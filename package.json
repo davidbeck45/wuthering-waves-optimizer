@@ -25,6 +25,7 @@
     "cypress:run:optimizer": "cypress run --spec \"cypress/e2e/calculator/optimizer/**/*.cy.ts\"",
     "cypress:run:team-rotations": "cypress run --spec \"cypress/e2e/teamRotations/**/*.cy.ts\"",
     "cypress:run:calculator-core": "cypress run --spec \"cypress/e2e/calculator/*.cy.ts\"",
+    "cypress:run:plus": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run",
     "cli": "tsx cli/index.ts"
   },

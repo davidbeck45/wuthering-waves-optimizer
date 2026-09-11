@@ -22,6 +22,7 @@ jobs:
           - optimizer
           - team-rotations
           - calculator-core
+          - plus
 
     steps:
       - name: Checkout repository
