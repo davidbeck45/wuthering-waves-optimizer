@@ -14,7 +14,7 @@ describe("Home E2E Tests", () => {
   });
 
   it("should load the homepage successfully and have the correct title", () => {
-    cy.title().should("eq", "Wuthering Waves Calculator & Optimizer");
+    cy.title().should("eq", "Wuthering Tools+ · Wuthering Waves Calculator & Optimizer");
   });
 
   it("should display the navigation bar with current chunks", () => {

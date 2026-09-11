@@ -41,7 +41,7 @@ describe("Info nested routes (liveResultBar flag)", () => {
     cy.visit("/info/formulas");
     cy.get("article.page-info h1").should(
       "contain.text",
-      "Wuthering Waves Calculator & Optimizer",
+      "Wuthering Tools+ · Wuthering Waves Calculator & Optimizer",
     );
     // The complete legacy page renders, not a blank/partial one.
     cy.contains("h3", "Formulas").should("be.visible");
