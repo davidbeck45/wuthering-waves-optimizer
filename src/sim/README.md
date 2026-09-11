@@ -28,7 +28,9 @@ Things learned the hard way:
   update banner) to its own width. The rankings page sets `width: 100vw`.
 - Visual checks: `node ~/Projects/wuwa-tools/scripts/shot.mjs http://localhost:5173/rankings --theme light --out x.png`
   (headless-Chromium DevTools screenshot; Cypress's `cy.screenshot()` hangs in this sandbox).
-- Cypress smoke spec: `cypress/e2e/rankings.cy.ts`.
+- Cypress smoke spec: `cypress/e2e/rankings.cy.ts` (CI shard `plus` = every root-level `cypress/e2e/*.cy.ts`).
+  CI must check out submodules (`.github/workflows/e2e.yml`): without `vendor/wuwa_calc` the lazy `/rankings`
+  chunk fails to resolve `@skittle/*`, the page (and its Nav) never mounts, and the spec times out.
 - Updating Riley: `~/Projects/wuwa-tools/scripts/sync-skittle.sh [--push]`.
 
 Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
