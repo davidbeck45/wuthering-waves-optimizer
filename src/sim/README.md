@@ -13,7 +13,8 @@ imported through the Vite alias `@skittle/*` and compiled by Vite straight from 
 | `rankings/solver.worker.ts` | worker entry: importing his `solver.ts` registers `onmessage` |
 | `public/tests/solves/*.json` | GENERATED: his precomputed solves; his page fetches `./tests/solves/…` relative to `/rankings` |
 | `public/sim/loading.gif` | GENERATED: the overlay sticker |
-| `src/pages/RankingsView.vue` | the page: `<Nav>` + host div + credit line; sizing overrides |
+| `skittle-theme.css` | hand-written theme bridge (phase B2): re-derives his `--bg/--surface/--ink/--accent…` variables from DaisyUI's tokens (`oklch(var(--b1))` etc.) on `.skittle-root`, `.pop` and `.ctxmenu`, sets the app font, and darkens kit colours / hard-coded whites on `[data-theme-style="light"]` — so the page follows every app theme |
+| `src/pages/RankingsView.vue` | the page: `<Nav>` + host div + credit line; claims `100vw` so AppLayout's content-sized `.contain` grid (and the update banner) span the viewport |
 
 Things learned the hard way:
 - Vue's root is `#wt-app` (index.html / main.ts) so that `#app` is free for his container.
@@ -23,6 +24,11 @@ Things learned the hard way:
   Electron, so the port races it against an 80 ms timeout.
 - His `body`/`html` rules become `.skittle-root { height: 100vh }` after scoping — the page's `!important`
   overrides size it to the host instead.
+- AppLayout's `.contain` is a content-sized grid: a page narrower than the viewport shrinks the grid (and the
+  update banner) to its own width. The rankings page sets `width: 100vw`.
+- Visual checks: `node ~/Projects/wuwa-tools/scripts/shot.mjs http://localhost:5173/rankings --theme light --out x.png`
+  (headless-Chromium DevTools screenshot; Cypress's `cy.screenshot()` hangs in this sandbox).
 - Cypress smoke spec: `cypress/e2e/rankings.cy.ts`.
+- Updating Riley: `~/Projects/wuwa-tools/scripts/sync-skittle.sh [--push]`.
 
 Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).

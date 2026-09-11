@@ -16,6 +16,7 @@ import { useRoute, useRouter } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
 import { mountRankings, onLocationChange, unmountRankings } from "../sim/rankings/controller";
 import "../sim/skittle.css";
+import "../sim/skittle-theme.css";
 
 const host = ref<HTMLElement | null>(null);
 const router = useRouter();
@@ -30,11 +31,17 @@ watch(() => route.fullPath, () => onLocationChange());
 </script>
 
 <style>
+/* AppLayout's .contain is a content-sized grid: it is only as wide as its widest child (668px with
+   Riley's aside alone, which also squeezed the update banner). Claiming the viewport width here makes
+   the grid — banner included — span the page, and the height matches .contain's own calc. */
 .rankings-page {
+  width: 100vw;
+  max-width: 100vw;
+  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
   min-height: 0;
+  background: oklch(var(--b1));
 }
 .skittle-host {
   flex: 1;
