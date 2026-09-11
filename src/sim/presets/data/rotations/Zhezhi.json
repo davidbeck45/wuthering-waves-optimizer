@@ -1,0 +1,1185 @@
+[
+ {
+  "name": "Zhezhi S6R5 · Mornye + Jinhsi (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S6R5 · Mornye + Jinhsi (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 33,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 37,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 39,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 40,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 41,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 42,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 43,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 44,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 45,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 46,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S6R5 · Shorekeeper + Jinhsi (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S6R5 · Shorekeeper + Jinhsi (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 33,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 37,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 39,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 40,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 41,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 42,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 43,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 44,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 45,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S6R5 · Mornye + Hiyuki (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S6R5 · Mornye + Hiyuki (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 33,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 37,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 39,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 40,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 41,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 42,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 43,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 44,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 45,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 46,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 47,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 48,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 49,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 50,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 51,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 52,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

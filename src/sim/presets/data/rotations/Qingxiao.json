@@ -1,0 +1,143 @@
+[
+ {
+  "name": "Qingxiao S6R5 · Mornye + Denia (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40. NOT PORTED: Forte Heavy - Heaven's Reckoning (mv 1913.725, Heavy/Forte, unmatched).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Qingxiao S6R5 · Mornye + Denia (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40. NOT PORTED: Forte Heavy - Heaven's Reckoning (mv 1913.725, Heavy/Forte, unmatched).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TonalityShiftDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidAirAttackStringbladeStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidAirAttackStringbladeStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidAirAttackStringbladeStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStringbladeStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackStringbladeStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SeveringNoteJudgementDMG",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackStringbladeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackEphemeralTranscendenceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackEphemeralTranscendenceStage2DMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackEphemeralTranscendenceStage3DMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackEphemeralTranscendenceStage4DMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BillowsBeneathHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "TransformDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "CalamityEffigy",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "LingeringSongDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

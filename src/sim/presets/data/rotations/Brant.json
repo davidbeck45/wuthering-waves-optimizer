@@ -1,0 +1,459 @@
+[
+ {
+  "name": "Brant S6R5 · Mornye + Lupa (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 5,241,251 DPR for Brant of 6,800,993 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Forte - Returned from Ashes (S6 Blast), 1x Forte - Returned from Ashes (S6 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 1 (Charged) = MidAirAttackStage1ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 1 = MidairAttackStage1DMG × 1.30; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Brant S6R5 · Mornye + Lupa (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 5,241,251 DPR for Brant of 6,800,993 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Forte - Returned from Ashes (S6 Blast), 1x Forte - Returned from Ashes (S6 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 1 (Charged) = MidAirAttackStage1ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 1 = MidairAttackStage1DMG × 1.30; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MidairAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "TotheHorizonDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MidAirAttackStage1ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Brant S6R5 · Shorekeeper + Lupa (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Lupa (main DPS): 4,507,179 DPR for Brant of 5,513,145 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 1x Forte - Returned from Ashes (S6 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 1 (Charged) = MidAirAttackStage1ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 1 = MidairAttackStage1DMG × 1.30; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Brant S6R5 · Shorekeeper + Lupa (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Lupa (main DPS): 4,507,179 DPR for Brant of 5,513,145 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 1x Forte - Returned from Ashes (S6 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 1 (Charged) = MidAirAttackStage1ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 1 = MidairAttackStage1DMG × 1.30; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MidairAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TotheHorizonDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MidAirAttackStage1ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Brant S6R5 · Lupa + Changli (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Changli (main DPS): 1,825,409 DPR for Brant of 4,808,972 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Brant S6R5 · Lupa + Changli (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Changli (main DPS): 1,825,409 DPR for Brant of 4,808,972 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Returned from Ashes = ReturnedfromAshesDMG × 1.42; Mid-air - Captain's Rhapsody 2 (Charged) = MidairAttackStage2ChargedAttackDMG × 1.30; Mid-air - Captain's Rhapsody 2 = MidAirAttackStage2DMG × 1.30; Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 1.30; Mid-air - Captain's Rhapsody Flip = MidAirAttackStage1FlipDMG × 1.30.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "TotheHorizonDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
+     "type": "outro",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

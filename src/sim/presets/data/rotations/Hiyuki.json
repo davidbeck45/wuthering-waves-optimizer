@@ -1,0 +1,809 @@
+[
+ {
+  "name": "Hiyuki S6R5 · Suisui + Lynae (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,735,400 DPR for Hiyuki of 10,111,942 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Hiyuki S6R5 · Suisui + Lynae (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,735,400 DPR for Hiyuki of 10,111,942 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "FrostedgeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 21,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ForeclaimingInwardVisionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "Aleph-1'sCreationDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianVoidborneConstruct",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 28,
+     "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "ForeclaimingBladeLiberationBaseDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hiyuki S6R5 · Suisui + Chisa (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Chisa (main DPS): 8,447,433 DPR for Hiyuki of 9,852,712 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 4x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Hiyuki S6R5 · Suisui + Chisa (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Chisa (main DPS): 8,447,433 DPR for Hiyuki of 9,852,712 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 4x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "FrostedgeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 21,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ForeclaimingInwardVisionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "Aleph-1'sCreationDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianVoidborneConstruct",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 28,
+     "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "ForeclaimingBladeLiberationBaseDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hiyuki S6R5 · Chisa + Lynae (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lynae (main DPS): 8,429,109 DPR for Hiyuki of 10,088,220 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Hiyuki S6R5 · Chisa + Lynae (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lynae (main DPS): 8,429,109 DPR for Hiyuki of 10,088,220 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Foreclaimed Self 2 = BasicAttackForeclaimedSelfStage2DMG × 2.20; Forte Basic - Iai = BasicAttackIaiDMG × 2.25; Glacio Bite - Fine Snow = GlacioBiteDMG × 5.88; Heavy - Bitterfrost: Foreclaimed Self = HeavyAttackBitterfrostForeclaimedSelfDMG × 2.60; Heavy - Foreclaimed Self = HeavyAttackForeclaimedSelfDMG × 2.20; Heavy - Frost Splinter: Present Self = HeavyAttackFrostSplinterPresentSelfDMG × 2.60; Liberation - Foreclaiming: Blade Liberation = ForeclaimingBladeLiberationBaseDMG × 1.80; Skill - Frostblight: Petalfall = FrostblightPetalfallDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "FrostedgeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 21,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ForeclaimingInwardVisionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavyAttackForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackPresentSelfStage3DMG",
+     "type": "basic",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "Aleph-1'sCreationDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianVoidborneConstruct",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 30,
+     "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "ForeclaimingBladeLiberationBaseDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

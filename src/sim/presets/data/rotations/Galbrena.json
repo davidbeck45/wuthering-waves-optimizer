@@ -1,0 +1,159 @@
+[
+ {
+  "name": "Galbrena S6R5 · Lupa + Lucilla (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Lucilla (main DPS): 7,364,436 DPR for Galbrena of 9,261,883 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 2.96; Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 2.96; Forte Basic - Seraphic Execution 4 = BasicAttackSeraphicExecutionStage4DMG × 2.96; Forte Basic - Seraphic Execution 5 = BasicAttackSeraphicExecutionStage5DMG × 2.96; Liberation - Hellfire Absolution = HellfireAbsolutionDMG × 2.30; Skill - Ascent of Malice = ResonanceSkillAscentofMaliceDMG × 2.50; Skill - Encroach = ResonanceSkillEncroachDMG × 2.50.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Galbrena S6R5 · Lupa + Lucilla (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Lucilla (main DPS): 7,364,436 DPR for Galbrena of 9,261,883 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 2.96; Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 2.96; Forte Basic - Seraphic Execution 4 = BasicAttackSeraphicExecutionStage4DMG × 2.96; Forte Basic - Seraphic Execution 5 = BasicAttackSeraphicExecutionStage5DMG × 2.96; Liberation - Hellfire Absolution = HellfireAbsolutionDMG × 2.30; Skill - Ascent of Malice = ResonanceSkillAscentofMaliceDMG × 2.50; Skill - Encroach = ResonanceSkillEncroachDMG × 2.50.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HellflareOverloadDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "CorrosaurusAttack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Corrosaurus",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "HeavyAttackVolleyofDeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackVolleyofDeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ResonanceSkillEncroachDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ResonanceSkillAscentofMaliceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "HellfireAbsolutionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackSeraphicExecutionStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "AshenPursuitDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

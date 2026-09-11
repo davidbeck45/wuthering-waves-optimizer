@@ -1,0 +1,167 @@
+[
+ {
+  "name": "Luuk Herssen S6R5 · Mornye + Denia (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Denia (main DPS): 8,562,376 DPR for Luuk Herssen of 10,949,445 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Gavel of Earthshaker = GavelofEarthshakerDMG × 3.46; Liberation - Rewritten in Winter's Margins = RewritteninWintersMargins × 2.35; Skill - Aureole of Execution: Breach = AureoleofExecutionBreachDMG × 3.46; Skill - Aureole of Execution: Glare = AureoleofExecutionGlareDMG × 3.46; Skill - Aureole of Execution: Ring = AureoleofExecutionRingDMG × 3.46; Skill - Ichor Deposit = IchorDepositDMG × 3.46.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Luuk Herssen S6R5 · Mornye + Denia (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Denia (main DPS): 8,562,376 DPR for Luuk Herssen of 10,949,445 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Gavel of Earthshaker = GavelofEarthshakerDMG × 3.46; Liberation - Rewritten in Winter's Margins = RewritteninWintersMargins × 2.35; Skill - Aureole of Execution: Breach = AureoleofExecutionBreachDMG × 3.46; Skill - Aureole of Execution: Glare = AureoleofExecutionGlareDMG × 3.46; Skill - Aureole of Execution: Ring = AureoleofExecutionRingDMG × 3.46; Skill - Ichor Deposit = IchorDepositDMG × 3.46.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "BeforeInjectionofDawnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "AureoleofExecutionRingDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackGoldenImpaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "AureoleofExecutionBreachDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackGoldenImpaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "AureoleofExecutionGlareDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "GavelofEarthshakerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "IchorDepositDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "RewritteninWintersMargins",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "TwinNovaNebulousCannonSlashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "TwinNovaNebulousCannon",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 19,
+     "key": "BowtotheLastLightDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

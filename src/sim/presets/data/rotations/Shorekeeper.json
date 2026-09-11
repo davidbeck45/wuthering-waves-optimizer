@@ -1,0 +1,127 @@
+[
+ {
+  "name": "Shorekeeper S6R5 · Lynae + Changli (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 293,288 DPR for Shorekeeper of 3,809,911 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Shorekeeper S6R5 · Lynae + Changli (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 293,288 DPR for Shorekeeper of 3,809,911 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OriginCalculusStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EnlightenmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "DiscernmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shorekeeper S6R5 · Lynae + Jingran (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 261,958 DPR for Shorekeeper of 8,489,737 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Shorekeeper S6R5 · Lynae + Jingran (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 261,958 DPR for Shorekeeper of 8,489,737 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OriginCalculusStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EnlightenmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DiscernmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shorekeeper S6R5 · Lynae + Roccia (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Roccia: 243,044 DPR for Shorekeeper of 4,130,311 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Shorekeeper S6R5 · Lynae + Roccia (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Roccia: 243,044 DPR for Shorekeeper of 4,130,311 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Intro - Discernment = DiscernmentDMG × 1.42.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OriginCalculusStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EnlightenmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "DiscernmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

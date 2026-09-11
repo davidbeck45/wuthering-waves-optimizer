@@ -1,0 +1,201 @@
+[
+ {
+  "name": "Mornye S6R5 · Lupa + Changli (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 604,529 DPR for Mornye of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mornye S6R5 · Lupa + Changli (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 604,529 DPR for Mornye of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "DistributedArrayDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeavyAttackInversionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CriticalProtocolDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReactorHusk",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mornye S6R5 · Lupa + Aemeath (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 559,563 DPR for Mornye of 9,668,520 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mornye S6R5 · Lupa + Aemeath (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 559,563 DPR for Mornye of 9,668,520 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "DistributedArrayDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeavyAttackInversionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CriticalProtocolDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReactorHusk",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "TuneRuptureResponseParticleJetDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mornye S6R5 · Lynae + Aemeath (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Aemeath: 474,065 DPR for Mornye of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mornye S6R5 · Lynae + Aemeath (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Aemeath: 474,065 DPR for Mornye of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "DistributedArrayDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeavyAttackInversionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CriticalProtocolDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReactorHusk",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "TuneRuptureResponseParticleJetDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

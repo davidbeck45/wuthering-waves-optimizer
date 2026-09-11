@@ -42,6 +42,12 @@
         <li>Namelag, and Dustin for all of your help with the Spectro Frazzle formula!</li>
         <li>noyaosu for your help in data gathering for Aero Erosion!</li>
         <li>F.I.S.H. and invidia.exe for your help in figuring out Tune Break!</li>
+        <li>
+          Riley31415 for
+          <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" class="link">wuwa_calc</a>
+          — the fight engine, S6R5 solves and rotations behind the Team Rankings page and the
+          "Riley31415 (wuwa_calc)" presets in Wuthering Tools+
+        </li>
       </ul>
     </div>
 

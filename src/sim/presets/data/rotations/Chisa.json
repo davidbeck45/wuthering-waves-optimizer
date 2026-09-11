@@ -1,0 +1,319 @@
+[
+ {
+  "name": "Chisa S6R5 · Mornye + Cartethyia (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 1,538,550 DPR for Chisa of 7,248,362 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25. NOT PORTED: Echo - Core of Collapse (echo not found in app registry).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Chisa S6R5 · Mornye + Cartethyia (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 1,538,550 DPR for Chisa of 7,248,362 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25. NOT PORTED: Echo - Core of Collapse (echo not found in app registry).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "CollapsingHorizonDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianLeviathan",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 6,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SawringBlitzStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SawringBlitzStage2DiscordanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SawringBlitzStage3FalltoneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chisa S6R5 · Mornye + Xuanling (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Xuanling: 1,293,330 DPR for Chisa of 10,753,346 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Chisa S6R5 · Mornye + Xuanling (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Xuanling: 1,293,330 DPR for Chisa of 10,753,346 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SawringBlitzStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SawringBlitzStage2DiscordanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SawringBlitzStage3FalltoneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chisa S6R5 · Rebecca + Electro Rover (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,159,856 DPR for Chisa of 3,839,424 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25. NOT PORTED: Echo - Core of Collapse (echo not found in app registry).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Chisa S6R5 · Rebecca + Electro Rover (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,159,856 DPR for Chisa of 3,839,424 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25. NOT PORTED: Echo - Core of Collapse (echo not found in app registry).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CollapsingHorizonDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianLeviathan",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SawringBlitzStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SawringBlitzStage2DiscordanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SawringBlitzStage3FalltoneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

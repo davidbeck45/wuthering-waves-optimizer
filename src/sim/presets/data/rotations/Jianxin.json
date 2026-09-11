@@ -1,0 +1,55 @@
+[
+ {
+  "name": "Jianxin S6R5 · Mornye + Aemeath (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 111,799 DPR for Jianxin of 6,209,244 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jianxin S6R5 · Mornye + Aemeath (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 111,799 DPR for Jianxin of 6,209,244 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "EssenceofTaoSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "CalmingAirChiParryDamage",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PurificationForceFieldResonanceLiberationExplosionDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "PrimordialChiSpiralPushingPunchDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ }
+]

@@ -1,0 +1,345 @@
+[
+ {
+  "name": "Jiyan S6R5 · Mornye + Lynae (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 2,899,397 DPR for Jiyan of 4,614,492 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jiyan S6R5 · Mornye + Lynae (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 2,899,397 DPR for Jiyan of 4,614,492 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "NightmareFeilianWhirlwindDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareFeilianBeringal",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "EmeraldStormFinaleDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jiyan S6R5 · Shorekeeper + Lynae (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Shorekeeper + Lynae (main DPS): 2,780,923 DPR for Jiyan of 4,014,265 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jiyan S6R5 · Shorekeeper + Lynae (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Shorekeeper + Lynae (main DPS): 2,780,923 DPR for Jiyan of 4,014,265 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "NightmareFeilianWhirlwindDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareFeilianBeringal",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "EmeraldStormFinaleDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jiyan S6R5 · Mornye + Ciaccona (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Ciaccona (main DPS): 2,598,990 DPR for Jiyan of 3,784,167 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jiyan S6R5 · Mornye + Ciaccona (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Ciaccona (main DPS): 2,598,990 DPR for Jiyan of 3,784,167 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "EmeraldStormFinaleDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ }
+]

@@ -542,7 +542,7 @@
     <TeamRotationsImportModal v-model:open="isImportOpen" @import="importTeamData" />
     <TeamRotationsPresetsModal
       v-model:open="isPresetsOpen"
-      :presets="teamRotationPresets"
+      :presets="teamPresets"
       @import="handleImportPreset" />
   </div>
 </template>
@@ -579,6 +579,7 @@ import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRota
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
+import { loadWuwaCalcTeamPresets } from "../sim/presets";
 
 const teamRotationsStore = useTeamRotationsStore();
 const { teams } = storeToRefs(teamRotationsStore);
@@ -635,6 +636,16 @@ function handleCreateTeam() {
 
 const isImportOpen = ref(false);
 const isPresetsOpen = ref(false);
+// Wuthering Tools+: the generated wuwa_calc team presets join the curated
+// list the first time the modal opens (their JSON chunk is loaded lazily).
+const teamPresets = ref<TeamRotationPreset[]>(teamRotationPresets);
+let wuwaCalcTeamPresetsLoaded = false;
+watch(isPresetsOpen, async (open) => {
+  if (open && !wuwaCalcTeamPresetsLoaded) {
+    wuwaCalcTeamPresetsLoaded = true;
+    teamPresets.value = [...teamRotationPresets, ...(await loadWuwaCalcTeamPresets())];
+  }
+});
 
 function importTeamData(data: TeamExportData) {
   const team = teamRotationsStore.importTeam(data);

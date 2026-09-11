@@ -34,3 +34,21 @@ Things learned the hard way:
 - Updating Riley: `~/Projects/wuwa-tools/scripts/sync-skittle.sh [--push]`.
 
 Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
+
+
+## Stock presets from wuwa_calc (phase C) — `src/sim/presets/`
+
+| File | Role |
+|---|---|
+| `index.ts` | loaders: `loadWuwaCalcRotationPresets(key)` (one lazy JSON chunk per character via `import.meta.glob`), `withWuwaCalcRotations(key, data)` (what `getCharByName` appends to a character's curated `rotations`), `loadWuwaCalcTeamPresets()` (lazy `data/teams.json`, joined to the curated list the first time Teams > List Presets opens) |
+| `data/rotations/<Key>.json` | GENERATED — `CharacterRotationPreset[]` per character: the top S6R5 steady-state loops Riley's engine ran for that resonator (team-dependent variants, e.g. Xuanling's 3 vs 5 "Still as Withered Wood" shadows), mapped onto this app's attack keys |
+| `data/teams.json` | GENERATED — `TeamRotationPreset[]`: for every main DPS the app knows, the best 3 distinct S6R5 compositions, the three rotations interleaved in execution order, main DPS in slot 0, enemy = level 100 / 20% RES (Riley's target) |
+| `data/manifest.json` | GENERATED — provenance (`wuwaCalcCommit`, `appCommit`, state, timestamp) and counts |
+| `wuwaCalcPresets.test.ts` | gate: every generated action resolves on its character through `resolveRotationActionToAttackData`, names unique and disjoint from the curated presets, every team a complete 3-slot team |
+
+Generator: `~/Projects/wuwa-tools/rotation-port/emit_app_presets.py` (after `export_rotations.mjs` → `dump_app_tables.ts` →
+`map_rotations.py`, see that README). Never hand-edit `data/`. Casts the app has no action for are listed in each
+preset's description as "Not ported" (as of 2026-09-11: the echoes Oblivion / Core of Collapse / Hecate, Cantarella's
+"Beneath the Sea", one forte heavy). Kit multipliers Riley folds into his motion values (Hiyuki, Cantarella, Brant,
+Galbrena, …) are mapped by ratio — the app applies them through the kit's buffs, so keep those enabled.
+E2E: `cypress/e2e/wuwaCalcPresets.cy.ts`. Credit: author field `Riley31415 (wuwa_calc)` on every preset.

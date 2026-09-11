@@ -1,0 +1,305 @@
+[
+ {
+  "name": "Lynae S6R5 · Mornye + Luuk Herssen (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,450,007 DPR for Lynae of 10,121,546 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lynae S6R5 · Mornye + Luuk Herssen (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,450,007 DPR for Lynae of 10,121,546 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TimetoShowSomeColorsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "PrismaticOverblastDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "LynaeStylePalettesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackSparkCollisionLv3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackPolychromeLeap1",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackPolychromeLeap2",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackPolychromeLeap3",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackVisualImpactDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "VoidwingMothTransformDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "VoidwingMoth",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "LetsHittheRoadDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lynae S6R5 · Mornye + Aemeath (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,279,011 DPR for Lynae of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lynae S6R5 · Mornye + Aemeath (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,279,011 DPR for Lynae of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TimetoShowSomeColorsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "PrismaticOverblastDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "LynaeStylePalettesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackSparkCollisionLv3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackPolychromeLeap1",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackPolychromeLeap2",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackPolychromeLeap3",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackVisualImpactDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Hyvatia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 11,
+     "key": "LetsHittheRoadDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lynae S6R5 · Mornye + Xuanling (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Xuanling: 1,259,769 DPR for Lynae of 8,593,208 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lynae S6R5 · Mornye + Xuanling (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Xuanling: 1,259,769 DPR for Lynae of 8,593,208 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "TimetoShowSomeColorsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PrismaticOverblastDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "LynaeStylePalettesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackSparkCollisionLv3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackPolychromeLeap1",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackPolychromeLeap2",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackPolychromeLeap3",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackVisualImpactDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Hyvatia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 11,
+     "key": "LetsHittheRoadDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

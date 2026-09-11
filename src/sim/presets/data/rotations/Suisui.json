@@ -1,0 +1,137 @@
+[
+ {
+  "name": "Suisui S6R5 · Chisa + Hiyuki (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 378,387 DPR for Suisui of 9,852,712 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suisui S6R5 · Chisa + Hiyuki (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 378,387 DPR for Suisui of 9,852,712 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackZephyrStanceStage4DMG",
+     "type": "basic",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suisui S6R5 · Lynae + Hiyuki (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Hiyuki: 304,036 DPR for Suisui of 10,111,942 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suisui S6R5 · Lynae + Hiyuki (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Hiyuki: 304,036 DPR for Suisui of 10,111,942 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackZephyrStanceStage4DMG",
+     "type": "basic",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suisui S6R5 · Lucilla + Carlotta (wuwa_calc)",
+  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 294,897 DPR for Suisui of 4,619,428 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suisui S6R5 · Lucilla + Carlotta (wuwa_calc)",
+   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 294,897 DPR for Suisui of 4,619,428 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackZephyrStanceStage4DMG",
+     "type": "basic",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]
