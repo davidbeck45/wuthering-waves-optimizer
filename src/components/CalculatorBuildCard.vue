@@ -310,7 +310,7 @@
                 :character-id="props.character" />
             </div>
             <div class="build-card__watermark shrink-0 text-right" data-test-build-card-watermark>
-              WUTHERINGTOOLS.COM
+              WUTHERING-TOOLS-PLUS.VERCEL.APP
             </div>
           </div>
         </div>

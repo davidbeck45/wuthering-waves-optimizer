@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://wutheringtools.com</loc>
+    <loc>https://wuthering-tools-plus.vercel.app</loc>
     <lastmod>2026-07-18</lastmod>
   </url>
   <url>
-    <loc>https://www.wutheringtools.com/updates</loc>
+    <loc>https://wuthering-tools-plus.vercel.app/updates</loc>
     <lastmod>2026-09-11</lastmod>
   </url>
   <url>
-    <loc>https://www.wutheringtools.com/convene</loc>
+    <loc>https://wuthering-tools-plus.vercel.app/convene</loc>
     <lastmod>2026-04-12</lastmod>
   </url>
   <url>
-    <loc>https://www.wutheringtools.com/info</loc>
+    <loc>https://wuthering-tools-plus.vercel.app/info</loc>
     <lastmod>2025-12-31</lastmod>
   </url>
   <url>
-    <loc>https://www.wutheringtools.com/privacy</loc>
+    <loc>https://wuthering-tools-plus.vercel.app/privacy</loc>
     <lastmod>2024-11-12</lastmod>
   </url>
   <url>
-    <loc>https://www.wutheringtools.com/legal</loc>
+    <loc>https://wuthering-tools-plus.vercel.app/legal</loc>
     <lastmod>2024-12-26</lastmod>
   </url>
 </urlset>
