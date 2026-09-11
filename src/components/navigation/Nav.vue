@@ -86,6 +86,16 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/teams.webp"
             class="size-8" />
         </RouterLink>
+        <RouterLink
+          to="/rankings"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2 relative"
+          :class="{ 'btn-active': curPage === 'rankings' }"
+          title="Team Rankings (wuwa_calc)"
+          data-test-nav-rankings>
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
+          </svg>
+        </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">
         <slot></slot>

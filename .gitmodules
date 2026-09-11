@@ -1,0 +1,3 @@
+[submodule "vendor/wuwa_calc"]
+	path = vendor/wuwa_calc
+	url = https://github.com/davidbeck45/wuwa_calc.git

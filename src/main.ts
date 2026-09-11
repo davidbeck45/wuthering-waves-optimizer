@@ -51,6 +51,9 @@ const routes = [
   { path: "/inventory", component: InventoryView, name: "InventoryView" },
   { path: "/convene", component: ConveneView, name: "ConveneView" },
   { path: "/teams", component: TeamRotationsView, name: "TeamRotationsView" },
+  // Wuthering Tools+: Riley31415/wuwa_calc's team comparison table + run detail pages, lazy so the
+  // engine only loads when the page is opened (src/sim/rankings/).
+  { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
 ];
 
 const router = createRouter({
@@ -84,4 +87,4 @@ window.addEventListener("unload", () => {
   console.log("unloading app");
 });
 
-app.mount("#app");
+app.mount("#wt-app");
