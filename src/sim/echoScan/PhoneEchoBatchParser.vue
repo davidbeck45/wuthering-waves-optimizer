@@ -146,13 +146,16 @@ import {
   KEY_TO_LABEL,
   MAIN_STAT_KEYS,
   SUBSTAT_KEYS,
-  buildRecord,
   echoEntry,
+  readRegion,
   resolveLayout,
+  scanEcho,
   toParsedEcho,
+  type BoxReader,
   type ParsedEchoForImporter,
   type RecordHints,
   type Region,
+  type ScanInput,
   type ScanRecord,
 } from "./phoneEchoScan";
 
@@ -290,14 +293,34 @@ async function scanOne(item: ScanItem, ocr: EchoOcr, matcher: EchoImageMatcher |
       return;
     }
     const regions = layout.regions;
+    const table = layout.table;
     currentStep.value = `${item.name}: reading the name…`;
     const name = await ocr.recognize(bitmap, regions.name, { scale: 1.5, psm: PSM.SINGLE_LINE });
+    const costText = await ocr.recognize(bitmap, regions.cost, { scale: 3, psm: PSM.SINGLE_LINE, mode: "plain" });
+    const levelText = await ocr.recognize(bitmap, regions.level, { scale: 3, psm: PSM.SINGLE_LINE, mode: "plain", whitelist: "+0123456789" });
     currentStep.value = `${item.name}: reading the stats…`;
-    const panel = await ocr.recognize(bitmap, regions.panel, { scale: 1.5, psm: PSM.SINGLE_BLOCK });
-    const panel2 = await ocr.recognize(bitmap, regions.panel, { scale: 2, psm: PSM.SINGLE_BLOCK, mode: "plain" });
+    // the block pass gives the rows' positions and labels; every value is then re-read from its own row
+    const { words } = await ocr.recognizeWords(bitmap, regions.panel, { scale: table.blockScale, psm: PSM.SINGLE_BLOCK });
     currentStep.value = `${item.name}: reading the set…`;
     const chip = await ocr.recognize(bitmap, regions.chip, { scale: 2, psm: PSM.SINGLE_LINE, mode: "invert" });
-    let record = buildRecord(item.name, { name, panel, panel2, chip });
+    const input: ScanInput = { words, name, chip, costText, levelText };
+    const reads = new Map<string, Promise<string>>();
+    const read: BoxReader = (request) => {
+      const key = `${request.kind}.${request.row}.${request.band.join("-")}.${request.variant.key}`;
+      let pending = reads.get(key);
+      if (!pending) {
+        pending = ocr.recognize(bitmap, readRegion(regions.panel, table, request), {
+          scale: request.variant.scale,
+          psm: PSM.SINGLE_LINE,
+          mode: request.variant.mode,
+          whitelist: request.variant.whitelist,
+        });
+        reads.set(key, pending);
+      }
+      return pending;
+    };
+    currentStep.value = `${item.name}: reading the stat rows…`;
+    let record = await scanEcho(item.name, input, read, table);
     if (matcher && (!record.echo || !record.set)) {
       currentStep.value = `${item.name}: matching images…`;
       const hints: RecordHints = {};
@@ -310,7 +333,7 @@ async function scanOne(item: ScanItem, ocr: EchoOcr, matcher: EchoImageMatcher |
       } catch {
         /* image matching is best-effort */
       }
-      record = buildRecord(item.name, { name, panel, panel2, chip }, hints);
+      record = await scanEcho(item.name, input, read, table, hints);
     }
     item.thumb = makeThumb(bitmap, regions.echoImage);
     bitmap.close();
@@ -339,7 +362,7 @@ async function scanAll(): Promise<void> {
       await matcher.init();
       matcherReady = true;
     } catch {
-      matcherReady = false;
+      /* image matching is best-effort: scanning continues without portrait / glyph hints */
     }
     for (const item of queued) {
       await scanOne(item, ocr, matcherReady ? matcher : null);
