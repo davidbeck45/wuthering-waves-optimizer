@@ -60,3 +60,20 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline {
 .skittle-root .wt-import { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; font: 12px var(--sans); color: var(--ink-2); }
 .skittle-root .wt-import__opt { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
 .skittle-root .wt-import__opt input { accent-color: oklch(var(--p)); }
+
+/* Wuthering Tools+: Riley's stacked layout (`main.stack`, `.tclayout.stack`) collides with DaisyUI's
+   global `.stack` (stacked cards) component, which turns the container into an inline grid and
+   transforms/dims its children — the table ended up scaled, shifted ~900px down and at 80% opacity
+   whenever his page stacked the aside above the table (narrow viewport, or a wider table after a
+   Team Cost switch). Give his elements their own values back. */
+.skittle-root main.stack { display: block; place-items: initial; align-items: initial; }
+.skittle-root .tclayout.stack { display: flex; place-items: initial; align-items: initial; }
+.skittle-root main.stack > *, .skittle-root .tclayout.stack > * {
+  transform: none !important;
+  opacity: 1 !important;
+  grid-column-start: auto !important;
+  grid-row-start: auto !important;
+  z-index: auto;
+}
+.skittle-root .tclayout.stack > .tcside { z-index: 41; align-self: flex-start; }
+.skittle-root .tclayout.stack > .tcbody { width: auto; }
