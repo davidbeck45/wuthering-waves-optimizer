@@ -1,0 +1,25 @@
+{
+  "version": "3.6",
+  "season": "S2 Phase 2",
+  "from": "2026-08-27",
+  "to": "2026-09-30",
+  "rounds": [1.0, 1.15, 1.25],
+  "teamBonusThreshold": 5000,
+  "scoreThresholds": [12000, 16000, 21000, 37000, 58000],
+  "vigor": { "default": 1, "two": ["Mornye", "Baizhi", "Verina", "Shorekeeper", "Buling", "Suisui"], "emergency": { "Denia": 1 } },
+  "matrixKits": ["Brant", "Camellya", "Cantarella", "Carlotta", "Changli", "Jinhsi", "Jiyan", "Xiangli Yao"],
+  "bosses": [
+    { "stage": 1, "name": "Mourning Aix", "resists": "Spectro", "mechanics": ["Its Vibration Strength Reduction Rate is lowered by 15 %: parries carry the stagger work.", "Counterattacks cut its Vibration Strength by 30 % of max and restore 10 Resonance Energy."], "round2": "ATK +6 % every 5 s, up to +72 %; immobilising it clears the stacks." },
+    { "stage": 2, "name": "Myriad Snare: Rustfire Chassis", "resists": "Fusion", "mechanics": ["Starts the fight with +30 % ATK.", "Dodge Counters cut its Vibration Strength by 20 % of max and restore 10 Resonance Energy."], "round2": "The Vibration Strength Reduction it takes is reduced by 20 %." },
+    { "stage": 3, "name": "Sentry Construct", "resists": "Glacio", "mechanics": ["Takes 25 % less Vibration Strength Reduction and deals 30 % more DMG while airborne — ground it on the first parry, about 5 s in.", "Negative Statuses or Tunability-Shifting raise your Vibration Strength Reduction Rate by 50 %."], "round2": "ATK +3 % every 5 s, stacking 10 times; immobilising it clears the stacks." },
+    { "stage": 4, "name": "Tempest Mephis", "resists": "Electro", "mechanics": ["Counterattacks raise its Off-Tune Level by 20 % of max and cut its Vibration Strength by 30 % of max.", "Nearly every attack has a counterattack window."], "round2": "+30 % ATK, disabled while under Tune Strain (Shifting or Interfered) — a Tune Strain team shuts it off." },
+    { "stage": 5, "name": "Matrix Mimic", "resists": null, "mechanics": ["Singularity Expansion only. Equal RES to every attribute.", "Damage dealt to it yields 1.1× points; after the kill the next team gets 15 s of damage and interrupt immunity."], "round2": null }
+  ],
+  "circuits": [
+    { "id": "general", "name": "General Enhancement", "short": "General", "effect": "Enemies take 20 % more total DMG and 20 % more total Heavy Attack DMG." },
+    { "id": "negstatus", "name": "Enhancement: Negative Status", "short": "Status", "effect": "Under a Negative Status the target takes 25 % more total DMG for 30 s. Enemies take 80 % more total Glacio Chafe DMG." },
+    { "id": "echo", "name": "Enhancement: Echo Skill", "short": "Echo", "effect": "+30 % total Echo Skill DMG, +20 % total Havoc DMG, +20 % total Resonance Skill DMG." },
+    { "id": "tunebreak", "name": "Enhancement: Tune Break", "short": "Tune", "effect": "Tunability-Shifting inflicted: the team deals 25 % more total DMG for 30 s. Tune Strain-Shifting inflicted: that Resonator deals 30 % more for 15 s." }
+  ],
+  "sources": ["Game8 (reset & buffs, stage guides)", "BitTopup 2026 guide", "u7buy S2 guide", "wuwamatrix.com (boss resistances, vigor)"]
+}

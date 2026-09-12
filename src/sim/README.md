@@ -57,6 +57,25 @@ Galbrena, …) are mapped by ratio — the app applies them through the kit's bu
 E2E: `cypress/e2e/wuwaCalcPresets.cy.ts`. Credit: author field `Riley31415 (wuwa_calc)` on every preset.
 
 
+## Endstate Matrix planner (track F) — `src/sim/matrix/`
+
+`/matrix` plans the endgame mode's teams for the account in the app: teams of three plus a Power Circuit fight the
+phase's bosses in succession, score is damage dealt (later rounds multiply it), every Resonator fights once (the
+designated healers twice) and each boss resists its own element. Rules and the current phase: the vault note
+"WuWa Endstate Matrix" and `data/phase.json` (update per phase: bosses + resists, circuits, emergency agent).
+
+| File | What it does |
+|---|---|
+| `data/phase.json` | 3.6 S2 Phase 2: rounds, Vigor rules, bosses (element resisted, mechanics, Round 2+ effects), the four circuits |
+| `planMatrix.ts` | pure decisions: the roster off the character store (+ ticked extras), compositions (a DPS at the sequence floor with two owned others — one Rover form, at most one other DPS as a support), the solve state per DPS (sequence / weapon rank, R1–R5 interpolated), the Matrix-Mode buff, a Power Circuit from the loop's damage-type mix (with uptime factors for the conditional circuits), the DP that fields the most teams above a floor under Vigor then the highest total (pinned teams kept), round labels, Vigor left |
+| `matrix.worker.ts` | Riley's solver + team run on any three loadouts (every loadout variant and slot order — the first slot leads the fight and needs a no-intro chain); answers `catalog` (who has a kit, DPS/support roles, element) and `score` messages |
+| `MatrixPlannerView.vue` | the page: phase panels, roster with "use" ticks and extras search, scoring on a worker pool with progress, plan cards weakest → strongest (circuit, bosses to avoid, picks, swap / pin / drop), Vigor left and unfielded reasons, saved plans + JSON copy/import (localStorage `wuthering-tools-plus.matrix.*`) |
+| `planMatrix.test.ts` + `__fixtures__/engineScores.json` | the decisions replayed on 11 engine scores recorded from real compositions (`wuwa-tools/matrix-plan`, whose Python planner is the offline twin) |
+| `cypress/e2e/matrix.cy.ts` | the Cartethyia fixture + ticked Aero Rover and Sanhua scored by the real engine in workers, a plan, a saved plan surviving a reload |
+
+Scores are Riley's engine on his standard builds for the state (main DPS invested, supports S0R1), not the user's
+own echoes; kits wuwa_calc lacks (Zani, 2026-09) show as "no kit — place by hand".
+
 ## Phone-screenshot echo import (phase D) — `src/sim/echoScan/`
 
 Batch import of echoes from phone screenshots of the in-game Echo inventory (an echo selected, its detail
