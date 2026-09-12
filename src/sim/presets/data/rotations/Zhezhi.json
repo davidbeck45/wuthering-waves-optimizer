@@ -1,11 +1,11 @@
 [
  {
-  "name": "Zhezhi S6R5 · Mornye + Jinhsi (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Zhezhi S6R5 · Mornye + Jinhsi (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 915,975 DPR for Zhezhi of 4,386,347 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
    "actions": [
     {
      "order": 1,
@@ -381,12 +381,12 @@
   }
  },
  {
-  "name": "Zhezhi S6R5 · Shorekeeper + Jinhsi (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Zhezhi S6R5 · Shorekeeper + Jinhsi (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 872,698 DPR for Zhezhi of 3,764,615 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
    "actions": [
     {
      "order": 1,
@@ -754,12 +754,12 @@
   }
  },
  {
-  "name": "Zhezhi S6R5 · Mornye + Hiyuki (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Hiyuki · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Zhezhi S6R5 · Mornye + Hiyuki (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Hiyuki · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Hiyuki: 853,725 DPR for Zhezhi of 6,675,359 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
    "actions": [
     {
      "order": 1,
@@ -1176,6 +1176,469 @@
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Shorekeeper + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 322,405 DPR for Zhezhi of 2,640,014 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Shorekeeper + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 322,405 DPR for Zhezhi of 2,640,014 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 13,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 18,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Hiyuki + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Hiyuki + Lucilla: 306,741 DPR for Zhezhi of 4,689,905 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Hiyuki + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Hiyuki + Lucilla: 306,741 DPR for Zhezhi of 4,689,905 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 15,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 18,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Hiyuki: 273,089 DPR for Zhezhi of 5,452,956 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Hiyuki: 273,089 DPR for Zhezhi of 5,452,956 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 21,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 16,
      "buffs": [],
      "isDisabled": false
     }

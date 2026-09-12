@@ -1,11 +1,11 @@
 [
  {
-  "name": "Verina S6R5 · Lynae + Qiuyuan (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 27,327 DPR for Verina of 3,660,464 team. Sequence procs in the loop: none.",
+  "name": "Verina S6 Variation R5 · Lynae + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 27,327 DPR for Verina of 3,660,464 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Verina S6R5 · Lynae + Qiuyuan (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 27,327 DPR for Verina of 3,660,464 team. Sequence procs in the loop: none.",
+   "name": "Verina S6 Variation R5 · Lynae + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 27,327 DPR for Verina of 3,660,464 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -85,97 +85,12 @@
   }
  },
  {
-  "name": "Verina S6R5 · Lynae + Roccia (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Roccia: 22,869 DPR for Verina of 3,132,206 team. Sequence procs in the loop: none.",
+  "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,417 DPR for Verina of 5,323,953 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Verina S6R5 · Lynae + Roccia (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Roccia: 22,869 DPR for Verina of 3,132,206 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "ArborealFlourishDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ArborealFlourishCoordinatedAttackDMG",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BotanyExperimentDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ArborealFlourishCoordinatedAttackDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MidAirAttackStarflowerBloomsStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ArborealFlourishCoordinatedAttackDMG",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "FallacyOfNoReturnDiffraction",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "ArborealFlourishCoordinatedAttackDMG",
-     "type": "liberation",
-     "count": 10,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "VerdantGrowthDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Verina S6R5 · Phrolova + Qiuyuan (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,417 DPR for Verina of 5,323,953 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Verina S6R5 · Phrolova + Qiuyuan (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,417 DPR for Verina of 5,323,953 team. Sequence procs in the loop: none.",
+   "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,417 DPR for Verina of 5,323,953 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -253,6 +168,216 @@
     },
     {
      "order": 10,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 23,861 DPR for Verina of 2,681,500 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 23,861 DPR for Verina of 2,681,500 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ArborealFlourishDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 12,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BotanyExperimentDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidAirAttackStarflowerBloomsStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidAirAttackStarflowerBloomsStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 9,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "VerdantGrowthDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 20,593 DPR for Verina of 4,462,775 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 20,593 DPR for Verina of 4,462,775 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "VerdantGrowthDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ArborealFlourishDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BotanyExperimentDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidAirAttackStarflowerBloomsStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MidAirAttackStarflowerBloomsStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ArborealFlourishCoordinatedAttackDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 12,
      "key": "ArborealFlourishCoordinatedAttackDMG",
      "type": "liberation",
      "count": 1,

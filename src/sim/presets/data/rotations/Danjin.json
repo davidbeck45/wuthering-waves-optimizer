@@ -1,11 +1,11 @@
 [
  {
-  "name": "Danjin S6R5 · Phrolova + Mornye (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 321,835 DPR for Danjin of 4,740,700 team. Sequence procs in the loop: none.",
+  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 321,835 DPR for Danjin of 4,740,700 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Danjin S6R5 · Phrolova + Mornye (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 321,835 DPR for Danjin of 4,740,700 team. Sequence procs in the loop: none.",
+   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 321,835 DPR for Danjin of 4,740,700 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -117,12 +117,12 @@
   }
  },
  {
-  "name": "Danjin S6R5 · Phrolova + Shorekeeper (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 273,471 DPR for Danjin of 4,365,572 team. Sequence procs in the loop: none.",
+  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 273,471 DPR for Danjin of 4,365,572 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Danjin S6R5 · Phrolova + Shorekeeper (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 273,471 DPR for Danjin of 4,365,572 team. Sequence procs in the loop: none.",
+   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 273,471 DPR for Danjin of 4,365,572 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

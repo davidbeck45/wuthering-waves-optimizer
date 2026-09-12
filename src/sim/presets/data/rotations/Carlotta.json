@@ -1,11 +1,11 @@
 [
  {
-  "name": "Carlotta S6R5 · Mornye + Lynae (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, The Last Dance R5, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Lynae (main DPS): 4,027,838 DPR for Carlotta of 5,742,498 team. Sequence procs in the loop: 1x Outro - Kaleidoscope Sparks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Imminent Oblivion = ImminentOblivionDMG × 1.47; Liberation - Death Knell = DeathKnellDMG × 3.67; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 3.06; Skill - Art of Violence = ArtofViolenceDMG × 1.93; Skill - Chromatic Splendor = ChromaticSplendorDMG × 1.93.",
+  "name": "Carlotta S6 The Last Dance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, The Last Dance R5, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Lynae (main DPS): 4,027,838 DPR for Carlotta of 5,742,498 team. Sequence procs in the loop: 1x Outro - Kaleidoscope Sparks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Imminent Oblivion = ImminentOblivionDMG × 1.47; Liberation - Death Knell = DeathKnellDMG × 3.67; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 3.06; Skill - Art of Violence = ArtofViolenceDMG × 1.93; Skill - Chromatic Splendor = ChromaticSplendorDMG × 1.93.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Carlotta S6R5 · Mornye + Lynae (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, The Last Dance R5, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Lynae (main DPS): 4,027,838 DPR for Carlotta of 5,742,498 team. Sequence procs in the loop: 1x Outro - Kaleidoscope Sparks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Imminent Oblivion = ImminentOblivionDMG × 1.47; Liberation - Death Knell = DeathKnellDMG × 3.67; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 3.06; Skill - Art of Violence = ArtofViolenceDMG × 1.93; Skill - Chromatic Splendor = ChromaticSplendorDMG × 1.93.",
+   "name": "Carlotta S6 The Last Dance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, The Last Dance R5, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Lynae (main DPS): 4,027,838 DPR for Carlotta of 5,742,498 team. Sequence procs in the loop: 1x Outro - Kaleidoscope Sparks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Imminent Oblivion = ImminentOblivionDMG × 1.47; Liberation - Death Knell = DeathKnellDMG × 3.67; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 3.06; Skill - Art of Violence = ArtofViolenceDMG × 1.93; Skill - Chromatic Splendor = ChromaticSplendorDMG × 1.93.",
    "actions": [
     {
      "order": 1,
@@ -108,6 +108,115 @@
     {
      "order": 13,
      "key": "S3StepForwardEleganceinProgressionDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Carlotta S0 The Last Dance R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 904,359 DPR for Carlotta of 5,163,267 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Death Knell = DeathKnellDMG × 1.80; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 1.80.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Carlotta S0 The Last Dance R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 904,359 DPR for Carlotta of 5,163,267 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Death Knell = DeathKnellDMG × 1.80; Liberation - Era of New Wave = EraofNewWaveDMG × 1.80; Liberation - Fatal Finale = FatalFinaleDMG × 1.80.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "WintertimeAriaDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ArtofViolenceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ChromaticSplendorDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ImminentOblivionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "EraofNewWaveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "DeathKnellDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "FatalFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ArtofViolenceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ChromaticSplendorDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SentryConstructAttack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "SentryConstruct",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 12,
+     "key": "ClosingRemarkDMG",
      "type": "outro",
      "count": 1,
      "buffs": [],

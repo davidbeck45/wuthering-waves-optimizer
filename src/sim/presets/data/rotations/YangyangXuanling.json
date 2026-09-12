@@ -1,11 +1,11 @@
 [
  {
-  "name": "Xuanling S6R5 · Suisui + Chisa (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 11,914,002 DPR for Xuanling of 13,383,773 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
+  "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 11,914,002 DPR for Xuanling of 13,383,773 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Xuanling S6R5 · Suisui + Chisa (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 11,914,002 DPR for Xuanling of 13,383,773 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
+   "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 11,914,002 DPR for Xuanling of 13,383,773 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
    "actions": [
     {
      "order": 1,
@@ -215,12 +215,12 @@
   }
  },
  {
-  "name": "Xuanling S6R5 · Shorekeeper + Chisa (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Chisa (main DPS): 9,300,965 DPR for Xuanling of 10,662,524 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
+  "name": "Xuanling S6 Azure Oath R5 · Shorekeeper + Chisa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Chisa (main DPS): 9,300,965 DPR for Xuanling of 10,662,524 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Xuanling S6R5 · Shorekeeper + Chisa (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Chisa (main DPS): 9,300,965 DPR for Xuanling of 10,662,524 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
+   "name": "Xuanling S6 Azure Oath R5 · Shorekeeper + Chisa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Chisa (main DPS): 9,300,965 DPR for Xuanling of 10,662,524 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1).",
    "actions": [
     {
      "order": 1,
@@ -438,12 +438,12 @@
   }
  },
  {
-  "name": "Xuanling S6R5 · Suisui + Rebecca (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 9,013,671 DPR for Xuanling of 10,440,668 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6).",
+  "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 9,013,671 DPR for Xuanling of 10,440,668 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Xuanling S6R5 · Suisui + Rebecca (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 9,013,671 DPR for Xuanling of 10,440,668 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6).",
+   "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 9,013,671 DPR for Xuanling of 10,440,668 team. Sequence procs in the loop: 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6), 1x Skill - Shadow of Xuanling: Unfaltering (S1), 1x Skill - Shadow of Xuanling: Still as Withered Wood (S6).",
    "actions": [
     {
      "order": 1,

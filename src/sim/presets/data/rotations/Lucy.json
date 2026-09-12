@@ -1,11 +1,11 @@
 [
  {
-  "name": "Lucy S6R5 · Mornye + Rebecca (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,488,446 DPR for Lucy of 8,615,917 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+  "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,488,446 DPR for Lucy of 8,615,917 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucy S6R5 · Mornye + Rebecca (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,488,446 DPR for Lucy of 8,615,917 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,488,446 DPR for Lucy of 8,615,917 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
    "actions": [
     {
      "order": 1,
@@ -173,12 +173,12 @@
   }
  },
  {
-  "name": "Lucy S6R5 · Shorekeeper + Rebecca (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,305,569 DPR for Lucy of 7,922,590 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+  "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,305,569 DPR for Lucy of 7,922,590 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucy S6R5 · Shorekeeper + Rebecca (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,305,569 DPR for Lucy of 7,922,590 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+   "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,305,569 DPR for Lucy of 7,922,590 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
    "actions": [
     {
      "order": 1,
@@ -336,6 +336,187 @@
     },
     {
      "order": 20,
+     "key": "SpoofingProgramCrippleMovementDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 4,446,353 DPR for Lucy of 5,213,033 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 4,446,353 DPR for Lucy of 5,213,033 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading = HeavyAttackMultithreadingDMG × 6.60; Liberation - Spoofing Program: Cripple Movement = SpoofingProgramCrippleMovementDMG × 1.65; Tune Hack Response - Data Crash = HackResponseDataCrashDMG × 1.65.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "IntroSkillOutdatedHallucination",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ResonanceSkillPayloadChargeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ResonanceSkillPayloadFollowUpAttackDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ResonanceSkillPulseInterferenceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SequenceNode2TheBlackwallthePasttheEscape",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ResonanceSkillDeadlockDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackThreadShreddingStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackThreadShreddingStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackThreadShreddingStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "HeavyAttackDualThreadingDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackMultithreadingDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 18,
+     "key": "ResonanceLiberationNetrunnerOverrideDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SpoofingProgramPingDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "SpoofingProgramSynapseBurnoutDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
      "key": "SpoofingProgramCrippleMovementDMG",
      "type": "liberation",
      "count": 1,

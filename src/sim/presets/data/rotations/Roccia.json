@@ -1,11 +1,11 @@
 [
  {
-  "name": "Roccia S6R5 · Mornye + Lynae (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,001,951 DPR for Roccia of 4,830,576 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Reality Recreation (S6) = SequenceNode6WhentheGoldenWingsFlyDMG × 1.60; Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+  "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,001,951 DPR for Roccia of 4,830,576 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Reality Recreation (S6) = SequenceNode6WhentheGoldenWingsFlyDMG × 1.60; Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Roccia S6R5 · Mornye + Lynae (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,001,951 DPR for Roccia of 4,830,576 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Reality Recreation (S6) = SequenceNode6WhentheGoldenWingsFlyDMG × 1.60; Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+   "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,001,951 DPR for Roccia of 4,830,576 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Reality Recreation (S6) = SequenceNode6WhentheGoldenWingsFlyDMG × 1.60; Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
    "actions": [
     {
      "order": 1,
@@ -83,12 +83,12 @@
   }
  },
  {
-  "name": "Roccia S6R5 · Phrolova + Mornye (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 668,535 DPR for Roccia of 5,411,555 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+  "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 668,535 DPR for Roccia of 5,411,555 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Roccia S6R5 · Phrolova + Mornye (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 668,535 DPR for Roccia of 5,411,555 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+   "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 668,535 DPR for Roccia of 5,411,555 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
    "actions": [
     {
      "order": 1,
@@ -152,12 +152,12 @@
   }
  },
  {
-  "name": "Roccia S6R5 · Mornye + Cantarella (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 537,380 DPR for Roccia of 3,948,813 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+  "name": "Roccia S6 Tragicomedy R5 · Mornye + Cantarella · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 537,380 DPR for Roccia of 3,948,813 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Roccia S6R5 · Mornye + Cantarella (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 537,380 DPR for Roccia of 3,948,813 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
+   "name": "Roccia S6 Tragicomedy R5 · Mornye + Cantarella · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 537,380 DPR for Roccia of 3,948,813 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Real Fantasy 1 = RealFantasyStage1DMG × 1.60; Forte Basic - Real Fantasy 2 = RealFantasyStage2DMG × 1.60; Liberation - Commedia Improvviso! = CommediaImprovvisoDMG × 1.20.",
    "actions": [
     {
      "order": 1,
@@ -209,6 +209,176 @@
     },
     {
      "order": 7,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 266,204 DPR for Roccia of 3,480,347 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 266,204 DPR for Roccia of 3,480,347 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "PerloHelpDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CommediaImprovvisoDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "AcrobaticTrickDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "RealFantasyStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "RealFantasyStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "RealFantasyStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BellBorneGeocheloneActivation",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "BellBorneGeochelone",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Roccia S0 Tragicomedy R1 · Shorekeeper + Camellya · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Camellya: 203,310 DPR for Roccia of 4,241,820 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Roccia S0 Tragicomedy R1 · Shorekeeper + Camellya · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Camellya: 203,310 DPR for Roccia of 4,241,820 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "CommediaImprovvisoDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "AcrobaticTrickDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "RealFantasyStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "RealFantasyStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "RealFantasyStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
      "key": "ImpermanenceHeronFlySmack",
      "type": "echoAttacks",
      "count": 1,

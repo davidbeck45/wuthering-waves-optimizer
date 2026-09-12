@@ -1,11 +1,11 @@
 [
  {
-  "name": "Phrolova S6R5 · Qiuyuan + Lucilla (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 5,802,680 DPR for Phrolova of 8,552,792 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+  "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 5,802,680 DPR for Phrolova of 8,552,792 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Phrolova S6R5 · Qiuyuan + Lucilla (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 5,802,680 DPR for Phrolova of 8,552,792 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+   "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 5,802,680 DPR for Phrolova of 8,552,792 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
    "actions": [
     {
      "order": 1,
@@ -133,12 +133,12 @@
   }
  },
  {
-  "name": "Phrolova S6R5 · Mornye + Lucilla (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lucilla (main DPS): 5,758,200 DPR for Phrolova of 7,899,885 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+  "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lucilla (main DPS): 5,758,200 DPR for Phrolova of 7,899,885 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Phrolova S6R5 · Mornye + Lucilla (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lucilla (main DPS): 5,758,200 DPR for Phrolova of 7,899,885 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+   "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lucilla (main DPS): 5,758,200 DPR for Phrolova of 7,899,885 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
    "actions": [
     {
      "order": 1,
@@ -314,12 +314,12 @@
   }
  },
  {
-  "name": "Phrolova S6R5 · Mornye + Lynae (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 5,157,860 DPR for Phrolova of 6,912,594 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+  "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 5,157,860 DPR for Phrolova of 6,912,594 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Phrolova S6R5 · Mornye + Lynae (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 5,157,860 DPR for Phrolova of 6,912,594 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+   "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 5,157,860 DPR for Phrolova of 6,912,594 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
    "actions": [
     {
      "order": 1,
@@ -485,6 +485,211 @@
     },
     {
      "order": 21,
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Phrolova S6 Lethean Elegy R5 · Verina + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Verina + Qiuyuan (main DPS): 4,329,965 DPR for Phrolova of 4,639,176 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Phrolova S6 Lethean Elegy R5 · Verina + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Verina + Qiuyuan (main DPS): 4,329,965 DPR for Phrolova of 4,639,176 team. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Enhanced - Hecate Cadenza = EnhancedAttackHecateCadenzaDMG × 1.24; Forte Basic - Movement of Fate and Finality = MovementOfFateAndFinalityDMG × 1.80.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "NightmareHecateSmashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareHecate",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 7,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ScarletCodaDMG",
+     "type": "basic",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackHecateStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackHecateStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
      "key": "SuiteofImmortalityDMG",
      "type": "intro",
      "count": 1,

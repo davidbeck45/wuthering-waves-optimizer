@@ -1,11 +1,11 @@
 [
  {
-  "name": "Changli S6R5 · Mornye + Lupa (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Lupa (main DPS): 2,789,223 DPR for Changli of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Flaming Sacrifice = FlamingVowDMG × 1.50.",
+  "name": "Changli S6 Blazing Brilliance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Lupa (main DPS): 2,789,223 DPR for Changli of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Flaming Sacrifice = FlamingVowDMG × 1.50.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Changli S6R5 · Mornye + Lupa (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Lupa (main DPS): 2,789,223 DPR for Changli of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Flaming Sacrifice = FlamingVowDMG × 1.50.",
+   "name": "Changli S6 Blazing Brilliance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Lupa (main DPS): 2,789,223 DPR for Changli of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Flaming Sacrifice = FlamingVowDMG × 1.50.",
    "actions": [
     {
      "order": 1,

@@ -1,11 +1,11 @@
 [
  {
-  "name": "Xiangli Yao S6R5 · Mornye + Lynae (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 4,586,864 DPR for Xiangli Yao of 6,293,170 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76.",
+  "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 4,586,864 DPR for Xiangli Yao of 6,293,170 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Xiangli Yao S6R5 · Mornye + Lynae (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 4,586,864 DPR for Xiangli Yao of 6,293,170 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76.",
+   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 4,586,864 DPR for Xiangli Yao of 6,293,170 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76.",
    "actions": [
     {
      "order": 1,
@@ -149,18 +149,332 @@
   }
  },
  {
-  "name": "Xiangli Yao S6R5 · Shorekeeper + Lynae (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Lynae (main DPS): 4,420,999 DPR for Xiangli Yao of 5,747,434 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+  "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Lynae (main DPS): 4,420,999 DPR for Xiangli Yao of 5,747,434 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Xiangli Yao S6R5 · Shorekeeper + Lynae (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Lynae (main DPS): 4,420,999 DPR for Xiangli Yao of 5,747,434 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Lynae (main DPS): 4,420,999 DPR for Xiangli Yao of 5,747,434 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
    "actions": [
     {
      "order": 1,
      "key": "OutroSkillDMG",
      "type": "outro",
      "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "PrincipleSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DeductionSkillDMG",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CogitationModelDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "DivergenceDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "PivotImpaleStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "PivotImpaleStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "PivotImpaleStage3DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "DivergenceDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "NightmareThunderingMephisAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareThunderingMephis",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 3,128,691 DPR for Xiangli Yao of 3,812,447 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD ATK Electro atk atk. Team: Mornye + Lynae (main DPS): 3,128,691 DPR for Xiangli Yao of 3,812,447 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "PrincipleSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DeductionSkillDMG",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CogitationModelDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "DivergenceDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "PivotImpaleStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "PivotImpaleStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "PivotImpaleStage3DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "DivergenceDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode1ProdigyofProteges",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "NightmareThunderingMephisAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareThunderingMephis",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Verina + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Verina + Lynae (main DPS): 2,709,368 DPR for Xiangli Yao of 3,199,352 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Verina + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR ATK Electro atk atk. Team: Verina + Lynae (main DPS): 2,709,368 DPR for Xiangli Yao of 3,199,352 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Convolution Matrices (S1) = SequenceNode1ProdigyofProteges × 1.76; Forte Skill - Law of Reigns = LawofReignsDMG × 1.76; Outro - Chain Rule (Laser) = OutroSkillDMG × 3.22.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },

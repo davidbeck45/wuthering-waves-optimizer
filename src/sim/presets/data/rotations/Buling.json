@@ -1,11 +1,11 @@
 [
  {
-  "name": "Buling S6R5 · Chisa + Hsin (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 89,883 DPR for Buling of 8,107,256 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 12 Stacks.",
+  "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 89,883 DPR for Buling of 8,107,256 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 12 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Buling S6R5 · Chisa + Hsin (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 89,883 DPR for Buling of 8,107,256 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 12 Stacks.",
+   "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 89,883 DPR for Buling of 8,107,256 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 12 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -125,12 +125,12 @@
   }
  },
  {
-  "name": "Buling S6R5 · Rebecca + Electro Rover (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Rebecca + Electro Rover: 62,842 DPR for Buling of 2,623,964 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks.",
+  "name": "Buling S6 Variation R5 · Rebecca + Electro Rover · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Rebecca + Electro Rover: 62,842 DPR for Buling of 2,623,964 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Buling S6R5 · Rebecca + Electro Rover (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Rebecca + Electro Rover: 62,842 DPR for Buling of 2,623,964 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks.",
+   "name": "Buling S6 Variation R5 · Rebecca + Electro Rover · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Rebecca + Electro Rover: 62,842 DPR for Buling of 2,623,964 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -250,12 +250,12 @@
   }
  },
  {
-  "name": "Buling S6R5 · Lynae + Jinhsi (wuwa_calc)",
-  "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Jinhsi: 60,089 DPR for Buling of 3,039,164 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
+  "name": "Buling S6 Variation R5 · Lynae + Jinhsi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Jinhsi: 60,089 DPR for Buling of 3,039,164 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Buling S6R5 · Lynae + Jinhsi (wuwa_calc)",
-   "description": "S6R5 steady-state loop executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Jinhsi: 60,089 DPR for Buling of 3,039,164 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
+   "name": "Buling S6 Variation R5 · Lynae + Jinhsi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Jinhsi: 60,089 DPR for Buling of 3,039,164 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -375,6 +375,123 @@
      "order": 15,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Buling S6 Variation R1 · Lynae + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Variation R1, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 57,676 DPR for Buling of 2,413,639 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 4 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Buling S6 Variation R1 · Lynae + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Variation R1, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 57,676 DPR for Buling of 2,413,639 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - In Shadow Thunder Stirs = HeavyAttackTwinThundersHealing × 6.38. Negative-status damage seen (set via the app's status settings, not actions): 1x Electro Flare - 9 Stacks, 1x Electro Flare - 4 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MidairAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "HeavyAttackThunderOverMountainDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackTwinThundersHealing",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 7,
+     "key": "FlashingThunderSpellHarmonyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 12,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SummonandSmiteDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
