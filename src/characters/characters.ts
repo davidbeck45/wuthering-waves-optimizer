@@ -1,5 +1,3 @@
-import { withWuwaCalcRotations } from "../sim/presets";
-
 interface CharacterList {
   [rating: string]: CharacterListItem[];
 }
@@ -581,7 +579,7 @@ async function loadModule(charName: string) {
 export async function getCharByName(charName: string) {
   const charModule = await loadModule(charName);
   const data = charModule.getData();
-  return withWuwaCalcRotations(charName, data); // Wuthering Tools+: wuwa_calc presets
+  return data;
 }
 
 export function getAttackData(

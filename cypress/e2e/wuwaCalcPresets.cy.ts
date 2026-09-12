@@ -39,5 +39,13 @@ describe("wuwa_calc stock presets", () => {
       .should("match", /^wuwa_calc Xuanling S6R5/);
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Xuanling");
     cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 10);
+
+    // the slot's import dialog lists the same loops under Presets
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
+      .parent()
+      .contains("(wuwa_calc)")
+      .should("exist");
   });
 });

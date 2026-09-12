@@ -3,6 +3,10 @@
 // attack keys by ~/Projects/wuwa-tools/rotation-port/emit_app_presets.py).
 // The JSON under ./data is GENERATED — never edit it by hand; regenerate it
 // with the tool after a wuwa_calc bump or an upstream character-data change.
+// Consumers: CalculatorRotations.vue (Rotation presets modal),
+// TeamRotationTeamEditor.vue (team-slot import dialog), TeamRotations.vue
+// (Teams > List Presets). The calculator engine itself never loads these —
+// getCharByName stays exactly upstream's.
 import type { CharacterRotationPreset } from "../../characters/rotationExportImport";
 import type { TeamRotationPreset } from "../../teamRotations/presets";
 
@@ -26,23 +30,6 @@ export async function loadWuwaCalcRotationPresets(
     return [];
   }
   return (await loader()).default;
-}
-
-/**
- * Appends the wuwa_calc presets to a character's own curated `rotations`
- * (the list `characters/<Name>/presets.ts` provides and the Rotation presets
- * modal / team-slot import dialog show). Returns the input untouched when
- * the character has no generated presets.
- */
-export async function withWuwaCalcRotations<T extends { rotations?: unknown[] }>(
-  characterKey: string,
-  data: T,
-): Promise<T> {
-  const extra = await loadWuwaCalcRotationPresets(characterKey);
-  if (!extra.length) {
-    return data;
-  }
-  return { ...data, rotations: [...(data.rotations ?? []), ...extra] };
 }
 
 let teamPresetsPromise: Promise<TeamRotationPreset[]> | null = null;

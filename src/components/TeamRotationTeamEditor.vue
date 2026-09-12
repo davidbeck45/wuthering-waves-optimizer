@@ -386,6 +386,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { buildTeamExportPayload, generateTeamExportFilename } from "../teamRotations/exportImport";
+import { loadWuwaCalcRotationPresets } from "../sim/presets";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import {
   buildCharacterCalculationContext,
@@ -619,19 +620,30 @@ const importDialogOwnRotations = computed(() => {
     actions: SourceRotationAction[];
   }>;
 });
+type ImportDialogPreset = {
+  name: string;
+  description?: string;
+  author?: string;
+  data: { name: string; actions: SourceRotationAction[] };
+};
+// Wuthering Tools+: the generated wuwa_calc presets for the slot's character,
+// loaded (lazily, per character) whenever the dialog targets a new one.
+const importDialogWuwaCalcPresets = ref<ImportDialogPreset[]>([]);
+watch(
+  importDialogCharacterId,
+  async (characterId) => {
+    importDialogWuwaCalcPresets.value = characterId
+      ? ((await loadWuwaCalcRotationPresets(characterId)) as unknown as ImportDialogPreset[])
+      : [];
+  },
+  { immediate: true },
+);
 const importDialogPresets = computed(() => {
   if (importDialogSlot.value === null) return [];
   const chosenChar = slotContexts.value[importDialogSlot.value]?.chosenChar as
-    | {
-        rotations?: Array<{
-          name: string;
-          description?: string;
-          author?: string;
-          data: { name: string; actions: SourceRotationAction[] };
-        }>;
-      }
+    | { rotations?: ImportDialogPreset[] }
     | undefined;
-  return chosenChar?.rotations ?? [];
+  return [...(chosenChar?.rotations ?? []), ...importDialogWuwaCalcPresets.value];
 });
 
 function openImportDialog(slot: number) {

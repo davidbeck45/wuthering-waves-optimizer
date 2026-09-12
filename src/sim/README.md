@@ -40,7 +40,7 @@ Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
 
 | File | Role |
 |---|---|
-| `index.ts` | loaders: `loadWuwaCalcRotationPresets(key)` (one lazy JSON chunk per character via `import.meta.glob`), `withWuwaCalcRotations(key, data)` (what `getCharByName` appends to a character's curated `rotations`), `loadWuwaCalcTeamPresets()` (lazy `data/teams.json`, joined to the curated list the first time Teams > List Presets opens) |
+| `index.ts` | loaders: `loadWuwaCalcRotationPresets(key)` (one lazy JSON chunk per character via `import.meta.glob`; appended to the curated list by `CalculatorRotations.vue` for the Rotation presets modal and by `TeamRotationTeamEditor.vue` for the team-slot import dialog — the calculator engine and `getCharByName` never touch them), `loadWuwaCalcTeamPresets()` (lazy `data/teams.json`, joined to the curated list the first time Teams > List Presets opens) |
 | `data/rotations/<Key>.json` | GENERATED — `CharacterRotationPreset[]` per character: the top S6R5 steady-state loops Riley's engine ran for that resonator (team-dependent variants, e.g. Xuanling's 3 vs 5 "Still as Withered Wood" shadows), mapped onto this app's attack keys |
 | `data/teams.json` | GENERATED — `TeamRotationPreset[]`: for every main DPS the app knows, the best 3 distinct S6R5 compositions, the three rotations interleaved in execution order, main DPS in slot 0, enemy = level 100 / 20% RES (Riley's target) |
 | `data/manifest.json` | GENERATED — provenance (`wuwaCalcCommit`, `appCommit`, state, timestamp) and counts |

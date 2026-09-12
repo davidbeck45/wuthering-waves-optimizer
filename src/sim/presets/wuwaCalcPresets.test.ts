@@ -26,7 +26,7 @@ describe("wuwa_calc stock presets (generated data)", () => {
     expect(hasWuwaCalcRotationPresets("NotACharacter")).toBe(false);
   });
 
-  it("every generated rotation action resolves on its character, and the loader appends the presets", async () => {
+  it("every generated rotation action resolves on its character", async () => {
     let presetCount = 0;
     let actionCount = 0;
     for (const key of manifest.characters) {
@@ -48,8 +48,6 @@ describe("wuwa_calc stock presets (generated data)", () => {
         }
         presetCount += 1;
       }
-      const merged = (chosenChar.rotations ?? []) as Array<{ author?: string }>;
-      expect(merged.filter((r) => r.author === WUWA_CALC_AUTHOR), key).toHaveLength(presets.length);
     }
     expect(presetCount).toBe(manifest.rotationPresets);
     expect(actionCount).toBeGreaterThan(1000);

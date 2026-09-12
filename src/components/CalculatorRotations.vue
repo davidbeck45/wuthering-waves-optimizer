@@ -227,6 +227,7 @@ import {
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
 import type { RotationExportData, CharacterRotationPreset } from "../characters/rotationExportImport";
+import { loadWuwaCalcRotationPresets } from "../sim/presets";
 import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
@@ -651,7 +652,8 @@ onMounted(async () => {
     unknown
   >;
   const presetList = (characterData.value?.rotations ?? []) as CharacterRotationPreset[];
-  presets.value = presetList;
+  // Wuthering Tools+: the generated wuwa_calc presets follow the curated ones
+  presets.value = [...presetList, ...(await loadWuwaCalcRotationPresets(props.character))];
   await recomputeCharacterContext();
 });
 </script>
