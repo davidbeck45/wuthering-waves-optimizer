@@ -291,11 +291,31 @@ async function runImport(): Promise<void> {
 }
 
 let tableRequested = false;
+/** the team whose detail is on screen, null while the comparison table is */
+let renderedKey: string | null = null;
+let routerSyncing = false;
+
+/** Riley's `syncHash` writes every filter into the hash with `history.replaceState`, which vue-router never
+ *  sees, so the router's idea of the current URL goes stale. Its next push (opening a rotation) or any nav
+ *  link first rewrites the current history entry to that stale URL — and Back came out on a filter-less
+ *  page. Bring the router's location up to date after every filter change instead. */
+async function syncRouter(): Promise<void> {
+  if (!router || router.currentRoute.value.hash === location.hash) return;
+  routerSyncing = true;
+  try {
+    await router.replace({ hash: location.hash });
+  } catch {
+    /* a cancelled navigation leaves the url as it is */
+  } finally {
+    routerSyncing = false;
+  }
+}
 
 function route(): void {
   const { routeTeam } = mods!.model;
   const key = routeTeam();
   root?.classList.toggle("wt-detail", !!key);
+  renderedKey = key;
   if (key) { openSide(false); mods!.detail.renderDetail(key); mountImportControls(key); return; }
   if (!tableRequested) { void refresh(); return; }
   mods!.table.renderComparison();
@@ -305,6 +325,7 @@ async function refresh(): Promise<void> {
   const M = mods!.model;
   const { bestKey } = mods!.solver;
   tableRequested = true;
+  await syncRouter();
   barReset();
   try {
     const inPlay = (Object.entries(M.TEAMS) as [string, Member[]][]).filter(([, members]) => M.teamWanted(members));
@@ -361,11 +382,13 @@ async function bootDetail(): Promise<boolean> {
 }
 
 /** Navigate to a team's detail page through vue-router (a real history entry, its state kept). */
-function goToDetail(teamKey: string): void {
+async function goToDetail(teamKey: string): Promise<void> {
+  await syncRouter();
   const p = mods!.model.hashParams() as URLSearchParams;
   p.set("team", teamKey);
   detailPushed = true;
-  void router!.push({ hash: `#${p.toString()}` }).then(() => route());
+  await router!.push({ hash: `#${p.toString()}` });
+  route();
 }
 
 function goBack(): void {
@@ -378,11 +401,12 @@ function goBack(): void {
 
 /** The location changed under us (browser back/forward, a nav click): re-read the hash. */
 export function onLocationChange(): void {
-  if (!mods || !booted) return;
+  if (!mods || !booted || routerSyncing) return;
   const M = mods.model;
   if (M.applyHash()) { void refresh(); return; }
   const key = M.hashParams().get("team");
   if (key && !M.results.has(key) && M.rowFromKey(key)) { void bootDetail(); return; }
+  if (tableRequested && M.routeTeam() === renderedKey) return; // the location moved without changing what is on screen
   route();
 }
 
@@ -398,12 +422,13 @@ async function boot(): Promise<void> {
   });
   if (!detail) await refresh();
   M.syncHash();
+  await syncRouter();
   const idle = (globalThis as any).requestIdleCallback ?? ((fn: () => void) => setTimeout(fn, 500));
   idle(() => { workerPool(); });
   mods!.panels.wireSourcePanels(app);
   root!.addEventListener("click", (e) => {
     const el = (e.target as Element).closest<HTMLElement>(".gotodetail");
-    if (el?.dataset.team) goToDetail(el.dataset.team);
+    if (el?.dataset.team) void goToDetail(el.dataset.team);
   });
   backLink.addEventListener("click", (e) => { e.preventDefault(); goBack(); });
 }

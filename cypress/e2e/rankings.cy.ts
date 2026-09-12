@@ -49,6 +49,22 @@ describe("Team Rankings (wuwa_calc)", () => {
   });
 });
 
+describe("wuwa_calc rankings: filters survive a rotation detail", () => {
+  it("keeps an added resonator filter after view rotation and back", () => {
+    cy.visit("/rankings");
+    cy.get(".skittle-root .trow:not(.thead)", { timeout: 60000 }).should("exist");
+    cy.get("#optionSearch").type("Mornye");
+    cy.get(".sresult").first().click();
+    cy.get(".tcchips .rchip", { timeout: 60000 }).should("contain.text", "Mornye");
+    cy.location("hash").should("include", "r=Mornye");
+    cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 120000 }).first().click();
+    cy.location("hash", { timeout: 60000 }).should("include", "team=").and("include", "r=Mornye");
+    cy.get("#backLink").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "r=Mornye");
+    cy.get(".tcchips .rchip", { timeout: 60000 }).should("contain.text", "Mornye");
+  });
+});
+
 describe("wuwa_calc rankings on a phone", () => {
   it("keeps Riley's aside in a bottom sheet behind a Filters button on narrow viewports", () => {
     cy.viewport(390, 844);
