@@ -54,6 +54,7 @@ const routes = [
   // Wuthering Tools+: Riley31415/wuwa_calc's team comparison table + run detail pages, lazy so the
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
+  { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
 ];
 
 const router = createRouter({

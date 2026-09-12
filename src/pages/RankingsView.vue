@@ -6,6 +6,7 @@
       Team rankings engine, rotations and solves by
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
       (ISC), running in-page from the pinned submodule.
+      <RouterLink to="/my-rankings" class="link link-primary ml-2" data-test-rankings-switch-mine>My roster rankings ▸</RouterLink>
     </p>
   </div>
 </template>

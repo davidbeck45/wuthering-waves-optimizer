@@ -94,3 +94,19 @@ checkbox to also save each member's steady-state loop to that character's rotati
 
 The generated stock presets (`src/sim/presets/`) remain the zero-click path for the best teams; this is the
 everything-else path.
+
+
+## My roster rankings (phase E) — `src/sim/myRankings/`
+
+`/my-rankings` (linked from the credit line on `/rankings`, and back): the app's own damage engine ranks the
+characters and teams YOU have set up — real weapon, echoes, chains and buffs — the way Riley's table ranks his
+solved picks.
+
+| File | Role |
+|---|---|
+| `rankRoster.ts` | pure/async `rankRoster(characters, echoes, teams, { investment, onProgress })`: for every character with a weapon (`isSetUp`) it scores every saved rotation, curated preset and wuwa_calc preset with `calcCharacterRotationDamage` on the active build and keeps the best; `investment` re-scores the best rotation with the next sequence node's chains on (first entry of a node when it has variants — an estimate) and with the weapon at R5; teams = your teams with actions + wuwa_calc / curated team presets whose three members are set up, through `calcTeamRotationDamage`. Enemy fixed at level 100 / 20 % RES (`RANKING_ENEMY`, Riley's target) so the numbers sit beside `/rankings` |
+| `MyRankingsView.vue` | the page: auto-computes on first visit (cached in module state, recomputed when the stores change), progress bar, two tables with bars, next-S / R5 deltas, empty state, wuwa_calc ⇄ My roster switch |
+| `rankRoster.test.ts` + `__fixtures__/cartethyiaAccount.json` | a real exported account (the Cartethyia optimizer fixture) ranks her own, curated and wuwa_calc rotations on her build; unknown ids and weaponless characters are skipped |
+| `cypress/e2e/myRankings.cy.ts` | empty state + links, then an imported account ranked in-page |
+
+Metric: average damage per rotation (DPR). DPS appears only when a rotation carries a duration.
