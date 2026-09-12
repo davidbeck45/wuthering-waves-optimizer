@@ -9,13 +9,15 @@
  * The engine, kits and page modules themselves come straight from the submodule via `@skittle/*`.
  */
 import type { Router } from "vue-router";
+import { useToast } from "../../composables/useToast";
+import { importTeamFromRankings } from "./importFromRankings";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
 type TeamRow = { key: string; teamKey: string; members: Member[]; combo: any[] };
 type Solved = { picks: any; rows: any[]; scores: any; hidden: any[]; hiddenScores: any[] };
 interface Mods {
-  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any;
+  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; stats: any;
 }
 
 const TEMPLATE = `
@@ -60,11 +62,12 @@ function buildDom(): HTMLElement {
 }
 
 async function loadModules(): Promise<Mods> {
-  const [display, solver, teamrun, model, panels, table, detail] = await Promise.all([
+  const [display, solver, teamrun, model, panels, table, detail, stats] = await Promise.all([
     import("@skittle/display"), import("@skittle/solver"), import("@skittle/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
+    import("@skittle/engine/stats"),
   ]);
-  return { display, solver, teamrun, model, panels, table, detail };
+  return { display, solver, teamrun, model, panels, table, detail, stats };
 }
 
 /* ---------------------------------------------------------------------------------- overlay */
@@ -221,12 +224,63 @@ async function ensureBestPicks(inPlay: [string, Member[]][]): Promise<boolean> {
   return true;
 }
 
+/**
+ * Wuthering Tools+: every team the detail page can show is importable — a
+ * Team Rotation (and optionally each member's loop) built from the engine's
+ * executed casts (see importFromRankings.ts). The controls live in his topbar
+ * next to Back and are re-pointed at the current team on each detail render.
+ */
+let importBusy = false;
+function mountImportControls(key: string): void {
+  const topbar = root?.querySelector<HTMLElement>("#topbar");
+  if (!topbar) return;
+  let box = topbar.querySelector<HTMLElement>(".wt-import");
+  if (!box) {
+    box = document.createElement("div");
+    box.className = "wt-import";
+    box.innerHTML = `
+      <label class="wt-import__opt"><input type="checkbox" data-test-rankings-import-rotations checked> also save each member's rotation</label>
+      <button type="button" class="btn btn-primary btn-xs" data-test-rankings-import-team>Import team into Wuthering Tools+</button>`;
+    topbar.appendChild(box);
+    box.querySelector("button")!.addEventListener("click", () => void runImport());
+  }
+  box.dataset.team = key;
+}
+
+async function runImport(): Promise<void> {
+  if (importBusy || !mods) return;
+  const box = root?.querySelector<HTMLElement>(".wt-import");
+  const key = box?.dataset.team ?? (mods.model.hashParams() as URLSearchParams).get("team");
+  if (!key) return;
+  const { showToast } = useToast();
+  const button = box?.querySelector<HTMLButtonElement>("button");
+  const withRotations = box?.querySelector<HTMLInputElement>("input[type=checkbox]")?.checked ?? true;
+  importBusy = true;
+  if (button) { button.disabled = true; button.textContent = "Importing…"; }
+  try {
+    const result = await importTeamFromRankings(mods, key, { characterRotations: withRotations });
+    let message = `Imported "${result.teamName}" (${result.actions} actions) into Teams.`;
+    if (withRotations) {
+      message += result.characterRotationsSaved.length ? ` Rotations saved for ${result.characterRotationsSaved.join(", ")}.` : "";
+      message += result.characterRotationsSkipped.length ? ` Not set up in the calculator yet, so no rotation saved: ${result.characterRotationsSkipped.join(", ")}.` : "";
+    }
+    if (result.notPorted.length) message += ` Not ported: ${result.notPorted.join(", ")}.`;
+    showToast(message, "success", 9000);
+    box?.setAttribute("data-test-rankings-import-done", result.teamId);
+  } catch (err) {
+    showToast(err instanceof Error ? err.message : String(err), "error", 8000);
+  } finally {
+    importBusy = false;
+    if (button) { button.disabled = false; button.textContent = "Import team into Wuthering Tools+"; }
+  }
+}
+
 let tableRequested = false;
 
 function route(): void {
   const { routeTeam } = mods!.model;
   const key = routeTeam();
-  if (key) { mods!.detail.renderDetail(key); return; }
+  if (key) { mods!.detail.renderDetail(key); mountImportControls(key); return; }
   if (!tableRequested) { void refresh(); return; }
   mods!.table.renderComparison();
 }
@@ -285,6 +339,7 @@ async function bootDetail(): Promise<boolean> {
   await paint();
   results.set(key, mods!.teamrun.runTeam(row.teamKey, row.members, row.combo, true));
   mods!.detail.renderDetail(key);
+  mountImportControls(key);
   overlayHide();
   return true;
 }

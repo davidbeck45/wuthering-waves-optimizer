@@ -22,6 +22,22 @@ describe("Team Rankings (wuwa_calc)", () => {
     cy.get(".skittle-root #app .tclayout", { timeout: 60000 }).should("exist");
   });
 
+  it("imports the shown team as a Team Rotation (Wuthering Tools+)", () => {
+    cy.visit("/rankings");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root #app .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("exist").click({ force: true });
+    cy.get(".skittle-root #topbar .wt-import[data-test-rankings-import-done]", { timeout: 60000 }).should("exist");
+    cy.window().should((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams?: Array<{ name: string; characterIds: string[]; actions: unknown[] }> };
+      expect(store.teams ?? []).to.have.length(1);
+      const team = store.teams![0];
+      expect(team.name).to.match(/^wuwa_calc /);
+      expect(team.characterIds.filter(Boolean)).to.have.length(3);
+      expect(team.actions.length).to.be.greaterThan(10);
+    });
+  });
+
   it("survives leaving and returning to the page", () => {
     cy.visit("/rankings");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");

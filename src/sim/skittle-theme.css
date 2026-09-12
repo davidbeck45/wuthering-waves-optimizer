@@ -54,3 +54,9 @@ html[data-theme-style="light"] .skittle-root .mem {
 html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline {
   color: hsl(var(--hue, 120) 60% 32%);
 }
+
+/* Wuthering Tools+: import controls in Riley's detail topbar */
+.skittle-root .topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.skittle-root .wt-import { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; font: 12px var(--sans); color: var(--ink-2); }
+.skittle-root .wt-import__opt { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+.skittle-root .wt-import__opt input { accent-color: oklch(var(--p)); }

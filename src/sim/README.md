@@ -77,3 +77,20 @@ Reading order per screenshot: name (PSM 7) → panel (PSM 6, two passes: binaris
 the second pass saw are added and flagged) → Sonata chip (PSM 7, inverted) → if the name or set is still unknown,
 the worker matches the portrait (cost-filtered) and the glyph next to +25 (among the echo's allowed sets).
 Tip for users: turn a Sonata filter on in-game before shooting — the chip then prints the set name.
+
+
+## Import any rotation from the Rankings page (C4) — `src/sim/rankings/`
+
+Every team the `/rankings` detail page can show — any composition, solver state and pick, including the
+compare axes — carries **"Import team into Wuthering Tools+"** in Riley's topbar (next to Back), with a
+checkbox to also save each member's steady-state loop to that character's rotations.
+
+| File | Role |
+|---|---|
+| `castMapper.ts` | TypeScript port of `wuwa-tools/rotation-port/map_rotations.py`: `appRowsOf(getCharByName(...))` / `echoRowsOf(mainEchoesData)` build the app's attack rows with level-10 motion values; `toActions()` maps executed casts through the cascade override → exact MV → aggregate → per-hit → kit ratio → tick → name-only, with `knownRatios()` pooling a kit's folded multipliers; Tune Breaks, negative-status ticks, 0-MV utility casts and cancelled echo forms are skipped and reported |
+| `importFromRankings.ts` | `importTeamFromRankings(mods, rowKey, { characterRotations })`: re-runs the engine traced for the row (`runTeam(..., true)`), turns `hitsOf(line)` into casts (`CAST_NAME` / `NODE_NAME` from `@skittle/engine/stats` name the erased enums), maps the last section (the steady-state loop) per member, interleaves the actions in execution order with the main DPS in slot 0, and writes a team through `useTeamRotationsStore().importTeam` (enemy = level 100 / 20 % RES, Riley's target); optionally appends each member's loop to `characters[key].rotations` — only for characters already set up in this app |
+| `controller.ts` | `mountImportControls(key)` after every `renderDetail`; `runImport()` → toast with the outcome (`data-test-rankings-import-done` carries the new team id for tests) |
+| `castMapper.test.ts` + `__fixtures__/wuwaCalcLoops.json` | the port must reproduce the Python mapper on 33 of Riley's loops (930 casts, 12 resonators incl. ratio-, tick-, per-hit- and override-heavy kits) |
+
+The generated stock presets (`src/sim/presets/`) remain the zero-click path for the best teams; this is the
+everything-else path.
