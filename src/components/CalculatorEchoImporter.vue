@@ -14,6 +14,8 @@
           <CalculatorEchoParser
             :inventory-only="inventoryOnly"
             @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
+          <!-- Wuthering Tools+: batch import from phone screenshots (inventory only) -->
+          <PhoneEchoBatchParser v-if="inventoryOnly" @echoes-parsed="handleEchoesParsed" />
         </template>
         <template v-else>
           <h2 class="text-xl font-bold mb-2">Possible inventory duplicates</h2>
@@ -127,6 +129,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from "vue";
 import CalculatorEchoParser from "./CalculatorEchoParser.vue";
+import PhoneEchoBatchParser from "../sim/echoScan/PhoneEchoBatchParser.vue";
 import {
   getEchoSetIconByType,
   getEchoSetLabelByType,

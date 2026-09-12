@@ -55,3 +55,25 @@ preset's description as "Not ported" (as of 2026-09-11: the echoes Oblivion / Co
 "Beneath the Sea", one forte heavy). Kit multipliers Riley folds into his motion values (Hiyuki, Cantarella, Brant,
 Galbrena, …) are mapped by ratio — the app applies them through the kit's buffs, so keep those enabled.
 E2E: `cypress/e2e/wuwaCalcPresets.cy.ts`. Credit: author field `Riley31415 (wuwa_calc)` on every preset.
+
+
+## Phone-screenshot echo import (phase D) — `src/sim/echoScan/`
+
+Batch import of echoes from phone screenshots of the in-game Echo inventory (an echo selected, its detail
+panel on the right; one screenshot per echo). Lives in the Inventory › **Import echoes** modal under the PC
+parser as "Phone screenshots (batch)"; emits the same `echoes-parsed` event as `CalculatorEchoParser`, so
+`CalculatorEchoImporter`'s duplicate review + save flow is reused unchanged.
+
+| File | Role |
+|---|---|
+| `phoneEchoScan.ts` | pure logic: `PHONE_LAYOUTS` (crop boxes measured on a Galaxy S26 Ultra, 3120×1440; same-aspect sizes are scaled), `parsePanelText` / `parseStatRow` (stat rows, COST, +level), `bestEcho` / `bestSet` (fuzzy registry matching), `buildRecord` (validation: main stat vs the +25 table, fixed secondary row, legal substat rolls, allowed sets — everything doubtful lands in `flags`), `toParsedEcho` (the importer's shape with verbose labels) |
+| `ocr.ts` | tesseract.js worker wrapper: crop → scale → binarise/invert → recognise (whitelist incl. `: - '`) |
+| `imageMatch.ts` | promise wrapper over the app's `echoParser.worker` (portrait + set-glyph pixel matching), used only as fallback when the name or the set isn't readable |
+| `PhoneEchoBatchParser.vue` | the UI: multi-file input, sequential scan with progress, editable results table (echo / set / main / substats), flags per row, "Add N echoes to inventory" |
+| `phoneEchoScan.test.ts` + `__fixtures__/s26UltraOcrSamples.json` | replay of the OCR transcripts of 40 real screenshots (validated 40/40 by the Python pipeline in `wuwa-tools/echo-import`) |
+| `cypress/e2e/echoScanBatch.cy.ts` + `cypress/fixtures/echoScan/*.jpg` | real OCR end-to-end on two screenshots (tesseract language data comes from its CDN, reference portraits from the assets CDN) |
+
+Reading order per screenshot: name (PSM 7) → panel (PSM 6, two passes: binarised ×1.5 and greyscale ×2, rows only
+the second pass saw are added and flagged) → Sonata chip (PSM 7, inverted) → if the name or set is still unknown,
+the worker matches the portrait (cost-filtered) and the glyph next to +25 (among the echo's allowed sets).
+Tip for users: turn a Sonata filter on in-game before shooting — the chip then prints the set name.
