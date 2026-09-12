@@ -48,3 +48,20 @@ describe("Team Rankings (wuwa_calc)", () => {
     cy.get(".skittle-root #app .gotodetail", { timeout: 60000 }).should("have.length.greaterThan", 10);
   });
 });
+
+describe("wuwa_calc rankings on a phone", () => {
+  it("keeps Riley's aside in a bottom sheet behind a Filters button on narrow viewports", () => {
+    cy.viewport(390, 844);
+    cy.visit("/rankings");
+    cy.get("[data-test-rankings-filters]", { timeout: 60000 }).should("be.visible");
+    cy.get(".skittle-root .tcside").should("not.be.visible");
+    cy.get("[data-test-rankings-filters]").click();
+    cy.get(".skittle-root .tcside").should("be.visible").and("contain.text", "Team Cost");
+    cy.get("[data-test-rankings-filters-close]").click({ force: true });
+    cy.get(".skittle-root .tcside").should("not.be.visible");
+    // desktop keeps the aside beside the table and no toolbar
+    cy.viewport(1440, 900);
+    cy.get("[data-test-rankings-filters]").should("not.be.visible");
+    cy.get(".skittle-root .tcside").should("be.visible");
+  });
+});

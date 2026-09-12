@@ -21,6 +21,12 @@ interface Mods {
 }
 
 const TEMPLATE = `
+  <div class="wt-toolbar">
+    <button type="button" class="btn btn-sm btn-primary" data-test-rankings-filters>Filters &amp; options</button>
+    <span class="wt-toolbar__hint">team cost · resonators · standards</span>
+    <button type="button" class="wt-sheet-close btn btn-sm btn-circle btn-ghost" aria-label="Close" data-test-rankings-filters-close>&#x2715;</button>
+  </div>
+  <div class="wt-backdrop"></div>
   <div id="topbar" class="topbar" hidden>
     <a id="backLink" class="backlink" href="#">&larr; Back</a>
   </div>
@@ -48,10 +54,19 @@ let overlayStatus!: HTMLElement;
 let overlayCount!: HTMLElement;
 let overlayFill!: HTMLElement;
 
+/** phones: Riley's aside lives in a bottom sheet (skittle-theme.css) toggled from the toolbar */
+const openSide = (open: boolean): void => {
+  root?.classList.toggle("wt-side-open", open);
+};
+const onKeydown = (e: KeyboardEvent): void => { if (e.key === "Escape") openSide(false); };
+
 function buildDom(): HTMLElement {
   const el = document.createElement("div");
   el.className = "skittle-root";
   el.innerHTML = TEMPLATE;
+  el.querySelector("[data-test-rankings-filters]")!.addEventListener("click", () => el.classList.toggle("wt-side-open"));
+  el.querySelector(".wt-backdrop")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
+  el.querySelector("[data-test-rankings-filters-close]")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
   app = el.querySelector<HTMLElement>("#app")!;
   backLink = el.querySelector<HTMLElement>("#backLink")!;
   overlay = el.querySelector<HTMLElement>("#loading")!;
@@ -280,7 +295,8 @@ let tableRequested = false;
 function route(): void {
   const { routeTeam } = mods!.model;
   const key = routeTeam();
-  if (key) { mods!.detail.renderDetail(key); mountImportControls(key); return; }
+  root?.classList.toggle("wt-detail", !!key);
+  if (key) { openSide(false); mods!.detail.renderDetail(key); mountImportControls(key); return; }
   if (!tableRequested) { void refresh(); return; }
   mods!.table.renderComparison();
 }
@@ -427,6 +443,7 @@ export async function mountRankings(host: HTMLElement, r: Router): Promise<void>
   patchFetch();
   if (!root) root = buildDom();
   host.appendChild(root);
+  document.addEventListener("keydown", onKeydown);
   try {
     if (!mods) mods = await loadModules();
     if (!booted) { booted = boot(); await booted; }
@@ -437,6 +454,8 @@ export async function mountRankings(host: HTMLElement, r: Router): Promise<void>
 }
 
 export function unmountRankings(): void {
+  document.removeEventListener("keydown", onKeydown);
+  openSide(false);
   root?.remove();
   mods?.panels?.clearPops?.();
   document.body.querySelectorAll(":scope > .ctxmenu").forEach((el) => el.remove());

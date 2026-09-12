@@ -77,3 +77,49 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline {
 }
 .skittle-root .tclayout.stack > .tcside { z-index: 41; align-self: flex-start; }
 .skittle-root .tclayout.stack > .tcbody { width: auto; }
+
+/* Wuthering Tools+: phones. Riley's aside (README, standards, team cost, resonator search) stacks
+   above the table below ~770 px and eats the first screen; on narrow viewports it becomes a bottom
+   sheet behind a "Filters & options" button in a toolbar the controller adds above his page. */
+.skittle-root .wt-toolbar { display: none; }
+.skittle-root .wt-backdrop { display: none; }
+@media (max-width: 767px) {
+  .skittle-root:not(.wt-detail) .wt-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .skittle-root .wt-toolbar__hint { font: 12px var(--sans); color: var(--dim); }
+  .skittle-root:not(.wt-detail) .tclayout.stack > .tcside {
+    display: none;
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: auto !important;
+    max-height: 78vh !important;
+    overflow: auto;
+    z-index: 70;
+    margin: 0 !important;
+    padding: 0.75rem 12px 1.25rem;
+    background: var(--surface);
+    border-top: 1px solid var(--line-2);
+    border-radius: var(--r) var(--r) 0 0;
+    box-shadow: var(--sh-2);
+  }
+  .skittle-root.wt-side-open:not(.wt-detail) .tclayout.stack > .tcside { display: block; }
+  .skittle-root.wt-side-open .wt-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 69;
+    background: oklch(var(--bc) / 0.35);
+  }
+  .skittle-root .wt-sheet-close { display: none; margin-left: auto; }
+  .skittle-root.wt-side-open:not(.wt-detail) .wt-toolbar { position: relative; z-index: 72; }
+  .skittle-root.wt-side-open:not(.wt-detail) .wt-sheet-close { display: inline-flex; }
+}
