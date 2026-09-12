@@ -71,8 +71,14 @@ export const appKeyOf = (name: string): string => ALIAS[name] ?? name.replace(/ 
 /** Hand-checked corrections (wuwa-tools/rotation-port/overrides.json); null drops the cast. */
 export const OVERRIDES: Record<string, Overrides> = {
   Brant: { "Forte - Returned from Ashes (S6 Blast)": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG" },
-  Cantarella: { "Basic - Dreamweaver": null },
+  // Beneath the Sea = Flowing Suffocation × 4.7: wuwa_calc folds her S3 into the MV, the app applies it through the chain
+  Cantarella: { "Basic - Dreamweaver": null, "Liberation - Beneath the Sea": "FlowingSuffocationDMG" },
+  // × 2.75: Heart Sword Intent doubling + the chain's bonus, both kit buffs in the app
+  Qingxiao: { "Forte Heavy - Heaven's Reckoning": "HeavenSReckoningEphemeralTranscendenceDMG" },
 };
+
+/** wuwa_calc casts named after an echo's passive rather than the echo: the app echo they belong to */
+const ECHO_ALIASES: Record<string, string> = { coreofcollapse: "Reminiscence: Threnodian - Leviathan" };
 
 const NODE_PREF: Record<string, string[]> = { Forte: ["forteCircuit"], Liberation: ["liberation"], Intro: ["intro"], Skill: ["skill", "forteCircuit"], Normal: ["basic", "forteCircuit"] };
 const CAST_PREF: Record<string, string[]> = { Outro: ["outro"], Echo: ["echoAttacks"], TuneBreak: ["tuneBreak"], Intro: ["intro"], Liberation: ["liberation"], Skill: ["skill"], Basic: ["basic"], Heavy: ["basic", "forteCircuit"] };
@@ -147,6 +153,7 @@ const stageOf = (cast: Cast): string | null => {
 };
 
 type Score = [boolean, boolean, boolean, boolean, number];
+// eslint-disable-next-line no-unused-vars -- the parameter of a function type
 function rankRows(cast: Cast, cands: AppRow[]): { ordered: AppRow[]; score: (r: AppRow) => Score } {
   const pref = NODE_PREF[cast.node ?? ""] ?? CAST_PREF[cast.cast ?? ""] ?? [];
   const hint = hintOf(cast.name);
@@ -197,7 +204,8 @@ export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [Ap
     if (!r.mv || r.mv > want + tol) continue;
     const q = want / r.mv;
     const n = Math.round(q);
-    if (Math.abs(q - n) < 0.01 && n >= 2 && n <= 40 && (nHint === null || n % nHint === 0 || nHint % n === 0) && sim(name, r) >= 0.5) {
+    // an echo with a single damage row (Hecate's Crescent Servants) needs no name resemblance
+    if (Math.abs(q - n) < 0.01 && n >= 2 && n <= 40 && (nHint === null || n % nHint === 0 || nHint % n === 0) && (sim(name, r) >= 0.5 || rows.filter((x) => x.mv).length === 1)) {
       return [r, `per-hit×${n}`, count * n];
     }
   }
@@ -262,8 +270,9 @@ export function findEcho(name: string, by: string | null | undefined, echoRows: 
   for (const [k, v] of Object.entries(echoRows)) keys.set(norm(v.name), k);
   for (const k of Object.keys(echoRows)) keys.set(norm(k), k);
   for (const c of cands) {
-    const n = norm(c);
+    let n = norm(c);
     if (!n) continue;
+    if (ECHO_ALIASES[n]) n = norm(ECHO_ALIASES[n]);
     const exact = keys.get(n);
     if (exact) return exact;
     const close = new Set<string>();
@@ -302,9 +311,15 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     let count = c.count;
     if (c.cast === "Echo" || nm.startsWith("Echo - ")) {
       const ekey = findEcho(nm, c.by, echoRows);
-      if (!ekey) { report.unmatched.push(`${nm} (echo not found in app registry)`); bump("unmatched"); continue; }
-      [hit, how, count] = matchCast(c, echoRows[ekey].rows, overrides);
-      if (hit) hit = { ...hit, echoKey: ekey };
+      if (ekey) {
+        [hit, how, count] = matchCast(c, echoRows[ekey].rows, overrides);
+        if (hit) hit = { ...hit, echoKey: ekey };
+      } else if (nm.startsWith("Echo - ")) {
+        report.unmatched.push(`${nm} (echo not found in app registry)`);
+        bump("unmatched");
+        continue;
+      }
+      // else: the resonator's own cast that wuwa_calc types as an Echo cast (Lucilla's "Forte Echo - Oblivion") — the kit's rows
     }
     if (hit === null) {
       [hit, how, count] = matchCast(c, rows, overrides);
@@ -318,6 +333,8 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     if (hit === null) { report.unmatched.push(`${nm} (mv ${c.mv}, ${c.cast}/${c.node}, ${how})`); continue; }
     if (how === "name-only" || how === "mv-ambiguous" || (how.startsWith("mv×") && sim(nm, hit) < 0.75)) report.review.push(`${nm} -> ${hit.key} [${how}]`);
     if (how.startsWith("mv×")) report.multipliers.push(`${nm} = ${hit.key} × ${how.slice(3)}`);
+    // a hand-mapped cast whose MV the kit multiplies
+    if (how === "override" && hit.mv && c.mv && Math.abs(c.mv / hit.mv - 1) > 0.01) report.multipliers.push(`${nm} = ${hit.key} × ${(c.mv / hit.mv).toFixed(2)}`);
     if (how.startsWith("tick/")) {
       const n = Number(how.split("/")[1]);
       const slot = ticks.get(hit.key);

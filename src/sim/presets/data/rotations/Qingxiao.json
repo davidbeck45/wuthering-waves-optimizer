@@ -1,11 +1,11 @@
 [
  {
   "name": "Qingxiao S6 Glint of Clouds R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40. NOT PORTED: Forte Heavy - Heaven's Reckoning (mv 1913.725, Heavy/Forte, unmatched).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Forte Heavy - Heaven's Reckoning = HeavenSReckoningEphemeralTranscendenceDMG × 2.75; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Qingxiao S6 Glint of Clouds R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40. NOT PORTED: Forte Heavy - Heaven's Reckoning (mv 1913.725, Heavy/Forte, unmatched).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Glint of Clouds R5, Heart of Evil's Purge 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Denia (main DPS): 8,709,681 DPR for Qingxiao of 10,845,110 team. Sequence procs in the loop: 1x Basic - Juque Perdition (S1). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Ephemeral Transcendence 1 = BasicAttackEphemeralTranscendenceStage1DMG × 2.50; Forte Heavy - Heaven's Reckoning = HeavenSReckoningEphemeralTranscendenceDMG × 2.75; Heavy - Stringblade = HeavyAttackStringbladeDMG × 1.40.",
    "actions": [
     {
      "order": 1,
@@ -113,6 +113,14 @@
     },
     {
      "order": 14,
+     "key": "HeavenSReckoningEphemeralTranscendenceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
      "key": "BillowsBeneathHeavenDMG",
      "type": "liberation",
      "count": 1,
@@ -120,7 +128,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 16,
      "key": "TransformDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -130,7 +138,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 16,
+     "order": 17,
      "key": "LingeringSongDMG",
      "type": "outro",
      "count": 1,
