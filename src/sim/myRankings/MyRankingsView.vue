@@ -48,10 +48,12 @@
               <th></th>
               <th v-if="investment" class="text-right" title="estimate: the next sequence node's chains switched on, best rotation">next S</th>
               <th v-if="investment" class="text-right" title="estimate: the weapon at R5, best rotation">R5</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(c, i) in ranking.characters" :key="c.id" :data-test-my-rankings-row="c.id">
+            <template v-for="(c, i) in ranking.characters" :key="c.id">
+            <tr :data-test-my-rankings-row="c.id">
               <td class="opacity-60">{{ i + 1 }}</td>
               <td>
                 <div class="flex items-center gap-2">
@@ -74,7 +76,47 @@
               <td class="w-40"><progress class="progress progress-primary w-full" :value="c.best?.avgDamage ?? 0" :max="maxCharacterDamage || 1"></progress></td>
               <td v-if="investment" class="text-right tabular-nums text-sm" :class="deltaClass(c.nextSequence)">{{ c.nextSequence ? `${c.nextSequence.label} ${pct(c.nextSequence.gain)}` : c.sequence >= 6 ? "S6" : "—" }}</td>
               <td v-if="investment" class="text-right tabular-nums text-sm" :class="deltaClass(c.refineFive)">{{ c.refineFive ? pct(c.refineFive.gain) : c.refinement >= 5 ? "R5" : "—" }}</td>
+              <td>
+                <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-whatif="c.id" title="score this character at another sequence, weapon or refinement on the same rotation" @click="toggleWhatIf(c)">
+                  what if…
+                </button>
+              </td>
             </tr>
+            <tr v-if="whatIfs[c.id]?.open" :data-test-my-rankings-whatif-panel="c.id">
+              <td :colspan="investment ? 9 : 7" class="bg-base-200/40">
+                <div class="flex flex-wrap items-end gap-3 py-1">
+                  <label class="form-control">
+                    <span class="label-text text-xs">Sequence</span>
+                    <select v-model.number="whatIfs[c.id].sequence" class="select select-bordered select-xs" data-test-my-rankings-whatif-sequence>
+                      <option v-for="n in [0, 1, 2, 3, 4, 5, 6]" :key="n" :value="n">S{{ n }}{{ n === c.sequence ? " (now)" : "" }}</option>
+                    </select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs">Weapon</span>
+                    <select v-model="whatIfs[c.id].weapon" class="select select-bordered select-xs max-w-60" data-test-my-rankings-whatif-weapon>
+                      <option v-for="w in whatIfs[c.id].weapons" :key="w.key" :value="w.key">{{ weaponLabel(w) }}{{ w.key === c.weapon ? " (now)" : ownedWeapons(c.id).has(w.key) ? " (owned)" : "" }}</option>
+                    </select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs">Refinement</span>
+                    <select v-model.number="whatIfs[c.id].refinement" class="select select-bordered select-xs" data-test-my-rankings-whatif-refinement>
+                      <option v-for="n in [1, 2, 3, 4, 5]" :key="n" :value="n">R{{ n }}{{ n === c.refinement && whatIfs[c.id].weapon === c.weapon ? " (now)" : "" }}</option>
+                    </select>
+                  </label>
+                  <button type="button" class="btn btn-primary btn-xs" :disabled="whatIfs[c.id].running" data-test-my-rankings-whatif-run @click="runWhatIf(c)">
+                    <span v-if="whatIfs[c.id].running" class="loading loading-spinner loading-xs"></span>
+                    Score this build
+                  </button>
+                  <span v-if="whatIfs[c.id].result" class="text-sm tabular-nums" data-test-my-rankings-whatif-result>
+                    {{ whatIfs[c.id].result?.label }}: <b>{{ fmt(whatIfs[c.id].result?.avgDamage ?? 0) }}</b>
+                    <span :class="gainClass(whatIfs[c.id].result?.gain ?? 0)">{{ pct(whatIfs[c.id].result?.gain ?? 0) }}</span>
+                    <span class="opacity-60">vs {{ fmt(whatIfs[c.id].result?.base ?? 0) }} now, on {{ whatIfs[c.id].result?.rotation }}</span>
+                  </span>
+                  <span v-if="whatIfs[c.id].error" class="text-xs text-error">{{ whatIfs[c.id].error }}</span>
+                </div>
+              </td>
+            </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -134,7 +176,18 @@ import { characterPortraitUrl, getCharacterRosterDisplayName } from "../../chara
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
-import { isSetUp, rankRoster, type InvestmentDelta, type RosterRanking, type RotationSource } from "./rankRoster";
+import {
+  isSetUp,
+  rankRoster,
+  weaponOptionsFor,
+  whatIf,
+  type CharacterRank,
+  type InvestmentDelta,
+  type RosterRanking,
+  type RotationSource,
+  type WeaponOption,
+  type WhatIfResult,
+} from "./rankRoster";
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -159,6 +212,61 @@ const errorCount = computed(() => ranking.value?.characters.reduce((n, c) => n +
 const fmt = (n: number): string => Math.round(n).toLocaleString();
 const pct = (g: number): string => `${g >= 0 ? "+" : ""}${(g * 100).toFixed(1)}%`;
 const deltaClass = (d: InvestmentDelta | null): string => (d ? (d.gain > 0.0005 ? "text-success" : "opacity-60") : "opacity-40");
+const gainClass = (g: number): string => (g > 0.0005 ? "text-success" : g < -0.0005 ? "text-error" : "opacity-60");
+
+// ---- what-if builds: the character at another sequence / weapon / refinement, scored on the same best rotation
+interface WhatIfState {
+  open: boolean;
+  sequence: number;
+  weapon: string;
+  refinement: number;
+  weapons: WeaponOption[];
+  running: boolean;
+  result: WhatIfResult | null;
+  error: string | null;
+}
+const whatIfs = ref<Record<string, WhatIfState>>({});
+const weaponLabel = (w: WeaponOption): string => `${w.rarity ? `${w.rarity}★ ` : ""}${w.name}`;
+function ownedWeapons(id: string): Set<string> {
+  const data = ((characters.value ?? {}) as Record<string, { weapons?: Record<string, unknown> }>)[id];
+  return new Set(Object.keys(data?.weapons ?? {}));
+}
+async function toggleWhatIf(c: CharacterRank): Promise<void> {
+  const current = whatIfs.value[c.id];
+  if (current) {
+    current.open = !current.open;
+    return;
+  }
+  whatIfs.value = { ...whatIfs.value, [c.id]: { open: true, sequence: c.sequence, weapon: c.weapon ?? "", refinement: c.refinement, weapons: [], running: false, result: null, error: null } };
+  const state = whatIfs.value[c.id];
+  let options: WeaponOption[] = [];
+  try {
+    options = await weaponOptionsFor(c.id);
+  } catch {
+    /* no registry list: the equipped weapon alone */
+  }
+  if (c.weapon && !options.some((w) => w.key === c.weapon)) options.unshift({ key: c.weapon, name: c.weapon, rarity: 0 });
+  state.weapons = options;
+}
+async function runWhatIf(c: CharacterRank): Promise<void> {
+  const state = whatIfs.value[c.id];
+  if (!state || !c.bestRotation || state.running) return;
+  state.running = true;
+  state.error = null;
+  try {
+    state.result = await whatIf(
+      c.id,
+      JSON.parse(JSON.stringify(characters.value ?? {})),
+      JSON.parse(JSON.stringify(inventoryStore.echoes ?? [])),
+      c.bestRotation,
+      { sequence: state.sequence, weapon: state.weapon || undefined, refinement: state.refinement },
+    );
+  } catch (error) {
+    state.error = error instanceof Error ? error.message : String(error);
+  } finally {
+    state.running = false;
+  }
+}
 const sourceLabel = (s: RotationSource): string => (s === "yours" ? "your rotation" : s === "curated" ? "curated preset" : "wuwa_calc");
 
 function fingerprint(): string {

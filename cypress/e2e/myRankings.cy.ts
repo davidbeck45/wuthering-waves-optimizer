@@ -24,5 +24,20 @@ describe("my roster rankings", () => {
       });
     cy.get('[data-test-my-rankings-row="Cartethyia"]').should("contain.text", "S2");
     cy.get("[data-test-my-rankings-no-teams]").should("exist");
+
+    // what if: the same rotation at S6 with the weapon at R5
+    cy.get('[data-test-my-rankings-whatif="Cartethyia"]').click({ force: true });
+    cy.get('[data-test-my-rankings-whatif-panel="Cartethyia"]').should("exist");
+    cy.get("[data-test-my-rankings-whatif-sequence]").select("6");
+    cy.get("[data-test-my-rankings-whatif-refinement]").select("5");
+    cy.get("[data-test-my-rankings-whatif-run]").click({ force: true });
+    cy.get("[data-test-my-rankings-whatif-result]", { timeout: 120000 })
+      .should("contain.text", "S6")
+      .and("contain.text", "R5")
+      .and("contain.text", "%")
+      .invoke("text")
+      .then((text) => {
+        expect(text).to.match(/\+\d+\.\d%/); // S6 + R5 beats S2 + R1 on her build
+      });
   });
 });
