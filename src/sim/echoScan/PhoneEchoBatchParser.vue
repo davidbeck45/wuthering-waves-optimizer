@@ -7,6 +7,54 @@
       S26 Ultra) or the same shape. Turn a Sonata filter on first so the set name shows bottom-left;
       otherwise the set is read from the small glyph next to +25.
     </p>
+    <div class="rounded-box border border-base-300 p-3 mb-3" data-test-phone-echo-album>
+      <div class="text-sm font-semibold mb-1">From a Google Photos album</div>
+      <p class="text-xs opacity-70 mb-2">
+        Share the album (anyone with the link) and paste the link here. Photos already imported from this
+        album are remembered in this browser, so later runs fetch and scan only the new ones.
+      </p>
+      <div class="flex flex-wrap items-center gap-2">
+        <input
+          v-model="albumUrl"
+          type="url"
+          placeholder="https://photos.app.goo.gl/…"
+          class="input input-bordered input-sm w-80 max-w-full"
+          data-test-phone-echo-album-url
+          @keyup.enter="loadAlbum" />
+        <button
+          type="button"
+          class="btn btn-sm"
+          :disabled="!albumUrl.trim() || isLoadingAlbum || isScanning"
+          data-test-phone-echo-album-load
+          @click="loadAlbum">
+          <span v-if="isLoadingAlbum" class="loading loading-spinner loading-xs"></span>
+          Load album
+        </button>
+        <template v-if="album">
+          <span class="text-xs" data-test-phone-echo-album-summary>
+            {{ album.photos.length }} photo{{ album.photos.length === 1 ? "" : "s" }} · {{ albumImportedCount }} already imported · {{ albumNewPhotos.length }} new
+          </span>
+          <label class="label cursor-pointer gap-1 py-0 text-xs">
+            <input v-model="includeImported" type="checkbox" class="checkbox checkbox-xs" />
+            include already imported
+          </label>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            :disabled="!albumPhotosToScan.length || isScanning"
+            data-test-phone-echo-album-scan
+            @click="scanAlbum">
+            Fetch &amp; scan {{ albumPhotosToScan.length }}
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs" :disabled="isScanning || !albumNewPhotos.length" data-test-phone-echo-album-mark @click="markAlbumImported">
+            Mark all as imported
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs" :disabled="isScanning || !albumImportedCount" @click="forgetAlbum">Forget</button>
+        </template>
+        <span v-if="albumError" class="text-xs text-error" data-test-phone-echo-album-error>{{ albumError }}</span>
+      </div>
+    </div>
+
     <div class="flex flex-wrap items-center gap-2 mb-3">
       <input
         type="file"
@@ -161,9 +209,22 @@ import {
 
 type ScanStatus = "queued" | "scanning" | "done" | "error" | "unsupported";
 
+interface AlbumPhoto {
+  id: string;
+  url: string;
+}
+interface AlbumInfo {
+  albumId: string | null;
+  resolvedUrl: string;
+  photos: AlbumPhoto[];
+}
+
 interface ScanItem {
   id: string;
-  file: File;
+  /** the screenshot; album photos are fetched right before their scan and dropped after it */
+  file: File | null;
+  /** set when the item came from a Google Photos album */
+  photo?: AlbumPhoto;
   name: string;
   status: ScanStatus;
   record: ScanRecord | null;
@@ -180,6 +241,106 @@ const items = ref<ScanItem[]>([]);
 const isScanning = ref(false);
 const progress = ref({ done: 0, total: 0 });
 const currentStep = ref("");
+
+// ---- Google Photos album: the site's own API fetches the share page and the photos (same-origin), and the
+// photos already imported from an album are remembered per browser so later runs take only the new ones.
+const ALBUM_MEMORY_KEY = "wuthering-tools-plus.echoScan.albums";
+const albumUrl = ref("");
+const album = ref<AlbumInfo | null>(null);
+const albumError = ref<string | null>(null);
+const isLoadingAlbum = ref(false);
+const includeImported = ref(false);
+const importedIds = ref<Set<string>>(new Set());
+
+const albumKey = computed(() => album.value?.albumId ?? album.value?.resolvedUrl ?? null);
+const albumImportedCount = computed(() => (album.value ? album.value.photos.filter((photo) => importedIds.value.has(photo.id)).length : 0));
+const albumNewPhotos = computed(() => (album.value ? album.value.photos.filter((photo) => !importedIds.value.has(photo.id)) : []));
+const albumPhotosToScan = computed(() => (includeImported.value ? (album.value?.photos ?? []) : albumNewPhotos.value));
+
+function loadImportedIds(key: string): Set<string> {
+  try {
+    const all = JSON.parse(localStorage.getItem(ALBUM_MEMORY_KEY) ?? "{}") as Record<string, { photoIds?: string[] }>;
+    return new Set(all[key]?.photoIds ?? []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveImportedIds(key: string, ids: Set<string>): void {
+  try {
+    const all = JSON.parse(localStorage.getItem(ALBUM_MEMORY_KEY) ?? "{}") as Record<string, unknown>;
+    all[key] = { photoIds: [...ids], updatedAt: new Date().toISOString() };
+    localStorage.setItem(ALBUM_MEMORY_KEY, JSON.stringify(all));
+  } catch {
+    /* storage may be unavailable; the memory is a convenience */
+  }
+}
+
+async function loadAlbum(): Promise<void> {
+  const url = albumUrl.value.trim();
+  if (!url || isLoadingAlbum.value) return;
+  isLoadingAlbum.value = true;
+  albumError.value = null;
+  try {
+    const response = await fetch(`/api/photos-album?url=${encodeURIComponent(url)}`);
+    const data = (await response.json()) as AlbumInfo & { error?: string };
+    if (!response.ok) throw new Error(data.error ?? `The album could not be read (${response.status})`);
+    album.value = data;
+    importedIds.value = loadImportedIds(data.albumId ?? data.resolvedUrl);
+  } catch (error) {
+    album.value = null;
+    albumError.value = error instanceof Error ? error.message : String(error);
+  } finally {
+    isLoadingAlbum.value = false;
+  }
+}
+
+async function fetchPhotoFile(photo: AlbumPhoto, name: string): Promise<File> {
+  const response = await fetch(`/api/photos-image?id=${encodeURIComponent(photo.id)}`);
+  if (!response.ok) throw new Error(`the photo could not be fetched (${response.status})`);
+  const blob = await response.blob();
+  return new File([blob], `${name}.jpg`, { type: blob.type || "image/jpeg" });
+}
+
+async function scanAlbum(): Promise<void> {
+  if (!album.value || isScanning.value) return;
+  const photos = albumPhotosToScan.value;
+  for (const photo of photos) {
+    const position = album.value.photos.indexOf(photo) + 1;
+    items.value.push({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      file: null,
+      photo,
+      name: `album photo ${position}`,
+      status: "queued",
+      record: null,
+      include: false,
+      thumb: null,
+      error: null,
+    });
+  }
+  await scanAll();
+}
+
+function rememberImported(photoIds: string[]): void {
+  const key = albumKey.value;
+  if (!key || !photoIds.length) return;
+  const next = new Set(importedIds.value);
+  for (const id of photoIds) next.add(id);
+  importedIds.value = next;
+  saveImportedIds(key, next);
+}
+
+function markAlbumImported(): void {
+  if (album.value) rememberImported(album.value.photos.map((photo) => photo.id));
+}
+
+function forgetAlbum(): void {
+  const key = albumKey.value;
+  if (!key) return;
+  importedIds.value = new Set();
+  saveImportedIds(key, importedIds.value);
+}
 
 const queuedCount = computed(() => items.value.filter((item) => item.status === "queued").length);
 const includedCount = computed(() => items.value.filter((item) => item.include && item.record).length);
@@ -284,6 +445,7 @@ async function scanOne(item: ScanItem, ocr: EchoOcr, matcher: EchoImageMatcher |
   item.status = "scanning";
   item.error = null;
   try {
+    if (!item.file) throw new Error("no image to scan");
     const bitmap = await createImageBitmap(item.file);
     const layout = resolveLayout(bitmap.width, bitmap.height);
     if (!layout) {
@@ -365,7 +527,19 @@ async function scanAll(): Promise<void> {
       /* image matching is best-effort: scanning continues without portrait / glyph hints */
     }
     for (const item of queued) {
+      if (!item.file && item.photo) {
+        currentStep.value = `${item.name}: fetching the photo…`;
+        try {
+          item.file = await fetchPhotoFile(item.photo, item.name.replace(/\s+/g, "-"));
+        } catch (error) {
+          item.status = "error";
+          item.error = error instanceof Error ? error.message : String(error);
+          progress.value = { ...progress.value, done: progress.value.done + 1 };
+          continue;
+        }
+      }
       await scanOne(item, ocr, matcherReady ? matcher : null);
+      if (item.photo) item.file = null; // the bytes are not needed after the scan; the thumb is a small data url
       progress.value = { ...progress.value, done: progress.value.done + 1 };
     }
   } catch (error) {
@@ -384,10 +558,10 @@ async function scanAll(): Promise<void> {
 }
 
 function addToInventory(): void {
-  const echoes = items.value
-    .filter((item) => item.include && item.record)
-    .map((item) => toParsedEcho(item.record as ScanRecord));
+  const included = items.value.filter((item) => item.include && item.record);
+  const echoes = included.map((item) => toParsedEcho(item.record as ScanRecord));
   if (!echoes.length) return;
+  rememberImported(included.flatMap((item) => (item.photo ? [item.photo.id] : [])));
   emit("echoes-parsed", echoes, true);
 }
 </script>

@@ -1,10 +1,21 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
+import { handleAlbumRequest, handleImageRequest } from "./api/_lib/googlePhotos";
+
+// Wuthering Tools+: the Vercel functions under api/ (Google Photos album import), served by the dev server
+// at the same paths so `vite dev` behaves like production.
+const wtPlusApi: Plugin = {
+  name: "wt-plus-api",
+  configureServer(server) {
+    server.middlewares.use("/api/photos-album", (req, res) => void handleAlbumRequest(req, res));
+    server.middlewares.use("/api/photos-image", (req, res) => void handleImageRequest(req, res));
+  },
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), wtPlusApi],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
