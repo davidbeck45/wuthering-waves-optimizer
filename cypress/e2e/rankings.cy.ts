@@ -56,7 +56,21 @@ describe("wuwa_calc rankings: Riley's body-level popovers keep his styles", () =
     // let the boot settle first: a redraw while the solves are still coming in clears every open popover
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root #app .gotodetail", { timeout: 60000 }).should("have.length.greaterThan", 10);
-    cy.get(".skittle-root .trow:not(.thead) .c.teamdpr", { timeout: 60000 }).first().click();
+    // the breakdown opens (pinned) on click; Riley closes every popover on any scroll event, and Cypress's
+    // scroll-into-view before a click lands its scroll event after the click on a slow runner — the first
+    // row is already in view, so click without scrolling, and click again if something closed it
+    const openBreakdown = (tries: number): void => {
+      cy.get(".skittle-root .trow:not(.thead) .c.teamdpr", { timeout: 60000 }).first().click({ scrollBehavior: false });
+      // eslint-disable-next-line cypress/no-unnecessary-waiting -- a beat for a late scroll/redraw to land before checking
+      cy.wait(500);
+      cy.document().then((doc) => {
+        if (doc.querySelector("body > .pop.dpr .rtable")) return;
+        const state = `pops=${doc.querySelectorAll("body > .pop").length} loadingHidden=${doc.querySelector(".skittle-root #loading")?.hasAttribute("hidden")} rows=${doc.querySelectorAll(".gotodetail").length} teamdpr=${doc.querySelectorAll(".c.teamdpr").length}`;
+        expect(tries, `breakdown popover never opened (${state})`).to.be.greaterThan(1);
+        openBreakdown(tries - 1);
+      });
+    };
+    openBreakdown(8);
     // the popover is appended to document.body, outside .skittle-root — its `.rtable` must still be styled
     cy.get("body > .pop.dpr .rtable", { timeout: 60000 }).should("have.css", "display", "grid");
     cy.get("body > .pop.dpr").invoke("outerWidth").should("be.greaterThan", 300);
