@@ -9,6 +9,7 @@
  * The engine, kits and page modules themselves come straight from the submodule via `@skittle/*`.
  */
 import type { Router } from "vue-router";
+import type { BuildRolls } from "./myBuilds";
 import { useToast } from "../../composables/useToast";
 import { importTeamFromRankings } from "./importFromRankings";
 
@@ -17,7 +18,7 @@ type Member = { name: string; mainDps: boolean };
 type TeamRow = { key: string; teamKey: string; members: Member[]; combo: any[] };
 type Solved = { picks: any; rows: any[]; scores: any; hidden: any[]; hiddenScores: any[] };
 interface Mods {
-  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; stats: any;
+  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; stats: any; substats: any;
 }
 
 const TEMPLATE = `
@@ -77,12 +78,12 @@ function buildDom(): HTMLElement {
 }
 
 async function loadModules(): Promise<Mods> {
-  const [display, solver, teamrun, model, panels, table, detail, stats] = await Promise.all([
+  const [display, solver, teamrun, model, panels, table, detail, stats, substats] = await Promise.all([
     import("@skittle/display"), import("@skittle/solver"), import("@skittle/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
-    import("@skittle/engine/stats"),
+    import("@skittle/engine/stats"), import("@skittle/shared/substats"),
   ]);
-  return { display, solver, teamrun, model, panels, table, detail, stats };
+  return { display, solver, teamrun, model, panels, table, detail, stats, substats };
 }
 
 /* ---------------------------------------------------------------------------------- overlay */
@@ -145,6 +146,26 @@ async function runMissing(rows: TeamRow[]): Promise<void> {
   await paint();
 }
 
+// ---- the player's own substat spreads ("My build" rows of a Substats compare): registered on the
+// page's loadouts and in every solver worker, since the worker is what builds the rows
+let myBuilds: BuildRolls[] = [];
+let registered = new Set<string>();
+function applyMyBuilds(): void {
+  if (!mods) return;
+  const next = new Set(myBuilds.map((b) => b.name));
+  const clear = [...registered].filter((n) => !next.has(n));
+  for (const name of clear) mods.solver.setMySubstat(name, null);
+  for (const b of myBuilds) mods.solver.setMySubstat(b.name, mods.substats.customSubstats("My build", b.rolls), b.key);
+  registered = next;
+  for (const w of pool ?? []) w.postMessage({ type: "mySubstats", builds: myBuilds, clear });
+}
+/** The builds changed in the app (a character's echoes were edited): re-register and redraw. */
+export function updateMyBuilds(builds: BuildRolls[]): void {
+  myBuilds = builds;
+  applyMyBuilds();
+  if (mods && booted && tableRequested) void refresh();
+}
+
 const WORKER_LIMIT = 8;
 let pool: Worker[] | null = null;
 let poolTried = false;
@@ -155,6 +176,7 @@ function workerPool(): Worker[] | null {
   try {
     pool = Array.from({ length: want }, () =>
       new Worker(new URL("./solver.worker.ts", import.meta.url), { type: "module" }));
+    for (const w of pool) w.postMessage({ type: "mySubstats", builds: myBuilds, clear: [] });
   } catch (err) {
     console.warn("Workers unavailable, optimizing on the main thread instead:", err);
     pool = null;
@@ -463,14 +485,16 @@ function patchFetch(): void {
   }) as typeof fetch;
 }
 
-export async function mountRankings(host: HTMLElement, r: Router): Promise<void> {
+export async function mountRankings(host: HTMLElement, r: Router, builds: BuildRolls[] = []): Promise<void> {
   router = r;
+  myBuilds = builds;
   patchFetch();
   if (!root) root = buildDom();
   host.appendChild(root);
   document.addEventListener("keydown", onKeydown);
   try {
     if (!mods) mods = await loadModules();
+    applyMyBuilds();
     if (!booted) { booted = boot(); await booted; }
     else onLocationChange();
   } catch (err) {

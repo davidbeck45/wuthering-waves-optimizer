@@ -12,20 +12,30 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
-import { mountRankings, onLocationChange, unmountRankings } from "../sim/rankings/controller";
+import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
+import { mountRankings, onLocationChange, unmountRankings, updateMyBuilds } from "../sim/rankings/controller";
+import { buildRollsOf } from "../sim/rankings/myBuilds";
 import "../sim/skittle.css";
 import "../sim/skittle-theme.css";
 
 const host = ref<HTMLElement | null>(null);
 const router = useRouter();
 const route = useRoute();
+// the player's equipped echoes, as the engine's "My build" substat rows (see src/sim/rankings/myBuilds.ts)
+const characterStore = useCharacterStore();
+const inventoryStore = useInventoryStore();
+const { characters } = storeToRefs(characterStore) as unknown as { characters: { value: Record<string, Record<string, unknown>> } };
+const myBuilds = computed(() => buildRollsOf(characters.value ?? {}, (inventoryStore.echoes ?? []) as Array<Record<string, unknown>>));
 
 onMounted(() => {
-  if (host.value) void mountRankings(host.value, router);
+  if (host.value) void mountRankings(host.value, router, myBuilds.value);
 });
+watch(() => myBuilds.value.map((b) => `${b.name}:${b.key}`).join(","), () => updateMyBuilds(myBuilds.value));
 onBeforeUnmount(() => unmountRankings());
 // browser back/forward and nav clicks change the hash without a hashchange event we can rely on
 watch(() => route.fullPath, () => onLocationChange());

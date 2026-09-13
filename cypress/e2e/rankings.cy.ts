@@ -1,3 +1,4 @@
+import { configOptimizer } from "./calculator/data/Cartethyia/data";
 // Wuthering Tools+: Riley31415/wuwa_calc's comparison table hosted at /rankings (src/sim/rankings/).
 describe("Team Rankings (wuwa_calc)", () => {
   it("boots the comparison table from the shipped solves inside the app shell", () => {
@@ -79,5 +80,35 @@ describe("wuwa_calc rankings on a phone", () => {
     cy.viewport(1440, 900);
     cy.get("[data-test-rankings-filters]").should("not.be.visible");
     cy.get(".skittle-root .tcside").should("be.visible");
+  });
+});
+
+// Wuthering Tools+: the player's own echoes as a "My build" row of Riley's Substat Investment compare
+// (src/sim/rankings/myBuilds.ts + the fork's `setMySubstat`).
+
+describe("wuwa_calc rankings: My build substat row", () => {
+  it("compares the account's equipped substats beside ChemX32 and High Invest", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#r=Cartethyia&cb=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".tcchips .rchip", { timeout: 60000 }).should("contain.text", "Cartethyia Substat Investment");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 })
+      .should("contain.text", "My build")
+      .and("contain.text", "High Invest")
+      .and("contain.text", "ChemX32");
+    // a My build row opens its rotation on the same spread, and Back keeps the compare
+    cy.contains(".skittle-root .trow:not(.thead):not(.tghost)", "My build").find(".gotodetail[data-team]").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "team=").and("match", /\.u[0-9a-z]+/);
+    cy.get(".skittle-root #app", { timeout: 60000 }).should("contain.text", "My build");
+    cy.get("#backLink").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "cb=Cartethyia");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "My build");
+  });
+
+  it("offers no My build row for a resonator the account has not built", () => {
+    cy.visit("/rankings#r=Mornye&cb=Mornye");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "High Invest").and("not.contain.text", "My build");
   });
 });

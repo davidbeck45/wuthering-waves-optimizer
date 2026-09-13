@@ -119,6 +119,24 @@ The generated stock presets (`src/sim/presets/`) remain the zero-click path for 
 everything-else path.
 
 
+## "My build" in the Substat Investment compare — `src/sim/rankings/myBuilds.ts`
+
+Riley's Substats compare offers two spreads per resonator: his default (ChemX32) and High Invest. The
+plus site adds a third row, **My build**: the substat rolls on the five echoes that character has
+equipped in this app's calculator, run through his engine like any other pick.
+
+| Piece | Role |
+|---|---|
+| `myBuilds.ts` | pure: `buildRollsOf(characters, inventoryEchoes)` resolves each character's `echoes[slot].echoId` against the inventory (`resolveCharacterEchoes`) and turns the five echoes' substats into `{ kind, value }` rolls in his `Substat` names (Healing Bonus has no counterpart and is skipped); `rollsKey()` tells one build from the next |
+| `controller.ts` | `mountRankings(host, router, builds)` / `updateMyBuilds(builds)`: registers every build on the page's loadouts (`setMySubstat` + `customSubstats("My build", rolls)`) and posts `{ type: "mySubstats" }` to every solver worker — the worker is what builds the rows, so it has to know too |
+| `solver.worker.ts` | intercepts that message ahead of Riley's `onmessage` |
+| `RankingsView.vue` | computes the builds from the character + inventory stores and re-registers on change |
+| fork `davidbeck45/wuwa_calc` branch `plus` | the engine side: `Loadout.mySubstat/mySubstatKey`, `customSubstats()`, `setMySubstat()`, a third entry in `buildsOf` when the axis is open, `.uKEY` in combo keys, "My build" labels, and the table grouping / twin / baseline rules for the new pick (`page/table.ts`, `rowFromKey` in `page/model.ts`) |
+
+Only resonators with a build in the app get the row (`#r=Cartethyia&cb=Cartethyia` after an import
+shows it; Mornye without one does not). The row keys carry the build's hash, so a changed build gets fresh
+solves, and a `#team=` link to a stale one falls back to the table. E2E: `cypress/e2e/rankings.cy.ts`.
+
 ## My roster rankings (phase E) — `src/sim/myRankings/`
 
 `/my-rankings` (linked from the credit line on `/rankings`, and back): the app's own damage engine ranks the
