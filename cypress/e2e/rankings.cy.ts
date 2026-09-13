@@ -50,6 +50,17 @@ describe("Team Rankings (wuwa_calc)", () => {
   });
 });
 
+describe("wuwa_calc rankings: Riley's body-level popovers keep his styles", () => {
+  it("draws a team's damage breakdown as his grid, not a column of cells", () => {
+    cy.visit("/rankings");
+    cy.get(".skittle-root .trow:not(.thead) .c.teamdpr", { timeout: 180000 }).first().click();
+    // the popover is appended to document.body, outside .skittle-root — its `.rtable` must still be styled
+    cy.get("body > .pop.dpr .rtable", { timeout: 60000 }).should("have.css", "display", "grid");
+    cy.get("body > .pop.dpr").invoke("outerWidth").should("be.greaterThan", 300);
+    cy.get("body > .pop.dpr .rtrow.rthead .c").should("have.length.greaterThan", 3);
+  });
+});
+
 describe("wuwa_calc rankings: filters survive a rotation detail", () => {
   it("keeps an added resonator filter after view rotation and back", () => {
     cy.visit("/rankings");
