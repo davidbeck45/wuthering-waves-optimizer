@@ -12,6 +12,13 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-13",
+    dateLabel: "September 13, 2026",
+    items: [
+      "v3: Adds suggested weapons for: Phrolova, Lupa, Cartethyia, Ciaccona, Zani, Cantarella, Brant, Phoebe",
+    ],
+  },
+  {
     date: "2026-09-12",
     dateLabel: "September 12, 2026",
     items: [
