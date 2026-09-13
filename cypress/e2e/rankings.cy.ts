@@ -53,7 +53,10 @@ describe("Team Rankings (wuwa_calc)", () => {
 describe("wuwa_calc rankings: Riley's body-level popovers keep his styles", () => {
   it("draws a team's damage breakdown as his grid, not a column of cells", () => {
     cy.visit("/rankings");
-    cy.get(".skittle-root .trow:not(.thead) .c.teamdpr", { timeout: 180000 }).first().click();
+    // let the boot settle first: a redraw while the solves are still coming in clears every open popover
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root #app .gotodetail", { timeout: 60000 }).should("have.length.greaterThan", 10);
+    cy.get(".skittle-root .trow:not(.thead) .c.teamdpr", { timeout: 60000 }).first().click();
     // the popover is appended to document.body, outside .skittle-root — its `.rtable` must still be styled
     cy.get("body > .pop.dpr .rtable", { timeout: 60000 }).should("have.css", "display", "grid");
     cy.get("body > .pop.dpr").invoke("outerWidth").should("be.greaterThan", 300);
