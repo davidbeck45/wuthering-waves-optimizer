@@ -12,6 +12,7 @@
           <input v-model="investment" type="checkbox" class="checkbox checkbox-sm" :disabled="isRunning" />
           <span class="label-text text-sm">estimate next sequence &amp; R5</span>
         </label>
+          <AutoTeamBuffsToggle />
         <button type="button" class="btn btn-primary btn-sm" :disabled="isRunning || !characterCount" data-test-my-rankings-compute @click="compute">
           <span v-if="isRunning" class="loading loading-spinner loading-xs"></span>
           {{ isRunning ? "Ranking…" : ranking ? "Recompute" : "Rank my roster" }}
@@ -188,6 +189,8 @@ import {
   type WeaponOption,
   type WhatIfResult,
 } from "./rankRoster";
+import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -270,7 +273,7 @@ async function runWhatIf(c: CharacterRank): Promise<void> {
 const sourceLabel = (s: RotationSource): string => (s === "yours" ? "your rotation" : s === "curated" ? "curated preset" : "wuwa_calc");
 
 function fingerprint(): string {
-  return `${JSON.stringify(characters.value ?? {}).length}:${(inventoryStore.echoes ?? []).length}:${JSON.stringify(teams.value ?? []).length}:${investment.value}`;
+  return `${JSON.stringify(characters.value ?? {}).length}:${(inventoryStore.echoes ?? []).length}:${JSON.stringify(teams.value ?? []).length}:${investment.value}:${autoTeamBuffs.value}`;
 }
 
 async function compute(): Promise<void> {
@@ -284,6 +287,7 @@ async function compute(): Promise<void> {
       JSON.parse(JSON.stringify(teams.value ?? [])),
       {
         investment: investment.value,
+        autoTeamBuffs: autoTeamBuffs.value,
         onProgress: (done, total, label) => {
           progress.value = { done, total, label };
         },

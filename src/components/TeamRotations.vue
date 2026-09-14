@@ -576,6 +576,8 @@ import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRotation";
+import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
+import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
@@ -892,18 +894,22 @@ function computeTeamFingerprint(team: any): string {
     actions: team.actions,
     duration: team.duration,
     enemyConfig: team.enemyConfig,
+    autoTeamBuffs: autoTeamBuffs.value, // Wuthering Tools+
   });
 }
 
 async function computeStatsForTeam(team: any): Promise<TeamSummaryStats> {
+  // Wuthering Tools+: builds by name + team buffs from the real members (src/sim/teamContext)
+  const teamResolution = await resolveTeamCharacters(team, characters.value, inventoryEchoes.value, { auto: autoTeamBuffs.value });
   const result = await calcTeamRotationDamage(
     {
       name: team.name,
       characterIds: team.characterIds,
+      buildIds: teamResolution.auto ? teamResolution.buildIds : undefined,
       actions: team.actions,
       duration: team.duration,
     },
-    characters.value,
+    teamResolution.characters,
     team.enemyConfig,
     inventoryEchoes.value,
   );

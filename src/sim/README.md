@@ -151,3 +151,28 @@ solved picks.
 | `cypress/e2e/myRankings.cy.ts` | empty state + links, then an imported account ranked in-page |
 
 Metric: average damage per rotation (DPR). DPS appears only when a rotation carries a duration.
+
+
+## Team-aware buffs and builds — `src/sim/teamContext/`
+
+Upstream computes each team slot from that character's stored build **including the Team Buffs panel
+saved on the Calculator page** — two teammates picked there, which need not be the team's real members
+(David's Aemeath panel named Mornye + Lynae; every Aemeath team inherited those buffs). `resolveTeam.ts`
+rewrites the members for the team they are actually in, before the engine runs:
+
+| Rule | Detail |
+|---|---|
+| Build per slot | explicit pin → a saved build whose name mentions both teammates in any order (`"Moonlit (Lupa + Galbrena)"`, `"Moonlit Chisa (Yangyang Suisui)"`: the key, the roster name, or any 4+-letter word of the key; case and punctuation ignored; only when the character has more than one build) → the active build. Pins are baked into the returned `characters`, so pass the returned `buildIds` (all null) to the engine |
+| Panel kept | a member whose own panel already names exactly the team's other members keeps it verbatim (the user curated it) |
+| Otherwise derived | from what each teammate's build really provides: outro / inherent / skill team buffs; **sequence-node buffs only when that node is on their build** (key match on their `resonanceChains`, else "Sequence Node N" ≤ their node count); the weapon's team buff only if they hold that weapon (matched by the buff's image basename); 5-piece set buffs only with 5 of that set equipped; main-echo buffs only with that main echo; stacks at `realisticMaxStacks` under the chain-adjusted cap; `inputBase` buffs (Shorekeeper's Energy Regen, Crit-Rate-scaled ones) fed from the teammate's **real** `finalStats` instead of a typed guess |
+| Teammate with no build | still a teammate: outro / inherent buffs provided, sequence nodes assumed **S6 for a 4-star, S0 for a 5-star**, nothing gear-based, `realisticBaseAttrValue` for stat-scaled buffs |
+| Still yours | per-action advanced overrides and the exclude-team-buffs flags apply on top inside the engine; `auto: false` is a strict passthrough of upstream behaviour |
+
+Switch: `autoTeamBuffs.ts` (`localStorage["wtplus:teamBuffs:auto"]`, default on, **off under Cypress** so
+upstream's E2E numbers hold) with `AutoTeamBuffsToggle.vue` in the Team Rotations editor header and on
+`/my-rankings`. Hooks: `TeamRotations.vue` (list totals + fingerprint), `TeamRotationTeamEditor.vue`
+(`recompute()`, the per-slot snapshot the action editor shows), `rankRoster.ts` (`autoTeamBuffs` option),
+CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each slot's build and buff source,
+plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
+whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
+(real Augusta / Iuno / Shorekeeper / Sanhua data).

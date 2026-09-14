@@ -31,6 +31,7 @@
             <span class="label-text text-xs">Status</span>
             <TeamBuildStatus :status="teamStatus" interactive :team-id="props.teamId" />
           </label>
+          <AutoTeamBuffsToggle />
           <AppOverflowMenu
             class="ml-auto"
             aria-label="Export team"
@@ -409,6 +410,10 @@ import {
 } from "../calculator/rotationAdvancedBuffs";
 import { applyBulkEnemyStacksOverride, type EnemyStackKey } from "../calculator/rotationEnemyStacksOverride";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
+import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
+import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
+import AutoTeamBuffsToggle from "../sim/teamContext/AutoTeamBuffsToggle.vue"; // Wuthering Tools+
+import { ref as refPlus, watch as watchPlus } from "vue"; // Wuthering Tools+
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
@@ -957,6 +962,10 @@ const chosenChars = computed(() => {
   return out;
 });
 
+// Wuthering Tools+: the members as the last recompute resolved them (builds by name, team buffs
+// from the real members) — null when the switch is off, so everything below is upstream's.
+const resolvedTeamCharacters = refPlus<Record<string, any> | null>(null);
+
 // Each slot's raw stored build data (buffs/weaponPassives/teamBuffs/etc
 // config, as persisted in the character store) — used by
 // TeamRotationActionEditor.vue's display-only "current state" snapshot
@@ -969,8 +978,9 @@ const characterDataForSlot = computed(() => {
       out[slot] = {};
       continue;
     }
-    const buildId = team.value?.buildIds?.[slot] ?? null;
-    out[slot] = resolveCharactersForBuild(characters.value, characterId, buildId)[characterId] ?? {};
+    const resolvedTeam = resolvedTeamCharacters.value; // Wuthering Tools+: pins are already baked in when resolved
+    const buildId = resolvedTeam ? null : (team.value?.buildIds?.[slot] ?? null);
+    out[slot] = resolveCharactersForBuild(resolvedTeam ?? characters.value, characterId, buildId)[characterId] ?? {};
   }
   return out;
 });
@@ -1091,6 +1101,11 @@ async function recompute() {
   const token = ++computeToken;
 
   const enemyConfig: TeamEnemyConfig = { ...t.enemyConfig };
+  // Wuthering Tools+: builds by name + team buffs from the real members (src/sim/teamContext)
+  const teamResolution = await resolveTeamCharacters(t, characters.value, inventoryEchoes.value, { auto: autoTeamBuffs.value, enemyConfig });
+  if (token !== computeToken) return;
+  resolvedTeamCharacters.value = teamResolution.auto ? teamResolution.characters : null;
+  const teamCharacters = teamResolution.characters;
 
   const nextContexts: Record<number, CharacterCalculationContext | null> = {};
   await Promise.all(
@@ -1100,7 +1115,7 @@ async function recompute() {
         nextContexts[slot] = null;
         return;
       }
-      const slotCharacters = resolveCharactersForBuild(characters.value, characterId, t.buildIds?.[slot] ?? null);
+      const slotCharacters = resolveCharactersForBuild(teamCharacters, characterId, teamResolution.buildIds[slot] ?? null);
       nextContexts[slot] = await buildCharacterCalculationContext(characterId, slotCharacters, enemyConfig, inventoryEchoes.value);
     }),
   );
@@ -1111,11 +1126,11 @@ async function recompute() {
     {
       name: t.name,
       characterIds: t.characterIds,
-      buildIds: t.buildIds,
+      buildIds: teamResolution.buildIds,
       actions: t.actions,
       duration: t.duration,
     },
-    characters.value,
+    teamCharacters,
     enemyConfig,
     inventoryEchoes.value,
   );
@@ -1130,6 +1145,8 @@ watch(
   },
   { deep: true, immediate: true },
 );
+
+watchPlus(autoTeamBuffs, () => void recompute()); // Wuthering Tools+
 </script>
 
 <style scoped lang="scss">

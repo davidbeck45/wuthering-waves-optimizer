@@ -9,6 +9,7 @@ import { calcTeamRotationDamage, type TeamRotationAction } from "../../calculato
 import { resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { teamRotationPresets } from "../../teamRotations/presets";
 import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets } from "../presets";
+import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 
 export type RotationSource = "yours" | "curated" | "wuwa_calc";
 
@@ -72,6 +73,8 @@ export interface RankOptions {
   investment?: boolean;
   /** keep the UI responsive between calculations */
   yieldToUi?: boolean;
+  /** teams: builds by name + team buffs from the real members (src/sim/teamContext); default true */
+  autoTeamBuffs?: boolean;
 }
 
 /** Riley's target, so numbers sit beside the /rankings page: a level-100 enemy with 20 % resistance, no stacks. */
@@ -340,7 +343,13 @@ export async function rankRoster(
   for (const c of teamCandidates) {
     progress(c.name);
     try {
-      const result = await calcTeamRotationDamage(c.team, characters, enemy, inventoryEchoes);
+      const resolution = await resolveTeamCharacters(c.team, characters, inventoryEchoes, { auto: options.autoTeamBuffs ?? true, enemyConfig: enemy });
+      const result = await calcTeamRotationDamage(
+        { ...c.team, buildIds: resolution.auto ? resolution.buildIds : undefined },
+        resolution.characters,
+        enemy,
+        inventoryEchoes,
+      );
       const seconds = Number(c.team.duration);
       teamRanks.push({
         id: c.id,
