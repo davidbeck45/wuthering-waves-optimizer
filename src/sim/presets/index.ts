@@ -15,13 +15,14 @@ export const WUWA_CALC_AUTHOR = "Riley31415 (wuwa_calc)";
 
 /** One JSON chunk per character, loaded only when that character's presets are asked for. */
 type RotationModules = Record<string, () => Promise<{ default: CharacterRotationPreset[] }>>;
-// `import.meta.glob` exists only under Vite (the app, vitest). The plus CLI runs this module under
-// plain tsx (`npm run cli`), where the generated JSON is read from disk instead — see nodeRotationLoader.
-const rotationModules: RotationModules =
-  typeof import.meta.glob === "function"
-    ? import.meta.glob<{ default: CharacterRotationPreset[] }>("./data/rotations/*.json")
-    : {};
-const underVite = typeof import.meta.glob === "function";
+// Under Vite (the app, vitest) `import.meta.glob(...)` is rewritten at build time — it is never a
+// runtime function, so the only reliable runtime tell is `import.meta.env`, which Vite defines and plain
+// Node does not. The plus CLI runs this module under tsx (`npm run cli`), where the generated JSON is
+// read from disk instead — see nodeRotationLoader.
+const underVite = typeof import.meta.env !== "undefined";
+const rotationModules: RotationModules = underVite
+  ? import.meta.glob<{ default: CharacterRotationPreset[] }>("./data/rotations/*.json")
+  : {};
 
 async function nodeRotationLoader(characterKey: string): Promise<CharacterRotationPreset[]> {
   const [{ readFile }, { fileURLToPath }, { dirname, join }] = await Promise.all([
