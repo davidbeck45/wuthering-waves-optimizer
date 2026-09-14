@@ -31,7 +31,12 @@ Things learned the hard way:
 - Cypress smoke spec: `cypress/e2e/rankings.cy.ts` (CI shard `plus` = every root-level `cypress/e2e/*.cy.ts`).
   CI must check out submodules (`.github/workflows/e2e.yml`): without `vendor/wuwa_calc` the lazy `/rankings`
   chunk fails to resolve `@skittle/*`, the page (and its Nav) never mounts, and the spec times out.
-- Updating Riley: `~/Projects/wuwa-tools/scripts/sync-skittle.sh [--push]`.
+- Updating Riley: `~/Projects/wuwa-tools/scripts/sync-skittle.sh [--push]`. Sept 2026 (his "huge update" / "substat
+  updates"): `index.css` and `loading.gif` moved to his repo root (`skittle-sync.mjs` looks there first), `teamWanted(key,
+  members)` takes the team key, his error page is gone (errors go into the overlay's `.loading-error` box — the controller's
+  `showBootError`), and a first-visit `tutorial.ts` exists that the port deliberately never shows. His substat pieces are now
+  ER-tiered `ErSpread`s (`Loadout.spread(highSubs, erRolls, mySubs)`); the fork's `plus` keeps `mySubstat` as a fixed third
+  piece the ER climb skips (`teamrun.ts` guard), rebased on top.
 
 Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
 

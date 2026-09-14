@@ -350,7 +350,7 @@ async function refresh(): Promise<void> {
   await syncRouter();
   barReset();
   try {
-    const inPlay = (Object.entries(M.TEAMS) as [string, Member[]][]).filter(([, members]) => M.teamWanted(members));
+    const inPlay = (Object.entries(M.TEAMS) as [string, Member[]][]).filter(([key, members]) => M.teamWanted(key, members)); // Riley's teamWanted takes the key since Sept 2026
     if (inPlay.some(([key, members]) => !M.bestPicks.has(bestKey(key, members, M.filters)))) workerPool();
     if (!M.visibleRows.length) route();
 
@@ -381,9 +381,7 @@ async function refresh(): Promise<void> {
       await refresh();
       return;
     }
-    console.error(err);
-    app.innerHTML = mods!.detail.errorPage(err);
-    app.className = "";
+    showBootError(err);
   }
   overlayHide();
 }
@@ -457,8 +455,8 @@ async function boot(): Promise<void> {
 
 function showBootError(err: unknown): void {
   console.error(err);
-  app.innerHTML = mods?.detail?.errorPage ? mods.detail.errorPage(err) : `<pre class="error">${String(err)}</pre>`;
-  app.className = "";
+  // Riley dropped his error page in Sept 2026: the error lives in the overlay box below and the page
+  // underneath is left as it was (his index.ts `showError`)
   const box = overlay.querySelector<HTMLElement>(".loading-error");
   if (box) {
     box.hidden = false;
