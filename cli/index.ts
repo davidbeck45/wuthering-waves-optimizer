@@ -6,6 +6,7 @@ import { runImportEchoes } from "./commands/importEchoes.js";
 import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
 import { runGenerateEnemies, type EnemyGeneratorMode } from "./commands/generateEnemies.js";
 import { runBackfillIcons } from "./commands/backfillIcons.js";
+import { registerPlusCommands } from "../src/sim/cli/index.js"; // Wuthering Tools+
 
 const program = new Command();
 
@@ -127,4 +128,5 @@ backfill
     }
   });
 
+registerPlusCommands(program); // Wuthering Tools+: calc / team / rank / snapshot / export inspect
 program.parse();

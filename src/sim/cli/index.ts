@@ -1,0 +1,283 @@
+// Wuthering Tools+ CLI — commands registered onto the repo's `ww` program (cli/index.ts, `npm run cli`).
+// Read an export file, run the app's engine, print JSON (or --pretty). See src/sim/README.md § CLI.
+import type { Command } from "commander";
+import { execSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import {
+  buildSnapshot,
+  calcCharacter,
+  calcTeam,
+  diffSnapshots,
+  findTeam,
+  rankExport,
+  resolveCharacterKey,
+  type CharacterCalc,
+  type Snapshot,
+  type TeamCalc,
+} from "./engine";
+import { readExport, resolveExportPath, type ExportFile } from "./exportFile";
+import { int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
+
+interface CommonOptions extends OutputOptions {
+  export?: string;
+}
+
+const AUTO_BUFFS_HELP = "compute teams with each character's own Team Buffs panel (the app's default) instead of buffs derived from the team's real members";
+
+function withCommon(command: Command): Command {
+  return command
+    .option("-e, --export <file>", "export file (default: $WUWA_EXPORT, else the newest ~/Downloads/character_data_*.json)")
+    .option("--pretty", "human-readable output (default on a terminal)")
+    .option("--json", "JSON output (default when piped)");
+}
+
+function load(options: CommonOptions): ExportFile {
+  return readExport(resolveExportPath(options.export));
+}
+
+function appCommit(): string | null {
+  try {
+    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+  } catch {
+    return null;
+  }
+}
+
+/** The engine still has a stray console.log in a hot path (attacks.ts); keep stdout clean for JSON consumers. */
+function quiet<T>(work: () => Promise<T>): Promise<T> {
+  const original = console.log;
+  console.log = process.env.WUWA_CLI_DEBUG ? (...args: unknown[]) => console.error(...args) : () => undefined;
+  return work().finally(() => {
+    console.log = original;
+  });
+}
+
+type Action = (...args: any[]) => Promise<void>;
+function guarded(action: Action): Action {
+  return async (...args) => {
+    try {
+      await action(...args);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  };
+}
+
+function printCharacter(calc: CharacterCalc, options: { attacks: boolean; rotations: boolean }): void {
+  console.log(
+    `${calc.name} (${calc.id})  Lv ${calc.level}  S${calc.sequence}  ${calc.weapon ?? "no weapon"}${calc.refinement ? ` R${calc.refinement}` : ""}  enemy Lv ${calc.enemy.enemyLevel} / ${pct(calc.enemy.enemyResist * 100, 0)} RES`,
+  );
+  console.log("\nStats");
+  console.log(table(calc.stats.map((s) => [`  ${s.label}`, s.display])));
+  if (options.rotations) {
+    console.log("\nSaved rotations");
+    console.log(
+      calc.rotations.length
+        ? table([
+            ["  Rotation", "Actions", "Normal", "Average", "Crit", "Avg DPS"],
+            ...calc.rotations.map((r) => [`  ${r.name}`, String(r.actions), int(r.normal), int(r.avg), int(r.crit), r.dps == null ? "-" : int(r.dps)]),
+          ])
+        : "  (none)",
+    );
+  }
+  if (options.attacks) {
+    console.log("\nAttacks");
+    console.log(
+      table([["  Group", "Attack", "Normal", "Average", "Crit"], ...calc.attacks.map((a) => [`  ${a.group}`, a.label, int(a.normal), int(a.avg), int(a.crit)])]),
+    );
+  }
+}
+
+function printSlots(team: TeamCalc): void {
+  console.log(`\n${team.name} — team buffs ${team.buffMode === "auto" ? "from the team's members" : "as set on each character"}`);
+  for (const s of team.slots) {
+    const build = `build ${s.buildName ? `"${s.buildName}"` : "(active)"}${s.buildSource === "active" ? "" : ` [${s.buildSource}]`}`;
+    const buffs =
+      s.buffSource === "panel"
+        ? `their own panel names ${s.teammates.join(" + ")}: kept, ${s.enabled.length} enabled`
+        : s.buffSource === "derived"
+          ? `derived from ${s.teammates.join(" + ") || "nobody"}: ${s.enabled.length} enabled`
+          : "as stored";
+    const skipped = s.skipped.length ? `; not owned: ${s.skipped.map((k) => `${k.key} (${k.from} ${k.reason})`).join(", ")}` : "";
+    console.log(`  ${s.characterId}: ${build}; ${buffs}${skipped}`);
+  }
+}
+
+function printTeams(teams: TeamCalc[]): void {
+  console.log(
+    table([
+      ["  Team", "Members", "Actions", "Normal", "Average", "Crit", "Avg DPS"],
+      ...teams.map((t) => [
+        `  ${t.name}`,
+        t.characterIds.filter(Boolean).join(" + "),
+        String(t.actions),
+        int(t.normal),
+        int(t.avg),
+        int(t.crit),
+        t.dps == null ? "-" : int(t.dps),
+      ]),
+    ]),
+  );
+}
+
+export function registerPlusCommands(program: Command): void {
+  withCommon(
+    program.command("inspect").description("Summarise an export file: data version, characters, builds, echoes, teams (Wuthering Tools+)"),
+  ).action(
+    guarded(async (options: CommonOptions) => {
+      const exp = load(options);
+      const characters = Object.entries(exp.characters).map(([id, c]: [string, any]) => ({
+        id,
+        weapon: c.weapon ?? null,
+        builds: (c.builds ?? []).length,
+        rotations: (c.rotations ?? []).length,
+        sequence: Object.values(c.resonanceChains ?? {}).filter((n: any) => n?.isEnabled).length,
+      }));
+      const summary = {
+        file: exp.path,
+        version: exp.version,
+        source: exp.source,
+        activeCharacter: exp.activeCharacter,
+        characters: characters.length,
+        echoes: exp.inventory.echoes.length,
+        equippedEchoes: Object.keys(exp.inventory.equipped).length,
+        teams: exp.teams.length,
+        rotations: characters.reduce((n, c) => n + c.rotations, 0),
+        roster: characters,
+      };
+      if (!wantsPretty(options)) return printJson(summary);
+      console.log(`${summary.file}\nexport v${summary.version} (${summary.source})  characters ${summary.characters}  echoes ${summary.echoes} (${summary.equippedEchoes} equipped)  rotations ${summary.rotations}  teams ${summary.teams}\n`);
+      console.log(table([["  Character", "S", "Weapon", "Builds", "Rotations"], ...characters.map((c) => [`  ${c.id}`, `S${c.sequence}`, c.weapon ?? "-", String(c.builds), String(c.rotations)])]));
+    }),
+  );
+
+  withCommon(
+    program
+      .command("calc <character>")
+      .description("Stats, every attack's damage and each saved rotation for one character, from the app's own engine")
+      .option("--no-attacks", "skip the per-attack table")
+      .option("--no-rotations", "skip the saved rotations"),
+  ).action(
+    guarded(async (character: string, options: CommonOptions & { attacks: boolean; rotations: boolean }) => {
+      const exp = load(options);
+      const id = resolveCharacterKey(character, exp.characters);
+      const calc = await quiet(() => calcCharacter(id, exp, { attacks: options.attacks, rotations: options.rotations }));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...calc });
+      printCharacter(calc, options);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("team [team]")
+      .description("Team-rotation damage and DPS for one team (name, id or 1-based index), or every team")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (team: string | undefined, options: CommonOptions & { autoBuffs: boolean }) => {
+      const exp = load(options);
+      const targets = team ? [findTeam(team, exp.teams)] : exp.teams;
+      const results: TeamCalc[] = [];
+      for (const t of targets) results.push(await quiet(() => calcTeam(t, exp, { autoBuffs: options.autoBuffs })));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, teams: results });
+      printTeams(results);
+      if (team) for (const t of results) printSlots(t);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("rank")
+      .description("Rank your roster and teams with the app's engine (the /my-rankings page, headless)")
+      .option("--investment", "also estimate the next sequence node and R5 for each character (slower)")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (options: CommonOptions & { investment?: boolean; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const ranking = await quiet(() => rankExport(exp, { investment: options.investment, autoBuffs: options.autoBuffs }));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...ranking });
+      console.log(`Enemy Lv ${ranking.enemy.enemyLevel} / ${pct(ranking.enemy.enemyResist * 100, 0)} RES\n\nCharacters`);
+      console.log(
+        table([
+          ["  #", "Character", "S", "Weapon", "Best rotation", "Source", "Average", "Avg DPS"],
+          ...ranking.characters.map((c, i) => [
+            `  ${i + 1}`,
+            c.name,
+            `S${c.sequence}`,
+            c.weapon ? `${c.weapon} R${c.refinement}` : "-",
+            c.best?.name ?? "-",
+            c.best?.source ?? "-",
+            int(c.best?.avgDamage),
+            c.best?.dps == null ? "-" : int(c.best.dps),
+          ]),
+        ]),
+      );
+      console.log(`\nTeams${ranking.teamsSkipped ? ` (${ranking.teamsSkipped} skipped: members not set up)` : ""}`);
+      console.log(
+        ranking.teams.length
+          ? table([
+              ["  #", "Team", "Members", "Source", "Average", "Avg DPS"],
+              ...ranking.teams.map((t, i) => [`  ${i + 1}`, t.name, t.characterIds.join(" + "), t.source, int(t.avgDamage), t.dps == null ? "-" : int(t.dps)]),
+            ])
+          : "  (none)",
+      );
+    }),
+  );
+
+  withCommon(
+    program
+      .command("snapshot")
+      .description("Every character's stats and saved rotations plus every team, as JSON — `ww diff` two of them after an upstream sync")
+      .option("-o, --out <file>", "write the snapshot to a file instead of stdout")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (options: CommonOptions & { out?: string; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const snapshot = await quiet(() => buildSnapshot(exp, appCommit(), { autoBuffs: options.autoBuffs }));
+      const errors = Object.keys(snapshot.errors).length;
+      if (options.out) {
+        writeFileSync(options.out, JSON.stringify(snapshot, null, 2) + "\n");
+        console.error(
+          `wrote ${options.out}: ${Object.keys(snapshot.characters).length} characters, ${Object.keys(snapshot.teams).length} teams${errors ? `, ${errors} errors` : ""} (app ${snapshot.appCommit ?? "?"})`,
+        );
+        return;
+      }
+      printJson(snapshot);
+    }),
+  );
+
+  program
+    .command("diff <before> <after>")
+    .description("Compare two snapshots and print every number that moved")
+    .option("--tolerance <percent>", "ignore relative changes at or below this many percent", "0.01")
+    .option("--pretty", "human-readable output (default on a terminal)")
+    .option("--json", "JSON output (default when piped)")
+    .action(
+      guarded(async (before: string, after: string, options: OutputOptions & { tolerance: string }) => {
+        const a = JSON.parse(readFileSync(before, "utf8")) as Snapshot;
+        const b = JSON.parse(readFileSync(after, "utf8")) as Snapshot;
+        const changes = diffSnapshots(a, b, Number(options.tolerance));
+        if (!wantsPretty(options)) return printJson({ before: { file: before, appCommit: a.appCommit }, after: { file: after, appCommit: b.appCommit }, changes });
+        console.log(`${before} (app ${a.appCommit ?? "?"}) → ${after} (app ${b.appCommit ?? "?"}): ${changes.length} change${changes.length === 1 ? "" : "s"}`);
+        if (changes.length) {
+          console.log(
+            table([
+              ["  Path", "Before", "After", "Change"],
+              ...changes.map((c) => [
+                `  ${c.path}`,
+                c.before == null ? "(added)" : fmtNumber(c.before),
+                c.after == null ? "(removed)" : fmtNumber(c.after),
+                c.deltaPct == null ? "" : `${c.deltaPct > 0 ? "+" : ""}${(c.deltaPct * 100).toFixed(2)}%`,
+              ]),
+            ]),
+          );
+        }
+        if (changes.length) process.exitCode = 2;
+      }),
+    );
+}
+
+function fmtNumber(n: number): string {
+  return Number.isInteger(n) || Math.abs(n) >= 100 ? int(n) : n.toFixed(4);
+}

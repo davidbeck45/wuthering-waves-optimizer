@@ -14,9 +14,28 @@ import type { TeamRotationPreset } from "../../teamRotations/presets";
 export const WUWA_CALC_AUTHOR = "Riley31415 (wuwa_calc)";
 
 /** One JSON chunk per character, loaded only when that character's presets are asked for. */
-const rotationModules = import.meta.glob<{ default: CharacterRotationPreset[] }>(
-  "./data/rotations/*.json",
-);
+type RotationModules = Record<string, () => Promise<{ default: CharacterRotationPreset[] }>>;
+// `import.meta.glob` exists only under Vite (the app, vitest). The plus CLI runs this module under
+// plain tsx (`npm run cli`), where the generated JSON is read from disk instead — see nodeRotationLoader.
+const rotationModules: RotationModules =
+  typeof import.meta.glob === "function"
+    ? import.meta.glob<{ default: CharacterRotationPreset[] }>("./data/rotations/*.json")
+    : {};
+const underVite = typeof import.meta.glob === "function";
+
+async function nodeRotationLoader(characterKey: string): Promise<CharacterRotationPreset[]> {
+  const [{ readFile }, { fileURLToPath }, { dirname, join }] = await Promise.all([
+    import(/* @vite-ignore */ "node:fs/promises"),
+    import(/* @vite-ignore */ "node:url"),
+    import(/* @vite-ignore */ "node:path"),
+  ]);
+  const file = join(dirname(fileURLToPath(import.meta.url)), "data", "rotations", `${characterKey}.json`);
+  try {
+    return JSON.parse(await readFile(file, "utf8")) as CharacterRotationPreset[];
+  } catch {
+    return [];
+  }
+}
 
 export function hasWuwaCalcRotationPresets(characterKey: string): boolean {
   return `./data/rotations/${characterKey}.json` in rotationModules;
@@ -25,6 +44,7 @@ export function hasWuwaCalcRotationPresets(characterKey: string): boolean {
 export async function loadWuwaCalcRotationPresets(
   characterKey: string,
 ): Promise<CharacterRotationPreset[]> {
+  if (!underVite) return nodeRotationLoader(characterKey);
   const loader = rotationModules[`./data/rotations/${characterKey}.json`];
   if (!loader) {
     return [];

@@ -153,6 +153,36 @@ solved picks.
 Metric: average damage per rotation (DPR). DPS appears only when a rotation carries a duration.
 
 
+## Headless CLI — `src/sim/cli/` (`npm run cli -- <command>`)
+
+The app's own engine from a terminal, for agents and for checking numbers across upstream syncs. The
+commands hang off the repo's `ww` program (`cli/index.ts`, two-line hook) and read an **export file** as
+their database (`--export <file>`, else `$WUWA_EXPORT`, else the newest `~/Downloads/character_data_*.json`);
+nothing is ever written back. Output is JSON when piped, a table on a terminal (`--json` / `--pretty` force).
+
+| Command | What it computes |
+|---|---|
+| `inspect` | data version, roster (sequence, weapon, builds, rotations), echoes, teams |
+| `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
+| `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
+| `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |
+| `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
+| `diff <before> <after> [--tolerance pct]` | every number that moved between two snapshots; exit code 2 when something did |
+
+| File | Role |
+|---|---|
+| `engine.ts` | pure wrappers over `buildCharacterCalculationContext` + `calcDamages`, `calcCharacterRotationDamage`, `calcTeamRotationDamage`, `rankRoster`; `STAT_ROWS` = the page's stat cards with their Cypress selectors; snapshot + diff |
+| `exportFile.ts` | newest-export discovery and the double-encoded export parse (v1 bare payload through v9) |
+| `index.ts` | the Commander commands and printers; engine calls run under `quiet()` because `attacks.ts` still has a stray `console.log` in a hot path (`WUWA_CLI_DEBUG=1` routes it to stderr) |
+| `parity.test.ts` | **the gate**: replays every Cypress golden fixture (`cypress/e2e/calculator/data/<Name>/data.ts`, 11 characters) through `calcCharacter` and demands the page's exact formatted stats and attack rows — same semantics as the E2E specs (a class shared by several rows passes when any row carries the numbers) |
+| `cli.test.ts` | export parsing, newest-file pick, name resolution, snapshot diff |
+
+`src/sim/presets/index.ts` gained a Node fallback for `import.meta.glob` (reads the generated JSON from disk)
+so `rank` works under plain tsx. Regression routine: `~/Projects/wuwa-tools/scripts/sync-plus.sh` snapshots
+before the upstream merge and diffs after the gates (`snapshots/<sha>.json` in wuwa-tools); moved numbers
+withhold `--push`. Not built: `optimize` (the workers expose nothing but `onmessage`) — only if a need appears.
+
+
 ## Team-aware buffs and builds — `src/sim/teamContext/`
 
 Upstream computes each team slot from that character's stored build **including the Team Buffs panel
