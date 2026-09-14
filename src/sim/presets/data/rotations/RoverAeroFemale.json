@@ -1,11 +1,11 @@
 [
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 461,960 DPR for Aero Rover of 3,839,666 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 488,114 DPR for Aero Rover of 3,911,566 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 461,960 DPR for Aero Rover of 3,839,666 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 488,114 DPR for Aero Rover of 3,911,566 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -134,267 +134,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Rejuvenating Glow 5pc + Bell-Borne Geochelone, main stats 43311 CR ATK ATK atk atk. Team: Chisa + Cartethyia: 340,816 DPR for Aero Rover of 5,493,686 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Chisa + Cartethyia: 479,443 DPR for Aero Rover of 5,469,803 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Rejuvenating Glow 5pc + Bell-Borne Geochelone, main stats 43311 CR ATK ATK atk atk. Team: Chisa + Cartethyia: 340,816 DPR for Aero Rover of 5,493,686 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "RelentlessSquallDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "CloudburstDanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MidAirAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BellBorneGeocheloneActivation",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "BellBorneGeochelone",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "OmegaStormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "AwakeningGaleDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "CloudburstDanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "MidAirAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "UnboundFlowStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "UnboundFlowStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 272,358 DPR for Aero Rover of 3,249,003 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 272,358 DPR for Aero Rover of 3,249,003 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "RelentlessSquallDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "CloudburstDanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MidAirAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "OmegaStormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "AwakeningGaleDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "CloudburstDanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "MidAirAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "UnboundFlowStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "UnboundFlowStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 222,961 DPR for Aero Rover of 2,932,711 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 222,961 DPR for Aero Rover of 2,932,711 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Chisa + Cartethyia: 479,443 DPR for Aero Rover of 5,469,803 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -514,6 +258,129 @@
      "order": 15,
      "key": "RelentlessSquallDMG",
      "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Sigrika · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Sigrika: 314,958 DPR for Aero Rover of 3,994,822 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Sigrika · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Sigrika: 314,958 DPR for Aero Rover of 3,994,822 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Unbound Flow 1 = UnboundFlowStage1DMG × 1.30; Forte Skill - Unbound Flow 2 (Swap) = UnboundFlowStage2DMG × 1.30; Liberation - Omega Storm = OmegaStormDMG × 1.20. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "RelentlessSquallDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "OmegaStormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "AwakeningGaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "UnboundFlowStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "UnboundFlowStage2DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false

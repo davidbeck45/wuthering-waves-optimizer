@@ -1,11 +1,11 @@
 [
  {
   "name": "Denia S6 Forged Dwarf Star R5 · Chisa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Chisa + Aemeath: 4,112,814 DPR for Denia of 13,264,956 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Chisa + Aemeath: 4,927,063 DPR for Denia of 14,105,528 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Denia S6 Forged Dwarf Star R5 · Chisa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Chisa + Aemeath: 4,112,814 DPR for Denia of 13,264,956 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Chisa + Aemeath: 4,927,063 DPR for Denia of 14,105,528 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -89,6 +89,22 @@
     },
     {
      "order": 11,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
      "key": "FinalActBreakdownFormDMG",
      "type": "liberation",
      "count": 1,
@@ -96,28 +112,10 @@
      "isDisabled": false
     },
     {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "TricksterDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceDenia",
-     "mainEchoRank": 5
-    },
-    {
      "order": 14,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
@@ -131,6 +129,16 @@
     },
     {
      "order": 16,
+     "key": "TricksterDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceDenia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -138,7 +146,23 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 18,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -150,11 +174,11 @@
  },
  {
   "name": "Denia S6 Forged Dwarf Star R5 · Suisui + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Aemeath: 2,978,382 DPR for Denia of 11,178,353 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Aemeath: 4,287,397 DPR for Denia of 13,210,942 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Denia S6 Forged Dwarf Star R5 · Suisui + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Aemeath: 2,978,382 DPR for Denia of 11,178,353 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Aemeath: 4,287,397 DPR for Denia of 13,210,942 team. Sequence procs in the loop: 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 2x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -166,6 +190,14 @@
     },
     {
      "order": 2,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
      "key": "ItsBeenAWhileDMG",
      "type": "intro",
      "count": 1,
@@ -173,7 +205,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "FinalActStagecraftFormDMG",
      "type": "liberation",
      "count": 1,
@@ -181,7 +213,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "BasicAttackBreakdownFormStage1DMG",
      "type": "basic",
      "count": 1,
@@ -189,7 +221,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "BasicAttackBreakdownFormStage2DMG",
      "type": "basic",
      "count": 1,
@@ -197,7 +229,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "BasicAttackBreakdownFormStage3DMG",
      "type": "basic",
      "count": 1,
@@ -205,7 +237,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "BasicAttackBreakdownFormStage4DMG",
      "type": "basic",
      "count": 1,
@@ -213,7 +245,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -221,7 +253,23 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "FinalActBreakdownFormDMG",
      "type": "liberation",
      "count": 1,
@@ -229,15 +277,15 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 13,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
-     "count": 4,
+     "count": 6,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 14,
      "key": "TricksterDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -247,31 +295,31 @@
      "mainEchoRank": 5
     },
     {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 15,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -283,11 +331,11 @@
  },
  {
   "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Aemeath: 2,509,803 DPR for Denia of 9,855,641 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Aemeath: 3,122,415 DPR for Denia of 10,523,707 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Aemeath: 2,509,803 DPR for Denia of 9,855,641 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Chromatic Foam 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Aemeath: 3,122,415 DPR for Denia of 10,523,707 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80; Skill - Banish 1 = BanishBreakdownFormStage1DMG × 1.40; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 8.90. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -371,6 +419,22 @@
     },
     {
      "order": 11,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
      "key": "FinalActBreakdownFormDMG",
      "type": "liberation",
      "count": 1,
@@ -378,15 +442,23 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 14,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
-     "count": 4,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 15,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
      "key": "TricksterDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -396,10 +468,314 @@
      "mainEchoRank": 5
     },
     {
-     "order": 14,
+     "order": 17,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Denia S0 Forged Dwarf Star R1 · Chisa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Chromatic Foam 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Chisa + Aemeath: 747,512 DPR for Denia of 7,025,059 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Denia S0 Forged Dwarf Star R1 · Chisa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Chromatic Foam 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Chisa + Aemeath: 747,512 DPR for Denia of 7,025,059 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ItsBeenAWhileDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStagecraftFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "PhantomBubbleStagecraftFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "FinalActStagecraftFormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackBreakdownFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackBreakdownFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackBreakdownFormStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackBreakdownFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "FinalActBreakdownFormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "TricksterDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceDenia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Denia S0 Forged Dwarf Star R1 · Suisui + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Chromatic Foam 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Suisui + Aemeath: 714,686 DPR for Denia of 6,802,416 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Denia S0 Forged Dwarf Star R1 · Suisui + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Chromatic Foam 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Suisui + Aemeath: 714,686 DPR for Denia of 6,802,416 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ItsBeenAWhileDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStagecraftFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "PhantomBubbleStagecraftFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FinalActStagecraftFormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackBreakdownFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackBreakdownFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackBreakdownFormStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackBreakdownFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "FinalActBreakdownFormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 4,
      "buffs": [],
      "isDisabled": false
     },
@@ -413,14 +789,24 @@
     },
     {
      "order": 16,
+     "key": "TricksterDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceDenia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 18,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -431,15 +817,31 @@
   }
  },
  {
-  "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Trailblazing Star 5pc, main stats 44111 CD CD atk atk atk. Team: Lupa + Changli: 1,631,575 DPR for Denia of 2,718,969 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
+  "name": "Denia S0 Forged Dwarf Star R1 · Lupa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Trailblazing Star 5pc, main stats 44111 CD CD atk atk atk. Team: Lupa + Changli: 1,631,575 DPR for Denia of 2,718,969 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
+   "name": "Denia S0 Forged Dwarf Star R1 · Lupa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Skill - Banish 2 = BanishBreakdownFormStage2DMG × 5.50. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
    "actions": [
     {
      "order": 1,
+     "key": "BasicAttackStagecraftFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "PhantomBubbleStagecraftFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
      "key": "FinalActStagecraftFormDMG",
      "type": "liberation",
      "count": 1,
@@ -447,7 +849,7 @@
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 4,
      "key": "BasicAttackBreakdownFormStage1DMG",
      "type": "basic",
      "count": 1,
@@ -455,7 +857,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 5,
      "key": "BasicAttackBreakdownFormStage2DMG",
      "type": "basic",
      "count": 1,
@@ -463,7 +865,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 6,
      "key": "BasicAttackBreakdownFormStage3DMG",
      "type": "basic",
      "count": 1,
@@ -471,7 +873,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 7,
      "key": "BasicAttackBreakdownFormStage4DMG",
      "type": "basic",
      "count": 1,
@@ -479,7 +881,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 8,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -487,7 +889,23 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 9,
+     "key": "BanishBreakdownFormStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BanishBreakdownFormStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
      "key": "FinalActBreakdownFormDMG",
      "type": "liberation",
      "count": 1,
@@ -495,340 +913,10 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 12,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 7,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SigillumAttacksDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Sigillum",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ItsBeenAWhileDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Changli · S6R5 DPS · S0R1 team · Trailblazing Star 5pc (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Trailblazing Star 5pc, main stats 44111 CD CD atk atk atk. Team: Lupa + Changli: 1,495,406 DPR for Denia of 2,588,640 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Denia S6 Forged Dwarf Star R5 · Lupa + Changli · S6R5 DPS · S0R1 team · Trailblazing Star 5pc (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Trailblazing Star 5pc, main stats 44111 CD CD atk atk atk. Team: Lupa + Changli: 1,495,406 DPR for Denia of 2,588,640 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ItsBeenAWhileDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "FinalActStagecraftFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackBreakdownFormStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackBreakdownFormStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackBreakdownFormStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "BasicAttackBreakdownFormStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "FinalActBreakdownFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "SigillumAttacksDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Sigillum",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 14,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Denia S6 Forged Dwarf Star R5 · Mornye + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Changli: 1,332,487 DPR for Denia of 2,099,182 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Denia S6 Forged Dwarf Star R5 · Mornye + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R5, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Changli: 1,332,487 DPR for Denia of 2,099,182 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ItsBeenAWhileDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "FinalActStagecraftFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackBreakdownFormStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackBreakdownFormStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackBreakdownFormStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackBreakdownFormStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "FinalActBreakdownFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 4,
      "buffs": [],
      "isDisabled": false
     },
@@ -846,7 +934,7 @@
      "order": 14,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -868,147 +956,6 @@
     },
     {
      "order": 17,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Denia S6 Forged Dwarf Star R1 · Lynae + Changli · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Lynae + Changli: 1,249,478 DPR for Denia of 2,271,431 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Denia S6 Forged Dwarf Star R1 · Lynae + Changli · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Lynae + Changli: 1,249,478 DPR for Denia of 2,271,431 team. Sequence procs in the loop: 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Breakdown Form 1 = BasicAttackBreakdownFormStage1DMG × 1.50; Basic - Breakdown Form 2 = BasicAttackBreakdownFormStage2DMG × 1.50; Basic - Breakdown Form 3 = BasicAttackBreakdownFormStage3DMG × 1.50; Basic - Breakdown Form 4 = BasicAttackBreakdownFormStage4DMG × 1.50; Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Liberation - Final Act (Breakdown) = FinalActBreakdownFormDMG × 1.80. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 2x Fusion Burst - 10 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "FinalActStagecraftFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BasicAttackBreakdownFormStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackBreakdownFormStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackBreakdownFormStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackBreakdownFormStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "FinalActBreakdownFormDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 7,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "LionessofGloryBlastDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LionessofGlory",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
      "key": "ItsBeenAWhileDMG",
      "type": "intro",
      "count": 1,
@@ -1016,7 +963,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 18,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,

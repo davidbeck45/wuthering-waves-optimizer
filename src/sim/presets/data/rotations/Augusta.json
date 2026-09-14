@@ -1,11 +1,11 @@
 [
  {
   "name": "Augusta S6 Thunderflare Dominion R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Iuno (main DPS): 7,229,381 DPR for Augusta of 9,508,549 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Undying Sunlight: Plunge = ResonanceSkillUndyingSunlightPlungeDMG × 1.25; Heavy - Thunderoar: Backstep = HeavyAttackThunderoarBackstepDMG × 1.25; Heavy - Thunderoar: Spinslash = HeavyAttackThunderoarSpinslashDMG × 1.25; Heavy - Thunderoar: Uppercut = HeavyAttackThunderoarUppercutDMG × 1.25; Liberation - Sublime is the Sun: Everbright Protector = SublimeistheSunEverbrightProtectorDMG × 1.25; Liberation - Sublime is the Sun: Sunborne x9 = SublimeistheSunEverbrightProtectorDMG × 1.12.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD ATK Electro atk atk. Team: Mornye + Iuno (main DPS): 7,181,274 DPR for Augusta of 9,521,640 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Undying Sunlight: Plunge = ResonanceSkillUndyingSunlightPlungeDMG × 1.25; Heavy - Thunderoar: Backstep = HeavyAttackThunderoarBackstepDMG × 1.25; Heavy - Thunderoar: Spinslash = HeavyAttackThunderoarSpinslashDMG × 1.25; Heavy - Thunderoar: Uppercut = HeavyAttackThunderoarUppercutDMG × 1.25; Liberation - Sublime is the Sun: Everbright Protector = SublimeistheSunEverbrightProtectorDMG × 1.25; Liberation - Sublime is the Sun: Sunborne x9 = SublimeistheSunEverbrightProtectorDMG × 1.12.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Augusta S6 Thunderflare Dominion R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Iuno (main DPS): 7,229,381 DPR for Augusta of 9,508,549 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Undying Sunlight: Plunge = ResonanceSkillUndyingSunlightPlungeDMG × 1.25; Heavy - Thunderoar: Backstep = HeavyAttackThunderoarBackstepDMG × 1.25; Heavy - Thunderoar: Spinslash = HeavyAttackThunderoarSpinslashDMG × 1.25; Heavy - Thunderoar: Uppercut = HeavyAttackThunderoarUppercutDMG × 1.25; Liberation - Sublime is the Sun: Everbright Protector = SublimeistheSunEverbrightProtectorDMG × 1.25; Liberation - Sublime is the Sun: Sunborne x9 = SublimeistheSunEverbrightProtectorDMG × 1.12.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD ATK Electro atk atk. Team: Mornye + Iuno (main DPS): 7,181,274 DPR for Augusta of 9,521,640 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Undying Sunlight: Plunge = ResonanceSkillUndyingSunlightPlungeDMG × 1.25; Heavy - Thunderoar: Backstep = HeavyAttackThunderoarBackstepDMG × 1.25; Heavy - Thunderoar: Spinslash = HeavyAttackThunderoarSpinslashDMG × 1.25; Heavy - Thunderoar: Uppercut = HeavyAttackThunderoarUppercutDMG × 1.25; Liberation - Sublime is the Sun: Everbright Protector = SublimeistheSunEverbrightProtectorDMG × 1.25; Liberation - Sublime is the Sun: Sunborne x9 = SublimeistheSunEverbrightProtectorDMG × 1.12.",
    "actions": [
     {
      "order": 1,
@@ -156,6 +156,147 @@
     {
      "order": 19,
      "key": "SequenceNode6EngravedinRadiantLight",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Augusta S0 Thunderflare Dominion R1 · Shorekeeper + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Thunderflare Dominion R1, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Shorekeeper + Suoming: 1,427,119 DPR for Augusta of 3,070,220 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Augusta S0 Thunderflare Dominion R1 · Shorekeeper + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Thunderflare Dominion R1, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Shorekeeper + Suoming: 1,427,119 DPR for Augusta of 3,070,220 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "StrideofGoldenflareDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "TheFalseSovereignSummon",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "TheFalseSovereign",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "HeavyAttackThunderoarBackstepDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackThunderoarSpinslashDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "WarriorsBladeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackThunderoarBackstepDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HeavyAttackThunderoarSpinslashDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackSteelclashDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SwordofEternalOathDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackSteelclashDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ResonanceSkillUndyingSunlightStrikeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ResonanceSkillUndyingSunlightLeapDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ResonanceSkillUndyingSunlightPlungeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "SublimeistheSunSunborneDMG",
+     "type": "liberation",
+     "count": 9,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "SublimeistheSunEverbrightProtectorDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackThunderoarUppercutDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],

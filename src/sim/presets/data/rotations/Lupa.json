@@ -1,117 +1,14 @@
 [
  {
-  "name": "Lupa S6 Wildfire Mark R5 · Mornye + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Changli: 1,366,020 DPR for Lupa of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Changli: 1,366,020 DPR for Lupa of 4,871,043 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "NowheretoRunDMG",
-     "type": "intro",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "LionessofGloryBlastDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LionessofGlory",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 3,
-     "key": "FireKissedGloryDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "FoebreakerDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MidairAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "MidairAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "MidairAttackFirestrikeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HeavyAttackWolfsClawDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "DanceWiththeWolfClimaxDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SettheArenaAblazeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
   "name": "Lupa S6 Wildfire Mark R5 · Denia + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Denia + Changli: 1,318,052 DPR for Lupa of 4,755,248 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Denia + Changli: 1,319,696 DPR for Lupa of 5,419,532 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Denia + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Denia + Changli: 1,318,052 DPR for Lupa of 4,755,248 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Denia + Changli: 1,319,696 DPR for Lupa of 5,419,532 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
    "actions": [
     {
      "order": 1,
-     "key": "LionessofGloryBlastDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LionessofGlory",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 2,
      "key": "FireKissedGloryDMG",
      "type": "liberation",
      "count": 1,
@@ -119,7 +16,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "FoebreakerDMG",
      "type": "liberation",
      "count": 1,
@@ -127,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -135,7 +32,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -143,7 +40,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "MidairAttackFirestrikeDMG",
      "type": "basic",
      "count": 1,
@@ -151,7 +48,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "HeavyAttackWolfsClawDMG",
      "type": "basic",
      "count": 1,
@@ -159,12 +56,22 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "DanceWiththeWolfClimaxDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LionessofGloryBlastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "LionessofGlory",
+     "mainEchoRank": 5
     },
     {
      "order": 9,
@@ -187,11 +94,11 @@
  },
  {
   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Aemeath: 1,181,334 DPR for Lupa of 9,668,520 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,214,410 DPR for Lupa of 9,714,227 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Mornye + Aemeath: 1,181,334 DPR for Lupa of 9,668,520 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,214,410 DPR for Lupa of 9,714,227 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
    "actions": [
     {
      "order": 1,
@@ -259,6 +166,16 @@
     },
     {
      "order": 9,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
      "key": "SettheArenaAblazeDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -269,22 +186,20 @@
   }
  },
  {
-  "name": "Lupa S0 Wildfire Mark R1 · Lynae + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Lynae + Changli: 1,143,748 DPR for Lupa of 2,480,979 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+  "name": "Lupa S6 Wildfire Mark R5 · Suisui + Changli · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Changli: 1,148,479 DPR for Lupa of 3,909,808 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lupa S0 Wildfire Mark R1 · Lynae + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Lynae + Changli: 1,143,748 DPR for Lupa of 2,480,979 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+   "name": "Lupa S6 Wildfire Mark R5 · Suisui + Changli · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Changli: 1,148,479 DPR for Lupa of 3,909,808 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43; Forte Skill - Dance With the Wolf: Climax = DanceWiththeWolfClimaxDMG × 2.25.",
    "actions": [
     {
      "order": 1,
-     "key": "LionessofGloryBlastDMG",
-     "type": "echoAttacks",
-     "count": 1,
+     "key": "NowheretoRunDMG",
+     "type": "intro",
+     "count": 2,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LionessofGlory",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 2,
@@ -341,6 +256,101 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LionessofGloryBlastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "LionessofGlory",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "SettheArenaAblazeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lupa S0 Wildfire Mark R1 · Denia + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Denia + Changli: 422,170 DPR for Lupa of 2,489,267 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lupa S0 Wildfire Mark R1 · Denia + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Denia + Changli: 422,170 DPR for Lupa of 2,489,267 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "FireKissedGloryDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "FoebreakerDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidairAttackFirestrikeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackWolfsClawDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "DanceWiththeWolfClimaxDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LionessofGloryBlastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "LionessofGlory",
+     "mainEchoRank": 5
     },
     {
      "order": 9,
@@ -363,11 +373,11 @@
  },
  {
   "name": "Lupa S0 Wildfire Mark R1 · Mornye + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Aemeath: 316,470 DPR for Lupa of 6,207,494 team. Sequence procs in the loop: none.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Aemeath: 335,417 DPR for Lupa of 6,267,700 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S0 Wildfire Mark R1 · Mornye + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Aemeath: 316,470 DPR for Lupa of 6,207,494 team. Sequence procs in the loop: none.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Aemeath: 335,417 DPR for Lupa of 6,267,700 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -435,6 +445,16 @@
     },
     {
      "order": 9,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
      "key": "SettheArenaAblazeDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -445,33 +465,23 @@
   }
  },
  {
-  "name": "Lupa S0 Wildfire Mark R1 · Denia + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Denia + Changli: 313,967 DPR for Lupa of 2,718,969 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+  "name": "Lupa S0 Wildfire Mark R1 · Mornye + Brant · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Brant: 233,619 DPR for Lupa of 3,976,520 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lupa S0 Wildfire Mark R1 · Denia + Changli · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Denia + Changli: 313,967 DPR for Lupa of 2,718,969 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+   "name": "Lupa S0 Wildfire Mark R1 · Mornye + Brant · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Moonlit Clouds 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Brant: 233,619 DPR for Lupa of 3,976,520 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "NowheretoRunDMG",
-     "type": "intro",
+     "key": "ShewolfsHuntDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "LionessofGloryBlastDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LionessofGlory",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 3,
      "key": "FireKissedGloryDMG",
      "type": "liberation",
      "count": 1,
@@ -479,7 +489,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "FoebreakerDMG",
      "type": "liberation",
      "count": 1,
@@ -487,7 +497,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -495,7 +505,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -503,7 +513,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "MidairAttackFirestrikeDMG",
      "type": "basic",
      "count": 1,
@@ -511,7 +521,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "HeavyAttackWolfsClawDMG",
      "type": "basic",
      "count": 1,
@@ -519,12 +529,115 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "DanceWiththeWolfClimaxDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "SettheArenaAblazeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lupa S0 Wildfire Mark R1 · Denia + Brant · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Denia + Brant: 253,702 DPR for Lupa of 3,347,210 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lupa S0 Wildfire Mark R1 · Denia + Brant · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Denia + Brant: 253,702 DPR for Lupa of 3,347,210 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ShewolfsHuntDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "FireKissedGloryDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "FoebreakerDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidairAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackFirestrikeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HeavyAttackWolfsClawDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "DanceWiththeWolfClimaxDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LionessofGloryBlastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "LionessofGlory",
+     "mainEchoRank": 5
     },
     {
      "order": 10,

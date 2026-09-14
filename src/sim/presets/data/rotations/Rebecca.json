@@ -1,11 +1,708 @@
 [
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,759,391 DPR for Rebecca of 5,436,872 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,759,391 DPR for Rebecca of 5,436,872 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SequenceNode6MaybeJustMaybe",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMG1stEnhancementDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 70,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 35,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 35,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00; Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00; Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SequenceNode6MaybeJustMaybe",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMG1stEnhancementDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 20,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 20,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SequenceNode6MaybeJustMaybe",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMG1stEnhancementDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 70,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 30,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 40,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S0 Skull Thrasher R1 · Shorekeeper + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 562,035 DPR for Rebecca of 2,328,676 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S0 Skull Thrasher R1 · Shorekeeper + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 562,035 DPR for Rebecca of 2,328,676 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 30,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 10,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 30,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 40,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 40,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Lucy · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Lucy · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Hyvatia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 9,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 10,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 30,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 20,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 20,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 552,255 DPR for Rebecca of 2,385,677 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 552,255 DPR for Rebecca of 2,385,677 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -25,6 +722,14 @@
     },
     {
      "order": 3,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 25,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
      "key": "HeyLeadheadComenGetMeDMG",
      "type": "intro",
      "count": 1,
@@ -32,7 +737,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "MidairAttackHuntressDMG",
      "type": "basic",
      "count": 1,
@@ -40,7 +745,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
@@ -48,7 +753,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "HeavyAttackGutsDMG",
      "type": "basic",
      "count": 1,
@@ -56,16 +761,8 @@
      "isDisabled": false
     },
     {
-     "order": 7,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 8,
-     "key": "SequenceNode6MaybeJustMaybe",
+     "key": "BangbangbangGutsDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -93,374 +790,60 @@
      "order": 11,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 65,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 30,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 35,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,752,371 DPR for Rebecca of 5,018,222 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,752,371 DPR for Rebecca of 5,018,222 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 70,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 30,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 40,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 1,690,035 DPR for Rebecca of 4,818,882 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 1,690,035 DPR for Rebecca of 4,818,882 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 30,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 40,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "PreemChoomDMG",
-     "type": "outro",
      "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 16,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "PreemChoomDMG",
-     "type": "outro",
+     "order": 13,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
      "count": 30,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 40,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 40,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
-  "name": "Rebecca S6 Skull Thrasher R5 · Suisui + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Electro Rover: 1,352,570 DPR for Rebecca of 2,675,802 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+  "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Electro Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Electro Rover: 561,730 DPR for Rebecca of 1,718,163 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Rebecca S6 Skull Thrasher R5 · Suisui + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Electro Rover: 1,352,570 DPR for Rebecca of 2,675,802 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Electro Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Electro Rover: 561,730 DPR for Rebecca of 1,718,163 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -504,14 +887,6 @@
     },
     {
      "order": 6,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
      "key": "HeavyAttackGutsDMG",
      "type": "basic",
      "count": 1,
@@ -519,7 +894,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -529,172 +904,31 @@
      "mainEchoRank": 5
     },
     {
-     "order": 9,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 70,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 50,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 20,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Electro Rover: 1,298,214 DPR for Rebecca of 2,563,269 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Electro Rover: 1,298,214 DPR for Rebecca of 2,563,269 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 8,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 5,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 9,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 10,
-     "key": "Mk31HMG1stEnhancementDMG",
+     "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 30,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
      "key": "PreemChoomDMG",
      "type": "outro",
      "count": 70,
@@ -702,142 +936,9 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "BOOMFireworksDMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 20,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 50,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Rebecca S6 Skull Thrasher R5 · Verina + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Verina + Electro Rover: 1,273,996 DPR for Rebecca of 2,391,483 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Rebecca S6 Skull Thrasher R5 · Verina + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Verina + Electro Rover: 1,273,996 DPR for Rebecca of 2,391,483 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -846,14 +947,14 @@
      "order": 13,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 70,
+     "count": 55,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 14,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
+     "key": "HackResponseMeltdownDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -862,15 +963,7 @@
      "order": 15,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 70,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
+     "count": 15,
      "buffs": [],
      "isDisabled": false
     }

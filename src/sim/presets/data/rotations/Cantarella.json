@@ -1,11 +1,186 @@
 [
  {
+  "name": "Cantarella S6 Whispers of Sirens R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Roccia (main DPS): 2,860,557 DPR for Cantarella of 3,840,456 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Cantarella S6 Whispers of Sirens R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Roccia (main DPS): 2,860,557 DPR for Cantarella of 3,840,456 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RippleDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DiffusionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "GracefulStepDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 7,
+     "key": "FlowingSuffocationDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "DelusiveDiveDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FlickeringReverieDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "PhantomStingStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PhantomStingStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "PhantomStingStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "PerceptionDrainDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 19,
+     "key": "PhantomStingStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "PhantomStingStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
   "name": "Cantarella S6 Whispers of Sirens R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Lynae (main DPS): 3,002,163 DPR for Cantarella of 4,725,258 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Lynae (main DPS): 2,837,220 DPR for Cantarella of 4,532,317 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Cantarella S6 Whispers of Sirens R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Lynae (main DPS): 3,002,163 DPR for Cantarella of 4,725,258 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Lynae (main DPS): 2,837,220 DPR for Cantarella of 4,532,317 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
    "actions": [
     {
      "order": 1,
@@ -168,11 +343,11 @@
  },
  {
   "name": "Cantarella S6 Whispers of Sirens R5 · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Shorekeeper + Roccia (main DPS): 2,176,225 DPR for Cantarella of 2,452,079 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Shorekeeper + Roccia (main DPS): 2,068,531 DPR for Cantarella of 2,346,530 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Cantarella S6 Whispers of Sirens R5 · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Shorekeeper + Roccia (main DPS): 2,176,225 DPR for Cantarella of 2,452,079 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Shorekeeper + Roccia (main DPS): 2,068,531 DPR for Cantarella of 2,346,530 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
    "actions": [
     {
      "order": 1,
@@ -332,6 +507,173 @@
     },
     {
      "order": 20,
+     "key": "PhantomStingStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cantarella S6 Whispers of Sirens R5 · Suisui + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Suisui + Roccia (main DPS): 1,963,381 DPR for Cantarella of 2,316,168 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Cantarella S6 Whispers of Sirens R5 · Suisui + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Whispers of Sirens R5, Havoc Eclipse 5pc, main stats 44111 CR CR atk atk atk. Team: Suisui + Roccia (main DPS): 1,963,381 DPR for Cantarella of 2,316,168 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Phantom Sting 1 = PhantomStingStage1DMG × 1.80; Forte Basic - Phantom Sting 2 = PhantomStingStage2DMG × 1.80; Forte Basic - Phantom Sting 3 = PhantomStingStage3DMG × 1.80; Forte Skill - Perception Drain = PerceptionDrainDMG × 1.50; Jolt = JoltDMG × 3.45; Liberation - Beneath the Sea = FlowingSuffocationDMG × 4.70; Skill - Flickering Reverie = FlickeringReverieDMG × 1.50; Skill - Graceful Step = GracefulStepDMG × 1.50.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "DiffusionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RippleDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "GracefulStepDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 6,
+     "key": "FlowingSuffocationDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "DelusiveDiveDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "FlickeringReverieDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "PhantomStingStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "PhantomStingStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "PhantomStingStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "PerceptionDrainDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "JoltDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 18,
+     "key": "PhantomStingStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
      "key": "PhantomStingStage2DMG",
      "type": "forteCircuit",
      "count": 1,

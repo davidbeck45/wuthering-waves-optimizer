@@ -1,11 +1,11 @@
 [
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,450,007 DPR for Lynae of 10,121,546 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,450,007 DPR for Lynae of 10,121,546 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
    "actions": [
     {
      "order": 1,
@@ -93,15 +93,23 @@
   }
  },
  {
-  "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,279,011 DPR for Lynae of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,279,011 DPR for Lynae of 10,208,240 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
    "actions": [
     {
      "order": 1,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "TimetoShowSomeColorsDMG",
      "type": "intro",
      "count": 1,
@@ -109,7 +117,7 @@
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "PrismaticOverblastDMG",
      "type": "liberation",
      "count": 1,
@@ -117,7 +125,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "LynaeStylePalettesDMG",
      "type": "skill",
      "count": 1,
@@ -125,7 +133,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "BasicAttackSparkCollisionLv3DMG",
      "type": "basic",
      "count": 1,
@@ -133,7 +141,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "BasicAttackPolychromeLeap1",
      "type": "forteCircuit",
      "count": 1,
@@ -141,7 +149,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "BasicAttackPolychromeLeap2",
      "type": "forteCircuit",
      "count": 1,
@@ -149,7 +157,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "BasicAttackPolychromeLeap3",
      "type": "forteCircuit",
      "count": 1,
@@ -157,16 +165,8 @@
      "isDisabled": false
     },
     {
-     "order": 8,
-     "key": "BasicAttackVisualImpactDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 9,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "key": "BasicAttackVisualImpactDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -189,28 +189,28 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Xuanling · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Xuanling: 1,259,769 DPR for Lynae of 8,593,208 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Xuanling · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Xuanling: 1,259,769 DPR for Lynae of 8,593,208 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
    "actions": [
     {
      "order": 1,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "TimetoShowSomeColorsDMG",
      "type": "intro",
      "count": 1,
@@ -218,7 +218,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "PrismaticOverblastDMG",
      "type": "liberation",
      "count": 1,
@@ -226,7 +226,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "LynaeStylePalettesDMG",
      "type": "skill",
      "count": 1,
@@ -234,9 +234,17 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "BasicAttackSparkCollisionLv3DMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -304,11 +312,11 @@
  },
  {
   "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Electro Rover: 951,262 DPR for Lynae of 2,810,515 team. Sequence procs in the loop: none.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Electro Rover: 502,448 DPR for Lynae of 2,215,170 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Electro Rover: 951,262 DPR for Lynae of 2,810,515 team. Sequence procs in the loop: none.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Electro Rover: 502,448 DPR for Lynae of 2,215,170 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -412,12 +420,12 @@
   }
  },
  {
-  "name": "Lynae S6 Spectrum Blaster R5 · Buling + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Buling + Electro Rover: 786,475 DPR for Lynae of 2,413,639 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Qiuyuan: 494,893 DPR for Lynae of 3,124,891 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lynae S6 Spectrum Blaster R5 · Buling + Electro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Buling + Electro Rover: 786,475 DPR for Lynae of 2,413,639 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Qiuyuan: 494,893 DPR for Lynae of 3,124,891 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -445,6 +453,14 @@
     },
     {
      "order": 4,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
      "key": "BasicAttackSparkCollisionLv3DMG",
      "type": "basic",
      "count": 1,
@@ -452,7 +468,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "BasicAttackPolychromeLeap1",
      "type": "forteCircuit",
      "count": 1,
@@ -460,7 +476,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "BasicAttackPolychromeLeap2",
      "type": "forteCircuit",
      "count": 1,
@@ -468,16 +484,8 @@
      "isDisabled": false
     },
     {
-     "order": 7,
-     "key": "BasicAttackPolychromeLeap3",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 8,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "key": "BasicAttackPolychromeLeap3",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -505,14 +513,6 @@
      "order": 11,
      "key": "LetsHittheRoadDMG",
      "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
-     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false

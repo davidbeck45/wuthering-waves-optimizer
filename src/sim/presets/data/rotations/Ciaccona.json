@@ -1,11 +1,11 @@
 [
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 963,701 DPR for Ciaccona of 8,306,619 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,113,017 DPR for Ciaccona of 8,448,893 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 963,701 DPR for Ciaccona of 8,306,619 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,113,017 DPR for Ciaccona of 8,448,893 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -33,6 +33,38 @@
     },
     {
      "order": 4,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidairAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SequenceNode6UnendingCadence",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
@@ -40,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 9,
      "key": "QuadrupleDownbeatDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -48,9 +80,104 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 10,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 13,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 1,065,460 DPR for Ciaccona of 4,119,779 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 1,065,460 DPR for Ciaccona of 4,119,779 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "SequenceNode6UnendingCadence",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -65,85 +192,6 @@
     },
     {
      "order": 8,
-     "key": "HarmonicAllegroDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 11,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Qiuyuan: 871,829 DPR for Ciaccona of 4,375,069 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Qiuyuan: 871,829 DPR for Ciaccona of 4,375,069 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -151,7 +199,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 9,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -159,178 +207,59 @@
      "isDisabled": false
     },
     {
-     "order": 6,
-     "key": "HarmonicAllegroDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "QuadrupleDownbeatDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "ImprovisedSymphonicPoemSkillDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "HarmonicAllegroDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 10,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "HarmonicAllegroDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 11,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Ciaccona S6 Woodland Aria R5 · Aero Rover + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 831,657 DPR for Ciaccona of 5,928,820 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Ciaccona S6 Woodland Aria R5 · Aero Rover + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 831,657 DPR for Ciaccona of 5,928,820 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6). Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "SequenceNode6UnendingCadence",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HarmonicAllegroDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
      "key": "QuadrupleDownbeatDMG",
      "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ImprovisedSymphonicPoemSkillDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "MidairAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HarmonicAllegroDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 11,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
+     "key": "ImprovisedSymphonicPoemSkillDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
     }
    ]
   }
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 620,307 DPR for Ciaccona of 5,368,412 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 617,704 DPR for Ciaccona of 5,394,817 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 620,307 DPR for Ciaccona of 5,368,412 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 617,704 DPR for Ciaccona of 5,394,817 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -437,11 +366,11 @@
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 578,893 DPR for Ciaccona of 4,870,842 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 581,545 DPR for Ciaccona of 4,911,438 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 578,893 DPR for Ciaccona of 4,870,842 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 581,545 DPR for Ciaccona of 4,911,438 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -555,12 +484,131 @@
   }
  },
  {
+  "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 482,145 DPR for Ciaccona of 2,768,275 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 482,145 DPR for Ciaccona of 2,768,275 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HarmonicAllegroDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "QuadrupleDownbeatDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImprovisedSymphonicPoemSkillDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MidairAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 11,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 12,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
   "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 492,137 DPR for Ciaccona of 2,374,816 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 499,243 DPR for Ciaccona of 2,443,704 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 492,137 DPR for Ciaccona of 2,374,816 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Aero Rover + Qiuyuan: 499,243 DPR for Ciaccona of 2,443,704 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
    "actions": [
     {
      "order": 1,
