@@ -1,10 +1,12 @@
 // Wuthering Tools+: the TypeScript cast mapper must reproduce the validated
 // Python mapper (wuwa-tools/rotation-port) on Riley's executed loops.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import loops from "./__fixtures__/wuwaCalcLoops.json";
 import { getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
 import { OVERRIDES, appRowsOf, echoRowsOf, emptyReport, knownRatios, mvOf, ratio, toActions, type Cast } from "./castMapper";
+// Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
+vi.setConfig({ testTimeout: 60_000 });
 
 describe("cast mapper: primitives", () => {
   it("sums level-10 talent expressions into motion values", () => {

@@ -1,7 +1,7 @@
 // Wuthering Tools+: gates the GENERATED wuwa_calc presets under ./data —
 // every action must resolve on its character with this app's own resolver,
 // exactly as the calculator would when the preset is imported.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import manifest from "./data/manifest.json";
 import {
   WUWA_CALC_AUTHOR,
@@ -12,6 +12,8 @@ import {
 import { allCharactersList, getCharByName } from "../../characters/characters";
 import { resolveRotationActionToAttackData } from "../../calculator/resolveRotationAction";
 import { teamRotationPresets } from "../../teamRotations/presets";
+// Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
+vi.setConfig({ testTimeout: 60_000 });
 
 type Action = Record<string, unknown>;
 const characterKeys = new Set(allCharactersList.map((c) => c.key));
