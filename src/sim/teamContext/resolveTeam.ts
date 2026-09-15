@@ -103,8 +103,12 @@ export interface TeamLike {
   handoffs?: Record<string, string[]> | null;
 }
 
-/** A buff worded for the one Resonator who comes in after the provider's Outro. */
-const INCOMING_RE = /incoming resonator|next character|next resonator|resonator switched onto/i;
+/** A buff worded for the one Resonator who comes in after the provider's Outro. The plural ("incoming Resonators gain…",
+ *  Suisui's Floral Epistle tiers) is a window anyone can enter — even when it goes on to hand something to "the incoming
+ *  Resonator" of whoever entered (a two-hop pass the whole team ends up holding) — so it stays team-wide. */
+const INCOMING_RE = /incoming resonator(?!s)|next character|next resonator(?!s)|resonator switched onto/i;
+const WINDOW_RE = /incoming resonators/i;
+const isHandoff = (details: string | undefined): boolean => Boolean(details) && !WINDOW_RE.test(details!) && INCOMING_RE.test(details!);
 const SEQUENCE_RE = /^(?:Sequence Node|S)\s?(\d+):/;
 
 /** Who each member hands off to: the character whose actions follow the end of that member's block in the
@@ -252,7 +256,7 @@ function providedBy(
       skipped.push({ key: def.key, from: provider, reason: `${other} mode; ${provider} is in ${mode.active}` });
       continue;
     }
-    if (outroTo && INCOMING_RE.test(def.details ?? "") && !outroTo.has(receiver)) {
+    if (outroTo && isHandoff(def.details) && !outroTo.has(receiver)) {
       skipped.push({ key: def.key, from: provider, reason: `outro handoff goes to ${[...outroTo].join(" / ")}` });
       continue;
     }
@@ -273,7 +277,7 @@ function providedBy(
   }
 
   const handoffElsewhere = (def: BuffDef): boolean => {
-    if (!outroTo || !INCOMING_RE.test(def.details ?? "") || outroTo.has(receiver)) return false;
+    if (!outroTo || !isHandoff(def.details) || outroTo.has(receiver)) return false;
     skipped.push({ key: def.key, from: provider, reason: `outro handoff goes to ${[...outroTo].join(" / ")}` });
     return true;
   };

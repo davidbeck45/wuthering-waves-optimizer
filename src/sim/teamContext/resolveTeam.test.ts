@@ -185,6 +185,24 @@ describe("resolveTeamCharacters: the 2026-09-15 audit rules", () => {
     expect(res.slots[0].buffSource).toBe("panel");
   });
 
+  it("keeps a window worded for 'incoming Resonators' team-wide even when a handoff is recorded", async () => {
+    // Suisui's Floral Epistle tiers: anyone who enters her landscape gets them (and passes the 600 one on), so Xuanling
+    // holds them in Riley's run although Suisui's own Outro goes to Chisa
+    const characters = {
+      YangyangXuanling: { weapon: "AzureOath", teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+      Suisui: { weapon: "Variation", resonanceChains: {}, teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+      Chisa: { weapon: "Kumokiri", resonanceChains: {}, teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters(
+      { characterIds: ["YangyangXuanling", "Suisui", "Chisa"], enemyConfig: {}, handoffs: { Suisui: ["Chisa"], Chisa: ["YangyangXuanling"], YangyangXuanling: ["Suisui"] } },
+      characters, [], { enemyConfig: enemy },
+    );
+    const xl = res.characters.YangyangXuanling.teamBuffs.buffs as Record<string, { isEnabled: boolean }>;
+    expect(xl.OutroSkillRipplingWaters400FloralEpistle?.isEnabled).toBe(true);
+    expect(xl.OutroSkillRipplingWaters600FloralEpistle?.isEnabled).toBe(true);
+    expect(xl.OutroSkillRipplingWaters?.isEnabled).toBe(true);
+  });
+
   it("brings only the Resonance Mode a provider is in, and reads an S2-named sequence buff as a sequence buff", async () => {
     const characters = {
       Aemeath: { weapon: "EverbrightPolestar", activeStance: "Tune Rupture", teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
