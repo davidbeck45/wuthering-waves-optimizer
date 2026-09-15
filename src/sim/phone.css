@@ -1,0 +1,481 @@
+/* Wuthering Tools+: the app on a phone.
+
+   Upstream's components were laid out for a desktop; below 768 px they stack, but the pieces inside
+   (echo cards with a vertical action menu, four-column damage tables, fixed-width selects, filter
+   rows that never wrap) still assume a wide screen and a 100 % font size. Every rule here is a
+   phone-only override keyed by upstream's own class names, so Ryan's .vue files stay untouched
+   wherever CSS alone can do it — the markup and the desktop layout are exactly his.
+
+   Budget: a 360–412 px viewport with the phone's font size at 130 % (Samsung "Large"): a rule that
+   fits 412 px at 100 % but not at 130 % is not done. Verify with
+   `shot.mjs … --width 412 --mobile --font-scale 1.3` (wuwa-tools/scripts).
+
+   Specificity: scoped component rules render as `.x[data-v-…]` (0,2,0) and load after this file,
+   so the selectors below carry three classes (0,3,0) or more where they must win a tie. */
+
+/* ---------------------------------------------------------------------------------------------
+   1. Numbers tables: `.calculator__damages` (attack / echo / rotation damages) and the optimizer's
+      `.calculator-optimizer__damages` (the same columns with a delta under each number), one row per
+      attack with Normal · Average · Crit. At 130 % text the three numbers plus a name no longer share a
+      row, so each row becomes a two-line card: the name (with count badge / avatar) on the first
+      line, the three numbers with tiny captions on the second. Healing / shield rows (one number,
+      colspan) keep their single value. */
+@media (max-width: 767px) {
+  table.calculator__damages.table,
+  table.calculator-optimizer__damages.table {
+    display: block;
+    width: 100%;
+  }
+  table.calculator__damages.table thead,
+  table.calculator-optimizer__damages.table thead {
+    display: none;
+  }
+  table.calculator__damages.table tbody,
+  table.calculator-optimizer__damages.table tbody,
+  table.calculator__damages.table tfoot,
+  table.calculator-optimizer__damages.table tfoot {
+    display: block;
+  }
+  table.calculator__damages.table tr,
+  table.calculator-optimizer__damages.table tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.5rem;
+    row-gap: 0.15rem;
+    padding: 0.45rem 0.4rem;
+    border-bottom: 1px solid oklch(var(--bc) / 0.08);
+  }
+  table.calculator__damages.table td,
+  table.calculator-optimizer__damages.table td,
+  table.calculator__damages.table th,
+  table.calculator-optimizer__damages.table th {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    white-space: normal;
+  }
+  table.calculator__damages.table td:first-child,
+  table.calculator-optimizer__damages.table td:first-child {
+    flex-basis: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  table.calculator__damages.table td:not(:first-child),
+  table.calculator-optimizer__damages.table td:not(:first-child) {
+    flex: 1 1 0;
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.95em;
+  }
+  table.calculator__damages.table td:not(:first-child)::before,
+  table.calculator-optimizer__damages.table td:not(:first-child)::before {
+    display: block;
+    font-size: 0.62em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.5;
+    font-weight: 600;
+  }
+  table.calculator__damages.table td:nth-child(2)::before,
+  table.calculator-optimizer__damages.table td:nth-child(2)::before {
+    content: "Normal";
+  }
+  table.calculator__damages.table td:nth-child(3)::before,
+  table.calculator-optimizer__damages.table td:nth-child(3)::before {
+    content: "Average";
+  }
+  table.calculator__damages.table td:nth-child(4)::before,
+  table.calculator-optimizer__damages.table td:nth-child(4)::before {
+    content: "Crit";
+  }
+  table.calculator__damages.table td[colspan]::before,
+  table.calculator-optimizer__damages.table td[colspan]::before {
+    content: "Amount";
+  }
+  /* an always-crit attack leaves Normal / Average empty */
+  table.calculator__damages.table td:not(:first-child):empty::after,
+  table.calculator-optimizer__damages.table td:not(:first-child):empty::after {
+    content: "—";
+    opacity: 0.4;
+  }
+  table.calculator__damages.table tfoot tr,
+  table.calculator-optimizer__damages.table tfoot tr {
+    border-bottom: 0;
+    border-top: 2px solid oklch(var(--bc) / 0.15);
+    font-weight: 700;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   2. Rotation cards (CalculatorRotation.vue): `.rotation__head` is a flex row whose `.card-body`
+      keeps `min-width: auto`, so a long wuwa_calc rotation name widens the card past the screen
+      instead of truncating. */
+@media (max-width: 767px) {
+  .rotation__head .card-body.card-body {
+    min-width: 0;
+    padding: 0.85rem 0.9rem;
+  }
+  .rotation__head .card-title.card-title {
+    font-size: 1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   3. Echo cards, calculator (CalculatorEcho.vue) and inventory / browser (CalculatorEchoCard.vue,
+      flag-off comfy layout). Below `lg` upstream stacks the desktop's two columns — image and a
+      vertical Edit / Reset / Save / Browse menu on top, the name and stat table below — which puts
+      a whole phone screen between an echo's picture and its stats. Reflow the same DOM into a grid:
+      picture beside the name and badges, the stat table full-width under both, the actions as one
+      row of buttons, "Equipped by" inline. */
+@media (max-width: 1023px) {
+  .echo__item .card-body .echo__content.echo__content:not(.echo__content--compact) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.9rem;
+    row-gap: 0.5rem;
+    align-items: start;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__left,
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__stats {
+    display: contents;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .echo__item__image-wrap {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .echo__item__image-wrap .echo__item__image {
+    margin-bottom: 0;
+  }
+  /* the favourite / status buttons that sit under the picture in the inventory card */
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__left > .flex.items-center {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: center;
+    margin-top: 0;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__stats > .card-title {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    row-gap: 0.35rem;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    min-width: 0;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__stats > .card-title > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__stats > .card-title .echo__item__meta {
+    flex-wrap: wrap;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) > .echo__item__stats > .echo__item__sub-stats {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .echo__item__actions.echo__item__actions {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0;
+    width: 100%;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .echo__item__actions .btn {
+    justify-content: center;
+    flex: 0 1 auto;
+    padding-inline: 0.6rem;
+  }
+  /* the lock / trash / temp / optimizer icons: one line instead of upstream's 3 + 1 stack */
+  .echo__item .echo-lock-trash-actions.flex-col {
+    flex-direction: row;
+    margin-left: auto;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .equipped-by.equipped-by {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0;
+    padding-top: 0.5rem;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .equipped-by .echo__item__equipped {
+    margin-top: 0;
+  }
+  .echo__item .echo__content:not(.echo__content--compact) .equipped-by .echo__item__equipped-list {
+    max-width: none;
+    justify-content: flex-start;
+  }
+  /* the stat table's cells at phone density */
+  .echo__item .echo__item__sub-stats.table :where(td) {
+    padding: 0.35rem 0.5rem;
+  }
+  .echo__item .echo__item__sub-stats.table img {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+@media (max-width: 767px) {
+  .echo__item.card .card-body.card-body {
+    padding: 0.85rem;
+  }
+  /* inventory card footer (Edit / Duplicate / Delete): one row, buttons share the width */
+  .echo__item .echoes__item__foot.echoes__item__foot {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .echo__item .echoes__item__foot .echoes__item__foot__actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+  .echo__item .echoes__item__foot .avatar-group .w-12 {
+    width: 2.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   4. AppRichSelect: a fixed `min-width` (12–18 rem per caller, 130 % bigger with the phone's
+      text) pushes the team-buff member pickers and the weapon picker past the screen. The
+      component sets the variable on itself, so upstream's own 480 px override in
+      CalculatorPartyBuffs.vue never applied. Cap it at the container. */
+@media (max-width: 767px) {
+  .app-rich-select.app-rich-select.app-rich-select {
+    --app-rich-select-min-width: min(12rem, 100%);
+    max-width: 100%;
+  }
+  .party-member__selection.character__selection.character__selection {
+    grid-gap: 1rem;
+    max-width: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   5. Rows that never wrap: filter rows, radio groups, join button groups, collapse titles with a
+      trailing badge. */
+@media (max-width: 767px) {
+  /* DaisyUI collapse: its single `1fr` track takes the title's max-content width, so a long
+     flex title ("Buffs for Shorekeeper" + badge, "Main echo buffs") widens the whole card past the
+     screen; a minmax(0, 1fr) track lets the title wrap instead. */
+  .collapse.collapse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .collapse.collapse > .collapse-title {
+    min-width: 0;
+    padding-right: 2.75rem;
+  }
+  .collapse.collapse > .collapse-title.text-xl {
+    font-size: 1.1rem;
+  }
+  /* Team buffs: "Buffs for X" + count badge */
+  .party-buffs__collapse-title.party-buffs__collapse-title {
+    flex-wrap: wrap;
+    padding-right: 2.75rem;
+  }
+  /* Game text: "18.00%/20.70%/23.40%/26.10%/28.80%" value runs have no break opportunity and are
+     wider than a 360 px card at 130 % text */
+  .main-echo__details,
+  .main-echo__details .param,
+  .card-body .param,
+  .card-body .description {
+    overflow-wrap: anywhere;
+  }
+  /* Character buffs: "Enabled?" + stacks input + "(Max N)" + Max button on one line */
+  .form-control > .label.inline-flex.justify-start {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+  /* Enemy: type radios */
+  .data-input--talents .flex.gap-4.mt-4 {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+  /* Optimizer: target select + Normal / Average / Crit join */
+  .optimizer-target-options.optimizer-target-options {
+    flex-wrap: wrap;
+  }
+  .optimizer-target-options .app-rich-select {
+    flex: 1 1 100%;
+  }
+  /* Character browser filters (element / weapon / rarity / status / favourites) */
+  .characters__filters.characters__filters {
+    row-gap: 0.5rem;
+  }
+  .characters__filters .characters__filters__rarity,
+  .characters__filters .characters__filters__build-status {
+    margin-left: 0;
+  }
+  .characters__filters .characters__filters__build-status {
+    flex-wrap: wrap;
+  }
+  /* "Pick one" browsers - characters, weapons, main echoes: two cards per row on a phone instead
+     of one screen-tall card each (upstream: 1 column below md, 4 above) */
+  .characters__list__items.grid-cols-1,
+  .weapons__list__items.grid-cols-1,
+  .echoes__list.grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+  .characters__list__items.grid-cols-1 .card-body,
+  .weapons__list__items.grid-cols-1 .card-body,
+  .echoes__list.grid-cols-1.md\:grid-cols-4 .card-body {
+    padding: 0.75rem 0.6rem;
+  }
+  .characters__list__items.grid-cols-1 .card-title,
+  .weapons__list__items.grid-cols-1 .card-title,
+  .echoes__list.grid-cols-1.md\:grid-cols-4 .card-title {
+    font-size: 0.95rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .characters__list__items.grid-cols-1 .btn,
+  .weapons__list__items.grid-cols-1 .btn,
+  .echoes__list.grid-cols-1.md\:grid-cols-4 .btn {
+    width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   6. Modals: DaisyUI's `.modal-box` keeps 5 % side margins and a `max-w`; on a phone let the box
+      take the screen and keep its own scroll, so the inventory importer, the echo browser and the
+      character browser read like pages. */
+@media (max-width: 767px) {
+  .modal .modal-box.modal-box {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 2rem);
+    padding: 1rem;
+    border-radius: 1rem 1rem 0 0;
+    overflow-x: hidden;
+  }
+  .modal.modal {
+    align-items: flex-end;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   7. Optimizer results (CalculatorOptimizerResult*.vue): the two "Basic Stats" tables sit side by
+      side and the five loadout echo tiles flow in a row; on a phone stack the stat tables and lay
+      the tiles out two per row. */
+@media (max-width: 767px) {
+  .optimizer_result_stats > .flex.gap-2 {
+    flex-direction: column;
+  }
+  .optimizer_result_stats .calculator__stats.table :where(td) {
+    padding: 0.3rem 0.5rem;
+  }
+  .optimizer_result_loadout.optimizer_result_loadout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .optimizer_result_loadout .echo__item.card {
+    margin-bottom: 0;
+  }
+  .optimizer_result_loadout .echo__item.card .card-body.card-body {
+    padding: 0.6rem;
+  }
+  .optimizer_result_loadout .echo__item__sub-stats.flex-col {
+    gap: 0.3rem;
+  }
+  /* CV / score badges inside a half-width tile */
+  .optimizer_result_loadout .echo__content > .flex {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .optimizer_result_loadout .echo__content .echo__item__cost.badge {
+    font-size: 0.7rem;
+    height: auto;
+    padding: 0.15rem 0.5rem;
+    max-width: 100%;
+  }
+  .optimizer-result.optimizer-result {
+    padding: 0.75rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   8. Team Rotations list (TeamRotations.vue): the sort join and each card's title row. */
+@media (max-width: 767px) {
+  .teams__summary > .flex > .flex.items-center.gap-2,
+  .rotations__summary > .flex > .flex.items-center.gap-2 {
+    flex-wrap: wrap;
+  }
+  .teams__summary .join,
+  .rotations__summary .join {
+    flex-wrap: wrap;
+  }
+  /* "#1 Team name" beside heart / status / delete: the name keeps a full line, the buttons drop
+     under it when the two do not fit */
+  [data-test-team-rotations-item] .card-body > .flex.items-start.justify-between {
+    flex-wrap: wrap;
+  }
+  [data-test-team-rotations-item] .card-body > .flex.items-start.justify-between > h3 {
+    flex: 1 1 11rem;
+  }
+  [data-test-team-rotations-item] .card-body > .flex.gap-4 {
+    justify-content: space-between;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   9. Team Rotations editor (TeamRotationTeamEditor.vue): the per-slot "Configure Character /
+      Import Rotation" join wraps its labels inside btn-xs at 130 % text — let the buttons grow. */
+@media (max-width: 767px) {
+  [data-test-team-rotation-editor] .join.w-full > .btn.btn-xs {
+    height: auto;
+    min-height: 2rem;
+    padding-block: 0.3rem;
+    line-height: 1.15;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   10. v3 workspace (Labs "UI Overhaul 3.0"): the weapon / build-score strip, the build meta line
+       and the section headers with button groups do not wrap at 130 % text. */
+@media (max-width: 767px) {
+  .calculator-character-workspace .flex.items-stretch.divide-x,
+  .calculator-character-workspace .flex.items-center.gap-3,
+  .calculator-character-workspace .flex.items-center.gap-1\.5,
+  .calculator-character-workspace .bg-base-200.rounded-xl > .flex.items-center.justify-between {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+  .calculator-character-workspace .whitespace-nowrap {
+    white-space: normal;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   11. Navbar height: AppLayout offsets the page by 80 px (`mt-20`) and the rankings page sizes
+       itself against the same 80 px, but at 130 % text DaisyUI's menu padding grows the bar to
+       88 px and the first content row slides under it. Pin the bar. */
+@media (max-width: 767px) {
+  .navbar.navbar {
+    height: 80px;
+    min-height: 80px;
+    max-height: 80px;
+  }
+  .navbar .menu.menu-horizontal :where(li > summary) {
+    padding-block: 0.4rem;
+  }
+}
+/* AppLayout pushes the page down with `mt-20` (5 rem) to clear the 80 px bar, and sizes it with
+   `calc(100vh - 80px …)`; with the root font at 130 % the rem margin is 104 px, so a 24 px band opens
+   under the bar and the page scrolls by as much. The offset is the bar's pixel height, at any width. */
+.contain.mt-20 {
+  margin-top: 80px;
+}

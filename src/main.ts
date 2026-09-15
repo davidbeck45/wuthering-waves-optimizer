@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createApp } from "vue";
 import "./style.css";
+import "./sim/phone.css"; // Wuthering Tools+: phone-only overrides for upstream's components
 import App from "./App.vue";
 import { createWebHistory, createRouter } from "vue-router";
 import FloatingVue from "floating-vue";

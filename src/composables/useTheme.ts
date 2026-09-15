@@ -11,6 +11,7 @@ export const THEME_OPTIONS = [
   "night",
   "nord",
   "dracula",
+  "gruvbox",
 ] as const;
 
 export type ThemeName = (typeof THEME_OPTIONS)[number];

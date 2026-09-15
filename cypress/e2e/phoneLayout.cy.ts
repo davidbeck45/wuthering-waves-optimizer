@@ -69,6 +69,33 @@ describe("phone layout", () => {
     cy.get('[data-test-my-rankings-row="Cartethyia"]').should("have.css", "display", "table-row");
   });
 
+  it("reflows the calculator's damage tables and echo cards for a phone", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/");
+    // Stats & Damages: each attack row is a two-line card (name, then Normal / Average / Crit)
+    cy.get(".main-menu-mobile summary").click();
+    cy.get('[data-test-calculator-mobile-nav="stats"]').click({ force: true });
+    cy.get("table.calculator__damages tbody tr").first().should("have.css", "display", "flex");
+    cy.get("table.calculator__damages thead").first().should("have.css", "display", "none");
+    expectNoHorizontalScroll("/ (stats)");
+    // Echoes: the picture sits beside the name, the actions are one row, nothing is a screen tall
+    cy.get(".main-menu-mobile summary").click();
+    cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
+    cy.get(".echo__item .echo__content").first().should("have.css", "display", "grid");
+    cy.get(".echo__item .echo__item__actions").first().should("have.css", "flex-direction", "row");
+    expectNoHorizontalScroll("/ (echoes)");
+    // the character browser lists two cards per row
+    cy.get("[data-test-nav-calculator]").click();
+    // (the browser dialog reports opacity 0 to Cypress like the importer's - assert the layout)
+    cy.get(".characters__list__items")
+      .should("exist")
+      .and(($grid) => {
+        expect($grid.css("grid-template-columns").split(" ").length, "phone browser columns").to.equal(2);
+      });
+    expectNoHorizontalScroll("/ (character browser)");
+  });
+
   it("reviews phone screenshots as cards inside the echo importer", () => {
     cy.visit("/inventory");
     cy.contains("button", "Import echoes").click({ force: true });

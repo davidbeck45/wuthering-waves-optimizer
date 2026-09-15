@@ -26,7 +26,7 @@
     </label>
     <span v-if="subsMode === 'm'" class="text-xs opacity-60" data-test-rankings-subs-hint>{{ builtCount }} character{{ builtCount === 1 ? "" : "s" }} with echoes in the app; the rest run ChemX32</span>
 
-    <div class="ml-auto flex items-center gap-1.5">
+    <div class="ml-auto flex flex-wrap items-center gap-1.5 max-sm:ml-0">
       <button type="button" class="btn btn-xs btn-ghost border-base-300" :disabled="syncing" :title="syncTitle" data-test-rankings-sync @click="sync">
         <span v-if="syncing" class="loading loading-spinner loading-xs"></span>
         {{ syncing ? "Syncing…" : "Sync my teams" }}
