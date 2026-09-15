@@ -1,0 +1,45 @@
+/* Wuthering Tools+: tables that reflow into cards on a phone.
+
+   Add `table--cards` to a DaisyUI `table`, put `data-label="…"` on the cells that need a caption
+   and pick the card order per component with `.cell--*` classes (see MyRankingsView.vue and
+   PhoneEchoBatchParser.vue). Below 768 px every row becomes a wrapping flex card; the markup stays
+   the desktop table, so E2E hooks and colspan panel rows are the same on both. */
+@media (max-width: 767px) {
+  .table--cards {
+    display: block;
+  }
+  .table--cards thead {
+    display: none;
+  }
+  .table--cards tbody {
+    display: block;
+  }
+  .table--cards tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0.15rem;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid oklch(var(--bc) / 0.1);
+  }
+  .table--cards td {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    max-width: none;
+  }
+  .table--cards td[data-label]::before {
+    content: attr(data-label) " ";
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.55;
+    margin-right: 0.35rem;
+  }
+  .table--cards .cell--full {
+    flex-basis: 100%;
+    text-align: left;
+  }
+}

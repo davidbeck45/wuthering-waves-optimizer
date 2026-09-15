@@ -24,5 +24,8 @@ const isLiveResultBarEnabled = computed(
 <style scoped lang="scss">
 .page-settings {
   padding: 2rem 3rem;
+  @media (max-width: 640px) {
+    padding: 1rem;
+  }
 }
 </style>

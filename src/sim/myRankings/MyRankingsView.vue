@@ -7,7 +7,7 @@
         <RouterLink to="/rankings" class="btn btn-sm join-item" data-test-rankings-switch-calc>wuwa_calc rankings</RouterLink>
         <span class="btn btn-sm btn-primary join-item no-animation pointer-events-none">My roster</span>
       </div>
-      <div class="ml-auto flex items-center gap-2">
+      <div class="ml-auto flex flex-wrap items-center gap-2 max-md:w-full max-md:ml-0">
         <label class="label cursor-pointer gap-2 py-0">
           <input v-model="investment" type="checkbox" class="checkbox checkbox-sm" :disabled="isRunning" />
           <span class="label-text text-sm">estimate next sequence &amp; R5</span>
@@ -47,7 +47,7 @@
     <template v-if="ranking">
       <h2 class="text-lg font-bold mt-2 mb-1">Characters</h2>
       <div class="overflow-x-auto">
-        <table class="table table-sm" data-test-my-rankings-characters>
+        <table class="table table-sm table--cards" data-test-my-rankings-characters>
           <thead>
             <tr>
               <th>#</th>
@@ -64,8 +64,8 @@
           <tbody>
             <template v-for="(c, i) in ranking.characters" :key="c.id">
             <tr :data-test-my-rankings-row="c.id">
-              <td class="opacity-60">{{ i + 1 }}</td>
-              <td>
+              <td class="opacity-60 cell--rank">{{ i + 1 }}</td>
+              <td class="cell--who">
                 <div class="flex items-center gap-2">
                   <div class="size-9 rounded-full bg-cover bg-center border border-base-300 shrink-0" :style="{ backgroundImage: `url(${characterPortraitUrl(c.id)})` }"></div>
                   <div>
@@ -74,27 +74,27 @@
                   </div>
                 </div>
               </td>
-              <td class="text-sm">{{ c.weapon ?? "—" }}</td>
-              <td class="text-sm">
+              <td class="text-sm cell--weapon" data-label="Weapon">{{ c.weapon ?? "—" }}</td>
+              <td class="text-sm cell--best" data-label="Best rotation">
                 <template v-if="c.best">
                   <div>{{ c.best.name }}</div>
                   <div class="text-xs opacity-60">{{ sourceLabel(c.best.source) }} · {{ c.rotationsEvaluated }} tried</div>
                 </template>
                 <span v-else class="opacity-60">no rotation with actions</span>
               </td>
-              <td class="text-right tabular-nums font-semibold" data-test-my-rankings-damage>{{ c.best ? fmt(c.best.avgDamage) : "—" }}</td>
-              <td class="w-40"><progress class="progress progress-primary w-full" :value="c.best?.avgDamage ?? 0" :max="maxCharacterDamage || 1"></progress></td>
-              <td v-if="investment" class="text-right tabular-nums text-sm" :class="deltaClass(c.nextSequence)">{{ c.nextSequence ? `${c.nextSequence.label} ${pct(c.nextSequence.gain)}` : c.sequence >= 6 ? "S6" : "—" }}</td>
-              <td v-if="investment" class="text-right tabular-nums text-sm" :class="deltaClass(c.refineFive)">{{ c.refineFive ? pct(c.refineFive.gain) : c.refinement >= 5 ? "R5" : "—" }}</td>
-              <td>
+              <td class="text-right tabular-nums font-semibold cell--dmg" data-test-my-rankings-damage>{{ c.best ? fmt(c.best.avgDamage) : "—" }}</td>
+              <td class="w-40 cell--bar"><progress class="progress progress-primary w-full" :value="c.best?.avgDamage ?? 0" :max="maxCharacterDamage || 1"></progress></td>
+              <td v-if="investment" class="text-right tabular-nums text-sm cell--delta" data-label="next S" :class="deltaClass(c.nextSequence)">{{ c.nextSequence ? `${c.nextSequence.label} ${pct(c.nextSequence.gain)}` : c.sequence >= 6 ? "S6" : "—" }}</td>
+              <td v-if="investment" class="text-right tabular-nums text-sm cell--delta" data-label="R5" :class="deltaClass(c.refineFive)">{{ c.refineFive ? pct(c.refineFive.gain) : c.refinement >= 5 ? "R5" : "—" }}</td>
+              <td class="cell--actions">
                 <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-whatif="c.id" title="score this character at another sequence, weapon or refinement on the same rotation" @click="toggleWhatIf(c)">
                   what if…
                 </button>
                 <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash([c.id]) }" class="btn btn-ghost btn-xs whitespace-nowrap" title="wuwa_calc's teams with this character, at your account's sequences and weapons" :data-test-my-rankings-mine-link="c.id">rankings ▸</RouterLink>
               </td>
             </tr>
-            <tr v-if="whatIfs[c.id]?.open" :data-test-my-rankings-whatif-panel="c.id">
-              <td :colspan="investment ? 9 : 7" class="bg-base-200/40">
+            <tr v-if="whatIfs[c.id]?.open" class="row--panel" :data-test-my-rankings-whatif-panel="c.id">
+              <td :colspan="investment ? 9 : 7" class="bg-base-200/40 cell--panel">
                 <div class="flex flex-wrap items-end gap-3 py-1">
                   <label class="form-control">
                     <span class="label-text text-xs">Sequence</span>
@@ -139,7 +139,7 @@
         wuwa_calc rankings page or Teams › List Presets, then recompute.
       </p>
       <div v-else class="overflow-x-auto">
-        <table class="table table-sm" data-test-my-rankings-teams>
+        <table class="table table-sm table--cards" data-test-my-rankings-teams>
           <thead>
             <tr>
               <th>#</th>
@@ -152,10 +152,10 @@
           </thead>
           <tbody>
             <tr v-for="(t, i) in ranking.teams" :key="t.id" :data-test-my-rankings-team="t.name">
-              <td class="opacity-60">{{ i + 1 }}</td>
-              <td>
+              <td class="opacity-60 cell--rank">{{ i + 1 }}</td>
+              <td class="cell--who">
                 <div class="flex items-center gap-2">
-                  <div class="flex -space-x-2">
+                  <div class="flex -space-x-2 shrink-0">
                     <div v-for="cid in t.characterIds" :key="cid" class="size-8 rounded-full bg-cover bg-center border border-base-300" :style="{ backgroundImage: `url(${characterPortraitUrl(cid)})` }" :title="getCharacterRosterDisplayName(cid)"></div>
                   </div>
                   <div class="text-sm">
@@ -165,10 +165,10 @@
                   </div>
                 </div>
               </td>
-              <td class="text-xs opacity-70">{{ sourceLabel(t.source) }}</td>
-              <td class="text-right tabular-nums font-semibold">{{ fmt(t.avgDamage) }}</td>
-              <td class="text-right tabular-nums text-xs opacity-80">{{ t.perSlot.map((d) => fmt(d)).join(" · ") }}</td>
-              <td class="w-40"><progress class="progress progress-secondary w-full" :value="t.avgDamage" :max="maxTeamDamage || 1"></progress></td>
+              <td class="text-xs opacity-70 cell--weapon" data-label="Source">{{ sourceLabel(t.source) }}</td>
+              <td class="text-right tabular-nums font-semibold cell--dmg">{{ fmt(t.avgDamage) }}</td>
+              <td class="text-right tabular-nums text-xs opacity-80 cell--best" data-label="Per slot">{{ t.perSlot.map((d) => fmt(d)).join(" · ") }}</td>
+              <td class="w-40 cell--bar"><progress class="progress progress-secondary w-full" :value="t.avgDamage" :max="maxTeamDamage || 1"></progress></td>
             </tr>
           </tbody>
         </table>
@@ -203,6 +203,7 @@ import {
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
 import { accountStateOf, rankingsMineHash } from "../account/accountState";
+import "../phone-tables.css";
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -325,3 +326,53 @@ onMounted(() => {
   if (characterCount.value && (!cachedRanking || cachedKey !== fingerprint())) void compute();
 });
 </script>
+
+<style scoped lang="scss">
+/* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
+@media (max-width: 767px) {
+  .table--cards {
+    .cell--rank {
+      order: 0;
+      min-width: 1.25rem;
+    }
+    .cell--who {
+      order: 0;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .cell--dmg {
+      order: 0;
+      margin-left: auto;
+    }
+    .cell--weapon,
+    .cell--best {
+      order: 1;
+      flex-basis: 100%;
+      text-align: left;
+    }
+    .cell--bar {
+      order: 2;
+      flex-basis: 100%;
+      width: auto;
+    }
+    .cell--delta {
+      order: 3;
+      text-align: left;
+    }
+    .cell--actions {
+      order: 4;
+      flex-basis: 100%;
+      display: flex;
+      gap: 0.25rem;
+    }
+    .row--panel {
+      padding: 0;
+      border-bottom: 0;
+    }
+    .cell--panel {
+      flex-basis: 100%;
+      padding: 0.5rem;
+    }
+  }
+}
+</style>

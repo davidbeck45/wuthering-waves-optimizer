@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Wuthering Tools+ home-screen icon: the nav's rankings bars on the app's dark base, a plus at the corner.
+       Everything sits inside the maskable safe zone (the inner 80 %), so one file serves both purposes. -->
+  <rect width="512" height="512" rx="96" fill="#1d232a"/>
+  <g stroke="#a6adbb" stroke-width="30" stroke-linecap="round" fill="none">
+    <path d="M118 400h276"/>
+    <path d="M166 400V236"/>
+    <path d="M256 400V128"/>
+    <path d="M346 400V284"/>
+  </g>
+  <g stroke="#7480ff" stroke-width="30" stroke-linecap="round" fill="none">
+    <path d="M394 112v92"/>
+    <path d="M348 158h92"/>
+  </g>
+</svg>

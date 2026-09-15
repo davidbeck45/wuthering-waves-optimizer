@@ -6,7 +6,7 @@
     <p class="rankings-credit text-xs opacity-60 px-3 py-1">
       Team rankings engine, rotations and solves by
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
-      (ISC), running in-page from the pinned submodule.
+      <span class="max-sm:hidden"> (ISC), running in-page from the pinned submodule.</span><span class="sm:hidden"> (ISC).</span>
       <RouterLink to="/my-rankings" class="link link-primary ml-2" data-test-rankings-switch-mine>My roster rankings ▸</RouterLink>
     </p>
   </div>
@@ -55,13 +55,15 @@ watch(() => route.fullPath, () => onLocationChange());
 </script>
 
 <style>
-/* AppLayout's .contain is a content-sized grid: it is only as wide as its widest child (668px with
-   Riley's aside alone, which also squeezed the update banner). Claiming the viewport width here makes
-   the grid — banner included — span the page, and the height matches .contain's own calc. */
+/* The page is a fixed-height column (Riley's #app scrolls inside it) matching .contain's own calc;
+   on a phone the dynamic viewport unit follows the browser chrome, so the credit line and the bottom
+   of his table are not hidden behind the URL bar. (It used to claim 100vw as well: the Vue root had
+   lost its `width: 100%` in the #app → #wt-app rename and shrank to its content - style.css has it.) */
 .rankings-page {
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: calc(100vh - 80px - var(--announce-banner-h, 0px));
+  height: calc(100dvh - 80px - var(--announce-banner-h, 0px));
   display: flex;
   flex-direction: column;
   min-height: 0;

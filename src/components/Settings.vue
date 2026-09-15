@@ -7,7 +7,7 @@
       <!-- Tabs switch from horizontal to vertical depending on screen -->
       <div
         role="tablist"
-        class="relative flex flex-row sm:flex-col border-b border-base-300 sm:border-b-0">
+        class="relative flex flex-row flex-wrap sm:flex-nowrap sm:flex-col border-b border-base-300 sm:border-b-0">
         <a
           href="#"
           class="tab-link text-base-content px-4 py-2"

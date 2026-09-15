@@ -3,9 +3,10 @@
     <h2 class="text-xl font-bold">Phone screenshots (batch)</h2>
     <p class="text-sm opacity-80 mb-3">
       On your phone, open the in-game Echo inventory, select an echo so its detail panel shows on the
-      right, and take one screenshot per echo — then drop them all here. Landscape 3120×1440 (Galaxy
-      S26 Ultra) or the same shape. Turn a Sonata filter on first so the set name shows bottom-left;
-      otherwise the set is read from the small glyph next to +25.
+      right, and take one screenshot per echo — then drop them all here (on the phone itself, pick them
+      straight from the gallery). Landscape 3120×1440 (Galaxy S26 Ultra) or the same shape. Turn a
+      Sonata filter on first so the set name shows bottom-left; otherwise the set is read from the
+      small glyph next to +25.
     </p>
     <div class="rounded-box border border-base-300 p-3 mb-3" data-test-phone-echo-album>
       <div class="text-sm font-semibold mb-1">From a Google Photos album</div>
@@ -60,7 +61,7 @@
         type="file"
         accept="image/*"
         multiple
-        class="file-input file-input-bordered file-input-sm"
+        class="file-input file-input-bordered file-input-sm max-w-full"
         data-test-phone-echo-batch-input
         @change="onFilesChosen" />
       <button
@@ -79,7 +80,7 @@
     </div>
 
     <div v-if="items.length" class="overflow-x-auto max-h-[50vh]">
-      <table class="table table-xs" data-test-phone-echo-batch-table>
+      <table class="table table-xs table--cards" data-test-phone-echo-batch-table>
         <thead>
           <tr>
             <th></th>
@@ -98,10 +99,10 @@
             :key="item.id"
             :class="{ 'bg-warning/10': item.record?.flags.length, 'bg-error/10': item.status === 'error' || item.status === 'unsupported' }"
             :data-test-phone-echo-batch-row="item.status">
-            <td>
+            <td class="cell--check">
               <input v-model="item.include" type="checkbox" class="checkbox checkbox-xs" :disabled="!item.record" />
             </td>
-            <td class="whitespace-nowrap">
+            <td class="whitespace-nowrap cell--shot">
               <div class="flex items-center gap-2">
                 <div
                   v-if="item.thumb"
@@ -113,7 +114,7 @@
                 </div>
               </div>
             </td>
-            <td>
+            <td class="cell--full" data-label="Echo">
               <select
                 v-if="item.record"
                 v-model="item.record.echo"
@@ -124,7 +125,7 @@
                 <option v-for="echo in echoOptions" :key="echo.key" :value="echo.key">{{ echo.name }}</option>
               </select>
             </td>
-            <td>
+            <td class="cell--full" data-label="Set">
               <select
                 v-if="item.record"
                 v-model="item.record.set"
@@ -134,8 +135,8 @@
                 <option v-for="set in setOptions(item)" :key="set" :value="set">{{ setLabel(set) }}</option>
               </select>
             </td>
-            <td>{{ item.record?.cost ?? "" }}</td>
-            <td>
+            <td class="cell--cost" data-label="Cost">{{ item.record?.cost ?? "" }}</td>
+            <td class="cell--full" data-label="Main stat">
               <select
                 v-if="item.record"
                 class="select select-bordered select-xs"
@@ -145,7 +146,7 @@
                 <option v-for="key in mainOptions(item)" :key="key" :value="key">{{ statLabel(key) }}</option>
               </select>
             </td>
-            <td>
+            <td class="cell--full cell--subs" data-label="Substats">
               <div v-if="item.record" class="flex flex-col gap-1">
                 <div v-for="(sub, index) in item.record.subs" :key="index" class="flex gap-1">
                   <select v-model="sub[0]" class="select select-bordered select-xs">
@@ -155,7 +156,7 @@
                 </div>
               </div>
             </td>
-            <td class="text-xs max-w-72">
+            <td class="text-xs max-w-72 cell--full" data-label="Notes">
               <div v-if="item.error" class="text-error">{{ item.error }}</div>
               <ul v-else-if="item.record?.flags.length" class="text-warning list-disc pl-3">
                 <li v-for="flag in item.record.flags" :key="flag">{{ flag }}</li>
@@ -186,6 +187,7 @@
 <script setup lang="ts">
 // Wuthering Tools+: batch import of echoes from phone screenshots (see phoneEchoScan.ts).
 import { computed, ref } from "vue";
+import "../phone-tables.css";
 import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, statsTable } from "../../echoes/stats";
 import { EchoImageMatcher } from "./imageMatch";
@@ -565,3 +567,29 @@ function addToInventory(): void {
   emit("echoes-parsed", echoes, true);
 }
 </script>
+
+<style scoped>
+/* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
+@media (max-width: 767px) {
+  .table--cards .cell--check {
+    order: 0;
+  }
+  .table--cards .cell--shot {
+    order: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal;
+  }
+  .table--cards .cell--cost {
+    order: 0;
+    margin-left: auto;
+  }
+  .table--cards .cell--full {
+    order: 1;
+  }
+  .table--cards .cell--subs::before {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+}
+</style>

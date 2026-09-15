@@ -1,12 +1,16 @@
 <template>
   <Teleport to="#navbar-container">
+    <!-- Wuthering Tools+: five icon links + the hamburger + the utility menu never fit DaisyUI's
+         50 % / 50 % navbar split on a phone (the Rankings icon overlapped the theme button at 412 px
+         and upstream's own four collide at 360 px) - below `sm` the two halves share the row by
+         content and every icon drops to 40 px with a 4 px gap. Desktop is untouched. -->
     <div
-      class="navbar bg-base-300 shadow"
+      class="navbar bg-base-300 shadow max-sm:px-0.5"
       :class="{ 'h-20': curPage === 'inventory' }"
       style="min-height: 80px">
-      <div class="navbar-start">
+      <div class="navbar-start max-sm:w-auto max-sm:flex-1 max-sm:min-w-0">
         <details class="main-menu-mobile dropdown" v-if="!disableMobileNav">
-          <summary tabindex="0" role="button" class="btn btn-ghost size-5 p-0 flex justify-center min-w-[48px] mr-2 lg:hidden">
+          <summary tabindex="0" role="button" class="btn btn-ghost size-5 p-0 flex justify-center min-w-[40px] sm:min-w-[48px] mr-1 sm:mr-2 lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -24,7 +28,7 @@
         </details>
         <RouterLink
           to="/"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2"
           :class="{ 'btn-active text-white': curPage === 'home' }"
           title="Calculator"
           data-test-nav-calculator
@@ -59,7 +63,7 @@
         </RouterLink>
         <RouterLink
           to="/inventory"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2"
           :class="{ 'btn-active': curPage === 'inventory' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png"
@@ -67,7 +71,7 @@
         </RouterLink>
         <RouterLink
           to="/convene"
-          class="btn btn-ghost size-5 p-2 flex justify-center basis-[48px] mr-2 relative"
+          class="btn btn-ghost size-5 p-2 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2 relative"
           :class="{ 'btn-active': curPage === 'convene' }"
           title="Convene odds"
           data-test-nav-convene>
@@ -78,7 +82,7 @@
         </RouterLink>
         <RouterLink
           to="/teams"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2 relative"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2 relative"
           :class="{ 'btn-active': curPage === 'team-rotations' }"
           title="Team Rotations"
           data-test-nav-team-rotations>
@@ -88,7 +92,7 @@
         </RouterLink>
         <RouterLink
           to="/rankings"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2 relative"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2 relative"
           :class="{ 'btn-active': curPage === 'rankings' }"
           title="Team Rankings (wuwa_calc)"
           data-test-nav-rankings>
@@ -100,12 +104,12 @@
       <div class="navbar-center hidden lg:flex">
         <slot></slot>
       </div>
-      <div class="navbar-end">
-        <ul class="menu menu-horizontal px-1">
+      <div class="navbar-end max-sm:w-auto max-sm:shrink-0">
+        <ul class="menu menu-horizontal px-0 sm:px-1">
           <ThemeChooser></ThemeChooser>
           <li>
             <details class="options-menu" data-test-options-menu>
-              <summary>
+              <summary class="max-sm:px-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

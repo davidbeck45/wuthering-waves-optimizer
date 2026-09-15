@@ -63,7 +63,8 @@ h6 {
   font-style: normal;
 }
 
-#app {
+#app,
+#wt-app {
   width: 100%;
 }
 html[data-theme-style="light"] {

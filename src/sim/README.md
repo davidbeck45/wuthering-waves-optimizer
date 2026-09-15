@@ -14,7 +14,7 @@ imported through the Vite alias `@skittle/*` and compiled by Vite straight from 
 | `public/tests/solves/*.json` | GENERATED: his precomputed solves; his page fetches `./tests/solves/…` relative to `/rankings` |
 | `public/sim/loading.gif` | GENERATED: the overlay sticker |
 | `skittle-theme.css` | hand-written theme bridge (phase B2): re-derives his `--bg/--surface/--ink/--accent…` variables from DaisyUI's tokens (`oklch(var(--b1))` etc.) on `.skittle-root`, `.pop` and `.ctxmenu`, sets the app font, and darkens kit colours / hard-coded whites on `[data-theme-style="light"]` — so the page follows every app theme |
-| `src/pages/RankingsView.vue` | the page: `<Nav>` + host div + credit line; claims `100vw` so AppLayout's content-sized `.contain` grid (and the update banner) span the viewport |
+| `src/pages/RankingsView.vue` | the page: `<Nav>` + host div + credit line; a fixed-height column (`100dvh` on phones) that Riley's `#app` scrolls inside |
 
 Things learned the hard way:
 - Vue's root is `#wt-app` (index.html / main.ts) so that `#app` is free for his container.
@@ -24,8 +24,10 @@ Things learned the hard way:
   Electron, so the port races it against an 80 ms timeout.
 - His `body`/`html` rules become `.skittle-root { height: 100vh }` after scoping — the page's `!important`
   overrides size it to the host instead.
-- AppLayout's `.contain` is a content-sized grid: a page narrower than the viewport shrinks the grid (and the
-  update banner) to its own width. The rankings page sets `width: 100vw`.
+- The `#app` → `#wt-app` rename silently dropped upstream's `#app { width: 100% }` (style.css): `body` is a flex
+  row, so the Vue root shrank to its content — the rankings page used to claim `100vw` to compensate, and on a
+  phone `/settings` and `/my-rankings` grew past the viewport. `style.css` now names `#wt-app` too; nothing
+  under it should size itself to the viewport.
 - Visual checks: `node ~/Projects/wuwa-tools/scripts/shot.mjs http://localhost:5173/rankings --theme light --out x.png`
   (headless-Chromium DevTools screenshot; Cypress's `cy.screenshot()` hangs in this sandbox).
 - Cypress smoke spec: `cypress/e2e/rankings.cy.ts` (CI shard `plus` = every root-level `cypress/e2e/*.cy.ts`).
@@ -39,6 +41,30 @@ Things learned the hard way:
   piece the ER climb skips (`teamrun.ts` guard), rebased on top.
 
 Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
+
+## Phones (2026-09-15)
+
+Upstream's layout is already responsive (768 px breakpoint, hamburger sub-navs); the plus additions are what
+broke on a phone. Rules and pieces:
+
+| Piece | Role |
+|---|---|
+| `src/style.css` `#app, #wt-app { width: 100% }` | the root-width fix above — the one change that touched every page |
+| `Nav.vue` below `sm` (640 px) | five icon links + hamburger + theme + `…` never fit DaisyUI's 50 %/50 % navbar halves: `navbar-start` becomes `flex-1`, `navbar-end` content-sized, icons 40 px with a 4 px gap, the `…` summary `px-2`. Fits 360 px with a desktop scrollbar (Cypress) — the gate in `phoneLayout.cy.ts` measures the Rankings icon against the theme button |
+| `phone-tables.css` (`table--cards`) | a DaisyUI `table` that reflows into flex cards below 768 px: `thead` hidden, each `tr` a wrapping flex card, `td[data-label]` captions itself; the component picks the card order with `.cell--*` classes. Used by `MyRankingsView.vue` (rank · name · damage on the first line, weapon / rotation / bar / deltas / buttons below; the what-if row stays a full-width panel) and `PhoneEchoBatchParser.vue` (screenshot + cost first, the echo / set / main / substat selects below). Same markup as the desktop table, so the E2E hooks and colspan rows are unchanged |
+| `Settings.vue` / `SettingsView.vue` (upstream files, two-line diffs) | the classic tab strip wraps below `sm`, page padding 1 rem — upstream's own page grows to 545 px on a phone once the root is 100 % (PR candidate, parked) |
+| `RankingsView.vue` | `100dvh` height so the credit line and the bottom of Riley's table clear Android's URL bar; credit shortened below `sm`. The B2b bottom sheet (above) is unchanged |
+| `index.html` + `public/manifest.webmanifest` + `public/icons/` | `theme-color`, standalone manifest and 192/512/apple-touch icons (rendered from `icons/icon.svg` with `rsvg-convert`) so the site installs to an Android/iOS home screen; `viewport-fit=cover` |
+
+Gates: `cypress/e2e/phoneLayout.cy.ts` at 360 × 800 — every route inside the viewport width, the nav clear of the
+utility menu, the two card tables reflowed (and back to tables at 1440), real OCR review inside the importer.
+Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
+for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
+whose right edge passes `clientWidth`).
+
+Known, left alone: Riley's slot columns still scroll horizontally inside `.tcwrap` on a phone (his DOM, B2b's
+native table is the fix); the v3 build meta's "Updated … ago" pokes 12 px past a 360 px viewport (upstream,
+clipped, no page scroll); the account bar takes three rows on a phone.
 
 
 ## Stock presets from wuwa_calc (phase C) — `src/sim/presets/`
