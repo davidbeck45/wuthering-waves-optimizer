@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-15T01:11:45.293Z",
+ "generated": "2026-09-15T03:41:44.216Z",
  "wuwaCalcCommit": "ab5a2b9",
  "resonators": {
   "Aemeath": {
@@ -13,6 +13,7 @@
      ],
      "changes": {
       "1": {
+       "kind": "chain",
        "added": [],
        "removed": [],
        "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
@@ -28,6 +29,7 @@
      ],
      "changes": {
       "1": {
+       "kind": "chain",
        "added": [],
        "removed": [],
        "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
@@ -256,6 +258,7 @@
      ],
      "changes": {
       "6": {
+       "kind": "loop",
        "added": [
         "Forte Skill - Perennial (S6) ×1"
        ],
@@ -625,6 +628,7 @@
      ],
      "changes": {
       "3": {
+       "kind": "loop",
        "added": [],
        "removed": [
         "Basic - Stagecraft Form 4 ×1",
@@ -643,6 +647,7 @@
      ],
      "changes": {
       "3": {
+       "kind": "loop",
        "added": [],
        "removed": [
         "Basic - Stagecraft Form 4 ×1",
@@ -837,6 +842,7 @@
      ],
      "changes": {
       "2": {
+       "kind": "chain",
        "added": [],
        "removed": [],
        "note": "first visit: adds Forte Basic - Iai ×1; first opener: adds Forte Basic - Iai ×1"
@@ -947,6 +953,7 @@
      ],
      "changes": {
       "6": {
+       "kind": "loop",
        "added": [
         "Forte Skill - Enhanced Arc Beyond the Edge ×2"
        ],
@@ -1005,6 +1012,7 @@
      ],
      "changes": {
       "2": {
+       "kind": "loop",
        "added": [
         "Skill - Calming Air: Chi Parry ×1"
        ],
@@ -1061,6 +1069,7 @@
      ],
      "changes": {
       "2": {
+       "kind": "loop",
        "added": [
         "Basic - Devil's Bane 2 ×1",
         "Basic - Devil's Bane 3 ×1",
@@ -1160,16 +1169,8 @@
     {
      "label": "Verdant Summit R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Sierra Gale 5pc",
      "minSequence": 0,
-     "loopChangesAt": [
-      6
-     ],
-     "changes": {
-      "6": {
-       "added": [],
-       "removed": [],
-       "note": "same casts in another order"
-      }
-     },
+     "loopChangesAt": [],
+     "changes": {},
      "intendedTeams": 6
     }
    ],
@@ -1539,6 +1540,7 @@
      ],
      "changes": {
       "2": {
+       "kind": "chain",
        "added": [],
        "removed": [],
        "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge ×2, Basic - Movement of Life and Death 1 ×1"
@@ -1642,6 +1644,7 @@
      ],
      "changes": {
       "3": {
+       "kind": "loop",
        "added": [
         "Basic - Thus Spoke the Blade: Inkwash 3 ×1",
         "Skill - Straw Cape in Drizzly Rain (S3) ×1"
@@ -1747,6 +1750,7 @@
      ],
      "changes": {
       "1": {
+       "kind": "loop",
        "added": [],
        "removed": [
         "Basic - Pero, Easy 4 ×1"
@@ -1764,6 +1768,7 @@
      ],
      "changes": {
       "6": {
+       "kind": "loop",
        "added": [
         "Basic - Reality Recreation (S6) ×8",
         "Basic - Reality Recreation (S6) (Swap) ×1"
@@ -1829,6 +1834,7 @@
      ],
      "changes": {
       "5": {
+       "kind": "loop",
        "added": [],
        "removed": [
         "Forte Heavy - Detonate ×1"
@@ -2198,6 +2204,7 @@
      ],
      "changes": {
       "1": {
+       "kind": "chain",
        "added": [],
        "removed": [],
        "note": "start of combat (position 3): adds Forte Heavy - Azure Sword Stance ×1"

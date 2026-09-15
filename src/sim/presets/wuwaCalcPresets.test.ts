@@ -100,7 +100,10 @@ describe("wuwa_calc stock presets (generated data)", () => {
 describe("wuwa_calc sequence breakpoints (generated data)", () => {
   it("names the sequence at which a kit's loop switches, for both Rover forms alike", async () => {
     const xuanling = await loadSequenceBreakpoints("YangyangXuanling");
-    expect(xuanling?.loadouts.some((l) => l.loopChangesAt.includes(1)), "Xuanling switches loops at S1").toBe(true);
+    expect(xuanling?.loadouts.some((l) => l.loopChangesAt.includes(1) && l.changes["1"].kind === "chain"), "Xuanling's S1 changes her start of combat, not the loop").toBe(true);
+    const denia = await loadSequenceBreakpoints("Denia");
+    expect(denia?.loadouts.some((l) => l.changes["3"]?.kind === "loop"), "Denia's S3 switches the loop").toBe(true);
+    expect(await loadSequenceBreakpoints("Jiyan"), "two identical Rotation objects are no breakpoint").toMatchObject({ loadouts: [{ loopChangesAt: [] }] });
     expect(xuanling?.sequences.map((s) => s.level)).toEqual([1, 2, 3, 4, 5, 6]);
     expect(await loadSequenceBreakpoints("RoverAeroMale")).toEqual(await loadSequenceBreakpoints("RoverAeroFemale"));
     expect(await loadSequenceBreakpoints("NotACharacter")).toBeNull();
@@ -110,10 +113,11 @@ describe("wuwa_calc sequence breakpoints (generated data)", () => {
     expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("one loop at every sequence");
     expect(describeBreakpoints({ label: "", minSequence: 2, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("no loop below S2; one loop from S2 up");
     expect(
-      describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [3], changes: { "3": { added: ["Distributed Array ×1"], removed: ["Wide Field ×2"] } }, intendedTeams: 1 }),
+      describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [3], changes: { "3": { kind: "loop", added: ["Distributed Array ×1"], removed: ["Wide Field ×2"] } }, intendedTeams: 1 }),
     ).toBe("S0–S2 run the base loop; S3 switches it (adds Distributed Array ×1; drops Wide Field ×2)");
-    expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [1], changes: { "1": { added: [], removed: [], note: "same casts in another order" } }, intendedTeams: 1 })).toBe(
-      "S0 runs the base loop; S1 switches it (same casts in another order)",
+    expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [1], changes: { "1": { kind: "chain", added: [], removed: [], note: "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1" } }, intendedTeams: 1 })).toBe(
+      "S0 runs the base loop; S1 changes only the opener / start of combat, the loop stays (start of combat (position 1): adds Heavy - Aemeath: Charged II ×1)",
     );
+    expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [6], changes: { "6": { kind: "order", added: [], removed: [] } }, intendedTeams: 1 })).toBe("S0–S5 run the base loop; S6 reorders it (same casts)");
   });
 });

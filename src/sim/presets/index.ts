@@ -73,9 +73,10 @@ export interface BreakpointLoadout {
   /** the lowest sequence the loadout declares a loop for (a build below it has no loop in Riley's solver) */
   minSequence: number;
   loopChangesAt: number[];
-  /** per switching level: what the steady-state loop adds and drops; `note` names another chain that differs
-   *  ("first visit: adds Forte Basic - Iai ×1") or says the casts merely changed order */
-  changes: Record<string, { added: string[]; removed: string[]; note?: string }>;
+  /** per switching level: `kind` says what changed — "loop" (the steady-state loop presses different casts:
+   *  `added` / `removed`), "order" (the same casts in another order), "chain" (the loop is the same and only another
+   *  chain differs, named in `note`: opener, first visit, start of combat) */
+  changes: Record<string, { kind: "loop" | "order" | "chain"; added: string[]; removed: string[]; note?: string }>;
   intendedTeams: number;
 }
 
@@ -117,16 +118,19 @@ export function loadSequenceBreakpoints(characterKey: string): Promise<Resonator
   return breakpointsPromise.then((d) => d.resonators[rileyNameOf(characterKey)] ?? null);
 }
 
-/** "S0–S2 run the base loop; S3 switches it (adds …; drops …)" — one line per loadout for the rotation modal. */
+/** "S0–S2 run the base loop; S3 switches it (adds …; drops …)" — one line per loadout for the rotation modal. A
+ *  level that only changes an opener or start-of-combat chain says so, since the loop the player presses is the same. */
 export function describeBreakpoints(l: BreakpointLoadout): string {
   const parts: string[] = [];
   if (l.minSequence > 0) parts.push(`no loop below S${l.minSequence}`);
   if (!l.loopChangesAt.length) return parts.length ? `${parts[0]}; one loop from S${l.minSequence} up` : "one loop at every sequence";
   let from = l.minSequence;
   for (const n of l.loopChangesAt) {
-    const c = l.changes[String(n)] ?? { added: [], removed: [] };
+    const c = l.changes[String(n)] ?? { kind: "loop", added: [], removed: [] };
     const what = [c.added.length ? `adds ${c.added.join(", ")}` : "", c.removed.length ? `drops ${c.removed.join(", ")}` : "", c.note ?? ""].filter(Boolean).join("; ");
-    parts.push(`${from === n - 1 ? `S${from}` : `S${from}–S${n - 1}`} run${from === n - 1 ? "s" : ""} the ${from === l.minSequence ? "base" : `S${from}`} loop; S${n} switches it${what ? ` (${what})` : ""}`);
+    const span = `${from === n - 1 ? `S${from}` : `S${from}–S${n - 1}`} run${from === n - 1 ? "s" : ""} the ${from === l.minSequence ? "base" : `S${from}`} loop`;
+    const verb = c.kind === "order" ? `S${n} reorders it (same casts)` : c.kind === "chain" ? `S${n} changes only the opener / start of combat, the loop stays` : `S${n} switches it`;
+    parts.push(`${span}; ${verb}${what ? ` (${what})` : ""}`);
     from = n;
   }
   return parts.join(". ");
