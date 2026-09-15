@@ -5,7 +5,9 @@ import { describe, expect, it, vi } from "vitest";
 import manifest from "./data/manifest.json";
 import {
   WUWA_CALC_AUTHOR,
+  describeBreakpoints,
   hasWuwaCalcRotationPresets,
+  loadSequenceBreakpoints,
   loadWuwaCalcRotationPresets,
   loadWuwaCalcTeamPresets,
 } from "./index";
@@ -92,5 +94,26 @@ describe("wuwa_calc stock presets (generated data)", () => {
       }
       expect(slotsSeen.size, `${preset.name}: every slot acts`).toBe(3);
     }
+  });
+});
+
+describe("wuwa_calc sequence breakpoints (generated data)", () => {
+  it("names the sequence at which a kit's loop switches, for both Rover forms alike", async () => {
+    const xuanling = await loadSequenceBreakpoints("YangyangXuanling");
+    expect(xuanling?.loadouts.some((l) => l.loopChangesAt.includes(1)), "Xuanling switches loops at S1").toBe(true);
+    expect(xuanling?.sequences.map((s) => s.level)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(await loadSequenceBreakpoints("RoverAeroMale")).toEqual(await loadSequenceBreakpoints("RoverAeroFemale"));
+    expect(await loadSequenceBreakpoints("NotACharacter")).toBeNull();
+  });
+
+  it("describes a loadout's loop map in one line", () => {
+    expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("one loop at every sequence");
+    expect(describeBreakpoints({ label: "", minSequence: 2, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("no loop below S2; one loop from S2 up");
+    expect(
+      describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [3], changes: { "3": { added: ["Distributed Array ×1"], removed: ["Wide Field ×2"] } }, intendedTeams: 1 }),
+    ).toBe("S0–S2 run the base loop; S3 switches it (adds Distributed Array ×1; drops Wide Field ×2)");
+    expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [1], changes: { "1": { added: [], removed: [], note: "same casts in another order" } }, intendedTeams: 1 })).toBe(
+      "S0 runs the base loop; S1 switches it (same casts in another order)",
+    );
   });
 });

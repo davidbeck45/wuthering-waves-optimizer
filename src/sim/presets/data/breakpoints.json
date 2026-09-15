@@ -1,0 +1,2331 @@
+{
+ "generated": "2026-09-15T01:11:45.293Z",
+ "wuwaCalcCommit": "ab5a2b9",
+ "resonators": {
+  "Aemeath": {
+   "appKey": "Aemeath",
+   "loadouts": [
+    {
+     "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Fusion Burst",
+     "minSequence": 0,
+     "loopChangesAt": [
+      1
+     ],
+     "changes": {
+      "1": {
+       "added": [],
+       "removed": [],
+       "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+      }
+     },
+     "intendedTeams": 5
+    },
+    {
+     "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
+     "minSequence": 0,
+     "loopChangesAt": [
+      1
+     ],
+     "changes": {
+      "1": {
+       "added": [],
+       "removed": [],
+       "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+      }
+     },
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Aemeath S1: Gilded Glimmer of the First Dawn",
+     "note": "S1: +300% Crit. DMG on either form's heavy in Instant Response, Brilliance included, and the Brilliance window above. Sealed Trail is a kill effect, and this calculator fights one boss."
+    },
+    {
+     "level": 2,
+     "name": "Aemeath S2: Downy Notes of Snowfluff",
+     "note": "S2: both Duets at x2 of their multiplier — no sequence row on nanoka, so multiplicative. In Tune Rupture the volley ramps 20% an instance to a cap of 5, which over its own 5 instances averages 40% and over Stardust's 10 averages 70%;…"
+    },
+    {
+     "level": 3,
+     "name": "Aemeath S3: Fervor Sightly Burns Bright as New",
+     "note": "S3: Finale at x2 and Overdrive at x1.4 — again no sequence rows, so multiplicative. The Instant Response heavies' own inflict and the rewritten Between the Stars are paid where each already lives (`inflicts()` and the two payout buffs)."
+    },
+    {
+     "level": 4,
+     "name": "Aemeath S4: Ethereal Waltz on Binary Tides",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Aemeath S5: Voyage to the Astral Shore",
+     "note": "S5: a kill-reset on Starflux and a once-per-fight cheat death. No formula effect."
+    },
+    {
+     "level": 6,
+     "name": "Aemeath S6: A Zephyr-Kissed Journey to You",
+     "note": "S6: the target takes 40% more Resonance Liberation DMG from her — which is what her heavies and Duets deal too; both Trails cap at 60 and double what the Forte Circuit lays (in the modes themselves); and each mode's status damage crits…"
+    }
+   ]
+  },
+  "Aero Rover": {
+   "appKey": "RoverAeroFemale",
+   "loadouts": [
+    {
+     "label": "Bloodpact's Pledge R5 · Rejuvenating Glow 5pc + Fallacy of No Return",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Aero Rover S1: Storm Subsides in the Void",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Aero Rover S2: Glimmers Fade into the Dark",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Aero Rover S3: Illusions Collapse in a Grip",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Aero Rover S4: Boundaries Shatter in an Instant",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Aero Rover S5: Life and Death Intertwine",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Aero Rover S6: All Crumble in the Wind",
+     "note": ""
+    }
+   ]
+  },
+  "Augusta": {
+   "appKey": "Augusta",
+   "loadouts": [
+    {
+     "label": "Thunderflare Dominion R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Verdant Summit R1 · Crown of Valor 3pc + Void Thunder 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Augusta S1: Stained in Scorched Earth",
+     "note": "S1: Crown of Wills holds 2 and pays +15% Crit. DMG a stack (both in the buff itself), and her Intro banks one. The Undying Sunlight interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Augusta S2: Cleansed in Crimson War",
+     "note": "S2: +20% Crit. Rate a stack of Crown of Wills (in the buff), and every point of Crit. Rate past 100 turned into 2 points of Crit. DMG, up to 100 — read late, once every source has landed, since it is the build's finished Crit. Rate the…"
+    },
+    {
+     "level": 3,
+     "name": "Augusta S3: Forged in Rot and Ruin",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Augusta S4: Ascent in Sun and Glory",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Augusta S5: Unshaken in Wrathful Tides",
+     "note": "S5: Glory's Favor shields for half as much again — shields are no stat here."
+    },
+    {
+     "level": 6,
+     "name": "Augusta S6: Engraved in Radiant Light",
+     "note": "S6: Crown of Wills holds 4 (`gainCrown()`), Spinslash and Uppercut bank 2 of them and fire Thunder Rage, and a second conversion band picks up where S2's leaves off — every point of Crit. Rate past 150 for 2 more Crit. DMG, up to 50.…"
+    }
+   ]
+  },
+  "Brant": {
+   "appKey": "Brant",
+   "loadouts": [
+    {
+     "label": "Unflickering Valor R1 / Emerald of Genesis R1 / Laser Shearer R1 / Bloodpact's Pledge R5 · Tidebreaking Courage 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 5
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Brant S1: By Currents and Winds",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Brant S2: For Smiles and Cheers",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Brant S3: Through Storms I Sail",
+     "note": "S3: Returned from Ashes' multiplier +42% — S6's secondary blast is 30% of that hit, so it takes the same lift."
+    },
+    {
+     "level": 4,
+     "name": "Brant S4: To Freedom I Sing",
+     "note": "S4: Returned from Ashes also heals the whole team (its +20% shield isn't modelled) — the healing marker every healing sonata/weapon reads, on Brant alone as always."
+    },
+    {
+     "level": 5,
+     "name": "Brant S5: All the World's an Actor's Stage",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Brant S6: All the World's a Captain's Carnevale",
+     "note": ""
+    }
+   ]
+  },
+  "Buling": {
+   "appKey": "Buling",
+   "loadouts": [
+    {
+     "label": "Variation R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Buling S1",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Buling S2",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Buling S3",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Buling S4",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Buling S5",
+     "note": "The Array inflicts 6 more Electro Flare the moment it is generated."
+    },
+    {
+     "level": 6,
+     "name": "Buling S6",
+     "note": ""
+    }
+   ]
+  },
+  "Camellya": {
+   "appKey": "Camellya",
+   "loadouts": [
+    {
+     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "added": [
+        "Forte Skill - Perennial (S6) ×1"
+       ],
+       "removed": [],
+       "note": "double intro: adds Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage (Swap) ×1, drops Basic - Burgeoning 4 (Hold) (Swap) ×1"
+      }
+     },
+     "intendedTeams": 2
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Camellya S1: Somewhere No One Travelled",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Camellya S2: Calling Upon the Silent Rose",
+     "note": "S2: Ephemeral at x2.2 of its multiplier — nanoka's second row (2777.38% against 1262.45%), so multiplicative — and Perennial with it, being 100% of Ephemeral's DMG."
+    },
+    {
+     "level": 3,
+     "name": "Camellya S3: A Bud Adorned by Thorns",
+     "note": "S3: Fervor Efflorescent at x1.5 (row 1804.21% against 1202.81%, multiplicative); the +58% ATK in Budding Mode is paid by Sweet Dream itself."
+    },
+    {
+     "level": 4,
+     "name": "Camellya S4: Roots Set Deep In Eternity",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Camellya S5: Infinity Held in Your Palm",
+     "note": "S5: Everblooming at x4.03 (row 801.21%) and Twining at x1.68 (row 553.11%) — both multiplicative."
+    },
+    {
+     "level": 6,
+     "name": "Camellya S6: Bloom For You Thousand Times Over",
+     "note": "S6: Sweet Dream's flat 50% becomes 200% (read off this node by Sweet Dream itself), and Perennial — the extra cast the S6 rotation makes."
+    }
+   ]
+  },
+  "Cantarella": {
+   "appKey": "Cantarella",
+   "loadouts": [
+    {
+     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Midnight Veil 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 6
+    },
+    {
+     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Havoc Eclipse 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Cantarella S1: Embrace the Endless Waves",
+     "note": "S1: every Resonance Skill cast banks a Trance, and Graceful Step, Flickering Reverie and Perception Drain hit at x1.5 — nanoka's second rows (110.40/294.34/1001.99%), multiplicative. The interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Cantarella S2: Surrender to the Illusive Reverie",
+     "note": "S2: Flowing Suffocation lays Hazy Dream too — her next own hit Jolts — and Jolt hits at x3.45 (row 685.90% against 198.81%, multiplicative)."
+    },
+    {
+     "level": 3,
+     "name": "Cantarella S3: Gaze into the Abyss",
+     "note": "S3: Flowing Suffocation at x4.7 (row 1767.20%, multiplicative) and it opens Mirage — Delusive Dive after it then just re-holds the same window."
+    },
+    {
+     "level": 4,
+     "name": "Cantarella S4: Behold Your Own Soul",
+     "note": "S4: +25% Healing Bonus in Mirage — paid by Mirage itself; healing is out of scope here."
+    },
+    {
+     "level": 5,
+     "name": "Cantarella S5: Rest in Your Reflection",
+     "note": "S5: Diffusion summons up to 26 Dreamweavers — read off this node by the Liberation's grant."
+    },
+    {
+     "level": 6,
+     "name": "Cantarella S6: Fall, Fall... and Fall Deeper into the Dream",
+     "note": ""
+    }
+   ]
+  },
+  "Carlotta": {
+   "appKey": "Carlotta",
+   "loadouts": [
+    {
+     "label": "The Last Dance R1 / Phasic Homogenizer R1 / Static Mist R1 · Frosty Resolve 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Carlotta S1: Beauty Blazes Brightest Before It Fades",
+     "note": "S1: +12.5% Crit Rate on any hit into a Deconstruction target, and Chromatic Splendor restores 30 more Substance — it always follows Art of Violence, whose Dispersion is what it asks for."
+    },
+    {
+     "level": 2,
+     "name": "Carlotta S2: Fallen Petals Give Life to New Blooms",
+     "note": "S2: Fatal Finale's multiplier +126%."
+    },
+    {
+     "level": 3,
+     "name": "Carlotta S3: Adelante, Cortado, Spinning in Grace",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Carlotta S4: Yesterday's Raindrops Make Finest Wine",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Carlotta S5: Toast to Past, Today, and Every Day to Come",
+     "note": "S5: Imminent Oblivion's multiplier +47%."
+    },
+    {
+     "level": 6,
+     "name": "Carlotta S6: As the Curtain Falls, I Remain What I Am",
+     "note": "S6: Death Knell's shots hit harder and double up — +186.6% multiplier in total."
+    }
+   ]
+  },
+  "Cartethyia": {
+   "appKey": "Cartethyia",
+   "loadouts": [
+    {
+     "label": "Defier's Thorn R1 / Emerald of Genesis R1 / Red Spring R1 · Windward Pilgrimage 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Cartethyia S1: Crown Destined by Fate",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Cartethyia S2: Blade Broken by Tempest",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Cartethyia S3: Prisoner Hanged in the Tower",
+     "note": "S3: the four Fleurdelys casts that already burst Aero Erosion now lay 2 stacks of it first, and the Blade's own multiplier doubles."
+    },
+    {
+     "level": 4,
+     "name": "Cartethyia S4: Sacrifice Made for Salvation",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Cartethyia S5: Hope Reshaped in Storms",
+     "note": "S5: a once-per-10-minutes death save and a cheaper Liberation HP cost — neither reaches the formula, since her motion values read Max HP rather than current. Held for the name."
+    },
+    {
+     "level": 6,
+     "name": "Cartethyia S6: Freedom Found in Storm's Wake",
+     "note": "S6: the Blade tops the target's Aero Erosion up instead of stripping it (see the Blade's own afterAction), any teammate inflicting Aero Erosion at the cap fires an instance of it, and the target takes 40% more DMG from Fleurdelys. The…"
+    }
+   ]
+  },
+  "Changli": {
+   "appKey": "Changli",
+   "loadouts": [
+    {
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 · Molten Rift 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 9
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Changli S1: Hidden Thoughts",
+     "note": "S1: Tripartite Flames and Flaming Sacrifice deal +10% DMG."
+    },
+    {
+     "level": 2,
+     "name": "Changli S2: Pursuit of Desires",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Changli S3: Learned Secrets",
+     "note": "S3: Radiance of Fealty's DMG +80% — read as DMG dealt, same as S1/S5."
+    },
+    {
+     "level": 4,
+     "name": "Changli S4: Polished Words",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Changli S5: Sacrificed Gains",
+     "note": "S5: Flaming Sacrifice's multiplier +50% and its DMG dealt +50%."
+    },
+    {
+     "level": 6,
+     "name": "Changli S6: Realized Plans",
+     "note": "S6: Tripartite Flames, Flaming Sacrifice and Radiance of Fealty ignore a further 40% DEF."
+    }
+   ]
+  },
+  "Chisa": {
+   "appKey": "Chisa",
+   "loadouts": [
+    {
+     "label": "Kumokiri R1 / Lustrous Razor R1 / Radiance Cleaver R1 / Discord R1 / Wildfire Mark R1 · Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 13
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Chisa S1: Wandering Through the Desolate Corridors",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Chisa S2: Into the Web of Endless Bonds",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Chisa S3: Across the Confusion of the Long Night",
+     "note": "S3: +120% DMG Multiplier on the Blitz chain and Eradication, and another +120% on Eradication for the Ring it spends — read as the same flat add the first half is, on top of the per-point bonus RING_CONSUMED already pays, since the text…"
+    },
+    {
+     "level": 4,
+     "name": "Chisa S4: Severing the Endless Cycle of Tragic Fate",
+     "note": "S4 halves Unseen Snare's Bane cooldown, 2s to 1s — the Snare keeps no clock here (see above), so nothing to change. Held for the name."
+    },
+    {
+     "level": 5,
+     "name": "Chisa S5: Thousands of Lights to Guide the Way Home",
+     "note": "S5: +100% DMG Bonus on Moment of Nihility. Glide's cheaper Jetstream reaches no formula."
+    },
+    {
+     "level": 6,
+     "name": "Chisa S6: Thus, Hope is Rekindled with the Rising Dawn",
+     "note": ""
+    }
+   ]
+  },
+  "Ciaccona": {
+   "appKey": "Ciaccona",
+   "loadouts": [
+    {
+     "label": "Woodland Aria R1 / Phasic Homogenizer R1 / Static Mist R1 · Gusts of Welkin 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 7
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Ciaccona S1: Where Wind Sings",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Ciaccona S2: Song of the Four Seasons",
+     "note": "S2: +40% Aero DMG Bonus to the team while the Cadenza plays — paid by the Recital itself (above), which is that window."
+    },
+    {
+     "level": 3,
+     "name": "Ciaccona S3: Starlit Improv",
+     "note": "S3: Stage 4 banks a second segment of Musical Essence, and Harmonic Allegro holds a second charge — which is the extra Skill the S3 rotation casts."
+    },
+    {
+     "level": 4,
+     "name": "Ciaccona S4: Toccata and Fugue",
+     "note": "S4: 45% of the target's DEF ignored on Quadruple Downbeat and on every Resonance Liberation hit. The old ignore, hers being a 2.4 kit (stats.ts)."
+    },
+    {
+     "level": 5,
+     "name": "Ciaccona S5: Eternal Idyll to Lasting Summer",
+     "note": "S5: +40% Resonance Liberation DMG Bonus. The damage reduction is out of scope."
+    },
+    {
+     "level": 6,
+     "name": "Ciaccona S6: Unending Cadence",
+     "note": "S6: the Solo Concert hit above, off every Stage 4 that opens one."
+    }
+   ]
+  },
+  "Danjin": {
+   "appKey": "Danjin",
+   "loadouts": [
+    {
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Blazing Brilliance R1 · Midnight Veil 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Danjin S1: Crimson Heart of Justice",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Danjin S2: Dusted Mirror",
+     "note": "S2: +20% (unscoped) DMG Bonus on any hit landed while Incinerating Will is up."
+    },
+    {
+     "level": 3,
+     "name": "Danjin S3: Fleeting Blossom",
+     "note": "S3: flat +30% Resonance Liberation DMG Bonus."
+    },
+    {
+     "level": 4,
+     "name": "Danjin S4: Solitary Carnation",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Danjin S5: Reigning Blade",
+     "note": "S5: +15% Havoc DMG Bonus flat, +15% more below 60% HP — no HP tracking, so the low-HP half is assumed always true."
+    },
+    {
+     "level": 6,
+     "name": "Danjin S6: Bloodied Jade",
+     "note": ""
+    }
+   ]
+  },
+  "Denia": {
+   "appKey": "Denia",
+   "loadouts": [
+    {
+     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Chromatic Foam 5pc · Resonance Mode - Fusion Burst",
+     "minSequence": 0,
+     "loopChangesAt": [
+      3
+     ],
+     "changes": {
+      "3": {
+       "added": [],
+       "removed": [
+        "Basic - Stagecraft Form 4 ×1",
+        "Skill - Phantom Bubble ×1"
+       ],
+       "note": "opener: drops Basic - Stagecraft Form 4 ×1, Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump ×1"
+      }
+     },
+     "intendedTeams": 6
+    },
+    {
+     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
+     "minSequence": 0,
+     "loopChangesAt": [
+      3
+     ],
+     "changes": {
+      "3": {
+       "added": [],
+       "removed": [
+        "Basic - Stagecraft Form 4 ×1",
+        "Skill - Phantom Bubble ×1"
+       ],
+       "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Dodge ×1"
+      }
+     },
+     "intendedTeams": 2
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Denia S1: Silent Glows in a Dimlit Dream",
+     "note": "S1: +30% Crit. DMG, and she enters the fight already in an Entropy Shift — Stagecraft, the form her loop always starts in. The interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Denia S2: Tossed in the Tides of Reality",
+     "note": "S2: the mode's own handout above, and Banish at x1.4 — nanoka's second Stage 2 ladder (392.04/627.26/862.48/1097.70/1332.92% against 280.03/448.04/616.06/784.07/952.09), so multiplicative, and over the Dark Core ladder rather than under it."
+    },
+    {
+     "level": 3,
+     "name": "Denia S3: Through Dark and Wind, the Erlking Follows",
+     "note": "S3: Final Act - Breakdown at x1.8 (row 357.86% against its own 198.81% a hit, multiplicative); five Dark Cores and a full Void Particle bar from the moment the fight opens; and at the cap, Stage 4 or Phantom Bubble spends the lot for a…"
+    },
+    {
+     "level": 4,
+     "name": "Denia S4: From the Far Beyond, to the Far Beyond",
+     "note": "S4: the Erosion Field pulls every 3s rather than every 4s — the field itself, granted by Final Act - Breakdown above."
+    },
+    {
+     "level": 5,
+     "name": "Denia S5: If Lies Patch Up a Heart",
+     "note": "S5: Final Act - Stagecraft deals 100% more. \"DMG\", not \"DMG Multiplier\", and nanoka carries no second row for it — so a damage bonus rather than a multiplier."
+    },
+    {
+     "level": 6,
+     "name": "Denia S6: May You Find Your Sun in the Silence",
+     "note": "S6: +60% ATK and +60% Fusion DMG Bonus in either Entropy Shift; in Fusion Burst, every pull of her Erosion Field calculates a Fusion Burst at the target's cap without taking the stacks, at +200% of its multiplier; and in Tune Strain a…"
+    }
+   ]
+  },
+  "Electro Rover": {
+   "appKey": "Roverelectrofemale",
+   "loadouts": [
+    {
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 · Heart of Sworn Vigil 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    },
+    {
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Unspoken Rue R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Electro Rover S1: Celestial Ingenuity",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Electro Rover S2: Thousandfold Artifice",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Electro Rover S3: Alchemy of Wonders",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Electro Rover S4: Earthquaking Rumble",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Electro Rover S5: Principle of Change",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Electro Rover S6: Mind's Depths in a Casket",
+     "note": ""
+    }
+   ]
+  },
+  "Encore": {
+   "appKey": "Encore",
+   "loadouts": [
+    {
+     "label": "Stringmaster R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Lethean Elegy R1 / Whispers of Sirens R1 / Rime-Draped Sprouts R1 · Molten Rift 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Encore S1",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Encore S2",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Encore S3",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Encore S4",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Encore S5",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Encore S6",
+     "note": ""
+    }
+   ]
+  },
+  "Galbrena": {
+   "appKey": "Galbrena",
+   "loadouts": [
+    {
+     "label": "Lux & Umbra R1 / Phasic Homogenizer R1 / Static Mist R1 · Flamewing's Shadow 3pc + Flaming Clawprint 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Galbrena S1: Heart of Defiance Ever Ablaze",
+     "note": "S1: 2% Crit. DMG a point of Afterflame to the enhanced casts, 80% at its own 40-point cap — paid by Afterflame itself, which is what holds the count. The interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Galbrena S2: Hellbound Dive of Fire and Abyss",
+     "note": "S2: Burning Drive's +20% ATK becomes +90% — paid by Burning Drive itself."
+    },
+    {
+     "level": 3,
+     "name": "Galbrena S3: Hunter's Blood Oath Rekindled",
+     "note": "S3: the Liberation at x2.3 — nanoka's second rows (255.07% and 208.69% against 110.90% and 90.74%), and nothing else multiplies it, so a plain multiplier reaches exactly that."
+    },
+    {
+     "level": 4,
+     "name": "Galbrena S4: Carry Forth This Fading Spark",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Galbrena S5: Though Light Fades, Torment Consumes",
+     "note": "S5: Encroach, Ascent of Malice and Ravage at x2.5 — nanoka's second rows (26.83%+62.60% and 128.93%), and none of the three carries another multiplier, so this lands on exactly that."
+    },
+    {
+     "level": 6,
+     "name": "Galbrena S6: I Remain Who I am, Eternal My Flame",
+     "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every Seraphic Execution and Flamewing Verdict at x1.6 — over the Hellfire window rather than beside it, which nanoka's rows settle: 174.61% is 58.99% x 1.85 x 1.6.…"
+    }
+   ]
+  },
+  "Hiyuki": {
+   "appKey": "Hiyuki",
+   "loadouts": [
+    {
+     "label": "Frostburn R1 / Emerald of Genesis R1 · Wishes of Quiet Snowfall 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "added": [],
+       "removed": [],
+       "note": "first visit: adds Forte Basic - Iai ×1; first opener: adds Forte Basic - Iai ×1"
+      }
+     },
+     "intendedTeams": 5
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Hiyuki S1: Springless",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Hiyuki S2: To Burn Cold in Silence",
+     "note": "S2: the Iai at x2.25 — multiplicative, its own second rows (638.59%+106.44%x4 against 283.82%+47.31%x4) — and Ephemeral Realm's one Snowforged Blade becomes three. The Frostharden restore is for Foreclaimed Self, which she is not in at…"
+    },
+    {
+     "level": 3,
+     "name": "Hiyuki S3: No Self, No Bound",
+     "note": "S3: a stack of Snow Rust from the off (`snowRust()`'s fourth bit, which belongs to no slot), both named Heavies at x2.6 — multiplicative, their own second rows (824.75% against 317.23%, 1602.49% against 616.33%) — and the…"
+    },
+    {
+     "level": 4,
+     "name": "Hiyuki S4: Like Reeds on Tides",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Hiyuki S5: Vessel of Thousand Wishes",
+     "note": "S5: all three Frostblight forms at x1.8 — multiplicative, their own second rows (352.72% against 195.98%, 475.24% against 264.04%, 576.20% against 320.10%)."
+    },
+    {
+     "level": 6,
+     "name": "Hiyuki S6: Into a Night Without End",
+     "note": "S6: +500% Crit. DMG on both halves of Foreclaiming. Its three Snow Rust tiers — the wider Bite trigger, the second +40% Crit. DMG and the target's +25% Glacio Bite vulnerability — are paid inside Snow Rust, which is where the count they…"
+    }
+   ]
+  },
+  "Hsin": {
+   "appKey": "Hsin",
+   "loadouts": [
+    {
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    },
+    {
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Hsin S1: A Boat to Cross the Rising Tide",
+     "note": "S1. Unison: both Manifold Unison Intros hit for +15% DMG Multiplier, and +10% more a Unison Boon stack the team holds, four at most — a fourth only ever exists at S6, which is what raises the Boon's own cap that far. Flare: entering…"
+    },
+    {
+     "level": 2,
+     "name": "Hsin S2: To Wake Is to Wonder What I Am",
+     "note": "S2: +60% DMG Multiplier on both Realm forms and both Horizons forms, and entering combat hands Answering Form 100 more Answering Heart. Its other half resets the two once-per-25s upgrades' cooldowns, which changes nothing here: the…"
+    },
+    {
+     "level": 3,
+     "name": "Hsin S3: A Dream of Return Among the Hills",
+     "note": "S3: +70% DMG Multiplier on Pillars Across Heaven; in Unison mode it also crits 20% harder, plus 15% a Unison Boon stack, four at most; in Flare mode it fires the instance above."
+    },
+    {
+     "level": 4,
+     "name": "Hsin S4: A River of Lanterns, a River of Wishes",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Hsin S5: Forms Turn as the Heart Wills",
+     "note": "S5 is a damage reduction and a death save — neither reaches the formula. Held for the name."
+    },
+    {
+     "level": 6,
+     "name": "Hsin S6: The Moon Owes Its Light to the Living",
+     "note": "S6: the target takes 40% more Resonance Skill DMG from her and 20% less of its DEF counts against it; in Unison mode the team's Unison Boon reaches a fourth stack (the cap unison.ts declares) and any member's response hands everyone…"
+    }
+   ]
+  },
+  "Iuno": {
+   "appKey": "Iuno",
+   "loadouts": [
+    {
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Marcato R1 / Abyss Surges R1 / Verity's Handle R1 · Crown of Valor 3pc + Sierra Gale 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 7
+    },
+    {
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Abyss Surges R1 / Verity's Handle R1 · Crown of Valor 3pc + Sierra Gale 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "added": [
+        "Forte Skill - Enhanced Arc Beyond the Edge ×2"
+       ],
+       "removed": [
+        "Skill - Closing Refrain ×1",
+        "Basic - Moonbow 1 ×1",
+        "Basic - Moonbow 2 ×1",
+        "Basic - Moonbow 3 ×1"
+       ]
+      }
+     },
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Iuno S1: Wax or Wane, All Gild the Bough",
+     "note": "S1: +40% ATK while in Lunar Cycle; the point of Energy a second inside the domain is paid by the domain itself (above). The interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Iuno S2: Day or Night, Let This Be Eternal",
+     "note": "S2: +40% all DMG Amplification on top for anyone at ten Blessing stacks — paid by the Blessing itself (above)."
+    },
+    {
+     "level": 3,
+     "name": "Iuno S3: I Drink Deep of Their Forgetting",
+     "note": "S3: Moonbow presses, Arc Beyond the Edge and the Moonbow Dodge Counter amplified 65% while in Lunar Cycle. Its cycle-keeping half is control flow, not a stat."
+    },
+    {
+     "level": 4,
+     "name": "Iuno S4: Rainy Season Dwell in My Eyes",
+     "note": "S4: Absolute Fullness shields the whole team, and a shield gained inside the domain it conjures is a Blessing stack — she gains her own off that cast already, so the others get theirs here."
+    },
+    {
+     "level": 5,
+     "name": "Iuno S5: A Thousand Futile Glimpses",
+     "note": "S5: +20% Resonance Liberation DMG Bonus."
+    },
+    {
+     "level": 6,
+     "name": "Iuno S6: I Am the Constant in the Chaos",
+     "note": "S6: Absolute Fullness gains 1600% of ATK on its multiplier — additive, nanoka's own S6 row is 1759.05% against the plain 159.05% — and casting it puts her straight back into New Moon with a full 100 Sentience and both Arc charges: the…"
+    }
+   ]
+  },
+  "Jianxin": {
+   "appKey": "Jianxin",
+   "loadouts": [
+    {
+     "label": "Marcato R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "added": [
+        "Skill - Calming Air: Chi Parry ×1"
+       ],
+       "removed": [
+        "Basic - Fengyiquan 1 ×1",
+        "Basic - Fengyiquan 2 ×1"
+       ]
+      }
+     },
+     "intendedTeams": 1
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Jianxin S1: Verdant Branchlet",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Jianxin S2: Tao Seeker's Journey",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Jianxin S3: Principles of Wuwei",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Jianxin S4",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Jianxin S5",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Jianxin S6",
+     "note": ""
+    }
+   ]
+  },
+  "Jingran": {
+   "appKey": "Jingran",
+   "loadouts": [
+    {
+     "label": "Thousandfold Deliverance R1 / Radiance Cleaver R1 / Thunderflare Dominion R1 / Lustrous Razor R1 / Verdant Summit R1 · Lamp of Nether Road 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "added": [
+        "Basic - Devil's Bane 2 ×1",
+        "Basic - Devil's Bane 3 ×1",
+        "Basic - Devil's Bane 4 ×1"
+       ],
+       "removed": [
+        "Basic - Drink Soul 2 ×1",
+        "Basic - Drink Soul 3 ×1",
+        "Basic - Drink Soul 4 ×1"
+       ],
+       "note": "start of combat (position 1): adds Forte Heavy - Stardome Meander ×1; start of combat (position 2): adds Forte Heavy - Stardome Meander ×1; start of combat (position 3): adds Forte Heavy - Stardome Meander ×1"
+      }
+     },
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Jingran S1: Yin and Yang in Harmony, the Ultimate Law of Being",
+     "note": "S1: all four Resonance Skill forms at x1.8 — nanoka's second rows (118.10%+59.05%*3, 93.03%+46.52%*2+69.77%*4, 118.57%*2+237.13%), and nothing else multiplies them, so a plain multiplier lands on exactly that. The interrupt immunity is…"
+    },
+    {
+     "level": 2,
+     "name": "Jingran S2: A Solitary Lantern, Across Lands Shade-Trodden",
+     "note": "S2: both Forte heavies at x1.46 — nanoka's second rows (35.10%+35.10%+70.19%+210.56% and 23.95%*2+30.79%*3+201.80%) — which is one multiplier over the whole bracket, so it carries Fire of Life's own per-HP increase with it, exactly as…"
+    },
+    {
+     "level": 3,
+     "name": "Jingran S3: World's Course Shifts, Each to Their Rightful Paths",
+     "note": "S3: five Ghost Shroud a Forte heavy, and the Everflow window above."
+    },
+    {
+     "level": 4,
+     "name": "Jingran S4: Where Reality Meets Illusion, Where Living Meet Dead",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Jingran S5: Ends Return to Beginnings, Truth of Life Laid Bare",
+     "note": "S5: a once-per-fight cheat death. No formula effect."
+    },
+    {
+     "level": 6,
+     "name": "Jingran S6: As Favors and Feuds Fade, New Stories Await",
+     "note": "S6: the target takes 40% more Heavy Attack DMG from him, Chimei Wangliang at x1.8 (row 150.31% against 83.51%), and the Parade above."
+    }
+   ]
+  },
+  "Jinhsi": {
+   "appKey": "Jinhsi",
+   "loadouts": [
+    {
+     "label": "Ages of Harvest R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Celestial Light 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 12
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Jinhsi S1: Abyssal Ascension",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Jinhsi S2: Chronofrost Repose",
+     "note": "S2: 50 Incandescence back for standing *out of combat* 4s. A rotation here is one unbroken fight, so this never fires — the node is held for its name, like Phrolova's own S5."
+    },
+    {
+     "level": 3,
+     "name": "Jinhsi S3: Celestial Incarnate",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Jinhsi S4: Benevolent Grace",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Jinhsi S5: Frostfire Illumination",
+     "note": "S5: Purge of Light's own 1666.03% x 2.2, which is nanoka's second row for it."
+    },
+    {
+     "level": 6,
+     "name": "Jinhsi S6: Thawing Triumph",
+     "note": "S6: the same +45% on both halves of Illuminous Epiphany — and, because a motion value is `(base + added) x (1 + multiplier)` (damage.ts), the one multiplier lifts the 44.54% per Incandescence stack by 45% too, which is the node's second…"
+    }
+   ]
+  },
+  "Jiyan": {
+   "appKey": "Jiyan",
+   "loadouts": [
+    {
+     "label": "Verdant Summit R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Sierra Gale 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "added": [],
+       "removed": [],
+       "note": "same casts in another order"
+      }
+     },
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Jiyan S1: Benevolence",
+     "note": "S1: Windqueller holds a second charge — the extra in-mode cast the S1 rotation makes — and its Resolve cost drops to 15, which the Skill itself reads off this being held."
+    },
+    {
+     "level": 2,
+     "name": "Jiyan S2: Versatility",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Jiyan S3: Spectation",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Jiyan S4: Prudence",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Jiyan S5: Resolution",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Jiyan S6: Fortitude",
+     "note": ""
+    }
+   ]
+  },
+  "Lucilla": {
+   "appKey": "Lucilla",
+   "loadouts": [
+    {
+     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 · Dream of the Lost 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone · Resonance Mode - Echo",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 7
+    },
+    {
+     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 2
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lucilla S1: Distant Noon",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Lucilla S2: Slumbering Moonlight",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Lucilla S3: Days Fade Unheard",
+     "note": "S3: +100% DMG Multiplier on Letting It Go."
+    },
+    {
+     "level": 4,
+     "name": "Lucilla S4: The Past Fades Into Silence",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Lucilla S5: Time is Like a Stream",
+     "note": "S5: +50% DMG Multiplier on Oblivion, either form."
+    },
+    {
+     "level": 6,
+     "name": "Lucilla S6: Gazing In the Mist of Time",
+     "note": ""
+    }
+   ]
+  },
+  "Lucy": {
+   "appKey": "Lucy",
+   "loadouts": [
+    {
+     "label": "Spectral Trigger R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 2
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lucy S1: The Moon, a Ticket, and a Dream",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Lucy S2: The Blackwall, the Past, the Escape",
+     "note": "S2. Its first clause is the starting RAM, 24 up to 32 — which is every Spoofing Program at once (2+4+4+5+6+5+6 = 32) rather than the five worth having at 24, and the two it adds are the defensive Weapon Glitch and the Common-Class-only…"
+    },
+    {
+     "level": 3,
+     "name": "Lucy S3: Cyberpunk",
+     "note": "S3, all three clauses against nanoka's own second rows: the Override at 1341.97%/2683.94% (x1.5), Cripple Movement at 1504.51% and Data Crash at 2256.77% (x1.65 apiece). The Crit. DMG is the Override's own, so it is added on that cast…"
+    },
+    {
+     "level": 4,
+     "name": "Lucy S4: No Living Legends in Night City",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Lucy S5: A Broken Path to Hell",
+     "note": "S5: a second Optical Illusion stack and a shield off it. Both are defensive and Ghost Cyberware itself holds no stat, so this is held for its name."
+    },
+    {
+     "level": 6,
+     "name": "Lucy S6: I Really Want to Stay At Your House",
+     "note": "S6: her own Heavy and Hack damage against a target carrying Hack - Shifting or sitting in Hack - Interfered — damage *taken*, so it goes on as Damage Taken the way Cyberware Malfunction's own 5% does, scoped to the two damage types the…"
+    }
+   ]
+  },
+  "Lupa": {
+   "appKey": "Lupa",
+   "loadouts": [
+    {
+     "label": "Wildfire Mark R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Flaming Clawprint 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 14
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lupa S1: Behold the Nameless One",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Lupa S2: Every Ground, Her Hunting Field",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Lupa S3: Wolflame Howls in Her Wake",
+     "note": "S3: Nowhere to Run! at x2 — nanoka's second rows (1587.14%+99.20%*4), and nothing else multiplies it. Pack Hunt's own Fusion-count gate and Glory's extra 15% are paid by those two."
+    },
+    {
+     "level": 4,
+     "name": "Lupa S4: High and Aflame Is Her Banner",
+     "note": "S4: Dance With the Wolf: Climax at x2.25 — nanoka's second rows (170.16%+127.62%*4+1020.92%), and nothing else multiplies it either."
+    },
+    {
+     "level": 5,
+     "name": "Lupa S5: Embrace the Thunderous Triumph",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Lupa S6: To the Brightest Flaming Star",
+     "note": "S6: 30% of the target's DEF ignored on Climax, Fire-Kissed Glory and Nowhere to Run! — the old ignore, hers being a 2.4 kit (stats.ts) — 100 Wolflame back on Feral Fang, and Nowhere to Run! keeping both Liberation windows alive (in her…"
+    }
+   ]
+  },
+  "Luuk Herssen": {
+   "appKey": "LuukHerssen",
+   "loadouts": [
+    {
+     "label": "Daybreaker's Spine R1 / Pulsation Bracer R1 / Abyss Surges R1 · Rite of Gilded Revelation 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Luuk S1: Gold Kindled in Ash",
+     "note": "S1: +150% Mid-air Attack DMG Bonus. The Dawnlit Keep half is a shield charge — no stat here, and nothing reads the buff."
+    },
+    {
+     "level": 2,
+     "name": "Luuk S2: Avalanche Roaring in Eyes",
+     "note": "S2: the Liberation +60% multiplier — additive with Endnotes' own, which the node says outright and nanoka's rows confirm (1839.00% at one Endnote against 994.09% base, so 1 + 0.6 + 0.25) — and Uncaused Diagnosis doubled: 10% a 10 points…"
+    },
+    {
+     "level": 3,
+     "name": "Luuk S3: Spine Tempered by Golden Rain",
+     "note": "S3: +136% multiplier on every Aureole form in Aureate Judge, and on the Gavel and Ichor Deposit a Glare marks — additive with the state's own +110%, which nanoka's third row for each hit gives exactly (Ring 766.90% against 221.33%, so…"
+    },
+    {
+     "level": 4,
+     "name": "Luuk S4: Pulse Thrumming Under Rime",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Luuk S5: Through the Stillness of Snowstorm",
+     "note": "S5: +80% DMG Bonus on his Intro and Outro, and Golden Reflux at x1.5 — multiplicative, its own second row (301.80% against 201.20%), and nothing else multiplies it. The extra charge and the shorter cooldown buy no press this line…"
+    },
+    {
+     "level": 6,
+     "name": "Luuk S6: Dawn Unfurling over Frostlands",
+     "note": "S6: that window, +40% Liberation DMG Bonus an Endnote to a 120% cap, and two more Tune Strain - Interfered on the target off every hit of his that lands on one. \"Ignores the max stack limit\" has no engine form — the cap is raised by the…"
+    }
+   ]
+  },
+  "Lynae": {
+   "appKey": "Lynae",
+   "loadouts": [
+    {
+     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Rupture",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 18
+    },
+    {
+     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 2
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lynae S1: Days to be Painted Like a Canvas",
+     "note": "S1: all three Polychrome Leaps at x2.2 — multiplicative, nanoka's own second rows (74.36% against 33.80%, and the same 2.2 on the other two). Spray Paint's longer window and the interrupt immunity are no stat, and the out-of-combat…"
+    },
+    {
+     "level": 2,
+     "name": "Lynae S2: Into Lights' Vanishing Point",
+     "note": "S2: +25% All DMG Amplification of her own, and the same again on her outro handoff (paid inside it, since the buff sits on whoever she hands to)."
+    },
+    {
+     "level": 3,
+     "name": "Lynae S3: For One Brilliant Moment",
+     "note": "S3: Visual Impact and Iridescent Splash at x1.9 — multiplicative, their own second rows (2311.77% against 1216.72%, 577.95% against 304.18%). Premixed Hue pays only Additive Color's own Spectro DMG Bonus, and this line never casts it,…"
+    },
+    {
+     "level": 4,
+     "name": "Lynae S4: Shadows of a Wind Racer",
+     "note": "S4: +20% ATK."
+    },
+    {
+     "level": 5,
+     "name": "Lynae S5: Visions of a Future Unbound",
+     "note": "S5: Prismatic Overblast at x1.7 — multiplicative, its own second row (148.71% against 87.48%)."
+    },
+    {
+     "level": 6,
+     "name": "Lynae S6: Painted in My True Color",
+     "note": "S6: Color of Soul above. Its other lines are shape rather than damage — the mid-air Heavy's charges, her damage reduction, staying in the Parade through her outro, and a Lumiflow ceiling nothing in this line spends."
+    }
+   ]
+  },
+  "Mornye": {
+   "appKey": "Mornye",
+   "loadouts": [
+    {
+     "label": "Starfield Calibrator R1 / Discord R1 · Halo of Starry Radiance 5pc + Reactor Husk",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 18
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Mornye S1: The Silent Observer",
+     "note": "S1: the Interfered Marker lasts 20s instead of 8 and pays whether or not the target is actually under an Interfered — both read off this node by the marker itself — and Inversion's Observation Marker now lays the Interfered Marker with…"
+    },
+    {
+     "level": 2,
+     "name": "Mornye S2: Morning Star of Entropy",
+     "note": "S2: +0.2% Crit. DMG per 1% of her ER past 100% against a marked target, capped at 32% — taken at the cap, the same 260%-ER build call as the marker — and +20% more Off-Tune Buildup Rate on top of whichever stage of the field is…"
+    },
+    {
+     "level": 3,
+     "name": "Mornye S3: Blueprint of Recursion",
+     "note": "S3: Distributed Array also hands her 25 Concerto and a full 100 Relative Momentum, once every 25s — once a loop, so it fires on every cast the rotation makes. The Momentum is what pays for Inversion on its own, which is why the S3…"
+    },
+    {
+     "level": 4,
+     "name": "Mornye S4: Latent Variables of the Cosmos",
+     "note": "S4 is healing only — held for the name."
+    },
+    {
+     "level": 5,
+     "name": "Mornye S5: Time Dilation Effect",
+     "note": "S5: +40% DMG Multiplier on Critical Protocol, +160% on Particle Jet."
+    },
+    {
+     "level": 6,
+     "name": "Mornye S6: To the Far Shores of the Stars",
+     "note": "S6: Critical Protocol deals 400% more DMG. Its other half refills her Resonance Energy while she is off field, which changes nothing here — she already casts the Liberation every loop."
+    }
+   ]
+  },
+  "Mortefi": {
+   "appKey": "Mortefi",
+   "loadouts": [
+    {
+     "label": "Static Mist R1 / Cadenza R1 / Phasic Homogenizer R1 / The Last Dance R1 · Moonlit Clouds 5pc + Impermanence Heron",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 8
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Mortefi S1: Solitary Etude",
+     "note": "S1 Solitary Etude: extra Marcato off a teammate's own Resonance Skill cast — depends on their own kit, so it's a documentary no-op, same reasoning as Rover Havoc's S2/S3."
+    },
+    {
+     "level": 2,
+     "name": "Mortefi S2: Hypocritical Hymn",
+     "note": "S2 Hypocritical Hymn: +10 Energy on Echo Skill — its own 20s ICD dropped, per the standing ICD simplification."
+    },
+    {
+     "level": 3,
+     "name": "Mortefi S3: Flaming Recitativo",
+     "note": "S3 Flaming Recitativo: +30% Crit DMG on Marcato hits, scoped to `Type2.Coordinated` (covers both the base window and S5's own burst below)."
+    },
+    {
+     "level": 4,
+     "name": "Mortefi S4: Cathartic Waltz",
+     "note": "S4 Cathartic Waltz: extends Burning Rhapsody 10s -> 17s — 20 more 0.35s coordinated-attack slots banked on top of the Liberation's own 28."
+    },
+    {
+     "level": 5,
+     "name": "Mortefi S5: Funerary Quartet",
+     "note": "S5 Funerary Quartet: Mortefi's own Passionate Variation/Fury Fugue hit fires 4 more Marcato at -50% DMG Bonus — his own follow-up, not the Liberation window's, so it fires whether or not Burning Rhapsody stands."
+    },
+    {
+     "level": 6,
+     "name": "Mortefi S6: Apoplectic Instrumental",
+     "note": "S6 Apoplectic Instrumental — payout lives in `S6_TEAM_ATK` above, this is just its trigger."
+    }
+   ]
+  },
+  "Phrolova": {
+   "appKey": "Phrolova",
+   "loadouts": [
+    {
+     "label": "Lethean Elegy R1 / Cosmic Ripples R1 / Stringmaster R1 · Dream of the Lost 3pc + Havoc Eclipse 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "added": [],
+       "removed": [],
+       "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge ×2, Basic - Movement of Life and Death 1 ×1"
+      }
+     },
+     "intendedTeams": 12
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Phrolova S1: A Key to Netherworld's Secrets",
+     "note": "S1: the out-of-combat top-up only ever reads, in a rotation, as opening the fight holding 2 Volatile Notes — Cadenza by its own text (\"gains Volatile Note - Cadenza until she has at least 2\"), banked straight into the store's first two…"
+    },
+    {
+     "level": 2,
+     "name": "Phrolova S2: A Rope Tied to a Life Beyond",
+     "note": "S2: both Scarlet Coda lines together are the one +75% MV multiplier, not a per-Aftersound one."
+    },
+    {
+     "level": 3,
+     "name": "Phrolova S3: A Dagger to Cut Clean Obsessions",
+     "note": "S3: every note becomes a Cadenza (in drawNote() above); the Cadenza ATK shred isn't modelled (enemy ATK doesn't enter this formula)."
+    },
+    {
+     "level": 4,
+     "name": "Phrolova S4: A Torch Illuminating the Path",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Phrolova S5: A Forked Road in Fate's Heartland",
+     "note": "S5: a Stagnation field and 30% damage-taken reduction — neither reaches this calculator."
+    },
+    {
+     "level": 6,
+     "name": "Phrolova S6: A Night to Depart From Eternal Rest",
+     "note": "S6: +24% MV on the Maestro notes, an extra Hecate cast out of each Forte action, and the Maestro damage split — off-field (her inactive actions) is the 40% the target takes, on-field is the Havoc bonus instead."
+    }
+   ]
+  },
+  "Qingxiao": {
+   "appKey": "Qingxiao",
+   "loadouts": [
+    {
+     "label": "Glint of Clouds R1 / Emerald of Genesis R1 / Laser Shearer R1 / Red Spring R1 · Heart of Evil's Purge 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Qingxiao S1: Like Clouds That Meet and Drift Apart",
+     "note": "S1: +16% Crit. Rate, and the Seal above. Swordlight Ward is damage taken."
+    },
+    {
+     "level": 2,
+     "name": "Qingxiao S2: Like Petals That Fall Without a Sound",
+     "note": "S2: +40% multiplier on Heavy Attack - Stringblade, Mindlock stacks to 25, and Heaven's Clarity has that Heavy lay 6 Mindlock rather than 3 — the three more here, on top of Clarity's own. The Gathered Mind cap only ever matters off kills."
+    },
+    {
+     "level": 3,
+     "name": "Qingxiao S3: Dreams Fade, Sword Abides",
+     "note": "S3: +100% Crit. DMG on the Liberation, World in Chorus above, and Gathered Mind's break lays two Interfered (in GATHERED_MIND itself)."
+    },
+    {
+     "level": 4,
+     "name": "Qingxiao S4: Wherever the Road Leads, Side by Side",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Qingxiao S5: Cold Steel That Longs to Warm the Snow",
+     "note": "S5: +100% multiplier on Severing Note: Judgement. Flight Qi is movement."
+    },
+    {
+     "level": 6,
+     "name": "Qingxiao S6: Cleanse This Tarnished Age, Till All Runs Clear",
+     "note": "S6: the target takes 40% more from Stringblade, Heaven's Reckoning, the Liberation and Juque Perdition; Stringblade banks Exorcising Seal equal to the target's Mindlock; Mindlock pays on Juque Perdition the same twice-over way it pays…"
+    }
+   ]
+  },
+  "Qiuyuan": {
+   "appKey": "Qiuyuan",
+   "loadouts": [
+    {
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 · Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 8
+    },
+    {
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 · Law of Harmony 3pc + Sierra Gale 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      3
+     ],
+     "changes": {
+      "3": {
+       "added": [
+        "Basic - Thus Spoke the Blade: Inkwash 3 ×1",
+        "Skill - Straw Cape in Drizzly Rain (S3) ×1"
+       ],
+       "removed": [
+        "Basic - Thus Spoke the Blade: Inkwash 4 ×1",
+        "Heavy - Inkwash ×2",
+        "Basic - Thus Spoke the Blade: Inkwash 1 ×2",
+        "Basic - Thus Spoke the Blade: Inkwash 2 ×2",
+        "Dodge ×1"
+       ],
+       "note": "start of combat (position 3): adds Liberation - Sundering Strike ×1, Skill - Through the Groves ×1; intro at position 2: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Liberation - Sundering Strike ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1; intro at position 3: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1, Liberation - Sundering Strike ×1"
+      }
+     },
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Qiuyuan S1: Sword Sheathed, Mind Unclouded",
+     "note": "S1: +20% Crit. Rate. The interrupt immunity is no stat."
+    },
+    {
+     "level": 2,
+     "name": "Qiuyuan S2: O Blade, I, Who Teach No More",
+     "note": "S2: Bamboo's Shade also amplifies Echo Skill DMG 30% — paid by the Shade itself (above)."
+    },
+    {
+     "level": 3,
+     "name": "Qiuyuan S3: O Blade, I, Who Save No More",
+     "note": "S3: Sundering Strike gains 500% of ATK — additive too, its S3 row being 1295.24% against 795.24% — and Straw Cape in Drizzly Rain, which the S3 rotation casts once a loop."
+    },
+    {
+     "level": 4,
+     "name": "Qiuyuan S4: O Blade, I, Who Sacrifice No More",
+     "note": "S4: +20% ATK."
+    },
+    {
+     "level": 5,
+     "name": "Qiuyuan S5: O Blade, I, Who Await to be Wielded",
+     "note": "S5: 15% of the target's DEF ignored — the new ignore, his being a 2.7 kit (stats.ts)."
+    },
+    {
+     "level": 6,
+     "name": "Qiuyuan S6: Thus I Heard, Thus I Saw, Thus I Spoke",
+     "note": "S6: the Inksplash-ending hit above whenever he is the one on field as it ends, and the crit window off Straw Cape. The stagnation is no stat."
+    }
+   ]
+  },
+  "Rebecca": {
+   "appKey": "Rebecca",
+   "loadouts": [
+    {
+     "label": "Skull Thrasher R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 8
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Rebecca S1: Try Not to Get in the Way!",
+     "note": "S1: +50% multiplier on the plain shots of both modes — the three-stage Basics, Heavy Attack - Huntress (the held burst, not Eat Lead!) and both Tactical Dodges. The Street Smarts stamina refund and the Liberation's interruption immunity…"
+    },
+    {
+     "level": 2,
+     "name": "Rebecca S2: Oh, Hey Choom!",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Rebecca S3: Don't Sweat Your Six!",
+     "note": "S3: +60% multiplier on everything Party 'til Dawn! fires — the Mk. 31 HMG tiers and BOOM! Fireworks! — and 120 Hot Hand on either Intro. Hot Hand cannot be restored while A Girl Gets What She Wants! is up, and the Intro is what triggers…"
+    },
+    {
+     "level": 4,
+     "name": "Rebecca S4: Got Ya Covered!",
+     "note": "S4: A Girl Gets What She Wants! grants 60% more — read by the buff itself (see A_GIRL)."
+    },
+    {
+     "level": 5,
+     "name": "Rebecca S5: Dreamin' on the Edge",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Rebecca S6: Maybe, Just Maybe...",
+     "note": ""
+    }
+   ]
+  },
+  "Roccia": {
+   "appKey": "Roccia",
+   "loadouts": [
+    {
+     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Midnight Veil 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      1
+     ],
+     "changes": {
+      "1": {
+       "added": [],
+       "removed": [
+        "Basic - Pero, Easy 4 ×1"
+       ],
+       "note": "opener: drops Basic - Pero, Easy 4 ×1"
+      }
+     },
+     "intendedTeams": 2
+    },
+    {
+     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Havoc Eclipse 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "added": [
+        "Basic - Reality Recreation (S6) ×8",
+        "Basic - Reality Recreation (S6) (Swap) ×1"
+       ],
+       "removed": [
+        "Basic - Pero, Easy 4 ×1",
+        "Skill - Acrobatic Trick ×1",
+        "Dodge ×1",
+        "Forte Basic - Real Fantasy 1 ×1",
+        "Forte Basic - Real Fantasy 2 ×1",
+        "Forte Basic - Real Fantasy 3 ×1",
+        "Echo Placeholder (on field) ×2",
+        "Basic - Pero, Easy 1 ×1",
+        "Basic - Pero, Easy 2 ×1",
+        "Basic - Pero, Easy 3 ×1"
+       ]
+      }
+     },
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Roccia S1: When Shadows Engulf the Hull",
+     "note": "S1: Acrobatic Trick banks 100 more Imagination and 10 Concerto. The Imagination is capped away in this line (Intro + Stage 4 + Skill already fill the 300); the Concerto counts."
+    },
+    {
+     "level": 2,
+     "name": "Roccia S2: When the Luceanite Gleams",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Roccia S3: When the Heart Sees and Hands Feel",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Roccia S4: When Wonders Gather in the Box",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Roccia S5: When Dreams Are Reborn on Stage",
+     "note": "S5: the Liberation at x1.2 (row 334.01%) and Heavy Attack Pero, Easy at x1.8 (row 304.18%) — both multiplicative. Real Fantasy deals Heavy DMG but is a Basic Attack, and has no such row."
+    },
+    {
+     "level": 6,
+     "name": "Roccia S6: When the Golden Wings Fly",
+     "note": ""
+    }
+   ]
+  },
+  "Sanhua": {
+   "appKey": "Sanhua",
+   "loadouts": [
+    {
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Overture R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      5
+     ],
+     "changes": {
+      "5": {
+       "added": [],
+       "removed": [
+        "Forte Heavy - Detonate ×1"
+       ],
+       "note": "opener: drops Forte Heavy - Detonate ×1"
+      }
+     },
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Sanhua S1: Solitude's Embrace",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Sanhua S2: Snowy Clarity",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Sanhua S3: Anomalous Vision",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Sanhua S4: Blade Mastery",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Sanhua S5: Unraveling Fate",
+     "note": "S5 Unraveling Fate: +100% Crit DMG on Ice Burst, plus a *second* Glacier stack on top of Liberation's own base 1 — Glacial Gaze's burst really does fire twice under S5, confirmed against the real game rather than smoothed down to a…"
+    },
+    {
+     "level": 6,
+     "name": "Sanhua S6: Daybreak Radiance",
+     "note": ""
+    }
+   ]
+  },
+  "Shorekeeper": {
+   "appKey": "Shorekeeper",
+   "loadouts": [
+    {
+     "label": "Stellar Symphony R1 / Variation R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 44
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Shorekeeper S1: Unspoken Conjecture",
+     "note": "S1: the range and the +10s reach nothing this calculator computes. What does is its third clause — Discernment no longer ends the Stellarealm, read by EIntro above."
+    },
+    {
+     "level": 2,
+     "name": "Shorekeeper S2: Night's Gift and Refusal",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Shorekeeper S3: Infinity Awaits Me",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Shorekeeper S4: Overflowing Quietude",
+     "note": "S4: Healing Bonus is out of this calculator's formula, so this is tracked for completeness the way her talents' own 12% is. Named Overflowing Quietude, which is a chain node and not the Inherent Skill an older comment on Chaos Theory…"
+    },
+    {
+     "level": 5,
+     "name": "Shorekeeper S5: Echoes in Silence",
+     "note": "S5: two pull ranges. Nothing here has a range, so this is held for its name alone."
+    },
+    {
+     "level": 6,
+     "name": "Shorekeeper S6: To the New World",
+     "note": ""
+    }
+   ]
+  },
+  "Sigrika": {
+   "appKey": "Sigrika",
+   "loadouts": [
+    {
+     "label": "Solsworn Ciphers R1 / Pulsation Bracer R1 / Abyss Surges R1 · Sound of True Name 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Sigrika S1: The Gleam Meant for Radiance",
+     "note": "S1: Elucidated, Decipher, BIG BOOMY BOOM! and Soliskin to the Aid deal x1.7 — multiplicative, nanoka's own S1 rows (104.64% against 61.56%). The interrupt immunity and the Encapsulated stagnation stacks are no stat."
+    },
+    {
+     "level": 2,
+     "name": "Sigrika S2: The Bitterness Steeped in Hope",
+     "note": "S2: Learn My True Name x2.2 (666.31% against 302.87%), and Divergent from having been out of combat — held from the start, so the first Rune gain after the Intro's Convergent doubles too."
+    },
+    {
+     "level": 3,
+     "name": "Sigrika S3: I Flee, Yet I Seek",
+     "note": "S3: Innate Gift? stacks to 4 (SOLISKIN_VITALITY's grant) and survives Learn My True Name and the swap (INNATE_GIFT)."
+    },
+    {
+     "level": 4,
+     "name": "Sigrika S4: I Lose, Yet I Gain",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Sigrika S5: Until Submerged by the Dark",
+     "note": "S5: Where Trust Leads Me! x1.3 (1119.86% against 861.43%)."
+    },
+    {
+     "level": 6,
+     "name": "Sigrika S6: True Names Resurfaced, Rising in Light",
+     "note": "S6: the target takes 30% more from her, and Innate Gift?'s extra Amplification and DEF ignore per stack (in INNATE_GIFT)."
+    }
+   ]
+  },
+  "Spectro Rover": {
+   "appKey": "RoverSpectroFemale",
+   "loadouts": [
+    {
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 0
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Spectro Rover S1: Odyssey of Beginnings",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Spectro Rover S2: Microcosmic Murmurs",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Spectro Rover S3: Visages of Dust",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Spectro Rover S4: Resonating Lamella",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Spectro Rover S5: Temporal Virtuoso",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Spectro Rover S6: Echoes of Wanderlust",
+     "note": ""
+    }
+   ]
+  },
+  "Suisui": {
+   "appKey": "Suisui",
+   "loadouts": [
+    {
+     "label": "Firstlight's Herald R1 / Variation R1 · Song of Feathered Trace 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 9
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Suisui S1: Mountains Washed Into Paintings",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Suisui S2: Clouds Pour Like Molten Gold",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Suisui S3: Sparse Curtains Invite Evening Glow",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Suisui S4: Autumn Mountains in Choir Sing",
+     "note": "S4 is +50% on two heals — nothing this calculator reads."
+    },
+    {
+     "level": 5,
+     "name": "Suisui S5: I Long To Ride The Eastern Wind",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Suisui S6: Staying True To This Splendid Realm",
+     "note": ""
+    }
+   ]
+  },
+  "Suoming": {
+   "appKey": "Suoming",
+   "loadouts": [
+    {
+     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 5
+    },
+    {
+     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Heart of Sworn Vigil 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Suoming S1: Into the Blight Rain",
+     "note": "S1: +60% DMG Multiplier on all four Intros. Unforsaken Mind's interruption immunity is nothing the formula reads."
+    },
+    {
+     "level": 2,
+     "name": "Suoming S2: Breaking Thunder, Slaying Evil",
+     "note": "S2: +40% Crit. DMG, and her Outro carries the handoff above on top of Canopy Rumble."
+    },
+    {
+     "level": 3,
+     "name": "Suoming S3: Lone Canopy, Solitary Road",
+     "note": "S3: Flash Rift and Thunder Rending — the Intros that are no response — grant the team's Unison Boon too, once every 25s. The kit's own clause makes it the one grant she has: a stack she has already put up is only refreshed, so it shares…"
+    },
+    {
+     "level": 4,
+     "name": "Suoming S4: Covenant Borne Upon the Heart",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Suoming S5: Seal Deep, Never Forgotten",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Suoming S6: Nine Shadows at Her Side",
+     "note": "S6: every Unison Boon stack pays the whole team's responders half again (unison.ts's own NINE_SHADOWS, up from the moment the fight starts), Engraved Heart's multiplier +50%, and Seal Master's Crit. DMG another +200%."
+    }
+   ]
+  },
+  "Verina": {
+   "appKey": "Verina",
+   "loadouts": [
+    {
+     "label": "Variation R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 5
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Verina S1: Moment of Emergence",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Verina S2: Sprouting Reflections",
+     "note": "S2 Sprouting Reflections: Botany Experiment's own +1 Photosynthesis Energy/+10 Energy on top of its base gain."
+    },
+    {
+     "level": 3,
+     "name": "Verina S3: The Choice to Flourish",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Verina S4: Blossoming Embrace",
+     "note": "S4 Blossoming Embrace: the trigger lives here; the payout is `S4_TEAM` (permanent uptime once granted, per the standing duration rule)."
+    },
+    {
+     "level": 5,
+     "name": "Verina S5: Miraculous Blooms",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Verina S6: Joyous Harvest",
+     "note": "S6 Joyous Harvest: Starflower Blooms deals +20% more DMG and also triggers one Coordinated Attack — the same single-hit value Photosynthesis Mark's own periodic proc has."
+    }
+   ]
+  },
+  "Xiangli Yao": {
+   "appKey": "XiangliYao",
+   "loadouts": [
+    {
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Verity's Handle R1 / Abyss Surges R1 · Void Thunder 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Xiangli Yao S1: Prodigy of Protégés",
+     "note": "S1: six Convolution Matrices off every Law of Reigns."
+    },
+    {
+     "level": 2,
+     "name": "Xiangli Yao S2: Traces of Predecessors",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Xiangli Yao S3: Ruins of Ancient",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Xiangli Yao S4: Vessel of Rebirth",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Xiangli Yao S5: End of Stars",
+     "note": "S5: Chain Rule's lasers at x3.22 and Cogitation Model at x2 — multiplicative, nanoka's own row for the Liberation (2932.11% against 1466.06%). The Outro carries no second row to read, so it is taken the same way its own sentence is written."
+    },
+    {
+     "level": 6,
+     "name": "Xiangli Yao S6: Solace of the Ordinary",
+     "note": "S6: Law of Reigns at x1.76 — multiplicative (168.48%/449.28% against 95.73%/255.28%) — and the Matrices with it, being a share of that same multiplier (89.86% against 51.06%)."
+    }
+   ]
+  },
+  "Xuanling": {
+   "appKey": "YangyangXuanling",
+   "loadouts": [
+    {
+     "label": "Azure Oath R1 / Emerald of Genesis R1 / Emerald Sentence R1 · Song of Feathered Trace 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [
+      1
+     ],
+     "changes": {
+      "1": {
+       "added": [],
+       "removed": [],
+       "note": "start of combat (position 3): adds Forte Heavy - Azure Sword Stance ×1"
+      }
+     },
+     "intendedTeams": 9
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Xuanling S1: At the Wind's Breath, the Blossoms Wake",
+     "note": "S1: a Shadow of Xuanling: Unfaltering off every Sword Stance Flow. Stagnation and the interrupt immunity are no stat."
+    },
+    {
+     "level": 2,
+     "name": "Xuanling S2: River Carries Her Song Away",
+     "note": "S2: +100% DMG on both Heavies, Feather Fall and Havoc in Bloom. The out-of-combat lines are taken once at the start of the fight: Strung Notes above and 2 Azure Plume (the cooldown reset has nothing to reset yet). The plume is banked,…"
+    },
+    {
+     "level": 3,
+     "name": "Xuanling S3: My Grief Follows You into the Clouds",
+     "note": "S3: the Liberation Amplified by 175%; the Intro and both Flows raise the target's Havoc Bane cap by 3 (20s, renewed every visit, and the engine takes one raise a source) — which is what the Liberation's raise-to-max then fills; and the…"
+    },
+    {
+     "level": 4,
+     "name": "Xuanling S4: Across the Miles, a Letter and My Longing",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Xuanling S5: Take Wing. Take Wing.",
+     "note": "S5: a once-per-fight cheat death. No formula effect."
+    },
+    {
+     "level": 6,
+     "name": "Xuanling S6: Let the Azure Keep Its Light",
+     "note": ""
+    }
+   ]
+  },
+  "Yinlin": {
+   "appKey": "Yinlin",
+   "loadouts": [
+    {
+     "label": "Stringmaster R1 / Cosmic Ripples R1 / Lethean Elegy R1 / Boson Astrolabe R1 · Empyrean Anthem 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Yinlin S1: Morality's Crossroads",
+     "note": "S1: Magnetic Roar and Lightning Execution deal 70% more — a damage bonus, not a multiplier, which is both how the sentence reads and why nanoka's second Lightning Execution row is the same 89.47% as the first."
+    },
+    {
+     "level": 2,
+     "name": "Yinlin S2: Ensnarled by Rapport",
+     "note": "S2: every Electromagnetic Blast hands back 5 Resonance Energy and 5 Judgement Points."
+    },
+    {
+     "level": 3,
+     "name": "Yinlin S3: Unyielding Verdict",
+     "note": "S3: Judgment Strike at x1.55 — multiplicative, nanoka's own second row (121.89% against 78.64%)."
+    },
+    {
+     "level": 4,
+     "name": "Yinlin S4: Steadfast Conviction",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Yinlin S5: Resounding Will",
+     "note": "S5: Thundering Wrath deals 100% extra to a marked target — her Liberation lays Sinner's Mark itself, ahead of this (the resonator's own updateBuffs), so it always reads one."
+    },
+    {
+     "level": 6,
+     "name": "Yinlin S6: Pursuit of Justice",
+     "note": ""
+    }
+   ]
+  },
+  "Zhezhi": {
+   "appKey": "Zhezhi",
+   "loadouts": [
+    {
+     "label": "Rime-Draped Sprouts R1 / Cosmic Ripples R1 / Variation R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Whispers of Sirens R1 · Empyrean Anthem 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 4
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Zhezhi S1: Brushwork's Finish",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Zhezhi S2: Vivid Strokes",
+     "note": "S2: six more Inklit Spirits off Living Canvas — read off this node by the Liberation itself, which is what grants the window."
+    },
+    {
+     "level": 3,
+     "name": "Zhezhi S3: Reflection's Grace",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Zhezhi S4: Hue's Spectrum",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Zhezhi S5: Composition's Clue",
+     "note": "S5: one extra spirit every third one summoned. The window's stacks are that count — it runs down one a spirit, and both counts it starts from are multiples of three — and the spirit itself lands on her slot, so this node is read off it…"
+    },
+    {
+     "level": 6,
+     "name": "Zhezhi S6: Infinite Legacy",
+     "note": "S6: an extra Ivory Herald off either forte Skill."
+    }
+   ]
+  }
+ }
+}

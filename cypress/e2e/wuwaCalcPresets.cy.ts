@@ -14,6 +14,8 @@ describe("wuwa_calc stock presets", () => {
     // assert on the dialog's open state, not on visibility: DaisyUI's open
     // transition (opacity 0 → 1) never advances in a frame-starved headless run
     cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
+    // the sequence-breakpoints table (Track I phase 2): Xuanling's loadout switches its loop at S1
+    cy.get("[data-test-rotations-breakpoints]").should("contain.text", "Sequence breakpoints").and("contain.text", "S1 switches it");
     cy.contains("[data-test-rotations-presets] .card", "(wuwa_calc)")
       .first()
       .within(() => {

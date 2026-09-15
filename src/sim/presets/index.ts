@@ -9,6 +9,7 @@
 // getCharByName stays exactly upstream's.
 import type { CharacterRotationPreset } from "../../characters/rotationExportImport";
 import type { TeamRotationPreset } from "../../teamRotations/presets";
+import { rileyNameOf } from "../rankings/castMapper";
 
 /** Author tag carried by every preset generated from wuwa_calc. */
 export const WUWA_CALC_AUTHOR = "Riley31415 (wuwa_calc)";
@@ -61,4 +62,72 @@ export function loadWuwaCalcTeamPresets(): Promise<TeamRotationPreset[]> {
     (m) => m.default as unknown as TeamRotationPreset[],
   );
   return teamPresetsPromise;
+}
+
+// ---------------------------------------------------------------- sequence breakpoints (Track I phase 2)
+
+/** One wuwa_calc loadout's loop map: the sequence levels at which the declared loop switches, and what each switch
+ *  adds and drops in the steady-state loop. */
+export interface BreakpointLoadout {
+  label: string;
+  /** the lowest sequence the loadout declares a loop for (a build below it has no loop in Riley's solver) */
+  minSequence: number;
+  loopChangesAt: number[];
+  /** per switching level: what the steady-state loop adds and drops; `note` names another chain that differs
+   *  ("first visit: adds Forte Basic - Iai ×1") or says the casts merely changed order */
+  changes: Record<string, { added: string[]; removed: string[]; note?: string }>;
+  intendedTeams: number;
+}
+
+export interface ResonatorBreakpoints {
+  appKey: string;
+  loadouts: BreakpointLoadout[];
+  /** the resonance-chain pieces, S1 first, with Riley's own note on each */
+  sequences: Array<{ level: number; name: string; note: string }>;
+}
+
+interface BreakpointsFile {
+  generated: string;
+  wuwaCalcCommit: string | null;
+  resonators: Record<string, ResonatorBreakpoints>;
+}
+
+let breakpointsPromise: Promise<BreakpointsFile> | null = null;
+
+async function nodeJson<T>(name: string): Promise<T | null> {
+  const [{ readFile }, { fileURLToPath }, { dirname, join }] = await Promise.all([
+    import(/* @vite-ignore */ "node:fs/promises"),
+    import(/* @vite-ignore */ "node:url"),
+    import(/* @vite-ignore */ "node:path"),
+  ]);
+  try {
+    return JSON.parse(await readFile(join(dirname(fileURLToPath(import.meta.url)), "data", name), "utf8")) as T;
+  } catch {
+    return null;
+  }
+}
+
+/** The GENERATED sequence-breakpoints table (`wuwa-tools/rotation-port/export_breakpoints.mjs`, kept in
+ *  `wuwa-tools/knowledge/`): for one character, which sequences change each of Riley's loadouts' loop and what the
+ *  sequence pieces do. Keyed by Riley's resonator name, so both Rover forms read the same entry. */
+export function loadSequenceBreakpoints(characterKey: string): Promise<ResonatorBreakpoints | null> {
+  breakpointsPromise ??= underVite
+    ? import("./data/breakpoints.json").then((m) => m.default as unknown as BreakpointsFile)
+    : nodeJson<BreakpointsFile>("breakpoints.json").then((d) => d ?? { generated: "", wuwaCalcCommit: null, resonators: {} });
+  return breakpointsPromise.then((d) => d.resonators[rileyNameOf(characterKey)] ?? null);
+}
+
+/** "S0–S2 run the base loop; S3 switches it (adds …; drops …)" — one line per loadout for the rotation modal. */
+export function describeBreakpoints(l: BreakpointLoadout): string {
+  const parts: string[] = [];
+  if (l.minSequence > 0) parts.push(`no loop below S${l.minSequence}`);
+  if (!l.loopChangesAt.length) return parts.length ? `${parts[0]}; one loop from S${l.minSequence} up` : "one loop at every sequence";
+  let from = l.minSequence;
+  for (const n of l.loopChangesAt) {
+    const c = l.changes[String(n)] ?? { added: [], removed: [] };
+    const what = [c.added.length ? `adds ${c.added.join(", ")}` : "", c.removed.length ? `drops ${c.removed.join(", ")}` : "", c.note ?? ""].filter(Boolean).join("; ");
+    parts.push(`${from === n - 1 ? `S${from}` : `S${from}–S${n - 1}`} run${from === n - 1 ? "s" : ""} the ${from === l.minSequence ? "base" : `S${from}`} loop; S${n} switches it${what ? ` (${what})` : ""}`);
+    from = n;
+  }
+  return parts.join(". ");
 }

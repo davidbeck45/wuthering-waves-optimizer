@@ -8,6 +8,29 @@
       <h3 class="text-lg font-bold">Rotation presets</h3>
 
       <div class="flex flex-col gap-2 mt-2 max-h-[60vh] overflow-y-auto">
+        <!-- Wuthering Tools+: which sequences change this kit's loop in wuwa_calc (generated table, src/sim/presets) -->
+        <div
+          v-if="breakpoints"
+          class="rounded-box border border-base-300 bg-base-200/60 p-3 text-sm"
+          data-test-rotations-breakpoints>
+          <div class="font-semibold">
+            Sequence breakpoints
+            <span class="font-normal opacity-70">(wuwa_calc)</span>
+          </div>
+          <p v-for="(l, i) in breakpoints.loadouts" :key="i" class="mt-1">
+            <span class="opacity-70">{{ l.label }}:</span>
+            {{ describeBreakpoints(l) }}
+          </p>
+          <details v-if="breakpoints.sequences.length" class="mt-1">
+            <summary class="cursor-pointer opacity-80">What each sequence does</summary>
+            <ul class="mt-1 pl-4 list-disc">
+              <li v-for="s in breakpoints.sequences" :key="s.level" class="mt-1">
+                <span class="font-medium">S{{ s.level }}</span> {{ s.name }}
+                <span v-if="s.note" class="opacity-70">— {{ s.note }}</span>
+              </li>
+            </ul>
+          </details>
+        </div>
         <div v-if="!presets.length" class="text-sm opacity-70">
           No presets are available for {{ characterName }} yet.
         </div>
@@ -48,10 +71,13 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import type { CharacterRotationPreset } from "../characters/rotationExportImport";
+import { describeBreakpoints, type ResonatorBreakpoints } from "../sim/presets"; // Wuthering Tools+
 
 defineProps<{
   presets: CharacterRotationPreset[];
   characterName: string;
+  /** Wuthering Tools+: the wuwa_calc sequence-breakpoints entry for this character, when one exists */
+  breakpoints?: ResonatorBreakpoints | null;
 }>();
 
 const emit = defineEmits<{

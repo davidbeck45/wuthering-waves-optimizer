@@ -76,6 +76,7 @@
       v-model:open="isPresetRotationsOpen"
       :presets="presets"
       :character-name="character"
+      :breakpoints="breakpoints"
       @import="handleImportPreset" />
     <div
       v-if="isLiveResultBarEnabled && rotations.length > 0"
@@ -227,7 +228,7 @@ import {
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
 import type { RotationExportData, CharacterRotationPreset } from "../characters/rotationExportImport";
-import { loadWuwaCalcRotationPresets } from "../sim/presets";
+import { loadSequenceBreakpoints, loadWuwaCalcRotationPresets, type ResonatorBreakpoints } from "../sim/presets";
 import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
@@ -303,6 +304,8 @@ const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
 const characterData = ref<Record<string, unknown>>({});
 const presets = ref<CharacterRotationPreset[]>([]);
+// Wuthering Tools+: which sequences change this kit's loop in wuwa_calc (shown in the presets modal)
+const breakpoints = ref<ResonatorBreakpoints | null>(null);
 
 // Rotation Flow (Labs) — which rotation (if any) is showing as its own
 // detail view, mirroring TeamRotations.vue's `selectedTeamId`. Legacy
@@ -654,6 +657,7 @@ onMounted(async () => {
   const presetList = (characterData.value?.rotations ?? []) as CharacterRotationPreset[];
   // Wuthering Tools+: the generated wuwa_calc presets follow the curated ones
   presets.value = [...presetList, ...(await loadWuwaCalcRotationPresets(props.character))];
+  breakpoints.value = await loadSequenceBreakpoints(props.character);
   await recomputeCharacterContext();
 });
 </script>
