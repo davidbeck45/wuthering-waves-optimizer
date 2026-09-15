@@ -8,10 +8,19 @@ import {
   type TeamEnemyConfig,
 } from "../../calculator/buildCharacterContext";
 import { calcDamages } from "../../calculator/attacks";
+import { getCharByName } from "../../characters/characters";
 import { calcCharacterRotationDamage } from "../../calculator/characterRotation";
 import { calcRotationDps, calcTeamRotationDamage } from "../../calculator/teamRotation";
 import { displayInt, displayPercentage } from "../../utils/numbers";
-import { rankRoster, type RosterRanking } from "../myRankings/rankRoster";
+import { RANKING_ENEMY, rankRoster, rotationCandidates, scoreRotation, type RosterRanking, type RotationCandidate, type RotationSource } from "../myRankings/rankRoster";
+import {
+  equippedSubstatWorth,
+  rotationScorer,
+  substatWeights,
+  type BuildScorer,
+  type EchoSubstatWorth,
+  type SubstatWeight,
+} from "../substats/substatWeights";
 import { resolveTeamCharacters, type SlotResolution } from "../teamContext/resolveTeam";
 import type { ExportFile } from "./exportFile";
 
@@ -305,6 +314,94 @@ export async function calcTeam(team: any, exp: ExportFile, options: { autoBuffs?
       crit: num(r.attack?.damage?.critDamage),
     })),
   };
+}
+
+// ── Substat weights: one more roll of each substat on the build, scored on a rotation or a team ─────
+export interface WeightsOptions {
+  /** a rotation by name (loose) among the character's own, the curated presets and wuwa_calc's loops; default = the best-scoring one, as /my-rankings picks it */
+  rotation?: string;
+  /** score on this team's rotation instead (name, id or 1-based index): the character's own share drives the weights, the team total rides along */
+  team?: string;
+  autoBuffs?: boolean;
+  /** also what each equipped echo's substats are worth (five more runs) */
+  echoes?: boolean;
+}
+export interface WeightsCalc {
+  id: string;
+  name: string;
+  sequence: number;
+  weapon: string | null;
+  refinement: number | null;
+  target: { kind: "rotation"; name: string; source: RotationSource } | { kind: "team"; name: string; members: Array<string | null>; buffMode: "auto" | "off" };
+  enemy: TeamEnemyConfig;
+  /** the character's average damage on the target as the build is */
+  baseline: number;
+  /** the team's total on a team target */
+  baselineTeam: number | null;
+  weights: SubstatWeight[];
+  echoes: EchoSubstatWorth[] | null;
+}
+
+/** A candidate by name: exact, case-insensitive, then a unique substring. */
+function findRotation(input: string, candidates: RotationCandidate[]): RotationCandidate {
+  const exact = candidates.filter((c) => c.name === input);
+  if (exact.length >= 1) return exact[0];
+  const needle = input.toLowerCase();
+  const ci = candidates.filter((c) => c.name.toLowerCase() === needle);
+  if (ci.length >= 1) return ci[0];
+  const partial = candidates.filter((c) => c.name.toLowerCase().includes(needle));
+  if (partial.length === 1) return partial[0];
+  if (partial.length > 1) throw new Error(`Ambiguous rotation "${input}": ${partial.map((c) => c.name).join(" | ")}`);
+  throw new Error(`No rotation "${input}" for this character; the candidates: ${candidates.map((c) => c.name).join(" | ") || "(none)"}`);
+}
+
+export async function calcSubstatWeights(id: string, exp: ExportFile, options: WeightsOptions = {}): Promise<WeightsCalc> {
+  const data = exp.characters[id];
+  if (!data) throw new Error(`Character ${id} is not set up in this export`);
+  const name = ((await getCharByName(id)) as any)?.basic?.name ?? id;
+  const weapon: string | null = data.weapon ?? null;
+  const head = { id, name, sequence: sequenceOf(data), weapon, refinement: weapon ? Number(data.weapons?.[weapon]?.refinement ?? 1) : null };
+
+  let score: BuildScorer;
+  let target: WeightsCalc["target"];
+  let enemy: TeamEnemyConfig;
+  if (options.team) {
+    const team = findTeam(options.team, exp.teams);
+    if (!(team.characterIds ?? []).includes(id)) throw new Error(`${id} is not in team "${team.name}" (${(team.characterIds ?? []).filter(Boolean).join(" + ")})`);
+    enemy = resolveTeamEnemyConfig(team.enemyConfig ?? {});
+    const autoBuffs = options.autoBuffs ?? true;
+    score = async (characters, inventoryEchoes) => {
+      const r = await calcTeam(team, { ...exp, characters, inventory: { ...exp.inventory, echoes: inventoryEchoes } }, { autoBuffs });
+      return { avg: r.perCharacter[id]?.avg ?? 0, extra: { team: r.avg } };
+    };
+    target = { kind: "team", name: team.name ?? "(unnamed team)", members: team.characterIds ?? [], buffMode: autoBuffs ? "auto" : "off" };
+  } else {
+    enemy = RANKING_ENEMY;
+    const candidates = await rotationCandidates(id, data);
+    if (!candidates.length) throw new Error(`${id} has no rotation to score: save one in the calculator, or import a wuwa_calc loop`);
+    let pick: RotationCandidate;
+    if (options.rotation) {
+      pick = findRotation(options.rotation, candidates);
+    } else {
+      let best: { candidate: RotationCandidate; avg: number } | null = null;
+      for (const candidate of candidates) {
+        try {
+          const s = await scoreRotation(candidate.rotation, id, exp.characters, enemy, exp.inventory.echoes);
+          if (!best || s.avgDamage > best.avg) best = { candidate, avg: s.avgDamage };
+        } catch {
+          /* an action this build cannot run: not a candidate */
+        }
+      }
+      if (!best) throw new Error(`None of ${id}'s ${candidates.length} rotations runs on this build`);
+      pick = best.candidate;
+    }
+    score = rotationScorer(id, pick.rotation, enemy);
+    target = { kind: "rotation", name: pick.name, source: pick.source };
+  }
+  const baseline = await score(exp.characters, exp.inventory.echoes);
+  const result = await substatWeights(id, exp.characters, exp.inventory.echoes, score, { baseline });
+  const echoes = options.echoes ? await equippedSubstatWorth(id, exp.characters, exp.inventory.echoes, score, { baseline }) : null;
+  return { ...head, target, enemy, baseline: baseline.avg, baselineTeam: baseline.extra?.team ?? null, weights: result.weights, echoes };
 }
 
 export function rankExport(exp: ExportFile, options: { investment?: boolean; autoBuffs?: boolean } = {}): Promise<RosterRanking> {

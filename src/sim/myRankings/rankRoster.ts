@@ -111,8 +111,15 @@ export const isSetUp = (characterData: Record<string, any> | undefined): boolean
 let rotationId = 0;
 const withIds = (actions: any[]): any[] => actions.map((a) => ({ ...a, id: a.id ?? `rr-${rotationId++}`, buffs: a.buffs ?? [] }));
 
-async function rotationCandidates(id: string, characterData: Record<string, any>): Promise<Array<{ name: string; source: RotationSource; rotation: CharacterRotationInput }>> {
-  const out: Array<{ name: string; source: RotationSource; rotation: CharacterRotationInput }> = [];
+export interface RotationCandidate {
+  name: string;
+  source: RotationSource;
+  rotation: CharacterRotationInput;
+}
+
+/** Every rotation a character can be scored on: their own saved ones, the curated presets, wuwa_calc's loops. */
+export async function rotationCandidates(id: string, characterData: Record<string, any>): Promise<RotationCandidate[]> {
+  const out: RotationCandidate[] = [];
   for (const r of (characterData.rotations ?? []) as any[]) {
     if (!r?.actions?.length) continue;
     out.push({ name: r.name, source: "yours", rotation: { id: r.id ?? `yours-${out.length}`, name: r.name, description: r.description, duration: r.duration ?? null, actions: withIds(r.actions) } });
@@ -131,7 +138,7 @@ async function rotationCandidates(id: string, characterData: Record<string, any>
   return out;
 }
 
-async function scoreRotation(rotation: CharacterRotationInput, id: string, characters: Record<string, any>, enemy: TeamEnemyConfig, echoes: any[]): Promise<Omit<RotationScore, "name" | "source">> {
+export async function scoreRotation(rotation: CharacterRotationInput, id: string, characters: Record<string, any>, enemy: TeamEnemyConfig, echoes: any[]): Promise<Omit<RotationScore, "name" | "source">> {
   const result = await calcCharacterRotationDamage(rotation, null, id, characters, enemy, echoes);
   const agg = result.damageAggregation;
   const seconds = Number(rotation.duration);
@@ -298,7 +305,7 @@ export async function rankRoster(
       refineFive: null,
       errors: [],
     };
-    let bestCandidate: { name: string; source: RotationSource; rotation: CharacterRotationInput } | null = null;
+    let bestCandidate: RotationCandidate | null = null;
     try {
       const candidates = await rotationCandidates(id, data);
       for (const c of candidates) {

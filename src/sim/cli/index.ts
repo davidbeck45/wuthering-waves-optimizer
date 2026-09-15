@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import {
   buildSnapshot,
   calcCharacter,
+  calcSubstatWeights,
   calcTeam,
   diffSnapshots,
   findTeam,
@@ -14,10 +15,12 @@ import {
   type CharacterCalc,
   type Snapshot,
   type TeamCalc,
+  type WeightsCalc,
 } from "./engine";
 import { readExport, resolveExportPath, writeSyncedExport, type ExportFile } from "./exportFile";
 import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from "../account/accountState";
 import { buildRollsOf } from "../rankings/myBuilds";
+import { SUBSTAT_ABBR } from "../substats/substatWeights";
 import { int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
 
 interface CommonOptions extends OutputOptions {
@@ -124,6 +127,54 @@ function printTeams(teams: TeamCalc[]): void {
   );
 }
 
+const signedPct = (g: number, digits = 2): string => `${g >= 0 ? "+" : ""}${(g * 100).toFixed(digits)}%`;
+const rollText = (value: number, flat: boolean): string => (flat ? String(Math.round(value)) : `${value.toFixed(1)}%`);
+
+function printWeights(w: WeightsCalc): void {
+  const build = `${w.name} (${w.id})  S${w.sequence}  ${w.weapon ?? "no weapon"}${w.refinement ? ` R${w.refinement}` : ""}`;
+  const target =
+    w.target.kind === "team"
+      ? `team "${w.target.name}" (${w.target.members.filter(Boolean).join(" + ")}; buffs ${w.target.buffMode === "auto" ? "from the members" : "as set on each character"})`
+      : `rotation "${w.target.name}" (${w.target.source === "yours" ? "your rotation" : w.target.source === "curated" ? "curated preset" : "wuwa_calc"})`;
+  console.log(`${build}\non ${target}  enemy Lv ${w.enemy.enemyLevel} / ${pct(w.enemy.enemyResist * 100, 0)} RES`);
+  console.log(`baseline ${int(w.baseline)} average damage${w.baselineTeam != null ? ` (team ${int(w.baselineTeam)})` : ""}\n`);
+  const team = w.baselineTeam != null;
+  console.log(
+    table([
+      ["  Substat", "Expected roll", "Gain", "Best roll", "Gain", ...(team ? ["Team"] : []), "Weight"],
+      ...w.weights.map((s) => [
+        `  ${s.label}`,
+        rollText(s.roll, s.flat),
+        signedPct(s.gain),
+        rollText(s.maxRoll, s.flat),
+        signedPct(s.maxGain),
+        ...(team ? [signedPct(s.extraGain.team ?? 0)] : []),
+        String(Math.round(s.weight * 100)),
+      ]),
+    ]),
+  );
+  const top = w.weights.filter((s) => s.weight >= 0.5).map((s) => s.label);
+  console.log(`\nLook for: ${top.join(", ") || "(nothing moves this number)"}`);
+  const er = w.weights.find((s) => s.key === "EnergyRegen");
+  if (er && Math.abs(er.gain) < 0.0005) console.log("Energy Regen reads 0 here: the engine has no energy model, so keep whatever ER the rotation needs.");
+  if (w.echoes) {
+    console.log("\nEquipped echoes — what each one's substats add over that echo without any (lowest = re-roll first)");
+    console.log(
+      table([
+        ["  Slot", "Echo", "Cost", "Main", "Substats", "Worth"],
+        ...w.echoes.map((e) => [
+          `  ${e.slot + 1}`,
+          e.echo ?? "-",
+          e.cost == null ? "-" : String(e.cost),
+          e.main ?? "-",
+          e.substats.map((x) => `${SUBSTAT_ABBR[x.key] ?? x.key} ${x.value}`).join(" · ") || "(none)",
+          signedPct(e.worth),
+        ]),
+      ]),
+    );
+  }
+}
+
 export function registerPlusCommands(program: Command): void {
   withCommon(
     program.command("inspect").description("Summarise an export file: data version, characters, builds, echoes, teams (Wuthering Tools+)"),
@@ -198,6 +249,24 @@ export function registerPlusCommands(program: Command): void {
       const calc = await quiet(() => calcCharacter(id, exp, { attacks: options.attacks, rotations: options.rotations }));
       if (!wantsPretty(options)) return printJson({ export: exp.path, ...calc });
       printCharacter(calc, options);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("weights <character>")
+      .description("Substat weights: what one more roll of each substat is worth on this character's build, scored on their best rotation (Wuthering Tools+)")
+      .option("--rotation <name>", "score on this rotation (your own, a curated preset or a wuwa_calc loop, by name) instead of the best-scoring one")
+      .option("--team <team>", "score on this team's rotation (name, id or 1-based index) with buffs from the team's real members; the team total rides along")
+      .option("--echoes", "also what each equipped echo's substats are worth — which one to re-roll first")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (character: string, options: CommonOptions & { rotation?: string; team?: string; echoes?: boolean; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const id = resolveCharacterKey(character, exp.characters);
+      const calc = await quiet(() => calcSubstatWeights(id, exp, { rotation: options.rotation, team: options.team, echoes: options.echoes, autoBuffs: options.autoBuffs }));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...calc });
+      printWeights(calc);
     }),
   );
 

@@ -39,5 +39,19 @@ describe("my roster rankings", () => {
       .then((text) => {
         expect(text).to.match(/\+\d+\.\d%/); // S6 + R5 beats S2 + R1 on her build
       });
+
+    // substat weights: one more roll of each substat on her build — crit moves an HP scaler, ATK does not
+    cy.get('[data-test-my-rankings-substats="Cartethyia"]').click({ force: true });
+    cy.get('[data-test-my-rankings-substats-panel="Cartethyia"]').should("exist");
+    cy.get("[data-test-my-rankings-substats-result]", { timeout: 120000 }).should("exist");
+    cy.get('[data-test-my-rankings-substat="CritRate"]')
+      .invoke("text")
+      .then((text) => {
+        expect(text).to.match(/\+\d+\.\d%/);
+      });
+    cy.get('[data-test-my-rankings-substat="ATK"]').should("contain.text", "+0.0%");
+    cy.get("[data-test-my-rankings-substats-echoes] .badge").should("have.length", 5);
+    cy.get('[data-test-my-rankings-substats="Cartethyia"]').click({ force: true });
+    cy.get('[data-test-my-rankings-substats-panel="Cartethyia"]').should("not.exist");
   });
 });

@@ -63,6 +63,11 @@ describe("phone layout", () => {
     cy.get('[data-test-my-rankings-whatif="Cartethyia"]').click();
     cy.get('[data-test-my-rankings-whatif-panel="Cartethyia"]').should("be.visible");
     expectNoHorizontalScroll("/my-rankings (what-if open)");
+    // the substat weights panel: a grid of short labels, the bar column dropped
+    cy.get('[data-test-my-rankings-substats="Cartethyia"]').click();
+    cy.get("[data-test-my-rankings-substats-result]", { timeout: 120000 }).should("be.visible");
+    cy.get('[data-test-my-rankings-substat="CritRate"]').should("be.visible");
+    expectNoHorizontalScroll("/my-rankings (substats open)");
     // desktop keeps the table
     cy.viewport(1440, 900);
     cy.get("[data-test-my-rankings-characters] thead").should("be.visible");

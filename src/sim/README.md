@@ -310,6 +310,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
 | `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
 | `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |
+| `weights <character> [--rotation name] [--team t] [--echoes]` | substat weights (§ below): what one more roll of each substat is worth on the build, scored on the best rotation as `/my-rankings` picks it (or a named one, or a team's rotation with the buffs derived from its real members — the character's share drives the weights, the team total rides along); `--echoes` adds what each equipped echo's substats are worth |
 | `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings and handoffs from the run — written to a new export (`<source>_synced.json` by default; a plain export is never overwritten), with the per-team report; `--rotations` also saves each member's loop to that character's rotations (replacing one of the same name) |
 | `team <one> --json` | also lists `actionRows`: every action's own normal / average / crit damage in execution order (what the audit compared against Riley's per-cast averages) |
 | `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
@@ -328,6 +329,31 @@ so `rank` works under plain tsx. Regression routine: `~/Projects/wuwa-tools/scri
 before the upstream merge and diffs after the gates (`snapshots/<sha>.json` in wuwa-tools); moved numbers
 withhold `--push`. Not built: `optimize` (the workers expose nothing but `onmessage`) — only if a need appears.
 
+
+## Substat weights — `src/sim/substats/` (2026-09-15)
+
+"Which substat should I be looking for as I roll echoes, and how much is it worth?" — answered by the
+engine on the build as it is: the rotation is scored once, then once more with a single extra roll of
+each of the 13 substats, and the relative gain is the weight. `substatWeights.ts` is pure (no Vue, no
+stores; the app's own `calcCharacterRotationDamage` path) and reused by the `/my-rankings` **substats**
+panel (beside "what if…", scored on the same best rotation, runs on open) and by `ww weights`.
+
+| Piece | What it does |
+|---|---|
+| `withSubstat(id, characters, echoes, key, value)` | a clone with `value` more of `key` **on an equipped echo**, so the roll goes through `getEchoStats` like a real one (per-action `excludeEchoes`, HP/DEF scalers, the crit cap all behave) — no engine change. Placement: an existing line of the same kind is bumped → a free substat field takes it → an empty slot gets an inline substat-only record → every field held another kind, so a duplicated kind gives up one line and its value moves onto its twin (`placement.moved`; 25 lines over 13 kinds always hold a twin). The store record is never touched: inventory echoes are cloned in the inventory, legacy inline slots on a cloned character record |
+| `expectedRoll` / `maxRoll` | the tiers are the app's `subStatsTable`; the expectation weights each tier by how often it lands — Kuro's KR product info as `vendor/wuwa_calc/src/shared/substats.ts` carries it (`[7, 8, 21, 25, 18, 15, 6, 3]` for the percent-shaped stats and flat HP, `[70, 70, 70, 24, 24, 24, 9, 9]` for crit, the flat ATK/DEF pairs); copied here because he does not export them. Crit Rate expects 7.5, Crit DMG 15.1, ATK % 8.8, flat ATK 44 |
+| `substatWeights(id, characters, echoes, scorer)` | one expected roll and one best-tier roll per substat against a pluggable `BuildScorer` (`{ avg, extra? }` — the CLI's team scorer puts the team total in `extra.team`, reported as `extraGain.team`); sorted best first, `weight` = gain ÷ the best gain, `perPoint` = gain per 1 % / 1 flat point |
+| `equippedSubstatWorth(...)` | each equipped echo scored with its five substats blanked (main stat and set kept): `worth` = what they add — the lowest is the echo to re-roll first |
+| `substatWeights.test.ts` | on the Cartethyia fixture: every roll moves the combined echo stats by exactly that roll and nothing else (all four placements), inputs untouched, an HP scaler weights crit and HP and not ATK, monotone and sorted; gates on the page: `myRankings.cy.ts` + `phoneLayout.cy.ts` |
+
+What the numbers mean: a **weight** of 100 is the substat to look for; the **expected roll** column is
+what a random line of that kind pays on average, the **best roll** its ceiling. Diminishing returns are
+real, not modelled: Xuanling at 96 % Crit Rate gets the same +2.5 % from a 7.5 and a 10.5 roll (the cap),
+so Crit DMG outranks it there while at 76 % Crit Rate leads. Known limits: the engine is static, so
+**Energy Regen reads 0** unless a buff scales with it (Brant, Sigrika show it) — keep the ER a rotation
+needs; a buff is on for the whole rotation or off (no uptime); healing/shield scalers are scored on damage
+only. The panel switches to short labels below 768 px and lays each substat out as a wrapping line (name ·
+expected → gain · bar, the best roll underneath) — the grid's rows are `display: contents` wrappers.
 
 ## Team-aware buffs and builds — `src/sim/teamContext/`
 

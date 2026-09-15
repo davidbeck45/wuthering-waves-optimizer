@@ -90,6 +90,9 @@
                 <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-whatif="c.id" title="score this character at another sequence, weapon or refinement on the same rotation" @click="toggleWhatIf(c)">
                   what if…
                 </button>
+                <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-substats="c.id" title="what one more roll of each substat is worth on this build, on the same rotation — what to look for as you roll echoes" @click="toggleSubstats(c)">
+                  substats
+                </button>
                 <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash([c.id]) }" class="btn btn-ghost btn-xs whitespace-nowrap" title="wuwa_calc's teams with this character, at your account's sequences and weapons" :data-test-my-rankings-mine-link="c.id">rankings ▸</RouterLink>
               </td>
             </tr>
@@ -124,6 +127,42 @@
                     <span class="opacity-60">vs {{ fmt(whatIfs[c.id].result?.base ?? 0) }} now, on {{ whatIfs[c.id].result?.rotation }}</span>
                   </span>
                   <span v-if="whatIfs[c.id].error" class="text-xs text-error">{{ whatIfs[c.id].error }}</span>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="substats[c.id]?.open" class="row--panel" :data-test-my-rankings-substats-panel="c.id">
+              <td :colspan="investment ? 9 : 7" class="bg-base-200/40 cell--panel">
+                <div class="subs py-1">
+                  <div class="text-xs opacity-70 mb-1">
+                    Substat weights: one more roll of each substat on your build, scored on {{ c.best?.name }} — an expected roll
+                    (the tiers weighted by how often they land) and the best tier. The top of the list is what to look for.
+                  </div>
+                  <div v-if="substats[c.id].running" class="text-sm"><span class="loading loading-spinner loading-xs"></span> scoring…</div>
+                  <span v-if="substats[c.id].error" class="text-xs text-error">{{ substats[c.id].error }}</span>
+                  <div v-if="substats[c.id].result" class="subs__grid tabular-nums text-sm" data-test-my-rankings-substats-result>
+                    <div class="subs__row subs__row--head">
+                      <div class="subs__head">Substat</div>
+                      <div class="subs__head">Expected roll</div>
+                      <div class="subs__head">Best roll</div>
+                      <div class="subs__head"></div>
+                    </div>
+                    <div v-for="w in substats[c.id].result?.weights ?? []" :key="w.key" class="subs__row">
+                      <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span></div>
+                      <div class="subs__gain" :class="gainClass(w.gain)" :data-test-my-rankings-substat="w.key"><span class="opacity-60">{{ rollLabel(w.roll, w.flat) }} →</span> {{ pct(w.gain) }}</div>
+                      <div class="subs__gain subs__gain--best" :class="gainClass(w.maxGain)"><span class="opacity-60"><span class="md:hidden">best </span>{{ rollLabel(w.maxRoll, w.flat) }} →</span> {{ pct(w.maxGain) }}</div>
+                      <div class="subs__bar"><div class="subs__fill" :style="{ width: `${Math.round(w.weight * 100)}%` }"></div></div>
+                    </div>
+                  </div>
+                  <p v-if="substats[c.id].result" class="text-xs mt-1">
+                    <span class="opacity-70">Look for:</span> <b>{{ lookFor(substats[c.id].result!) }}</b>
+                    <span v-if="erReadsZero(substats[c.id].result!)" class="opacity-70"> · Energy Regen reads 0 here — the engine has no energy model, keep the ER the rotation needs</span>
+                  </p>
+                  <div v-if="substats[c.id].echoes?.length" class="mt-2 text-xs flex flex-wrap items-center gap-1" data-test-my-rankings-substats-echoes>
+                    <span class="opacity-70 mr-1">Your echoes' substats on this rotation (lowest = re-roll first):</span>
+                    <span v-for="e in echoesWorstFirst(substats[c.id].echoes ?? [])" :key="e.slot" class="badge badge-ghost badge-sm tabular-nums">
+                      {{ e.cost }}-cost {{ echoLabel(e.echo) }} · {{ e.main }} · <b class="ml-1" :class="gainClass(e.worth)">{{ pct(e.worth) }}</b>
+                    </span>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -200,6 +239,9 @@ import {
   type WeaponOption,
   type WhatIfResult,
 } from "./rankRoster";
+import { RANKING_ENEMY } from "./rankRoster";
+import { equippedSubstatWorth, rotationScorer, substatWeights, type EchoSubstatWorth, type SubstatWeightsResult } from "../substats/substatWeights";
+import { mainEchoesData } from "../../echoes/index";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
 import { accountStateOf, rankingsMineHash } from "../account/accountState";
@@ -293,6 +335,47 @@ async function runWhatIf(c: CharacterRank): Promise<void> {
 }
 const sourceLabel = (s: RotationSource): string => (s === "yours" ? "your rotation" : s === "curated" ? "curated preset" : "wuwa_calc");
 
+// ---- substat weights: one more roll of each substat on the build, scored on the same best rotation (src/sim/substats)
+interface SubstatsState {
+  open: boolean;
+  running: boolean;
+  result: SubstatWeightsResult | null;
+  echoes: EchoSubstatWorth[] | null;
+  error: string | null;
+}
+const substats = ref<Record<string, SubstatsState>>({});
+const rollLabel = (value: number, flat: boolean): string => (flat ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
+const echoLabel = (key: string | null): string => (key ? ((mainEchoesData as Record<string, { name?: string }>)[key]?.name ?? key) : "echo");
+const lookFor = (r: SubstatWeightsResult): string => r.weights.filter((w) => w.weight >= 0.5).map((w) => w.label).join(", ") || "nothing moves this number";
+const erReadsZero = (r: SubstatWeightsResult): boolean => Math.abs(r.weights.find((w) => w.key === "EnergyRegen")?.gain ?? 0) < 0.0005;
+const echoesWorstFirst = (list: EchoSubstatWorth[]): EchoSubstatWorth[] => [...list].sort((a, b) => a.worth - b.worth);
+async function toggleSubstats(c: CharacterRank): Promise<void> {
+  const current = substats.value[c.id];
+  if (current) {
+    current.open = !current.open;
+    return;
+  }
+  substats.value = { ...substats.value, [c.id]: { open: true, running: true, result: null, echoes: null, error: null } };
+  const state = substats.value[c.id];
+  if (!c.bestRotation) {
+    state.running = false;
+    state.error = "no rotation to score";
+    return;
+  }
+  try {
+    const chars = JSON.parse(JSON.stringify(characters.value ?? {}));
+    const echoes = JSON.parse(JSON.stringify(inventoryStore.echoes ?? []));
+    const score = rotationScorer(c.id, c.bestRotation, RANKING_ENEMY);
+    const baseline = await score(chars, echoes);
+    state.result = await substatWeights(c.id, chars, echoes, score, { baseline });
+    state.echoes = await equippedSubstatWorth(c.id, chars, echoes, score, { baseline });
+  } catch (error) {
+    state.error = error instanceof Error ? error.message : String(error);
+  } finally {
+    state.running = false;
+  }
+}
+
 function fingerprint(): string {
   return `${JSON.stringify(characters.value ?? {}).length}:${(inventoryStore.echoes ?? []).length}:${JSON.stringify(teams.value ?? []).length}:${investment.value}:${autoTeamBuffs.value}`;
 }
@@ -317,6 +400,8 @@ async function compute(): Promise<void> {
     ranking.value = result;
     cachedRanking = result;
     cachedKey = fingerprint();
+    substats.value = {}; // scored on the previous data
+
   } finally {
     isRunning.value = false;
   }
@@ -328,6 +413,66 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+/* the substat weights panel: a grid, not a nested table (the phone card rules turn every td into a block);
+   each row is a `display: contents` wrapper so a phone can turn it into a wrapping flex line instead */
+.subs__grid {
+  display: grid;
+  grid-template-columns: max-content max-content max-content minmax(4rem, 1fr);
+  column-gap: 1rem;
+  row-gap: 0.15rem;
+  align-items: center;
+  max-width: 40rem;
+}
+.subs__row {
+  display: contents;
+}
+.subs__head {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.55;
+}
+.subs__bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: oklch(var(--bc) / 0.1);
+  overflow: hidden;
+}
+.subs__fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: oklch(var(--p));
+}
+@media (max-width: 767px) {
+  /* one wrapping line per substat: name · expected roll → gain · bar, the best roll underneath in small print */
+  .subs__grid {
+    display: block;
+  }
+  .subs__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.6rem;
+    padding: 0.15rem 0;
+  }
+  .subs__row--head {
+    display: none;
+  }
+  .subs__gain {
+    font-size: 0.8rem;
+  }
+  .subs__bar {
+    flex: 1 1 4rem;
+    order: 1;
+  }
+  .subs__gain--best {
+    order: 2;
+    flex-basis: 100%;
+    font-size: 0.7rem;
+    opacity: 0.85;
+  }
+}
+
 /* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
 @media (max-width: 767px) {
   .table--cards {
@@ -371,6 +516,7 @@ onMounted(() => {
     }
     .cell--panel {
       flex-basis: 100%;
+      min-width: 0;
       padding: 0.5rem;
     }
   }
