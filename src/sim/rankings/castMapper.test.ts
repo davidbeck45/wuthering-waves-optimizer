@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import loops from "./__fixtures__/wuwaCalcLoops.json";
 import { getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
-import { OVERRIDES, appRowsOf, echoRowsOf, emptyReport, knownRatios, mvOf, ratio, toActions, type Cast } from "./castMapper";
+import { OVERRIDES, appKeyOf, appRowsOf, echoRowsOf, emptyReport, knownRatios, mvOf, ratio, rileyNameOf, toActions, type Cast } from "./castMapper";
 // Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
 vi.setConfig({ testTimeout: 60_000 });
 
@@ -20,6 +20,17 @@ describe("cast mapper: primitives", () => {
     expect(ratio("abcd", "abcd")).toBe(1);
     expect(ratio("abcd", "bcde")).toBeCloseTo(0.75, 5);
     expect(ratio("", "x")).toBe(0);
+  });
+  it("maps Riley's resonator names to app keys and back", () => {
+    expect(appKeyOf("Xuanling")).toBe("YangyangXuanling");
+    expect(appKeyOf("Aero Rover")).toBe("RoverAeroFemale");
+    expect(appKeyOf("Luuk Herssen")).toBe("LuukHerssen");
+    expect(appKeyOf("Aemeath")).toBe("Aemeath");
+    expect(rileyNameOf("YangyangXuanling")).toBe("Xuanling");
+    expect(rileyNameOf("RoverAeroFemale")).toBe("Aero Rover");
+    expect(rileyNameOf("RoverAeroMale")).toBe("Aero Rover");
+    expect(rileyNameOf("Roverelectromale")).toBe("Electro Rover");
+    expect(rileyNameOf("Aemeath")).toBe("Aemeath");
   });
 });
 

@@ -67,6 +67,10 @@ export const ALIAS: Record<string, string> = {
   "Xiangli Yao": "XiangliYao",
 };
 export const appKeyOf = (name: string): string => ALIAS[name] ?? name.replace(/ /g, "");
+/** app character key -> Riley's resonator name (ALIAS inverted; both Rover genders are his one form) */
+const RILEY_NAME: Record<string, string> = Object.fromEntries(Object.entries(ALIAS).map(([riley, app]) => [app, riley]));
+for (const [riley, app] of Object.entries(ALIAS)) if (/female$/i.test(app)) RILEY_NAME[app.replace(/(f)emale$/i, (_, f) => (f === "F" ? "Male" : "male"))] = riley;
+export const rileyNameOf = (appKey: string): string => RILEY_NAME[appKey] ?? appKey;
 
 /** Hand-checked corrections (wuwa-tools/rotation-port/overrides.json); null drops the cast. */
 export const OVERRIDES: Record<string, Overrides> = {

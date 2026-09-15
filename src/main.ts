@@ -55,7 +55,6 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
-  { path: "/matrix", component: () => import("./sim/matrix/MatrixPlannerView.vue"), name: "MatrixPlannerView" },
 ];
 
 const router = createRouter({

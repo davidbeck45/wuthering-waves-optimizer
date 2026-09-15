@@ -96,16 +96,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
           </svg>
         </RouterLink>
-        <RouterLink
-          to="/matrix"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2 relative"
-          :class="{ 'btn-active': curPage === 'matrix' }"
-          title="Endstate Matrix planner"
-          data-test-nav-matrix>
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
-          </svg>
-        </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">
         <slot></slot>

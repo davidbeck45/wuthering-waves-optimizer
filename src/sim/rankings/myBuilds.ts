@@ -3,7 +3,7 @@
 // customSubstats). Pure: the character store's builds + the inventory in, one roll list per
 // resonator out; the rankings controller registers them on the page and in its solver workers.
 import { resolveCharacterEchoes } from "../../calculator/buildCharacterContext";
-import { rileyNameOf } from "../matrix/planMatrix";
+import { rileyNameOf } from "./castMapper";
 
 /** app substat keys -> wuwa_calc `Substat` names (Healing Bonus has no counterpart there) */
 const KIND: Record<string, string> = {
