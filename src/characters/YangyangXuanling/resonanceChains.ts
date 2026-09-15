@@ -23,15 +23,12 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        // Wuthering Tools+ 2026-09-15: the rows the node's own text names (both Heavies, Feather Fall, Havoc in Bloom and its
+        // Dodge Counter) — upstream listed the plain Azure / Feather basic stages instead and left the Heavies out
         modifySpecificTalents: [
-          "BasicAttackAzureSwordStanceStage1DMG",
-          "BasicAttackAzureSwordStanceStage2DMG",
-          "BasicAttackAzureSwordStanceStage3DMG",
-          "BasicAttackAzureSwordStanceStage4DMG",
-          "BasicAttackFeatherSwordStanceStage1DMG",
-          "BasicAttackFeatherSwordStanceStage2DMG",
-          "BasicAttackFeatherSwordStanceStage3DMG",
-          "BasicAttackFeatherSwordStanceStage4DMG",
+          "HeavyAttackAzureSwordStanceDMG",
+          "HeavyAttackFeatherSwordStanceDMG",
+          "MidAirAttackFeatherSwordStanceFeatherFallDMG",
           "BasicAttackHavocInBloomStage1DMG",
           "BasicAttackHavocInBloomStage2DMG",
           "BasicAttackHavocInBloomStage3DMG",
