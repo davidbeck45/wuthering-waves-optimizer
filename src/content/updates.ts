@@ -12,6 +12,13 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-14",
+    dateLabel: "September 14, 2026",
+    items: [
+      "Updates info page with updated features, and expands on formulas",
+    ],
+  },
+  {
     date: "2026-09-13",
     dateLabel: "September 13, 2026",
     items: [
