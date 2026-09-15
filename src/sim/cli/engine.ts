@@ -100,6 +100,8 @@ export interface TeamCalc {
   shield: number;
   dps: number | null;
   perCharacter: Record<string, { normal: number; avg: number; crit: number }>;
+  /** every action's own damage, in execution order (`team <one> --json`) */
+  actionRows?: Array<{ slot: number; characterId: string; order: number; key: string; type: string; count: number; label: string; normal: number; avg: number; crit: number }>;
   /** auto = builds by name + team buffs from the real members; off = each character's own panel */
   buffMode: "auto" | "off";
   slots: SlotResolution[];
@@ -249,7 +251,7 @@ export function findTeam(input: string, teams: any[]): any {
 export async function calcTeam(team: any, exp: ExportFile, options: { autoBuffs?: boolean } = {}): Promise<TeamCalc> {
   const enemy = resolveTeamEnemyConfig(team.enemyConfig ?? {});
   const resolution = await resolveTeamCharacters(
-    { characterIds: team.characterIds ?? [], buildIds: team.buildIds, enemyConfig: team.enemyConfig },
+    { characterIds: team.characterIds ?? [], buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null },
     exp.characters,
     exp.inventory.echoes,
     { auto: options.autoBuffs ?? true, enemyConfig: enemy },
@@ -290,6 +292,18 @@ export async function calcTeam(team: any, exp: ExportFile, options: { autoBuffs?
     perCharacter,
     buffMode: resolution.auto ? "auto" : "off",
     slots: resolution.slots,
+    actionRows: res.actionResults.map((r) => ({
+      slot: r.slot,
+      characterId: r.characterId,
+      order: r.order,
+      key: String(r.attack?.key ?? ""),
+      type: String(r.attack?.actionType ?? r.attack?.type ?? ""),
+      count: Number(r.attack?.count ?? 1),
+      label: String(r.attack?.label ?? ""),
+      normal: num(r.attack?.damage?.totalDamage ?? r.attack?.damage?.damage),
+      avg: num(r.attack?.damage?.avgDamage),
+      crit: num(r.attack?.damage?.critDamage),
+    })),
   };
 }
 

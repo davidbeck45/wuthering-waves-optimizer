@@ -296,9 +296,11 @@ export function registerPlusCommands(program: Command): void {
       const result = await quiet(() => syncTeamsHeadless(exp, { subs: options.subs as "standard" | "high" | "mine", rotations: options.rotations }));
       let out: string | null = null;
       if (!options.dryRun) {
-        // idempotent: syncing a `_synced` file again writes the same name, and ~/Downloads' newest export stays one file
+        // the default lands next to the source as `<name>_synced.json`; syncing that file again (it is then the newest
+        // download) writes over it through a temp file — the source of a sync is only ever protected when it is not
+        // itself a synced copy
         out = options.out ?? path.replace(/(_synced)?\.json$/i, "") + "_synced.json";
-        writeSyncedExport(path, out, result.teams, options.rotations ? result.characters : null);
+        writeSyncedExport(path, out, result.teams, options.rotations ? result.characters : null, { allowSelf: /_synced\.json$/i.test(path) });
       }
       const r = result.report;
       if (!wantsPretty(options)) return printJson({ export: path, out, account: result.account, subs: result.subs, seconds: result.seconds, report: r });

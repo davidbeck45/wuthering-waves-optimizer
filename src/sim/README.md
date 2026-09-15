@@ -49,7 +49,7 @@ Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
 | `data/rotations/<Key>.json` | GENERATED — `CharacterRotationPreset[]` per character: the top steady-state loops Riley's engine ran for that resonator in each solver state (see below), team-dependent variants included (e.g. Xuanling's 3 vs 5 "Still as Withered Wood" shadows), mapped onto this app's attack keys; identical action lists across states are emitted once |
 | `data/teams.json` | GENERATED — `TeamRotationPreset[]`: per solver state, for every main DPS the app knows, the best 3 distinct compositions, the three rotations interleaved in execution order, main DPS in slot 0, enemy = level 100 / 20% RES (Riley's target) |
 | `data/manifest.json` | GENERATED — provenance (`wuwaCalcCommit`, `appCommit`, state, timestamp) and counts |
-| `data/breakpoints.json` | GENERATED — the **sequence-breakpoints table** (`wuwa-tools/rotation-port/export_breakpoints.mjs`, kept with its prose twin in `wuwa-tools/knowledge/`): per resonator, each of Riley's loadouts with the sequence levels at which its declared loop switches (`Loadout.rotationAt` over the kit's `rotation: { 0: …, 3: … }` map) and what the switch adds/drops, plus the Sequence pieces with his own note on each. `loadSequenceBreakpoints(key)` (keyed by Riley's name, so both Rover forms match) feeds the Rotation presets modal's "Sequence breakpoints" block (`CalculatorRotationsPresetsModal.vue`, `describeBreakpoints()`); the same `rotationAt` rule gives every import its members' `nextLoopChange` (13 of 47 resonators have one, 2026-09-14) |
+| `data/breakpoints.json` | GENERATED — the **sequence-breakpoints table** (`wuwa-tools/rotation-port/export_breakpoints.mjs`, kept with its prose twin in `wuwa-tools/knowledge/`): per resonator, each of Riley's loadouts with the sequence levels at which its declared loop switches (`Loadout.rotationAt` over the kit's `rotation: { 0: …, 3: … }` map) and what the switch adds/drops, plus the Sequence pieces with his own note on each. `loadSequenceBreakpoints(key)` (keyed by Riley's name, so both Rover forms match) feeds the Rotation presets modal's "Sequence breakpoints" block (`CalculatorRotationsPresetsModal.vue`, `describeBreakpoints()`). Each switch carries a `kind`: `loop` (different casts), `order` (same casts reordered) or `chain` (only an opener / first-visit / start-of-combat chain differs — Aemeath S1, Xuanling S1, Hiyuki S2, Phrolova S2); two identical Rotation objects (Jiyan's S6) are no breakpoint. 12 of 47 resonators have one, 8 of them a real loop change (2026-09-15). The import/sync hint `nextLoopChange` fires only for a real loop change |
 | `wuwaCalcPresets.test.ts` | gate: every generated action resolves on its character through `resolveRotationActionToAttackData`, names unique and disjoint from the curated presets, every team a complete 3-slot team |
 
 Generator: `~/Projects/wuwa-tools/rotation-port/emit_app_presets.py --states s6r5,s6r5mdps,s6r1mdps` (after
@@ -137,6 +137,21 @@ modelling: static buffs, no status stacks written yet — Phase 2). Regenerate a
 `export_rotations.mjs` states → `map_rotations.py` → `emit_app_presets.py` → `emit_ts_fixture.py` (the replay test
 compares TS to Python on the same loops, so both mappers move together).
 
+**Audit fixes (2026-09-15, seven agents over the imports on David's export — vault Session Log):** the team paths map
+one hit at a time, so a row that stands for N ticks was written once *per tick* (Cantarella's Diffusion ×31, Ciaccona's
+Tonic ×30) — `toActions` now takes a shared `TickState` per member and `finishTicks` settles it after the loop.
+Aemeath's "Forte - Seraphic Duet: Fusion Burst" (a 0-MV cast: the status at the cap rung × Fusion Trail / Stardust /
+S2) was dropped — it is now her `ElementalEffectFusionBurst` at the loop's cap (`fusionBurstCapOf`: 10, or 13 beside
+Denia) with the run's multiplier as an action-level `talentModifierMultiply` and her two multiplier buffs switched off
+per action (`advancedConfig`), on the status's own tick too. An Electro Flare tick's Rage count is read off the
+"Electro Rage - N" tick that follows (`attachRage`; Riley revokes Rage in the hook that fires the Flare). Cascade:
+the aggregate rule is name-gated (sim ≥ 0.6), per-hit candidates are ranked (Rebecca's enhanced rows, Buling's two
+Talismans), the ratio rule never takes a healing/shield row, and a cast the app splits in two rows (Lioness of Glory
+Blast + Crash, Feilian Attack + Whirlwind) presses both (`sum2`); overrides for Jingran's swapped hold MVs and
+Danjin's Crimson Erosion typo. Every import also records **`handoffs`** (who each member's Outro hands off to: the
+first cast another member *presses* after it, `handoffsOf`) on the team — the team-buff derivation reads it (below).
+TS and Python agree on all 1,247 loops of the three states (audit harness), 68 sim tests.
+
 **Sync my teams (Track I phase 2, 2026-09-14):** the bar's **Sync my teams** button re-imports every saved team
 whose name marks it as wuwa_calc's (`isGeneratedTeamName`: an import "wuwa_calc …" or a stock preset
 "… (wuwa_calc tNNN)") at the account's own state and updates it **in place** — `syncTeams.ts` (`runSync(deps)`:
@@ -154,7 +169,9 @@ player named are left alone and listed as such. On David's export (2026-09-14 ev
 
 **Headless:** `npm run cli -- sync-teams [--out file] [--dry-run] [--subs standard|high|mine] [--rotations]`
 (`syncTeamsHeadless.ts` + `writeSyncedExport` in `cli/exportFile.ts`) does the same from the terminal in ~3 s and
-writes a new export next to the source (`<name>_synced.json`, idempotent; the source is never overwritten) —
+writes a new export next to the source (`<name>_synced.json`; a plain export is never overwritten, a `_synced` file
+syncs over itself through a temp file, so the bare command keeps working once the synced copy is the newest
+download; `--rotations` replaces a member loop already saved under the same name instead of appending it again) —
 Settings › Import replaces the whole app database with it. `wuwa-tools/rotation-port/sync_teams.mjs` is the front
 door: it runs the command and prints, per team, Riley's DPR beside the app's own engine before and after
 (`cli -- team` on both files).
@@ -258,7 +275,8 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
 | `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
 | `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |
-| `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings from the run — written to a new export (`<source>_synced.json` by default; the source is never overwritten), with the per-team report; `--rotations` also appends each member's loop to that character's rotations |
+| `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings and handoffs from the run — written to a new export (`<source>_synced.json` by default; a plain export is never overwritten), with the per-team report; `--rotations` also saves each member's loop to that character's rotations (replacing one of the same name) |
+| `team <one> --json` | also lists `actionRows`: every action's own normal / average / crit damage in execution order (what the audit compared against Riley's per-cast averages) |
 | `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
 | `diff <before> <after> [--tolerance pct]` | every number that moved between two snapshots; exit code 2 when something did |
 
@@ -277,6 +295,16 @@ withhold `--push`. Not built: `optimize` (the workers expose nothing but `onmess
 
 
 ## Team-aware buffs and builds — `src/sim/teamContext/`
+
+**Three rules added 2026-09-15 (the audit found every one over-buffing a support):** a provider with Resonance Modes
+(Aemeath, Denia, Lucilla, Lynae) brings only the mode they are in — a buff bound to another mode by its `stance` or its
+key suffix (`…FusionBurst`, `…TuneStrain2`, `…Shifting`) is skipped; a buff worded for "the incoming Resonator" / "the
+next character" (41 of 183 definitions, `INCOMING_RE`) is an Outro handoff and reaches only the character who follows
+the provider — read off the team's recorded `handoffs` (a wuwa_calc import writes them; the block order of the actions
+stands in for a hand-built team, and a team with no actions keeps the old everyone-gets-it rule); a sequence-node buff
+is recognised by "Sequence Node N:" or "SN:" in its name (Suisui's "S2: Clouds Pour…" +50 % Crit DMG leaked at S0).
+`slots[].skipped` says which rule dropped what. On David's 31 synced teams the median app/Riley ratio went to 0.96.
+
 
 Upstream computes each team slot from that character's stored build **including the Team Buffs panel
 saved on the Calculator page** — two teammates picked there, which need not be the team's real members

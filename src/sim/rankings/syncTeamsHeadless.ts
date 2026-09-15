@@ -96,13 +96,17 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
     target.enemyConfig = { ...(target.enemyConfig ?? {}), ...prepared.enemyConfig };
     if (isGeneratedTeamName(target.name)) target.name = prepared.teamName;
     target.description = prepared.description;
+    target.handoffs = prepared.handoffs;
     const saved: string[] = [];
     const skipped: string[] = [];
     if (options.rotations) {
       for (const r of prepared.rotations) {
         const c = characters[r.key];
         if (!c || !r.actions.length) { skipped.push(r.name); continue; }
-        c.rotations = [...(c.rotations ?? []), toCharacterRotation(r, (c.rotations ?? []).length)];
+        // a re-run must not append the same loop again: replace a rotation already saved under this name
+        const existing = (c.rotations ?? []).findIndex((x: any) => x?.name === r.rotationName);
+        if (existing >= 0) c.rotations[existing] = { ...toCharacterRotation(r, existing), id: c.rotations[existing].id };
+        else c.rotations = [...(c.rotations ?? []), toCharacterRotation(r, (c.rotations ?? []).length)];
         saved.push(r.name);
       }
     }
