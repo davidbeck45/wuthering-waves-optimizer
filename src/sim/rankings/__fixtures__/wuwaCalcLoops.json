@@ -296,12 +296,14 @@
     "outro",
     1,
     null,
+    null,
     null
    ],
    [
     "ApplaudforMeDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -310,6 +312,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -317,12 +320,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -331,6 +336,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -338,12 +344,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -352,12 +360,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ApplaudforMeDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -366,12 +376,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -380,12 +392,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -394,12 +408,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -408,12 +424,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage2ChargedAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -422,12 +440,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -436,12 +456,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -747,12 +769,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -761,12 +785,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -775,6 +801,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -782,12 +809,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -796,12 +825,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ApplaudforMeDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -810,12 +841,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -824,12 +857,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -838,12 +873,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStage1FlipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -852,12 +889,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage2ChargedAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -866,12 +905,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -880,12 +921,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -1059,12 +1102,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "TotheHorizonDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -1073,12 +1118,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackStage2ChargedAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -1087,12 +1134,6 @@
     "basic",
     1,
     null,
-    null
-   ],
-   [
-    "MidairAttackStage3DMG",
-    "basic",
-    1,
     null,
     null
    ],
@@ -1100,6 +1141,15 @@
     "MidairAttackStage3DMG",
     "basic",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "MidairAttackStage3DMG",
+    "basic",
+    1,
+    null,
     null,
     null
    ],
@@ -1108,6 +1158,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -1115,12 +1166,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode2ForSmilesandCheersBlastDMG",
     "outro",
     2,
+    null,
     null,
     null
    ]
@@ -1382,12 +1435,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "CrimsonBlossomDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1396,6 +1451,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -1403,12 +1459,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "FloralRavageDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1417,12 +1475,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "FervorEfflorescentDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -1431,12 +1491,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "CrimsonBlossomDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1445,12 +1507,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "ViningWaltz2DMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1459,12 +1523,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BlazingWaltzDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1473,6 +1539,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -1480,12 +1547,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6PerennialDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -1736,12 +1805,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "CrimsonBlossomDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1750,6 +1821,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -1757,12 +1829,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "FloralRavageDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1771,12 +1845,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "FervorEfflorescentDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -1785,12 +1861,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "CrimsonBlossomDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1799,12 +1877,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "ViningWaltz2DMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1813,12 +1893,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BlazingWaltzDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -1827,6 +1909,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -1834,12 +1917,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6PerennialDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -2251,9 +2336,10 @@
   ],
   "expected": [
    [
-    "Stage2DMG",
-    "basic",
-    1,
+    "DiffusionDMG",
+    "liberation",
+    2,
+    null,
     null,
     null
    ],
@@ -2262,12 +2348,6 @@
     "intro",
     1,
     null,
-    null
-   ],
-   [
-    "DiffusionDMG",
-    "liberation",
-    1,
     null,
     null
    ],
@@ -2276,12 +2356,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "GracefulStepDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2290,6 +2372,7 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
@@ -2297,12 +2380,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "Stage2DMG",
-    "basic",
-    1,
     null,
     null
    ],
@@ -2311,12 +2388,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2325,6 +2404,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -2332,12 +2412,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -2346,12 +2428,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2360,12 +2444,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2374,6 +2460,7 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
@@ -2381,12 +2468,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -2789,7 +2878,8 @@
    [
     "DiffusionDMG",
     "liberation",
-    1,
+    2,
+    null,
     null,
     null
    ],
@@ -2798,12 +2888,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -2812,6 +2904,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -2819,6 +2912,7 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
@@ -2826,12 +2920,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "Stage2DMG",
-    "basic",
-    1,
     null,
     null
    ],
@@ -2840,12 +2928,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2854,6 +2944,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -2861,12 +2952,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -2875,12 +2968,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2889,6 +2984,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -2896,12 +2992,14 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -2910,12 +3008,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -3318,7 +3418,8 @@
    [
     "DiffusionDMG",
     "liberation",
-    1,
+    2,
+    null,
     null,
     null
    ],
@@ -3327,12 +3428,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -3341,6 +3444,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -3348,6 +3452,7 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
@@ -3355,12 +3460,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "Stage2DMG",
-    "basic",
-    1,
     null,
     null
    ],
@@ -3369,12 +3468,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -3383,6 +3484,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -3390,12 +3492,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -3404,12 +3508,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -3418,6 +3524,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -3425,12 +3532,14 @@
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
     null
    ],
    [
     "JoltDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -3439,12 +3548,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -3955,12 +4066,14 @@
     "negativeStatus",
     9,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordtoMarkTidesTraceDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -3969,12 +4082,14 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -3983,6 +4098,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -3990,6 +4106,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -3997,13 +4114,15 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordtoBearTheirNamesDMG",
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4011,13 +4130,15 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "MidairAttack3SwordShadowsRecalledDMG",
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4025,12 +4146,14 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordToAnswerWavesCallDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4039,12 +4162,14 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "MayTempestBreakTheTidesDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4053,19 +4178,22 @@
     "negativeStatus",
     3,
     null,
-    9
+    9,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    8
+    8,
+    null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4074,12 +4202,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage5DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4088,19 +4218,22 @@
     "negativeStatus",
     4,
     null,
-    9
+    9,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    8
+    8,
+    null
    ],
    [
     "BasicAttackStage1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4109,12 +4242,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4123,12 +4258,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage5DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4137,12 +4274,14 @@
     "negativeStatus",
     5,
     null,
-    9
+    9,
+    null
    ],
    [
     "BladeofHowlingSquallDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -4151,6 +4290,7 @@
     "echoAttacks",
     1,
     "ReminiscenceFleurdelys",
+    null,
     null
    ],
    [
@@ -4158,7 +4298,8 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ]
   ],
   "unmatched": [],
@@ -4676,12 +4817,14 @@
     "negativeStatus",
     5,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordtoMarkTidesTraceDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -4690,12 +4833,14 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -4704,6 +4849,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4711,6 +4857,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4718,13 +4865,15 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordtoBearTheirNamesDMG",
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4732,13 +4881,15 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ],
    [
     "MidairAttack3SwordShadowsRecalledDMG",
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4746,13 +4897,15 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ],
    [
     "SwordToAnswerWavesCallDMG",
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4760,13 +4913,15 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "MayTempestBreakTheTidesDMG",
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4774,19 +4929,22 @@
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    8
+    8,
+    null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4795,6 +4953,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4802,6 +4961,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -4809,26 +4969,30 @@
     "negativeStatus",
     1,
     null,
-    8
+    8,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    8
+    8,
+    null
    ],
    [
     "BasicAttackStage1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4837,12 +5001,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4851,12 +5017,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage5DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -4865,19 +5033,22 @@
     "negativeStatus",
     3,
     null,
-    8
+    8,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     2,
     null,
-    9
+    9,
+    null
    ],
    [
     "BladeofHowlingSquallDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -4886,6 +5057,7 @@
     "echoAttacks",
     1,
     "ReminiscenceFleurdelys",
+    null,
     null
    ],
    [
@@ -4893,7 +5065,8 @@
     "negativeStatus",
     1,
     null,
-    9
+    9,
+    null
    ]
   ],
   "unmatched": [],
@@ -5481,12 +5654,14 @@
     "negativeStatus",
     5,
     null,
-    12
+    12,
+    null
    ],
    [
     "SwordtoMarkTidesTraceDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -5495,12 +5670,14 @@
     "negativeStatus",
     1,
     null,
-    12
+    12,
+    null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -5509,6 +5686,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5516,6 +5694,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5523,13 +5702,15 @@
     "negativeStatus",
     2,
     null,
-    12
+    12,
+    null
    ],
    [
     "SwordtoBearTheirNamesDMG",
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5537,13 +5718,15 @@
     "negativeStatus",
     1,
     null,
-    12
+    12,
+    null
    ],
    [
     "MidairAttack3SwordShadowsRecalledDMG",
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5551,13 +5734,15 @@
     "negativeStatus",
     1,
     null,
-    12
+    12,
+    null
    ],
    [
     "SwordToAnswerWavesCallDMG",
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5565,13 +5750,15 @@
     "negativeStatus",
     2,
     null,
-    12
+    12,
+    null
    ],
    [
     "MayTempestBreakTheTidesDMG",
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5579,19 +5766,22 @@
     "negativeStatus",
     2,
     null,
-    12
+    12,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    11
+    11,
+    null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -5600,6 +5790,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5607,6 +5798,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -5614,26 +5806,30 @@
     "negativeStatus",
     1,
     null,
-    11
+    11,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     2,
     null,
-    12
+    12,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     1,
     null,
-    11
+    11,
+    null
    ],
    [
     "BasicAttackStage1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -5642,12 +5838,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -5656,12 +5854,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage5DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -5670,19 +5870,22 @@
     "negativeStatus",
     3,
     null,
-    11
+    11,
+    null
    ],
    [
     "ElementalEffectAeroErosion",
     "negativeStatus",
     2,
     null,
-    12
+    12,
+    null
    ],
    [
     "BladeofHowlingSquallDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -5691,6 +5894,7 @@
     "echoAttacks",
     1,
     "ReminiscenceFleurdelys",
+    null,
     null
    ],
    [
@@ -5698,7 +5902,8 @@
     "negativeStatus",
     1,
     null,
-    12
+    12,
+    null
    ]
   ],
   "unmatched": [],
@@ -6309,12 +6514,14 @@
     "negativeStatus",
     1,
     null,
-    1
+    1,
+    null
    ],
    [
     "ThunderousFuryDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -6323,12 +6530,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -6337,12 +6546,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -6351,12 +6562,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackRepelDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -6365,6 +6578,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -6372,89 +6586,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    3,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    13
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSilencingBladeDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -6463,12 +6594,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ThrumOfAllSoundsSpectroStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -6477,47 +6610,6 @@
     "forteCircuit",
     1,
     null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    6
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -6526,12 +6618,30 @@
     "forteCircuit",
     3,
     null,
+    null,
     null
    ],
    [
-    "ThrumOfAllSoundsSilencingBladeDMG",
+    "ThrumOfAllSoundsHavocStage1DMG",
     "forteCircuit",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
     null,
     null
    ],
@@ -6540,6 +6650,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -6547,7 +6658,136 @@
     "negativeStatus",
     1,
     null,
-    3
+    13,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    6,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    3,
+    null
    ]
   ],
   "unmatched": [],
@@ -7095,12 +7335,14 @@
     "negativeStatus",
     1,
     null,
-    1
+    1,
+    null
    ],
    [
     "ThunderousFuryDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -7109,12 +7351,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -7123,12 +7367,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -7137,12 +7383,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackRepelDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -7151,6 +7399,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -7158,89 +7407,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    3,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    10
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSilencingBladeDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -7249,12 +7415,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ThrumOfAllSoundsSpectroStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -7263,47 +7431,6 @@
     "forteCircuit",
     1,
     null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    5
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -7312,12 +7439,30 @@
     "forteCircuit",
     3,
     null,
+    null,
     null
    ],
    [
-    "ThrumOfAllSoundsSilencingBladeDMG",
+    "ThrumOfAllSoundsHavocStage1DMG",
     "forteCircuit",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
     null,
     null
    ],
@@ -7326,6 +7471,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -7333,7 +7479,136 @@
     "negativeStatus",
     1,
     null,
-    2
+    10,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    5,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    2,
+    null
    ]
   ],
   "unmatched": [],
@@ -7870,12 +8145,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -7884,12 +8161,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -7898,12 +8177,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ThunderclapDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -7912,12 +8193,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "OvershockDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -7926,89 +8209,6 @@
     "liberation",
     1,
     null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    3,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    10
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSilencingBladeDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -8017,12 +8217,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ThrumOfAllSoundsSpectroStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -8031,47 +8233,6 @@
     "forteCircuit",
     1,
     null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    5
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -8080,12 +8241,30 @@
     "forteCircuit",
     3,
     null,
+    null,
     null
    ],
    [
-    "ThrumOfAllSoundsSilencingBladeDMG",
+    "ThrumOfAllSoundsHavocStage1DMG",
     "forteCircuit",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
     null,
     null
    ],
@@ -8094,6 +8273,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -8101,7 +8281,136 @@
     "negativeStatus",
     1,
     null,
-    2
+    10,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    5,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    2,
+    null
    ]
   ],
   "unmatched": [],
@@ -8355,6 +8664,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -8362,12 +8672,14 @@
     "echoAttacks",
     1,
     "Corrosaurus",
+    null,
     null
    ],
    [
     "HeavyAttackVolleyofDeathStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -8376,12 +8688,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -8390,12 +8704,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ResonanceSkillEncroachDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -8404,12 +8720,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "HellfireAbsolutionDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -8418,12 +8736,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackSeraphicExecutionStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -8432,6 +8752,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -8439,12 +8760,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackSeraphicExecutionStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -8453,6 +8776,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -8460,12 +8784,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackSeraphicExecutionStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -8473,6 +8799,7 @@
     "AshenPursuitDMG",
     "outro",
     1,
+    null,
     null,
     null
    ]
@@ -9260,6 +9587,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9267,12 +9595,14 @@
     "forteCircuit",
     43,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     43,
+    null,
     null,
     null
    ],
@@ -9281,12 +9611,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9295,6 +9627,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9302,12 +9635,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9316,6 +9651,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9323,12 +9659,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9337,6 +9675,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9344,12 +9683,14 @@
     "forteCircuit",
     6,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     6,
+    null,
     null,
     null
    ],
@@ -9358,12 +9699,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -9372,19 +9715,6 @@
     "basic",
     1,
     null,
-    null
-   ],
-   [
-    "ElementalEffectGlacioBite",
-    "forteCircuit",
-    3,
-    null,
-    13
-   ],
-   [
-    "GlacioBiteDMG",
-    "forteCircuit",
-    3,
     null,
     null
    ],
@@ -9393,12 +9723,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9407,12 +9739,30 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectGlacioBite",
+    "forteCircuit",
+    3,
+    null,
+    13,
+    null
+   ],
+   [
+    "GlacioBiteDMG",
+    "forteCircuit",
+    3,
+    null,
     null,
     null
    ],
@@ -9421,12 +9771,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -9435,12 +9787,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -9449,6 +9803,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9456,12 +9811,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9470,6 +9827,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9477,12 +9835,14 @@
     "forteCircuit",
     5,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     5,
+    null,
     null,
     null
    ],
@@ -9491,12 +9851,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -9505,12 +9867,14 @@
     "forteCircuit",
     5,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     5,
+    null,
     null,
     null
    ],
@@ -9519,12 +9883,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -9533,12 +9899,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -9547,12 +9915,14 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianVoidborneConstruct",
+    null,
     null
    ],
    [
     "HeavyAttackBitterfrostForeclaimedSelfDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -9561,12 +9931,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -9575,6 +9947,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -9582,12 +9955,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -10391,6 +10766,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10398,12 +10774,14 @@
     "forteCircuit",
     23,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     23,
+    null,
     null,
     null
    ],
@@ -10412,12 +10790,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10426,6 +10806,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10433,12 +10814,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10447,6 +10830,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10454,12 +10838,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10468,6 +10854,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10475,12 +10862,14 @@
     "forteCircuit",
     4,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     4,
+    null,
     null,
     null
    ],
@@ -10489,12 +10878,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -10503,19 +10894,6 @@
     "basic",
     1,
     null,
-    null
-   ],
-   [
-    "ElementalEffectGlacioBite",
-    "forteCircuit",
-    1,
-    null,
-    13
-   ],
-   [
-    "GlacioBiteDMG",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -10524,12 +10902,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10538,12 +10918,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10552,12 +10934,30 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectGlacioBite",
+    "forteCircuit",
+    1,
+    null,
+    13,
+    null
+   ],
+   [
+    "GlacioBiteDMG",
+    "forteCircuit",
+    1,
+    null,
     null,
     null
    ],
@@ -10566,12 +10966,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -10580,6 +10982,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10587,12 +10990,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10601,6 +11006,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10608,12 +11014,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -10622,12 +11030,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10636,12 +11046,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -10650,12 +11062,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10664,12 +11078,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -10678,12 +11094,14 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianVoidborneConstruct",
+    null,
     null
    ],
    [
     "HeavyAttackBitterfrostForeclaimedSelfDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -10692,12 +11110,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -10706,6 +11126,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -10713,12 +11134,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -11536,6 +11959,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11543,12 +11967,14 @@
     "forteCircuit",
     41,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     41,
+    null,
     null,
     null
    ],
@@ -11557,12 +11983,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11571,6 +11999,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11578,12 +12007,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11592,6 +12023,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11599,12 +12031,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11613,6 +12047,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11620,12 +12055,14 @@
     "forteCircuit",
     6,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     6,
+    null,
     null,
     null
    ],
@@ -11634,12 +12071,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -11648,19 +12087,6 @@
     "basic",
     1,
     null,
-    null
-   ],
-   [
-    "ElementalEffectGlacioBite",
-    "forteCircuit",
-    3,
-    null,
-    13
-   ],
-   [
-    "GlacioBiteDMG",
-    "forteCircuit",
-    3,
     null,
     null
    ],
@@ -11669,12 +12095,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11683,12 +12111,30 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectGlacioBite",
+    "forteCircuit",
+    3,
+    null,
+    13,
+    null
+   ],
+   [
+    "GlacioBiteDMG",
+    "forteCircuit",
+    3,
+    null,
     null,
     null
    ],
@@ -11697,12 +12143,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackForeclaimedSelfStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -11711,6 +12159,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11718,12 +12167,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11732,6 +12183,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -11739,12 +12191,14 @@
     "forteCircuit",
     5,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     5,
+    null,
     null,
     null
    ],
@@ -11753,12 +12207,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -11767,12 +12223,14 @@
     "forteCircuit",
     5,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     5,
+    null,
     null,
     null
    ],
@@ -11781,12 +12239,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackIaiDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -11795,12 +12255,14 @@
     "forteCircuit",
     3,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -11809,12 +12271,14 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianVoidborneConstruct",
+    null,
     null
    ],
    [
     "HeavyAttackBitterfrostForeclaimedSelfDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -11823,12 +12287,14 @@
     "forteCircuit",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "GlacioBiteDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -11836,6 +12302,7 @@
     "ForeclaimingBladeLiberationBaseDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ]
@@ -12221,12 +12688,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12235,12 +12704,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "CrescentDivinityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12249,12 +12720,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack4DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12263,6 +12736,7 @@
     "echoAttacks",
     4,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12270,6 +12744,7 @@
     "echoAttacks",
     15,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12277,12 +12752,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "StarGlamourDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12291,12 +12768,14 @@
     "echoAttacks",
     9,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "LoongsHalo",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -12305,6 +12784,7 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12312,12 +12792,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12326,6 +12808,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -12333,12 +12816,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "CrescentDivinityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12347,12 +12832,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12361,6 +12848,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -12368,12 +12856,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "SolarFlareDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12382,12 +12872,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PurgeOfLight",
     "liberation",
     1,
+    null,
     null,
     null
    ]
@@ -12781,12 +13273,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "LoongsHalo",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -12795,12 +13289,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12809,6 +13305,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -12816,12 +13313,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack4DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12830,6 +13329,7 @@
     "echoAttacks",
     4,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12837,6 +13337,7 @@
     "echoAttacks",
     13,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12844,12 +13345,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "StarGlamourDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12858,12 +13361,14 @@
     "echoAttacks",
     5,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "LoongsHalo",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -12872,6 +13377,7 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -12879,12 +13385,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12893,6 +13401,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -12900,12 +13409,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "CrescentDivinityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12914,12 +13425,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12928,6 +13441,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -12935,12 +13449,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "SolarFlareDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -12949,12 +13465,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PurgeOfLight",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -12963,6 +13481,7 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ]
   ],
@@ -13333,12 +13852,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13347,12 +13868,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "CrescentDivinityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13361,12 +13884,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttack4DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13375,6 +13900,7 @@
     "echoAttacks",
     4,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -13382,6 +13908,7 @@
     "echoAttacks",
     15,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -13389,12 +13916,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "StarGlamourDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13403,12 +13932,14 @@
     "echoAttacks",
     8,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "LoongsHalo",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -13417,6 +13948,7 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
@@ -13424,12 +13956,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13438,6 +13972,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -13445,12 +13980,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "CrescentDivinityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13459,12 +13996,14 @@
     "echoAttacks",
     1,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "BasicAttack3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13473,6 +14012,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -13480,12 +14020,14 @@
     "echoAttacks",
     2,
     "Ju\u00e9",
+    null,
     null
    ],
    [
     "SolarFlareDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13494,12 +14036,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PurgeOfLight",
     "liberation",
     1,
+    null,
     null,
     null
    ]
@@ -13796,6 +14340,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -13803,6 +14348,7 @@
     "echoAttacks",
     1,
     "NightmareHecate",
+    null,
     null
    ],
    [
@@ -13810,12 +14356,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13824,6 +14372,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -13831,12 +14380,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13845,12 +14396,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -13859,12 +14412,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MovementOfFateAndFinalityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -13873,12 +14428,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ScarletCodaDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -13887,12 +14444,14 @@
     "liberation",
     10,
     null,
+    null,
     null
    ],
    [
     "SuiteofImmortalityDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -14297,12 +14856,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14311,6 +14872,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -14318,12 +14880,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14332,33 +14896,6 @@
     "echoAttacks",
     1,
     "NightmareHecate",
-    null
-   ],
-   [
-    "Stage1DMG",
-    "basic",
-    1,
-    null,
-    null
-   ],
-   [
-    "Stage2DMG",
-    "basic",
-    1,
-    null,
-    null
-   ],
-   [
-    "MovementOfFateAndFinalityDMG",
-    "forteCircuit",
-    1,
-    null,
-    null
-   ],
-   [
-    "ApparitionofBeyondHecate",
-    "forteCircuit",
-    1,
     null,
     null
    ],
@@ -14367,12 +14904,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -14381,12 +14920,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14395,12 +14936,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -14409,12 +14952,46 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "MovementOfFateAndFinalityDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ApparitionofBeyondHecate",
+    "forteCircuit",
+    1,
+    null,
     null,
     null
    ],
@@ -14423,6 +15000,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -14430,12 +15008,14 @@
     "liberation",
     7,
     null,
+    null,
     null
    ],
    [
     "SuiteofImmortalityDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -14686,6 +15266,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -14693,12 +15274,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -14707,6 +15290,7 @@
     "echoAttacks",
     1,
     "NightmareHecate",
+    null,
     null
    ],
    [
@@ -14714,12 +15298,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14728,6 +15314,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -14735,12 +15322,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ApparitionofBeyondHecate",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14749,12 +15338,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -14763,12 +15354,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MovementOfFateAndFinalityDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -14777,6 +15370,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -14784,12 +15378,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "EnhancedAttackHecateCadenzaDMG",
     "liberation",
     6,
+    null,
     null,
     null
    ]
@@ -15040,12 +15636,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "HeyLeadheadComenGetMeDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -15054,6 +15652,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15061,12 +15660,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavyAttackGutsDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -15075,12 +15676,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6MaybeJustMaybe",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -15089,6 +15692,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15096,6 +15700,7 @@
     "echoAttacks",
     1,
     "ReminiscenceNightmareAdamSmasher",
+    null,
     null
    ],
    [
@@ -15103,19 +15708,22 @@
     "liberation",
     5,
     null,
-    null
-   ],
-   [
-    "Mk31HMGDMG",
-    "liberation",
-    10,
     null,
     null
    ],
    [
-    "Mk31HMGDMG",
+    "Mk31HMG1stEnhancementDMG",
     "liberation",
-    30,
+    5,
+    null,
+    null,
+    null
+   ],
+   [
+    "Mk31HMG2ndEnhancementDMG",
+    "liberation",
+    10,
+    null,
     null,
     null
    ],
@@ -15124,6 +15732,7 @@
     "outro",
     70,
     null,
+    null,
     null
    ],
    [
@@ -15131,12 +15740,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "PreemChoomDMG",
     "outro",
     35,
+    null,
     null,
     null
    ],
@@ -15145,12 +15756,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PreemChoomDMG",
     "outro",
     35,
+    null,
     null,
     null
    ]
@@ -15379,12 +15992,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "HeyLeadheadComenGetMeDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -15393,6 +16008,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15400,12 +16016,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavyAttackGutsDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -15414,12 +16032,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6MaybeJustMaybe",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -15428,6 +16048,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15435,6 +16056,7 @@
     "echoAttacks",
     1,
     "ReminiscenceNightmareAdamSmasher",
+    null,
     null
    ],
    [
@@ -15442,19 +16064,22 @@
     "liberation",
     5,
     null,
-    null
-   ],
-   [
-    "Mk31HMGDMG",
-    "liberation",
-    10,
     null,
     null
    ],
    [
-    "Mk31HMGDMG",
+    "Mk31HMG1stEnhancementDMG",
     "liberation",
-    30,
+    5,
+    null,
+    null,
+    null
+   ],
+   [
+    "Mk31HMG2ndEnhancementDMG",
+    "liberation",
+    10,
+    null,
     null,
     null
    ],
@@ -15462,6 +16087,7 @@
     "PreemChoomDMG",
     "outro",
     20,
+    null,
     null,
     null
    ],
@@ -15470,12 +16096,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "PreemChoomDMG",
     "outro",
     20,
+    null,
     null,
     null
    ]
@@ -15726,12 +16354,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "MidairAttackHuntressDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -15740,12 +16370,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavyAttackGutsDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -15754,6 +16386,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15761,12 +16394,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "HackResponseMeltdownDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -15775,6 +16410,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -15782,6 +16418,7 @@
     "echoAttacks",
     1,
     "ReminiscenceNightmareAdamSmasher",
+    null,
     null
    ],
    [
@@ -15789,19 +16426,22 @@
     "liberation",
     5,
     null,
-    null
-   ],
-   [
-    "Mk31HMGDMG",
-    "liberation",
-    10,
     null,
     null
    ],
    [
-    "Mk31HMGDMG",
+    "Mk31HMG1stEnhancementDMG",
     "liberation",
-    30,
+    5,
+    null,
+    null,
+    null
+   ],
+   [
+    "Mk31HMG2ndEnhancementDMG",
+    "liberation",
+    10,
+    null,
     null,
     null
    ],
@@ -15810,12 +16450,14 @@
     "outro",
     70,
     null,
+    null,
     null
    ],
    [
     "BOOMFireworksDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -15824,6 +16466,7 @@
     "outro",
     30,
     null,
+    null,
     null
    ],
    [
@@ -15831,12 +16474,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "PreemChoomDMG",
     "outro",
     40,
+    null,
     null,
     null
    ]
@@ -15988,12 +16633,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16002,12 +16649,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusPlungingAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16016,12 +16665,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "EnlightenmentDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -16030,12 +16681,14 @@
     "echoAttacks",
     1,
     "FallacyOfNoReturn",
+    null,
     null
    ],
    [
     "DiscernmentDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -16187,12 +16840,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16201,12 +16856,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusPlungingAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16215,6 +16872,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -16222,12 +16880,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "DiscernmentDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -16390,12 +17050,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16404,12 +17066,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "OriginCalculusPlungingAttackDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16418,12 +17082,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "EnlightenmentDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -16432,12 +17098,14 @@
     "echoAttacks",
     1,
     "FallacyOfNoReturn",
+    null,
     null
    ],
    [
     "DiscernmentDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -16843,12 +17511,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16857,12 +17527,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -16871,6 +17543,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -16878,12 +17551,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode1AtTheWindSBreathTheBlossomsWake",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16892,6 +17567,7 @@
     "echoAttacks",
     1,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -16899,6 +17575,7 @@
     "echoAttacks",
     4,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -16906,12 +17583,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16920,12 +17599,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16934,12 +17615,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16948,6 +17631,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -16955,12 +17639,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16969,12 +17655,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16983,12 +17671,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackHavocInBloomStage1DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -16997,6 +17687,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -17004,12 +17695,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "AsTheWindWillsDMG",
     "outro",
     1,
+    null,
     null,
     null
    ]
@@ -17385,12 +18078,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -17399,12 +18094,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -17413,6 +18110,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -17420,12 +18118,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode1AtTheWindSBreathTheBlossomsWake",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17434,6 +18134,7 @@
     "echoAttacks",
     1,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -17441,6 +18142,7 @@
     "echoAttacks",
     4,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -17448,12 +18150,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17462,12 +18166,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17476,12 +18182,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ShadowOfXuanlingDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -17490,12 +18198,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavyAttackFeatherSwordStanceDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17504,12 +18214,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackFeatherSwordStanceFeatherFallDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17518,12 +18230,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackHavocInBloomStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17532,12 +18246,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "AsTheWindWillsDMG",
     "outro",
     1,
+    null,
     null,
     null
    ]
@@ -17918,12 +18634,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -17932,12 +18650,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackFeatherSwordStanceStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -17946,6 +18666,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -17953,12 +18674,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode1AtTheWindSBreathTheBlossomsWake",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17967,6 +18690,7 @@
     "echoAttacks",
     1,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -17974,6 +18698,7 @@
     "echoAttacks",
     4,
     "ThousandPuppetPavilion",
+    null,
     null
    ],
    [
@@ -17981,12 +18706,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -17995,12 +18722,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18009,12 +18738,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18023,12 +18754,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode1AtTheWindSBreathTheBlossomsWake",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18037,12 +18770,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18051,12 +18786,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SequenceNode6LetTheAzureKeepItsLight",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18065,12 +18802,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackHavocInBloomStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18079,12 +18818,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "AsTheWindWillsDMG",
     "outro",
     1,
+    null,
     null,
     null
    ]
@@ -18325,12 +19066,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -18339,12 +19082,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "DeathSnipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -18353,6 +19098,7 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianLeviathan",
+    null,
     null
    ],
    [
@@ -18360,12 +19106,14 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianLeviathan",
+    null,
     null
    ],
    [
     "MomentofNihilityDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -18374,12 +19122,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18388,12 +19138,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18402,12 +19154,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringEradicationDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -18633,12 +19387,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "Stage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -18647,12 +19403,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "DeathSnipDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -18661,12 +19419,14 @@
     "echoAttacks",
     1,
     "FallacyOfNoReturn",
+    null,
     null
    ],
    [
     "MomentofNihilityDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -18675,12 +19435,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18689,12 +19451,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18703,12 +19467,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringEradicationDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ]
@@ -18942,12 +19708,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "RendingLungeDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -18956,6 +19724,7 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
@@ -18963,6 +19732,7 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianLeviathan",
+    null,
     null
    ],
    [
@@ -18970,12 +19740,14 @@
     "echoAttacks",
     1,
     "ReminiscenceThrenodianLeviathan",
+    null,
     null
    ],
    [
     "MomentofNihilityDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -18984,12 +19756,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -18998,12 +19772,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "SawringBlitzStage3DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -19012,6 +19788,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19019,12 +19796,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "ReverberanceReturnDMG",
     "intro",
     1,
+    null,
     null,
     null
    ]
@@ -19223,6 +20002,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19230,12 +20010,14 @@
     "negativeStatus",
     1,
     null,
-    13
+    13,
+    null
    ],
    [
     "PhantomFrameDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -19244,12 +20026,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "ClearAsDayDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19258,12 +20042,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackTracingFormsStage2DMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19272,12 +20058,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "OblivionDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -19286,6 +20074,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19293,6 +20082,7 @@
     "echoAttacks",
     1,
     "ImpermanenceHeron",
+    null,
     null
    ]
   ],
@@ -19496,6 +20286,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19503,12 +20294,14 @@
     "negativeStatus",
     1,
     null,
-    4
+    4,
+    null
    ],
    [
     "PhantomFrameDMG",
     "skill",
     1,
+    null,
     null,
     null
    ],
@@ -19517,12 +20310,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "ClearAsDayDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19531,12 +20326,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackTracingFormsStage2DMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19545,12 +20342,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "OblivionDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -19559,6 +20358,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19566,6 +20366,7 @@
     "echoAttacks",
     1,
     "ImpermanenceHeron",
+    null,
     null
    ]
   ],
@@ -19769,6 +20570,7 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19776,19 +20578,22 @@
     "negativeStatus",
     1,
     null,
-    4
+    4,
+    null
    ],
    [
     "BellBorneGeocheloneActivation",
     "echoAttacks",
     1,
     "BellBorneGeochelone",
+    null,
     null
    ],
    [
     "ClearAsDayDMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19797,12 +20602,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackTracingFormsStage2DMG",
     "liberation",
     1,
+    null,
     null,
     null
    ],
@@ -19811,12 +20618,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "OblivionDMG",
     "forteCircuit",
     3,
+    null,
     null,
     null
    ],
@@ -19825,6 +20634,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -19832,12 +20642,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "SpotlightDMG",
     "skill",
     1,
+    null,
     null,
     null
    ]
@@ -20105,12 +20917,14 @@
     "liberation",
     12,
     null,
+    null,
     null
    ],
    [
     "DissonanceSkillDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -20119,6 +20933,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20126,12 +20941,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20140,6 +20957,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20147,12 +20965,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20161,12 +20981,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -20175,12 +20997,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -20189,12 +21013,14 @@
     "liberation",
     12,
     null,
+    null,
     null
    ],
    [
     "FuryFugueDamage",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -20203,12 +21029,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20217,12 +21045,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     46,
+    null,
     null,
     null
    ],
@@ -20231,12 +21061,14 @@
     "echoAttacks",
     6,
     "Hecate",
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     46,
+    null,
     null,
     null
    ]
@@ -20498,12 +21330,14 @@
     "liberation",
     19,
     null,
+    null,
     null
    ],
    [
     "DissonanceSkillDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -20512,6 +21346,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20519,12 +21354,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20533,6 +21370,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20540,12 +21378,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20554,12 +21394,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -20568,12 +21410,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -20582,12 +21426,14 @@
     "liberation",
     12,
     null,
+    null,
     null
    ],
    [
     "FuryFugueDamage",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -20596,12 +21442,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20610,12 +21458,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     41,
+    null,
     null,
     null
    ],
@@ -20624,12 +21474,14 @@
     "echoAttacks",
     1,
     "StonewallBracer",
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     41,
+    null,
     null,
     null
    ]
@@ -20954,12 +21806,14 @@
     "liberation",
     14,
     null,
+    null,
     null
    ],
    [
     "DissonanceSkillDMG",
     "intro",
     1,
+    null,
     null,
     null
    ],
@@ -20968,6 +21822,7 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20975,12 +21830,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -20989,6 +21846,7 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
@@ -20996,12 +21854,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -21010,12 +21870,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage2DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21024,12 +21886,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "ImpromptuShowStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21038,12 +21902,14 @@
     "liberation",
     12,
     null,
+    null,
     null
    ],
    [
     "FuryFugueDamage",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -21052,12 +21918,14 @@
     "liberation",
     4,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     2,
+    null,
     null,
     null
    ],
@@ -21066,12 +21934,14 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     46,
+    null,
     null,
     null
    ],
@@ -21080,12 +21950,14 @@
     "echoAttacks",
     6,
     "Hecate",
+    null,
     null
    ],
    [
     "MarcatoDamage",
     "liberation",
     46,
+    null,
     null,
     null
    ]
@@ -21354,12 +22226,14 @@
     "intro",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStringbladeStage1DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21368,12 +22242,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "MidAirAttackStringbladeStage3DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21382,12 +22258,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackStringbladeStage4DMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21396,12 +22274,14 @@
     "skill",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavyAttackStringbladeDMG",
     "basic",
     1,
+    null,
     null,
     null
    ],
@@ -21410,12 +22290,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackEphemeralTranscendenceStage2DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -21424,12 +22306,14 @@
     "forteCircuit",
     1,
     null,
+    null,
     null
    ],
    [
     "BasicAttackEphemeralTranscendenceStage4DMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -21438,12 +22322,14 @@
     "basic",
     1,
     null,
+    null,
     null
    ],
    [
     "HeavenSReckoningEphemeralTranscendenceDMG",
     "forteCircuit",
     1,
+    null,
     null,
     null
    ],
@@ -21452,6 +22338,7 @@
     "liberation",
     1,
     null,
+    null,
     null
    ],
    [
@@ -21459,12 +22346,14 @@
     "echoAttacks",
     1,
     "CalamityEffigy",
+    null,
     null
    ],
    [
     "LingeringSongDMG",
     "outro",
     1,
+    null,
     null,
     null
    ]

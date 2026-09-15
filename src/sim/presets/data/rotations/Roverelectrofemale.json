@@ -161,7 +161,7 @@
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 13,
-     "electroRageStacks": 0
+     "electroRageStacks": 2
     },
     {
      "order": 20,
@@ -460,7 +460,7 @@
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 10,
-     "electroRageStacks": 0
+     "electroRageStacks": 5
     },
     {
      "order": 20,
@@ -749,7 +749,7 @@
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 10,
-     "electroRageStacks": 0
+     "electroRageStacks": 5
     },
     {
      "order": 19,

@@ -17,7 +17,7 @@
     },
     {
      "order": 2,
-     "key": "SanguinePulse2",
+     "key": "CrimsonErosion1",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -33,7 +33,7 @@
     },
     {
      "order": 4,
-     "key": "CrimsonBloomContinuousATKDMG",
+     "key": "CrimsonBloomScarletBurstDMG",
      "type": "liberation",
      "count": 2,
      "buffs": [],
@@ -134,7 +134,7 @@
     },
     {
      "order": 2,
-     "key": "SanguinePulse2",
+     "key": "CrimsonErosion1",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -150,7 +150,7 @@
     },
     {
      "order": 4,
-     "key": "CrimsonBloomContinuousATKDMG",
+     "key": "CrimsonBloomScarletBurstDMG",
      "type": "liberation",
      "count": 2,
      "buffs": [],

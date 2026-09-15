@@ -1,11 +1,11 @@
 [
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,252,486 DPR for Jingran of 11,607,123 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,252,486 DPR for Jingran of 11,607,123 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,252,486 DPR for Jingran of 11,607,123 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,252,486 DPR for Jingran of 11,607,123 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
    "actions": [
     {
      "order": 1,
@@ -113,7 +113,7 @@
     },
     {
      "order": 14,
-     "key": "AfterlifeSGuideDMG",
+     "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -153,7 +153,7 @@
     },
     {
      "order": 19,
-     "key": "NetherworldTraverseDMG",
+     "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -198,11 +198,11 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 9,006,825 DPR for Jingran of 10,734,584 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 9,006,825 DPR for Jingran of 10,734,584 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 9,006,825 DPR for Jingran of 10,734,584 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 9,006,825 DPR for Jingran of 10,734,584 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
    "actions": [
     {
      "order": 1,
@@ -310,7 +310,7 @@
     },
     {
      "order": 14,
-     "key": "AfterlifeSGuideDMG",
+     "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -350,7 +350,7 @@
     },
     {
      "order": 19,
-     "key": "NetherworldTraverseDMG",
+     "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -395,11 +395,11 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,947,883 DPR for Jingran of 9,749,754 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,947,883 DPR for Jingran of 9,749,754 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,947,883 DPR for Jingran of 9,749,754 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,947,883 DPR for Jingran of 9,749,754 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
    "actions": [
     {
      "order": 1,
@@ -507,7 +507,7 @@
     },
     {
      "order": 14,
-     "key": "AfterlifeSGuideDMG",
+     "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -547,7 +547,7 @@
     },
     {
      "order": 19,
-     "key": "NetherworldTraverseDMG",
+     "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -592,11 +592,11 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,604,844 DPR for Jingran of 7,241,347 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,604,844 DPR for Jingran of 7,241,347 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,604,844 DPR for Jingran of 7,241,347 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,604,844 DPR for Jingran of 7,241,347 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang, 1x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Afterlife's Guide = AfterlifeSGuideDMG × 0.98; Skill - Netherworld Traverse = NetherworldTraverseDMG × 1.02.",
    "actions": [
     {
      "order": 1,
@@ -704,7 +704,7 @@
     },
     {
      "order": 14,
-     "key": "AfterlifeSGuideDMG",
+     "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -744,7 +744,7 @@
     },
     {
      "order": 19,
-     "key": "NetherworldTraverseDMG",
+     "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],

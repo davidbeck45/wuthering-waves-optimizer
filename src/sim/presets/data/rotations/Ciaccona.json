@@ -988,9 +988,9 @@
     },
     {
      "order": 12,
-     "key": "MidairAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -1016,11 +1016,12 @@
     },
     {
      "order": 15,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 9
     },
     {
      "order": 16,
@@ -1071,7 +1072,7 @@
      "order": 21,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -1080,22 +1081,13 @@
      "order": 22,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 24,
+     "order": 23,
      "key": "RoamingwiththeWindDMG",
      "type": "intro",
      "count": 1,
@@ -1206,9 +1198,9 @@
     },
     {
      "order": 12,
-     "key": "MidairAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -1234,11 +1226,12 @@
     },
     {
      "order": 15,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 6
     },
     {
      "order": 16,
@@ -1305,15 +1298,6 @@
     },
     {
      "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 24,
      "key": "RoamingwiththeWindDMG",
      "type": "intro",
      "count": 1,
@@ -1321,7 +1305,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 24,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,

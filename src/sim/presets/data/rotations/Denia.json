@@ -1178,11 +1178,11 @@
  },
  {
   "name": "Denia S0 Forged Dwarf Star R1 · Lupa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Denia S0 Forged Dwarf Star R1 · Lupa + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lioness of Glory = LionessofGloryBlastDMG × 1.43. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Forged Dwarf Star R1, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Lupa + Aemeath: 619,745 DPR for Denia of 6,193,151 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -1310,6 +1310,16 @@
     },
     {
      "order": 16,
+     "key": "LionessofGloryCrashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "LionessofGlory",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 2,
@@ -1317,24 +1327,24 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 18,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 10
-    },
-    {
-     "order": 18,
-     "key": "ErosionFieldDMGPerTick",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
     },
     {
      "order": 19,
+     "key": "ErosionFieldDMGPerTick",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,
@@ -1343,7 +1353,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 20,
+     "order": 21,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -1351,7 +1361,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 22,
      "key": "ItsBeenAWhileDMG",
      "type": "intro",
      "count": 1,
@@ -1359,7 +1369,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 23,
      "key": "ErosionFieldDMGPerTick",
      "type": "forteCircuit",
      "count": 1,
@@ -1367,7 +1377,7 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 24,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,

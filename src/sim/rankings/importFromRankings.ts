@@ -16,17 +16,23 @@ import {
   OVERRIDES,
   appKeyOf,
   appRowsOf,
+  attachRage,
   echoRowsOf,
   emptyReport,
   enemyConfigOf,
   enemyStacksOf,
+  finishTicks,
+  fusionBurstCapOf,
+  handoffsOf,
   knownRatios,
   toActions,
   type AppRow,
   type Cast,
   type EchoRows,
   type EnemyStacks,
+  type MapReport,
   type MappedAction,
+  type TickState,
 } from "./castMapper";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -86,6 +92,9 @@ export interface PreparedTeam {
   enemyConfig: Record<string, unknown>;
   /** the stack fields the run set above zero */
   enemySeen: Partial<EnemyStacks>;
+  /** who each member hands off to after their Outro (app keys) — what the team-buff derivation reads for
+   *  "incoming Resonator" buffs (src/sim/teamContext) */
+  handoffs: Record<string, string[]>;
   members: PreparedMember[];
   statuses: string[];
   notPorted: string[];
@@ -153,8 +162,13 @@ const cleanAction = (a: MappedAction): Record<string, unknown> => {
   }
   if (a.negativeStatusStacks != null) out.negativeStatusStacks = a.negativeStatusStacks;
   if (a.electroRageStacks != null) out.electroRageStacks = a.electroRageStacks;
+  if (a.buffs.length) out.buffs = a.buffs.map((b) => ({ ...b }));
+  if (a.advancedConfig) out.advancedConfig = { buffs: Object.fromEntries(Object.entries(a.advancedConfig.buffs).map(([k, v]) => [k, { ...v }])) };
   return out;
 };
+
+/** the action-level multiplier a row carries, for its identity */
+const multOf = (a: { buffs?: unknown }): string => JSON.stringify((Array.isArray(a.buffs) ? a.buffs : []).map((b: any) => [b.modifier, b.modifierValue]));
 
 const investmentTag = (combo: any): string => `S${combo.sequence}R${combo.weapon?.refinement ?? 1}`;
 
@@ -163,23 +177,35 @@ export const isGeneratedTeamName = (name: string | null | undefined): boolean =>
 
 /** Two team actions that merge into one row: same slot, attack, main echo and (for a status tick) stack count. */
 export const sameAction = (
-  a: { slot: number; key: string; mainEcho?: string | null; negativeStatusStacks?: number | null },
-  b: { slot: number; key: string; mainEcho?: string | null; negativeStatusStacks?: number | null },
-): boolean => a.slot === b.slot && a.key === b.key && (a.mainEcho ?? null) === (b.mainEcho ?? null) && (a.negativeStatusStacks ?? null) === (b.negativeStatusStacks ?? null);
+  a: { slot: number; key: string; mainEcho?: string | null; negativeStatusStacks?: number | null; buffs?: unknown; advancedConfig?: unknown },
+  b: { slot: number; key: string; mainEcho?: string | null; negativeStatusStacks?: number | null; buffs?: unknown; advancedConfig?: unknown },
+): boolean =>
+  a.slot === b.slot && a.key === b.key && (a.mainEcho ?? null) === (b.mainEcho ?? null) && (a.negativeStatusStacks ?? null) === (b.negativeStatusStacks ?? null)
+  && multOf(a) === multOf(b) && Boolean(a.advancedConfig) === Boolean(b.advancedConfig);
 
-/** The sequence levels at which a loadout's declared loop changes (Riley's `Loadout.rotationAt`): a level whose
- *  rotation differs from the one below it. A loadout with one loop at every level gives []. */
+/** the steady-state loop a Rotation presses, as the sequence of cast names (groups unfolded) */
+const loopSequence = (rotation: any): string => {
+  const out: string[] = [];
+  const add = (a: any): void => { if (a?.actions?.length) a.actions.forEach(add); else out.push(String(a?.name ?? "")); };
+  for (const a of rotation?.intro?.body ?? rotation?.opener?.body ?? []) add(a);
+  return out.join("|");
+};
+
+/** The sequence levels at which a loadout's steady-state loop changes (Riley's `Loadout.rotationAt`): a level whose
+ *  loop presses a different sequence of casts than the one below it. A level that only changes an opener or
+ *  start-of-combat chain (Aemeath S1, Xuanling S1, Hiyuki S2) is not a loop change — the breakpoints table lists
+ *  those separately. A loadout with one loop at every level gives []. */
 export function loopChangesAt(loadout: any): number[] {
   const out: number[] = [];
-  let prev: unknown = null;
+  let prev: any = null;
   for (let n = 0; n <= 6; n++) {
-    let r: unknown = null;
+    let r: any = null;
     try {
       r = loadout?.rotationAt?.(n) ?? null;
     } catch {
       r = null;
     }
-    if (n > 0 && prev !== null && r !== null && r !== prev) out.push(n);
+    if (n > 0 && prev !== null && r !== null && r !== prev && loopSequence(r) !== loopSequence(prev)) out.push(n);
     prev = r;
   }
   return out;
@@ -219,13 +245,17 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
     cast: CAST[h.action.cast] ?? null,
     node: NODE[h.action.node] ?? null,
     queued: !!h.queued,
+    triggered: !!h.triggered,
     by: h.triggeredBy?.name ?? null,
     held: enemyStacksOf(h.heldEnemy),
   });
   const sections: Hit[][] = (traced.rotationLines as any[][]).map((lines) =>
     lines.flatMap((line) => mods.teamrun.hitsOf(line) as any[]).map((h) => ({ member: h.member, enemy: h.slot !== h.member, cast: toCast(h) })),
   );
-  const loop = sections[sections.length - 1] ?? [];
+  const lastSection = sections[sections.length - 1] ?? [];
+  // per-hit mapping below: give each Flare tick its Rage count first (attachRage works on a whole loop)
+  const raged = attachRage(lastSection.map((h) => h.cast));
+  const loop: Hit[] = lastSection.map((h, i) => ({ ...h, cast: raged[i] }));
 
   // kit multipliers per member, pooled over every cast of this run (what map_rotations does per resonator)
   const ratiosByName = new Map<string, Set<number>>();
@@ -239,17 +269,26 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const slotOrder = [mainIndex, ...members.map((_, i) => i).filter((i) => i !== mainIndex)];
   const slotOf = (name: string): number => slotOrder.indexOf(names.indexOf(name));
 
-  const teamActions: TeamAction[] = [];
-  const notPorted = new Set<string>();
-  const statuses = new Set<string>();
+  // one hit at a time so the slots interleave as the engine ran them; one report + tick state per member across
+  // those calls, so a row that stands for N ticks is settled once the whole loop has been seen (finishTicks)
+  const raw: Array<{ slot: number; action: MappedAction }> = [];
+  const reports = new Map<string, { report: MapReport; ticks: TickState }>();
+  const fbCap = fusionBurstCapOf(loop.map((h) => h.cast));
   for (const h of loop) {
     if (h.enemy) continue;
-    const report = emptyReport();
-    const acts = toActions([h.cast], rowsByKey.get(appKeyOf(h.member))!, echoRows, OVERRIDES[h.member] ?? {}, report, ratiosByName.get(h.member));
-    for (const u of report.unmatched) notPorted.add(`${h.member}: ${u.replace(/ \(.*\)$/, "")}`);
-    for (const s of report.status) statuses.add(s.replace(/^\d+x /, ""));
-    for (const a of acts) teamActions.push({ slot: slotOf(h.member), ...cleanAction(a) } as TeamAction);
+    const r = reports.get(h.member) ?? { report: emptyReport(), ticks: new Map() };
+    reports.set(h.member, r);
+    const acts = toActions([h.cast], rowsByKey.get(appKeyOf(h.member))!, echoRows, OVERRIDES[h.member] ?? {}, r.report, ratiosByName.get(h.member), r.ticks, fbCap);
+    for (const a of acts) raw.push({ slot: slotOf(h.member), action: a });
   }
+  const notPorted = new Set<string>();
+  const statuses = new Set<string>();
+  for (const [member, r] of reports) {
+    finishTicks(r.ticks, r.report);
+    for (const u of r.report.unmatched) notPorted.add(`${member}: ${u.replace(/ \(.*\)$/, "")}`);
+    for (const s of r.report.status) statuses.add(s.replace(/^\d+x /, ""));
+  }
+  const teamActions: TeamAction[] = raw.map(({ slot, action }) => ({ slot, ...cleanAction(action) }) as TeamAction);
   const merged: TeamAction[] = [];
   for (const a of teamActions) {
     const last = merged[merged.length - 1];
@@ -263,6 +302,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const enemySeen: Partial<EnemyStacks> = {};
   for (const k of Object.keys(enemyStacks) as Array<keyof EnemyStacks>) if (enemyStacks[k]) enemySeen[k] = enemyStacks[k];
   const enemyConfig = { ...ENEMY, ...enemyStacks };
+  const handoffs = handoffsOf(loop);
 
   const tags = members.map((_, i) => investmentTag(combos[i]));
   const dpsTag = tags[mainIndex];
@@ -324,6 +364,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
     actions: merged,
     enemyConfig,
     enemySeen,
+    handoffs,
     members: memberDetails,
     statuses: [...statuses],
     notPorted: [...notPorted],
@@ -388,7 +429,9 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     teamStore.setTeamActions(existing.id, written.map((a) => ({ ...a, id: randomString(12) })));
     teamStore.setTeamEnemyConfig(existing.id, { ...prepared.enemyConfig });
     if (isGeneratedTeamName(existing.name)) teamStore.renameTeam(existing.id, prepared.teamName);
-    existing.description = prepared.description; // the store has no setter for it; the record is the store's own
+    // the store has no setters for these; the record is the store's own reactive object
+    existing.description = prepared.description;
+    existing.handoffs = prepared.handoffs;
     team = existing;
   } else {
     team = teamStore.importTeam({
@@ -399,6 +442,7 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
       duration: null,
       enemyConfig: { ...prepared.enemyConfig },
       description: prepared.description,
+      handoffs: prepared.handoffs,
     });
   }
 

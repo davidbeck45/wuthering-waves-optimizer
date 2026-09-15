@@ -91,17 +91,17 @@
     },
     {
      "order": 11,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -240,17 +240,17 @@
     },
     {
      "order": 11,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -373,17 +373,17 @@
     },
     {
      "order": 11,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -522,17 +522,17 @@
     },
     {
      "order": 11,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -647,17 +647,17 @@
     },
     {
      "order": 10,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -796,17 +796,17 @@
     },
     {
      "order": 12,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 13,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -913,17 +913,17 @@
     },
     {
      "order": 9,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
-     "count": 10,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 10,
-     "key": "Mk31HMGDMG",
+     "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
-     "count": 30,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },

@@ -22,7 +22,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 3,
@@ -111,7 +121,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 14,
@@ -253,7 +273,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 13,
@@ -331,7 +361,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 5,
@@ -420,7 +460,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 16,
@@ -647,7 +697,17 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
     },
     {
      "order": 5,

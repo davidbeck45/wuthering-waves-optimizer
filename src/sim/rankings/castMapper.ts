@@ -36,6 +36,8 @@ export interface Cast {
   cast: string | null;
   node: string | null;
   queued?: boolean;
+  /** fired by a hook rather than pressed (a coordinated / follow-up hit) — never the incoming resonator's first press */
+  triggered?: boolean;
   by?: string | null;
   /** the enemy debuffs the engine held while this cast ran, by stack count (a traced run's `heldEnemy`, parsed by
    *  `enemyStacksOf` / the exporter): Havoc Bane, Tune Strain - Interfered, Electro Rage, and the tick statuses */
@@ -50,7 +52,10 @@ export interface MappedAction {
   key: string;
   type: string;
   count: number;
-  buffs: never[];
+  /** action-level buffs the app applies to this press (a Duet burst's run multiplier) */
+  buffs: Array<{ modifier: string; modifierValue: number }>;
+  /** per-action overrides of the character's own toggles (the app's RotationAdvancedConfig shape) */
+  advancedConfig?: { buffs: Record<string, { isEnabled: boolean }> };
   excludeTeamBuffs: boolean;
   excludeWeaponBuffs: boolean;
   isDisabled: boolean;
@@ -106,6 +111,10 @@ export const OVERRIDES: Record<string, Overrides> = {
   Cantarella: { "Basic - Dreamweaver": null, "Liberation - Beneath the Sea": "FlowingSuffocationDMG" },
   // × 2.75: Heart Sword Intent doubling + the chain's bonus, both kit buffs in the app
   Qingxiao: { "Forte Heavy - Heaven's Reckoning": "HeavenSReckoningEphemeralTranscendenceDMG" },
+  // wuwa_calc and the app disagree on which MV belongs to which of Yang Font's / Yin Vessel's holds: the names win
+  Jingran: { "Skill - Afterlife's Guide": "AfterlifeSGuideDMG", "Skill - Netherworld Traverse": "NetherworldTraverseDMG" },
+  // 64.42 % × 2 in wuwa_calc vs 64.12 % × 2 in the app: a typo on one side, the same-named row rather than Sanguine Pulse 2
+  Danjin: { "Skill - Crimson Erosion 1": "CrimsonErosion1" },
 };
 
 /** wuwa_calc casts named after an echo's passive rather than the echo: the app echo they belong to */
@@ -128,6 +137,29 @@ const TICK_SUB: Record<string, string> = { "Spectro Frazzle": "SpectroFrazzle", 
 /** the app's stack→motion-value tables end at 13 (Aero Erosion at 12); Riley's engine climbs past that (Glacio Chafe / Electro Flare x16) */
 const tickCap = (sub: string): number => (sub === "AeroErosion" ? 12 : 13);
 const RAGE_RE = /^Electro Rage - (\d+) Stacks?$/;
+/** Aemeath's "Forte - Seraphic Duet: Fusion Burst": the status calculated at the target's cap rung without spending
+ *  the stacks, multiplied by her Fusion Trail / Stardust Resonance / S2 (Riley: `mv: 0` + AddMv from the ladder +
+ *  MulMv from her buffs, so `mvRun` = cap rung × (1 + multiplier)). The app presses the same thing as her
+ *  ElementalEffectFusionBurst at the cap with the run's multiplier as an action-level talentModifierMultiply, and her
+ *  own two multiplier buffs switched off on every Fusion Burst row she presses (per-Duet in the game and in Riley's
+ *  model; on the status's own tick they would inflate it). The ladder is calculator.ts's Fusion Burst MV table. */
+const DUET_BURST = "Forte - Seraphic Duet: Fusion Burst";
+const FUSION_BURST_MV = [0, 84.0, 152.29, 220.58, 288.88, 357.17, 425.46, 493.75, 562.04, 630.34, 698.63, 931.5, 1164.38, 1397.26];
+const DUET_BURST_BUFFS = ["SeraphicDuetFusionBurst", "StardustResonance"];
+const duetBurstOff = (): { buffs: Record<string, { isEnabled: boolean }> } => ({ buffs: Object.fromEntries(DUET_BURST_BUFFS.map((k) => [k, { isEnabled: false }])) });
+const FB_TICK_RE = /^Fusion Burst - (\d+) Stacks?$/;
+/** The Fusion Burst cap a loop ran at: the highest rung its own ticks fired (10, or 13 beside Denia); 10 when none. */
+export function fusionBurstCapOf(casts: Cast[]): number {
+  let cap = 0;
+  for (const c of casts) { const m = FB_TICK_RE.exec(c.name); if (m) cap = Math.max(cap, Number(m[1])); }
+  return cap ? Math.min(cap, 13) : 10;
+}
+/** The multiplier a Duet burst ran at, off its run MV against the cap rung; null when the cast carries no run MV. */
+export function duetBurstOf(cast: Cast, cap: number): { cap: number; mult: number } | null {
+  const run = cast.mvRun ?? 0;
+  if (run <= 0) return null;
+  return { cap, mult: Math.round((run / FUSION_BURST_MV[cap] - 1) * 10000) / 10000 };
+}
 /** the team-wide enemy settings the app holds, with the enemy panel's slider caps */
 export const ENEMY_CAP: EnemyStacks = { spectroFrazzleStacks: 13, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 13, electroFlareStacks: 13, electroRageStacks: 13, glacioChafeStacks: 13, strainStacks: 9 };
 const HELD_RE = /^(Havoc Bane|Tune Strain - Interfered|Electro Rage|Electro Flare|Aero Erosion|Glacio Chafe|Spectro Frazzle|Fusion Burst|Glacio Bite) x(\d+)/;
@@ -150,7 +182,7 @@ export function enemyStacksOf(heldEnemy: Array<{ name: string }> | null | undefi
 export function enemyConfigOf(casts: Cast[]): EnemyStacks {
   const out: EnemyStacks = { spectroFrazzleStacks: 0, aeroErosionStacks: 0, havocBaneStacks: 0, fusionBurstStacks: 0, electroFlareStacks: 0, electroRageStacks: 0, glacioChafeStacks: 0, strainStacks: 0 };
   const held: Record<"havocBaneStacks" | "strainStacks", Map<number, number>> = { havocBaneStacks: new Map(), strainStacks: new Map() };
-  for (const c of casts) {
+  for (const c of attachRage(casts)) {
     const nm = c.name;
     const n = c.count || 1;
     const enemy = c.held ?? {};
@@ -265,7 +297,11 @@ function rankRows(cast: Cast, cands: AppRow[]): { ordered: AppRow[]; score: (r: 
 }
 const sameScore = (a: Score, b: Score): boolean => a.every((v, i) => v === b[i]);
 
-export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [AppRow | null, string, number] {
+/** A cast the app splits into two rows (an echo's Blast + Crash, Jué's Thunderbolt + Spiral): `matchCast` returns
+ *  both under "sum2" and `toActions` presses both. */
+export type MatchHit = AppRow | AppRow[] | null;
+
+export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [MatchHit, string, number] {
   const { name, mv: want, count } = cast;
   if (name in overrides) {
     const key = overrides[name];
@@ -282,26 +318,47 @@ export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [Ap
     if (cands.length === 1) return [ordered[0], "mv", count];
     return [ordered[0], sameScore(score(ordered[0]), score(ordered[1])) ? "mv-ambiguous" : "mv+name", count];
   }
-  // 2. aggregate: the app row already holds all `count` ticks
+  // 2. aggregate: the app row already holds all `count` ticks — name-gated (2026-09-15): the tolerance grows with the
+  //    count, and 10 Diffusion ticks used to snap onto a basic-attack row by coincidence; without a resemblance the
+  //    tick rule below (4b) is the right reading
   if (count > 1) {
-    cands = rows.filter((r) => r.mv && Math.abs(r.mv - want * count) < tol * count);
+    cands = rows.filter((r) => r.mv && Math.abs(r.mv - want * count) < tol * count && sim(name, r) >= 0.6);
     if (cands.length) return [rankRows(cast, cands).ordered[0], "aggregate", 1];
   }
-  // 3. per-hit: the app row is one hit, the cast is N hits
+  // 3. per-hit: the app row is one hit, the cast is N hits — every candidate ranked, not the first in table order
+  //    (Rebecca's "1st Enhancement x5" is 5 × the enhanced row, not 10 × the base one); a row in the cast's own
+  //    group needs less of a name (Buling's skill = 2 Thunder Talismans)
   const nHint = hitsSuffix(name);
+  const pref = NODE_PREF[cast.node ?? ""] ?? CAST_PREF[cast.cast ?? ""] ?? [];
+  const perHit: Array<[AppRow, number]> = [];
   for (const r of rows) {
     if (!r.mv || r.mv > want + tol) continue;
     const q = want / r.mv;
     const n = Math.round(q);
     // an echo with a single damage row (Hecate's Crescent Servants) needs no name resemblance
-    if (Math.abs(q - n) < 0.01 && n >= 2 && n <= 40 && (nHint === null || n % nHint === 0 || nHint % n === 0) && (sim(name, r) >= 0.5 || rows.filter((x) => x.mv).length === 1)) {
-      return [r, `per-hit×${n}`, count * n];
+    if (Math.abs(q - n) < 0.01 && n >= 2 && n <= 40 && (nHint === null || n % nHint === 0 || nHint % n === 0)
+      && (sim(name, r) >= 0.5 || rows.filter((x) => x.mv).length === 1 || (pref.includes(r.group) && n <= 4 && sim(name, r) >= 0.3))) {
+      perHit.push([r, n]);
     }
   }
-  // 4. ratio: same action, a multiplier the app models elsewhere
+  if (perHit.length) {
+    const best = rankRows(cast, perHit.map(([r]) => r)).ordered[0];
+    const n = perHit.find(([r]) => r === best)![1];
+    return [best, `per-hit×${n}`, count * n];
+  }
+  // 3b. a pair of rows: a cast the app splits in two (an echo's Blast + Crash, Jué's Thunderbolt + Spiral, Danjin's
+  //     Crimson Bloom Continuous + Scarlet Burst) — both rows are pressed; one of them has to resemble the cast
+  const damage = rows.filter((r) => r.mv && !/(Healing|Shield)$/.test(r.key));
+  const pairs: Array<[AppRow, AppRow]> = [];
+  for (let i = 0; i < damage.length; i++) for (let j = i + 1; j < damage.length; j++) {
+    const a = damage[i], b = damage[j];
+    if (Math.abs((a.mv as number) + (b.mv as number) - want) < tol && Math.max(sim(name, a), sim(name, b)) >= 0.5) pairs.push([a, b]);
+  }
+  if (pairs.length === 1) return [pairs[0], "sum2", count];
+  // 4. ratio: same action, a multiplier the app models elsewhere — never a healing / shield row
   const stage = stageOf(cast);
   const hint = hintOf(name);
-  const named = rows.filter((r) => r.mv && (sim(name, r) >= 0.55 || (stage && new RegExp(`stage${stage}(?!\\d)`).test(norm(r.key)) && (hint === null || norm(r.key).includes(hint)))));
+  const named = rows.filter((r) => r.mv && !/(Healing|Shield)$/.test(r.key) && (sim(name, r) >= 0.55 || (stage && new RegExp(`stage${stage}(?!\\d)`).test(norm(r.key)) && (hint === null || norm(r.key).includes(hint)))));
   const ordered = named.length ? rankRows(cast, named).ordered : [];
   for (const r of ordered.slice(0, 3)) {
     const q = want / (r.mv as number);
@@ -326,7 +383,7 @@ export function knownRatios(casts: Cast[], rows: AppRow[], overrides: Overrides)
   for (const c of casts) {
     if (!c.mv || isStatus(c.name) || c.name.startsWith("Echo - ")) continue;
     const [hit, how] = matchCast(c, rows, overrides);
-    if (hit && how.startsWith("mv×")) {
+    if (hit && !Array.isArray(hit) && how.startsWith("mv×")) {
       const r = Math.round(Number(how.slice(3)) * 100) / 100;
       if (!names.has(r)) names.set(r, new Set());
       names.get(r)!.add(c.name);
@@ -377,14 +434,68 @@ export function findEcho(name: string, by: string | null | undefined, echoRows: 
   return null;
 }
 
+/** Who each member hands off to in a loop: after a member's Outro, the first cast another member *presses* (not a
+ *  triggered or queued follow-up) names the incoming resonator — the one an "incoming Resonator" buff is for. Keyed
+ *  by app character key; a member with no Outro in the loop has no entry. 99 % of Riley's loops agree with "the next
+ *  Intro"; the rest are quick-swaps where the pressed cast is the right reading. */
+export function handoffsOf(hits: Array<{ member: string; enemy: boolean; cast: Cast }>): Record<string, string[]> {
+  const loop = hits.filter((h) => !h.enemy);
+  const n = loop.length;
+  const out: Record<string, Set<string>> = {};
+  for (let i = 0; i < n; i++) {
+    const c = loop[i].cast;
+    if (!(c.cast === "Outro" || /^Outro\b/.test(c.name))) continue;
+    for (let k = 1; k < n; k++) {
+      const h = loop[(i + k) % n];
+      if (h.member === loop[i].member || h.cast.triggered || h.cast.queued) continue;
+      (out[appKeyOf(loop[i].member)] ??= new Set()).add(appKeyOf(h.member));
+      break;
+    }
+  }
+  return Object.fromEntries(Object.entries(out).map(([k, v]) => [k, [...v]]));
+}
+
+/** Riley revokes Electro Rage in the same hook that fires an Electro Flare tick, so a Flare tick's `held` roster never
+ *  carries it — the count is on the "Electro Rage - N Stacks" tick that immediately follows. Copy it onto the Flare
+ *  tick (fresh objects; the caller's casts stay as they were). Mirrors map_rotations.attach_rage. */
+export function attachRage(casts: Cast[]): Cast[] {
+  const out = casts.map((c) => ({ ...c }));
+  for (let i = 0; i < out.length; i++) {
+    if (!out[i].name.startsWith("Electro Flare - ")) continue;
+    const m = i + 1 < out.length ? RAGE_RE.exec(out[i + 1].name) : null;
+    if (m) out[i].held = { ...(out[i].held ?? {}), electroRage: Number(m[1]) };
+  }
+  return out;
+}
+
 export const emptyReport = (): MapReport => ({ methods: {}, unmatched: [], review: [], skipped: [], status: [], multipliers: [] });
 
-/** Executed casts -> app rotation actions (order 1..n). Mirrors map_rotations.to_actions. */
-export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string, EchoRows>, overrides: Overrides, report: MapReport, ratios?: Set<number>): MappedAction[] {
+/** The tick rows one mapping accumulates: per app key, how many single ticks were seen and how many ticks the app's
+ *  row stands for. Local to one `toActions` call unless the caller hands one in — the team path maps a loop one hit
+ *  at a time and keeps one per member across those calls, then settles it with `finishTicks` (map_rotations.py's
+ *  `defer_ticks` / `finish_ticks`); without that, 31 single Diffusion ticks became 31 full rows instead of ≈ 1. */
+export type TickState = Map<string, { ticks: number; n: number; action: MappedAction }>;
+
+/** Settle the tick rows: every N ticks of an app row that is an N-tick aggregate become one press of it. */
+export function finishTicks(ticks: TickState, report: MapReport): void {
+  for (const [key, t] of ticks) {
+    t.action.count = Math.max(1, Math.round(t.ticks / t.n));
+    report.skipped.push(`${t.ticks} ticks of ${key} -> ${t.action.count}x the app's ${t.n}-hit row`);
+  }
+  ticks.clear();
+}
+
+/** Executed casts -> app rotation actions (order 1..n). Mirrors map_rotations.to_actions. With `tickState` the tick
+ *  rows are left unsettled in it for the caller's `finishTicks`. */
+export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string, EchoRows>, overrides: Overrides, report: MapReport, ratios?: Set<number>, tickState?: TickState, fusionBurstCap?: number): MappedAction[] {
   const actions: MappedAction[] = [];
   let order = 0;
   const kitRatios = ratios ?? knownRatios(casts, rows, overrides);
-  const ticks = new Map<string, { ticks: number; n: number; action: MappedAction }>();
+  const ticks: TickState = tickState ?? new Map();
+  casts = attachRage(casts); // a whole loop: a Flare tick reads its Rage count off the tick that follows
+  const aemeath = rows.some((r) => r.key === "SeraphicDuetBonusDMGPerInstance"); // her rows: Duet-burst handling applies
+  // the cap her Duet burst fires at comes from the loop's own ticks; a caller mapping one hit at a time passes it in
+  const fbCap = fusionBurstCap ?? fusionBurstCapOf(casts);
   const bump = (how: string): void => {
     const m = how.startsWith("mv×") ? "ratio" : how.startsWith("tick/") ? "tick" : how.startsWith("per-hit") ? "per-hit" : how;
     report.methods[m] = (report.methods[m] ?? 0) + 1;
@@ -392,6 +503,19 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
   for (const c of casts) {
     const nm = c.name;
     if (nm === "Tune Break" || c.cast === "TuneBreak") { report.skipped.push("Tune Break (enemy row)"); continue; }
+    if (nm === DUET_BURST && aemeath) {
+      const d = duetBurstOf(c, fbCap);
+      if (!d) { report.skipped.push(`${nm} (no run MV)`); continue; }
+      order += 1;
+      actions.push({
+        order, key: "ElementalEffectFusionBurst", type: "negativeStatus", count: c.count,
+        buffs: [{ modifier: "talentModifierMultiply", modifierValue: Math.round(d.mult * 10000) / 100 }],
+        excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false, negativeStatusStacks: d.cap, advancedConfig: duetBurstOff(),
+      });
+      bump("duet-burst");
+      report.multipliers.push(`${nm} = ElementalEffectFusionBurst @${d.cap} × ${(1 + d.mult).toFixed(2)} (Fusion Trail / Stardust from the run)`);
+      continue;
+    }
     if (isStatus(nm)) {
       report.status.push(`${c.count}x ${nm}`);
       const t = TICK_RE.exec(nm);
@@ -404,20 +528,23 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
       order += 1;
       const a: MappedAction = { order, key: own?.key ?? `ElementalEffect${sub}`, type: own?.group ?? "negativeStatus", count: c.count, buffs: [], excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false, negativeStatusStacks: stacks };
       if (sub === "ElectroFlare") a.electroRageStacks = Math.min(c.held?.electroRage ?? 0, 13);
+      // Aemeath's own multiplier buffs are per-Duet: keep them off the status's own tick when she presses it
+      if (aemeath && sub === "FusionBurst") a.advancedConfig = duetBurstOff();
       bump("status");
       actions.push(a);
       continue;
     }
     if (!c.mv) { report.skipped.push(`${nm} (0 MV)`); continue; }
     if (nm.includes("(Cancelled)") || nm === "Echo - Stay tuned" || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
-    let hit: AppRow | null = null;
+    let hit: MatchHit = null;
     let how = "";
     let count = c.count;
     if (c.cast === "Echo" || nm.startsWith("Echo - ")) {
       const ekey = findEcho(nm, c.by, echoRows);
       if (ekey) {
         [hit, how, count] = matchCast(c, echoRows[ekey].rows, overrides);
-        if (hit) hit = { ...hit, echoKey: ekey };
+        if (Array.isArray(hit)) hit = hit.map((r) => ({ ...r, echoKey: ekey }));
+        else if (hit) hit = { ...hit, echoKey: ekey };
       } else if (nm.startsWith("Echo - ")) {
         report.unmatched.push(`${nm} (echo not found in app registry)`);
         bump("unmatched");
@@ -427,10 +554,21 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     }
     if (hit === null) {
       [hit, how, count] = matchCast(c, rows, overrides);
-      if (kitRatios.size && (hit === null || how === "name-only" || how === "mv-ambiguous" || (how.startsWith("mv×") && !kitRatios.has(Math.round(Number(how.slice(3)) * 100) / 100) && sim(nm, hit) < 0.75))) {
+      if (kitRatios.size && (hit === null || how === "name-only" || how === "mv-ambiguous" || (how.startsWith("mv×") && !Array.isArray(hit) && !kitRatios.has(Math.round(Number(how.slice(3)) * 100) / 100) && sim(nm, hit) < 0.75))) {
         const [h2, how2] = matchWithRatios(c, rows, kitRatios);
         if (h2 !== null && how2 !== null) { hit = h2; how = how2; count = c.count; }
       }
+    }
+    if (Array.isArray(hit)) {
+      // two app rows for one cast: press both
+      bump("sum2");
+      for (const r of hit) {
+        order += 1;
+        const a: MappedAction = { order, key: r.key, type: r.group, count, buffs: [], excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false };
+        if (r.echoKey) { a.mainEcho = r.echoKey; a.mainEchoRank = 5; }
+        actions.push(a);
+      }
+      continue;
     }
     bump(how);
     if (how === "override-drop") continue;
@@ -454,10 +592,7 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     if (hit.echoKey) { a.mainEcho = hit.echoKey; a.mainEchoRank = 5; }
     actions.push(a);
   }
-  for (const [key, t] of ticks) {
-    t.action.count = Math.max(1, Math.round(t.ticks / t.n));
-    report.skipped.push(`${t.ticks} ticks of ${key} -> ${t.action.count}x the app's ${t.n}-hit row`);
-  }
+  if (!tickState) finishTicks(ticks, report);
   return actions;
 }
 

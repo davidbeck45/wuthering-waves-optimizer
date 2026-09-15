@@ -57,9 +57,9 @@
     },
     {
      "order": 7,
-     "key": "ResonatingWhirlDMG",
+     "key": "ResonatingEchoesStage1DMG",
      "type": "forteCircuit",
-     "count": 6,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
