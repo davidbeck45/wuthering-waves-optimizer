@@ -49,10 +49,18 @@ Credit: engine, kits, rotations and solves by Riley31415 (wuwa_calc, ISC).
 | `data/rotations/<Key>.json` | GENERATED — `CharacterRotationPreset[]` per character: the top steady-state loops Riley's engine ran for that resonator in each solver state (see below), team-dependent variants included (e.g. Xuanling's 3 vs 5 "Still as Withered Wood" shadows), mapped onto this app's attack keys; identical action lists across states are emitted once |
 | `data/teams.json` | GENERATED — `TeamRotationPreset[]`: per solver state, for every main DPS the app knows, the best 3 distinct compositions, the three rotations interleaved in execution order, main DPS in slot 0, enemy = level 100 / 20% RES (Riley's target) |
 | `data/manifest.json` | GENERATED — provenance (`wuwaCalcCommit`, `appCommit`, state, timestamp) and counts |
+| `data/breakpoints.json` | GENERATED — the **sequence-breakpoints table** (`wuwa-tools/rotation-port/export_breakpoints.mjs`, kept with its prose twin in `wuwa-tools/knowledge/`): per resonator, each of Riley's loadouts with the sequence levels at which its declared loop switches (`Loadout.rotationAt` over the kit's `rotation: { 0: …, 3: … }` map) and what the switch adds/drops, plus the Sequence pieces with his own note on each. `loadSequenceBreakpoints(key)` (keyed by Riley's name, so both Rover forms match) feeds the Rotation presets modal's "Sequence breakpoints" block (`CalculatorRotationsPresetsModal.vue`, `describeBreakpoints()`); the same `rotationAt` rule gives every import its members' `nextLoopChange` (13 of 47 resonators have one, 2026-09-14) |
 | `wuwaCalcPresets.test.ts` | gate: every generated action resolves on its character through `resolveRotationActionToAttackData`, names unique and disjoint from the curated presets, every team a complete 3-slot team |
 
 Generator: `~/Projects/wuwa-tools/rotation-port/emit_app_presets.py --states s6r5,s6r5mdps,s6r1mdps` (after
 `export_rotations.mjs <state>` → `dump_app_tables.ts` → `map_rotations.py --state <state>` per state, see that README).
+**Negative-status ticks are actions (2026-09-14):** a tick Riley's engine fires ("Aero Erosion - 9 Stacks", "Fusion Burst -
+10 Stacks", "Glacio Chafe - 13 Stacks", Electro Flare, Spectro Frazzle) becomes the app's own per-tick negative-status
+action (`type: "negativeStatus"`, key `ElementalEffect<Status>`, `negativeStatusStacks` = the tick's count, capped at the
+stack tables' 13 / Aero Erosion 12; an Electro Flare tick also carries the Electro Rage held) — Hiyuki's converted ticks
+use her own `ElementalEffectGlacioBite` forte row. Every team preset's `enemyConfig` carries the **enemy settings the run
+held**: each tick status at its ceiling in the loop, Electro Rage, and Havoc Bane / Tune Strain at the count in force on
+most damage casts (`enemyConfigOf` here, `enemy_config_of` in the Python mapper; 76 of 130 team presets set one).
 Solver states shipped: **S6R5** (everyone S6, R5 signatures), **S6R5 DPS · S0R1 team** and **S6R1 DPS · S0R1 team**
 (only the main DPS S6, everyone else S0 with R1 weapons — the realistic case when supports aren't S6/R5); names
 carry the state tag, and each character preset's name states that character's own sequence and weapon. Never hand-edit `data/`. Casts the app has no action for are listed in each
@@ -106,8 +114,9 @@ checkbox to also save each member's steady-state loop to that character's rotati
 
 | File | Role |
 |---|---|
-| `castMapper.ts` | TypeScript port of `wuwa-tools/rotation-port/map_rotations.py`: `appRowsOf(getCharByName(...))` / `echoRowsOf(mainEchoesData)` build the app's attack rows with level-10 motion values; `toActions()` maps executed casts through the cascade override → exact MV → aggregate → per-hit → kit ratio → tick → name-only, with `knownRatios()` pooling a kit's folded multipliers; Tune Breaks, negative-status ticks, 0-MV utility casts and cancelled echo forms are skipped and reported |
-| `importFromRankings.ts` | `importTeamFromRankings(mods, rowKey, { characterRotations })`: re-runs the engine traced for the row (`runTeam(..., true)`), turns `hitsOf(line)` into casts (`CAST_NAME` / `NODE_NAME` from `@skittle/engine/stats` name the erased enums), maps the last section (the steady-state loop) per member, interleaves the actions in execution order with the main DPS in slot 0, and writes a team through `useTeamRotationsStore().importTeam` (enemy = level 100 / 20 % RES, Riley's target); optionally appends each member's loop to `characters[key].rotations` — only for characters already set up in this app |
+| `castMapper.ts` | TypeScript port of `wuwa-tools/rotation-port/map_rotations.py`: `appRowsOf(getCharByName(...))` / `echoRowsOf(mainEchoesData)` build the app's attack rows with level-10 motion values; `toActions()` maps executed casts through the cascade override → exact MV → aggregate → per-hit → kit ratio → tick → name-only, with `knownRatios()` pooling a kit's folded multipliers; a negative-status tick becomes a `negativeStatus` action at the tick's stack count; Tune Breaks, 0-MV utility casts and cancelled echo forms are skipped and reported. `enemyStacksOf(heldEnemy)` reads the debuff stacks a traced hit ran under and `enemyConfigOf(casts)` the team enemy settings a loop held (both mirrored in Python; the replay fixture checks both) |
+| `importFromRankings.ts` | `prepareTeamImport(engine, tracedRun)` — the store-free half: turns a traced run (`runTeam(..., true)`, `hitsOf(line)` casts named through `CAST_NAME` / `NODE_NAME`) into plain data: the last section (the steady-state loop) mapped per member and interleaved in execution order with the main DPS in slot 0, the enemy settings the run held (`enemyConfigOf` over Riley's level 100 / 20 % RES target), each member's own loop, and per member `loopChangesAt` / `nextLoopChange` (`Loadout.rotationAt`). `importTeamFromRankings(mods, rowKey, { characterRotations, replaceTeamId })` is the browser path: resolves the run from the page model, prepares it, writes the stores (the Pinia stores load lazily inside it — a static import would drag lodash into the CLI). `reslotActions` / `toImportedActions` / `toCharacterRotation` are shared with the headless path |
+| `syncTeamsHeadless.ts` | **Node-only** (`npm run cli -- sync-teams`): loads the fork's engine from `vendor/wuwa_calc/src` through a `file:` URL (tsx resolves Riley's `.js` imports to `.ts`; vue-tsc never sees his tree), registers the export's Account State, solves every saved wuwa_calc team's composition at `mine`, runs the best row traced and feeds `prepareTeamImport`; returns the new teams (and characters) for `writeSyncedExport` |
 | `controller.ts` | `mountImportControls(key)` after every `renderDetail`; `runImport()` → toast with the outcome (`data-test-rankings-import-done` carries the new team id for tests) |
 | `castMapper.test.ts` + `__fixtures__/wuwaCalcLoops.json` | the port must reproduce the Python mapper on 33 of Riley's loops (930 casts, 12 resonators incl. ratio-, tick-, per-hit- and override-heavy kits) |
 
@@ -130,15 +139,25 @@ compares TS to Python on the same loops, so both mappers move together).
 
 **Sync my teams (Track I phase 2, 2026-09-14):** the bar's **Sync my teams** button re-imports every saved team
 whose name marks it as wuwa_calc's (`isGeneratedTeamName`: an import "wuwa_calc …" or a stock preset
-"… (wuwa_calc tNNN)") at the account's own state and updates it **in place** — `syncTeams.ts` (`runSync`:
-`rileyTeamKeysFor` finds every loadout variant of the composition in `model.TEAMS`, the best-scoring one at
-`mine` wins; `diffActions` reports per slot/attack/main-echo count moves), `controller.ts` `syncMyTeams()`
-(switches `filters.cost` to `mine` only while the rows solve and read, then restores it — the table on screen
-is untouched), `importFromRankings.ts` `replaceTeamId` (actions re-slotted to the saved team's own slot order,
-enemy reset to Riley's target, the name follows the new state only while it still reads as generated; a
-row the table solved but never ran is run traced on the spot). Teams the player named are left alone and
-listed as such. On David's export: 33 teams → 27 updated, 4 unchanged, 2 left alone. Not a Node command
-yet (the mapper is app code); `solve_mine.mjs` covers the ranking side headless.
+"… (wuwa_calc tNNN)") at the account's own state and updates it **in place** — `syncTeams.ts` (`runSync(deps)`:
+`rileyTeamKeysFor` finds every loadout variant of the composition, `deps.solveBest` solves them at `mine` and the
+best-scoring one wins, `deps.importInto` re-imports it; `diffActions` reports per slot/attack/main-echo/stack-count
+moves and `diffEnemy` the enemy-settings fields that moved; a team is "updated" when either did), `controller.ts`
+`syncMyTeams()` (the browser deps: `ensureBestPicks` + `bestPicks` with `filters.cost` switched to `mine` only
+while solving and importing, restored after — the table on screen is untouched), `importFromRankings.ts`
+`replaceTeamId` (actions re-slotted to the saved team's own slot order, enemy = Riley's target **plus the stacks the
+run held**, the name follows the new state only while it still reads as generated; a row the table solved but never
+ran is run traced on the spot). The report lists per team the moved actions (a tick as "Aero Erosion @9 0→13"), the
+enemy settings that moved, and **which member's next sequence switches their loop** ("Denia S0 → S3"). Teams the
+player named are left alone and listed as such. On David's export (2026-09-14 evening): 33 teams → 30 updated,
+1 unchanged, 2 left alone; 17 teams got enemy settings, 8 carry a loop-change hint.
+
+**Headless:** `npm run cli -- sync-teams [--out file] [--dry-run] [--subs standard|high|mine] [--rotations]`
+(`syncTeamsHeadless.ts` + `writeSyncedExport` in `cli/exportFile.ts`) does the same from the terminal in ~3 s and
+writes a new export next to the source (`<name>_synced.json`, idempotent; the source is never overwritten) —
+Settings › Import replaces the whole app database with it. `wuwa-tools/rotation-port/sync_teams.mjs` is the front
+door: it runs the command and prints, per team, Riley's DPR beside the app's own engine before and after
+(`cli -- team` on both files).
 ## "My build" in the Substat Investment compare — `src/sim/rankings/myBuilds.ts`
 
 Riley's Substats compare offers two spreads per resonator: his default (ChemX32) and High Invest. The
@@ -239,6 +258,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
 | `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
 | `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |
+| `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings from the run — written to a new export (`<source>_synced.json` by default; the source is never overwritten), with the per-team report; `--rotations` also appends each member's loop to that character's rotations |
 | `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
 | `diff <before> <after> [--tolerance pct]` | every number that moved between two snapshots; exit code 2 when something did |
 

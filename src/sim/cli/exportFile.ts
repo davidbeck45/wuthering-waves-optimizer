@@ -2,7 +2,7 @@
 // writes `character_data_YYYY-M-D.json`; every command reads one (newest in ~/Downloads by
 // default) and never modifies it. Shape: docs in the vault's "WuWa Export Format" note —
 // `data.character` / `data.inventory` / `data.teamRotations` are JSON *strings* (double-encoded).
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -78,4 +78,20 @@ export function resolveExportPath(explicit?: string): string {
     );
   }
   return path;
+}
+
+/** A copy of an export with its teams (and, when given, characters) replaced — the double-encoded stores kept
+ *  double-encoded, everything else byte-for-byte. Never writes over the source: `out` must differ from it. */
+export function writeSyncedExport(source: string, out: string, teams: any[], characters: Record<string, any> | null = null): void {
+  if (out === source) throw new Error("refusing to overwrite the source export — pass another --out path");
+  const raw = JSON.parse(readFileSync(source, "utf8")) as Record<string, any>;
+  const data = (raw.data ?? raw) as Record<string, any>;
+  const encodeLike = (original: unknown, value: unknown): unknown => (typeof original === "string" ? JSON.stringify(value) : value);
+  const teamRotations = parseStore<Record<string, any>>(data.teamRotations, {});
+  data.teamRotations = encodeLike(data.teamRotations, { ...teamRotations, teams });
+  if (characters) {
+    const character = parseStore<Record<string, any>>(data.character, {});
+    data.character = encodeLike(data.character, { ...character, characters });
+  }
+  writeFileSync(out, JSON.stringify(raw));
 }

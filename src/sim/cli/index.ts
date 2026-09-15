@@ -15,7 +15,7 @@ import {
   type Snapshot,
   type TeamCalc,
 } from "./engine";
-import { readExport, resolveExportPath, type ExportFile } from "./exportFile";
+import { readExport, resolveExportPath, writeSyncedExport, type ExportFile } from "./exportFile";
 import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from "../account/accountState";
 import { buildRollsOf } from "../rankings/myBuilds";
 import { int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
@@ -276,6 +276,48 @@ export function registerPlusCommands(program: Command): void {
         return;
       }
       printJson(snapshot);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("sync-teams")
+      .description("Sync my teams, headless: re-import every wuwa_calc team at your account's own state and write a new export to import (Wuthering Tools+)")
+      .option("-o, --out <file>", "where to write the synced export (default: the source file with a _synced suffix, next to it)")
+      .option("--dry-run", "report only; write nothing")
+      .option("--subs <mode>", "the substat spread every row runs: standard (ChemX32), high (Riley's High Invest), mine (your equipped echoes)", "standard")
+      .option("--rotations", "also append each member's loop to that character's saved rotations"),
+  ).action(
+    guarded(async (options: CommonOptions & { out?: string; dryRun?: boolean; subs: string; rotations?: boolean }) => {
+      if (!["standard", "high", "mine"].includes(options.subs)) throw new Error("--subs must be standard, high or mine");
+      const path = resolveExportPath(options.export);
+      const exp = readExport(path);
+      const { syncTeamsHeadless } = await import("../rankings/syncTeamsHeadless");
+      const result = await quiet(() => syncTeamsHeadless(exp, { subs: options.subs as "standard" | "high" | "mine", rotations: options.rotations }));
+      let out: string | null = null;
+      if (!options.dryRun) {
+        // idempotent: syncing a `_synced` file again writes the same name, and ~/Downloads' newest export stays one file
+        out = options.out ?? path.replace(/(_synced)?\.json$/i, "") + "_synced.json";
+        writeSyncedExport(path, out, result.teams, options.rotations ? result.characters : null);
+      }
+      const r = result.report;
+      if (!wantsPretty(options)) return printJson({ export: path, out, account: result.account, subs: result.subs, seconds: result.seconds, report: r });
+      console.log(`${path}\naccount ${result.account} · ${r.updated} updated · ${r.unchanged} unchanged · ${r.skipped} left alone${r.failed ? ` · ${r.failed} failed` : ""} · ${result.seconds.toFixed(1)} s (${result.subs} substats)\n`);
+      console.log(
+        table([
+          ["  Team", "Status", "Riley DPR", "What moved"],
+          ...r.teams.map((t) => {
+            const moves = [
+              ...t.deltas.slice(0, 4).map((d) => `${d.characterId ?? "?"} ${d.key}${d.stacks != null ? `@${d.stacks}` : ""} ${d.from}→${d.to}`),
+              ...(t.deltas.length > 4 ? [`+${t.deltas.length - 4} more`] : []),
+              ...t.enemyDeltas.map((e) => `enemy ${e.label} ${e.from}→${e.to}`),
+              ...t.members.filter((m) => m.nextLoopChange).map((m) => `${m.name} S${m.sequence}→S${m.nextLoopChange} switches loop`),
+            ];
+            return [`  ${t.newName ?? t.name}`, t.status, t.total == null ? "-" : int(t.total), t.reason ?? moves.join("; ")];
+          }),
+        ]),
+      );
+      if (out) console.log(`\nwrote ${out} — Settings › Import replaces the whole app database with it; the source export is untouched.`);
     }),
   );
 
