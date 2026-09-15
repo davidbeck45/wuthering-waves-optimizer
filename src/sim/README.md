@@ -115,6 +115,30 @@ The generated stock presets (`src/sim/presets/`) remain the zero-click path for 
 everything-else path.
 
 
+
+**Mapping fix 2026-09-14 (David: "the big attack is counted twice"):** `castMapper.ts` and the Python mapper
+matched casts on Riley's *run* motion value (`h.mv`, after MulMv effects such as Aemeath's S3 "Finale multiplier
++100%" or S2 "Duet multiplier +100%"), so an integer multiplier read as extra hits — Finale ×2, the Duets ×2, and
+17 characters' stock loops likewise (Camellya's Vining Waltz ×17, Phrolova's Scarlet Coda ×7, Cartethyia's
+Liberation ×2 …). `Cast.mv` is now the kit's own `action.mv` (the app applies those multipliers through its own
+chains and buffs; `mvRun` keeps the run's value for the record), a kit cast named after a status ("Forte - Seraphic
+Duet: Tune Rupture") is no longer dropped as an enemy tick, and Aemeath's Mech chain has overrides for its MV ties.
+On David's Mornye · Lynae · Aemeath import the app went 13.66M → 9.85M against Riley's 8.20M (the rest is engine
+modelling: static buffs, no status stacks written yet — Phase 2). Regenerate after such a change: the three
+`export_rotations.mjs` states → `map_rotations.py` → `emit_app_presets.py` → `emit_ts_fixture.py` (the replay test
+compares TS to Python on the same loops, so both mappers move together).
+
+**Sync my teams (Track I phase 2, 2026-09-14):** the bar's **Sync my teams** button re-imports every saved team
+whose name marks it as wuwa_calc's (`isGeneratedTeamName`: an import "wuwa_calc …" or a stock preset
+"… (wuwa_calc tNNN)") at the account's own state and updates it **in place** — `syncTeams.ts` (`runSync`:
+`rileyTeamKeysFor` finds every loadout variant of the composition in `model.TEAMS`, the best-scoring one at
+`mine` wins; `diffActions` reports per slot/attack/main-echo count moves), `controller.ts` `syncMyTeams()`
+(switches `filters.cost` to `mine` only while the rows solve and read, then restores it — the table on screen
+is untouched), `importFromRankings.ts` `replaceTeamId` (actions re-slotted to the saved team's own slot order,
+enemy reset to Riley's target, the name follows the new state only while it still reads as generated; a
+row the table solved but never ran is run traced on the spot). Teams the player named are left alone and
+listed as such. On David's export: 33 teams → 27 updated, 4 unchanged, 2 left alone. Not a Node command
+yet (the mapper is app code); `solve_mine.mjs` covers the ranking side headless.
 ## "My build" in the Substat Investment compare — `src/sim/rankings/myBuilds.ts`
 
 Riley's Substats compare offers two spreads per resonator: his default (ChemX32) and High Invest. The
@@ -149,6 +173,58 @@ solved picks.
 Metric: average damage per rotation (DPR). DPS appears only when a rotation carries a duration.
 
 
+## Account State and the "My account" tier — `src/sim/account/` + `/rankings` (Track I, 2026-09-14)
+
+The account-first spine: `accountState.ts` derives one snapshot of the player's account from the
+stores (or the export file, on the CLI) — per character `owned` (= a weapon equipped, the bar
+my-rankings and Riley's loadouts set), `sequence` (the highest enabled `SequenceNode<N>`, never the
+toggle count: a node's sub-toggles once printed Aemeath at "S10"), `weapon` + `refinement`, the active
+build, plus teams (`fieldable` = every member set up) and totals. `rileyAccountEntries()` turns it
+into what the engine takes; `accountKeyOf()` fingerprints it so a changed account never reads a
+stale solve; `rankingsMineHash()` writes the `/rankings` link at the account's own state.
+
+**The `mine` Team Cost** lives on the wuwa_calc fork's `plus` branch (`vendor/wuwa_calc`, beside the
+"My build" row): `TEAM_COSTS` gained `"mine"`, `setAccountState(entries, key)` registers the account,
+and under `mine` the cost rules read it per member — `costGrant` returns the account's sequence and
+weapon rank, `weaponOptions` pins the worn weapon where the loadout lists it (`accountWeapon`; no
+weapon set or a resonator the account lacks reads as `s0r1`, a worn weapon the loadout never lists
+runs the best standard — `weaponApproximated` says so; **a 4-star or Rover form (`Tier.Free`) counts
+as owned even when the account never set it up** — Riley runs them S6 on standard/4-star weapons
+throughout, so `accountOf()` synthesises S6 / default weapon at R1 for them, and a set-up one runs
+the account's weapon; David's Shorekeeper · Sanhua · Camellya was hidden until this rule, Sanhua
+not being in his app data), and `costTag()` suffixes row keys and
+shipped-solve signatures with the account key. `precompute.ts` never ships it; the page solves it in
+its workers (31 fieldable intended teams in well under a minute on David's export; the same solve is
+1.3 s in Node, see `wuwa-tools/rotation-port/solve_mine.mjs`). `page/model.ts` adds `ownedOnly`
+(hash `own=0` lifts it): under `mine`, `teamWanted()` drops teams with a resonator the account
+lacks, so fewer teams are solved and the table reads as "teams I can field". Riley's Team Cost box
+lists "My account" only while an account is registered (`hasAccountState()`).
+
+**App side:** `RankingsView.vue` computes the Account State from the stores and hands it to
+`mountRankings(host, router, builds, { entries, key })` / `updateAccountState()` (controller.ts),
+which register it on the page and post `{ type: "accountState" }` to every solver worker
+(`solver.worker.ts`). `RankingsAccountBar.vue` sits above his page: My account / Riley's tiers (hash
+`tc=mine`), the "Teams I can field" box (`own=0`), and **saved views** — named copies of the current
+hash in `localStorage["wtplus:rankings:views"]`; every control is a `router.replace` on the hash, so
+his page re-reads it through `onLocationChange` like a Back button would. `/my-rankings` shows the
+account card and links each character and team row to `/rankings#tc=mine&r=…`.
+
+**One substat spread for every row (David's ask, 2026-09-14 evening):** Riley's Substats compare
+opens one resonator's rows side by side (ChemX32 / High Invest / My build). The bar's **Substats**
+box instead runs *every* row in one spread — `Filters.subs` (`SUBS_MODES`: `standard` / `high` /
+`mine`, hash `sb=h|m`, fork `solver.ts` + `page/model.ts`): a shut Substats box's row takes the
+mode's spread in `buildsOf()` (High Invest for everyone; the registered "My build" spread where a
+character has echoes in the app and ChemX32 where none), `bestKey()` gains a fourth segment and
+`filterSignature()` a suffix on the non-default modes so shipped solves still load for the default
+and the rows re-run (never re-search: the best picks come from `picksKey`, which the mode leaves
+alone — the same rule as his compare rows). The detail page names the spread per member. On David's
+export the top team reads 8.20M (ChemX32) → 9.74M (High Invest) → 9.50M (his own echoes).
+
+Gates: `accountState.test.ts`, the "My account tier" and "one substat spread" describes in
+`cypress/e2e/rankings.cy.ts`, `npx tsc -p vendor/wuwa_calc --noEmit` for the engine. CLI:
+`npm run cli -- state [--pretty|--riley]` (`--riley` also carries the "My build" rolls, so
+`wuwa-tools/rotation-port/solve_mine.mjs --subs high|mine` reproduces the page's three spreads).
+
 ## Headless CLI — `src/sim/cli/` (`npm run cli -- <command>`)
 
 The app's own engine from a terminal, for agents and for checking numbers across upstream syncs. The
@@ -159,6 +235,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | Command | What it computes |
 |---|---|
 | `inspect` | data version, roster (sequence, weapon, builds, rotations), echoes, teams |
+| `state` | the Account State (`src/sim/account/`): every character's owned / sequence / weapon / refinement / active build, teams with `fieldable`, totals; `--riley` prints it as wuwa_calc's solver takes it (`{ key, entries }`) |
 | `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
 | `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
 | `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |

@@ -1,6 +1,7 @@
 <template>
   <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
   <div class="rankings-page">
+    <RankingsAccountBar :account="account" :built-count="myBuilds.length" />
     <div ref="host" class="skittle-host"></div>
     <p class="rankings-credit text-xs opacity-60 px-3 py-1">
       Team rankings engine, rotations and solves by
@@ -18,8 +19,11 @@ import { useRoute, useRouter } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { mountRankings, onLocationChange, unmountRankings, updateMyBuilds } from "../sim/rankings/controller";
+import { useTeamRotationsStore } from "../stores/teamRotations";
+import { mountRankings, onLocationChange, unmountRankings, updateAccountState, updateMyBuilds } from "../sim/rankings/controller";
 import { buildRollsOf } from "../sim/rankings/myBuilds";
+import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../sim/account/accountState";
+import RankingsAccountBar from "../sim/rankings/RankingsAccountBar.vue";
 import "../sim/skittle.css";
 import "../sim/skittle-theme.css";
 
@@ -31,11 +35,20 @@ const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const { characters } = storeToRefs(characterStore) as unknown as { characters: { value: Record<string, Record<string, unknown>> } };
 const myBuilds = computed(() => buildRollsOf(characters.value ?? {}, (inventoryStore.echoes ?? []) as Array<Record<string, unknown>>));
+// the Account State (src/sim/account): the `mine` Team Cost runs every member at what the player has set up
+const teamStore = useTeamRotationsStore();
+const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: Array<Record<string, unknown>> } };
+const account = computed(() =>
+  accountStateOf(characters.value ?? {}, { echoes: inventoryStore.echoes ?? [], equipped: inventoryStore.equipped ?? {} }, teams.value ?? []),
+);
+const rileyEntries = computed(() => rileyAccountEntries(account.value));
+const registration = computed(() => ({ entries: rileyEntries.value, key: accountKeyOf(rileyEntries.value) }));
 
 onMounted(() => {
-  if (host.value) void mountRankings(host.value, router, myBuilds.value);
+  if (host.value) void mountRankings(host.value, router, myBuilds.value, registration.value);
 });
 watch(() => myBuilds.value.map((b) => `${b.name}:${b.key}`).join(","), () => updateMyBuilds(myBuilds.value));
+watch(() => registration.value.key, () => updateAccountState(registration.value));
 onBeforeUnmount(() => unmountRankings());
 // browser back/forward and nav clicks change the hash without a hashchange event we can rely on
 watch(() => route.fullPath, () => onLocationChange());

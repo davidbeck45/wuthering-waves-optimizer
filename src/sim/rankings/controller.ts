@@ -10,8 +10,10 @@
  */
 import type { Router } from "vue-router";
 import type { BuildRolls } from "./myBuilds";
+import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
 import { importTeamFromRankings } from "./importFromRankings";
+import { runSync, type SyncReport, type TeamLike } from "./syncTeams";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -166,6 +168,24 @@ export function updateMyBuilds(builds: BuildRolls[]): void {
   if (mods && booted && tableRequested) void refresh();
 }
 
+// ---- the player's account (src/sim/account): the `mine` Team Cost runs every member at the
+// sequence, weapon and refinement the player has set up. Registered on the page and in every solver
+// worker, keyed so a changed account never reads a stale solve.
+export interface AccountRegistration { entries: Record<string, RileyAccountEntry>; key: string }
+let account: AccountRegistration | null = null;
+function applyAccountState(): void {
+  if (!mods) return;
+  mods.solver.setAccountState(account?.entries ?? null, account?.key ?? "");
+  for (const w of pool ?? []) w.postMessage({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
+}
+/** The account changed in the app (a weapon equipped, a chain toggled): re-register and redraw. */
+export function updateAccountState(next: AccountRegistration | null): void {
+  if ((next?.key ?? "") === (account?.key ?? "")) return;
+  account = next;
+  applyAccountState();
+  if (mods && booted && tableRequested) void refresh();
+}
+
 const WORKER_LIMIT = 8;
 let pool: Worker[] | null = null;
 let poolTried = false;
@@ -176,7 +196,10 @@ function workerPool(): Worker[] | null {
   try {
     pool = Array.from({ length: want }, () =>
       new Worker(new URL("./solver.worker.ts", import.meta.url), { type: "module" }));
-    for (const w of pool) w.postMessage({ type: "mySubstats", builds: myBuilds, clear: [] });
+    for (const w of pool) {
+      w.postMessage({ type: "mySubstats", builds: myBuilds, clear: [] });
+      w.postMessage({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
+    }
   } catch (err) {
     console.warn("Workers unavailable, optimizing on the main thread instead:", err);
     pool = null;
@@ -309,6 +332,40 @@ async function runImport(): Promise<void> {
   } finally {
     importBusy = false;
     if (button) { button.disabled = false; button.textContent = "Import team into Wuthering Tools+"; }
+  }
+}
+
+/**
+ * Wuthering Tools+ "Sync my teams": re-import every saved wuwa_calc team at the account's own state
+ * (`mine`) and update it in place. The page's filters are switched to `mine` only while the rows are
+ * solved and read (restored after, nothing re-rendered), so the table the player is looking at stays.
+ */
+let syncBusy = false;
+export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
+  if (!mods || !booted) throw new Error("The rankings page is still loading — try again in a moment.");
+  if (syncBusy) throw new Error("A sync is already running.");
+  syncBusy = true;
+  await booted;
+  const M = mods.model;
+  const was = M.filters.cost;
+  const withMine = async <T>(fn: () => Promise<T>): Promise<T> => {
+    M.filters.cost = "mine";
+    try {
+      return await fn();
+    } finally {
+      M.filters.cost = was;
+    }
+  };
+  const ensureSolved = async (keys: string[]): Promise<void> => {
+    await ensureBestPicks(keys.map((k) => [k, M.TEAMS[k] as Member[]]));
+  };
+  try {
+    const report = await runSync({ mods, ensureSolved, withMine, teams });
+    M.saveSolves();
+    return report;
+  } finally {
+    syncBusy = false;
+    overlayHide();
   }
 }
 
@@ -483,9 +540,10 @@ function patchFetch(): void {
   }) as typeof fetch;
 }
 
-export async function mountRankings(host: HTMLElement, r: Router, builds: BuildRolls[] = []): Promise<void> {
+export async function mountRankings(host: HTMLElement, r: Router, builds: BuildRolls[] = [], acct: AccountRegistration | null = null): Promise<void> {
   router = r;
   myBuilds = builds;
+  account = acct;
   patchFetch();
   if (!root) root = buildDom();
   host.appendChild(root);
@@ -493,6 +551,7 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
   try {
     if (!mods) mods = await loadModules();
     applyMyBuilds();
+    applyAccountState();
     if (!booted) { booted = boot(); await booted; }
     else onLocationChange();
   } catch (err) {

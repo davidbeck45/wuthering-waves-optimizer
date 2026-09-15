@@ -16,6 +16,8 @@ import {
   type TeamCalc,
 } from "./engine";
 import { readExport, resolveExportPath, type ExportFile } from "./exportFile";
+import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from "../account/accountState";
+import { buildRollsOf } from "../rankings/myBuilds";
 import { int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
 
 interface CommonOptions extends OutputOptions {
@@ -133,7 +135,7 @@ export function registerPlusCommands(program: Command): void {
         weapon: c.weapon ?? null,
         builds: (c.builds ?? []).length,
         rotations: (c.rotations ?? []).length,
-        sequence: Object.values(c.resonanceChains ?? {}).filter((n: any) => n?.isEnabled).length,
+        sequence: sequenceOf(c),
       }));
       const summary = {
         file: exp.path,
@@ -150,6 +152,36 @@ export function registerPlusCommands(program: Command): void {
       if (!wantsPretty(options)) return printJson(summary);
       console.log(`${summary.file}\nexport v${summary.version} (${summary.source})  characters ${summary.characters}  echoes ${summary.echoes} (${summary.equippedEchoes} equipped)  rotations ${summary.rotations}  teams ${summary.teams}\n`);
       console.log(table([["  Character", "S", "Weapon", "Builds", "Rotations"], ...characters.map((c) => [`  ${c.id}`, `S${c.sequence}`, c.weapon ?? "-", String(c.builds), String(c.rotations)])]));
+    }),
+  );
+
+  withCommon(
+    program
+      .command("state")
+      .description("The Account State: every character's sequence, weapon and refinement, builds, teams (Wuthering Tools+)")
+      .option("--riley", "print the account as wuwa_calc's solver takes it: entries (resonator name → sequence, weapon, refine, owned) and builds (each character's equipped substat rolls, the \"My build\" spreads)"),
+  ).action(
+    guarded(async (options: CommonOptions & { riley?: boolean }) => {
+      const exp = load(options);
+      const state = accountStateOf(exp.characters, exp.inventory, exp.teams);
+      const entries = rileyAccountEntries(state);
+      const key = accountKeyOf(entries);
+      if (options.riley) return printJson({ key, entries, builds: buildRollsOf(exp.characters, exp.inventory.echoes) });
+      const payload = { file: exp.path, version: exp.version, appCommit: appCommit(), accountKey: key, ...state };
+      if (!wantsPretty(options)) return printJson(payload);
+      const s = state.summary;
+      console.log(`${exp.path}\naccount ${key}  characters ${s.characters} (${s.owned} set up, ${s.s6} at S6)  echoes ${state.echoes.total} (${state.echoes.equipped} equipped)  teams ${s.teams} (${s.teamsFieldable} fieldable)  rotations ${s.rotations}\n`);
+      const rows = Object.values(state.characters).sort((a, b) => Number(b.owned) - Number(a.owned) || b.sequence - a.sequence || a.key.localeCompare(b.key));
+      console.log(
+        table([
+          ["  Character", "Owned", "S", "Weapon", "R", "Build", "Builds", "Rotations"],
+          ...rows.map((c) => [`  ${c.key}`, c.owned ? "yes" : "-", `S${c.sequence}`, c.weapon ?? "-", c.weapon ? `R${c.refinement}` : "-", c.build?.name ?? "-", String(c.builds.length), String(c.rotations)]),
+        ]),
+      );
+      if (state.teams.length) {
+        console.log("\nTeams");
+        console.log(table([["  Team", "Members", "Actions", "Fieldable"], ...state.teams.map((t) => [`  ${t.name}`, t.characterIds.filter(Boolean).join(" + "), String(t.actions), t.fieldable ? "yes" : "-"])]));
+      }
     }),
   );
 

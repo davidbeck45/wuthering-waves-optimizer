@@ -107,9 +107,10 @@ export interface TeamCalc {
 
 const num = (value: unknown): number => (typeof value === "number" && Number.isFinite(value) ? value : 0);
 
-export function sequenceOf(characterData: Record<string, any> | undefined): number {
-  return Object.values(characterData?.resonanceChains ?? {}).filter((node: any) => node?.isEnabled).length;
-}
+// the Account State rule: the highest enabled sequence node, never the toggle count (a node's
+// sub-toggles counted twice and printed Aemeath at "S10")
+import { sequenceOf } from "../account/accountState";
+export { sequenceOf };
 
 function statRows(finalStats: Record<string, any>): StatRow[] {
   return STAT_ROWS.map(({ selector, key, label, kind }) => {

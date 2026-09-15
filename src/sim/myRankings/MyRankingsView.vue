@@ -26,6 +26,15 @@
       beside the wuwa_calc rankings).
     </p>
 
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm mb-3 px-3 py-2 rounded-box bg-base-200/60" data-test-my-rankings-account>
+      <span class="font-semibold">Account</span>
+      <span><b class="tabular-nums">{{ account.summary.owned }}</b> characters set up <span class="opacity-60">(of {{ account.summary.characters }} in the calculator)</span></span>
+      <span><b class="tabular-nums">{{ account.summary.s6 }}</b> at S6</span>
+      <span><b class="tabular-nums">{{ account.echoes.total }}</b> echoes <span class="opacity-60">({{ account.echoes.equipped }} equipped)</span></span>
+      <span><b class="tabular-nums">{{ account.summary.teamsFieldable }}</b> of {{ account.summary.teams }} teams fieldable</span>
+      <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="link link-primary ml-auto" data-test-my-rankings-open-mine>wuwa_calc rankings at my account ▸</RouterLink>
+    </div>
+
     <div v-if="!characterCount" class="alert" data-test-my-rankings-empty>
       <span>No character has a weapon equipped yet. Build a character in the calculator (weapon, echoes, chains), or import your data under Settings › Backup &amp; Restore.</span>
     </div>
@@ -81,6 +90,7 @@
                 <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-whatif="c.id" title="score this character at another sequence, weapon or refinement on the same rotation" @click="toggleWhatIf(c)">
                   what if…
                 </button>
+                <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash([c.id]) }" class="btn btn-ghost btn-xs whitespace-nowrap" title="wuwa_calc's teams with this character, at your account's sequences and weapons" :data-test-my-rankings-mine-link="c.id">rankings ▸</RouterLink>
               </td>
             </tr>
             <tr v-if="whatIfs[c.id]?.open" :data-test-my-rankings-whatif-panel="c.id">
@@ -150,6 +160,7 @@
                   </div>
                   <div class="text-sm">
                     {{ t.name }}
+                    <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash(t.characterIds) }" class="link link-primary text-xs ml-2" title="wuwa_calc's teams with these three, at your account's sequences and weapons" :data-test-my-rankings-team-mine-link="t.name">rankings ▸</RouterLink>
                     <div v-if="t.unarmed.length" class="text-xs text-warning">no weapon: {{ t.unarmed.map((cid) => getCharacterRosterDisplayName(cid)).join(", ") }}</div>
                   </div>
                 </div>
@@ -191,6 +202,7 @@ import {
 } from "./rankRoster";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
+import { accountStateOf, rankingsMineHash } from "../account/accountState";
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -208,6 +220,14 @@ const investment = ref(true);
 const progress = ref({ done: 0, total: 0, label: "" });
 
 const characterCount = computed(() => Object.values((characters.value ?? {}) as Record<string, Record<string, unknown>>).filter((c) => isSetUp(c)).length);
+// the Account State (src/sim/account): what the `mine` cost on /rankings runs, summarised
+const account = computed(() =>
+  accountStateOf(
+    (characters.value ?? {}) as Record<string, Record<string, unknown>>,
+    { echoes: inventoryStore.echoes ?? [], equipped: inventoryStore.equipped ?? {} },
+    (teams.value ?? []) as Array<Record<string, unknown>>,
+  ),
+);
 const maxCharacterDamage = computed(() => Math.max(0, ...(ranking.value?.characters.map((c) => c.best?.avgDamage ?? 0) ?? [0])));
 const maxTeamDamage = computed(() => Math.max(0, ...(ranking.value?.teams.map((t) => t.avgDamage) ?? [0])));
 const errorCount = computed(() => ranking.value?.characters.reduce((n, c) => n + c.errors.length, 0) ?? 0);

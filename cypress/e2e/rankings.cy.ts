@@ -140,3 +140,104 @@ describe("wuwa_calc rankings: My build substat row", () => {
     cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "High Invest").and("not.contain.text", "My build");
   });
 });
+
+describe("wuwa_calc rankings: My account tier (Wuthering Tools+)", () => {
+  it("runs the account's own sequences and weapons and hides teams it cannot field", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    // the account-first bar switches the cost through the hash (her own teams only, so the in-page
+    // solve stays small); his aside then lists the new tier
+    cy.visit("/rankings#r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-account-summary]").should("not.exist");
+    cy.get("[data-test-rankings-mine]").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=mine").and("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-account-summary]").should("contain.text", "1 of 1 set up");
+    cy.get(".skittle-root #cost", { timeout: 60000 }).should("have.value", "mine");
+    // only Cartethyia is set up; 4-stars and Rover forms count as owned, so exactly one of her six
+    // intended teams is fieldable (Aero Rover + Sanhua + Cartethyia), at her S2 R1. Lifting
+    // "Teams I can field" lists the other five with their unowned limited members at S0R1.
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S2R1").and("contain.text", "Sanhua");
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)").should("have.length", 1);
+    cy.get("[data-test-rankings-owned-only]").uncheck();
+    cy.location("hash", { timeout: 60000 }).should("include", "own=0");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)", { timeout: 180000 }).should("have.length", 6);
+    cy.get(".skittle-root .tgrid").should("contain.text", "Ciaccona");
+    // back to Riley's tiers: the cost falls back to his default and the owned filter is dropped
+    cy.get("[data-test-rankings-riley]").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "tc=mine").and("not.include", "own=");
+    cy.get(".skittle-root #cost", { timeout: 60000 }).should("have.value", "s0r1");
+  });
+
+  it("saves the current filters as a named view and applies it again", () => {
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-view-new]").click();
+    cy.get("[data-test-rankings-view-name]").type("Cartethyia at mine");
+    cy.get("[data-test-rankings-view-save]").click();
+    cy.get("[data-test-rankings-views]").should("have.value", "Cartethyia at mine");
+    cy.get("[data-test-rankings-riley]").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "tc=mine");
+    cy.get("[data-test-rankings-views]").select("Cartethyia at mine");
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=mine").and("include", "own=0").and("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-view-forget]").click();
+    cy.get("[data-test-rankings-views] option").should("have.length", 1);
+  });
+});
+
+describe("wuwa_calc rankings: one substat spread for every row (Wuthering Tools+)", () => {
+  it("runs every row at High Invest, then at the account's own builds, from the bar", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-subs]").should("have.value", "");
+    cy.get("[data-test-rankings-subs]").select("h");
+    cy.location("hash", { timeout: 60000 }).should("include", "sb=h");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // the rows are the same builds in the High Invest spread: the detail page names it
+    cy.get(".skittle-root .trow:not(.thead):not(.tghost) .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.get(".skittle-root #app", { timeout: 60000 }).should("contain.text", "High Invest").and("not.contain.text", "ChemX32");
+    cy.get("#backLink").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "sb=h");
+    // the player's own builds: Cartethyia's equipped echoes, ChemX32 for a teammate without any
+    cy.get("[data-test-rankings-subs]").select("m");
+    cy.location("hash", { timeout: 60000 }).should("include", "sb=m");
+    cy.get("[data-test-rankings-subs-hint]").should("contain.text", "1 character with echoes");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .trow:not(.thead):not(.tghost) .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.location("hash", { timeout: 60000 }).should("match", /\.u[0-9a-z]+/);
+    cy.get(".skittle-root #app", { timeout: 60000 }).should("contain.text", "My build").and("contain.text", "ChemX32");
+    cy.get("#backLink").click();
+    cy.get("[data-test-rankings-subs]").select("");
+    cy.location("hash", { timeout: 60000 }).should("not.include", "sb=");
+  });
+});
+
+describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
+  it("re-imports a saved wuwa_calc team at the account's state in place and reports no change for a fresh import", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // import Cartethyia's one fieldable team from its detail page, at her own state
+    cy.get(".skittle-root .trow:not(.thead):not(.tghost) .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("exist").click({ force: true });
+    cy.get(".skittle-root #topbar .wt-import[data-test-rankings-import-done]", { timeout: 60000 }).should("exist");
+    cy.get("#backLink").click({ force: true }); // the import's success toast overlaps the Back link
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // the sync re-imports it at the same state: same actions, so "unchanged"; the team count does not grow
+    cy.get("[data-test-rankings-sync]").click();
+    cy.get("[data-test-rankings-sync-report]", { timeout: 180000 }).should("exist");
+    cy.get("[data-test-rankings-sync-team][data-test-rankings-sync-status='unchanged']", { timeout: 180000 }).should("have.length", 1).and("contain.text", "wuwa_calc Cartethyia");
+    cy.window().should((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams?: Array<{ name: string; actions: unknown[] }> };
+      expect(store.teams ?? []).to.have.length(1);
+      expect(store.teams![0].actions.length).to.be.greaterThan(5);
+    });
+    cy.get("[data-test-rankings-sync-close]").click();
+    cy.get("[data-test-rankings-sync-report]").should("not.exist");
+  });
+});
