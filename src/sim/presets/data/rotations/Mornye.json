@@ -1,11 +1,11 @@
 [
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 596,639 DPR for Mornye of 4,904,189 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 596,639 DPR for Mornye of 4,904,189 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 596,639 DPR for Mornye of 4,904,189 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Changli: 596,639 DPR for Mornye of 4,904,189 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -86,11 +86,11 @@
  },
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 554,615 DPR for Mornye of 9,714,227 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 554,615 DPR for Mornye of 9,714,227 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 554,615 DPR for Mornye of 9,714,227 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 554,615 DPR for Mornye of 9,714,227 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -179,11 +179,11 @@
  },
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Changli: 549,021 DPR for Mornye of 4,531,070 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Changli: 549,021 DPR for Mornye of 4,531,070 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Changli: 549,021 DPR for Mornye of 4,531,070 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Critical Protocol = CriticalProtocolDMG × 1.40; Tune Rupture Response - Particle Jet = TuneRuptureResponseParticleJetDMG × 2.60.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Changli: 549,021 DPR for Mornye of 4,531,070 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

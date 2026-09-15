@@ -73,9 +73,9 @@
     },
     {
      "order": 9,
-     "key": "SequenceNode4RainySeasonDwellinMyEyes",
+     "key": "AbsoluteFullnessDMG",
      "type": "forteCircuit",
-     "count": 11,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -214,9 +214,9 @@
     },
     {
      "order": 9,
-     "key": "SequenceNode4RainySeasonDwellinMyEyes",
+     "key": "AbsoluteFullnessDMG",
      "type": "forteCircuit",
-     "count": 11,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -298,115 +298,6 @@
   "data": {
    "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
    "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,573,189 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "IlluminatedManifestationDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ClosingRefrainDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "LadyoftheSeaTidestorm",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LadyoftheSea",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 4,
-     "key": "BeneathLunarTidesDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "FluxMoonbowDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SequenceNode4RainySeasonDwellinMyEyes",
-     "type": "forteCircuit",
-     "count": 11,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "FromGloomtoGleamDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Iuno S0 Moongazer's Sigil R1 · Shorekeeper + Jiyan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Jiyan: 570,605 DPR for Iuno of 2,615,910 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Iuno S0 Moongazer's Sigil R1 · Shorekeeper + Jiyan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Jiyan: 570,605 DPR for Iuno of 2,615,910 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

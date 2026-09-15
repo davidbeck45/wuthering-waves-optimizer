@@ -1,11 +1,11 @@
 [
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Heavenfall Edict: Overdrive = HeavenfallEdictOverdriveDMG × 1.40. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Forte - Seraphic Duet: Fusion Burst, 1x Fusion Burst - 13 Stacks, 1x Forte - Seraphic Duet: Fusion Burst.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Heavenfall Edict: Overdrive = HeavenfallEdictOverdriveDMG × 1.40. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Forte - Seraphic Duet: Fusion Burst, 1x Fusion Burst - 13 Stacks, 1x Forte - Seraphic Duet: Fusion Burst.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -41,8 +41,8 @@
     },
     {
      "order": 5,
-     "key": "HeavyAttackAemeathChargedIDMG",
-     "type": "basic",
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -57,8 +57,8 @@
     },
     {
      "order": 7,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -67,7 +67,7 @@
      "order": 8,
      "key": "SeraphicDuetEncoreDMG",
      "type": "forteCircuit",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -97,16 +97,16 @@
     },
     {
      "order": 12,
-     "key": "SeraphicDuetEncoreDMG",
+     "key": "SeraphicDuetOvertureDMG",
      "type": "forteCircuit",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 13,
-     "key": "HeavyAttackAemeathChargedIIDMG",
-     "type": "basic",
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -125,7 +125,7 @@
      "order": 15,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     }
@@ -134,11 +134,11 @@
  },
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 6,062,196 DPR for Aemeath of 6,836,514 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Heavenfall Edict: Overdrive = HeavenfallEdictOverdriveDMG × 1.40. Negative-status damage seen (set via the app's status settings, not actions): 1x Forte - Seraphic Duet: Tune Rupture, 1x Forte - Seraphic Duet: Tune Rupture.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 6,062,196 DPR for Aemeath of 6,836,514 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 6,062,196 DPR for Aemeath of 6,836,514 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Heavenfall Edict: Overdrive = HeavenfallEdictOverdriveDMG × 1.40. Negative-status damage seen (set via the app's status settings, not actions): 1x Forte - Seraphic Duet: Tune Rupture, 1x Forte - Seraphic Duet: Tune Rupture.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 6,062,196 DPR for Aemeath of 6,836,514 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -182,8 +182,8 @@
     },
     {
      "order": 6,
-     "key": "HeavyAttackAemeathChargedIDMG",
-     "type": "basic",
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -198,8 +198,8 @@
     },
     {
      "order": 8,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -216,12 +216,20 @@
      "order": 10,
      "key": "SeraphicDuetEncoreDMG",
      "type": "forteCircuit",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
+     "key": "SeraphicDuetBonusDMGPerInstance",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "BasicAttackAemeathStage2DMG",
      "type": "basic",
      "count": 1,
@@ -229,7 +237,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "BasicAttackAemeathStage3DMG",
      "type": "basic",
      "count": 1,
@@ -237,7 +245,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "BasicAttackAemeathStage4DMG",
      "type": "basic",
      "count": 1,
@@ -245,23 +253,31 @@
      "isDisabled": false
     },
     {
-     "order": 14,
-     "key": "SeraphicDuetEncoreDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 15,
-     "key": "HeavyAttackAemeathChargedIIDMG",
-     "type": "basic",
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 16,
+     "key": "SeraphicDuetBonusDMGPerInstance",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -271,10 +287,10 @@
      "mainEchoRank": 5
     },
     {
-     "order": 17,
+     "order": 19,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     }

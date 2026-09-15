@@ -1,11 +1,11 @@
 [
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,444,394 DPR for Lynae of 10,093,369 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -94,11 +94,11 @@
  },
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Qiuyuan: 1,250,064 DPR for Lynae of 5,543,552 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -203,11 +203,11 @@
  },
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Xuanling · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Xuanling · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Polychrome Leap 1 = BasicAttackPolychromeLeap1 × 2.20; Forte Basic - Polychrome Leap 2 = BasicAttackPolychromeLeap2 × 2.20; Forte Basic - Polychrome Leap 3 = BasicAttackPolychromeLeap3 × 2.20; Forte Basic - Visual Impact = BasicAttackVisualImpactDMG × 1.90; Liberation - Prismatic Overblast = PrismaticOverblastDMG × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Xuanling: 1,228,197 DPR for Lynae of 8,655,485 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

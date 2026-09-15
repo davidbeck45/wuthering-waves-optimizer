@@ -1,11 +1,11 @@
 [
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Qiuyuan: 1,772,132 DPR for Rebecca of 5,563,924 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
    "actions": [
     {
      "order": 1,
@@ -85,23 +85,23 @@
      "order": 10,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
+     "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 30,
      "buffs": [],
      "isDisabled": false
     },
@@ -150,11 +150,11 @@
  },
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00; Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00; Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 1,765,384 DPR for Rebecca of 7,842,016 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
    "actions": [
     {
      "order": 1,
@@ -234,23 +234,23 @@
      "order": 10,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
+     "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 30,
      "buffs": [],
      "isDisabled": false
     },
@@ -283,11 +283,11 @@
  },
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Roccia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - BOOM! Fireworks! = BOOMFireworksDMG × 1.60; Liberation - Mk. 31 HMG 1st Enhancement x5 = Mk31HMG1stEnhancementDMG × 8.00; Liberation - Mk. 31 HMG 2nd Enhancement x10 = TacticalDodgeHuntressSuccessfulDodgeDMG × 8.00; Liberation - Mk. 31 HMG x5 = Mk31HMGDMG × 8.00.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Roccia: 1,745,958 DPR for Rebecca of 5,056,665 team. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike).",
    "actions": [
     {
      "order": 1,
@@ -367,23 +367,23 @@
      "order": 10,
      "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "Mk31HMG1stEnhancementDMG",
+     "key": "Mk31HMGDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "TacticalDodgeHuntressSuccessfulDodgeDMG",
-     "type": "basic",
-     "count": 1,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 30,
      "buffs": [],
      "isDisabled": false
     },
@@ -565,11 +565,11 @@
  },
  {
   "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Lucy · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Lucy · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Outro - Preem Choom: Turret (Enhanced) = PreemChoomDMG × 3.50.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Pact of Neonlight Leap 5pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Lucy: 556,147 DPR for Rebecca of 5,200,720 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

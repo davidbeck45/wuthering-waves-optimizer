@@ -1,11 +1,11 @@
 [
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Gavel of Earthshaker = GavelofEarthshakerDMG × 3.46; Liberation - Rewritten in Winter's Margins = RewritteninWintersMargins × 2.35; Skill - Aureole of Execution: Breach = AureoleofExecutionBreachDMG × 3.46; Skill - Aureole of Execution: Glare = AureoleofExecutionGlareDMG × 3.46; Skill - Aureole of Execution: Ring = AureoleofExecutionRingDMG × 3.46; Skill - Ichor Deposit = IchorDepositDMG × 3.46.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Gavel of Earthshaker = GavelofEarthshakerDMG × 3.46; Liberation - Rewritten in Winter's Margins = RewritteninWintersMargins × 2.35; Skill - Aureole of Execution: Breach = AureoleofExecutionBreachDMG × 3.46; Skill - Aureole of Execution: Glare = AureoleofExecutionGlareDMG × 3.46; Skill - Aureole of Execution: Ring = AureoleofExecutionRingDMG × 3.46; Skill - Ichor Deposit = IchorDepositDMG × 3.46.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

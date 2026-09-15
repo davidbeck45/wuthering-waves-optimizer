@@ -1,11 +1,11 @@
 [
  {
   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97; Intro - Discernment = DiscernmentDMG × 1.42.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97; Intro - Discernment = DiscernmentDMG × 1.42.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
    "actions": [
     {
      "order": 1,
@@ -78,11 +78,11 @@
  },
  {
   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Jingran · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97; Intro - Discernment = DiscernmentDMG × 1.42.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Jingran · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97; Intro - Discernment = DiscernmentDMG × 1.42.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
    "actions": [
     {
      "order": 1,

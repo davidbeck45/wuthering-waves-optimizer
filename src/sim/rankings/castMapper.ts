@@ -24,7 +24,12 @@ export interface EchoRows {
 
 export interface Cast {
   name: string;
+  /** the kit's own motion value (Riley's `action.mv`) — what the app's rows carry. Never the run's value: a
+   *  sequence's "+100% multiplier" or a buff on the next two casts doubles that, and read as hits it doubled
+   *  Aemeath's Finale in every import until 2026-09-14; the app applies those through its own chains and buffs */
   mv: number | null;
+  /** the value the run applied after those multipliers, for the record */
+  mvRun?: number | null;
   count: number;
   cast: string | null;
   node: string | null;
@@ -74,6 +79,13 @@ export const rileyNameOf = (appKey: string): string => RILEY_NAME[appKey] ?? app
 
 /** Hand-checked corrections (wuwa-tools/rotation-port/overrides.json); null drops the cast. */
 export const OVERRIDES: Record<string, Overrides> = {
+  // the Mech chain shares motion values with her own (Mech 2 = Charged I 92.83, Mech 4 = Aemeath 4, Mech Charged II = Aemeath Charged II)
+  Aemeath: {
+    "Basic - Mech 1": "BasicAttackMechStage1DMG", "Basic - Mech 2": "BasicAttackMechStage2DMG",
+    "Basic - Mech 3": "BasicAttackMechStage3DMG", "Basic - Mech 4": "BasicAttackMechStage4DMG",
+    "Heavy - Mech: Charged I": "HeavyAttackMechChargedIDMG", "Heavy - Mech: Charged II": "HeavyAttackMechChargedIIDMG",
+    "Heavy - Aemeath: Charged I": "HeavyAttackAemeathChargedIDMG", "Heavy - Aemeath: Charged II": "HeavyAttackAemeathChargedIIDMG",
+  },
   Brant: { "Forte - Returned from Ashes (S6 Blast)": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG" },
   // Beneath the Sea = Flowing Suffocation × 4.7: wuwa_calc folds her S3 into the MV, the app applies it through the chain
   Cantarella: { "Basic - Dreamweaver": null, "Liberation - Beneath the Sea": "FlowingSuffocationDMG" },
@@ -91,6 +103,10 @@ const PREFIX_HINT: Array<[string, string]> = [
   ["Forte Mid-air", "midair"], ["Heavy", "heavyattack"], ["Basic", "basicattack"], ["Skill", "skill"], ["Liberation", "liberation"], ["Intro", "intro"], ["Outro", "outro"],
 ];
 const STATUS_RE = /(^|: )(Glacio Chafe|Glacio Bite|Fusion Burst|Electro Flare|Electro Rage|Aero Erosion|Spectro Frazzle|Havoc Bane|Tune Rupture|Tune Strain|Tune Hack)( - \d+ Stacks?)?$/i;
+/** a kit's own cast named after a status ("Forte - Seraphic Duet: Tune Rupture" is Aemeath's Forte damage, an app row)
+ *  is not a status tick: only a bare status name ("Fusion Burst - 10 Stacks", "Glacio Bite - Fine Snow") is the enemy's */
+const KIT_RE = /^(Forte|Mid-air|Dodge Counter|Basic|Heavy|Skill|Liberation|Intro|Outro|Enhanced)\b/;
+const isStatus = (name: string): boolean => STATUS_RE.test(name) && !KIT_RE.test(name);
 const KEY_PREFIX_RE = /^(ResonanceSkill|ResonanceLiberation|ForteCircuit|BasicAttack|HeavyAttack|MidAirAttack|MidairAttack|DodgeCounter|IntroSkill|OutroSkill)/i;
 
 export const norm = (s: string | null | undefined): string =>
@@ -239,7 +255,7 @@ export function knownRatios(casts: Cast[], rows: AppRow[], overrides: Overrides)
   const strong = new Map<number, number>();
   const names = new Map<number, Set<string>>();
   for (const c of casts) {
-    if (!c.mv || STATUS_RE.test(c.name) || c.name.startsWith("Echo - ")) continue;
+    if (!c.mv || isStatus(c.name) || c.name.startsWith("Echo - ")) continue;
     const [hit, how] = matchCast(c, rows, overrides);
     if (hit && how.startsWith("mv×")) {
       const r = Math.round(Number(how.slice(3)) * 100) / 100;
@@ -307,7 +323,7 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
   for (const c of casts) {
     const nm = c.name;
     if (nm === "Tune Break" || c.cast === "TuneBreak") { report.skipped.push("Tune Break (enemy row)"); continue; }
-    if (STATUS_RE.test(nm)) { report.status.push(`${c.count}x ${nm}`); continue; }
+    if (isStatus(nm)) { report.status.push(`${c.count}x ${nm}`); continue; }
     if (!c.mv) { report.skipped.push(`${nm} (0 MV)`); continue; }
     if (nm.includes("(Cancelled)") || nm === "Echo - Stay tuned" || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
     let hit: AppRow | null = null;

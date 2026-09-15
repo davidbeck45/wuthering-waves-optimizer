@@ -1,11 +1,11 @@
 [
  {
   "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,474,279 DPR for Chisa of 7,223,077 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,474,279 DPR for Chisa of 7,223,077 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,474,279 DPR for Chisa of 7,223,077 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,474,279 DPR for Chisa of 7,223,077 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -120,11 +120,11 @@
  },
  {
   "name": "Chisa S6 Kumokiri R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Hsin: 1,196,449 DPR for Chisa of 9,724,465 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Hsin: 1,196,449 DPR for Chisa of 9,724,465 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S6 Kumokiri R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Hsin: 1,196,449 DPR for Chisa of 9,724,465 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Hsin: 1,196,449 DPR for Chisa of 9,724,465 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -229,11 +229,11 @@
  },
  {
   "name": "Chisa S6 Kumokiri R5 · Rebecca + Electro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,168,197 DPR for Chisa of 3,866,243 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,168,197 DPR for Chisa of 3,866,243 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S6 Kumokiri R5 · Rebecca + Electro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,168,197 DPR for Chisa of 3,866,243 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 3.40; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 3.40; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 3.40; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 3.40; Forte - Sawring Eradication = SawringEradicationDMG × 5.25.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Rebecca + Electro Rover: 1,168,197 DPR for Chisa of 3,866,243 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -348,11 +348,11 @@
  },
  {
   "name": "Chisa S0 Kumokiri R1 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cartethyia: 319,553 DPR for Chisa of 3,773,980 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cartethyia: 319,553 DPR for Chisa of 3,773,980 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S0 Kumokiri R1 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cartethyia: 319,553 DPR for Chisa of 3,773,980 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cartethyia: 319,553 DPR for Chisa of 3,773,980 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -447,11 +447,11 @@
  },
  {
   "name": "Chisa S0 Kumokiri R1 · Lynae + Xuanling · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD Havoc Havoc atk atk. Team: Lynae + Xuanling: 268,577 DPR for Chisa of 6,796,522 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD Havoc Havoc atk atk. Team: Lynae + Xuanling: 268,577 DPR for Chisa of 6,796,522 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S0 Kumokiri R1 · Lynae + Xuanling · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD Havoc Havoc atk atk. Team: Lynae + Xuanling: 268,577 DPR for Chisa of 6,796,522 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD Havoc Havoc atk atk. Team: Lynae + Xuanling: 268,577 DPR for Chisa of 6,796,522 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -556,11 +556,11 @@
  },
  {
   "name": "Chisa S0 Kumokiri R1 · Shorekeeper + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Cartethyia: 312,658 DPR for Chisa of 3,354,549 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Cartethyia: 312,658 DPR for Chisa of 3,354,549 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S0 Kumokiri R1 · Shorekeeper + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Cartethyia: 312,658 DPR for Chisa of 3,354,549 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte - Sawring Blitz 2 = SawringBlitzStage2DMG × 2.20; Forte - Sawring Blitz 2: Discordance = SawringBlitzStage2DiscordanceDMG × 2.20; Forte - Sawring Blitz 3 = SawringBlitzStage3DMG × 2.20; Forte - Sawring Blitz 3: Falltone = SawringBlitzStage3FalltoneDMG × 2.20; Forte - Sawring Eradication = SawringEradicationDMG × 3.39.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Cartethyia: 312,658 DPR for Chisa of 3,354,549 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

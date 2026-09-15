@@ -1,16 +1,16 @@
 [
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50.",
    "actions": [
     {
      "order": 1,
-     "key": "SkillDMG",
-     "type": "intro",
+     "key": "OutroSkillDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -118,16 +118,16 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40; Outro - Discipline (Coordinated Lance) = SkillDMG × 3.40.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "SkillDMG",
-     "type": "intro",
+     "key": "OutroSkillDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -245,11 +245,11 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50; Liberation - Emerald Storm: Finale = EmeraldStormFinaleDamage × 3.40.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Nightmare: Feilian Beringal = NightmareFeilianWhirlwindDMG × 2.50.",
    "actions": [
     {
      "order": 1,

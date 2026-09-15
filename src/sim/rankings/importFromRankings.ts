@@ -34,12 +34,26 @@ export interface RankingsMods {
 export interface ImportOptions {
   /** also append each member's loop to that character's saved rotations (characters set up in this app only) */
   characterRotations?: boolean;
+  /** update this saved team in place — actions, enemy settings, and the name while it still reads as
+   *  generated (`isGeneratedTeamName`) — instead of creating a new team ("Sync my teams", syncTeams.ts) */
+  replaceTeamId?: string;
+}
+
+export interface ImportedAction {
+  slot: number;
+  key: string;
+  count: number;
+  mainEcho?: string;
 }
 
 export interface ImportResult {
   teamId: string;
   teamName: string;
   actions: number;
+  /** the actions written, slot-indexed against the team's characterIds */
+  actionList: ImportedAction[];
+  /** true when an existing team was updated in place */
+  replaced: boolean;
   members: string[];
   characterRotationsSaved: string[];
   characterRotationsSkipped: string[];
@@ -80,9 +94,18 @@ const cleanAction = (a: MappedAction): Record<string, unknown> => {
 
 const investmentTag = (combo: any): string => `S${combo.sequence}R${combo.weapon?.refinement ?? 1}`;
 
+/** A team name this importer (or the stock team presets) wrote, as opposed to one the player typed. */
+export const isGeneratedTeamName = (name: string | null | undefined): boolean => /^wuwa_calc /.test(name ?? "") || /\(wuwa_calc t\d+\)/.test(name ?? "");
+
 export async function importTeamFromRankings(mods: RankingsMods, key: string, options: ImportOptions = {}): Promise<ImportResult> {
-  const run = mods.model.results.get(key);
-  if (!run) throw new Error("This team has not been run yet — open its detail page first.");
+  let run = mods.model.results.get(key);
+  if (!run) {
+    // a row the table solved but never ran (Sync my teams): run it traced here, as the detail page would
+    const row = mods.model.rowFromKey(key);
+    if (!row) throw new Error("This team has not been run yet — open its detail page first.");
+    run = mods.teamrun.runTeam(row.teamKey, row.members, row.combo, true);
+    mods.model.results.set(key, run);
+  }
   const traced = run.rotationLines ? run : mods.teamrun.runTeam(run.teamKey, run.members, run.combo, true);
   const members: any[] = traced.members;
   const combos: any[] = traced.combo;
@@ -105,7 +128,9 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
   const NODE: Record<number, string> = mods.stats.NODE_NAME;
   const toCast = (h: any): Cast => ({
     name: h.action.name,
-    mv: h.mv,
+    // the kit's own motion value, not the run's (see castMapper.ts `Cast.mv`)
+    mv: h.action.mv,
+    mvRun: h.mv,
     count: 1,
     cast: CAST[h.action.cast] ?? null,
     node: NODE[h.action.node] ?? null,
@@ -162,15 +187,30 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
   if (notPorted.size) description += ` Not ported (no matching action in this app): ${[...notPorted].join(", ")}.`;
 
   const teamStore = useTeamRotationsStore();
-  const team = teamStore.importTeam({
-    name: teamName,
-    characterIds: slotOrder.map((i) => keys[i]),
-    buildIds: [null, null, null],
-    actions: merged,
-    duration: null,
-    enemyConfig: { ...ENEMY },
-    description,
-  });
+  let team: { id: string; name: string };
+  let written: typeof merged = merged;
+  if (options.replaceTeamId) {
+    const existing = (teamStore.teams as any[]).find((t) => t.id === options.replaceTeamId);
+    if (!existing) throw new Error("The team to update no longer exists.");
+    // the saved team keeps its slot order: re-point every action at the slot that character holds there
+    const slotIn = slotOrder.map((i) => (existing.characterIds as Array<string | null>).indexOf(keys[i]));
+    if (slotIn.some((s) => s < 0)) throw new Error(`${existing.name} does not hold the same three characters as the rankings row.`);
+    written = merged.map((a) => ({ ...a, slot: slotIn[a.slot] }));
+    teamStore.setTeamActions(existing.id, written.map((a) => ({ ...a, id: randomString(12) })));
+    teamStore.setTeamEnemyConfig(existing.id, { ...ENEMY });
+    if (isGeneratedTeamName(existing.name)) teamStore.renameTeam(existing.id, teamName);
+    team = existing;
+  } else {
+    team = teamStore.importTeam({
+      name: teamName,
+      characterIds: slotOrder.map((i) => keys[i]),
+      buildIds: [null, null, null],
+      actions: merged,
+      duration: null,
+      enemyConfig: { ...ENEMY },
+      description,
+    });
+  }
 
   const saved: string[] = [];
   const skipped: string[] = [];
@@ -216,6 +256,8 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     teamId: team.id,
     teamName,
     actions: merged.length,
+    actionList: written.map((a) => ({ slot: a.slot, key: a.key, count: a.count, ...(a.mainEcho ? { mainEcho: a.mainEcho } : {}) })),
+    replaced: Boolean(options.replaceTeamId),
     members: ordered,
     characterRotationsSaved: saved,
     characterRotationsSkipped: skipped,
