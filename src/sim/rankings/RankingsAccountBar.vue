@@ -62,9 +62,21 @@
         <span v-if="t.reason" class="text-xs opacity-70">{{ t.reason }}</span>
         <span v-if="t.deltas.length" class="text-xs opacity-80 w-full pl-2">
           <template v-for="(d, i) in t.deltas.slice(0, 12)" :key="i">
-            <span class="tabular-nums">{{ d.characterId ? getCharacterRosterDisplayName(d.characterId) + " · " : "" }}{{ humanKey(d.key) }}{{ d.mainEcho ? ` (${d.mainEcho})` : "" }} {{ d.from }}→{{ d.to }}</span><span v-if="i < Math.min(t.deltas.length, 12) - 1"> · </span>
+            <span class="tabular-nums">{{ d.characterId ? getCharacterRosterDisplayName(d.characterId) + " · " : "" }}{{ humanKey(d.key) }}{{ d.mainEcho ? ` (${d.mainEcho})` : "" }}{{ d.stacks != null ? ` @${d.stacks}` : "" }} {{ d.from }}→{{ d.to }}</span><span v-if="i < Math.min(t.deltas.length, 12) - 1"> · </span>
           </template>
           <span v-if="t.deltas.length > 12"> · +{{ t.deltas.length - 12 }} more</span>
+        </span>
+        <span v-if="t.enemyDeltas.length" class="text-xs opacity-80 w-full pl-2" data-test-rankings-sync-enemy>
+          enemy settings:
+          <template v-for="(e, i) in t.enemyDeltas" :key="e.key">
+            <span class="tabular-nums">{{ e.label }} {{ e.from }}→{{ e.to }}</span><span v-if="i < t.enemyDeltas.length - 1"> · </span>
+          </template>
+        </span>
+        <span v-if="t.members.some((m) => m.nextLoopChange)" class="text-xs opacity-70 w-full pl-2" data-test-rankings-sync-breakpoints>
+          loop changes:
+          <template v-for="(m, i) in t.members.filter((m) => m.nextLoopChange)" :key="m.name">
+            <span>{{ m.name }} S{{ m.sequence }} → S{{ m.nextLoopChange }}</span><span v-if="i < t.members.filter((m) => m.nextLoopChange).length - 1"> · </span>
+          </template>
         </span>
       </li>
     </ul>

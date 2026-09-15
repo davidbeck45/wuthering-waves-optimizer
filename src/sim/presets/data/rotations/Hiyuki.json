@@ -1,11 +1,11 @@
 [
  {
   "name": "Hiyuki S6 Frostburn R5 · Suisui + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,902,755 DPR for Hiyuki of 11,051,767 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 43x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,902,755 DPR for Hiyuki of 11,051,767 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 43x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hiyuki S6 Frostburn R5 · Suisui + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,902,755 DPR for Hiyuki of 11,051,767 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 43x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,902,755 DPR for Hiyuki of 11,051,767 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 43x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -17,6 +17,15 @@
     },
     {
      "order": 2,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 43,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 3,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 43,
@@ -24,20 +33,13 @@
      "isDisabled": false
     },
     {
-     "order": 3,
-     "key": "GlacioBiteDMG",
+     "order": 4,
+     "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 3,
      "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackPresentSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 5,
@@ -49,7 +51,7 @@
     },
     {
      "order": 6,
-     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "key": "BasicAttackPresentSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -57,6 +59,15 @@
     },
     {
      "order": 7,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 8,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -64,7 +75,32 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 11,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "ForeclaimingInwardVisionDMG",
      "type": "liberation",
      "count": 1,
@@ -72,7 +108,16 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 13,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 14,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 6,
@@ -80,7 +125,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 15,
      "key": "BasicAttackForeclaimedSelfStage1DMG",
      "type": "basic",
      "count": 1,
@@ -88,7 +133,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 16,
      "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
@@ -96,48 +141,8 @@
      "isDisabled": false
     },
     {
-     "order": 12,
-     "key": "BasicAttackForeclaimedSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 17,
-     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -145,6 +150,82 @@
     },
     {
      "order": 18,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 19,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 21,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 23,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 25,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
      "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
@@ -152,7 +233,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 28,
      "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
@@ -160,79 +241,115 @@
      "isDisabled": false
     },
     {
-     "order": 20,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "BasicAttackIaiDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "FrostblightPetalfallDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "BasicAttackIaiDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "FrostblightPetalfallDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 27,
-     "key": "BasicAttackIaiDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 28,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 29,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 30,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 33,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 37,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 39,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 40,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 41,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 42,
      "key": "Aleph-1'sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -242,7 +359,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 30,
+     "order": 43,
      "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
      "type": "basic",
      "count": 1,
@@ -250,7 +367,16 @@
      "isDisabled": false
     },
     {
-     "order": 31,
+     "order": 44,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 45,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -258,7 +384,7 @@
      "isDisabled": false
     },
     {
-     "order": 32,
+     "order": 46,
      "key": "ForeclaimingBladeLiberationBaseDMG",
      "type": "liberation",
      "count": 1,
@@ -266,7 +392,16 @@
      "isDisabled": false
     },
     {
-     "order": 33,
+     "order": 47,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 48,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -278,11 +413,11 @@
  },
  {
   "name": "Hiyuki S6 Frostburn R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,808,435 DPR for Hiyuki of 10,132,288 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 23x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,808,435 DPR for Hiyuki of 10,132,288 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 23x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hiyuki S6 Frostburn R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,808,435 DPR for Hiyuki of 10,132,288 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 23x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,808,435 DPR for Hiyuki of 10,132,288 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 23x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -294,6 +429,15 @@
     },
     {
      "order": 2,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 23,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 3,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 23,
@@ -301,20 +445,13 @@
      "isDisabled": false
     },
     {
-     "order": 3,
-     "key": "GlacioBiteDMG",
+     "order": 4,
+     "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackPresentSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 5,
@@ -326,7 +463,7 @@
     },
     {
      "order": 6,
-     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "key": "BasicAttackPresentSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -334,6 +471,15 @@
     },
     {
      "order": 7,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 8,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -341,7 +487,32 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 11,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "ForeclaimingInwardVisionDMG",
      "type": "liberation",
      "count": 1,
@@ -349,7 +520,16 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 13,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 14,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 4,
@@ -357,7 +537,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 15,
      "key": "BasicAttackForeclaimedSelfStage1DMG",
      "type": "basic",
      "count": 1,
@@ -365,7 +545,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 16,
      "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
@@ -373,48 +553,8 @@
      "isDisabled": false
     },
     {
-     "order": 12,
-     "key": "BasicAttackForeclaimedSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 17,
-     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -422,22 +562,15 @@
     },
     {
      "order": 18,
-     "key": "BasicAttackForeclaimedSelfStage2DMG",
-     "type": "basic",
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 19,
-     "key": "BasicAttackForeclaimedSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -445,8 +578,17 @@
      "isDisabled": false
     },
     {
+     "order": 20,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
      "order": 21,
-     "key": "BasicAttackIaiDMG",
+     "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -454,22 +596,81 @@
     },
     {
      "order": 22,
-     "key": "GlacioBiteDMG",
+     "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
-     "count": 3,
+     "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 23,
-     "key": "FrostblightPetalfallDMG",
-     "type": "skill",
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 24,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 25,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "BasicAttackForeclaimedSelfStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 30,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
      "key": "BasicAttackIaiDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -477,7 +678,16 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 32,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 33,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -485,7 +695,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 34,
      "key": "FrostblightPetalfallDMG",
      "type": "skill",
      "count": 1,
@@ -493,7 +703,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 35,
      "key": "BasicAttackIaiDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -501,7 +711,16 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 36,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 37,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -509,7 +728,40 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 38,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 39,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 40,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 41,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 42,
      "key": "Aleph-1'sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -519,7 +771,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 30,
+     "order": 43,
      "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
      "type": "basic",
      "count": 1,
@@ -527,7 +779,16 @@
      "isDisabled": false
     },
     {
-     "order": 31,
+     "order": 44,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 45,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -535,7 +796,7 @@
      "isDisabled": false
     },
     {
-     "order": 32,
+     "order": 46,
      "key": "ForeclaimingBladeLiberationBaseDMG",
      "type": "liberation",
      "count": 1,
@@ -543,7 +804,16 @@
      "isDisabled": false
     },
     {
-     "order": 33,
+     "order": 47,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 48,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -555,11 +825,11 @@
  },
  {
   "name": "Hiyuki S6 Frostburn R5 · Chisa + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lucilla (main DPS): 8,745,471 DPR for Hiyuki of 11,123,960 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lucilla (main DPS): 8,745,471 DPR for Hiyuki of 11,123,960 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hiyuki S6 Frostburn R5 · Chisa + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lucilla (main DPS): 8,745,471 DPR for Hiyuki of 11,123,960 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD ATK Glacio atk atk. Team: Chisa + Lucilla (main DPS): 8,745,471 DPR for Hiyuki of 11,123,960 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -571,6 +841,15 @@
     },
     {
      "order": 2,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 41,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 3,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 41,
@@ -578,20 +857,13 @@
      "isDisabled": false
     },
     {
-     "order": 3,
-     "key": "GlacioBiteDMG",
+     "order": 4,
+     "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 3,
      "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackPresentSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 5,
@@ -603,7 +875,7 @@
     },
     {
      "order": 6,
-     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "key": "BasicAttackPresentSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -611,6 +883,15 @@
     },
     {
      "order": 7,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 8,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -618,7 +899,32 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
+     "key": "HeavyAttackFrostSplinterPresentSelfDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 11,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "ForeclaimingInwardVisionDMG",
      "type": "liberation",
      "count": 1,
@@ -626,7 +932,16 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 13,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 14,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 6,
@@ -634,56 +949,16 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 15,
      "key": "BasicAttackForeclaimedSelfStage1DMG",
      "type": "basic",
      "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackForeclaimedSelfStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "BasicAttackForeclaimedSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 16,
-     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -691,7 +966,7 @@
     },
     {
      "order": 17,
-     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -699,11 +974,12 @@
     },
     {
      "order": 18,
-     "key": "BasicAttackForeclaimedSelfStage3DMG",
-     "type": "basic",
-     "count": 1,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 19,
@@ -715,62 +991,15 @@
     },
     {
      "order": 20,
-     "key": "BasicAttackIaiDMG",
+     "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 3,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 21,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "FrostblightPetalfallDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "BasicAttackIaiDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "FrostblightPetalfallDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "BasicAttackIaiDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 27,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -778,7 +1007,156 @@
      "isDisabled": false
     },
     {
+     "order": 22,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 23,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackForeclaimedSelfStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackForeclaimedSelfStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "BasicAttackForeclaimedSelfStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
      "order": 28,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 31,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 33,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 35,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "FrostblightPetalfallDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 37,
+     "key": "BasicAttackIaiDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 39,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 40,
      "key": "Aleph-1'sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -788,7 +1166,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 29,
+     "order": 41,
      "key": "HeavyAttackBitterfrostForeclaimedSelfDMG",
      "type": "basic",
      "count": 1,
@@ -796,7 +1174,16 @@
      "isDisabled": false
     },
     {
-     "order": 30,
+     "order": 42,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 43,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -804,7 +1191,7 @@
      "isDisabled": false
     },
     {
-     "order": 31,
+     "order": 44,
      "key": "ForeclaimingBladeLiberationBaseDMG",
      "type": "liberation",
      "count": 1,

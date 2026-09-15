@@ -6,8 +6,10 @@
 //   · aggregate (cast.mv × count == app row) · per-hit (cast == app row × N)
 //   · ratio (a kit multiplier the app models as a buff) · tick (the app row is
 //   an N-tick aggregate) · name-only · unmatched.
-// Tune Breaks, negative-status ticks, 0-MV utility casts and cancelled echo
-// forms are not actions in this app and are skipped (reported instead).
+// Tune Breaks, 0-MV utility casts and cancelled echo forms are not actions in
+// this app and are skipped (reported instead); a negative-status tick becomes
+// the app's own per-tick negative-status action at the tick's stack count, and
+// `enemyConfigOf` reads the team enemy settings a loop ran under (2026-09-14).
 
 export interface AppRow {
   group: string;
@@ -35,7 +37,13 @@ export interface Cast {
   node: string | null;
   queued?: boolean;
   by?: string | null;
+  /** the enemy debuffs the engine held while this cast ran, by stack count (a traced run's `heldEnemy`, parsed by
+   *  `enemyStacksOf` / the exporter): Havoc Bane, Tune Strain - Interfered, Electro Rage, and the tick statuses */
+  held?: EnemySeen;
 }
+
+/** stack counts read off a traced hit's `heldEnemy` roster ("Havoc Bane x9" → havocBane: 9) */
+export type EnemySeen = Partial<Record<"havocBane" | "strain" | "electroRage" | "electroFlare" | "aeroErosion" | "glacioChafe" | "spectroFrazzle" | "fusionBurst" | "glacioBite", number>>;
 
 export interface MappedAction {
   order: number;
@@ -48,7 +56,14 @@ export interface MappedAction {
   isDisabled: boolean;
   mainEcho?: string;
   mainEchoRank?: number;
+  /** a negative-status tick: the stack count the tick ran at (the app's per-action `negativeStatusStacks`) */
+  negativeStatusStacks?: number;
+  /** an Electro Flare tick: the Electro Rage stacks held at that moment */
+  electroRageStacks?: number;
 }
+
+/** the app's team enemy settings (`TeamEnemyConfig` stack fields) */
+export type EnemyStacks = Record<"spectroFrazzleStacks" | "aeroErosionStacks" | "havocBaneStacks" | "fusionBurstStacks" | "electroFlareStacks" | "electroRageStacks" | "glacioChafeStacks" | "strainStacks", number>;
 
 export interface MapReport {
   methods: Record<string, number>;
@@ -107,6 +122,60 @@ const STATUS_RE = /(^|: )(Glacio Chafe|Glacio Bite|Fusion Burst|Electro Flare|El
  *  is not a status tick: only a bare status name ("Fusion Burst - 10 Stacks", "Glacio Bite - Fine Snow") is the enemy's */
 const KIT_RE = /^(Forte|Mid-air|Dodge Counter|Basic|Heavy|Skill|Liberation|Intro|Outro|Enhanced)\b/;
 const isStatus = (name: string): boolean => STATUS_RE.test(name) && !KIT_RE.test(name);
+/** a status tick the app has an action for: `ElementalEffect<Sub>` of type `negativeStatus`, per-tick stack count */
+const TICK_RE = /^(Spectro Frazzle|Aero Erosion|Fusion Burst|Electro Flare|Glacio Chafe) - (\d+) Stacks?$/;
+const TICK_SUB: Record<string, string> = { "Spectro Frazzle": "SpectroFrazzle", "Aero Erosion": "AeroErosion", "Fusion Burst": "FusionBurst", "Electro Flare": "ElectroFlare", "Glacio Chafe": "GlacioChafe" };
+/** the app's stack→motion-value tables end at 13 (Aero Erosion at 12); Riley's engine climbs past that (Glacio Chafe / Electro Flare x16) */
+const tickCap = (sub: string): number => (sub === "AeroErosion" ? 12 : 13);
+const RAGE_RE = /^Electro Rage - (\d+) Stacks?$/;
+/** the team-wide enemy settings the app holds, with the enemy panel's slider caps */
+export const ENEMY_CAP: EnemyStacks = { spectroFrazzleStacks: 13, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 13, electroFlareStacks: 13, electroRageStacks: 13, glacioChafeStacks: 13, strainStacks: 9 };
+const HELD_RE = /^(Havoc Bane|Tune Strain - Interfered|Electro Rage|Electro Flare|Aero Erosion|Glacio Chafe|Spectro Frazzle|Fusion Burst|Glacio Bite) x(\d+)/;
+const HELD_KEY: Record<string, keyof EnemySeen> = { "Havoc Bane": "havocBane", "Tune Strain - Interfered": "strain", "Electro Rage": "electroRage", "Electro Flare": "electroFlare", "Aero Erosion": "aeroErosion", "Glacio Chafe": "glacioChafe", "Spectro Frazzle": "spectroFrazzle", "Fusion Burst": "fusionBurst", "Glacio Bite": "glacioBite" };
+
+/** The enemy debuff stacks a traced hit ran under, off its `heldEnemy` roster (mirrors the exporter's `enemyOf`). */
+export function enemyStacksOf(heldEnemy: Array<{ name: string }> | null | undefined): EnemySeen | undefined {
+  let out: EnemySeen | undefined;
+  for (const b of heldEnemy ?? []) {
+    const m = HELD_RE.exec(b.name);
+    if (m) (out ??= {})[HELD_KEY[m[1]]] = Number(m[2]);
+  }
+  return out;
+}
+
+/** The team-wide enemy settings one loop ran under (mirrors map_rotations.enemy_config_of): every tick status at the
+ *  highest stack count its ticks reached in the loop, Electro Rage likewise (its own ticks, or the count held under an
+ *  Electro Flare tick), and the debuffs the engine held rather than ticked — Havoc Bane, Tune Strain - Interfered — at
+ *  the count in force on most of the loop's damage casts (ties to the higher count). Clamped to the panel's caps. */
+export function enemyConfigOf(casts: Cast[]): EnemyStacks {
+  const out: EnemyStacks = { spectroFrazzleStacks: 0, aeroErosionStacks: 0, havocBaneStacks: 0, fusionBurstStacks: 0, electroFlareStacks: 0, electroRageStacks: 0, glacioChafeStacks: 0, strainStacks: 0 };
+  const held: Record<"havocBaneStacks" | "strainStacks", Map<number, number>> = { havocBaneStacks: new Map(), strainStacks: new Map() };
+  for (const c of casts) {
+    const nm = c.name;
+    const n = c.count || 1;
+    const enemy = c.held ?? {};
+    const t = isStatus(nm) ? TICK_RE.exec(nm) : null;
+    if (t) {
+      const sub = TICK_SUB[t[1]];
+      const key = (sub[0].toLowerCase() + sub.slice(1) + "Stacks") as keyof EnemyStacks;
+      out[key] = Math.max(out[key], Number(t[2]));
+      if (t[1] === "Electro Flare") out.electroRageStacks = Math.max(out.electroRageStacks, enemy.electroRage ?? 0);
+      continue;
+    }
+    const r = isStatus(nm) ? RAGE_RE.exec(nm) : null;
+    if (r) { out.electroRageStacks = Math.max(out.electroRageStacks, Number(r[1])); continue; }
+    if (!c.mv) continue;
+    held.havocBaneStacks.set(enemy.havocBane ?? 0, (held.havocBaneStacks.get(enemy.havocBane ?? 0) ?? 0) + n);
+    held.strainStacks.set(enemy.strain ?? 0, (held.strainStacks.get(enemy.strain ?? 0) ?? 0) + n);
+  }
+  for (const key of ["havocBaneStacks", "strainStacks"] as const) {
+    let best: [number, number] | null = null;
+    for (const [stacks, hits] of held[key]) if (!best || hits > best[1] || (hits === best[1] && stacks > best[0])) best = [stacks, hits];
+    if (best) out[key] = best[0];
+  }
+  for (const key of Object.keys(out) as Array<keyof EnemyStacks>) out[key] = Math.min(out[key], ENEMY_CAP[key]);
+  return out;
+}
 const KEY_PREFIX_RE = /^(ResonanceSkill|ResonanceLiberation|ForteCircuit|BasicAttack|HeavyAttack|MidAirAttack|MidairAttack|DodgeCounter|IntroSkill|OutroSkill)/i;
 
 export const norm = (s: string | null | undefined): string =>
@@ -323,7 +392,22 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
   for (const c of casts) {
     const nm = c.name;
     if (nm === "Tune Break" || c.cast === "TuneBreak") { report.skipped.push("Tune Break (enemy row)"); continue; }
-    if (isStatus(nm)) { report.status.push(`${c.count}x ${nm}`); continue; }
+    if (isStatus(nm)) {
+      report.status.push(`${c.count}x ${nm}`);
+      const t = TICK_RE.exec(nm);
+      if (!t) continue; // Electro Rage ticks, bare status names: nothing to press in the app
+      const sub = TICK_SUB[t[1]];
+      const stacks = Math.min(Number(t[2]), tickCap(sub));
+      // a kit that converts the status has its own row for the tick (Hiyuki's Glacio Bite DMG, a forte row that reads
+      // the stack count the same way); everyone else presses the app's generic negative-status action
+      const own = rows.find((r) => r.key === `ElementalEffect${sub === "GlacioChafe" ? "GlacioBite" : sub}`) ?? null;
+      order += 1;
+      const a: MappedAction = { order, key: own?.key ?? `ElementalEffect${sub}`, type: own?.group ?? "negativeStatus", count: c.count, buffs: [], excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false, negativeStatusStacks: stacks };
+      if (sub === "ElectroFlare") a.electroRageStacks = Math.min(c.held?.electroRage ?? 0, 13);
+      bump("status");
+      actions.push(a);
+      continue;
+    }
     if (!c.mv) { report.skipped.push(`${nm} (0 MV)`); continue; }
     if (nm.includes("(Cancelled)") || nm === "Echo - Stay tuned" || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
     let hit: AppRow | null = null;

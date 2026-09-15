@@ -1,11 +1,162 @@
 [
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status damage seen (set via the app's status settings, not actions): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 8,716,326 DPR for Aemeath of 10,040,496 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SongsAcrosstheUniverseDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 14,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 8,599,218 DPR for Aemeath of 13,210,942 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 8,599,218 DPR for Aemeath of 13,210,942 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -97,6 +248,15 @@
     },
     {
      "order": 12,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 13,
      "key": "SeraphicDuetOvertureDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -104,7 +264,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "HeavyAttackMechChargedIIDMG",
      "type": "skill",
      "count": 1,
@@ -112,7 +272,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -122,7 +282,158 @@
      "mainEchoRank": 5
     },
     {
+     "order": 16,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 8,322,860 DPR for Aemeath of 14,105,528 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 8,322,860 DPR for Aemeath of 14,105,528 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SongsAcrosstheUniverseDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 15,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 16,
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
      "count": 1,
@@ -288,6 +599,148 @@
     },
     {
      "order": 19,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 5,935,922 DPR for Aemeath of 6,802,416 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 5,935,922 DPR for Aemeath of 6,802,416 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SongsAcrosstheUniverseDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
      "count": 1,

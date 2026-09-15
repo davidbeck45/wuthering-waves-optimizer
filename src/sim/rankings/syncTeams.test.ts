@@ -1,6 +1,6 @@
 // Wuthering Tools+: the plain-data half of "Sync my teams" (the engine half runs on the rankings page).
 import { describe, expect, it } from "vitest";
-import { actionCounts, diffActions, humanKey, isWuwaCalcTeam, rileyTeamKeysFor } from "./syncTeams";
+import { actionCounts, diffActions, diffEnemy, humanKey, isWuwaCalcTeam, rileyTeamKeysFor } from "./syncTeams";
 
 describe("sync my teams", () => {
   it("touches only wuwa_calc-named teams", () => {
@@ -41,13 +41,35 @@ describe("sync my teams", () => {
       [0, "HeavenfallEdictFinaleDMG", 2], [0, "SeraphicDuetEncoreDMG", 4], [1, "HyvatiaLasersDMG", 1],
     ]);
     expect(diffActions(before, after, ["Aemeath", "Lynae", "Mornye"])).toEqual([
-      { slot: 0, characterId: "Aemeath", key: "HeavenfallEdictFinaleDMG", mainEcho: null, from: 2, to: 1 },
-      { slot: 0, characterId: "Aemeath", key: "SeraphicDuetBonusDMGPerInstance", mainEcho: null, from: 0, to: 5 },
-      { slot: 0, characterId: "Aemeath", key: "SeraphicDuetEncoreDMG", mainEcho: null, from: 4, to: 1 },
-      { slot: 2, characterId: "Mornye", key: "ConvergenceDMG", mainEcho: null, from: 0, to: 1 },
+      { slot: 0, characterId: "Aemeath", key: "HeavenfallEdictFinaleDMG", mainEcho: null, stacks: null, from: 2, to: 1 },
+      { slot: 0, characterId: "Aemeath", key: "SeraphicDuetBonusDMGPerInstance", mainEcho: null, stacks: null, from: 0, to: 5 },
+      { slot: 0, characterId: "Aemeath", key: "SeraphicDuetEncoreDMG", mainEcho: null, stacks: null, from: 4, to: 1 },
+      { slot: 2, characterId: "Mornye", key: "ConvergenceDMG", mainEcho: null, stacks: null, from: 0, to: 1 },
     ]);
     expect(diffActions(after, after)).toEqual([]);
     expect(humanKey("HeavenfallEdictFinaleDMG")).toBe("Heavenfall Edict Finale DMG");
     expect(humanKey("SeraphicDuetBonusDMGPerInstance")).toBe("Seraphic Duet Bonus DMG Per Instance");
+    expect(humanKey("ElementalEffectAeroErosion")).toBe("Aero Erosion");
+  });
+
+  it("tells a status tick's rows apart by stack count (a stored action and the import's view alike)", () => {
+    const before = [{ slot: 1, key: "ElementalEffectAeroErosion", type: "negativeStatus", count: 9, negativeStatusStacks: 9 }];
+    const after = [
+      { slot: 1, key: "ElementalEffectAeroErosion", count: 9, stacks: 12 },
+      { slot: 1, key: "ElementalEffectAeroErosion", count: 2, stacks: 9 },
+    ];
+    expect(diffActions(before, after, ["Cartethyia", "Ciaccona", "Chisa"])).toEqual([
+      { slot: 1, characterId: "Ciaccona", key: "ElementalEffectAeroErosion", mainEcho: null, stacks: 9, from: 9, to: 2 },
+      { slot: 1, characterId: "Ciaccona", key: "ElementalEffectAeroErosion", mainEcho: null, stacks: 12, from: 0, to: 9 },
+    ]);
+  });
+
+  it("diffs the enemy settings' stack fields, a missing field reading as 0", () => {
+    expect(diffEnemy({ enemyLevel: 90, aeroErosionStacks: 0 }, { enemyLevel: 100, aeroErosionStacks: 9, havocBaneStacks: 6 })).toEqual([
+      { key: "aeroErosionStacks", label: "Aero Erosion", from: 0, to: 9 },
+      { key: "havocBaneStacks", label: "Havoc Bane", from: 0, to: 6 },
+    ]);
+    expect(diffEnemy(null, { aeroErosionStacks: 0 })).toEqual([]);
+    expect(diffEnemy({ strainStacks: 3 }, {})).toEqual([{ key: "strainStacks", label: "Tune Strain", from: 3, to: 0 }]);
   });
 });

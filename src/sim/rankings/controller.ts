@@ -12,8 +12,8 @@ import type { Router } from "vue-router";
 import type { BuildRolls } from "./myBuilds";
 import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
-import { importTeamFromRankings } from "./importFromRankings";
-import { runSync, type SyncReport, type TeamLike } from "./syncTeams";
+import { importTeamFromRankings, type ImportResult } from "./importFromRankings";
+import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -356,11 +356,27 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
       M.filters.cost = was;
     }
   };
-  const ensureSolved = async (keys: string[]): Promise<void> => {
-    await ensureBestPicks(keys.map((k) => [k, M.TEAMS[k] as Member[]]));
-  };
+  const S = mods.solver;
+  const engine = mods;
+  // the best row per composition at `mine`, as the table's top row for it would read
+  const solveBest = (keys: string[]): Promise<Map<string, SolvedBest | null>> =>
+    withMine(async () => {
+      await ensureBestPicks(keys.map((k) => [k, M.TEAMS[k] as Member[]]));
+      const out = new Map<string, SolvedBest | null>();
+      for (const key of keys) {
+        const members = M.TEAMS[key] as Member[];
+        const solved = M.bestPicks.get(S.bestKey(key, members, M.filters)) as Solved | undefined;
+        const row = solved?.rows?.[0];
+        if (!row) { out.set(key, null); continue; }
+        const combo = row.map((p: any, i: number) => S.comboOf((members[i] as any).loadout, p));
+        out.set(key, { total: Number(solved!.scores?.[0]?.total ?? 0), ref: `${key}-${combo.map((c: any) => c.key).join("-")}` });
+      }
+      return out;
+    });
+  const importInto = (team: TeamLike, best: SolvedBest): Promise<ImportResult> =>
+    withMine(() => importTeamFromRankings(engine, best.ref as string, { replaceTeamId: team.id }));
   try {
-    const report = await runSync({ mods, ensureSolved, withMine, teams });
+    const report = await runSync({ teams, rileyTeams: M.TEAMS, solveBest, importInto });
     M.saveSolves();
     return report;
   } finally {
