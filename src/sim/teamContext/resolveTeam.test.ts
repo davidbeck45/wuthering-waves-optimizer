@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildCharacterCalculationContext, resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
-import { resolveTeamCharacters } from "./resolveTeam";
+import { outroRecipients, resolveTeamCharacters } from "./resolveTeam";
 
 const enemy = resolveTeamEnemyConfig({});
 const echo = (set: string, i: number) => ({
@@ -150,5 +150,61 @@ describe("resolveTeamCharacters", () => {
     expect(res.characters).toBe(characters);
     expect(res.buildIds).toEqual([null, "x", null]);
     expect(res.slots.every((s) => s.buffSource === "off")).toBe(true);
+  });
+});
+
+describe("resolveTeamCharacters: the 2026-09-15 audit rules", () => {
+  it("reads who hands off to whom from the recorded handoffs, else from the block order of the actions", () => {
+    const ids = ["Galbrena", "Phrolova", "Lucilla"];
+    // recorded by the wuwa_calc import: Lucilla's Outro goes to Galbrena even though Phrolova's off-field hits interleave
+    const recorded = outroRecipients({ characterIds: ids, handoffs: { Lucilla: ["Galbrena"], Phrolova: ["Lucilla"], Galbrena: ["Phrolova"] } });
+    expect([...recorded.get("Lucilla")!]).toEqual(["Galbrena"]);
+    // a hand-built team: blocks in slot order → 0 → 1 → 2 → 0
+    const actions = [0, 0, 1, 1, 1, 2, 2].map((slot, i) => ({ slot, order: i + 1, type: "basic" }));
+    const blocks = outroRecipients({ characterIds: ids, actions });
+    expect([...blocks.get("Galbrena")!]).toEqual(["Phrolova"]);
+    expect([...blocks.get("Phrolova")!]).toEqual(["Lucilla"]);
+    expect([...blocks.get("Lucilla")!]).toEqual(["Galbrena"]);
+    // nothing known: empty, so every teammate keeps receiving (the old rule)
+    expect(outroRecipients({ characterIds: ids }).size).toBe(0);
+    expect(outroRecipients({ characterIds: ids, actions: [{ slot: 0, order: 1 }] }).size).toBe(0);
+  });
+
+  it("gives an incoming-Resonator buff only to the one who follows the provider's Outro", async () => {
+    // Iuno's "From Gloom to Gleam" is worded for the incoming Resonator; Augusta follows Iuno, Shorekeeper does not
+    const characters = roster(true);
+    const withHandoffs = { ...team, handoffs: { Iuno: ["Augusta"], Augusta: ["Shorekeeper"], Shorekeeper: ["Iuno"] } };
+    const res = await resolveTeamCharacters(withHandoffs, characters, [], { enemyConfig: enemy });
+    const shorekeeper = res.slots[2];
+    expect(shorekeeper.buffSource).toBe("derived");
+    expect(res.characters.Shorekeeper.teamBuffs.buffs.OutroSkillFromGloomtoGleam).toBeUndefined();
+    expect(shorekeeper.skipped.find((x) => x.key === "OutroSkillFromGloomtoGleam")?.reason).toBe("outro handoff goes to Augusta");
+    // Iuno's Blessing of the Wan Light is team-wide and still reaches her
+    expect(res.characters.Shorekeeper.teamBuffs.buffs.BlessingoftheWanLight?.isEnabled).toBe(true);
+    // Augusta's panel names Iuno + Shorekeeper, so it is kept verbatim, handoffs or not
+    expect(res.slots[0].buffSource).toBe("panel");
+  });
+
+  it("brings only the Resonance Mode a provider is in, and reads an S2-named sequence buff as a sequence buff", async () => {
+    const characters = {
+      Aemeath: { weapon: "EverbrightPolestar", activeStance: "Tune Rupture", teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+      Denia: { weapon: "ForgedDwarfStar", activeStance: "Fusion Burst", teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+      Suisui: { weapon: "Variation", resonanceChains: {}, teamBuffs: { selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Aemeath", "Denia", "Suisui"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    const suisui = res.characters.Suisui.teamBuffs.buffs as Record<string, { isEnabled: boolean }>;
+    // Aemeath in Tune Rupture: her Fusion Burst outro variants stay home; Denia in Fusion Burst: her Tune Strain ones do
+    expect(suisui.SilentProtectionTuneRupture?.isEnabled).toBe(true);
+    expect(suisui.SilentProtectionFusionBurst).toBeUndefined();
+    expect(suisui.SilentProtectionFusionBurstAppliers).toBeUndefined();
+    expect(suisui.OutroSkillUnfinishedLiesFusionBurst?.isEnabled).toBe(true);
+    expect(suisui.OutroSkillUnfinishedLiesTuneStrain).toBeUndefined();
+    expect(suisui.OutroSkillUnfinishedLiesTuneStrain2).toBeUndefined();
+    expect(res.slots[2].skipped.find((x) => x.key === "OutroSkillUnfinishedLiesTuneStrain2")?.reason).toBe("Tune Strain mode; Denia is in Fusion Burst");
+    // Suisui at S0: her "S2: Clouds Pour Like Molten Gold" (+50% Crit DMG) must not reach Aemeath
+    const aemeath = res.characters.Aemeath.teamBuffs.buffs as Record<string, { isEnabled: boolean }>;
+    expect(aemeath.S2CloudsPourLikeMoltenGold).toBeUndefined();
+    expect(res.slots[0].skipped.find((x) => x.key === "S2CloudsPourLikeMoltenGold")?.reason).toBe("needs S2");
+    expect(aemeath.CarelessLandscape?.isEnabled).toBe(true);
   });
 });

@@ -254,19 +254,19 @@ export async function rankRoster(
   const enemy = RANKING_ENEMY;
   const ids = Object.keys(characters ?? {}).filter((id) => isSetUp(characters[id])).sort();
   const wuwaTeams = await loadWuwaCalcTeamPresets();
-  const teamCandidates: Array<{ id: string; name: string; source: RotationSource; team: { name: string; characterIds: string[]; actions: TeamRotationAction[]; duration: number | string | null } }> = [];
+  const teamCandidates: Array<{ id: string; name: string; source: RotationSource; team: { name: string; characterIds: string[]; actions: TeamRotationAction[]; duration: number | string | null; handoffs?: Record<string, string[]> | null } }> = [];
   let teamsSkipped = 0;
   // a team ranks when its three members exist in your data; members without a weapon are flagged, not excluded
   const owned = (cids: Array<string | null>): cids is string[] => cids.length === 3 && cids.every((c) => !!c && !!characters[c]);
   for (const t of teams ?? []) {
     if (!t?.actions?.length || !owned(t.characterIds ?? [])) { teamsSkipped += 1; continue; }
-    teamCandidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration ?? null } });
+    teamCandidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
   }
   for (const [source, list] of [["curated", teamRotationPresets], ["wuwa_calc", wuwaTeams]] as const) {
     for (const p of list) {
       const actions = (p.data.actions ?? []) as TeamRotationAction[];
       if (!actions.length || !owned(p.data.characterIds)) continue;
-      teamCandidates.push({ id: `${source}:${p.name}`, name: p.name, source, team: { name: p.name, characterIds: p.data.characterIds as string[], actions, duration: p.data.duration ?? null } });
+      teamCandidates.push({ id: `${source}:${p.name}`, name: p.name, source, team: { name: p.name, characterIds: p.data.characterIds as string[], actions, duration: p.data.duration ?? null, handoffs: (p.data as { handoffs?: Record<string, string[]> }).handoffs ?? null } });
     }
   }
   const total = ids.length + teamCandidates.length;

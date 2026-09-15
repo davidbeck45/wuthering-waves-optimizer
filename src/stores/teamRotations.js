@@ -68,6 +68,9 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         duration: teamData.duration ?? null,
         enemyConfig: { ...defaultEnemyConfig(), ...(teamData.enemyConfig ?? {}) },
       };
+      // Wuthering Tools+: a wuwa_calc import carries its provenance and who hands off to whom (src/sim/rankings)
+      if (teamData.description) team.description = teamData.description;
+      if (teamData.handoffs) team.handoffs = teamData.handoffs;
       this.teams.push(team);
       return team;
     },

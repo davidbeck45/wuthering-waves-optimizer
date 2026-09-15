@@ -12,6 +12,10 @@ export interface TeamExportData {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
+  /** Wuthering Tools+: a wuwa_calc import's provenance text */
+  description?: string;
+  /** Wuthering Tools+: who each member hands off to after their Outro (character keys), read by the team-buff derivation */
+  handoffs?: Record<string, string[]>;
 }
 
 const TEAM_EXPORT_TYPE = "teamRotation";
@@ -35,6 +39,8 @@ export function buildTeamExportPayload(team: {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
+  description?: string;
+  handoffs?: Record<string, string[]>;
 }): TeamExportPayload {
   return {
     meta: { version: TEAM_EXPORT_VERSION, source: "WutheringTools", type: TEAM_EXPORT_TYPE },
@@ -44,6 +50,9 @@ export function buildTeamExportPayload(team: {
       actions: team.actions,
       duration: team.duration,
       enemyConfig: team.enemyConfig,
+      // Wuthering Tools+: keep a wuwa_calc import's provenance and handoffs with the team
+      ...(team.description ? { description: team.description } : {}),
+      ...(team.handoffs ? { handoffs: team.handoffs } : {}),
     },
   };
 }
@@ -97,6 +106,9 @@ export function parseTeamImportPayload(raw: string): TeamExportData {
     actions: team.actions.map(stripLegacyExcludeFields),
     duration: team.duration ?? null,
     enemyConfig: (team.enemyConfig as Record<string, unknown> | undefined) ?? {},
+    // Wuthering Tools+: a wuwa_calc import's provenance and handoffs travel with the team
+    ...(typeof team.description === "string" && team.description ? { description: team.description } : {}),
+    ...(team.handoffs && typeof team.handoffs === "object" ? { handoffs: team.handoffs as Record<string, string[]> } : {}),
   };
 }
 

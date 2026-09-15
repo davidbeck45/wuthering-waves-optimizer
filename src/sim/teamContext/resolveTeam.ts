@@ -15,6 +15,15 @@
 // still counts as a teammate: their outro / inherent buffs are provided, sequence-node buffs assume S6
 // for a 4-star and S0 for a 5-star, and nothing gear-based. Per-action advanced overrides still
 // apply on top inside the engine, and `auto: false` is a strict passthrough (upstream behaviour).
+// Three rules added 2026-09-15 after the rotation-import audit (every one over-buffed a support):
+//   • a provider with Resonance Modes (Aemeath, Denia, Lucilla, Lynae) brings only the mode they are
+//     in — a buff bound to another mode by its `stance` or its key suffix (…FusionBurst, …TuneStrain2)
+//     is skipped;
+//   • a buff worded for "the incoming Resonator" / "the next character" is an outro handoff: when the
+//     team's actions say who follows the provider's block in the loop, only that character receives
+//     it (a team with no actions keeps the old everyone-gets-it behaviour);
+//   • a sequence-node buff is recognised by "Sequence Node N:" or "SN:" in its name (Suisui's
+//     "S2: Clouds Pour…" used to leak at S0).
 // Pure/async; no Vue. Consumers: Team Rotations pages, /my-rankings, the CLI.
 import { allEchoBuffs, allWeaponTeamBuffs, buffsByCharacter } from "../../buffs/index";
 import {
@@ -26,10 +35,13 @@ import {
 import { resolveCharactersForBuild } from "../../calculator/buildOverride";
 import { getCharByName, getCharacterRosterDisplayName } from "../../characters/characters";
 import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import { isBuffActiveForStance, resolveActiveStance } from "../../calculator/stances";
 
 interface BuffDef {
   key: string;
   name?: string;
+  details?: string;
+  stance?: string;
   imageUrl?: string;
   hasStacks?: boolean;
   maxStacks?: number;
@@ -84,6 +96,59 @@ export interface TeamLike {
   characterIds: Array<string | null>;
   buildIds?: Array<string | null>;
   enemyConfig?: Record<string, any> | null;
+  /** the team's rotation, when known: the order of its blocks says who each member hands off to */
+  actions?: Array<{ slot?: number; order?: number; type?: string; isDisabled?: boolean }> | null;
+  /** who each member hands off to after their Outro, when the import recorded it (src/sim/rankings) — preferred
+   *  over the block order, which off-field hits can blur */
+  handoffs?: Record<string, string[]> | null;
+}
+
+/** A buff worded for the one Resonator who comes in after the provider's Outro. */
+const INCOMING_RE = /incoming resonator|next character|next resonator|resonator switched onto/i;
+const SEQUENCE_RE = /^(?:Sequence Node|S)\s?(\d+):/;
+
+/** Who each member hands off to: the character whose actions follow the end of that member's block in the
+ *  loop (cyclic) — the rotation order itself, which is what an Outro's "incoming Resonator" means. Read off the
+ *  blocks rather than Outro rows because an Outro with no damage (Mornye's, Lucilla's) is no action in this app.
+ *  Empty when the actions are unknown or only one member acts, so the caller keeps the old rule. */
+export function outroRecipients(team: TeamLike): Map<string, Set<string>> {
+  const out = new Map<string, Set<string>>();
+  const ids = team.characterIds ?? [];
+  if (team.handoffs && Object.keys(team.handoffs).length) {
+    for (const [from, tos] of Object.entries(team.handoffs)) {
+      const set = new Set((tos ?? []).filter((to) => to && to !== from && ids.includes(to)));
+      if (set.size) out.set(from, set);
+    }
+    return out;
+  }
+  const acts = (team.actions ?? []).filter((a) => a && !a.isDisabled && a.slot != null).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  if (new Set(acts.map((a) => a.slot)).size < 2) return out;
+  for (let i = 0; i < acts.length; i++) {
+    const next = acts[(i + 1) % acts.length];
+    if (next.slot === acts[i].slot) continue;
+    const from = ids[acts[i].slot as number];
+    const to = ids[next.slot as number];
+    if (!from || !to || from === to) continue;
+    const set = out.get(from) ?? new Set();
+    set.add(to);
+    out.set(from, set);
+  }
+  return out;
+}
+
+/** The provider's mode and the modes a buff of theirs may be bound to instead. */
+interface ProviderMode {
+  active: string | null;
+  others: string[];
+}
+const modeRe = (stance: string): RegExp => new RegExp(`${compact(stance)}(\\d+|appliers?|shifting)?$`, "i");
+/** True when a team buff belongs to one of the provider's modes and it is not the one they are in. */
+function boundToAnotherMode(def: BuffDef, mode: ProviderMode): string | null {
+  if (!mode.active) return null;
+  if (def.stance) return isBuffActiveForStance(def, mode.active) ? null : def.stance;
+  const key = def.key.toLowerCase();
+  if (modeRe(mode.active).test(key)) return null;
+  return mode.others.find((st) => modeRe(st).test(key)) ?? null;
 }
 
 const compact = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -162,7 +227,7 @@ function entryFor(
   return entry;
 }
 
-/** Everything `provider`'s build actually brings to a teammate. */
+/** Everything `provider`'s build actually brings to `receiver`. */
 function providedBy(
   provider: string,
   providerData: Record<string, any> | undefined,
@@ -170,6 +235,10 @@ function providedBy(
   inventoryEchoes: any[],
   skipped: SkippedBuff[],
   assumedSequence: number | null,
+  mode: ProviderMode,
+  /** who the provider's Outro hands off to; null when the team's actions don't say */
+  outroTo: Set<string> | null,
+  receiver: string,
 ): Record<string, TeamBuffEntry> {
   const entries: Record<string, TeamBuffEntry> = {};
   const isSetUp = providerData !== undefined;
@@ -178,7 +247,16 @@ function providedBy(
   const chainCount = Object.values(chains).filter((node) => node?.isEnabled).length;
 
   for (const def of ((buffsByCharacter as Record<string, BuffDef[]>)[provider] ?? []) as BuffDef[]) {
-    const requirement = /^Sequence Node (\d+):/.exec(def.name ?? "");
+    const other = boundToAnotherMode(def, mode);
+    if (other) {
+      skipped.push({ key: def.key, from: provider, reason: `${other} mode; ${provider} is in ${mode.active}` });
+      continue;
+    }
+    if (outroTo && INCOMING_RE.test(def.details ?? "") && !outroTo.has(receiver)) {
+      skipped.push({ key: def.key, from: provider, reason: `outro handoff goes to ${[...outroTo].join(" / ")}` });
+      continue;
+    }
+    const requirement = SEQUENCE_RE.exec(def.name ?? "");
     if (requirement) {
       const needed = Number(requirement[1]);
       const owned = !isSetUp
@@ -194,10 +272,16 @@ function providedBy(
     entries[def.key] = entryFor(provider, def, providerData, providerStats);
   }
 
+  const handoffElsewhere = (def: BuffDef): boolean => {
+    if (!outroTo || !INCOMING_RE.test(def.details ?? "") || outroTo.has(receiver)) return false;
+    skipped.push({ key: def.key, from: provider, reason: `outro handoff goes to ${[...outroTo].join(" / ")}` });
+    return true;
+  };
   const weapon: string | null = providerData.weapon ?? null;
   for (const def of allWeaponTeamBuffs as BuffDef[]) {
     const weaponKey = basename(def.imageUrl) ?? compact(def.name ?? "");
     if (weapon && (weaponKey === weapon || compact(weaponKey) === compact(weapon))) {
+      if (handoffElsewhere(def)) continue;
       entries[def.key] = {
         ...entryFor(provider, def, providerData, providerStats),
         refinement: providerData.weapons?.[weapon]?.refinement ?? 1,
@@ -214,9 +298,9 @@ function providedBy(
     const name = basename(url);
     if (!name) continue;
     if (url.includes("/echoes/sets/")) {
-      if ((setCounts[name] ?? 0) >= 5) entries[def.key] = entryFor(provider, def, providerData, providerStats);
+      if ((setCounts[name] ?? 0) >= 5 && !handoffElsewhere(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
     } else if (mainEcho && (name === mainEcho || compact(name) === compact(mainEcho))) {
-      entries[def.key] = entryFor(provider, def, providerData, providerStats);
+      if (!handoffElsewhere(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
     }
   }
   return entries;
@@ -295,6 +379,24 @@ export async function resolveTeamCharacters(
     }
   };
 
+  // the mode each provider is in (their stored stance, else the app's default for the kit) and their Outro handoffs
+  const modeCache = new Map<string, Promise<ProviderMode>>();
+  const modeOf = (id: string): Promise<ProviderMode> => {
+    let cached = modeCache.get(id);
+    if (!cached) {
+      cached = getCharByName(id)
+        .then((chosen: any) => {
+          const stances: string[] | undefined = chosen?.basic?.stances;
+          const active = resolveActiveStance(stances, resolved[id]?.activeStance, resolved[id]?.buffs ?? null);
+          return { active, others: (stances ?? []).filter((st) => st !== active) };
+        })
+        .catch(() => ({ active: null, others: [] }));
+      modeCache.set(id, cached);
+    }
+    return cached;
+  };
+  const handoffs = outroRecipients(team);
+
   const out: Record<string, any> = { ...resolved };
   for (const slotInfo of slots) {
     const data = resolved[slotInfo.characterId];
@@ -311,7 +413,10 @@ export async function resolveTeamCharacters(
     for (const teammate of slotInfo.teammates) {
       Object.assign(
         buffs,
-        providedBy(teammate, resolved[teammate], await statsOf(teammate), inventoryEchoes, slotInfo.skipped, await assumedSequenceOf(teammate)),
+        providedBy(
+          teammate, resolved[teammate], await statsOf(teammate), inventoryEchoes, slotInfo.skipped, await assumedSequenceOf(teammate),
+          await modeOf(teammate), handoffs.get(teammate) ?? null, slotInfo.characterId,
+        ),
       );
     }
     slotInfo.enabled = Object.keys(buffs);
