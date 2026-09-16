@@ -12,6 +12,13 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-16",
+    dateLabel: "September 16, 2026",
+    items: [
+      "Fixes Mornye's S6, moves it from Vulnerability to DMG Bonus",
+    ],
+  },
+  {
     date: "2026-09-14",
     dateLabel: "September 14, 2026",
     items: [
