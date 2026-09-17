@@ -1,11 +1,11 @@
 [
  {
   "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Luuk Herssen: 206,434 DPR for Sanhua of 4,840,241 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Luuk Herssen: 207,859 DPR for Sanhua of 4,942,922 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Luuk Herssen: 206,434 DPR for Sanhua of 4,840,241 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Mornye + Luuk Herssen: 207,859 DPR for Sanhua of 4,942,922 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -77,12 +77,12 @@
   }
  },
  {
-  "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Brant · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Mornye + Brant: 198,108 DPR for Sanhua of 4,062,498 team. Sequence procs in the loop: none.",
+  "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Mornye + Suoming: 198,026 DPR for Sanhua of 7,207,959 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Brant · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Mornye + Brant: 198,108 DPR for Sanhua of 4,062,498 team. Sequence procs in the loop: none.",
+   "name": "Sanhua S6 Emerald of Genesis R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Mornye + Suoming: 198,026 DPR for Sanhua of 7,207,959 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

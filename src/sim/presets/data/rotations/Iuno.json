@@ -1,11 +1,11 @@
 [
  {
   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,564,320 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,563,791 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,564,320 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,563,791 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -142,11 +142,11 @@
  },
  {
   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,539,346 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,536,488 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,539,346 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,536,488 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -293,11 +293,11 @@
  },
  {
   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,573,189 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,571,407 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,573,189 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,571,407 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -401,12 +401,12 @@
   }
  },
  {
-  "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 6,727,548 team. Sequence procs in the loop: none.",
+  "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 5,590,245 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 6,727,548 team. Sequence procs in the loop: none.",
+   "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 5,590,245 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

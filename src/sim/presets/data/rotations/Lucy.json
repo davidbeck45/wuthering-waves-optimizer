@@ -1,11 +1,11 @@
 [
  {
   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,526,732 DPR for Lucy of 8,710,529 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,759,083 DPR for Lucy of 8,937,616 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,526,732 DPR for Lucy of 8,710,529 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,759,083 DPR for Lucy of 8,937,616 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
    "actions": [
     {
      "order": 1,
@@ -81,6 +81,14 @@
     },
     {
      "order": 10,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
      "key": "ResonanceSkillDeadlockDMG",
      "type": "skill",
      "count": 1,
@@ -88,7 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 12,
      "key": "BasicAttackThreadShreddingStage2DMG",
      "type": "basic",
      "count": 1,
@@ -96,7 +104,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "BasicAttackThreadShreddingStage3DMG",
      "type": "basic",
      "count": 1,
@@ -104,7 +112,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "BasicAttackThreadShreddingStage4DMG",
      "type": "basic",
      "count": 1,
@@ -112,7 +120,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "HeavyAttackDualThreadingDMG",
      "type": "basic",
      "count": 1,
@@ -120,17 +128,9 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 16,
      "key": "HeavyAttackMultithreadingDMG",
      "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "HackResponseDataCrashDMG",
-     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -173,6 +173,22 @@
      "order": 21,
      "key": "SpoofingProgramCrippleMovementDMG",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HeavyAttack1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "HeavyAttack2DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -182,11 +198,200 @@
  },
  {
   "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 5,790,277 DPR for Lucy of 7,842,016 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,590,743 DPR for Lucy of 8,239,545 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 5,790,277 DPR for Lucy of 7,842,016 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,590,743 DPR for Lucy of 8,239,545 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "IntroSkillOutdatedHallucination",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceSkillPayloadChargeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ResonanceSkillPayloadFollowUpAttackDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ResonanceSkillPulseInterferenceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SequenceNode2TheBlackwallthePasttheEscape",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ResonanceSkillDeadlockDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackThreadShreddingStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackThreadShreddingStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackThreadShreddingStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "HeavyAttackDualThreadingDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "HeavyAttackMultithreadingDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "ResonanceLiberationOldNetDeepDiveOverrideDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SpoofingProgramPingDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "SpoofingProgramSynapseBurnoutDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SpoofingProgramCrippleMovementDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "HeavyAttack1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HeavyAttack2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lucy S6 Spectral Trigger R5 · Mornye + Mortefi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Mortefi (main DPS): 5,290,332 DPR for Lucy of 6,114,522 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Mortefi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Mortefi (main DPS): 5,290,332 DPR for Lucy of 6,114,522 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
    "actions": [
     {
      "order": 1,
@@ -302,6 +507,14 @@
     },
     {
      "order": 15,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
      "key": "HeavyAttackMultithreadingDMG",
      "type": "basic",
      "count": 1,
@@ -309,7 +522,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 17,
      "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -319,7 +532,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 17,
+     "order": 18,
      "key": "ResonanceLiberationOldNetDeepDiveOverrideDMG",
      "type": "liberation",
      "count": 1,
@@ -327,7 +540,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 19,
      "key": "SpoofingProgramPingDMG",
      "type": "liberation",
      "count": 1,
@@ -335,7 +548,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 20,
      "key": "SpoofingProgramSynapseBurnoutDMG",
      "type": "liberation",
      "count": 1,
@@ -343,9 +556,25 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 21,
      "key": "SpoofingProgramCrippleMovementDMG",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HeavyAttack1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "HeavyAttack2DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -354,12 +583,12 @@
   }
  },
  {
-  "name": "Lucy S6 Spectral Trigger R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,588,795 DPR for Lucy of 7,286,903 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "name": "Lucy S6 Spectral Trigger R1 · Mornye + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,450,464 DPR for Lucy of 4,210,562 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,588,795 DPR for Lucy of 7,286,903 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "name": "Lucy S6 Spectral Trigger R1 · Mornye + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,450,464 DPR for Lucy of 4,210,562 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
    "actions": [
     {
      "order": 1,
@@ -530,20 +759,44 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HeavyAttack1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "HeavyAttack2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
-  "name": "Lucy S6 Spectral Trigger R5 · Verina + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Verina + Rebecca (main DPS): 3,981,326 DPR for Lucy of 4,542,229 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "name": "Lucy S6 Spectral Trigger R1 · Verina + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Verina + Rebecca (main DPS): 3,132,654 DPR for Lucy of 3,751,944 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucy S6 Spectral Trigger R5 · Verina + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Verina + Rebecca (main DPS): 3,981,326 DPR for Lucy of 4,542,229 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "name": "Lucy S6 Spectral Trigger R1 · Verina + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Verina + Rebecca (main DPS): 3,132,654 DPR for Lucy of 3,751,944 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
    "actions": [
     {
      "order": 1,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "IntroSkillOutdatedHallucination",
      "type": "intro",
      "count": 1,
@@ -551,7 +804,7 @@
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "BasicAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -559,7 +812,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -567,17 +820,9 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "BasicAttackStage4DMG",
      "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "HackResponseDataCrashDMG",
-     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -700,6 +945,30 @@
      "order": 20,
      "key": "SpoofingProgramCrippleMovementDMG",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "HackResponseDataCrashDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HeavyAttack1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "HeavyAttack2DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false

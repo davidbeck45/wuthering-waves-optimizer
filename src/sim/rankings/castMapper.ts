@@ -535,7 +535,8 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
       continue;
     }
     if (!c.mv) { report.skipped.push(`${nm} (0 MV)`); continue; }
-    if (nm.includes("(Cancelled)") || nm === "Echo - Stay tuned" || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
+    // "Echo - Stay tuned" is an unreleased 4-cost echo the app has no entry for; Riley names its forms "Stay tuned 4c" / "Stay tuned 4c (Hsin)" since 2026-09-17
+    if (nm.includes("(Cancelled)") || nm.startsWith("Echo - Stay tuned") || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
     let hit: MatchHit = null;
     let how = "";
     let count = c.count;

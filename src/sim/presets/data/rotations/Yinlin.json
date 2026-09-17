@@ -1,17 +1,17 @@
 [
  {
   "name": "Yinlin S6 Stringmaster R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 882,685 DPR for Yinlin of 3,900,594 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 878,265 DPR for Yinlin of 3,933,498 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S6 Stringmaster R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 882,685 DPR for Yinlin of 3,900,594 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 878,265 DPR for Yinlin of 3,933,498 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
    "actions": [
     {
      "order": 1,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 10,
+     "count": 11,
      "buffs": [],
      "isDisabled": false
     },
@@ -155,7 +155,7 @@
      "order": 19,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 8,
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     },
@@ -173,7 +173,7 @@
      "order": 21,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 8,
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     }
@@ -182,11 +182,11 @@
  },
  {
   "name": "Yinlin S6 Stringmaster R5 · Mornye + Xiangli Yao · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 855,911 DPR for Yinlin of 4,744,603 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 855,911 DPR for Yinlin of 4,745,991 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S6 Stringmaster R5 · Mornye + Xiangli Yao · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 855,911 DPR for Yinlin of 4,744,603 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 855,911 DPR for Yinlin of 4,745,991 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
    "actions": [
     {
      "order": 1,
@@ -362,18 +362,18 @@
   }
  },
  {
-  "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Xiangli Yao · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 731,813 DPR for Yinlin of 4,232,943 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 790,154 DPR for Yinlin of 3,320,484 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Xiangli Yao · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 731,813 DPR for Yinlin of 4,232,943 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 790,154 DPR for Yinlin of 3,320,484 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
    "actions": [
     {
      "order": 1,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 4,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
@@ -525,7 +525,7 @@
      "order": 20,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 13,
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     },
@@ -543,7 +543,7 @@
      "order": 22,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 13,
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     }
@@ -551,12 +551,137 @@
   }
  },
  {
-  "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 329,835 DPR for Yinlin of 2,389,481 team. Sequence procs in the loop: none.",
+  "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 327,877 DPR for Yinlin of 2,138,366 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 329,835 DPR for Yinlin of 2,389,481 team. Sequence procs in the loop: none.",
+   "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 327,877 DPR for Yinlin of 2,138,366 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RagingStorm",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MagneticRoarDamage",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ThunderingWrath",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Part1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Part2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "Part3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Part4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElectromagneticBlastDamage",
+     "type": "skill",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LightningExecutionDamage",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChameleonCipherDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "NightmareTempestMephisDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareTempestMephis",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 315,422 DPR for Yinlin of 2,063,466 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 315,422 DPR for Yinlin of 2,063,466 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -576,6 +701,14 @@
     },
     {
      "order": 3,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
      "key": "MagneticRoarDamage",
      "type": "skill",
      "count": 1,
@@ -583,7 +716,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "ThunderingWrath",
      "type": "liberation",
      "count": 1,
@@ -591,7 +724,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "Part1DMG",
      "type": "basic",
      "count": 1,
@@ -599,7 +732,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "Part2DMG",
      "type": "basic",
      "count": 1,
@@ -607,7 +740,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "Part3DMG",
      "type": "basic",
      "count": 1,
@@ -615,7 +748,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "Part4DMG",
      "type": "basic",
      "count": 1,
@@ -623,7 +756,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "ElectromagneticBlastDamage",
      "type": "skill",
      "count": 4,
@@ -631,7 +764,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 11,
      "key": "LightningExecutionDamage",
      "type": "skill",
      "count": 1,
@@ -639,7 +772,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 12,
      "key": "ChameleonCipherDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -647,15 +780,15 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 8,
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "NightmareTempestMephisDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -665,268 +798,151 @@
      "mainEchoRank": 5
     },
     {
-     "order": 14,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 8,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Yinlin S0 Stringmaster R1 · Suisui + Xiangli Yao · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Moonlit Clouds 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Xiangli Yao: 240,721 DPR for Yinlin of 2,972,630 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Yinlin S0 Stringmaster R1 · Suisui + Xiangli Yao · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Moonlit Clouds 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Xiangli Yao: 240,721 DPR for Yinlin of 2,972,630 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "RagingStorm",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "MagneticRoarDamage",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ThunderingWrath",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "Part1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Part2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "Part3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "Part4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ElectromagneticBlastDamage",
-     "type": "skill",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "LightningExecutionDamage",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ChameleonCipherDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 13,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 14,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 13,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Xiangli Yao · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Moonlit Clouds 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 218,515 DPR for Yinlin of 3,025,371 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Xiangli Yao · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Moonlit Clouds 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 218,515 DPR for Yinlin of 3,025,371 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "RagingStorm",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "MagneticRoarDamage",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ThunderingWrath",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Part1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "Part2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "Part3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "Part4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ElectromagneticBlastDamage",
-     "type": "skill",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "LightningExecutionDamage",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ChameleonCipherDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "JudgmentStrikeDMG",
-     "type": "forteCircuit",
-     "count": 13,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    },
-    {
      "order": 15,
      "key": "JudgmentStrikeDMG",
      "type": "forteCircuit",
-     "count": 13,
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Yinlin S0 Stringmaster R1 · Verina + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Verina + Jinhsi: 292,630 DPR for Yinlin of 1,936,703 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Yinlin S0 Stringmaster R1 · Verina + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Verina + Jinhsi: 292,630 DPR for Yinlin of 1,936,703 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 9,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RagingStorm",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MagneticRoarDamage",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ThunderingWrath",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "Part1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Part2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "Part3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "Part4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ElectromagneticBlastDamage",
+     "type": "skill",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "LightningExecutionDamage",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ChameleonCipherDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "NightmareTempestMephisDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareTempestMephis",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "JudgmentStrikeDMG",
+     "type": "forteCircuit",
+     "count": 7,
      "buffs": [],
      "isDisabled": false
     }

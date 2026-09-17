@@ -1,11 +1,11 @@
 [
  {
   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,054 DPR for Shorekeeper of 4,050,494 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Changli · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,061 DPR for Shorekeeper of 3,931,191 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Changli: 303,054 DPR for Shorekeeper of 4,050,494 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
    "actions": [
     {
      "order": 1,
@@ -77,79 +77,12 @@
   }
  },
  {
-  "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Jingran · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+  "name": "Shorekeeper S6 Stellar Symphony R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 209,333 DPR for Shorekeeper of 6,524,301 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Jingran · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Jingran: 272,083 DPR for Shorekeeper of 8,602,556 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "OriginCalculusStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "OriginCalculusStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "OriginCalculusStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "OriginCalculusPlungingAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "DeductionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnlightenmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "DiscernmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Shorekeeper S0 Stellar Symphony R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stellar Symphony R1, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 58,958 DPR for Shorekeeper of 4,601,421 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Shorekeeper S0 Stellar Symphony R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stellar Symphony R1, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 58,958 DPR for Shorekeeper of 4,601,421 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+   "name": "Shorekeeper S6 Stellar Symphony R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 209,333 DPR for Shorekeeper of 6,524,301 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
    "actions": [
     {
      "order": 1,
@@ -216,6 +149,73 @@
      "isDisabled": false,
      "mainEcho": "FallacyOfNoReturn",
      "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shorekeeper S6 Stellar Symphony R5 · Rebecca + Jingran · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Rebecca + Jingran: 207,261 DPR for Shorekeeper of 8,066,217 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Shorekeeper S6 Stellar Symphony R5 · Rebecca + Jingran · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Halo of Starry Radiance 5pc, main stats 43311 HP ER ER hp hp. Team: Rebecca + Jingran: 207,261 DPR for Shorekeeper of 8,066,217 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "OriginCalculusStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "OriginCalculusStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "OriginCalculusStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "OriginCalculusPlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "DeductionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "EnlightenmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "DiscernmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

@@ -1,11 +1,11 @@
 [
  {
-  "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 9,385,861 DPR for Sigrika of 11,498,363 team. Sequence procs in the loop: none.",
+  "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,640,632 DPR for Sigrika of 9,535,260 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 9,385,861 DPR for Sigrika of 11,498,363 team. Sequence procs in the loop: none.",
+   "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,640,632 DPR for Sigrika of 9,535,260 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -181,12 +181,12 @@
   }
  },
  {
-  "name": "Sigrika S6 Solsworn Ciphers R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Qiuyuan + Lucilla (main DPS): 8,313,703 DPR for Sigrika of 11,004,792 team. Sequence procs in the loop: none.",
+  "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Lucilla (main DPS): 8,617,583 DPR for Sigrika of 10,257,866 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Sigrika S6 Solsworn Ciphers R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Qiuyuan + Lucilla (main DPS): 8,313,703 DPR for Sigrika of 11,004,792 team. Sequence procs in the loop: none.",
+   "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Lucilla (main DPS): 8,617,583 DPR for Sigrika of 10,257,866 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

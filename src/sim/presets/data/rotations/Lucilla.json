@@ -1,11 +1,11 @@
 [
  {
   "name": "Lucilla S6 Freeze Frame R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 44111 CD CD atk atk atk. Team: Suisui + Qiuyuan: 2,269,751 DPR for Lucilla of 5,443,330 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,268,662 DPR for Lucilla of 5,440,654 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucilla S6 Freeze Frame R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 44111 CD CD atk atk atk. Team: Suisui + Qiuyuan: 2,269,751 DPR for Lucilla of 5,443,330 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,268,662 DPR for Lucilla of 5,440,654 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -103,11 +103,11 @@
  },
  {
   "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 44111 CD CD atk atk atk. Team: Mornye + Qiuyuan: 2,085,352 DPR for Lucilla of 6,009,685 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,084,669 DPR for Lucilla of 6,024,784 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 44111 CD CD atk atk atk. Team: Mornye + Qiuyuan: 2,085,352 DPR for Lucilla of 6,009,685 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,084,669 DPR for Lucilla of 6,024,784 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -205,11 +205,11 @@
  },
  {
   "name": "Lucilla S6 Freeze Frame R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,058,420 DPR for Lucilla of 8,593,381 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,060,902 DPR for Lucilla of 8,616,118 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucilla S6 Freeze Frame R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,058,420 DPR for Lucilla of 8,593,381 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,060,902 DPR for Lucilla of 8,616,118 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 4 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -230,12 +230,12 @@
     },
     {
      "order": 3,
-     "key": "BellBorneGeocheloneActivation",
+     "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "BellBorneGeochelone",
+     "mainEcho": "FallacyOfNoReturn",
      "mainEchoRank": 5
     },
     {
@@ -306,12 +306,12 @@
   }
  },
  {
-  "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 404,796 DPR for Lucilla of 7,563,642 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 404,667 DPR for Lucilla of 6,377,844 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 404,796 DPR for Lucilla of 7,563,642 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 404,667 DPR for Lucilla of 6,377,844 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Phantom Frame = PhantomFrameDMG × 1.08. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,

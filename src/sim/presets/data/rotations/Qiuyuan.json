@@ -1,11 +1,11 @@
 [
  {
   "name": "Qiuyuan S6 Emerald Sentence R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 3,690,104 DPR for Qiuyuan of 5,543,552 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 3,689,077 DPR for Qiuyuan of 5,502,930 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Qiuyuan S6 Emerald Sentence R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 3,690,104 DPR for Qiuyuan of 5,543,552 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 3,689,077 DPR for Qiuyuan of 5,502,930 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
    "actions": [
     {
      "order": 1,
@@ -157,12 +157,113 @@
   }
  },
  {
+  "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK Aero atk atk. Team: Phrolova + Lynae: 845,183 DPR for Qiuyuan of 5,828,446 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK Aero atk atk. Team: Phrolova + Lynae: 845,183 DPR for Qiuyuan of 5,828,446 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "AttacktheMustDefendDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ThusSpoketheBladeInkwashStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ThusSpoketheBladeInkwashStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "ThroughtheGrovesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ThusSpoketheBladeToTeachDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ThusSpoketheBladeToSaveDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ThusSpoketheBladeToSacrificeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SequenceNode6ThusIHeardThusISawThusISpoke",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SunderingStrikeDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "StrikeBeforeReadyDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
   "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Lucilla: 911,882 DPR for Qiuyuan of 8,016,693 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Lucilla: 807,298 DPR for Qiuyuan of 8,075,723 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Lucilla: 911,882 DPR for Qiuyuan of 8,016,693 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Lucilla: 807,298 DPR for Qiuyuan of 8,075,723 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
    "actions": [
     {
      "order": 1,
@@ -190,12 +291,12 @@
     },
     {
      "order": 4,
-     "key": "ReminiscenceFenricoDMG",
+     "key": "BellBorneGeocheloneActivation",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "ReminiscenceFenrico",
+     "mainEcho": "BellBorneGeochelone",
      "mainEchoRank": 5
     },
     {
@@ -258,113 +359,12 @@
   }
  },
  {
-  "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Shorekeeper: 848,865 DPR for Qiuyuan of 6,510,963 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
+  "name": "Qiuyuan S0 Emerald Sentence R1 · Shorekeeper + Phrolova · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Phrolova (main DPS): 677,333 DPR for Qiuyuan of 3,944,267 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Qiuyuan S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico, main stats 43311 CD Aero Aero atk atk. Team: Phrolova + Shorekeeper: 848,865 DPR for Qiuyuan of 6,510,963 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6).",
-   "actions": [
-    {
-     "order": 1,
-     "key": "AttacktheMustDefendDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ThusSpoketheBladeInkwashStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ThusSpoketheBladeInkwashStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ReminiscenceFenricoDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceFenrico",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 5,
-     "key": "SunderingStrikeDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ThroughtheGrovesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ThusSpoketheBladeToTeachDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "ThusSpoketheBladeToSaveDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ThusSpoketheBladeToSacrificeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SequenceNode6ThusIHeardThusISawThusISpoke",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "StrikeBeforeReadyDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Qiuyuan S0 Emerald Sentence R1 · Shorekeeper + Phrolova · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Phrolova (main DPS): 677,594 DPR for Qiuyuan of 4,668,101 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Qiuyuan S0 Emerald Sentence R1 · Shorekeeper + Phrolova · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Phrolova (main DPS): 677,594 DPR for Qiuyuan of 4,668,101 team. Sequence procs in the loop: none.",
+   "name": "Qiuyuan S0 Emerald Sentence R1 · Shorekeeper + Phrolova · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Shorekeeper + Phrolova (main DPS): 677,333 DPR for Qiuyuan of 3,944,267 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -540,12 +540,12 @@
   }
  },
  {
-  "name": "Qiuyuan S0 Emerald Sentence R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CR Aero Aero atk atk. Team: Phrolova + Shorekeeper: 294,876 DPR for Qiuyuan of 4,601,421 team. Sequence procs in the loop: none.",
+  "name": "Qiuyuan S0 Emerald Sentence R1 · Phrolova + Shorekeeper · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CR Aero Aero atk atk. Team: Phrolova + Shorekeeper: 294,760 DPR for Qiuyuan of 3,831,643 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Qiuyuan S0 Emerald Sentence R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CR Aero Aero atk atk. Team: Phrolova + Shorekeeper: 294,876 DPR for Qiuyuan of 4,601,421 team. Sequence procs in the loop: none.",
+   "name": "Qiuyuan S0 Emerald Sentence R1 · Phrolova + Shorekeeper · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 43311 CR Aero Aero atk atk. Team: Phrolova + Shorekeeper: 294,760 DPR for Qiuyuan of 3,831,643 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

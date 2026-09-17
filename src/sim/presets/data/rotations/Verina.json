@@ -1,11 +1,11 @@
 [
  {
   "name": "Verina S6 Variation R5 · Lynae + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 26,062 DPR for Verina of 3,791,689 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 26,054 DPR for Verina of 3,779,718 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S6 Variation R5 · Lynae + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 26,062 DPR for Verina of 3,791,689 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 26,054 DPR for Verina of 3,779,718 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -102,11 +102,11 @@
  },
  {
   "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,454 DPR for Verina of 5,382,583 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,499 DPR for Verina of 5,101,334 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,454 DPR for Verina of 5,382,583 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 22,499 DPR for Verina of 5,101,334 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -210,12 +210,12 @@
   }
  },
  {
-  "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 20,979 DPR for Verina of 2,740,692 team. Sequence procs in the loop: none.",
+  "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 20,429 DPR for Verina of 2,438,613 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 20,979 DPR for Verina of 2,740,692 team. Sequence procs in the loop: none.",
+   "name": "Verina S0 Variation R1 · Lynae + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Qiuyuan: 20,429 DPR for Verina of 2,438,613 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -311,12 +311,12 @@
   }
  },
  {
-  "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 18,118 DPR for Verina of 4,527,920 team. Sequence procs in the loop: none.",
+  "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 18,170 DPR for Verina of 3,549,196 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 18,118 DPR for Verina of 4,527,920 team. Sequence procs in the loop: none.",
+   "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 18,170 DPR for Verina of 3,549,196 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

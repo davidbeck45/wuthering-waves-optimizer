@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-15T03:41:44.216Z",
- "wuwaCalcCommit": "ab5a2b9",
+ "generated": "2026-09-17T17:44:01.393Z",
+ "wuwaCalcCommit": "26312d1",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -19,7 +19,7 @@
        "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 5
+     "intendedTeams": 18
     },
     {
      "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
@@ -35,7 +35,7 @@
        "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 4
+     "intendedTeams": 10
     }
    ],
    "sequences": [
@@ -79,7 +79,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -123,7 +123,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -167,7 +167,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -211,7 +211,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 0
     }
    ],
    "sequences": [
@@ -251,7 +251,7 @@
    "appKey": "Camellya",
    "loadouts": [
     {
-     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc",
+     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 1",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -260,13 +260,52 @@
       "6": {
        "kind": "loop",
        "added": [
-        "Forte Skill - Perennial (S6) ×1"
+        "Basic - Vining Waltz 1 ×2",
+        "Basic - Vining Waltz 2 ×1",
+        "Basic - Vining Waltz 3 ×1",
+        "Basic - Blazing Waltz ×1",
+        "Basic - Vining Waltz 4 ×1",
+        "Echo Placeholder (cancel) ×1",
+        "Skill - Floral Ravage (Swap) ×1",
+        "Forte Skill - Perennial (S6) (Swap) ×1"
        ],
-       "removed": [],
-       "note": "double intro: adds Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage (Swap) ×1, drops Basic - Burgeoning 4 (Hold) (Swap) ×1"
+       "removed": [
+        "Skill - Floral Ravage ×1",
+        "Echo Placeholder (swap) ×1"
+       ],
+       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo Placeholder (cancel) ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage (Swap) ×1"
       }
      },
      "intendedTeams": 2
+    },
+    {
+     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 2",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 2
+    },
+    {
+     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 3",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "kind": "loop",
+       "added": [
+        "Basic - Vining Waltz 1 ×1",
+        "Forte Skill - Perennial (S6) ×1",
+        "Skill - Floral Ravage (Swap) ×1"
+       ],
+       "removed": [
+        "Skill - Floral Ravage ×1",
+        "Echo Placeholder (swap) ×1"
+       ]
+      }
+     },
+     "intendedTeams": 1
     }
    ],
    "sequences": [
@@ -310,14 +349,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 9
     },
     {
      "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Havoc Eclipse 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 0
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -361,7 +400,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 7
     }
    ],
    "sequences": [
@@ -405,7 +444,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 10
     }
    ],
    "sequences": [
@@ -449,7 +488,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 9
+     "intendedTeams": 10
     }
    ],
    "sequences": [
@@ -493,7 +532,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 13
+     "intendedTeams": 22
     }
    ],
    "sequences": [
@@ -537,7 +576,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 7
+     "intendedTeams": 27
     }
    ],
    "sequences": [
@@ -581,7 +620,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 0
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -637,7 +676,7 @@
        "note": "opener: drops Basic - Stagecraft Form 4 ×1, Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump ×1"
       }
      },
-     "intendedTeams": 6
+     "intendedTeams": 17
     },
     {
      "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -656,7 +695,7 @@
        "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Dodge ×1"
       }
      },
-     "intendedTeams": 2
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -696,14 +735,14 @@
    "appKey": "Roverelectrofemale",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 · Heart of Sworn Vigil 5pc",
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Unspoken Rue R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 8
     },
     {
-     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Unspoken Rue R1 · Moonlit Clouds 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 · Heart of Sworn Vigil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -751,7 +790,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 0
+     "intendedTeams": 1
     }
    ],
    "sequences": [
@@ -795,7 +834,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 15
     }
    ],
    "sequences": [
@@ -848,7 +887,7 @@
        "note": "first visit: adds Forte Basic - Iai ×1; first opener: adds Forte Basic - Iai ×1"
       }
      },
-     "intendedTeams": 5
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -888,14 +927,14 @@
    "appKey": "Hsin",
    "loadouts": [
     {
-     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 5
     },
     {
-     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -943,7 +982,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 7
+     "intendedTeams": 13
     },
     {
      "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Abyss Surges R1 / Verity's Handle R1 · Crown of Valor 3pc + Sierra Gale 2pc",
@@ -965,7 +1004,7 @@
        ]
       }
      },
-     "intendedTeams": 3
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -1007,22 +1046,9 @@
     {
      "label": "Marcato R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
-     "loopChangesAt": [
-      2
-     ],
-     "changes": {
-      "2": {
-       "kind": "loop",
-       "added": [
-        "Skill - Calming Air: Chi Parry ×1"
-       ],
-       "removed": [
-        "Basic - Fengyiquan 1 ×1",
-        "Basic - Fengyiquan 2 ×1"
-       ]
-      }
-     },
-     "intendedTeams": 1
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -1083,7 +1109,7 @@
        "note": "start of combat (position 1): adds Forte Heavy - Stardome Meander ×1; start of combat (position 2): adds Forte Heavy - Stardome Meander ×1; start of combat (position 3): adds Forte Heavy - Stardome Meander ×1"
       }
      },
-     "intendedTeams": 6
+     "intendedTeams": 9
     }
    ],
    "sequences": [
@@ -1127,7 +1153,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 12
+     "intendedTeams": 10
     }
    ],
    "sequences": [
@@ -1171,7 +1197,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 10
     }
    ],
    "sequences": [
@@ -1215,14 +1241,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 7
+     "intendedTeams": 17
     },
     {
      "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 2
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -1266,7 +1292,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 2
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -1310,7 +1336,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 14
+     "intendedTeams": 32
     }
    ],
    "sequences": [
@@ -1354,7 +1380,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 0
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -1398,14 +1424,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 18
+     "intendedTeams": 37
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 2
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -1449,7 +1475,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 18
+     "intendedTeams": 52
     }
    ],
    "sequences": [
@@ -1493,7 +1519,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 8
+     "intendedTeams": 15
     }
    ],
    "sequences": [
@@ -1546,7 +1572,7 @@
        "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge ×2, Basic - Movement of Life and Death 1 ×1"
       }
      },
-     "intendedTeams": 12
+     "intendedTeams": 36
     }
    ],
    "sequences": [
@@ -1590,7 +1616,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -1634,7 +1660,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 8
+     "intendedTeams": 16
     },
     {
      "label": "Emerald Sentence R1 / Emerald of Genesis R1 · Law of Harmony 3pc + Sierra Gale 2pc",
@@ -1659,7 +1685,7 @@
        "note": "start of combat (position 3): adds Liberation - Sundering Strike ×1, Skill - Through the Groves ×1; intro at position 2: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Liberation - Sundering Strike ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1; intro at position 3: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1, Liberation - Sundering Strike ×1"
       }
      },
-     "intendedTeams": 3
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -1703,7 +1729,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 8
+     "intendedTeams": 21
     }
    ],
    "sequences": [
@@ -1758,7 +1784,7 @@
        "note": "opener: drops Basic - Pero, Easy 4 ×1"
       }
      },
-     "intendedTeams": 2
+     "intendedTeams": 9
     },
     {
      "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Havoc Eclipse 5pc",
@@ -1787,7 +1813,7 @@
        ]
       }
      },
-     "intendedTeams": 0
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -1842,7 +1868,7 @@
        "note": "opener: drops Forte Heavy - Detonate ×1"
       }
      },
-     "intendedTeams": 6
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -1886,7 +1912,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 44
+     "intendedTeams": 55
     }
    ],
    "sequences": [
@@ -1930,7 +1956,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -1966,50 +1992,6 @@
     }
    ]
   },
-  "Spectro Rover": {
-   "appKey": "RoverSpectroFemale",
-   "loadouts": [
-    {
-     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 · Rejuvenating Glow 5pc",
-     "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
-     "intendedTeams": 0
-    }
-   ],
-   "sequences": [
-    {
-     "level": 1,
-     "name": "Spectro Rover S1: Odyssey of Beginnings",
-     "note": ""
-    },
-    {
-     "level": 2,
-     "name": "Spectro Rover S2: Microcosmic Murmurs",
-     "note": ""
-    },
-    {
-     "level": 3,
-     "name": "Spectro Rover S3: Visages of Dust",
-     "note": ""
-    },
-    {
-     "level": 4,
-     "name": "Spectro Rover S4: Resonating Lamella",
-     "note": ""
-    },
-    {
-     "level": 5,
-     "name": "Spectro Rover S5: Temporal Virtuoso",
-     "note": ""
-    },
-    {
-     "level": 6,
-     "name": "Spectro Rover S6: Echoes of Wanderlust",
-     "note": ""
-    }
-   ]
-  },
   "Suisui": {
    "appKey": "Suisui",
    "loadouts": [
@@ -2018,7 +2000,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 9
+     "intendedTeams": 21
     }
    ],
    "sequences": [
@@ -2062,7 +2044,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 4
     },
     {
      "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Heart of Sworn Vigil 5pc",
@@ -2113,7 +2095,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -2254,7 +2236,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 2
     }
    ],
    "sequences": [
@@ -2298,7 +2280,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 2
     }
    ],
    "sequences": [

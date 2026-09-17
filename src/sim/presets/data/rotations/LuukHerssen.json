@@ -1,11 +1,11 @@
 [
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,758,879 DPR for Luuk Herssen of 11,368,137 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,076,599 DPR for Luuk Herssen of 10,549,962 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,758,879 DPR for Luuk Herssen of 11,368,137 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -145,13 +145,190 @@
     },
     {
      "order": 18,
-     "key": "TwinNovaNebulousCannonSlashDMG",
-     "type": "echoAttacks",
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "TwinNovaNebulousCannon",
-     "mainEchoRank": 5
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "GoldenRefluxDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BowtotheLastLightDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,902,021 DPR for Luuk Herssen of 10,192,841 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,902,021 DPR for Luuk Herssen of 10,192,841 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "BeforeInjectionofDawnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "AureoleofExecutionRingDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackGoldenImpaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "AureoleofExecutionBreachDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackGoldenImpaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MidairAttackStage2ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "MidairAttackStage3ScytheDissectionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "AureoleofExecutionGlareDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "GavelofEarthshakerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "IchorDepositDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "RewritteninWintersMargins",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "GoldenRefluxDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 19,

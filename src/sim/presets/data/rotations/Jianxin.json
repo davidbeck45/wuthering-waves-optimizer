@@ -1,96 +1,11 @@
 [
  {
   "name": "Jianxin S6 Marcato R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 136,119 DPR for Jianxin of 6,214,421 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 123,645 DPR for Jianxin of 5,906,354 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jianxin S6 Marcato R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 136,119 DPR for Jianxin of 6,214,421 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "EssenceofTaoSkillDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "FengyiquanStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "FengyiquanStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "FengyiquanStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "FengyiquanStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "CalmingAirChiParryDamage",
-     "type": "skill",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "PurificationForceFieldResonanceLiberationExplosionDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "PrimordialChiSpiralPushingPunchDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Jianxin S0 Marcato R1 · Mornye + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Marcato R1, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 99,443 DPR for Jianxin of 4,999,024 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Jianxin S0 Marcato R1 · Mornye + Aemeath · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Marcato R1, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 99,443 DPR for Jianxin of 4,999,024 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 123,645 DPR for Jianxin of 5,906,354 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70.",
    "actions": [
     {
      "order": 1,
@@ -142,22 +57,6 @@
     },
     {
      "order": 7,
-     "key": "FengyiquanStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "FengyiquanStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "PurificationForceFieldResonanceLiberationExplosionDamage",
      "type": "liberation",
      "count": 1,
@@ -165,7 +64,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 8,
      "key": "PrimordialChiSpiralPushingPunchDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -173,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 9,
      "key": "ImpermanenceHeronFlySmack",
      "type": "echoAttacks",
      "count": 1,

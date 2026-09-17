@@ -1,226 +1,14 @@
 [
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 2,439,176 DPR for Electro Rover of 3,832,905 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 1 Stack, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 1,744,631 DPR for Electro Rover of 3,037,122 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 2,439,176 DPR for Electro Rover of 3,832,905 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 1 Stack, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 1,744,631 DPR for Electro Rover of 3,037,122 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 1,
-     "electroRageStacks": 0
-    },
-    {
-     "order": 2,
-     "key": "ThunderousFuryDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ThunderclapDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackRepelDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "OvershockDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "UltimateTacticsDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "electroRageStacks": 2
-    },
-    {
-     "order": 20,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 27,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -230,63 +18,7 @@
      "electroRageStacks": 0
     },
     {
-     "order": 28,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 30,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 31,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 32,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 33,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 34,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 35,
+     "order": 2,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -294,20 +26,9 @@
      "isDisabled": false,
      "negativeStatusStacks": 3,
      "electroRageStacks": 0
-    }
-   ]
-  }
- },
- {
-  "name": "Electro Rover S6 Blazing Brilliance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Lynae (main DPS): 2,251,737 DPR for Electro Rover of 4,046,094 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Electro Rover S6 Blazing Brilliance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Lynae (main DPS): 2,251,737 DPR for Electro Rover of 4,046,094 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks.",
-   "actions": [
+    },
     {
-     "order": 1,
+     "order": 3,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -317,7 +38,7 @@
      "electroRageStacks": 0
     },
     {
-     "order": 2,
+     "order": 4,
      "key": "ThunderousFuryDMG",
      "type": "intro",
      "count": 1,
@@ -325,7 +46,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 5,
      "key": "BasicAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -333,7 +54,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 6,
      "key": "BasicAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -341,7 +62,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 7,
      "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -349,7 +70,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 8,
      "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
@@ -357,7 +78,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 9,
      "key": "ThunderclapDMG",
      "type": "skill",
      "count": 1,
@@ -365,7 +86,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 10,
      "key": "BasicAttackRepelDMG",
      "type": "skill",
      "count": 1,
@@ -373,7 +94,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 11,
      "key": "OvershockDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -381,7 +102,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 12,
      "key": "UltimateTacticsDMG",
      "type": "liberation",
      "count": 1,
@@ -389,24 +110,8 @@
      "isDisabled": false
     },
     {
-     "order": 11,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 13,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
+     "key": "ThrumOfAllSoundsSpectroStage1DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -414,88 +119,6 @@
     },
     {
      "order": 14,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10,
-     "electroRageStacks": 5
-    },
-    {
-     "order": 20,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
      "key": "ThrumOfAllSoundsSpectroStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -503,7 +126,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 15,
      "key": "ThrumOfAllSoundsSpectroStage3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -511,57 +134,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 5,
-     "electroRageStacks": 0
-    },
-    {
-     "order": 28,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 30,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 31,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 32,
+     "order": 16,
      "key": "ThunderBaneDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -569,15 +142,31 @@
      "isDisabled": false
     },
     {
-     "order": 33,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
+     "order": 17,
+     "key": "ThrumOfAllSoundsHavocStage1DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 34,
+     "order": 18,
+     "key": "ThrumOfAllSoundsHavocStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ThrumOfAllSoundsHavocStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
      "key": "ThunderBaneDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -585,230 +174,52 @@
      "isDisabled": false
     },
     {
-     "order": 35,
+     "order": 21,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 2,
-     "electroRageStacks": 0
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 2
+    },
+    {
+     "order": 22,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "ThrumOfAllSoundsSilencingBladeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
-  "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 1,518,791 DPR for Electro Rover of 2,413,458 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks.",
+  "name": "Electro Rover S6 Blazing Brilliance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 1,614,531 DPR for Electro Rover of 3,266,514 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 1,518,791 DPR for Electro Rover of 2,413,458 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks.",
+   "name": "Electro Rover S6 Blazing Brilliance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 1,614,531 DPR for Electro Rover of 3,266,514 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "ThunderousFuryDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BasicAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ThunderclapDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackRepelDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "OvershockDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "UltimateTacticsDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10,
-     "electroRageStacks": 5
-    },
-    {
-     "order": 19,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -818,63 +229,7 @@
      "electroRageStacks": 0
     },
     {
-     "order": 27,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 28,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 30,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 31,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 32,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 33,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 34,
+     "order": 2,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -882,6 +237,397 @@
      "isDisabled": false,
      "negativeStatusStacks": 2,
      "electroRageStacks": 0
+    },
+    {
+     "order": 3,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 1,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 4,
+     "key": "ThunderousFuryDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ThunderclapDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackRepelDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "OvershockDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "UltimateTacticsDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ThrumOfAllSoundsSpectroStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ThrumOfAllSoundsSpectroStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ThrumOfAllSoundsSpectroStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ThrumOfAllSoundsHavocStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ThrumOfAllSoundsHavocStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ThrumOfAllSoundsHavocStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10,
+     "electroRageStacks": 5
+    },
+    {
+     "order": 22,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "ThrumOfAllSoundsSilencingBladeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Electro Rover S6 Blazing Brilliance R5 · Verina + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Verina + Lynae (main DPS): 1,155,892 DPR for Electro Rover of 2,045,700 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Electro Rover S6 Blazing Brilliance R5 · Verina + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Verina + Lynae (main DPS): 1,155,892 DPR for Electro Rover of 2,045,700 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 1 Stack, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 5,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 2,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 2,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 3,
+     "key": "ThunderousFuryDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 1,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ThunderclapDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackRepelDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "OvershockDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "UltimateTacticsDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ThrumOfAllSoundsSpectroStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ThrumOfAllSoundsSpectroStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ThrumOfAllSoundsSpectroStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ThrumOfAllSoundsHavocStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ThrumOfAllSoundsHavocStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ThrumOfAllSoundsHavocStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10,
+     "electroRageStacks": 5
+    },
+    {
+     "order": 22,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "ThrumOfAllSoundsSilencingBladeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "ThunderBaneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

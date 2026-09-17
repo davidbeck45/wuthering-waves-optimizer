@@ -1,11 +1,11 @@
 [
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,128 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,635 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Lynae (main DPS): 2,988,215 DPR for Jiyan of 4,658,128 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -128,11 +128,11 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,008,260 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,014,247 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,875,771 DPR for Jiyan of 4,008,260 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -254,12 +254,131 @@
   }
  },
  {
-  "name": "Jiyan S6 Verdant Summit R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none.",
+  "name": "Jiyan S6 Verdant Summit R5 · Suisui + Ciaccona · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Ciaccona (main DPS): 2,387,599 DPR for Jiyan of 3,425,590 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Jiyan S6 Verdant Summit R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Lynae (main DPS): 2,512,304 DPR for Jiyan of 3,737,014 team. Sequence procs in the loop: none.",
+   "name": "Jiyan S6 Verdant Summit R5 · Suisui + Ciaccona · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 44111 CR CD atk atk atk. Team: Suisui + Ciaccona (main DPS): 2,387,599 DPR for Jiyan of 3,425,590 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EmeraldStormFinaleDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Windqueller",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 13,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jiyan S6 Verdant Summit R1 · Suisui + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,591 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jiyan S6 Verdant Summit R1 · Suisui + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,591 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
