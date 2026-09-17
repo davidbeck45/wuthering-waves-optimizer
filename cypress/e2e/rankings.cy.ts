@@ -154,16 +154,17 @@ describe("wuwa_calc rankings: My account tier (Wuthering Tools+)", () => {
     cy.location("hash", { timeout: 60000 }).should("include", "tc=mine").and("include", "r=Cartethyia");
     cy.get("[data-test-rankings-account-summary]").should("contain.text", "1 of 1 set up");
     cy.get(".skittle-root #cost", { timeout: 60000 }).should("have.value", "mine");
-    // only Cartethyia is set up; 4-stars and Rover forms count as owned, so exactly one of her six
-    // intended teams is fieldable (Aero Rover + Sanhua + Cartethyia), at her S2 R1. Lifting
-    // "Teams I can field" lists the other five with their unowned limited members at S0R1.
+    // only Cartethyia is set up; 4-stars and Rover forms count as owned, so exactly one of her ten
+    // primary teams (one per interchangeable-support group, Riley's roster of 2026-09-17) is
+    // fieldable (Aero Rover + Sanhua + Cartethyia), at her S2 R1. Lifting "Teams I can field"
+    // lists the other nine with their unowned limited members at S0R1.
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S2R1").and("contain.text", "Sanhua");
     cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)").should("have.length", 1);
     cy.get("[data-test-rankings-owned-only]").uncheck();
     cy.location("hash", { timeout: 60000 }).should("include", "own=0");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
-    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)", { timeout: 180000 }).should("have.length", 6);
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)", { timeout: 180000 }).should("have.length", 10);
     cy.get(".skittle-root .tgrid").should("contain.text", "Ciaccona");
     // back to Riley's tiers: the cost falls back to his default and the owned filter is dropped
     cy.get("[data-test-rankings-riley]").click();
