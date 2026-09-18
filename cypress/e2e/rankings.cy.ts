@@ -227,7 +227,11 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     cy.get(".skittle-root .trow:not(.thead):not(.tghost) .gotodetail[data-team]", { timeout: 60000 }).first().click();
     cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("exist").click({ force: true });
     cy.get(".skittle-root #topbar .wt-import[data-test-rankings-import-done]", { timeout: 60000 }).should("exist");
-    cy.get("#backLink").click({ force: true }); // the import's success toast overlaps the Back link
+    // the import's success toast lives in a top-layer dialog (ToastContainer) that covers the Back link and, on
+    // CI's viewport, the account bar's Sync button too — cy.click() refuses a covered element. It dismisses
+    // itself after 4 s (useToast DEFAULT_DURATION); wait it out rather than click through it
+    cy.get(".toast .alert-success", { timeout: 15000 }).should("not.exist");
+    cy.get("#backLink").click();
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     // the sync re-imports it at the same state: same actions, so "unchanged"; the team count does not grow
     cy.get("[data-test-rankings-sync]").click();
