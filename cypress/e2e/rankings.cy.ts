@@ -242,6 +242,8 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
       expect(store.teams ?? []).to.have.length(1);
       expect(store.teams![0].actions.length).to.be.greaterThan(5);
     });
+    // the sync's own toast covers the report's Close button on CI's viewport the same way: let it go first
+    cy.get(".toast .alert", { timeout: 20000 }).should("not.exist");
     cy.get("[data-test-rankings-sync-close]").click();
     cy.get("[data-test-rankings-sync-report]").should("not.exist");
   });
