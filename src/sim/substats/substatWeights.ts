@@ -1,7 +1,10 @@
 // Wuthering Tools+: substat weights — what one more roll of each substat is worth on a build, as the
 // app's own engine scores it. "Current build + buffs": the character's real echoes, weapon, chains and
 // buffs on a rotation, then the same rotation with one roll of Crit Rate / Crit DMG / ATK% / … added, and
-// the relative gain of each. The roll is placed on an equipped echo in a *clone* of the data (the store
+// the relative gain of each. Four sizes of "one roll" per substat: the expected roll (the tiers weighted
+// by how often they land — an average, not always a tier the game can show), the median tier (a real
+// tier: half of all rolls land on it or lower), the best tier, and one tier step (what an existing line
+// gains from going up a tier). The roll is placed on an equipped echo in a *clone* of the data (the store
 // and the export are never touched), so it goes through `getEchoStats` exactly like a real substat —
 // per-action `excludeEchoes` flags, HP/DEF scalers and the crit cap all behave; no engine change.
 // The scorer is pluggable: a character rotation (the /my-rankings number), or a team rotation with the
@@ -118,6 +121,34 @@ export function expectedRoll(key: SubstatKey): number {
   if (tiers.length !== weights.length) return tiers.reduce((a, b) => a + b, 0) / (tiers.length || 1);
   const total = weights.reduce((a, b) => a + b, 0);
   return tiers.reduce((sum, tier, i) => sum + tier * weights[i], 0) / total;
+}
+
+/**
+ * The median tier of a substat: the first tier at which the odds of landing there or lower reach one half.
+ * Unlike the expectation it is always a value the game can roll (flat ATK: 40, where the expectation is 44).
+ */
+export function medianRoll(key: SubstatKey): number {
+  const tiers = rollTiers(key);
+  const weights = TIER_WEIGHTS[key];
+  if (!tiers.length) return 0;
+  if (tiers.length !== weights.length) return tiers[Math.floor((tiers.length - 1) / 2)];
+  const total = weights.reduce((a, b) => a + b, 0);
+  let cumulative = 0;
+  for (let i = 0; i < tiers.length; i++) {
+    cumulative += weights[i];
+    if (cumulative * 2 >= total) return tiers[i];
+  }
+  return tiers[tiers.length - 1];
+}
+
+/**
+ * One tier step of a substat: the distance between two neighbouring tiers (Crit Rate 0.6, Crit DMG 1.2,
+ * flat ATK 10). The tables that are not evenly spaced (ATK % runs 6.4, 7.1, 7.9, …) get the average step.
+ */
+export function tierStep(key: SubstatKey): number {
+  const tiers = rollTiers(key);
+  if (tiers.length < 2) return 0;
+  return (tiers[tiers.length - 1] - tiers[0]) / (tiers.length - 1);
 }
 
 const SUB_FIELDS = [1, 2, 3, 4, 5] as const;
@@ -307,10 +338,18 @@ export interface SubstatWeight {
   avgDamage: number;
   /** relative gain of one expected roll, e.g. 0.021 for +2.1 % */
   gain: number;
+  /** the same for the median tier (a real tier, half of all rolls land on it or lower) */
+  medianRoll: number;
+  medianAvgDamage: number;
+  medianGain: number;
   /** the same for the best tier */
   maxRoll: number;
   maxAvgDamage: number;
   maxGain: number;
+  /** the same for one tier step — what an existing line is worth going up one tier */
+  step: number;
+  stepAvgDamage: number;
+  stepGain: number;
   /** gain per unit of the stat (per 1 % or per 1 flat point), from the expected roll */
   perPoint: number;
   /** gain relative to the best substat's: 1 = the one to look for, 0 = does nothing */
@@ -331,8 +370,9 @@ export interface SubstatWeightsResult {
 const rel = (base: number, value: number): number => (base > 0 ? value / base - 1 : 0);
 
 /**
- * One more roll of every substat, scored on the build: the expected tier and the best tier, each as the
- * relative gain over the build as it is. Sorted best first; `weight` normalises to the best one.
+ * One more roll of every substat, scored on the build: the expected roll, the median tier, the best tier
+ * and one tier step, each as the relative gain over the build as it is. Sorted by the expected gain, best
+ * first; `weight` normalises it to the best substat's.
  */
 export async function substatWeights(
   characterId: string,
@@ -348,8 +388,13 @@ export async function substatWeights(
     const roll = expectedRoll(key);
     const expected = withSubstat(characterId, characters, inventoryEchoes, key, roll);
     const scored = await score(expected.characters, expected.inventoryEchoes);
-    const best = withSubstat(characterId, characters, inventoryEchoes, key, maxRoll(key));
-    const bestScored = await score(best.characters, best.inventoryEchoes);
+    const scoreWith = async (value: number): Promise<number> => {
+      const clone = withSubstat(characterId, characters, inventoryEchoes, key, value);
+      return (await score(clone.characters, clone.inventoryEchoes)).avg;
+    };
+    const medianAvgDamage = await scoreWith(medianRoll(key));
+    const maxAvgDamage = await scoreWith(maxRoll(key));
+    const stepAvgDamage = await scoreWith(tierStep(key));
     const gain = rel(base.avg, scored.avg);
     const extraGain: Record<string, number> = {};
     for (const [name, value] of Object.entries(base.extra ?? {})) extraGain[name] = rel(value, scored.extra?.[name] ?? value);
@@ -361,9 +406,15 @@ export async function substatWeights(
       roll,
       avgDamage: scored.avg,
       gain,
+      medianRoll: medianRoll(key),
+      medianAvgDamage,
+      medianGain: rel(base.avg, medianAvgDamage),
       maxRoll: maxRoll(key),
-      maxAvgDamage: bestScored.avg,
-      maxGain: rel(base.avg, bestScored.avg),
+      maxAvgDamage,
+      maxGain: rel(base.avg, maxAvgDamage),
+      step: tierStep(key),
+      stepAvgDamage,
+      stepGain: rel(base.avg, stepAvgDamage),
       perPoint: roll > 0 ? gain / roll : 0,
       weight: 0,
       extraGain,

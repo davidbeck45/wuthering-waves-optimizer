@@ -334,26 +334,33 @@ withhold `--push`. Not built: `optimize` (the workers expose nothing but `onmess
 
 "Which substat should I be looking for as I roll echoes, and how much is it worth?" — answered by the
 engine on the build as it is: the rotation is scored once, then once more with a single extra roll of
-each of the 13 substats, and the relative gain is the weight. `substatWeights.ts` is pure (no Vue, no
+each of the 13 substats, and the relative gain is the weight. Four sizes of "one roll" per substat since
+2026-09-18: the expected roll, the median tier, the best tier and one tier step (David: "44 flat ATK is
+not a roll the game can give, and what is one tier more of Crit Rate worth?"). `substatWeights.ts` is pure (no Vue, no
 stores; the app's own `calcCharacterRotationDamage` path) and reused by the `/my-rankings` **substats**
 panel (beside "what if…", scored on the same best rotation, runs on open) and by `ww weights`.
 
 | Piece | What it does |
 |---|---|
 | `withSubstat(id, characters, echoes, key, value)` | a clone with `value` more of `key` **on an equipped echo**, so the roll goes through `getEchoStats` like a real one (per-action `excludeEchoes`, HP/DEF scalers, the crit cap all behave) — no engine change. Placement: an existing line of the same kind is bumped → a free substat field takes it → an empty slot gets an inline substat-only record → every field held another kind, so a duplicated kind gives up one line and its value moves onto its twin (`placement.moved`; 25 lines over 13 kinds always hold a twin). The store record is never touched: inventory echoes are cloned in the inventory, legacy inline slots on a cloned character record |
-| `expectedRoll` / `maxRoll` | the tiers are the app's `subStatsTable`; the expectation weights each tier by how often it lands — Kuro's KR product info as `vendor/wuwa_calc/src/shared/substats.ts` carries it (`[7, 8, 21, 25, 18, 15, 6, 3]` for the percent-shaped stats and flat HP, `[70, 70, 70, 24, 24, 24, 9, 9]` for crit, the flat ATK/DEF pairs); copied here because he does not export them. Crit Rate expects 7.5, Crit DMG 15.1, ATK % 8.8, flat ATK 44 |
-| `substatWeights(id, characters, echoes, scorer)` | one expected roll and one best-tier roll per substat against a pluggable `BuildScorer` (`{ avg, extra? }` — the CLI's team scorer puts the team total in `extra.team`, reported as `extraGain.team`); sorted best first, `weight` = gain ÷ the best gain, `perPoint` = gain per 1 % / 1 flat point |
+| `expectedRoll` / `medianRoll` / `maxRoll` / `tierStep` | the tiers are the app's `subStatsTable`; the expectation weights each tier by how often it lands — Kuro's KR product info as `vendor/wuwa_calc/src/shared/substats.ts` carries it (`[7, 8, 21, 25, 18, 15, 6, 3]` for the percent-shaped stats and flat HP, `[70, 70, 70, 24, 24, 24, 9, 9]` for crit, the flat ATK/DEF pairs); copied here because he does not export them. Crit Rate expects 7.5, Crit DMG 15.1, ATK % 8.8, flat ATK 44. The median is the first tier where the cumulative odds reach one half — always a real tier: crit's third (7.5 / 15.0), the spread's fourth (ATK % 8.6, flat HP 430), the flat pairs' second (ATK 40, DEF 50). The step is `(max − min) / (tiers − 1)`: Crit Rate 0.6, Crit DMG 1.2, flat ATK/DEF 10, the unevenly spaced ATK % table 0.74 |
+| `substatWeights(id, characters, echoes, scorer)` | four rolls per substat — expected (`roll`/`gain`), median (`medianRoll`/`medianGain`), best (`maxRoll`/`maxGain`), one tier step (`step`/`stepGain`), each with its `…AvgDamage` — against a pluggable `BuildScorer` (`{ avg, extra? }` — the CLI's team scorer puts the team total in `extra.team`, reported as `extraGain.team` for the expected roll); sorted by the expected gain best first, `weight` = expected gain ÷ the best one, `perPoint` = gain per 1 % / 1 flat point. 4 × 13 + 1 scorings, half a second on a rotation |
 | `equippedSubstatWorth(...)` | each equipped echo scored with its five substats blanked (main stat and set kept): `worth` = what they add — the lowest is the echo to re-roll first |
-| `substatWeights.test.ts` | on the Cartethyia fixture: every roll moves the combined echo stats by exactly that roll and nothing else (all four placements), inputs untouched, an HP scaler weights crit and HP and not ATK, monotone and sorted; gates on the page: `myRankings.cy.ts` + `phoneLayout.cy.ts` |
+| `substatWeights.test.ts` | on the Cartethyia fixture: every roll moves the combined echo stats by exactly that roll and nothing else (all four placements), inputs untouched, an HP scaler weights crit and HP and not ATK, the four gains ordered step ≤ median ≤ expected ≤ best, sorted; every median is in the table; gates on the page: `myRankings.cy.ts` + `phoneLayout.cy.ts` |
 
 What the numbers mean: a **weight** of 100 is the substat to look for; the **expected roll** column is
-what a random line of that kind pays on average, the **best roll** its ceiling. Diminishing returns are
-real, not modelled: Xuanling at 96 % Crit Rate gets the same +2.5 % from a 7.5 and a 10.5 roll (the cap),
+what a random line of that kind pays on average, the **median roll** what the middle tier pays (a tier
+the game can show, where the expectation of a skewed table need not be), the **best roll** its ceiling,
+and **+1 tier** what an existing line gains from rolling one tier higher (the gap between two echoes whose
+lines differ by one tier; two decimals on the page, the gains sit an order below a whole roll's). The
+panel carries a collapsed "How to read these numbers" list saying the same, with the examples computed
+from the tables. Diminishing returns are real, not modelled: Xuanling at 96 % Crit Rate gets the same +2.5 % from a 7.5 and a 10.5 roll (the cap),
 so Crit DMG outranks it there while at 76 % Crit Rate leads. Known limits: the engine is static, so
 **Energy Regen reads 0** unless a buff scales with it (Brant, Sigrika show it) — keep the ER a rotation
 needs; a buff is on for the whole rotation or off (no uptime); healing/shield scalers are scored on damage
 only. The panel switches to short labels below 768 px and lays each substat out as a wrapping line (name ·
-expected → gain · bar, the best roll underneath) — the grid's rows are `display: contents` wrappers.
+expected → gain · bar; median, best and +1 tier underneath in small print, prefixed) — the grid's rows and
+the `.subs__more` group are `display: contents` wrappers.
 
 ## Team-aware buffs and builds — `src/sim/teamContext/`
 

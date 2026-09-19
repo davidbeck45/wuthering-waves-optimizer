@@ -141,17 +141,26 @@ function printWeights(w: WeightsCalc): void {
   const team = w.baselineTeam != null;
   console.log(
     table([
-      ["  Substat", "Expected roll", "Gain", "Best roll", "Gain", ...(team ? ["Team"] : []), "Weight"],
+      ["  Substat", "Expected roll", "Gain", "Median roll", "Gain", "Best roll", "Gain", "+1 tier", "Gain", ...(team ? ["Team"] : []), "Weight"],
       ...w.weights.map((s) => [
         `  ${s.label}`,
         rollText(s.roll, s.flat),
         signedPct(s.gain),
+        rollText(s.medianRoll, s.flat),
+        signedPct(s.medianGain),
         rollText(s.maxRoll, s.flat),
         signedPct(s.maxGain),
+        rollText(s.step, s.flat),
+        signedPct(s.stepGain),
         ...(team ? [signedPct(s.extraGain.team ?? 0)] : []),
         String(Math.round(s.weight * 100)),
       ]),
     ]),
+  );
+  console.log(
+    "\nOne more line of the substat on an equipped echo, and what it adds to the baseline. Expected roll = the average roll, every tier weighted by how often" +
+      "\nit drops (not always a tier the game can show); median roll = the middle tier, a real one; best roll = the top tier; +1 tier = one tier step, what an" +
+      `\nexisting line gains from rolling one tier higher.${team ? " Team = the expected roll's gain on the team total." : ""} Weight = the expected gain next to the best substat's (100).`,
   );
   const top = w.weights.filter((s) => s.weight >= 0.5).map((s) => s.label);
   console.log(`\nLook for: ${top.join(", ") || "(nothing moves this number)"}`);

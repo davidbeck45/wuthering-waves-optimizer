@@ -3,15 +3,17 @@
 import { describe, expect, it } from "vitest";
 import account from "../myRankings/__fixtures__/cartethyiaAccount.json";
 import { resolveCharacterEchoes } from "../../calculator/buildCharacterContext";
-import { getCombinedEchoStats } from "../../echoes/stats";
+import { getCombinedEchoStats, subStatsTable } from "../../echoes/stats";
 import { RANKING_ENEMY, rotationCandidates } from "../myRankings/rankRoster";
 import {
   SUBSTAT_KEYS,
   equippedSubstatWorth,
   expectedRoll,
   maxRoll,
+  medianRoll,
   rotationScorer,
   substatWeights,
+  tierStep,
   withSubstat,
   withoutEchoSubstats,
   type SubstatKey,
@@ -38,6 +40,30 @@ describe("substat rolls", () => {
     for (const key of SUBSTAT_KEYS) {
       expect(expectedRoll(key)).toBeGreaterThan(0);
       expect(expectedRoll(key)).toBeLessThan(maxRoll(key));
+    }
+  });
+
+  it("knows the median tier (a real tier) and one tier step of every substat", () => {
+    // crit: 70/70/70/24/24/24/9/9 crosses one half at the third tier; the spread 7/8/21/25/… at the fourth
+    expect(medianRoll("CritRate")).toBe(7.5);
+    expect(medianRoll("CritDMG")).toBe(15);
+    expect(medianRoll("ATK")).toBe(8.6);
+    expect(medianRoll("HP_FLAT")).toBe(430);
+    expect(medianRoll("EnergyRegen")).toBe(9.2);
+    // the flat pairs: 7/54/39/3 and 15/46/33/9 cross at the second tier — 40, not the 44 the expectation reads
+    expect(medianRoll("ATK_FLAT")).toBe(40);
+    expect(medianRoll("DEF_FLAT")).toBe(50);
+    expect(tierStep("CritRate")).toBeCloseTo(0.6, 9);
+    expect(tierStep("CritDMG")).toBeCloseTo(1.2, 9);
+    expect(tierStep("ATK_FLAT")).toBe(10);
+    expect(tierStep("DEF_FLAT")).toBe(10);
+    expect(tierStep("ATK")).toBeCloseTo(5.2 / 7, 9); // 6.4 … 11.6 is not evenly spaced: the average step
+    for (const key of SUBSTAT_KEYS) {
+      const tiers = subStatsTable[key];
+      expect(tiers, key).toContain(medianRoll(key)); // always a value the game can roll
+      expect(tierStep(key)).toBeGreaterThan(0);
+      expect(tierStep(key)).toBeLessThan(medianRoll(key));
+      expect(medianRoll(key)).toBeLessThanOrEqual(expectedRoll(key) + 1e-9); // every table here is right-skewed
     }
   });
 });
@@ -136,10 +162,22 @@ describe("substat weights on Cartethyia's build", () => {
     expect(result.weights[0].weight).toBe(1);
     for (let i = 1; i < result.weights.length; i++) expect(result.weights[i].gain).toBeLessThanOrEqual(result.weights[i - 1].gain);
     for (const w of result.weights) {
+      // four sizes of one roll, a bigger one never pays less: one tier step ≤ the median tier ≤ the expected roll ≤ the best tier
+      expect(w.step).toBeCloseTo(tierStep(w.key), 9);
+      expect(w.medianRoll).toBe(medianRoll(w.key));
+      expect(w.stepGain).toBeLessThanOrEqual(w.medianGain + 1e-9);
+      expect(w.medianGain).toBeLessThanOrEqual(w.gain + 1e-9);
       expect(w.maxGain).toBeGreaterThanOrEqual(w.gain - 1e-9);
       expect(w.avgDamage).toBeCloseTo(result.baseline * (1 + w.gain), 3);
+      expect(w.medianAvgDamage).toBeCloseTo(result.baseline * (1 + w.medianGain), 3);
+      expect(w.maxAvgDamage).toBeCloseTo(result.baseline * (1 + w.maxGain), 3);
+      expect(w.stepAvgDamage).toBeCloseTo(result.baseline * (1 + w.stepGain), 3);
       expect(w.perPoint).toBeCloseTo(w.roll > 0 ? w.gain / w.roll : 0, 9);
     }
+    // a tier step is a real, smaller gain on a stat that moves her; nothing on one that does not
+    expect(by.CritDMG.stepGain).toBeGreaterThan(0);
+    expect(by.CritDMG.stepGain).toBeLessThan(by.CritDMG.medianGain);
+    expect(by.ATK.stepGain).toBeCloseTo(0, 6);
     expect(by.HP.flat).toBe(false);
     expect(by.HP_FLAT.flat).toBe(true);
   });

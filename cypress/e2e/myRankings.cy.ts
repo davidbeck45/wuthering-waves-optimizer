@@ -50,6 +50,14 @@ describe("my roster rankings", () => {
         expect(text).to.match(/\+\d+\.\d%/);
       });
     cy.get('[data-test-my-rankings-substat="ATK"]').should("contain.text", "+0.0%");
+    // the median tier and one tier step ride along: a real tier and a two-decimal gain on a stat that moves her
+    cy.get('[data-test-my-rankings-substat-median="CritRate"]').should("contain.text", "+7.5%");
+    cy.get('[data-test-my-rankings-substat-step="CritRate"]')
+      .invoke("text")
+      .then((text) => {
+        expect(text).to.match(/\+0\.6% → \+\d+\.\d\d%/);
+      });
+    cy.get("[data-test-my-rankings-substats-help] summary").should("contain.text", "How to read");
     cy.get("[data-test-my-rankings-substats-echoes] .badge").should("have.length", 5);
     cy.get('[data-test-my-rankings-substats="Cartethyia"]').click({ force: true });
     cy.get('[data-test-my-rankings-substats-panel="Cartethyia"]').should("not.exist");
