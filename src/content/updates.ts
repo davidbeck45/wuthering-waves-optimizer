@@ -12,6 +12,14 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-19",
+    dateLabel: "September 19, 2026",
+    items: [
+      "v3: Echo cards, presets and the import modal reworked; presets now show stats, build score and damage impact, and support descriptions",
+      "v3: Team Buffs and Custom Buffs now show a sticky summary panel beside the controls",
+    ],
+  },
+  {
     date: "2026-09-16",
     dateLabel: "September 16, 2026",
     items: [
