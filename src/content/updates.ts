@@ -17,6 +17,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "v3: Echo cards, presets and the import modal reworked; presets now show stats, build score and damage impact, and support descriptions",
       "v3: Team Buffs and Custom Buffs now show a sticky summary panel beside the controls",
+      "Adds Total DMG (Endgame buff) as a custom and rotation action level buff; it multiplies against Total DMG and is shown in the damage breakdown",
     ],
   },
   {
