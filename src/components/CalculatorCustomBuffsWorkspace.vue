@@ -329,6 +329,11 @@ const SECTIONS: SectionDef[] = [
     fields: [
       { key: "SpecialMultiplier", label: "Vulnerability", unit: "%" },
       { key: "TotalDamage", label: "Total DMG", unit: "%" },
+      {
+        key: "TotalDamageEndgame",
+        label: "Total DMG (Endgame buff)",
+        unit: "%",
+      },
     ],
   },
 ];
