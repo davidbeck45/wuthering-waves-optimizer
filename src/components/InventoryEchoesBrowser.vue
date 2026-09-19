@@ -473,7 +473,23 @@
                 :data-test-echo-select="echoRow.echoId"
                 @change="toggleSelect(echoRow.echoId)" />
             </label>
+            <InventoryEchoTile
+              v-if="isLiveResultBarEnabled && !isCompact"
+              v-bind="echoCardBinder(echoRow)"
+              :locked="Boolean(echoRow.locked)"
+              @edit="handleEditEcho(echoRow.echoId)"
+              @duplicate="duplicateEcho(echoRow.echoId)"
+              @delete="removeEcho(echoRow.echoId)">
+              <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse mt-1">
+                <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
+                  <div class="w-8 bg-accent-content">
+                    <img :src="getCharImg(char)" />
+                  </div>
+                </div>
+              </div>
+            </InventoryEchoTile>
             <CalculatorEchoCard
+              v-else
               class="echo__item"
               v-bind="echoCardBinder(echoRow)"
               :hide-inventory="true"
@@ -634,6 +650,7 @@ import {
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import InventoryEchoTile from "./InventoryEchoTile.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
