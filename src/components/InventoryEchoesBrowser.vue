@@ -495,21 +495,14 @@
               :hide-inventory="true"
               :hide-rating="true"
               :compact="isCompact">
+              <template v-if="isLiveResultBarEnabled" #status>
+                <EchoLockTrashActions :echo-id="echoRow.echoId" layout="row" size="xs" />
+              </template>
               <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
                    optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
                    as two distinct clusters instead of one crowded button row —
                    see docs/adr/0014 decision #14. -->
               <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-1.5 flex-wrap" data-test-echo-status-cluster>
-                  <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse">
-                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
-                      <div class="w-8 bg-accent-content">
-                        <img :src="getCharImg(char)" />
-                      </div>
-                    </div>
-                  </div>
-                  <EchoLockTrashActions :echo-id="echoRow.echoId" />
-                </div>
                 <div class="flex items-center gap-1" data-test-echo-action-cluster>
                   <button
                     type="button"
@@ -554,6 +547,16 @@
                       </svg>
                     </button>
                   </span>
+                </div>
+                <div
+                  v-if="getCharsEquipped(echoRow).length"
+                  class="avatar-group -space-x-6 rtl:space-x-reverse ml-auto"
+                  data-test-echo-status-cluster>
+                  <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
+                    <div class="w-8 bg-accent-content">
+                      <img :src="getCharImg(char)" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
