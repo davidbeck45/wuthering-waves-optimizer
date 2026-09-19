@@ -1,5 +1,5 @@
 <template>
-  <dialog id="modal-echoes-presets" class="modal">
+  <dialog id="modal-echoes-presets" class="modal" @close="isOpen = false">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -9,7 +9,16 @@
           ✕
         </button>
       </form>
-      <div class="py-4">
+      <!--
+        Cards only mount while the dialog is open. This component itself is
+        mounted for the whole time the Echoes tab is, and each v3 card runs
+        real damage/stat calculations against the character's *current*
+        build — computed once at mount they went stale (or ran before data
+        was ready) and showed the wrong diff. Mounting on open recomputes
+        against the live build every time, same approach as
+        CalculatorManageBuilds.vue.
+      -->
+      <div v-if="isOpen" class="py-4">
         <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
         <div role="tablist" class="tabs tabs-bordered">
           <input
@@ -152,11 +161,15 @@ function waitForUiPaint() {
   });
 }
 
+const isOpen = ref(false);
+
 function triggerOpenModal() {
+  isOpen.value = true;
   const modalEl = document.getElementById("modal-echoes-presets");
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 function triggerCloseModal() {
+  isOpen.value = false;
   const modalEl = document.getElementById("modal-echoes-presets");
   (modalEl as HTMLDialogElement | null)?.close();
 }
