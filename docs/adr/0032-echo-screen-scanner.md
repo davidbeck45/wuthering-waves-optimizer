@@ -40,7 +40,9 @@ Built `src/scanner/` (pure TS) + `src/workers/echoScanner.worker.ts` +
 Discord-bot image importer, both feeding the same
 `mapParsedEchoes`/duplicate-review/save pipeline (extracted the mapping
 functions to `src/echoes/parsedEchoMapping.ts` so both flows share one
-implementation instead of drifting).
+implementation instead of drifting). **Stale as of a later revision** —
+the tab was split into its own standalone modal/button; see the bottom of
+this ADR for what replaced it and why.
 
 Key choices, each with a reason:
 
@@ -120,7 +122,10 @@ Key choices, each with a reason:
 - **Nothing auto-saves.** Every field carries per-candidate confidence;
   low-confidence fields are flagged in the review list
   (`EchoScannerCapture.vue`) before the result is handed to the existing,
-  already-tested `CalculatorEchoImporter.vue` duplicate-review/save step.
+  already-tested duplicate-review/save step — originally
+  `CalculatorEchoImporter.vue`'s own logic directly, now
+  `useEchoDuplicateReview.ts`/`EchoDuplicateReviewList.vue` shared by both
+  it and `EchoScannerModal.vue` (see the bottom of this ADR).
 - **Debug mode**: an opt-in checkbox that overlays every named ROI on the
   live preview and, per captured candidate, shows a thumbnail crop + OCR
   text for each region. Added after real usage reported every scanned
@@ -175,6 +180,9 @@ explicit user direction for this feature.
 - `docs/scanner.md`, `docs/src-workers.md`
 - `src/scanner/*`, `src/workers/echoScanner.worker.ts`,
   `src/composables/useEchoScanner.ts`, `src/components/EchoScannerCapture.vue`
+- `src/components/EchoScannerModal.vue`,
+  `src/composables/useEchoDuplicateReview.ts`,
+  `src/components/EchoDuplicateReviewList.vue`
 - `src/echoes/parsedEchoMapping.ts`
 - `tests/scanner/*`, `tests/echoes/parsedEchoMapping.test.ts`
 
@@ -369,3 +377,54 @@ batch of real captures — like every scoring-weight change above, reasoned
 from checked data (the 182/122 counts), not exhaustively tuned; the debug
 view's per-candidate label now names which path actually ran so that's
 checkable from real usage going forward.
+
+**Revised a seventh time (same rollout) — split out of the importer, gated
+behind a labs flag, explicit privacy messaging:** with accuracy validated
+against real footage at last, three product changes landed together:
+
+- **Separate entry point, not a tab.** The scanner used to be a second
+  mode tab inside `CalculatorEchoImporter.vue`'s "Import echoes" modal —
+  easy to miss, and conceptually mismatched (most people looking for this
+  kind of feature look for something literally called a "scanner," not a
+  tab buried inside an unrelated import flow). Split into its own
+  component, `EchoScannerModal.vue`, with its own "Scan echoes" button on
+  the inventory page (styled `btn-secondary` to stand out next to the
+  plain "Import echoes" button) and its own dialog. Inventory-only by
+  design — no `character` prop, unlike `CalculatorEchoImporter.vue` — since
+  scanning is naturally a "build up my inventory" action, not an
+  "assign echoes to this one character" action; that also meant the split
+  didn't need to preserve the old tab UI's "apply to character" path for
+  the scanner side.
+- **Shared duplicate-review/save logic, not copy-pasted.** Splitting the
+  entry point risked duplicating `CalculatorEchoImporter.vue`'s ~250 lines
+  of duplicate-detection/save/apply-to-character logic and its ~100-line
+  review-list template into a second component that could silently drift
+  from the first. Extracted both instead: `useEchoDuplicateReview.ts`
+  (state + business logic — `handleEchoesParsed`, duplicate detection,
+  `finalizeImport`, character-apply) and `EchoDuplicateReviewList.vue` (the
+  review-list markup + its display-only helpers). Both
+  `CalculatorEchoImporter.vue` (now Discord-bot-image only, tab UI removed)
+  and `EchoScannerModal.vue` compose the same two pieces with their own
+  thin modal wrapper around them — a fix to duplicate detection or the
+  save pipeline now can't land in only one of the two entry points.
+- **Gated behind a new `echoScanning` labs flag** (`SettingsLabs.vue`),
+  same on/off-by-default mechanism as `liveResultBar`
+  (`settingsStore.labs.<key>.isEnabled`, no migration needed since `labs`
+  is already a generic record) — explicit ask, so the feature can keep
+  iterating without every user seeing it by default while it does. The
+  "Scan echoes" button and `EchoScannerModal.vue` itself are both
+  `v-if`-gated on the flag; the old ungated tab access point is gone
+  (replaced by this gated one), so there's no second, ungated way in.
+- **Explicit, prominent privacy messaging.** The intro screen already had
+  a one-line "processed in your browser" mention; added a dedicated
+  `alert-info` callout ahead of the feature description stating plainly
+  that neither screen sharing nor video upload ever sends anything to a
+  server — no upload, no account, nothing stored beyond the current
+  session, on either path — specifically so hesitant users don't have to
+  infer that from the code or take it on faith from a buried sentence.
+
+## Related (updated)
+
+- `src/components/EchoScannerModal.vue`,
+  `src/composables/useEchoDuplicateReview.ts`,
+  `src/components/EchoDuplicateReviewList.vue`, `src/components/SettingsLabs.vue`

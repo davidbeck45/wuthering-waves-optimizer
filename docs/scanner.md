@@ -32,7 +32,11 @@ capture.ts (FrameSource: live share or uploaded video)
     reviewable candidate list
   → EchoScannerCapture.vue: UI, emits the same `echoes-parsed` event shape
     CalculatorEchoParser.vue already emits
-  → CalculatorEchoImporter.vue: unchanged duplicate-review / save pipeline
+  → EchoScannerModal.vue: its own standalone modal ("Scan echoes" button,
+    inventory page) — shares the actual duplicate-review/save pipeline
+    with CalculatorEchoImporter.vue's Discord-bot-image flow via
+    useEchoDuplicateReview.ts + EchoDuplicateReviewList.vue, rather than
+    being a tab inside that importer (an earlier design — see ADR 0032)
 ```
 
 `src/scanner/*` is pure TS (no Vue/DOM beyond the browser APIs the capture
@@ -462,13 +466,17 @@ nothing here auto-saves silently:
 - Every candidate carries per-field confidence (name, cost, main stat, set,
   each substat) computed in `parse.ts`; low-confidence fields are flagged in
   `EchoScannerCapture.vue`'s review list.
-- Echo identity is narrowed by the matched set first (mirroring the
-  Discord-bot flow's `filteredEchoKeys`, minus its cost half — this
-  scanner doesn't read cost), with Levenshtein name-text matching only
-  breaking ties within that pool or serving as a fallback — see "Echo
-  identification" above. A name below threshold with no narrowing to fall
-  back on is left unresolved (`echo: null`) rather than guessed. Cost is
-  then derived from the resolved echo's own class, never guessed from text.
+- Echo identity is resolved by name text first, narrowed by a cost inferred
+  from the fixed secondary stat's value — never a hard filter, always
+  retries unfiltered on a miss. Set-icon image matching only runs where
+  text alone can't finish the job: narrowed to a resolved echo's own 2-3
+  candidate sets, or full-pool as a last resort when name+cost can't
+  resolve an echo at all — see "Echo identification" above (this was a
+  set-icon-first design originally; ADR 0032 has the full history of why
+  it flipped). A name below threshold with nothing to resolve is left
+  unresolved (`echo: null`) rather than guessed. Cost is then derived from
+  the resolved echo's own class for the saved result, never guessed from
+  OCR'd cost text.
 - Substat values are snapped to the nearest legal roll in `subStatsTable`
   (`src/echoes/stats.ts`) — the same table the Discord-bot importer trusts.
 - A freshly-acquired echo with no main stat chosen yet (`needsMainStatSelection`)
@@ -476,8 +484,10 @@ nothing here auto-saves silently:
 - Truly identical echoes (same name/set/cost/main/substats) collapse to one
   via `dedupe.ts`'s signature (`getEchoIdentityKey`) — no grid-position
   tracking.
-- The scanner's result is handed to `CalculatorEchoImporter.vue`'s existing,
-  already-tested duplicate-review → save pipeline unchanged — reviewing and
+- The scanner's result is handed to `useEchoDuplicateReview.ts` +
+  `EchoDuplicateReviewList.vue` — the same duplicate-review → save pipeline
+  `CalculatorEchoImporter.vue`'s Discord-bot-image flow uses, shared via
+  that composable/component pair rather than duplicated — reviewing and
   confirming before anything is saved is not new UI, it's the same UI the
   Discord-bot import flow already uses.
 

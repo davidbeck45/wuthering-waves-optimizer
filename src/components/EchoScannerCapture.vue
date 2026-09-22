@@ -5,9 +5,32 @@
       <p class="mb-2">
         Share your WuWa window (Backpack → Echoes) and click through your
         echoes one at a time, or upload a video you already recorded doing
-        that. Everything is processed in your browser — nothing is uploaded
-        anywhere.
+        that.
       </p>
+      <div role="alert" class="alert alert-info items-start mb-4 text-sm">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="h-6 w-6 shrink-0 stroke-current">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="font-semibold">Nothing here ever leaves your device.</p>
+          <p class="opacity-90">
+            Screen sharing and video upload are both processed entirely in
+            your browser — no server, no upload, no account, nothing saved
+            anywhere but this device. Once you close this window (or a
+            video finishes scanning), the captured frames are gone. There's
+            no data collection, no privacy tradeoff, and nothing to worry
+            about using either option.
+          </p>
+        </div>
+      </div>
       <ul class="list-disc list-inside ml-4 mb-4 text-sm opacity-80">
         <li>Desktop Chrome or Edge only. English game client only.</li>
         <li>
