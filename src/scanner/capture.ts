@@ -324,6 +324,97 @@ export async function grabFullFrameSnapshot(
 }
 
 /**
+ * Finds the tight bounding box of "icon" content within a generously-sized
+ * crop, by sampling the crop's four corners as a background reference (a
+ * crop with any margin around a centered circular icon is guaranteed to
+ * have plain background in its corners) and thresholding every pixel by
+ * color distance from that sample.
+ *
+ * This exists because SET_ICON_BOX's own measured bounds — hand-tuned
+ * against a couple of real screenshots — can't be pixel-perfect for every
+ * capture, and a *inscribed-circle* mask sized to the box (not to the
+ * icon's real edge) silently bakes in whatever slack remains as a ring of
+ * true background color just inside the mask. That ring is invisible at a
+ * glance but matters a lot downstream: echoParser.worker.ts's matchSetFirst
+ * stretches both the captured crop and the (tightly-cropped, no-margin)
+ * reference set image to the same 32x32 canvas before comparing — so a
+ * crop with a lingering background ring makes the real icon content
+ * occupy less of that 32x32 square than the reference's icon does, a
+ * scale mismatch that throws off both the color-family and pixel-diff
+ * signals matchSetFirst uses. (Confirmed from a side-by-side debug-view
+ * screenshot: the captured icon visibly smaller than the reference it was
+ * being compared against.) Detecting the icon's real bounds and cropping
+ * to *that* — rather than trusting the configured box's own bounds —
+ * keeps the two at the same relative scale regardless of how loose the
+ * box's margin actually is.
+ *
+ * Returns null (caller falls back to the full crop) if nothing in the
+ * crop is distinguishable from its own corners — e.g. a solid-color crop,
+ * or one where the "icon" already fills the entire box with no margin to
+ * sample a background from.
+ */
+export function detectIconBounds(
+  data: Uint8ClampedArray,
+  width: number,
+  height: number,
+): { x: number; y: number; width: number; height: number } | null {
+  if (width < 2 || height < 2) return null;
+
+  const sampleAt = (x: number, y: number): [number, number, number] => {
+    const i = (y * width + x) * 4;
+    return [data[i], data[i + 1], data[i + 2]];
+  };
+  // Average a few corner pixels each, not just one, for some robustness
+  // against video-compression noise in a real capture.
+  const corners: [number, number][] = [
+    [0, 0],
+    [width - 1, 0],
+    [0, height - 1],
+    [width - 1, height - 1],
+  ];
+  let br = 0;
+  let bg = 0;
+  let bb = 0;
+  for (const [cx, cy] of corners) {
+    const [r, g, b] = sampleAt(cx, cy);
+    br += r;
+    bg += g;
+    bb += b;
+  }
+  br /= corners.length;
+  bg /= corners.length;
+  bb /= corners.length;
+
+  const BACKGROUND_DISTANCE_THRESHOLD = 28; // empirically enough to separate icon art from a flat panel background
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const [r, g, b] = sampleAt(x, y);
+      const dist = Math.sqrt((r - br) ** 2 + (g - bg) ** 2 + (b - bb) ** 2);
+      if (dist > BACKGROUND_DISTANCE_THRESHOLD) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < minX || maxY < minY) return null;
+
+  const foundWidth = maxX - minX + 1;
+  const foundHeight = maxY - minY + 1;
+  // Guard against a degenerate detection: too small to be the icon (noise)
+  // or so close to the full box that nothing was really distinguished.
+  if (foundWidth < width * 0.5 || foundHeight < height * 0.5) return null;
+  if (foundWidth >= width - 1 && foundHeight >= height - 1) return null;
+
+  return { x: minX, y: minY, width: foundWidth, height: foundHeight };
+}
+
+/**
  * Crops one region and makes every pixel outside a centered circle fully
  * transparent — used only for the set-icon crop, before handing it to
  * echoParser.worker.ts's matchSetFirst.
@@ -342,11 +433,13 @@ export async function grabFullFrameSnapshot(
  * (transparent background) side by side.
  *
  * Masking by *shape* instead of *color* sidesteps that: the icon is
- * circular and (SET_ICON_BOX is cropped tight to it) fills nearly the
- * whole crop, so a centered circular alpha mask removes the background
+ * circular, so a centered circular alpha mask removes the background
  * regardless of what color it actually is, without needing to touch
  * echoParser.worker.ts's shared masking logic (used by the Discord-bot
- * flow too) at all.
+ * flow too) at all. The circle is inscribed in the *detected icon bounds*
+ * (detectIconBounds), not just SET_ICON_BOX's own configured bounds — see
+ * that function's doc comment for why that distinction is what actually
+ * fixes the scale-mismatch-vs-reference problem, on top of the color fix.
  */
 export async function grabCircularMaskedBitmap(
   videoEl: HTMLVideoElement,
@@ -371,21 +464,49 @@ export async function grabCircularMaskedBitmap(
     region.height,
   );
 
-  const imageData = ctx.getImageData(0, 0, region.width, region.height);
+  const rawImageData = ctx.getImageData(0, 0, region.width, region.height);
+  const bounds = detectIconBounds(rawImageData.data, region.width, region.height) ?? {
+    x: 0,
+    y: 0,
+    width: region.width,
+    height: region.height,
+  };
+
+  // Re-crop tight to the detected bounds before masking, onto a fresh
+  // canvas, so the circle cut out matches the icon's own real edge rather
+  // than whatever margin SET_ICON_BOX happened to leave around it.
+  const tightCanvas = document.createElement("canvas");
+  tightCanvas.width = bounds.width;
+  tightCanvas.height = bounds.height;
+  const tightCtx = tightCanvas.getContext("2d", { willReadFrequently: true });
+  if (!tightCtx) throw new Error("Couldn't get a 2d canvas context.");
+  tightCtx.drawImage(
+    canvas,
+    bounds.x,
+    bounds.y,
+    bounds.width,
+    bounds.height,
+    0,
+    0,
+    bounds.width,
+    bounds.height,
+  );
+
+  const imageData = tightCtx.getImageData(0, 0, bounds.width, bounds.height);
   const data = imageData.data;
-  const cx = region.width / 2;
-  const cy = region.height / 2;
-  const radius = Math.min(region.width, region.height) / 2;
+  const cx = bounds.width / 2;
+  const cy = bounds.height / 2;
+  const radius = Math.min(bounds.width, bounds.height) / 2;
   const radiusSquared = radius * radius;
-  for (let y = 0; y < region.height; y++) {
-    for (let x = 0; x < region.width; x++) {
+  for (let y = 0; y < bounds.height; y++) {
+    for (let x = 0; x < bounds.width; x++) {
       const dx = x + 0.5 - cx;
       const dy = y + 0.5 - cy;
       if (dx * dx + dy * dy > radiusSquared) {
-        data[(y * region.width + x) * 4 + 3] = 0;
+        data[(y * bounds.width + x) * 4 + 3] = 0;
       }
     }
   }
-  ctx.putImageData(imageData, 0, 0);
-  return createImageBitmap(canvas);
+  tightCtx.putImageData(imageData, 0, 0);
+  return createImageBitmap(tightCanvas);
 }

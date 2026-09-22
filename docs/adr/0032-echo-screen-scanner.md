@@ -240,3 +240,28 @@ used only for that stop condition. Regression tests in
 `tests/scanner/parse.test.ts` use the user's real "Inferno Rider" OCR text
 verbatim, both at the `splitStatBlock` level and end-to-end through
 `parseEchoCandidate`.
+
+**Revised a third time (same rollout):** the circular shape-mask fixed set
+icons picking up the wrong *color* signal, but a side-by-side debug-view
+screenshot (captured crop next to the reference icon it was matched
+against) showed a second, separate problem — the captured icon read
+visibly *smaller* than the reference. Cause: `matchSetFirst` stretches
+both images onto the same 32x32 canvas before comparing; reference set
+images are cropped with essentially no margin, but `SET_ICON_BOX`'s own
+hand-measured bounds still leave some slack around the icon's real edge,
+and the circular mask was inscribed in the *box's* dimensions rather than
+the icon's — baking that slack in as a ring of true background color just
+inside the mask. Stretched to 32x32 next to a margin-free reference, the
+real icon ends up occupying a smaller fraction of the canvas, throwing off
+both the color-family and pixel-diff signals. Fixed with a new
+`detectIconBounds` in `capture.ts`: samples the crop's four corners
+(guaranteed background in a crop with any margin) as a reference color,
+thresholds every pixel by distance from it, and returns the tight
+bounding box of whatever doesn't match — the icon's real edge, not the
+box's. `grabCircularMaskedBitmap` re-crops to that detected box before
+masking, matching the reference convention regardless of how loose
+`SET_ICON_BOX` actually is, falling back to the full configured crop if
+nothing is distinguishable from the corners. Unlike the rest of
+`capture.ts`, `detectIconBounds` is a plain function over pixel data (no
+canvas/DOM), so it's directly unit-tested in
+`tests/scanner/capture.test.ts` with synthetic crops.

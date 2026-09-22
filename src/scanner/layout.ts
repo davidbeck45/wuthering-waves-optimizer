@@ -103,7 +103,13 @@ export const NAME_BLOCK: RegionFrac = {
  * capture.ts's grabCircularMaskedBitmap for the other half (the
  * background behind the icon isn't black, so echoParser.worker.ts's
  * shared black-background masking doesn't remove it, which was corrupting
- * the color-family comparison matchSetFirst relies on most).
+ * the color-family comparison matchSetFirst relies on most) and its
+ * detectIconBounds for a third: even "tight" hand-measured bounds still
+ * left enough margin to make the captured icon read as smaller than the
+ * (truly tight, no-margin) reference icon once both get resized to the
+ * same comparison canvas — a scale mismatch, not a color one. That's now
+ * corrected dynamically per-capture rather than by chasing tighter and
+ * tighter fixed fractions here.
  */
 export const SET_ICON_BOX: RegionFrac = {
   x: 0.7266,

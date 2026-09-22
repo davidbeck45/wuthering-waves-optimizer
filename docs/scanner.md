@@ -290,6 +290,41 @@ backdrop so the transparent corners are visible), not a plain rectangle,
 so the mask being applied is something you can actually see, not just
 take on faith.
 
+### Second bug, same symptom: a scale mismatch, not just a color one
+
+Fixing the background color didn't fully fix match accuracy either — a
+side-by-side debug-view screenshot (the captured crop next to the
+reference icon it was being compared against) showed the captured icon
+reading visibly *smaller* than the reference, even after masking. Cause:
+`matchSetFirst` stretches both images onto the same 32x32 comparison
+canvas before comparing, and the reference set images (e.g.
+`CelestialLight.webp`) are cropped with essentially no margin around their
+content. `SET_ICON_BOX`'s own bounds, however tightly hand-measured, still
+leave *some* slack around the icon's real edge — and the original circular
+mask was inscribed in the *box's* dimensions, not the icon's, so that
+slack became a ring of true background color sitting just inside the
+mask. Stretched to 32x32 alongside a reference with no such ring, the
+real icon content ends up occupying a smaller fraction of the comparison
+canvas than the reference's does — a scale mismatch that throws off both
+the color-family signal and the pixel-diff one.
+
+`capture.ts`'s `detectIconBounds` fixes this at capture time rather than
+by chasing an ever-tighter fixed fraction in `layout.ts`: it samples the
+crop's four corners (guaranteed background, since a crop with any margin
+has plain background in its corners) as a reference color, thresholds
+every pixel in the crop by distance from that color, and returns the
+tight bounding box of whatever doesn't match — i.e. the icon's own real
+edge, not the configured box's edge. `grabCircularMaskedBitmap` re-crops
+to that detected box before inscribing the circular mask, so the result
+matches the reference convention (icon fills the bitmap, no ring) however
+loose `SET_ICON_BOX` actually is. It falls back to the full configured
+crop (previous behavior) if nothing in the crop is distinguishable from
+its own corners, so a bad detection never makes things worse than before.
+Unit-tested directly in `tests/scanner/capture.test.ts` with synthetic
+crops (centered icon block, flat crop, icon already filling the whole
+box, a too-small noise speck, minor per-pixel color noise) since it's a
+plain function over pixel data with no canvas/DOM dependency.
+
 ## Accuracy
 
 Per `docs/accuracy-verification.md` and the project's priority order,
