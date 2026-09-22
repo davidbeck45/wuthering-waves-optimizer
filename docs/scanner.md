@@ -142,6 +142,17 @@ the default CDN, so scanning doesn't depend on a third party being up. These
 are only fetched lazily when a scan session actually starts (not on normal
 app load), so they don't affect the app's regular load time.
 
+**The paths must be fully-qualified absolute URLs** (`${self.location.origin}/tesseract/...`),
+not path-absolute strings (`/tesseract/...`). tesseract.js spawns its own
+nested worker by wrapping `workerPath` in a `Blob` and calling
+`importScripts()` from *inside* that blob's own `blob:` context
+(`workerBlobURL`, default `true`) — a path-absolute URL fails to resolve
+against a `blob:` base there ("Failed to execute 'importScripts' ... URL is
+invalid"), even though the exact same string resolves fine as a normal
+fetch from this worker itself. The Discord-bot importer's tesseract.js
+usage never hits this because it uses tesseract's default CDN path, which
+is already a full `https://` URL — self-hosting is what exposes it.
+
 ## Extending / debugging
 
 - `src/echoes/parsedEchoMapping.ts` (`mapParsedEchoes`, `getSubstatType`,

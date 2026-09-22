@@ -33,11 +33,23 @@ type RecognizeCandidateMessage = {
 let pool: TesseractWorker[] = [];
 let nextWorkerIndex = 0;
 
+// tesseract.js spawns its own nested worker by wrapping workerPath in a
+// `Blob` and calling `importScripts()` from *inside* that blob's own
+// `blob:` context (its `workerBlobURL` default). A path-absolute URL like
+// "/tesseract/worker.min.js" fails to resolve against a blob: base in that
+// nested context ("Failed to execute 'importScripts' ... URL is invalid"),
+// even though it resolves fine as a normal fetch from this worker itself —
+// self.location.origin is unaffected by that nesting, so build fully
+// qualified URLs instead. (The Discord-bot importer's tesseract.js usage
+// never hit this because it uses tesseract's default CDN path, which is
+// already a full https:// URL.)
+const TESSERACT_ASSET_ORIGIN = self.location.origin;
+
 async function createPooledWorker(): Promise<TesseractWorker> {
   const worker = await createWorker("eng", 1, {
-    workerPath: "/tesseract/worker.min.js",
-    corePath: "/tesseract/tesseract-core-simd-lstm.wasm.js",
-    langPath: "/tesseract",
+    workerPath: `${TESSERACT_ASSET_ORIGIN}/tesseract/worker.min.js`,
+    corePath: `${TESSERACT_ASSET_ORIGIN}/tesseract/tesseract-core-simd-lstm.wasm.js`,
+    langPath: `${TESSERACT_ASSET_ORIGIN}/tesseract`,
     gzip: true,
   });
   await worker.setParameters({
