@@ -52,6 +52,28 @@ driven* differs:
 Everything downstream of `FrameSource` (fingerprint, stability, layout,
 parse, dedupe) doesn't know or care which source is active.
 
+### Video upload: open → trim → scan
+
+Uploading a video is an explicit three-step flow (`capture.ts`'s
+`openVideoFile` / `seekPreview` / `createVideoFileSource`,
+`useEchoScanner.ts`'s `openVideo` / `previewSeek` / `startVideoScan`,
+`EchoScannerCapture.vue`'s "trimming" status), matching the reference
+project [Tacet-Lab](https://github.com/DJ12421/Tacet-Lab)'s actual
+`ScannerView.tsx` (`openVideo`/`scanVideo`, backed by a `LocalVideoSource`)
+rather than scanning a whole file blind:
+
+1. **Open**: load metadata and a scrubbable preview frame, no scanning yet.
+2. **Trim**: the user picks a start/end range (skip past menu navigation
+   before reaching the Echo screen) and a sample rate — 1/2/4/8 frames/sec,
+   default 2fps (matching Tacet-Lab's default). Scrubbing the range calls
+   `seekPreview` so the mounted `<video>` preview updates live.
+3. **Scan**: `createVideoFileSource` runs the seek-and-capture loop only
+   over the chosen window at the chosen rate.
+
+(An earlier pass at this doc/ADR incorrectly concluded, from a README-only
+check, that Tacet-Lab didn't support video upload at all — it does, and
+this flow was built to match its actual approach once that was corrected.)
+
 ## ROI layout — how the numbers in `layout.ts` were derived
 
 All regions are **fractions of the full captured frame**, not fixed pixels —

@@ -11,9 +11,14 @@ import { onBeforeUnmount, ref, computed } from "vue";
 import {
   createScreenShareSource,
   createVideoFileSource,
+  openVideoFile,
+  seekPreview,
+  closeVideoHandle,
   grabRegionImageData,
   grabRegionBitmap,
   type FrameSource,
+  type VideoFileHandle,
+  type VideoScanOptions,
 } from "../scanner/capture";
 import { computeFingerprint } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
@@ -27,7 +32,14 @@ import type { ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
-export type ScannerStatus = "idle" | "starting" | "running" | "stopping" | "stopped" | "error";
+export type ScannerStatus =
+  | "idle"
+  | "trimming" // a video file is open and previewable, waiting for the user to confirm a range/rate and start scanning
+  | "starting"
+  | "running"
+  | "stopping"
+  | "stopped"
+  | "error";
 
 export function useEchoScanner() {
   const status = ref<ScannerStatus>("idle");
@@ -39,6 +51,8 @@ export function useEchoScanner() {
   const unsupportedAspect = ref(false);
   /** The FrameSource's <video> element, for the component to mount as a live preview. Not reactive data — just a handle. */
   const previewVideoEl = ref<HTMLVideoElement | null>(null);
+  /** Set once a video file is open (status "trimming") — lets the trim UI show/scrub a range before scanning starts. */
+  const videoDuration = ref<number | null>(null);
 
   const reviewNeededCount = computed(
     () =>
@@ -53,6 +67,7 @@ export function useEchoScanner() {
   );
 
   let frameSource: FrameSource | null = null;
+  let openVideoHandle: VideoFileHandle | null = null;
   let ocrWorker: Worker | null = null;
   let setWorker: Worker | null = null;
   let setWorkerReady: Promise<void> | null = null;
@@ -214,7 +229,12 @@ export function useEchoScanner() {
   function releaseResources() {
     frameSource?.stop();
     frameSource = null;
+    if (openVideoHandle) {
+      closeVideoHandle(openVideoHandle);
+      openVideoHandle = null;
+    }
     previewVideoEl.value = null;
+    videoDuration.value = null;
     ocrWorker?.postMessage({ type: "terminate" });
     ocrWorker?.terminate();
     ocrWorker = null;
@@ -246,13 +266,48 @@ export function useEchoScanner() {
     }
   }
 
-  async function startVideoFile(file: File) {
+  /** Opens a video file and shows a preview so the user can trim a range and pick a sample rate before scanning — see docs/scanner.md. */
+  async function openVideo(file: File) {
     resetState();
     status.value = "starting";
     try {
+      const handle = await openVideoFile(file);
+      openVideoHandle = handle;
+      previewVideoEl.value = handle.videoEl;
+      videoDuration.value = handle.duration;
+      status.value = "trimming";
+    } catch (err) {
+      errorMessage.value = err instanceof Error ? err.message : String(err);
+      status.value = "error";
+    }
+  }
+
+  /** Scrubs the trim preview to a timestamp without starting a scan. Only valid while status is "trimming". */
+  async function previewSeek(timeSeconds: number) {
+    if (!openVideoHandle) return;
+    await seekPreview(openVideoHandle, timeSeconds);
+  }
+
+  /** Discards an opened-but-not-yet-scanned video file (the trim step's "Cancel"). */
+  function cancelVideo() {
+    if (openVideoHandle) {
+      closeVideoHandle(openVideoHandle);
+      openVideoHandle = null;
+    }
+    previewVideoEl.value = null;
+    videoDuration.value = null;
+    status.value = "idle";
+  }
+
+  /** Starts scanning the already-open, already-trimmed video — the "scanVideo" half. */
+  async function startVideoScan(options: VideoScanOptions = {}) {
+    if (!openVideoHandle) return;
+    const handle = openVideoHandle;
+    status.value = "starting";
+    try {
       await initWorkers();
-      frameSource = await createVideoFileSource(file);
-      previewVideoEl.value = frameSource.videoEl;
+      frameSource = createVideoFileSource(handle, options);
+      openVideoHandle = null; // ownership moves to frameSource — its own stop() closes the handle
       status.value = "running";
       await frameSource.start(async (tick) => {
         progress.value = { current: tick.frameIndex, total: tick.totalFrames };
@@ -275,7 +330,7 @@ export function useEchoScanner() {
   }
 
   onBeforeUnmount(() => {
-    if (status.value === "running" || status.value === "starting") {
+    if (status.value === "running" || status.value === "starting" || status.value === "trimming") {
       stop();
     }
   });
@@ -290,9 +345,13 @@ export function useEchoScanner() {
     progress,
     unsupportedAspect,
     previewVideoEl,
+    videoDuration,
     isEchoNameKnown: (key: string) => Boolean(mainEchoesData?.[key]),
     startLive,
-    startVideoFile,
+    openVideo,
+    previewSeek,
+    cancelVideo,
+    startVideoScan,
     stop,
     removeCandidate,
     updateCandidate,

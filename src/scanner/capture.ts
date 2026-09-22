@@ -99,7 +99,7 @@ export async function createScreenShareSource(): Promise<FrameSource> {
   };
 }
 
-function seekTo(videoEl: HTMLVideoElement, timeSeconds: number): Promise<void> {
+export function seekTo(videoEl: HTMLVideoElement, timeSeconds: number): Promise<void> {
   if (Math.abs(videoEl.currentTime - timeSeconds) < 0.001) {
     return Promise.resolve();
   }
@@ -113,11 +113,22 @@ function seekTo(videoEl: HTMLVideoElement, timeSeconds: number): Promise<void> {
   });
 }
 
-export async function createVideoFileSource(
-  file: File,
-  options: { stepMs?: number } = {},
-): Promise<FrameSource> {
-  const stepSeconds = (options.stepMs ?? DEFAULT_VIDEO_STEP_MS) / 1000;
+/**
+ * A loaded-but-not-yet-scanning video file: metadata is known and the first
+ * frame is ready to preview, so the caller (EchoScannerCapture.vue) can show
+ * a trim range + sample-rate picker before committing to a scan — same
+ * open → preview/trim → scan split as the Tacet-Lab reference UI
+ * (ScannerView.tsx's openVideo/scanVideo). Call seekPreview to scrub the
+ * mounted preview while trimming, and either createVideoFileSource (to
+ * start scanning) or closeVideoHandle (to abandon it) when done.
+ */
+export type VideoFileHandle = {
+  videoEl: HTMLVideoElement;
+  duration: number;
+  objectUrl: string;
+};
+
+export async function openVideoFile(file: File): Promise<VideoFileHandle> {
   const objectUrl = URL.createObjectURL(file);
   const videoEl = createVideoElement();
   videoEl.src = objectUrl;
@@ -126,26 +137,60 @@ export async function createVideoFileSource(
     videoEl.addEventListener("loadedmetadata", () => resolve(), { once: true });
     videoEl.addEventListener(
       "error",
-      () => reject(new Error("Couldn't read this video file. Try exporting it as mp4.")),
+      () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Couldn't read this video file. Try exporting it as mp4."));
+      },
       { once: true },
     );
   });
+
+  return { videoEl, duration: videoEl.duration, objectUrl };
+}
+
+/** Scrubs the handle's (already-mounted-for-preview) video element to a timestamp, without starting a scan. */
+export function seekPreview(handle: VideoFileHandle, timeSeconds: number): Promise<void> {
+  return seekTo(handle.videoEl, Math.max(0, Math.min(handle.duration, timeSeconds)));
+}
+
+export function closeVideoHandle(handle: VideoFileHandle): void {
+  handle.videoEl.pause();
+  URL.revokeObjectURL(handle.objectUrl);
+  handle.videoEl.remove();
+}
+
+export type VideoScanOptions = {
+  /** Defaults to the whole clip. */
+  startSeconds?: number;
+  endSeconds?: number;
+  /** Samples per second of video, converted to a seek step. Tacet-Lab defaults to 2fps; we match that. */
+  fps?: number;
+};
+
+const DEFAULT_VIDEO_FPS = 1000 / DEFAULT_VIDEO_STEP_MS; // 2.5, if fps isn't given
+
+/** Starts scanning an already-open handle over [startSeconds, endSeconds] at the given sample rate — the "scanVideo" half of the open/trim/scan split. */
+export function createVideoFileSource(
+  handle: VideoFileHandle,
+  options: VideoScanOptions = {},
+): FrameSource {
+  const { videoEl } = handle;
+  const stepSeconds = 1 / (options.fps ?? DEFAULT_VIDEO_FPS);
+  const startSeconds = Math.max(0, Math.min(handle.duration, options.startSeconds ?? 0));
+  const endSeconds = Math.max(startSeconds, Math.min(handle.duration, options.endSeconds ?? handle.duration));
 
   let stopped = false;
 
   function stop() {
     stopped = true;
-    videoEl.pause();
-    URL.revokeObjectURL(objectUrl);
-    videoEl.remove();
+    closeVideoHandle(handle);
   }
 
   async function start(onTick: (tick: FrameTick) => void | Promise<void>) {
-    const duration = videoEl.duration;
-    const totalFrames = Math.max(1, Math.ceil(duration / stepSeconds));
+    const totalFrames = Math.max(1, Math.ceil((endSeconds - startSeconds) / stepSeconds));
     let frameIndex = 0;
-    let t = 0;
-    while (!stopped && t <= duration) {
+    let t = startSeconds;
+    while (!stopped && t <= endSeconds) {
       await seekTo(videoEl, t);
       if (stopped) break;
       await onTick({ frameIndex, totalFrames });

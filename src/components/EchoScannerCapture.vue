@@ -35,6 +35,65 @@
       </div>
     </template>
 
+    <template v-else-if="status === 'trimming'">
+      <h2 class="text-xl font-bold mb-2">Trim and set a scan rate</h2>
+      <p class="mb-3 text-sm opacity-80">
+        Only the range you set is scanned — skip past menus or loading
+        before you reach the Echo Management screen. A higher rate catches
+        fast clicking but takes longer to process.
+      </p>
+      <div class="flex flex-col items-center gap-3">
+        <div
+          ref="previewContainer"
+          class="w-full max-w-md aspect-[8/5] bg-base-300 rounded overflow-hidden"></div>
+
+        <div class="w-full max-w-md form-control">
+          <label class="label py-1">
+            <span class="label-text">Start: {{ formatTime(trimStart) }}</span>
+          </label>
+          <input
+            type="range"
+            class="range range-xs"
+            min="0"
+            :max="videoDuration ?? 0"
+            step="0.5"
+            v-model.number="trimStart"
+            @input="scanner.previewSeek(trimStart)" />
+        </div>
+        <div class="w-full max-w-md form-control">
+          <label class="label py-1">
+            <span class="label-text">End: {{ formatTime(trimEnd) }}</span>
+          </label>
+          <input
+            type="range"
+            class="range range-xs"
+            min="0"
+            :max="videoDuration ?? 0"
+            step="0.5"
+            v-model.number="trimEnd"
+            @input="scanner.previewSeek(trimEnd)" />
+        </div>
+        <div class="w-full max-w-md form-control">
+          <label class="label py-1">
+            <span class="label-text">Sample rate</span>
+          </label>
+          <select class="select select-bordered select-sm" v-model.number="sampleFps">
+            <option :value="1">1 frame/sec (fastest, may miss quick clicks)</option>
+            <option :value="2">2 frames/sec (default)</option>
+            <option :value="4">4 frames/sec</option>
+            <option :value="8">8 frames/sec (thorough, slowest)</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2 justify-end w-full max-w-md">
+          <button class="btn" @click="scanner.cancelVideo()">Cancel</button>
+          <button class="btn btn-primary" @click="handleStartVideoScan">
+            Start scanning
+          </button>
+        </div>
+      </div>
+    </template>
+
     <template v-else-if="status === 'starting' || status === 'running'">
       <div class="flex flex-col items-center gap-3">
         <div
@@ -207,11 +266,15 @@ const {
   progress,
   unsupportedAspect,
   previewVideoEl,
+  videoDuration,
 } = scanner;
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const previewContainer = ref<HTMLDivElement | null>(null);
 const isSavingToInventory = ref(props.inventoryOnly);
+const trimStart = ref(0);
+const trimEnd = ref(0);
+const sampleFps = ref(2);
 
 watch(previewVideoEl, (videoEl) => {
   if (!previewContainer.value) return;
@@ -223,6 +286,19 @@ watch(previewVideoEl, (videoEl) => {
     previewContainer.value.appendChild(videoEl);
   }
 });
+
+// A newly-opened video defaults to its full length trimmed.
+watch(videoDuration, (duration) => {
+  trimStart.value = 0;
+  trimEnd.value = duration ?? 0;
+});
+
+function formatTime(seconds: number): string {
+  const total = Math.max(0, Math.round(seconds));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
 
 function getEchoName(candidate: ScanCandidate): string {
   if (!candidate.slot.echo) return "Unknown echo — needs review";
@@ -246,9 +322,17 @@ function handleFileChange(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (file) {
-    void scanner.startVideoFile(file);
+    void scanner.openVideo(file);
   }
   input.value = "";
+}
+
+async function handleStartVideoScan() {
+  await scanner.startVideoScan({
+    startSeconds: trimStart.value,
+    endSeconds: trimEnd.value,
+    fps: sampleFps.value,
+  });
 }
 
 function handleRetry() {

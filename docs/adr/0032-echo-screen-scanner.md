@@ -19,10 +19,13 @@ they already recorded doing this — they'd already made one), click through
 the in-game Echo inventory, and have the app detect each newly-displayed
 echo, OCR it, and queue it for review. A reference open-source project,
 [Tacet-Lab](https://github.com/DJ12421/Tacet-Lab) (React, tesseract.js,
-GPL-3.0), does the live-share half of this (window share → OCR → review
-queue → IndexedDB) but — checked directly against its README — does **not**
-support uploading a pre-recorded video; only live share, static screenshot
-import, and manual entry.
+GPL-3.0), does both halves of this: live share and a video-file upload with
+a trim range + adjustable sample rate (`ScannerView.tsx`'s
+`openVideo`/`scanVideo`, backed by a `LocalVideoSource` that seeks and
+samples frames). An initial pass at this ADR under-researched that — a
+README-only check missed the video-upload path entirely and wrongly
+concluded it needed to be designed from scratch; corrected once the user
+pointed at the actual source.
 
 Real footage was provided to ground the design instead of guessing ROIs:
 11 screenshots (2880x1800) and a 49s gameplay video (2304x1440, itself a
@@ -82,6 +85,15 @@ Key choices, each with a reason:
   software the user already has is a lower-friction path than live sharing
   every time). Fingerprint/stability/layout/parse/dedupe are unaffected by
   which source is active.
+- **Video upload is an explicit open → trim → scan flow**, matching
+  Tacet-Lab's actual `openVideo`/`scanVideo` split rather than scanning the
+  whole file blind: `capture.ts`'s `openVideoFile` loads metadata and a
+  scrubbable preview frame, the user picks a start/end range and a sample
+  rate (1/2/4/8 fps, default 2fps — matching Tacet-Lab's default), then
+  `createVideoFileSource` runs the seek-and-capture loop only over that
+  window. Lets a long recording skip past menu navigation before reaching
+  the Echo screen, and trades scan thoroughness for speed deliberately
+  instead of a single fixed step for every video.
 - **Signature dedupe only, no grid-position tracking.** Truly identical
   echoes (same name/set/cost/main/substats) collapse to one via
   `getEchoIdentityKey`, reused from the existing Discord-bot flow.
