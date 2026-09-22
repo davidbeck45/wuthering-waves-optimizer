@@ -75,11 +75,26 @@ import EchoParserWorker from "../workers/echoParser.worker?worker";
  * matchSetFirst calls — see SetMatchWeights's doc comment in
  * echoParser.worker.ts for why the Discord-bot flow's own calls
  * (which don't pass this) are completely unaffected.
+ *
+ * dominantColorDistanceWeight (0 by default, i.e. off, for every other
+ * caller) turns on a fourth signal added specifically for a real
+ * mismatch: a gray/white "Song of Feathered Trace" icon matched to a
+ * dark-maroon "Dream of the Lost" reference. Neither classifyColorFamily
+ * bucket (green/yellow/blue/red/purple/orange) fits a gray icon, so
+ * colorFamilyPenalty silently never engaged — and compareSetIcons's raw,
+ * unaligned per-pixel diff turned out to *favor the wrong one* on that
+ * exact pair (confirmed by replaying both real icons through the same
+ * math outside the worker). A plain Euclidean distance between the two
+ * images' single most-dominant colors isn't gated by the six-bucket
+ * classifier at all, and correctly separated this pair (distance ~78 for
+ * the right match, ~113 for the wrong one) where the bucketed check saw
+ * nothing.
  */
 const SCANNER_SET_MATCH_WEIGHTS = {
   colorFamilyMismatchPenalty: 3000,
   shapeDiffWeight: 1500,
   pixelDiffWeight: 1,
+  dominantColorDistanceWeight: 100,
 };
 
 export type ScannerStatus =

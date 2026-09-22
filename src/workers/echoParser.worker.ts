@@ -1085,17 +1085,52 @@ function detectShapes(
  * (pixelDiffWeight) is now far more trustworthy than it used to be for that
  * path, since the crop it's given is properly scale/alignment-matched to
  * the reference convention (capture.ts's detectIconBounds).
+ *
+ * dominantColorDistanceWeight is a fourth, later addition (default 0 — a
+ * true no-op for every existing caller): classifyColorFamily buckets a
+ * color into one of six hardcoded families (green/yellow/blue/red/purple/
+ * orange), and returns null for anything that doesn't clearly fit one —
+ * which includes any gray/neutral/white icon, since none of the six
+ * checks can fire without real channel separation. For those icons
+ * colorFamilyPenalty silently never applies (both sides need a *nonempty*
+ * family set), so two very differently-colored neutral icons (e.g. a gray
+ * icon vs a dark-maroon one) get zero color signal at all — it's down to
+ * shapeDiff and pixelDiff alone, and pixelDiff is a raw, unaligned
+ * per-pixel diff that isn't reliable for that (see below). Confirmed from
+ * a real mismatch report: a gray/white "Song of Feathered Trace" icon
+ * matched to a dark-maroon/pink "Dream of the Lost" reference, with
+ * colorFamilyPenalty 0 on both sides and pixelDiff actually *favoring* the
+ * wrong one. A plain Euclidean distance between the two images' single
+ * most-dominant colors isn't gated by the six-bucket classifier at all —
+ * for that exact pair it separates the correct match (distance ~78) from
+ * the wrong one (~113) cleanly, where the bucketed family check saw
+ * nothing. It's additive with, not a replacement for, colorFamilyPenalty
+ * (still useful when it *does* fire — e.g. definitively green vs blue).
  */
 type SetMatchWeights = {
   colorFamilyMismatchPenalty: number;
   shapeDiffWeight: number;
   pixelDiffWeight: number;
+  dominantColorDistanceWeight: number;
 };
 const DEFAULT_SET_MATCH_WEIGHTS: SetMatchWeights = {
   colorFamilyMismatchPenalty: 100000,
   shapeDiffWeight: 5000,
   pixelDiffWeight: 0.1,
+  dominantColorDistanceWeight: 0,
 };
+
+/** Euclidean RGB distance between two images' single most-dominant colors, or null if either has none (e.g. an all-background/all-excluded crop). */
+function dominantColorDistance(
+  a: Array<{ r: number; g: number; b: number; count: number }>,
+  b: Array<{ r: number; g: number; b: number; count: number }>,
+): number | null {
+  if (a.length === 0 || b.length === 0) return null;
+  const dr = a[0].r - b[0].r;
+  const dg = a[0].g - b[0].g;
+  const db = a[0].b - b[0].b;
+  return Math.sqrt(dr * dr + dg * dg + db * db);
+}
 
 /**
  * Match echo set from image region (matches against ALL sets first)
@@ -1248,11 +1283,20 @@ async function matchSetFirst(
     
     // Also do simple pixel comparison as fallback
     const pixelDiff = compareSetIcons(resizedCtx, refCtx, 32, 32);
-    
+
+    // Continuous color-distance signal, independent of classifyColorFamily's
+    // six hardcoded buckets — see SetMatchWeights's doc comment for why
+    // this exists (a gray/neutral icon never lands in any bucket, so
+    // colorFamilyPenalty silently no-ops for it, no matter how different
+    // its actual color is from a candidate's).
+    const colorDistance = dominantColorDistance(sourceDominantColors, refDominantColors);
+    const colorDistanceTerm = colorDistance !== null ? colorDistance * weights.dominantColorDistanceWeight : 0;
+
     // Combined score — see weights's doc comment for what each term means
     // and why the scanner tunes them differently than the default.
     const combinedDiff =
       colorFamilyPenalty +
+      colorDistanceTerm +
       shapeDiff * weights.shapeDiffWeight +
       pixelDiff * weights.pixelDiffWeight;
 

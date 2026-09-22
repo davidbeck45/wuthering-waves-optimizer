@@ -369,6 +369,46 @@ something validated against a large batch of real captures yet — the
 debug view is exactly the tool to tune them further from here if matches
 are still inconsistent.
 
+### Fourth bug: color-family's six buckets have no bucket for gray
+
+Boosting `compareSetIcons`'s weight assumed it was reliable once given a
+properly scaled/aligned crop — a real mismatch showed that assumption was
+only partly true. A gray/white "Song of Feathered Trace" icon (a light
+ring, dark gray fill, white feather glyph — no real hue anywhere) matched
+to "Dream of the Lost" (pink ring, dark maroon fill) instead. Replaying
+both real icons through the same math outside the worker (same resize,
+same dominant-color extraction) found *both* remaining signals failed on
+this exact pair:
+
+- `classifyColorFamily`'s six hardcoded buckets (green/yellow/blue/red/
+  purple/orange) all require real separation between channels — a gray
+  color (r≈g≈b) can't fit any of them, so it classifies as *no family at
+  all*. `colorFamilyPenalty` only applies when **both** sides have a
+  nonempty family set, so for a gray source icon it silently never
+  engages, no matter how different a candidate's actual color is.
+- `compareSetIcons`'s per-pixel diff, with nothing else to check it,
+  turned out to slightly *favor the wrong icon* (30499 vs. 32783 for the
+  correct one) — it's a raw, position-by-position comparison with no
+  alignment/registration step, so it's sensitive to exactly where each
+  icon's internal detail (the feather glyph vs. the tribal glyph) happens
+  to land after both get stretched to 32x32, not just to overall color or
+  shape.
+
+What *did* cleanly separate this pair: a plain Euclidean distance between
+the two images' single most-dominant colors — no bucketing, so a gray
+source and a maroon reference just compute a large, real distance instead
+of "no signal." For this exact pair it came out ~78 for the correct match
+vs. ~113 for the wrong one, a clean separation the bucketed check
+couldn't see at all. Added as `dominantColorDistance` in
+`echoParser.worker.ts`, gated by a new `dominantColorDistanceWeight` in
+`SetMatchWeights` — **0 by default** (a true no-op; the Discord-bot flow's
+calls are completely unaffected, same as every other weight here), and
+`SCANNER_SET_MATCH_WEIGHTS` turns it on (100) for the scanner's own calls.
+It's additive with `colorFamilyPenalty`, not a replacement — the bucketed
+check still helps when it *does* fire (a definitively green icon vs. a
+definitively blue one), this just stops it going silent exactly when the
+source icon has no real hue to bucket.
+
 ## Accuracy
 
 Per `docs/accuracy-verification.md` and the project's priority order,

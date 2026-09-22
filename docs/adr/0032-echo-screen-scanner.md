@@ -294,3 +294,26 @@ captured crop, not just a "Matched: <name>" label, for a literal
 side-by-side. These particular weight values are a reasoned starting
 point from the scoring math, not yet validated against a large batch of
 real captures — expect further tuning from real debug-view use.
+
+**Revised a fifth time (same rollout):** boosting `compareSetIcons`'s
+weight assumed it was reliable given a properly scaled/aligned crop — a
+real mismatch (a gray/white "Song of Feathered Trace" icon matched to a
+dark-maroon "Dream of the Lost" reference) showed both remaining signals
+can fail together on a gray/neutral icon specifically.
+`classifyColorFamily`'s six hardcoded buckets all require real channel
+separation, so a gray color fits none of them — `colorFamilyPenalty` only
+applies when *both* sides have a nonempty family, so it silently never
+engages for a gray source regardless of how different a candidate's real
+color is. With that check disengaged, `compareSetIcons`'s own per-pixel
+diff (confirmed by replaying both real icons through the same math outside
+the worker) turned out to slightly favor the *wrong* icon — it's a raw,
+unaligned position-by-position comparison, sensitive to exactly where each
+icon's internal glyph lands after both get stretched to 32x32, not a
+holistic color or shape check. Added `dominantColorDistance`: a plain
+Euclidean distance between the two images' single most-dominant colors,
+not gated by any bucket, which cleanly separated this exact pair (~78 for
+the correct match, ~113 for the wrong one) where the bucketed check saw
+nothing. Gated by a new `dominantColorDistanceWeight` in `SetMatchWeights`,
+0 by default (true no-op for the Discord-bot flow and every other existing
+caller), turned on (100) only in `SCANNER_SET_MATCH_WEIGHTS`. Additive
+with `colorFamilyPenalty`, not a replacement.
