@@ -177,3 +177,19 @@ explicit user direction for this feature.
   `src/composables/useEchoScanner.ts`, `src/components/EchoScannerCapture.vue`
 - `src/echoes/parsedEchoMapping.ts`
 - `tests/scanner/*`, `tests/echoes/parsedEchoMapping.test.ts`
+
+**Revised (same rollout, before this ADR was ever marked as shipped
+history):** several patterns the user spotted directly in the debug view's
+real crop images led to a further round of changes, detailed in
+`docs/scanner.md` rather than duplicated here — no cost or level OCR at
+all (cost derived from the resolved echo's class, level unused since the
+app doesn't persist it, so `NAME_BLOCK` shrank to a single-line name-only
+crop); stat-row crops now exclude the leading stat-type icon glyph (real
+noise source: tesseract reading it as garbage text); `SET_ICON_BOX`
+tightened further after a direct screenshot comparison against a reference
+icon image showed it was still too loose; and substat OCR gained a
+`SUBSTAT_BLOCK` fallback pass for when the 5 per-row crops don't add up to
+all 5 (their real cause: a wrap earlier in the panel shifts every row
+below it down by an amount no fixed-position crop's height alone can
+account for). Echo identification's narrowing is now set-only, not
+set+cost, since cost is no longer read as text.

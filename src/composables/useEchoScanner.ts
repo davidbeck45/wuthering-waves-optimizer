@@ -28,10 +28,11 @@ import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { parseEchoCandidate } from "../scanner/parse";
 import {
   PANEL_BOX,
-  HEADER_BLOCK,
+  NAME_BLOCK,
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
+  SUBSTAT_BLOCK,
   SET_ICON_BOX,
   FULL_FRAME,
   DEBUG_REGIONS,
@@ -244,8 +245,8 @@ export function useEchoScanner() {
 
     try {
       const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
-      const [headerBitmap, mainBitmap, secondaryBitmap, ...substatBitmaps] = await Promise.all([
-        grabRegionBitmap(videoEl, HEADER_BLOCK),
+      const [nameBitmap, mainBitmap, secondaryBitmap, ...substatBitmaps] = await Promise.all([
+        grabRegionBitmap(videoEl, NAME_BLOCK),
         grabRegionBitmap(videoEl, MAIN_STAT_ROW),
         grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
         ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
@@ -253,7 +254,7 @@ export function useEchoScanner() {
       const frameBitmap = await grabRegionBitmap(videoEl, FULL_FRAME);
 
       const regions: Record<string, ImageBitmap> = {
-        header: headerBitmap,
+        name: nameBitmap,
         main: mainBitmap,
         secondary: secondaryBitmap,
       };
@@ -267,13 +268,36 @@ export function useEchoScanner() {
         debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
       ]);
 
-      const parsed = parseEchoCandidate({
-        headerText: texts.header ?? "",
+      let parsed = parseEchoCandidate({
+        nameText: texts.name ?? "",
         mainStatText: texts.main ?? "",
         secondaryStatText: texts.secondary ?? "",
         substatTexts: substatKeys.map((key) => texts[key] ?? ""),
         matchedSet,
       });
+
+      // The 5 per-row crops didn't add up to all 5 substats — most often a
+      // wrapped label upstream having shifted every row below it down by
+      // an amount the fixed-position crops didn't anticipate. Re-OCR one
+      // wider block spanning all 5 rows (+ wrap allowance) and re-parse
+      // with that as a fallback — see parse.ts's parseEchoCandidate and
+      // layout.ts's SUBSTAT_BLOCK doc comments.
+      if (parsed.slot.substats.some((s) => !s.subStat)) {
+        const blockBitmap = await grabRegionBitmap(videoEl, SUBSTAT_BLOCK);
+        const blockTexts = await recognizeCandidate({ substatBlock: blockBitmap });
+        parsed = parseEchoCandidate({
+          nameText: texts.name ?? "",
+          mainStatText: texts.main ?? "",
+          secondaryStatText: texts.secondary ?? "",
+          substatTexts: substatKeys.map((key) => texts[key] ?? ""),
+          substatBlockText: blockTexts.substatBlock ?? "",
+          matchedSet,
+        });
+        if (debugCrops && parsed.usedSubstatBlockFallback) {
+          const blockCrop = debugCrops.crops.find((c) => c.key === "substatBlock");
+          if (blockCrop) blockCrop.text = blockTexts.substatBlock ?? "";
+        }
+      }
       stability.commitScan(fingerprint);
 
       if (parsed.needsMainStatSelection) {
@@ -295,9 +319,9 @@ export function useEchoScanner() {
       candidates.value.push({
         id: randomString(),
         slot: parsed.slot,
-        level: parsed.level,
         confidence: parsed.confidence,
         needsMainStatSelection: false,
+        usedSubstatBlockFallback: parsed.usedSubstatBlockFallback,
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,

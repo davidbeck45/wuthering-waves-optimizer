@@ -45,8 +45,6 @@ export type FieldConfidence = "high" | "low";
 export type ScanCandidate = {
   id: string;
   slot: ParsedEchoSlot;
-  /** +level read from the header, 0-25. Not part of ParsedEchoSlot (the app doesn't persist echo level today). */
-  level: number | null;
   confidence: {
     name: FieldConfidence;
     cost: FieldConfidence;
@@ -56,6 +54,8 @@ export type ScanCandidate = {
   };
   /** True when the panel had no main stat selected yet (freshly acquired echo) — should be skipped, not saved. */
   needsMainStatSelection: boolean;
+  /** True when the per-row substat crops came up short and the wider SUBSTAT_BLOCK fallback pass was used instead — see parse.ts's parseEchoCandidate. */
+  usedSubstatBlockFallback: boolean;
   /** Dedupe signature — see dedupe.ts. */
   signature: string;
   /** Small preview crop of the echo portrait, for the review list UI. */

@@ -13,15 +13,20 @@ capture.ts (FrameSource: live share or uploaded video)
   → grab a small crop of the detail panel every tick
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
     something new?" gate — no OCR yet
-  → on settle: grab header + main-stat + fixed-secondary + up to 5
+  → on settle: grab name + main-stat + fixed-secondary + up to 5
     individually-cropped substat-row bitmaps, plus a full-frame bitmap
       → echoScanner.worker.ts: OCR each crop separately (tesseract.js, self-hosted)
       → echoParser.worker.ts: matchSetFirst (existing set-icon matcher, reused)
-  → parse.ts: raw per-row OCR text + matched set → ParsedEchoSlot candidate
-    (echo identity: narrow mainEchoesData by the matched set + cost first,
-    same as CalculatorEchoParser.vue's filteredEchoKeys, then Levenshtein
-    name-text match only to break a tie within that narrowed pool — not
-    image matching, since the name is printed as text in the panel)
+  → if the 5 per-row substat crops don't add up to all 5 substats: one more
+    OCR call against a wider SUBSTAT_BLOCK crop, parsed as a fallback pass
+  → parse.ts: raw OCR text + matched set → ParsedEchoSlot candidate (echo
+    identity: narrow mainEchoesData by the matched set first, same as
+    CalculatorEchoParser.vue's filteredEchoKeys minus its cost half —
+    this scanner doesn't read cost — then Levenshtein name-text match to
+    break a tie within that narrowed pool; cost is then derived from the
+    resolved echo's own class, not read as text at all; level isn't read
+    either — every scanned echo is assumed max-level, since the app
+    doesn't persist echo level today)
   → dedupe.ts: signature-based (getEchoIdentityKey) — identical echoes collapse
   → useEchoScanner.ts (composable) owns all of the above, exposes a
     reviewable candidate list
@@ -82,105 +87,146 @@ this flow was built to match its actual approach once that was corrected.)
 All regions are **fractions of the full captured frame**, not fixed pixels —
 required because the live stream, an uploaded video, and a future
 calibration screenshot can each arrive at a different resolution. The
-fractions currently in `layout.ts` were **measured, not guessed**, off real
-screenshots and a real gameplay video the user provided:
+fractions in `layout.ts` are **measured, not guessed**, off real
+screenshots and a real gameplay video the user provided, using simple
+Python/PIL luma-variance and brightness-threshold scans (row/column bands,
+bounding boxes) rather than eyeballing crops — every constant's doc
+comment says what was actually measured.
 
-- Row bands were found by taking a luma-variance profile down the panel
-  region and grouping contiguous high-variance rows (text) — see the
-  approach documented in the PR history; the result: the main-stat row
-  starts at a fixed fraction of frame height (~0.384) with a consistent
-  ~0.037 pitch between single-line rows, **regardless of capture
-  resolution** — checked against three real resolutions that share WuWa's
-  fixed 16:10 UI aspect: 2880x1800 and 2304x1440 (this PR's footage) and
-  2800x1752 (an earlier session's sample).
-- This measurement also settled a real design question: **an echo below
-  +25 reveals fewer than 5 substats**, and the panel doesn't reserve blank
-  space for the missing ones — content below the last populated row just
-  moves up. A long stat label ("Resonance Skill DMG Bonus") can also wrap
-  to a second line, shifting everything after it unpredictably. `layout.ts`
-  therefore defines `MAIN_STAT_ROW`, `SECONDARY_STAT_ROW`, and 5
-  `SUBSTAT_ROWS` as individually-positioned crops at fixed Y fractions
-  (0.384 first row, ~0.0373 pitch), not one big block — see "Substat OCR"
-  below for why.
-- `SET_ICON_BOX` is now also pixel-measured (threshold two real screenshots'
-  header regions for bright ring/glyph pixels, take the bounding box — both
-  landed at x0≈0.728-0.729, y0≈0.161-0.166). Its first version was an
-  unmeasured guess, and a bad enough one to consistently miss the icon
-  entirely and land on background/portrait art instead — every scan
-  confidently returned whatever set icon happened to be closest to that
-  background blur (reported as every echo coming back "Dream of the Lost").
-  See `SET_ICON_BOX`'s own doc comment in `layout.ts`.
+- Row bands: the main-stat row starts at a fixed fraction of frame height
+  (~0.384) with a consistent ~0.0373 pitch between single-line rows,
+  **regardless of capture resolution** — checked against three real
+  resolutions that share WuWa's fixed 16:10 UI aspect: 2880x1800,
+  2304x1440, and 2800x1752.
+- **No cost or level OCR.** The app doesn't persist echo level (every
+  scanned echo is assumed max-level), and cost is derived from the
+  resolved echo's own class once name+set narrow it down — the same
+  fallback `CalculatorEchoParser.vue` already has for when its own cost
+  OCR misses, just always taken here. That means the old multi-purpose
+  header crop shrank to `NAME_BLOCK`: the name line only, single-line,
+  fixed height — WuWa shrinks the font for a long name rather than
+  wrapping it, checked against both a short name ("Thousand-Puppet
+  Pavilion") and a long one ("Reminiscence - Nightmare: Adam Smasher").
+- **Stat-row crops exclude the leading stat-type icon glyph** (the small
+  icon matching `subStatIconMap`, e.g. a sword for ATK, that sits before
+  every row's label). A real debug-crop capture showed tesseract reading
+  that icon as garbage text ahead of the real label ("QQ HP 957", "% DEF")
+  — measured the icon/text gap directly (a column-variance scan across a
+  real row) and shifted every stat row's left edge past it, rather than
+  relying only on `parseStatRow`'s noise-tolerance to work around it.
+- `SET_ICON_BOX` has had two revisions, both from real usage. Its first
+  version (an unmeasured guess) missed the icon entirely and landed on
+  background/portrait art — every scan confidently returned whatever set
+  icon happened to be closest to that background blur (reported as every
+  echo coming back "Dream of the Lost"). Its second version was
+  pixel-measured but still left the icon under half the crop, with real
+  background margin around it — a direct screenshot comparison against a
+  reference icon image (which is cropped tight to its content) showed the
+  gap, and that margin dilutes the real signal once `matchSetFirst`
+  resizes to 32x32 for comparison. The current version is cropped as
+  close to the icon's own measured bounds as a couple of pixels of margin
+  allows, verified visually against two different echoes' icons.
+- `SUBSTAT_BLOCK` — a fallback, not primary, region — spans all 5 substat
+  rows plus wrap allowance; see "Substat OCR" below.
 - Only 16:10 has been measured. A very different aspect ratio is rejected
   up front (`isSupportedAspect`) rather than silently producing garbage; a
   calibration UI for non-16:10/ultrawide is a known follow-up, not built here.
 
-If a future WuWa UI update moves the panel, re-run the same measurement
-against a fresh screenshot before touching the fractions by feel.
+If a future WuWa UI update moves the panel, re-run the same kind of
+measurement against a fresh screenshot before touching the fractions by feel.
 
-## Substat OCR: individually-cropped rows, not one block
+## Substat OCR: per-row crops first, a wider block as fallback
 
 The first version of this scanner OCR'd the whole stats area as one
 multi-line block and asked tesseract to segment it into rows itself. Real
-usage surfaced this as the cause of missing substats: block-level line
+usage surfaced this as a cause of missing substats: block-level line
 segmentation can silently merge two rows together or drop a row's text
 entirely when line spacing is tight, with no way to recover it from the
-block's recognized text afterward.
+block's recognized text afterward. That was replaced with 5 separate,
+individually-cropped substat regions — mirroring `CalculatorEchoParser.vue`'s
+proven approach for the Discord-bot image (5 separate crops there too) —
+which fixed that failure mode but introduced a different one: `SUBSTAT_ROWS`
+crops are taller than one line (to still catch a wrapped label's
+continuation, which lands in the next row's space), and real debug-crop
+captures showed that overlap regularly catching a *neighboring* row's
+actual text too, not just blank margin — visible as two consecutive
+substat crops both containing the same line. A wrapped label earlier in
+the panel is the root cause either way: WuWa doesn't reserve consistent
+spacing for a wrap, so it shifts every row below it down by an amount
+that varies echo to echo, which no *fixed*-position crop's height alone
+can fully account for.
 
-This now mirrors `CalculatorEchoParser.vue`'s proven approach instead — 5
-separate, individually-cropped substat regions there too, one OCR call
-each. `layout.ts`'s `SUBSTAT_ROWS` crops are deliberately taller than a
-single line (tall enough to also catch a wrapped label's continuation
-line, which lands in the next row's space); `parse.ts`'s `parseStatRow`
-takes only the *first* complete "label value" match it finds in a crop and
-ignores anything after, so that overlap can never leak a neighboring row's
-text into the wrong slot. `MAIN_STAT_ROW`/`SECONDARY_STAT_ROW` stay
-single-line height — the labels eligible there (HP/ATK/DEF/element/Crit/
-Healing Bonus/Energy Regen) never wrap, unlike the 4 attack-type DMG bonus
-substat labels.
+The current design is two passes, per the user's own suggestion after
+seeing the debug-crop bleed-over directly:
 
-This costs more OCR calls per candidate (up to 8, vs. 2 for the old header
-+ stats-block design) — a deliberate accuracy-over-speed tradeoff per
-`CLAUDE.md`'s priority order, offset by giving `echoScanner.worker.ts` a
-3-worker pool (up from 2) so a candidate's row crops OCR in parallel.
+1. **Per-row pass** (primary): the 5 individually-cropped `SUBSTAT_ROWS`,
+   as before. `parse.ts`'s `parseStatRow` only accepts a candidate row
+   whose label actually looks like a real stat name
+   (`isPlausibleLabel`) — keeps scanning past noise (including a
+   neighboring row's leaked-in text, or the excluded icon's OCR garbage
+   if any still gets through) rather than grabbing the first thing that
+   merely *shaped* like "label value".
+2. **Block fallback**: if the per-row pass doesn't add up to all 5
+   substats — expected every time now that level is assumed max, so
+   anything less is treated as a miss to recover, not a legitimately
+   partial echo — one more OCR call goes out against `SUBSTAT_BLOCK` (all
+   5 rows + wrap allowance, in one wider crop), parsed by `splitStatBlock`
+   (the same per-row plausibility gate, generalized to keep finding more
+   rows instead of stopping at the first). If that recovers more than the
+   per-row pass did, its result *replaces* the per-row one outright,
+   rather than trying to merge two different partial views position by
+   position — `usedSubstatBlockFallback` on both the parse result and the
+   saved `ScanCandidate` records when this happened, shown in the debug view.
 
-## Echo identification: narrow by set+cost first, name text breaks ties
+This costs more OCR calls per candidate than the original single-block
+design (up to 8 baseline, +1 only when the fallback triggers) — a
+deliberate accuracy-over-speed tradeoff per `CLAUDE.md`'s priority order,
+offset by giving `echoScanner.worker.ts` a 3-worker pool (up from 2) so a
+candidate's row crops OCR in parallel.
+
+## Echo identification: narrow by set first, name text breaks ties, cost is derived
 
 The first version matched the echo purely by OCR'ing its name and
-Levenshtein-fuzzy-matching against all ~150 echoes (narrowed only by
-cost). That missed the technique `CalculatorEchoParser.vue`'s Discord-bot
-flow actually relies on for its accuracy: match the set icon first
-(`matchSetFirst`), filter `mainEchoesData` down to echoes in that set *and*
-at that cost (`filteredEchoKeys`), and only then resolve the specific echo
-— often down to exactly one candidate, since most sets have a single echo
-at a given cost tier.
+Levenshtein-fuzzy-matching against all ~150 echoes (narrowed only by a
+cost read from text). That missed the technique `CalculatorEchoParser.vue`'s
+Discord-bot flow actually relies on for its accuracy: match the set icon
+first (`matchSetFirst`), filter `mainEchoesData` down to echoes in that set,
+and only then resolve the specific echo.
 
-`parse.ts`'s `resolveEcho` now does the same narrowing (`matchedSet` was
-already being computed via the existing `matchSetFirst` reuse — it just
-wasn't being used to narrow the name match):
+`parse.ts`'s `resolveEcho` does this narrowing by **set only** — this
+scanner doesn't read cost as text at all (see the ROI layout section
+above), so unlike `CalculatorEchoParser.vue`'s own `filteredEchoKeys` this
+can't also narrow by cost:
 
-1. **Narrow** `mainEchoesData` by `matchedSet` membership and cost.
-2. **Pool of exactly one**: trust it directly — this is the common case for
-   cost-3/cost-4 "boss" echoes, and sidesteps OCR'ing the name at all for
-   an echo whose name is short or accented and therefore hard to read
-   reliably (confirmed cause of a real "Jué" (4-cost) mismatch — see
-   `normalize`'s doc comment). Still sanity-checked against any name text
-   that *was* read (`NAME_SANITY_THRESHOLD`), so a set icon that was
-   clearly misread doesn't get silently trusted.
-3. **Pool of several**: cost-1 "trash" echoes commonly share both a set and
-   a cost with a handful of siblings — Levenshtein name matching breaks
-   the tie, but only within that narrowed pool instead of against the
-   full list, which is both faster and more accurate.
-4. **Empty pool**: the set (or set+cost combination) matched nothing — the
-   set read was probably wrong. Falls back to `matchEchoName`, matching by
-   name against the full cost tier, same as the very first version's
-   behavior.
+1. **Narrow** `mainEchoesData` by `matchedSet` membership.
+2. **Pool of exactly one** (only when a set actually narrowed to a single
+   echo across *every* cost tier — checked: most sets still have several,
+   e.g. `SongofFeatheredTrace` has 8 across costs 1/3/4, but some, e.g.
+   `ShadowofShatteredDreams`, really do have just one): trust it directly,
+   sidestepping OCR'ing the name at all for an echo whose name is short or
+   accented and therefore hard to read reliably (confirmed cause of a real
+   "Jué" (4-cost) mismatch — see `normalize`'s doc comment). Still
+   sanity-checked against any name text that *was* read
+   (`NAME_SANITY_THRESHOLD`), so a set icon that was clearly misread
+   doesn't get silently trusted.
+3. **Pool of several** (the common case now that cost doesn't also
+   narrow): Levenshtein name matching breaks the tie within that pool
+   instead of against the full list — `NAME_BLOCK`'s single-line, no-wrap
+   crop (see above) exists specifically to make this name read reliable,
+   since it now carries more of the identification burden than it used to.
+4. **Empty pool**: the set match itself was probably wrong. Falls back to
+   `matchEchoName`, matching by name against every echo, same as the very
+   first version's behavior.
 
-The fixed secondary-stat row is also now OCR'd (previously skipped as
-"not persisted") and used for a second cost fallback: its flat value is
-unique per cost tier at rank 5 (`flatBonusesByRankByType`; e.g. 150 only
-ever appears at cost 4) — `inferCostFromSecondaryValue` uses this when the
-small "COST n" text itself fails to OCR, since the secondary row is a much
-larger, easier crop to read reliably.
+Once the echo is resolved, **cost is derived from its class**
+(`getCostByClass`) — never read as OCR text. The fixed secondary-stat row
+is still OCR'd (useful context, shown in the debug view) but no longer
+feeds cost detection at all; an earlier version tried inferring cost from
+its flat value, but only checked the rank-5 table (a real bug — echoes
+aren't all 5-star, confirmed from a real rank-4 cost-1 echo whose
+secondary crop was perfectly legible but didn't match rank 5's value).
+Deriving cost from the resolved echo instead sidesteps that whole class of
+problem.
 
 ## Accuracy
 
@@ -190,12 +236,13 @@ nothing here auto-saves silently:
 - Every candidate carries per-field confidence (name, cost, main stat, set,
   each substat) computed in `parse.ts`; low-confidence fields are flagged in
   `EchoScannerCapture.vue`'s review list.
-- Echo identity is narrowed by matched set + cost first (mirroring the
-  Discord-bot flow's `filteredEchoKeys`), with Levenshtein name-text
-  matching only breaking ties within that pool or serving as a fallback —
-  see "Echo identification" above. A name below threshold with no
-  narrowing to fall back on is left unresolved (`echo: null`) rather than
-  guessed.
+- Echo identity is narrowed by the matched set first (mirroring the
+  Discord-bot flow's `filteredEchoKeys`, minus its cost half — this
+  scanner doesn't read cost), with Levenshtein name-text matching only
+  breaking ties within that pool or serving as a fallback — see "Echo
+  identification" above. A name below threshold with no narrowing to fall
+  back on is left unresolved (`echo: null`) rather than guessed. Cost is
+  then derived from the resolved echo's own class, never guessed from text.
 - Substat values are snapped to the nearest legal roll in `subStatsTable`
   (`src/echoes/stats.ts`) — the same table the Discord-bot importer trusts.
 - A freshly-acquired echo with no main stat chosen yet (`needsMainStatSelection`)
@@ -207,6 +254,19 @@ nothing here auto-saves silently:
   already-tested duplicate-review → save pipeline unchanged — reviewing and
   confirming before anything is saved is not new UI, it's the same UI the
   Discord-bot import flow already uses.
+
+**Preprocessing is scoped to text OCR only, never to set-icon matching.**
+`echoScanner.worker.ts`'s `preprocess` (grayscale, contrast stretch, 3x
+upscale — the same recipe `CalculatorEchoParser.vue` already uses for the
+Discord-bot flow) runs on every crop that goes to that worker (name, main,
+secondary, substat rows, the substat-block fallback) — text OCR genuinely
+benefits from it. The set icon never goes through that worker or that
+preprocessing at all: it's matched by `echoParser.worker.ts`'s
+`matchSetFirst`, a color-based pixelmatch against the *raw* captured
+bitmap, in a completely separate worker. Grayscaling would destroy the
+color signal that comparison depends on, so the two pipelines are kept
+architecturally apart rather than relying on a preprocessing flag to skip
+it correctly in one path.
 
 ## Self-hosted tesseract.js
 
@@ -250,31 +310,36 @@ wrong:
   live/moving scan.
 - **Per-candidate crop grid**: every captured candidate also carries
   `debugCrops` — a labeled `data:` URL thumbnail of exactly what was
-  cropped for each region, plus that region's own OCR text. The `setIcon`
-  entry shows the actual matched set ("Matched: <Set Name>" or "No set
-  match") instead of a generic placeholder, so you can directly compare
-  the crop against what it was matched to; `panel` (fingerprint-only, not
-  OCR'd or matched) keeps a placeholder. `capture.ts`'s
-  `grabRegionWithPreview` produces both the bitmap sent to the worker and
-  the thumbnail from one canvas draw, so what's shown is provably the same
-  pixels that were actually OCR'd/matched, not a re-derived approximation.
+  cropped for each region (including `substatBlock`, the fallback region),
+  plus that region's own OCR text. The `setIcon` entry shows the actual
+  matched set ("Matched: <Set Name>" or "No set match") instead of a
+  generic placeholder, so you can directly compare the crop against what
+  it was matched to; `panel` (fingerprint-only, not OCR'd or matched)
+  keeps a placeholder. `capture.ts`'s `grabRegionWithPreview` produces
+  both the bitmap sent to the worker and the thumbnail from one canvas
+  draw, so what's shown is provably the same pixels that were actually
+  OCR'd/matched, not a re-derived approximation. A candidate whose substat
+  block fallback pass actually fired shows a small "Used substat fallback
+  pass" note (`usedSubstatBlockFallback`).
 
 This is what caught `SET_ICON_BOX` being badly mispositioned (see its doc
 comment) — every scan confidently returning the same wrong set is exactly
-what a fixed-but-wrong crop landing on background art looks like. It also
-led directly to two `parse.ts` fixes from real debug-crop text a user
-reported: `inferCostFromSecondaryValue` only checked the rank-5 flat
-value, missing a legible crop from a rank-4 echo; and `parseStatRow`
-greedily accepted the *first* line that happened to end in a number —
-including obvious OCR garbage — instead of continuing to look for a line
-that actually resembled a real stat label further down (see both
-functions' doc comments). If substat/set accuracy regresses again, debug
-mode first: check the full-frame snapshot to confirm the boxes actually
-sit on the right UI elements, and check a few candidates' crop grids and
-raw text to see whether OCR is misreading text it *did* capture correctly,
-versus not capturing the right pixels at all, versus capturing the right
-pixels but the parser rejecting real content the way the two bugs above
-did — those each need a different kind of fix.
+what a fixed-but-wrong crop landing on background art looks like — and led
+directly to several fixes from real debug-crop text a user reported: an
+earlier cost-inference helper only checking the rank-5 flat value (fixed
+by deriving cost from the resolved echo instead, see "Echo identification"
+above); `parseStatRow`/`splitStatBlock` greedily accepting the *first*
+line that happened to end in a number, including obvious OCR garbage,
+instead of continuing to look for a line that actually resembled a real
+stat label further down; the set-icon crop being too loose around the
+actual icon; and the stat-type icon glyph itself being read as text noise
+(see "ROI layout" and "Substat OCR" above for all of these). If
+substat/set accuracy regresses again, debug mode first: check the
+full-frame snapshot to confirm the boxes actually sit on the right UI
+elements, and check a few candidates' crop grids and raw text to see
+whether OCR is misreading text it *did* capture correctly, versus not
+capturing the right pixels at all, versus capturing the right pixels but
+the parser rejecting real content — those each need a different kind of fix.
 
 Debug mode costs an extra canvas encode per region per candidate (not
 free), so it's opt-in and off by default — leave it off for normal scanning.

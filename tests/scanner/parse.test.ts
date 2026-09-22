@@ -1,46 +1,45 @@
 import { describe, it, expect } from "vitest";
 import {
-  parseHeaderText,
+  parseNameText,
   parseStatRow,
+  splitStatBlock,
   matchEchoName,
   normalizeStatLabel,
   parseEchoCandidate,
 } from "../../src/scanner/parse";
 import { getEchoData } from "../../src/echoes/index";
 
-// Ground-truth transcripts read directly off real 2880x1800 screenshots the
-// user provided (~/Downloads/ScreenshotsEchoes), typed out as tesseract
-// would plausibly return them per individually-cropped row (one OCR call
-// per row, mirroring CalculatorEchoParser.vue's Discord-bot-image approach
-// — see layout.ts/parse.ts's doc comments for why). Real set memberships
-// below were checked against src/echoes/index.ts, not invented:
+// Ground-truth transcripts read directly off real screenshots/debug-crop
+// text the user provided, typed out as tesseract would plausibly return
+// them per individually-cropped row (one OCR call per row, mirroring
+// CalculatorEchoParser.vue's Discord-bot-image approach — see
+// layout.ts/parse.ts's doc comments for why). Real set memberships below
+// were checked against src/echoes/index.ts, not invented:
 //  - Thousand-Puppet Pavilion: cost 4 (Calamity), sets: [SongofFeatheredTrace]
-//    — the only cost-4 echo in that set, so set+cost alone narrows to it.
+//    — the only cost-4 echo in that set, so the set alone narrows to it.
 //  - Kernel Puppet: Reflection: cost 1 (Common), sets: [HeartofEvilsPurge]
 //    — one of ~4 cost-1 echoes sharing that set, so name text still has to
 //    break the tie among that (much smaller) pool.
 //  - Viridblaze Saurian: cost 3 (Elite), sets: [MoonlitClouds, MoltenRift]
 
-describe("parseHeaderText", () => {
-  it("reads name, level, and cost from a clean header block", () => {
-    const result = parseHeaderText("Thousand-Puppet Pavilion\n+25\nCOST 4");
-    expect(result).toEqual({ name: "Thousand-Puppet Pavilion", level: 25, cost: 4 });
+describe("parseNameText", () => {
+  it("reads the name from a single-line crop", () => {
+    expect(parseNameText("Thousand-Puppet Pavilion")).toBe("Thousand-Puppet Pavilion");
   });
 
-  it("handles a colon in the echo name", () => {
-    const result = parseHeaderText("Kernel Puppet: Reflection\n+25\nCOST 1");
-    expect(result.name).toBe("Kernel Puppet: Reflection");
-    expect(result.cost).toBe(1);
+  it("handles a colon and hyphen in the name", () => {
+    expect(parseNameText("Reminiscence - Nightmare: Adam Smasher")).toBe(
+      "Reminiscence - Nightmare: Adam Smasher",
+    );
   });
 
-  it("rejects an illegal cost (there is no cost-2 echo tier)", () => {
-    const result = parseHeaderText("Some Echo\n+25\nCOST 2");
-    expect(result.cost).toBeNull();
+  it("takes the first non-blank line and strips stray OCR noise characters", () => {
+    expect(parseNameText("\n  Jué|_ \n")).toBe("Jué");
   });
 
-  it("returns nulls for lines it can't parse instead of throwing", () => {
-    const result = parseHeaderText("");
-    expect(result).toEqual({ name: null, level: null, cost: null });
+  it("returns null for blank or non-name-shaped text", () => {
+    expect(parseNameText("")).toBeNull();
+    expect(parseNameText("12")).toBeNull();
   });
 });
 
@@ -71,7 +70,7 @@ describe("parseStatRow", () => {
     expect(parseStatRow("ATK 50")).toEqual({ rawLabel: "ATK", rawValue: "50" });
   });
 
-  it("returns null for a blank or unparseable crop (an absent row on a below-+25 echo)", () => {
+  it("returns null for a blank or unparseable crop", () => {
     expect(parseStatRow("")).toBeNull();
     expect(parseStatRow("   \n  ")).toBeNull();
   });
@@ -96,6 +95,33 @@ describe("parseStatRow", () => {
   });
 });
 
+describe("splitStatBlock", () => {
+  it("extracts multiple rows from one multi-line block", () => {
+    const rows = splitStatBlock("Crit. Rate 6.3%\nHP 7.9%\nATK 40");
+    expect(rows).toEqual([
+      { rawLabel: "Crit. Rate", rawValue: "6.3%" },
+      { rawLabel: "HP", rawValue: "7.9%" },
+      { rawLabel: "ATK", rawValue: "40" },
+    ]);
+  });
+
+  it("rejoins a wrapped label spanning two lines within the block", () => {
+    const rows = splitStatBlock("Crit. Rate 6.3%\nResonance Liberation DMG\nBonus 10.9%\nATK 40");
+    expect(rows).toEqual([
+      { rawLabel: "Crit. Rate", rawValue: "6.3%" },
+      { rawLabel: "Resonance Liberation DMG Bonus", rawValue: "10.9%" },
+      { rawLabel: "ATK", rawValue: "40" },
+    ]);
+  });
+
+  it("skips implausible noise lines rather than counting them as rows", () => {
+    const rows = splitStatBlock("72 DdIIC ALAC DITO DOIIUS 4.4170\nCrit. Rate 6.3%\nHP 7.9%");
+    expect(rows).toHaveLength(2);
+    expect(rows[0].rawLabel.endsWith("Crit. Rate")).toBe(true);
+    expect(rows[1]).toEqual({ rawLabel: "HP", rawValue: "7.9%" });
+  });
+});
+
 describe("normalizeStatLabel", () => {
   it("passes through an exact label", () => {
     expect(normalizeStatLabel("Crit. DMG")).toBe("Crit. DMG");
@@ -117,22 +143,15 @@ describe("normalizeStatLabel", () => {
 
 describe("matchEchoName", () => {
   it("finds an exact match", () => {
-    const match = matchEchoName("Thousand-Puppet Pavilion", 4);
+    const match = matchEchoName("Thousand-Puppet Pavilion");
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Thousand-Puppet Pavilion");
   });
 
   it("still finds the right echo through minor OCR noise", () => {
-    const match = matchEchoName("Thousand Puppet Pavillon", 4); // missing hyphen, doubled L
+    const match = matchEchoName("Thousand Puppet Pavillon"); // missing hyphen, doubled L
     expect(match?.similarity).toBeGreaterThan(0.85);
     expect(getEchoData(match!.key).name).toBe("Thousand-Puppet Pavilion");
-  });
-
-  it("narrows candidates by cost hint", () => {
-    const withHint = matchEchoName("Kernel Puppet: Reflection", 1);
-    const withoutHint = matchEchoName("Kernel Puppet: Reflection", null);
-    expect(getEchoData(withHint!.key).name).toBe("Kernel Puppet: Reflection");
-    expect(getEchoData(withoutHint!.key).name).toBe("Kernel Puppet: Reflection");
   });
 
   it("matches an accented echo name when OCR reads the accent as a plain letter (regression: 'Jué' scanned as 'Unknown echo')", () => {
@@ -141,22 +160,22 @@ describe("matchEchoName", () => {
     // normalized form to 2 chars while a plain-ASCII OCR read normalized to
     // 3, pushing similarity below threshold for a match that should have
     // been exact.
-    const match = matchEchoName("Jue", 4);
+    const match = matchEchoName("Jue");
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Jué");
   });
 
   it("still matches the accented spelling itself", () => {
-    const match = matchEchoName("Jué", 4);
+    const match = matchEchoName("Jué");
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Jué");
   });
 });
 
 describe("parseEchoCandidate (full real-footage transcripts, per individually-cropped row)", () => {
-  it("parses a maxed cost-4 echo with all 5 substats", () => {
+  it("parses a maxed cost-4 echo with all 5 substats, deriving cost from the resolved echo (no cost OCR)", () => {
     const result = parseEchoCandidate({
-      headerText: "Thousand-Puppet Pavilion\n+25\nCOST 4",
+      nameText: "Thousand-Puppet Pavilion",
       mainStatText: "Healing Bonus 26.4%",
       secondaryStatText: "ATK 150",
       substatTexts: [
@@ -171,8 +190,8 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
 
     expect(getEchoData(result.slot.echo!).name).toBe("Thousand-Puppet Pavilion");
     expect(result.slot.cost).toBe(4);
-    expect(result.level).toBe(25);
     expect(result.needsMainStatSelection).toBe(false);
+    expect(result.usedSubstatBlockFallback).toBe(false);
     expect(result.slot.mainStatLabel).toBe("Healing Bonus");
     expect(result.slot.substats).toEqual([
       { subStat: "DEF", subStatValue: "40" },
@@ -183,44 +202,47 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     ]);
   });
 
-  it("resolves the echo from set+cost alone (single-candidate pool), even with no usable name text", () => {
-    // SongofFeatheredTrace has exactly one cost-4 echo — Thousand-Puppet
-    // Pavilion — so this should resolve confidently without ever needing
-    // to read the name, mirroring CalculatorEchoParser.vue's filteredEchoKeys
-    // narrowing (which the same way often gets down to one candidate).
+  it("resolves the echo from the set alone (genuinely single-candidate set), even with no usable name text", () => {
+    // ShadowofShatteredDreams has exactly one echo total, at any cost —
+    // Reminiscence - Nightmare: Adam Smasher — so this should resolve
+    // confidently without ever needing to read the name. (Most sets have
+    // several echoes across different cost tiers now that cost isn't part
+    // of the narrowing — SongofFeatheredTrace, e.g., has 8 — so this only
+    // holds for a set that's genuinely down to one echo already.)
     const result = parseEchoCandidate({
-      headerText: "\n+25\nCOST 4", // name line missing/unreadable
-      mainStatText: "Healing Bonus 26.4%",
+      nameText: "", // name unreadable
+      mainStatText: "Crit. DMG 44.0%",
       secondaryStatText: "ATK 150",
-      substatTexts: ["", "", "", "", ""],
-      matchedSet: "SongofFeatheredTrace",
+      substatTexts: ["Crit. Rate 6.9%", "HP 8.6%", "ATK 50", "Energy Regen 11.6%", ""],
+      matchedSet: "ShadowofShatteredDreams",
     });
-    expect(getEchoData(result.slot.echo!).name).toBe("Thousand-Puppet Pavilion");
+    expect(getEchoData(result.slot.echo!).name).toBe("Reminiscence - Nightmare: Adam Smasher");
+    expect(result.slot.cost).toBe(4);
     expect(result.confidence.name).toBe("high");
   });
 
-  it("flags low confidence (but still takes the single-candidate guess) when the name text actively disagrees with a confident set+cost narrowing", () => {
+  it("flags low confidence (but still takes the single-candidate guess) when the name text actively disagrees with a confident set narrowing", () => {
     // A single-candidate pool is trusted unless the name OCR clearly read
     // something else entirely — that's a sign the set icon itself was
     // probably misread, not that the name should override a bad set match
     // silently.
     const result = parseEchoCandidate({
-      headerText: "Completely Different Name\n+25\nCOST 4",
-      mainStatText: "Healing Bonus 26.4%",
+      nameText: "Completely Different Name",
+      mainStatText: "Crit. DMG 44.0%",
       secondaryStatText: "ATK 150",
-      substatTexts: ["", "", "", "", ""],
-      matchedSet: "SongofFeatheredTrace",
+      substatTexts: ["Crit. Rate 6.9%", "HP 8.6%", "ATK 50", "Energy Regen 11.6%", ""],
+      matchedSet: "ShadowofShatteredDreams",
     });
-    expect(getEchoData(result.slot.echo!).name).toBe("Thousand-Puppet Pavilion");
+    expect(getEchoData(result.slot.echo!).name).toBe("Reminiscence - Nightmare: Adam Smasher");
     expect(result.confidence.name).toBe("low");
   });
 
-  it("narrows by set+cost to a small pool, then breaks the tie by name (multi-candidate case)", () => {
-    // HeartofEvilsPurge has several cost-1 echoes — set+cost alone isn't
+  it("narrows by set to a small pool, then breaks the tie by name (multi-candidate case)", () => {
+    // HeartofEvilsPurge has several cost-1 echoes — the set alone isn't
     // enough here, so name matching (against just that narrowed pool) has
     // to pick the right one.
     const result = parseEchoCandidate({
-      headerText: "Kernel Puppet: Reflection\n+25\nCOST 1",
+      nameText: "Kernel Puppet: Reflection",
       mainStatText: "ATK 18.0%",
       secondaryStatText: "HP 2280",
       substatTexts: ["Crit. Rate 6.9%", "HP 7.9%", "Crit. DMG 19.8%", "ATK 7.9%", "ATK 50"],
@@ -239,77 +261,86 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     ]);
   });
 
-  it("falls back to name-only matching against the full cost tier when the set read matches nothing at that cost", () => {
-    // A wrong/misread set combined with the real cost narrows to an empty
-    // pool — the set was probably misread, so fall back to matching by
-    // name (still narrowed by cost) instead of giving up.
+  it("falls back to name-only matching against every echo when the set read matches nothing", () => {
     const result = parseEchoCandidate({
-      headerText: "Kernel Puppet: Reflection\n+25\nCOST 1",
+      nameText: "Kernel Puppet: Reflection",
       mainStatText: "ATK 18.0%",
       secondaryStatText: "HP 2280",
       substatTexts: ["Crit. Rate 6.9%", "HP 7.9%", "Crit. DMG 19.8%", "ATK 7.9%", "ATK 50"],
-      matchedSet: "ShadowofShatteredDreams", // cost-4-only set — no cost-1 echoes exist in it
+      matchedSet: null, // no set match at all
     });
     expect(getEchoData(result.slot.echo!).name).toBe("Kernel Puppet: Reflection");
+    expect(result.slot.cost).toBe(1);
   });
 
-  it("infers cost from the fixed secondary row's flat value when the small COST text fails to OCR", () => {
-    // flatBonusesByRankByType[4][5] === 150 — unique to cost 4 at rank 5.
+  it("derives cost from the resolved echo's own class, not from any OCR'd cost text (regression: real footage, a rank-4 cost-1 echo whose main stat was legible but cost text wasn't read at all)", () => {
     const result = parseEchoCandidate({
-      headerText: "Thousand-Puppet Pavilion\n+25", // no COST line at all
-      mainStatText: "Healing Bonus 26.4%",
-      secondaryStatText: "ATK 150",
-      substatTexts: ["", "", "", "", ""],
-      matchedSet: "SongofFeatheredTrace",
-    });
-    expect(result.slot.cost).toBe(4);
-    // Inferred, not read directly — still worth a second look.
-    expect(result.confidence.cost).toBe("low");
-  });
-
-  it("infers cost from a below-rank-5 secondary value too (regression: real footage, a rank-4 cost-1 echo)", () => {
-    // flatBonusesByRankByType[1][4] === 957 — a legible secondary crop the
-    // rank-5-only version of this inference used to reject outright,
-    // leaving cost (and everything that depends on it: main-stat
-    // legality, echo narrowing) unresolved despite the crop being fine.
-    const result = parseEchoCandidate({
-      headerText: "\n+18", // no COST line — this echo also happened to be below +25
+      nameText: "Aureate Picket", // HeartofEvilsPurge has several cost-1 echoes, so name still has to pick one
       mainStatText: "% DEF\n11.3%",
-      secondaryStatText: "QQ HP 957",
+      secondaryStatText: "QQ HP 957", // rank-4 flat HP for cost 1 — not used for cost anymore, just present in a real crop
       substatTexts: ["", "", "", "", ""],
-      matchedSet: null,
+      matchedSet: "HeartofEvilsPurge", // has several cost-1 echoes, but they all share cost 1
     });
     expect(result.slot.cost).toBe(1);
     expect(result.slot.mainStatLabel).toBe("DEF");
     expect(result.needsMainStatSelection).toBe(false);
   });
 
-  it("parses a below-max echo that only reveals 3 of 5 substats, without inventing the other two", () => {
+  it("falls back to the SUBSTAT_BLOCK pass when the per-row crops don't add up to all 5 substats", () => {
     const result = parseEchoCandidate({
-      headerText: "Viridblaze Saurian\n+15\nCOST 3",
-      mainStatText: "Electro DMG Bonus 20.4%",
-      secondaryStatText: "ATK 68",
-      substatTexts: ["HP 470", "ATK 40", "ATK 9.4%", "", ""],
-      matchedSet: "MoonlitClouds",
+      nameText: "Thousand-Puppet Pavilion",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      // Per-row pass only recovers 2 of 5 (as if 3 rows shifted out of
+      // their fixed positions from an earlier wrap).
+      substatTexts: ["DEF 40", "HP 8.6%", "", "", ""],
+      substatBlockText: [
+        "DEF 40",
+        "HP 8.6%",
+        "Crit. DMG 16.2%",
+        "Energy Regen 11.6%",
+        "Resonance Skill DMG",
+        "Bonus 10.9%",
+      ].join("\n"),
+      matchedSet: "SongofFeatheredTrace",
     });
-
-    expect(getEchoData(result.slot.echo!).name).toBe("Viridblaze Saurian");
-    expect(result.level).toBe(15);
-    expect(result.slot.cost).toBe(3);
+    expect(result.usedSubstatBlockFallback).toBe(true);
     expect(result.slot.substats).toEqual([
-      { subStat: "HP", subStatValue: "470" },
-      { subStat: "ATK", subStatValue: "40" },
-      { subStat: "ATK", subStatValue: "9.4%" },
-      { subStat: "", subStatValue: "" },
-      { subStat: "", subStatValue: "" },
+      { subStat: "DEF", subStatValue: "40" },
+      { subStat: "HP", subStatValue: "8.6%" },
+      { subStat: "Crit. DMG", subStatValue: "16.2%" },
+      { subStat: "Energy Regen", subStatValue: "11.6%" },
+      { subStat: "Resonance Skill DMG Bonus", subStatValue: "10.9%" },
     ]);
-    // Absent trailing rows aren't a problem to flag — they're legitimately empty.
-    expect(result.confidence.substats.slice(3)).toEqual(["high", "high"]);
+  });
+
+  it("does not use the block fallback's result if it doesn't actually recover more than the per-row pass did", () => {
+    const result = parseEchoCandidate({
+      nameText: "Thousand-Puppet Pavilion",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["DEF 40", "HP 8.6%", "Crit. DMG 16.2%", "", ""], // 3 of 5
+      substatBlockText: "DEF 40\nHP 8.6%", // only 2 — worse than the per-row pass
+      matchedSet: "SongofFeatheredTrace",
+    });
+    expect(result.usedSubstatBlockFallback).toBe(false);
+    expect(result.slot.substats.filter((s) => s.subStat)).toHaveLength(3);
+  });
+
+  it("flags a substat slot the per-row pass missed and the block fallback couldn't recover either as low-confidence, not a legitimate absence (assumes max level)", () => {
+    const result = parseEchoCandidate({
+      nameText: "Thousand-Puppet Pavilion",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["DEF 40", "HP 8.6%", "Crit. DMG 16.2%", "Energy Regen 11.6%", ""],
+      matchedSet: "SongofFeatheredTrace",
+    });
+    expect(result.confidence.substats[4]).toBe("low");
   });
 
   it("flags needsMainStatSelection for a freshly-acquired echo with no main stat yet", () => {
     const result = parseEchoCandidate({
-      headerText: "Some Echo\n+0\nCOST 4",
+      nameText: "Some Echo",
       mainStatText: "",
       secondaryStatText: "",
       substatTexts: ["", "", "", "", ""],
@@ -324,10 +355,11 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     // string-equality confidence check flagged as "changed" even though
     // the value was always exactly correct.
     const result = parseEchoCandidate({
-      headerText: "Thousand-Puppet Pavilion\n+25\nCOST 4",
+      nameText: "Thousand-Puppet Pavilion",
       mainStatText: "Healing Bonus 26.4%",
       secondaryStatText: "ATK 150",
-      substatTexts: ["Crit. DMG 21.0%", "", "", "", ""],
+      substatTexts: ["Crit. DMG 21.0%", "x", "x", "x", "x"],
+      substatBlockText: undefined,
       matchedSet: "SongofFeatheredTrace",
     });
     expect(result.slot.substats[0]).toEqual({ subStat: "Crit. DMG", subStatValue: "21%" });
@@ -338,10 +370,10 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     // 6.8% isn't a legal CritRate roll (table: 6.3, 6.9, 7.5, ...) — a
     // plausible single-digit OCR miss reading 6.9 as 6.8.
     const result = parseEchoCandidate({
-      headerText: "Thousand-Puppet Pavilion\n+25\nCOST 4",
+      nameText: "Thousand-Puppet Pavilion",
       mainStatText: "Healing Bonus 26.4%",
       secondaryStatText: "ATK 150",
-      substatTexts: ["Crit. Rate 6.8%", "", "", "", ""],
+      substatTexts: ["Crit. Rate 6.8%", "x", "x", "x", "x"],
       matchedSet: "SongofFeatheredTrace",
     });
     expect(result.slot.substats[0]).toEqual({ subStat: "Crit. Rate", subStatValue: "6.9%" });

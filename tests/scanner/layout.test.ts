@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   PANEL_BOX,
-  HEADER_BLOCK,
+  NAME_BLOCK,
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
+  SUBSTAT_BLOCK,
   SET_ICON_BOX,
   DEBUG_REGIONS,
   toPixelRegion,
@@ -41,11 +42,11 @@ describe("layout", () => {
     }
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps the header above the main stat row, which sits above the secondary row at %ox%o", (frame) => {
-    const header = toPixelRegion(HEADER_BLOCK, frame);
+  it.each(REAL_RESOLUTIONS)("keeps the name block above the main stat row, which sits above the secondary row at %ox%o", (frame) => {
+    const name = toPixelRegion(NAME_BLOCK, frame);
     const main = toPixelRegion(MAIN_STAT_ROW, frame);
     const secondary = toPixelRegion(SECONDARY_STAT_ROW, frame);
-    expect(header.y + header.height).toBeLessThanOrEqual(main.y);
+    expect(name.y + name.height).toBeLessThanOrEqual(main.y);
     expect(main.y).toBeLessThan(secondary.y);
   });
 
@@ -66,22 +67,58 @@ describe("layout", () => {
   });
 
   it.each(REAL_RESOLUTIONS)(
-    "keeps the (pixel-measured) set icon box inside the header block at %ox%o — regression: the original guessed box missed the icon entirely, causing every scan to return the same wrong set",
+    "keeps the (pixel-measured) set icon box inside the panel and below the name block, tightly cropped to roughly a square, at %ox%o — regression: the original guessed box missed the icon entirely, causing every scan to return the same wrong set",
     (frame) => {
-      const header = toPixelRegion(HEADER_BLOCK, frame);
+      const panel = toPixelRegion(PANEL_BOX, frame);
+      const name = toPixelRegion(NAME_BLOCK, frame);
       const icon = toPixelRegion(SET_ICON_BOX, frame);
-      expect(icon.x).toBeGreaterThanOrEqual(header.x);
-      expect(icon.y).toBeGreaterThanOrEqual(header.y);
-      expect(icon.x + icon.width).toBeLessThanOrEqual(header.x + header.width + 2);
-      expect(icon.y + icon.height).toBeLessThanOrEqual(header.y + header.height + 2);
+      expect(icon.x).toBeGreaterThanOrEqual(panel.x);
+      expect(icon.y).toBeGreaterThanOrEqual(name.y + name.height); // sits on its own line, below the name
+      expect(icon.x + icon.width).toBeLessThanOrEqual(panel.x + panel.width);
+      expect(icon.y + icon.height).toBeLessThanOrEqual(panel.y + panel.height);
+      // Tight crop, not a generous box around the icon — roughly square, not a wide rectangle.
+      expect(Math.abs(icon.width - icon.height) / Math.max(icon.width, icon.height)).toBeLessThan(0.3);
     },
   );
+
+  it.each(REAL_RESOLUTIONS)("keeps SUBSTAT_BLOCK spanning at least all 5 substat rows, inside the panel, at %ox%o", (frame) => {
+    const panel = toPixelRegion(PANEL_BOX, frame);
+    const block = toPixelRegion(SUBSTAT_BLOCK, frame);
+    const firstRow = toPixelRegion(SUBSTAT_ROWS[0], frame);
+    const lastRow = toPixelRegion(SUBSTAT_ROWS[SUBSTAT_ROWS.length - 1], frame);
+    expect(block.y).toBeLessThanOrEqual(firstRow.y);
+    expect(block.y + block.height).toBeGreaterThan(lastRow.y);
+    expect(block.y + block.height).toBeLessThanOrEqual(panel.y + panel.height);
+  });
+
+  it("excludes the leading stat-type icon from stat row crops (measured gap, not the full row width)", () => {
+    // Real footage showed tesseract misreading that icon glyph as garbage
+    // text ("QQ HP 957") ahead of the real label — see layout.ts's top doc
+    // comment. MAIN_STAT_ROW/SECONDARY_STAT_ROW/SUBSTAT_ROWS/SUBSTAT_BLOCK
+    // should all share the same (icon-excluding) left edge.
+    const xs = new Set(
+      [MAIN_STAT_ROW, SECONDARY_STAT_ROW, SUBSTAT_BLOCK, ...SUBSTAT_ROWS].map((r) => r.x),
+    );
+    expect(xs.size).toBe(1);
+  });
 
   it("lists every named ROI exactly once in DEBUG_REGIONS, for the scanner's debug view", () => {
     const keys = DEBUG_REGIONS.map((r) => r.key);
     expect(new Set(keys).size).toBe(keys.length);
     expect(keys).toEqual(
-      expect.arrayContaining(["panel", "header", "setIcon", "main", "secondary", "sub0", "sub1", "sub2", "sub3", "sub4"]),
+      expect.arrayContaining([
+        "panel",
+        "name",
+        "setIcon",
+        "main",
+        "secondary",
+        "sub0",
+        "sub1",
+        "sub2",
+        "sub3",
+        "sub4",
+        "substatBlock",
+      ]),
     );
   });
 
