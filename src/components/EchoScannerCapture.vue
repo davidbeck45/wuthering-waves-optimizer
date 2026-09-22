@@ -252,7 +252,28 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 p-2 bg-base-200 rounded">
               <div v-for="crop in candidate.debugCrops" :key="crop.key" class="flex flex-col gap-1">
                 <span class="font-semibold">{{ crop.label }}</span>
-                <img :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
+                <!--
+                  For setIcon specifically, show the matched reference icon
+                  right next to the captured crop — a direct side-by-side,
+                  not just a "Matched: <name>" label, so a bad match (or a
+                  still-off scale/crop) is visible at a glance instead of
+                  requiring a separate lookup of what that set's icon even
+                  looks like.
+                -->
+                <div v-if="crop.key === 'setIcon'" class="flex gap-1 items-start">
+                  <div class="flex flex-col gap-1 items-center">
+                    <img :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
+                    <span class="text-[9px] opacity-60">captured</span>
+                  </div>
+                  <div v-if="candidate.slot.set && echoSetImageMap[candidate.slot.set]" class="flex flex-col gap-1 items-center">
+                    <img
+                      :src="echoSetImageMap[candidate.slot.set]"
+                      class="border border-base-300 bg-base-100 max-w-full"
+                      :alt="`Reference: ${candidate.slot.set}`" />
+                    <span class="text-[9px] opacity-60">reference</span>
+                  </div>
+                </div>
+                <img v-else :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
                 <span class="opacity-70 break-words">{{ crop.text || "(empty)" }}</span>
               </div>
             </div>
@@ -293,6 +314,7 @@
 import { ref, watch } from "vue";
 import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
+import { echoSetImageMap } from "../echoes/stats";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
 import type { ScanCandidate, RegionFrac } from "../scanner/types";
 

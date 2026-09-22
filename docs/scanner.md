@@ -325,6 +325,50 @@ crops (centered icon block, flat crop, icon already filling the whole
 box, a too-small noise speck, minor per-pixel color noise) since it's a
 plain function over pixel data with no canvas/DOM dependency.
 
+### Third bug: matchSetFirst's own scoring buries the signal that works
+
+Fixing color and scale still left matching inconsistent, and it turned out
+the algorithm itself was the remaining cause, not the crop. `matchSetFirst`
+combines three signals into one score: a binary color-family match/mismatch,
+a crude shape heuristic (`detectShapes`'s `hasShield`/`hasCross`/etc., built
+by literally counting edge-pixel patterns), and `compareSetIcons`'s
+per-pixel diff — the same comparison the Discord-bot flow relies on and
+that reliably works well there. But the *combining weights* treat a
+color-family mismatch as a flat **100000** penalty (an absolute veto —
+nothing else can outweigh it) and give `compareSetIcons` only **0.1x**
+("just for fine-tuning"), with the shape heuristic at 5000x in between.
+One misclassified dominant color — far more likely from a
+chroma-subsampled, video-compressed live capture (which bleeds/shifts hue
+at edges) than from the Discord-bot flow's clean, uncompressed rendered
+source images — silently disqualifies the correct set regardless of how
+well `compareSetIcons` would have scored it. That's why the same shared
+algorithm can be reliable for one input and inconsistent for the other:
+it's the same code and the same weights, but a live capture trips the
+harsh veto far more often than a bot-rendered image does.
+
+Rather than change those weights globally (which would also change the
+Discord-bot flow's results — the flow this scanner explicitly avoids
+touching), `matchSetFirst` now takes an optional `weights` parameter
+(`SetMatchWeights`) defaulting to the exact original hardcoded values, so
+every caller that doesn't pass it — every existing Discord-bot call site —
+sees byte-identical scoring. `useEchoScanner.ts` defines its own
+`SCANNER_SET_MATCH_WEIGHTS` and passes it on the scanner's `matchSetFirst`
+message only: the color-family penalty drops from a 100000 veto to a 3000
+nudge, the shape weight drops from 5000 to 1500 (crude heuristics tuned
+against clean renders, likely noisier here too), and `compareSetIcons`'s
+weight rises from 0.1 to 1 — making it the primary signal now that its
+input (thanks to the shape/scale fixes above) actually matches the
+reference convention it needs to compare well.
+
+The debug view's crop grid also now shows the *matched reference icon*
+directly beside the captured `setIcon` crop (`echoSetImageMap[candidate.slot.set]`),
+not just a "Matched: <name>" label — a literal side-by-side, so a bad
+match (or a still-off scale/crop) is visible without a separate lookup.
+These weights are a reasoned starting point from the scoring math, not
+something validated against a large batch of real captures yet — the
+debug view is exactly the tool to tune them further from here if matches
+are still inconsistent.
+
 ## Accuracy
 
 Per `docs/accuracy-verification.md` and the project's priority order,

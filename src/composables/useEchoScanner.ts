@@ -47,6 +47,41 @@ import type { ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
+/**
+ * echoParser.worker.ts's matchSetFirst combines three signals into one
+ * score: a color-family match/mismatch, a crude shape-heuristic diff, and
+ * compareSetIcons's per-pixel diff. Its *default* weights (used by the
+ * Discord-bot import flow, unchanged here) treat a color-family mismatch
+ * as an absolute veto (100000 — nothing else can outweigh it) and give
+ * compareSetIcons only 10% of the vote, as "fine-tuning."
+ *
+ * That default makes sense for the Discord-bot flow's clean, uncompressed
+ * rendered source images, where color-family classification rarely
+ * misfires. It's the wrong tradeoff here: a live/video-compressed capture
+ * is a much rougher input (chroma-subsampled compression bleeds and shifts
+ * hue at icon edges in a way a bot-rendered image never does), so the same
+ * veto is a real, observed source of consistently-wrong matches — one
+ * misclassified dominant color throws out the correct set regardless of
+ * how well shape/pixel matching would have scored it. Meanwhile
+ * compareSetIcons's pixel-level comparison — the piece confirmed to work
+ * well elsewhere — is now much more trustworthy for this path than it
+ * used to be, since capture.ts's detectIconBounds keeps the crop at the
+ * same scale/alignment convention as the (margin-free) reference icons.
+ *
+ * These weights turn the color-family signal into a strong nudge instead
+ * of a veto, de-emphasize the shape heuristics (built and tuned against
+ * clean renders, so likely noisier here too), and make the pixel-level
+ * comparison the primary signal. Passed only on the scanner's own
+ * matchSetFirst calls — see SetMatchWeights's doc comment in
+ * echoParser.worker.ts for why the Discord-bot flow's own calls
+ * (which don't pass this) are completely unaffected.
+ */
+const SCANNER_SET_MATCH_WEIGHTS = {
+  colorFamilyMismatchPenalty: 3000,
+  shapeDiffWeight: 1500,
+  pixelDiffWeight: 1,
+};
+
 export type ScannerStatus =
   | "idle"
   | "trimming" // a video file is open and previewable, waiting for the user to confirm a range/rate and start scanning
@@ -202,7 +237,11 @@ export function useEchoScanner() {
         setWorker?.addEventListener("message", resultHandler);
         setWorker?.postMessage({
           type: "matchSetFirst",
-          data: { setCoords, allSetImageUrls: echoSetImageMap },
+          data: {
+            setCoords,
+            allSetImageUrls: echoSetImageMap,
+            setMatchWeights: SCANNER_SET_MATCH_WEIGHTS,
+          },
         });
       };
       setWorker?.addEventListener("message", readyHandler);

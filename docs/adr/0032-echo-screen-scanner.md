@@ -265,3 +265,32 @@ nothing is distinguishable from the corners. Unlike the rest of
 `capture.ts`, `detectIconBounds` is a plain function over pixel data (no
 canvas/DOM), so it's directly unit-tested in
 `tests/scanner/capture.test.ts` with synthetic crops.
+
+**Revised a fourth time (same rollout):** color and scale were both fixed,
+but matching stayed inconsistent — the remaining cause was
+`matchSetFirst`'s own combining weights, not the crop. It merges a
+color-family match/mismatch, a crude shape heuristic, and
+`compareSetIcons`'s per-pixel diff (the same comparison the Discord-bot
+flow already relies on, confirmed to work well there) into one score —
+but weights a color-family mismatch as a flat 100000 (an absolute veto)
+and `compareSetIcons` at only 0.1x ("fine-tuning"). A live capture trips
+that veto far more than the Discord-bot flow's clean rendered source
+images do (video compression bleeds/shifts hue at edges in a way a
+bot-rendered image never does), so one misclassified dominant color
+silently disqualifies the correct set regardless of how well the
+per-pixel comparison would have scored it. Rather than change the shared
+weights globally — which would also change the Discord-bot flow's
+results, the flow this scanner deliberately avoids touching — added an
+optional `weights` parameter (`SetMatchWeights`) to `matchSetFirst`,
+defaulting to the exact original hardcoded values so every caller that
+omits it (every Discord-bot call site) is unaffected. `useEchoScanner.ts`
+passes its own `SCANNER_SET_MATCH_WEIGHTS` on the scanner's calls only:
+color-family mismatch drops from a 100000 veto to a 3000 nudge, the shape
+weight drops from 5000 to 1500, and `compareSetIcons`'s weight rises from
+0.1 to 1, making it primary now that the shape/scale fixes above make its
+input actually match the reference convention it needs. The debug view's
+crop grid now also shows the matched reference icon directly beside the
+captured crop, not just a "Matched: <name>" label, for a literal
+side-by-side. These particular weight values are a reasoned starting
+point from the scoring math, not yet validated against a large batch of
+real captures — expect further tuning from real debug-view use.

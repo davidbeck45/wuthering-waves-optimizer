@@ -33,6 +33,7 @@ interface ParseEchoMessage {
     setImageUrls?: Record<string, string>;
     allSetImageUrls?: Record<string, string>; // All set URLs for matching set first
     filteredEchoKeys?: string[]; // Echo keys to filter by after set match
+    setMatchWeights?: SetMatchWeights; // matchSetFirst only — see its doc comment; omitted keeps the original hardcoded behavior
   };
 }
 
@@ -1065,6 +1066,38 @@ function detectShapes(
 }
 
 /**
+ * Relative weights of the three signals matchSetFirst combines. Defaults
+ * match this function's original hardcoded values exactly, so every
+ * existing caller (the Discord-bot import flow, which never passes this
+ * argument) sees byte-identical scoring, unchanged by anything below.
+ *
+ * The scanner (useEchoScanner.ts) passes a different profile instead — see
+ * its SCANNER_SET_MATCH_WEIGHTS for why. Short version: colorFamilyPenalty
+ * defaulting to a flat 100000 makes it an absolute veto, not a weighted
+ * signal — one misclassified dominant color and the correct set is
+ * disqualified outright regardless of how well shape/pixel matching would
+ * have scored it. That veto is safe for the Discord-bot flow's clean,
+ * uncompressed rendered source images, where color-family classification
+ * rarely misfires. A live/video-compressed capture is a rougher input
+ * (chroma-subsampled compression bleeds and shifts hue at edges more than
+ * a bot-rendered image ever does), so the same veto is a much likelier
+ * false negative there — while compareSetIcons's pixel-level comparison
+ * (pixelDiffWeight) is now far more trustworthy than it used to be for that
+ * path, since the crop it's given is properly scale/alignment-matched to
+ * the reference convention (capture.ts's detectIconBounds).
+ */
+type SetMatchWeights = {
+  colorFamilyMismatchPenalty: number;
+  shapeDiffWeight: number;
+  pixelDiffWeight: number;
+};
+const DEFAULT_SET_MATCH_WEIGHTS: SetMatchWeights = {
+  colorFamilyMismatchPenalty: 100000,
+  shapeDiffWeight: 5000,
+  pixelDiffWeight: 0.1,
+};
+
+/**
  * Match echo set from image region (matches against ALL sets first)
  * This is simpler since set icons are simpler (circular, limited colors)
  */
@@ -1072,6 +1105,7 @@ async function matchSetFirst(
   sourceBitmap: ImageBitmap,
   setCoords: { x: number; y: number; width: number; height: number },
   allSetImageUrls: Record<string, string>,
+  weights: SetMatchWeights = DEFAULT_SET_MATCH_WEIGHTS,
 ): Promise<{ setKey: string; diff: number } | null> {
   // Extract the set region
   const regionCanvas = extractImageRegion(sourceBitmap, setCoords);
@@ -1186,10 +1220,12 @@ async function matchSetFirst(
     const colorFamilyMatch = sourceColorFamilies.size > 0 && refColorFamilies.size > 0 &&
       Array.from(sourceColorFamilies).some(f => refColorFamilies.has(f));
     
-    // If color families don't match, huge penalty
+    // If color families don't match, penalize (magnitude configurable — see
+    // SetMatchWeights's doc comment for why this defaults to an absolute
+    // veto but doesn't have to be one for every caller)
     let colorFamilyPenalty = 0;
     if (!colorFamilyMatch && sourceColorFamilies.size > 0 && refColorFamilies.size > 0) {
-      colorFamilyPenalty = 100000; // Massive penalty for different color families
+      colorFamilyPenalty = weights.colorFamilyMismatchPenalty;
     }
     
     // Detect shapes in reference
@@ -1213,14 +1249,12 @@ async function matchSetFirst(
     // Also do simple pixel comparison as fallback
     const pixelDiff = compareSetIcons(resizedCtx, refCtx, 32, 32);
     
-    // Combined score:
-    // - Color family match is critical (huge penalty if mismatch)
-    // - Shape matching is primary differentiator within same color family
-    // - Pixel diff is fallback
-    const combinedDiff = 
-      colorFamilyPenalty +                    // Color family mismatch penalty
-      shapeDiff * 5000 +                      // Shape difference (primary for same-color sets)
-      pixelDiff * 0.1;                        // Pixel diff (small weight, just for fine-tuning)
+    // Combined score — see weights's doc comment for what each term means
+    // and why the scanner tunes them differently than the default.
+    const combinedDiff =
+      colorFamilyPenalty +
+      shapeDiff * weights.shapeDiffWeight +
+      pixelDiff * weights.pixelDiffWeight;
 
     if (combinedDiff < lowestDiff) {
       lowestDiff = combinedDiff;
@@ -1403,6 +1437,7 @@ self.onmessage = async (e: MessageEvent<ParseEchoMessage>) => {
         sourceImageBitmap,
         data.setCoords,
         data.allSetImageUrls,
+        data.setMatchWeights,
       );
       if (result) {
         self.postMessage({
