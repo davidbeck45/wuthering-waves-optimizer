@@ -19,6 +19,17 @@
       <div v-if="errorMessage" class="alert alert-error mb-4 text-sm">
         {{ errorMessage }}
       </div>
+      <div class="form-control mb-3">
+        <label class="label inline-flex justify-start gap-2 cursor-pointer">
+          <input type="checkbox" class="checkbox checkbox-sm" v-model="scanner.debugMode.value" />
+          <span class="label-text">
+            Debug mode — show the ROI boxes on the preview and a crop of
+            what each region actually captured for every echo, so
+            mismatches (wrong set, missing substats) are visible instead of
+            guessed at
+          </span>
+        </label>
+      </div>
       <div class="flex flex-wrap gap-3 items-center">
         <button class="btn btn-primary" @click="handleStartLive">
           Share screen (live)
@@ -43,9 +54,22 @@
         fast clicking but takes longer to process.
       </p>
       <div class="flex flex-col items-center gap-3">
-        <div
-          ref="previewContainer"
-          class="w-full max-w-md aspect-[8/5] bg-base-300 rounded overflow-hidden"></div>
+        <div class="relative w-full max-w-md aspect-[8/5]">
+          <div
+            ref="previewContainer"
+            class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
+          <div v-if="scanner.debugMode.value" class="absolute inset-0 pointer-events-none">
+            <div
+              v-for="r in scanner.debugRegions"
+              :key="r.key"
+              class="absolute border border-dashed border-warning"
+              :style="regionOverlayStyle(r.region)">
+              <span class="absolute -top-4 left-0 text-[10px] bg-warning text-warning-content px-1 rounded-sm whitespace-nowrap">
+                {{ r.label }}
+              </span>
+            </div>
+          </div>
+        </div>
 
         <div class="w-full max-w-md form-control">
           <label class="label py-1">
@@ -96,9 +120,22 @@
 
     <template v-else-if="status === 'starting' || status === 'running'">
       <div class="flex flex-col items-center gap-3">
-        <div
-          ref="previewContainer"
-          class="w-full max-w-md aspect-[8/5] bg-base-300 rounded overflow-hidden"></div>
+        <div class="relative w-full max-w-md aspect-[8/5]">
+          <div
+            ref="previewContainer"
+            class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
+          <div v-if="scanner.debugMode.value" class="absolute inset-0 pointer-events-none">
+            <div
+              v-for="r in scanner.debugRegions"
+              :key="r.key"
+              class="absolute border border-dashed border-warning"
+              :style="regionOverlayStyle(r.region)">
+              <span class="absolute -top-4 left-0 text-[10px] bg-warning text-warning-content px-1 rounded-sm whitespace-nowrap">
+                {{ r.label }}
+              </span>
+            </div>
+          </div>
+        </div>
         <div v-if="unsupportedAspect" class="alert alert-warning text-sm">
           This capture's aspect ratio doesn't look like WuWa's Echo
           Management screen (16:10). Results may be unreliable — make sure
@@ -187,6 +224,17 @@
 ---
 {{ candidate.rawStatsText }}</pre>
           </details>
+
+          <details v-if="candidate.debugCrops?.length" class="mt-1 text-xs opacity-70" open>
+            <summary class="cursor-pointer">Debug: what each region actually captured</summary>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 p-2 bg-base-200 rounded">
+              <div v-for="crop in candidate.debugCrops" :key="crop.key" class="flex flex-col gap-1">
+                <span class="font-semibold">{{ crop.label }}</span>
+                <img :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
+                <span class="opacity-70 break-words">{{ crop.text || "(empty)" }}</span>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
       <p v-if="candidates.length && inventoryOnly" class="text-xs opacity-70 mb-2">
@@ -224,7 +272,7 @@ import { ref, watch } from "vue";
 import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
-import type { ScanCandidate } from "../scanner/types";
+import type { ScanCandidate, RegionFrac } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
   inventoryOnly: false,
@@ -280,6 +328,16 @@ watch(videoDuration, (duration) => {
   trimStart.value = 0;
   trimEnd.value = duration ?? 0;
 });
+
+/** The video preview fills its container exactly (object-fit: contain on a matching-aspect source), so a region's own 0-1 fraction is already the right %. */
+function regionOverlayStyle(region: RegionFrac) {
+  return {
+    left: `${region.x * 100}%`,
+    top: `${region.y * 100}%`,
+    width: `${region.width * 100}%`,
+    height: `${region.height * 100}%`,
+  };
+}
 
 function formatTime(seconds: number): string {
   const total = Math.max(0, Math.round(seconds));

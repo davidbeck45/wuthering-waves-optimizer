@@ -5,6 +5,8 @@ import {
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
+  SET_ICON_BOX,
+  DEBUG_REGIONS,
   toPixelRegion,
   isSupportedAspect,
 } from "../../src/scanner/layout";
@@ -61,6 +63,26 @@ describe("layout", () => {
   it("gives substat rows a taller crop than main/secondary rows, to catch a wrapped label's continuation line", () => {
     expect(SUBSTAT_ROWS[0].height).toBeGreaterThan(MAIN_STAT_ROW.height);
     expect(SUBSTAT_ROWS[0].height).toBeGreaterThan(SECONDARY_STAT_ROW.height);
+  });
+
+  it.each(REAL_RESOLUTIONS)(
+    "keeps the (pixel-measured) set icon box inside the header block at %ox%o — regression: the original guessed box missed the icon entirely, causing every scan to return the same wrong set",
+    (frame) => {
+      const header = toPixelRegion(HEADER_BLOCK, frame);
+      const icon = toPixelRegion(SET_ICON_BOX, frame);
+      expect(icon.x).toBeGreaterThanOrEqual(header.x);
+      expect(icon.y).toBeGreaterThanOrEqual(header.y);
+      expect(icon.x + icon.width).toBeLessThanOrEqual(header.x + header.width + 2);
+      expect(icon.y + icon.height).toBeLessThanOrEqual(header.y + header.height + 2);
+    },
+  );
+
+  it("lists every named ROI exactly once in DEBUG_REGIONS, for the scanner's debug view", () => {
+    const keys = DEBUG_REGIONS.map((r) => r.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(keys).toEqual(
+      expect.arrayContaining(["panel", "header", "setIcon", "main", "secondary", "sub0", "sub1", "sub2", "sub3", "sub4"]),
+    );
   });
 
   it("accepts WuWa's real 16:10 aspect ratios", () => {

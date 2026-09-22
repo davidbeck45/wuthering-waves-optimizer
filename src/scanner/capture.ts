@@ -260,3 +260,39 @@ export async function grabRegionBitmap(
   );
   return createImageBitmap(canvas);
 }
+
+/**
+ * Same crop as grabRegionBitmap, but also returns a `data:` URL preview of
+ * exactly the same pixels — for the scanner's debug view (see
+ * EchoScannerCapture.vue), so what the user sees is provably the same crop
+ * the worker actually OCR's, not a re-derived approximation. Only called
+ * when debug mode is on — the extra `toDataURL()` encode isn't free, so
+ * normal scanning stays on the plain grabRegionBitmap path.
+ */
+export async function grabRegionWithPreview(
+  videoEl: HTMLVideoElement,
+  regionFrac: RegionFrac,
+): Promise<{ bitmap: ImageBitmap; dataUrl: string }> {
+  const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
+  const region = toPixelRegion(regionFrac, frame);
+  const canvas = document.createElement("canvas");
+  canvas.width = region.width;
+  canvas.height = region.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
+  ctx.drawImage(
+    videoEl,
+    region.x,
+    region.y,
+    region.width,
+    region.height,
+    0,
+    0,
+    region.width,
+    region.height,
+  );
+  // createImageBitmap doesn't consume the canvas, so both come from one draw.
+  const bitmap = await createImageBitmap(canvas);
+  const dataUrl = canvas.toDataURL("image/png");
+  return { bitmap, dataUrl };
+}

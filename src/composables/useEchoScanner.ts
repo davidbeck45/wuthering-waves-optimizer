@@ -16,6 +16,7 @@ import {
   closeVideoHandle,
   grabRegionImageData,
   grabRegionBitmap,
+  grabRegionWithPreview,
   type FrameSource,
   type VideoFileHandle,
   type VideoScanOptions,
@@ -32,6 +33,7 @@ import {
   SUBSTAT_ROWS,
   SET_ICON_BOX,
   FULL_FRAME,
+  DEBUG_REGIONS,
   isSupportedAspect,
 } from "../scanner/layout";
 import { echoSetImageMap } from "../echoes/stats";
@@ -64,6 +66,14 @@ export function useEchoScanner() {
   const previewVideoEl = ref<HTMLVideoElement | null>(null);
   /** Set once a video file is open (status "trimming") — lets the trim UI show/scrub a range before scanning starts. */
   const videoDuration = ref<number | null>(null);
+  /**
+   * Set (by the component, before starting) to capture a labeled crop
+   * thumbnail + text for every named ROI on every candidate, and to expose
+   * the live preview's ROI boxes — see DEBUG_REGIONS in layout.ts. Off by
+   * default: the extra canvas encode per region isn't free, and most
+   * sessions don't need it.
+   */
+  const debugMode = ref(false);
 
   const reviewNeededCount = computed(
     () =>
@@ -191,6 +201,25 @@ export function useEchoScanner() {
     });
   }
 
+  /**
+   * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry from the
+   * current (stable, about-to-be-scanned) frame. Independent of the
+   * OCR-dedicated grabRegionBitmap calls in handleTick — these are their
+   * own draws, so nothing here competes with what the worker actually
+   * OCR's. Text is filled in by the caller once `texts` is known; regions
+   * this scanner doesn't OCR (panel, setIcon — image-matched, not OCR'd)
+   * keep a placeholder.
+   */
+  async function captureDebugCrops(videoEl: HTMLVideoElement) {
+    const captured = await Promise.all(
+      DEBUG_REGIONS.map(async ({ key, label, region }) => {
+        const { dataUrl } = await grabRegionWithPreview(videoEl, region);
+        return { key, label, dataUrl, text: key === "setIcon" || key === "panel" ? "(image-matched, not OCR'd)" : "" };
+      }),
+    );
+    return captured;
+  }
+
   async function handleTick() {
     if (!frameSource) return;
     const videoEl = frameSource.videoEl;
@@ -226,9 +255,10 @@ export function useEchoScanner() {
         regions[key] = substatBitmaps[i];
       });
 
-      const [texts, matchedSet] = await Promise.all([
+      const [texts, matchedSet, debugCrops] = await Promise.all([
         recognizeCandidate(regions),
         matchSetIcon(frameBitmap, frame),
+        debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
       ]);
 
       const parsed = parseEchoCandidate({
@@ -261,6 +291,7 @@ export function useEchoScanner() {
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,
+        debugCrops: debugCrops?.map((crop) => ({ ...crop, text: texts[crop.key] ?? crop.text })),
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the
@@ -411,6 +442,8 @@ export function useEchoScanner() {
     unsupportedAspect,
     previewVideoEl,
     videoDuration,
+    debugMode,
+    debugRegions: DEBUG_REGIONS,
     isEchoNameKnown: (key: string) => Boolean(mainEchoesData?.[key]),
     startLive,
     openVideo,

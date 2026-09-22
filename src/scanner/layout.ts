@@ -55,17 +55,28 @@ export const HEADER_BLOCK: RegionFrac = {
 };
 
 /**
- * Small set-icon badge on the "+level" line. This one is a first-pass
- * estimate (not independently pixel-measured like the blocks above — the
- * icon is small and its exact bounds weren't isolated during the review of
- * the provided footage). Expect to refine via the calibration UI once real
- * matchSetFirst results come back low-confidence for it.
+ * Small set-icon badge on the "+level" line.
+ *
+ * The first version of this constant (x 0.685, y 0.127) was an eyeballed
+ * guess, explicitly flagged here as unmeasured — and it was wrong enough
+ * to consistently miss the actual icon and land on background/portrait art
+ * instead, which is why `matchSetFirst` kept confidently returning the
+ * same wrong set (whatever was closest to a muted background blur, not any
+ * real per-echo icon) regardless of which echo was on screen.
+ *
+ * These values are now pixel-measured off two real screenshots
+ * (~/Downloads/ScreenshotsEchoes/2880x1800): threshold each screenshot's
+ * header-line region for bright (icon ring/glyph) pixels and take the
+ * bounding box. Both echoes' icons landed at x0≈0.728-0.729, y0≈0.161-0.166
+ * — consistent with each other, and well inside HEADER_BLOCK's own bounds
+ * as a sanity check. The box below adds a small margin around that
+ * measured bound rather than cropping exactly to it.
  */
 export const SET_ICON_BOX: RegionFrac = {
-  x: 0.685,
-  y: 0.127,
+  x: 0.724,
+  y: 0.155,
   width: 0.032,
-  height: 0.045,
+  height: 0.042,
 };
 
 const STAT_ROW_X = 0.685;
@@ -99,6 +110,22 @@ export const SUBSTAT_ROWS: RegionFrac[] = [2, 3, 4, 5, 6].map((rowIndex) => ({
   width: STAT_ROW_WIDTH,
   height: WRAP_SAFE_ROW_HEIGHT,
 }));
+
+/**
+ * Every named ROI in one list, for the debug view (EchoScannerCapture.vue):
+ * dashed boxes drawn over the live preview, and — per captured candidate —
+ * a labeled crop thumbnail + its raw OCR text, so a mismatch like the
+ * set-icon one (see SET_ICON_BOX's doc comment) is visible and diagnosable
+ * from the UI itself instead of guessed at blind.
+ */
+export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[] = [
+  { key: "panel", label: "Detail panel", region: PANEL_BOX },
+  { key: "header", label: "Header (name/level/cost)", region: HEADER_BLOCK },
+  { key: "setIcon", label: "Set icon", region: SET_ICON_BOX },
+  { key: "main", label: "Main stat", region: MAIN_STAT_ROW },
+  { key: "secondary", label: "Fixed secondary", region: SECONDARY_STAT_ROW },
+  ...SUBSTAT_ROWS.map((region, i) => ({ key: `sub${i}`, label: `Substat ${i + 1}`, region })),
+];
 
 export function toPixelRegion(region: RegionFrac, frame: FrameSize): RegionPx {
   return {

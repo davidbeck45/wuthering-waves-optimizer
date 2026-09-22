@@ -102,9 +102,14 @@ screenshots and a real gameplay video the user provided:
   `SUBSTAT_ROWS` as individually-positioned crops at fixed Y fractions
   (0.384 first row, ~0.0373 pitch), not one big block — see "Substat OCR"
   below for why.
-- `SET_ICON_BOX` is a first-pass estimate, not independently pixel-measured
-  the way the blocks above were — refine it via real testing before relying
-  on set-icon match confidence.
+- `SET_ICON_BOX` is now also pixel-measured (threshold two real screenshots'
+  header regions for bright ring/glyph pixels, take the bounding box — both
+  landed at x0≈0.728-0.729, y0≈0.161-0.166). Its first version was an
+  unmeasured guess, and a bad enough one to consistently miss the icon
+  entirely and land on background/portrait art instead — every scan
+  confidently returned whatever set icon happened to be closest to that
+  background blur (reported as every echo coming back "Dream of the Lost").
+  See `SET_ICON_BOX`'s own doc comment in `layout.ts`.
 - Only 16:10 has been measured. A very different aspect ratio is rejected
   up front (`isSupportedAspect`) rather than silently producing garbage; a
   calibration UI for non-16:10/ultrawide is a known follow-up, not built here.
@@ -223,6 +228,39 @@ invalid"), even though the exact same string resolves fine as a normal
 fetch from this worker itself. The Discord-bot importer's tesseract.js
 usage never hits this because it uses tesseract's default CDN path, which
 is already a full `https://` URL — self-hosting is what exposes it.
+
+## Debug view
+
+`EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen
+(binds to `useEchoScanner`'s `debugMode` ref). When on, two things become
+visible that are otherwise invisible even when something's clearly wrong:
+
+- **Live preview overlay**: every `DEBUG_REGIONS` entry (`layout.ts`) drawn
+  as a labeled dashed box over the live/trimming preview, positioned by
+  simple percentage CSS (`region.x * 100%`, etc. — the crop fractions
+  double as overlay positions for free, no separate pixel math). Confirms
+  at a glance whether a region actually lands on what it's supposed to.
+- **Per-candidate crop grid**: once debug mode was on for the session,
+  every captured candidate carries `debugCrops` — a labeled `data:` URL
+  thumbnail of exactly what was cropped for each region, plus that
+  region's own OCR text (or "(image-matched, not OCR'd)" for `panel`/
+  `setIcon`, which go through `matchSetFirst` instead), shown in the
+  review list. `capture.ts`'s `grabRegionWithPreview` produces both the
+  bitmap sent to the worker and the thumbnail from one canvas draw, so
+  what's shown is provably the same pixels that were actually OCR'd/
+  matched, not a re-derived approximation.
+
+This is what caught `SET_ICON_BOX` being badly mispositioned (see its doc
+comment) — every scan confidently returning the same wrong set is exactly
+what a fixed-but-wrong crop landing on background art looks like. If
+substat/set accuracy regresses again, debug mode first: screenshot the
+overlay to check the boxes actually sit on the right UI elements, and check
+a few candidates' crop grids to see whether OCR is misreading text it *did*
+capture correctly, versus not capturing the right pixels at all — those
+need different fixes.
+
+Debug mode costs an extra canvas encode per region per candidate (not
+free), so it's opt-in and off by default — leave it off for normal scanning.
 
 ## Extending / debugging
 

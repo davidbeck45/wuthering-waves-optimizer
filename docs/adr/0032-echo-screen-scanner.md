@@ -121,6 +121,19 @@ Key choices, each with a reason:
   low-confidence fields are flagged in the review list
   (`EchoScannerCapture.vue`) before the result is handed to the existing,
   already-tested `CalculatorEchoImporter.vue` duplicate-review/save step.
+- **Debug mode**: an opt-in checkbox that overlays every named ROI on the
+  live preview and, per captured candidate, shows a thumbnail crop + OCR
+  text for each region. Added after real usage reported every scanned
+  echo coming back with the same wrong set — with no way to see what was
+  actually being cropped, that was a guessing exercise. It immediately
+  showed the cause: `SET_ICON_BOX` was badly mispositioned (an unmeasured
+  guess, unlike the header/stats blocks) and was landing on background art
+  instead of the icon, so `matchSetFirst` was confidently matching a muted
+  background blur against all 30 set icons and always winning with the
+  same one. Re-measured it the same way as the row positions (threshold a
+  real screenshot's header region for bright pixels, take the bounding
+  box) — see `SET_ICON_BOX`'s doc comment and `docs/scanner.md`'s "Debug
+  view" section.
 
 Shipped as one PR rather than the smaller incremental PRs a change this
 size would normally be split into (per `CLAUDE.md`'s usual preference) —
@@ -134,9 +147,7 @@ explicit user direction for this feature.
   of guesswork, with the measurement method documented so it can be redone
   if a UI update moves the panel; video upload gives a faster, permission-free,
   deterministic alternative to live sharing.
-- Cons: `SET_ICON_BOX` is a first-pass estimate (not independently
-  pixel-measured the way the header/stats blocks were) and needs real-world
-  confidence tuning; only 16:10 is supported today (`isSupportedAspect`
+- Cons: only 16:10 is supported today (`isSupportedAspect`
   rejects other aspects up front rather than silently misreading them) — a
   calibration UI for non-16:10/ultrawide is a known, explicitly deferred
   follow-up, not built here; `public/tesseract/` adds ~19MB of static assets

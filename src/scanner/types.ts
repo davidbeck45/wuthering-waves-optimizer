@@ -63,4 +63,6 @@ export type ScanCandidate = {
   /** Raw OCR text this candidate was parsed from — shown as a diagnostic for low-confidence fields, not used for parsing itself. */
   rawHeaderText: string;
   rawStatsText: string;
+  /** Per-region crop thumbnails + their own OCR text — only populated when the scanner's debug mode was on for this session. See layout.ts's DEBUG_REGIONS. */
+  debugCrops?: { key: string; label: string; dataUrl: string; text: string }[];
 };
