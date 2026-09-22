@@ -114,18 +114,9 @@ comment says what was actually measured.
   — measured the icon/text gap directly (a column-variance scan across a
   real row) and shifted every stat row's left edge past it, rather than
   relying only on `parseStatRow`'s noise-tolerance to work around it.
-- `SET_ICON_BOX` has had two revisions, both from real usage. Its first
-  version (an unmeasured guess) missed the icon entirely and landed on
-  background/portrait art — every scan confidently returned whatever set
-  icon happened to be closest to that background blur (reported as every
-  echo coming back "Dream of the Lost"). Its second version was
-  pixel-measured but still left the icon under half the crop, with real
-  background margin around it — a direct screenshot comparison against a
-  reference icon image (which is cropped tight to its content) showed the
-  gap, and that margin dilutes the real signal once `matchSetFirst`
-  resizes to 32x32 for comparison. The current version is cropped as
-  close to the icon's own measured bounds as a couple of pixels of margin
-  allows, verified visually against two different echoes' icons.
+- `SET_ICON_BOX` has had three revisions, all from real usage — see "Set
+  icon matching" below for the geometry history and the (larger) separate
+  fix to how the crop is matched, not just how tightly it's cropped.
 - `SUBSTAT_BLOCK` — a fallback, not primary, region — spans all 5 substat
   rows plus wrap allowance; see "Substat OCR" below.
 - Only 16:10 has been measured. A very different aspect ratio is rejected
@@ -184,6 +175,43 @@ deliberate accuracy-over-speed tradeoff per `CLAUDE.md`'s priority order,
 offset by giving `echoScanner.worker.ts` a 3-worker pool (up from 2) so a
 candidate's row crops OCR in parallel.
 
+### Row parsing: what a wrapped/split row's text actually looks like
+
+`parse.ts`'s `scanStatRows` (shared by `parseStatRow` and `splitStatBlock`)
+has to reassemble a row's label from however tesseract split it across
+lines. Real debug-crop footage confirmed three distinct shapes, not just
+the one originally assumed:
+
+- **Normal**: label and value on one line — `"Healing Bonus 26.4%"`.
+- **Value-only continuation**: the label is alone on its own line, and the
+  value lands alone on the *next* line — `"% DEF"` / `"11.3%"`.
+- **Wrapped label, value on its first line**: `"Resonance Liberation
+  10.9%"` / `"DMG Bonus"` — the value is right-aligned to the label's
+  *first* visual line, and the rest of the label continues below it with
+  no value of its own. This is the game's actual layout (confirmed by
+  comparing two real debug-crop screenshots side by side), and it's the
+  *opposite* of what an original version assumed (value after the label's
+  *last* line) — that version could never recover a wrapped row at all: a
+  crop that was clearly legible in the debug view still came back with 0
+  substats, because the value was already sitting correctly on line 1, but
+  the partial label without the word(s) pushed to line 2 didn't look
+  plausible, and the code was looking *behind* itself for more label text
+  instead of *ahead*.
+
+`scanStatRows` accumulates label text from both directions around
+whichever line the value turns up on, and only settles a row once it hits
+a real boundary (a new value line starting a different row, or the end of
+input) or an *exact* known label. That last part matters on its own:
+`verboseStatLabelMap` deliberately carries multiple aliases per stat for
+fuzzy-matching elsewhere ("Resonance Liberation DMG Bonus", "Resonance
+Liberation DMG", and "Resonance Liberation" all resolve to the same stat)
+— treating *any* registered key as "this label is complete, stop
+extending" was a second real bug, since "Resonance Liberation" alone is
+already a registered alias and kept committing the truncated label before
+ever reading the next line. `CANONICAL_COMPLETE_LABELS` picks out only the
+*longest* alias per stat — the one WuWa actually displays in full — as
+the signal that a label is really finished.
+
 ## Echo identification: narrow by set first, name text breaks ties, cost is derived
 
 The first version matched the echo purely by OCR'ing its name and
@@ -227,6 +255,40 @@ aren't all 5-star, confirmed from a real rank-4 cost-1 echo whose
 secondary crop was perfectly legible but didn't match rank 5's value).
 Deriving cost from the resolved echo instead sidesteps that whole class of
 problem.
+
+## Set icon matching: shape-mask the background, not just crop tighter
+
+`SET_ICON_BOX`'s geometry alone (see "ROI layout" above) wasn't the whole
+accuracy problem — a tight crop still fed `echoParser.worker.ts`'s
+`matchSetFirst` a wrong result most of the time. The actual cause: that
+worker's background handling (`extractImageRegion`'s masking, and
+`matchSetFirst`'s own second pass) only clears pixels close to *black*.
+That's correct for the Discord-bot flow, whose source image is rendered
+onto a black canvas specifically so that convention works — but wrong for
+a live capture, where the icon sits on the game's own reddish panel
+background, nowhere near black. None of that background was ever being
+masked, so `getDominantColors` (which `matchSetFirst` leans on most
+heavily, ahead of shape detection and a small-weight pixel diff) picked up
+the *background's* color as one of the crop's "dominant colors" alongside
+or instead of the icon's own — corrupting the color-family comparison the
+whole match is built on. Confirmed by comparing a captured crop against a
+reference icon image (transparent background) side by side.
+
+`capture.ts`'s `grabCircularMaskedBitmap` fixes this by masking by *shape*
+instead of *color*: since the icon is circular and (now cropped tight)
+fills nearly the whole crop, everything outside a centered circle is made
+fully transparent before the crop is ever sent to `matchSetFirst` —
+removing the background regardless of what color it actually is.
+`useEchoScanner.ts`'s `matchSetIcon` grabs and masks this crop itself,
+then sends *that* (not the full frame + pixel coordinates, the earlier
+approach) as `sourceImageBitmap`, with `setCoords` covering the whole
+already-cropped, already-masked bitmap — so `echoParser.worker.ts`'s own
+black-only masking pass, still used unmodified by the Discord-bot flow
+too, is never relied on here and stays untouched. The debug view's
+`setIcon` crop thumbnail shows this exact masked bitmap (on a gray
+backdrop so the transparent corners are visible), not a plain rectangle,
+so the mask being applied is something you can actually see, not just
+take on faith.
 
 ## Accuracy
 

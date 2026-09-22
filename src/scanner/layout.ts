@@ -95,13 +95,21 @@ export const NAME_BLOCK: RegionFrac = {
  *
  * These values are cropped as tight as the icon's own measured bounds
  * allow (a couple of pixels of margin, not a generous box around it),
- * verified visually against two different echoes' icons.
+ * verified visually against two different echoes' icons — shaved another
+ * 2px off the top and right after a closer look still showed a sliver of
+ * empty space on those two edges specifically.
+ *
+ * Tight geometry alone wasn't the whole accuracy problem though — see
+ * capture.ts's grabCircularMaskedBitmap for the other half (the
+ * background behind the icon isn't black, so echoParser.worker.ts's
+ * shared black-background masking doesn't remove it, which was corrupting
+ * the color-family comparison matchSetFirst relies on most).
  */
 export const SET_ICON_BOX: RegionFrac = {
   x: 0.7266,
-  y: 0.1583,
-  width: 0.0191,
-  height: 0.0328,
+  y: 0.1594,
+  width: 0.0184,
+  height: 0.0317,
 };
 
 /** Starts right after the stat-type icon glyph (see this file's top doc comment) — measured gap, not guessed. */

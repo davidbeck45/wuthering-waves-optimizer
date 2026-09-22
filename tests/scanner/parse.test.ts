@@ -51,11 +51,16 @@ describe("parseStatRow", () => {
     });
   });
 
-  it("rejoins a label that wrapped onto a second line within the same row's (taller) crop", () => {
-    expect(parseStatRow("Resonance Skill DMG\nBonus 10.9%")).toEqual({
+  it("rejoins a wrapped label whose value attaches to its first line (the game's actual layout, confirmed from real footage — regression: an earlier version assumed the value came after the label's *last* line and could never recover this)", () => {
+    expect(parseStatRow("Resonance Skill DMG 8.6%\nBonus")).toEqual({
       rawLabel: "Resonance Skill DMG Bonus",
-      rawValue: "10.9%",
+      rawValue: "8.6%",
     });
+  });
+
+  it("also handles a label and value split onto entirely separate lines (no wrap involved)", () => {
+    // Confirmed from real footage: "% DEF" / "11.3%".
+    expect(parseStatRow("% DEF\n11.3%")).toEqual({ rawLabel: "% DEF", rawValue: "11.3%" });
   });
 
   it("stops at the first complete match and ignores a neighboring row that leaked into the overlap", () => {
@@ -105,11 +110,24 @@ describe("splitStatBlock", () => {
     ]);
   });
 
-  it("rejoins a wrapped label spanning two lines within the block", () => {
-    const rows = splitStatBlock("Crit. Rate 6.3%\nResonance Liberation DMG\nBonus 10.9%\nATK 40");
+  it("rejoins a wrapped label whose value attaches to its first line (the game's actual layout, confirmed from real footage)", () => {
+    // Real debug-crop screenshots showed the value right-aligned to a
+    // wrapped label's *first* line, with the rest of the label
+    // continuing below with no value of its own — not the reverse.
+    const rows = splitStatBlock("Crit. Rate 6.3%\nResonance Liberation 10.9%\nDMG Bonus\nATK 40");
     expect(rows).toEqual([
       { rawLabel: "Crit. Rate", rawValue: "6.3%" },
       { rawLabel: "Resonance Liberation DMG Bonus", rawValue: "10.9%" },
+      { rawLabel: "ATK", rawValue: "40" },
+    ]);
+  });
+
+  it("also handles a label and value split onto entirely separate lines (no wrap involved)", () => {
+    // Confirmed from real footage: "% DEF" / "11.3%" — a single-word-ish
+    // label with the value landing alone on its own recognized line.
+    const rows = splitStatBlock("% DEF\n11.3%\nATK 40");
+    expect(rows).toEqual([
+      { rawLabel: "% DEF", rawValue: "11.3%" },
       { rawLabel: "ATK", rawValue: "40" },
     ]);
   });
@@ -119,6 +137,32 @@ describe("splitStatBlock", () => {
     expect(rows).toHaveLength(2);
     expect(rows[0].rawLabel.endsWith("Crit. Rate")).toBe(true);
     expect(rows[1]).toEqual({ rawLabel: "HP", rawValue: "7.9%" });
+  });
+
+  it("recovers all 5 substats from real 'Inferno Rider' SUBSTAT_BLOCK footage with two differently-wrapped labels (regression: this exact block previously came back empty)", () => {
+    // The debug view showed this exact crop clearly legible, but the
+    // fallback still returned nothing — the old wrap-direction assumption
+    // (value after the label's *last* line) never matched either wrapped
+    // row here, so neither ever became plausible and the whole block
+    // yielded 0 rows despite being perfectly readable.
+    const rows = splitStatBlock(
+      [
+        "Energy Regen 7.6%",
+        "Resonance Liberation 10.9%",
+        "DMG Bonus",
+        "Resonance Skill DMG 8.6%",
+        "Bonus",
+        "ATK 50",
+        "Crit. DMG 13.8%",
+      ].join("\n"),
+    );
+    expect(rows).toEqual([
+      { rawLabel: "Energy Regen", rawValue: "7.6%" },
+      { rawLabel: "Resonance Liberation DMG Bonus", rawValue: "10.9%" },
+      { rawLabel: "Resonance Skill DMG Bonus", rawValue: "8.6%" },
+      { rawLabel: "ATK", rawValue: "50" },
+      { rawLabel: "Crit. DMG", rawValue: "13.8%" },
+    ]);
   });
 });
 
@@ -183,7 +227,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
         "HP 8.6%",
         "Crit. DMG 16.2%",
         "Energy Regen 11.6%",
-        "Resonance Skill DMG\nBonus 10.9%",
+        "Resonance Skill DMG 10.9%\nBonus",
       ],
       matchedSet: "SongofFeatheredTrace",
     });
@@ -294,14 +338,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
       // Per-row pass only recovers 2 of 5 (as if 3 rows shifted out of
       // their fixed positions from an earlier wrap).
       substatTexts: ["DEF 40", "HP 8.6%", "", "", ""],
-      substatBlockText: [
-        "DEF 40",
-        "HP 8.6%",
-        "Crit. DMG 16.2%",
-        "Energy Regen 11.6%",
-        "Resonance Skill DMG",
-        "Bonus 10.9%",
-      ].join("\n"),
+      substatBlockText: ["DEF 40", "HP 8.6%", "Crit. DMG 16.2%", "Energy Regen 11.6%", "ATK 50"].join("\n"),
       matchedSet: "SongofFeatheredTrace",
     });
     expect(result.usedSubstatBlockFallback).toBe(true);
@@ -310,7 +347,41 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
       { subStat: "HP", subStatValue: "8.6%" },
       { subStat: "Crit. DMG", subStatValue: "16.2%" },
       { subStat: "Energy Regen", subStatValue: "11.6%" },
-      { subStat: "Resonance Skill DMG Bonus", subStatValue: "10.9%" },
+      { subStat: "ATK", subStatValue: "50" },
+    ]);
+  });
+
+  it("recovers all 5 substats via the block fallback from real 'Inferno Rider' footage with two differently-wrapped labels (regression: this exact block previously came back empty)", () => {
+    // The debug view showed this exact SUBSTAT_BLOCK crop clearly
+    // legible, but the fallback still returned nothing — the old
+    // wrap-direction assumption (value after the label's *last* line)
+    // never matched either wrapped row here, so neither ever became
+    // plausible and the whole block yielded 0 rows despite being
+    // perfectly readable. See splitStatBlock's own regression test for
+    // the isolated case.
+    const result = parseEchoCandidate({
+      nameText: "Inferno Rider",
+      mainStatText: "Crit. DMG 44.0%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["", "", "", "", ""], // per-row pass recovers nothing this time
+      substatBlockText: [
+        "Energy Regen 7.6%",
+        "Resonance Liberation 10.9%",
+        "DMG Bonus",
+        "Resonance Skill DMG 8.6%",
+        "Bonus",
+        "ATK 50",
+        "Crit. DMG 13.8%",
+      ].join("\n"),
+      matchedSet: null,
+    });
+    expect(result.usedSubstatBlockFallback).toBe(true);
+    expect(result.slot.substats).toEqual([
+      { subStat: "Energy Regen", subStatValue: "7.6%" },
+      { subStat: "Resonance Liberation DMG Bonus", subStatValue: "10.9%" },
+      { subStat: "Resonance Skill DMG Bonus", subStatValue: "8.6%" },
+      { subStat: "ATK", subStatValue: "50" },
+      { subStat: "Crit. DMG", subStatValue: "13.8%" },
     ]);
   });
 

@@ -18,6 +18,7 @@ import {
   grabRegionBitmap,
   grabRegionWithPreview,
   grabFullFrameSnapshot,
+  grabCircularMaskedBitmap,
   type FrameSource,
   type VideoFileHandle,
   type VideoScanOptions,
@@ -34,7 +35,6 @@ import {
   SUBSTAT_ROWS,
   SUBSTAT_BLOCK,
   SET_ICON_BOX,
-  FULL_FRAME,
   DEBUG_REGIONS,
   isSupportedAspect,
 } from "../scanner/layout";
@@ -167,15 +167,25 @@ export function useEchoScanner() {
     });
   }
 
-  async function matchSetIcon(frameBitmap: ImageBitmap, frame: { width: number; height: number }) {
+  /**
+   * Matches the set icon via the existing echoParser.worker.ts
+   * (matchSetFirst, reused as-is — untouched by this scanner's changes).
+   * Grabs and circularly-masks just the icon crop itself first (see
+   * capture.ts's grabCircularMaskedBitmap) rather than sending the whole
+   * frame + pixel coords: that worker's shared background masking only
+   * clears near-black pixels (correct for the Discord-bot flow's
+   * black-canvas-rendered reference source, wrong for this scanner's
+   * actual game-UI background), so a real capture's background was never
+   * being removed before comparison. Since the pre-masked crop already IS
+   * just the icon with a transparent surround, setCoords covers the whole
+   * thing (no further cropping needed from the worker's own — now
+   * effectively no-op for this path — masking pass).
+   */
+  async function matchSetIcon(videoEl: HTMLVideoElement) {
     if (!setWorker) return null;
     await setWorkerReady;
-    const setCoords = {
-      x: Math.round(SET_ICON_BOX.x * frame.width),
-      y: Math.round(SET_ICON_BOX.y * frame.height),
-      width: Math.round(SET_ICON_BOX.width * frame.width),
-      height: Math.round(SET_ICON_BOX.height * frame.height),
-    };
+    const maskedBitmap = await grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
+    const setCoords = { x: 0, y: 0, width: maskedBitmap.width, height: maskedBitmap.height };
     return new Promise<string | null>((resolve) => {
       const readyHandler = (e: MessageEvent) => {
         if (e.data?.type !== "ready") return;
@@ -197,8 +207,8 @@ export function useEchoScanner() {
       };
       setWorker?.addEventListener("message", readyHandler);
       setWorker?.postMessage(
-        { type: "setSourceImage", data: { sourceImageBitmap: frameBitmap } },
-        [frameBitmap],
+        { type: "setSourceImage", data: { sourceImageBitmap: maskedBitmap } },
+        [maskedBitmap],
       );
     });
   }
@@ -210,16 +220,37 @@ export function useEchoScanner() {
    * about-to-be-scanned) frame. Independent of the OCR-dedicated
    * grabRegionBitmap calls in handleTick — these are their own draws, so
    * nothing here competes with what the worker actually OCR's. Text is
-   * filled in by the caller once `texts`/`matchedSet` are known; regions
-   * this scanner doesn't OCR (panel, setIcon — image-matched, not OCR'd)
-   * keep a placeholder until then.
+   * filled in by the caller once `texts`/`matchedSet` are known; `panel`
+   * (fingerprint-only, not OCR'd or matched) keeps a placeholder.
+   *
+   * `setIcon`'s thumbnail is the actual circularly-masked crop
+   * (grabCircularMaskedBitmap) that gets sent to matchSetFirst, not the
+   * plain rectangle every other region shows — the mask is the fix for
+   * the background-color contamination bug (see capture.ts's doc
+   * comment), so the debug view should make it visible that it's really
+   * being applied, not just describe it.
    */
   async function captureDebugCrops(videoEl: HTMLVideoElement) {
     const [crops, fullFrame] = await Promise.all([
       Promise.all(
         DEBUG_REGIONS.map(async ({ key, label, region }) => {
+          if (key === "setIcon") {
+            const masked = await grabCircularMaskedBitmap(videoEl, region);
+            const canvas = document.createElement("canvas");
+            canvas.width = masked.width;
+            canvas.height = masked.height;
+            const ctx = canvas.getContext("2d");
+            // A mid-gray backdrop so the masked-out (transparent) corners
+            // are visibly different from the page background either theme.
+            if (ctx) {
+              ctx.fillStyle = "#80808080";
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(masked, 0, 0);
+            }
+            return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
+          }
           const { dataUrl } = await grabRegionWithPreview(videoEl, region);
-          return { key, label, dataUrl, text: key === "setIcon" || key === "panel" ? "(image-matched, not OCR'd)" : "" };
+          return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
         }),
       ),
       grabFullFrameSnapshot(videoEl),
@@ -251,7 +282,6 @@ export function useEchoScanner() {
         grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
         ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
       ]);
-      const frameBitmap = await grabRegionBitmap(videoEl, FULL_FRAME);
 
       const regions: Record<string, ImageBitmap> = {
         name: nameBitmap,
@@ -264,7 +294,7 @@ export function useEchoScanner() {
 
       const [texts, matchedSet, debugCrops] = await Promise.all([
         recognizeCandidate(regions),
-        matchSetIcon(frameBitmap, frame),
+        matchSetIcon(videoEl),
         debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
       ]);
 

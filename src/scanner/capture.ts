@@ -322,3 +322,70 @@ export async function grabFullFrameSnapshot(
   ctx.drawImage(videoEl, 0, 0, width, height);
   return canvas.toDataURL("image/jpeg", 0.85);
 }
+
+/**
+ * Crops one region and makes every pixel outside a centered circle fully
+ * transparent — used only for the set-icon crop, before handing it to
+ * echoParser.worker.ts's matchSetFirst.
+ *
+ * That worker's own background handling (extractImageRegion, and
+ * matchSetFirst's own second masking pass) only clears pixels close to
+ * *black* — correct for the Discord-bot flow, whose reference image is
+ * rendered on a black canvas specifically so that convention works, but
+ * wrong for a live capture: the set icon sits on the game's own reddish
+ * panel background, which is nowhere near black, so none of it gets
+ * masked. getDominantColors then picks up that background color as one of
+ * the crop's "dominant colors" alongside (or instead of) the icon's own
+ * color, which corrupts the color-family comparison matchSetFirst leans
+ * on most heavily — a real cause of consistently wrong set matches,
+ * confirmed by comparing a captured crop against a reference icon image
+ * (transparent background) side by side.
+ *
+ * Masking by *shape* instead of *color* sidesteps that: the icon is
+ * circular and (SET_ICON_BOX is cropped tight to it) fills nearly the
+ * whole crop, so a centered circular alpha mask removes the background
+ * regardless of what color it actually is, without needing to touch
+ * echoParser.worker.ts's shared masking logic (used by the Discord-bot
+ * flow too) at all.
+ */
+export async function grabCircularMaskedBitmap(
+  videoEl: HTMLVideoElement,
+  regionFrac: RegionFrac,
+): Promise<ImageBitmap> {
+  const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
+  const region = toPixelRegion(regionFrac, frame);
+  const canvas = document.createElement("canvas");
+  canvas.width = region.width;
+  canvas.height = region.height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
+  ctx.drawImage(
+    videoEl,
+    region.x,
+    region.y,
+    region.width,
+    region.height,
+    0,
+    0,
+    region.width,
+    region.height,
+  );
+
+  const imageData = ctx.getImageData(0, 0, region.width, region.height);
+  const data = imageData.data;
+  const cx = region.width / 2;
+  const cy = region.height / 2;
+  const radius = Math.min(region.width, region.height) / 2;
+  const radiusSquared = radius * radius;
+  for (let y = 0; y < region.height; y++) {
+    for (let x = 0; x < region.width; x++) {
+      const dx = x + 0.5 - cx;
+      const dy = y + 0.5 - cy;
+      if (dx * dx + dy * dy > radiusSquared) {
+        data[(y * region.width + x) * 4 + 3] = 0;
+      }
+    }
+  }
+  ctx.putImageData(imageData, 0, 0);
+  return createImageBitmap(canvas);
+}

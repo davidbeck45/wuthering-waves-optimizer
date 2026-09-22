@@ -64,6 +64,29 @@ function normalize(text: string): string {
 
 const KNOWN_LABEL_WORDS = ["ATK", "DEF", "HP"];
 
+/**
+ * verboseStatLabelMap deliberately carries multiple aliases per stat for
+ * fuzzy-matching purposes elsewhere (e.g. "Resonance Liberation DMG
+ * Bonus", "Resonance Liberation DMG", and "Resonance Liberation" all map
+ * to the same canonical key) — useful for normalizeStatLabel's tolerance,
+ * but wrong to treat as "this label is complete, stop extending it" in
+ * scanStatRows: "Resonance Liberation" alone being a registered key made
+ * that check fire before "DMG Bonus" (a real wrapped label's continuation
+ * line) was ever consumed, truncating the row. Only the *longest* alias
+ * per canonical key — the one WuWa actually displays in full — counts as
+ * "complete" here.
+ */
+const CANONICAL_COMPLETE_LABELS: Set<string> = (() => {
+  const longestByCanonicalKey = new Map<string, string>();
+  for (const [label, canonicalKey] of Object.entries(verboseStatLabelMap)) {
+    const current = longestByCanonicalKey.get(canonicalKey);
+    if (!current || label.length > current.length) {
+      longestByCanonicalKey.set(canonicalKey, label);
+    }
+  }
+  return new Set(longestByCanonicalKey.values());
+})();
+
 function bestKnownLabelMatch(text: string): { label: string; score: number } | null {
   const target = normalize(text);
   if (!target) return null;
@@ -114,6 +137,118 @@ function isPlausibleLabel(rawLabel: string): boolean {
   return normalizeStatLabel(trimmed) !== null;
 }
 
+/** A line that's *only* a value, no label text at all — e.g. a value that landed on its own OCR'd line with nothing else on it. */
+const VALUE_ONLY_PATTERN = /^[+-]?\d+(?:\.\d+)?%?$/;
+/** A line carrying both a label and a trailing value. */
+const LABEL_AND_VALUE_PATTERN = /^(.*?)\s+([+-]?\d+(?:\.\d+)?%?)$/;
+
+/**
+ * Scans a crop's OCR'd lines for stat rows, tolerating the label and value
+ * landing on the same line, on separate lines, or a multi-line label with
+ * the value attached to only one of its lines — accumulating label text
+ * from *both* directions around wherever the value actually is, since
+ * real footage confirmed more than one shape:
+ *  - normal: "Healing Bonus 26.4%" (label + value, one line).
+ *  - value-only continuation: "% DEF" / "11.3%" (label on its own line,
+ *    the value lands alone on the next).
+ *  - wrapped label, value on its first line: "Resonance Liberation 10.9%"
+ *    / "DMG Bonus" (the rest of the label continues below with no value
+ *    of its own) — this is the game's actual layout for a wrapped label
+ *    (value right-aligned to the label's *first* line, not its last), the
+ *    opposite of what an earlier version of this function assumed, which
+ *    could never recover a wrapped row as a result.
+ *
+ * A line whose own trailing number *doesn't* belong to the row currently
+ * being accumulated (i.e. a second value shows up before the pending
+ * label has become plausible) ends that pending attempt — it's someone
+ * else's row, most likely OCR garbage that coincidentally looked
+ * value-shaped (confirmed from real footage: a crop reading "72 DdIIC
+ * ALAC DITO DOIIUS 4.4170" *before* a legitimate "Crit. Rate 6.3%") — and
+ * that same line is then reprocessed as a fresh row's start rather than
+ * dropped.
+ *
+ * Returns every row whose accumulated label became plausible
+ * (isPlausibleLabel), in order, plus the very first attempted row (even
+ * if it never became plausible) as a last-resort fallback for callers
+ * that need *something* rather than nothing.
+ *
+ * Committing a fuzzy (non-exact) match as soon as it crosses the
+ * plausibility threshold was a real bug: "Resonance Skill DMG" alone is
+ * *already* ~0.77 similar to the real label "Resonance Skill DMG Bonus"
+ * (just barely over the 0.75 tolerance meant for OCR typos, not for
+ * incomplete prefixes) — so it kept committing the truncated label
+ * without ever looking at the next line ("Bonus") that would have
+ * completed it. Only an *exact* known-label match short-circuits early
+ * now (safe — it can't get more complete than exact); a fuzzy match keeps
+ * accumulating through any further non-value lines until it hits a real
+ * boundary (a new value line, or the end of input), and only then is
+ * plausibility (fuzzy or exact) checked and the row committed or dropped.
+ */
+function scanStatRows(lines: string[]): { plausible: StatRow[]; firstAttempt: StatRow | null } {
+  const plausible: StatRow[] = [];
+  let firstAttempt: StatRow | null = null;
+  let bufferLabel = "";
+  let bufferValue: string | null = null;
+
+  function isExactLabel(label: string): boolean {
+    return CANONICAL_COMPLETE_LABELS.has(label.trim());
+  }
+
+  function recordAttempt(): void {
+    if (bufferValue !== null && !firstAttempt) {
+      firstAttempt = { rawLabel: bufferLabel, rawValue: bufferValue };
+    }
+  }
+
+  function reset(): void {
+    bufferLabel = "";
+    bufferValue = null;
+  }
+
+  /** Boundary reached (a new value line, or end of input) — commit the pending buffer if it's at least fuzzy-plausible, otherwise drop it as noise. */
+  function finalizeBuffer(): void {
+    if (bufferValue === null) return;
+    recordAttempt();
+    if (isPlausibleLabel(bufferLabel)) {
+      plausible.push({ rawLabel: bufferLabel, rawValue: bufferValue });
+    }
+    reset();
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const labelAndValue = line.match(LABEL_AND_VALUE_PATTERN);
+    const isValueOnly = VALUE_ONLY_PATTERN.test(line);
+
+    if (bufferValue !== null && (labelAndValue || isValueOnly)) {
+      // A new value showed up while the pending row's label still hadn't
+      // been finalized — it belongs to a different row. Close out the
+      // pending one and reprocess this same line as a fresh start.
+      finalizeBuffer();
+      i--;
+      continue;
+    }
+
+    if (labelAndValue) {
+      bufferLabel = bufferLabel ? `${bufferLabel} ${labelAndValue[1].trim()}` : labelAndValue[1].trim();
+      bufferValue = labelAndValue[2].trim();
+    } else if (isValueOnly) {
+      bufferValue = line;
+    } else {
+      bufferLabel = bufferLabel ? `${bufferLabel} ${line}` : line;
+    }
+    recordAttempt();
+
+    if (bufferValue !== null && isExactLabel(bufferLabel)) {
+      plausible.push({ rawLabel: bufferLabel, rawValue: bufferValue });
+      reset();
+    }
+  }
+  finalizeBuffer(); // trailing buffer at end of input
+
+  return { plausible, firstAttempt };
+}
+
 /**
  * Resolves one individually-cropped stat row's OCR text to a {label,
  * value} pair. Mirrors CalculatorEchoParser.vue's per-row crops (5
@@ -121,20 +256,18 @@ function isPlausibleLabel(rawLabel: string): boolean {
  * segment a multi-line block itself.
  *
  * The crop is deliberately taller than one line (see SUBSTAT_ROWS in
- * layout.ts) so a wrapped label ("Resonance Skill DMG" / "Bonus 8.6%")
- * still resolves correctly, and so it tolerates the row shifting down a
- * bit when an *earlier* row wrapped (the panel reflows, so every row below
- * a wrap sits lower than this crop's fixed position assumes). That
- * overlap has a real cost though: a crop can end up containing noise or
- * even a neighboring row's actual text ahead of this row's own content
- * (confirmed from real footage — e.g. a crop reading "72 DdIIC ALAC DITO
- * DOIIUS 4.4170" *before* a legitimate "Crit. Rate 6.3%"). Accepting
- * whichever line happens to end in a number *first* was a real bug: that
- * garbled first line matches the same "label value" shape as real content,
- * so it won by being first, and the real row underneath it was silently
- * never reached. This keeps scanning past a match whose label doesn't
- * actually look like a stat name (isPlausibleLabel), only falling back to
- * the first match found if nothing in the crop ever looks plausible.
+ * layout.ts) so a wrapped label still resolves correctly (see
+ * scanStatRows' doc comment for the shapes that actually occur), and so
+ * it tolerates the row shifting down a bit when an *earlier* row wrapped
+ * (the panel reflows, so every row below a wrap sits lower than this
+ * crop's fixed position assumes). That overlap has a real cost though: a
+ * crop can end up containing a neighboring row's actual text ahead of
+ * this row's own content, which scanStatRows also has to tell apart from
+ * this row's own (possibly still-accumulating) label.
+ *
+ * Only the *first* plausible row scanStatRows finds is this row's own —
+ * a second one that leaked in from crop overlap is a different row,
+ * handled by that row's own crop instead.
  *
  * When a per-row crop still can't recover all 5 substats (most often a
  * wrap having shifted rows below it by an amount this fixed-position crop
@@ -147,69 +280,26 @@ export function parseStatRow(rawText: string): StatRow | null {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-
-  const valuePattern = /^(.*?)\s+([+-]?\d+(?:\.\d+)?%?)$/;
-  let pendingLabel = "";
-  let firstMatch: StatRow | null = null;
-
-  for (const line of lines) {
-    const candidate = pendingLabel ? `${pendingLabel} ${line}` : line;
-    const match = candidate.match(valuePattern);
-    if (match) {
-      const row: StatRow = { rawLabel: match[1].trim(), rawValue: match[2].trim() };
-      if (!firstMatch) firstMatch = row;
-      if (isPlausibleLabel(row.rawLabel)) return row;
-      // Doesn't look like a real stat label yet — keep the whole matched
-      // text (garbage included) and keep scanning; the real label may
-      // still be further down, with this noise as its leading prefix.
-      pendingLabel = candidate;
-      continue;
-    }
-    // No trailing number yet — could be a wrapped label continuation.
-    pendingLabel = candidate;
-  }
-  // Nothing in the crop ever looked like a real label — the first numeric
-  // match is still a better answer than nothing (matches prior behavior),
-  // just one that'll correctly come back low-confidence downstream.
-  return firstMatch;
+  const { plausible, firstAttempt } = scanStatRows(lines);
+  // Nothing in the crop ever looked like a real label — the first
+  // attempted match is still a better answer than nothing (matches prior
+  // behavior), just one that'll correctly come back low-confidence downstream.
+  return plausible[0] ?? firstAttempt;
 }
 
 /**
  * The fallback pass: extracts as many {label, value} rows as it can find
  * from one wide multi-line block (SUBSTAT_BLOCK), used only when the 5
- * individual per-row crops don't add up to all 5 substats. This is
- * essentially parseStatRow generalized to keep going after a match instead
- * of stopping at the first one — same plausibility gate, so a block that
- * happens to contain noise doesn't get an implausible "row" counted.
+ * individual per-row crops don't add up to all 5 substats. Just
+ * scanStatRows' full plausible-rows list — see its doc comment for the
+ * label/value shapes this handles.
  */
 export function splitStatBlock(rawText: string): StatRow[] {
   const lines = rawText
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-
-  const valuePattern = /^(.*?)\s+([+-]?\d+(?:\.\d+)?%?)$/;
-  const rows: StatRow[] = [];
-  let pendingLabel = "";
-
-  for (const line of lines) {
-    const candidate = pendingLabel ? `${pendingLabel} ${line}` : line;
-    const match = candidate.match(valuePattern);
-    if (match) {
-      const row: StatRow = { rawLabel: match[1].trim(), rawValue: match[2].trim() };
-      if (isPlausibleLabel(row.rawLabel)) {
-        rows.push(row);
-        pendingLabel = "";
-        continue;
-      }
-      // Doesn't look real yet — could be noise ahead of the next line's
-      // actual content (or a wrapped label's first line) — keep going.
-      pendingLabel = candidate;
-      continue;
-    }
-    pendingLabel = candidate;
-  }
-  return rows;
+  return scanStatRows(lines).plausible;
 }
 
 /**

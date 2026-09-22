@@ -193,3 +193,50 @@ all 5 (their real cause: a wrap earlier in the panel shifts every row
 below it down by an amount no fixed-position crop's height alone can
 account for). Echo identification's narrowing is now set-only, not
 set+cost, since cost is no longer read as text.
+
+**Revised again (same rollout):** two more real-usage bugs, both found
+from the user's own debug-view screenshots rather than guessed at blind.
+
+First, set-icon matching was still unreliable even after `SET_ICON_BOX`
+was tightened — because tight cropping was never the whole problem.
+`matchSetFirst`/`extractImageRegion` (`echoParser.worker.ts`, shared with
+the Discord-bot importer) mask background by color: any near-black pixel
+is treated as transparent and ignored before `getDominantColors` runs. That
+assumption holds for the Discord-bot flow's source images, which are
+rendered onto a black canvas, but not for a live capture, whose panel
+background behind the icon is a reddish-brown game-UI color that never
+gets masked. The unmasked background pixels were corrupting the
+color-family signal `matchSetFirst` weighs most heavily — exactly the
+"OCR has a background, the reference icons don't" mismatch the user
+suspected. Fixed in `src/scanner/capture.ts` with a new
+`grabCircularMaskedBitmap`, which masks by *shape* instead of color
+(alpha=0 outside a centered circle matching the icon's own round bounds)
+before the crop is ever handed to the shared worker — `echoParser.worker.ts`
+itself stays untouched, so the Discord-bot flow this ADR didn't intend to
+touch carries zero regression risk. The debug view's set-icon thumbnail
+now renders this same masked bitmap over a visible gray backdrop, so the
+mask is checkable by eye, not just asserted.
+
+Second, the `SUBSTAT_BLOCK` fallback could come back completely empty on
+a block that was, by eye, clearly legible — traced to the wrap-direction
+assumption in `parse.ts` being backwards from the real game layout. The
+code assumed a wrapped label's value follows its *last* line (e.g.
+"Resonance Skill DMG" / "Bonus 8.6%"); real captures instead put the value
+on the label's *first* line, with the bare continuation word(s) trailing
+on the next line ("Resonance Liberation 10.9%" / "DMG Bonus"). Confirmed
+by direct comparison of a user-supplied empty-fallback crop against the
+full-panel reference image. `parseStatRow`/`splitStatBlock` were rewritten
+around one shared `scanStatRows()` that accumulates label text from
+whichever line the value lands on, handling all three real shapes seen in
+footage (single-line, value-only continuation, and label-continues-after
+wrap). A second bug surfaced while fixing the first: the "is this label
+already complete, stop extending it" check used `verboseStatLabelMap`
+key-lookup directly, which also matches intentional *partial* aliases the
+map keeps for fuzzy-matching elsewhere (e.g. `"Resonance Liberation"` is a
+registered alias short of the full `"Resonance Liberation DMG Bonus"`
+label) — so extension stopped one line too early. Fixed with a derived
+`CANONICAL_COMPLETE_LABELS` set (the longest alias per canonical stat key)
+used only for that stop condition. Regression tests in
+`tests/scanner/parse.test.ts` use the user's real "Inferno Rider" OCR text
+verbatim, both at the `splitStatBlock` level and end-to-end through
+`parseEchoCandidate`.
