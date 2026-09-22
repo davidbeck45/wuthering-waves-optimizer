@@ -11,9 +11,30 @@
       </form>
       <div class="py-4">
         <template v-if="!isReviewingDuplicates">
+          <div role="tablist" class="tabs tabs-bordered mb-4">
+            <a
+              role="tab"
+              class="tab"
+              :class="{ 'tab-active': importMode === 'image' }"
+              @click="importMode = 'image'">
+              Discord bot image
+            </a>
+            <a
+              role="tab"
+              class="tab"
+              :class="{ 'tab-active': importMode === 'scan' }"
+              @click="importMode = 'scan'">
+              Scan from game
+            </a>
+          </div>
           <CalculatorEchoParser
+            v-if="importMode === 'image'"
             :inventory-only="inventoryOnly"
             @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
+          <EchoScannerCapture
+            v-else
+            :inventory-only="inventoryOnly"
+            @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
         </template>
         <template v-else>
           <h2 class="text-xl font-bold mb-2">Possible inventory duplicates</h2>
@@ -127,18 +148,22 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from "vue";
 import CalculatorEchoParser from "./CalculatorEchoParser.vue";
+import EchoScannerCapture from "./EchoScannerCapture.vue";
 import {
   getEchoSetIconByType,
   getEchoSetLabelByType,
   getReadableSubStatLabel,
   getSubStatIconByType,
-  verboseStatLabelMap,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index";
+import {
+  mapParsedEchoes,
+  type MappedEcho,
+  type ParsedEcho,
+} from "../echoes/parsedEchoMapping";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
-import { randomString } from "../utils/strings.ts";
 
 const DEFAULT_ECHO_IMAGE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
@@ -158,38 +183,10 @@ const modalId = computed(() =>
 );
 
 const isOpen = ref(false);
+const importMode = ref<"image" | "scan">("image");
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
-
-type ParsedSubstat = { subStat?: string; subStatValue?: string };
-type ParsedEcho = {
-  substats: ParsedSubstat[];
-  cost?: unknown;
-  rank?: number;
-  mainStatLabel?: string;
-  echo?: string | null;
-  set?: string | null;
-};
-
-type MappedEcho = {
-  echo: string | null;
-  type: number | null;
-  rank: number;
-  stat: string | null;
-  echoId: string | null;
-  echoSet: string | null | undefined;
-  echoSubStatsType1: string | null;
-  echoSubStatsValue1: number | null;
-  echoSubStatsType2: string | null;
-  echoSubStatsValue2: number | null;
-  echoSubStatsType3: string | null;
-  echoSubStatsValue3: number | null;
-  echoSubStatsType4: string | null;
-  echoSubStatsValue4: number | null;
-  echoSubStatsType5: string | null;
-  echoSubStatsValue5: number | null;
-};
 
 type DuplicateReviewItem = {
   index: number;
@@ -221,6 +218,7 @@ function triggerCloseModal() {
   (modalEl as HTMLDialogElement | null)?.close();
   isOpen.value = false;
   resetDuplicateReview();
+  importMode.value = "image";
 }
 
 function handleClose() {
@@ -229,34 +227,6 @@ function handleClose() {
 
 function handleCancelDuplicateReview() {
   triggerCloseModal();
-}
-
-function getSubstatValue(subStatValue: string | undefined) {
-  if (!subStatValue) {
-    return null;
-  }
-  const valueWithoutPercent = subStatValue.replace("%", "");
-  return Number(valueWithoutPercent);
-}
-
-function getSubstatType(subStatData: ParsedSubstat | undefined) {
-  const type = subStatData?.subStat;
-  const value = subStatData?.subStatValue;
-  if (!type || !value) {
-    return null;
-  }
-  if (type === "DEF Y") {
-    return "DEF";
-  }
-  if (["ATK", "DEF", "HP"].includes(type)) {
-    if (value.includes("%")) {
-      return type;
-    }
-    return `${type}_FLAT`;
-  }
-  return (
-    verboseStatLabelMap[type as keyof typeof verboseStatLabelMap] ?? null
-  );
 }
 
 function isExactInventoryMatch(echo: MappedEcho) {
@@ -268,50 +238,6 @@ function isExactInventoryMatch(echo: MappedEcho) {
     (inventoryEcho: MappedEcho) =>
       getEchoIdentityKey(inventoryEcho) === identityKey,
   );
-}
-
-function mapParsedEchoes(
-  echoData: ParsedEcho[],
-  isSavingToInventory: boolean,
-): MappedEcho[] {
-  return echoData.map((echo) => {
-    const echoSubStatsType1 = getSubstatType(echo.substats[0]);
-    const echoSubStatsValue1 = getSubstatValue(echo.substats[0]?.subStatValue);
-    const echoSubStatsType2 = getSubstatType(echo.substats[1]);
-    const echoSubStatsValue2 = getSubstatValue(echo.substats[1]?.subStatValue);
-    const echoSubStatsType3 = getSubstatType(echo.substats[2]);
-    const echoSubStatsValue3 = getSubstatValue(echo.substats[2]?.subStatValue);
-    const echoSubStatsType4 = getSubstatType(echo.substats[3]);
-    const echoSubStatsValue4 = getSubstatValue(echo.substats[3]?.subStatValue);
-    const echoSubStatsType5 = getSubstatType(echo.substats[4]);
-    const echoSubStatsValue5 = getSubstatValue(echo.substats[4]?.subStatValue);
-    let echoId: string | null = null;
-    if (isSavingToInventory) {
-      echoId = randomString();
-    }
-    return {
-      echo: echo.echo ?? null,
-      type: Number(echo.cost) || null,
-      rank: echo.rank ?? 5,
-      stat: echo.mainStatLabel
-        ? verboseStatLabelMap[
-            echo.mainStatLabel as keyof typeof verboseStatLabelMap
-          ]
-        : null,
-      echoId,
-      echoSet: echo.set,
-      echoSubStatsType1,
-      echoSubStatsValue1,
-      echoSubStatsType2,
-      echoSubStatsValue2,
-      echoSubStatsType3,
-      echoSubStatsValue3,
-      echoSubStatsType4,
-      echoSubStatsValue4,
-      echoSubStatsType5,
-      echoSubStatsValue5,
-    };
-  });
 }
 
 function getEchoDisplayName(echo: MappedEcho) {
