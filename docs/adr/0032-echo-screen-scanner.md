@@ -317,3 +317,55 @@ nothing. Gated by a new `dominantColorDistanceWeight` in `SetMatchWeights`,
 0 by default (true no-op for the Discord-bot flow and every other existing
 caller), turned on (100) only in `SCANNER_SET_MATCH_WEIGHTS`. Additive
 with `colorFamilyPenalty`, not a replacement.
+
+**Revised a sixth time (same rollout) — a design pivot, not another
+scoring tweak:** after four straight rounds of set-icon-matching fixes
+(background masking, scale/alignment, scoring weights, a gray-icon color
+gap) still left matching inconsistent, it was worth checking whether
+set-icon-first identification was ever the right primary signal, rather
+than continuing to patch the comparison algorithm. It wasn't, for a
+fact-checkable reason: of the 182 echoes in `mainEchoesData`, none share a
+name, but 122 (67%) support more than one set. Name text is sufficient on
+its own to identify the echo, for any echo, once OCR reads it well
+enough — it has no structural ceiling the way set-icon matching does.
+Set-icon matching, even a hypothetically perfect one, still can't
+identify the echo by itself for two-thirds of the pool, since knowing
+*which set* doesn't say *which echo* when several share that set.
+Set-icon matching's real, necessary job is answering a different, smaller
+question — which of an already-identified echo's few legal sets did the
+player equip it into — not identifying the echo in the first place.
+
+Flipped the priority: `parse.ts`'s new `resolveEchoByNameAndCost` matches
+by name (Levenshtein) first, narrowed (as a soft optimization, never a
+hard filter — always retries unfiltered on a narrowed miss) by cost
+inferred from the fixed secondary stat's value (`inferCostFromSecondaryStat`
+— deterministic at max level, no image matching, no dependency on the
+echo being known yet: 2280/100/150 for cost 1/3/4, from
+`flatBonusesByRankByType`'s own rank-5 entries). Once an echo resolves,
+`useEchoScanner.ts`'s `resolveEchoIdentity` checks its own `sets`: exactly
+one (33% of the pool) needs no image matching *at all*; more than one
+(67%) gets a *narrowed* `matchSet` call (just that echo's 2-3 real
+candidates, via the same structural `compareImages` comparison the
+Discord-bot flow already trusts for this exact job — not
+`matchSetFirst`'s bucketed scoring). The old set-icon-first path
+(`matchSetFirst` full-pool, then set-narrows-pool/name-breaks-ties,
+renamed `resolveEchoBySet`) is kept as the last-resort fallback for when
+name+cost can't confidently resolve an echo at all — every fix from the
+four rounds above still matters there, just exercised less often.
+
+`parseEchoCandidate` gained an optional `preResolvedEcho` input rather
+than a signature rewrite: when given (name+cost succeeded), it's trusted
+directly, cross-checked against the resolved `matchedSet` only for a
+confidence flag; when omitted (name+cost failed), the function falls
+through to the exact original set-narrows-pool logic unchanged. This kept
+every one of the ~30 pre-existing `parseEchoCandidate` tests passing
+byte-for-byte with zero changes — they all exercise the omitted-param
+path — while 15 new tests cover `inferCostFromSecondaryStat`,
+`resolveEchoByNameAndCost` (single-set, multi-set, OCR-noise-tolerant, and
+cost-inference-miss-falls-back-unfiltered cases, using real echo data
+checked against `src/echoes/index.ts`, not invented), and
+`preResolvedEcho`'s three branches. Not yet validated against a large
+batch of real captures — like every scoring-weight change above, reasoned
+from checked data (the 182/122 counts), not exhaustively tuned; the debug
+view's per-candidate label now names which path actually ran so that's
+checkable from real usage going forward.

@@ -212,49 +212,94 @@ ever reading the next line. `CANONICAL_COMPLETE_LABELS` picks out only the
 *longest* alias per stat — the one WuWa actually displays in full — as
 the signal that a label is really finished.
 
-## Echo identification: narrow by set first, name text breaks ties, cost is derived
+## Echo identification: name + cost first, set-icon image matching narrowed or last-resort
 
-The first version matched the echo purely by OCR'ing its name and
-Levenshtein-fuzzy-matching against all ~150 echoes (narrowed only by a
-cost read from text). That missed the technique `CalculatorEchoParser.vue`'s
-Discord-bot flow actually relies on for its accuracy: match the set icon
-first (`matchSetFirst`), filter `mainEchoesData` down to echoes in that set,
-and only then resolve the specific echo.
+This has gone through three real designs. The first matched by OCR'd name
+alone (Levenshtein-fuzzy against all ~150 echoes). The second (documented
+in this section for a while) switched to set-icon-first — match the icon
+against all ~30 sets (`matchSetFirst`), narrow `mainEchoesData` to that
+set, then resolve the specific echo — mirroring `CalculatorEchoParser.vue`'s
+Discord-bot flow. That second design is what every set-icon-matching fix
+earlier in this doc (background masking, scale, scoring weights, the
+gray-icon color-distance fix) was in service of — and after all of them,
+matching was *still* inconsistent enough that it was worth checking
+whether set-icon-first was ever the right primary signal to begin with.
 
-`parse.ts`'s `resolveEcho` does this narrowing by **set only** — this
-scanner doesn't read cost as text at all (see the ROI layout section
-above), so unlike `CalculatorEchoParser.vue`'s own `filteredEchoKeys` this
-can't also narrow by cost:
+It wasn't, for a fact-checkable reason: of the 182 echoes in
+`mainEchoesData`, **none share a name**, but **122 (67%) support more than
+one set**. Name text is sufficient on its own to identify the echo, for
+*any* echo, once OCR reads it well enough — it has no structural ceiling
+the way set-icon matching does. Set-icon matching, even a hypothetically
+*perfect* one, still can't identify the echo by itself for two-thirds of
+the pool, since knowing "this is a `SongofFeatheredTrace` echo" doesn't
+say *which* `SongofFeatheredTrace` echo when 8 of them share that set.
+Set-icon matching's real, necessary job is answering a different
+question — *which* of an already-identified echo's few legal sets did the
+player equip it into — not identifying the echo in the first place.
 
-1. **Narrow** `mainEchoesData` by `matchedSet` membership.
-2. **Pool of exactly one** (only when a set actually narrowed to a single
-   echo across *every* cost tier — checked: most sets still have several,
-   e.g. `SongofFeatheredTrace` has 8 across costs 1/3/4, but some, e.g.
-   `ShadowofShatteredDreams`, really do have just one): trust it directly,
-   sidestepping OCR'ing the name at all for an echo whose name is short or
-   accented and therefore hard to read reliably (confirmed cause of a real
-   "Jué" (4-cost) mismatch — see `normalize`'s doc comment). Still
-   sanity-checked against any name text that *was* read
-   (`NAME_SANITY_THRESHOLD`), so a set icon that was clearly misread
-   doesn't get silently trusted.
-3. **Pool of several** (the common case now that cost doesn't also
-   narrow): Levenshtein name matching breaks the tie within that pool
-   instead of against the full list — `NAME_BLOCK`'s single-line, no-wrap
-   crop (see above) exists specifically to make this name read reliable,
-   since it now carries more of the identification burden than it used to.
-4. **Empty pool**: the set match itself was probably wrong. Falls back to
-   `matchEchoName`, matching by name against every echo, same as the very
-   first version's behavior.
+The current design, in `parse.ts`'s `resolveEchoByNameAndCost` +
+`useEchoScanner.ts`'s `resolveEchoIdentity`:
+
+1. **Infer cost from the fixed secondary stat's value** (`inferCostFromSecondaryStat`)
+   — at max level (always assumed), the fixed secondary is entirely
+   determined by cost: 2280 (HP) for cost-1, 100 (ATK) for cost-3, 150
+   (ATK) for cost-4, straight from `flatBonusesByRankByType`'s own rank-5
+   entries. No image matching, no dependency on the echo being known yet.
+   An earlier attempt at this same idea only checked the rank-5 table
+   without accounting for lower ranks at all (a real bug, since it assumed
+   every echo was always at rank 5) — moot now that level is fixed at
+   max, but worth remembering if that assumption ever changes.
+2. **Narrow the name-match candidate pool by that cost**, if inferred —
+   purely a soft optimization, never a hard filter: `resolveEchoByNameAndCost`
+   always retries against the *full* unfiltered pool if the narrowed
+   search doesn't turn up a confident match, so a wrong cost inference (or
+   none at all) can only cost some discriminating power, never silently
+   exclude the right answer.
+3. **Levenshtein-match the name** (`bestNameMatch`) against that pool —
+   `NAME_BLOCK`'s single-line, no-wrap crop exists specifically to make
+   this read reliable, since it now carries the primary identification
+   burden rather than a secondary tie-break role.
+4. **If an echo resolves**, look up its own `sets`:
+   - **Exactly one** (33% of the pool): done — the set is known directly,
+     with *no image matching at all*, not even attempted.
+   - **More than one** (67%): `useEchoScanner.ts` calls the shared
+     worker's `matchSet` — narrowed to just that echo's own 2-3 candidate
+     sets, via `setImageUrls` built from only those keys — to disambiguate.
+     This is a fundamentally easier problem than picking correctly out of
+     all 30: few candidates, and `matchSet` uses a different, more robust
+     comparison (`compareImages`, structural/edge-based) than
+     `matchSetFirst`'s bucketed-color/shape-heuristic scoring — the same
+     narrowed-comparison function the Discord-bot flow already relies on
+     for this exact job.
+5. **If no echo resolves at all** (name OCR too garbled to clear
+   `NAME_MATCH_THRESHOLD` even unfiltered): falls back to the *old*
+   design in full — full-pool `matchSetFirst` (still with the tuned
+   `SCANNER_SET_MATCH_WEIGHTS` from the fixes above, since this path still
+   exercises it), then the old set-narrows-pool/name-breaks-ties logic
+   (`resolveEchoBySet`, the renamed original `resolveEcho`) to resolve an
+   echo from that. Every earlier set-icon-matching fix in this doc still
+   matters here — this fallback is hit far less often now, but not never.
+
+`parseEchoCandidate` takes the result of whichever path ran as a
+`preResolvedEcho` (when name+cost succeeded) or falls through to
+`resolveEchoBySet` internally (when it didn't) — see its doc comment for
+the exact contract. `matchedSet` is always the *final* resolved set
+regardless of which path produced it, and is what ends up in the saved
+`ParsedEchoSlot`.
 
 Once the echo is resolved, **cost is derived from its class**
-(`getCostByClass`) — never read as OCR text. The fixed secondary-stat row
-is still OCR'd (useful context, shown in the debug view) but no longer
-feeds cost detection at all; an earlier version tried inferring cost from
-its flat value, but only checked the rank-5 table (a real bug — echoes
-aren't all 5-star, confirmed from a real rank-4 cost-1 echo whose
-secondary crop was perfectly legible but didn't match rank 5's value).
-Deriving cost from the resolved echo instead sidesteps that whole class of
-problem.
+(`getCostByClass`) for the saved result — never read as OCR text for that
+purpose. The secondary-stat value above is used only for the *narrowing*
+step; it isn't re-used as the final cost output, so a narrowing miss can't
+propagate into a wrong saved cost the way a hard filter would.
+
+This hasn't been validated against a large batch of real captures yet —
+like the set-icon scoring weights, it's a design change reasoned from real
+data (the 182/122 counts above, checked directly against
+`src/echoes/index.ts`, not estimated) rather than exhaustively tuned. The
+debug view's per-candidate label (`identity.debugLabel` in
+`useEchoScanner.ts`) now says which of the paths above actually ran and
+what it found, specifically so that's checkable from real usage.
 
 ## Set icon matching: shape-mask the background, not just crop tighter
 
@@ -492,13 +537,20 @@ wrong:
 - **Per-candidate crop grid**: every captured candidate also carries
   `debugCrops` — a labeled `data:` URL thumbnail of exactly what was
   cropped for each region (including `substatBlock`, the fallback region),
-  plus that region's own OCR text. The `setIcon` entry shows the actual
-  matched set ("Matched: <Set Name>" or "No set match") instead of a
-  generic placeholder, so you can directly compare the crop against what
-  it was matched to; `panel` (fingerprint-only, not OCR'd or matched)
-  keeps a placeholder. `capture.ts`'s `grabRegionWithPreview` produces
-  both the bitmap sent to the worker and the thumbnail from one canvas
-  draw, so what's shown is provably the same pixels that were actually
+  plus that region's own OCR text. The `setIcon` entry shows
+  `resolveEchoIdentity`'s `debugLabel` instead of a generic placeholder —
+  which of the identification paths actually ran ("Resolved by name
+  (single possible set): …", "Resolved by name; narrowed image match (N
+  candidates): …", "Name unresolved — fell back to full image match: …",
+  etc. — see "Echo identification" above), not just a flat "Matched: X" /
+  "No set match", since *which path* produced the result is itself useful
+  diagnostic information now that there's more than one. It also shows the
+  matched reference icon directly beside the captured crop (only
+  meaningful when a path actually did an image comparison — see "Set icon
+  matching" above); `panel` (fingerprint-only, not OCR'd or matched) keeps
+  a placeholder. `capture.ts`'s `grabRegionWithPreview` produces both the
+  bitmap sent to the worker and the thumbnail from one canvas draw, so
+  what's shown is provably the same pixels that were actually
   OCR'd/matched, not a re-derived approximation. A candidate whose substat
   block fallback pass actually fired shows a small "Used substat fallback
   pass" note (`usedSubstatBlockFallback`).

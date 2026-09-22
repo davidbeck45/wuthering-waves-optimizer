@@ -14,18 +14,39 @@
  * has for when its own cost OCR misses, just always taken here instead of
  * only as a fallback.
  *
- * Echo identification deliberately mirrors CalculatorEchoParser.vue's
- * proven approach instead of doing OCR-name-vs-everything matching alone:
- * narrow mainEchoesData by the already-matched set icon (matchSetFirst,
- * called by the caller/useEchoScanner.ts — this module stays string-only,
- * no image matching here), the same way that flow's `filteredEchoKeys`
- * narrowing does (minus its cost half, which this scanner doesn't read).
- * A set alone often narrows to one echo; when it narrows to several,
- * Levenshtein name-text matching breaks the tie within that pool instead
- * of guessing against the full ~150-echo list. See docs/scanner.md.
+ * Echo identification is name-first, not set-icon-first (revised from an
+ * earlier set-first design — see docs/scanner.md's "Echo identification"
+ * section for the full reasoning and the real mismatch that motivated it).
+ * Short version: of 182 echoes, none share a name, but 122 (67%) support
+ * more than one set — so even a *correct* set-icon match alone often
+ * can't identify the echo, and a *wrong* one (the persistent problem this
+ * scanner kept hitting) actively misidentifies it. Name text, tolerant of
+ * OCR noise via Levenshtein similarity, doesn't have that ceiling: it
+ * alone is enough to identify the echo, no image matching needed at all,
+ * for any echo whose set happens to be unambiguous (33% of the pool) or
+ * once the echo itself is known regardless of set. `resolveEchoByNameAndCost`
+ * below does exactly that — cost (inferred from the fixed secondary
+ * stat's value, deterministic, no image involved) narrows the name-match
+ * candidate pool as a soft optimization (never a hard filter: a bad
+ * narrowing just means no narrowing, not a wrong answer — it always
+ * retries unfiltered before giving up).
+ *
+ * Set-icon image matching still has a real, necessary job: when the
+ * resolved echo supports more than one set, *something* has to say which
+ * one the player actually slotted it into — the pixels are the only
+ * signal for that. useEchoScanner.ts calls the shared worker's `matchSet`
+ * (narrowed to just that echo's 2-3 real candidates) for this, which is a
+ * fundamentally easier, more forgiving comparison than picking correctly
+ * out of all 30 sets blind — and it's the same narrowed-comparison
+ * function (`compareImages`, not `matchSetFirst`'s bucketed/heuristic
+ * scoring) the Discord-bot flow already relies on for its own multi-set
+ * disambiguation. Full-pool set-icon matching (`matchSetFirst`) is kept
+ * only as a last-resort fallback for when name+cost matching can't
+ * confidently resolve an echo at all (badly garbled name OCR) — the old
+ * primary path, still exercised, just no longer trusted first.
  */
 import { mainEchoesData, getEchoData, getCostByClass, type Echo } from "../echoes/index";
-import { statsTable, subStatsTable, verboseStatLabelMap } from "../echoes/stats";
+import { statsTable, subStatsTable, verboseStatLabelMap, flatBonusesByRankByType } from "../echoes/stats";
 import { getSubstatType, getSubstatValue } from "../echoes/parsedEchoMapping";
 import { levenshteinSimilarity } from "./levenshtein";
 import type { FieldConfidence, ParsedEchoSlot, ParsedSubstat } from "./types";
@@ -340,9 +361,80 @@ function bestNameMatch(rawName: string, pool: Echo[]): EchoNameMatch | null {
   return best;
 }
 
-/** Kept as the fallback path for when set-based narrowing (see parseEchoCandidate) comes up empty — matches by name against every echo, unfiltered. */
+/** Kept as the fallback path for when set-based narrowing (see resolveEchoBySet) comes up empty — matches by name against every echo, unfiltered. */
 export function matchEchoName(rawName: string): EchoNameMatch | null {
   return bestNameMatch(rawName, Object.values(mainEchoesData ?? {}));
+}
+
+/**
+ * The fixed secondary stat's value is entirely determined by cost at max
+ * level (assumed always — see this file's top doc comment): 2280 (HP) for
+ * cost-1, 100 (ATK) for cost-3, 150 (ATK) for cost-4, straight from
+ * flatBonusesByRankByType's own rank-5 entries. That identifies cost
+ * before the specific echo is even known or any image matching happens.
+ *
+ * Used only to *narrow* resolveEchoByNameAndCost's candidate pool, never
+ * as a hard filter — a bad OCR read here (or a value that doesn't land
+ * near any of the three) just means no narrowing happens, not a wrong
+ * answer, since that function always retries unfiltered before giving up.
+ */
+export function inferCostFromSecondaryStat(secondaryStatText: string): number | null {
+  const row = parseStatRow(secondaryStatText);
+  if (!row) return null;
+  const value = getSubstatValue(row.rawValue);
+  if (value === null) return null;
+  // The three real values (2280/100/150) are tens apart at minimum, so
+  // even a generous tolerance here can't confuse one for another — this
+  // only needs to absorb a minor OCR digit misread.
+  const TOLERANCE = 3;
+  for (const [costKey, byRank] of Object.entries(flatBonusesByRankByType)) {
+    const maxRankValue = byRank[5];
+    if (maxRankValue !== undefined && Math.abs(maxRankValue - value) <= TOLERANCE) {
+      return Number(costKey);
+    }
+  }
+  return null;
+}
+
+export type EchoIdentityResult = {
+  echo: string | null;
+  confidence: FieldConfidence;
+  /** The resolved echo's own possible sets — 0 means no echo resolved, 1 means unambiguous (the caller needs no image matching at all), >1 means the caller should run a *narrowed* image match (just these candidates) to disambiguate. */
+  candidateSets: string[];
+};
+
+/**
+ * Primary identification path — see this file's top doc comment for why
+ * name text now comes before set-icon image matching. Cost-narrows the
+ * candidate pool when the secondary stat's value confidently infers one,
+ * but always falls back to the full unfiltered pool if that narrowed
+ * search doesn't turn up a confident match, so a bad cost inference can
+ * only cost some discriminating power, never silently exclude the right
+ * answer.
+ */
+export function resolveEchoByNameAndCost(nameText: string, secondaryStatText: string): EchoIdentityResult {
+  const name = parseNameText(nameText);
+  if (!name) return { echo: null, confidence: "low", candidateSets: [] };
+
+  const all = Object.values(mainEchoesData ?? {});
+  const inferredCost = inferCostFromSecondaryStat(secondaryStatText);
+
+  if (inferredCost !== null) {
+    const narrowedPool = all.filter((echo) => getCostByClass(echo.class) === inferredCost);
+    const narrowedMatch = bestNameMatch(name, narrowedPool);
+    if (narrowedMatch && narrowedMatch.similarity >= NAME_MATCH_THRESHOLD) {
+      const echoData = getEchoData(narrowedMatch.key);
+      return { echo: narrowedMatch.key, confidence: "high", candidateSets: echoData.sets ?? [] };
+    }
+  }
+
+  const fullMatch = bestNameMatch(name, all);
+  if (fullMatch && fullMatch.similarity >= NAME_MATCH_THRESHOLD) {
+    const echoData = getEchoData(fullMatch.key);
+    return { echo: fullMatch.key, confidence: "high", candidateSets: echoData.sets ?? [] };
+  }
+
+  return { echo: null, confidence: "low", candidateSets: [] };
 }
 
 function narrowEchoCandidates(matchedSet: string | null): Echo[] {
@@ -352,12 +444,16 @@ function narrowEchoCandidates(matchedSet: string | null): Echo[] {
 }
 
 /**
- * Identifies the echo the same way CalculatorEchoParser.vue's flow does —
- * narrow by the matched set first, only fall back to full-list name
- * matching when that narrowing can't be trusted. See this module's top
- * doc comment.
+ * The old set-first identification path — narrow by the matched set,
+ * break ties by name text within that narrowed pool. Kept as
+ * parseEchoCandidate's fallback for when resolveEchoByNameAndCost can't
+ * confidently resolve an echo at all (badly garbled name OCR): useEchoScanner.ts
+ * then falls back to full-pool set-icon image matching (matchSetFirst) to
+ * get *some* matchedSet, and this narrows/confirms an echo from it exactly
+ * as it always did. See this module's top doc comment for why this is no
+ * longer the primary path.
  */
-function resolveEcho(
+function resolveEchoBySet(
   headerName: string | null,
   matchedSet: string | null,
 ): { echo: string | null; confidence: FieldConfidence } {
@@ -456,10 +552,39 @@ export function parseEchoCandidate(input: {
   substatTexts: string[];
   /** SUBSTAT_BLOCK's OCR text — only consulted if the per-row pass doesn't add up to EXPECTED_SUBSTAT_COUNT. Optional so callers that skip the fallback OCR call entirely (nothing to gain if the per-row pass already got everything) don't need to pass anything. */
   substatBlockText?: string;
+  /**
+   * The final resolved set (single-set lookup, narrowed image match, or
+   * full-pool fallback match — see useEchoScanner.ts's resolveEchoIdentity),
+   * always used as this candidate's set output regardless of how it was
+   * obtained.
+   */
   matchedSet: string | null;
+  /**
+   * Already resolved by resolveEchoByNameAndCost (the primary, name-first
+   * path) — when given, trusted directly instead of re-deriving the echo
+   * from matchedSet's pool, only cross-checked against matchedSet for a
+   * confidence flag. Omitted when that path couldn't confidently resolve
+   * an echo at all, in which case the old set-first fallback (resolveEchoBySet)
+   * runs exactly as it always did.
+   */
+  preResolvedEcho?: string | null;
 }): ParseCandidateResult {
   const name = parseNameText(input.nameText);
-  const { echo: resolvedEcho, confidence: nameConfidence } = resolveEcho(name, input.matchedSet);
+  let resolvedEcho: string | null;
+  let nameConfidence: FieldConfidence;
+  if (input.preResolvedEcho) {
+    const echoData = getEchoData(input.preResolvedEcho);
+    const sets = echoData.sets ?? [];
+    // Trust it fully unless we do have a resolved set to check against and
+    // it disagrees with this echo's own known sets — that combination
+    // means the narrowed image match (or the caller's matchedSet) picked
+    // something that isn't even a legal set for this echo, worth flagging.
+    const trusted = !input.matchedSet || sets.length === 0 || sets.includes(input.matchedSet);
+    resolvedEcho = input.preResolvedEcho;
+    nameConfidence = trusted ? "high" : "low";
+  } else {
+    ({ echo: resolvedEcho, confidence: nameConfidence } = resolveEchoBySet(name, input.matchedSet));
+  }
   const cost = resolvedEcho ? getCostByClass(getEchoData(resolvedEcho).class) : null;
 
   const mainRow = parseStatRow(input.mainStatText);

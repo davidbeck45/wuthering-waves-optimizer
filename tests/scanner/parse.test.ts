@@ -6,6 +6,8 @@ import {
   matchEchoName,
   normalizeStatLabel,
   parseEchoCandidate,
+  inferCostFromSecondaryStat,
+  resolveEchoByNameAndCost,
 } from "../../src/scanner/parse";
 import { getEchoData } from "../../src/echoes/index";
 
@@ -213,6 +215,77 @@ describe("matchEchoName", () => {
     const match = matchEchoName("Jué");
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Jué");
+  });
+});
+
+describe("inferCostFromSecondaryStat", () => {
+  it("infers cost 1 from the fixed cost-1 secondary value (HP 2280)", () => {
+    expect(inferCostFromSecondaryStat("HP 2280")).toBe(1);
+  });
+
+  it("infers cost 3 from the fixed cost-3 secondary value (ATK 100)", () => {
+    expect(inferCostFromSecondaryStat("ATK 100")).toBe(3);
+  });
+
+  it("infers cost 4 from the fixed cost-4 secondary value (ATK 150)", () => {
+    expect(inferCostFromSecondaryStat("ATK 150")).toBe(4);
+  });
+
+  it("tolerates a minor OCR digit misread", () => {
+    expect(inferCostFromSecondaryStat("ATK 149")).toBe(4);
+    expect(inferCostFromSecondaryStat("HP 2278")).toBe(1);
+  });
+
+  it("returns null for a value that doesn't land near any of the three real ones (not confused for a wrong cost)", () => {
+    expect(inferCostFromSecondaryStat("ATK 120")).toBeNull();
+  });
+
+  it("returns null for blank or unparseable text", () => {
+    expect(inferCostFromSecondaryStat("")).toBeNull();
+    expect(inferCostFromSecondaryStat("garbage noise")).toBeNull();
+  });
+});
+
+describe("resolveEchoByNameAndCost", () => {
+  it("resolves a single-set echo from name + cost alone, reporting exactly one candidate set (no image matching needed)", () => {
+    // Thousand-Puppet Pavilion: cost 4 (Calamity, secondary ATK 150), sets: [SongofFeatheredTrace].
+    const result = resolveEchoByNameAndCost("Thousand-Puppet Pavilion", "ATK 150");
+    expect(result.echo).toBe("ThousandPuppetPavilion");
+    expect(result.confidence).toBe("high");
+    expect(result.candidateSets).toEqual(["SongofFeatheredTrace"]);
+  });
+
+  it("resolves a multi-set echo from name + cost alone, reporting every candidate set for the caller to narrow-image-match", () => {
+    // Viridblaze Saurian: cost 3 (Elite, secondary ATK 100), sets: [MoonlitClouds, MoltenRift].
+    const result = resolveEchoByNameAndCost("Viridblaze Saurian", "ATK 100");
+    expect(result.echo).toBe("ViridblazeSaurian");
+    expect(result.confidence).toBe("high");
+    expect(result.candidateSets).toEqual(["MoonlitClouds", "MoltenRift"]);
+  });
+
+  it("still resolves correctly through minor OCR noise in both the name and the secondary-stat digits", () => {
+    const result = resolveEchoByNameAndCost("Thousand Puppet Pavillon", "ATK 149");
+    expect(result.echo).toBe("ThousandPuppetPavilion");
+  });
+
+  it("falls back to the full unfiltered pool when cost inference is wrong or missing, rather than excluding the right answer", () => {
+    // Secondary-stat text deliberately garbled/unreadable — no cost narrowing
+    // possible — but the name alone is still enough.
+    const result = resolveEchoByNameAndCost("Thousand-Puppet Pavilion", "garbage noise");
+    expect(result.echo).toBe("ThousandPuppetPavilion");
+    expect(result.confidence).toBe("high");
+  });
+
+  it("returns no match when the name text doesn't resemble any real echo", () => {
+    const result = resolveEchoByNameAndCost("zzz totally not an echo zzz", "ATK 150");
+    expect(result.echo).toBeNull();
+    expect(result.confidence).toBe("low");
+    expect(result.candidateSets).toEqual([]);
+  });
+
+  it("returns no match for blank name text", () => {
+    const result = resolveEchoByNameAndCost("", "ATK 150");
+    expect(result.echo).toBeNull();
   });
 });
 
@@ -450,5 +523,51 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     expect(result.slot.substats[0]).toEqual({ subStat: "Crit. Rate", subStatValue: "6.9%" });
     // Unlike the .0-formatting case above, this one really was off — flag it.
     expect(result.confidence.substats[0]).toBe("low");
+  });
+});
+
+describe("parseEchoCandidate with preResolvedEcho (name-first identification — see this module's top doc comment)", () => {
+  it("trusts a pre-resolved echo directly, without re-deriving it from matchedSet's pool", () => {
+    const result = parseEchoCandidate({
+      nameText: "irrelevant here — preResolvedEcho wins",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["Crit. DMG 21%", "x", "x", "x", "x"],
+      matchedSet: "SongofFeatheredTrace",
+      preResolvedEcho: "ThousandPuppetPavilion",
+    });
+    expect(result.slot.echo).toBe("ThousandPuppetPavilion");
+    expect(result.slot.set).toBe("SongofFeatheredTrace");
+    expect(result.slot.cost).toBe(4);
+    expect(result.confidence.name).toBe("high");
+  });
+
+  it("flags low confidence when the resolved set doesn't actually belong to the pre-resolved echo (narrowed image match landed on something illegal for it)", () => {
+    const result = parseEchoCandidate({
+      nameText: "Thousand-Puppet Pavilion",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["", "", "", "", ""],
+      // ThousandPuppetPavilion only supports SongofFeatheredTrace — this
+      // disagrees, which should never happen in practice but is worth
+      // flagging rather than silently trusting if it somehow does.
+      matchedSet: "MoltenRift",
+      preResolvedEcho: "ThousandPuppetPavilion",
+    });
+    expect(result.slot.echo).toBe("ThousandPuppetPavilion");
+    expect(result.confidence.name).toBe("low");
+  });
+
+  it("trusts a pre-resolved echo even with no set at all (single-set echo, no image matching attempted)", () => {
+    const result = parseEchoCandidate({
+      nameText: "Thousand-Puppet Pavilion",
+      mainStatText: "Healing Bonus 26.4%",
+      secondaryStatText: "ATK 150",
+      substatTexts: ["", "", "", "", ""],
+      matchedSet: null,
+      preResolvedEcho: "ThousandPuppetPavilion",
+    });
+    expect(result.slot.echo).toBe("ThousandPuppetPavilion");
+    expect(result.confidence.name).toBe("high");
   });
 });

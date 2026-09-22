@@ -26,7 +26,7 @@ import {
 import { computeFingerprint } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
-import { parseEchoCandidate } from "../scanner/parse";
+import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
 import {
   PANEL_BOX,
   NAME_BLOCK,
@@ -218,20 +218,20 @@ export function useEchoScanner() {
   }
 
   /**
-   * Matches the set icon via the existing echoParser.worker.ts
-   * (matchSetFirst, reused as-is — untouched by this scanner's changes).
-   * Grabs and circularly-masks just the icon crop itself first (see
-   * capture.ts's grabCircularMaskedBitmap) rather than sending the whole
-   * frame + pixel coords: that worker's shared background masking only
-   * clears near-black pixels (correct for the Discord-bot flow's
-   * black-canvas-rendered reference source, wrong for this scanner's
-   * actual game-UI background), so a real capture's background was never
-   * being removed before comparison. Since the pre-masked crop already IS
-   * just the icon with a transparent surround, setCoords covers the whole
-   * thing (no further cropping needed from the worker's own — now
-   * effectively no-op for this path — masking pass).
+   * Shared plumbing for both set-matching calls below: grab and circularly
+   * mask the icon crop (see capture.ts's grabCircularMaskedBitmap — the
+   * worker's own black-only masking is wrong for this scanner's actual
+   * game-UI background, so the crop is pre-masked before it ever reaches
+   * the worker), send it as the source image, then post whichever match
+   * message the caller wants against it. setCoords covers the whole
+   * already-cropped, already-masked bitmap (no further cropping needed
+   * from the worker's own — now effectively no-op for this path —
+   * masking pass).
    */
-  async function matchSetIcon(videoEl: HTMLVideoElement) {
+  async function runSetMatch(
+    videoEl: HTMLVideoElement,
+    message: { type: "matchSetFirst" | "matchSet"; data: Record<string, unknown> },
+  ): Promise<string | null> {
     if (!setWorker) return null;
     await setWorkerReady;
     const maskedBitmap = await grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
@@ -250,14 +250,7 @@ export function useEchoScanner() {
           }
         };
         setWorker?.addEventListener("message", resultHandler);
-        setWorker?.postMessage({
-          type: "matchSetFirst",
-          data: {
-            setCoords,
-            allSetImageUrls: echoSetImageMap,
-            setMatchWeights: SCANNER_SET_MATCH_WEIGHTS,
-          },
-        });
+        setWorker?.postMessage({ type: message.type, data: { ...message.data, setCoords } });
       };
       setWorker?.addEventListener("message", readyHandler);
       setWorker?.postMessage(
@@ -265,6 +258,97 @@ export function useEchoScanner() {
         [maskedBitmap],
       );
     });
+  }
+
+  /**
+   * Full-pool set-icon match (all ~30 sets) via echoParser.worker.ts's
+   * matchSetFirst, reused as-is (untouched by this scanner's changes) —
+   * now only the *fallback* path, used when resolveEchoIdentity's primary
+   * name+cost matching can't confidently resolve an echo at all. See this
+   * file's SCANNER_SET_MATCH_WEIGHTS doc comment and docs/scanner.md's
+   * "Echo identification" section for why this stopped being primary.
+   */
+  async function matchSetIcon(videoEl: HTMLVideoElement): Promise<string | null> {
+    return runSetMatch(videoEl, {
+      type: "matchSetFirst",
+      data: { allSetImageUrls: echoSetImageMap, setMatchWeights: SCANNER_SET_MATCH_WEIGHTS },
+    });
+  }
+
+  /**
+   * Narrowed set-icon match — just the resolved echo's own 2-3 possible
+   * sets, via echoParser.worker.ts's matchSet (also reused as-is; it
+   * already uses a different, more robust comparison — compareImages,
+   * structural/edge-based — than matchSetFirst's color/shape scoring, the
+   * same one the Discord-bot flow already relies on for this exact
+   * disambiguation job). A far easier problem than picking correctly out
+   * of all 30 sets: the candidates are already known to be few and
+   * (usually) visually distinct, since the echo itself is already resolved
+   * by name.
+   */
+  async function matchSetNarrowed(videoEl: HTMLVideoElement, candidateSets: string[]): Promise<string | null> {
+    const setImageUrls: Record<string, string> = {};
+    for (const key of candidateSets) {
+      if (echoSetImageMap[key]) setImageUrls[key] = echoSetImageMap[key];
+    }
+    return runSetMatch(videoEl, { type: "matchSet", data: { possibleSets: candidateSets, setImageUrls } });
+  }
+
+  /**
+   * Resolves which echo (and, where needed, which set) a candidate is —
+   * name+cost text matching first (resolveEchoByNameAndCost, pure/sync),
+   * set-icon image matching only where text alone can't finish the job:
+   * narrowed to the resolved echo's own candidates when it supports more
+   * than one set, or a full-pool fallback match when name+cost couldn't
+   * confidently resolve an echo at all. See docs/scanner.md's "Echo
+   * identification" section for the full reasoning (name uniqueness vs.
+   * set ambiguity across the real echo pool) behind this priority order.
+   *
+   * debugLabel is shown in the debug view in place of the old blunt
+   * "Matched: <name>" / "No set match" text, since which *path* produced
+   * the result (no image match needed at all / narrowed among N
+   * candidates / full-pool fallback) is itself useful diagnostic
+   * information now that there's more than one path.
+   */
+  async function resolveEchoIdentity(
+    videoEl: HTMLVideoElement,
+    nameText: string,
+    secondaryStatText: string,
+  ): Promise<{ preResolvedEcho: string | null; matchedSet: string | null; debugLabel: string }> {
+    const byName = resolveEchoByNameAndCost(nameText, secondaryStatText);
+
+    if (byName.echo) {
+      if (byName.candidateSets.length <= 1) {
+        const set = byName.candidateSets[0] ?? null;
+        return {
+          preResolvedEcho: byName.echo,
+          matchedSet: set,
+          debugLabel: set
+            ? `Resolved by name (single possible set): ${getEchoSetLabelByType(set) ?? set}`
+            : "Resolved by name (no set on file for this echo)",
+        };
+      }
+      const narrowedSet = await matchSetNarrowed(videoEl, byName.candidateSets);
+      return {
+        preResolvedEcho: byName.echo,
+        matchedSet: narrowedSet,
+        debugLabel: narrowedSet
+          ? `Resolved by name; narrowed image match (${byName.candidateSets.length} candidates): ${getEchoSetLabelByType(narrowedSet) ?? narrowedSet}`
+          : `Resolved by name, but narrowed image match failed among ${byName.candidateSets.length} candidates`,
+      };
+    }
+
+    // Name+cost couldn't confidently resolve an echo at all — fall back to
+    // the old set-icon-first path (full 30-set image match, then name
+    // breaks ties within that set).
+    const fallbackSet = await matchSetIcon(videoEl);
+    return {
+      preResolvedEcho: null,
+      matchedSet: fallbackSet,
+      debugLabel: fallbackSet
+        ? `Name unresolved — fell back to full image match: ${getEchoSetLabelByType(fallbackSet) ?? fallbackSet}`
+        : "Name unresolved, and no set match either",
+    };
   }
 
   /**
@@ -346,18 +430,26 @@ export function useEchoScanner() {
         regions[key] = substatBitmaps[i];
       });
 
-      const [texts, matchedSet, debugCrops] = await Promise.all([
+      // Debug crops don't depend on OCR text, so they still run in
+      // parallel with it — but echo/set identity now does (name+cost
+      // matching needs the name and secondary-stat text first, and only
+      // *sometimes* needs a follow-up image-match call after that), so it
+      // can no longer run alongside OCR the way the old unconditional
+      // matchSetIcon call did. See resolveEchoIdentity's doc comment.
+      const [texts, debugCrops] = await Promise.all([
         recognizeCandidate(regions),
-        matchSetIcon(videoEl),
         debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
       ]);
+
+      const identity = await resolveEchoIdentity(videoEl, texts.name ?? "", texts.secondary ?? "");
 
       let parsed = parseEchoCandidate({
         nameText: texts.name ?? "",
         mainStatText: texts.main ?? "",
         secondaryStatText: texts.secondary ?? "",
         substatTexts: substatKeys.map((key) => texts[key] ?? ""),
-        matchedSet,
+        matchedSet: identity.matchedSet,
+        preResolvedEcho: identity.preResolvedEcho,
       });
 
       // The 5 per-row crops didn't add up to all 5 substats — most often a
@@ -375,7 +467,8 @@ export function useEchoScanner() {
           secondaryStatText: texts.secondary ?? "",
           substatTexts: substatKeys.map((key) => texts[key] ?? ""),
           substatBlockText: blockTexts.substatBlock ?? "",
-          matchedSet,
+          matchedSet: identity.matchedSet,
+          preResolvedEcho: identity.preResolvedEcho,
         });
         if (debugCrops && parsed.usedSubstatBlockFallback) {
           const blockCrop = debugCrops.crops.find((c) => c.key === "substatBlock");
@@ -396,10 +489,6 @@ export function useEchoScanner() {
       }
       dedupe.add(signature);
 
-      const setMatchText = matchedSet
-        ? `Matched: ${getEchoSetLabelByType(matchedSet) ?? matchedSet}`
-        : "No set match";
-
       candidates.value.push({
         id: randomString(),
         slot: parsed.slot,
@@ -411,7 +500,7 @@ export function useEchoScanner() {
         rawStatsText: parsed.rawStatsText,
         debugCrops: debugCrops?.crops.map((crop) => ({
           ...crop,
-          text: crop.key === "setIcon" ? setMatchText : (texts[crop.key] ?? crop.text),
+          text: crop.key === "setIcon" ? identity.debugLabel : (texts[crop.key] ?? crop.text),
         })),
         debugFullFrame: debugCrops?.fullFrame,
       });
