@@ -75,6 +75,25 @@ describe("parseStatRow", () => {
     expect(parseStatRow("")).toBeNull();
     expect(parseStatRow("   \n  ")).toBeNull();
   });
+
+  it("skips past OCR garbage that happens to end in a number, to the real row underneath (regression: real footage)", () => {
+    // Real debug-crop text the user reported: a garbled first line that
+    // itself matches the "label value" shape (ending in "4.4170"), sitting
+    // in front of the row's actual, legible content.
+    const row = parseStatRow("72 DdIIC ALAC DITO DOIIUS 4.4170\nCrit. Rate 6.3%");
+    expect(row?.rawValue).toBe("6.3%");
+    expect(row?.rawLabel.endsWith("Crit. Rate")).toBe(true);
+  });
+
+  it("recovers a real label sitting after a noisy prefix on the same line (regression: real footage)", () => {
+    const row = parseStatRow("7. Basic Attack DMG Bonus 10.1%");
+    expect(row).toEqual({ rawLabel: "7. Basic Attack DMG Bonus", rawValue: "10.1%" });
+  });
+
+  it("falls back to the first numeric match when nothing in the crop ever looks like a real label", () => {
+    const row = parseStatRow("asdf jkl 123");
+    expect(row).toEqual({ rawLabel: "asdf jkl", rawValue: "123" });
+  });
 });
 
 describe("normalizeStatLabel", () => {
@@ -88,6 +107,11 @@ describe("normalizeStatLabel", () => {
 
   it("returns null for nonsense text", () => {
     expect(normalizeStatLabel("zzz???")).toBeNull();
+  });
+
+  it("recovers a real label buried after a garbled prefix (regression: real footage)", () => {
+    expect(normalizeStatLabel("72 DdIIC ALAC DITO DOIIUS 4.4170 Crit. Rate")).toBe("Crit. Rate");
+    expect(normalizeStatLabel("ITO DOINIUS 7. Basic Attack DMG Bonus")).toBe("Basic Attack DMG Bonus");
   });
 });
 
@@ -241,6 +265,23 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     expect(result.slot.cost).toBe(4);
     // Inferred, not read directly — still worth a second look.
     expect(result.confidence.cost).toBe("low");
+  });
+
+  it("infers cost from a below-rank-5 secondary value too (regression: real footage, a rank-4 cost-1 echo)", () => {
+    // flatBonusesByRankByType[1][4] === 957 — a legible secondary crop the
+    // rank-5-only version of this inference used to reject outright,
+    // leaving cost (and everything that depends on it: main-stat
+    // legality, echo narrowing) unresolved despite the crop being fine.
+    const result = parseEchoCandidate({
+      headerText: "\n+18", // no COST line — this echo also happened to be below +25
+      mainStatText: "% DEF\n11.3%",
+      secondaryStatText: "QQ HP 957",
+      substatTexts: ["", "", "", "", ""],
+      matchedSet: null,
+    });
+    expect(result.slot.cost).toBe(1);
+    expect(result.slot.mainStatLabel).toBe("DEF");
+    expect(result.needsMainStatSelection).toBe(false);
   });
 
   it("parses a below-max echo that only reveals 3 of 5 substats, without inventing the other two", () => {

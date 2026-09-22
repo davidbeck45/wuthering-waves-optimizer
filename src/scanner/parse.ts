@@ -55,16 +55,12 @@ function normalize(text: string): string {
     .trim();
 }
 
-/**
- * Matches OCR'd label noise (missing/extra periods, spacing) against the
- * known display labels in verboseStatLabelMap, returning the exact
- * canonical label string mapParsedEchoes expects — or null if nothing is
- * close enough to trust.
- */
-export function normalizeStatLabel(rawLabel: string): string | null {
-  const target = normalize(rawLabel);
+const KNOWN_LABEL_WORDS = ["ATK", "DEF", "HP"];
+
+function bestKnownLabelMatch(text: string): { label: string; score: number } | null {
+  const target = normalize(text);
   if (!target) return null;
-  if (verboseStatLabelMap[rawLabel]) return rawLabel;
+  if (verboseStatLabelMap[text]) return { label: text, score: 1 };
 
   let best: { label: string; score: number } | null = null;
   for (const label of Object.keys(verboseStatLabelMap)) {
@@ -73,7 +69,40 @@ export function normalizeStatLabel(rawLabel: string): string | null {
       best = { label, score };
     }
   }
-  return best && best.score >= 0.75 ? best.label : null;
+  return best;
+}
+
+/**
+ * Matches OCR'd label noise (missing/extra periods, spacing) against the
+ * known display labels in verboseStatLabelMap, returning the exact
+ * canonical label string mapParsedEchoes expects — or null if nothing is
+ * close enough to trust.
+ *
+ * Tries the *whole* string first, then progressively drops leading words
+ * and retries — real footage showed a row's label sometimes carries a
+ * garbled prefix from OCR noise or a neighboring row's crop overlap (e.g.
+ * "72 DdIIC ALAC DITO DOIIUS 4.4170" preceding a real "Crit. Rate 6.3%" —
+ * see parseStatRow's doc comment), and the true label is always at the
+ * *end*, right before the value. A whole-string match would score too low
+ * to trust; stripping noise word-by-word from the front recovers it.
+ */
+export function normalizeStatLabel(rawLabel: string): string | null {
+  const words = rawLabel.split(/\s+/).filter(Boolean);
+  if (!words.length) return null;
+
+  for (let start = 0; start < words.length; start++) {
+    const candidate = words.slice(start).join(" ");
+    const best = bestKnownLabelMatch(candidate);
+    if (best && best.score >= 0.75) return best.label;
+  }
+  return null;
+}
+
+/** Same tolerance normalizeStatLabel uses, but a yes/no check — used by parseStatRow to decide whether a candidate row's label looks real enough to accept, or whether to keep scanning further lines. */
+function isPlausibleLabel(rawLabel: string): boolean {
+  const trimmed = rawLabel.trim();
+  if (KNOWN_LABEL_WORDS.includes(trimmed) || trimmed === "DEF Y") return true;
+  return normalizeStatLabel(trimmed) !== null;
 }
 
 /**
@@ -88,10 +117,19 @@ export function normalizeStatLabel(rawLabel: string): string | null {
  *
  * The crop is deliberately taller than one line (see SUBSTAT_ROWS in
  * layout.ts) so a wrapped label ("Resonance Skill DMG" / "Bonus 8.6%")
- * still resolves correctly — this function returns as soon as it finds the
- * *first* complete "label value" match and ignores any further lines, so
- * the crop's overlap into the next row's space never leaks that row's text
- * into this one's result.
+ * still resolves correctly, and so it tolerates the row shifting down a
+ * bit when an *earlier* row wrapped (the panel reflows, so every row below
+ * a wrap sits lower than this crop's fixed position assumes). That
+ * overlap has a real cost though: a crop can end up containing noise or
+ * even a neighboring row's actual text ahead of this row's own content
+ * (confirmed from real footage — e.g. a crop reading "72 DdIIC ALAC DITO
+ * DOIIUS 4.4170" *before* a legitimate "Crit. Rate 6.3%"). Accepting
+ * whichever line happens to end in a number *first* was a real bug: that
+ * garbled first line matches the same "label value" shape as real content,
+ * so it won by being first, and the real row underneath it was silently
+ * never reached. This now keeps scanning past a match whose label doesn't
+ * actually look like a stat name (isPlausibleLabel), only falling back to
+ * the first match found if nothing in the crop ever looks plausible.
  */
 export function parseStatRow(rawText: string): StatRow | null {
   const lines = rawText
@@ -101,17 +139,28 @@ export function parseStatRow(rawText: string): StatRow | null {
 
   const valuePattern = /^(.*?)\s+([+-]?\d+(?:\.\d+)?%?)$/;
   let pendingLabel = "";
+  let firstMatch: StatRow | null = null;
 
   for (const line of lines) {
     const candidate = pendingLabel ? `${pendingLabel} ${line}` : line;
     const match = candidate.match(valuePattern);
     if (match) {
-      return { rawLabel: match[1].trim(), rawValue: match[2].trim() };
+      const row: StatRow = { rawLabel: match[1].trim(), rawValue: match[2].trim() };
+      if (!firstMatch) firstMatch = row;
+      if (isPlausibleLabel(row.rawLabel)) return row;
+      // Doesn't look like a real stat label yet — keep the whole matched
+      // text (garbage included) and keep scanning; the real label may
+      // still be further down, with this noise as its leading prefix.
+      pendingLabel = candidate;
+      continue;
     }
     // No trailing number yet — could be a wrapped label continuation.
     pendingLabel = candidate;
   }
-  return null;
+  // Nothing in the crop ever looked like a real label — the first numeric
+  // match is still a better answer than nothing (matches prior behavior),
+  // just one that'll correctly come back low-confidence downstream.
+  return firstMatch;
 }
 
 export function parseHeaderText(rawText: string): {
@@ -150,18 +199,23 @@ export function parseHeaderText(rawText: string): {
 }
 
 /**
- * The fixed secondary-stat row's flat value is unique per cost tier at the
- * app's assumed rank 5 (ATK_FLAT 150 for cost 4, 100 for cost 3; HP_FLAT
- * 2280 for cost 1 — see flatBonusesByRankByType) — a useful fallback signal
- * for cost when the small "COST n" text itself misreads, since the
- * secondary row is a much larger, easier-to-OCR crop.
+ * The fixed secondary-stat row's flat value is unique per cost tier —
+ * *not* just at rank 5 (checked: cost 1's {296,516,957,2280}, cost 3's
+ * {31,44,63,100}, and cost 4's {46,68,92,150} never collide with each
+ * other at any rank) — a useful fallback signal for cost when the small
+ * "COST n" text itself misreads, since the secondary row is a much larger,
+ * easier-to-OCR crop. Checking every rank, not just 5, matters: echoes
+ * aren't all 5-star (confirmed from real footage — a cost-1 echo whose
+ * secondary row read HP 957, the rank-4 value, not rank-5's 2280; checking
+ * only rank 5 came back empty on a perfectly legible crop).
  */
 function inferCostFromSecondaryValue(rawValue: string | null): number | null {
   if (!rawValue) return null;
   const numeric = getSubstatValue(rawValue);
   if (numeric === null) return null;
   for (const cost of [1, 3, 4]) {
-    if (flatBonusesByRankByType[cost]?.[5] === numeric) return cost;
+    const byRank = flatBonusesByRankByType[cost];
+    if (byRank && Object.values(byRank).includes(numeric)) return cost;
   }
   return null;
 }

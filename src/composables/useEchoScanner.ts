@@ -17,6 +17,7 @@ import {
   grabRegionImageData,
   grabRegionBitmap,
   grabRegionWithPreview,
+  grabFullFrameSnapshot,
   type FrameSource,
   type VideoFileHandle,
   type VideoScanOptions,
@@ -36,7 +37,7 @@ import {
   DEBUG_REGIONS,
   isSupportedAspect,
 } from "../scanner/layout";
-import { echoSetImageMap } from "../echoes/stats";
+import { echoSetImageMap, getEchoSetLabelByType } from "../echoes/stats";
 import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
@@ -202,22 +203,27 @@ export function useEchoScanner() {
   }
 
   /**
-   * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry from the
-   * current (stable, about-to-be-scanned) frame. Independent of the
-   * OCR-dedicated grabRegionBitmap calls in handleTick — these are their
-   * own draws, so nothing here competes with what the worker actually
-   * OCR's. Text is filled in by the caller once `texts` is known; regions
+   * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry, plus a
+   * whole-frame snapshot to draw all of them on top of as one reviewable
+   * image (EchoScannerCapture.vue), from the current (stable,
+   * about-to-be-scanned) frame. Independent of the OCR-dedicated
+   * grabRegionBitmap calls in handleTick — these are their own draws, so
+   * nothing here competes with what the worker actually OCR's. Text is
+   * filled in by the caller once `texts`/`matchedSet` are known; regions
    * this scanner doesn't OCR (panel, setIcon — image-matched, not OCR'd)
-   * keep a placeholder.
+   * keep a placeholder until then.
    */
   async function captureDebugCrops(videoEl: HTMLVideoElement) {
-    const captured = await Promise.all(
-      DEBUG_REGIONS.map(async ({ key, label, region }) => {
-        const { dataUrl } = await grabRegionWithPreview(videoEl, region);
-        return { key, label, dataUrl, text: key === "setIcon" || key === "panel" ? "(image-matched, not OCR'd)" : "" };
-      }),
-    );
-    return captured;
+    const [crops, fullFrame] = await Promise.all([
+      Promise.all(
+        DEBUG_REGIONS.map(async ({ key, label, region }) => {
+          const { dataUrl } = await grabRegionWithPreview(videoEl, region);
+          return { key, label, dataUrl, text: key === "setIcon" || key === "panel" ? "(image-matched, not OCR'd)" : "" };
+        }),
+      ),
+      grabFullFrameSnapshot(videoEl),
+    ]);
+    return { crops, fullFrame };
   }
 
   async function handleTick() {
@@ -282,6 +288,10 @@ export function useEchoScanner() {
       }
       dedupe.add(signature);
 
+      const setMatchText = matchedSet
+        ? `Matched: ${getEchoSetLabelByType(matchedSet) ?? matchedSet}`
+        : "No set match";
+
       candidates.value.push({
         id: randomString(),
         slot: parsed.slot,
@@ -291,7 +301,11 @@ export function useEchoScanner() {
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,
-        debugCrops: debugCrops?.map((crop) => ({ ...crop, text: texts[crop.key] ?? crop.text })),
+        debugCrops: debugCrops?.crops.map((crop) => ({
+          ...crop,
+          text: crop.key === "setIcon" ? setMatchText : (texts[crop.key] ?? crop.text),
+        })),
+        debugFullFrame: debugCrops?.fullFrame,
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the

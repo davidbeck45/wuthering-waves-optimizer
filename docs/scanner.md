@@ -232,32 +232,49 @@ is already a full `https://` URL — self-hosting is what exposes it.
 ## Debug view
 
 `EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen
-(binds to `useEchoScanner`'s `debugMode` ref). When on, two things become
-visible that are otherwise invisible even when something's clearly wrong:
+(binds to `useEchoScanner`'s `debugMode` ref). When on, three things
+become visible that are otherwise invisible even when something's clearly
+wrong:
 
 - **Live preview overlay**: every `DEBUG_REGIONS` entry (`layout.ts`) drawn
   as a labeled dashed box over the live/trimming preview, positioned by
   simple percentage CSS (`region.x * 100%`, etc. — the crop fractions
   double as overlay positions for free, no separate pixel math). Confirms
   at a glance whether a region actually lands on what it's supposed to.
-- **Per-candidate crop grid**: once debug mode was on for the session,
-  every captured candidate carries `debugCrops` — a labeled `data:` URL
-  thumbnail of exactly what was cropped for each region, plus that
-  region's own OCR text (or "(image-matched, not OCR'd)" for `panel`/
-  `setIcon`, which go through `matchSetFirst` instead), shown in the
-  review list. `capture.ts`'s `grabRegionWithPreview` produces both the
-  bitmap sent to the worker and the thumbnail from one canvas draw, so
-  what's shown is provably the same pixels that were actually OCR'd/
-  matched, not a re-derived approximation.
+- **Per-candidate full-frame snapshot with boxes**: a downscaled
+  (`capture.ts`'s `grabFullFrameSnapshot`, ~960px wide — kept small so a
+  long debug session's candidate list doesn't hold a full-res PNG per
+  echo) whole-frame image with every ROI box overlaid the same way as the
+  live preview, one per captured candidate, sitting in the review list
+  where it can be inspected at your own pace rather than only during the
+  live/moving scan.
+- **Per-candidate crop grid**: every captured candidate also carries
+  `debugCrops` — a labeled `data:` URL thumbnail of exactly what was
+  cropped for each region, plus that region's own OCR text. The `setIcon`
+  entry shows the actual matched set ("Matched: <Set Name>" or "No set
+  match") instead of a generic placeholder, so you can directly compare
+  the crop against what it was matched to; `panel` (fingerprint-only, not
+  OCR'd or matched) keeps a placeholder. `capture.ts`'s
+  `grabRegionWithPreview` produces both the bitmap sent to the worker and
+  the thumbnail from one canvas draw, so what's shown is provably the same
+  pixels that were actually OCR'd/matched, not a re-derived approximation.
 
 This is what caught `SET_ICON_BOX` being badly mispositioned (see its doc
 comment) — every scan confidently returning the same wrong set is exactly
-what a fixed-but-wrong crop landing on background art looks like. If
-substat/set accuracy regresses again, debug mode first: screenshot the
-overlay to check the boxes actually sit on the right UI elements, and check
-a few candidates' crop grids to see whether OCR is misreading text it *did*
-capture correctly, versus not capturing the right pixels at all — those
-need different fixes.
+what a fixed-but-wrong crop landing on background art looks like. It also
+led directly to two `parse.ts` fixes from real debug-crop text a user
+reported: `inferCostFromSecondaryValue` only checked the rank-5 flat
+value, missing a legible crop from a rank-4 echo; and `parseStatRow`
+greedily accepted the *first* line that happened to end in a number —
+including obvious OCR garbage — instead of continuing to look for a line
+that actually resembled a real stat label further down (see both
+functions' doc comments). If substat/set accuracy regresses again, debug
+mode first: check the full-frame snapshot to confirm the boxes actually
+sit on the right UI elements, and check a few candidates' crop grids and
+raw text to see whether OCR is misreading text it *did* capture correctly,
+versus not capturing the right pixels at all, versus capturing the right
+pixels but the parser rejecting real content the way the two bugs above
+did — those each need a different kind of fix.
 
 Debug mode costs an extra canvas encode per region per candidate (not
 free), so it's opt-in and off by default — leave it off for normal scanning.

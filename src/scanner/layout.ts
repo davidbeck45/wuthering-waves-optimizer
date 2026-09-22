@@ -85,8 +85,22 @@ const FIRST_STAT_ROW_Y = 0.384;
 const STAT_ROW_PITCH = 0.0373;
 /** Tall enough for one line + padding; main/secondary labels never wrap. */
 const SINGLE_LINE_ROW_HEIGHT = 0.028;
-/** Tall enough to also catch a wrapped label's continuation line, which lands in the next row's space. */
-const WRAP_SAFE_ROW_HEIGHT = 0.065;
+/**
+ * Tall enough to also catch a wrapped label's continuation line, which
+ * lands in the next row's space (WRAP_SAFE_ROW_HEIGHT / STAT_ROW_PITCH ≈
+ * 1.3x). This was originally 0.065 (≈1.74x pitch) — real footage showed
+ * that was tall enough to regularly capture a *neighboring* row's actual
+ * text as well as this row's own (visible in the debug crop grid as two
+ * consecutive substat crops both containing the same line), not just
+ * blank overlap margin. Reduced to lessen how often that happens for the
+ * common single-line case; parseStatRow's plausibility check (see its own
+ * doc comment) is the real fix for when a neighboring row's text still
+ * bleeds in ahead of this row's own content, since a shorter crop alone
+ * can't fully solve it — an *earlier* row wrapping shifts every row below
+ * it down by a line, which a fixed-position crop can't know about no
+ * matter its height.
+ */
+const WRAP_SAFE_ROW_HEIGHT = 0.048;
 
 export const MAIN_STAT_ROW: RegionFrac = {
   x: STAT_ROW_X,

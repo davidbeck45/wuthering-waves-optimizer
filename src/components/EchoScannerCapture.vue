@@ -227,6 +227,25 @@
 
           <details v-if="candidate.debugCrops?.length" class="mt-1 text-xs opacity-70" open>
             <summary class="cursor-pointer">Debug: what each region actually captured</summary>
+
+            <div v-if="candidate.debugFullFrame" class="relative inline-block mt-2 max-w-full">
+              <img
+                :src="candidate.debugFullFrame"
+                class="block max-w-full border border-base-300"
+                alt="Full frame with ROI boxes" />
+              <div class="absolute inset-0 pointer-events-none">
+                <div
+                  v-for="r in scanner.debugRegions"
+                  :key="r.key"
+                  class="absolute border border-dashed border-warning"
+                  :style="regionOverlayStyle(r.region)">
+                  <span class="absolute -top-3.5 left-0 text-[9px] leading-none bg-warning text-warning-content px-0.5 rounded-sm whitespace-nowrap">
+                    {{ r.label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 p-2 bg-base-200 rounded">
               <div v-for="crop in candidate.debugCrops" :key="crop.key" class="flex flex-col gap-1">
                 <span class="font-semibold">{{ crop.label }}</span>

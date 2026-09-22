@@ -296,3 +296,29 @@ export async function grabRegionWithPreview(
   const dataUrl = canvas.toDataURL("image/png");
   return { bitmap, dataUrl };
 }
+
+/**
+ * A downscaled snapshot of the *whole* frame — for the scanner's debug
+ * view (EchoScannerCapture.vue) to draw every ROI box on top of, as one
+ * reviewable image per candidate rather than only the small per-region
+ * crops. Downscaled (default 960px wide, matching the source's aspect) so
+ * a long debug session's candidate list doesn't hold a full-resolution PNG
+ * per echo — the boxes are still perfectly placeable on it since they're
+ * positioned by CSS percentage, not pixels.
+ */
+export async function grabFullFrameSnapshot(
+  videoEl: HTMLVideoElement,
+  maxWidth = 960,
+): Promise<string> {
+  const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
+  const scale = Math.min(1, maxWidth / frame.width);
+  const width = Math.round(frame.width * scale);
+  const height = Math.round(frame.height * scale);
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
+  ctx.drawImage(videoEl, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg", 0.85);
+}
