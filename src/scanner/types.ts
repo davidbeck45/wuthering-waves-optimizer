@@ -60,4 +60,7 @@ export type ScanCandidate = {
   signature: string;
   /** Small preview crop of the echo portrait, for the review list UI. */
   thumbnailDataUrl?: string;
+  /** Raw OCR text this candidate was parsed from — shown as a diagnostic for low-confidence fields, not used for parsing itself. */
+  rawHeaderText: string;
+  rawStatsText: string;
 };

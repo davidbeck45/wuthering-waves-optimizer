@@ -27,6 +27,8 @@ import { parseEchoCandidate } from "../scanner/parse";
 import { PANEL_BOX, HEADER_BLOCK, STATS_BLOCK, SET_ICON_BOX, FULL_FRAME, isSupportedAspect } from "../scanner/layout";
 import { echoSetImageMap } from "../echoes/stats";
 import { mainEchoesData } from "../echoes/index";
+import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
+import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
 import type { ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
@@ -217,6 +219,8 @@ export function useEchoScanner() {
         confidence: parsed.confidence,
         needsMainStatSelection: false,
         signature,
+        rawHeaderText: parsed.rawHeaderText,
+        rawStatsText: parsed.rawStatsText,
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the
@@ -325,6 +329,27 @@ export function useEchoScanner() {
     candidates.value = candidates.value.filter((c) => c.id !== id);
   }
 
+  const inventoryStore = useInventoryStore();
+
+  /**
+   * Saves one candidate straight to the inventory (same mapping the
+   * duplicate-review "Continue" step would eventually use) and drops it
+   * from the pending list, so it isn't saved a second time when the rest
+   * of the session finishes. Used by "Edit" — see EchoScannerCapture.vue —
+   * so editing can reuse the real InventoryEchoEdit.vue/EditPanel (which
+   * only knows how to edit an echo that already exists in the store)
+   * instead of a second, parallel edit UI. Returns the assigned echoId, or
+   * null if the candidate is gone already.
+   */
+  function saveCandidateNow(id: string): string | null {
+    const candidate = candidates.value.find((c) => c.id === id);
+    if (!candidate) return null;
+    const [mapped] = mapParsedEchoes([candidate.slot], true);
+    inventoryStore.saveEcho(mapped);
+    removeCandidate(id);
+    return mapped.echoId;
+  }
+
   function updateCandidate(id: string, updater: (candidate: ScanCandidate) => ScanCandidate) {
     candidates.value = candidates.value.map((c) => (c.id === id ? updater(c) : c));
   }
@@ -355,5 +380,6 @@ export function useEchoScanner() {
     stop,
     removeCandidate,
     updateCandidate,
+    saveCandidateNow,
   };
 }

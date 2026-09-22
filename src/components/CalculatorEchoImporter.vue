@@ -34,7 +34,8 @@
           <EchoScannerCapture
             v-else
             :inventory-only="inventoryOnly"
-            @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
+            @echoes-parsed="handleEchoesParsed"
+            @edit-candidate="emit('edit-candidate', $event)"></EchoScannerCapture>
         </template>
         <template v-else>
           <h2 class="text-xl font-bold mb-2">Possible inventory duplicates</h2>
@@ -175,6 +176,11 @@ const props = withDefaults(
   }>(),
   { character: "", inventoryOnly: false },
 );
+
+const emit = defineEmits<{
+  /** Pass-through from EchoScannerCapture.vue — see its own doc comment on the same event. */
+  "edit-candidate": [echoId: string];
+}>();
 
 const modalId = computed(() =>
   props.inventoryOnly

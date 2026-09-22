@@ -24,9 +24,25 @@ type StatRow = { rawLabel: string; rawValue: string };
 /** Legal WuWa echo costs (there is no cost-2 tier). */
 const LEGAL_COSTS = new Set([1, 3, 4]);
 
+/**
+ * Lowercases, transliterates accented Latin letters to their base form
+ * (é→e, ü→u, …), then strips anything left that isn't alphanumeric.
+ *
+ * The transliteration step matters: stripping accents outright (dropping
+ * "é" instead of collapsing it to "e") silently loses a whole letter from
+ * an echo name like "Jué", shrinking its normalized form to "ju" (2 chars)
+ * while OCR reading the same glyph as a plain "e" (a common, often-correct
+ * simplification for an English-trained model) normalizes to "jue" (3
+ * chars) — a spurious mismatch caused entirely by this function being
+ * asymmetric, not by OCR actually getting anything wrong. Confirmed via a
+ * real "Jué" (4-cost) scan that came back "Unknown echo". Same technique
+ * `slugify` already uses in `src/utils/strings.ts`.
+ */
 function normalize(text: string): string {
   return text
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // combining diacritical marks
     .replace(/[^a-z0-9]/g, "")
     .trim();
 }
@@ -139,13 +155,33 @@ export function matchEchoName(
   return best;
 }
 
-function snapSubstatValue(rawLabel: string, rawValue: string): string {
+/**
+ * Snaps a raw OCR'd value to the nearest legal roll for its stat.
+ *
+ * `exact` reflects whether the *number* OCR read already equalled a legal
+ * roll (diff 0), not whether the formatted string round-trips unchanged —
+ * comparing formatted strings was a real bug: OCR reading "21.0%" for a
+ * Crit DMG roll of 21 (a legal, correct roll — subStatsTable.CritDMG ends
+ * at 21) reformats to "21%", which is a different STRING from "21.0%" even
+ * though it's the same, exactly-correct NUMBER. That was flagging
+ * objectively-correct values as low-confidence "questionable" — the value
+ * was always right, only the trailing ".0" changed. Confirmed via a real
+ * "Crit. DMG 21%" scan reported as looking questionable despite being correct.
+ */
+function resolveSubstatValue(
+  rawLabel: string,
+  rawValue: string,
+): { formatted: string; exact: boolean } {
   const canonicalKey = getSubstatType({ subStat: rawLabel, subStatValue: rawValue });
   const numericValue = getSubstatValue(rawValue);
-  if (!canonicalKey || numericValue === null) return rawValue;
+  if (!canonicalKey || numericValue === null) {
+    return { formatted: rawValue, exact: false };
+  }
 
   const legalRolls = subStatsTable[canonicalKey];
-  if (!legalRolls?.length) return rawValue;
+  if (!legalRolls?.length) {
+    return { formatted: rawValue, exact: false };
+  }
 
   let nearest = legalRolls[0];
   let smallestDiff = Math.abs(legalRolls[0] - numericValue);
@@ -156,7 +192,8 @@ function snapSubstatValue(rawLabel: string, rawValue: string): string {
       smallestDiff = diff;
     }
   }
-  return rawValue.includes("%") ? `${nearest}%` : `${nearest}`;
+  const formatted = rawValue.includes("%") ? `${nearest}%` : `${nearest}`;
+  return { formatted, exact: smallestDiff < 1e-9 };
 }
 
 export type ParseCandidateResult = {
@@ -170,6 +207,9 @@ export type ParseCandidateResult = {
     set: FieldConfidence;
     substats: FieldConfidence[];
   };
+  /** Raw OCR text, kept only for surfacing in the review UI's diagnostics when something's low-confidence — not used for parsing itself. */
+  rawHeaderText: string;
+  rawStatsText: string;
 };
 
 export function parseEchoCandidate(input: {
@@ -198,17 +238,19 @@ export function parseEchoCandidate(input: {
     cost && mainStatLabel && statsTable[cost]?.[verboseStatLabelMap[mainStatLabel] ?? ""],
   );
 
-  const substats: ParsedSubstat[] = substatRows.map((row) => {
+  const resolvedSubstats = substatRows.map((row) => {
     const label = normalizeStatLabel(row.rawLabel) ?? row.rawLabel;
-    const snappedValue = snapSubstatValue(label, row.rawValue);
-    return { subStat: label, subStatValue: snappedValue };
+    return { label, ...resolveSubstatValue(label, row.rawValue) };
   });
 
-  const substatConfidence: FieldConfidence[] = substatRows.map((row, i) => {
-    const label = substats[i].subStat;
+  const substats: ParsedSubstat[] = resolvedSubstats.map(({ label, formatted }) => ({
+    subStat: label,
+    subStatValue: formatted,
+  }));
+
+  const substatConfidence: FieldConfidence[] = resolvedSubstats.map(({ label, exact }) => {
     const known = Boolean(verboseStatLabelMap[label] || ["ATK", "DEF", "HP"].includes(label));
-    const valueUnchanged = snapSubstatValue(label, row.rawValue) === row.rawValue;
-    return known && valueUnchanged ? "high" : "low";
+    return known && exact ? "high" : "low";
   });
 
   const needsMainStatSelection = !mainRow || !mainStatLabel;
@@ -230,5 +272,7 @@ export function parseEchoCandidate(input: {
       set: input.matchedSet ? "high" : "low",
       substats: substatConfidence,
     },
+    rawHeaderText: input.headerText,
+    rawStatsText: input.statsText,
   };
 }

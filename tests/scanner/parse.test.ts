@@ -111,6 +111,23 @@ describe("matchEchoName", () => {
     expect(getEchoData(withHint!.key).name).toBe("Kernel Puppet: Reflection");
     expect(getEchoData(withoutHint!.key).name).toBe("Kernel Puppet: Reflection");
   });
+
+  it("matches an accented echo name when OCR reads the accent as a plain letter (regression: 'Jué' scanned as 'Unknown echo')", () => {
+    // Jué is a real 4-cost echo (src/echoes/index.ts). Stripping accents
+    // outright instead of transliterating them shrank the stored name's
+    // normalized form to 2 chars while a plain-ASCII OCR read normalized to
+    // 3, pushing similarity below threshold for a match that should have
+    // been exact.
+    const match = matchEchoName("Jue", 4);
+    expect(match?.similarity).toBe(1);
+    expect(getEchoData(match!.key).name).toBe("Jué");
+  });
+
+  it("still matches the accented spelling itself", () => {
+    const match = matchEchoName("Jué", 4);
+    expect(match?.similarity).toBe(1);
+    expect(getEchoData(match!.key).name).toBe("Jué");
+  });
 });
 
 describe("parseEchoCandidate (full real-footage transcripts)", () => {
@@ -199,6 +216,20 @@ describe("parseEchoCandidate (full real-footage transcripts)", () => {
     expect(result.needsMainStatSelection).toBe(true);
   });
 
+  it("does not flag a legal roll as low-confidence just because OCR added a trailing .0 (regression: 'Crit. DMG 21%' reported as questionable)", () => {
+    // subStatsTable.CritDMG's top roll is exactly 21 — OCR reading "21.0%"
+    // reformats to "21%" (same number, different string), which a
+    // string-equality confidence check flagged as "changed" even though
+    // the value was always exactly correct.
+    const result = parseEchoCandidate({
+      headerText: "Thousand-Puppet Pavilion\n+25\nCOST 4",
+      statsText: ["Healing Bonus 26.4%", "ATK 150", "Crit. DMG 21.0%"].join("\n"),
+      matchedSet: null,
+    });
+    expect(result.slot.substats[0]).toEqual({ subStat: "Crit. DMG", subStatValue: "21%" });
+    expect(result.confidence.substats[0]).toBe("high");
+  });
+
   it("snaps an off-roll-table OCR value to the nearest legal substat roll", () => {
     // 6.8% isn't a legal CritRate roll (table: 6.3, 6.9, 7.5, ...) — a
     // plausible single-digit OCR miss reading 6.9 as 6.8.
@@ -208,5 +239,7 @@ describe("parseEchoCandidate (full real-footage transcripts)", () => {
       matchedSet: null,
     });
     expect(result.slot.substats[0]).toEqual({ subStat: "Crit. Rate", subStatValue: "6.9%" });
+    // Unlike the .0-formatting case above, this one really was off — flag it.
+    expect(result.confidence.substats[0]).toBe("low");
   });
 });

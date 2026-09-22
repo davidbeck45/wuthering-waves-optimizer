@@ -145,72 +145,54 @@
         (right side of the Echo Management screen) is visible while you
         click through echoes.
       </p>
-      <div v-else class="space-y-2 max-h-[50vh] overflow-y-auto mb-4">
-        <div
-          v-for="candidate in candidates"
-          :key="candidate.id"
-          class="flex gap-3 items-start p-3 rounded-lg border border-base-300">
-          <div
-            class="rounded-full border border-solid neutral-content size-12 shrink-0 bg-cover bg-center"
-            :style="{ backgroundImage: `url(${getEchoImage(candidate)})` }"></div>
-          <div class="flex-1 min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="font-semibold">{{ getEchoName(candidate) }}</span>
-              <span
-                v-if="candidate.confidence.name === 'low'"
-                class="badge badge-sm badge-warning">
-                Check name
-              </span>
-              <span class="badge badge-sm badge-primary">
-                {{ candidate.slot.cost ?? "?" }} Cost
-              </span>
-              <span v-if="candidate.level !== null" class="badge badge-sm">
-                +{{ candidate.level }}
-              </span>
-              <img
-                v-if="candidate.slot.set"
-                :src="getEchoSetIconByType(candidate.slot.set)"
-                class="size-5 rounded-full"
-                :alt="getEchoSetLabelByType(candidate.slot.set) ?? ''" />
-              <span
-                v-else
-                class="badge badge-sm badge-warning">
-                Check set
-              </span>
-            </div>
-            <div class="mt-1 text-sm flex items-center gap-2">
-              <span>
-                Main:
-                {{ candidate.slot.mainStatLabel || "unknown" }}
-              </span>
-              <span
-                v-if="candidate.confidence.mainStat === 'low'"
-                class="badge badge-xs badge-warning">
-                low confidence
-              </span>
-            </div>
-            <div class="mt-2 pt-2 border-t border-base-300 text-sm flex flex-wrap gap-x-3 gap-y-1 opacity-90">
-              <span
-                v-for="(sub, subIndex) in candidate.slot.substats"
-                :key="subIndex"
-                class="inline-flex items-center gap-1">
-                {{ sub.subStat }} {{ sub.subStatValue }}
-                <span
-                  v-if="candidate.confidence.substats[subIndex] === 'low'"
-                  class="badge badge-xs badge-warning">
-                  ?
-                </span>
-              </span>
-            </div>
+      <div v-else class="space-y-3 max-h-[60vh] overflow-y-auto mb-4">
+        <div v-for="candidate in candidates" :key="candidate.id">
+          <div v-if="!candidate.slot.echo" class="alert alert-warning text-sm mb-1 py-2">
+            Unknown echo — couldn't match a name. Edit it by hand below.
           </div>
-          <button
-            class="btn btn-xs btn-ghost"
-            title="Remove this candidate"
-            @click="scanner.removeCandidate(candidate.id)">
-            ✕
-          </button>
+          <div v-else-if="hasLowConfidence(candidate)" class="flex flex-wrap gap-1 mb-1">
+            <span v-if="candidate.confidence.name === 'low'" class="badge badge-xs badge-warning">
+              Check name
+            </span>
+            <span v-if="candidate.confidence.cost === 'low'" class="badge badge-xs badge-warning">
+              Check cost
+            </span>
+            <span v-if="candidate.confidence.set === 'low'" class="badge badge-xs badge-warning">
+              Check set
+            </span>
+            <span v-if="candidate.confidence.mainStat === 'low'" class="badge badge-xs badge-warning">
+              Check main stat
+            </span>
+            <span
+              v-if="candidate.confidence.substats.some((c) => c === 'low')"
+              class="badge badge-xs badge-warning">
+              Check substats
+            </span>
+          </div>
+
+          <InventoryEchoTile
+            v-bind="tileProps(candidate)"
+            hide-inventory-actions
+            :hide-edit="!inventoryOnly"
+            delete-label="Remove"
+            delete-tooltip="Remove this from the scan results (it won't be saved)"
+            @edit="handleEditCandidate(candidate.id)"
+            @delete="scanner.removeCandidate(candidate.id)" />
+
+          <details v-if="hasLowConfidence(candidate)" class="mt-1 text-xs opacity-70">
+            <summary class="cursor-pointer">Show what OCR actually read</summary>
+            <pre class="whitespace-pre-wrap bg-base-200 rounded p-2 mt-1">{{
+              candidate.rawHeaderText
+            }}
+---
+{{ candidate.rawStatsText }}</pre>
+          </details>
         </div>
       </div>
+      <p v-if="candidates.length && inventoryOnly" class="text-xs opacity-70 mb-2">
+        "Edit" opens the same editor as your inventory, and saves this echo
+        right away — the rest still wait for "Continue" below.
+      </p>
       <div
         v-if="!inventoryOnly"
         class="flex gap-2 items-center justify-center">
@@ -240,12 +222,9 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useEchoScanner } from "../composables/useEchoScanner";
-import { getEchoData } from "../echoes/index";
-import { getEchoSetIconByType, getEchoSetLabelByType } from "../echoes/stats";
+import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
+import InventoryEchoTile from "./InventoryEchoTile.vue";
 import type { ScanCandidate } from "../scanner/types";
-
-const DEFAULT_ECHO_IMAGE =
-  "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
   inventoryOnly: false,
@@ -253,6 +232,15 @@ const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
 
 const emit = defineEmits<{
   "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean];
+  /**
+   * Fired when the user edits a candidate — it's already been saved to the
+   * inventory (this echoId) by the time this fires. Only emitted when
+   * inventoryOnly, since editing reuses InventoryEchoesBrowser.vue's
+   * existing edit modal (InventoryEchoEdit.vue/InventoryEchoEditPanel.vue),
+   * which this component deliberately doesn't mount a second copy of — see
+   * CalculatorEchoImporter.vue's pass-through of this event.
+   */
+  "edit-candidate": [echoId: string];
 }>();
 
 const scanner = useEchoScanner();
@@ -300,14 +288,48 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-function getEchoName(candidate: ScanCandidate): string {
-  if (!candidate.slot.echo) return "Unknown echo — needs review";
-  return getEchoData(candidate.slot.echo)?.name ?? candidate.slot.echo;
+// Same shape as InventoryEchoesBrowser.vue's local echoCardBinder — feeds
+// the same InventoryEchoTile.vue used everywhere else echoes are shown, so
+// a scanned candidate looks identical to a normal inventory echo.
+function tileProps(candidate: ScanCandidate) {
+  const [mapped] = mapParsedEchoes([candidate.slot], false);
+  const str = (v: unknown) => (v == null ? "" : String(v));
+  const numish = (v: unknown): number | string => (v == null ? 0 : (v as number | string));
+  return {
+    rank: mapped.rank ?? 5,
+    type: str(mapped.type),
+    echoId: candidate.id,
+    echoSet: str(mapped.echoSet),
+    stat: str(mapped.stat),
+    echo: str(mapped.echo),
+    echoSubStatsType1: str(mapped.echoSubStatsType1),
+    echoSubStatsValue1: numish(mapped.echoSubStatsValue1),
+    echoSubStatsType2: str(mapped.echoSubStatsType2),
+    echoSubStatsValue2: numish(mapped.echoSubStatsValue2),
+    echoSubStatsType3: str(mapped.echoSubStatsType3),
+    echoSubStatsValue3: numish(mapped.echoSubStatsValue3),
+    echoSubStatsType4: str(mapped.echoSubStatsType4),
+    echoSubStatsValue4: numish(mapped.echoSubStatsValue4),
+    echoSubStatsType5: str(mapped.echoSubStatsType5),
+    echoSubStatsValue5: numish(mapped.echoSubStatsValue5),
+  };
 }
 
-function getEchoImage(candidate: ScanCandidate): string {
-  if (!candidate.slot.echo) return DEFAULT_ECHO_IMAGE;
-  return getEchoData(candidate.slot.echo)?.image ?? DEFAULT_ECHO_IMAGE;
+function hasLowConfidence(candidate: ScanCandidate): boolean {
+  const c = candidate.confidence;
+  return (
+    c.name === "low" ||
+    c.cost === "low" ||
+    c.mainStat === "low" ||
+    c.set === "low" ||
+    c.substats.some((s) => s === "low")
+  );
+}
+
+function handleEditCandidate(id: string) {
+  if (!props.inventoryOnly) return;
+  const echoId = scanner.saveCandidateNow(id);
+  if (echoId) emit("edit-candidate", echoId);
 }
 
 function triggerFileSelect() {
