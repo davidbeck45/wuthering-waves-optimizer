@@ -356,14 +356,27 @@ const trimStart = ref(0);
 const trimEnd = ref(0);
 const sampleFps = ref(2);
 
-watch(previewVideoEl, (videoEl) => {
-  if (!previewContainer.value) return;
-  previewContainer.value.replaceChildren();
+// Watches both, not just previewVideoEl: the "trimming" and
+// "starting"/"running" template branches each have their *own*
+// `ref="previewContainer"` div (only one is ever mounted at a time, per
+// status), so a video-upload session's trimming -> starting transition
+// swaps previewContainer to a brand new DOM node while previewVideoEl's
+// value stays exactly the same (same <video> element throughout that
+// whole flow). A previewVideoEl-only watch never re-fires for that swap,
+// so the video stayed attached to the old, now-unmounted div — the new
+// container rendered blank until the *next* unrelated change happened to
+// touch previewVideoEl. Live sharing never hit this (idle goes straight
+// to starting/running, one container the whole time), which is why this
+// only showed up for the video-upload path. Confirmed from a real report:
+// the preview staying blank through video-upload scanning specifically.
+watch([previewVideoEl, previewContainer], ([videoEl, container]) => {
+  if (!container) return;
+  container.replaceChildren();
   if (videoEl) {
     videoEl.style.width = "100%";
     videoEl.style.height = "100%";
     videoEl.style.objectFit = "contain";
-    previewContainer.value.appendChild(videoEl);
+    container.appendChild(videoEl);
   }
 });
 
