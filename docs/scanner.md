@@ -13,12 +13,15 @@ capture.ts (FrameSource: live share or uploaded video)
   → grab a small crop of the detail panel every tick
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
     something new?" gate — no OCR yet
-  → on settle: grab header/stats-block crops
-      → echoScanner.worker.ts: OCR only (tesseract.js, self-hosted)
+  → on settle: grab header + main-stat + fixed-secondary + up to 5
+    individually-cropped substat-row bitmaps, plus a full-frame bitmap
+      → echoScanner.worker.ts: OCR each crop separately (tesseract.js, self-hosted)
       → echoParser.worker.ts: matchSetFirst (existing set-icon matcher, reused)
-  → parse.ts: raw OCR text + matched set → ParsedEchoSlot candidate
-    (name via Levenshtein match against mainEchoesData, not image matching —
-    the echo name is printed as text in the panel)
+  → parse.ts: raw per-row OCR text + matched set → ParsedEchoSlot candidate
+    (echo identity: narrow mainEchoesData by the matched set + cost first,
+    same as CalculatorEchoParser.vue's filteredEchoKeys, then Levenshtein
+    name-text match only to break a tie within that narrowed pool — not
+    image matching, since the name is printed as text in the panel)
   → dedupe.ts: signature-based (getEchoIdentityKey) — identical echoes collapse
   → useEchoScanner.ts (composable) owns all of the above, exposes a
     reviewable candidate list
@@ -94,11 +97,11 @@ screenshots and a real gameplay video the user provided:
   +25 reveals fewer than 5 substats**, and the panel doesn't reserve blank
   space for the missing ones — content below the last populated row just
   moves up. A long stat label ("Resonance Skill DMG Bonus") can also wrap
-  to a second line, shifting everything after it unpredictably. Because of
-  this, `STATS_BLOCK` is captured as **one region and OCR'd as a multi-line
-  block**, not as 7 rigid per-row boxes — `parse.ts`'s `splitStatRows`
-  reassembles rows from the recognized text (including rejoining a wrapped
-  label onto its value line) instead of trusting fixed row slots.
+  to a second line, shifting everything after it unpredictably. `layout.ts`
+  therefore defines `MAIN_STAT_ROW`, `SECONDARY_STAT_ROW`, and 5
+  `SUBSTAT_ROWS` as individually-positioned crops at fixed Y fractions
+  (0.384 first row, ~0.0373 pitch), not one big block — see "Substat OCR"
+  below for why.
 - `SET_ICON_BOX` is a first-pass estimate, not independently pixel-measured
   the way the blocks above were — refine it via real testing before relying
   on set-icon match confidence.
@@ -109,6 +112,71 @@ screenshots and a real gameplay video the user provided:
 If a future WuWa UI update moves the panel, re-run the same measurement
 against a fresh screenshot before touching the fractions by feel.
 
+## Substat OCR: individually-cropped rows, not one block
+
+The first version of this scanner OCR'd the whole stats area as one
+multi-line block and asked tesseract to segment it into rows itself. Real
+usage surfaced this as the cause of missing substats: block-level line
+segmentation can silently merge two rows together or drop a row's text
+entirely when line spacing is tight, with no way to recover it from the
+block's recognized text afterward.
+
+This now mirrors `CalculatorEchoParser.vue`'s proven approach instead — 5
+separate, individually-cropped substat regions there too, one OCR call
+each. `layout.ts`'s `SUBSTAT_ROWS` crops are deliberately taller than a
+single line (tall enough to also catch a wrapped label's continuation
+line, which lands in the next row's space); `parse.ts`'s `parseStatRow`
+takes only the *first* complete "label value" match it finds in a crop and
+ignores anything after, so that overlap can never leak a neighboring row's
+text into the wrong slot. `MAIN_STAT_ROW`/`SECONDARY_STAT_ROW` stay
+single-line height — the labels eligible there (HP/ATK/DEF/element/Crit/
+Healing Bonus/Energy Regen) never wrap, unlike the 4 attack-type DMG bonus
+substat labels.
+
+This costs more OCR calls per candidate (up to 8, vs. 2 for the old header
++ stats-block design) — a deliberate accuracy-over-speed tradeoff per
+`CLAUDE.md`'s priority order, offset by giving `echoScanner.worker.ts` a
+3-worker pool (up from 2) so a candidate's row crops OCR in parallel.
+
+## Echo identification: narrow by set+cost first, name text breaks ties
+
+The first version matched the echo purely by OCR'ing its name and
+Levenshtein-fuzzy-matching against all ~150 echoes (narrowed only by
+cost). That missed the technique `CalculatorEchoParser.vue`'s Discord-bot
+flow actually relies on for its accuracy: match the set icon first
+(`matchSetFirst`), filter `mainEchoesData` down to echoes in that set *and*
+at that cost (`filteredEchoKeys`), and only then resolve the specific echo
+— often down to exactly one candidate, since most sets have a single echo
+at a given cost tier.
+
+`parse.ts`'s `resolveEcho` now does the same narrowing (`matchedSet` was
+already being computed via the existing `matchSetFirst` reuse — it just
+wasn't being used to narrow the name match):
+
+1. **Narrow** `mainEchoesData` by `matchedSet` membership and cost.
+2. **Pool of exactly one**: trust it directly — this is the common case for
+   cost-3/cost-4 "boss" echoes, and sidesteps OCR'ing the name at all for
+   an echo whose name is short or accented and therefore hard to read
+   reliably (confirmed cause of a real "Jué" (4-cost) mismatch — see
+   `normalize`'s doc comment). Still sanity-checked against any name text
+   that *was* read (`NAME_SANITY_THRESHOLD`), so a set icon that was
+   clearly misread doesn't get silently trusted.
+3. **Pool of several**: cost-1 "trash" echoes commonly share both a set and
+   a cost with a handful of siblings — Levenshtein name matching breaks
+   the tie, but only within that narrowed pool instead of against the
+   full list, which is both faster and more accurate.
+4. **Empty pool**: the set (or set+cost combination) matched nothing — the
+   set read was probably wrong. Falls back to `matchEchoName`, matching by
+   name against the full cost tier, same as the very first version's
+   behavior.
+
+The fixed secondary-stat row is also now OCR'd (previously skipped as
+"not persisted") and used for a second cost fallback: its flat value is
+unique per cost tier at rank 5 (`flatBonusesByRankByType`; e.g. 150 only
+ever appears at cost 4) — `inferCostFromSecondaryValue` uses this when the
+small "COST n" text itself fails to OCR, since the secondary row is a much
+larger, easier crop to read reliably.
+
 ## Accuracy
 
 Per `docs/accuracy-verification.md` and the project's priority order,
@@ -117,9 +185,12 @@ nothing here auto-saves silently:
 - Every candidate carries per-field confidence (name, cost, main stat, set,
   each substat) computed in `parse.ts`; low-confidence fields are flagged in
   `EchoScannerCapture.vue`'s review list.
-- Echo name is matched via Levenshtein similarity against `mainEchoesData`
-  (threshold 0.68), narrowed by cost when the cost was also read — a name
-  below threshold is left unresolved (`echo: null`) rather than guessed.
+- Echo identity is narrowed by matched set + cost first (mirroring the
+  Discord-bot flow's `filteredEchoKeys`), with Levenshtein name-text
+  matching only breaking ties within that pool or serving as a fallback —
+  see "Echo identification" above. A name below threshold with no
+  narrowing to fall back on is left unresolved (`echo: null`) rather than
+  guessed.
 - Substat values are snapped to the nearest legal roll in `subStatsTable`
   (`src/echoes/stats.ts`) — the same table the Discord-bot importer trusts.
 - A freshly-acquired echo with no main stat chosen yet (`needsMainStatSelection`)

@@ -1,20 +1,28 @@
 /**
  * Echo Scanner OCR Worker
  *
- * Purely mechanical: given an ImageBitmap crop, preprocess it and return
- * the recognized text. All echo-data lookups, name/stat matching, and
- * value snapping happen on the main thread in src/scanner/parse.ts — this
- * worker doesn't import src/echoes/*, keeping the "workers receive/return
- * plain serializable objects only" rule simple to hold to.
+ * Purely mechanical: given a named list of ImageBitmap crops, preprocess
+ * and recognize each and return the raw text per key. All echo-data
+ * lookups, name/stat matching, and value snapping happen on the main
+ * thread in src/scanner/parse.ts — this worker doesn't import
+ * src/echoes/*, keeping the "workers receive/return plain serializable
+ * objects only" rule simple to hold to.
+ *
+ * One region per named crop (header, main stat, fixed secondary, and each
+ * of up to 5 individually-cropped substat rows — see layout.ts) rather
+ * than one big multi-line block, mirroring CalculatorEchoParser.vue's
+ * proven-reliable per-row Discord-bot-image approach: a crop that can only
+ * contain one row's text can't have that row's text merged into or lost
+ * behind a neighboring row the way a whole block's line segmentation can.
  *
  * Uses a small pool of self-hosted tesseract.js workers (public/tesseract/)
- * so header and stats-block crops for one candidate OCR in parallel, and so
- * scanning works without depending on a CDN.
+ * so a candidate's several row crops OCR in parallel, and so scanning
+ * works without depending on a CDN.
  *
  * Message flow:
  *  {type:"init"} -> {type:"ready"}
- *  {type:"recognizeCandidate", id, headerBitmap, statsBitmap} ->
- *    {type:"candidateResult", id, headerText, statsText}
+ *  {type:"recognizeCandidate", id, regions: {key, bitmap}[]} ->
+ *    {type:"candidateResult", id, texts: Record<key, string>}
  *  {type:"terminate"}
  */
 import { createWorker, type Worker as TesseractWorker } from "tesseract.js";
@@ -22,12 +30,15 @@ import { createWorker, type Worker as TesseractWorker } from "tesseract.js";
 const CHAR_WHITELIST =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜàáâãäåèéêëìíîïòóôõöùúûü0123456789.:,-'+% ";
 const PSM_SINGLE_BLOCK = 6;
+/** Header + main + secondary + up to 5 substats = up to 8 crops per candidate, up from 2 when this was two big blocks — a bigger pool keeps per-candidate latency down. */
+const POOL_SIZE = 3;
+
+type Region = { key: string; bitmap: ImageBitmap };
 
 type RecognizeCandidateMessage = {
   type: "init" | "recognizeCandidate" | "terminate";
   id?: string;
-  headerBitmap?: ImageBitmap;
-  statsBitmap?: ImageBitmap;
+  regions?: Region[];
 };
 
 let pool: TesseractWorker[] = [];
@@ -60,7 +71,7 @@ async function createPooledWorker(): Promise<TesseractWorker> {
 }
 
 async function initPool() {
-  pool = await Promise.all([createPooledWorker(), createPooledWorker()]);
+  pool = await Promise.all(Array.from({ length: POOL_SIZE }, createPooledWorker));
 }
 
 function nextWorker(): TesseractWorker {
@@ -113,16 +124,20 @@ async function handleMessage(data: RecognizeCandidateMessage) {
     }
 
     if (data.type === "recognizeCandidate") {
-      if (!data.headerBitmap || !data.statsBitmap) {
-        throw new Error("Missing bitmaps for recognizeCandidate");
+      if (!data.regions?.length) {
+        throw new Error("Missing regions for recognizeCandidate");
       }
-      const [headerText, statsText] = await Promise.all([
-        recognizeBitmap(data.headerBitmap),
-        recognizeBitmap(data.statsBitmap),
-      ]);
-      data.headerBitmap.close();
-      data.statsBitmap.close();
-      self.postMessage({ type: "candidateResult", id: data.id, headerText, statsText });
+      const regions = data.regions;
+      const recognized = await Promise.all(
+        regions.map((region) => recognizeBitmap(region.bitmap)),
+      );
+      for (const region of regions) region.bitmap.close();
+
+      const texts: Record<string, string> = {};
+      regions.forEach((region, i) => {
+        texts[region.key] = recognized[i];
+      });
+      self.postMessage({ type: "candidateResult", id: data.id, texts });
       return;
     }
 

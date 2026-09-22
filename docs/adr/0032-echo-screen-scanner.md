@@ -51,20 +51,40 @@ Key choices, each with a reason:
   and an earlier session's 2800x1752 sample) — same fractions held at all
   three, confirming the resolution-independent design. See
   `docs/scanner.md` and `src/scanner/layout.ts`.
-- **Stats block is one OCR'd region, not 7 rigid row boxes.** The
-  measurement surfaced two things a fixed 7-row table would have gotten
-  wrong: an echo below +25 reveals fewer than 5 substats with no reserved
-  blank space (confirmed: a cost-3 +15 echo showed only 3 of 5), and a long
-  stat label wraps to a second line, shifting rows after it. `parse.ts`
-  reassembles rows from multi-line OCR text instead.
-- **Echo name is matched as text (Levenshtein vs. `mainEchoesData`), not by
-  image.** The detail panel prints the echo's name as text; fuzzy text
-  matching a clean OCR'd string is simpler and more robust than image-diffing
-  a rendered 3D portrait, and avoids re-implementing the reference
-  screenshot/pixelmatch machinery the Discord-bot flow uses for that
-  purpose. Only the small **set icon** (not printed as text anywhere in the
-  panel) still goes through the existing `echoParser.worker.ts`
+- **Substat rows are individually cropped, one OCR call each** — not one
+  multi-line block, and not the originally-shipped design either (see
+  **Revised** below). The measurement surfaced two things a fixed row
+  table has to handle: an echo below +25 reveals fewer than 5 substats
+  with no reserved blank space (confirmed: a cost-3 +15 echo showed only 3
+  of 5, represented as empty slots, not a shorter array), and a long stat
+  label wraps to a second line. Each `SUBSTAT_ROWS` crop is taller than one
+  line to still catch a wrap, and `parse.ts`'s `parseStatRow` takes only
+  the first complete match per crop so that overlap never leaks a
+  neighboring row in.
+  **Revised:** the first shipped version of this ADR instead OCR'd the
+  whole stats area as one multi-line block and had tesseract segment it
+  into rows. Real usage reported missing substats — block-level line
+  segmentation can silently merge or drop a row with no way to recover it.
+  Reverted to individually-cropped rows (mirroring
+  `CalculatorEchoParser.vue`'s own 5-separate-crop approach, which is what
+  should have been followed from the start) once that was diagnosed. See
+  `docs/scanner.md`'s "Substat OCR" section.
+- **Echo identity is narrowed by matched set + cost first, the same way
+  `CalculatorEchoParser.vue`'s `filteredEchoKeys` narrowing works** — name
+  text (Levenshtein vs. `mainEchoesData`) only breaks a tie within that
+  narrowed pool, or serves as the fallback when the narrowing comes up
+  empty; it never matches against image data, since the name is printed as
+  text in the panel. Only the small **set icon** (not printed as text
+  anywhere in the panel) goes through the existing `echoParser.worker.ts`
   `matchSetFirst` pixelmatch path.
+  **Revised:** the first shipped version matched the name against *all*
+  ~150 echoes (narrowed only by cost), never using the set match it had
+  already computed to narrow further. That's a materially weaker version
+  of the Discord-bot flow's own accuracy driver, and it directly
+  contributed to a real "Jué" (a real, short, accented 4-cost echo name)
+  coming back "Unknown echo" — set+cost alone narrows to that one echo
+  with no name OCR needed at all. See `docs/scanner.md`'s "Echo
+  identification" section.
 - **OCR runs in its own worker** (`echoScanner.worker.ts`), unlike the
   Discord-bot flow where tesseract.js runs on the main thread — a scanning
   session can trigger OCR many times a minute and must not compete with the
@@ -121,7 +141,10 @@ explicit user direction for this feature.
   calibration UI for non-16:10/ultrawide is a known, explicitly deferred
   follow-up, not built here; `public/tesseract/` adds ~19MB of static assets
   to the repo (fetched lazily, only when a scan session starts, so it
-  doesn't affect normal app load).
+  doesn't affect normal app load); individually-cropped substat rows mean
+  up to 8 OCR calls per candidate instead of 2, a deliberate
+  accuracy-over-speed tradeoff (offset by a bigger, 3-worker OCR pool) that
+  makes each candidate slower to process.
 
 ## Guidance
 

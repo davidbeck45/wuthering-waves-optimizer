@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { PANEL_BOX, STATS_BLOCK, HEADER_BLOCK, toPixelRegion, isSupportedAspect } from "../../src/scanner/layout";
+import {
+  PANEL_BOX,
+  HEADER_BLOCK,
+  MAIN_STAT_ROW,
+  SECONDARY_STAT_ROW,
+  SUBSTAT_ROWS,
+  toPixelRegion,
+  isSupportedAspect,
+} from "../../src/scanner/layout";
 
 // Real capture resolutions reviewed from the user's provided footage
 // (~/Downloads/ScreenshotsEchoes) — all WuWa's fixed 16:10 Echo Management
@@ -20,19 +28,39 @@ describe("layout", () => {
     expect(region.y + region.height).toBeLessThanOrEqual(frame.height);
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps the stats block inside the panel box at %ox%o", (frame) => {
+  it.each(REAL_RESOLUTIONS)("keeps the main/secondary stat rows inside the panel box at %ox%o", (frame) => {
     const panel = toPixelRegion(PANEL_BOX, frame);
-    const stats = toPixelRegion(STATS_BLOCK, frame);
-    expect(stats.x).toBeGreaterThanOrEqual(panel.x);
-    expect(stats.y).toBeGreaterThanOrEqual(panel.y);
-    expect(stats.x + stats.width).toBeLessThanOrEqual(panel.x + panel.width + 2); // +2px rounding slack
-    expect(stats.y + stats.height).toBeLessThanOrEqual(panel.y + panel.height + 2);
+    for (const row of [MAIN_STAT_ROW, SECONDARY_STAT_ROW]) {
+      const region = toPixelRegion(row, frame);
+      expect(region.x).toBeGreaterThanOrEqual(panel.x);
+      expect(region.y).toBeGreaterThanOrEqual(panel.y);
+      expect(region.x + region.width).toBeLessThanOrEqual(panel.x + panel.width + 2);
+      expect(region.y + region.height).toBeLessThanOrEqual(panel.y + panel.height + 2);
+    }
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps the header block above the stats block at %ox%o", (frame) => {
+  it.each(REAL_RESOLUTIONS)("keeps the header above the main stat row, which sits above the secondary row at %ox%o", (frame) => {
     const header = toPixelRegion(HEADER_BLOCK, frame);
-    const stats = toPixelRegion(STATS_BLOCK, frame);
-    expect(header.y + header.height).toBeLessThanOrEqual(stats.y);
+    const main = toPixelRegion(MAIN_STAT_ROW, frame);
+    const secondary = toPixelRegion(SECONDARY_STAT_ROW, frame);
+    expect(header.y + header.height).toBeLessThanOrEqual(main.y);
+    expect(main.y).toBeLessThan(secondary.y);
+  });
+
+  it.each(REAL_RESOLUTIONS)("lays out all 5 substat row slots below the secondary row, each further down than the last, at %ox%o", (frame) => {
+    const secondary = toPixelRegion(SECONDARY_STAT_ROW, frame);
+    expect(SUBSTAT_ROWS).toHaveLength(5);
+    let previousY = secondary.y;
+    for (const row of SUBSTAT_ROWS) {
+      const region = toPixelRegion(row, frame);
+      expect(region.y).toBeGreaterThan(previousY);
+      previousY = region.y;
+    }
+  });
+
+  it("gives substat rows a taller crop than main/secondary rows, to catch a wrapped label's continuation line", () => {
+    expect(SUBSTAT_ROWS[0].height).toBeGreaterThan(MAIN_STAT_ROW.height);
+    expect(SUBSTAT_ROWS[0].height).toBeGreaterThan(SECONDARY_STAT_ROW.height);
   });
 
   it("accepts WuWa's real 16:10 aspect ratios", () => {

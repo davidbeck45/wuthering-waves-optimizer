@@ -11,14 +11,29 @@
  * See docs/scanner.md for how these were derived and what to re-measure if
  * a future WuWa UI update moves the panel.
  *
- * The stats block (main stat + fixed secondary + up to 5 substats) is
- * intentionally captured as ONE region and OCR'd as a multi-line block,
- * rather than as 7 rigid per-row boxes: real footage shows unleveled echoes
- * render fewer than 5 substat rows (nothing below the last one — the panel
- * doesn't reserve blank space for it), and long stat labels ("Resonance
- * Skill DMG Bonus") wrap to a second line, which shifts every row after it.
- * parse.ts reassembles rows from the recognized text instead of trusting
- * fixed row slots.
+ * Stat rows are captured as individually-cropped regions — one OCR call per
+ * row — mirroring CalculatorEchoParser.vue's proven-reliable Discord-bot-image
+ * approach (5 separate substat crops there too), rather than one big
+ * multi-line block asking tesseract to segment rows itself. Block-level
+ * multi-line OCR turned out to be the source of real missing-substat
+ * reports: tesseract's own line segmentation can merge or drop a row when
+ * two lines sit close together, and there's no way to recover a row that
+ * silently vanished from the block's recognized text. An isolated per-row
+ * crop can't lose a *different* row's text, because there isn't any in the
+ * crop to begin with.
+ *
+ * Row Y-positions are fixed fractions (measured the same way as the blocks
+ * above — see docs/scanner.md): the main-stat row starts at 0.384 and every
+ * following row sits at a further ~0.0373 down, consistently across all
+ * three measured resolutions. Substat rows (which is where the only
+ * wrap-prone labels — "Resonance Skill DMG Bonus" etc. — live; main/fixed-
+ * secondary labels never wrap, see docs/scanner.md) get a taller crop that
+ * deliberately overlaps into the next row's space, so a 2-line wrapped
+ * label+value still lands in one crop; parse.ts takes only the *first*
+ * complete "label value" line found and ignores anything after, so that
+ * overlap never leaks a neighboring row's text into this one's result. An
+ * echo below +25 that simply has fewer populated rows just OCRs a blank
+ * crop for the unused slots, handled as "absent" the same as before.
  */
 import type { FrameSize, RegionFrac, RegionPx } from "./types";
 
@@ -53,13 +68,37 @@ export const SET_ICON_BOX: RegionFrac = {
   height: 0.045,
 };
 
-/** Main stat + fixed secondary + up to 5 substats, multi-line OCR block. */
-export const STATS_BLOCK: RegionFrac = {
-  x: 0.685,
-  y: 0.375,
-  width: 0.29,
-  height: 0.335,
+const STAT_ROW_X = 0.685;
+const STAT_ROW_WIDTH = 0.29;
+const FIRST_STAT_ROW_Y = 0.384;
+const STAT_ROW_PITCH = 0.0373;
+/** Tall enough for one line + padding; main/secondary labels never wrap. */
+const SINGLE_LINE_ROW_HEIGHT = 0.028;
+/** Tall enough to also catch a wrapped label's continuation line, which lands in the next row's space. */
+const WRAP_SAFE_ROW_HEIGHT = 0.065;
+
+export const MAIN_STAT_ROW: RegionFrac = {
+  x: STAT_ROW_X,
+  y: FIRST_STAT_ROW_Y,
+  width: STAT_ROW_WIDTH,
+  height: SINGLE_LINE_ROW_HEIGHT,
 };
+
+/** Not persisted (getEchoStats derives it from cost+rank) — cropped and OCR'd anyway as a sanity signal the calibration/debug view can show. */
+export const SECONDARY_STAT_ROW: RegionFrac = {
+  x: STAT_ROW_X,
+  y: FIRST_STAT_ROW_Y + STAT_ROW_PITCH,
+  width: STAT_ROW_WIDTH,
+  height: SINGLE_LINE_ROW_HEIGHT,
+};
+
+/** Up to 5 possible substat slots, in panel order. */
+export const SUBSTAT_ROWS: RegionFrac[] = [2, 3, 4, 5, 6].map((rowIndex) => ({
+  x: STAT_ROW_X,
+  y: FIRST_STAT_ROW_Y + rowIndex * STAT_ROW_PITCH,
+  width: STAT_ROW_WIDTH,
+  height: WRAP_SAFE_ROW_HEIGHT,
+}));
 
 export function toPixelRegion(region: RegionFrac, frame: FrameSize): RegionPx {
   return {

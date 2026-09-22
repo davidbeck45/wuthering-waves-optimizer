@@ -24,7 +24,16 @@ import { computeFingerprint } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { parseEchoCandidate } from "../scanner/parse";
-import { PANEL_BOX, HEADER_BLOCK, STATS_BLOCK, SET_ICON_BOX, FULL_FRAME, isSupportedAspect } from "../scanner/layout";
+import {
+  PANEL_BOX,
+  HEADER_BLOCK,
+  MAIN_STAT_ROW,
+  SECONDARY_STAT_ROW,
+  SUBSTAT_ROWS,
+  SET_ICON_BOX,
+  FULL_FRAME,
+  isSupportedAspect,
+} from "../scanner/layout";
 import { echoSetImageMap } from "../echoes/stats";
 import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
@@ -114,22 +123,34 @@ export function useEchoScanner() {
     await Promise.all([ocrReady, setWorkerReady]);
   }
 
-  function recognizeCandidate(headerBitmap: ImageBitmap, statsBitmap: ImageBitmap) {
+/**
+ * OCR's a named set of crops in one round-trip to echoScanner.worker.ts.
+ * Named regions (rather than two big blocks) mirror CalculatorEchoParser.vue's
+ * per-row Discord-bot-image crops — see layout.ts and parse.ts's top doc
+ * comments for why this replaced the original whole-block design.
+ */
+  function recognizeCandidate(regions: Record<string, ImageBitmap>) {
     const id = randomString();
-    return new Promise<{ headerText: string; statsText: string }>((resolve, reject) => {
+    const keys = Object.keys(regions);
+    const bitmaps = keys.map((key) => regions[key]);
+    return new Promise<Record<string, string>>((resolve, reject) => {
       const handler = (e: MessageEvent) => {
         if (e.data?.id !== id) return;
         ocrWorker?.removeEventListener("message", handler);
         if (e.data.type === "candidateResult") {
-          resolve({ headerText: e.data.headerText, statsText: e.data.statsText });
+          resolve(e.data.texts as Record<string, string>);
         } else {
           reject(new Error(e.data.error ?? "OCR failed"));
         }
       };
       ocrWorker?.addEventListener("message", handler);
       ocrWorker?.postMessage(
-        { type: "recognizeCandidate", id, headerBitmap, statsBitmap },
-        [headerBitmap, statsBitmap],
+        {
+          type: "recognizeCandidate",
+          id,
+          regions: keys.map((key) => ({ key, bitmap: regions[key] })),
+        },
+        bitmaps,
       );
     });
   }
@@ -172,6 +193,7 @@ export function useEchoScanner() {
 
   async function handleTick() {
     if (!frameSource) return;
+    const videoEl = frameSource.videoEl;
     const frame = frameSource.frameSize();
     if (frame.width === 0 || frame.height === 0) return;
 
@@ -180,24 +202,42 @@ export function useEchoScanner() {
       return;
     }
 
-    const panelImageData = grabRegionImageData(frameSource.videoEl, PANEL_BOX);
+    const panelImageData = grabRegionImageData(videoEl, PANEL_BOX);
     const fingerprint = computeFingerprint(panelImageData);
     const event = stability.observe(fingerprint);
     if (event !== "stable-novel") return;
 
     try {
-      const [headerBitmap, statsBitmap, frameBitmap] = await Promise.all([
-        grabRegionBitmap(frameSource.videoEl, HEADER_BLOCK),
-        grabRegionBitmap(frameSource.videoEl, STATS_BLOCK),
-        grabRegionBitmap(frameSource.videoEl, FULL_FRAME),
+      const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
+      const [headerBitmap, mainBitmap, secondaryBitmap, ...substatBitmaps] = await Promise.all([
+        grabRegionBitmap(videoEl, HEADER_BLOCK),
+        grabRegionBitmap(videoEl, MAIN_STAT_ROW),
+        grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
+        ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
       ]);
+      const frameBitmap = await grabRegionBitmap(videoEl, FULL_FRAME);
 
-      const [{ headerText, statsText }, matchedSet] = await Promise.all([
-        recognizeCandidate(headerBitmap, statsBitmap),
+      const regions: Record<string, ImageBitmap> = {
+        header: headerBitmap,
+        main: mainBitmap,
+        secondary: secondaryBitmap,
+      };
+      substatKeys.forEach((key, i) => {
+        regions[key] = substatBitmaps[i];
+      });
+
+      const [texts, matchedSet] = await Promise.all([
+        recognizeCandidate(regions),
         matchSetIcon(frameBitmap, frame),
       ]);
 
-      const parsed = parseEchoCandidate({ headerText, statsText, matchedSet });
+      const parsed = parseEchoCandidate({
+        headerText: texts.header ?? "",
+        mainStatText: texts.main ?? "",
+        secondaryStatText: texts.secondary ?? "",
+        substatTexts: substatKeys.map((key) => texts[key] ?? ""),
+        matchedSet,
+      });
       stability.commitScan(fingerprint);
 
       if (parsed.needsMainStatSelection) {

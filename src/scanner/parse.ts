@@ -1,23 +1,31 @@
 /**
- * Turns the raw OCR text pulled from the header block and stats block
- * (layout.ts's HEADER_BLOCK / STATS_BLOCK) into a ParsedEchoSlot candidate —
- * the same shape CalculatorEchoParser.vue already emits, so the result can
- * be handed straight to CalculatorEchoImporter.vue's existing
+ * Turns the raw OCR text pulled from the header block and individually-
+ * cropped stat rows (layout.ts's HEADER_BLOCK / MAIN_STAT_ROW /
+ * SECONDARY_STAT_ROW / SUBSTAT_ROWS) into a ParsedEchoSlot candidate — the
+ * same shape CalculatorEchoParser.vue already emits, so the result can be
+ * handed straight to CalculatorEchoImporter.vue's existing
  * mapParsedEchoes → duplicate-review → save pipeline.
  *
- * Deliberately does NOT do image-based echo/set matching here — the set
- * icon is matched via the existing echoParser.worker.ts (matchSetFirst) by
- * the caller (useEchoScanner.ts), which passes the resolved set key in.
- * Keeping this module string-only makes it trivial to unit test against
- * real OCR output from the provided screenshots without a canvas/worker.
+ * Echo identification deliberately mirrors CalculatorEchoParser.vue's
+ * proven approach instead of doing OCR-name-vs-everything matching alone:
+ * narrow mainEchoesData by the already-matched set icon (matchSetFirst,
+ * called by the caller/useEchoScanner.ts — this module stays string-only,
+ * no image matching here) and by cost first, the same way that flow's
+ * `filteredEchoKeys` narrowing does. Set+cost alone usually narrows to
+ * exactly one echo (most sets have a single echo at a given cost tier) —
+ * name-text Levenshtein matching only has to break a tie among the
+ * (typically few) cost-1 echoes that share both a set and a cost, instead
+ * of guessing against the full ~150-echo list. See docs/scanner.md.
  */
-import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
-import { statsTable, subStatsTable, verboseStatLabelMap } from "../echoes/stats";
+import { mainEchoesData, getCostByClass, type Echo } from "../echoes/index";
+import { statsTable, subStatsTable, verboseStatLabelMap, flatBonusesByRankByType } from "../echoes/stats";
 import { getSubstatType, getSubstatValue } from "../echoes/parsedEchoMapping";
 import { levenshteinSimilarity } from "./levenshtein";
 import type { FieldConfidence, ParsedEchoSlot, ParsedSubstat } from "./types";
 
 export const NAME_MATCH_THRESHOLD = 0.68;
+/** Loose sanity floor for the "set+cost already narrowed to one echo" case — just enough to catch a set icon that was clearly misread, not to require a strong text match. */
+const NAME_SANITY_THRESHOLD = 0.4;
 
 type StatRow = { rawLabel: string; rawValue: string };
 
@@ -69,34 +77,41 @@ export function normalizeStatLabel(rawLabel: string): string | null {
 }
 
 /**
- * Splits a multi-line stats-block OCR result into ordered {label, value}
- * rows, reassembling labels that wrapped onto a second line (e.g.
- * "Resonance Skill DMG" / "Bonus 8.6%" — confirmed happening in real
- * footage for the two longest substat labels).
+ * Resolves one individually-cropped stat row's OCR text to a {label,
+ * value} pair. Mirrors CalculatorEchoParser.vue's per-row crops (5
+ * separate small OCR calls there too) rather than asking tesseract to
+ * segment a multi-line block itself — segmenting a block turned out to be
+ * the source of real missing-substat reports, since a merged/garbled row
+ * boundary silently drops that row from the recognized text with no way to
+ * recover it. An isolated crop can't lose a *different* row's text because
+ * there isn't any in the crop.
+ *
+ * The crop is deliberately taller than one line (see SUBSTAT_ROWS in
+ * layout.ts) so a wrapped label ("Resonance Skill DMG" / "Bonus 8.6%")
+ * still resolves correctly — this function returns as soon as it finds the
+ * *first* complete "label value" match and ignores any further lines, so
+ * the crop's overlap into the next row's space never leaks that row's text
+ * into this one's result.
  */
-export function splitStatRows(rawText: string): StatRow[] {
+export function parseStatRow(rawText: string): StatRow | null {
   const lines = rawText
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
 
   const valuePattern = /^(.*?)\s+([+-]?\d+(?:\.\d+)?%?)$/;
-  const rows: StatRow[] = [];
   let pendingLabel = "";
 
   for (const line of lines) {
     const candidate = pendingLabel ? `${pendingLabel} ${line}` : line;
     const match = candidate.match(valuePattern);
     if (match) {
-      rows.push({ rawLabel: match[1].trim(), rawValue: match[2].trim() });
-      pendingLabel = "";
-    } else {
-      // No trailing number yet — could be a wrapped label continuation.
-      pendingLabel = candidate;
+      return { rawLabel: match[1].trim(), rawValue: match[2].trim() };
     }
+    // No trailing number yet — could be a wrapped label continuation.
+    pendingLabel = candidate;
   }
-
-  return rows;
+  return null;
 }
 
 export function parseHeaderText(rawText: string): {
@@ -134,25 +149,89 @@ export function parseHeaderText(rawText: string): {
   return { name, level, cost };
 }
 
+/**
+ * The fixed secondary-stat row's flat value is unique per cost tier at the
+ * app's assumed rank 5 (ATK_FLAT 150 for cost 4, 100 for cost 3; HP_FLAT
+ * 2280 for cost 1 — see flatBonusesByRankByType) — a useful fallback signal
+ * for cost when the small "COST n" text itself misreads, since the
+ * secondary row is a much larger, easier-to-OCR crop.
+ */
+function inferCostFromSecondaryValue(rawValue: string | null): number | null {
+  if (!rawValue) return null;
+  const numeric = getSubstatValue(rawValue);
+  if (numeric === null) return null;
+  for (const cost of [1, 3, 4]) {
+    if (flatBonusesByRankByType[cost]?.[5] === numeric) return cost;
+  }
+  return null;
+}
+
 export type EchoNameMatch = { key: string; name: string; similarity: number };
 
-/** `costHint` narrows the candidate pool when the cost was already read — much better match quality on a name OCR miss. */
-export function matchEchoName(
-  rawName: string,
-  costHint: number | null,
-): EchoNameMatch | null {
+function bestNameMatch(rawName: string, pool: Echo[]): EchoNameMatch | null {
   const target = normalize(rawName);
   if (!target) return null;
-
   let best: EchoNameMatch | null = null;
-  for (const echo of Object.values(mainEchoesData ?? {})) {
-    if (costHint && getCostByClass(echo.class) !== costHint) continue;
+  for (const echo of pool) {
     const similarity = levenshteinSimilarity(target, normalize(echo.name));
     if (!best || similarity > best.similarity) {
       best = { key: echo.key, name: echo.name, similarity };
     }
   }
   return best;
+}
+
+/** `costHint` narrows the candidate pool when the cost was already read — much better match quality on a name OCR miss. Kept as the fallback path for when set+cost narrowing (see parseEchoCandidate) comes up empty. */
+export function matchEchoName(rawName: string, costHint: number | null): EchoNameMatch | null {
+  const pool = Object.values(mainEchoesData ?? {}).filter(
+    (echo) => !costHint || getCostByClass(echo.class) === costHint,
+  );
+  return bestNameMatch(rawName, pool);
+}
+
+function narrowEchoCandidates(matchedSet: string | null, cost: number | null): Echo[] {
+  let pool = Object.values(mainEchoesData ?? {});
+  if (matchedSet) pool = pool.filter((echo) => echo.sets?.includes(matchedSet));
+  if (cost) pool = pool.filter((echo) => getCostByClass(echo.class) === cost);
+  return pool;
+}
+
+/**
+ * Identifies the echo the same way CalculatorEchoParser.vue's flow does —
+ * narrow by set+cost first, only fall back to full-list name matching when
+ * that narrowing can't be trusted. See this module's top doc comment.
+ */
+function resolveEcho(
+  headerName: string | null,
+  matchedSet: string | null,
+  cost: number | null,
+): { echo: string | null; confidence: FieldConfidence } {
+  const pool = narrowEchoCandidates(matchedSet, cost);
+
+  if (pool.length === 1) {
+    const only = pool[0];
+    const similarity = headerName ? levenshteinSimilarity(normalize(headerName), normalize(only.name)) : null;
+    // No name text to sanity-check against, or it's at least a loose match: trust the set+cost narrowing.
+    const trusted = similarity === null || similarity >= NAME_SANITY_THRESHOLD;
+    return { echo: only.key, confidence: trusted ? "high" : "low" };
+  }
+
+  if (pool.length > 1) {
+    const match = headerName ? bestNameMatch(headerName, pool) : null;
+    if (match && match.similarity >= NAME_MATCH_THRESHOLD) {
+      return { echo: match.key, confidence: "high" };
+    }
+    return { echo: null, confidence: "low" };
+  }
+
+  // Set (or the set+cost combination) didn't narrow to anything — the set
+  // read was probably wrong. Fall back to matching by name against every
+  // echo at this cost, same as before set-based narrowing existed.
+  const fallback = headerName ? matchEchoName(headerName, cost) : null;
+  if (fallback && fallback.similarity >= NAME_MATCH_THRESHOLD) {
+    return { echo: fallback.key, confidence: "high" };
+  }
+  return { echo: null, confidence: "low" };
 }
 
 /**
@@ -214,43 +293,42 @@ export type ParseCandidateResult = {
 
 export function parseEchoCandidate(input: {
   headerText: string;
-  statsText: string;
+  mainStatText: string;
+  secondaryStatText: string;
+  /** Up to 5, in panel order. A slot's text can be empty/unparseable — that's how an echo below +25 with fewer revealed substats is represented. */
+  substatTexts: string[];
   matchedSet: string | null;
 }): ParseCandidateResult {
   const header = parseHeaderText(input.headerText);
-  const rows = splitStatRows(input.statsText);
+  const secondaryRow = parseStatRow(input.secondaryStatText);
+  const cost = header.cost ?? inferCostFromSecondaryValue(secondaryRow?.rawValue ?? null);
+  const costConfidence: FieldConfidence = header.cost ? "high" : cost ? "low" : "low";
 
-  const nameMatch = header.name ? matchEchoName(header.name, header.cost) : null;
-  const resolvedEcho = nameMatch && nameMatch.similarity >= NAME_MATCH_THRESHOLD ? nameMatch.key : null;
+  const { echo: resolvedEcho, confidence: nameConfidence } = resolveEcho(header.name, input.matchedSet, cost);
 
-  let cost = header.cost;
-  if (!cost && resolvedEcho) {
-    cost = getCostByClass(getEchoData(resolvedEcho).class);
-  }
-
-  // Row 0 = main stat, row 1 = fixed secondary (not persisted — getEchoStats
-  // derives it from cost+rank), rows 2-6 = up to 5 substats.
-  const mainRow = rows[0] ?? null;
-  const substatRows = rows.slice(2, 7);
-
+  const mainRow = parseStatRow(input.mainStatText);
   const mainStatLabel = mainRow ? (normalizeStatLabel(mainRow.rawLabel) ?? mainRow.rawLabel) : "";
   const mainStatLegal = Boolean(
     cost && mainStatLabel && statsTable[cost]?.[verboseStatLabelMap[mainStatLabel] ?? ""],
   );
 
-  const resolvedSubstats = substatRows.map((row) => {
+  const resolvedSubstats = input.substatTexts.map((text) => {
+    const row = parseStatRow(text);
+    if (!row) return null;
     const label = normalizeStatLabel(row.rawLabel) ?? row.rawLabel;
     return { label, ...resolveSubstatValue(label, row.rawValue) };
   });
 
-  const substats: ParsedSubstat[] = resolvedSubstats.map(({ label, formatted }) => ({
-    subStat: label,
-    subStatValue: formatted,
-  }));
+  const substats: ParsedSubstat[] = resolvedSubstats.map((resolved) =>
+    resolved ? { subStat: resolved.label, subStatValue: resolved.formatted } : { subStat: "", subStatValue: "" },
+  );
 
-  const substatConfidence: FieldConfidence[] = resolvedSubstats.map(({ label, exact }) => {
-    const known = Boolean(verboseStatLabelMap[label] || ["ATK", "DEF", "HP"].includes(label));
-    return known && exact ? "high" : "low";
+  const substatConfidence: FieldConfidence[] = resolvedSubstats.map((resolved) => {
+    if (!resolved) return "high"; // legitimately absent (below-+25 echo) — nothing to flag
+    const known = Boolean(
+      verboseStatLabelMap[resolved.label] || ["ATK", "DEF", "HP"].includes(resolved.label),
+    );
+    return known && resolved.exact ? "high" : "low";
   });
 
   const needsMainStatSelection = !mainRow || !mainStatLabel;
@@ -266,13 +344,13 @@ export function parseEchoCandidate(input: {
     level: header.level,
     needsMainStatSelection,
     confidence: {
-      name: resolvedEcho ? "high" : "low",
-      cost: header.cost ? "high" : "low",
+      name: resolvedEcho ? nameConfidence : "low",
+      cost: costConfidence,
       mainStat: mainStatLegal ? "high" : "low",
       set: input.matchedSet ? "high" : "low",
       substats: substatConfidence,
     },
     rawHeaderText: input.headerText,
-    rawStatsText: input.statsText,
+    rawStatsText: [input.mainStatText, input.secondaryStatText, ...input.substatTexts].join("\n---\n"),
   };
 }
