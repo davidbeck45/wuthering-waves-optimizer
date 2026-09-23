@@ -366,12 +366,12 @@
   }
  },
  {
-  "name": "Brant S6 Unflickering Valor R5 · Lupa + Encore · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Encore (main DPS): 1,773,875 DPR for Brant of 3,704,674 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast).",
+  "name": "Brant S6 Unflickering Valor R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,925,582 DPR for Brant of 7,655,377 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Brant S6 Unflickering Valor R5 · Lupa + Encore · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Encore (main DPS): 1,773,875 DPR for Brant of 3,704,674 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast).",
+   "name": "Brant S6 Unflickering Valor R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,925,582 DPR for Brant of 7,655,377 team. Sequence procs in the loop: 1x Forte - Returned from Ashes (S6 Blast), 2x Outro - The Course is Set! (S2 Blast).",
    "actions": [
     {
      "order": 1,
@@ -423,6 +423,16 @@
     },
     {
      "order": 7,
+     "key": "GriefRiftDMG",
+     "type": "echoAttacks",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "DragonofDirge",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 8,
      "key": "MidairAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -430,7 +440,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "ReturnedfromAshesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -438,7 +448,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -446,7 +456,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 11,
      "key": "SequenceNode2ForSmilesandCheersBlastDMG",
      "type": "outro",
      "count": 2,

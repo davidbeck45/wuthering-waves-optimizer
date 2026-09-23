@@ -1,11 +1,11 @@
 [
  {
   "name": "Camellya S6 Red Spring R5 · Verina + Sanhua · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,144,747 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,150,717 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Camellya S6 Red Spring R5 · Verina + Sanhua · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,144,747 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,150,717 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -343,11 +343,11 @@
  },
  {
   "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 3,992,188 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 4,014,955 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 3,992,188 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 4,014,955 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

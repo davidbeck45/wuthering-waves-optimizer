@@ -374,11 +374,11 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R1 · Suisui + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,591 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,513 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R1 · Suisui + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,591 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Mortefi (main DPS): 1,694,525 DPR for Jiyan of 2,158,513 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

@@ -1,11 +1,11 @@
 [
  {
   "name": "Encore S6 Stringmaster R5 · Lupa + Brant · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,704,674 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,754,722 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Encore S6 Stringmaster R5 · Lupa + Brant · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,704,674 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,754,722 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

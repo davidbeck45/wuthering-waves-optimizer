@@ -118,11 +118,11 @@
  },
  {
   "name": "Carlotta S0 The Last Dance R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 911,523 DPR for Carlotta of 4,552,265 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 911,523 DPR for Carlotta of 4,557,038 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Carlotta S0 The Last Dance R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 911,523 DPR for Carlotta of 4,552,265 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, The Last Dance R1, Frosty Resolve 5pc, main stats 43311 CR ATK Glacio atk atk. Team: Suisui + Hiyuki (main DPS): 911,523 DPR for Carlotta of 4,557,038 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

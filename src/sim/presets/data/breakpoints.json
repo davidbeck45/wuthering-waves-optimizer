@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-17T17:44:01.393Z",
- "wuwaCalcCommit": "26312d1",
+ "generated": "2026-09-23T17:42:54.101Z",
+ "wuwaCalcCommit": "a54ec44",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -211,7 +211,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 0
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -532,7 +532,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 22
+     "intendedTeams": 25
     }
    ],
    "sequences": [
@@ -739,7 +739,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 8
+     "intendedTeams": 9
     },
     {
      "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 · Heart of Sworn Vigil 5pc",
@@ -931,14 +931,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 10
     },
     {
      "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -950,7 +950,7 @@
     {
      "level": 2,
      "name": "Hsin S2: To Wake Is to Wonder What I Am",
-     "note": "S2: +60% DMG Multiplier on both Realm forms and both Horizons forms, and entering combat hands Answering Form 100 more Answering Heart. Its other half resets the two once-per-25s upgrades' cooldowns, which changes nothing here: the…"
+     "note": "S2: +60% DMG Multiplier on both Realm forms and both Horizons forms, and entering combat hands her 100 more Answering Heart. Its other half resets the two once-per-24s upgrades' cooldowns, which changes nothing here: the rotation…"
     },
     {
      "level": 3,
@@ -1424,7 +1424,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 37
+     "intendedTeams": 39
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -1475,7 +1475,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 52
+     "intendedTeams": 50
     }
    ],
    "sequences": [
@@ -1519,14 +1519,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 15
+     "intendedTeams": 16
     }
    ],
    "sequences": [
     {
      "level": 1,
      "name": "Mortefi S1: Solitary Etude",
-     "note": "S1 Solitary Etude: extra Marcato off a teammate's own Resonance Skill cast — depends on their own kit, so it's a documentary no-op, same reasoning as Rover Havoc's S2/S3."
+     "note": "S1 Solitary Etude: while Burning Rhapsody stands, the active resonator's own Resonance Skill draws a coordinated attack of two Marcato — whoever is on field, his own cast included, fired on his slot like every other tick. Every Skill…"
     },
     {
      "level": 2,
@@ -1552,6 +1552,57 @@
      "level": 6,
      "name": "Mortefi S6: Apoplectic Instrumental",
      "note": "S6 Apoplectic Instrumental — payout lives in `S6_TEAM_ATK` above, this is just its trigger."
+    }
+   ]
+  },
+  "Phoebe": {
+   "appKey": "Phoebe",
+   "loadouts": [
+    {
+     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Eternal Radiance 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 5
+    },
+    {
+     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Phoebe S1: Warm Light and Bedside Wishes",
+     "note": "S1: the Liberation's own multipliers and the Confession Frazzle cap — paid out on the cast itself, which is where both halves are read."
+    },
+    {
+     "level": 2,
+     "name": "Phoebe S2: A Boat Adrift in Tears",
+     "note": "S2: Absolution amplifies her Outro against a Frazzled target; Confession pays into Silent Prayer. Both halves live on the casts that grant them (the Outro above)."
+    },
+    {
+     "level": 3,
+     "name": "Phoebe S3: Daisy Wreaths and Dreams",
+     "note": "S3: Starflash's multiplier, x1.91 in Absolution and x3.49 in Confession — nanoka's own twin rows for that hit (82.69% -> 157.92% and 288.56%)."
+    },
+    {
+     "level": 4,
+     "name": "Phoebe S4: Ringing Bells on Wings Aloft",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Phoebe S5: Prayer to the Distant Light",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Phoebe S6: Whispering Chirps in Silence",
+     "note": ""
     }
    ]
   },
@@ -1729,7 +1780,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 21
+     "intendedTeams": 23
     }
    ],
    "sequences": [
@@ -1853,7 +1904,7 @@
    "appKey": "Sanhua",
    "loadouts": [
     {
-     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Overture R1 · Moonlit Clouds 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Overture R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       5
@@ -1863,9 +1914,10 @@
        "kind": "loop",
        "added": [],
        "removed": [
-        "Forte Heavy - Detonate ×1"
+        "Basic - Frigid Light 2 ×1",
+        "Basic - Frigid Light 3 ×1"
        ],
-       "note": "opener: drops Forte Heavy - Detonate ×1"
+       "note": "opener: drops Basic - Frigid Light 4 ×1"
       }
      },
      "intendedTeams": 13
@@ -1912,7 +1964,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 55
+     "intendedTeams": 57
     }
    ],
    "sequences": [
@@ -1992,6 +2044,50 @@
     }
    ]
   },
+  "Spectro Rover": {
+   "appKey": "RoverSpectroFemale",
+   "loadouts": [
+    {
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 6
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Spectro Rover S1: Odyssey of Beginnings",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Spectro Rover S2: Microcosmic Murmurs",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Spectro Rover S3: Visages of Dust",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Spectro Rover S4: Resonating Lamella",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Spectro Rover S5: Temporal Virtuoso",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Spectro Rover S6: Echoes of Wanderlust",
+     "note": ""
+    }
+   ]
+  },
   "Suisui": {
    "appKey": "Suisui",
    "loadouts": [
@@ -2000,7 +2096,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 21
+     "intendedTeams": 24
     }
    ],
    "sequences": [
@@ -2044,7 +2140,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 5
     },
     {
      "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Heart of Sworn Vigil 5pc",
@@ -2269,6 +2365,62 @@
      "level": 6,
      "name": "Yinlin S6: Pursuit of Justice",
      "note": ""
+    }
+   ]
+  },
+  "Zani": {
+   "appKey": "Zani",
+   "loadouts": [
+    {
+     "label": "Blazing Justice R1 / Pulsation Bracer R1 / Abyss Surges R1 / Tragicomedy R1 · Eternal Radiance 5pc + Capitaneus",
+     "minSequence": 0,
+     "loopChangesAt": [
+      6
+     ],
+     "changes": {
+      "6": {
+       "kind": "loop",
+       "added": [
+        "Forte Basic - Heavy Slash: Daybreak ×1",
+        "Forte Basic - Heavy Slash: Dawning ×1",
+        "Forte Basic - Heavy Slash: Nightfall ×1"
+       ],
+       "removed": []
+      }
+     },
+     "intendedTeams": 3
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Zani S1: When the Alarm Clock Rings",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Zani S2: Stale Bread With Energy Drink",
+     "note": "S2: +20% Crit. Rate flat, and Targeted Action's multiplier x1.8 — nanoka's own S-chain twin of that row is 287.29% x 1.8, so the 80% is a multiplier on it rather than points added to it."
+    },
+    {
+     "level": 3,
+     "name": "Zani S3: Each Day A New Commute",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Zani S4: More Efficiency, Less Drama",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Zani S5: Delivered In Full On Time",
+     "note": "S5: Rekindle's multiplier x2.2 — nanoka's twin row again (318.52% x 2.2)."
+    },
+    {
+     "level": 6,
+     "name": "Zani S6: First Things First? Clock Out!",
+     "note": "S6: the Heavy Slash chain's multipliers x1.4, another 40% on Nightfall's multiplier a Blaze on top of the base 9.95%, and the refill above. The fatal-blow clause is out of scope."
     }
    ]
   },

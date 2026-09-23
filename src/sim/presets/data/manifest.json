@@ -8,9 +8,9 @@
   "s6r5": "S6R5",
   "s6r1mdps": "S6R1 DPS \u00b7 S0R1 team"
  },
- "generatedAt": "2026-09-17T17:44:00+00:00",
- "wuwaCalcCommit": "26312d1",
- "appCommit": "b48633fa",
+ "generatedAt": "2026-09-23T17:42:48+00:00",
+ "wuwaCalcCommit": "a54ec44",
+ "appCommit": "8ee55a9a",
  "characters": [
   "Aemeath",
   "Augusta",
@@ -40,6 +40,7 @@
   "Lynae",
   "Mornye",
   "Mortefi",
+  "Phoebe",
   "Phrolova",
   "Qingxiao",
   "Qiuyuan",
@@ -56,22 +57,23 @@
   "XiangliYao",
   "YangyangXuanling",
   "Yinlin",
+  "Zani",
   "Zhezhi"
  ],
- "rotationPresets": 155,
- "teamPresets": 126,
+ "rotationPresets": 163,
+ "teamPresets": 139,
  "mapping": {
   "rotations": {
    "unmatched": 0,
-   "rotations:s6r5": 110,
-   "deduped": 73,
-   "rotations:s6r1mdps": 45
+   "rotations:s6r5": 116,
+   "deduped": 77,
+   "rotations:s6r1mdps": 47
   },
   "teams": {
    "unmatched": 0,
-   "teams:s6r5": 73,
-   "teams:s6r1mdps": 73,
-   "deduped": 20
+   "teams:s6r5": 79,
+   "teams:s6r1mdps": 79,
+   "deduped": 19
   }
  }
 }

@@ -956,7 +956,7 @@
     "name": "Intro - Applaud for Me!",
     "count": 1,
     "mv": 253.49,
-    "avg": 31413,
+    "avg": 31991,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -967,7 +967,7 @@
     "name": "Liberation - To the Horizon",
     "count": 1,
     "mv": 680.45,
-    "avg": 110456,
+    "avg": 113436,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Liberation",
@@ -978,7 +978,7 @@
     "name": "Mid-air - Captain's Rhapsody 2",
     "count": 1,
     "mv": 169.84,
-    "avg": 76522,
+    "avg": 77157,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -989,7 +989,7 @@
     "name": "Mid-air - Captain's Rhapsody 2 (Charged)",
     "count": 1,
     "mv": 197.22,
-    "avg": 88858,
+    "avg": 89596,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -1000,7 +1000,7 @@
     "name": "Mid-air - Captain's Rhapsody Flip",
     "count": 1,
     "mv": 92.95,
-    "avg": 43782,
+    "avg": 44061,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -1011,7 +1011,7 @@
     "name": "Mid-air - Captain's Rhapsody 3",
     "count": 1,
     "mv": 169.02,
-    "avg": 79613,
+    "avg": 80122,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -1019,13 +1019,13 @@
     "by": null
    },
    {
-    "name": "Echo - Dragon of Dirge (Cancelled)",
+    "name": "Echo - Dragon of Dirge",
     "count": 1,
-    "mv": 0,
-    "avg": 0,
+    "mv": 294.48,
+    "avg": 50795,
     "cast": "Echo",
     "node": null,
-    "type": null,
+    "type": "Echo",
     "queued": false,
     "by": null
    },
@@ -1037,14 +1037,14 @@
     "cast": null,
     "node": null,
     "type": null,
-    "queued": true,
-    "by": "Echo - Dragon of Dirge (Cancelled)"
+    "queued": false,
+    "by": null
    },
    {
     "name": "Mid-air - Captain's Rhapsody 3",
     "count": 1,
     "mv": 169.02,
-    "avg": 79613,
+    "avg": 80122,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -1055,7 +1055,7 @@
     "name": "Forte Skill - Returned from Ashes",
     "count": 1,
     "mv": 1888.71,
-    "avg": 971754,
+    "avg": 977968,
     "cast": "Skill",
     "node": "Forte",
     "type": "Basic",
@@ -1066,7 +1066,7 @@
     "name": "Forte - Returned from Ashes (S6 Blast)",
     "count": 1,
     "mv": 566.6129999999999,
-    "avg": 184815,
+    "avg": 184124,
     "cast": null,
     "node": "Forte",
     "type": "Basic",
@@ -1088,7 +1088,7 @@
     "name": "Outro - The Course is Set! (S2 Blast)",
     "count": 2,
     "mv": 440,
-    "avg": 114264,
+    "avg": 115030,
     "cast": null,
     "node": "Normal",
     "type": "Basic",
@@ -1142,6 +1142,14 @@
     "basic",
     1,
     null,
+    null,
+    null
+   ],
+   [
+    "GriefRiftDMG",
+    "echoAttacks",
+    8,
+    "DragonofDirge",
     null,
     null
    ],
@@ -2460,7 +2468,7 @@
     "name": "Liberation - Diffusion",
     "count": 10,
     "mv": 14.54,
-    "avg": 14604,
+    "avg": 14934,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2471,7 +2479,7 @@
     "name": "Intro - Ripple",
     "count": 1,
     "mv": 169,
-    "avg": 22498,
+    "avg": 23436,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -2493,7 +2501,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 3340,
+    "avg": 3480,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2504,7 +2512,7 @@
     "name": "Basic - Illusion Collapse 3",
     "count": 1,
     "mv": 145.14,
-    "avg": 33348,
+    "avg": 34738,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -2515,7 +2523,7 @@
     "name": "Skill - Graceful Step",
     "count": 1,
     "mv": 147.2,
-    "avg": 31153,
+    "avg": 32451,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -2526,7 +2534,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 3340,
+    "avg": 3480,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2537,7 +2545,7 @@
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 47120,
+    "avg": 49085,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -2548,7 +2556,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4330,
+    "avg": 4511,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2559,7 +2567,7 @@
     "name": "Liberation - Beneath the Sea",
     "count": 1,
     "mv": 376,
-    "avg": 621876,
+    "avg": 647800,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Basic",
@@ -2568,9 +2576,9 @@
    },
    {
     "name": "Liberation - Diffusion",
-    "count": 10,
+    "count": 13,
     "mv": 14.54,
-    "avg": 47390,
+    "avg": 65358,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2581,7 +2589,7 @@
     "name": "Heavy - Delusive Dive",
     "count": 1,
     "mv": 106.1,
-    "avg": 23073,
+    "avg": 24035,
     "cast": "Heavy",
     "node": "Normal",
     "type": "Heavy",
@@ -2592,7 +2600,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 241365,
+    "avg": 251427,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -2603,7 +2611,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2614,7 +2622,7 @@
     "name": "Skill - Flickering Reverie",
     "count": 1,
     "mv": 196.23,
-    "avg": 64010,
+    "avg": 66679,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -2625,7 +2633,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2636,7 +2644,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 67136,
+    "avg": 69934,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -2647,7 +2655,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 79722,
+    "avg": 83045,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -2658,7 +2666,7 @@
     "name": "Forte Basic - Phantom Sting 3",
     "count": 1,
     "mv": 258.48,
-    "avg": 163725,
+    "avg": 170551,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -2669,7 +2677,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 241365,
+    "avg": 251427,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -2680,7 +2688,7 @@
     "name": "Liberation - Diffusion",
     "count": 2,
     "mv": 14.54,
-    "avg": 10232,
+    "avg": 10658,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2691,7 +2699,7 @@
     "name": "Basic - Dreamweaver",
     "count": 3,
     "mv": 14.54,
-    "avg": 15348,
+    "avg": 15987,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2702,7 +2710,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2713,7 +2721,7 @@
     "name": "Forte Skill - Perception Drain",
     "count": 1,
     "mv": 1335.98,
-    "avg": 705195,
+    "avg": 734593,
     "cast": "Skill",
     "node": "Forte",
     "type": "Basic",
@@ -2724,7 +2732,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2735,7 +2743,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 241365,
+    "avg": 251427,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -2746,7 +2754,7 @@
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 55671,
+    "avg": 57992,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -2757,7 +2765,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2768,7 +2776,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 67136,
+    "avg": 69934,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -2779,7 +2787,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2790,7 +2798,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 79722,
+    "avg": 83045,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -2801,7 +2809,73 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5116,
+    "avg": 5329,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Basic - Illusion Collapse 1",
+    "count": 1,
+    "mv": 79.53,
+    "avg": 29153,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 2",
+    "count": 1,
+    "mv": 145.76,
+    "avg": 53431,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 3",
+    "count": 1,
+    "mv": 145.14,
+    "avg": 53203,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 2,
+    "mv": 14.54,
+    "avg": 10658,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Skill - Graceful Step",
+    "count": 1,
+    "mv": 147.2,
+    "avg": 50018,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 1,
+    "mv": 14.54,
+    "avg": 5329,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2823,7 +2897,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 1346,
+    "avg": 1410,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -2971,6 +3045,38 @@
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "GracefulStepDMG",
+    "skill",
     1,
     null,
     null,
@@ -3000,7 +3106,7 @@
     "name": "Liberation - Diffusion",
     "count": 12,
     "mv": 14.54,
-    "avg": 18219,
+    "avg": 19077,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3011,7 +3117,7 @@
     "name": "Intro - Ripple",
     "count": 1,
     "mv": 169,
-    "avg": 26913,
+    "avg": 28035,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -3022,7 +3128,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 2560,
+    "avg": 2667,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3033,7 +3139,7 @@
     "name": "Basic - Illusion Collapse 3",
     "count": 1,
     "mv": 145.14,
-    "avg": 25559,
+    "avg": 26625,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -3044,7 +3150,7 @@
     "name": "Skill - Graceful Step",
     "count": 1,
     "mv": 147.2,
-    "avg": 36258,
+    "avg": 37770,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -3052,21 +3158,10 @@
     "by": null
    },
    {
-    "name": "Liberation - Diffusion",
-    "count": 1,
-    "mv": 14.54,
-    "avg": 2560,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Basic",
-    "queued": true,
-    "by": "Cantarella: Diffusion"
-   },
-   {
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 43054,
+    "avg": 44849,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -3074,21 +3169,10 @@
     "by": null
    },
    {
-    "name": "Liberation - Diffusion",
-    "count": 1,
-    "mv": 14.54,
-    "avg": 3282,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Basic",
-    "queued": true,
-    "by": "Cantarella: Diffusion"
-   },
-   {
     "name": "Liberation - Beneath the Sea",
     "count": 1,
     "mv": 376,
-    "avg": 610112,
+    "avg": 635546,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Basic",
@@ -3097,9 +3181,9 @@
    },
    {
     "name": "Liberation - Diffusion",
-    "count": 10,
+    "count": 13,
     "mv": 14.54,
-    "avg": 46582,
+    "avg": 64225,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3110,7 +3194,7 @@
     "name": "Heavy - Delusive Dive",
     "count": 1,
     "mv": 106.1,
-    "avg": 27352,
+    "avg": 28493,
     "cast": "Heavy",
     "node": "Normal",
     "type": "Heavy",
@@ -3121,7 +3205,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 236799,
+    "avg": 246671,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -3132,7 +3216,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3143,7 +3227,7 @@
     "name": "Skill - Flickering Reverie",
     "count": 1,
     "mv": 196.23,
-    "avg": 75882,
+    "avg": 79046,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -3154,7 +3238,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3165,7 +3249,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 65866,
+    "avg": 68611,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3176,7 +3260,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 78214,
+    "avg": 81474,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3187,7 +3271,7 @@
     "name": "Forte Basic - Phantom Sting 3",
     "count": 1,
     "mv": 258.48,
-    "avg": 160628,
+    "avg": 167325,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3198,7 +3282,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 236799,
+    "avg": 246671,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -3209,7 +3293,7 @@
     "name": "Liberation - Diffusion",
     "count": 2,
     "mv": 14.54,
-    "avg": 10038,
+    "avg": 10458,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3220,7 +3304,7 @@
     "name": "Basic - Dreamweaver",
     "count": 3,
     "mv": 14.54,
-    "avg": 15057,
+    "avg": 15687,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3231,7 +3315,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3242,7 +3326,7 @@
     "name": "Forte Skill - Perception Drain",
     "count": 1,
     "mv": 1335.98,
-    "avg": 691855,
+    "avg": 720697,
     "cast": "Skill",
     "node": "Forte",
     "type": "Basic",
@@ -3253,7 +3337,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3261,21 +3345,10 @@
     "by": "Cantarella: Diffusion"
    },
    {
-    "name": "Jolt",
-    "count": 1,
-    "mv": 198.81,
-    "avg": 236799,
-    "cast": null,
-    "node": "Skill",
-    "type": "Basic",
-    "queued": true,
-    "by": "Cantarella: Hazy Dream"
-   },
-   {
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 66236,
+    "avg": 68997,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -3283,10 +3356,21 @@
     "by": null
    },
    {
+    "name": "Jolt",
+    "count": 1,
+    "mv": 198.81,
+    "avg": 246671,
+    "cast": null,
+    "node": "Skill",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Hazy Dream"
+   },
+   {
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3297,7 +3381,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 65866,
+    "avg": 68611,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3308,7 +3392,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3319,7 +3403,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 78214,
+    "avg": 81474,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3330,7 +3414,73 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 5019,
+    "avg": 5229,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Basic - Illusion Collapse 1",
+    "count": 1,
+    "mv": 79.53,
+    "avg": 28601,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 2",
+    "count": 1,
+    "mv": 145.76,
+    "avg": 52420,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 3",
+    "count": 1,
+    "mv": 145.14,
+    "avg": 52197,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 2,
+    "mv": 14.54,
+    "avg": 10458,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Skill - Graceful Step",
+    "count": 1,
+    "mv": 147.2,
+    "avg": 59295,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 1,
+    "mv": 14.54,
+    "avg": 5229,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3352,7 +3502,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 1411,
+    "avg": 1477,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3474,18 +3624,18 @@
     null
    ],
    [
-    "JoltDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
     "NightmareCrownlessAttackDMG",
     "echoAttacks",
     1,
     "NightmareCrownless",
+    null,
+    null
+   ],
+   [
+    "JoltDMG",
+    "skill",
+    1,
+    null,
     null,
     null
    ],
@@ -3500,6 +3650,38 @@
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "GracefulStepDMG",
+    "skill",
     1,
     null,
     null,
@@ -3529,7 +3711,7 @@
     "name": "Liberation - Diffusion",
     "count": 9,
     "mv": 14.54,
-    "avg": 12657,
+    "avg": 13357,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3540,7 +3722,7 @@
     "name": "Intro - Ripple",
     "count": 1,
     "mv": 169,
-    "avg": 20307,
+    "avg": 21639,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -3562,7 +3744,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 3090,
+    "avg": 3169,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3573,7 +3755,7 @@
     "name": "Basic - Illusion Collapse 3",
     "count": 1,
     "mv": 145.14,
-    "avg": 30846,
+    "avg": 31637,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -3584,7 +3766,7 @@
     "name": "Skill - Graceful Step",
     "count": 1,
     "mv": 147.2,
-    "avg": 28187,
+    "avg": 29836,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -3595,7 +3777,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 3090,
+    "avg": 3169,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3606,7 +3788,7 @@
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 42618,
+    "avg": 45161,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -3617,7 +3799,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4007,
+    "avg": 4104,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3628,7 +3810,7 @@
     "name": "Liberation - Beneath the Sea",
     "count": 1,
     "mv": 376,
-    "avg": 575494,
+    "avg": 589461,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Basic",
@@ -3637,9 +3819,9 @@
    },
    {
     "name": "Liberation - Diffusion",
-    "count": 10,
+    "count": 13,
     "mv": 14.54,
-    "avg": 44096,
+    "avg": 59770,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3650,7 +3832,7 @@
     "name": "Heavy - Delusive Dive",
     "count": 1,
     "mv": 106.1,
-    "avg": 20896,
+    "avg": 22062,
     "cast": "Heavy",
     "node": "Normal",
     "type": "Heavy",
@@ -3661,7 +3843,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 223363,
+    "avg": 228784,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -3672,7 +3854,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3683,7 +3865,7 @@
     "name": "Skill - Flickering Reverie",
     "count": 1,
     "mv": 196.23,
-    "avg": 57971,
+    "avg": 61205,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -3694,7 +3876,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3705,7 +3887,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 62128,
+    "avg": 63636,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3716,7 +3898,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 73776,
+    "avg": 75566,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3727,7 +3909,7 @@
     "name": "Forte Basic - Phantom Sting 3",
     "count": 1,
     "mv": 258.48,
-    "avg": 151514,
+    "avg": 155191,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3738,7 +3920,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 223363,
+    "avg": 228784,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -3749,7 +3931,7 @@
     "name": "Liberation - Diffusion",
     "count": 2,
     "mv": 14.54,
-    "avg": 9468,
+    "avg": 9698,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3760,7 +3942,7 @@
     "name": "Basic - Dreamweaver",
     "count": 3,
     "mv": 14.54,
-    "avg": 14202,
+    "avg": 14547,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3771,7 +3953,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3782,7 +3964,7 @@
     "name": "Forte Skill - Perception Drain",
     "count": 1,
     "mv": 1335.98,
-    "avg": 652599,
+    "avg": 668437,
     "cast": "Skill",
     "node": "Forte",
     "type": "Basic",
@@ -3793,7 +3975,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3804,7 +3986,7 @@
     "name": "Echo - Nightmare: Crownless",
     "count": 1,
     "mv": 264.6,
-    "avg": 50352,
+    "avg": 53357,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -3815,7 +3997,7 @@
     "name": "Jolt",
     "count": 1,
     "mv": 198.81,
-    "avg": 223363,
+    "avg": 228784,
     "cast": null,
     "node": "Skill",
     "type": "Basic",
@@ -3826,7 +4008,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3837,7 +4019,7 @@
     "name": "Forte Basic - Phantom Sting 1",
     "count": 1,
     "mv": 105.99,
-    "avg": 62128,
+    "avg": 63636,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3848,7 +4030,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3859,7 +4041,7 @@
     "name": "Forte Basic - Phantom Sting 2",
     "count": 1,
     "mv": 125.86,
-    "avg": 73776,
+    "avg": 75566,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -3870,7 +4052,73 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 4734,
+    "avg": 4849,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Basic - Illusion Collapse 1",
+    "count": 1,
+    "mv": 79.53,
+    "avg": 26527,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 2",
+    "count": 1,
+    "mv": 145.76,
+    "avg": 48619,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Illusion Collapse 3",
+    "count": 1,
+    "mv": 145.14,
+    "avg": 48412,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 2,
+    "mv": 14.54,
+    "avg": 9698,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Basic",
+    "queued": true,
+    "by": "Cantarella: Diffusion"
+   },
+   {
+    "name": "Skill - Graceful Step",
+    "count": 1,
+    "mv": 147.2,
+    "avg": 45912,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Diffusion",
+    "count": 1,
+    "mv": 14.54,
+    "avg": 4849,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -3892,7 +4140,7 @@
     "name": "Liberation - Diffusion",
     "count": 1,
     "mv": 14.54,
-    "avg": 1490,
+    "avg": 1582,
     "cast": null,
     "node": "Liberation",
     "type": "Basic",
@@ -4040,6 +4288,38 @@
    [
     "PhantomStingStage2DMG",
     "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "Stage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "GracefulStepDMG",
+    "skill",
     1,
     null,
     null,
@@ -5636,7 +5916,7 @@
     "name": "Intro - Sword to Mark Tide's Trace",
     "count": 1,
     "mv": 12.48,
-    "avg": 87773,
+    "avg": 84285,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -5668,7 +5948,7 @@
     "name": "Basic - Sword to Carve My Forms 2",
     "count": 1,
     "mv": 13.13,
-    "avg": 97604,
+    "avg": 93935,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -5684,7 +5964,7 @@
     "name": "Basic - Sword to Carve My Forms 3",
     "count": 1,
     "mv": 17.12,
-    "avg": 127264,
+    "avg": 122480,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -5700,7 +5980,7 @@
     "name": "Basic - Sword to Carve My Forms 4",
     "count": 1,
     "mv": 15.1,
-    "avg": 112248,
+    "avg": 108028,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -5732,7 +6012,7 @@
     "name": "Skill - Sword to Bear Their Names",
     "count": 1,
     "mv": 29.53,
-    "avg": 146344,
+    "avg": 140842,
     "cast": "Skill",
     "node": "Skill",
     "type": "Basic",
@@ -5764,7 +6044,7 @@
     "name": "Mid-air - Plunging Attack (3 Sword Shadows)",
     "count": 1,
     "mv": 33.87,
-    "avg": 682601,
+    "avg": 656939,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -5796,7 +6076,7 @@
     "name": "Skill - Sword to Answer Waves' Call",
     "count": 1,
     "mv": 24.8,
-    "avg": 140853,
+    "avg": 135411,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -5828,7 +6108,7 @@
     "name": "Skill - May Tempest Break the Tides",
     "count": 1,
     "mv": 24.81,
-    "avg": 140910,
+    "avg": 135466,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -5860,7 +6140,7 @@
     "name": "Basic - Tempest 3",
     "count": 1,
     "mv": 10.65,
-    "avg": 67813,
+    "avg": 65263,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5876,7 +6156,7 @@
     "name": "Basic - Tempest 4",
     "count": 1,
     "mv": 13.7,
-    "avg": 87234,
+    "avg": 83954,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5892,7 +6172,7 @@
     "name": "Basic - Tempest 5",
     "count": 1,
     "mv": 36,
-    "avg": 248330,
+    "avg": 238994,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5940,7 +6220,7 @@
     "name": "Basic - Tempest 1",
     "count": 1,
     "mv": 6.49,
-    "avg": 44768,
+    "avg": 43085,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5956,7 +6236,7 @@
     "name": "Basic - Tempest 2",
     "count": 1,
     "mv": 9.09,
-    "avg": 62703,
+    "avg": 60346,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5972,7 +6252,7 @@
     "name": "Basic - Tempest 3",
     "count": 1,
     "mv": 10.65,
-    "avg": 79115,
+    "avg": 76141,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -5988,7 +6268,7 @@
     "name": "Basic - Tempest 4",
     "count": 1,
     "mv": 13.7,
-    "avg": 101773,
+    "avg": 97946,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -6004,7 +6284,7 @@
     "name": "Basic - Tempest 5",
     "count": 1,
     "mv": 36,
-    "avg": 286535,
+    "avg": 275763,
     "cast": "Basic",
     "node": "Forte",
     "type": "Basic",
@@ -6068,7 +6348,7 @@
     "name": "Liberation - Blade of Howling Squall",
     "count": 1,
     "mv": 91.84,
-    "avg": 1744669,
+    "avg": 1677264,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Liberation",
@@ -6084,7 +6364,7 @@
     "name": "Echo - Reminiscence: Fleurdelys",
     "count": 1,
     "mv": 355.68,
-    "avg": 64432,
+    "avg": 61872,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -6379,6 +6659,585 @@
   "appKey": "Roverelectrofemale",
   "casts": [
    {
+    "name": "Electro Flare - 5 Stacks",
+    "count": 1,
+    "mv": 212.6,
+    "avg": 3052,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Electro Flare",
+    "held": {
+     "electroFlare": 2
+    }
+   },
+   {
+    "name": "Electro Flare - 2 Stacks",
+    "count": 1,
+    "mv": 90.65,
+    "avg": 1301,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Electro Flare",
+    "held": {
+     "electroFlare": 1
+    }
+   },
+   {
+    "name": "Electro Flare - 1 Stack",
+    "count": 1,
+    "mv": 50,
+    "avg": 717,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Electro Flare"
+   },
+   {
+    "name": "Intro - Thunderous Fury",
+    "count": 1,
+    "mv": 167.03,
+    "avg": 32170,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Deterrence 1",
+    "count": 1,
+    "mv": 51.08,
+    "avg": 10144,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Deterrence 2",
+    "count": 1,
+    "mv": 65,
+    "avg": 12908,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Deterrence 3",
+    "count": 1,
+    "mv": 92.89,
+    "avg": 18447,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Deterrence 4",
+    "count": 1,
+    "mv": 182.04,
+    "avg": 36152,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Thunderclap",
+    "count": 1,
+    "mv": 200.4,
+    "avg": 40998,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Repel",
+    "count": 1,
+    "mv": 140.29,
+    "avg": 27860,
+    "cast": "Basic",
+    "node": "Skill",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Skill - Overshock (Hold)",
+    "count": 1,
+    "mv": 1412.58,
+    "avg": 460790,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10
+    }
+   },
+   {
+    "name": "Liberation - Ultimate Tactics",
+    "count": 1,
+    "mv": 1192.86,
+    "avg": 345539,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 1",
+    "count": 1,
+    "mv": 99.12,
+    "avg": 32639,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 2",
+    "count": 1,
+    "mv": 163.53,
+    "avg": 53849,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 3",
+    "count": 1,
+    "mv": 255.14,
+    "avg": 84015,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 5
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 3,
+    "mv": 39.77,
+    "avg": 44814,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Electro Rover",
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Havoc 1",
+    "count": 1,
+    "mv": 149.76,
+    "avg": 49314,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Havoc 2",
+    "count": 1,
+    "mv": 138.3,
+    "avg": 45541,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Havoc 3",
+    "count": 1,
+    "mv": 208.38,
+    "avg": 68618,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 1,
+    "mv": 39.77,
+    "avg": 14938,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Electro Rover",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Electro Flare - 10 Stacks",
+    "count": 1,
+    "mv": 415.85,
+    "avg": 5969,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Electro Flare",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Electro Rage - 5 Stacks",
+    "count": 1,
+    "mv": 212.6,
+    "avg": 3052,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Electro Flare",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 2,
+    "mv": 39.77,
+    "avg": 29876,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Electro Rover",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Skill - Thrum: Silencing Blade",
+    "count": 1,
+    "mv": 470.68,
+    "avg": 154991,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 1,
+    "mv": 39.77,
+    "avg": 14938,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Electro Rover",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Echo - Stay tuned 4c",
+    "count": 1,
+    "mv": 273.6,
+    "avg": 55625,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": "Stay tuned 4c",
+    "held": {
+     "electroFlare": 5
+    }
+   },
+   {
+    "name": "Outro - Rumbling Thunders",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 5
+    }
+   }
+  ],
+  "expected": [
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    5,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    2,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    1,
+    null
+   ],
+   [
+    "ThunderousFuryDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage4DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderclapDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackRepelDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "OvershockDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "UltimateTacticsDMG",
+    "liberation",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSpectroStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    3,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsHavocStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    10,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    2,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThrumOfAllSoundsSilencingBladeDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ThunderBaneDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [
+   "1x Electro Flare - 5 Stacks",
+   "1x Electro Flare - 2 Stacks",
+   "1x Electro Flare - 1 Stack",
+   "1x Electro Flare - 10 Stacks",
+   "1x Electro Rage - 5 Stacks"
+  ],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 10,
+   "electroRageStacks": 5,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [],
+  "ratiosTop3": []
+ },
+ {
+  "resonator": "Electro Rover",
+  "appKey": "Roverelectrofemale",
+  "casts": [
+   {
     "name": "Electro Flare - 6 Stacks",
     "count": 1,
     "mv": 253.25,
@@ -6524,7 +7383,7 @@
     "name": "Forte Skill - Overshock (Hold)",
     "count": 1,
     "mv": 1412.58,
-    "avg": 385562,
+    "avg": 400546,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -6555,7 +7414,7 @@
     "name": "Skill - Thrum: Spectro 1",
     "count": 1,
     "mv": 99.12,
-    "avg": 26233,
+    "avg": 28336,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -7001,262 +7860,113 @@
   "appKey": "Roverelectrofemale",
   "casts": [
    {
-    "name": "Electro Flare - 5 Stacks",
-    "count": 1,
-    "mv": 212.6,
-    "avg": 3052,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 2
-    }
-   },
-   {
-    "name": "Electro Flare - 2 Stacks",
-    "count": 1,
-    "mv": 90.65,
-    "avg": 1301,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 1
-    }
-   },
-   {
-    "name": "Electro Flare - 1 Stack",
-    "count": 1,
-    "mv": 50,
-    "avg": 717,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare"
-   },
-   {
     "name": "Intro - Thunderous Fury",
     "count": 1,
     "mv": 167.03,
-    "avg": 32170,
+    "avg": 21016,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 7
+    }
    },
    {
     "name": "Basic - Deterrence 1",
     "count": 1,
     "mv": 51.08,
-    "avg": 10144,
+    "avg": 6662,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 9
+    }
    },
    {
     "name": "Basic - Deterrence 2",
     "count": 1,
     "mv": 65,
-    "avg": 12908,
+    "avg": 8478,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 4
+    }
    },
    {
     "name": "Basic - Deterrence 3",
     "count": 1,
     "mv": 92.89,
-    "avg": 18447,
+    "avg": 12116,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 6
+    }
    },
    {
     "name": "Basic - Deterrence 4",
     "count": 1,
     "mv": 182.04,
-    "avg": 36152,
+    "avg": 23745,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 6
+    }
    },
    {
     "name": "Skill - Thunderclap",
     "count": 1,
     "mv": 200.4,
-    "avg": 40998,
+    "avg": 32441,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 8
+    }
    },
    {
     "name": "Basic - Repel",
     "count": 1,
     "mv": 140.29,
-    "avg": 27860,
+    "avg": 18299,
     "cast": "Basic",
     "node": "Skill",
     "type": "Basic",
     "queued": false,
-    "by": null
+    "by": null,
+    "held": {
+     "electroFlare": 8
+    }
    },
    {
     "name": "Forte Skill - Overshock (Hold)",
     "count": 1,
     "mv": 1412.58,
-    "avg": 440848,
+    "avg": 367398,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
     "queued": false,
     "by": null,
-    "held": {
-     "electroFlare": 10
-    }
-   },
-   {
-    "name": "Liberation - Ultimate Tactics",
-    "count": 1,
-    "mv": 1192.86,
-    "avg": 345539,
-    "cast": "Liberation",
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 1",
-    "count": 1,
-    "mv": 99.12,
-    "avg": 29840,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 2",
-    "count": 1,
-    "mv": 163.53,
-    "avg": 53849,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 3",
-    "count": 1,
-    "mv": 255.14,
-    "avg": 84015,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 3,
-    "mv": 39.77,
-    "avg": 44814,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 1",
-    "count": 1,
-    "mv": 149.76,
-    "avg": 49314,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 2",
-    "count": 1,
-    "mv": 138.3,
-    "avg": 45541,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 3",
-    "count": 1,
-    "mv": 208.38,
-    "avg": 68618,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 1,
-    "mv": 39.77,
-    "avg": 14938,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
     "held": {
      "electroFlare": 5
     }
@@ -7276,10 +7986,10 @@
     }
    },
    {
-    "name": "Electro Rage - 5 Stacks",
+    "name": "Electro Rage - 10 Stacks",
     "count": 1,
-    "mv": 212.6,
-    "avg": 3052,
+    "mv": 415.85,
+    "avg": 5969,
     "cast": null,
     "node": null,
     "type": "Status",
@@ -7290,24 +8000,97 @@
     }
    },
    {
+    "name": "Liberation - Ultimate Tactics",
+    "count": 1,
+    "mv": 1192.86,
+    "avg": 231895,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 1",
+    "count": 1,
+    "mv": 99.12,
+    "avg": 26019,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 2",
+    "count": 1,
+    "mv": 163.53,
+    "avg": 42926,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 2
+    }
+   },
+   {
+    "name": "Skill - Thrum: Spectro 3",
+    "count": 1,
+    "mv": 255.14,
+    "avg": 66974,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 2
+    }
+   },
+   {
     "name": "Forte Skill - Thunder Bane",
-    "count": 2,
+    "count": 3,
     "mv": 39.77,
-    "avg": 29876,
+    "avg": 35631,
     "cast": null,
     "node": "Forte",
     "type": "Skill",
     "queued": true,
     "by": "Electro Rover",
     "held": {
-     "electroFlare": 5
+     "electroFlare": 10
     }
    },
    {
-    "name": "Skill - Thrum: Silencing Blade",
+    "name": "Skill - Thrum: Havoc 1",
     "count": 1,
-    "mv": 470.68,
-    "avg": 154991,
+    "mv": 149.76,
+    "avg": 39312,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 10,
+     "electroRage": 4
+    }
+   },
+   {
+    "name": "Skill - Thrum: Havoc 2",
+    "count": 1,
+    "mv": 138.3,
+    "avg": 36303,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -7318,31 +8101,74 @@
     }
    },
    {
-    "name": "Forte Skill - Thunder Bane",
+    "name": "Skill - Thrum: Havoc 3",
     "count": 1,
+    "mv": 208.38,
+    "avg": 54699,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 7
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 3,
     "mv": 39.77,
-    "avg": 14938,
+    "avg": 35631,
     "cast": null,
     "node": "Forte",
     "type": "Skill",
     "queued": true,
     "by": "Electro Rover",
     "held": {
-     "electroFlare": 5
+     "electroFlare": 10,
+     "electroRage": 4
+    }
+   },
+   {
+    "name": "Skill - Thrum: Silencing Blade",
+    "count": 1,
+    "mv": 470.68,
+    "avg": 123553,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null,
+    "held": {
+     "electroFlare": 7
+    }
+   },
+   {
+    "name": "Forte Skill - Thunder Bane",
+    "count": 1,
+    "mv": 39.77,
+    "avg": 11877,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Electro Rover",
+    "held": {
+     "electroFlare": 7
     }
    },
    {
     "name": "Echo - Stay tuned 4c",
     "count": 1,
     "mv": 273.6,
-    "avg": 55625,
+    "avg": 36817,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
     "queued": false,
     "by": "Stay tuned 4c",
     "held": {
-     "electroFlare": 5
+     "electroFlare": 9
     }
    },
    {
@@ -7356,35 +8182,11 @@
     "queued": false,
     "by": null,
     "held": {
-     "electroFlare": 5
+     "electroFlare": 9
     }
    }
   ],
   "expected": [
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    5,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    2,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    1,
-    null
-   ],
    [
     "ThunderousFuryDMG",
     "intro",
@@ -7447,6 +8249,14 @@
     1,
     null,
     null,
+    null
+   ],
+   [
+    "ElementalEffectElectroFlare",
+    "negativeStatus",
+    1,
+    null,
+    10,
     null
    ],
    [
@@ -7516,607 +8326,12 @@
    [
     "ThunderBaneDMG",
     "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    10,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSilencingBladeDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ]
-  ],
-  "unmatched": [],
-  "status": [
-   "1x Electro Flare - 5 Stacks",
-   "1x Electro Flare - 2 Stacks",
-   "1x Electro Flare - 1 Stack",
-   "1x Electro Flare - 10 Stacks",
-   "1x Electro Rage - 5 Stacks"
-  ],
-  "enemy": {
-   "spectroFrazzleStacks": 0,
-   "aeroErosionStacks": 0,
-   "havocBaneStacks": 0,
-   "fusionBurstStacks": 0,
-   "electroFlareStacks": 10,
-   "electroRageStacks": 5,
-   "glacioChafeStacks": 0,
-   "strainStacks": 0
-  },
-  "ratiosPooled": [],
-  "ratiosTop3": []
- },
- {
-  "resonator": "Electro Rover",
-  "appKey": "Roverelectrofemale",
-  "casts": [
-   {
-    "name": "Electro Flare - 5 Stacks",
-    "count": 1,
-    "mv": 212.6,
-    "avg": 3052,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 2
-    }
-   },
-   {
-    "name": "Electro Flare - 2 Stacks",
-    "count": 1,
-    "mv": 90.65,
-    "avg": 1301,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 1
-    }
-   },
-   {
-    "name": "Intro - Thunderous Fury",
-    "count": 1,
-    "mv": 167.03,
-    "avg": 21913,
-    "cast": "Intro",
-    "node": "Intro",
-    "type": "Intro",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Electro Flare - 1 Stack",
-    "count": 1,
-    "mv": 50,
-    "avg": 717,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare"
-   },
-   {
-    "name": "Basic - Deterrence 1",
-    "count": 1,
-    "mv": 51.08,
-    "avg": 6944,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Deterrence 2",
-    "count": 1,
-    "mv": 65,
-    "avg": 8837,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Deterrence 3",
-    "count": 1,
-    "mv": 92.89,
-    "avg": 12629,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Deterrence 4",
-    "count": 1,
-    "mv": 182.04,
-    "avg": 24750,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Thunderclap",
-    "count": 1,
-    "mv": 200.4,
-    "avg": 28203,
-    "cast": "Skill",
-    "node": "Skill",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Repel",
-    "count": 1,
-    "mv": 140.29,
-    "avg": 19074,
-    "cast": "Basic",
-    "node": "Skill",
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Skill - Overshock (Hold)",
-    "count": 1,
-    "mv": 1412.58,
-    "avg": 315468,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10
-    }
-   },
-   {
-    "name": "Liberation - Ultimate Tactics",
-    "count": 1,
-    "mv": 1192.86,
-    "avg": 241714,
-    "cast": "Liberation",
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 1",
-    "count": 1,
-    "mv": 99.12,
-    "avg": 22312,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 2",
-    "count": 1,
-    "mv": 163.53,
-    "avg": 40537,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Spectro 3",
-    "count": 1,
-    "mv": 255.14,
-    "avg": 63246,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 3,
-    "mv": 39.77,
-    "avg": 32760,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
-    "held": {
-     "electroFlare": 10,
-     "electroRage": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 1",
-    "count": 1,
-    "mv": 149.76,
-    "avg": 35524,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 2",
-    "count": 1,
-    "mv": 138.3,
-    "avg": 32806,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Havoc 3",
-    "count": 1,
-    "mv": 208.38,
-    "avg": 49429,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 1,
-    "mv": 39.77,
-    "avg": 10920,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Electro Flare - 10 Stacks",
-    "count": 1,
-    "mv": 415.85,
-    "avg": 5969,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Electro Rage - 5 Stacks",
-    "count": 1,
-    "mv": 212.6,
-    "avg": 3052,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Electro Flare",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 2,
-    "mv": 39.77,
-    "avg": 21840,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Skill - Thrum: Silencing Blade",
-    "count": 1,
-    "mv": 470.68,
-    "avg": 111650,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Forte Skill - Thunder Bane",
-    "count": 1,
-    "mv": 39.77,
-    "avg": 10920,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Electro Rover",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Echo - Stay tuned 4c",
-    "count": 1,
-    "mv": 273.6,
-    "avg": 38387,
-    "cast": "Echo",
-    "node": null,
-    "type": "Echo",
-    "queued": false,
-    "by": "Stay tuned 4c",
-    "held": {
-     "electroFlare": 5
-    }
-   },
-   {
-    "name": "Outro - Rumbling Thunders",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": "Outro",
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null,
-    "held": {
-     "electroFlare": 5
-    }
-   }
-  ],
-  "expected": [
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    5,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    2,
-    null
-   ],
-   [
-    "ThunderousFuryDMG",
-    "intro",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    1,
-    null
-   ],
-   [
-    "BasicAttackStage1DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage2DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage4DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThunderclapDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackRepelDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "OvershockDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "UltimateTacticsDMG",
-    "liberation",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsSpectroStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
     3,
     null,
     null,
     null
    ],
    [
-    "ThrumOfAllSoundsHavocStage1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThrumOfAllSoundsHavocStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectElectroFlare",
-    "negativeStatus",
-    1,
-    null,
-    10,
-    null
-   ],
-   [
-    "ThunderBaneDMG",
-    "forteCircuit",
-    2,
-    null,
-    null,
-    null
-   ],
-   [
     "ThrumOfAllSoundsSilencingBladeDMG",
     "forteCircuit",
     1,
@@ -8135,11 +8350,8 @@
   ],
   "unmatched": [],
   "status": [
-   "1x Electro Flare - 5 Stacks",
-   "1x Electro Flare - 2 Stacks",
-   "1x Electro Flare - 1 Stack",
    "1x Electro Flare - 10 Stacks",
-   "1x Electro Rage - 5 Stacks"
+   "1x Electro Rage - 10 Stacks"
   ],
   "enemy": {
    "spectroFrazzleStacks": 0,
@@ -8147,7 +8359,7 @@
    "havocBaneStacks": 0,
    "fusionBurstStacks": 0,
    "electroFlareStacks": 10,
-   "electroRageStacks": 5,
+   "electroRageStacks": 10,
    "glacioChafeStacks": 0,
    "strainStacks": 0
   },
@@ -8162,7 +8374,7 @@
     "name": "Intro - Hellflare Overload",
     "count": 1,
     "mv": 94.12,
-    "avg": 13250,
+    "avg": 11967,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -8173,7 +8385,7 @@
     "name": "Echo - Corrosaurus",
     "count": 1,
     "mv": 273.6,
-    "avg": 42118,
+    "avg": 38231,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -8184,7 +8396,7 @@
     "name": "Heavy - Volley of Death 2",
     "count": 1,
     "mv": 69.18,
-    "avg": 19625,
+    "avg": 17865,
     "cast": "Heavy",
     "node": "Normal",
     "type": "Heavy",
@@ -8195,7 +8407,7 @@
     "name": "Heavy - Volley of Death 3",
     "count": 1,
     "mv": 167.7,
-    "avg": 49360,
+    "avg": 44959,
     "cast": "Heavy",
     "node": "Normal",
     "type": "Echo",
@@ -8206,7 +8418,7 @@
     "name": "Basic - Slayer's Trigger 3",
     "count": 1,
     "mv": 142.98,
-    "avg": 42663,
+    "avg": 38838,
     "cast": "Basic",
     "node": "Normal",
     "type": "Heavy",
@@ -8217,7 +8429,7 @@
     "name": "Basic - Slayer's Trigger 4",
     "count": 1,
     "mv": 177.86,
-    "avg": 53672,
+    "avg": 48887,
     "cast": "Basic",
     "node": "Normal",
     "type": "Echo",
@@ -8228,7 +8440,7 @@
     "name": "Skill - Encroach",
     "count": 1,
     "mv": 35.78,
-    "avg": 26691,
+    "avg": 24297,
     "cast": "Skill",
     "node": "Skill",
     "type": "Heavy",
@@ -8239,7 +8451,7 @@
     "name": "Skill - Ascent of Malice",
     "count": 1,
     "mv": 103.14,
-    "avg": 76940,
+    "avg": 70040,
     "cast": "Skill",
     "node": "Skill",
     "type": "Heavy",
@@ -8250,7 +8462,7 @@
     "name": "Liberation - Hellfire Absolution",
     "count": 1,
     "mv": 1109.04,
-    "avg": 769754,
+    "avg": 701128,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Echo",
@@ -8261,7 +8473,7 @@
     "name": "Forte Basic - Seraphic Execution 2",
     "count": 1,
     "mv": 139.19,
-    "avg": 212366,
+    "avg": 193322,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -8272,7 +8484,7 @@
     "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
     "mv": 243.17,
-    "avg": 371011,
+    "avg": 337741,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -8283,7 +8495,7 @@
     "name": "Forte Basic - Seraphic Execution 4",
     "count": 1,
     "mv": 181.47,
-    "avg": 280010,
+    "avg": 255046,
     "cast": "Basic",
     "node": "Forte",
     "type": "Echo",
@@ -8294,7 +8506,7 @@
     "name": "Forte Basic - Seraphic Execution 5",
     "count": 1,
     "mv": 224.27,
-    "avg": 346051,
+    "avg": 315199,
     "cast": "Basic",
     "node": "Forte",
     "type": "Echo",
@@ -8316,7 +8528,7 @@
     "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
     "mv": 243.17,
-    "avg": 371011,
+    "avg": 337741,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -8327,7 +8539,7 @@
     "name": "Forte Basic - Seraphic Execution 4",
     "count": 1,
     "mv": 181.47,
-    "avg": 280010,
+    "avg": 255046,
     "cast": "Basic",
     "node": "Forte",
     "type": "Echo",
@@ -8338,7 +8550,7 @@
     "name": "Forte Basic - Seraphic Execution 5",
     "count": 1,
     "mv": 224.27,
-    "avg": 346051,
+    "avg": 315199,
     "cast": "Basic",
     "node": "Forte",
     "type": "Echo",
@@ -8360,7 +8572,7 @@
     "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
     "mv": 243.17,
-    "avg": 214776,
+    "avg": 195516,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -8371,7 +8583,7 @@
     "name": "Outro - Ashen Pursuit",
     "count": 1,
     "mv": 795,
-    "avg": 126337,
+    "avg": 114569,
     "cast": "Outro",
     "node": null,
     "type": "Outro",
@@ -12810,588 +13022,6 @@
   "appKey": "Jinhsi",
   "casts": [
    {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 3,
-    "mv": 16,
-    "avg": 6123,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Intro - Loong's Halo",
-    "count": 1,
-    "mv": 159.05,
-    "avg": 31598,
-    "cast": "Intro",
-    "node": "Intro",
-    "type": "Intro",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Overflowing Radiance (Cancelled)",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": "Skill",
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Dodge",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": null,
-    "node": null,
-    "type": null,
-    "queued": true,
-    "by": "Skill - Overflowing Radiance (Cancelled)"
-   },
-   {
-    "name": "Basic - Incarnation 1",
-    "count": 1,
-    "mv": 88.62,
-    "avg": 17669,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Incarnation 2",
-    "count": 1,
-    "mv": 129.95,
-    "avg": 25909,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Crescent Divinity",
-    "count": 1,
-    "mv": 503.8,
-    "avg": 100448,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Incarnation 3",
-    "count": 1,
-    "mv": 165.74,
-    "avg": 33045,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Incarnation 4",
-    "count": 1,
-    "mv": 186.69,
-    "avg": 37222,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9",
-    "count": 1,
-    "mv": 243.22000000000003,
-    "avg": 32214,
-    "cast": "Echo",
-    "node": null,
-    "type": "Echo",
-    "queued": false,
-    "by": "Ju\u00e9"
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 12,
-    "mv": 16,
-    "avg": 32427,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Forte Skill - Illuminous Epiphany: Solar Flare",
-    "count": 1,
-    "mv": 119.34,
-    "avg": 24923,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Skill - Illuminous Epiphany: Stella Glamor",
-    "count": 1,
-    "mv": 347.92,
-    "avg": 890185,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Forte Skill - Illuminous Epiphany: Solar Flare"
-   },
-   {
-    "name": "Outro - Temporal Bender (Unison)",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": "Outro",
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 5,
-    "mv": 16,
-    "avg": 10745,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Intro - Loong's Halo",
-    "count": 1,
-    "mv": 159.05,
-    "avg": 31598,
-    "cast": "Intro",
-    "node": "Intro",
-    "type": "Intro",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 1,
-    "mv": 16,
-    "avg": 2887,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Skill - Overflowing Radiance (Cancelled)",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": "Skill",
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Dodge",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": null,
-    "node": null,
-    "type": null,
-    "queued": true,
-    "by": "Skill - Overflowing Radiance (Cancelled)"
-   },
-   {
-    "name": "Basic - Incarnation 1",
-    "count": 1,
-    "mv": 88.62,
-    "avg": 18507,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Incarnation 2",
-    "count": 1,
-    "mv": 129.95,
-    "avg": 27139,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 2,
-    "mv": 16,
-    "avg": 6682,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Skill - Crescent Divinity",
-    "count": 1,
-    "mv": 503.8,
-    "avg": 105215,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 1,
-    "mv": 16,
-    "avg": 3341,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Basic - Incarnation 3",
-    "count": 1,
-    "mv": 165.74,
-    "avg": 34613,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Incarnation 4",
-    "count": 1,
-    "mv": 186.69,
-    "avg": 38988,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 2,
-    "mv": 16,
-    "avg": 6682,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   },
-   {
-    "name": "Forte Skill - Illuminous Epiphany: Solar Flare",
-    "count": 1,
-    "mv": 119.34,
-    "avg": 44324,
-    "cast": "Skill",
-    "node": "Forte",
-    "type": "Skill",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Skill - Illuminous Epiphany: Stella Glamor",
-    "count": 1,
-    "mv": 347.92,
-    "avg": 857100,
-    "cast": null,
-    "node": "Forte",
-    "type": "Skill",
-    "queued": true,
-    "by": "Forte Skill - Illuminous Epiphany: Solar Flare"
-   },
-   {
-    "name": "Liberation - Purge of Light",
-    "count": 1,
-    "mv": 1666.03,
-    "avg": 504097,
-    "cast": "Liberation",
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Outro - Temporal Bender",
-    "count": 1,
-    "mv": 0,
-    "avg": 0,
-    "cast": "Outro",
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Ju\u00e9: Blessing of Time",
-    "count": 1,
-    "mv": 16,
-    "avg": 2090,
-    "cast": null,
-    "node": null,
-    "type": "Skill",
-    "queued": true,
-    "by": "Ju\u00e9: Blessing of Time"
-   }
-  ],
-  "expected": [
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    3,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "LoongsHalo",
-    "intro",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "CrescentDivinityDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSummonDMG",
-    "echoAttacks",
-    5,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    12,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "SolarFlareDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "StarGlamourDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    5,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "LoongsHalo",
-    "intro",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    1,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "BasicAttack1DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    2,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "CrescentDivinityDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    1,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "BasicAttack3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttack4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    2,
-    "Ju\u00e9",
-    null,
-    null
-   ],
-   [
-    "SolarFlareDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "StarGlamourDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "PurgeOfLight",
-    "liberation",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "JueSkillCoordinatedDMG",
-    "echoAttacks",
-    1,
-    "Ju\u00e9",
-    null,
-    null
-   ]
-  ],
-  "unmatched": [],
-  "status": [],
-  "enemy": {
-   "spectroFrazzleStacks": 0,
-   "aeroErosionStacks": 0,
-   "havocBaneStacks": 0,
-   "fusionBurstStacks": 0,
-   "electroFlareStacks": 0,
-   "electroRageStacks": 0,
-   "glacioChafeStacks": 0,
-   "strainStacks": 0
-  },
-  "ratiosPooled": [],
-  "ratiosTop3": []
- },
- {
-  "resonator": "Jinhsi",
-  "appKey": "Jinhsi",
-  "casts": [
-   {
     "name": "Intro - Loong's Halo",
     "count": 1,
     "mv": 159.05,
@@ -13930,6 +13560,550 @@
     "JueSkillCoordinatedDMG",
     "echoAttacks",
     1,
+    "Ju\u00e9",
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [],
+  "ratiosTop3": []
+ },
+ {
+  "resonator": "Jinhsi",
+  "appKey": "Jinhsi",
+  "casts": [
+   {
+    "name": "Intro - Loong's Halo",
+    "count": 1,
+    "mv": 159.05,
+    "avg": 29358,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Overflowing Radiance (Cancelled)",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": "Skill",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": null,
+    "node": null,
+    "type": null,
+    "queued": true,
+    "by": "Skill - Overflowing Radiance (Cancelled)"
+   },
+   {
+    "name": "Basic - Incarnation 1",
+    "count": 1,
+    "mv": 88.62,
+    "avg": 16416,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Incarnation 2",
+    "count": 1,
+    "mv": 129.95,
+    "avg": 24072,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Crescent Divinity",
+    "count": 1,
+    "mv": 503.8,
+    "avg": 93325,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Incarnation 3",
+    "count": 1,
+    "mv": 165.74,
+    "avg": 30702,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Incarnation 4",
+    "count": 1,
+    "mv": 186.69,
+    "avg": 34583,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9",
+    "count": 1,
+    "mv": 243.22000000000003,
+    "avg": 29929,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": "Ju\u00e9"
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 15,
+    "mv": 16,
+    "avg": 38782,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Forte Skill - Illuminous Epiphany: Solar Flare",
+    "count": 1,
+    "mv": 119.34,
+    "avg": 23155,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Skill - Illuminous Epiphany: Stella Glamor",
+    "count": 1,
+    "mv": 347.92,
+    "avg": 888538,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Forte Skill - Illuminous Epiphany: Solar Flare"
+   },
+   {
+    "name": "Outro - Temporal Bender (Unison)",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 5,
+    "mv": 16,
+    "avg": 10745,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Intro - Loong's Halo",
+    "count": 1,
+    "mv": 159.05,
+    "avg": 31598,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 1,
+    "mv": 16,
+    "avg": 2887,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Skill - Overflowing Radiance (Cancelled)",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": "Skill",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": null,
+    "node": null,
+    "type": null,
+    "queued": true,
+    "by": "Skill - Overflowing Radiance (Cancelled)"
+   },
+   {
+    "name": "Basic - Incarnation 1",
+    "count": 1,
+    "mv": 88.62,
+    "avg": 18507,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Incarnation 2",
+    "count": 1,
+    "mv": 129.95,
+    "avg": 27139,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 2,
+    "mv": 16,
+    "avg": 6682,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Skill - Crescent Divinity",
+    "count": 1,
+    "mv": 503.8,
+    "avg": 105215,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 1,
+    "mv": 16,
+    "avg": 3341,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Basic - Incarnation 3",
+    "count": 1,
+    "mv": 165.74,
+    "avg": 34613,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Incarnation 4",
+    "count": 1,
+    "mv": 186.69,
+    "avg": 38988,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 2,
+    "mv": 16,
+    "avg": 6682,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   },
+   {
+    "name": "Forte Skill - Illuminous Epiphany: Solar Flare",
+    "count": 1,
+    "mv": 119.34,
+    "avg": 44324,
+    "cast": "Skill",
+    "node": "Forte",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Skill - Illuminous Epiphany: Stella Glamor",
+    "count": 1,
+    "mv": 347.92,
+    "avg": 691673,
+    "cast": null,
+    "node": "Forte",
+    "type": "Skill",
+    "queued": true,
+    "by": "Forte Skill - Illuminous Epiphany: Solar Flare"
+   },
+   {
+    "name": "Outro - Temporal Bender",
+    "count": 1,
+    "mv": 0,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Ju\u00e9: Blessing of Time",
+    "count": 4,
+    "mv": 16,
+    "avg": 8445,
+    "cast": null,
+    "node": null,
+    "type": "Skill",
+    "queued": true,
+    "by": "Ju\u00e9: Blessing of Time"
+   }
+  ],
+  "expected": [
+   [
+    "LoongsHalo",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "CrescentDivinityDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSummonDMG",
+    "echoAttacks",
+    5,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    15,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "SolarFlareDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "StarGlamourDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    5,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "LoongsHalo",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    1,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "BasicAttack1DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    2,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "CrescentDivinityDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    1,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "BasicAttack3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttack4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    2,
+    "Ju\u00e9",
+    null,
+    null
+   ],
+   [
+    "SolarFlareDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "StarGlamourDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "JueSkillCoordinatedDMG",
+    "echoAttacks",
+    4,
     "Ju\u00e9",
     null,
     null
@@ -18011,7 +18185,7 @@
     "name": "Forte Heavy - Azure Sword Stance",
     "count": 1,
     "mv": 450.53,
-    "avg": 926899,
+    "avg": 887253,
     "cast": "Heavy",
     "node": "Forte",
     "type": "Heavy",
@@ -18116,7 +18290,7 @@
     "name": "Heavy - Feather Sword Stance",
     "count": 1,
     "mv": 217.05,
-    "avg": 484748,
+    "avg": 446548,
     "cast": "Heavy",
     "node": "Forte",
     "type": "Heavy",
@@ -18146,7 +18320,7 @@
     "name": "Forte Mid-air - Feather Fall",
     "count": 1,
     "mv": 110.97,
-    "avg": 247834,
+    "avg": 228304,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -18161,7 +18335,7 @@
     "name": "Basic - Havoc in Bloom 1",
     "count": 1,
     "mv": 119.37,
-    "avg": 266595,
+    "avg": 245586,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -18176,7 +18350,7 @@
     "name": "Basic - Havoc in Bloom 2",
     "count": 1,
     "mv": 223.13,
-    "avg": 498327,
+    "avg": 459057,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -18427,195 +18601,165 @@
     "name": "Intro - Reverberance - Return",
     "count": 1,
     "mv": 95.43,
-    "avg": 19914,
+    "avg": 14084,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Basic - Reign of Silence 2",
     "count": 1,
     "mv": 95.45,
-    "avg": 20509,
+    "avg": 14536,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Basic - Rending Lunge",
     "count": 1,
     "mv": 151.1,
-    "avg": 32467,
+    "avg": 23011,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
-    "name": "Basic - Death Snip",
+    "name": "Basic - Death Snip + Spread",
     "count": 1,
-    "mv": 149.06,
-    "avg": 42605,
+    "mv": 196.84,
+    "avg": 40586,
     "cast": "Basic",
     "node": "Normal",
     "type": "Liberation",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Echo - Reminiscence: Leviathan",
     "count": 1,
     "mv": 262.08,
-    "avg": 54692,
+    "avg": 38680,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
     "queued": false,
     "by": "Reminiscence: Threnodian - Leviathan",
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Echo - Core of Collapse",
     "count": 1,
     "mv": 196.56,
-    "avg": 70318,
+    "avg": 49732,
     "cast": null,
     "node": null,
     "type": "Echo",
     "queued": true,
     "by": "Echo - Reminiscence: Leviathan",
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Liberation - Moment of Nihility",
     "count": 1,
     "mv": 954.29,
-    "avg": 341431,
+    "avg": 248928,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Liberation",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Skill - Serrated Loop",
     "count": 1,
     "mv": 139.6,
-    "avg": 32581,
+    "avg": 23489,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2",
+    "name": "Forte - Sawring Blitz 2 (Hold)",
     "count": 1,
-    "mv": 85.12,
-    "avg": 89848,
+    "mv": 191.52,
+    "avg": 148346,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2: Discordance",
+    "name": "Forte - Sawring Blitz 3 (Hold)",
     "count": 1,
-    "mv": 10.74,
-    "avg": 11336,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 2",
-    "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3",
-    "count": 1,
-    "mv": 127.84,
-    "avg": 134941,
+    "mv": 223.72,
+    "avg": 173287,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3: Falltone",
-    "count": 1,
-    "mv": 10.74,
-    "avg": 11336,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 3",
-    "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
     "name": "Forte - Sawring Eradication",
     "count": 1,
     "mv": 257.67,
-    "avg": 419612,
+    "avg": 400199,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    },
    {
@@ -18629,8 +18773,8 @@
     "queued": false,
     "by": null,
     "held": {
-     "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 12,
+     "havocBane": 6
     }
    }
   ],
@@ -18661,6 +18805,14 @@
    ],
    [
     "DeathSnipDMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "DeathSnipAdditionalDMG",
     "basic",
     1,
     null,
@@ -18700,17 +18852,9 @@
     null
    ],
    [
-    "SawringBlitzStage2DMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "SawringBlitzStage2DiscordanceDMG",
-    "forteCircuit",
-    1,
+    2,
     null,
     null,
     null
@@ -18724,7 +18868,7 @@
     null
    ],
    [
-    "SawringBlitzStage3FalltoneDMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
     1,
     null,
@@ -18805,10 +18949,10 @@
     }
    },
    {
-    "name": "Basic - Death Snip",
+    "name": "Basic - Death Snip + Spread",
     "count": 1,
-    "mv": 149.06,
-    "avg": 43880,
+    "mv": 196.84,
+    "avg": 57946,
     "cast": "Basic",
     "node": "Normal",
     "type": "Liberation",
@@ -18865,10 +19009,10 @@
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2",
+    "name": "Forte - Sawring Blitz 2 (Hold)",
     "count": 1,
-    "mv": 85.12,
-    "avg": 95506,
+    "mv": 191.52,
+    "avg": 214889,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
@@ -18880,45 +19024,15 @@
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2: Discordance",
+    "name": "Forte - Sawring Blitz 3 (Hold)",
     "count": 1,
-    "mv": 10.74,
-    "avg": 12050,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 2",
-    "held": {
-     "havocBane": 6,
-     "electroFlare": 13
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3",
-    "count": 1,
-    "mv": 127.84,
-    "avg": 143438,
+    "mv": 223.72,
+    "avg": 251018,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
     "queued": false,
     "by": null,
-    "held": {
-     "havocBane": 6,
-     "electroFlare": 13
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3: Falltone",
-    "count": 1,
-    "mv": 10.74,
-    "avg": 12050,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 3",
     "held": {
      "havocBane": 6,
      "electroFlare": 13
@@ -18928,7 +19042,7 @@
     "name": "Forte - Sawring Eradication",
     "count": 1,
     "mv": 257.67,
-    "avg": 446036,
+    "avg": 579713,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
@@ -18989,6 +19103,14 @@
     null
    ],
    [
+    "DeathSnipAdditionalDMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
     "FallacyOfNoReturnDiffraction",
     "echoAttacks",
     1,
@@ -19013,17 +19135,9 @@
     null
    ],
    [
-    "SawringBlitzStage2DMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "SawringBlitzStage2DiscordanceDMG",
-    "forteCircuit",
-    1,
+    2,
     null,
     null,
     null
@@ -19037,7 +19151,7 @@
     null
    ],
    [
-    "SawringBlitzStage3FalltoneDMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
     1,
     null,
@@ -19121,10 +19235,10 @@
     }
    },
    {
-    "name": "Basic - Death Snip",
+    "name": "Basic - Death Snip + Spread",
     "count": 1,
-    "mv": 149.06,
-    "avg": 34631,
+    "mv": 196.84,
+    "avg": 45732,
     "cast": "Basic",
     "node": "Normal",
     "type": "Liberation",
@@ -19201,10 +19315,10 @@
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2",
+    "name": "Forte - Sawring Blitz 2 (Hold)",
     "count": 1,
-    "mv": 85.12,
-    "avg": 73777,
+    "mv": 191.52,
+    "avg": 165999,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
@@ -19217,47 +19331,15 @@
     }
    },
    {
-    "name": "Forte - Sawring Blitz 2: Discordance",
+    "name": "Forte - Sawring Blitz 3 (Hold)",
     "count": 1,
-    "mv": 10.74,
-    "avg": 9308,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 2",
-    "held": {
-     "havocBane": 6,
-     "glacioChafe": 16,
-     "electroFlare": 16
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3",
-    "count": 1,
-    "mv": 127.84,
-    "avg": 110804,
+    "mv": 223.72,
+    "avg": 193908,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
     "queued": false,
     "by": null,
-    "held": {
-     "havocBane": 6,
-     "glacioChafe": 16,
-     "electroFlare": 16
-    }
-   },
-   {
-    "name": "Forte - Sawring Blitz 3: Falltone",
-    "count": 1,
-    "mv": 10.74,
-    "avg": 9308,
-    "cast": null,
-    "node": "Forte",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Forte - Sawring Blitz 3",
     "held": {
      "havocBane": 6,
      "glacioChafe": 16,
@@ -19268,7 +19350,7 @@
     "name": "Forte - Sawring Eradication",
     "count": 1,
     "mv": 257.67,
-    "avg": 344558,
+    "avg": 447822,
     "cast": null,
     "node": "Forte",
     "type": "Liberation",
@@ -19331,6 +19413,14 @@
     null
    ],
    [
+    "DeathSnipAdditionalDMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
     "MomentofNihilityDMG",
     "liberation",
     1,
@@ -19347,17 +19437,9 @@
     null
    ],
    [
-    "SawringBlitzStage2DMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "SawringBlitzStage2DiscordanceDMG",
-    "forteCircuit",
-    1,
+    2,
     null,
     null,
     null
@@ -19371,7 +19453,7 @@
     null
    ],
    [
-    "SawringBlitzStage3FalltoneDMG",
+    "SawringBlitzStage3HoldDMG",
     "forteCircuit",
     1,
     null,
@@ -20260,14 +20342,14 @@
   "casts": [
    {
     "name": "Liberation - Marcato",
-    "count": 18,
+    "count": 20,
     "mv": 31.81,
-    "avg": 49978,
+    "avg": 55806,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
+    "by": "Mortefi S1: Solitary Etude"
    },
    {
     "name": "Intro - Dissonance",
@@ -20292,26 +20374,26 @@
     "by": null
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 6548,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude"
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
-    "avg": 11092,
+    "avg": 11214,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet"
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 6638,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
    },
    {
     "name": "Forte Skill - Fury Fugue",
@@ -20325,26 +20407,26 @@
     "by": null
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 6700,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude"
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
-    "avg": 11397,
+    "avg": 11519,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet"
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 6792,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
    },
    {
     "name": "Basic - Impromptu Show 1",
@@ -20394,7 +20476,7 @@
     "name": "Liberation - Marcato",
     "count": 12,
     "mv": 31.81,
-    "avg": 41247,
+    "avg": 41277,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
@@ -20413,6 +20495,17 @@
     "by": null
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 6882,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude"
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
@@ -20422,17 +20515,6 @@
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet"
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 6882,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
    },
    {
     "name": "Liberation - Violent Finale",
@@ -20494,7 +20576,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    18,
+    20,
     null,
     null,
     null
@@ -20518,7 +20600,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -20526,7 +20608,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -20542,7 +20624,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -20550,7 +20632,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -20606,7 +20688,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -20614,7 +20696,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -20673,14 +20755,14 @@
   "casts": [
    {
     "name": "Liberation - Marcato",
-    "count": 18,
+    "count": 20,
     "mv": 31.81,
-    "avg": 53106,
+    "avg": 58488,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
+    "by": "Mortefi S1: Solitary Etude"
    },
    {
     "name": "Intro - Dissonance",
@@ -20705,6 +20787,17 @@
     "by": null
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 6852,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude"
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
@@ -20714,17 +20807,6 @@
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet"
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 6882,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
    },
    {
     "name": "Forte Skill - Fury Fugue",
@@ -20738,6 +20820,17 @@
     "by": null
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 6882,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude"
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
@@ -20747,17 +20840,6 @@
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet"
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 6882,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody"
    },
    {
     "name": "Basic - Impromptu Show 1",
@@ -20805,9 +20887,9 @@
    },
    {
     "name": "Liberation - Marcato",
-    "count": 3,
+    "count": 6,
     "mv": 31.81,
-    "avg": 10323,
+    "avg": 20646,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
@@ -20849,9 +20931,9 @@
    },
    {
     "name": "Liberation - Marcato",
-    "count": 46,
+    "count": 43,
     "mv": 31.81,
-    "avg": 122847,
+    "avg": 114011,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
@@ -20882,9 +20964,9 @@
    },
    {
     "name": "Liberation - Marcato",
-    "count": 46,
+    "count": 43,
     "mv": 31.81,
-    "avg": 122847,
+    "avg": 114011,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
@@ -20896,7 +20978,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    18,
+    20,
     null,
     null,
     null
@@ -20920,7 +21002,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -20928,7 +21010,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -20944,7 +21026,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -20952,7 +21034,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -20992,7 +21074,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    3,
+    6,
     null,
     null,
     null
@@ -21024,7 +21106,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    46,
+    43,
     null,
     null,
     null
@@ -21040,7 +21122,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    46,
+    43,
     null,
     null,
     null
@@ -21074,7 +21156,7 @@
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi: Burning Rhapsody",
+    "by": "Mortefi S1: Solitary Etude",
     "held": {
      "glacioChafe": 13
     }
@@ -21108,29 +21190,29 @@
     }
    },
    {
-    "name": "Liberation - Marcato (S5 Funerary Quartet)",
-    "count": 4,
+    "name": "Liberation - Marcato",
+    "count": 2,
     "mv": 31.81,
-    "avg": 11940,
+    "avg": 6860,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi S5: Funerary Quartet",
+    "by": "Mortefi S1: Solitary Etude",
     "held": {
      "glacioChafe": 13
     }
    },
    {
-    "name": "Liberation - Marcato",
-    "count": 2,
+    "name": "Liberation - Marcato (S5 Funerary Quartet)",
+    "count": 4,
     "mv": 31.81,
-    "avg": 6972,
+    "avg": 11996,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi: Burning Rhapsody",
+    "by": "Mortefi S5: Funerary Quartet",
     "held": {
      "glacioChafe": 13
     }
@@ -21150,29 +21232,29 @@
     }
    },
    {
-    "name": "Liberation - Marcato (S5 Funerary Quartet)",
-    "count": 4,
+    "name": "Liberation - Marcato",
+    "count": 2,
     "mv": 31.81,
-    "avg": 12220,
+    "avg": 7000,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi S5: Funerary Quartet",
+    "by": "Mortefi S1: Solitary Etude",
     "held": {
      "glacioChafe": 13
     }
    },
    {
-    "name": "Liberation - Marcato",
-    "count": 2,
+    "name": "Liberation - Marcato (S5 Funerary Quartet)",
+    "count": 4,
     "mv": 31.81,
-    "avg": 7112,
+    "avg": 12276,
     "cast": null,
     "node": "Liberation",
     "type": "Liberation",
     "queued": true,
-    "by": "Mortefi: Burning Rhapsody",
+    "by": "Mortefi S5: Funerary Quartet",
     "held": {
      "glacioChafe": 13
     }
@@ -21262,6 +21344,20 @@
     }
    },
    {
+    "name": "Liberation - Marcato",
+    "count": 2,
+    "mv": 31.81,
+    "avg": 7224,
+    "cast": null,
+    "node": "Liberation",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Mortefi S1: Solitary Etude",
+    "held": {
+     "glacioChafe": 13
+    }
+   },
+   {
     "name": "Liberation - Marcato (S5 Funerary Quartet)",
     "count": 4,
     "mv": 31.81,
@@ -21271,20 +21367,6 @@
     "type": "Liberation",
     "queued": true,
     "by": "Mortefi S5: Funerary Quartet",
-    "held": {
-     "glacioChafe": 13
-    }
-   },
-   {
-    "name": "Liberation - Marcato",
-    "count": 2,
-    "mv": 31.81,
-    "avg": 7224,
-    "cast": null,
-    "node": "Liberation",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Mortefi: Burning Rhapsody",
     "held": {
      "glacioChafe": 13
     }
@@ -21388,7 +21470,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -21396,7 +21478,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -21412,7 +21494,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -21420,7 +21502,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null
@@ -21476,7 +21558,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    4,
+    2,
     null,
     null,
     null
@@ -21484,7 +21566,7 @@
    [
     "MarcatoDamage",
     "liberation",
-    2,
+    4,
     null,
     null,
     null

@@ -1,11 +1,11 @@
 [
  {
-  "name": "Spectro Rover S6 Emerald of Genesis R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Luuk Herssen: 298,976 DPR for Spectro Rover of 4,446,011 team. Sequence procs in the loop: none.",
+  "name": "Spectro Rover S6 Blazing Brilliance R5 · Suisui + Phoebe · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Phoebe: 351,277 DPR for Spectro Rover of 4,000,644 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Spectro Rover S6 Emerald of Genesis R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Mornye + Luuk Herssen: 298,976 DPR for Spectro Rover of 4,446,011 team. Sequence procs in the loop: none.",
+   "name": "Spectro Rover S6 Blazing Brilliance R5 · Suisui + Phoebe · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Phoebe: 351,277 DPR for Spectro Rover of 4,000,644 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -17,30 +17,6 @@
     },
     {
      "order": 2,
-     "key": "VibrationManifestationHeavyAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "VibrationManifestationHeavyAttackResonanceDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
      "key": "ResonatingSpinDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -48,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 3,
      "key": "ResonatingWhirlDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -56,10 +32,338 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 4,
      "key": "ResonatingEchoesStage1DMG",
      "type": "forteCircuit",
      "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "EchoingOrchestraSkillDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "VibrationManifestationHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "VibrationManifestationHeavyAttackResonanceDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 10,
+     "key": "VibrationManifestationHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "VibrationManifestationHeavyAttackResonanceDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 14,
+     "key": "ResonatingSpinDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ResonatingWhirlDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 17,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spectro Rover S6 Blazing Brilliance R5 · Mornye + Phoebe · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 346,319 DPR for Spectro Rover of 3,803,968 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Spectro Rover S6 Blazing Brilliance R5 · Mornye + Phoebe · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 346,319 DPR for Spectro Rover of 3,803,968 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "WaveshockSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ResonatingSpinDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ResonatingWhirlDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ResonatingEchoesStage1DMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "EchoingOrchestraSkillDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "VibrationManifestationHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "VibrationManifestationHeavyAttackResonanceDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10
+    },
+    {
+     "order": 10,
+     "key": "VibrationManifestationHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "VibrationManifestationHeavyAttackResonanceDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10
+    },
+    {
+     "order": 14,
+     "key": "ResonatingSpinDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ResonatingWhirlDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10
+    },
+    {
+     "order": 17,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spectro Rover S6 Blazing Brilliance R5 · Phoebe + Zani · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Rejuvenating Glow 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Phoebe + Zani: 259,034 DPR for Spectro Rover of 6,668,523 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Spectro Rover S6 Blazing Brilliance R5 · Phoebe + Zani · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Rejuvenating Glow 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Phoebe + Zani: 259,034 DPR for Spectro Rover of 6,668,523 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ResonatingSpinDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ResonatingWhirlDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ResonatingEchoesStage1DMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "EchoingOrchestraSkillDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "VibrationManifestationHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "VibrationManifestationHeavyAttackResonanceDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "VibrationManifestationHeavyAttackAftertuneDMG",
+     "type": "basic",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -105,21 +409,21 @@
     },
     {
      "order": 13,
-     "key": "EchoingOrchestraSkillDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ImpermanenceHeronFlySmack",
+     "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
+     "mainEcho": "FallacyOfNoReturn",
      "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "WaveshockSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

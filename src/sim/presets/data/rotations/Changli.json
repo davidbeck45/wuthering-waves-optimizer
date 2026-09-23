@@ -1,11 +1,11 @@
 [
  {
   "name": "Changli S6 Blazing Brilliance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lupa (main DPS): 3,020,635 DPR for Changli of 5,233,460 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lupa (main DPS): 2,907,840 DPR for Changli of 5,090,888 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Changli S6 Blazing Brilliance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lupa (main DPS): 3,020,635 DPR for Changli of 5,233,460 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lupa (main DPS): 2,907,840 DPR for Changli of 5,090,888 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -33,7 +33,7 @@
     },
     {
      "order": 4,
-     "key": "TrueSightConquestDMG",
+     "key": "TrueSightChargeDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -49,7 +49,7 @@
     },
     {
      "order": 6,
-     "key": "TrueSightConquestDMG",
+     "key": "TrueSightChargeDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -57,7 +57,7 @@
     },
     {
      "order": 7,
-     "key": "BasicAttack1DMG",
+     "key": "MidAirHeavyAttackDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -65,14 +65,6 @@
     },
     {
      "order": 8,
-     "key": "BasicAttack2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "BasicAttack3DMG",
      "type": "basic",
      "count": 1,
@@ -80,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "BasicAttack4DMG",
      "type": "basic",
      "count": 1,
@@ -88,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "TrueSightConquestDMG",
      "type": "skill",
      "count": 1,
@@ -96,7 +88,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "FlamingVowDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -104,7 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "RadianceofFealty",
      "type": "liberation",
      "count": 1,
@@ -112,7 +104,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "FlamingVowDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -120,7 +112,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "NightmareInfernoRiderJumpDMG",
      "type": "echoAttacks",
      "count": 1,

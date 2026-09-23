@@ -217,243 +217,6 @@
   }
  },
  {
-  "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Hsin (main DPS): 2,848,578 DPR for Jinhsi of 8,405,753 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Hsin (main DPS): 2,848,578 DPR for Jinhsi of 8,405,753 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 2,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "JueSummonDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 9,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 10,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 13,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 15,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 18,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 20,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 23,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
   "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Cantarella · S6R5 (wuwa_calc)",
   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Cantarella (main DPS): 2,830,010 DPR for Jinhsi of 4,439,452 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
@@ -672,6 +435,225 @@
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Hsin (main DPS): 2,595,661 DPR for Jinhsi of 8,283,864 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Hsin (main DPS): 2,595,661 DPR for Jinhsi of 8,283,864 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "LoongsHalo",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttack1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttack2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CrescentDivinityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttack3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttack4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "JueSummonDMG",
+     "type": "echoAttacks",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 8,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 15,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 9,
+     "key": "SolarFlareDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "StarGlamourDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 12,
+     "key": "LoongsHalo",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "BasicAttack1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BasicAttack2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 17,
+     "key": "CrescentDivinityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 19,
+     "key": "BasicAttack3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttack4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "SolarFlareDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "StarGlamourDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 4,
      "buffs": [],
      "isDisabled": false,
      "mainEcho": "Jué",
