@@ -101,7 +101,8 @@ rather than scanning a whole file blind:
 1. **Open**: load metadata and a scrubbable preview frame, no scanning yet.
 2. **Trim**: the user picks a start/end range (skip past menu navigation
    before reaching the Echo screen) and a sample rate — 1/2/4/8 frames/sec,
-   default 2fps (matching Tacet-Lab's default). Scrubbing the range calls
+   default 4fps (2fps missed echoes clicked through every 1-2s, since the
+   settle gate needs 3 matching samples in a row). Scrubbing the range calls
    `seekPreview` so the mounted `<video>` preview updates live.
 3. **Scan**: `createVideoFileSource` runs the seek-and-capture loop only
    over the chosen window at the chosen rate.

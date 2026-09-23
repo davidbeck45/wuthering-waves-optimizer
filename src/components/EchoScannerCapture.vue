@@ -141,8 +141,8 @@
           </label>
           <select class="select select-bordered select-sm" v-model.number="sampleFps">
             <option :value="1">1 frame/sec (fastest, may miss quick clicks)</option>
-            <option :value="2">2 frames/sec (default)</option>
-            <option :value="4">4 frames/sec</option>
+            <option :value="2">2 frames/sec</option>
+            <option :value="4">4 frames/sec (default)</option>
             <option :value="8">8 frames/sec (thorough, slowest)</option>
           </select>
         </div>
@@ -407,7 +407,7 @@ const previewContainer = ref<HTMLDivElement | null>(null);
 const isSavingToInventory = ref(props.inventoryOnly);
 const trimStart = ref(0);
 const trimEnd = ref(0);
-const sampleFps = ref(2);
+const sampleFps = ref(4);
 
 // Watches both, not just previewVideoEl: the "trimming" and
 // "starting"/"running" template branches each have their *own*
