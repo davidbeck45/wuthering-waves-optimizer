@@ -165,3 +165,6 @@ cypress/downloads
 .serena
 .vercel
 .env*
+
+### Wuthering Tools+: Riley's shipped solves are served from /dist/solves/ (scripts/skittle-sync.mjs)
+!public/dist/
