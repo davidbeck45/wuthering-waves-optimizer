@@ -179,6 +179,21 @@ export const SUBSTAT_BLOCK: RegionFrac = {
 };
 
 /**
+ * Main stat row through the end of SUBSTAT_BLOCK — fingerprinted (not
+ * OCR'd) at a fine grid alongside the coarse PANEL_BOX fingerprint, so the
+ * change-detection gate notices when only the stat text changes. The
+ * game's default name sort puts same-name echoes back to back, and a run
+ * of them with the same main stat looks identical to the coarse panel
+ * fingerprint (same art, name, main stat) — see stability.ts.
+ */
+export const STATS_BLOCK: RegionFrac = {
+  x: STAT_ROW_X,
+  y: FIRST_STAT_ROW_Y,
+  width: STAT_ROW_WIDTH,
+  height: SUBSTAT_BLOCK.y + SUBSTAT_BLOCK.height - FIRST_STAT_ROW_Y,
+};
+
+/**
  * Every named ROI in one list, for the debug view (EchoScannerCapture.vue):
  * dashed boxes drawn over the live preview, and — per captured candidate —
  * a labeled crop thumbnail + its raw OCR text, so a mismatch like the

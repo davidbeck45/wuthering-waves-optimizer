@@ -6,6 +6,7 @@ import {
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
   SUBSTAT_BLOCK,
+  STATS_BLOCK,
   SET_ICON_BOX,
   DEBUG_REGIONS,
   toPixelRegion,
@@ -89,6 +90,17 @@ describe("layout", () => {
     expect(block.y).toBeLessThanOrEqual(firstRow.y);
     expect(block.y + block.height).toBeGreaterThan(lastRow.y);
     expect(block.y + block.height).toBeLessThanOrEqual(panel.y + panel.height);
+  });
+
+  it.each(REAL_RESOLUTIONS)("keeps STATS_BLOCK covering the main stat row through SUBSTAT_BLOCK, inside the panel, at %ox%o", (frame) => {
+    const panel = toPixelRegion(PANEL_BOX, frame);
+    const stats = toPixelRegion(STATS_BLOCK, frame);
+    const main = toPixelRegion(MAIN_STAT_ROW, frame);
+    const substats = toPixelRegion(SUBSTAT_BLOCK, frame);
+    expect(stats.y).toBeLessThanOrEqual(main.y);
+    expect(stats.y + stats.height).toBeGreaterThanOrEqual(substats.y + substats.height - 1);
+    expect(stats.y + stats.height).toBeLessThanOrEqual(panel.y + panel.height);
+    expect(stats.x + stats.width).toBeLessThanOrEqual(panel.x + panel.width + 2);
   });
 
   it("excludes the leading stat-type icon from stat row crops (measured gap, not the full row width)", () => {

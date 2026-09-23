@@ -23,12 +23,13 @@ import {
   type VideoFileHandle,
   type VideoScanOptions,
 } from "../scanner/capture";
-import { computeFingerprint } from "../scanner/fingerprint";
+import { computeFingerprint, STATS_FINGERPRINT_GRID } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
 import {
   PANEL_BOX,
+  STATS_BLOCK,
   NAME_BLOCK,
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
@@ -407,8 +408,10 @@ export function useEchoScanner() {
       return;
     }
 
-    const panelImageData = grabRegionImageData(videoEl, PANEL_BOX);
-    const fingerprint = computeFingerprint(panelImageData);
+    const fingerprint = {
+      panel: computeFingerprint(grabRegionImageData(videoEl, PANEL_BOX)),
+      stats: computeFingerprint(grabRegionImageData(videoEl, STATS_BLOCK), STATS_FINGERPRINT_GRID),
+    };
     const event = stability.observe(fingerprint);
     if (event !== "stable-novel") return;
 

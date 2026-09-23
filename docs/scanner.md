@@ -10,9 +10,10 @@ server, no upload. See [ADR 0032](./adr/0032-echo-screen-scanner.md) for why.
 
 ```
 capture.ts (FrameSource: live share or uploaded video)
-  → grab a small crop of the detail panel every tick
+  → grab a small crop of the detail panel + the stat rows every tick
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
-    something new?" gate — no OCR yet
+    something new?" gate — no OCR yet (coarse panel fingerprint AND a
+    fine stat-rows fingerprint; see "Change detection" below)
   → on settle: grab name + main-stat + fixed-secondary + up to 5
     individually-cropped substat-row bitmaps, plus a full-frame bitmap
       → echoScanner.worker.ts: OCR each crop separately (tesseract.js, self-hosted)
@@ -44,6 +45,29 @@ layer itself needs — `HTMLVideoElement`, `File`, canvas). `echoScanner.worker.
 is intentionally dumb: it never imports `src/echoes/*`, so it only ever
 returns raw recognized strings — all game-data lookups happen on the main
 thread in `parse.ts`, keeping the worker's messages plain and serializable.
+
+## Change detection: two fingerprints, not one
+
+Each tick produces two cheap luma fingerprints (`fingerprint.ts`), and
+`stability.ts` treats two frames as "the same echo" only if **both** match:
+
+- **Panel** — `PANEL_BOX` at 32x16, compared by mean distance. Tolerant of
+  the animated portrait art; catches a different echo name/art/main stat.
+- **Stats** — `STATS_BLOCK` (main stat row through `SUBSTAT_BLOCK`) at
+  64x48, compared by *changed-cell count* (cells whose luma moved > 0.1).
+  A changed substat digit is a handful of cells here.
+
+Why both: WuWa's default inventory sort is by echo name, so a run of the
+same echo (same art, name, and often main stat) sits back to back. Those
+differ only in substat text, which the coarse panel mean dilutes to well
+under its threshold — the original panel-only gate dropped every echo
+after the first in such a run as a "repeat" before OCR ever ran (real
+report: five Inferno Rider / Crit DMG echoes in a row scanned as one).
+
+Thresholds lean toward re-scanning: a missed echo is silently lost, while
+a spurious re-scan of the same echo is collapsed by `dedupe.ts`'s
+signature check. Settling uses a looser stats bound (`statsSettleCells`)
+than novelty (`statsNoveltyCells`) so a few noisy cells can't stall it.
 
 ## Two capture sources, one pipeline
 
