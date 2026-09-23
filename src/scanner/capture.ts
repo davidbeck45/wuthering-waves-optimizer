@@ -31,7 +31,7 @@ export type FrameSource = {
 };
 
 const LIVE_TICK_MS = 125; // ~8fps
-const DEFAULT_VIDEO_STEP_MS = 400;
+const DEFAULT_VIDEO_STEP_MS = 250;
 
 /**
  * Deliberately left detached from the document — decoding/drawImage works
@@ -174,11 +174,11 @@ export type VideoScanOptions = {
   /** Defaults to the whole clip. */
   startSeconds?: number;
   endSeconds?: number;
-  /** Samples per second of video, converted to a seek step. Tacet-Lab defaults to 2fps; we match that. */
+  /** Samples per second of video, converted to a seek step. Defaults to 4fps: stability.ts needs 3 consecutive matching samples to call a frame settled, so 2fps missed echoes clicked through every 1-2s. */
   fps?: number;
 };
 
-const DEFAULT_VIDEO_FPS = 1000 / DEFAULT_VIDEO_STEP_MS; // 2.5, if fps isn't given
+const DEFAULT_VIDEO_FPS = 1000 / DEFAULT_VIDEO_STEP_MS; // 4, if fps isn't given
 
 /** Starts scanning an already-open handle over [startSeconds, endSeconds] at the given sample rate — the "scanVideo" half of the open/trim/scan split. */
 export function createVideoFileSource(
