@@ -86,6 +86,54 @@ rather than scanning a whole file blind:
 check, that Tacet-Lab didn't support video upload at all — it does, and
 this flow was built to match its actual approach once that was corrected.)
 
+### Cleanup: nothing keeps running once you're done
+
+Nothing here ever leaves the browser (see `EchoScannerCapture.vue`'s
+intro-screen callout — no server, no upload), which makes cleanup a real
+promise, not just a data-handling one: a screen-share stream or an open
+video file left running in the background *is* the privacy problem, not
+just a resource leak, if the app doesn't reliably stop it once the user is
+done. Every capture path releases the same way:
+
+- **Live share**: `createScreenShareSource`'s `stop()` calls
+  `track.stop()` on every `MediaStreamTrack` (this is what actually turns
+  off the browser's own "you are sharing your screen" indicator, not just
+  detaching the `<video>`), clears `srcObject`, and removes the element.
+  It's also wired to the *track's own* `ended` event, so ending the share
+  from the browser's native "Stop sharing" UI (not just this app's own Stop
+  button) is caught the same way — the composable's state doesn't stay out
+  of sync with a stream the user already stopped through Chrome/Edge's own
+  chrome.
+- **Video upload**: `closeVideoHandle` pauses the element,
+  `URL.revokeObjectURL`s the blob URL, and removes the element — same
+  whether the video finished scanning normally, the user hits Cancel
+  during trim, or hits Stop mid-scan.
+- **Component unmount**: `useEchoScanner.ts` registers an `onBeforeUnmount`
+  that calls `stop()` whenever the composable's owning component
+  (`EchoScannerCapture.vue`) disappears while a session was still
+  `starting`/`running`/`trimming` — the safety net for "the modal closed
+  out from under an active session," not just the explicit Stop/Cancel
+  buttons.
+- **The `<dialog>` itself**: `EchoScannerModal.vue`/`CalculatorEchoImporter.vue`
+  wire `@close` on the `<dialog>` element itself, not just `@click` on the
+  backdrop and ✕ button — a real gap found from asking "does this actually
+  cover every way to close it": a native `<dialog>` shown via `showModal()`
+  closes on **Escape** directly, bypassing both click handlers entirely.
+  Without the `@close` listener, Escape left the modal's own `isOpen` state
+  stuck `true` (dialog visually gone, `EchoScannerCapture.vue` still
+  mounted underneath, its unmount cleanup never firing) — exactly the
+  wrong failure mode for a feature whose whole pitch is "nothing keeps
+  running once you're done." `triggerCloseModal` is idempotent (closing an
+  already-closed dialog, or resetting empty state, are no-ops), so it's
+  safe that both the click path and the native close event can end up
+  calling it.
+
+If a future change adds another way to dismiss either modal (a keyboard
+shortcut, a route change, etc.), route it through the same
+`triggerCloseModal`/`onBeforeUnmount` machinery rather than adding a new
+one-off close path — that's exactly the kind of path the Escape-key gap
+above shows is easy to miss.
+
 ## ROI layout — how the numbers in `layout.ts` were derived
 
 All regions are **fractions of the full captured frame**, not fixed pixels —

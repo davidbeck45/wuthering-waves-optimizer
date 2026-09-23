@@ -1,5 +1,5 @@
 <template>
-  <dialog :id="modalId" class="modal">
+  <dialog :id="modalId" class="modal" @close="handleClose">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -56,6 +56,14 @@ async function triggerOpenModal() {
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
+/**
+ * Also wired to the <dialog>'s own native `close` event (see the
+ * template) — Escape closes a native <dialog> shown via showModal()
+ * directly, bypassing the backdrop/✕ click handlers entirely, which would
+ * otherwise leave `isOpen` stuck true. Safe to call more than once (a
+ * click handler's own modalEl.close() triggers this same native event
+ * too) — everything here is a no-op the second time.
+ */
 function triggerCloseModal() {
   const modalEl = document.getElementById(modalId.value);
   (modalEl as HTMLDialogElement | null)?.close();

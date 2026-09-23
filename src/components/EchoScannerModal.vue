@@ -1,5 +1,5 @@
 <template>
-  <dialog :id="modalId" class="modal">
+  <dialog :id="modalId" class="modal" @close="handleClose">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -64,6 +64,21 @@ async function triggerOpenModal() {
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
+/**
+ * Also wired to the <dialog>'s own native `close` event (see the
+ * template), not just the backdrop/✕ button clicks — a native <dialog>
+ * shown via showModal() closes on its own when the user presses Escape,
+ * bypassing both of those click handlers entirely. Without this, Escape
+ * would leave `isOpen` stuck true (the dialog visually gone but
+ * EchoScannerCapture still mounted underneath, so its cleanup effect
+ * never runs) — for a feature whose whole pitch is "nothing keeps running
+ * once you're done," Escape silently leaving a live screen-share stream
+ * active in the background would be exactly the wrong failure mode. Safe
+ * to call more than once (a click handler's own modalEl.close() also
+ * triggers this same native event) — closing an already-closed dialog,
+ * setting isOpen false twice, and resetting an empty review list are all
+ * no-ops.
+ */
 function triggerCloseModal() {
   const modalEl = document.getElementById(modalId);
   (modalEl as HTMLDialogElement | null)?.close();
