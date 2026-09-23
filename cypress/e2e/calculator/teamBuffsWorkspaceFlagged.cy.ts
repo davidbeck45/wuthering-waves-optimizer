@@ -20,16 +20,40 @@ function visitWithFlagEnabled() {
 }
 
 // The legacy spec's testAttacks/testStats scope to `.results` — the
-// flag-off split pane. With the flag on, CalculatorLiveResultDetail renders
-// the same CalculatorStats/CalculatorDamages components (and the same
-// `.stat-*`/`.{attack}-dmg` classes) inside the slide-out detail panel
-// instead, so these mirror those helpers scoped there.
+// flag-off split pane. With the flag on, CalculatorLiveResultDetail shows
+// them in tabs instead: the Attacks tab reuses CalculatorDamage rows (same
+// `.{attack}-dmg` classes), but the Overview tab has its own stat rows keyed
+// by `data-test-live-result-stat-row-key`, and only lists the character's own
+// element — so the legacy `.stat-*` selectors are mapped onto those keys here,
+// and other elements' bonuses (covered by calculator/teamBuffs.cy.ts) skipped.
+const OVERVIEW_STAT_KEYS: Record<string, string> = {
+  ".stat-hp": "totalHp",
+  ".stat-atk": "totalAtk",
+  ".stat-def": "totalDef",
+  ".stat-cr": "totalCritRate",
+  ".stat-cd": "totalCritDMG",
+  ".stat-er": "energyRegen",
+  ".stat-basic": "basicAttackDmgBonus",
+  ".stat-heavy": "heavyAttackDmgBonus",
+  ".stat-skill": "resonanceSkillDmgBonus",
+  ".stat-liberation": "resonanceLiberationDmgBonus",
+  ".stat-glacio": "elementDmgBonus", // Carlotta's own element
+  ".stat-healing": "healingBonus",
+};
 function testStatsInDetail(stats: StatTests) {
+  cy.get("[data-test-live-result-detail-tab-overview]").click();
   stats.forEach(({ selector, value }) => {
-    cy.get(`[data-test-live-result-detail] ${selector}`).should("contain.text", value);
+    const key = OVERVIEW_STAT_KEYS[selector];
+    if (!key) return;
+    cy.get(
+      `[data-test-live-result-detail] [data-test-live-result-stat-row-key="${key}"]`,
+    ).should("contain.text", value);
   });
 }
 function testAttacksInDetail(attackTests: AttackTests) {
+  // Attack groups are a collapsed-by-default accordion.
+  cy.get("[data-test-live-result-detail-tab-attacks]").click();
+  cy.get("[data-test-live-result-attacks-expand-all]").click();
   attackTests.forEach(({ selector, values }) => {
     cy.get(`[data-test-live-result-detail] ${selector}`).should(($el) => {
       values.forEach((text) => {
