@@ -38,7 +38,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 
 ## Index
 
-Architecture ADRs (0001–0012, 0029) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
+Architecture ADRs (0001–0012, 0029, 0031, 0032) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
 
 | ADR | Title | Status | Superseded by | Tags |
 |-----|-------|--------|----------------|------|
@@ -55,6 +55,8 @@ Architecture ADRs (0001–0012, 0029) first, then redesign-chapter ADRs (0013+) 
 | [0011](./0011-headless-character-calculation-context.md) | Headless character calculation context for non-active-character consumers | accepted | | calculator, stores, team-rotations |
 | [0012](./0012-echo-substat-ratings.md) | Echo & character substat ratings | accepted | | echoes, characters, stores |
 | [0029](./0029-buff-realistic-max-stacks.md) | `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap | accepted | | calculator, characters, buffs |
+| [0031](./0031-mutually-exclusive-buffs.md) | `mutuallyExclusiveWith` for buffs/passives/resonance-chain nodes that can't be active together | accepted | | calculator, characters, weapons, buffs, components |
+| [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | | echoes, workers, components, inventory |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, stores |

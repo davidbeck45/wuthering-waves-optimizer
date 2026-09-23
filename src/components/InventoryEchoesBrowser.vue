@@ -6,6 +6,10 @@
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
+  <EchoScannerModal
+    v-if="isEchoScanningEnabled"
+    ref="echoScanner"
+    @edit-candidate="handleEditEcho"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -16,6 +20,12 @@
         </button>
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import echoes
+        </button>
+        <button
+          v-if="isEchoScanningEnabled"
+          class="btn btn-sm btn-secondary"
+          @click="handleOpenEchoScanner">
+          Scan echoes
         </button>
         <AppOverflowMenu
           aria-label="More inventory actions"
@@ -473,27 +483,36 @@
                 :data-test-echo-select="echoRow.echoId"
                 @change="toggleSelect(echoRow.echoId)" />
             </label>
+            <InventoryEchoTile
+              v-if="isLiveResultBarEnabled && !isCompact"
+              v-bind="echoCardBinder(echoRow)"
+              :locked="Boolean(echoRow.locked)"
+              @edit="handleEditEcho(echoRow.echoId)"
+              @duplicate="duplicateEcho(echoRow.echoId)"
+              @delete="removeEcho(echoRow.echoId)">
+              <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse mt-1">
+                <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
+                  <div class="w-8 bg-accent-content">
+                    <img :src="getCharImg(char)" />
+                  </div>
+                </div>
+              </div>
+            </InventoryEchoTile>
             <CalculatorEchoCard
+              v-else
               class="echo__item"
               v-bind="echoCardBinder(echoRow)"
               :hide-inventory="true"
               :hide-rating="true"
               :compact="isCompact">
+              <template v-if="isLiveResultBarEnabled" #status>
+                <EchoLockTrashActions :echo-id="echoRow.echoId" layout="row" size="xs" />
+              </template>
               <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
                    optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
                    as two distinct clusters instead of one crowded button row —
                    see docs/adr/0014 decision #14. -->
               <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-1.5 flex-wrap" data-test-echo-status-cluster>
-                  <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse">
-                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
-                      <div class="w-8 bg-accent-content">
-                        <img :src="getCharImg(char)" />
-                      </div>
-                    </div>
-                  </div>
-                  <EchoLockTrashActions :echo-id="echoRow.echoId" />
-                </div>
                 <div class="flex items-center gap-1" data-test-echo-action-cluster>
                   <button
                     type="button"
@@ -538,6 +557,16 @@
                       </svg>
                     </button>
                   </span>
+                </div>
+                <div
+                  v-if="getCharsEquipped(echoRow).length"
+                  class="avatar-group -space-x-6 rtl:space-x-reverse ml-auto"
+                  data-test-echo-status-cluster>
+                  <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
+                    <div class="w-8 bg-accent-content">
+                      <img :src="getCharImg(char)" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -634,12 +663,14 @@ import {
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import InventoryEchoTile from "./InventoryEchoTile.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
+import EchoScannerModal from "./EchoScannerModal.vue";
 import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -683,9 +714,13 @@ const inventoryEchoEditRef = ref<
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
+const isEchoScanningEnabled = computed(
+  () => settingsStore.labs?.echoScanning?.isEnabled ?? false,
+);
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
 );
+const echoScanner = ref<InstanceType<typeof EchoScannerModal> | null>(null);
 
 const echoSet = ref<string | null>(null);
 const echo = ref<string | null>(null);
@@ -1228,6 +1263,10 @@ async function createEcho() {
 
 function handleOpenEchoesImporter() {
   echoesImporter.value?.triggerOpenModal();
+}
+
+function handleOpenEchoScanner() {
+  echoScanner.value?.triggerOpenModal();
 }
 </script>
 
