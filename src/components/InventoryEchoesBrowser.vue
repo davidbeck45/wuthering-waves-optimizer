@@ -6,6 +6,10 @@
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
+  <EchoScannerModal
+    v-if="isEchoScanningEnabled"
+    ref="echoScanner"
+    @edit-candidate="handleEditEcho"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -16,6 +20,12 @@
         </button>
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import echoes
+        </button>
+        <button
+          v-if="isEchoScanningEnabled"
+          class="btn btn-sm btn-secondary"
+          @click="handleOpenEchoScanner">
+          Scan echoes
         </button>
         <AppOverflowMenu
           aria-label="More inventory actions"
@@ -660,6 +670,7 @@ import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
+import EchoScannerModal from "./EchoScannerModal.vue";
 import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -703,9 +714,13 @@ const inventoryEchoEditRef = ref<
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
+const isEchoScanningEnabled = computed(
+  () => settingsStore.labs?.echoScanning?.isEnabled ?? false,
+);
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
 );
+const echoScanner = ref<InstanceType<typeof EchoScannerModal> | null>(null);
 
 const echoSet = ref<string | null>(null);
 const echo = ref<string | null>(null);
@@ -1248,6 +1263,10 @@ async function createEcho() {
 
 function handleOpenEchoesImporter() {
   echoesImporter.value?.triggerOpenModal();
+}
+
+function handleOpenEchoScanner() {
+  echoScanner.value?.triggerOpenModal();
 }
 </script>
 
