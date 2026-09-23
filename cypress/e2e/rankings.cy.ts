@@ -24,7 +24,9 @@ describe("Team Rankings (wuwa_calc)", () => {
   });
 
   it("imports the shown team as a Team Rotation (Wuthering Tools+)", () => {
-    cy.visit("/rankings");
+    // a resonator filter keeps the first row importable: the unfiltered table can lead with a team the
+    // app has no kit for yet (Riley's a54ec44 opens with Suoming), which the import rightly refuses
+    cy.visit("/rankings#r=Cartethyia");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root #app .gotodetail[data-team]", { timeout: 60000 }).first().click();
     cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("exist").click({ force: true });
