@@ -98,11 +98,16 @@ done. Every capture path releases the same way:
 - **Live share**: `createScreenShareSource`'s `stop()` calls
   `track.stop()` on every `MediaStreamTrack` (this is what actually turns
   off the browser's own "you are sharing your screen" indicator, not just
-  detaching the `<video>`), clears `srcObject`, and removes the element.
-  It's also wired to the *track's own* `ended` event, so ending the share
-  from the browser's native "Stop sharing" UI (not just this app's own Stop
-  button) is caught the same way — the composable's state doesn't stay out
-  of sync with a stream the user already stopped through Chrome/Edge's own
+  detaching the `<video>`), clears `srcObject`, removes the element, and
+  drops this module's own reference to the `MediaStream` (`stream = null`)
+  rather than relying only on the returned `FrameSource` closure eventually
+  becoming unreachable — `track.stop()` is what actually matters here, the
+  explicit null is just defense-in-depth so there's no lingering local
+  reference to the stream at all once `stop()` has run. It's also wired to
+  the *track's own* `ended` event, so ending the share from the browser's
+  native "Stop sharing" UI (not just this app's own Stop button) is caught
+  the same way — the composable's state doesn't stay out of sync with a
+  stream the user already stopped through Chrome/Edge's own
   chrome.
 - **Video upload**: `closeVideoHandle` pauses the element,
   `URL.revokeObjectURL`s the blob URL, and removes the element — same

@@ -51,10 +51,18 @@ export async function createScreenShareSource(): Promise<FrameSource> {
   if (!navigator.mediaDevices?.getDisplayMedia) {
     throw new Error("Screen sharing isn't supported in this browser.");
   }
-  const stream = await navigator.mediaDevices.getDisplayMedia({
+  const initialStream = await navigator.mediaDevices.getDisplayMedia({
     video: { frameRate: { ideal: 8, max: 12 } },
     audio: false,
   });
+  // Mutable/nullable from here so stop() can explicitly drop this module's
+  // own reference to the MediaStream once it's done with it, not just rely
+  // on the returned FrameSource object (and this whole closure) eventually
+  // becoming unreachable once useEchoScanner.ts nulls its own frameSource
+  // field — belt and suspenders for the thing that actually matters
+  // (track.stop() below, which is what turns off the browser's own sharing
+  // indicator), not the GC-eligibility itself.
+  let stream: MediaStream | null = initialStream;
 
   const videoEl = createVideoElement();
   videoEl.srcObject = stream;
@@ -69,14 +77,17 @@ export async function createScreenShareSource(): Promise<FrameSource> {
       clearInterval(intervalId);
       intervalId = null;
     }
-    for (const track of stream.getTracks()) track.stop();
+    if (stream) {
+      for (const track of stream.getTracks()) track.stop();
+      stream = null;
+    }
     videoEl.srcObject = null;
     videoEl.remove();
   }
 
   // The user can end the share from the browser's own "Stop sharing" UI,
   // not just our Stop button — react to that the same way.
-  stream.getVideoTracks()[0]?.addEventListener("ended", stop);
+  initialStream.getVideoTracks()[0]?.addEventListener("ended", stop);
 
   function start(onTick: (tick: FrameTick) => void | Promise<void>) {
     intervalId = setInterval(() => {

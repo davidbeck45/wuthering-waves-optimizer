@@ -76,6 +76,21 @@
         before you reach the Echo Management screen. A higher rate catches
         fast clicking but takes longer to process.
       </p>
+      <p class="mb-3 text-xs opacity-60 flex items-center gap-1">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="h-3.5 w-3.5 shrink-0 stroke-current">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
+        </svg>
+        Processed on this device only — the video file is never uploaded
+        anywhere, and it's discarded when you close this window.
+      </p>
       <div class="flex flex-col items-center gap-3">
         <div class="relative w-full max-w-md aspect-[8/5]">
           <div
@@ -190,6 +205,21 @@
         <p v-else class="text-sm opacity-70">
           Click through your echoes in-game — new ones will appear below as
           they're captured.
+        </p>
+        <p class="text-xs opacity-60 flex items-center gap-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="h-3.5 w-3.5 shrink-0 stroke-current">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
+          </svg>
+          Processed on this device only — nothing is uploaded, and sharing
+          stops the moment you click Stop (or close this window).
         </p>
         <button class="btn" @click="scanner.stop()">Stop scanning</button>
       </div>
