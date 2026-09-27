@@ -198,7 +198,9 @@ describe("CalculatorRotationQuickAdd — paste panel", () => {
     expect(textarea.value).toBe("Feint Shot DMG\n");
     expect(textarea.selectionStart).toBe(textarea.value.length);
     expect(utils.q("[data-test-rotation-quick-add-paste-suggestions]")).toBeNull();
-    expect(utils.q('[data-test-rotation-quick-add-paste-line="0"]')?.textContent).toContain("→ Feint Shot DMG");
+    expect(
+      utils.q('[data-test-rotation-quick-add-paste-line="0"] [data-test-rotation-quick-add-paste-match]')?.textContent?.trim(),
+    ).toBe("Feint Shot DMG");
   });
 
   it("keeps the line's count suffix and accepts with Tab", async () => {
