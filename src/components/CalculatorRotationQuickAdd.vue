@@ -3,25 +3,31 @@
     <div class="text-xs font-semibold opacity-70 mb-1">Add one action</div>
     <div class="rotation__quick-add__row relative">
       <input
+        ref="inputEl"
         v-model="queryValue"
         type="text"
+        role="combobox"
+        aria-autocomplete="list"
+        :aria-expanded="inputGroups.length > 0"
+        :aria-controls="`${inputId}-listbox`"
+        :aria-activedescendant="inputActiveDescendant"
         class="input input-bordered input-sm w-full"
-        placeholder="Type an action name, press Enter to add…"
+        placeholder="Type an action name or kind (intro, skill, lib…), Enter to add"
         autocomplete="off"
         data-test-rotation-quick-add-input
-        @keydown.enter.prevent="onEnter"
-        @keydown.esc="queryValue = ''" />
-      <ul
-        v-if="suggestions.length"
-        class="rotation__quick-add__suggest menu bg-base-200 rounded-box shadow"
-        data-test-rotation-quick-add-suggestions>
-        <li v-for="s in suggestions" :key="s.key">
-          <a href="#" @click.prevent="chooseSuggestion(s)">
-            {{ s.label }}
-            <span class="opacity-50 text-xs">{{ formatGroup(s.group) }}</span>
-          </a>
-        </li>
-      </ul>
+        @focus="inputOpen = true"
+        @click="inputOpen = true"
+        @input="inputOpen = true"
+        @blur="inputOpen = false"
+        @keydown="onInputKeydown" />
+      <ActionSuggestList
+        v-if="inputGroups.length"
+        :groups="inputGroups"
+        :active-index="inputNav.activeIndex.value"
+        :id-prefix="inputId"
+        :count-suffix="inputParsed.count"
+        data-test-rotation-quick-add-suggestions
+        @choose="chooseSuggestion" />
     </div>
 
     <div class="divider my-1 text-xs opacity-50" data-test-rotation-quick-add-divider>or</div>
@@ -38,16 +44,38 @@
     </button>
 
     <div v-if="showPaste" class="rotation__quick-add__paste mt-3 flex flex-col gap-2" data-test-rotation-quick-add-paste>
-      <label for="rotation-quick-add-paste-textarea" class="text-xs opacity-70">
-        One action name per line — a trailing "x2"/"×2" sets that line's hit count.
+      <label :for="`${pasteId}-textarea`" class="text-xs opacity-70">
+        One action name per line — a trailing "x2"/"×2" sets that line's hit count. Suggestions appear as you type;
+        ↑↓ to pick, Enter or Tab to fill the line.
       </label>
-      <textarea
-        id="rotation-quick-add-paste-textarea"
-        v-model="pasteText"
-        class="textarea textarea-bordered textarea-sm"
-        rows="4"
-        placeholder="Intro Skill&#10;Resonance Skill&#10;Heavy Attack x2"
-        data-test-rotation-quick-add-textarea></textarea>
+      <div class="relative">
+        <textarea
+          :id="`${pasteId}-textarea`"
+          ref="pasteEl"
+          v-model="pasteText"
+          role="combobox"
+          aria-autocomplete="list"
+          :aria-expanded="pasteGroups.length > 0"
+          :aria-controls="`${pasteId}-listbox`"
+          :aria-activedescendant="pasteActiveDescendant"
+          class="textarea textarea-bordered textarea-sm w-full"
+          rows="4"
+          placeholder="Intro&#10;Skill&#10;Heavy Attack x2"
+          data-test-rotation-quick-add-textarea
+          @input="onPasteInput"
+          @click="updatePasteLine"
+          @keyup="onPasteKeyup"
+          @keydown="onPasteKeydown"
+          @blur="pasteOpen = false"></textarea>
+        <ActionSuggestList
+          v-if="pasteGroups.length"
+          :groups="pasteGroups"
+          :active-index="pasteNav.activeIndex.value"
+          :id-prefix="pasteId"
+          :count-suffix="pasteParsed.count"
+          data-test-rotation-quick-add-paste-suggestions
+          @choose="choosePasteSuggestion" />
+      </div>
       <div v-if="pasteResults.length" class="flex flex-col gap-1">
         <div
           v-for="(line, i) in pasteResults"
@@ -71,9 +99,26 @@
             class="select select-bordered select-xs"
             :data-test-rotation-quick-add-paste-pick="i">
             <option :value="null" disabled>Pick one…</option>
-            <option v-for="c in line.candidates" :key="c.key" :value="c.key">{{ c.label }}</option>
+            <optgroup
+              v-for="bucket in groupCandidates(line.candidates)"
+              :key="bucket.group ?? ''"
+              :label="formatActionGroup(bucket.group) || 'Other'">
+              <option v-for="c in bucket.items" :key="c.key" :value="c.key">{{ c.label }}</option>
+            </optgroup>
           </select>
-          <span v-else class="opacity-50 text-xs whitespace-nowrap">no match — skipped</span>
+          <select
+            v-else
+            v-model="resolvedByLine[i]"
+            class="select select-bordered select-xs"
+            :data-test-rotation-quick-add-paste-unmatched-pick="i">
+            <option :value="null">No match — skip</option>
+            <optgroup
+              v-for="bucket in allActionGroups"
+              :key="bucket.group ?? ''"
+              :label="formatActionGroup(bucket.group) || 'Other'">
+              <option v-for="c in bucket.items" :key="c.key" :value="c.key">{{ c.label }}</option>
+            </optgroup>
+          </select>
         </div>
       </div>
       <button
@@ -88,11 +133,22 @@
   </div>
 </template>
 
+<script lang="ts">
+let instanceCounter = 0;
+</script>
+
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
+import ActionSuggestList from "./ActionSuggestList.vue";
+import { useSuggestNavigation } from "../composables/useSuggestNavigation";
 import {
+  formatActionGroup,
+  groupCandidates,
   matchActionLines,
+  normalize,
+  parseActionLine,
   rankActionMatches,
+  type CandidateGroup,
   type LineMatchResult,
   type MatchableAction,
   type MatchCandidate,
@@ -106,45 +162,174 @@ const emit = defineEmits<{
   "add-actions": [payload: Array<{ key: string; type: string; count: number }>];
 }>();
 
-const GROUP_DISPLAY_LABELS: Record<string, string> = {
-  basic: "Basic",
-  skill: "Skill",
-  forteCircuit: "Forte Circuit",
-  liberation: "Liberation",
-  intro: "Intro",
-  outro: "Outro",
-  tuneBreak: "Tune Break",
-};
+/** Suggestions scoring below this are noise, not worth showing. */
+const SUGGESTION_SCORE_FLOOR = 0.3;
+const SUGGESTION_LIMITS = { perGroup: 4, total: 12 };
 
-function formatGroup(group?: string): string {
-  if (!group) return "";
-  return GROUP_DISPLAY_LABELS[group] ?? group;
+const instanceId = ++instanceCounter;
+const inputId = `rotation-quick-add-${instanceId}`;
+const pasteId = `rotation-quick-add-paste-${instanceId}`;
+
+function flatten(groups: CandidateGroup[]): MatchCandidate[] {
+  return groups.flatMap((bucket) => bucket.items);
 }
 
-const queryValue = ref("");
+function suggestionGroups(text: string): CandidateGroup[] {
+  return groupCandidates(
+    rankActionMatches(text, props.actions).filter((c) => c.score > SUGGESTION_SCORE_FLOOR),
+    SUGGESTION_LIMITS,
+  );
+}
 
-const suggestions = computed<MatchCandidate[]>(() => {
-  if (!queryValue.value.trim()) return [];
-  return rankActionMatches(queryValue.value, props.actions)
-    .filter((c) => c.score > 0.3)
-    .slice(0, 6);
+/** Every attack, bucketed in game order — for browsing and the unmatched-line picker. */
+const allActionGroups = computed<CandidateGroup[]>(() => groupCandidates(rankActionMatches("", props.actions)));
+
+// ── "Add one action" input ──────────────────────────────────────────────
+
+const inputEl = ref<HTMLInputElement | null>(null);
+const queryValue = ref("");
+const inputOpen = ref(false);
+
+const inputParsed = computed(() => parseActionLine(queryValue.value));
+
+const inputGroups = computed<CandidateGroup[]>(() => {
+  if (!inputOpen.value) return [];
+  // Empty query: browse every attack, so names can be found without typing.
+  if (!inputParsed.value.text) return allActionGroups.value;
+  return suggestionGroups(inputParsed.value.text);
 });
 
+const inputFlat = computed(() => flatten(inputGroups.value));
+
+// Browsing starts with nothing highlighted so a stray Enter doesn't add the first attack.
+const inputNav = useSuggestNavigation(inputFlat, {
+  initialIndex: () => (inputParsed.value.text ? 0 : -1),
+});
+
+const inputActiveDescendant = computed(() =>
+  inputFlat.value.length && inputNav.activeIndex.value >= 0 ? `${inputId}-opt-${inputNav.activeIndex.value}` : undefined,
+);
+
 function chooseSuggestion(candidate: MatchCandidate) {
-  emit("add-actions", [{ key: candidate.key, type: candidate.group ?? "basic", count: 1 }]);
+  emit("add-actions", [{ key: candidate.key, type: candidate.group ?? "basic", count: inputParsed.value.count }]);
   queryValue.value = "";
+  // Stay focused but closed, so the next action can be typed straight away.
+  inputOpen.value = false;
+  inputEl.value?.focus();
 }
 
-function onEnter() {
-  const top = suggestions.value[0];
-  if (top) {
-    chooseSuggestion(top);
+function onInputKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") {
+    queryValue.value = "";
+    inputOpen.value = false;
+    return;
+  }
+  if (event.key === "Tab") {
+    inputOpen.value = false;
+    return;
+  }
+  if (!inputOpen.value && event.key === "ArrowDown") {
+    event.preventDefault();
+    inputOpen.value = true;
+    return;
+  }
+  if (!inputNav.onKeydown(event, chooseSuggestion) && event.key === "Enter") {
+    event.preventDefault();
   }
 }
+
+// ── Paste panel ─────────────────────────────────────────────────────────
 
 const showPaste = ref(false);
 const pasteText = ref("");
 const resolvedByLine = ref<Record<number, string | null>>({});
+
+const pasteEl = ref<HTMLTextAreaElement | null>(null);
+const pasteOpen = ref(false);
+/** The line the caret is on: [start, end) offsets into the textarea value. */
+const pasteLine = ref({ start: 0, end: 0, text: "" });
+
+function updatePasteLine() {
+  const el = pasteEl.value;
+  if (!el) return;
+  const value = el.value;
+  const caret = el.selectionStart ?? value.length;
+  const start = value.lastIndexOf("\n", caret - 1) + 1;
+  const newlineAt = value.indexOf("\n", caret);
+  const end = newlineAt === -1 ? value.length : newlineAt;
+  pasteLine.value = { start, end, text: value.slice(start, end) };
+}
+
+const pasteParsed = computed(() => parseActionLine(pasteLine.value.text));
+
+const pasteGroups = computed<CandidateGroup[]>(() => {
+  if (!pasteOpen.value || !pasteParsed.value.text) return [];
+  const ranked = rankActionMatches(pasteParsed.value.text, props.actions);
+  // Already an exact match — let Enter insert a newline as usual.
+  if (!ranked.length || ranked[0].score >= 1) return [];
+  return suggestionGroups(pasteParsed.value.text);
+});
+
+const pasteFlat = computed(() => flatten(pasteGroups.value));
+const pasteNav = useSuggestNavigation(pasteFlat, { acceptTab: true });
+
+const pasteActiveDescendant = computed(() =>
+  pasteFlat.value.length && pasteNav.activeIndex.value >= 0 ? `${pasteId}-opt-${pasteNav.activeIndex.value}` : undefined,
+);
+
+/** Labels shared by more than one attack (e.g. a skill and forte circuit hit with the same name). */
+const duplicateLabels = computed(() => {
+  const counts = new Map<string, number>();
+  for (const action of props.actions) {
+    const key = normalize(action.label);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return new Set([...counts].filter(([, n]) => n > 1).map(([key]) => key));
+});
+
+function onPasteInput() {
+  pasteOpen.value = true;
+  updatePasteLine();
+}
+
+function onPasteKeyup(event: KeyboardEvent) {
+  // ↑/↓ drive the suggestion highlight while the list is open, not the caret.
+  if ((event.key === "ArrowUp" || event.key === "ArrowDown") && pasteFlat.value.length) return;
+  updatePasteLine();
+}
+
+function onPasteKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape" && pasteFlat.value.length) {
+    event.preventDefault();
+    pasteOpen.value = false;
+    return;
+  }
+  pasteNav.onKeydown(event, choosePasteSuggestion);
+}
+
+async function choosePasteSuggestion(candidate: MatchCandidate) {
+  const el = pasteEl.value;
+  const value = el?.value ?? pasteText.value;
+  const { start, end } = pasteLine.value;
+  const count = pasteParsed.value.count;
+
+  // A label shared across types gets a "<Type>: " prefix so the line resolves
+  // to exactly this attack instead of coming back ambiguous.
+  const label = duplicateLabels.value.has(normalize(candidate.label))
+    ? `${formatActionGroup(candidate.group)}: ${candidate.label}`
+    : candidate.label;
+  const newLine = label + (count > 1 ? ` x${count}` : "");
+  const after = value.slice(end);
+
+  pasteText.value = value.slice(0, start) + newLine + (after.startsWith("\n") ? after : "\n" + after);
+  pasteOpen.value = false;
+
+  const caret = start + newLine.length + 1;
+  await nextTick();
+  el?.focus();
+  el?.setSelectionRange(caret, caret);
+  updatePasteLine();
+}
 
 const pasteResults = computed<LineMatchResult[]>(() => matchActionLines(pasteText.value, props.actions));
 
@@ -161,12 +346,13 @@ const pastedResolvedEntries = computed<ResolvedEntry[]>(() => {
       entries.push({ key: line.candidates[0].key, group: line.candidates[0].group, count: line.count });
       return;
     }
-    if (line.status === "ambiguous") {
-      const chosenKey = resolvedByLine.value[i];
-      const chosen = chosenKey ? line.candidates.find((c) => c.key === chosenKey) : null;
-      if (chosen) {
-        entries.push({ key: chosen.key, group: chosen.group, count: line.count });
-      }
+    const chosenKey = resolvedByLine.value[i];
+    if (!chosenKey) return;
+    const pool: Array<{ key: string; group?: string }> =
+      line.status === "ambiguous" ? line.candidates : props.actions;
+    const chosen = pool.find((c) => c.key === chosenKey);
+    if (chosen) {
+      entries.push({ key: chosen.key, group: chosen.group, count: line.count });
     }
   });
   return entries;
@@ -174,6 +360,7 @@ const pastedResolvedEntries = computed<ResolvedEntry[]>(() => {
 
 const pastedMatchedCount = computed(() => pastedResolvedEntries.value.length);
 
+// Unmatched lines default to "skip" and never block; only unresolved ambiguous ones do.
 const ambiguousUnresolvedCount = computed(
   () =>
     pasteResults.value.filter((line, i) => line.status === "ambiguous" && !resolvedByLine.value[i]).length,
@@ -194,15 +381,3 @@ function addPasted() {
   showPaste.value = false;
 }
 </script>
-
-<style scoped lang="scss">
-.rotation__quick-add__suggest {
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  left: 0;
-  right: 0;
-  z-index: 10;
-  max-height: 14rem;
-  overflow-y: auto;
-}
-</style>
