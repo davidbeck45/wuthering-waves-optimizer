@@ -89,14 +89,14 @@
               'badge-warning': line.status === 'ambiguous',
               'badge-ghost': line.status === 'unmatched',
             }"></span>
-          <span class="flex-1 truncate" :title="line.raw">{{ line.raw }}</span>
-          <span v-if="line.status === 'matched'" class="opacity-70 text-xs whitespace-nowrap">
+          <span class="flex-1 min-w-0 truncate" :title="line.raw">{{ line.raw }}</span>
+          <span v-if="line.status === 'matched'" class="opacity-70 text-xs truncate max-w-[60%]">
             → {{ line.candidates[0].label }}
           </span>
           <select
             v-else-if="line.status === 'ambiguous'"
             v-model="resolvedByLine[i]"
-            class="select select-bordered select-xs"
+            class="select select-bordered select-xs w-1/2 max-w-xs"
             :data-test-rotation-quick-add-paste-pick="i">
             <option :value="null" disabled>Pick one…</option>
             <optgroup
@@ -109,7 +109,7 @@
           <select
             v-else
             v-model="resolvedByLine[i]"
-            class="select select-bordered select-xs"
+            class="select select-bordered select-xs w-1/2 max-w-xs"
             :data-test-rotation-quick-add-paste-unmatched-pick="i">
             <option :value="null">No match — skip</option>
             <optgroup
