@@ -142,6 +142,7 @@
         <TeamRotationEnemySettings
           :model-value="team.enemyConfig"
           :character-element="primaryCharacterElement"
+          :team-elements="teamElements"
           @update:model-value="updateEnemyConfig" />
 
         <div>
@@ -1005,6 +1006,13 @@ const primaryCharacterElement = computed(
   () => (slotContexts.value[0]?.chosenChar as { basic?: { element?: string } } | undefined)?.basic
     ?.element ?? "",
 );
+
+const teamElements = computed(() => {
+  const elements = [0, 1, 2]
+    .map((slot) => (slotContexts.value[slot]?.chosenChar as { basic?: { element?: string } } | undefined)?.basic?.element)
+    .filter((element): element is string => !!element);
+  return [...new Set(elements)];
+});
 
 const definitionsForSlot = computed(() => {
   const out: Record<number, CharacterCalculationContext["definitions"] | null> = {};

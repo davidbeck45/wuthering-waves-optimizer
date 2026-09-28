@@ -1,7 +1,8 @@
 /**
- * Turns the raw OCR text pulled from the name line and individually-
- * cropped stat rows (layout.ts's NAME_BLOCK / MAIN_STAT_ROW /
- * SECONDARY_STAT_ROW / SUBSTAT_ROWS, plus the SUBSTAT_BLOCK fallback) into
+ * Turns the raw OCR text pulled from the name line, the main/secondary
+ * stat rows, and the substat label/value columns (layout.ts's NAME_BLOCK /
+ * MAIN_STAT_ROW / SECONDARY_STAT_ROW / SUBSTAT_LABEL_COLUMN /
+ * SUBSTAT_VALUE_COLUMN, with SUBSTAT_ROWS and SUBSTAT_BLOCK as fallbacks) into
  * a ParsedEchoSlot candidate — the same shape CalculatorEchoParser.vue
  * already emits, so the result can be handed straight to
  * CalculatorEchoImporter.vue's existing mapParsedEchoes →
@@ -48,12 +49,20 @@
 import { mainEchoesData, getEchoData, getCostByClass, type Echo } from "../echoes/index";
 import { statsTable, subStatsTable, verboseStatLabelMap, flatBonusesByRankByType } from "../echoes/stats";
 import { getSubstatType, getSubstatValue } from "../echoes/parsedEchoMapping";
-import { levenshteinSimilarity } from "./levenshtein";
-import type { FieldConfidence, ParsedEchoSlot, ParsedSubstat } from "./types";
+import { levenshteinSimilarity, prefixTolerantSimilarity } from "./levenshtein";
+import type { FieldConfidence, OcrLine, ParsedEchoSlot, ParsedSubstat, SubstatSource } from "./types";
 
 export const NAME_MATCH_THRESHOLD = 0.68;
 /** Loose sanity floor for the "set already narrowed to one echo" case — just enough to catch a set icon that was clearly misread, not to require a strong text match. */
 const NAME_SANITY_THRESHOLD = 0.4;
+/**
+ * Per-char cost of dropping trailing OCR text when matching a name (a full
+ * edit costs 1) — see prefixTolerantSimilarity. At 0.5, "Dreamless" plus up
+ * to ~8 junk chars still clears NAME_MATCH_THRESHOLD, while a lightly
+ * garbled "Fog Lion Arch: Bdy" still prefers Fog Lion Arch: Body over its
+ * prefix echo Fog Lion Arch.
+ */
+const TRAILING_DROP_WEIGHT = 0.5;
 /** How many substats a max-level echo has — the app doesn't track echo level, so every scanned echo is assumed to be at this many. */
 const EXPECTED_SUBSTAT_COUNT = 5;
 
@@ -324,6 +333,85 @@ export function splitStatBlock(rawText: string): StatRow[] {
 }
 
 /**
+ * A wrapped label's continuation line starts closer under its first line
+ * than the next row does. Measured top-to-top (descenders like "Energy
+ * Regen"'s g stretch a box's bottom, not its top) on real 3x-upscaled
+ * column crops, in multiples of a value line's height: continuation
+ * ≈ 1.65-1.75x, next row ≈ 2.05x, Echo Skill text below the substats ≥ 3x.
+ */
+const CONTINUATION_MAX_OFFSET_RATIO = 1.85;
+
+function lineCenter(line: OcrLine): number {
+  return (line.y0 + line.y1) / 2;
+}
+
+/** Strips OCR noise hugging a value ("10.9%.", ",40", "8.6 %") without touching its digits. */
+function cleanValueText(text: string): string {
+  return text.replace(/\s+/g, "").replace(/^[^\d+-]+/, "").replace(/[^\d%]+$/, "");
+}
+
+/**
+ * The primary substat pass: SUBSTAT_LABEL_COLUMN and SUBSTAT_VALUE_COLUMN
+ * are OCR'd separately, then each value is paired with the label line at
+ * the same height.
+ *
+ * Values never wrap, so the value column reads one clean line per row. A
+ * wrapped label ("Resonance Skill DMG" / "Bonus", "Resonance Liberation" /
+ * "DMG Bonus") only adds a line to the label column, and the value lines up
+ * with the label's *first* line. So the label line nearest each value's
+ * center is that row's label; an unpaired label line sitting just under it
+ * is its continuation and gets appended. Pairing by position (rather than
+ * list index) means one dropped or garbled line only costs its own row.
+ *
+ * The columns extend past the last substat into the Echo Skill
+ * description, so pairs whose label isn't a plausible stat name are
+ * dropped, and a continuation is only appended when it's close below
+ * (CONTINUATION_MAX_OFFSET_RATIO) and the merged text reads as one label.
+ */
+export function parseSubstatColumns(labelLines: OcrLine[], valueLines: OcrLine[]): StatRow[] {
+  const values = valueLines
+    .map((line) => ({ ...line, text: cleanValueText(line.text) }))
+    .filter((line) => VALUE_ONLY_PATTERN.test(line.text))
+    .sort((a, b) => a.y0 - b.y0);
+  const labels = labelLines.filter((line) => line.text.trim()).sort((a, b) => a.y0 - b.y0);
+
+  const anchors: { value: OcrLine; labelIndex: number }[] = [];
+  const anchored = new Set<number>();
+  for (const value of values) {
+    const tolerance = (value.y1 - value.y0) / 2;
+    let bestIndex = -1;
+    let bestDistance = Infinity;
+    labels.forEach((label, i) => {
+      if (anchored.has(i)) return;
+      const distance = Math.abs(lineCenter(label) - lineCenter(value));
+      if (distance < bestDistance) {
+        bestIndex = i;
+        bestDistance = distance;
+      }
+    });
+    if (bestIndex < 0 || bestDistance > tolerance) continue;
+    anchored.add(bestIndex);
+    anchors.push({ value, labelIndex: bestIndex });
+  }
+
+  const rows: StatRow[] = [];
+  for (const { value, labelIndex } of anchors) {
+    let rawLabel = labels[labelIndex].text.trim();
+    const next = labels[labelIndex + 1];
+    const maxOffset = (value.y1 - value.y0) * CONTINUATION_MAX_OFFSET_RATIO;
+    if (next && !anchored.has(labelIndex + 1) && next.y0 - labels[labelIndex].y0 <= maxOffset) {
+      // The merged text has to read as one real label on its own —
+      // normalizeStatLabel's drop-leading-words tolerance would happily turn
+      // "Crit. Rate" + an unpaired "HP" into "HP".
+      const merged = `${rawLabel} ${next.text.trim()}`;
+      if ((bestKnownLabelMatch(merged)?.score ?? 0) >= 0.75) rawLabel = merged;
+    }
+    if (isPlausibleLabel(rawLabel)) rows.push({ rawLabel, rawValue: value.text });
+  }
+  return rows.slice(0, EXPECTED_SUBSTAT_COUNT);
+}
+
+/**
  * NAME_BLOCK is a single line by design (WuWa shrinks the font for a long
  * name rather than wrapping it) and contains nothing else — unlike the
  * old multi-purpose header crop (name + level + cost), there's no other
@@ -348,12 +436,69 @@ export function parseNameText(rawText: string): string | null {
 
 export type EchoNameMatch = { key: string; name: string; similarity: number };
 
+/** Both args already normalized. Tolerates trailing OCR junk after the name — see TRAILING_DROP_WEIGHT. */
+function nameSimilarity(ocrName: string, echoName: string): number {
+  return prefixTolerantSimilarity(ocrName, echoName, TRAILING_DROP_WEIGHT);
+}
+
+/** Same lowercasing/accent transliteration as normalize(), but split into words instead of joined: "Jué wll" → ["jue", "wll"]. */
+function nameWords(text: string): string[] {
+  return text.split(/[^\p{L}\p{N}]+/u).map(normalize).filter(Boolean);
+}
+
+function startsWithWords(words: string[], prefix: string[]): boolean {
+  return prefix.length > 0 && prefix.every((word, i) => words[i] === word);
+}
+
+let prefixFamilyNames: Set<string> | null = null;
+
+/**
+ * Echoes whose full name is the leading words of another echo's name
+ * ("Chop Chop" → "Chop Chop: Headless", "Fog Lionarch" → "Fog Lionarch:
+ * Body"). The whole-word rule in bestNameMatch never applies to these: a
+ * junk-trailed read of the longer name would otherwise fall back to the
+ * short one whenever its own fuzzy score came up short.
+ */
+function getPrefixFamilyNames(): Set<string> {
+  if (prefixFamilyNames) return prefixFamilyNames;
+  const all = Object.values(mainEchoesData ?? {}).map((echo) => ({ key: echo.key, words: nameWords(echo.name) }));
+  prefixFamilyNames = new Set(
+    all
+      .filter((a) => all.some((b) => b.words.length > a.words.length && startsWithWords(b.words, a.words)))
+      .map((a) => a.key),
+  );
+  return prefixFamilyNames;
+}
+
+/**
+ * Whole-word rule: OCR text that starts with an echo's complete name as
+ * separate words, followed by more words, counts as that echo — scored at
+ * least NAME_MATCH_THRESHOLD. It's a floor, not an override, so a stronger
+ * fuzzy match to another echo still wins.
+ *
+ * Needed for very short names. A real "Jué" read as "Jue wll" (name
+ * perfect, background art as junk) scored 1 − 1.5 / (3 + 1.5) = 0.667
+ * under prefixTolerantSimilarity — the 3-char name makes the denominator
+ * tiny, so 3 junk chars were enough to miss the 0.68 threshold. Requiring
+ * an exact whole word (then a word break) keeps random text that merely
+ * starts with "ju" out.
+ */
+function matchesWholeNamePrefix(ocrWords: string[], echo: Echo): boolean {
+  if (getPrefixFamilyNames().has(echo.key)) return false;
+  const words = nameWords(echo.name);
+  return ocrWords.length > words.length && startsWithWords(ocrWords, words);
+}
+
 function bestNameMatch(rawName: string, pool: Echo[]): EchoNameMatch | null {
   const target = normalize(rawName);
   if (!target) return null;
+  const ocrWords = nameWords(rawName);
   let best: EchoNameMatch | null = null;
   for (const echo of pool) {
-    const similarity = levenshteinSimilarity(target, normalize(echo.name));
+    let similarity = nameSimilarity(target, normalize(echo.name));
+    if (similarity < NAME_MATCH_THRESHOLD && matchesWholeNamePrefix(ocrWords, echo)) {
+      similarity = NAME_MATCH_THRESHOLD;
+    }
     if (!best || similarity > best.similarity) {
       best = { key: echo.key, name: echo.name, similarity };
     }
@@ -461,7 +606,7 @@ function resolveEchoBySet(
 
   if (matchedSet && pool.length === 1) {
     const only = pool[0];
-    const similarity = headerName ? levenshteinSimilarity(normalize(headerName), normalize(only.name)) : null;
+    const similarity = headerName ? nameSimilarity(normalize(headerName), normalize(only.name)) : null;
     // No name text to sanity-check against, or it's at least a loose match: trust the set narrowing.
     const trusted = similarity === null || similarity >= NAME_SANITY_THRESHOLD;
     return { echo: only.key, confidence: trusted ? "high" : "low" };
@@ -530,8 +675,8 @@ function resolveRow(row: StatRow): ResolvedRow {
 export type ParseCandidateResult = {
   slot: ParsedEchoSlot;
   needsMainStatSelection: boolean;
-  /** True when the per-row substat crops came up short and SUBSTAT_BLOCK's wider fallback pass was used instead. */
-  usedSubstatBlockFallback: boolean;
+  /** Which substat pass produced the result — see parseEchoCandidate. */
+  substatSource: SubstatSource;
   confidence: {
     name: FieldConfidence;
     cost: FieldConfidence;
@@ -548,9 +693,12 @@ export function parseEchoCandidate(input: {
   nameText: string;
   mainStatText: string;
   secondaryStatText: string;
-  /** Up to 5, in panel order. A slot's text can be empty/unparseable when the per-row pass misses it — usedSubstatBlockFallback then reports whether substatBlockText recovered it. */
-  substatTexts: string[];
-  /** SUBSTAT_BLOCK's OCR text — only consulted if the per-row pass doesn't add up to EXPECTED_SUBSTAT_COUNT. Optional so callers that skip the fallback OCR call entirely (nothing to gain if the per-row pass already got everything) don't need to pass anything. */
+  /** SUBSTAT_LABEL_COLUMN / SUBSTAT_VALUE_COLUMN OCR lines — the primary substat pass (parseSubstatColumns). */
+  substatLabelLines?: OcrLine[];
+  substatValueLines?: OcrLine[];
+  /** Fallback: the 5 per-row SUBSTAT_ROWS crops' text, in panel order. Only OCR'd when the column pass comes up short. */
+  substatTexts?: string[];
+  /** Fallback: SUBSTAT_BLOCK's OCR text, parsed with splitStatBlock. Only OCR'd when the column pass comes up short. */
   substatBlockText?: string;
   /**
    * The final resolved set (single-set lookup, narrowed image match, or
@@ -593,22 +741,25 @@ export function parseEchoCandidate(input: {
     cost && mainStatLabel && statsTable[cost]?.[verboseStatLabelMap[mainStatLabel] ?? ""],
   );
 
-  let resolvedSubstats: (ResolvedRow | null)[] = input.substatTexts.map((text) => {
-    const row = parseStatRow(text);
-    return row ? resolveRow(row) : null;
-  });
-  let usedSubstatBlockFallback = false;
-
-  const perRowCount = resolvedSubstats.filter(Boolean).length;
-  if (perRowCount < EXPECTED_SUBSTAT_COUNT && input.substatBlockText) {
-    const blockRows = splitStatBlock(input.substatBlockText).slice(0, EXPECTED_SUBSTAT_COUNT);
-    if (blockRows.length > perRowCount) {
-      const blockResolved: (ResolvedRow | null)[] = blockRows.map(resolveRow);
-      while (blockResolved.length < EXPECTED_SUBSTAT_COUNT) blockResolved.push(null);
-      resolvedSubstats = blockResolved;
-      usedSubstatBlockFallback = true;
+  // Column pass first. If it comes up short, whichever fallback pass
+  // recovers the most rows replaces it outright — two partial views aren't
+  // merged position by position. Ties keep the earlier pass.
+  const passes: { source: SubstatSource; rows: StatRow[] }[] = [
+    { source: "columns", rows: parseSubstatColumns(input.substatLabelLines ?? [], input.substatValueLines ?? []) },
+  ];
+  if (passes[0].rows.length < EXPECTED_SUBSTAT_COUNT) {
+    if (input.substatTexts) {
+      const perRow = input.substatTexts.map(parseStatRow);
+      passes.push({ source: "rows", rows: perRow.filter((row): row is StatRow => row !== null) });
+    }
+    if (input.substatBlockText) {
+      passes.push({ source: "block", rows: splitStatBlock(input.substatBlockText).slice(0, EXPECTED_SUBSTAT_COUNT) });
     }
   }
+  const best = passes.reduce((a, b) => (b.rows.length > a.rows.length ? b : a));
+  const substatSource = best.source;
+  const resolvedSubstats: (ResolvedRow | null)[] = best.rows.map(resolveRow);
+  while (resolvedSubstats.length < EXPECTED_SUBSTAT_COUNT) resolvedSubstats.push(null);
 
   const substats: ParsedSubstat[] = resolvedSubstats.map((resolved) =>
     resolved ? { subStat: resolved.label, subStatValue: resolved.formatted } : { subStat: "", subStatValue: "" },
@@ -632,7 +783,7 @@ export function parseEchoCandidate(input: {
       set: input.matchedSet,
     },
     needsMainStatSelection,
-    usedSubstatBlockFallback,
+    substatSource,
     confidence: {
       name: resolvedEcho ? nameConfidence : "low",
       cost: costConfidence,
@@ -641,6 +792,12 @@ export function parseEchoCandidate(input: {
       substats: substatConfidence,
     },
     rawHeaderText: input.nameText,
-    rawStatsText: [input.mainStatText, input.secondaryStatText, ...input.substatTexts].join("\n---\n"),
+    rawStatsText: [
+      input.mainStatText,
+      input.secondaryStatText,
+      (input.substatLabelLines ?? []).map((line) => line.text).join("\n"),
+      (input.substatValueLines ?? []).map((line) => line.text).join("\n"),
+      ...(input.substatTexts ?? []),
+    ].join("\n---\n"),
   };
 }

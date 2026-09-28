@@ -22,8 +22,8 @@ const GROUP_KEY_TO_ACTION_TYPE: Record<string, string> = {
  * only; echo-set/utility/echo/negative-status attacks are intentionally out
  * of scope for v1's quick-add/paste-import), for `actionTextMatch.ts` to
  * search against. Each entry's `group` is the short action-type key (e.g.
- * "basic"), not a display label — callers needing a display label should
- * capitalize/format it themselves.
+ * "basic"), not a display label — the matcher also scores it against type
+ * aliases ("int" -> intro), and `formatActionGroup` turns it into a label.
  */
 export function useCharacterActionList(
   characterData: Ref<Record<string, unknown> | null | undefined> | ComputedRef<Record<string, unknown> | null | undefined>,

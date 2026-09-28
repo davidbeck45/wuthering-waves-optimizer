@@ -1,5 +1,6 @@
 /**
- * Pure fuzzy-matching engine for the rotation builder's "paste import" feature.
+ * Pure fuzzy-matching engine for the rotation builder's quick-add input and
+ * "paste import" feature (Rotation Flow, ADR 0015).
  *
  * Given free-form pasted text (one action per line, optionally with a
  * trailing count suffix like "x2"), matches each line against a character's
@@ -10,7 +11,12 @@
 export interface MatchableAction {
   key: string;
   label: string;
-  group?: string; // e.g. "Basic", "Skill", "Liberation" — for display only, not matching
+  /**
+   * Attack type, e.g. "intro", "skill", "forteCircuit" (case-insensitive).
+   * Used for bucketing *and* matching: typing a type alias ("int", "lib",
+   * "forte") finds that type's attacks even when their labels don't say it.
+   */
+  group?: string;
 }
 
 export interface MatchCandidate {
@@ -18,6 +24,13 @@ export interface MatchCandidate {
   label: string;
   group?: string;
   score: number; // 0..1
+  /** Whether the winning score came from the label text or the type alias. */
+  matchedBy: "label" | "group";
+}
+
+export interface CandidateGroup {
+  group: string | undefined;
+  items: MatchCandidate[];
 }
 
 export type LineMatchStatus = "matched" | "ambiguous" | "unmatched";
@@ -40,6 +53,55 @@ const AMBIGUOUS_SCORE_WINDOW = 0.12;
 const AMBIGUOUS_SCORE_FLOOR = 0.5;
 /** Ambiguous clusters are capped to this many candidates for display. */
 const MAX_AMBIGUOUS_CANDIDATES = 3;
+
+/** Type-alias scores: below exact (1.0) / prefix (0.85) label hits, above substring (0.6). */
+const GROUP_EXACT_SCORE = 0.8;
+const GROUP_PREFIX_SCORE = 0.7;
+/** Minimum query length before a partial type alias ("in" -> "intro") counts. */
+const GROUP_PREFIX_MIN_LENGTH = 2;
+
+/**
+ * Words players use for each attack type, keyed by the lowercased short
+ * action-type key (`useCharacterActionList` emits "forteCircuit", etc.).
+ * No single-letter aliases — they'd match nearly everything.
+ */
+const GROUP_ALIASES: Record<string, string[]> = {
+  intro: ["intro", "intro skill", "qte"],
+  outro: ["outro", "outro skill"],
+  skill: ["skill", "resonance skill"],
+  liberation: ["liberation", "resonance liberation", "lib", "ult"],
+  fortecircuit: ["forte", "forte circuit", "fc"],
+  basic: ["basic", "basic attack", "normal attack"],
+  tunebreak: ["tune break", "tune"],
+};
+
+/** Every alias, longest first, paired with its group — for "<type> <text>" scoping. */
+const ALIASES_LONGEST_FIRST: Array<{ alias: string; group: string }> = Object.entries(GROUP_ALIASES)
+  .flatMap(([group, aliases]) => aliases.map((alias) => ({ alias, group })))
+  .sort((a, b) => b.alias.length - a.alias.length);
+
+/** Game order for bucketing ties (e.g. browse mode, where every score is 0). */
+const GROUP_ORDER = ["intro", "basic", "skill", "fortecircuit", "liberation", "outro", "tunebreak"];
+
+const GROUP_DISPLAY_LABELS: Record<string, string> = {
+  basic: "Basic",
+  skill: "Skill",
+  fortecircuit: "Forte Circuit",
+  liberation: "Liberation",
+  intro: "Intro",
+  outro: "Outro",
+  tunebreak: "Tune Break",
+};
+
+function groupId(group: string | undefined): string {
+  return (group ?? "").toLowerCase();
+}
+
+/** Display label for an action type key ("forteCircuit" -> "Forte Circuit"). */
+export function formatActionGroup(group: string | undefined): string {
+  if (!group) return "";
+  return GROUP_DISPLAY_LABELS[groupId(group)] ?? group;
+}
 
 /** Matches a trailing count suffix like "x2", "×2", "*3" (case-insensitive, optional surrounding whitespace). */
 const COUNT_SUFFIX_RE = /\s*[x×*]\s*(\d+)\s*$/i;
@@ -65,7 +127,7 @@ export function parseActionLine(rawLine: string): { text: string; count: number 
 }
 
 /** Lowercases, collapses all non-alphanumeric runs to single spaces, and trims. */
-function normalize(input: string): string {
+export function normalize(input: string): string {
   return input
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
@@ -149,21 +211,80 @@ function scoreMatch(query: string, label: string): number {
 }
 
 /**
- * Scores `query` against every provided action's label and returns all of
- * them, sorted best-first. Never drops any input action — callers filter
- * by score/threshold as needed. Ties preserve input order (stable sort).
+ * Scores a query against an action's type aliases: exact alias -> 0.8,
+ * a partial alias ("int" for "intro") -> 0.7, otherwise 0.
+ */
+function scoreGroupMatch(query: string, group: string | undefined): number {
+  const aliases = GROUP_ALIASES[groupId(group)];
+  const normalizedQuery = normalize(query);
+  if (!aliases || !normalizedQuery) {
+    return 0;
+  }
+
+  if (aliases.includes(normalizedQuery)) {
+    return GROUP_EXACT_SCORE;
+  }
+
+  if (
+    normalizedQuery.length >= GROUP_PREFIX_MIN_LENGTH &&
+    aliases.some((alias) => alias.startsWith(normalizedQuery))
+  ) {
+    return GROUP_PREFIX_SCORE;
+  }
+
+  return 0;
+}
+
+/**
+ * Splits a "<type alias> <text>" query (e.g. "lib horizon", "skill: anchors")
+ * into the aliased group and the remaining text. The longest alias wins, so
+ * "intro skill foo" scopes to intro with "foo" rather than "skill foo".
+ * Returns null when the query doesn't start with an alias or has no rest.
+ */
+function splitTypePrefix(query: string): { group: string; rest: string } | null {
+  const normalizedQuery = normalize(query);
+  for (const { alias, group } of ALIASES_LONGEST_FIRST) {
+    if (normalizedQuery.startsWith(alias + " ")) {
+      const rest = normalizedQuery.slice(alias.length + 1).trim();
+      if (rest) {
+        return { group, rest };
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Scores `query` against every provided action's label and type and returns
+ * all of them, sorted best-first. Never drops any input action — callers
+ * filter by score/threshold as needed. Ties preserve input order (stable sort).
  */
 export function rankActionMatches(query: string, actions: MatchableAction[]): MatchCandidate[] {
+  const typePrefix = splitTypePrefix(query);
+
   return actions
-    .map((action, index) => ({
-      candidate: {
-        key: action.key,
-        label: action.label,
-        group: action.group,
-        score: scoreMatch(query, action.label),
-      },
-      index,
-    }))
+    .map((action, index) => {
+      let labelScore = scoreMatch(query, action.label);
+      if (typePrefix && typePrefix.group === groupId(action.group)) {
+        const scopedScore = scoreMatch(typePrefix.rest, action.label);
+        if (scopedScore > 0) {
+          labelScore = Math.max(labelScore, Math.min(1, scopedScore * 0.95 + 0.05));
+        }
+      }
+      const groupScore = scoreGroupMatch(query, action.group);
+      const matchedBy: MatchCandidate["matchedBy"] = groupScore > labelScore ? "group" : "label";
+
+      return {
+        candidate: {
+          key: action.key,
+          label: action.label,
+          group: action.group,
+          score: Math.max(labelScore, groupScore),
+          matchedBy,
+        },
+        index,
+      };
+    })
     .sort((a, b) => {
       const scoreDiff = b.candidate.score - a.candidate.score;
       if (scoreDiff !== 0) {
@@ -172,6 +293,49 @@ export function rankActionMatches(query: string, actions: MatchableAction[]): Ma
       return a.index - b.index; // stable: preserve input order on ties
     })
     .map((entry) => entry.candidate);
+}
+
+/**
+ * Buckets ranked candidates by action type. Buckets are ordered by their best
+ * score (ties fall back to game order: intro, basic, skill, forte circuit,
+ * liberation, outro, tune break); items keep their incoming (ranked) order.
+ * `perGroup` caps each bucket and `total` caps the whole list, filled
+ * bucket-by-bucket in display order.
+ */
+export function groupCandidates(
+  candidates: MatchCandidate[],
+  { perGroup = Infinity, total = Infinity }: { perGroup?: number; total?: number } = {},
+): CandidateGroup[] {
+  const byGroup = new Map<string, CandidateGroup>();
+  for (const candidate of candidates) {
+    const id = groupId(candidate.group);
+    let bucket = byGroup.get(id);
+    if (!bucket) {
+      bucket = { group: candidate.group, items: [] };
+      byGroup.set(id, bucket);
+    }
+    bucket.items.push(candidate);
+  }
+
+  const orderOf = (group: string | undefined) => {
+    const index = GROUP_ORDER.indexOf(groupId(group));
+    return index === -1 ? GROUP_ORDER.length : index;
+  };
+  const bestScore = (bucket: CandidateGroup) => Math.max(...bucket.items.map((c) => c.score));
+
+  const ordered = [...byGroup.values()].sort(
+    (a, b) => bestScore(b) - bestScore(a) || orderOf(a.group) - orderOf(b.group),
+  );
+
+  const out: CandidateGroup[] = [];
+  let remaining = total;
+  for (const bucket of ordered) {
+    if (remaining <= 0) break;
+    const items = bucket.items.slice(0, Math.min(perGroup, remaining));
+    remaining -= items.length;
+    out.push({ group: bucket.group, items });
+  }
+  return out;
 }
 
 /**

@@ -71,6 +71,11 @@ Key choices, each with a reason:
   `CalculatorEchoParser.vue`'s own 5-separate-crop approach, which is what
   should have been followed from the start) once that was diagnosed. See
   `docs/scanner.md`'s "Substat OCR" section.
+  **Superseded 2026-09-23:** per-row crops are now a fallback. The
+  primary substat pass OCRs a label column and a value column separately
+  and pairs them by line position, because wrapped Resonance
+  Skill/Liberation labels kept pushing rows out of their fixed crops. See
+  `docs/scanner.md`'s "Substat OCR" section.
 - **Echo identity is narrowed by matched set + cost first, the same way
   `CalculatorEchoParser.vue`'s `filteredEchoKeys` narrowing works** — name
   text (Levenshtein vs. `mainEchoesData`) only breaks a tie within that
@@ -155,7 +160,10 @@ explicit user direction for this feature.
 - Cons: only 16:10 is supported today (`isSupportedAspect`
   rejects other aspects up front rather than silently misreading them) — a
   calibration UI for non-16:10/ultrawide is a known, explicitly deferred
-  follow-up, not built here; `public/tesseract/` adds ~19MB of static assets
+  follow-up, not built here **Superseded 2026-09-25:** 16:9 is now
+  supported too, by mapping the 16:10 ROIs rather than a calibration UI —
+  see docs/scanner.md's "Aspect ratios"; ultrawide is still rejected;
+  `public/tesseract/` adds ~19MB of static assets
   to the repo (fetched lazily, only when a scan session starts, so it
   doesn't affect normal app load); individually-cropped substat rows mean
   up to 8 OCR calls per candidate instead of 2, a deliberate

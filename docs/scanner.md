@@ -14,12 +14,17 @@ capture.ts (FrameSource: live share or uploaded video)
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
     something new?" gate — no OCR yet (coarse panel fingerprint AND a
     fine stat-rows fingerprint; see "Change detection" below)
-  → on settle: grab name + main-stat + fixed-secondary + up to 5
-    individually-cropped substat-row bitmaps, plus a full-frame bitmap
-      → echoScanner.worker.ts: OCR each crop separately (tesseract.js, self-hosted)
+  → on settle: snapshot every crop from that one frame (name, main-stat,
+    fixed-secondary, both substat columns, set icon, fallback rows/block)
+    and queue it — see "Capture queue" below; sampling never pauses for OCR
+  → queue.ts runs one snapshot at a time, in capture order:
+      → echoScanner.worker.ts: OCR each crop separately (tesseract.js,
+        self-hosted), returning text plus each line's vertical position
       → echoParser.worker.ts: matchSetFirst (existing set-icon matcher, reused)
-  → if the 5 per-row substat crops don't add up to all 5 substats: one more
-    OCR call against a wider SUBSTAT_BLOCK crop, parsed as a fallback pass
+  → parse.ts pairs each substat value with the label line at its height
+  → if that doesn't add up to all 5 substats: one more batch OCRs the 5
+    per-row SUBSTAT_ROWS crops plus the wider SUBSTAT_BLOCK crop as
+    fallback passes; whichever pass recovers the most wins
   → parse.ts: raw OCR text + matched set → ParsedEchoSlot candidate (echo
     identity: narrow mainEchoesData by the matched set first, same as
     CalculatorEchoParser.vue's filteredEchoKeys minus its cost half —
@@ -77,6 +82,10 @@ shape (an `HTMLVideoElement` plus a `start`/`stop`). Only *how a tick is
 driven* differs:
 
 - **Live** (`getDisplayMedia`): a fixed ~8fps timer over real elapsed time.
+  The tick itself never waits on OCR (see "Capture queue"). `startLive`
+  calls `getDisplayMedia` *before* awaiting the OCR workers: the browser
+  only allows it within the Start click's transient activation, and a cold
+  Tesseract load can outlast that and throw `InvalidStateError`.
 - **Video file**: a deterministic **seek-and-capture** loop — step
   `currentTime` forward, await `seeked`, capture, repeat — decoupled from
   real time. This is faster than live (a ~49s clip becomes ~100 sequential
@@ -111,6 +120,60 @@ rather than scanning a whole file blind:
 check, that Tacet-Lab didn't support video upload at all — it does, and
 this flow was built to match its actual approach once that was corrected.)
 
+## Capture queue: sampling never waits for OCR
+
+Before this, the live tick loop skipped every tick while the previous
+echo was still being OCR'd (one echo is 5-11 OCR crops plus a set-icon
+match, often a couple of seconds). An echo clicked past during that window
+was never seen at all. Real report: 36 echoes clicked every ~5s scanned
+33; clicked every ~2s, only 25.
+
+Now `handleTick` is synchronous. On `stable-novel` it:
+
+1. calls `snapshotFrame`, which starts **every** crop the candidate could
+   need from the current frame: the five primary crops, the masked set
+   icon, the five `SUBSTAT_ROWS` plus `SUBSTAT_BLOCK` fallbacks, and the
+   debug crops if debug mode is on. Each `grab*` helper in `capture.ts`
+   draws to its own canvas synchronously before its first `await`, so
+   starting them all in one synchronous block pins them to the same frame;
+2. calls `stability.commitScan` right away, not after OCR, or the next
+   ticks would queue the same echo again;
+3. enqueues the snapshot on `queue.ts`'s `createSerialQueue`.
+
+`processJob` then OCRs, matches, and parses one snapshot at a time, in
+capture order (the OCR worker already spreads one job's crops over its
+tesseract pool, so running two jobs at once would only split that pool).
+
+This also fixed a mixed-echo bug. The set icon and the fallback crops
+used to be grabbed from the live video *after* the first OCR pass
+returned. If the user had clicked on by then, echo A's name and main
+stat could be paired with echo B's set or substats. The fallback and
+set-icon crops are now always grabbed up front, even though they're
+only sometimes used (unused bitmaps are closed after the job).
+
+Memory: a snapshot is a few MB of small crops. A live share has no cap,
+since the user is still clicking and can't be made to wait. A video file
+can wait, so its seek loop pauses while `VIDEO_MAX_PENDING` (3) snapshots
+are queued.
+
+Stopping: **Stop** (and a video reaching its end) ends capture at once
+(the screen share indicator goes away right then), then status stays
+`stopping` while the queue drains, with a "still reading N more" line in
+the results view. Continue and Scan again are disabled until it finishes.
+Workers are released only after that. Unmounting the component instead
+calls `abort()`: it drops queued snapshots and tears everything down
+immediately. Each session gets a fresh queue and a `session` number, so a
+job still in flight from an aborted session drops its result instead of
+writing into the next one.
+
+Debug mode adds a timing table (`EchoScannerTimings.vue`): the gap between
+live ticks, split by whether the page was visible or hidden (the game full
+screen on top), how long each snapshot waited in the queue, OCR + parse
+time, and the deepest the queue got. The live timer targets 125ms. A
+hidden-page gap near 1000ms means the browser is throttling the timer,
+which is the next thing to fix (driving ticks from a worker timer or
+`MediaStreamTrackProcessor` instead of a main-thread `setInterval`).
+
 ### Cleanup: nothing keeps running once you're done
 
 Nothing here ever leaves the browser (see `EchoScannerCapture.vue`'s
@@ -139,11 +202,12 @@ done. Every capture path releases the same way:
   whether the video finished scanning normally, the user hits Cancel
   during trim, or hits Stop mid-scan.
 - **Component unmount**: `useEchoScanner.ts` registers an `onBeforeUnmount`
-  that calls `stop()` whenever the composable's owning component
+  that calls `abort()` whenever the composable's owning component
   (`EchoScannerCapture.vue`) disappears while a session was still
-  `starting`/`running`/`trimming` — the safety net for "the modal closed
-  out from under an active session," not just the explicit Stop/Cancel
-  buttons.
+  `starting`/`running`/`trimming`/`stopping`. That's the safety net for
+  "the modal closed out from under an active session," not just the
+  explicit Stop/Cancel buttons. Unlike Stop, it doesn't let the capture
+  queue drain first (see "Capture queue").
 - **The `<dialog>` itself**: `EchoScannerModal.vue`/`CalculatorEchoImporter.vue`
   wire `@close` on the `<dialog>` element itself, not just `@click` on the
   backdrop and ✕ button — a real gap found from asking "does this actually
@@ -178,7 +242,7 @@ comment says what was actually measured.
 - Row bands: the main-stat row starts at a fixed fraction of frame height
   (~0.384) with a consistent ~0.0373 pitch between single-line rows,
   **regardless of capture resolution** — checked against three real
-  resolutions that share WuWa's fixed 16:10 UI aspect: 2880x1800,
+  resolutions that share the 16:10 reference aspect: 2880x1800,
   2304x1440, and 2800x1752.
 - **No cost or level OCR.** The app doesn't persist echo level (every
   scanned echo is assumed max-level), and cost is derived from the
@@ -199,67 +263,120 @@ comment says what was actually measured.
 - `SET_ICON_BOX` has had three revisions, all from real usage — see "Set
   icon matching" below for the geometry history and the (larger) separate
   fix to how the crop is matched, not just how tightly it's cropped.
-- `SUBSTAT_BLOCK` — a fallback, not primary, region — spans all 5 substat
-  rows plus wrap allowance; see "Substat OCR" below.
-- Only 16:10 has been measured. A very different aspect ratio is rejected
-  up front (`isSupportedAspect`) rather than silently producing garbage; a
-  calibration UI for non-16:10/ultrawide is a known follow-up, not built here.
+- `SUBSTAT_BLOCK` spans all 5 substat rows plus wrap allowance. The
+  primary substat regions, `SUBSTAT_LABEL_COLUMN` and `SUBSTAT_VALUE_COLUMN`,
+  split that same span at x = 0.905. That split was measured with a
+  bright-text column scan over 11 real 2880x1800 Echo screenshots: label
+  text always ends at or before 0.887 (the longest one-line label, "Heavy
+  Attack DMG Bonus"), and the right-aligned values always start at or after
+  0.922. The split sits in the middle of that gap. See "Substat OCR" below.
+- 16:10 is the measured reference; 16:9 is mapped onto it (next section).
+  Any other aspect ratio is rejected up front (`isSupportedAspect`) rather
+  than silently producing garbage; a calibration UI for ultrawide and other
+  aspects is a known follow-up, not built here.
+
+### Aspect ratios
+
+Every `RegionFrac` in `layout.ts` is a fraction of a **16:10** frame
+(`REFERENCE_ASPECT`). WuWa scales the Echo Management UI with the frame's
+**width** and anchors it to the top, so on a 16:9 frame the panel sits at
+the same x fractions but every y/height fraction is 10/9 larger ((16/9) /
+(16/10)). `regionForFrame` applies that mapping, and `toPixelRegion` (every
+crop) and `regionPercentStyle` (every debug overlay) go through it, so no
+caller needs a second ROI table. It snaps to the matched supported aspect
+(`SUPPORTED_ASPECTS`, ±0.05) rather than the frame's exact ratio, so 16:10
+captures a few pixels off (2800x1752) resolve exactly as they did before.
+
+Verified against a real 16:9 Echo Management screenshot (1400x788, a
+downscaled JPEG): the mapped boxes landed on their targets, including the
+tight `SET_ICON_BOX` and the `SUBSTAT_COLUMN_SPLIT_X` gap. Tesseract read
+the mapped name, main/secondary rows, and label/value columns correctly,
+including a wrapped "Resonance Liberation / DMG Bonus". A full-resolution
+16:9 capture (1920x1080 or 2560x1440) is still worth checking in-app with
+debug mode on.
+
+Not handled: a 16:9 game **letterboxed** inside a 16:10 capture (e.g. a 16:9
+window on a 16:10 laptop shared as the whole screen). The frame reads as
+16:10 but the content is offset by the black bars. The guide's "share the
+Window, not the screen" step avoids this.
 
 If a future WuWa UI update moves the panel, re-run the same kind of
 measurement against a fresh screenshot before touching the fractions by feel.
 
-## Substat OCR: per-row crops first, a wider block as fallback
+## Substat OCR: label and value columns first, per-row and block as fallbacks
 
-The first version of this scanner OCR'd the whole stats area as one
-multi-line block and asked tesseract to segment it into rows itself. Real
-usage surfaced this as a cause of missing substats: block-level line
-segmentation can silently merge two rows together or drop a row's text
-entirely when line spacing is tight, with no way to recover it from the
-block's recognized text afterward. That was replaced with 5 separate,
-individually-cropped substat regions — mirroring `CalculatorEchoParser.vue`'s
-proven approach for the Discord-bot image (5 separate crops there too) —
-which fixed that failure mode but introduced a different one: `SUBSTAT_ROWS`
-crops are taller than one line (to still catch a wrapped label's
-continuation, which lands in the next row's space), and real debug-crop
-captures showed that overlap regularly catching a *neighboring* row's
-actual text too, not just blank margin — visible as two consecutive
-substat crops both containing the same line. A wrapped label earlier in
-the panel is the root cause either way: WuWa doesn't reserve consistent
-spacing for a wrap, so it shifts every row below it down by an amount
-that varies echo to echo, which no *fixed*-position crop's height alone
-can fully account for.
+Substats are the part of the panel that shifts from echo to echo. A long
+label ("Resonance Skill DMG Bonus", "Resonance Liberation DMG Bonus") wraps
+to a second line, and WuWa doesn't reserve space for the wrap, so every row
+below it moves down by a varying amount. The scanner has had three designs
+for this:
 
-The current design is two passes, per the user's own suggestion after
-seeing the debug-crop bleed-over directly:
+1. **One multi-line block** (the first version). Tesseract's own line
+   segmentation sometimes merged two rows or dropped one, with no way to
+   recover it afterward.
+2. **Five fixed per-row crops** (`SUBSTAT_ROWS`), mirroring
+   `CalculatorEchoParser.vue`'s Discord-bot approach, with `SUBSTAT_BLOCK`
+   as a fallback. A wrap above a row pushes that row's text out of its
+   fixed crop. Crops were made taller than one line to compensate, which
+   then caught a neighboring row's text. Resonance Skill/Liberation rows were
+   the main source of EMPTY substats, and some shifted rows were read with
+   another row's value without any warning.
+3. **Label and value columns** (current primary pass, the user's idea). The
+   substat span is split into `SUBSTAT_LABEL_COLUMN` and
+   `SUBSTAT_VALUE_COLUMN` (see "ROI layout" for the measured split). Each
+   is OCR'd once, and the worker returns every line's vertical bounds
+   along with its text.
 
-1. **Per-row pass** (primary): the 5 individually-cropped `SUBSTAT_ROWS`,
-   as before. `parse.ts`'s `parseStatRow` only accepts a candidate row
-   whose label actually looks like a real stat name
-   (`isPlausibleLabel`) — keeps scanning past noise (including a
-   neighboring row's leaked-in text, or the excluded icon's OCR garbage
-   if any still gets through) rather than grabbing the first thing that
-   merely *shaped* like "label value".
-2. **Block fallback**: if the per-row pass doesn't add up to all 5
-   substats — expected every time now that level is assumed max, so
-   anything less is treated as a miss to recover, not a legitimately
-   partial echo — one more OCR call goes out against `SUBSTAT_BLOCK` (all
-   5 rows + wrap allowance, in one wider crop), parsed by `splitStatBlock`
-   (the same per-row plausibility gate, generalized to keep finding more
-   rows instead of stopping at the first). If that recovers more than the
-   per-row pass did, its result *replaces* the per-row one outright,
-   rather than trying to merge two different partial views position by
-   position — `usedSubstatBlockFallback` on both the parse result and the
-   saved `ScanCandidate` records when this happened, shown in the debug view.
+Why columns work: values never wrap, so the value column always reads one
+clean line per row. A wrap only adds a line to the *label* column, and the
+value is right-aligned to the label's *first* line. `parse.ts`'s
+`parseSubstatColumns`:
 
-This costs more OCR calls per candidate than the original single-block
-design (up to 8 baseline, +1 only when the fallback triggers) — a
-deliberate accuracy-over-speed tradeoff per `CLAUDE.md`'s priority order,
-offset by giving `echoScanner.worker.ts` a 3-worker pool (up from 2) so a
-candidate's row crops OCR in parallel.
+- keeps value lines that are numbers after trimming punctuation around them;
+- pairs each value with the unpaired label line whose vertical center is
+  closest, within half a line height;
+- appends the unpaired label line directly below a paired one as its
+  continuation ("Resonance Skill DMG" + "Bonus", "Resonance Liberation" +
+  "DMG Bonus"), but only when it starts within 1.85x a value line's height
+  (top to top) and the merged text reads as one known label. Measured on
+  real crops: a continuation starts ~1.65-1.75x below, the next row ~2.05x,
+  and the Echo Skill text below the last substat ≥ 3x;
+- drops any pair whose label isn't a plausible stat name. The columns run
+  past the last substat into the Echo Skill description, which otherwise
+  pairs stray digits with description text.
 
-### Row parsing: what a wrapped/split row's text actually looks like
+Pairing by position rather than list index means one dropped or garbled
+line only costs its own row. ATK vs ATK% (and HP/DEF) still comes from the
+paired value's `%`, the same as every other path.
 
-`parse.ts`'s `scanStatRows` (shared by `parseStatRow` and `splitStatBlock`)
+Measured against the old per-row + block pipeline on the same 11 real
+screenshots (real tesseract.js output, same preprocessing), the column pass
+read every substat correctly. The old pipeline garbled one row
+("Cl IL. RdlC 0.970" for "Crit. Rate 6.3%"), and on one echo it assigned
+two values to the wrong rows (6.4% / 11.6% for a real 8.6% / 8.6%) without
+any warning. The second case is worse than an empty slot.
+
+**Fallbacks.** If the column pass finds fewer than 5 substats (every echo is
+assumed max-level, so fewer than 5 counts as a miss), a second OCR batch
+reads the 5 `SUBSTAT_ROWS` crops plus `SUBSTAT_BLOCK`. `parseEchoCandidate`
+keeps whichever pass recovered the most rows (ties go to the earlier pass,
+columns first), and replaces the result outright rather than merging partial
+views row by row. `substatSource` (`"columns" | "rows" | "block"`) on the
+parse result and on the `ScanCandidate` records which pass won, and the
+debug view shows it. An echo below +25 legitimately has fewer than 5
+substats, so it always triggers the fallback batch; the column result still
+wins unless a fallback does better.
+
+The common case is now 5 OCR calls per candidate (name, main, secondary,
+two columns), down from 8. The fallback case costs 11, run in two batches
+through the 3-worker pool. The fallbacks stay in place as a safety net
+until the column pass has held up across more real scans; after that they
+can be removed in a small follow-up.
+
+### Row parsing (fallback passes): what a wrapped/split row's text actually looks like
+
+`parse.ts`'s `scanStatRows` (shared by `parseStatRow` and `splitStatBlock`,
+i.e. the per-row and block fallbacks — not the column pass)
 has to reassemble a row's label from however tesseract split it across
 lines. Real debug-crop footage confirmed three distinct shapes, not just
 the one originally assumed:
@@ -341,6 +458,27 @@ The current design, in `parse.ts`'s `resolveEchoByNameAndCost` +
    `NAME_BLOCK`'s single-line, no-wrap crop exists specifically to make
    this read reliable, since it now carries the primary identification
    burden rather than a secondary tie-break role.
+   The match tolerates **trailing OCR junk** (`prefixTolerantSimilarity`,
+   `TRAILING_DROP_WEIGHT` in `parse.ts`): `NAME_BLOCK` is sized for the
+   longest names, so a short one ("Dreamless") leaves background art in
+   the rest of the crop that tesseract reads as junk ("Dreamless LQ Va A").
+   Whole-string similarity charged each junk char as a full edit, so the
+   same echo passed or failed depending on how much junk a frame produced.
+   Trailing chars can now be dropped at half the cost of an edit. They
+   still cost *something*, so a lightly garbled longer name ("Chop Chop:
+   Headlss", "Fog Lionarch: Bdy") keeps beating its prefix echo ("Chop
+   Chop", "Fog Lionarch"), the only prefix families in the pool.
+   **Whole-word rule for short names:** when the OCR text *starts with an
+   echo's complete name as whole words* followed by more words, that echo
+   scores at least `NAME_MATCH_THRESHOLD` (`matchesWholeNamePrefix`). A real
+   Jué read as "Jue wll" otherwise scored 1 − 1.5 / (3 + 1.5) = 0.667 and
+   came back "Unknown echo": with a 3-letter name, 3 junk chars were
+   enough. It's a floor, not an override, so a stronger fuzzy match to
+   another echo still wins, and it needs an exact whole word plus a word
+   break ("Juewll" and "Jux wll" don't qualify). It never applies to a
+   name that is the leading words of another echo's name (Chop Chop, Fog
+   Lionarch), so a junk-trailed read of "Chop Chop: Leftless" can't fall
+   back to plain Chop Chop.
 4. **If an echo resolves**, look up its own `sets`:
    - **Exactly one** (33% of the pool): done — the set is known directly,
      with *no image matching at all*, not even attempted.
@@ -382,6 +520,35 @@ data (the 182/122 counts above, checked directly against
 debug view's per-candidate label (`identity.debugLabel` in
 `useEchoScanner.ts`) now says which of the paths above actually ran and
 what it found, specifically so that's checkable from real usage.
+
+### Name OCR: next options if misses return
+
+The trailing-junk tolerance above fixed the inconsistent short-name
+matches seen on real footage (e.g. Dreamless). If more testing turns up
+name misses, these were identified but held back until needed, in order:
+
+1. **OCR tuning for the name crop only** (`echoScanner.worker.ts`):
+   - Drop low-confidence words. Tesseract reports a confidence per word,
+     and junk read from background art usually scores low.
+   - Read the name as a single line (`PSM 7`) instead of a block (`PSM 6`).
+   - Use a letters-only whitelist for the name: letters, space, `: - '`
+     and accents, with no digits, `%` or `+`.
+2. **Preprocessing for the name crop:**
+   - Binarize instead of the current grayscale + 1.5× contrast stretch.
+     Names are near-white, so keep bright, low-saturation pixels as text,
+     make everything else background, then invert to dark text on white.
+   - Trim the crop at the first wide empty column gap after the text, so
+     the background art never reaches OCR.
+3. **Other:**
+   - Vote on the name across the frames `stability.ts` already groups for
+     one echo, so a single bad frame can't decide it.
+   - Require a margin between the best and runner-up match before trusting
+     it, so a wrong echo can't win by a hair.
+
+Known limit of the current matcher: a very short name (Jué, 3 chars) only
+tolerates about 2 junk chars when the junk isn't separated by a space.
+The whole-word rule covers the common case (junk after a word break).
+Options 1 and 2 would reduce junk at the source instead.
 
 ## Set icon matching: shape-mask the background, not just crop tighter
 
@@ -603,6 +770,91 @@ fetch from this worker itself. The Discord-bot importer's tesseract.js
 usage never hits this because it uses tesseract's default CDN path, which
 is already a full `https://` URL — self-hosting is what exposes it.
 
+## Using the scanner (the in-app guide)
+
+`EchoScannerGuide.vue` is the "How to scan" walkthrough on the start
+screen. It opens automatically the first time (a per-browser
+`localStorage` flag, `echoScanner.guideSeen`, wrapped in try/catch; it
+isn't user data, so no store or migration), then from the **How to scan**
+button. It's text only on purpose: screenshots would be large and go stale
+with each game UI update. Keep its steps in line with this list:
+
+1. Desktop Chrome/Edge, English client, game at 16:10 or 16:9 (full screen
+   or windowed).
+2. In game: Backpack → Echoes, click the first echo.
+3. In the app: Inventory → Scan echoes → Share screen (live), then pick the
+   game on the picker's **Window** tab.
+4. Click an echo → wait ~2s → click the next. Keep the panel unobstructed.
+5. Stop scanning; queued echoes still finish.
+6. Review (below), then save.
+
+While scanning, a short "Click → wait ~2s → click next → Stop" strip
+replaces the old one-line hint.
+
+**Beep on each capture** (toggle on the start screen, off by default,
+remembered in `localStorage` as `echoScanner.captureCue`):
+`captureCue.ts` plays a ~80ms WebAudio blip on each `stable-novel`
+capture. The user is usually full screen in the game and can't see the
+counter, so the beep says it's safe to click on. The `AudioContext` is
+created inside the Start click (browsers keep one created without a
+gesture suspended) and closed in `releaseCapture`. Only live shares open
+it, so a video scan never beeps.
+
+## Reviewing results
+
+Every candidate now carries:
+
+- `captureIndex`: 1-based capture order, assigned in `handleTick` at
+  capture time rather than after OCR, so "#137" matches the order the
+  user clicked.
+- `panelPreviewUrl`: a ~480px-wide JPEG of `PANEL_BOX` from the same
+  frame (`grabRegionPreviewJpeg`), always kept, not only in debug mode.
+  At ~30-50KB each, a 200-echo scan holds under ~10MB in memory. It's
+  never persisted and goes away with the candidate list when the modal
+  closes.
+
+`src/scanner/review.ts` holds the pure rules (unit-tested in
+`tests/scanner/review.test.ts`):
+
+- **Needs attention** = a low-confidence field or no echo match, minus
+  echoes the user marked **Looks right**. That mark is UI-only (a set of
+  ids in `EchoScannerCapture.vue`) and never changes the slot or its
+  confidence. An unknown echo can't be marked, since there's no echo to
+  save.
+- **Already in inventory** uses the same exact identity-key rule as the
+  duplicate step (`useEchoDuplicateReview`), via `buildIdentityKeySet`
+  (`src/utils/echoIdentity.ts`), a set lookup instead of scanning the
+  inventory for each echo.
+
+The results view (`EchoScannerCapture.vue` + `EchoScannerResultCard.vue`):
+
+- filter tabs **All / Needs attention / Unknown echo / Already in
+  inventory** with counts, opening on Needs attention when anything is
+  flagged;
+- a two-column grid (one column below `lg`);
+- a **Show in-game capture** toggle per echo, open by default on flagged
+  ones, with a click-to-enlarge dialog.
+
+**Edit** still saves the echo right away and opens the inventory editor
+(see `saveCandidateNow`). It now passes the capture along (`edit-candidate`
+→ `{ echoId, referenceImageUrl }`), and both editors
+(`InventoryEchoEdit.vue` and the labs `InventoryEchoEditPanel.vue` →
+`CalculatorEchoEditPanel.vue`) show it through `EchoScanReferenceImage.vue`.
+They clear it on close, so it never appears on a later, unrelated edit.
+
+**Save button.** It used to say "Continue" whatever came next. It now says
+what will happen:
+
+- **Save N echoes** when nothing matches the inventory. This saves
+  directly and closes.
+- **Review K duplicates →** when something does. This opens
+  `EchoDuplicateReviewList.vue`, with duplicates unchecked; its button
+  now reads "Save N selected".
+
+A summary line above the button shows the new / already-in-inventory /
+still-flagged / unknown counts. After saving, `onFinalized(savedCount)`
+drives a "Saved N echoes to your inventory" toast.
+
 ## Debug view
 
 `EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen
@@ -625,7 +877,9 @@ wrong:
 - **Per-candidate crop grid**: every captured candidate also carries
   `debugCrops` — a labeled `data:` URL thumbnail of exactly what was
   cropped for each region (including `substatBlock`, the fallback region),
-  plus that region's own OCR text. The `setIcon` entry shows
+  plus that region's own OCR text. `substatLabels`/`substatValues` are
+  the primary substat crops; `sub0`-`sub4` and `substatBlock` only show OCR
+  text when the fallback batch actually ran. The `setIcon` entry shows
   `resolveEchoIdentity`'s `debugLabel` instead of a generic placeholder —
   which of the identification paths actually ran ("Resolved by name
   (single possible set): …", "Resolved by name; narrowed image match (N
@@ -639,9 +893,9 @@ wrong:
   a placeholder. `capture.ts`'s `grabRegionWithPreview` produces both the
   bitmap sent to the worker and the thumbnail from one canvas draw, so
   what's shown is provably the same pixels that were actually
-  OCR'd/matched, not a re-derived approximation. A candidate whose substat
-  block fallback pass actually fired shows a small "Used substat fallback
-  pass" note (`usedSubstatBlockFallback`).
+  OCR'd/matched, not a re-derived approximation. A candidate whose substats
+  came from a fallback pass instead of the columns shows a small note
+  saying which one (`substatSource`).
 
 This is what caught `SET_ICON_BOX` being badly mispositioned (see its doc
 comment) — every scan confidently returning the same wrong set is exactly
@@ -665,6 +919,26 @@ the parser rejecting real content — those each need a different kind of fix.
 Debug mode costs an extra canvas encode per region per candidate (not
 free), so it's opt-in and off by default — leave it off for normal scanning.
 
+## Usage analytics
+
+Scanner usage is reported to Umami via `trackEvent` (`src/utils/analytics.ts`;
+a no-op when `VITE_UMAMI_WEBSITE_ID` is unset or under Cypress). Only
+modes, outcomes, and timings are sent — no echo counts, echo contents, OCR
+text, or frames.
+
+| Event | Where | Data |
+|-------|-------|------|
+| `scanner-opened` | `EchoScannerModal.vue` | — |
+| `scanner-started` | `useEchoScanner` | `mode` (`live`/`video`); video adds `fps`, `scanSeconds` |
+| `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `durationSeconds` |
+| `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share; for a non-Error throw, `Event:<type>`, `string`, etc.), `message` (the error message, truncated to 120 chars, or `null`) — see `describeError` in `src/scanner/analytics.ts` |
+| `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp), `ratio` (nearest common ratio — `16:9`, `21:9`, `32:9`, `4:3`, …, or `portrait`/`other`), `resolution` (`<width>x<height>` of the captured frame) — once per session |
+
+`scanner-finished` fires at most once per session: for video, `stop()`
+reports `stopped` and clears the session, so the scan loop's own exit
+afterward doesn't double-report. `durationSeconds` is measured when
+capture ends, not after the capture queue finishes draining.
+
 ## Extending / debugging
 
 - `src/echoes/parsedEchoMapping.ts` (`mapParsedEchoes`, `getSubstatType`,
@@ -672,7 +946,7 @@ free), so it's opt-in and off by default — leave it off for normal scanning.
   scanner — fix a mapping bug once, both flows benefit. Don't re-duplicate
   it back into a component.
 - Unit tests: `tests/scanner/*` (fingerprint/stability with synthetic
-  frames, layout at the three measured real resolutions, parse against real
+  frames, the capture queue's ordering/backpressure/clear, layout at the three measured real resolutions, parse against real
   transcripts read off the provided screenshots) and
   `tests/echoes/parsedEchoMapping.test.ts`. There is deliberately no
   end-to-end tesseract-in-CI test — OCR accuracy against real captures is a

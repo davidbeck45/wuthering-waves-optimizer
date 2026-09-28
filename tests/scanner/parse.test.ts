@@ -3,13 +3,15 @@ import {
   parseNameText,
   parseStatRow,
   splitStatBlock,
+  parseSubstatColumns,
   matchEchoName,
   normalizeStatLabel,
   parseEchoCandidate,
   inferCostFromSecondaryStat,
   resolveEchoByNameAndCost,
+  NAME_MATCH_THRESHOLD,
 } from "../../src/scanner/parse";
-import { getEchoData } from "../../src/echoes/index";
+import { getEchoData, mainEchoesData } from "../../src/echoes/index";
 
 // Ground-truth transcripts read directly off real screenshots/debug-crop
 // text the user provided, typed out as tesseract would plausibly return
@@ -216,6 +218,80 @@ describe("matchEchoName", () => {
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Jué");
   });
+
+  // Real name-crop OCR of the same Dreamless echo across frames: a short
+  // name leaves background art in the fixed-width crop, read as trailing
+  // junk. Plain whole-string similarity failed the first (5 junk chars)
+  // and passed the others (4), so the same echo matched inconsistently.
+  it.each(["Dreamless LQ Va A", "Dreamless LQ Va", "Dreamless ws dS", "Dreamless LQ Va Axy"])(
+    "matches a short name through trailing OCR junk (%s)",
+    (raw) => {
+      const match = matchEchoName(raw);
+      expect(match?.key).toBe("Dreamless");
+      expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+    },
+  );
+
+  // Very short names only tolerate a little junk: a 3-char name followed by
+  // lots of junk is too close to "random text starting with ju" to trust.
+  it("still matches a short accented name through a little trailing junk", () => {
+    const match = matchEchoName("Jue dS");
+    expect(getEchoData(match!.key).name).toBe("Jué");
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  // Real report: a Jué scan came back "Unknown echo" with name OCR
+  // "Jue wll" — the name read perfectly, but 3 junk chars were enough to
+  // drop a 3-letter name under the threshold. A complete name as whole
+  // words at the start of the text now counts (see bestNameMatch).
+  it.each(["Jue wll", "Jué wll", "Jue wll Axy"])("matches a short name followed by junk words (%s)", (raw) => {
+    const match = matchEchoName(raw);
+    expect(getEchoData(match!.key).name).toBe("Jué");
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  it.each(["Juewll", "Jux wll"])("doesn't apply the whole-word rule without an exact whole word (%s)", (raw) => {
+    const match = matchEchoName(raw);
+    expect(match!.similarity).toBeLessThan(NAME_MATCH_THRESHOLD);
+  });
+
+  it("never applies the whole-word rule to a name that starts another echo's name", () => {
+    // "Chop Chop" + junk could be a garbled Chop Chop: Headless/Leftless/Rightless.
+    const match = matchEchoName("Chop Chop Lxxxxxxx");
+    const isPlainChopChop = match && getEchoData(match.key).name === "Chop Chop";
+    expect(isPlainChopChop && match!.similarity >= NAME_MATCH_THRESHOLD).toBeFalsy();
+  });
+
+  // Echo names that are a prefix of other echo names: dropping trailing
+  // text must not let the shorter one steal the longer one's reads.
+  it.each([
+    ["Chop Chop", "Chop Chop"],
+    ["Chop Chop ws dS", "Chop Chop"],
+    ["Chop Chop: Headless", "Chop Chop: Headless"],
+    ["Chop Chop: Headlss", "Chop Chop: Headless"],
+    ["Chop Chop Lcftlcss", "Chop Chop: Leftless"],
+    ["Chop Chop: Rightless LQ", "Chop Chop: Rightless"],
+    ["Fog Lionarch", "Fog Lionarch"],
+    ["Fog Lionarch: Bdy", "Fog Lionarch: Body"],
+    ["Fog Lionarch Hcad", "Fog Lionarch: Head"],
+  ])("resolves prefix-family name %s to %s", (raw, expected) => {
+    const match = matchEchoName(raw);
+    expect(getEchoData(match!.key).name).toBe(expected);
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  it("matches every known echo name to itself exactly", () => {
+    for (const echo of Object.values(mainEchoesData)) {
+      const match = matchEchoName(echo.name);
+      expect(match?.similarity, echo.name).toBe(1);
+      expect(match?.key, echo.name).toBe(echo.key);
+    }
+  });
+
+  it("still rejects text that isn't an echo name", () => {
+    const match = matchEchoName("zzz totally not an echo zzz");
+    expect(match!.similarity).toBeLessThan(NAME_MATCH_THRESHOLD);
+  });
 });
 
 describe("inferCostFromSecondaryStat", () => {
@@ -283,6 +359,12 @@ describe("resolveEchoByNameAndCost", () => {
     expect(result.candidateSets).toEqual([]);
   });
 
+  it("resolves the real 'Jue wll' name read (Jué, cost 4) instead of Unknown echo", () => {
+    const result = resolveEchoByNameAndCost("Jue wll", "ATK 150");
+    expect(result.echo).toBe("Jué");
+    expect(result.confidence).toBe("high");
+  });
+
   it("returns no match for blank name text", () => {
     const result = resolveEchoByNameAndCost("", "ATK 150");
     expect(result.echo).toBeNull();
@@ -308,7 +390,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
     expect(getEchoData(result.slot.echo!).name).toBe("Thousand-Puppet Pavilion");
     expect(result.slot.cost).toBe(4);
     expect(result.needsMainStatSelection).toBe(false);
-    expect(result.usedSubstatBlockFallback).toBe(false);
+    expect(result.substatSource).toBe("rows");
     expect(result.slot.mainStatLabel).toBe("Healing Bonus");
     expect(result.slot.substats).toEqual([
       { subStat: "DEF", subStatValue: "40" },
@@ -414,7 +496,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
       substatBlockText: ["DEF 40", "HP 8.6%", "Crit. DMG 16.2%", "Energy Regen 11.6%", "ATK 50"].join("\n"),
       matchedSet: "SongofFeatheredTrace",
     });
-    expect(result.usedSubstatBlockFallback).toBe(true);
+    expect(result.substatSource).toBe("block");
     expect(result.slot.substats).toEqual([
       { subStat: "DEF", subStatValue: "40" },
       { subStat: "HP", subStatValue: "8.6%" },
@@ -448,7 +530,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
       ].join("\n"),
       matchedSet: null,
     });
-    expect(result.usedSubstatBlockFallback).toBe(true);
+    expect(result.substatSource).toBe("block");
     expect(result.slot.substats).toEqual([
       { subStat: "Energy Regen", subStatValue: "7.6%" },
       { subStat: "Resonance Liberation DMG Bonus", subStatValue: "10.9%" },
@@ -467,7 +549,7 @@ describe("parseEchoCandidate (full real-footage transcripts, per individually-cr
       substatBlockText: "DEF 40\nHP 8.6%", // only 2 — worse than the per-row pass
       matchedSet: "SongofFeatheredTrace",
     });
-    expect(result.usedSubstatBlockFallback).toBe(false);
+    expect(result.substatSource).toBe("rows");
     expect(result.slot.substats.filter((s) => s.subStat)).toHaveLength(3);
   });
 
@@ -569,5 +651,170 @@ describe("parseEchoCandidate with preResolvedEcho (name-first identification —
     });
     expect(result.slot.echo).toBe("ThousandPuppetPavilion");
     expect(result.confidence.name).toBe("high");
+  });
+});
+
+// Real tesseract.js v6 output (text + line bboxes, 3x-upscaled crop space)
+// from SUBSTAT_LABEL_COLUMN / SUBSTAT_VALUE_COLUMN crops of the user's
+// 2880x1800 screenshots (~/Downloads/ScreenshotsEchoes/2880x1800), run
+// through the worker's own preprocess recipe.
+const line = (text: string, y0: number, y1: number) => ({ text, y0, y1 });
+
+describe("parseSubstatColumns (real column-crop OCR)", () => {
+  it("pairs a wrapped 'Resonance Skill DMG' / 'Bonus' label in the middle of the block, with every row below it shifted", () => {
+    const rows = parseSubstatColumns(
+      [
+        line("Crit. Rate", 16, 114),
+        line("Resonance Skill DMG", 217, 315),
+        line("Bonus", 375, 470),
+        line("Basic Attack DMG Bonus", 572, 672),
+        line("HP", 780, 872),
+        line("ATK", 984, 1074),
+      ],
+      [
+        line("10.5%", 12, 111),
+        line("7.1%", 219, 309),
+        line("10.1%", 571, 669),
+        line("430", 774, 872),
+        line("60", 976, 1074),
+      ],
+    );
+    expect(rows).toEqual([
+      { rawLabel: "Crit. Rate", rawValue: "10.5%" },
+      { rawLabel: "Resonance Skill DMG Bonus", rawValue: "7.1%" },
+      { rawLabel: "Basic Attack DMG Bonus", rawValue: "10.1%" },
+      { rawLabel: "HP", rawValue: "430" },
+      { rawLabel: "ATK", rawValue: "60" },
+    ]);
+  });
+
+  it("pairs a wrapped 'Resonance Liberation' / 'DMG Bonus' label, and ignores Echo Skill text below the last substat", () => {
+    const rows = parseSubstatColumns(
+      [
+        line("Crit. DMG", 16, 114),
+        line("Resonance Liberation", 214, 315),
+        line("DMG Bonus", 372, 471),
+        line("Basic Attack DMG Bonus", 572, 672),
+        line("Crit. Rate", 777, 876),
+        line("ho Skill", 1080, 1182),
+      ],
+      [line("21.0%", 12, 110), line("8.6%", 216, 312), line("10.1%", 571, 669), line("6.3%", 774, 872)],
+    );
+    expect(rows.map((r) => r.rawLabel)).toEqual([
+      "Crit. DMG",
+      "Resonance Liberation DMG Bonus",
+      "Basic Attack DMG Bonus",
+      "Crit. Rate",
+    ]);
+  });
+
+  it("doesn't append the Echo Skill header to the last substat's label", () => {
+    const rows = parseSubstatColumns(
+      [
+        line("ATK", 19, 111),
+        line("DEF", 222, 312),
+        line("Crit. DMG", 420, 519),
+        line("ATK", 627, 717),
+        line("DEF", 829, 921),
+        line("ho Skill", 1129, 1230),
+      ],
+      [line("30", 12, 111), line("60", 216, 312), line("15.0%", 417, 516), line("7.9%", 621, 717), line("11.8%", 822, 921)],
+    );
+    expect(rows[4]).toEqual({ rawLabel: "DEF", rawValue: "11.8%" });
+    // ATK% vs flat ATK stays decided by the paired value.
+    expect(rows[0]).toEqual({ rawLabel: "ATK", rawValue: "30" });
+    expect(rows[3]).toEqual({ rawLabel: "ATK", rawValue: "7.9%" });
+  });
+
+  it("drops description text and non-numeric noise past the last substat of a not-fully-leveled echo", () => {
+    const rows = parseSubstatColumns(
+      [
+        line("HP", 19, 111),
+        line("ATK", 222, 312),
+        line("ATK", 424, 516),
+        line("ho Skill", 724, 825),
+        line("mmon a Viridblaze Saurian t", 944, 1044),
+        line("ntinuously spit fire, dealing 1", 1136, 1269),
+      ],
+      [line("470", 12, 111), line("40", 216, 312), line("9.4%", 417, 516), line("0", 972, 1044), line("7.12%", 1140, 1233), line("Borne", 1250, 1300)],
+    );
+    expect(rows).toEqual([
+      { rawLabel: "HP", rawValue: "470" },
+      { rawLabel: "ATK", rawValue: "40" },
+      { rawLabel: "ATK", rawValue: "9.4%" },
+    ]);
+  });
+
+  it("only loses the affected row when the label pass drops a line", () => {
+    const rows = parseSubstatColumns(
+      [line("DEF", 19, 111), line("Crit. DMG", 420, 519), line("Energy Regen", 627, 752), line("Resonance Skill DMG", 823, 924), line("Bonus", 984, 1077)],
+      [line("40", 12, 111), line("8.6%", 216, 312), line("16.2%", 417, 516), line("11.6%", 621, 717), line("10.9%", 822, 921)],
+    );
+    expect(rows.map((r) => [r.rawLabel, r.rawValue])).toEqual([
+      ["DEF", "40"],
+      ["Crit. DMG", "16.2%"],
+      ["Energy Regen", "11.6%"],
+      ["Resonance Skill DMG Bonus", "10.9%"],
+    ]);
+  });
+
+  it("cleans punctuation OCR sometimes attaches to a value", () => {
+    const rows = parseSubstatColumns([line("Crit. Rate", 16, 114)], [line(",10.5%.", 12, 111)]);
+    expect(rows).toEqual([{ rawLabel: "Crit. Rate", rawValue: "10.5%" }]);
+  });
+});
+
+describe("parseEchoCandidate substat pass selection", () => {
+  const base = {
+    nameText: "Thousand-Puppet Pavilion",
+    mainStatText: "Healing Bonus 26.4%",
+    secondaryStatText: "ATK 150",
+    matchedSet: "SongofFeatheredTrace",
+  };
+  const labelLines = [
+    line("DEF", 19, 111),
+    line("HP", 222, 312),
+    line("Crit. DMG", 420, 519),
+    line("Energy Regen", 627, 752),
+    line("Resonance Skill DMG", 823, 924),
+    line("Bonus", 984, 1077),
+  ];
+  const valueLines = [line("40", 12, 111), line("8.6%", 216, 312), line("16.2%", 417, 516), line("11.6%", 621, 717), line("10.9%", 822, 921)];
+
+  it("uses the column pass when it finds all 5 substats", () => {
+    const result = parseEchoCandidate({ ...base, substatLabelLines: labelLines, substatValueLines: valueLines });
+    expect(result.substatSource).toBe("columns");
+    expect(result.slot.substats).toEqual([
+      { subStat: "DEF", subStatValue: "40" },
+      { subStat: "HP", subStatValue: "8.6%" },
+      { subStat: "Crit. DMG", subStatValue: "16.2%" },
+      { subStat: "Energy Regen", subStatValue: "11.6%" },
+      { subStat: "Resonance Skill DMG Bonus", subStatValue: "10.9%" },
+    ]);
+    expect(result.confidence.substats.every((c) => c === "high")).toBe(true);
+  });
+
+  it("falls back to the per-row pass when it recovers more than the columns did", () => {
+    const result = parseEchoCandidate({
+      ...base,
+      substatLabelLines: labelLines.slice(0, 2),
+      substatValueLines: valueLines.slice(0, 2),
+      substatTexts: ["DEF 40", "HP 8.6%", "Crit. DMG 16.2%", "Energy Regen 11.6%", "Resonance Skill DMG 10.9%\nBonus"],
+    });
+    expect(result.substatSource).toBe("rows");
+    expect(result.slot.substats.filter((s) => s.subStat)).toHaveLength(5);
+  });
+
+  it("keeps a partial column result when neither fallback does better", () => {
+    const result = parseEchoCandidate({
+      ...base,
+      substatLabelLines: labelLines.slice(0, 3),
+      substatValueLines: valueLines.slice(0, 3),
+      substatTexts: ["DEF 40", "", "", "", ""],
+      substatBlockText: "DEF 40\nHP 8.6%",
+    });
+    expect(result.substatSource).toBe("columns");
+    expect(result.slot.substats.filter((s) => s.subStat)).toHaveLength(3);
+    expect(result.confidence.substats[4]).toBe("low");
   });
 });

@@ -4,7 +4,10 @@ import {
   rankActionMatches,
   matchActionLine,
   matchActionLines,
+  groupCandidates,
+  formatActionGroup,
   type MatchableAction,
+  type MatchCandidate,
 } from "../../src/utils/actionTextMatch";
 
 const ACTIONS: MatchableAction[] = [
@@ -184,5 +187,124 @@ describe("matchActionLines", () => {
   it("returns an empty array for blank input", () => {
     expect(matchActionLines("", ACTIONS)).toEqual([]);
     expect(matchActionLines("\n\n  \n", ACTIONS)).toEqual([]);
+  });
+});
+
+// Realistic labels: most attacks don't say what type they are.
+const KIT: MatchableAction[] = [
+  { key: "intro", label: "Feint Shot DMG", group: "intro" },
+  { key: "stage1", label: "Stage 1 DMG", group: "basic" },
+  { key: "heavy", label: "Heavy Attack DMG", group: "basic" },
+  { key: "skillA", label: "Anchors Aweigh DMG", group: "skill" },
+  { key: "skillB", label: "Mist Bullet DMG", group: "skill" },
+  { key: "forteMist", label: "Mist Bullet DMG", group: "forteCircuit" },
+  { key: "lib", label: "To the Horizon DMG", group: "liberation" },
+  { key: "libHeal", label: "To the Horizon Healing", group: "liberation" },
+  { key: "outro", label: "Wildfire Mark DMG", group: "outro" },
+  { key: "interlude", label: "Interlude Strike", group: "skill" },
+];
+
+describe("type-aware matching", () => {
+  it("finds an intro attack by a partial type alias even though its label doesn't say 'intro'", () => {
+    const ranked = rankActionMatches("int", KIT);
+    const intro = ranked.find((c) => c.key === "intro")!;
+    expect(intro.score).toBe(0.7);
+    expect(intro.matchedBy).toBe("group");
+  });
+
+  it("still ranks a label prefix above a type match", () => {
+    const ranked = rankActionMatches("int", KIT);
+    expect(ranked[0].key).toBe("interlude");
+    expect(ranked[0].matchedBy).toBe("label");
+    expect(ranked[1].key).toBe("intro");
+  });
+
+  it("resolves a pasted 'Intro' line to the character's only intro", () => {
+    const result = matchActionLine("Intro", KIT);
+    expect(result.status).toBe("matched");
+    expect(result.candidates[0].key).toBe("intro");
+  });
+
+  it("makes a pasted 'Skill' line ambiguous across the skill attacks", () => {
+    const result = matchActionLine("Skill", KIT);
+    expect(result.status).toBe("ambiguous");
+    expect(result.candidates.every((c) => c.group === "skill")).toBe(true);
+  });
+
+  it("looks the group up case-insensitively", () => {
+    const actions: MatchableAction[] = [{ key: "fc", label: "Something", group: "FORTECIRCUIT" }];
+    expect(rankActionMatches("forte", actions)[0].score).toBe(0.8);
+  });
+
+  it("ignores single-character queries for type aliases", () => {
+    // "i" still hits "Feint" as a label substring, but never the intro type alias.
+    const intro = rankActionMatches("i", KIT).find((c) => c.key === "intro")!;
+    expect(intro.matchedBy).toBe("label");
+    expect(intro.score).toBeLessThan(0.7);
+  });
+
+  it("scopes '<type> <text>' queries to that type's labels", () => {
+    const ranked = rankActionMatches("lib horizon", KIT);
+    expect(ranked[0].group).toBe("liberation");
+    expect(ranked.slice(0, 2).map((c) => c.key).sort()).toEqual(["lib", "libHeal"]);
+  });
+
+  it("accepts a colon after the type alias", () => {
+    expect(rankActionMatches("skill: anchors", KIT)[0].key).toBe("skillA");
+  });
+
+  it("tries the longest alias first", () => {
+    const actions: MatchableAction[] = [
+      { key: "outroSkill", label: "Outro Skill", group: "outro" },
+      { key: "wildfire", label: "Outro: Wildfire Mark", group: "outro" },
+    ];
+    // "outro skill" is the alias, so only "wildfire" is scored against labels.
+    expect(rankActionMatches("outro skill wildfire", actions)[0].key).toBe("wildfire");
+  });
+
+  it("uses a '<Type>: <label>' line to pick one of two attacks sharing a label", () => {
+    const result = matchActionLine("Forte Circuit: Mist Bullet DMG x2", KIT);
+    expect(result).toMatchObject({ status: "matched", count: 2 });
+    expect(result.candidates[0].key).toBe("forteMist");
+  });
+});
+
+describe("groupCandidates", () => {
+  const candidate = (key: string, group: string, score: number): MatchCandidate => ({
+    key,
+    label: key,
+    group,
+    score,
+    matchedBy: "label",
+  });
+
+  it("orders buckets by their best score", () => {
+    const groups = groupCandidates([candidate("a", "outro", 0.9), candidate("b", "intro", 0.6), candidate("c", "outro", 0.5)]);
+    expect(groups.map((g) => g.group)).toEqual(["outro", "intro"]);
+    expect(groups[0].items.map((c) => c.key)).toEqual(["a", "c"]);
+  });
+
+  it("falls back to game order when scores tie", () => {
+    const groups = groupCandidates(rankActionMatches("", KIT));
+    expect(groups.map((g) => g.group)).toEqual(["intro", "basic", "skill", "forteCircuit", "liberation", "outro"]);
+  });
+
+  it("caps items per group and in total", () => {
+    const many = [
+      ...["a", "b", "c", "d", "e"].map((k) => candidate(k, "skill", 0.9)),
+      ...["f", "g", "h"].map((k) => candidate(k, "basic", 0.8)),
+    ];
+    const groups = groupCandidates(many, { perGroup: 4, total: 6 });
+    expect(groups[0].items).toHaveLength(4);
+    expect(groups[1].items).toHaveLength(2);
+  });
+});
+
+describe("formatActionGroup", () => {
+  it("formats known type keys and passes unknown ones through", () => {
+    expect(formatActionGroup("forteCircuit")).toBe("Forte Circuit");
+    expect(formatActionGroup("tuneBreak")).toBe("Tune Break");
+    expect(formatActionGroup("echo")).toBe("echo");
+    expect(formatActionGroup(undefined)).toBe("");
   });
 });
