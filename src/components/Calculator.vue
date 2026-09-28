@@ -915,6 +915,9 @@ export default defineComponent({
       // update the character level
       characterLevel.value =
         characters.value?.[charName]?.characterLevel ?? "90";
+      // resync talent levels — the talent sliders only emit on user input,
+      // so without this the previous character's levels carry over
+      Object.assign(talentData, readStoredTalents(charName));
       // update the weapons if needed
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
@@ -1149,14 +1152,18 @@ export default defineComponent({
     characterLevel.value =
       characters.value?.[character.value]?.characterLevel ?? "90";
 
-    const talentData = reactive({
-      basic: characters.value?.[character.value]?.talents?.basic ?? 10,
-      skill: characters.value?.[character.value]?.talents?.skill ?? 10,
-      forte: characters.value?.[character.value]?.talents?.forte ?? 10,
-      liberation:
-        characters.value?.[character.value]?.talents?.liberation ?? 10,
-      intro: characters.value?.[character.value]?.talents?.intro ?? 10,
-    });
+    const readStoredTalents = (charName: string) => {
+      const talents = characters.value?.[charName]?.talents;
+      return {
+        basic: talents?.basic ?? 10,
+        skill: talents?.skill ?? 10,
+        forte: talents?.forte ?? 10,
+        liberation: talents?.liberation ?? 10,
+        intro: talents?.intro ?? 10,
+      };
+    };
+
+    const talentData = reactive(readStoredTalents(character.value));
 
     const updateStats = (stats) => {
       totalAtkPercent.value = stats.attackPercent;
