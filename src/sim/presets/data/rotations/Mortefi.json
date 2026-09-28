@@ -1,11 +1,11 @@
 [
  {
   "name": "Mortefi S6 Static Mist R5 · Lupa + Jingran · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,199,552 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,144,149 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R5 · Lupa + Jingran · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,199,552 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,144,149 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
    "actions": [
     {
      "order": 1,
@@ -174,11 +174,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,921,436 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,906,196 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,921,436 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,906,196 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
    "actions": [
     {
      "order": 1,
@@ -512,11 +512,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R1 · Mornye + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,117,675 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,100,436 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R1 · Mornye + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,117,675 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,100,436 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
    "actions": [
     {
      "order": 1,

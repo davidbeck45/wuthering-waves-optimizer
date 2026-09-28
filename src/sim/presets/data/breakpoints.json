@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-23T17:42:54.101Z",
- "wuwaCalcCommit": "a54ec44",
+ "generated": "2026-09-28T21:58:02.961Z",
+ "wuwaCalcCommit": "90c199a",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -19,7 +19,7 @@
        "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 18
+     "intendedTeams": 17
     },
     {
      "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
@@ -123,7 +123,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -676,7 +676,7 @@
        "note": "opener: drops Basic - Stagecraft Form 4 ×1, Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump ×1"
       }
      },
-     "intendedTeams": 17
+     "intendedTeams": 16
     },
     {
      "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -1336,7 +1336,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 32
+     "intendedTeams": 31
     }
    ],
    "sequences": [
@@ -1964,7 +1964,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 57
+     "intendedTeams": 56
     }
    ],
    "sequences": [
@@ -2140,7 +2140,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 4
     },
     {
      "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Heart of Sworn Vigil 5pc",

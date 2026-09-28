@@ -1,11 +1,11 @@
 [
  {
   "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Zhezhi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Zhezhi (main DPS): 2,886,810 DPR for Jinhsi of 4,296,264 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Zhezhi (main DPS): 2,886,628 DPR for Jinhsi of 4,293,955 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jinhsi S6 Ages of Harvest R5 · Mornye + Zhezhi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Zhezhi (main DPS): 2,886,810 DPR for Jinhsi of 4,296,264 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Ages of Harvest R5, Celestial Light 5pc, main stats 44111 CD CD atk atk atk. Team: Mornye + Zhezhi (main DPS): 2,886,628 DPR for Jinhsi of 4,293,955 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

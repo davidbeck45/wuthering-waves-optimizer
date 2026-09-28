@@ -11456,51 +11456,6 @@
     }
    },
    {
-    "name": "Basic - Foreclaimed Self 3",
-    "count": 1,
-    "mv": 167.72,
-    "avg": 136074,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Liberation",
-    "queued": true,
-    "by": "Hiyuki",
-    "held": {
-     "havocBane": 6,
-     "glacioBite": 3
-    }
-   },
-   {
-    "name": "Glacio Chafe - 13 Stacks",
-    "count": 3,
-    "mv": 407.53,
-    "avg": 95163,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Hiyuki",
-    "held": {
-     "havocBane": 6,
-     "glacioBite": 3
-    }
-   },
-   {
-    "name": "Glacio Bite - Fine Snow",
-    "count": 3,
-    "mv": 102,
-    "avg": 140052,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Hiyuki: Snow Rust",
-    "held": {
-     "havocBane": 6,
-     "glacioBite": 3
-    }
-   },
-   {
     "name": "Basic - Foreclaimed Self 1",
     "count": 1,
     "mv": 49.27,
@@ -11512,7 +11467,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 3
     }
    },
    {
@@ -11527,7 +11482,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 9
+     "glacioBite": 6
     }
    },
    {
@@ -11542,7 +11497,37 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 10
+     "glacioBite": 9
+    }
+   },
+   {
+    "name": "Glacio Chafe - 13 Stacks",
+    "count": 3,
+    "mv": 407.53,
+    "avg": 95163,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Hiyuki",
+    "held": {
+     "havocBane": 6,
+     "glacioBite": 3
+    }
+   },
+   {
+    "name": "Glacio Bite - Fine Snow",
+    "count": 3,
+    "mv": 102,
+    "avg": 140052,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Hiyuki: Snow Rust",
+    "held": {
+     "havocBane": 6,
+     "glacioBite": 3
     }
    },
    {
@@ -11603,36 +11588,6 @@
     "held": {
      "havocBane": 6,
      "glacioBite": 9
-    }
-   },
-   {
-    "name": "Glacio Chafe - 13 Stacks",
-    "count": 3,
-    "mv": 407.53,
-    "avg": 95163,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Hiyuki",
-    "held": {
-     "havocBane": 6,
-     "glacioBite": 10
-    }
-   },
-   {
-    "name": "Glacio Bite - Fine Snow",
-    "count": 3,
-    "mv": 102,
-    "avg": 140052,
-    "cast": null,
-    "node": null,
-    "type": "Status",
-    "queued": true,
-    "by": "Hiyuki: Snow Rust",
-    "held": {
-     "havocBane": 6,
-     "glacioBite": 10
     }
    },
    {
@@ -11647,7 +11602,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 10
+     "glacioBite": 9
     }
    },
    {
@@ -11662,7 +11617,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 10
+     "glacioBite": 9
     }
    },
    {
@@ -11677,7 +11632,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 10
+     "glacioBite": 9
     }
    },
    {
@@ -11836,14 +11791,14 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
     "name": "Glacio Chafe - 13 Stacks",
-    "count": 3,
+    "count": 5,
     "mv": 407.53,
-    "avg": 95163,
+    "avg": 158605,
     "cast": null,
     "node": null,
     "type": "Status",
@@ -11851,14 +11806,14 @@
     "by": "Hiyuki",
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
     "name": "Glacio Bite - Fine Snow",
-    "count": 3,
+    "count": 5,
     "mv": 102,
-    "avg": 140052,
+    "avg": 233420,
     "cast": null,
     "node": null,
     "type": "Status",
@@ -11866,7 +11821,7 @@
     "by": "Hiyuki: Snow Rust",
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
@@ -11881,7 +11836,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
@@ -11896,7 +11851,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
@@ -11911,7 +11866,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 3
+     "glacioBite": 5
     }
    },
    {
@@ -11926,7 +11881,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 8
     }
    },
    {
@@ -11941,7 +11896,7 @@
     "by": "Hiyuki",
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 8
     }
    },
    {
@@ -11956,7 +11911,7 @@
     "by": "Hiyuki: Snow Rust",
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 8
     }
    },
    {
@@ -11971,7 +11926,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 8
     }
    },
    {
@@ -11986,7 +11941,7 @@
     "by": "Reminiscence: Threnodian - Voidborne",
     "held": {
      "havocBane": 6,
-     "glacioBite": 6
+     "glacioBite": 8
     }
    },
    {
@@ -12001,7 +11956,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 7
+     "glacioBite": 9
     }
    },
    {
@@ -12016,7 +11971,7 @@
     "by": "Hiyuki",
     "held": {
      "havocBane": 6,
-     "glacioBite": 7
+     "glacioBite": 9
     }
    },
    {
@@ -12031,7 +11986,52 @@
     "by": "Hiyuki: Snow Rust",
     "held": {
      "havocBane": 6,
-     "glacioBite": 7
+     "glacioBite": 9
+    }
+   },
+   {
+    "name": "Basic - Foreclaimed Self 3",
+    "count": 1,
+    "mv": 167.72,
+    "avg": 136074,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Liberation",
+    "queued": true,
+    "by": "Hiyuki",
+    "held": {
+     "havocBane": 6,
+     "glacioBite": 10
+    }
+   },
+   {
+    "name": "Glacio Chafe - 13 Stacks",
+    "count": 1,
+    "mv": 407.53,
+    "avg": 31721,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Hiyuki",
+    "held": {
+     "havocBane": 6,
+     "glacioBite": 10
+    }
+   },
+   {
+    "name": "Glacio Bite - Fine Snow",
+    "count": 1,
+    "mv": 102,
+    "avg": 46684,
+    "cast": null,
+    "node": null,
+    "type": "Status",
+    "queued": true,
+    "by": "Hiyuki: Snow Rust",
+    "held": {
+     "havocBane": 6,
+     "glacioBite": 10
     }
    },
    {
@@ -12046,7 +12046,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 7
+     "glacioBite": 10
     }
    },
    {
@@ -12061,7 +12061,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "glacioBite": 7
+     "glacioBite": 10
     }
    }
   ],
@@ -12179,30 +12179,6 @@
     null
    ],
    [
-    "BasicAttackForeclaimedSelfStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ElementalEffectGlacioBite",
-    "forteCircuit",
-    3,
-    null,
-    13,
-    null
-   ],
-   [
-    "GlacioBiteDMG",
-    "forteCircuit",
-    3,
-    null,
-    null,
-    null
-   ],
-   [
     "BasicAttackForeclaimedSelfStage1DMG",
     "basic",
     1,
@@ -12357,7 +12333,7 @@
    [
     "ElementalEffectGlacioBite",
     "forteCircuit",
-    3,
+    5,
     null,
     13,
     null
@@ -12365,7 +12341,7 @@
    [
     "GlacioBiteDMG",
     "forteCircuit",
-    3,
+    5,
     null,
     null,
     null
@@ -12435,6 +12411,30 @@
     null
    ],
    [
+    "BasicAttackForeclaimedSelfStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ElementalEffectGlacioBite",
+    "forteCircuit",
+    1,
+    null,
+    13,
+    null
+   ],
+   [
+    "GlacioBiteDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
     "ForeclaimingBladeLiberationBaseDMG",
     "liberation",
     1,
@@ -12454,10 +12454,10 @@
    "3x Glacio Chafe - 13 Stacks",
    "3x Glacio Chafe - 13 Stacks",
    "3x Glacio Chafe - 13 Stacks",
-   "3x Glacio Chafe - 13 Stacks",
+   "5x Glacio Chafe - 13 Stacks",
    "5x Glacio Chafe - 13 Stacks",
    "3x Glacio Chafe - 13 Stacks",
-   "3x Glacio Chafe - 13 Stacks",
+   "1x Glacio Chafe - 13 Stacks",
    "1x Glacio Chafe - 13 Stacks"
   ],
   "enemy": {
@@ -15698,17 +15698,6 @@
     "by": null
    },
    {
-    "name": "Tune Hack Response - Meltdown",
-    "count": 1,
-    "mv": 2358.89,
-    "avg": 147499,
-    "cast": null,
-    "node": "Forte",
-    "type": "Hack",
-    "queued": true,
-    "by": "Rebecca"
-   },
-   {
     "name": "Skill - It's Big Boomin' Time!",
     "count": 1,
     "mv": 236.6,
@@ -15718,6 +15707,17 @@
     "type": "Skill",
     "queued": false,
     "by": null
+   },
+   {
+    "name": "Tune Hack Response - Meltdown",
+    "count": 1,
+    "mv": 2358.89,
+    "avg": 147499,
+    "cast": null,
+    "node": "Forte",
+    "type": "Hack",
+    "queued": true,
+    "by": "Rebecca"
    },
    {
     "name": "Dodge",
@@ -15922,16 +15922,16 @@
     null
    ],
    [
-    "HackResponseMeltdownDMG",
-    "forteCircuit",
+    "ItsBigBoominTimeDMG",
+    "skill",
     1,
     null,
     null,
     null
    ],
    [
-    "ItsBigBoominTimeDMG",
-    "skill",
+    "HackResponseMeltdownDMG",
+    "forteCircuit",
     1,
     null,
     null,
@@ -16840,7 +16840,7 @@
     "name": "Basic - Origin Calculus 1",
     "count": 1,
     "mv": 31.78,
-    "avg": 489,
+    "avg": 483,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -16851,7 +16851,7 @@
     "name": "Basic - Origin Calculus 2",
     "count": 1,
     "mv": 47.72,
-    "avg": 734,
+    "avg": 725,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -16862,7 +16862,7 @@
     "name": "Basic - Origin Calculus 3",
     "count": 1,
     "mv": 69.96,
-    "avg": 1077,
+    "avg": 1063,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -16884,7 +16884,7 @@
     "name": "Mid-air - Origin Calculus Plunge",
     "count": 1,
     "mv": 73.96,
-    "avg": 1138,
+    "avg": 1124,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -16895,7 +16895,7 @@
     "name": "Forte Heavy - Illation",
     "count": 1,
     "mv": 281.3,
-    "avg": 4331,
+    "avg": 4277,
     "cast": "Heavy",
     "node": "Forte",
     "type": "Heavy",
@@ -16906,7 +16906,7 @@
     "name": "Skill - Chaos Theory",
     "count": 1,
     "mv": 156.55,
-    "avg": 2934,
+    "avg": 2380,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -16928,7 +16928,7 @@
     "name": "Echo - Fallacy of No Return",
     "count": 1,
     "mv": 15.85,
-    "avg": 4791,
+    "avg": 4746,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -16950,7 +16950,7 @@
     "name": "Intro - Discernment",
     "count": 1,
     "mv": 58.92,
-    "avg": 172776,
+    "avg": 171423,
     "cast": "Intro",
     "node": "Intro",
     "type": "Liberation",
