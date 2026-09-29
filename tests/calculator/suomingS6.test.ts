@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { computeSelfBuffs } from "../../src/calculator/stats";
-import { buffs as suomingBuffs } from "../../src/characters/suoming/buffs";
+import { buffs as suomingBuffs } from "../../src/characters/Suoming/buffs";
 import { getEffectiveMaxStacks } from "../../src/characters/effectiveBuffStacks";
 
 // Suoming's Sequence Node 6: Nine Shadows at Her Side increases the effect of
