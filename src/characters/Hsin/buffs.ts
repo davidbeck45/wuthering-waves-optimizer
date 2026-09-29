@@ -1,5 +1,5 @@
 export const buffs = [
-{
+  {
     key: `InherentSkillTidesOfSuccessionUnison`,
     name: `Inherent Skill: Tides of Succession`,
     stance: "Unison",

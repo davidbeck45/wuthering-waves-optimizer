@@ -5,7 +5,7 @@ const weaponInfo: WeaponInfo = {
   type: "Rectifier",
   rarity: 5,
   passiveName: "Hundredfold Artifice",
-  passiveValue: "Grants 12%/15%/18%/21%/24% All-Attribute DMG Bonus. After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG is Amplified by 36%/45%/54%/63%/72% and ignores 10%/15%/20%/25%/30% of the target's Electro RES. While the wielder is on the field, Electro Flare DMG taken by targets within a certain range is Amplified by 30%/37.5%/45%/52.5%/60% for 30/30/30/30/30s. Only the highest value applies among effects of the same name.",
+  passiveValue: `<div>Grants <span style="color:#ffd12f;" class="font-bold">12%/15%/18%/21%/24%</span> All-Attribute DMG Bonus. After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG is Amplified by <span style="color:#ffd12f;" class="font-bold">36%/45%/54%/63%/72%</span> and ignores <span style="color:#ffd12f;" class="font-bold">10%/13.5%/17%/20.5%/24%</span> of the target's Electro RES. While the wielder is on the field, Electro Flare DMG taken by targets within a certain range is Amplified by <span style="color:#ffd12f;" class="font-bold">30%/37.5%/45%/52.5%/60%</span> for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s, triggered <saptag=6><span style="color:#ffd12f;" class="font-bold">1/1/1/1/1</span> time every <span style="color:#ffd12f;" class="font-bold">0.1/0.1/0.1/0.1/0.1</span>s. Only the strongest effect of the same name applies.</saptag=6></div>`,
   passiveData: [
     {
       key: "BloomingsJadehavenAllElementAttributeBonus",
@@ -19,7 +19,7 @@ const weaponInfo: WeaponInfo = {
         "5": 0.24,
       },
       details:
-        "Grants 12%/15%/18%/21%/24% All-Attribute DMG Bonus",
+        `Grants <span style="color:#ffd12f;" class="font-bold">12%/15%/18%/21%/24%</span> All-Attribute DMG Bonus.`,
       alwaysEnabled: true,
     },
     {
@@ -34,7 +34,7 @@ const weaponInfo: WeaponInfo = {
         "5": 0.72,
       },
       details:
-        "After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG is Amplified by 36%/45%/54%/63%/72%",
+        `After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG is Amplified by <span style="color:#ffd12f;" class="font-bold">36%/45%/54%/63%/72%</span>`,
       alwaysEnabled: false,
     },
     {
@@ -49,7 +49,7 @@ const weaponInfo: WeaponInfo = {
         "5": 0.3,
       },
       details:
-        "After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG ignores 10%/15%/20%/25%/30% of the target's Electro RES.",
+        `After the wielder inflicts Electro Flare or triggers Unison Response, Resonance Skill DMG ignores <span style="color:#ffd12f;" class="font-bold">10%/13.5%/17%/20.5%/24%</span> of the target's Electro RES.`,
       alwaysEnabled: false,
     },
     {
@@ -64,7 +64,7 @@ const weaponInfo: WeaponInfo = {
         "5": 0.6,
       },
       details:
-        "While the wielder is on the field, Electro Flare DMG taken by targets within a certain range is Amplified by 30%/37.5%/45%/52.5%/60% for 30/30/30/30/30s. Only the highest value applies among effects of the same name.",
+        `While the wielder is on the field, Electro Flare DMG taken by targets within a certain range is Amplified by <span style="color:#ffd12f;" class="font-bold">30%/37.5%/45%/52.5%/60%</span> for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s, triggered <saptag=6><span style="color:#ffd12f;" class="font-bold">1/1/1/1/1</span> time every <span style="color:#ffd12f;" class="font-bold">0.1/0.1/0.1/0.1/0.1</span>s. Only the strongest effect of the same name applies.</saptag=6>`,
       alwaysEnabled: false,
     },
   ],

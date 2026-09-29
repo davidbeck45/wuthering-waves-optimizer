@@ -83,11 +83,11 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
-  _StayTunedCalamity1: {
-    key: "_StayTunedCalamity1",
-    name: "Stay tuned",
+  ReminiscenceSuhsintheInevitable: {
+    key: "ReminiscenceSuhsintheInevitable",
+    name: "Reminiscence: Suhsin the Inevitable",
     class: "Calamity",
-    image: "",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34033_2_UI.webp",
     details: `<span>Cast Echo Skill to deal 4 instances of 27.36% Electro DMG and 1 instance of 164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus. Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s.<br>CD: 20s</span>`,
     modifiers: [
       {
@@ -136,11 +136,11 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
   },
-  _StayTunedElite1: {
-    key: "_StayTunedElite1",
-    name: "Stay tuned",
+  Soulfrayer: {
+    key: "Soulfrayer",
+    name: "Soulfrayer",
     class: "Elite",
-    image: "",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32071_UI.webp",
     details: `<span>Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
 Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
 CD: 20s</span>`,
@@ -165,11 +165,11 @@ CD: 20s`,
     ],
     sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
   },
-  _StayTunedElite2: {
-    key: "_StayTunedElite2",
-    name: "Stay tuned",
+  Formrender: {
+    key: "Formrender",
+    name: "Formrender",
     class: "Elite",
-    image: "",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32070_UI.webp",
     details: `<span>Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.
 The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.
 CD: 20s</span>`,
@@ -200,11 +200,11 @@ CD: 20s</span>`,
     ],
     sets: ["HeartofSwornVigil", "FlowerofTingedYearning"],
   },
-  _StayTunedCommon1: {
-    key: "_StayTunedCommon1",
-    name: "Stay tuned",
+  BloomburstPuppet: {
+    key: "BloomburstPuppet",
+    name: "Bloomburst Puppet",
     class: "Common",
-    image: "",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31104_UI.webp",
     details: `<span>Summon a Bloomburst Puppet to startle the target, dealing 1 instance of 25.92% Glacio DMG, followed by 2 instances of 12.96% Glacio DMG and 1 instance of 77.76% Glacio DMG.
 CD: 8s</span>`,
     modifiers: [],

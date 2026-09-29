@@ -190,7 +190,7 @@ export async function fetchCharacterDetail(
   id: number,
 ): Promise<ApiCharacterDetail> {
   const data = await fetchJson<ApiCharacterDetail & { roleList?: unknown }>(
-    `${CHARACTER_API_BASE}/${id}?v=Beta`,
+    `${CHARACTER_API_BASE}/${id}`,
   );
 
   if (data.roleList !== undefined) {

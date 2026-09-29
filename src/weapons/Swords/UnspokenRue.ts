@@ -5,7 +5,7 @@ const weaponInfo: WeaponInfo = {
   type: "Sword",
   rarity: 5,
   passiveName: "Locked Thunder, Trapped Rain",
-  passiveValue: "ATK is increased by 12%/15%/18%/21%/24%. Upon obtaining Unison, grants 30%/37.5%/45%/52.5%/60% Electro DMG Bonus for 30/30/30/30/30s.\nUpon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain 24%/30%/36%/42%/48% Electro DMG Bonus for 30/30/30/30/30s. Effects of the same name cannot stack.\nWhen the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains 40%/50%/60%/70%/80% Electro DMG Bonus for 14/14/14/14/14s. Switching to another Resonator ends this effect early.",
+  passiveValue: `<div>ATK is increased by <span style="color:#ffd12f;" class="font-bold">12%/15%/18%/21%/24%</span>. Upon obtaining Unison, grants <span style="color:#ffd12f;" class="font-bold">30%/37.5%/45%/52.5%/60%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s.<br>Upon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain <span style="color:#ffd12f;" class="font-bold">24%/30%/36%/42%/48%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s. Effects of the same name cannot stack.<br>When the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains <span style="color:#ffd12f;" class="font-bold">40%/50%/60%/70%/80%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">14/14/14/14/14</span>s. Switching to another Resonator ends this effect early.</div>`,
   passiveData: [
     {
       key: "UnspokenRueAtk",
@@ -18,7 +18,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.21,
         "5": 0.24,
       },
-      details: "ATK is increased by 12/15/18/21/24%.",
+      details: `ATK is increased by <span style="color:#ffd12f;" class="font-bold">12%/15%/18%/21%/24%</span>`,
       alwaysEnabled: true,
     },
     {
@@ -32,7 +32,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.525,
         "5": 0.6,
       },
-      details: "Upon obtaining Unison, grants 30%/37.5%/45%/52.5%/60% Electro DMG Bonus for 30/30/30/30/30s",
+      details: `Upon obtaining Unison, grants <span style="color:#ffd12f;" class="font-bold">30%/37.5%/45%/52.5%/60%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s.`,
       alwaysEnabled: false,
     },
     {
@@ -46,7 +46,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.42,
         "5": 0.48,
       },
-      details: "Upon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain 24%/30%/36%/42%/48% Electro DMG Bonus for 30/30/30/30/30s. Effects of the same name cannot stack.",
+      details: `Upon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain <span style="color:#ffd12f;" class="font-bold">24%/30%/36%/42%/48%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">30/30/30/30/30</span>s. Effects of the same name cannot stack.`,
       alwaysEnabled: false,
     },
     {
@@ -60,7 +60,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.7,
         "5": 0.8,
       },
-      details: "When the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains 40%/50%/60%/70%/80% Electro DMG Bonus for 14/14/14/14/14s. Switching to another Resonator ends this effect early.",
+      details: `When the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains <span style="color:#ffd12f;" class="font-bold">40%/50%/60%/70%/80%</span> Electro DMG Bonus for <span style="color:#ffd12f;" class="font-bold">14/14/14/14/14</span>s. Switching to another Resonator ends this effect early.`,
       alwaysEnabled: false,
     },
   ],

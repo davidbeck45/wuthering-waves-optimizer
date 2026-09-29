@@ -2651,6 +2651,22 @@ The above effects end early when Hsin switches Resonance Mode.</div>`,
       alwaysEnabled: false,
     },
     {
+      key: `SequenceNode4ARiverOfLanternsARiverOfWishes`,
+      name: `Sequence Node 4: A River of Lanterns, a River of Wishes`,
+      details: `<div>When Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> or <span style="color:#ffd12f;" class="font-bold">Electro Rage</span> to a target, or when Resonators in the team gain <span style="color:#ffd12f;" class="font-bold">Unison</span> or trigger <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 20% All-Attribute DMG Bonus for 30s.</div>`,
+      icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XinM4_UI.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "AllElementAttributeBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
       key: `SequenceNode6TheMoonOwesItsLightToTheLiving`,
       name: `Sequence Node 6: The Moon Owes Its Light to the Living`,
       details: `<div>When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 1 stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> for 30s. This effect does not stack.</div>`,
