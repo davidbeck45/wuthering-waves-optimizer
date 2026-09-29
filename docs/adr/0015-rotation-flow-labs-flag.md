@@ -268,6 +268,32 @@ legacy path untouched:
     partitions `groupedAdvancedBuffChips` by it instead of rendering one
     concatenated row.
 
+## Round 6 (quick-add autocomplete)
+
+19. **Attack type is part of matching, not just display.** Real labels rarely
+    name their type (an intro is "Feint Shot DMG", not "Intro Skill"), so
+    typing "int" or pasting "Intro" used to miss it entirely. The matcher now
+    also scores each action's `group` against a small alias table
+    (`intro`/`qte`, `lib`/`ult`, `forte`/`fc`, …): exact alias 0.8, partial
+    alias (≥ 2 chars) 0.7 — deliberately below a label prefix (0.85) so a
+    typed name still wins, and above a label substring (0.6). A
+    `"<type> <text>"` query (`"lib horizon"`, `"skill: anchors"`) scopes the
+    text to that type's labels. Side effect on paste-import, accepted as more
+    correct: a bare "Intro" line now matches a single-intro kit, and "Skill"
+    comes back ambiguous across the real skill attacks.
+
+20. **Suggestions are bucketed by type and keyboard-driven.** Both the
+    one-action input and the paste textarea share `ActionSuggestList.vue` +
+    `useSuggestNavigation.ts` (↑/↓, Enter; Tab too in the textarea). Buckets
+    are ordered by best score, falling back to game order. Focusing the empty
+    input browses every attack, with nothing highlighted so a stray Enter
+    adds nothing. The textarea anchors its list under the box rather than at
+    the caret (no caret-pixel measuring), fills the caret's line keeping any
+    `xN`, and prefixes `"<Type>: "` when the chosen label is shared by two
+    types so the line resolves unambiguously. Unmatched paste lines get a
+    grouped "pick or skip" select instead of being silently dropped; they
+    still never block Add.
+
 ## Not done here
 
 - Team paste-import's `Name:`-per-line prefix convention for assigning a
@@ -301,6 +327,8 @@ legacy path untouched:
 - `AppOverflowMenu.vue`, `FavoriteHeartButton.vue` (reused, unchanged)
 - `src/composables/useCharacterActionList.ts` (new)
 - `src/utils/actionTextMatch.ts` (new) — `tests/utils/actionTextMatch.test.ts`
+- `src/components/ActionSuggestList.vue`, `src/composables/useSuggestNavigation.ts`
+  (new, round 6) — `tests/components/CalculatorRotationQuickAdd.test.ts`
 - `src/calculator/rotationAdvancedBuffs.ts`, `characterRotation.ts`,
   `teamRotation.ts` (read, unchanged)
 - `tests/components/CalculatorRotationActionEditor.test.ts` (new) — covers
