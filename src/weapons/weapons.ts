@@ -12,7 +12,7 @@ export const swordsList = {
     { key: "LaserShearer", name: "Laser Shearer", mainStat: "EnergyRegen" },
     { key: "RedSpring", name: "Red Spring", mainStat: "CritRate" },
     { key: "UnflickeringValor", name: "Unflickering Valor", mainStat: "EnergyRegen" },
-    { key: "UnspokenRue", name: "Unspoken Rue" },
+    { key: "UnspokenRue", name: "Unspoken Rue", mainStat: "CritRate" },
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction", mainStat: "ATK" },
@@ -78,7 +78,7 @@ const broadbladesList = {
 
 const rectifiersList = {
   five: [
-    { key: "BloomingJadehaven", name: "Blooming Jadehaven" },
+    { key: "BloomingJadehaven", name: "Blooming Jadehaven", mainStat: "CritRate" },
     { key: "BosonAstrolabe", name: "Boson Astrolabe", mainStat: "EnergyRegen" },
     { key: "CosmicRipples", name: "Cosmic Ripples", mainStat: "ATK" },
     { key: "FirstlightsHerald", name: "Firstlight's Herald", mainStat: "EnergyRegen" },

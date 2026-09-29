@@ -3488,6 +3488,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Unspoken Rue",
     key: "UnspokenRue",
+    weaponType: "Sword",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UnspokenRue.png",
     modifiers: [
