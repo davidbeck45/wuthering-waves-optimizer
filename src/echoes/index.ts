@@ -147,7 +147,7 @@ CD: 20s</span>`,
     modifiers: [],
     actions: [
       {
-        key: "_StayTunedElite1DMG",
+        key: "SoulfrayerSummonDMG",
         label: "Summon DMG",
         description: `Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
 Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
