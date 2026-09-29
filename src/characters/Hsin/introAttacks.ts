@@ -1,11 +1,11 @@
 export const introAttacks = {
   name: "Intro Skill: Glance on a Whim",
   description: `<div><span class="Title">Intro Skill - Answering Form</span></span><br><br>This skill becomes available while in <span style="color:#ffd12f;" class="font-bold">Answering Form</span>. Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.<br>After casting this skill, press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack - Answering Form Stage 3</span> (when in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>) or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Answering Form Stage 4</span> (when in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>).<br><br><span class="Title">Intro Skill - Answering Form: Manifold Unison</span></span><br><br>The skill becomes available when in <span style="color:#ffd12f;" class="font-bold">Answering Form</span>. Attack the target, dealing greater <span style="color:#ebb0ff;">Electro DMG</span>, considered <span style="color:#ffd12f;" class="font-bold">Resonance Skill DMG</span>.<br>After casting this skill, press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack - Answering Form Stage 3</span>.<br><br><span class="Title">Intro Skill - Illumining Form</span></span><br><br>This skill becomes available while in <span style="color:#ffd12f;" class="font-bold">Illumining Form</span>. Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.<br><br><span class="Title">Intro Skill - Illumining Form: Manifold Unison</span></span><br><br>The skill becomes available when in <span style="color:#ffd12f;" class="font-bold">Illumining Form</span>. Attack the target, dealing greater <span style="color:#ebb0ff;">Electro DMG</span>, considered <span style="color:#ffd12f;" class="font-bold">Resonance Skill DMG</span>.</div>`,
-  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinQTE.webp",
+  icon: "https://static.nanoka.cc/assets/ww/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinQTE.webp",
   attacks: [
     {
       key: "IntroSkillAnsweringFormElectroFlareDMG",
-      label: "Intro Skill - Answering Form: Electro Flare DMG",
+      label: "Intro Skill - Answering Form DMG in Resonance Mode - Electro Flare",
       talents: {
         "1": "3.97%*2+3.97%*2+63.39%",
         "2": "4.29%*2+4.29%*2+68.59%",
@@ -22,7 +22,7 @@ export const introAttacks = {
     },
     {
       key: "IntroSkillAnsweringFormUnisonDMG",
-      label: "Intro Skill - Answering Form: Unison DMG",
+      label: "Intro Skill - Answering Form DMG in Resonance Mode - Unison",
       talents: {
         "1": "5.17%+10.34%+5.17%+10.34%*3",
         "2": "5.59%+11.18%+5.59%+11.18%*3",
@@ -56,7 +56,7 @@ export const introAttacks = {
     },
     {
       key: "IntroSkillIlluminingFormElectroFlareDMG",
-      label: "Intro Skill - Illumining Form: Electro Flare DMG",
+      label: "Intro Skill - Illumining Form DMG in Resonance Mode - Electro Flare",
       talents: {
         "1": "5.75%*4+5.75%*2+20.11%*4",
         "2": "6.22%*4+6.22%*2+21.76%*4",
@@ -73,7 +73,7 @@ export const introAttacks = {
     },
     {
       key: "IntroSkillIlluminingFormUnisonDMG",
-      label: "Intro Skill - Illumining Form: Unison DMG",
+      label: "Intro Skill - Illumining Form DMG in Resonance Mode - Unison",
       talents: {
         "1": "28.47%*4+2.85%+5.70%*2+7.12%*2",
         "2": "30.80%*4+3.08%+6.16%*2+7.70%*2",

@@ -11,7 +11,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     signatureWeapon: "BloomingJadehaven",
     electroFlare: true,
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "LetheanElegy", label: "Alternate" },
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "Augment", label: "BP" },
+      { key: "FusionAccretion", label: "4*" },
+    ],
     stances: ["Unison", "Electro Flare"],
   };
 }
