@@ -17721,6 +17721,1766 @@
   }
  },
  {
+  "name": "wuwa_calc Hsin S6R5 · Suisui + Chisa",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 11,092,167 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 9,476,576; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 343,236; Chisa S6 Kumokiri R5, Moonlit Clouds 5pc, 44111 CD CD atk atk atk — 1,166,331). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Electro Flare 13, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "wuwa_calc Hsin S6R5 · Suisui + Chisa",
+   "characterIds": [
+    "Hsin",
+    "Suisui",
+    "Chisa"
+   ],
+   "actions": [
+    {
+     "slot": 1,
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 2,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 3,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 4,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 5,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 7,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 8,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 9,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 10,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "slot": 1,
+     "order": 11,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 12,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 13,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 14,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 15,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 16,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 17,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 18,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 2,
+     "order": 19,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 20,
+     "key": "DeathSnipAdditionalDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 21,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 22,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 23,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 24,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 25,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 26,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 27,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 28,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 29,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 30,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 31,
+     "key": "IntroSkillAnsweringFormElectroFlareDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 32,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 33,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 34,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 35,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 37,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 38,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 39,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 41,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 42,
+     "key": "BasicAttackIlluminingFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 43,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 44,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 45,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 46,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 47,
+     "key": "ResonanceSkillIlluminingFormPillarsAlignedDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 48,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 49,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 50,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 51,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 52,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 53,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 54,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 55,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 56,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 57,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 58,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 1,
+     "order": 59,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    }
+   ],
+   "duration": null,
+   "enemyConfig": {
+    "enemyLevel": 100,
+    "enemyResist": 0.2,
+    "enemyType": "Calamity",
+    "enemyBrowserKey": null,
+    "spectroFrazzleStacks": 0,
+    "aeroErosionStacks": 0,
+    "havocBaneStacks": 6,
+    "fusionBurstStacks": 0,
+    "electroFlareStacks": 13,
+    "electroRageStacks": 0,
+    "glacioChafeStacks": 13,
+    "strainStacks": 0
+   },
+   "handoffs": {
+    "Suisui": [
+     "Chisa"
+    ],
+    "Chisa": [
+     "Hsin"
+    ],
+    "Hsin": [
+     "Suisui"
+    ]
+   }
+  }
+ },
+ {
+  "name": "wuwa_calc Hsin S6R5 · Mornye + Chisa",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 9,907,906 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK ATK atk atk — 7,845,392; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 369,318; Chisa S6 Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, 43311 CD ATK ATK atk atk — 1,520,661). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Electro Flare 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "wuwa_calc Hsin S6R5 · Mornye + Chisa",
+   "characterIds": [
+    "Hsin",
+    "Mornye",
+    "Chisa"
+   ],
+   "actions": [
+    {
+     "slot": 1,
+     "order": 1,
+     "key": "BasicAttackWideFieldObservationModeStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 2,
+     "key": "BasicAttackWideFieldObservationModeStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 3,
+     "key": "BasicAttackWideFieldObservationModeStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 4,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 5,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 1,
+     "order": 6,
+     "key": "DistributedArrayDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 7,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 8,
+     "key": "HeavyAttackInversionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 9,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 10,
+     "key": "CriticalProtocolDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 11,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReactorHusk",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 12,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 13,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 14,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 15,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 16,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 17,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 18,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 2,
+     "order": 19,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 20,
+     "key": "DeathSnipAdditionalDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 21,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 22,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 23,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 24,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 25,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 26,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 27,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 28,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 29,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 30,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 31,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 32,
+     "key": "IntroSkillAnsweringFormElectroFlareDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 33,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 34,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 35,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 37,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 38,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 39,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 41,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 42,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 43,
+     "key": "BasicAttackIlluminingFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 44,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 45,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 46,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 47,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 48,
+     "key": "ResonanceSkillIlluminingFormPillarsAlignedDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 49,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 50,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 51,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 52,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 53,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 54,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 55,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 56,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 57,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 58,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 59,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 60,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    }
+   ],
+   "duration": null,
+   "enemyConfig": {
+    "enemyLevel": 100,
+    "enemyResist": 0.2,
+    "enemyType": "Calamity",
+    "enemyBrowserKey": null,
+    "spectroFrazzleStacks": 0,
+    "aeroErosionStacks": 0,
+    "havocBaneStacks": 6,
+    "fusionBurstStacks": 0,
+    "electroFlareStacks": 13,
+    "electroRageStacks": 0,
+    "glacioChafeStacks": 0,
+    "strainStacks": 0
+   },
+   "handoffs": {
+    "Mornye": [
+     "Chisa"
+    ],
+    "Chisa": [
+     "Hsin"
+    ],
+    "Hsin": [
+     "Mornye"
+    ]
+   }
+  }
+ },
+ {
+  "name": "wuwa_calc Hsin S6R5 · Suisui + Lynae",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 9,529,159 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 8,202,983; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 278,861; Lynae S6 Spectrum Blaster R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CR CD atk atk atk — 934,477). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Electro Flare 13, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "wuwa_calc Hsin S6R5 · Suisui + Lynae",
+   "characterIds": [
+    "Hsin",
+    "Suisui",
+    "Lynae"
+   ],
+   "actions": [
+    {
+     "slot": 1,
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 2,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 3,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 4,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 5,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 7,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 8,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 9,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 10,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 11,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "slot": 1,
+     "order": 12,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 13,
+     "key": "TimetoShowSomeColorsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 14,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 15,
+     "key": "PrismaticOverblastDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 16,
+     "key": "LynaeStylePalettesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 17,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 18,
+     "key": "BasicAttackSparkCollisionLv3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 19,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 20,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 2,
+     "order": 21,
+     "key": "BasicAttackPolychromeLeap1",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 22,
+     "key": "BasicAttackPolychromeLeap2",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 23,
+     "key": "BasicAttackPolychromeLeap3",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 24,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 25,
+     "key": "BasicAttackVisualImpactDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 26,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 27,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 28,
+     "key": "LetsHittheRoadDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 29,
+     "key": "IntroSkillAnsweringFormElectroFlareDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 30,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 31,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 32,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 33,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 34,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 35,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 37,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 38,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 39,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
+     "key": "BasicAttackIlluminingFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 41,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 42,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 43,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 44,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 45,
+     "key": "ResonanceSkillIlluminingFormPillarsAlignedDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 46,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 47,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 48,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 49,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 50,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 51,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 52,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 53,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 54,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 55,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 56,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 57,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 1,
+     "order": 58,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    }
+   ],
+   "duration": null,
+   "enemyConfig": {
+    "enemyLevel": 100,
+    "enemyResist": 0.2,
+    "enemyType": "Calamity",
+    "enemyBrowserKey": null,
+    "spectroFrazzleStacks": 0,
+    "aeroErosionStacks": 0,
+    "havocBaneStacks": 0,
+    "fusionBurstStacks": 0,
+    "electroFlareStacks": 13,
+    "electroRageStacks": 0,
+    "glacioChafeStacks": 13,
+    "strainStacks": 0
+   },
+   "handoffs": {
+    "Suisui": [
+     "Lynae"
+    ],
+    "Lynae": [
+     "Hsin"
+    ],
+    "Hsin": [
+     "Suisui"
+    ]
+   }
+  }
+ },
+ {
   "name": "wuwa_calc Iuno S6R5 · Mornye + Lynae",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 7,563,791 team DPR against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD ATK Aero atk atk — 5,808,903; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 454,753; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 1,162,222). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
   "author": "Riley31415 (wuwa_calc)",
@@ -20303,15 +22063,15 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 · Mornye + Rebecca",
-  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 4,640,188 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 2,374,316; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 367,454; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, 43311 CR ATK Electro atk atk — 1,757,562). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
+  "name": "wuwa_calc Jinhsi S6R5 · Mornye + Hsin",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 8,283,864 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 43311 CR ATK ATK atk atk — 2,595,661; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 357,525; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 5,205,302). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Mornye + Rebecca",
+   "name": "wuwa_calc Jinhsi S6R5 · Mornye + Hsin",
    "characterIds": [
     "Jinhsi",
     "Mornye",
-    "Rebecca"
+    "Hsin"
    ],
    "actions": [
     {
@@ -20342,48 +22102,17 @@
      "isDisabled": false
     },
     {
-     "slot": 0,
+     "slot": 2,
      "order": 4,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 5,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 6,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 7,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 10,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 1,
-     "order": 8,
+     "order": 5,
      "key": "DistributedArrayDMG",
      "type": "skill",
      "count": 1,
@@ -20392,16 +22121,16 @@
     },
     {
      "slot": 2,
-     "order": 9,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 6,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 1,
-     "order": 10,
+     "order": 7,
      "key": "HeavyAttackInversionDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20410,16 +22139,16 @@
     },
     {
      "slot": 2,
-     "order": 11,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 8,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 1,
-     "order": 12,
+     "order": 9,
      "key": "CriticalProtocolDMG",
      "type": "liberation",
      "count": 1,
@@ -20428,7 +22157,7 @@
     },
     {
      "slot": 1,
-     "order": 13,
+     "order": 10,
      "key": "HyvatiaLasersDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20439,7 +22168,7 @@
     },
     {
      "slot": 0,
-     "order": 14,
+     "order": 11,
      "key": "LoongsHalo",
      "type": "intro",
      "count": 1,
@@ -20448,16 +22177,16 @@
     },
     {
      "slot": 2,
-     "order": 15,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 12,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 16,
+     "order": 13,
      "key": "BasicAttack1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20466,7 +22195,7 @@
     },
     {
      "slot": 0,
-     "order": 17,
+     "order": 14,
      "key": "BasicAttack2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20475,16 +22204,16 @@
     },
     {
      "slot": 2,
-     "order": 18,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 15,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 19,
+     "order": 16,
      "key": "CrescentDivinityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20493,16 +22222,16 @@
     },
     {
      "slot": 2,
-     "order": 20,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
+     "order": 17,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 21,
+     "order": 18,
      "key": "BasicAttack3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20511,7 +22240,7 @@
     },
     {
      "slot": 0,
-     "order": 22,
+     "order": 19,
      "key": "BasicAttack4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20519,8 +22248,17 @@
      "isDisabled": false
     },
     {
+     "slot": 2,
+     "order": 20,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "slot": 0,
-     "order": 23,
+     "order": 21,
      "key": "JueSummonDMG",
      "type": "echoAttacks",
      "count": 5,
@@ -20531,10 +22269,10 @@
     },
     {
      "slot": 0,
-     "order": 24,
+     "order": 22,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
-     "count": 13,
+     "count": 15,
      "buffs": [],
      "isDisabled": false,
      "mainEcho": "Jué",
@@ -20542,7 +22280,7 @@
     },
     {
      "slot": 0,
-     "order": 25,
+     "order": 23,
      "key": "SolarFlareDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20551,7 +22289,7 @@
     },
     {
      "slot": 0,
-     "order": 26,
+     "order": 24,
      "key": "StarGlamourDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20560,8 +22298,8 @@
     },
     {
      "slot": 2,
-     "order": 27,
-     "key": "HeyLeadheadComenGetMeDMG",
+     "order": 25,
+     "key": "IntroSkillAnsweringFormManifoldUnisonDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -20569,7 +22307,7 @@
     },
     {
      "slot": 0,
-     "order": 28,
+     "order": 26,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20580,8 +22318,17 @@
     },
     {
      "slot": 2,
-     "order": 29,
-     "key": "MidairAttackHuntressDMG",
+     "order": 27,
+     "key": "BasicAttackAnsweringFormStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 28,
+     "key": "BasicAttackAnsweringFormStage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -20589,10 +22336,10 @@
     },
     {
      "slot": 0,
-     "order": 30,
+     "order": 29,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "mainEcho": "Jué",
@@ -20600,8 +22347,8 @@
     },
     {
      "slot": 2,
-     "order": 31,
-     "key": "ItsBigBoominTimeDMG",
+     "order": 30,
+     "key": "ResonanceSkillAnsweringFormDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -20609,7 +22356,7 @@
     },
     {
      "slot": 0,
-     "order": 32,
+     "order": 31,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20620,16 +22367,16 @@
     },
     {
      "slot": 2,
-     "order": 33,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
+     "order": 32,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 34,
+     "order": 33,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20640,9 +22387,18 @@
     },
     {
      "slot": 2,
+     "order": 34,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
      "order": 35,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -20650,93 +22406,6 @@
     {
      "slot": 0,
      "order": 36,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 37,
-     "key": "SequenceNode6MaybeJustMaybe",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 38,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 39,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 40,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 41,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 42,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 43,
-     "key": "Mk31HMG2ndEnhancementDMG",
-     "type": "liberation",
-     "count": 10,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 44,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 35,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 45,
      "key": "LoongsHalo",
      "type": "intro",
      "count": 1,
@@ -20744,17 +22413,8 @@
      "isDisabled": false
     },
     {
-     "slot": 2,
-     "order": 46,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "slot": 0,
-     "order": 47,
+     "order": 37,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20765,16 +22425,16 @@
     },
     {
      "slot": 2,
-     "order": 48,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 38,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 49,
+     "order": 39,
      "key": "BasicAttack1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20783,7 +22443,7 @@
     },
     {
      "slot": 0,
-     "order": 50,
+     "order": 40,
      "key": "BasicAttack2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20792,7 +22452,7 @@
     },
     {
      "slot": 0,
-     "order": 51,
+     "order": 41,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20803,16 +22463,16 @@
     },
     {
      "slot": 2,
-     "order": 52,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 42,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 53,
+     "order": 43,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20823,16 +22483,16 @@
     },
     {
      "slot": 2,
-     "order": 54,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 44,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 55,
+     "order": 45,
      "key": "CrescentDivinityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20841,7 +22501,7 @@
     },
     {
      "slot": 0,
-     "order": 56,
+     "order": 46,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20852,16 +22512,16 @@
     },
     {
      "slot": 2,
-     "order": 57,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 47,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 58,
+     "order": 48,
      "key": "BasicAttack3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20870,7 +22530,7 @@
     },
     {
      "slot": 0,
-     "order": 59,
+     "order": 49,
      "key": "BasicAttack4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20879,7 +22539,7 @@
     },
     {
      "slot": 0,
-     "order": 60,
+     "order": 50,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20890,16 +22550,16 @@
     },
     {
      "slot": 2,
-     "order": 61,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 51,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 62,
+     "order": 52,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20910,25 +22570,16 @@
     },
     {
      "slot": 2,
-     "order": 63,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 64,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
+     "order": 53,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 65,
+     "order": 54,
      "key": "SolarFlareDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20937,7 +22588,7 @@
     },
     {
      "slot": 0,
-     "order": 66,
+     "order": 55,
      "key": "StarGlamourDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20945,18 +22596,9 @@
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 67,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 68,
-     "key": "ConvergenceDMG",
+     "slot": 2,
+     "order": 56,
+     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -20964,7 +22606,7 @@
     },
     {
      "slot": 0,
-     "order": 69,
+     "order": 57,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -20974,8 +22616,149 @@
      "mainEchoRank": 5
     },
     {
-     "slot": 1,
+     "slot": 2,
+     "order": 58,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 59,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 60,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 61,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 62,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 63,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 64,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 65,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 66,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 67,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 68,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 69,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
      "order": 70,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 71,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 72,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 73,
      "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -20984,10 +22767,10 @@
     },
     {
      "slot": 2,
-     "order": 71,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "order": 74,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     }
@@ -21008,36 +22791,35 @@
     "strainStacks": 0
    },
    "handoffs": {
-    "Rebecca": [
-     "Mornye",
-     "Jinhsi"
-    ],
     "Mornye": [
      "Jinhsi"
     ],
     "Jinhsi": [
-     "Rebecca",
+     "Hsin"
+    ],
+    "Hsin": [
+     "Jinhsi",
      "Mornye"
     ]
    }
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 · Mornye + Cantarella",
-  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 4,439,452 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 43311 CR ATK ATK atk atk — 2,830,010; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 351,667; Cantarella S6 Whispers of Sirens R5, Rejuvenating Glow 5pc, 43311 CR ER Havoc atk atk — 1,139,249). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
+  "name": "wuwa_calc Jinhsi S6R5 · Shorekeeper + Hsin",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 7,644,520 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CD CD atk atk atk — 2,359,902; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 209,275; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 4,996,983). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Mornye + Cantarella",
+   "name": "wuwa_calc Jinhsi S6R5 · Shorekeeper + Hsin",
    "characterIds": [
     "Jinhsi",
-    "Mornye",
-    "Cantarella"
+    "Shorekeeper",
+    "Hsin"
    ],
    "actions": [
     {
      "slot": 1,
      "order": 1,
-     "key": "BasicAttackWideFieldObservationModeStage1DMG",
+     "key": "OriginCalculusStage1DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -21046,7 +22828,7 @@
     {
      "slot": 1,
      "order": 2,
-     "key": "BasicAttackWideFieldObservationModeStage2DMG",
+     "key": "OriginCalculusStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -21055,7 +22837,7 @@
     {
      "slot": 1,
      "order": 3,
-     "key": "BasicAttackWideFieldObservationModeStage3DMG",
+     "key": "OriginCalculusStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -21064,168 +22846,16 @@
     {
      "slot": 2,
      "order": 4,
-     "key": "DiffusionDMG",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 1,
      "order": 5,
-     "key": "DistributedArrayDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 6,
-     "key": "HeavyAttackInversionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 7,
-     "key": "CriticalProtocolDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 8,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReactorHusk",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 9,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 10,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 11,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 12,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 13,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 14,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 15,
-     "key": "JueSummonDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 16,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 15,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 17,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 18,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 19,
-     "key": "RippleDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 20,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 21,
-     "key": "Stage3DMG",
+     "key": "OriginCalculusPlungingAttackDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -21233,27 +22863,34 @@
     },
     {
      "slot": 2,
-     "order": 22,
-     "key": "GracefulStepDMG",
-     "type": "skill",
+     "order": 6,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 23,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
+     "slot": 1,
+     "order": 7,
+     "key": "DeductionDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
-     "slot": 2,
-     "order": 24,
+     "slot": 1,
+     "order": 8,
+     "key": "EnlightenmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 9,
      "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
@@ -21263,155 +22900,8 @@
      "mainEchoRank": 5
     },
     {
-     "slot": 2,
-     "order": 25,
-     "key": "FlowingSuffocationDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 26,
-     "key": "DelusiveDiveDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "slot": 0,
-     "order": 27,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 28,
-     "key": "JoltDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 29,
-     "key": "PhantomStingStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 30,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 31,
-     "key": "FlickeringReverieDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 32,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 33,
-     "key": "PhantomStingStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 34,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 35,
-     "key": "JoltDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 36,
-     "key": "PhantomStingStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 37,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 38,
-     "key": "PerceptionDrainDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 39,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 40,
+     "order": 10,
      "key": "LoongsHalo",
      "type": "intro",
      "count": 1,
@@ -21419,19 +22909,17 @@
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 41,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
+     "slot": 2,
+     "order": 11,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 42,
+     "order": 12,
      "key": "BasicAttack1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21440,7 +22928,7 @@
     },
     {
      "slot": 0,
-     "order": 43,
+     "order": 13,
      "key": "BasicAttack2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21448,19 +22936,17 @@
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 44,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
+     "slot": 2,
+     "order": 14,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 2,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 45,
+     "order": 15,
      "key": "CrescentDivinityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21468,19 +22954,17 @@
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 46,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
+     "slot": 2,
+     "order": 16,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "slot": 0,
-     "order": 47,
+     "order": 17,
      "key": "BasicAttack3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21489,281 +22973,8 @@
     },
     {
      "slot": 0,
-     "order": 48,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 49,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 50,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 51,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 52,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 53,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 54,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 1,
-     "order": 55,
-     "key": "SyntonyFieldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ],
-   "duration": null,
-   "enemyConfig": {
-    "enemyLevel": 100,
-    "enemyResist": 0.2,
-    "enemyType": "Calamity",
-    "enemyBrowserKey": null,
-    "spectroFrazzleStacks": 0,
-    "aeroErosionStacks": 0,
-    "havocBaneStacks": 0,
-    "fusionBurstStacks": 0,
-    "electroFlareStacks": 0,
-    "electroRageStacks": 0,
-    "glacioChafeStacks": 0,
-    "strainStacks": 0
-   },
-   "handoffs": {
-    "Mornye": [
-     "Jinhsi"
-    ],
-    "Jinhsi": [
-     "Cantarella",
-     "Mornye"
-    ],
-    "Cantarella": [
-     "Jinhsi"
-    ]
-   }
-  }
- },
- {
-  "name": "wuwa_calc Jinhsi S6R5 · Mornye + Zhezhi",
-  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 4,293,955 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 2,886,628; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 352,671; Zhezhi S6 Rime-Draped Sprouts R5, Empyrean Anthem 5pc, 43311 CR Glacio Glacio atk atk — 941,818). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Mornye + Zhezhi",
-   "characterIds": [
-    "Jinhsi",
-    "Mornye",
-    "Zhezhi"
-   ],
-   "actions": [
-    {
-     "slot": 1,
-     "order": 1,
-     "key": "BasicAttackWideFieldObservationModeStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 2,
-     "key": "BasicAttackWideFieldObservationModeStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 3,
-     "key": "BasicAttackWideFieldObservationModeStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 4,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 5,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 6,
-     "key": "DistributedArrayDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 7,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 8,
-     "key": "HeavyAttackInversionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 9,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 10,
-     "key": "CriticalProtocolDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 11,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReactorHusk",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 12,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 13,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 14,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 15,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 16,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 17,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
      "order": 18,
-     "key": "CrescentDivinityDMG",
+     "key": "BasicAttack4DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -21772,43 +22983,7 @@
     {
      "slot": 2,
      "order": 19,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 20,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 21,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 22,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 23,
-     "key": "InklitSpiritDMG",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 2,
      "buffs": [],
@@ -21816,7 +22991,7 @@
     },
     {
      "slot": 0,
-     "order": 24,
+     "order": 20,
      "key": "JueSummonDMG",
      "type": "echoAttacks",
      "count": 5,
@@ -21827,7 +23002,7 @@
     },
     {
      "slot": 0,
-     "order": 25,
+     "order": 21,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 15,
@@ -21838,7 +23013,7 @@
     },
     {
      "slot": 0,
-     "order": 26,
+     "order": 22,
      "key": "SolarFlareDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21847,7 +23022,7 @@
     },
     {
      "slot": 0,
-     "order": 27,
+     "order": 23,
      "key": "StarGlamourDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -21856,8 +23031,8 @@
     },
     {
      "slot": 2,
-     "order": 28,
-     "key": "BrillianceInABrushDMG",
+     "order": 24,
+     "key": "IntroSkillAnsweringFormManifoldUnisonDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -21865,7 +23040,7 @@
     },
     {
      "slot": 0,
-     "order": 29,
+     "order": 25,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -21876,45 +23051,87 @@
     },
     {
      "slot": 2,
-     "order": 30,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "order": 26,
+     "key": "BasicAttackAnsweringFormStage3DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 27,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 28,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 29,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 30,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
     },
     {
      "slot": 2,
      "order": 31,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 32,
-     "key": "NormalAttackStage1DMG",
-     "type": "basic",
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
     },
     {
      "slot": 2,
      "order": 33,
-     "key": "NormalAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 11,
      "buffs": [],
      "isDisabled": false
     },
     {
      "slot": 2,
      "order": 34,
-     "key": "NormalAttackStage3DMG",
-     "type": "basic",
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -21922,6 +23139,15 @@
     {
      "slot": 0,
      "order": 35,
+     "key": "LoongsHalo",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -21932,8 +23158,8 @@
     },
     {
      "slot": 2,
-     "order": 36,
-     "key": "InklitSpiritDMG",
+     "order": 37,
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -21941,20 +23167,9 @@
     },
     {
      "slot": 0,
-     "order": 37,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
      "order": 38,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "key": "BasicAttack1DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -21962,6 +23177,15 @@
     {
      "slot": 0,
      "order": 39,
+     "key": "BasicAttack2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -21972,99 +23196,96 @@
     },
     {
      "slot": 2,
-     "order": 40,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
      "order": 41,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 42,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
     },
     {
      "slot": 2,
      "order": 43,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 44,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
+     "key": "CrescentDivinityDMG",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 45,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
     },
     {
      "slot": 2,
      "order": 46,
-     "key": "InklitSpiritDMG",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 47,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "BasicAttack3DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 48,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
+     "key": "BasicAttack4DMG",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 49,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
     },
     {
      "slot": 2,
      "order": 50,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22083,16 +23304,16 @@
     {
      "slot": 2,
      "order": 52,
-     "key": "InklitSpiritDMG",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 2,
+     "slot": 0,
      "order": 53,
-     "key": "CompositionDMG",
+     "key": "SolarFlareDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -22101,6 +23322,24 @@
     {
      "slot": 0,
      "order": 54,
+     "key": "StarGlamourDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 55,
+     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 56,
      "key": "JueSkillCoordinatedDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -22111,8 +23350,8 @@
     },
     {
      "slot": 2,
-     "order": 55,
-     "key": "InklitSpiritDMG",
+     "order": 57,
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -22120,29 +23359,9 @@
     },
     {
      "slot": 2,
-     "order": 56,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 57,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
      "order": 58,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22150,8 +23369,8 @@
     {
      "slot": 2,
      "order": 59,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22159,8 +23378,8 @@
     {
      "slot": 2,
      "order": 60,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22168,8 +23387,8 @@
     {
      "slot": 2,
      "order": 61,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22188,26 +23407,28 @@
     {
      "slot": 2,
      "order": 63,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 64,
-     "key": "InklitSpiritDMG",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
+     "slot": 0,
+     "order": 64,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
      "slot": 2,
      "order": 65,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22226,8 +23447,8 @@
     {
      "slot": 2,
      "order": 67,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22235,8 +23456,8 @@
     {
      "slot": 2,
      "order": 68,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -22244,264 +23465,34 @@
     {
      "slot": 2,
      "order": 69,
-     "key": "NightmareLampylumenMyriadDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareLampylumenMyriad",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 70,
-     "key": "LoongsHalo",
-     "type": "intro",
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "slot": 0,
-     "order": 71,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
+     "slot": 2,
+     "order": 70,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 71,
+     "key": "DiscernmentDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "slot": 2,
      "order": 72,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 73,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 74,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 75,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 76,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 77,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 78,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 79,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 80,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 81,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 82,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 83,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 84,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 85,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 86,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 87,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 88,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 89,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 90,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 91,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 92,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 93,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 94,
-     "key": "SyntonyFieldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 95,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 96,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -22524,15 +23515,750 @@
     "strainStacks": 0
    },
    "handoffs": {
-    "Mornye": [
+    "Shorekeeper": [
      "Jinhsi"
     ],
     "Jinhsi": [
-     "Zhezhi",
-     "Mornye"
+     "Hsin"
     ],
-    "Zhezhi": [
+    "Hsin": [
+     "Jinhsi",
+     "Shorekeeper"
+    ]
+   }
+  }
+ },
+ {
+  "name": "wuwa_calc Jinhsi S6R5 · Suisui + Hsin",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 6,795,262 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 2,146,754; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 248,596; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 4,321,552). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "wuwa_calc Jinhsi S6R5 · Suisui + Hsin",
+   "characterIds": [
+    "Jinhsi",
+    "Suisui",
+    "Hsin"
+   ],
+   "actions": [
+    {
+     "slot": 1,
+     "order": 1,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 2,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 3,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 4,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 5,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 7,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 8,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "slot": 1,
+     "order": 9,
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 0,
+     "order": 10,
+     "key": "LoongsHalo",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 11,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 12,
+     "key": "BasicAttack1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 13,
+     "key": "BasicAttack2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 14,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 15,
+     "key": "CrescentDivinityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 16,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 17,
+     "key": "BasicAttack3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 18,
+     "key": "BasicAttack4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 19,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 20,
+     "key": "JueSummonDMG",
+     "type": "echoAttacks",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 0,
+     "order": 21,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 15,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 0,
+     "order": 22,
+     "key": "SolarFlareDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 23,
+     "key": "StarGlamourDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 24,
+     "key": "IntroSkillAnsweringFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 25,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 26,
+     "key": "BasicAttackAnsweringFormStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 27,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 28,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 29,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 30,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 31,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 32,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 33,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 34,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 35,
+     "key": "LoongsHalo",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 37,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 38,
+     "key": "BasicAttack1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 39,
+     "key": "BasicAttack2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 41,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 42,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 43,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 44,
+     "key": "CrescentDivinityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 45,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 46,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 47,
+     "key": "BasicAttack3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 48,
+     "key": "BasicAttack4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 49,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 50,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 51,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 52,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 53,
+     "key": "SolarFlareDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 54,
+     "key": "StarGlamourDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 55,
+     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 56,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 57,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 58,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 59,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 60,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 61,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 62,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 63,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 64,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 65,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 66,
+     "key": "JueSkillCoordinatedDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Jué",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 2,
+     "order": 67,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 68,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 69,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 70,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 71,
+     "key": "TinklingJadeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 72,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 73,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    }
+   ],
+   "duration": null,
+   "enemyConfig": {
+    "enemyLevel": 100,
+    "enemyResist": 0.2,
+    "enemyType": "Calamity",
+    "enemyBrowserKey": null,
+    "spectroFrazzleStacks": 0,
+    "aeroErosionStacks": 0,
+    "havocBaneStacks": 0,
+    "fusionBurstStacks": 0,
+    "electroFlareStacks": 0,
+    "electroRageStacks": 0,
+    "glacioChafeStacks": 13,
+    "strainStacks": 0
+   },
+   "handoffs": {
+    "Suisui": [
      "Jinhsi"
+    ],
+    "Jinhsi": [
+     "Hsin"
+    ],
+    "Hsin": [
+     "Jinhsi",
+     "Suisui"
     ]
    }
   }
@@ -51541,6 +53267,628 @@
   }
  },
  {
+  "name": "wuwa_calc Hsin S6R1 DPS · S0R1 team · Chisa + Electro Rover",
+  "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 4,958,812 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R1, Heart of Sworn Vigil 5pc, 43311 CD ATK ATK atk atk — 4,340,920; Chisa S0 Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, 43311 CD Havoc Havoc atk atk — 210,214; Electro Rover S6 Emerald of Genesis R1, Flash of Electric Reflection 5pc, 43311 CD Electro Electro atk atk — 316,278). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Electro Flare 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "wuwa_calc Hsin S6R1 DPS · S0R1 team · Chisa + Electro Rover",
+   "characterIds": [
+    "Hsin",
+    "Chisa",
+    "Roverelectrofemale"
+   ],
+   "actions": [
+    {
+     "slot": 1,
+     "order": 1,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 2,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 3,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 4,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 5,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 6,
+     "key": "DeathSnipAdditionalDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 7,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 8,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 1,
+     "order": 9,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 1,
+     "order": 10,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 11,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 12,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 13,
+     "key": "SawringBlitzStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 14,
+     "key": "SawringBlitzStage2DiscordanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 15,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 16,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 17,
+     "key": "SawringBlitzStage3FalltoneDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 18,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 19,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 20,
+     "key": "ThunderousFuryDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 21,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 22,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 23,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 24,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 25,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 26,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 27,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 28,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 29,
+     "key": "ThunderclapDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 30,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 31,
+     "key": "BasicAttackRepelDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 32,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 33,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 2,
+     "order": 34,
+     "key": "UltimateTacticsDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 35,
+     "key": "OvershockDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 36,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 2,
+     "order": 37,
+     "key": "SoulfrayerSummonDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Soulfrayer",
+     "mainEchoRank": 5
+    },
+    {
+     "slot": 0,
+     "order": 38,
+     "key": "IntroSkillAnsweringFormElectroFlareDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 39,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 40,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 41,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 42,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 43,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 44,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 45,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 46,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 47,
+     "key": "BasicAttackIlluminingFormStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 48,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 49,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 50,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 51,
+     "key": "ResonanceSkillIlluminingFormPillarsAlignedDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 52,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 53,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 54,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 55,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 56,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 57,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "slot": 0,
+     "order": 58,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 59,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 60,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 61,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 1,
+     "order": 62,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "slot": 0,
+     "order": 63,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ],
+   "duration": null,
+   "enemyConfig": {
+    "enemyLevel": 100,
+    "enemyResist": 0.2,
+    "enemyType": "Calamity",
+    "enemyBrowserKey": null,
+    "spectroFrazzleStacks": 0,
+    "aeroErosionStacks": 0,
+    "havocBaneStacks": 6,
+    "fusionBurstStacks": 0,
+    "electroFlareStacks": 13,
+    "electroRageStacks": 0,
+    "glacioChafeStacks": 0,
+    "strainStacks": 0
+   },
+   "handoffs": {
+    "Chisa": [
+     "Roverelectrofemale"
+    ],
+    "Roverelectrofemale": [
+     "Hsin"
+    ],
+    "Hsin": [
+     "Chisa"
+    ]
+   }
+  }
+ },
+ {
   "name": "wuwa_calc Iuno S6R1 DPS · S0R1 team · Mornye + Lynae",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 3,866,287 team DPR against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R1, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 3,140,859; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 104,705; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 482,810). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
   "author": "Riley31415 (wuwa_calc)",
@@ -53268,1980 +55616,6 @@
     ],
     "Jingran": [
      "Mornye"
-    ]
-   }
-  }
- },
- {
-  "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Mornye + Rebecca",
-  "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 2,241,624 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R1, Celestial Light 5pc, 44111 CR CD atk atk atk — 1,404,285; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 64,862; Rebecca S0 Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 635,363). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Mornye + Rebecca",
-   "characterIds": [
-    "Jinhsi",
-    "Mornye",
-    "Rebecca"
-   ],
-   "actions": [
-    {
-     "slot": 1,
-     "order": 1,
-     "key": "BasicAttackWideFieldObservationModeStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 2,
-     "key": "BasicAttackWideFieldObservationModeStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 3,
-     "key": "BasicAttackWideFieldObservationModeStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 4,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 5,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 6,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 7,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 10,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 8,
-     "key": "DistributedArrayDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 9,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 10,
-     "key": "HeavyAttackInversionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 11,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 12,
-     "key": "CriticalProtocolDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 13,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReactorHusk",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 14,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 15,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 16,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 17,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 18,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 19,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 20,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 21,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 22,
-     "key": "JueSummonDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 23,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 13,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 24,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 25,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 26,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 27,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 28,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 29,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 30,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 31,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 32,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 33,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 34,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 35,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 36,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 37,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 38,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 39,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 40,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 41,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 42,
-     "key": "Mk31HMG2ndEnhancementDMG",
-     "type": "liberation",
-     "count": 10,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 43,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 35,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 44,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 45,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 46,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 47,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 48,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 49,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 50,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 51,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 52,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 53,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 54,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 55,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 56,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 57,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 58,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 59,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 60,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 61,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 62,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 63,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 64,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 65,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 66,
-     "key": "HackResponseMeltdownDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 67,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 68,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 1,
-     "order": 69,
-     "key": "SyntonyFieldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 70,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ],
-   "duration": null,
-   "enemyConfig": {
-    "enemyLevel": 100,
-    "enemyResist": 0.2,
-    "enemyType": "Calamity",
-    "enemyBrowserKey": null,
-    "spectroFrazzleStacks": 0,
-    "aeroErosionStacks": 0,
-    "havocBaneStacks": 0,
-    "fusionBurstStacks": 0,
-    "electroFlareStacks": 0,
-    "electroRageStacks": 0,
-    "glacioChafeStacks": 0,
-    "strainStacks": 0
-   },
-   "handoffs": {
-    "Rebecca": [
-     "Mornye",
-     "Jinhsi"
-    ],
-    "Mornye": [
-     "Jinhsi"
-    ],
-    "Jinhsi": [
-     "Rebecca",
-     "Mornye"
-    ]
-   }
-  }
- },
- {
-  "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Suisui + Cantarella",
-  "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 2,240,366 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R1, Celestial Light 5pc, 44111 CR CD atk atk atk — 1,845,700; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 79,151; Cantarella S0 Whispers of Sirens R1, Rejuvenating Glow 5pc, 43311 CR ER Havoc atk atk — 252,827). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Suisui + Cantarella",
-   "characterIds": [
-    "Jinhsi",
-    "Suisui",
-    "Cantarella"
-   ],
-   "actions": [
-    {
-     "slot": 1,
-     "order": 1,
-     "key": "ResonanceSkillDrizzleStanceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 2,
-     "key": "DiffusionDMG",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 3,
-     "key": "BasicAttackDrizzleStanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 4,
-     "key": "BasicAttackDrizzleStanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 5,
-     "key": "BasicAttackDrizzleStanceStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 6,
-     "key": "BasicAttackDrizzleStanceStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 7,
-     "key": "ElementalEffectGlacioChafe",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    },
-    {
-     "slot": 1,
-     "order": 8,
-     "key": "ForbiddenBastionBashDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ForbiddenBastion",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 9,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 10,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 11,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 12,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 13,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 14,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 15,
-     "key": "JueSummonDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 16,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 15,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 17,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 18,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 19,
-     "key": "RippleDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 20,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 21,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 22,
-     "key": "GracefulStepDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 23,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 24,
-     "key": "FallacyOfNoReturnDiffraction",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 25,
-     "key": "FlowingSuffocationDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 26,
-     "key": "DelusiveDiveDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 27,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 28,
-     "key": "PhantomStingStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 29,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 30,
-     "key": "FlickeringReverieDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 31,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 32,
-     "key": "PhantomStingStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 33,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 34,
-     "key": "JoltDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 35,
-     "key": "PhantomStingStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 36,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 37,
-     "key": "PerceptionDrainDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 38,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 39,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 40,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 41,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 42,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 43,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 44,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 45,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 46,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 47,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 48,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 49,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 50,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 51,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 52,
-     "key": "TinklingJadeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 53,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 1,
-     "order": 54,
-     "key": "ElementalEffectGlacioChafe",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    }
-   ],
-   "duration": null,
-   "enemyConfig": {
-    "enemyLevel": 100,
-    "enemyResist": 0.2,
-    "enemyType": "Calamity",
-    "enemyBrowserKey": null,
-    "spectroFrazzleStacks": 0,
-    "aeroErosionStacks": 0,
-    "havocBaneStacks": 0,
-    "fusionBurstStacks": 0,
-    "electroFlareStacks": 0,
-    "electroRageStacks": 0,
-    "glacioChafeStacks": 13,
-    "strainStacks": 0
-   },
-   "handoffs": {
-    "Suisui": [
-     "Jinhsi"
-    ],
-    "Jinhsi": [
-     "Cantarella",
-     "Suisui"
-    ],
-    "Cantarella": [
-     "Jinhsi"
-    ]
-   }
-  }
- },
- {
-  "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Suisui + Zhezhi",
-  "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 2,232,654 team DPR against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R1, Celestial Light 5pc, 44111 CR CD atk atk atk — 1,756,335; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 78,939; Zhezhi S0 Rime-Draped Sprouts R1, Empyrean Anthem 5pc, 43311 CR Glacio Glacio atk atk — 319,020). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "wuwa_calc Jinhsi S6R1 DPS · S0R1 team · Suisui + Zhezhi",
-   "characterIds": [
-    "Jinhsi",
-    "Suisui",
-    "Zhezhi"
-   ],
-   "actions": [
-    {
-     "slot": 1,
-     "order": 1,
-     "key": "ResonanceSkillDrizzleStanceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 2,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 3,
-     "key": "BasicAttackDrizzleStanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 4,
-     "key": "BasicAttackDrizzleStanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 5,
-     "key": "BasicAttackDrizzleStanceStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 6,
-     "key": "BasicAttackDrizzleStanceStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 7,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 8,
-     "key": "ElementalEffectGlacioChafe",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    },
-    {
-     "slot": 1,
-     "order": 9,
-     "key": "ForbiddenBastionBashDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ForbiddenBastion",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 10,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 11,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 12,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 13,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 14,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 15,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 16,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 17,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 18,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 19,
-     "key": "JueSummonDMG",
-     "type": "echoAttacks",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 20,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 15,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 21,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 22,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 23,
-     "key": "BrillianceInABrushDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 24,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 25,
-     "key": "NormalAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 26,
-     "key": "NormalAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 27,
-     "key": "NormalAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 28,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 29,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 30,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 31,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 32,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 33,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 34,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 35,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 36,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 37,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 38,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 39,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 40,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 41,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 42,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 43,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 44,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 45,
-     "key": "NightmareLampylumenMyriadDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareLampylumenMyriad",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 0,
-     "order": 46,
-     "key": "LoongsHalo",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 47,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 48,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 49,
-     "key": "BasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 50,
-     "key": "BasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 51,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 52,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 53,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 54,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 55,
-     "key": "CrescentDivinityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 56,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 57,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 58,
-     "key": "BasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 59,
-     "key": "BasicAttack4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 60,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 61,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 62,
-     "key": "JueSkillCoordinatedDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Jué",
-     "mainEchoRank": 5
-    },
-    {
-     "slot": 2,
-     "order": 63,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 64,
-     "key": "SolarFlareDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 65,
-     "key": "StarGlamourDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 0,
-     "order": 66,
-     "key": "PurgeOfLight",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 67,
-     "key": "TinklingJadeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 2,
-     "order": 68,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "slot": 1,
-     "order": 69,
-     "key": "ElementalEffectGlacioChafe",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    }
-   ],
-   "duration": null,
-   "enemyConfig": {
-    "enemyLevel": 100,
-    "enemyResist": 0.2,
-    "enemyType": "Calamity",
-    "enemyBrowserKey": null,
-    "spectroFrazzleStacks": 0,
-    "aeroErosionStacks": 0,
-    "havocBaneStacks": 0,
-    "fusionBurstStacks": 0,
-    "electroFlareStacks": 0,
-    "electroRageStacks": 0,
-    "glacioChafeStacks": 13,
-    "strainStacks": 0
-   },
-   "handoffs": {
-    "Suisui": [
-     "Jinhsi"
-    ],
-    "Jinhsi": [
-     "Zhezhi",
-     "Suisui"
-    ],
-    "Zhezhi": [
-     "Jinhsi"
     ]
    }
   }

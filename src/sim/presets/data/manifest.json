@@ -8,9 +8,9 @@
   "s6r5": "S6R5",
   "s6r1mdps": "S6R1 DPS \u00b7 S0R1 team"
  },
- "generatedAt": "2026-09-28T21:57:56+00:00",
+ "generatedAt": "2026-09-30T17:16:41+00:00",
  "wuwaCalcCommit": "90c199a",
- "appCommit": "33c5e11d",
+ "appCommit": "16ac79ff",
  "characters": [
   "Aemeath",
   "Augusta",
@@ -28,6 +28,7 @@
   "Encore",
   "Galbrena",
   "Hiyuki",
+  "Hsin",
   "Iuno",
   "Jianxin",
   "Jingran",
@@ -60,20 +61,20 @@
   "Zani",
   "Zhezhi"
  ],
- "rotationPresets": 162,
- "teamPresets": 138,
+ "rotationPresets": 166,
+ "teamPresets": 139,
  "mapping": {
   "rotations": {
    "unmatched": 0,
-   "rotations:s6r5": 116,
-   "deduped": 77,
-   "rotations:s6r1mdps": 46
+   "rotations:s6r5": 119,
+   "deduped": 79,
+   "rotations:s6r1mdps": 47
   },
   "teams": {
    "unmatched": 0,
-   "teams:s6r5": 79,
-   "teams:s6r1mdps": 79,
-   "deduped": 20
+   "teams:s6r5": 82,
+   "teams:s6r1mdps": 82,
+   "deduped": 25
   }
  }
 }
