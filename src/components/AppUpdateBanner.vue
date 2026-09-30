@@ -9,6 +9,7 @@
       <span class="text-sm truncate">{{ headline }}</span>
     </div>
     <div class="flex items-center gap-2 md:ml-auto shrink-0">
+      <template v-if="showActions">
       <button
         v-if="!isLiveResultBarEnabled"
         type="button"
@@ -32,6 +33,7 @@
         @click="openWhatsNew">
         See what's new
       </button>
+      </template>
       <button
         type="button"
         class="btn btn-circle btn-ghost btn-xs"
@@ -169,6 +171,11 @@ import { trackEvent } from "../utils/analytics";
 
 defineOptions({ name: "AppUpdateBanner" });
 
+// The v3 UI toggle + "See what's new" buttons (and the modal they open) are
+// kept wired up but hidden while the banner carries a plain game-version
+// announcement. Flip the default back to true to bring them back.
+const { showActions = false } = defineProps<{ showActions?: boolean }>();
+
 const settingsStore = useSettingsStore() as any;
 
 const isLiveResultBarEnabled = computed(
@@ -185,9 +192,9 @@ const dismissedDate = computed(
 // migration needed to signal "there's something new again".
 const visible = computed(() => !!latestDate && dismissedDate.value !== latestDate);
 
-// Same copy regardless of the flag - the bar's job is just to keep the v3
-// beta visible/reachable, not to re-litigate the pitch once someone's on it.
-const headline = "Redesigned v3 UI in beta";
+// Same copy regardless of the flag. Previous v3 announcement copy:
+// "Redesigned v3 UI in beta"
+const headline = "Version 3.7 (first half) is up!";
 
 // Screenshots live on the same asset CDN as the Optimizer Guide's images
 // (CalculatorOptimizerGuide.vue) - drop files with these exact names into
