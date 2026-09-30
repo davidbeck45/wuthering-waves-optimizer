@@ -21,7 +21,7 @@ interface ResonanceChains {
   SequenceNode3ThroughDarkandWindtheErlkingFollows?: ResonanceChainEntry;
   SequenceNode3DreamsFadeSwordAbides?: ResonanceChainEntry;
   SequenceNode2LikePetalsThatFallWithoutASound?: ResonanceChainEntry;
-  SequenceNode6TheMoonOwesItsLightToTheLiving?: ResonanceChainEntry;
+  SequenceNode6TheMoonOwesItsLightToTheLivingUnison?: ResonanceChainEntry;
 }
 
 /**
@@ -134,7 +134,7 @@ export function getEffectiveMaxStacks(
     if (selfBuffs?.InherentSkillGleaningSimpleJoysUnison?.isEnabled) {
       effectiveMaxStacks += 1;
     }
-    if (resonanceChains?.SequenceNode6TheMoonOwesItsLightToTheLiving?.isEnabled) {
+    if (resonanceChains?.SequenceNode6TheMoonOwesItsLightToTheLivingUnison?.isEnabled) {
       effectiveMaxStacks += 1;
     }
   }

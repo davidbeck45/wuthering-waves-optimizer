@@ -135,7 +135,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode6TheMoonOwesItsLightToTheLiving`,
     name: `Sequence Node 6: The Moon Owes Its Light to the Living`,
-    details: `<div>Targets take 40% more Resonance Skill DMG from Hsin.<br><br>Resonance Skill DMG dealt by Hsin ignores 20% of the target's DEF.<br><br>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The maximum stacks of the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> effect on Resonators in the team are additionally increased by 1. When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131112">Unison Response</span></span>, all Resonators in the team additionally gain 1 stack of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> for 30s. This effect does not stack.</div>`,
+    details: `<div>Targets take 40% more Resonance Skill DMG from Hsin.<br><br>Resonance Skill DMG dealt by Hsin ignores 20% of the target's DEF.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -172,6 +172,19 @@ export const resonanceChains = [
         modifierValue: 0.2,
       },
     ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `SequenceNode6TheMoonOwesItsLightToTheLivingUnison`,
+    name: `Sequence Node 6: The Moon Owes Its Light to the Living (Unison)`,
+    stance: "Unison",
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The maximum stacks of the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> effect on Resonators in the team are additionally increased by 1. When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131112">Unison Response</span></span>, all Resonators in the team additionally gain 1 stack of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> for 30s. This effect does not stack.</div>`,
+    icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
+    hasStacks: false,
+    // The +1 Unison Boon max stacks is applied in effectiveBuffStacks.ts.
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
