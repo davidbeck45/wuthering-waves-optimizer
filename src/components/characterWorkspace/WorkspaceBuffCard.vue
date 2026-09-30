@@ -55,7 +55,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
-import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getSelectedTeammateBuffs, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import {
   buildBuffToggleUpdate,
   type MutuallyExclusiveRef,
@@ -111,6 +111,7 @@ const currentCharacter = computed(
     (characters.value[props.character] ?? {}) as {
       buffs?: Record<string, { isEnabled?: boolean; stacks?: number }>;
       resonanceChains?: Record<string, { isEnabled?: boolean }>;
+      teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
     },
 );
 
@@ -139,6 +140,8 @@ const effectiveMaxStacks = computed(() =>
     props.uniqueKey,
     props.maxStacks,
     currentCharacter.value.resonanceChains,
+    currentCharacter.value.buffs,
+    getSelectedTeammateBuffs(currentCharacter.value.teamBuffs),
   ),
 );
 

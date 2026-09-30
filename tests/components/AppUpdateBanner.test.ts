@@ -14,8 +14,10 @@ const router = createRouter({
   ],
 });
 
-function renderBanner() {
-  return render(AppUpdateBanner, { global: { plugins: [router] } });
+// The action buttons are hidden by default (see showActions in the
+// component); tests exercising them opt back in.
+function renderBanner(props: { showActions?: boolean } = { showActions: true }) {
+  return render(AppUpdateBanner, { props, global: { plugins: [router] } });
 }
 
 describe("AppUpdateBanner", () => {
@@ -30,10 +32,17 @@ describe("AppUpdateBanner", () => {
     };
   });
 
-  it("shows the beta headline and a New badge by default", () => {
+  it("shows the headline and a New badge by default", () => {
     const { getByText } = renderBanner();
     expect(getByText("New")).toBeTruthy();
-    expect(getByText("Redesigned v3 UI in beta")).toBeTruthy();
+    expect(getByText("Version 3.7 (first half) is up!")).toBeTruthy();
+  });
+
+  it("hides the v3 toggle and 'See what's new' by default, leaving only dismiss", () => {
+    const { container } = renderBanner({});
+    const buttons = container.querySelectorAll("[data-test-update-banner] button");
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].hasAttribute("data-test-update-banner-dismiss")).toBe(true);
   });
 
   it("shows the 'Try the v3 UI' CTA when the flag is off, and enables it on click", async () => {
@@ -61,12 +70,12 @@ describe("AppUpdateBanner", () => {
   it("headline stays the same regardless of the flag", () => {
     const settingsStore = useSettingsStore() as any;
     const off = renderBanner();
-    expect(off.getByText("Redesigned v3 UI in beta")).toBeTruthy();
+    expect(off.getByText("Version 3.7 (first half) is up!")).toBeTruthy();
     off.unmount();
 
     settingsStore.upsertLab({ liveResultBar: { isEnabled: true } });
     const on = renderBanner();
-    expect(on.getByText("Redesigned v3 UI in beta")).toBeTruthy();
+    expect(on.getByText("Version 3.7 (first half) is up!")).toBeTruthy();
   });
 
   it("'See what's new' opens the v3 features modal instead of navigating away", async () => {

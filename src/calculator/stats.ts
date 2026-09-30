@@ -500,6 +500,14 @@ export const computeSelfBuffs = (
     if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
+    // Runs before the hasStacks stacks<=0 "continue" below so the delayed
+    // proc stays selectable/enabled in rotations even at 0 Heart of Thunder
+    // stacks consumed (it just deals 0 damage there, per the kit formula).
+    if (character === "Hsin" && key === "ResonanceModeElectroFlareHeartOfThunderDelayedDMG") {
+      data.EnableAttack.push("ResonanceModeElectroFlareHeartOfThunderDelayedDMG");
+      data.specificTalentBuffs["HeartOfThunderDelayedDMG:heartOfThunderStacks"] =
+        buffData?.stacks ?? 0;
+    }
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
     const modifiersData = buff?.modifiers ?? [];
@@ -1057,6 +1065,56 @@ export const computeSelfBuffs = (
           data.specificTalentBuffs["GlacioBiteDMG:specialMultiplier"] = 0.25;
           data.specificTalentBuffs["ElementalEffectGlacioBite:talentModifierMultiply"] = 0.25;
         }
+      }
+    }
+    // Unison Boon's own stack count also drives per-stack bonuses on two
+    // Sequence Node 1/3 Unison-branch modifiers, on top of their flat
+    // resonance-chain modifiers declared normally.
+    if (character === "Hsin" && key === "UnisonBoon") {
+      const unisonBoonStacks = buffData?.stacks ?? 0;
+      if (unisonBoonStacks > 0 && activeStance === "Unison") {
+        if (
+          resonanceChainsConfig?.SequenceNode1ABoatToCrossTheRisingTideUnison
+            ?.isEnabled
+        ) {
+          [
+            "IntroSkillAnsweringFormManifoldUnisonDMG",
+            "IntroSkillIlluminingFormManifoldUnisonDMG",
+          ].forEach((talentKey) => {
+            data.specificTalentBuffs[`${talentKey}:talentModifierMultiply`] =
+              (data.specificTalentBuffs[`${talentKey}:talentModifierMultiply`] ||
+                0) +
+              unisonBoonStacks * 0.1;
+          });
+        }
+        if (
+          resonanceChainsConfig?.SequenceNode3ADreamOfReturnAmongTheHillsUnison
+            ?.isEnabled
+        ) {
+          data.specificTalentBuffs["PillarsAcrossHeavenDMG:CritDMG"] =
+            (data.specificTalentBuffs["PillarsAcrossHeavenDMG:CritDMG"] || 0) +
+            unisonBoonStacks * 0.15;
+        }
+      }
+    }
+    // Suoming Sequence Node 6: Nine Shadows at Her Side increases the effect
+    // of each Unison Boon stack by 50% (3% -> 4.5% Total DMG per stack).
+    if (character === "Suoming" && key === "UnisonBoon") {
+      const unisonBoonStacks = buffData?.stacks ?? 0;
+      if (
+        unisonBoonStacks > 0 &&
+        resonanceChainsConfig?.SequenceNode6NineShadowsAtHerSide?.isEnabled
+      ) {
+        data["TotalDamage"] =
+          (data["TotalDamage"] || 0) + unisonBoonStacks * 0.015;
+      }
+    }
+    // Suoming Sequence Node 6: Nine Shadows at Her Side further increases
+    // Crit. DMG by 80% while Seal Master (from Inherent Skill: Sunken Seal,
+    // Forged Lock) is active.
+    if (character === "Suoming" && key === "InherentSkillSunkenSealForgedLock") {
+      if (resonanceChainsConfig?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
+        data["CritDMG"] = (data["CritDMG"] || 0) + 0.8;
       }
     }
     if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {

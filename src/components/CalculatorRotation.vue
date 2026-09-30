@@ -906,6 +906,7 @@ function handleAddActions(entries: Array<{ key: string; type: string; count: num
     buffs: [],
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    heartOfThunderStacks: 0,
   }));
   actionsList.value = renumberActionsByArrayOrder([...actionsList.value, ...newActions]);
   emitRotation();
@@ -922,6 +923,7 @@ function addAction() {
     buffs: [],
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    heartOfThunderStacks: 0,
   });
   void nextTick(() => {
     actionRefs.get(id)?.toggleEdit();
