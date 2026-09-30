@@ -671,6 +671,8 @@ export const buffsByCharacter = {
             "RoverHavocMale",
             "RoverSpectroFemale",
             "RoverSpectroMale",
+            "RoverElectrofemale",
+            "RoverElectromale",
           ],
         },
       ],
@@ -2582,6 +2584,203 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Hsin: [
+    {
+      key: `InherentSkillTidesOfSuccessionElectroFlareERover`,
+      name: `Inherent Skill: Tides of Succession`,
+      details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, after Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span>. In addition, if Rover: Electro is in the same team, when Rover: Electro casts <span style="color:#ffd12f;" class="font-bold">Intro Skill - Thunderous Fury</span>, both Hsin and Rover: Electro gain 20% Electro DMG Bonus for 7s.<br>This effect resets when a Resonator is added to the team or when Hsin switches Resonance Mode.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+          specificCharacters: [
+            "Roverelectrofemale",
+            "Roverelectromale",
+          ],
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillGleaningSimpleJoysUnison`,
+      name: `Inherent Skill: Gleaning Simple Joys`,
+      stance: "Unison",
+      details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>, the maximum stacks of the <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> effect on Resonators in the team are increased by 1. When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 1 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> for 30s. This effect can only grant up to 1 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span>.</div>`,
+      hasStacks: false,
+      modifiers: [],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillHerselfaThousandLanterns`,
+      name: `Outro Skill: Herself a Thousand Lanterns`,
+      stance: "Unison",
+      details: `<div>While in Resonance Mode - Unison, Resonators in the team other than Hsin gain Shared Light when they gain Unison. After Hsin casts Outro Skill, Resonators with Shared Light gain 20% All DMG Amplification for 30s.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinT.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillHerselfaThousandLanternsElectroFlare`,
+      name: `Outro Skill: Herself a Thousand Lanterns (Electro Flare)`,
+      stance: "Electro Flare",
+      details: `<div>While in Resonance Mode - Electro Flare, Electro DMG dealt by Resonators in the team other than Hsin is Amplified by 20% for 20s.
+The above effects end early when Hsin switches Resonance Mode.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinT.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Electro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `SequenceNode4ARiverOfLanternsARiverOfWishes`,
+      name: `Sequence Node 4: A River of Lanterns, a River of Wishes`,
+      details: `<div>When Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> or <span style="color:#ffd12f;" class="font-bold">Electro Rage</span> to a target, or when Resonators in the team gain <span style="color:#ffd12f;" class="font-bold">Unison</span> or trigger <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 20% All-Attribute DMG Bonus for 30s.</div>`,
+      icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XinM4_UI.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "AllElementAttributeBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `SequenceNode6TheMoonOwesItsLightToTheLiving`,
+      name: `Sequence Node 6: The Moon Owes Its Light to the Living`,
+      details: `<div>When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 1 stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> for 30s. This effect does not stack.</div>`,
+      icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
+      hasStacks: false,
+      modifiers: [],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  // Suoming: [
+  //   {
+  //     key: `SunkenSealForgedLock`,
+  //     name: `Sunken Seal, Forged Lock`,
+  //     details: `<div>When Suoming has Unison and is switched out, she gains the Aligned Seals effect for 30s.
+// While this effect is active, Suoming's Outro Skill grants the incoming Resonator 30% Electro DMG Bonus. This effect lasts for 8s or until the Resonator is switched out.</div>`,
+  //     icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "Electro",
+  //         modifierValue: 0.3,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: `SunkenSealForgedLockUnison`,
+  //     name: `Sunken Seal, Forged Lock. (Unison)`,
+  //     details: `<div>When Suoming has Unison and is switched out, she gains the Aligned Seals effect for 30s.
+// While this effect is active, Suoming's Outro Skill grants the incoming Resonator an additional 20% for each stack of Unison Boon they have, up to 40%. This effect lasts for 8s or until the Resonator is switched out.</div>`,
+  //     icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp`,
+  //     hasStacks: true,
+  //     modifiers: [
+  //       {
+  //         modifier: "Electro",
+  //         modifierValue: 0.2,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 2,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: `OutroSkillCanopyRumble`,
+  //     name: `Outro Skill: Canopy Rumble`,
+  //     details: `<div>The incoming Resonator gains 20% Electro DMG Amplification</div>`,
+  //     icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingY.webp`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "DMGDeepen:Electro",
+  //         modifierValue: 0.2,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: `OutroSkillCanopyRumbleUnison`,
+  //     name: `Outro Skill: Canopy Rumble (Unison)`,
+  //     details: `<div>The incoming Resonator, while having Unison Boon, they gain 25% Resonance Skill DMG Amplification for 8s or until the Resonator is switched out.</div>`,
+  //     icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingY.webp`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "DMGDeepen:Skill",
+  //         modifierValue: 0.25,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: `S2BreakingThunderSlayingEvil`,
+  //     name: `S2: Breaking Thunder, Slaying Evil`,
+  //     details: `<div>Casting Outro Skill increases the incoming Resonator's Crit. DMG by 10%, plus an additional 6% for each stack of Unison Boon they have, up to 24%. This effect lasts for 30s or until the Resonator is switched out.</div>`,
+  //     icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
+  //     hasStacks: true,
+  //     modifiers: [
+  //       {
+  //         modifier: "CritDMG",
+  //         modifierValue: 0.06,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 4,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: `SequenceNode6NineShadowsAtHerSide`,
+  //     name: `Sequence Node 6: Nine Shadows at Her Side`,
+  //     details: `<div>The effect of each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> is increased by 50%, up to 4 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span>.</div>`,
+  //     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_SuomingM6_UI.webp`,
+  //     hasStacks: true,
+  //     // +50% to each Unison Boon stack's 3% Total DMG = 1.5% per stack. Like
+  //     // S2BreakingThunderSlayingEvil above, `stacks` is the receiver's Unison
+  //     // Boon stack count.
+  //     modifiers: [
+  //       {
+  //         modifier: "TotalDamage",
+  //         modifierValue: 0.015,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 4,
+  //     alwaysEnabled: false,
+  //   },
+  // ],
 };
 
 export const allEchoBuffs = [
@@ -2677,6 +2876,20 @@ CD: 20s.`,
     modifiers: [
       {
         modifier: "ATK",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "_StayTunedElite1",
+    name: "Stay tuned",
+    details: `Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.`,
+    imageUrl: "",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Electro",
         modifierValue: 0.12,
       },
     ],
@@ -2903,6 +3116,48 @@ CD: 20s`,
     inputBase: true,
     modifierBasedOn: "Energy Regen",
     realisticBaseAttrValue: 250,
+  },
+  {
+    key: "FlashofElectricReflection",
+    name: "Flash of Electric Reflection",
+    details: `When the Resonator inflicts Electro Flare on enemies, they gain the following effects: Gain 10% Electro DMG Bonus for 15s. While this effect is active, casting Outro Skill grants the incoming Resonator 25% Electro DMG Bonus for 15s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlashofElectricReflection.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "FlowerofTingedYearning",
+    name: "Flower of Tinged Yearning",
+    details: `Healing a Resonator in the team increases the ATK of all Resonators in the team by 10% for 30s. Effects of the same name cannot be stacked.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlowerofTingedYearning.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "FlowerofTingedYearningUnison",
+    name: "Flower of Tinged Yearning (Unison)",
+    details: `While the effect is active, if the Resonator gains Unison or triggers Unison Response, their ATK is further increased by 15%.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlowerofTingedYearning.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.15,
+      },
+    ],
+    alwaysEnabled: false,
   },
 ];
 
@@ -3230,6 +3485,29 @@ export const allWeaponTeamBuffs = [
     details: `Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/30%/35%/40%/45%. Effects of the same name do not stack.`,
     alwaysEnabled: false,
   },
+  // {
+  //   name: "Unspoken Rue",
+  //   key: "UnspokenRue",
+  //   weaponType: "Sword",
+  //   hasStacks: false,
+  //   imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UnspokenRue.png",
+  //   modifiers: [
+  //     {
+  //       modifier: "Electro",
+  //       modifierByRefinement: {
+  //         "1": 0.24,
+  //         "2": 0.3,
+  //         "3": 0.36,
+  //         "4": 0.42,
+  //         "5": 0.48,
+  //       },
+  //     },
+  //   ],
+  //   minStacks: 0,
+  //   maxStacks: 0,
+  //   details: `Upon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain 24%/30%/36%/42%/48% Electro DMG Bonus for 30/30/30/30/30s. Effects of the same name cannot stack.`,
+  //   alwaysEnabled: false,
+  // },
 ];
 
 export const allCharacters: string[] = [

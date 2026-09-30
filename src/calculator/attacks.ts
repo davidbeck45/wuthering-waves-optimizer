@@ -1066,7 +1066,17 @@ export const calculateAttackDamage = (
   }
   const customBuffTotalDamage = n(context.buffs.customBuffs?.TotalDamage);
   const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
+  const teamBuffsTotalDamage = context.buffs.teamBuffsData?.TotalDamage ?? 0;
+  const selfBuffTotalDamage = context.buffs.charBuffsData?.TotalDamage ?? 0;
+  const resonanceChainTotalDamage =
+    context.buffs.charResonanceChainsData?.TotalDamage ?? 0;
   const totalDamageMultiplier =
+    strainTotalDamage +
+    customBuffTotalDamage +
+    actionBuffTotalDamage +
+    teamBuffsTotalDamage +
+    selfBuffTotalDamage +
+    resonanceChainTotalDamage;
     strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
   // Endgame Total DMG is its own multiplicative factor on top of Total DMG:
   // (1 + totalDamageMultiplier) * (1 + totalDamageEndgame)
@@ -1320,6 +1330,105 @@ export const calculateAttackDamage = (
       attack?.stacks ?? 0,
     );
     return elementalEffectDmg;
+  }
+
+  // Hsin's Heart of Thunder procs (and Sequence Node 3's bonus Electro
+  // Flare proc off Pillars Across Heaven): a hardcoded kit multiplier
+  // layered on top of the standard Electro Flare stacks-based MV, via the
+  // generic getElectroFlareDamage formula. Must stay before the generic
+  // ElementalEffect + ElectroFlare dispatch below (it would otherwise
+  // handle these attacks with no kit multiplier applied).
+  if (
+    attack.key === "HeartOfThunderDelayedDMG" ||
+    attack.key === "SequenceNode3PillarsAcrossHeavenElectroFlareDMG"
+  ) {
+    let heartOfThunderDeepenWeaponBuffs =
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:ElectroFlare"
+      ] ?? 0;
+    if (excludeWeaponBuffs) {
+      heartOfThunderDeepenWeaponBuffs = 0;
+    }
+    let heartOfThunderDeepenTeamBuffs =
+      context.buffs.teamBuffsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+    if (excludeTeamBuffs) {
+      heartOfThunderDeepenTeamBuffs = 0;
+    }
+    const heartOfThunderDeepenSelfBuffs =
+      selfBuffs?.["DMGDeepen:ElectroFlare"] ?? 0;
+    const heartOfThunderDeepenResonanceChains =
+      context.buffs.charResonanceChainsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+    const totalHeartOfThunderDeepen =
+      heartOfThunderDeepenWeaponBuffs +
+      heartOfThunderDeepenTeamBuffs +
+      heartOfThunderDeepenSelfBuffs +
+      heartOfThunderDeepenResonanceChains +
+      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "ElectroFlare") +
+      getAttackBuffNegativeStatusDeepen(attack.buffs, "ElectroFlare");
+    const heartOfThunderCritRateResonanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const heartOfThunderCritDmgResonanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    const totalHeartOfThunderCritRate = heartOfThunderCritRateResonanceChains;
+    const totalHeartOfThunderCritDmg = 1 + heartOfThunderCritDmgResonanceChains;
+    // The target's current Electro Flare stacks: prefer an explicit
+    // per-rotation-action override (attack.stacks, set via the "Stacks"
+    // slider), falling back to the same global enemy-panel Electro Flare
+    // Stacks setting the auto-generated ElementalEffectElectroFlare attack
+    // uses — this is what makes these attacks show real damage outside of
+    // a rotation (e.g. in the main Damages tab).
+    const heartOfThunderTargetStacks =
+      attack?.stacks ?? context.enemy.electroFlare.electroFlareStacks ?? 0;
+    // Heart of Thunder stacks consumed by the delayed proc: prefer an
+    // explicit per-rotation-action override (attack.heartOfThunderStacks,
+    // set via the "Heart of Thunder stacks" slider), falling back to the
+    // ResonanceModeElectroFlareHeartOfThunderDelayedDMG buff's own stacks
+    // value (set directly in the Buffs panel, no rotation required) — see
+    // the Hsin-specific branch in stats.ts#computeSelfBuffs.
+    const heartOfThunderStacksConsumed =
+      attack?.heartOfThunderStacks ??
+      context.buffs.charBuffsData?.specificTalentBuffs?.[
+        "HeartOfThunderDelayedDMG:heartOfThunderStacks"
+      ] ??
+      0;
+    // Sequence Node 1 upgrades the Heart of Thunder procs' kit multipliers
+    // (175%->210%, 40%->42% per stack consumed) once unlocked.
+    const sequenceNode1Enabled =
+      context.global.characters?.[context.character.characterKey]
+        ?.resonanceChains?.SequenceNode1ABoatToCrossTheRisingTide?.isEnabled ??
+      false;
+    let kitMultiplier: number;
+    if (attack.key === "HeartOfThunderDelayedDMG") {
+      kitMultiplier =
+        (sequenceNode1Enabled ? 0.42 : 0.35) * heartOfThunderStacksConsumed;
+    } else {
+      // SequenceNode3PillarsAcrossHeavenElectroFlareDMG: fixed 1500%.
+      kitMultiplier = 15.0;
+    }
+    // Relies on totalTalentModifierMultiply defaulting to 0 for these
+    // unique attack keys (nothing else targets them today). A future
+    // talentModifierMultiplySetValue override on these keys would replace
+    // this base rather than compose with it.
+    const hsinTalentModifierMultiply =
+      totalTalentModifierMultiply + (kitMultiplier - 1);
+    return getElectroFlareDamage(
+      String(context.character.characterLevel),
+      context.enemy.enemyLevel,
+      context.enemy.enemyResist,
+      totalResistReduction,
+      totalDefReduction,
+      hsinTalentModifierMultiply,
+      totalHeartOfThunderDeepen,
+      totalHeartOfThunderCritRate,
+      totalHeartOfThunderCritDmg,
+      attack?.count ?? 1,
+      heartOfThunderTargetStacks,
+      0,
+    );
   }
 
   if (

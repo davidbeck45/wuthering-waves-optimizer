@@ -324,11 +324,11 @@ describe("inferCostFromSecondaryStat", () => {
 
 describe("resolveEchoByNameAndCost", () => {
   it("resolves a single-set echo from name + cost alone, reporting exactly one candidate set (no image matching needed)", () => {
-    // Thousand-Puppet Pavilion: cost 4 (Calamity, secondary ATK 150), sets: [SongofFeatheredTrace].
-    const result = resolveEchoByNameAndCost("Thousand-Puppet Pavilion", "ATK 150");
-    expect(result.echo).toBe("ThousandPuppetPavilion");
+    // Impermanence Heron: cost 4 (Overlord, secondary ATK 150), sets: [MoonlitClouds].
+    const result = resolveEchoByNameAndCost("Impermanence Heron", "ATK 150");
+    expect(result.echo).toBe("ImpermanenceHeron");
     expect(result.confidence).toBe("high");
-    expect(result.candidateSets).toEqual(["SongofFeatheredTrace"]);
+    expect(result.candidateSets).toEqual(["MoonlitClouds"]);
   });
 
   it("resolves a multi-set echo from name + cost alone, reporting every candidate set for the caller to narrow-image-match", () => {

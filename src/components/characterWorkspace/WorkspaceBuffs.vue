@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getSelectedTeammateBuffs, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import {
   buildBulkEnableUpdate,
   type BuffCategory,
@@ -183,13 +183,20 @@ function maxAll() {
   const resonanceChains = (characters.value[props.character] as {
     resonanceChains?: Record<string, { isEnabled?: boolean }>;
   })?.resonanceChains ?? {};
+  const selfBuffs = (characters.value[props.character] as {
+    buffs?: Record<string, { isEnabled?: boolean }>;
+  })?.buffs;
+  const teamBuffs = getSelectedTeammateBuffs(
+    (characters.value[props.character] as { teamBuffs?: Parameters<typeof getSelectedTeammateBuffs>[0] })
+      ?.teamBuffs,
+  );
 
   const updates = buildBulkEnableUpdate("buffs", props.buffs, isEnabledElsewhere, (key) => {
     const buff = props.buffs.find((b) => b.key === key);
     if (!buff?.hasStacks) {
       return {};
     }
-    const effectiveMaxStacks = getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains);
+    const effectiveMaxStacks = getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains, selfBuffs, teamBuffs);
     return { stacks: getRealisticMaxStacks(effectiveMaxStacks, buff.realisticMaxStacks) };
   });
 
