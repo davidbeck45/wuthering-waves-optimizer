@@ -134,8 +134,9 @@ const isStatus = (name: string): boolean => STATUS_RE.test(name) && !KIT_RE.test
 /** a status tick the app has an action for: `ElementalEffect<Sub>` of type `negativeStatus`, per-tick stack count */
 const TICK_RE = /^(Spectro Frazzle|Aero Erosion|Fusion Burst|Electro Flare|Glacio Chafe) - (\d+) Stacks?$/;
 const TICK_SUB: Record<string, string> = { "Spectro Frazzle": "SpectroFrazzle", "Aero Erosion": "AeroErosion", "Fusion Burst": "FusionBurst", "Electro Flare": "ElectroFlare", "Glacio Chafe": "GlacioChafe" };
-/** the app's stack→motion-value tables end at 13 (Aero Erosion at 12); Riley's engine climbs past that (Glacio Chafe / Electro Flare x16) */
-const tickCap = (sub: string): number => (sub === "AeroErosion" ? 12 : 13);
+/** the app's stack→motion-value tables end at 13 (Aero Erosion at 12, Electro Flare at 16 since Ryan's 3.7); Riley's
+ *  engine climbs past that (Glacio Chafe x16) */
+const tickCap = (sub: string): number => (sub === "AeroErosion" ? 12 : sub === "ElectroFlare" ? 16 : 13);
 const RAGE_RE = /^Electro Rage - (\d+) Stacks?$/;
 /** Aemeath's "Forte - Seraphic Duet: Fusion Burst": the status calculated at the target's cap rung without spending
  *  the stacks, multiplied by her Fusion Trail / Stardust Resonance / S2 (Riley: `mv: 0` + AddMv from the ladder +
@@ -161,7 +162,7 @@ export function duetBurstOf(cast: Cast, cap: number): { cap: number; mult: numbe
   return { cap, mult: Math.round((run / FUSION_BURST_MV[cap] - 1) * 10000) / 10000 };
 }
 /** the team-wide enemy settings the app holds, with the enemy panel's slider caps */
-export const ENEMY_CAP: EnemyStacks = { spectroFrazzleStacks: 13, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 13, electroFlareStacks: 13, electroRageStacks: 13, glacioChafeStacks: 13, strainStacks: 9 };
+export const ENEMY_CAP: EnemyStacks = { spectroFrazzleStacks: 13, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 13, electroFlareStacks: 16, electroRageStacks: 13, glacioChafeStacks: 13, strainStacks: 9 };
 const HELD_RE = /^(Havoc Bane|Tune Strain - Interfered|Electro Rage|Electro Flare|Aero Erosion|Glacio Chafe|Spectro Frazzle|Fusion Burst|Glacio Bite) x(\d+)/;
 const HELD_KEY: Record<string, keyof EnemySeen> = { "Havoc Bane": "havocBane", "Tune Strain - Interfered": "strain", "Electro Rage": "electroRage", "Electro Flare": "electroFlare", "Aero Erosion": "aeroErosion", "Glacio Chafe": "glacioChafe", "Spectro Frazzle": "spectroFrazzle", "Fusion Burst": "fusionBurst", "Glacio Bite": "glacioBite" };
 

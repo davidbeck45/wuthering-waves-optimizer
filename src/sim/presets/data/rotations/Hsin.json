@@ -420,7 +420,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -438,7 +438,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -472,7 +472,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -562,7 +562,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -668,7 +668,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     }
    ]

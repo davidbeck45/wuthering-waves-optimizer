@@ -40,7 +40,7 @@ describe("cast mapper: primitives", () => {
         cast("Utility - Dodge", 0, 1, { havocBane: 9 }),
       ]),
       // Havoc Bane 6 and 9 each held on one damage cast, Tune Strain 0 and 3 likewise: the tie goes to the higher count
-    ).toEqual({ spectroFrazzleStacks: 0, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 0, electroFlareStacks: 13, electroRageStacks: 2, glacioChafeStacks: 0, strainStacks: 3 });
+    ).toEqual({ spectroFrazzleStacks: 0, aeroErosionStacks: 12, havocBaneStacks: 9, fusionBurstStacks: 0, electroFlareStacks: 16, electroRageStacks: 2, glacioChafeStacks: 0, strainStacks: 3 });
     // and the Flare tick's own action carries that Rage count
     const flareRows: AppRow[] = [{ group: "basic", key: "X", label: "X", mv: 10 }];
     const flare = toActions([cast("Electro Flare - 10 Stacks", 50, 1, { electroFlare: 10 }), cast("Electro Rage - 5 Stacks", 50, 1)], flareRows, {}, {}, emptyReport(), new Set());

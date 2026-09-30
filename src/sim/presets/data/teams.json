@@ -17722,7 +17722,7 @@
  },
  {
   "name": "wuwa_calc Hsin S6R5 · Suisui + Chisa",
-  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 11,092,167 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 9,476,576; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 343,236; Chisa S6 Kumokiri R5, Moonlit Clouds 5pc, 44111 CD CD atk atk atk — 1,166,331). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Electro Flare 13, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 11,092,167 team DPR against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 9,476,576; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 343,236; Chisa S6 Kumokiri R5, Moonlit Clouds 5pc, 44111 CD CD atk atk atk — 1,166,331). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Electro Flare 16, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "wuwa_calc Hsin S6R5 · Suisui + Chisa",
@@ -17803,7 +17803,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -17898,7 +17898,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -18035,7 +18035,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -18136,7 +18136,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -18264,7 +18264,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 13,
+     "negativeStatusStacks": 16,
      "electroRageStacks": 0
     },
     {
@@ -18288,7 +18288,7 @@
     "aeroErosionStacks": 0,
     "havocBaneStacks": 6,
     "fusionBurstStacks": 0,
-    "electroFlareStacks": 13,
+    "electroFlareStacks": 16,
     "electroRageStacks": 0,
     "glacioChafeStacks": 13,
     "strainStacks": 0
