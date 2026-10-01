@@ -67,3 +67,30 @@ describe("getEffectiveMaxStacks — Unison Boon team buffs", () => {
     ).toBe(2);
   });
 });
+
+describe("getEffectiveMaxStacks — Hsin Unison Boon", () => {
+  it("only the Unison-stance Sequence Node 6 entry raises the cap", () => {
+    expect(
+      getEffectiveMaxStacks("Hsin", "UnisonBoon", 2, {
+        SequenceNode6TheMoonOwesItsLightToTheLiving: { isEnabled: true },
+      } as never),
+    ).toBe(2);
+    expect(
+      getEffectiveMaxStacks("Hsin", "UnisonBoon", 2, {
+        SequenceNode6TheMoonOwesItsLightToTheLivingUnison: { isEnabled: true },
+      }),
+    ).toBe(3);
+  });
+
+  it("stacks additively with Inherent Skill: Gleaning Simple Joys", () => {
+    expect(
+      getEffectiveMaxStacks(
+        "Hsin",
+        "UnisonBoon",
+        2,
+        { SequenceNode6TheMoonOwesItsLightToTheLivingUnison: { isEnabled: true } },
+        { InherentSkillGleaningSimpleJoysUnison: { isEnabled: true } },
+      ),
+    ).toBe(4);
+  });
+});

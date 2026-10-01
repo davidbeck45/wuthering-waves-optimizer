@@ -96,7 +96,7 @@ export const resonanceChains = [
     // increase (+50%), and the conditional +80% Crit. DMG while Seal Master
     // is active, are stack/state-dependent and are handled in
     // effectiveBuffStacks.ts and stats.ts (computeSelfBuffs), mirroring
-    // Hsin's SequenceNode6TheMoonOwesItsLightToTheLiving UnisonBoon handling.
+    // Hsin's SequenceNode6TheMoonOwesItsLightToTheLivingUnison UnisonBoon handling.
     modifiers: [
       {
         modifier: "talentModifierMultiply",

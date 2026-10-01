@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode1ABoatToCrossTheRisingTide`,
     name: `Sequence Node 1: A Boat to Cross the Rising Tide`,
-    details: `<div class="ui-skill-description" data-ui="character-skill-description"><span style="white-space:pre-line">Casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Formshift</strong></span> grants Hsin 2 stacks of <span style="color:#f7ca2f"><strong>Radiance Ward</strong></span>, stacking up to 2 times. Switching to <span style="color:#f7ca2f"><strong>Answering Form</strong></span> clears all stacks. When Hsin takes DMG from an enemy target's attack, 1 stack of <span style="color:#f7ca2f"><strong>Radiance Ward</strong></span> can be consumed to make Her immune to interruption and reduce DMG taken by 60% for 1s. This effect can be triggered once every 1s.<br><br>While in <span style="color:#f7ca2f"><strong>Resonance Mode - Electro Flare</strong></span>:<br>When Hsin enters combat, if <span style="color:#f7ca2f"><strong><a href="#WwLink131113" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="131113">Heart of Thunder</a></strong></span> is below 50 stacks, it is increased to 50 stacks, triggered once every 12s.<br>The DMG Multiplier of the <span style="color:#f7ca2f"><strong><a href="#WwLink850013" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850013">Electro Flare</a></strong></span> DMG triggered by <span style="color:#f7ca2f"><strong>Forte Circuit - Resonance Skill: Heartward by Moon</strong></span> is increased to 42% x (the number of <span style="color:#f7ca2f"><strong>Heart of Thunder</strong></span> stacks on Hsin) x (the <span style="color:#f7ca2f"><strong><a href="#WwLink850013" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850013">Electro Flare</a></strong></span> DMG Multiplier corresponding to the target's current <span style="color:#f7ca2f"><strong><a href="#WwLink850013" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850013">Electro Flare</a></strong></span> stacks).</span> </div>`,
+    details: `<div>Casting <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Formshift</span> grants Hsin 2 stacks of <span style="color:#ffd12f;" class="font-bold">Radiance Ward</span>, stacking up to 2 times. Switching to <span style="color:#ffd12f;" class="font-bold">Answering Form</span> clears all stacks. When Hsin takes DMG from an enemy target's attack, 1 stack of <span style="color:#ffd12f;" class="font-bold">Radiance Ward</span> can be consumed to make Her immune to interruption and reduce DMG taken by 60% for 1s. This effect can be triggered once every 1s.<br><br>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>:<br>When Hsin enters combat, if <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131113">Heart of Thunder</span></span> is below 50 stacks, it is increased to 50 stacks, triggered once every 12s.<br>The DMG Multiplier of the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> DMG triggered by <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Heartward by Moon</span> is increased to 42% x (the number of <span style="color:#ffd12f;" class="font-bold">Heart of Thunder</span> stacks on Hsin) x (the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> DMG Multiplier corresponding to the target's current <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> stacks).</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
@@ -14,7 +14,7 @@ export const resonanceChains = [
     key: `SequenceNode1ABoatToCrossTheRisingTideUnison`,
     name: `Sequence Node 1: A Boat to Cross the Rising Tide (Unison)`,
     stance: "Unison",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>, the DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span> are increased by 15%, and each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> additionally increases the DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span> by 10%, up to a total 4 stacks.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span> are increased by 15%, and each stack of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> additionally increases the DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span> by 10%, up to a total of 4 stacks.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM1_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -34,7 +34,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2ToWakeIsToWonderWhatIAm`,
     name: `Sequence Node 2: To Wake Is to Wonder What I Am`,
-    details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Answering Form: Realm Wanderer</span> and <span style="color:#ffd12f;" class="font-bold">Answering Form: Realm Protector</span> are increased by 60%.<br>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Illumining Form: Beholding All Horizons</span> and <span style="color:#ffd12f;" class="font-bold">Illumining Form: Stilling All Horizons</span> are increased by 60%.<br><br>When Hsin enters combat, the Cooldowns for Hsin to gain <span style="color:#ffd12f;" class="font-bold">Resolution of Wishes</span> and <span style="color:#ffd12f;" class="font-bold">Law of Heaven</span> are reset. If Hsin is in <span style="color:#ffd12f;" class="font-bold">Answering Form</span>, 100 additional points of <span style="color:#ffd12f;" class="font-bold">Answering Heart</span> are also restored. This effect can be triggered once every 4s.</div>`,
+    details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Answering Form: Realm Wanderer</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Answering Form: Realm Protector</span> are increased by 60%.<br>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Illumining Form: Beholding All Horizons</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Illumining Form: Stilling All Horizons</span> are increased by 60%.<br><br>When Hsin enters combat, reset the Cooldowns for Hsin to gain <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131114">Resolution of Wishes</span></span> and <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131115">Law of Heaven</span></span>, and restore 100 additional points of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131117">Answering Heart</span></span>. This effect can be triggered once every 12s.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM2_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -74,7 +74,7 @@ export const resonanceChains = [
     key: `SequenceNode3ADreamOfReturnAmongTheHillsUnison`,
     name: `Sequence Node 3: A Dream of Return Among the Hills (Unison)`,
     stance: "Unison",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>, the Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Pillars Across Heaven</span> is increased by 20%, and each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> additionally increases its Crit. DMG by 15%, stacking up to 4 times.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Pillars Across Heaven</span> is increased by 20%, and each stack of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> additionally increases its Crit. DMG by 15%, up to a total of 4 stacks.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM3_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -92,7 +92,7 @@ export const resonanceChains = [
     key: `SequenceNode3ADreamOfReturnAmongTheHillsElectroFlare`,
     name: `Sequence Node 3: A Dream of Return Among the Hills (Electro Flare)`,
     stance: "Electro Flare",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, when the last stage of <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Pillars Across Heaven</span> hits a target inflicted with <span style="color:#ffd12f;" class="font-bold">Electro Flare</span>, it triggers 1 instance of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG, with its DMG Multiplier equal to 1500% times the <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG Multiplier corresponding to the current <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> stacks on the target.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>:<br>When the last stage of <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Pillars Across Heaven</span> hits a target inflicted with <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span>, it triggers 1 instance of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> DMG, with its DMG Multiplier equal to 1500% times the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> DMG Multiplier corresponding to the current <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> stacks on the target.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM3_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -108,7 +108,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode4ARiverOfLanternsARiverOfWishes`,
     name: `Sequence Node 4: A River of Lanterns, a River of Wishes`,
-    details: `<div>When Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> or <span style="color:#ffd12f;" class="font-bold">Electro Rage</span> to a target, or when Resonators in the team gain <span style="color:#ffd12f;" class="font-bold">Unison</span> or trigger <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 20% All-Attribute DMG Bonus for 30s.</div>`,
+    details: `<div>All Resonators in the team gain 20% All-Attribute DMG Bonus for 30s when a Resonator in the team triggers any of the following actions:<br>- Inflict <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> or <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="150806">Electro Rage</span></span> on a target.<br>- Gain <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131110">Unison</span></span> while not having the effect.<br>- Trigger <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131112">Unison Response</span></span>.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM4_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -135,7 +135,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode6TheMoonOwesItsLightToTheLiving`,
     name: `Sequence Node 6: The Moon Owes Its Light to the Living`,
-    details: `<div>Targets take 40% more Resonance Skill DMG from Hsin.<br><br>Resonance Skill DMG dealt by Hsin ignores 20% of the target's DEF.<br><br>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The maximum stacks of the <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> effect on Resonators in the team are increased by 1. When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold">Unison Response</span>, all Resonators in the team gain 1 stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> for 30s. This effect does not stack.</div>`,
+    details: `<div>Targets take 40% more Resonance Skill DMG from Hsin.<br><br>Resonance Skill DMG dealt by Hsin ignores 20% of the target's DEF.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -177,10 +177,23 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: `SequenceNode6TheMoonOwesItsLightToTheLivingUnison`,
+    name: `Sequence Node 6: The Moon Owes Its Light to the Living (Unison)`,
+    stance: "Unison",
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>:<br>The maximum stacks of the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> effect on Resonators in the team are additionally increased by 1. When a Resonator in the team triggers <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131112">Unison Response</span></span>, all Resonators in the team additionally gain 1 stack of <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="131111">Unison Boon</span></span> for 30s. This effect does not stack.</div>`,
+    icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
+    hasStacks: false,
+    // The +1 Unison Boon max stacks is applied in effectiveBuffStacks.ts.
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: `SequenceNode6TheMoonOwesItsLightToTheLivingElectroFlare`,
     name: `Sequence Node 6: The Moon Owes Its Light to the Living (Electro Flare)`,
     stance: "Electro Flare",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span> and in combat, <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG taken by targets within a certain range around Hsin can be Critical, with Crit. Rate fixed at 80% and Crit. DMG fixed at 230%.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>:<br>While in combat, <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link " data-term-id="850013">Electro Flare</span></span> DMG taken by targets within a certain range around Hsin can be Critical, with Crit. Rate fixed at 80% and Crit. DMG fixed at 230%.</div>`,
     icon: `https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_XinM6_UI.webp`,
     hasStacks: false,
     modifiers: [
