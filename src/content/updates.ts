@@ -10,6 +10,26 @@ export interface UpdateEntry {
   items: string[];
 }
 
+export interface Announcement {
+  /**
+   * ISO date the announcement was posted, e.g. "2026-09-29". Doubles as the
+   * dismissal key: the banner stays hidden for anyone whose stored dismissal
+   * date is on or after this, so only bump it when posting a new announcement.
+   */
+  date: string;
+  headline: string;
+}
+
+/**
+ * The site-wide banner (AppUpdateBanner.vue) shows this, independent of
+ * updateEntries - routine changelog entries never re-show a dismissed banner.
+ * Set to null to hide the banner entirely.
+ */
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-09-29",
+  headline: "Version 3.7 (first half) is up!",
+};
+
 export const updateEntries: UpdateEntry[] = [
   {
     date: "2026-10-01",

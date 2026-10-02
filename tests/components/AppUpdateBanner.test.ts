@@ -4,7 +4,7 @@ import { createRouter, createMemoryHistory } from "vue-router";
 import { render, fireEvent } from "@testing-library/vue";
 import AppUpdateBanner from "../../src/components/AppUpdateBanner.vue";
 import { useSettingsStore } from "../../src/stores/settings";
-import { updateEntries } from "../../src/content/updates";
+import { currentAnnouncement, type Announcement } from "../../src/content/updates";
 
 const router = createRouter({
   history: createMemoryHistory(),
@@ -16,7 +16,9 @@ const router = createRouter({
 
 // The action buttons are hidden by default (see showActions in the
 // component); tests exercising them opt back in.
-function renderBanner(props: { showActions?: boolean } = { showActions: true }) {
+function renderBanner(
+  props: { showActions?: boolean; announcement?: Announcement | null } = { showActions: true },
+) {
   return render(AppUpdateBanner, { props, global: { plugins: [router] } });
 }
 
@@ -156,25 +158,42 @@ describe("AppUpdateBanner", () => {
     expect(dialog?.hasAttribute("open")).toBe(false);
   });
 
-  it("dismiss persists the latest entry's date and hides the banner", async () => {
+  it("dismiss persists the announcement's date and hides the banner", async () => {
     const settingsStore = useSettingsStore() as any;
     const { getByLabelText, container } = renderBanner();
     await fireEvent.click(getByLabelText("Dismiss"));
-    expect(settingsStore.config?.dismissedUpdateBannerDate).toBe(updateEntries[0].date);
+    expect(settingsStore.config?.dismissedUpdateBannerDate).toBe(currentAnnouncement!.date);
     expect(container.querySelector("[data-test-update-banner]")).toBeNull();
   });
 
-  it("stays hidden across remounts once dismissed for the current latest date", () => {
+  it("stays hidden across remounts once the current announcement is dismissed", () => {
     const settingsStore = useSettingsStore() as any;
-    settingsStore.addToConfig({ dismissedUpdateBannerDate: updateEntries[0].date });
+    settingsStore.addToConfig({ dismissedUpdateBannerDate: currentAnnouncement!.date });
     const { container } = renderBanner();
     expect(container.querySelector("[data-test-update-banner]")).toBeNull();
   });
 
-  it("reappears once the stored dismissed date no longer matches the latest entry", () => {
+  it("stays hidden for a dismissal stored after the announcement (old changelog-date scheme, newer changelog entries)", () => {
     const settingsStore = useSettingsStore() as any;
-    settingsStore.addToConfig({ dismissedUpdateBannerDate: "2000-01-01" });
-    const { container } = renderBanner();
+    settingsStore.addToConfig({ dismissedUpdateBannerDate: "2026-10-01" });
+    const { container } = renderBanner({
+      announcement: { date: "2026-09-29", headline: "Version 3.7 is up!" },
+    });
+    expect(container.querySelector("[data-test-update-banner]")).toBeNull();
+  });
+
+  it("reappears once a newer announcement is posted", () => {
+    const settingsStore = useSettingsStore() as any;
+    settingsStore.addToConfig({ dismissedUpdateBannerDate: "2026-09-29" });
+    const { container, getByText } = renderBanner({
+      announcement: { date: "2026-10-15", headline: "Version 3.7 (second half) is up!" },
+    });
     expect(container.querySelector("[data-test-update-banner]")).not.toBeNull();
+    expect(getByText("Version 3.7 (second half) is up!")).toBeTruthy();
+  });
+
+  it("renders nothing when there is no announcement", () => {
+    const { container } = renderBanner({ announcement: null });
+    expect(container.querySelector("[data-test-update-banner]")).toBeNull();
   });
 });
