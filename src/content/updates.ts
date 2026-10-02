@@ -32,6 +32,14 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-02",
+    dateLabel: "October 2, 2026",
+    items: [
+      "Echo scanner (lab feature) now works with windowed and letterboxed captures - it finds the game's area inside the frame (e.g. a window title bar or black bars) instead of rejecting anything that isn't exactly 16:9 or 16:10",
+      "The announcement bar below the main nav no longer pops back up after you close it just because the changelog was updated - it only returns for a new announcement",
+    ],
+  },
+  {
     date: "2026-10-01",
     dateLabel: "October 1, 2026",
     items: ["Adds Electro Flare and Unison preset rotations for Hsin (thanks Dorito)"],
