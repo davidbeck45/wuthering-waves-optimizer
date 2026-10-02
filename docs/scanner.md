@@ -270,35 +270,82 @@ comment says what was actually measured.
   text always ends at or before 0.887 (the longest one-line label, "Heavy
   Attack DMG Bonus"), and the right-aligned values always start at or after
   0.922. The split sits in the middle of that gap. See "Substat OCR" below.
-- 16:10 is the measured reference; 16:9 is mapped onto it (next section).
-  Any other aspect ratio is rejected up front (`isSupportedAspect`) rather
-  than silently producing garbage; a calibration UI for ultrawide and other
-  aspects is a known follow-up, not built here.
+- 16:10 is the measured reference; other game aspects are mapped onto it,
+  inside the game's own area of the capture (next section). Ultrawide and
+  4:3 are rejected up front (`isSupportedAspect`) rather than silently
+  producing garbage.
 
 ### Aspect ratios
 
-Every `RegionFrac` in `layout.ts` is a fraction of a **16:10** frame
-(`REFERENCE_ASPECT`). WuWa scales the Echo Management UI with the frame's
-**width** and anchors it to the top, so on a 16:9 frame the panel sits at
+Every `RegionFrac` in `layout.ts` is a fraction of a **16:10** game area
+(`REFERENCE_ASPECT`). WuWa scales the Echo Management UI with the game's
+**width** and anchors it to the top, so on a 16:9 game the panel sits at
 the same x fractions but every y/height fraction is 10/9 larger ((16/9) /
 (16/10)). `regionForFrame` applies that mapping, and `toPixelRegion` (every
 crop) and `regionPercentStyle` (every debug overlay) go through it, so no
-caller needs a second ROI table. It snaps to the matched supported aspect
-(`SUPPORTED_ASPECTS`, ±0.05) rather than the frame's exact ratio, so 16:10
-captures a few pixels off (2800x1752) resolve exactly as they did before.
+caller needs a second ROI table.
 
 Verified against a real 16:9 Echo Management screenshot (1400x788, a
 downscaled JPEG): the mapped boxes landed on their targets, including the
 tight `SET_ICON_BOX` and the `SUBSTAT_COLUMN_SPLIT_X` gap. Tesseract read
 the mapped name, main/secondary rows, and label/value columns correctly,
-including a wrapped "Resonance Liberation / DMG Bonus". A full-resolution
-16:9 capture (1920x1080 or 2560x1440) is still worth checking in-app with
-debug mode on.
+including a wrapped "Resonance Liberation / DMG Bonus".
 
-Not handled: a 16:9 game **letterboxed** inside a 16:10 capture (e.g. a 16:9
-window on a 16:10 laptop shared as the whole screen). The frame reads as
-16:10 but the content is offset by the black bars. The guide's "share the
-Window, not the screen" step avoids this.
+#### The game's area, not the whole capture
+
+Beta analytics showed captures rejected at 1762x1022, 1368x800, 860x498 and
+~1.54. None of these is a new game layout. They are standard game windows
+with Windows chrome included in the capture: 1762x1022 is a 1760x990
+(16:9) game plus a 32px title bar and 1px borders, 1368x800 is 1366x768
+plus the same, 860x498 is the 1762x1022 window downscaled, and ~1.54 fits
+1440x900 (16:10) plus a title bar. Collecting a real screenshot for every
+window size isn't practical, so the scanner now finds the game inside the
+frame instead of matching the frame's own ratio against a list.
+
+`contentRect.ts`'s `detectContentRect` runs on a ~640px grab of the whole
+frame (`capture.ts`'s `grabFullFrameImageData`), once per session and again
+whenever the frame size changes (`useEchoScanner.ts`'s `detectLayout`). Both
+cases it handles are found by **geometry first**, with pixels only
+confirming:
+
+- **Black bars** (`letterbox`): symmetric near-black rows top+bottom and/or
+  columns left+right, accepted only if what's left is 16:10 or 16:9. Covers
+  a 16:9 game full screen on a 16:10 display, previously listed here as
+  unhandled.
+- **Title bar** (`titlebar`): the frame is exactly a 16:10 or 16:9 game plus
+  a band on top of 0.5–7% of the height (only one of the two can fit), and
+  that band's middle is flat (a title bar's text is at the left and its
+  buttons at the right). 1px side borders are ignored (~0.05% of x).
+- Otherwise the whole frame is the game (`full`), which is the old behavior.
+  An all-black frame returns null, and the tick is skipped until something
+  draws.
+
+The game's area (`contentRect`, a `RegionFrac` of the frame) is then passed
+to every `grab*` helper and overlay. `regionForFrame` maps by the **game
+area's real aspect**, continuously: y/height scale by aspect / (16/10). It
+snaps to exactly 16:10 or 16:9 within ±0.01, so captures that were already
+supported (e.g. 2800x1752 at 1.598) crop exactly as before. Accepted game
+aspects are `SUPPORTED_ASPECT_RANGE`, 1.55 to ~1.83 (the hull of the old
+16:10 ±0.05 and 16:9 ±0.05 windows). In between, the width-scaled,
+top-anchored rule is an interpolation between two measured points.
+Ultrawide and 4:3 stay rejected, since WuWa likely lays those out
+differently and we have no captures of them.
+
+Verified by wrapping 5 real 16:10 screenshots in a synthetic Windows title
+bar (dark and light) and 1px borders at 1442x933, 1682x1082 and a 700px
+downscale. Detection found the title bar every time, and every ROI landed
+within 1px of where it lands on the bare game area. Unit tests in
+`tests/scanner/contentRect.test.ts` cover the reported sizes, bars, and the
+"fits the geometry but isn't flat" case that must not trim.
+
+**Checking by result, not by size.** A detection miss shouldn't fail
+silently. `useEchoScanner.ts`'s `checkLayout` looks at each candidate's
+fixed secondary stat (always 2280/100/150 on a real panel,
+`inferCostFromSecondaryStat`) and whether its name resolved. If the
+session's first 3 candidates show neither, `layoutMismatch` shows a warning
+pointing at debug mode, and scanning carries on. Debug mode draws the
+detected game area as a solid box around the dashed ROI boxes, on both the
+live preview and each candidate's full-frame snapshot.
 
 If a future WuWa UI update moves the panel, re-run the same kind of
 measurement against a fresh screenshot before touching the fractions by feel.
@@ -779,8 +826,8 @@ isn't user data, so no store or migration), then from the **How to scan**
 button. It's text only on purpose: screenshots would be large and go stale
 with each game UI update. Keep its steps in line with this list:
 
-1. Desktop Chrome/Edge, English client, game at 16:10 or 16:9 (full screen
-   or windowed).
+1. Desktop Chrome/Edge, English client, game at any 16:10 or 16:9
+   resolution (full screen or windowed; the title bar is found and skipped).
 2. In game: Backpack → Echoes, click the first echo.
 3. In the app: Inventory → Scan echoes → Share screen (live), then pick the
    game on the picker's **Window** tab.
@@ -932,7 +979,9 @@ text, or frames.
 | `scanner-started` | `useEchoScanner` | `mode` (`live`/`video`); video adds `fps`, `scanSeconds` |
 | `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `durationSeconds` |
 | `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share; for a non-Error throw, `Event:<type>`, `string`, etc.), `message` (the error message, truncated to 120 chars, or `null`) — see `describeError` in `src/scanner/analytics.ts` |
-| `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp), `ratio` (nearest common ratio — `16:9`, `21:9`, `32:9`, `4:3`, …, or `portrait`/`other`), `resolution` (`<width>x<height>` of the captured frame) — once per session |
+| `scanner-layout` | `useEchoScanner` | `mode`, the frame's `aspect`/`ratio`/`resolution` (as below), plus `content` (`full`/`titlebar`/`letterbox` — which `detectContentRect` branch ran), `contentAspect`, `contentResolution`, `contentOffset` (`x,y` px) — once per session, and again if the frame size changes |
+| `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp), `ratio` (nearest common ratio — `16:9`, `21:9`, `32:9`, `4:3`, …, or `portrait`/`other`), `resolution` (`<width>x<height>` of the captured frame), plus the `content*` fields above — once per session, when the game's area is outside `SUPPORTED_ASPECT_RANGE` |
+| `scanner-layout-mismatch` | `useEchoScanner` | the same fields as `scanner-layout` — once per session, when the first 3 candidates don't read as an Echo panel (see "Aspect ratios") |
 
 `scanner-finished` fires at most once per session: for video, `stop()`
 reports `stopped` and clears the session, so the scan loop's own exit

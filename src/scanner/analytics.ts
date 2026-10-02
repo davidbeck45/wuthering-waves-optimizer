@@ -1,6 +1,7 @@
 // Pure helpers that shape scanner analytics payloads (see docs/scanner.md's
 // "Usage analytics"). Kept out of useEchoScanner so they can be unit-tested.
-import type { FrameSize } from "./types";
+import type { ContentKind } from "./contentRect";
+import type { FrameSize, RegionFrac } from "./types";
 
 const COMMON_RATIOS: { label: string; value: number }[] = [
   { label: "4:3", value: 4 / 3 },
@@ -27,6 +28,23 @@ export function describeAspect(frame: FrameSize) {
     aspect: (frame.width / frame.height).toFixed(2),
     ratio: ratioLabel(frame),
     resolution: `${frame.width}x${frame.height}`,
+  };
+}
+
+/**
+ * Where the game sat inside the frame (contentRect.ts): which detection
+ * branch ran, the game area's own aspect and pixel size, and its offset —
+ * enough to tell a detection miss from a genuinely new layout without
+ * needing the user's screenshot.
+ */
+export function describeContent(frame: FrameSize, content: RegionFrac, kind: ContentKind) {
+  const width = Math.round(content.width * frame.width);
+  const height = Math.round(content.height * frame.height);
+  return {
+    content: kind,
+    contentAspect: (width / height).toFixed(2),
+    contentResolution: `${width}x${height}`,
+    contentOffset: `${Math.round(content.x * frame.width)},${Math.round(content.y * frame.height)}`,
   };
 }
 

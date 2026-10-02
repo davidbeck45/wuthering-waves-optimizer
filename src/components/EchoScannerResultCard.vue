@@ -105,10 +105,14 @@
           @load="onDebugFrameLoad" />
         <div class="absolute inset-0 pointer-events-none">
           <div
+            v-if="candidate.debugContentRect"
+            class="absolute border border-info"
+            :style="contentPercentStyle(candidate.debugContentRect)"></div>
+          <div
             v-for="r in DEBUG_REGIONS"
             :key="r.key"
             class="absolute border border-dashed border-warning"
-            :style="regionPercentStyle(r.region, debugFrame)">
+            :style="regionPercentStyle(r.region, debugFrame, candidate.debugContentRect)">
             <span class="absolute -top-3.5 left-0 text-[9px] leading-none bg-warning text-warning-content px-0.5 rounded-sm whitespace-nowrap">
               {{ r.label }}
             </span>
@@ -159,7 +163,7 @@ import { computed, ref } from "vue";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { echoSetImageMap } from "../echoes/stats";
-import { DEBUG_REGIONS, regionPercentStyle } from "../scanner/layout";
+import { DEBUG_REGIONS, contentPercentStyle, regionPercentStyle } from "../scanner/layout";
 import { hasLowConfidence } from "../scanner/review";
 import type { FrameSize, ScanCandidate } from "../scanner/types";
 
@@ -182,7 +186,7 @@ const emit = defineEmits<{
 // Open by default on flagged echoes — those are the ones worth comparing.
 const showCapture = ref(props.attention);
 
-/** The debug full-frame snapshot's size (it keeps the capture's aspect), so the ROI boxes map onto a 16:9 frame too — see layout.ts's regionForFrame. */
+/** The debug full-frame snapshot's size (it keeps the capture's aspect), so the ROI boxes map onto any supported aspect — see layout.ts's regionForFrame. */
 const debugFrame = ref<FrameSize>({ width: 16, height: 10 });
 function onDebugFrameLoad(event: Event) {
   const img = event.target as HTMLImageElement;

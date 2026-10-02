@@ -162,7 +162,11 @@ explicit user direction for this feature.
   calibration UI for non-16:10/ultrawide is a known, explicitly deferred
   follow-up, not built here **Superseded 2026-09-25:** 16:9 is now
   supported too, by mapping the 16:10 ROIs rather than a calibration UI —
-  see docs/scanner.md's "Aspect ratios"; ultrawide is still rejected;
+  see docs/scanner.md's "Aspect ratios"; ultrawide is still rejected.
+  **Revised 2026-10-02:** the scanner now finds the game's area inside the
+  capture (window title bar, black bars) and maps any game aspect between
+  16:10 and 16:9 continuously, instead of matching the whole frame against
+  a list of aspects — see docs/scanner.md's "Aspect ratios";
   `public/tesseract/` adds ~19MB of static assets
   to the repo (fetched lazily, only when a scan session starts, so it
   doesn't affect normal app load); individually-cropped substat rows mean

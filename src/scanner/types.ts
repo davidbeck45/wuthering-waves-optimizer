@@ -75,4 +75,6 @@ export type ScanCandidate = {
   debugCrops?: { key: string; label: string; dataUrl: string; text: string }[];
   /** A downscaled snapshot of the whole frame, for drawing every ROI box on top of as one reviewable image — see capture.ts's grabFullFrameSnapshot. Only populated in debug mode. */
   debugFullFrame?: string;
+  /** The game's area within debugFullFrame (contentRect.ts), so its ROI boxes are placed the same way the crops were. Only populated in debug mode. */
+  debugContentRect?: RegionFrac;
 };

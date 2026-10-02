@@ -13,9 +13,9 @@ import {
   DEBUG_REGIONS,
   toPixelRegion,
   isSupportedAspect,
-  matchSupportedAspect,
   regionForFrame,
   regionPercentStyle,
+  contentSize,
 } from "../../src/scanner/layout";
 
 // Real capture resolutions reviewed from the user's provided footage
@@ -175,8 +175,18 @@ describe("layout", () => {
   it("accepts 16:9", () => {
     for (const frame of SIXTEEN_NINE_RESOLUTIONS) {
       expect(isSupportedAspect(frame)).toBe(true);
-      expect(matchSupportedAspect(frame)).toBeCloseTo(16 / 9);
+      expect(regionForFrame(MAIN_STAT_ROW, frame).y).toBeCloseTo((MAIN_STAT_ROW.y * 10) / 9);
     }
+  });
+
+  it("accepts game areas between 16:10 and 16:9, scaling y continuously", () => {
+    const frame = { width: 1720, height: 1000 }; // 1.72
+    expect(isSupportedAspect(frame)).toBe(true);
+    const mapped = regionForFrame(MAIN_STAT_ROW, frame);
+    expect(mapped.x).toBe(MAIN_STAT_ROW.x);
+    expect(mapped.y).toBeCloseTo((MAIN_STAT_ROW.y * 1.72) / 1.6);
+    expect(mapped.y).toBeGreaterThan(MAIN_STAT_ROW.y);
+    expect(mapped.y).toBeLessThan((MAIN_STAT_ROW.y * 10) / 9);
   });
 
   it("rejects a very different aspect ratio (e.g. a webcam or unrelated capture)", () => {
@@ -227,5 +237,44 @@ describe("layout", () => {
     expect(Number.isInteger(region.y)).toBe(true);
     expect(Number.isInteger(region.width)).toBe(true);
     expect(Number.isInteger(region.height)).toBe(true);
+  });
+
+  describe("game area inside the frame (window chrome, black bars)", () => {
+    // 1762x1022 from beta analytics: a 1760x990 (16:9) game window plus a
+    // 32px title bar and 1px borders.
+    const frame = { width: 1762, height: 1022 };
+    const content = { x: 0, y: 32 / 1022, width: 1, height: 990 / 1022 };
+
+    it("maps the game area's own aspect, not the frame's", () => {
+      expect(isSupportedAspect(contentSize(frame, content))).toBe(true);
+      expect(contentSize(frame, content).width / contentSize(frame, content).height).toBeCloseTo(16 / 9, 2);
+    });
+
+    it("places crops inside the game area exactly as on a bare game frame of that size, offset by the title bar", () => {
+      const bare = { width: 1762, height: 990 };
+      for (const region of [PANEL_BOX, NAME_BLOCK, SET_ICON_BOX, MAIN_STAT_ROW, SUBSTAT_LABEL_COLUMN]) {
+        const inFrame = toPixelRegion(region, frame, content);
+        const onBare = toPixelRegion(region, bare);
+        expect(inFrame.x).toBe(onBare.x);
+        expect(Math.abs(inFrame.y - (onBare.y + 32))).toBeLessThanOrEqual(1);
+        expect(inFrame.width).toBe(onBare.width);
+        expect(Math.abs(inFrame.height - onBare.height)).toBeLessThanOrEqual(1);
+      }
+    });
+
+    it("offsets x and width for pillarbox bars", () => {
+      // A 16:10 game centered in a 16:9 frame: 1728 wide with 96px bars.
+      const pillar = { width: 1920, height: 1080 };
+      const area = { x: 96 / 1920, y: 0, width: 1728 / 1920, height: 1 };
+      const region = toPixelRegion(MAIN_STAT_ROW, pillar, area);
+      expect(region.x).toBe(Math.round(96 + MAIN_STAT_ROW.x * 1728));
+      expect(region.y).toBe(Math.round(MAIN_STAT_ROW.y * 1080));
+    });
+
+    it("moves the debug overlay the same way", () => {
+      const style = regionPercentStyle(MAIN_STAT_ROW, frame, content);
+      const px = toPixelRegion(MAIN_STAT_ROW, frame, content);
+      expect((parseFloat(style.top) / 100) * frame.height).toBeCloseTo(px.y, 0);
+    });
   });
 });
