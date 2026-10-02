@@ -1,11 +1,11 @@
 [
  {
   "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,073,447 DPR for Roccia of 4,877,670 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,166,283 DPR for Roccia of 4,828,742 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Lynae (main DPS): 3,073,447 DPR for Roccia of 4,877,670 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,166,283 DPR for Roccia of 4,828,742 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -67,309 +67,94 @@
      "order": 8,
      "key": "SequenceNode6WhentheGoldenWingsFlyDMG",
      "type": "forteCircuit",
-     "count": 8,
+     "count": 9,
      "buffs": [],
      "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Roccia S0 Tragicomedy R1 · Phrolova + Mornye · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 352,282 DPR for Roccia of 3,316,550 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Roccia S0 Tragicomedy R1 · Phrolova + Mornye · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 352,282 DPR for Roccia of 3,316,550 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "PerloHelpDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CommediaImprovvisoDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "AcrobaticTrickDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "RealFantasyStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "RealFantasyStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "RealFantasyStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImperStrikeDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareImpermanenceHeron",
+     "mainEchoRank": 5
     },
     {
      "order": 9,
-     "key": "SequenceNode6WhentheGoldenWingsFlyDMG",
-     "type": "forteCircuit",
+     "key": "MidnightVeilDMG",
+     "type": "echoSetAttacks",
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 665,437 DPR for Roccia of 5,498,745 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Mornye: 665,437 DPR for Roccia of 5,498,745 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "PerloHelpDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "AcrobaticTrickDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "RealFantasyStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "RealFantasyStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "RealFantasyStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "CommediaImprovvisoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BellBorneGeocheloneActivation",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "BellBorneGeochelone",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Roccia S6 Tragicomedy R5 · Mornye + Cantarella · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 541,748 DPR for Roccia of 4,161,541 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Roccia S6 Tragicomedy R5 · Mornye + Cantarella · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Cantarella: 541,748 DPR for Roccia of 4,161,541 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "PerloHelpDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "AcrobaticTrickDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "RealFantasyStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "RealFantasyStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "RealFantasyStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "CommediaImprovvisoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 265,087 DPR for Roccia of 2,947,854 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Bell-Borne Geochelone, main stats 43311 CR Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 265,087 DPR for Roccia of 2,947,854 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "PerloHelpDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BasicAttackStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "CommediaImprovvisoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "AcrobaticTrickDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "RealFantasyStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "RealFantasyStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "RealFantasyStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BellBorneGeocheloneActivation",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "BellBorneGeochelone",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Roccia S0 Tragicomedy R1 · Suisui + Cantarella · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cantarella: 204,038 DPR for Roccia of 1,984,288 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Roccia S0 Tragicomedy R1 · Suisui + Cantarella · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Cantarella: 204,038 DPR for Roccia of 1,984,288 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "PerloHelpDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BasicAttackStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "CommediaImprovvisoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "AcrobaticTrickDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "RealFantasyStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "RealFantasyStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "RealFantasyStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
     }
    ]
   }

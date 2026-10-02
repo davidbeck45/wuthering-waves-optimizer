@@ -1,14 +1,22 @@
 [
  {
   "name": "Encore S6 Stringmaster R5 · Lupa + Brant · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,754,722 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 811,064 DPR for Encore of 3,058,973 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Encore S6 Stringmaster R5 · Lupa + Brant · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 1,020,474 DPR for Encore of 3,754,722 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Lupa + Brant (main DPS): 811,064 DPR for Encore of 3,058,973 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "SkillDMG",
      "type": "intro",
      "count": 1,
@@ -16,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "InfernoRiderSlash",
      "type": "echoAttacks",
      "count": 1,
@@ -26,7 +34,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "FlamingWooliesDamage",
      "type": "skill",
      "count": 1,
@@ -34,16 +42,8 @@
      "isDisabled": false
     },
     {
-     "order": 4,
-     "key": "CosmosRampageDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 5,
-     "key": "CosmosFrolickingStage1DMG",
+     "key": "CosmosRampageDamage",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -51,38 +51,6 @@
     },
     {
      "order": 6,
-     "key": "CosmosFrolickingStage2DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "CosmosFrolickingStage3DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "CosmosFrolickingStage4DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "CosmosRampageDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
      "key": "CosmosFrolickingStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -90,7 +58,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 7,
      "key": "CosmosFrolickingStage2DMG",
      "type": "liberation",
      "count": 1,
@@ -98,7 +66,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 8,
      "key": "CosmosFrolickingStage3DMG",
      "type": "liberation",
      "count": 1,
@@ -106,7 +74,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 9,
      "key": "CosmosFrolickingStage4DMG",
      "type": "liberation",
      "count": 1,
@@ -114,7 +82,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 10,
      "key": "CosmosRampageDamage",
      "type": "liberation",
      "count": 1,
@@ -122,18 +90,50 @@
      "isDisabled": false
     },
     {
+     "order": 11,
+     "key": "CosmosFrolickingStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "CosmosFrolickingStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "CosmosFrolickingStage3DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "CosmosFrolickingStage4DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 15,
-     "key": "CosmosRuptureDamage",
-     "type": "forteCircuit",
+     "key": "CosmosRampageDamage",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 16,
-     "key": "OutroSkillDMG",
-     "type": "outro",
-     "count": 4,
+     "key": "CosmosRuptureDamage",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     }

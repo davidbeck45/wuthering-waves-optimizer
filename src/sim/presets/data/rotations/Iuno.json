@@ -1,14 +1,22 @@
 [
  {
-  "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,563,791 team. Sequence procs in the loop: none.",
+  "name": "Iuno S6 Moongazer's Sigil R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Shorekeeper + Lynae (main DPS): 5,589,411 DPR for Iuno of 6,814,238 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Lynae (main DPS): 5,808,903 DPR for Iuno of 7,563,791 team. Sequence procs in the loop: none.",
+   "name": "Iuno S6 Moongazer's Sigil R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD ATK Aero atk atk. Team: Shorekeeper + Lynae (main DPS): 5,589,411 DPR for Iuno of 6,814,238 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
+     "key": "FromGloomtoGleamDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "IlluminatedManifestationDMG",
      "type": "intro",
      "count": 1,
@@ -16,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "BeneathLunarTidesDMG",
      "type": "liberation",
      "count": 1,
@@ -24,7 +32,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "FluxMoonbowDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -32,16 +40,8 @@
      "isDisabled": false
     },
     {
-     "order": 4,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 5,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
+     "key": "EnhancedArcBeyondtheEdgeDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -49,46 +49,6 @@
     },
     {
      "order": 6,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "AbsoluteFullnessDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
      "key": "EnhancedMoonbowBasicAttack1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -96,7 +56,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 7,
      "key": "EnhancedMoonbowBasicAttack2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -104,7 +64,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 8,
      "key": "EnhancedMoonbowBasicAttack3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -112,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 9,
      "key": "EnhancedArcBeyondtheEdgeDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -120,7 +80,15 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 10,
+     "key": "AbsoluteFullnessDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
      "key": "LadyoftheSeaTidestorm",
      "type": "echoAttacks",
      "count": 1,
@@ -130,115 +98,8 @@
      "mainEchoRank": 5
     },
     {
-     "order": 16,
-     "key": "FromGloomtoGleamDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,533,354 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Windward Pilgrimage 5pc, main stats 43311 CD ATK Aero atk atk. Team: Mornye + Ciaccona (main DPS): 5,368,732 DPR for Iuno of 6,533,354 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "IlluminatedManifestationDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BeneathLunarTidesDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "FluxMoonbowDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "AbsoluteFullnessDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 12,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
+     "key": "EnhancedArcBeyondtheEdgeDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -246,7 +107,7 @@
     },
     {
      "order": 13,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
+     "key": "EnhancedMoonbowBasicAttack1DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -254,7 +115,7 @@
     },
     {
      "order": 14,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
+     "key": "EnhancedMoonbowBasicAttack2DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -262,236 +123,16 @@
     },
     {
      "order": 15,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "EnhancedMoonbowBasicAttack3DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 16,
-     "key": "FromGloomtoGleamDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,570,957 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Iuno S6 Moongazer's Sigil R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Qiuyuan: 2,479,262 DPR for Iuno of 5,570,957 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "IlluminatedManifestationDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ClosingRefrainDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "LadyoftheSeaTidestorm",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "LadyoftheSea",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 4,
-     "key": "BeneathLunarTidesDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "FluxMoonbowDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "EnhancedArcBeyondtheEdgeDMG",
      "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "AbsoluteFullnessDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "FromGloomtoGleamDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 5,495,593 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Iuno S0 Moongazer's Sigil R1 · Suisui + Xuanling · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Moongazer's Sigil R1, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Suisui + Xuanling: 490,608 DPR for Iuno of 5,495,593 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "IlluminatedManifestationDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ClosingRefrainDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BeneathLunarTidesDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "FluxMoonbowDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnhancedMoonbowBasicAttack1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "EnhancedMoonbowBasicAttack2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "EnhancedMoonbowBasicAttack3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "EnhancedArcBeyondtheEdgeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "AbsoluteFullnessDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "FromGloomtoGleamDMG",
-     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-28T21:58:02.961Z",
- "wuwaCalcCommit": "90c199a",
+ "generated": "2026-10-02T22:51:43.984Z",
+ "wuwaCalcCommit": "32e43fc",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -16,7 +16,7 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+       "note": "start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
       }
      },
      "intendedTeams": 17
@@ -32,7 +32,7 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 1): adds Heavy - Aemeath: Charged II ×1; start of combat (position 2): adds Heavy - Aemeath: Charged II ×1; start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+       "note": "start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
       }
      },
      "intendedTeams": 10
@@ -167,7 +167,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 13
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -265,15 +265,13 @@
         "Basic - Vining Waltz 3 ×1",
         "Basic - Blazing Waltz ×1",
         "Basic - Vining Waltz 4 ×1",
-        "Echo Placeholder (cancel) ×1",
-        "Skill - Floral Ravage (Swap) ×1",
-        "Forte Skill - Perennial (S6) (Swap) ×1"
+        "Echo Placeholder (on field) ×1",
+        "Forte Skill - Perennial (S6) ×1"
        ],
        "removed": [
-        "Skill - Floral Ravage ×1",
-        "Echo Placeholder (swap) ×1"
+        "Echo Placeholder (insta swap) ×1"
        ],
-       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo Placeholder (cancel) ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage (Swap) ×1"
+       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo Placeholder (on field) ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage ×1"
       }
      },
      "intendedTeams": 2
@@ -296,12 +294,10 @@
        "kind": "loop",
        "added": [
         "Basic - Vining Waltz 1 ×1",
-        "Forte Skill - Perennial (S6) ×1",
-        "Skill - Floral Ravage (Swap) ×1"
+        "Forte Skill - Perennial (S6) ×1"
        ],
        "removed": [
-        "Skill - Floral Ravage ×1",
-        "Echo Placeholder (swap) ×1"
+        "Echo Placeholder (insta swap) ×1"
        ]
       }
      },
@@ -349,7 +345,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 9
+     "intendedTeams": 8
     },
     {
      "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Havoc Eclipse 5pc",
@@ -461,7 +457,7 @@
     {
      "level": 3,
      "name": "Cartethyia S3: Prisoner Hanged in the Tower",
-     "note": "S3: the four Fleurdelys casts that already burst Aero Erosion now lay 2 stacks of it first, and the Blade's own multiplier doubles."
+     "note": "S3: the four Fleurdelys casts that already burst Aero Erosion now lay 2 stacks of it first (their first hits, `fleurdelysErosion()`), and the Blade's own multiplier doubles."
     },
     {
      "level": 4,
@@ -488,7 +484,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 10
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -554,7 +550,7 @@
     {
      "level": 4,
      "name": "Chisa S4: Severing the Endless Cycle of Tragic Fate",
-     "note": "S4 halves Unseen Snare's Bane cooldown, 2s to 1s — the Snare keeps no clock here (see above), so nothing to change. Held for the name."
+     "note": "S4 halves Unseen Snare's Bane cooldown, 2s to 1s (read off the target's own marker, above)."
     },
     {
      "level": 5,
@@ -673,10 +669,10 @@
         "Basic - Stagecraft Form 4 ×1",
         "Skill - Phantom Bubble ×1"
        ],
-       "note": "opener: drops Basic - Stagecraft Form 4 ×1, Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump ×1"
+       "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump Placeholder ×1"
       }
      },
-     "intendedTeams": 16
+     "intendedTeams": 15
     },
     {
      "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -692,7 +688,7 @@
         "Basic - Stagecraft Form 4 ×1",
         "Skill - Phantom Bubble ×1"
        ],
-       "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Dodge ×1"
+       "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Dodge Placeholder ×1"
       }
      },
      "intendedTeams": 3
@@ -834,7 +830,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 15
+     "intendedTeams": 14
     }
    ],
    "sequences": [
@@ -929,8 +925,17 @@
     {
      "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
      "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "kind": "chain",
+       "added": [],
+       "removed": [],
+       "note": "first visit: adds Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Echo Placeholder (on field) ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1, Forte Skill - Illumining Form: Pillars Aligned ×1, Basic - Illumining Form: Pillars Aligned 1 ×1, Basic - Illumining Form: Pillars Aligned 2 ×1, Basic - Illumining Form: Pillars Aligned 3 ×1, Basic - Illumining Form: Pillars Aligned 4 ×1, Forte Heavy - Illumining Form: Stilling All Horizons ×1, Liberation - Pillars Across Heaven ×1, Skill - Answering Form ×1"
+      }
+     },
      "intendedTeams": 10
     },
     {
@@ -997,7 +1002,6 @@
         "Forte Skill - Enhanced Arc Beyond the Edge ×2"
        ],
        "removed": [
-        "Skill - Closing Refrain ×1",
         "Basic - Moonbow 1 ×1",
         "Basic - Moonbow 2 ×1",
         "Basic - Moonbow 3 ×1"
@@ -1044,8 +1048,8 @@
    "appKey": "Jianxin",
    "loadouts": [
     {
-     "label": "Marcato R1 · Moonlit Clouds 5pc",
-     "minSequence": 0,
+     "label": "Marcato R5 · Moonlit Clouds 5pc",
+     "minSequence": 2,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 13
@@ -1106,7 +1110,7 @@
         "Basic - Drink Soul 3 ×1",
         "Basic - Drink Soul 4 ×1"
        ],
-       "note": "start of combat (position 1): adds Forte Heavy - Stardome Meander ×1; start of combat (position 2): adds Forte Heavy - Stardome Meander ×1; start of combat (position 3): adds Forte Heavy - Stardome Meander ×1"
+       "note": "start of combat (position 3): adds Forte Heavy - Stardome Meander ×1"
       }
      },
      "intendedTeams": 9
@@ -1241,7 +1245,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 17
+     "intendedTeams": 15
     },
     {
      "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
@@ -1288,7 +1292,7 @@
    "appKey": "Lucy",
    "loadouts": [
     {
-     "label": "Spectral Trigger R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Pact of Neonlight Leap 2pc + Celestial Light 2pc",
+     "label": "Spectral Trigger R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1336,7 +1340,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 31
+     "intendedTeams": 29
     }
    ],
    "sequences": [
@@ -1380,7 +1384,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -1407,7 +1411,7 @@
     {
      "level": 5,
      "name": "Luuk S5: Through the Stillness of Snowstorm",
-     "note": "S5: +80% DMG Bonus on his Intro and Outro, and Golden Reflux at x1.5 — multiplicative, its own second row (301.80% against 201.20%), and nothing else multiplies it. The extra charge and the shorter cooldown buy no press this line…"
+     "note": "S5: +80% DMG Bonus on his Intro and Outro, and Golden Reflux at x1.5 — multiplicative, its own second row (301.80% against 201.20%), and nothing else multiplies it. The extra charge and the shorter cooldown are on SKILL_CD."
     },
     {
      "level": 6,
@@ -1424,14 +1428,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 39
+     "intendedTeams": 35
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -1475,7 +1479,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 50
+     "intendedTeams": 48
     }
    ],
    "sequences": [
@@ -1536,7 +1540,7 @@
     {
      "level": 3,
      "name": "Mortefi S3: Flaming Recitativo",
-     "note": "S3 Flaming Recitativo: +30% Crit DMG on Marcato hits, scoped to `Type2.Coordinated` (covers both the base window and S5's own burst below)."
+     "note": "S3 Flaming Recitativo: +30% Crit DMG on Marcato hits, scoped to `Subtype.Coordinated` (covers both the base window and S5's own burst below)."
     },
     {
      "level": 4,
@@ -1617,13 +1621,13 @@
      ],
      "changes": {
       "2": {
-       "kind": "chain",
+       "kind": "order",
        "added": [],
        "removed": [],
-       "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge ×2, Basic - Movement of Life and Death 1 ×1"
+       "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge Placeholder ×2, Basic - Movement of Life and Death 1 ×1"
       }
      },
-     "intendedTeams": 36
+     "intendedTeams": 33
     }
    ],
    "sequences": [
@@ -1640,7 +1644,7 @@
     {
      "level": 3,
      "name": "Phrolova S3: A Dagger to Cut Clean Obsessions",
-     "note": "S3: every note becomes a Cadenza (in drawNote() above); the Cadenza ATK shred isn't modelled (enemy ATK doesn't enter this formula)."
+     "note": "S3: Scarlet Coda turns every stored note into a Cadenza; the Cadenza ATK shred isn't modelled (enemy ATK doesn't enter this formula)."
     },
     {
      "level": 4,
@@ -1679,7 +1683,7 @@
     {
      "level": 2,
      "name": "Qingxiao S2: Like Petals That Fall Without a Sound",
-     "note": "S2: +40% multiplier on Heavy Attack - Stringblade, Mindlock stacks to 25, and Heaven's Clarity has that Heavy lay 6 Mindlock rather than 3 — the three more here, on top of Clarity's own. The Gathered Mind cap only ever matters off kills."
+     "note": "S2: +40% multiplier on Heavy Attack - Stringblade, Mindlock stacks to 25, and Heaven's Clarity has that Heavy lay 6 Mindlock rather than 3 (`stringbladeMindlock()`). The Gathered Mind cap only ever matters off kills."
     },
     {
      "level": 3,
@@ -1728,12 +1732,13 @@
        ],
        "removed": [
         "Basic - Thus Spoke the Blade: Inkwash 4 ×1",
+        "Echo Placeholder (on field) ×1",
         "Heavy - Inkwash ×2",
+        "Dodge Placeholder ×2",
         "Basic - Thus Spoke the Blade: Inkwash 1 ×2",
-        "Basic - Thus Spoke the Blade: Inkwash 2 ×2",
-        "Dodge ×1"
+        "Basic - Thus Spoke the Blade: Inkwash 2 ×2"
        ],
-       "note": "start of combat (position 3): adds Liberation - Sundering Strike ×1, Skill - Through the Groves ×1; intro at position 2: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Liberation - Sundering Strike ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1; intro at position 3: adds Intro Placeholder ×1, Basic - Thus Spoke the Blade: Inkwash 3 ×2, Basic - Thus Spoke the Blade: Inkwash 4 ×2, Echo Placeholder (cancel) ×1, Skill - Through the Groves ×1, Forte Heavy - Thus Spoke the Blade: To Teach ×2, Forte Heavy - Thus Spoke the Blade: To Save ×2, Forte Heavy - Thus Spoke the Blade: To Sacrifice ×2, Skill - Straw Cape in Drizzly Rain (S3) ×1, Liberation - Sundering Strike ×1"
+       "note": "start of combat (position 2): adds Liberation - Sundering Strike ×1, Skill - Through the Groves ×1"
       }
      },
      "intendedTeams": 12
@@ -1835,35 +1840,13 @@
        "note": "opener: drops Basic - Pero, Easy 4 ×1"
       }
      },
-     "intendedTeams": 9
+     "intendedTeams": 7
     },
     {
      "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Havoc Eclipse 5pc",
-     "minSequence": 0,
-     "loopChangesAt": [
-      6
-     ],
-     "changes": {
-      "6": {
-       "kind": "loop",
-       "added": [
-        "Basic - Reality Recreation (S6) ×8",
-        "Basic - Reality Recreation (S6) (Swap) ×1"
-       ],
-       "removed": [
-        "Basic - Pero, Easy 4 ×1",
-        "Skill - Acrobatic Trick ×1",
-        "Dodge ×1",
-        "Forte Basic - Real Fantasy 1 ×1",
-        "Forte Basic - Real Fantasy 2 ×1",
-        "Forte Basic - Real Fantasy 3 ×1",
-        "Echo Placeholder (on field) ×2",
-        "Basic - Pero, Easy 1 ×1",
-        "Basic - Pero, Easy 2 ×1",
-        "Basic - Pero, Easy 3 ×1"
-       ]
-      }
-     },
+     "minSequence": 6,
+     "loopChangesAt": [],
+     "changes": {},
      "intendedTeams": 4
     }
    ],
@@ -1964,7 +1947,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 56
+     "intendedTeams": 55
     }
    ],
    "sequences": [
@@ -2191,7 +2174,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 2
     }
    ],
    "sequences": [
@@ -2285,7 +2268,7 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 3): adds Forte Heavy - Azure Sword Stance ×1"
+       "note": "start of combat (position 2): adds Forte Heavy - Azure Sword Stance ×1"
       }
      },
      "intendedTeams": 9
@@ -2359,7 +2342,7 @@
     {
      "level": 5,
      "name": "Yinlin S5: Resounding Will",
-     "note": "S5: Thundering Wrath deals 100% extra to a marked target — her Liberation lays Sinner's Mark itself, ahead of this (the resonator's own updateBuffs), so it always reads one."
+     "note": "S5: Thundering Wrath deals 100% extra to a marked target — her Liberation lays Sinner's Mark itself, ahead of this (the resonator's own updateDebuffs), so it always reads one."
     },
     {
      "level": 6,
@@ -2459,7 +2442,7 @@
     {
      "level": 5,
      "name": "Zhezhi S5: Composition's Clue",
-     "note": "S5: one extra spirit every third one summoned. The window's stacks are that count — it runs down one a spirit, and both counts it starts from are multiples of three — and the spirit itself lands on her slot, so this node is read off it…"
+     "note": "S5: one extra spirit every third one summoned — fired by the window itself (INKLIT_SPIRITS above), which is what counts them."
     },
     {
      "level": 6,

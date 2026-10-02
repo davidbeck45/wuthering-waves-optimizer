@@ -1,17 +1,17 @@
 [
  {
   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Lynae (main DPS): 4,653,876 DPR for Xiangli Yao of 6,412,345 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Lynae (main DPS): 3,874,158 DPR for Xiangli Yao of 5,457,388 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Lynae (main DPS): 4,653,876 DPR for Xiangli Yao of 6,412,345 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Lynae (main DPS): 3,874,158 DPR for Xiangli Yao of 5,457,388 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
    "actions": [
     {
      "order": 1,
      "key": "OutroSkillDMG",
      "type": "outro",
-     "count": 3,
+     "count": 6,
      "buffs": [],
      "isDisabled": false
     },
@@ -25,14 +25,6 @@
     },
     {
      "order": 3,
-     "key": "DeductionSkillDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
      "key": "CogitationModelDMG",
      "type": "liberation",
      "count": 1,
@@ -40,7 +32,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "DivergenceDMG",
      "type": "liberation",
      "count": 1,
@@ -48,8 +40,16 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "LawofReignsDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -57,7 +57,7 @@
     },
     {
      "order": 7,
-     "key": "LawofReignsDMG",
+     "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -65,14 +65,6 @@
     },
     {
      "order": 8,
-     "key": "SequenceNode1ProdigyofProteges",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "PivotImpaleStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -80,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "PivotImpaleStage2DMG",
      "type": "liberation",
      "count": 1,
@@ -88,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "PivotImpaleStage3DMG",
      "type": "liberation",
      "count": 1,
@@ -96,8 +88,16 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -105,14 +105,6 @@
     },
     {
      "order": 13,
-     "key": "SequenceNode1ProdigyofProteges",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
      "key": "DivergenceDMG",
      "type": "liberation",
      "count": 1,
@@ -120,7 +112,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "RevampDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -128,7 +120,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "LawofReignsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -136,7 +128,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
@@ -144,7 +136,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "NightmareThunderingMephisAttackDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -158,17 +150,17 @@
  },
  {
   "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Verina + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR Electro Electro atk atk. Team: Verina + Lynae (main DPS): 3,286,435 DPR for Xiangli Yao of 4,187,611 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Lynae (main DPS): 2,776,451 DPR for Xiangli Yao of 3,690,953 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Xiangli Yao S6 Moongazer's Sigil R5 · Verina + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 43311 CR Electro Electro atk atk. Team: Verina + Lynae (main DPS): 3,286,435 DPR for Xiangli Yao of 4,187,611 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Moongazer's Sigil R5, Void Thunder 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Lynae (main DPS): 2,776,451 DPR for Xiangli Yao of 3,690,953 team. Sequence procs in the loop: 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1), 1x Forte Skill - Convolution Matrices (S1).",
    "actions": [
     {
      "order": 1,
      "key": "OutroSkillDMG",
      "type": "outro",
-     "count": 2,
+     "count": 4,
      "buffs": [],
      "isDisabled": false
     },
@@ -182,14 +174,6 @@
     },
     {
      "order": 3,
-     "key": "DeductionSkillDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
      "key": "CogitationModelDMG",
      "type": "liberation",
      "count": 1,
@@ -197,7 +181,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "DivergenceDMG",
      "type": "liberation",
      "count": 1,
@@ -205,8 +189,16 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "RevampDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "LawofReignsDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -214,7 +206,7 @@
     },
     {
      "order": 7,
-     "key": "LawofReignsDMG",
+     "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -222,14 +214,6 @@
     },
     {
      "order": 8,
-     "key": "SequenceNode1ProdigyofProteges",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "PivotImpaleStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -237,7 +221,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "PivotImpaleStage2DMG",
      "type": "liberation",
      "count": 1,
@@ -245,7 +229,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "PivotImpaleStage3DMG",
      "type": "liberation",
      "count": 1,
@@ -253,8 +237,16 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "LawofReignsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -262,14 +254,6 @@
     },
     {
      "order": 13,
-     "key": "SequenceNode1ProdigyofProteges",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
      "key": "DivergenceDMG",
      "type": "liberation",
      "count": 1,
@@ -277,7 +261,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "RevampDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -285,7 +269,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "LawofReignsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -293,7 +277,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "SequenceNode1ProdigyofProteges",
      "type": "forteCircuit",
      "count": 1,
@@ -301,7 +285,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "NightmareThunderingMephisAttackDMG",
      "type": "echoAttacks",
      "count": 1,

@@ -1,14 +1,22 @@
 [
  {
-  "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Lucilla (main DPS): 7,394,497 DPR for Galbrena of 9,354,370 team. Sequence procs in the loop: none.",
+  "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,485,969 DPR for Galbrena of 7,676,515 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Lucilla (main DPS): 7,394,497 DPR for Galbrena of 9,354,370 team. Sequence procs in the loop: none.",
+   "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,485,969 DPR for Galbrena of 7,676,515 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
+     "key": "AshenPursuitDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "HellflareOverloadDMG",
      "type": "intro",
      "count": 1,
@@ -16,18 +24,8 @@
      "isDisabled": false
     },
     {
-     "order": 2,
-     "key": "CorrosaurusAttack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Corrosaurus",
-     "mainEchoRank": 5
-    },
-    {
      "order": 3,
-     "key": "HeavyAttackVolleyofDeathStage2DMG",
+     "key": "BasicAttackStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -35,14 +33,6 @@
     },
     {
      "order": 4,
-     "key": "HeavyAttackVolleyofDeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
      "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -50,8 +40,16 @@
      "isDisabled": false
     },
     {
+     "order": 5,
+     "key": "HeavyAttackVolleyofDeathStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 6,
-     "key": "BasicAttackStage4DMG",
+     "key": "HeavyAttackVolleyofDeathStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -59,8 +57,8 @@
     },
     {
      "order": 7,
-     "key": "ResonanceSkillEncroachDMG",
-     "type": "skill",
+     "key": "HeavyAttackVolleyofDeathStage3DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -115,7 +113,7 @@
     },
     {
      "order": 14,
-     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "key": "HellstrideDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -123,22 +121,6 @@
     },
     {
      "order": 15,
-     "key": "BasicAttackSeraphicExecutionStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "BasicAttackSeraphicExecutionStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
      "key": "BasicAttackSeraphicExecutionStage3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -146,9 +128,33 @@
      "isDisabled": false
     },
     {
+     "order": 16,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 18,
-     "key": "AshenPursuitDMG",
-     "type": "outro",
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false

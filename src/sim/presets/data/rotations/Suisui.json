@@ -1,54 +1,22 @@
 [
  {
   "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Hiyuki · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 409,623 DPR for Suisui of 10,412,481 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 353,971 DPR for Suisui of 9,941,349 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Hiyuki · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 409,623 DPR for Suisui of 10,412,481 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hiyuki: 353,971 DPR for Suisui of 9,941,349 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 3x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "ResonanceSkillDrizzleStanceDMG",
-     "type": "skill",
+     "key": "TinklingJadeDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "BasicAttackDrizzleStanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackDrizzleStanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackDrizzleStanceStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackDrizzleStanceStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -57,14 +25,44 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 7,
-     "key": "ForbiddenBastionBashDMG",
-     "type": "echoAttacks",
+     "order": 3,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ForbiddenBastion",
-     "mainEchoRank": 5
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 8,
@@ -77,14 +75,34 @@
     },
     {
      "order": 9,
-     "key": "TinklingJadeDMG",
-     "type": "intro",
+     "key": "ForbiddenBastionBashDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "ForbiddenBastion",
+     "mainEchoRank": 5
     },
     {
      "order": 10,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 11,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 12,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -96,55 +114,23 @@
   }
  },
  {
-  "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Cartethyia: 345,768 DPR for Suisui of 6,693,805 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+  "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hsin: 291,766 DPR for Suisui of 10,963,102 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Cartethyia: 345,768 DPR for Suisui of 6,693,805 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
+   "name": "Suisui S6 Firstlight's Herald R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Firstlight's Herald R5, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Chisa + Hsin: 291,766 DPR for Suisui of 10,963,102 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks, 1x Glacio Chafe - 16 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "ResonanceSkillDrizzleStanceDMG",
-     "type": "skill",
+     "key": "TinklingJadeDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "BasicAttackDrizzleStanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackDrizzleStanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackDrizzleStanceStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackDrizzleStanceStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -153,7 +139,56 @@
      "negativeStatusStacks": 13
     },
     {
+     "order": 3,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 7,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 9,
      "key": "ForbiddenBastionBashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -163,15 +198,25 @@
      "mainEchoRank": 5
     },
     {
-     "order": 8,
-     "key": "TinklingJadeDMG",
-     "type": "intro",
+     "order": 10,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
-     "order": 9,
+     "order": 11,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 12,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -184,54 +229,22 @@
  },
  {
   "name": "Suisui S0 Firstlight's Herald R1 · Lucilla + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Firstlight's Herald R1, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 117,380 DPR for Suisui of 2,637,363 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Firstlight's Herald R1, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 113,909 DPR for Suisui of 2,333,143 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Suisui S0 Firstlight's Herald R1 · Lucilla + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Firstlight's Herald R1, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 117,380 DPR for Suisui of 2,637,363 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Firstlight's Herald R1, Song of Feathered Trace 5pc, main stats 43311 HP ER ER hp hp. Team: Lucilla + Carlotta: 113,909 DPR for Suisui of 2,333,143 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 11 Stacks, 1x Glacio Chafe - 12 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "ResonanceSkillDrizzleStanceDMG",
-     "type": "skill",
+     "key": "TinklingJadeDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "BasicAttackDrizzleStanceStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackDrizzleStanceStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackDrizzleStanceStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackDrizzleStanceStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -240,7 +253,7 @@
      "negativeStatusStacks": 11
     },
     {
-     "order": 7,
+     "order": 3,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -249,7 +262,7 @@
      "negativeStatusStacks": 12
     },
     {
-     "order": 8,
+     "order": 4,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
@@ -258,7 +271,74 @@
      "negativeStatusStacks": 13
     },
     {
+     "order": 5,
+     "key": "ResonanceSkillDrizzleStanceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackDrizzleStanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackDrizzleStanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackDrizzleStanceStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 9,
+     "key": "BasicAttackDrizzleStanceStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 11
+    },
+    {
+     "order": 11,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 12
+    },
+    {
+     "order": 12,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 13,
      "key": "ForbiddenBastionBashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -268,33 +348,25 @@
      "mainEchoRank": 5
     },
     {
-     "order": 10,
-     "key": "TinklingJadeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
+     "order": 14,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 11
+     "negativeStatusStacks": 13
     },
     {
-     "order": 12,
+     "order": 15,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 12
+     "negativeStatusStacks": 13
     },
     {
-     "order": 13,
+     "order": 16,
      "key": "ElementalEffectGlacioChafe",
      "type": "negativeStatus",
      "count": 1,

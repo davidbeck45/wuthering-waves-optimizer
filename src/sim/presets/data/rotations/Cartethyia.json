@@ -1,17 +1,17 @@
 [
  {
   "name": "Cartethyia S6 Defier's Thorn R5 · Ciaccona + Chisa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Chisa (main DPS): 6,574,124 DPR for Cartethyia of 8,509,096 team. Sequence procs in the loop: 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 4x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Chisa (main DPS): 5,737,161 DPR for Cartethyia of 7,758,455 team. Sequence procs in the loop: 10x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 10x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Cartethyia S6 Defier's Thorn R5 · Ciaccona + Chisa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Chisa (main DPS): 6,574,124 DPR for Cartethyia of 8,509,096 team. Sequence procs in the loop: 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 4x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Chisa (main DPS): 5,737,161 DPR for Cartethyia of 7,758,455 team. Sequence procs in the loop: 10x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 10x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 8,
+     "count": 10,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -28,7 +28,7 @@
      "order": 3,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -78,7 +78,7 @@
      "order": 9,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -95,7 +95,7 @@
      "order": 11,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -112,7 +112,7 @@
      "order": 13,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
@@ -129,22 +129,13 @@
      "order": 15,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 2,
+     "count": 3,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
      "order": 16,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 17,
      "key": "BasicAttackStage3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -152,7 +143,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "BasicAttackStage4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -160,7 +151,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "BasicAttackStage5DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -168,25 +159,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 22,
+     "order": 19,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 3,
@@ -195,16 +168,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 24,
+     "order": 20,
      "key": "BasicAttackStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -212,7 +176,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 21,
      "key": "BasicAttackStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -220,7 +184,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 22,
      "key": "BasicAttackStage3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -228,7 +192,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 23,
      "key": "BasicAttackStage4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -236,7 +200,7 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 24,
      "key": "BasicAttackStage5DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -244,34 +208,16 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 25,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 30,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 31,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 32,
+     "order": 26,
      "key": "BladeofHowlingSquallDMG",
      "type": "liberation",
      "count": 1,
@@ -279,7 +225,16 @@
      "isDisabled": false
     },
     {
-     "order": 33,
+     "order": 27,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 28,
      "key": "WindcleaverDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -287,541 +242,29 @@
      "isDisabled": false,
      "mainEcho": "ReminiscenceFleurdelys",
      "mainEchoRank": 5
-    },
-    {
-     "order": 34,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
     }
    ]
   }
  },
  {
   "name": "Cartethyia S6 Defier's Thorn R5 · Mornye + Chisa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero hp hp. Team: Mornye + Chisa (main DPS): 5,260,127 DPR for Cartethyia of 7,655,814 team. Sequence procs in the loop: 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 4x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CR hp hp hp. Team: Mornye + Chisa (main DPS): 4,663,484 DPR for Cartethyia of 6,471,608 team. Sequence procs in the loop: 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 8 Stacks, 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Cartethyia S6 Defier's Thorn R5 · Mornye + Chisa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero hp hp. Team: Mornye + Chisa (main DPS): 5,260,127 DPR for Cartethyia of 7,655,814 team. Sequence procs in the loop: 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 4x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CR hp hp hp. Team: Mornye + Chisa (main DPS): 4,663,484 DPR for Cartethyia of 6,471,608 team. Sequence procs in the loop: 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 8 Stacks, 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 2x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 4,
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 9
+     "negativeStatusStacks": 8
     },
     {
      "order": 2,
-     "key": "SwordtoMarkTidesTraceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 4,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 8,
-     "key": "SwordtoBearTheirNamesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 10,
-     "key": "MidairAttack3SwordShadowsRecalledDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SwordToAnswerWavesCallDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 13,
-     "key": "MayTempestBreakTheTidesDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 15,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 20,
-     "key": "BasicAttackStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "BasicAttackStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 28,
-     "key": "BladeofHowlingSquallDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "WindcleaverDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceFleurdelys",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Cartethyia S6 Defier's Thorn R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CR hp hp hp. Team: Suisui + Chisa (main DPS): 4,744,241 DPR for Cartethyia of 6,693,805 team. Sequence procs in the loop: 1x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 4x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 11 Stacks, 2x Aero Erosion - 12 Stacks, 3x Aero Erosion - 11 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 11 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Cartethyia S6 Defier's Thorn R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CR hp hp hp. Team: Suisui + Chisa (main DPS): 4,744,241 DPR for Cartethyia of 6,693,805 team. Sequence procs in the loop: 1x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 4x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 3x Aero Erosion - 12 Stacks, 2x Aero Erosion - 12 Stacks, 2x Aero Erosion - 11 Stacks, 2x Aero Erosion - 12 Stacks, 3x Aero Erosion - 11 Stacks, 2x Aero Erosion - 12 Stacks, 1x Aero Erosion - 11 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 2,
-     "key": "SwordtoMarkTidesTraceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 4,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 8,
-     "key": "SwordtoBearTheirNamesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 10,
-     "key": "MidairAttack3SwordShadowsRecalledDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SwordToAnswerWavesCallDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 13,
-     "key": "MayTempestBreakTheTidesDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 15,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 11
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 20,
-     "key": "BasicAttackStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "BasicAttackStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 11
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 11
-    },
-    {
-     "order": 28,
-     "key": "BladeofHowlingSquallDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "WindcleaverDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceFleurdelys",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Aero Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Aero Rover (main DPS): 3,499,375 DPR for Cartethyia of 4,318,409 team. Sequence procs in the loop: 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Aero Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Aero Rover (main DPS): 3,499,375 DPR for Cartethyia of 4,318,409 team. Sequence procs in the loop: 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 8x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 3x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 5x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
-   "actions": [
-    {
-     "order": 1,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 8,
@@ -830,7 +273,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "SwordtoMarkTidesTraceDMG",
      "type": "intro",
      "count": 1,
@@ -838,7 +281,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 2,
@@ -847,7 +290,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -855,7 +298,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
@@ -863,7 +306,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -871,16 +314,16 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 3,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "SwordtoBearTheirNamesDMG",
      "type": "skill",
      "count": 1,
@@ -888,16 +331,16 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 10,
+     "order": 11,
      "key": "MidairAttack3SwordShadowsRecalledDMG",
      "type": "basic",
      "count": 1,
@@ -905,16 +348,16 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 12,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "SwordToAnswerWavesCallDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -922,16 +365,16 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "MayTempestBreakTheTidesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -939,7 +382,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 16,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 3,
@@ -948,16 +391,8 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 16,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 17,
-     "key": "BasicAttackStage4DMG",
+     "key": "BasicAttackStage3DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -965,47 +400,6 @@
     },
     {
      "order": 18,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 20,
-     "key": "BasicAttackStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "BasicAttackStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
      "key": "BasicAttackStage4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -1013,7 +407,7 @@
      "isDisabled": false
     },
     {
-     "order": 24,
+     "order": 19,
      "key": "BasicAttackStage5DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -1021,40 +415,80 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 20,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 8
     },
     {
-     "order": 27,
-     "key": "BladeofHowlingSquallDMG",
-     "type": "liberation",
+     "order": 21,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackStage1DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 28,
-     "key": "WindcleaverDMG",
-     "type": "echoAttacks",
+     "order": 23,
+     "key": "BasicAttackStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "BasicAttackStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "ReminiscenceFleurdelys",
-     "mainEchoRank": 5
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 28,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 8
     },
     {
      "order": 29,
@@ -1064,262 +498,6 @@
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 9
-    }
-   ]
-  }
- },
- {
-  "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Sanhua (main DPS): 3,001,323 DPR for Cartethyia of 3,537,901 team. Sequence procs in the loop: 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 2x Aero Erosion - 6 Stacks.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Sanhua (main DPS): 3,001,323 DPR for Cartethyia of 3,537,901 team. Sequence procs in the loop: 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 4x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 2x Aero Erosion - 6 Stacks.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 2,
-     "key": "SwordtoMarkTidesTraceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 4,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "Stage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 8,
-     "key": "SwordtoBearTheirNamesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 10,
-     "key": "MidairAttack3SwordShadowsRecalledDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SwordToAnswerWavesCallDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 13,
-     "key": "MayTempestBreakTheTidesDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 15,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 5
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 21,
-     "key": "BasicAttackStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "BasicAttackStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "BasicAttackStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "BasicAttackStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "BasicAttackStage5DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 5
-    },
-    {
-     "order": 28,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 29,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 5
     },
     {
      "order": 30,
@@ -1331,6 +509,271 @@
     },
     {
      "order": 31,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 32,
+     "key": "WindcleaverDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceFleurdelys",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cartethyia S6 Defier's Thorn R5 · Ciaccona + Sanhua · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Sanhua (main DPS): 4,236,931 DPR for Cartethyia of 5,164,911 team. Sequence procs in the loop: 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Cartethyia S6 Defier's Thorn R5 · Ciaccona + Sanhua · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R5, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Sanhua (main DPS): 4,236,931 DPR for Cartethyia of 5,164,911 team. Sequence procs in the loop: 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 3x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 4x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks, 6x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 2x Aero Erosion - 6 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 2,
+     "key": "SwordtoMarkTidesTraceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 4,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 8,
+     "key": "SwordtoBearTheirNamesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 10,
+     "key": "MidairAttack3SwordShadowsRecalledDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 12,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 13,
+     "key": "SwordToAnswerWavesCallDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 15,
+     "key": "MayTempestBreakTheTidesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "BasicAttackStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "BasicAttackStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 27,
+     "key": "BladeofHowlingSquallDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 29,
      "key": "WindcleaverDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -1340,13 +783,260 @@
      "mainEchoRank": 5
     },
     {
-     "order": 32,
+     "order": 30,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 6
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Aero Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Aero Rover (main DPS): 2,865,283 DPR for Cartethyia of 3,662,016 team. Sequence procs in the loop: 11x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 11x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Cartethyia S6 Defier's Thorn R1 · Ciaccona + Aero Rover · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Defier's Thorn R1, Windward Pilgrimage 5pc, main stats 44111 CR CD hp hp hp. Team: Ciaccona + Aero Rover (main DPS): 2,865,283 DPR for Cartethyia of 3,662,016 team. Sequence procs in the loop: 11x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 11x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 4x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 2,
+     "key": "SwordtoMarkTidesTraceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 4,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 8,
+     "key": "SwordtoBearTheirNamesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 10,
+     "key": "MidairAttack3SwordShadowsRecalledDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 12,
+     "key": "SwordToAnswerWavesCallDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 14,
+     "key": "MayTempestBreakTheTidesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "BasicAttackStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "BasicAttackStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 26,
+     "key": "BladeofHowlingSquallDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 28,
+     "key": "WindcleaverDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceFleurdelys",
+     "mainEchoRank": 5
     }
    ]
   }

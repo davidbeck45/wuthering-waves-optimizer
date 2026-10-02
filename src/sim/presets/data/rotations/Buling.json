@@ -1,38 +1,22 @@
 [
  {
   "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 98,332 DPR for Buling of 8,407,318 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 93,306 DPR for Buling of 8,511,426 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 98,332 DPR for Buling of 8,407,318 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 93,306 DPR for Buling of 8,511,426 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "MidairAttackDMG",
-     "type": "basic",
+     "key": "SummonandSmiteDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -40,7 +24,15 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 3,
+     "key": "ThunderTalismanDMG",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -50,15 +42,15 @@
      "electroRageStacks": 0
     },
     {
-     "order": 6,
-     "key": "HeavyAttackThunderOverMountainDMG",
+     "order": 5,
+     "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -66,16 +58,24 @@
      "isDisabled": false
     },
     {
+     "order": 7,
+     "key": "MidairAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 8,
-     "key": "ThunderTalismanDMG",
-     "type": "skill",
-     "count": 2,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 9,
-     "key": "Stage4DMG",
+     "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -91,13 +91,11 @@
     },
     {
      "order": 11,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
+     "key": "HeavyAttackThunderOverMountainDMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "electroRageStacks": 0
+     "isDisabled": false
     },
     {
      "order": 12,
@@ -121,12 +119,22 @@
      "order": 14,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
-     "count": 9,
+     "count": 8,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 15,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 16,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 2,
@@ -134,7 +142,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 17,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -142,17 +150,17 @@
      "isDisabled": false,
      "negativeStatusStacks": 13,
      "electroRageStacks": 0
-    },
-    {
-     "order": 17,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
     },
     {
      "order": 18,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -162,23 +170,7 @@
      "electroRageStacks": 0
     },
     {
-     "order": 19,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 20,
-     "key": "SummonandSmiteDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -190,17 +182,17 @@
  },
  {
   "name": "Buling S6 Variation R5 · Suisui + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 72,981 DPR for Buling of 7,439,578 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 79,694 DPR for Buling of 7,666,211 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Suisui + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 72,981 DPR for Buling of 7,439,578 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 79,694 DPR for Buling of 7,666,211 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
    "actions": [
     {
      "order": 1,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -218,7 +210,7 @@
      "order": 3,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -232,14 +224,6 @@
     },
     {
      "order": 5,
-     "key": "MidairAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -247,23 +231,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
+     "order": 6,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -273,7 +241,23 @@
      "electroRageStacks": 0
     },
     {
-     "order": 10,
+     "order": 7,
+     "key": "ThunderTalismanDMG",
+     "type": "skill",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -281,8 +265,16 @@
      "isDisabled": false
     },
     {
+     "order": 10,
+     "key": "MidairAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 11,
-     "key": "HeavyAttackThunderOverMountainDMG",
+     "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -290,9 +282,9 @@
     },
     {
      "order": 12,
-     "key": "ThunderTalismanDMG",
-     "type": "skill",
-     "count": 2,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -306,7 +298,7 @@
     },
     {
      "order": 14,
-     "key": "Stage4DMG",
+     "key": "HeavyAttackThunderOverMountainDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -314,14 +306,6 @@
     },
     {
      "order": 15,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -331,7 +315,7 @@
      "electroRageStacks": 0
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
@@ -341,7 +325,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "FlashingThunderSpellHarmonyDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -349,18 +333,36 @@
      "isDisabled": false
     },
     {
+     "order": 18,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 19,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
-     "count": 5,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 20,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 21,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
-     "count": 5,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     }
@@ -369,16 +371,16 @@
  },
  {
   "name": "Buling S6 Variation R5 · Lynae + Electro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,151 DPR for Buling of 2,173,108 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 4 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 60,505 DPR for Buling of 2,052,611 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 4 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Lynae + Electro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,151 DPR for Buling of 2,173,108 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 2 Stacks, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 4 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 60,505 DPR for Buling of 2,052,611 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 4 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "MidairAttackDMG",
-     "type": "basic",
+     "key": "SummonandSmiteDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -393,40 +395,6 @@
     },
     {
      "order": 3,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10,
-     "electroRageStacks": 5
-    },
-    {
-     "order": 6,
-     "key": "HeavyAttackThunderOverMountainDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
      "key": "ThunderTalismanDMG",
      "type": "skill",
      "count": 2,
@@ -434,7 +402,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 4,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -442,87 +410,39 @@
      "isDisabled": false
     },
     {
+     "order": 5,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 9,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 5,
-     "electroRageStacks": 0
-    },
-    {
-     "order": 10,
-     "key": "FallacyOfNoReturnDiffraction",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 11,
-     "key": "FlashingThunderSpellHarmonyDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 11,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10,
-     "electroRageStacks": 2
-    },
-    {
-     "order": 15,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ElementalEffectElectroFlare",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9,
-     "electroRageStacks": 0
-    },
-    {
-     "order": 17,
-     "key": "FiveThundersSpellArrayContinuousDMG",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
      "key": "ElementalEffectElectroFlare",
      "type": "negativeStatus",
      "count": 1,
@@ -532,7 +452,7 @@
      "electroRageStacks": 4
     },
     {
-     "order": 19,
+     "order": 10,
      "key": "FiveThundersSpellArrayContinuousDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -540,10 +460,108 @@
      "isDisabled": false
     },
     {
-     "order": 20,
-     "key": "SummonandSmiteDMG",
-     "type": "intro",
+     "order": 11,
+     "key": "HeavyAttackThunderOverMountainDMG",
+     "type": "basic",
      "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 13,
+     "key": "FlashingThunderSpellHarmonyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10,
+     "electroRageStacks": 3
+    },
+    {
+     "order": 16,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10,
+     "electroRageStacks": 1
+    },
+    {
+     "order": 18,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9,
+     "electroRageStacks": 0
+    },
+    {
+     "order": 20,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "ElementalEffectElectroFlare",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10,
+     "electroRageStacks": 10
+    },
+    {
+     "order": 22,
+     "key": "FiveThundersSpellArrayContinuousDMG",
+     "type": "forteCircuit",
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     }

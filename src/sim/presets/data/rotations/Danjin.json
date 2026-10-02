@@ -1,11 +1,136 @@
 [
  {
+  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 415,091 DPR for Danjin of 4,201,262 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 415,091 DPR for Danjin of 4,201,262 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "CrimsonErosion1",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CrimsonErosion2",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "CrimsonBloomScarletBurstDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "CarmineGleam",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Part2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "Part3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SanguinePulse1",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SanguinePulse2",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SanguinePulse3",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChaoscleaveDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ScatterbloomDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ImperStrikeDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "MidnightVeilDMG",
+     "type": "echoSetAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 324,065 DPR for Danjin of 4,770,213 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Mornye: 322,460 DPR for Danjin of 4,765,150 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 324,065 DPR for Danjin of 4,770,213 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Mornye: 322,460 DPR for Danjin of 4,765,150 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -117,12 +242,12 @@
   }
  },
  {
-  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Buling · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Buling: 198,654 DPR for Danjin of 3,538,979 team. Sequence procs in the loop: none.",
+  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 · Moonlit Clouds 5pc (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 309,005 DPR for Danjin of 4,974,377 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Buling · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Buling: 198,654 DPR for Danjin of 3,538,979 team. Sequence procs in the loop: none.",
+   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 · Moonlit Clouds 5pc (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 309,005 DPR for Danjin of 4,974,377 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

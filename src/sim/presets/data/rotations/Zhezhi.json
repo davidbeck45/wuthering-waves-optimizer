@@ -1,11 +1,11 @@
 [
  {
-  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 941,818 DPR for Zhezhi of 4,293,955 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 838,548 DPR for Zhezhi of 3,811,613 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Jinhsi: 941,818 DPR for Zhezhi of 4,293,955 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 838,548 DPR for Zhezhi of 3,811,613 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -59,7 +59,7 @@
      "order": 7,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -75,7 +75,7 @@
      "order": 9,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -107,6 +107,333 @@
      "order": 13,
      "key": "NormalAttackStage3DMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 32,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 33,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 34,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 36,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 37,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 38,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 39,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Carlotta · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Carlotta: 815,539 DPR for Zhezhi of 4,384,792 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Carlotta · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Carlotta: 815,539 DPR for Zhezhi of 4,384,792 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -179,20 +506,12 @@
      "order": 22,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 23,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
      "key": "ManifestationHoldDMG",
      "type": "skill",
      "count": 1,
@@ -200,8 +519,16 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 24,
      "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -233,7 +560,7 @@
     },
     {
      "order": 29,
-     "key": "CreationsZenithDMG",
+     "key": "StrokeOfGeniusDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -241,6 +568,14 @@
     },
     {
      "order": 30,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 31,
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 1,
@@ -248,16 +583,8 @@
      "isDisabled": false
     },
     {
-     "order": 31,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 32,
-     "key": "StrokeOfGeniusDMG",
+     "key": "CreationsZenithDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -273,6 +600,14 @@
     },
     {
      "order": 34,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 35,
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 1,
@@ -280,17 +615,9 @@
      "isDisabled": false
     },
     {
-     "order": 35,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 36,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -299,25 +626,23 @@
      "order": 37,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 38,
-     "key": "NightmareLampylumenMyriadDMG",
-     "type": "echoAttacks",
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareLampylumenMyriad",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 39,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
@@ -349,15 +674,7 @@
      "order": 43,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 44,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     }
@@ -366,17 +683,17 @@
  },
  {
   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Carlotta · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Carlotta: 890,460 DPR for Zhezhi of 4,816,228 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Carlotta: 805,669 DPR for Zhezhi of 4,571,728 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Mornye + Carlotta · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Carlotta: 890,460 DPR for Zhezhi of 4,816,228 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Mornye + Carlotta: 805,669 DPR for Zhezhi of 4,571,728 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -392,14 +709,14 @@
      "order": 3,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 4,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -414,22 +731,6 @@
     },
     {
      "order": 6,
-     "key": "BrillianceInABrushDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
      "key": "NormalAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -437,7 +738,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 7,
      "key": "NormalAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -445,9 +746,25 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 8,
      "key": "NormalAttackStage3DMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -462,11 +779,13 @@
     },
     {
      "order": 12,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
     },
     {
      "order": 13,
@@ -478,62 +797,54 @@
     },
     {
      "order": 14,
-     "key": "InklitSpiritDMG",
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 15,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 16,
-     "key": "InklitSpiritDMG",
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 17,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 18,
-     "key": "InklitSpiritDMG",
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 19,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 20,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
      "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
      "count": 1,
@@ -541,7 +852,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 3,
@@ -549,9 +860,17 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 22,
      "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -560,14 +879,14 @@
      "order": 24,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 25,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -582,16 +901,16 @@
     },
     {
      "order": 27,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 28,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -622,15 +941,15 @@
     },
     {
      "order": 32,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 33,
-     "key": "StrokeOfGeniusDMG",
+     "key": "CreationsZenithDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -648,29 +967,29 @@
      "order": 35,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 36,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
+     "key": "SequenceNode5CompositionsClue",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 37,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 38,
-     "key": "InklitSpiritDMG",
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -678,17 +997,15 @@
     },
     {
      "order": 39,
-     "key": "NightmareLampylumenMyriadDMG",
-     "type": "echoAttacks",
-     "count": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 3,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareLampylumenMyriad",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 40,
-     "key": "InklitSpiritDMG",
+     "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -696,65 +1013,17 @@
     },
     {
      "order": 41,
-     "key": "SequenceNode5CompositionsClue",
+     "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 42,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 43,
      "key": "SequenceNode5CompositionsClue",
      "type": "liberation",
      "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 44,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 45,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 46,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 47,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 48,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 2,
      "buffs": [],
      "isDisabled": false
     }
@@ -762,25 +1031,25 @@
   }
  },
  {
-  "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 886,539 DPR for Zhezhi of 3,696,034 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 318,060 DPR for Zhezhi of 2,260,252 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Zhezhi S6 Rime-Draped Sprouts R5 · Shorekeeper + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Rime-Draped Sprouts R5, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 886,539 DPR for Zhezhi of 3,696,034 team. Sequence procs in the loop: 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Skill - Ivory Herald (S6), 1x Skill - Ivory Herald (S6), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5), 1x Liberation - Inklit Spirit (S5).",
+   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Jinhsi: 318,060 DPR for Zhezhi of 2,260,252 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -789,30 +1058,30 @@
      "order": 3,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 4,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 5,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 6,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -821,252 +1090,12 @@
      "order": 7,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BrillianceInABrushDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "NormalAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "NormalAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "NormalAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
      "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 16,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 23,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 27,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 28,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 30,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 31,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 32,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 33,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 34,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 35,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 36,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 37,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 38,
+     "order": 8,
      "key": "NightmareLampylumenMyriadDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -1076,7 +1105,31 @@
      "mainEchoRank": 5
     },
     {
-     "order": 39,
+     "order": 9,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 1,
@@ -1084,42 +1137,42 @@
      "isDisabled": false
     },
     {
-     "order": 40,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
+     "order": 13,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 41,
+     "order": 14,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 42,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 43,
+     "order": 16,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 44,
-     "key": "SequenceNode5CompositionsClue",
-     "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     }
@@ -1128,11 +1181,160 @@
  },
  {
   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Jinhsi: 319,020 DPR for Zhezhi of 2,232,654 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Jinhsi: 295,548 DPR for Zhezhi of 2,170,824 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Jinhsi: 319,020 DPR for Zhezhi of 2,232,654 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Jinhsi: 295,548 DPR for Zhezhi of 2,170,824 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BrillianceInABrushDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "NormalAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "NormalAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "NormalAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "NightmareLampylumenMyriadDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareLampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 9,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "CompositionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "CreationsZenithDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Verina + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Verina + Jinhsi: 281,310 DPR for Zhezhi of 2,167,612 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Verina + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Empyrean Anthem 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Verina + Jinhsi: 281,310 DPR for Zhezhi of 2,167,612 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -1152,6 +1354,14 @@
     },
     {
      "order": 3,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
      "key": "NormalAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -1159,7 +1369,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "NormalAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -1167,7 +1377,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "NormalAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -1175,95 +1385,15 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 8,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
      "key": "NightmareLampylumenMyriadDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -1273,246 +1403,6 @@
      "mainEchoRank": 5
     },
     {
-     "order": 18,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 7,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Carlotta: 234,492 DPR for Zhezhi of 2,701,619 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Suisui + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Suisui + Carlotta: 234,492 DPR for Zhezhi of 2,701,619 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BrillianceInABrushDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "NormalAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "NormalAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "NormalAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 17,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "StrokeOfGeniusDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "CreationsZenithDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 18,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Verina + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Verina + Carlotta: 206,348 DPR for Zhezhi of 2,397,625 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Zhezhi S0 Rime-Draped Sprouts R1 · Verina + Carlotta · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Rime-Draped Sprouts R1, Moonlit Clouds 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Verina + Carlotta: 206,348 DPR for Zhezhi of 2,397,625 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BrillianceInABrushDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "NormalAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "NormalAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "NormalAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 17,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "ManifestationHoldDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 9,
      "key": "InklitSpiritDMG",
      "type": "liberation",
@@ -1522,23 +1412,23 @@
     },
     {
      "order": 10,
-     "key": "CompositionDMG",
-     "type": "forteCircuit",
-     "count": 1,
+     "key": "InklitSpiritDMG",
+     "type": "liberation",
+     "count": 8,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
+     "key": "ManifestationHoldDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "StrokeOfGeniusDMG",
+     "key": "CompositionDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -1562,6 +1452,14 @@
     },
     {
      "order": 15,
+     "key": "StrokeOfGeniusDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
      "key": "InklitSpiritDMG",
      "type": "liberation",
      "count": 1,
@@ -1569,7 +1467,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 17,
      "key": "CreationsZenithDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -1577,28 +1475,10 @@
      "isDisabled": false
     },
     {
-     "order": 17,
-     "key": "InklitSpiritDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 18,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 19,
      "key": "InklitSpiritDMG",
      "type": "liberation",
-     "count": 12,
+     "count": 6,
      "buffs": [],
      "isDisabled": false
     }

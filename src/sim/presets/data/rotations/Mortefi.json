@@ -1,522 +1,11 @@
 [
  {
-  "name": "Mortefi S6 Static Mist R5 · Lupa + Jingran · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,144,149 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "name": "Mortefi S6 Static Mist R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Qiuyuan: 314,305 DPR for Mortefi of 3,603,785 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Mortefi S6 Static Mist R5 · Lupa + Jingran · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Stonewall Bracer, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Jingran: 371,930 DPR for Mortefi of 8,144,149 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
-   "actions": [
-    {
-     "order": 1,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 20,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "DissonanceSkillDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "PassionateVariation",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ImpromptuShowStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ImpromptuShowStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ImpromptuShowStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ImpromptuShowStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ViolentFinaleDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 41,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "StonewallBracerCharge",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "StonewallBracer",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 20,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 41,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,906,196 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK ATK atk atk. Team: Lupa + Galbrena: 361,210 DPR for Mortefi of 5,906,196 team. Sequence procs in the loop: 20x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
-   "actions": [
-    {
-     "order": 1,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 20,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "DissonanceSkillDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "PassionateVariation",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ImpromptuShowStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ImpromptuShowStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ImpromptuShowStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ImpromptuShowStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 6,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ViolentFinaleDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 43,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 19,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 43,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Mortefi S6 Static Mist R5 · Suisui + Jiyan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Jiyan: 349,810 DPR for Mortefi of 2,764,266 team. Sequence procs in the loop: 14x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Mortefi S6 Static Mist R5 · Suisui + Jiyan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Jiyan: 349,810 DPR for Mortefi of 2,764,266 team. Sequence procs in the loop: 14x Liberation - Marcato, 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
-   "actions": [
-    {
-     "order": 1,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 14,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "DissonanceSkillDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "PassionateVariation",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ImpromptuShowStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ImpromptuShowStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ImpromptuShowStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ImpromptuShowStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "FuryFugueDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ViolentFinaleDamage",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 46,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "CrescentServantsDMG",
-     "type": "echoAttacks",
-     "count": 6,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Hecate",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 20,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 46,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Mortefi S6 Static Mist R1 · Mornye + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,100,436 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Mortefi S6 Static Mist R1 · Mornye + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Jiyan: 314,085 DPR for Mortefi of 2,100,436 team. Sequence procs in the loop: 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 2x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "name": "Mortefi S6 Static Mist R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Qiuyuan: 314,305 DPR for Mortefi of 3,603,785 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
    "actions": [
     {
      "order": 1,
@@ -546,20 +35,12 @@
      "order": 4,
      "key": "MarcatoDamage",
      "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MarcatoDamage",
-     "type": "liberation",
      "count": 4,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "FuryFugueDamage",
      "type": "forteCircuit",
      "count": 1,
@@ -567,15 +48,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
+     "order": 6,
      "key": "MarcatoDamage",
      "type": "liberation",
      "count": 4,
@@ -583,7 +56,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 7,
      "key": "ImpromptuShowStage1DMG",
      "type": "basic",
      "count": 1,
@@ -591,7 +64,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 8,
      "key": "ImpromptuShowStage2DMG",
      "type": "basic",
      "count": 1,
@@ -599,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 9,
      "key": "ImpromptuShowStage3DMG",
      "type": "basic",
      "count": 1,
@@ -607,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 10,
      "key": "ImpromptuShowStage4DMG",
      "type": "basic",
      "count": 1,
@@ -615,15 +88,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
+     "order": 11,
      "key": "FuryFugueDamage",
      "type": "forteCircuit",
      "count": 1,
@@ -631,15 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
-     "key": "MarcatoDamage",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
+     "order": 12,
      "key": "MarcatoDamage",
      "type": "liberation",
      "count": 4,
@@ -647,7 +104,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 13,
      "key": "ViolentFinaleDamage",
      "type": "liberation",
      "count": 1,
@@ -655,7 +112,430 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 14,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 50,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 50,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortefi S6 Static Mist R5 · Mornye + Lucy · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Lucy: 301,315 DPR for Mortefi of 5,974,168 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mortefi S6 Static Mist R5 · Mornye + Lucy · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Mornye + Lucy: 301,315 DPR for Mortefi of 5,974,168 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "DissonanceSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PassionateVariation",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ImpromptuShowStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImpromptuShowStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpromptuShowStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpromptuShowStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViolentFinaleDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 44,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 44,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Galbrena: 295,554 DPR for Mortefi of 4,582,231 team. Sequence procs in the loop: 8x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mortefi S6 Static Mist R5 · Lupa + Galbrena · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Galbrena: 295,554 DPR for Mortefi of 4,582,231 team. Sequence procs in the loop: 8x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "DissonanceSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PassionateVariation",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ImpromptuShowStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImpromptuShowStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpromptuShowStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpromptuShowStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViolentFinaleDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 47,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 47,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortefi S6 Static Mist R1 · Suisui + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Jiyan: 253,867 DPR for Mortefi of 1,970,145 team. Sequence procs in the loop: 8x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mortefi S6 Static Mist R1 · Suisui + Jiyan · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Jiyan: 253,867 DPR for Mortefi of 1,970,145 team. Sequence procs in the loop: 8x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "DissonanceSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PassionateVariation",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ImpromptuShowStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImpromptuShowStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpromptuShowStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpromptuShowStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViolentFinaleDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "MarcatoDamage",
      "type": "liberation",
      "count": 46,
@@ -663,7 +543,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 15,
      "key": "CrescentServantsDMG",
      "type": "echoAttacks",
      "count": 6,
@@ -673,10 +553,151 @@
      "mainEchoRank": 5
     },
     {
-     "order": 20,
+     "order": 16,
      "key": "MarcatoDamage",
      "type": "liberation",
      "count": 46,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Lucy · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Lucy: 235,462 DPR for Mortefi of 3,612,902 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Lucy · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Lucy: 235,462 DPR for Mortefi of 3,612,902 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet).",
+   "actions": [
+    {
+     "order": 1,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 12,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "DissonanceSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PassionateVariation",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ImpromptuShowStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImpromptuShowStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpromptuShowStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpromptuShowStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViolentFinaleDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 44,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 44,
      "buffs": [],
      "isDisabled": false
     }

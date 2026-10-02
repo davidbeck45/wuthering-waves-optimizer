@@ -1,11 +1,11 @@
 [
  {
-  "name": "Camellya S6 Red Spring R5 · Verina + Sanhua · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,150,717 team. Sequence procs in the loop: none.",
+  "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,593,767 DPR for Camellya of 3,860,085 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Camellya S6 Red Spring R5 · Verina + Sanhua · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Verina + Sanhua (main DPS): 3,937,062 DPR for Camellya of 4,150,717 team. Sequence procs in the loop: none.",
+   "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,593,767 DPR for Camellya of 3,860,085 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -25,23 +25,25 @@
     },
     {
      "order": 3,
-     "key": "HeavyAttackDMG",
-     "type": "basic",
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
     },
     {
      "order": 4,
-     "key": "BasicAttack4DMG",
-     "type": "basic",
+     "key": "ViningWaltz1DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 5,
-     "key": "FloralRavageDMG",
+     "key": "ViningWaltz2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -49,32 +51,32 @@
     },
     {
      "order": 6,
-     "key": "EverbloomingDMG",
-     "type": "intro",
+     "key": "ViningWaltz3DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 7,
-     "key": "FervorEfflorescentDMG",
-     "type": "liberation",
+     "key": "BlazingWaltzDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 8,
-     "key": "EphemeralDMG",
-     "type": "forteCircuit",
+     "key": "ViningWaltz4DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 9,
-     "key": "CrimsonBlossomDMG",
-     "type": "skill",
+     "key": "FervorEfflorescentDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -89,38 +91,14 @@
     },
     {
      "order": 11,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
+     "key": "EphemeralDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 12,
-     "key": "ViningWaltz3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "BlazingWaltzDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ViningWaltz4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
      "key": "ViningWaltz1DMG",
      "type": "skill",
      "count": 1,
@@ -128,9 +106,337 @@
      "isDisabled": false
     },
     {
+     "order": 13,
+     "key": "ViningWaltz2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ViningWaltz3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BlazingWaltzDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 16,
+     "key": "ViningWaltz4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "FloralRavageDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
      "key": "SequenceNode6PerennialDMG",
      "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,437,204 DPR for Camellya of 5,069,453 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,437,204 DPR for Camellya of 5,069,453 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TwiningDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EverbloomingDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CrimsonBlossomDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ViningWaltz1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ViningWaltz2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ViningWaltz3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BlazingWaltzDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ViningWaltz4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FervorEfflorescentDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ViningWaltz1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "EphemeralDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ViningWaltz1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViningWaltz2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ViningWaltz3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BlazingWaltzDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ViningWaltz4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "FloralRavageDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Camellya S6 Red Spring R1 · Verina + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,526,805 DPR for Camellya of 2,698,175 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Camellya S6 Red Spring R1 · Verina + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,526,805 DPR for Camellya of 2,698,175 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TwiningDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EverbloomingDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CrimsonBlossomDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "NightmareCrownlessAttackDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareCrownless",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "HeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttack4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "FloralRavageDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "EverbloomingDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FervorEfflorescentDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "EphemeralDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "CrimsonBlossomDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ViningWaltz1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViningWaltz2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ViningWaltz3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BlazingWaltzDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ViningWaltz4DMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -145,15 +451,15 @@
     },
     {
      "order": 18,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
+     "key": "SequenceNode6PerennialDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 19,
-     "key": "ViningWaltz3DMG",
+     "key": "ViningWaltz1DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -161,7 +467,7 @@
     },
     {
      "order": 20,
-     "key": "BlazingWaltzDMG",
+     "key": "ViningWaltz2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -169,7 +475,7 @@
     },
     {
      "order": 21,
-     "key": "ViningWaltz4DMG",
+     "key": "ViningWaltz3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -177,7 +483,7 @@
     },
     {
      "order": 22,
-     "key": "FloralRavageDMG",
+     "key": "BlazingWaltzDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -185,73 +491,6 @@
     },
     {
      "order": 23,
-     "key": "TwiningDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,893,035 DPR for Camellya of 5,636,135 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,893,035 DPR for Camellya of 5,636,135 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "EverbloomingDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "CrimsonBlossomDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ViningWaltz3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BlazingWaltzDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
      "key": "ViningWaltz4DMG",
      "type": "skill",
      "count": 1,
@@ -259,228 +498,9 @@
      "isDisabled": false
     },
     {
-     "order": 8,
-     "key": "FervorEfflorescentDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EphemeralDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ViningWaltz3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BlazingWaltzDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ViningWaltz4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
+     "order": 24,
      "key": "FloralRavageDMG",
      "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "TwiningDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 4,014,955 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,761,894 DPR for Camellya of 4,014,955 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "EverbloomingDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "CrimsonBlossomDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ViningWaltz3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BlazingWaltzDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "ViningWaltz4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "FervorEfflorescentDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "EphemeralDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ViningWaltz1DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ViningWaltz2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ViningWaltz3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BlazingWaltzDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ViningWaltz4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "FloralRavageDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "SequenceNode6PerennialDMG",
-     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
