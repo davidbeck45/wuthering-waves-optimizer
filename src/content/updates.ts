@@ -10,7 +10,35 @@ export interface UpdateEntry {
   items: string[];
 }
 
+export interface Announcement {
+  /**
+   * ISO date the announcement was posted, e.g. "2026-09-29". Doubles as the
+   * dismissal key: the banner stays hidden for anyone whose stored dismissal
+   * date is on or after this, so only bump it when posting a new announcement.
+   */
+  date: string;
+  headline: string;
+}
+
+/**
+ * The site-wide banner (AppUpdateBanner.vue) shows this, independent of
+ * updateEntries - routine changelog entries never re-show a dismissed banner.
+ * Set to null to hide the banner entirely.
+ */
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-09-29",
+  headline: "Version 3.7 (first half) is up!",
+};
+
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-02",
+    dateLabel: "October 2, 2026",
+    items: [
+      "Echo scanner (lab feature) now works with windowed and letterboxed captures - it finds the game's area inside the frame (e.g. a window title bar or black bars) instead of rejecting anything that isn't exactly 16:9 or 16:10",
+      "The announcement bar below the main nav no longer pops back up after you close it just because the changelog was updated - it only returns for a new announcement",
+    ],
+  },
   {
     date: "2026-10-01",
     dateLabel: "October 1, 2026",
