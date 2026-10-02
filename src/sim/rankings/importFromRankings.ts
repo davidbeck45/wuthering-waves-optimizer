@@ -236,17 +236,22 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const echoRows: Record<string, EchoRows> = echoRowsOf(mainEchoesData as never);
   const CAST: Record<number, string> = mods.stats.CAST_NAME;
   const NODE: Record<number, string> = mods.stats.NODE_NAME;
+  // since Riley's frame-accurate engine (2026-10-02) a motion value is stored in hundredths of a percent (3178 = 31.78%)
+  const MV_UNIT: number = mods.stats.MV_UNIT ?? 1;
   const toCast = (h: any): Cast => ({
     name: h.action.name,
     // the kit's own motion value, not the run's (see castMapper.ts `Cast.mv`)
-    mv: h.action.mv,
-    mvRun: h.mv,
+    mv: h.action.mv / MV_UNIT,
+    mvRun: h.mv / MV_UNIT,
+    // a press cut at its cancel frame: the whole press's MV (frame-accurate engine)
+    mvFull: h.action.cancelOf && h.action.cancelOf.mv !== h.action.mv ? h.action.cancelOf.mv / MV_UNIT : null,
     count: 1,
     cast: CAST[h.action.cast] ?? null,
     node: NODE[h.action.node] ?? null,
     queued: !!h.queued,
     triggered: !!h.triggered,
-    by: h.triggeredBy?.name ?? null,
+    // what queued the cast: `source` (a HeldBuff) since the frame-accurate engine, `triggeredBy` before
+    by: (h.triggeredBy ?? h.source)?.name ?? null,
     held: enemyStacksOf(h.heldEnemy),
   });
   const sections: Hit[][] = (traced.rotationLines as any[][]).map((lines) =>

@@ -32,6 +32,9 @@ export interface Cast {
   mv: number | null;
   /** the value the run applied after those multipliers, for the record */
   mvRun?: number | null;
+  /** a press cut at its cancel frame lands only the hits before it (Riley's frame-accurate engine): the whole
+   *  press's own motion value, which the cut one is matched as and pressed a share of */
+  mvFull?: number | null;
   count: number;
   cast: string | null;
   node: string | null;
@@ -115,10 +118,21 @@ export const OVERRIDES: Record<string, Overrides> = {
   Jingran: { "Skill - Afterlife's Guide": "AfterlifeSGuideDMG", "Skill - Netherworld Traverse": "NetherworldTraverseDMG" },
   // 64.42 % × 2 in wuwa_calc vs 64.12 % × 2 in the app: a typo on one side, the same-named row rather than Sanguine Pulse 2
   Danjin: { "Skill - Crimson Erosion 1": "CrimsonErosion1" },
+  // a fixed 666-point hit, flat in the app's table (no MV to match on)
+  Galbrena: { "Dodge - Hellstride": "HellstrideDMG" },
 };
 
+/** a set's own damage, pressed in the app as an echo-set attack (Midnight Veil 5pc: 480% Havoc DMG on the Outro) */
+const SET_ATTACKS: Record<string, string> = { "Outro - Midnight Veil": "MidnightVeilDMG" };
+
 /** wuwa_calc casts named after an echo's passive rather than the echo: the app echo they belong to */
-const ECHO_ALIASES: Record<string, string> = { coreofcollapse: "Reminiscence: Threnodian - Leviathan" };
+/** cast names that are not the echo's own; since Riley's frame-accurate engine (2026-10-02) a rotation-placed echo cast
+ *  carries no queuing gear (`by`), so his cast names are all there is to go on */
+const ECHO_ALIASES: Record<string, string> = {
+  coreofcollapse: "Reminiscence: Threnodian - Leviathan",
+  reminiscenceleviathan: "Reminiscence: Threnodian - Leviathan",
+  trickster: "Reminiscence: Denia",
+};
 
 const NODE_PREF: Record<string, string[]> = { Forte: ["forteCircuit"], Liberation: ["liberation"], Intro: ["intro"], Skill: ["skill", "forteCircuit"], Normal: ["basic", "forteCircuit"] };
 const CAST_PREF: Record<string, string[]> = { Outro: ["outro"], Echo: ["echoAttacks"], TuneBreak: ["tuneBreak"], Intro: ["intro"], Liberation: ["liberation"], Skill: ["skill"], Basic: ["basic"], Heavy: ["basic", "forteCircuit"] };
@@ -396,6 +410,20 @@ export function knownRatios(casts: Cast[], rows: AppRow[], overrides: Overrides)
   return out;
 }
 
+/** A Basic / Heavy stage cast that is one hit of its stage's N-hit app row: Riley's own single-hit form of a press he
+ *  cuts after its first hit (Cantarella's "Basic - Illusion Collapse 3" at 72.57 beside the app's 72.57%*2 Stage 3). */
+export function stageFraction(cast: Cast, rows: AppRow[]): [AppRow, number] | null {
+  const stage = stageOf(cast);
+  const want = cast.mv;
+  if (!stage || !want) return null;
+  for (const r of rows) {
+    if (!r.mv || !new RegExp(`stage${stage}(?!\\d)`).test(norm(r.key))) continue;
+    const n = r.mv / want;
+    if (Math.round(n) >= 2 && Math.round(n) <= 6 && Math.abs(n - Math.round(n)) < 0.01) return [r, Math.round(n)];
+  }
+  return null;
+}
+
 function matchWithRatios(cast: Cast, rows: AppRow[], ratios: Set<number>): [AppRow | null, string | null] {
   const want = cast.mv as number;
   const cands: Array<[AppRow, number]> = [];
@@ -412,7 +440,8 @@ function matchWithRatios(cast: Cast, rows: AppRow[], ratios: Set<number>): [AppR
 /** The app echo an "Echo - X" cast belongs to: by the queuing gear's name (the echo itself) or the cast name. */
 export function findEcho(name: string, by: string | null | undefined, echoRows: Record<string, EchoRows>): string | null {
   const base = stripPrefix(name);
-  const cands = [by ?? "", (by ?? "").split(":")[0], base, base.split(":")[0], base.replace(/\s*(Outro|Swap)$/, "")];
+  // "Reminiscence: Suhsin (Hsin)", "False Sovereign (Intro)": a form of the one echo
+  const cands = [by ?? "", (by ?? "").split(":")[0], base, base.split(":")[0], base.replace(/\s*(Outro|Swap)$/, ""), base.replace(/\s*\([^)]*\)$/, "")];
   const keys = new Map<string, string>();
   for (const [k, v] of Object.entries(echoRows)) keys.set(norm(v.name), k);
   for (const k of Object.keys(echoRows)) keys.set(norm(k), k);
@@ -538,13 +567,23 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     if (!c.mv) { report.skipped.push(`${nm} (0 MV)`); continue; }
     // "Echo - Stay tuned" is an unreleased 4-cost echo the app has no entry for; Riley names its forms "Stay tuned 4c" / "Stay tuned 4c (Hsin)" since 2026-09-17
     if (nm.includes("(Cancelled)") || nm.startsWith("Echo - Stay tuned") || nm.startsWith("Utility - ")) { report.skipped.push(nm); continue; }
+    if (SET_ATTACKS[nm]) {
+      order += 1;
+      actions.push({ order, key: SET_ATTACKS[nm], type: "echoSetAttacks", count: c.count, buffs: [], excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false });
+      bump("set");
+      continue;
+    }
+    // a press cut at its cancel frame lands only the hits before it: matched as the whole press (`mvFull`), pressed at
+    // the share it landed through an action-level talentModifierMultiply
+    let cut = c.mvFull && c.mvFull > c.mv ? c.mv / c.mvFull : null;
+    const cm: Cast = cut ? { ...c, mv: c.mvFull! } : c;
     let hit: MatchHit = null;
     let how = "";
     let count = c.count;
     if (c.cast === "Echo" || nm.startsWith("Echo - ")) {
       const ekey = findEcho(nm, c.by, echoRows);
       if (ekey) {
-        [hit, how, count] = matchCast(c, echoRows[ekey].rows, overrides);
+        [hit, how, count] = matchCast(cm, echoRows[ekey].rows, overrides);
         if (Array.isArray(hit)) hit = hit.map((r) => ({ ...r, echoKey: ekey }));
         else if (hit) hit = { ...hit, echoKey: ekey };
       } else if (nm.startsWith("Echo - ")) {
@@ -555,9 +594,11 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
       // else: the resonator's own cast that wuwa_calc types as an Echo cast (Lucilla's "Forte Echo - Oblivion") — the kit's rows
     }
     if (hit === null) {
-      [hit, how, count] = matchCast(c, rows, overrides);
+      [hit, how, count] = matchCast(cm, rows, overrides);
+      const sf = hit === null && !cut ? stageFraction(c, rows) : null;
+      if (sf) [hit, how, count, cut] = [sf[0], `cut1/${sf[1]}`, c.count, 1 / sf[1]];
       if (kitRatios.size && (hit === null || how === "name-only" || how === "mv-ambiguous" || (how.startsWith("mv×") && !Array.isArray(hit) && !kitRatios.has(Math.round(Number(how.slice(3)) * 100) / 100) && sim(nm, hit) < 0.75))) {
-        const [h2, how2] = matchWithRatios(c, rows, kitRatios);
+        const [h2, how2] = matchWithRatios(cm, rows, kitRatios);
         if (h2 !== null && how2 !== null) { hit = h2; how = how2; count = c.count; }
       }
     }
@@ -592,6 +633,11 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     order += 1;
     const a: MappedAction = { order, key: hit.key, type: hit.group, count, buffs: [], excludeTeamBuffs: false, excludeWeaponBuffs: false, isDisabled: false };
     if (hit.echoKey) { a.mainEcho = hit.echoKey; a.mainEchoRank = 5; }
+    if (cut) {
+      a.buffs = [{ modifier: "talentModifierMultiply", modifierValue: Math.round((cut - 1) * 10000) / 100 }];
+      bump("cut");
+      report.multipliers.push(`${nm} = ${hit.key} × ${cut.toFixed(2)} (cut at its cancel frame)`);
+    }
     actions.push(a);
   }
   if (!tickState) finishTicks(ticks, report);
