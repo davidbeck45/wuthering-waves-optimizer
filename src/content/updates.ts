@@ -12,6 +12,16 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-01",
+    dateLabel: "October 1, 2026",
+    items: ["Adds Electro Flare and Unison preset rotations for Hsin (thanks Dorito)"],
+  },
+  {
+    date: "2026-09-30",
+    dateLabel: "September 30, 2026",
+    items: ["Updates Hsin resonance chain text, splits one of her S6 buffs"],
+  },
+  {
     date: "2026-09-29",
     dateLabel: "September 29, 2026",
     items: ["Version 3.7 (first half) is up!"],
