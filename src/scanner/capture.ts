@@ -12,7 +12,7 @@
  * unaffected by which source is active.
  */
 import type { FrameSize, RegionFrac } from "./types";
-import { toPixelRegion } from "./layout";
+import { FULL_FRAME, toPixelRegion } from "./layout";
 
 export type FrameSourceMode = "live" | "video-file";
 
@@ -224,9 +224,10 @@ export function createVideoFileSource(
 export function grabRegionImageData(
   videoEl: HTMLVideoElement,
   regionFrac: RegionFrac,
+  content: RegionFrac = FULL_FRAME,
 ): ImageData {
   const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
-  const region = toPixelRegion(regionFrac, frame);
+  const region = toPixelRegion(regionFrac, frame, content);
   const canvas = document.createElement("canvas");
   canvas.width = region.width;
   canvas.height = region.height;
@@ -250,9 +251,10 @@ export function grabRegionImageData(
 export async function grabRegionBitmap(
   videoEl: HTMLVideoElement,
   regionFrac: RegionFrac,
+  content: RegionFrac = FULL_FRAME,
 ): Promise<ImageBitmap> {
   const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
-  const region = toPixelRegion(regionFrac, frame);
+  const region = toPixelRegion(regionFrac, frame, content);
   const canvas = document.createElement("canvas");
   canvas.width = region.width;
   canvas.height = region.height;
@@ -283,9 +285,10 @@ export async function grabRegionBitmap(
 export async function grabRegionWithPreview(
   videoEl: HTMLVideoElement,
   regionFrac: RegionFrac,
+  content: RegionFrac = FULL_FRAME,
 ): Promise<{ bitmap: ImageBitmap; dataUrl: string }> {
   const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
-  const region = toPixelRegion(regionFrac, frame);
+  const region = toPixelRegion(regionFrac, frame, content);
   const canvas = document.createElement("canvas");
   canvas.width = region.width;
   canvas.height = region.height;
@@ -321,10 +324,11 @@ export async function grabRegionWithPreview(
 export function grabRegionPreviewJpeg(
   videoEl: HTMLVideoElement,
   regionFrac: RegionFrac,
+  content: RegionFrac = FULL_FRAME,
   maxWidth = 480,
 ): string {
   const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
-  const region = toPixelRegion(regionFrac, frame);
+  const region = toPixelRegion(regionFrac, frame, content);
   const scale = Math.min(1, maxWidth / region.width);
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(region.width * scale));
@@ -359,6 +363,25 @@ export async function grabFullFrameSnapshot(
   if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
   ctx.drawImage(videoEl, 0, 0, width, height);
   return canvas.toDataURL("image/jpeg", 0.85);
+}
+
+/**
+ * The whole current frame, downscaled to at most maxWidth, as ImageData —
+ * the input for contentRect.ts's detectContentRect. Small on purpose: it
+ * runs once per session (and on a frame-size change), and the title bar /
+ * black bars it looks for are many pixels tall even at this size.
+ */
+export function grabFullFrameImageData(videoEl: HTMLVideoElement, maxWidth = 640): ImageData {
+  const scale = Math.min(1, maxWidth / videoEl.videoWidth);
+  const width = Math.max(1, Math.round(videoEl.videoWidth * scale));
+  const height = Math.max(1, Math.round(videoEl.videoHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
+  ctx.drawImage(videoEl, 0, 0, width, height);
+  return ctx.getImageData(0, 0, width, height);
 }
 
 /**
@@ -482,9 +505,10 @@ export function detectIconBounds(
 export async function grabCircularMaskedBitmap(
   videoEl: HTMLVideoElement,
   regionFrac: RegionFrac,
+  content: RegionFrac = FULL_FRAME,
 ): Promise<ImageBitmap> {
   const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
-  const region = toPixelRegion(regionFrac, frame);
+  const region = toPixelRegion(regionFrac, frame, content);
   const canvas = document.createElement("canvas");
   canvas.width = region.width;
   canvas.height = region.height;

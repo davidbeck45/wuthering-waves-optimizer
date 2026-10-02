@@ -11,9 +11,11 @@
  * See docs/scanner.md for how these were derived and what to re-measure if
  * a future WuWa UI update moves the panel.
  *
- * **The fractions are for a 16:10 frame (REFERENCE_ASPECT).** Other
- * supported aspects are mapped onto it by toPixelRegion / regionPercentStyle
- * (via regionForFrame) rather than getting a table of their own: WuWa scales
+ * **The fractions are for a 16:10 game area (REFERENCE_ASPECT).** Other
+ * aspects are mapped onto it by toPixelRegion / regionPercentStyle (via
+ * regionForFrame) rather than getting a table of their own, and both take
+ * the game's area within the frame (contentRect.ts) so window chrome or
+ * black bars around the game don't shift the crops. WuWa scales
  * this screen's UI with the frame's *width* and anchors it to the top, so
  * at 16:9 every x fraction is unchanged and every y/height fraction grows by
  * (16/9) / (16/10) = 10/9. Verified by overlaying the mapped boxes on a real
@@ -261,56 +263,87 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
 export const REFERENCE_ASPECT = 16 / 10;
 
 /**
- * Frame aspects the scanner has been verified against. 16:10 is the
- * measured reference; 16:9 maps onto it (regionForFrame). Anything else —
- * ultrawide, 4:3, a 16:9 game letterboxed inside a 16:10 capture — is
- * rejected up front rather than silently producing garbage crops.
+ * Game-area aspects that have been checked against real captures. A game
+ * area within SNAP_TOLERANCE of one maps exactly as that aspect, so 16:10
+ * captures a few pixels off (2800x1752) resolve exactly as before.
  */
-export const SUPPORTED_ASPECTS = [16 / 10, 16 / 9] as const;
-const ASPECT_TOLERANCE = 0.05;
+const MEASURED_ASPECTS = [16 / 10, 16 / 9];
+const SNAP_TOLERANCE = 0.01;
 
-/** The supported aspect this frame is (within tolerance), or null if none. */
-export function matchSupportedAspect(frame: FrameSize): number | null {
-  const aspect = frame.width / frame.height;
-  return SUPPORTED_ASPECTS.find((supported) => Math.abs(aspect - supported) < ASPECT_TOLERANCE) ?? null;
+/**
+ * The game-area aspects the scanner accepts. Both ends are measured (16:10
+ * and 16:9, plus the ±0.05 slack they always had); in between, the same
+ * width-scaled, top-anchored rule is applied continuously, which is an
+ * interpolation between two verified points. Outside it — ultrawide, 4:3 —
+ * WuWa likely lays the screen out differently, and we have no captures to
+ * check against, so those are still rejected up front.
+ */
+export const SUPPORTED_ASPECT_RANGE = { min: 16 / 10 - 0.05, max: 16 / 9 + 0.05 } as const;
+
+/** The game area's size in pixels, given the frame and the game's area within it (contentRect.ts). */
+export function contentSize(frame: FrameSize, content: RegionFrac = FULL_FRAME): FrameSize {
+  return { width: content.width * frame.width, height: content.height * frame.height };
 }
 
-export function isSupportedAspect(frame: FrameSize): boolean {
-  return matchSupportedAspect(frame) !== null;
+/** Whether a game area of this size is in SUPPORTED_ASPECT_RANGE. */
+export function isSupportedAspect(content: FrameSize): boolean {
+  const aspect = content.width / content.height;
+  return aspect >= SUPPORTED_ASPECT_RANGE.min && aspect <= SUPPORTED_ASPECT_RANGE.max;
 }
 
 /**
- * Maps a reference (16:10) region onto this frame's own 0-1 fractions: x
- * and width unchanged, y and height scaled by aspect / REFERENCE_ASPECT
- * (the UI scales with frame width, top-anchored). Snaps to the matched
- * supported aspect rather than the frame's exact one, so a 16:10 capture a
- * few pixels off (2800x1752) resolves exactly as before. An unsupported
- * frame is left unscaled — the caller has already flagged it.
+ * Maps a reference (16:10) region onto a game area of this size, as 0-1
+ * fractions of that area: x and width unchanged, y and height scaled by
+ * aspect / REFERENCE_ASPECT (the UI scales with width and is top-anchored).
+ * Snaps to a measured aspect when within SNAP_TOLERANCE of one.
  */
-export function regionForFrame(region: RegionFrac, frame: FrameSize): RegionFrac {
-  const aspect = matchSupportedAspect(frame) ?? REFERENCE_ASPECT;
+export function regionForFrame(region: RegionFrac, content: FrameSize): RegionFrac {
+  const raw = content.width / content.height;
+  const aspect = MEASURED_ASPECTS.find((a) => Math.abs(raw - a) < SNAP_TOLERANCE) ?? raw;
   const scale = aspect / REFERENCE_ASPECT;
   if (scale === 1) return region;
   return { x: region.x, y: region.y * scale, width: region.width, height: region.height * scale };
 }
 
-export function toPixelRegion(region: RegionFrac, frame: FrameSize): RegionPx {
-  const mapped = regionForFrame(region, frame);
+/** A reference region as fractions of the whole frame, placed inside the game's area. */
+function regionInFrame(region: RegionFrac, frame: FrameSize, content: RegionFrac): RegionFrac {
+  const mapped = regionForFrame(region, contentSize(frame, content));
   return {
-    x: Math.round(mapped.x * frame.width),
-    y: Math.round(mapped.y * frame.height),
-    width: Math.round(mapped.width * frame.width),
-    height: Math.round(mapped.height * frame.height),
+    x: content.x + mapped.x * content.width,
+    y: content.y + mapped.y * content.height,
+    width: mapped.width * content.width,
+    height: mapped.height * content.height,
+  };
+}
+
+/** `content` is the game's area within the frame (contentRect.ts); the whole frame by default. */
+export function toPixelRegion(region: RegionFrac, frame: FrameSize, content: RegionFrac = FULL_FRAME): RegionPx {
+  const placed = regionInFrame(region, frame, content);
+  return {
+    x: Math.round(placed.x * frame.width),
+    y: Math.round(placed.y * frame.height),
+    width: Math.round(placed.width * frame.width),
+    height: Math.round(placed.height * frame.height),
   };
 }
 
 /** CSS for drawing a region's box over an image/video that fills its container at the frame's own aspect — the frame-mapped 0-1 fractions are already the right percentages. */
-export function regionPercentStyle(region: RegionFrac, frame: FrameSize) {
-  const mapped = regionForFrame(region, frame);
+export function regionPercentStyle(region: RegionFrac, frame: FrameSize, content: RegionFrac = FULL_FRAME) {
+  const placed = regionInFrame(region, frame, content);
   return {
-    left: `${mapped.x * 100}%`,
-    top: `${mapped.y * 100}%`,
-    width: `${mapped.width * 100}%`,
-    height: `${mapped.height * 100}%`,
+    left: `${placed.x * 100}%`,
+    top: `${placed.y * 100}%`,
+    width: `${placed.width * 100}%`,
+    height: `${placed.height * 100}%`,
+  };
+}
+
+/** CSS for drawing the game's area itself (contentRect.ts) over the same image/video — a plain frame fraction, no aspect mapping. */
+export function contentPercentStyle(content: RegionFrac) {
+  return {
+    left: `${content.x * 100}%`,
+    top: `${content.y * 100}%`,
+    width: `${content.width * 100}%`,
+    height: `${content.height * 100}%`,
   };
 }

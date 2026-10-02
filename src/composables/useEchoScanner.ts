@@ -9,7 +9,7 @@
  */
 import { onBeforeUnmount, ref, computed } from "vue";
 import { trackEvent } from "../utils/analytics";
-import { describeAspect, describeError } from "../scanner/analytics";
+import { describeAspect, describeContent, describeError } from "../scanner/analytics";
 import {
   createScreenShareSource,
   createVideoFileSource,
@@ -20,6 +20,7 @@ import {
   grabRegionBitmap,
   grabRegionWithPreview,
   grabFullFrameSnapshot,
+  grabFullFrameImageData,
   grabCircularMaskedBitmap,
   grabRegionPreviewJpeg,
   type FrameSource,
@@ -32,7 +33,8 @@ import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { createSerialQueue, type SerialQueue } from "../scanner/queue";
 import { createCaptureCue } from "../scanner/captureCue";
 import { needsAttention } from "../scanner/review";
-import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
+import { inferCostFromSecondaryStat, parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
+import { detectContentRect, type ContentKind } from "../scanner/contentRect";
 import {
   PANEL_BOX,
   STATS_BLOCK,
@@ -45,6 +47,8 @@ import {
   SUBSTAT_VALUE_COLUMN,
   SET_ICON_BOX,
   DEBUG_REGIONS,
+  FULL_FRAME,
+  contentSize,
   isSupportedAspect,
 } from "../scanner/layout";
 import { echoSetImageMap, getEchoSetLabelByType } from "../echoes/stats";
@@ -52,7 +56,7 @@ import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
-import type { OcrLine, ScanCandidate } from "../scanner/types";
+import type { FrameSize, OcrLine, RegionFrac, ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
@@ -123,6 +127,14 @@ export type ScannerStatus =
  * "Capture queue".
  */
 const VIDEO_MAX_PENDING = 3;
+
+/**
+ * How many candidates in a row may fail to read as an Echo panel before
+ * the session is flagged as a likely layout mismatch — see checkLayout.
+ * More than one, so a single echo mid-transition or a garbled read can't
+ * trip it.
+ */
+const LAYOUT_CHECK_CANDIDATES = 3;
 
 /**
  * Every crop one candidate could need, all drawn from the *same* frame at
@@ -208,12 +220,12 @@ function closeSnapshot(snapshot: FrameSnapshot) {
  * Every draw here happens synchronously on call (before any await), so
  * snapshotFrame can start this alongside its own grabs and get the same frame.
  */
-async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement) {
+async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement, content: RegionFrac) {
   const [crops, fullFrame] = await Promise.all([
     Promise.all(
       DEBUG_REGIONS.map(async ({ key, label, region }) => {
         if (key === "setIcon") {
-          const masked = await grabCircularMaskedBitmap(videoEl, region);
+          const masked = await grabCircularMaskedBitmap(videoEl, region, content);
           const canvas = document.createElement("canvas");
           canvas.width = masked.width;
           canvas.height = masked.height;
@@ -228,7 +240,7 @@ async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement) {
           masked.close();
           return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
         }
-        const { bitmap, dataUrl } = await grabRegionWithPreview(videoEl, region);
+        const { bitmap, dataUrl } = await grabRegionWithPreview(videoEl, region, content);
         bitmap.close();
         return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
       }),
@@ -246,21 +258,21 @@ async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement) {
  * returned promise settles later. The caller must not await anything
  * between the stability check and this call.
  */
-function snapshotFrame(videoEl: HTMLVideoElement, withDebug: boolean): Promise<FrameSnapshot> {
+function snapshotFrame(videoEl: HTMLVideoElement, content: RegionFrac, withDebug: boolean): Promise<FrameSnapshot> {
   const primary = Promise.all([
-    grabRegionBitmap(videoEl, NAME_BLOCK),
-    grabRegionBitmap(videoEl, MAIN_STAT_ROW),
-    grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
-    grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN),
-    grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN),
+    grabRegionBitmap(videoEl, NAME_BLOCK, content),
+    grabRegionBitmap(videoEl, MAIN_STAT_ROW, content),
+    grabRegionBitmap(videoEl, SECONDARY_STAT_ROW, content),
+    grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN, content),
+    grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN, content),
   ]);
-  const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
+  const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX, content);
   const fallback = Promise.all([
-    grabRegionBitmap(videoEl, SUBSTAT_BLOCK),
-    ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
+    grabRegionBitmap(videoEl, SUBSTAT_BLOCK, content),
+    ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region, content)),
   ]);
-  const debug = withDebug ? captureDebugCropsFromVideo(videoEl) : Promise.resolve(undefined);
-  const panelPreview = grabRegionPreviewJpeg(videoEl, PANEL_BOX);
+  const debug = withDebug ? captureDebugCropsFromVideo(videoEl, content) : Promise.resolve(undefined);
+  const panelPreview = grabRegionPreviewJpeg(videoEl, PANEL_BOX, content);
 
   return Promise.all([primary, setIcon, fallback, debug]).then(
     ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops]) => {
@@ -287,6 +299,18 @@ export function useEchoScanner() {
   const duplicateCount = ref(0);
   const progress = ref<{ current: number; total: number | null }>({ current: 0, total: null });
   const unsupportedAspect = ref(false);
+  /**
+   * The game's area within the captured frame (contentRect.ts) — the whole
+   * frame unless window chrome or black bars were found. Every crop and
+   * debug overlay is placed inside it. See docs/scanner.md's "Aspect ratios".
+   */
+  const contentRect = ref<RegionFrac>(FULL_FRAME);
+  /**
+   * Set when the first few candidates of a session all fail to read as an
+   * Echo panel — the crops likely aren't landing on it, whatever the
+   * capture's size. See LAYOUT_CHECK_CANDIDATES.
+   */
+  const layoutMismatch = ref(false);
   /** The FrameSource's <video> element, for the component to mount as a live preview. Not reactive data — just a handle. */
   const previewVideoEl = ref<HTMLVideoElement | null>(null);
   /** Set once a video file is open (status "trimming") — lets the trim UI show/scrub a range before scanning starts. */
@@ -327,6 +351,11 @@ export function useEchoScanner() {
   let session = 0;
   let lastTickAt: number | null = null;
   let captureCount = 0;
+  /** detectLayout's cache: the frame size it was detected for, and the result. */
+  let detectedLayout: { frame: FrameSize; content: RegionFrac; kind: ContentKind } | null = null;
+  /** Candidates checked by checkLayout so far this session, and whether any read as an Echo panel. */
+  let layoutChecked = 0;
+  let layoutConfirmed = false;
   // A fresh queue per session: aborting terminates the OCR worker, which
   // can leave the in-flight job's promise unresolved forever — it must not
   // block the next session's queue.
@@ -348,11 +377,13 @@ export function useEchoScanner() {
   let trackedMode: "live" | "video" | null = null;
   let trackedStartedAt = 0;
   let trackedAspect = false;
+  let trackedLayout = false;
 
   function trackSessionStart(mode: "live" | "video", data: Record<string, unknown> = {}) {
     trackedMode = mode;
     trackedStartedAt = Date.now();
     trackedAspect = false;
+    trackedLayout = false;
     trackEvent("scanner-started", { mode, ...data });
   }
 
@@ -383,6 +414,11 @@ export function useEchoScanner() {
     progress.value = { current: 0, total: null };
     errorMessage.value = null;
     unsupportedAspect.value = false;
+    layoutMismatch.value = false;
+    contentRect.value = FULL_FRAME;
+    detectedLayout = null;
+    layoutChecked = 0;
+    layoutConfirmed = false;
     stability.reset();
     session++;
     queue.clear();
@@ -596,6 +632,55 @@ export function useEchoScanner() {
   }
 
   /**
+   * Finds the game's area in the frame (contentRect.ts), once per frame
+   * size: a live share's size changes when the window is resized, so a
+   * new size re-detects. Null while the frame is still blank (a share or
+   * video that hasn't drawn yet), so the caller skips that tick.
+   */
+  function detectLayout(videoEl: HTMLVideoElement, frame: FrameSize) {
+    if (
+      detectedLayout &&
+      detectedLayout.frame.width === frame.width &&
+      detectedLayout.frame.height === frame.height
+    ) {
+      return detectedLayout;
+    }
+    const pixels = grabFullFrameImageData(videoEl);
+    const detection = detectContentRect(pixels.data, pixels.width, pixels.height, frame);
+    if (!detection) return null;
+    detectedLayout = { frame: { ...frame }, content: detection.rect, kind: detection.kind };
+    contentRect.value = detection.rect;
+    trackedLayout = false;
+    return detectedLayout;
+  }
+
+  /**
+   * Whether the crops are landing on the Echo panel, judged by what they
+   * read rather than by the capture's size: a real panel's fixed secondary
+   * stat is always one of three known values (inferCostFromSecondaryStat),
+   * and its name usually resolves. If none of the session's first
+   * LAYOUT_CHECK_CANDIDATES candidates show either, flag it so the user
+   * can check with debug mode. Scanning carries on either way.
+   */
+  function checkLayout(secondaryText: string, nameResolved: boolean) {
+    if (layoutConfirmed || layoutMismatch.value) return;
+    if (nameResolved || inferCostFromSecondaryStat(secondaryText) !== null) {
+      layoutConfirmed = true;
+      return;
+    }
+    layoutChecked++;
+    if (layoutChecked < LAYOUT_CHECK_CANDIDATES) return;
+    layoutMismatch.value = true;
+    if (trackedMode && detectedLayout) {
+      trackEvent("scanner-layout-mismatch", {
+        mode: trackedMode,
+        ...describeAspect(detectedLayout.frame),
+        ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+      });
+    }
+  }
+
+  /**
    * The per-tick gate: fingerprint the frame, and once it settles on a new
    * echo, snapshot every crop from that frame and queue it. Never awaits
    * OCR, so the live tick loop keeps sampling while earlier echoes are
@@ -608,27 +693,39 @@ export function useEchoScanner() {
     const frame = frameSource.frameSize();
     if (frame.width === 0 || frame.height === 0) return;
 
-    if (!isSupportedAspect(frame)) {
+    const layout = detectLayout(videoEl, frame);
+    if (!layout) return;
+    if (trackedMode && !trackedLayout) {
+      trackedLayout = true;
+      trackEvent("scanner-layout", {
+        mode: trackedMode,
+        ...describeAspect(frame),
+        ...describeContent(frame, layout.content, layout.kind),
+      });
+    }
+    if (!isSupportedAspect(contentSize(frame, layout.content))) {
       unsupportedAspect.value = true;
       if (trackedMode && !trackedAspect) {
         trackedAspect = true;
         trackEvent("scanner-unsupported-aspect", {
           mode: trackedMode,
           ...describeAspect(frame),
+          ...describeContent(frame, layout.content, layout.kind),
         });
       }
       return;
     }
+    unsupportedAspect.value = false;
 
     const fingerprint = {
-      panel: computeFingerprint(grabRegionImageData(videoEl, PANEL_BOX)),
-      stats: computeFingerprint(grabRegionImageData(videoEl, STATS_BLOCK), STATS_FINGERPRINT_GRID),
+      panel: computeFingerprint(grabRegionImageData(videoEl, PANEL_BOX, layout.content)),
+      stats: computeFingerprint(grabRegionImageData(videoEl, STATS_BLOCK, layout.content), STATS_FINGERPRINT_GRID),
     };
     const event = stability.observe(fingerprint);
     if (event !== "stable-novel") return;
 
     // No await between observe() and here — the snapshot must be this frame.
-    const snapshot = snapshotFrame(videoEl, debugMode.value);
+    const snapshot = snapshotFrame(videoEl, layout.content, debugMode.value);
     // processJob awaits it later; this only stops an early rejection from
     // being reported as unhandled while the job waits its turn.
     snapshot.catch(() => {});
@@ -657,6 +754,7 @@ export function useEchoScanner() {
 
       const identity = await resolveEchoIdentity(snapshot.setIcon, texts.name ?? "", texts.secondary ?? "");
       if (job.session !== session) return;
+      checkLayout(texts.secondary ?? "", identity.preResolvedEcho !== null);
 
       const candidateInput = {
         nameText: texts.name ?? "",
@@ -714,6 +812,7 @@ export function useEchoScanner() {
           text: crop.key === "setIcon" ? identity.debugLabel : (texts[crop.key] ?? crop.text),
         })),
         debugFullFrame: debug?.fullFrame,
+        debugContentRect: debug ? detectedLayout?.content : undefined,
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the
@@ -815,6 +914,7 @@ export function useEchoScanner() {
       openVideoHandle = handle;
       previewVideoEl.value = handle.videoEl;
       videoDuration.value = handle.duration;
+      detectPreviewLayout();
       status.value = "trimming";
     } catch (err) {
       trackError("video", "open", err);
@@ -827,6 +927,14 @@ export function useEchoScanner() {
   async function previewSeek(timeSeconds: number) {
     if (!openVideoHandle) return;
     await seekPreview(openVideoHandle, timeSeconds);
+    detectPreviewLayout();
+  }
+
+  /** Detects the game's area on the trim preview too, so the debug overlay lines up before scanning starts. A blank frame just waits for the next seek. */
+  function detectPreviewLayout() {
+    const videoEl = openVideoHandle?.videoEl;
+    if (!videoEl?.videoWidth || !videoEl.videoHeight) return;
+    detectLayout(videoEl, { width: videoEl.videoWidth, height: videoEl.videoHeight });
   }
 
   /** Discards an opened-but-not-yet-scanned video file (the trim step's "Cancel"). */
@@ -917,6 +1025,8 @@ export function useEchoScanner() {
     reviewNeededCount,
     progress,
     unsupportedAspect,
+    layoutMismatch,
+    contentRect,
     previewVideoEl,
     videoDuration,
     debugMode,

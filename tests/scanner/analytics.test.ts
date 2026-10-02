@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { describeAspect, describeError, ratioLabel } from "../../src/scanner/analytics";
+import { describeAspect, describeContent, describeError, ratioLabel } from "../../src/scanner/analytics";
 
 describe("ratioLabel", () => {
   it.each([
@@ -22,6 +22,18 @@ describe("describeAspect", () => {
       aspect: "1.78",
       ratio: "16:9",
       resolution: "1920x1080",
+    });
+  });
+});
+
+describe("describeContent", () => {
+  it("reports the detection branch and the game area's aspect, size, and offset", () => {
+    const frame = { width: 1762, height: 1022 };
+    expect(describeContent(frame, { x: 0, y: 32 / 1022, width: 1, height: 990 / 1022 }, "titlebar")).toEqual({
+      content: "titlebar",
+      contentAspect: "1.78",
+      contentResolution: "1762x990",
+      contentOffset: "0,32",
     });
   });
 });

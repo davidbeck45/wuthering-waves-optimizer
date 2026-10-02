@@ -132,6 +132,9 @@
             class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
           <div v-if="scanner.debugMode.value" class="absolute inset-0 pointer-events-none">
             <div
+              class="absolute border border-info"
+              :style="contentPercentStyle(scanner.contentRect.value)"></div>
+            <div
               v-for="r in scanner.debugRegions"
               :key="r.key"
               class="absolute border border-dashed border-warning"
@@ -198,6 +201,9 @@
             class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
           <div v-if="scanner.debugMode.value" class="absolute inset-0 pointer-events-none">
             <div
+              class="absolute border border-info"
+              :style="contentPercentStyle(scanner.contentRect.value)"></div>
+            <div
               v-for="r in scanner.debugRegions"
               :key="r.key"
               class="absolute border border-dashed border-warning"
@@ -209,9 +215,15 @@
           </div>
         </div>
         <div v-if="unsupportedAspect" class="alert alert-warning text-sm">
-          This capture's aspect ratio doesn't look like WuWa's Echo
-          Management screen (16:10 or 16:9), so it isn't being scanned —
-          make sure you're sharing the full game window.
+          This capture's shape doesn't look like WuWa's Echo Management
+          screen (16:10 or 16:9, ultrawide isn't supported yet), so it isn't
+          being scanned — make sure you're sharing the game window.
+        </div>
+        <div v-else-if="layoutMismatch" class="alert alert-warning text-sm">
+          The scan boxes don't seem to line up with the Echo panel — the
+          last few echoes didn't read correctly. Make sure the Echo
+          Management screen is open, or turn on Debug mode to see where the
+          boxes land.
         </div>
         <div class="stats shadow">
           <div class="stat place-items-center py-2 px-4">
@@ -394,7 +406,7 @@ import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { buildIdentityKeySet, getEchoIdentityKey } from "../utils/echoIdentity";
-import { regionPercentStyle } from "../scanner/layout";
+import { contentPercentStyle, regionPercentStyle } from "../scanner/layout";
 import {
   filterCandidates,
   stillNeedsAttention,
@@ -434,6 +446,7 @@ const {
   reviewNeededCount,
   progress,
   unsupportedAspect,
+  layoutMismatch,
   previewVideoEl,
   videoDuration,
   pendingCount,
@@ -479,8 +492,9 @@ watch(videoDuration, (duration) => {
 
 /**
  * The preview video's own frame size: sizes the preview box to the
- * capture's aspect (16:10 or 16:9), and maps the debug ROI boxes onto it
- * (layout.ts's regionForFrame). 16:10 until the video reports its size.
+ * capture's aspect, and maps the debug ROI boxes onto the game's area
+ * within it (layout.ts's regionForFrame, scanner.contentRect). 16:10 until
+ * the video reports its size.
  */
 const previewFrame = ref<FrameSize>({ width: 16, height: 10 });
 watch(previewVideoEl, (videoEl, _, onCleanup) => {
@@ -505,7 +519,7 @@ const previewAspectStyle = computed(() => ({
 
 /** The video preview fills its container exactly (object-fit: contain on a matching-aspect source), so a region's frame-mapped 0-1 fraction is already the right %. */
 function regionOverlayStyle(region: RegionFrac) {
-  return regionPercentStyle(region, previewFrame.value);
+  return regionPercentStyle(region, previewFrame.value, scanner.contentRect.value);
 }
 
 function formatTime(seconds: number): string {
