@@ -904,12 +904,22 @@ The results view (`EchoScannerCapture.vue` + `EchoScannerResultCard.vue`):
 - a **Show in-game capture** toggle per echo, open by default on flagged
   ones, with a click-to-enlarge dialog.
 
-**Edit** still saves the echo right away and opens the inventory editor
-(see `saveCandidateNow`). It now passes the capture along (`edit-candidate`
-→ `{ echoId, referenceImageUrl }`), and both editors
-(`InventoryEchoEdit.vue` and the labs `InventoryEchoEditPanel.vue` →
-`CalculatorEchoEditPanel.vue`) show it through `EchoScanReferenceImage.vue`.
-They clear it on close, so it never appears on a later, unrelated edit.
+**Edit** still saves the echo right away (see `saveCandidateNow`), but now
+edits it **inline**: the card stays in the grid at its capture position as
+`EchoScannerSavedCard.vue`, expanded across both columns, with
+`EchoEditHeader.vue` + `EchoEditFields.vue` (the same pieces as the labs side
+panel, writing straight through to the inventory) next to the in-game
+capture. Collapsed, it shows the saved echo's normal `InventoryEchoTile`
+with a "Saved to inventory" badge; Delete there is a real inventory delete
+(lock guard + confirm). Saved cards show under every filter, so one never
+vanishes mid-edit, and they reset when a new scan finishes.
+
+It used to hand the echo to the Inventory page's editor instead
+(`edit-candidate` → `InventoryEchoesBrowser.vue`). With the labs
+`liveResultBar` flag on, that editor is `CalculatorEchoEditPanel.vue`'s
+`position: fixed` side panel, which can never render above the scanner: the
+scanner is a `showModal()` `<dialog>`, and the browser's top layer sits
+above every z-index. Keep any future scanner editing inside the dialog.
 
 **Save button.** It used to say "Continue" whatever came next. It now says
 what will happen:
