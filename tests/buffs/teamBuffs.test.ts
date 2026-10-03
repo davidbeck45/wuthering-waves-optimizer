@@ -3,7 +3,6 @@ import {
   resolveTeamBuffInstance,
   aggregateTeamBuffStats,
   getSequenceNodeRequirement,
-  categorizeBuffModifier,
   getModifierLabel,
   type TeamBuffDef,
 } from "../../src/buffs/teamBuffs";
@@ -128,6 +127,20 @@ describe("resolveTeamBuffInstance", () => {
     expect(result.data).toEqual({ ATK: 0.15 });
   });
 
+  it("hardcodes S2BreakingThunderSlayingEvil's flat 10% Crit. DMG on activation, plus 6% per Unison Boon stack", () => {
+    const def: TeamBuffDef = {
+      key: "S2BreakingThunderSlayingEvil",
+      hasStacks: true,
+      modifiers: [{ modifier: "CritDMG", modifierValue: 0.06 }],
+    };
+
+    const zeroStacks = resolveTeamBuffInstance(def, { isEnabled: true, stacks: 0 }, "Jinhsi", {}, {});
+    expect(zeroStacks.data).toEqual({ CritDMG: 0.1 });
+
+    const maxStacks = resolveTeamBuffInstance(def, { isEnabled: true, stacks: 4 }, "Jinhsi", {}, {});
+    expect(maxStacks.data.CritDMG).toBeCloseTo(0.34);
+  });
+
   it("computes InherentSkillEtchedColorsOffTuneBuildupRate's tune-break boost from stacks", () => {
     const def: TeamBuffDef = { key: "InherentSkillEtchedColorsOffTuneBuildupRate", modifiers: [] };
     const result = resolveTeamBuffInstance(
@@ -243,34 +256,6 @@ describe("getSequenceNodeRequirement", () => {
   it("returns null for buff names that aren't sequence-node-gated", () => {
     expect(getSequenceNodeRequirement("Outro: Silversnow")).toBeNull();
     expect(getSequenceNodeRequirement("Euphonia")).toBeNull();
-  });
-});
-
-describe("categorizeBuffModifier", () => {
-  it("categorizes the core single-key stats", () => {
-    expect(categorizeBuffModifier("ATK")).toBe("atk");
-    expect(categorizeBuffModifier("CritRate")).toBe("critRate");
-    expect(categorizeBuffModifier("CritDMG")).toBe("critDMG");
-    expect(categorizeBuffModifier("EnergyRegen")).toBe("energyRegen");
-  });
-
-  it("categorizes damage-increasing/defense-shredding keys as 'damage'", () => {
-    expect(categorizeBuffModifier("DMGBonus")).toBe("damage");
-    expect(categorizeBuffModifier("DMGDeepen:Heavy")).toBe("damage");
-    expect(categorizeBuffModifier("Fusion")).toBe("damage");
-    expect(categorizeBuffModifier("EchoDMGBonus")).toBe("damage");
-    expect(categorizeBuffModifier("AllElementAttributeBonus")).toBe("damage");
-    expect(categorizeBuffModifier("ResistShred:Aero")).toBe("damage");
-    expect(categorizeBuffModifier("DEFIgnore:Havoc")).toBe("damage");
-    expect(categorizeBuffModifier("DefReduction")).toBe("damage");
-  });
-
-  it("safely skips keys it can't confidently place rather than guessing", () => {
-    expect(categorizeBuffModifier("EnableAttack")).toBeNull();
-    expect(categorizeBuffModifier("specialMultiplier")).toBeNull();
-    expect(categorizeBuffModifier("tuneBreakBoost")).toBeNull();
-    expect(categorizeBuffModifier("CritDMG:Echo")).toBeNull();
-    expect(categorizeBuffModifier("ATK_FLAT")).toBeNull();
   });
 });
 

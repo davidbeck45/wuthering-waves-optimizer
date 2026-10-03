@@ -1,7 +1,7 @@
 const CHARACTER_API_BASE = "https://api-v2.encore.moe/api/en/character";
 const CHARACTER_LIST_URL = `${CHARACTER_API_BASE}`;
 const WEAPON_API_BASE = "https://api-v2.encore.moe/api/en/weapon";
-const WEAPON_LIST_URL = `${WEAPON_API_BASE}`;
+const WEAPON_LIST_URL = `${WEAPON_API_BASE}?v=Beta`;
 const ECHO_API_BASE = "https://api-v2.encore.moe/api/en/echo";
 const ECHO_LIST_URL = `${ECHO_API_BASE}`;
 
@@ -190,7 +190,7 @@ export async function fetchCharacterDetail(
   id: number,
 ): Promise<ApiCharacterDetail> {
   const data = await fetchJson<ApiCharacterDetail & { roleList?: unknown }>(
-    `${CHARACTER_API_BASE}/${id}?v=Beta`,
+    `${CHARACTER_API_BASE}/${id}`,
   );
 
   if (data.roleList !== undefined) {

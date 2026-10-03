@@ -9,6 +9,7 @@
       <span class="text-sm truncate">{{ headline }}</span>
     </div>
     <div class="flex items-center gap-2 md:ml-auto shrink-0">
+      <template v-if="showActions">
       <button
         v-if="!isLiveResultBarEnabled"
         type="button"
@@ -32,6 +33,7 @@
         @click="openWhatsNew">
         See what's new
       </button>
+      </template>
       <button
         type="button"
         class="btn btn-circle btn-ghost btn-xs"
@@ -164,10 +166,19 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
-import { updateEntries } from "../content/updates";
+import { currentAnnouncement, type Announcement } from "../content/updates";
 import { trackEvent } from "../utils/analytics";
 
 defineOptions({ name: "AppUpdateBanner" });
+
+// The v3 UI toggle + "See what's new" buttons (and the modal they open) are
+// kept wired up but hidden while the banner carries a plain game-version
+// announcement. Flip the default back to true to bring them back.
+// `announcement` defaults to the shipped one; tests pass their own.
+const { showActions = false, announcement = currentAnnouncement } = defineProps<{
+  showActions?: boolean;
+  announcement?: Announcement | null;
+}>();
 
 const settingsStore = useSettingsStore() as any;
 
@@ -175,19 +186,23 @@ const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
-const latestDate = updateEntries[0]?.date ?? "";
-
-const dismissedDate = computed(
+const dismissedDate = computed<string | null>(
   () => settingsStore.config?.dismissedUpdateBannerDate ?? null,
 );
-// Compared by value, not a boolean "seen" flag, so the banner reappears on
-// its own the next time updateEntries[0].date changes - no extra data or
-// migration needed to signal "there's something new again".
-const visible = computed(() => !!latestDate && dismissedDate.value !== latestDate);
+// Keyed on the announcement's own date, not the changelog's latest entry, so
+// daily changelog updates don't re-show a dismissed banner. ">=" (ISO dates
+// compare correctly as strings) keeps older dismissals valid: users who
+// dismissed under the old scheme stored a changelog date on or after the
+// announcement's, so they stay dismissed with no migration.
+const visible = computed(
+  () =>
+    !!announcement?.date &&
+    !(dismissedDate.value && dismissedDate.value >= announcement.date),
+);
 
-// Same copy regardless of the flag - the bar's job is just to keep the v3
-// beta visible/reachable, not to re-litigate the pitch once someone's on it.
-const headline = "Redesigned v3 UI in beta";
+// Same copy regardless of the flag. Previous v3 announcement copy:
+// "Redesigned v3 UI in beta"
+const headline = computed(() => announcement?.headline ?? "");
 
 // Screenshots live on the same asset CDN as the Optimizer Guide's images
 // (CalculatorOptimizerGuide.vue) - drop files with these exact names into
@@ -299,7 +314,8 @@ function disableV3(source: string) {
 }
 
 function dismiss() {
-  settingsStore.addToConfig({ dismissedUpdateBannerDate: latestDate });
+  if (!announcement) return;
+  settingsStore.addToConfig({ dismissedUpdateBannerDate: announcement.date });
 }
 
 const whatsNewDialogEl = ref<HTMLDialogElement | null>(null);

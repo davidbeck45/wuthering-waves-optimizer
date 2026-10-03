@@ -29,12 +29,12 @@ Yet, when it raises its head again to loose a piercing cry, the slumbering sun s
       modifier: "ATK",
       modifierByRefinement: {
         "1": 0.2,
-        "2": 0.3,
-        "3": 0.35,
-        "4": 0.4,
-        "5": 0.45,
+        "2": 0.25,
+        "3": 0.3,
+        "4": 0.35,
+        "5": 0.4,
       },
-      details: "Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/30%/35%/40%/45%. Effects of the same name do not stack.",
+      details: "Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/25%/30%/35%/40%. Effects of the same name do not stack.",
     },
   ],
 };

@@ -37,6 +37,23 @@ export interface TeamBuffInstanceResult {
   data: Record<string, unknown>;
 }
 
+/**
+ * Team buffs that cannot be active together (e.g. one per Resonance Mode).
+ * Enabling one in the UI disables its partners; the first key in a group
+ * wins in `resolveTeamBuffInstance` if legacy data has both enabled.
+ */
+export const TEAM_BUFF_EXCLUSIVE_GROUPS: readonly (readonly string[])[] = [
+  [
+    "OutroSkillHerselfaThousandLanterns",
+    "OutroSkillHerselfaThousandLanternsElectroFlare",
+  ],
+];
+
+export function getExclusiveTeamBuffKeys(key: string): string[] {
+  const group = TEAM_BUFF_EXCLUSIVE_GROUPS.find((g) => g.includes(key));
+  return group ? group.filter((k) => k !== key) : [];
+}
+
 export const ELEMENT_NAMES = ["Glacio", "Fusion", "Electro", "Aero", "Spectro", "Havoc"] as const;
 export type ElementName = (typeof ELEMENT_NAMES)[number];
 
@@ -48,44 +65,6 @@ export type ElementName = (typeof ELEMENT_NAMES)[number];
 export function getSequenceNodeRequirement(buffName: string): string | null {
   const match = /^Sequence Node (\d+):/.exec(buffName);
   return match ? `Requires S${match[1]}` : null;
-}
-
-export type BuffContributionCategory = "atk" | "critRate" | "critDMG" | "energyRegen" | "damage" | null;
-
-/**
- * Buckets a *resolved* stat key (as produced by `aggregateTeamBuffStats`)
- * into a coarse category for display-only summary totals — never fed back
- * into the real calculation pipeline, so a miscategorized future key is a
- * cosmetic gap, not an accuracy bug. Keys this can't confidently place
- * (`EnableAttack`'s array, `specialMultiplier`'s different math, the
- * Denia-only `tuneBreakBoost`, echo-specific `CritDMG:Echo`) fall through to
- * `null` on purpose rather than being force-fit into a bucket.
- */
-export function categorizeBuffModifier(modifierKey: string): BuffContributionCategory {
-  switch (modifierKey) {
-    case "ATK":
-      return "atk";
-    case "CritRate":
-      return "critRate";
-    case "CritDMG":
-      return "critDMG";
-    case "EnergyRegen":
-      return "energyRegen";
-    default:
-      break;
-  }
-  if (
-    modifierKey.startsWith("DMGDeepen") ||
-    modifierKey.endsWith("Bonus") ||
-    modifierKey.startsWith("ResistShred") ||
-    modifierKey.startsWith("ResistIgnore") ||
-    modifierKey.startsWith("DEFIgnore") ||
-    modifierKey === "DefReduction" ||
-    (ELEMENT_NAMES as readonly string[]).includes(modifierKey)
-  ) {
-    return "damage";
-  }
-  return null;
 }
 
 /**
@@ -213,8 +192,20 @@ export function resolveTeamBuffInstance(
       return { key: def.key, data };
     }
   }
+  for (const group of TEAM_BUFF_EXCLUSIVE_GROUPS) {
+    const idx = group.indexOf(uniqueKey);
+    if (idx > 0 && group.slice(0, idx).some((k) => buffsMap?.[k]?.isEnabled)) {
+      return { key: def.key, data };
+    }
+  }
   if (uniqueKey === "PactofNeonlightLeap") {
     data["ATK"] = 0.15;
+  }
+  if (uniqueKey === "S2BreakingThunderSlayingEvil") {
+    // Casting Outro Skill grants a flat 10% Crit. DMG on activation, on top
+    // of the 6%/Unison Boon stack handled by the generic hasStacks path
+    // below.
+    data["CritDMG"] = 0.1;
   }
   if (uniqueKey === "InherentSkillEtchedColorsOffTuneBuildupRate") {
     if (stacksVal >= 1) {

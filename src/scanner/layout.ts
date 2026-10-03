@@ -11,6 +11,19 @@
  * See docs/scanner.md for how these were derived and what to re-measure if
  * a future WuWa UI update moves the panel.
  *
+ * **The fractions are for a 16:10 game area (REFERENCE_ASPECT).** Other
+ * aspects are mapped onto it by toPixelRegion / regionPercentStyle (via
+ * regionForFrame) rather than getting a table of their own, and both take
+ * the game's area within the frame (contentRect.ts) so window chrome or
+ * black bars around the game don't shift the crops. WuWa scales
+ * this screen's UI with the frame's *width* and anchors it to the top, so
+ * at 16:9 every x fraction is unchanged and every y/height fraction grows by
+ * (16/9) / (16/10) = 10/9. Verified by overlaying the mapped boxes on a real
+ * 16:9 Echo Management screenshot (every box, including the tight set icon
+ * and the substat column split, landed on its target) and OCR'ing the
+ * mapped crops (name, main/secondary, wrapped substat labels and values all
+ * read correctly). See docs/scanner.md's "Aspect ratios".
+ *
  * Two simplifications, both from real usage:
  * - **No level or cost OCR.** The app doesn't persist echo level yet (every
  *   scanned echo is treated as max-level), so there's nothing to gain from
@@ -37,11 +50,12 @@
  * and every following row sits at a further ~0.0373 down, consistently
  * across all three measured resolutions.
  *
- * SUBSTAT_BLOCK is a *fallback*, not the primary path: if the 5 individual
- * substat-row crops don't yield all 5 substats (expected every time now
- * that level is assumed max), one extra OCR call against this wider block
- * — spanning all 5 rows plus wrap allowance — is parsed with
- * `splitStatBlock` instead. Long labels wrapping to a second line
+ * Substats are read primarily from two columns over SUBSTAT_BLOCK's span
+ * (SUBSTAT_LABEL_COLUMN / SUBSTAT_VALUE_COLUMN), paired by line position.
+ * The per-row SUBSTAT_ROWS crops and the whole SUBSTAT_BLOCK are only OCR'd
+ * as fallbacks when the column pass doesn't yield all 5 substats (expected
+ * every time now that level is assumed max); SUBSTAT_BLOCK is parsed with
+ * `splitStatBlock`. Long labels wrapping to a second line
  * ("Resonance Skill DMG Bonus") is the main reason per-row crops fall
  * short: the game doesn't reserve consistent spacing for a wrap, so a
  * wrapped row can shift everything below it down by an amount that varies
@@ -179,6 +193,39 @@ export const SUBSTAT_BLOCK: RegionFrac = {
 };
 
 /**
+ * x where the substat label column ends and the value column begins.
+ * Measured with a column scan for bright text pixels across 11 real
+ * 2880x1800 Echo screenshots: label text always ends at or before 0.887
+ * (the widest single-line label, "Heavy Attack DMG Bonus"), and values
+ * (right-aligned) always start at or after 0.922 (the widest value, e.g.
+ * "10.5%"). The split sits in the middle of that ~0.035 (≈100px) gap so
+ * either side can drift a little without leaking into the other column.
+ */
+const SUBSTAT_COLUMN_SPLIT_X = 0.905;
+
+/**
+ * Primary substat pass: SUBSTAT_BLOCK's span, split into a label-only
+ * column and a value-only column, each OCR'd on its own. A wrapped label
+ * ("Resonance Skill DMG" / "Bonus") only adds a line to the label column;
+ * the value column always reads one value per row, lined up with the first
+ * line of its label. parse.ts's parseSubstatColumns pairs them by each
+ * line's vertical position. See docs/scanner.md's "Substat OCR".
+ */
+export const SUBSTAT_LABEL_COLUMN: RegionFrac = {
+  x: STAT_ROW_X,
+  y: SUBSTAT_BLOCK.y,
+  width: SUBSTAT_COLUMN_SPLIT_X - STAT_ROW_X,
+  height: SUBSTAT_BLOCK.height,
+};
+
+export const SUBSTAT_VALUE_COLUMN: RegionFrac = {
+  x: SUBSTAT_COLUMN_SPLIT_X,
+  y: SUBSTAT_BLOCK.y,
+  width: STAT_ROW_X + STAT_ROW_WIDTH - SUBSTAT_COLUMN_SPLIT_X,
+  height: SUBSTAT_BLOCK.height,
+};
+
+/**
  * Main stat row through the end of SUBSTAT_BLOCK — fingerprinted (not
  * OCR'd) at a fine grid alongside the coarse PANEL_BOX fingerprint, so the
  * change-detection gate notices when only the stat text changes. The
@@ -206,21 +253,97 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
   { key: "setIcon", label: "Set icon", region: SET_ICON_BOX },
   { key: "main", label: "Main stat", region: MAIN_STAT_ROW },
   { key: "secondary", label: "Fixed secondary", region: SECONDARY_STAT_ROW },
+  { key: "substatLabels", label: "Substat labels", region: SUBSTAT_LABEL_COLUMN },
+  { key: "substatValues", label: "Substat values", region: SUBSTAT_VALUE_COLUMN },
   ...SUBSTAT_ROWS.map((region, i) => ({ key: `sub${i}`, label: `Substat ${i + 1}`, region })),
   { key: "substatBlock", label: "Substat fallback block", region: SUBSTAT_BLOCK },
 ];
 
-export function toPixelRegion(region: RegionFrac, frame: FrameSize): RegionPx {
+/** The aspect every RegionFrac in this file was measured at — see this file's top doc comment. */
+export const REFERENCE_ASPECT = 16 / 10;
+
+/**
+ * Game-area aspects that have been checked against real captures. A game
+ * area within SNAP_TOLERANCE of one maps exactly as that aspect, so 16:10
+ * captures a few pixels off (2800x1752) resolve exactly as before.
+ */
+const MEASURED_ASPECTS = [16 / 10, 16 / 9];
+const SNAP_TOLERANCE = 0.01;
+
+/**
+ * The game-area aspects the scanner accepts. Both ends are measured (16:10
+ * and 16:9, plus the ±0.05 slack they always had); in between, the same
+ * width-scaled, top-anchored rule is applied continuously, which is an
+ * interpolation between two verified points. Outside it — ultrawide, 4:3 —
+ * WuWa likely lays the screen out differently, and we have no captures to
+ * check against, so those are still rejected up front.
+ */
+export const SUPPORTED_ASPECT_RANGE = { min: 16 / 10 - 0.05, max: 16 / 9 + 0.05 } as const;
+
+/** The game area's size in pixels, given the frame and the game's area within it (contentRect.ts). */
+export function contentSize(frame: FrameSize, content: RegionFrac = FULL_FRAME): FrameSize {
+  return { width: content.width * frame.width, height: content.height * frame.height };
+}
+
+/** Whether a game area of this size is in SUPPORTED_ASPECT_RANGE. */
+export function isSupportedAspect(content: FrameSize): boolean {
+  const aspect = content.width / content.height;
+  return aspect >= SUPPORTED_ASPECT_RANGE.min && aspect <= SUPPORTED_ASPECT_RANGE.max;
+}
+
+/**
+ * Maps a reference (16:10) region onto a game area of this size, as 0-1
+ * fractions of that area: x and width unchanged, y and height scaled by
+ * aspect / REFERENCE_ASPECT (the UI scales with width and is top-anchored).
+ * Snaps to a measured aspect when within SNAP_TOLERANCE of one.
+ */
+export function regionForFrame(region: RegionFrac, content: FrameSize): RegionFrac {
+  const raw = content.width / content.height;
+  const aspect = MEASURED_ASPECTS.find((a) => Math.abs(raw - a) < SNAP_TOLERANCE) ?? raw;
+  const scale = aspect / REFERENCE_ASPECT;
+  if (scale === 1) return region;
+  return { x: region.x, y: region.y * scale, width: region.width, height: region.height * scale };
+}
+
+/** A reference region as fractions of the whole frame, placed inside the game's area. */
+function regionInFrame(region: RegionFrac, frame: FrameSize, content: RegionFrac): RegionFrac {
+  const mapped = regionForFrame(region, contentSize(frame, content));
   return {
-    x: Math.round(region.x * frame.width),
-    y: Math.round(region.y * frame.height),
-    width: Math.round(region.width * frame.width),
-    height: Math.round(region.height * frame.height),
+    x: content.x + mapped.x * content.width,
+    y: content.y + mapped.y * content.height,
+    width: mapped.width * content.width,
+    height: mapped.height * content.height,
   };
 }
 
-/** WuWa's Echo Management screen is 16:10. Frames far off that ratio need the calibration fallback (Phase 4 of the plan). */
-export function isSupportedAspect(frame: FrameSize): boolean {
-  const aspect = frame.width / frame.height;
-  return Math.abs(aspect - 1.6) < 0.05;
+/** `content` is the game's area within the frame (contentRect.ts); the whole frame by default. */
+export function toPixelRegion(region: RegionFrac, frame: FrameSize, content: RegionFrac = FULL_FRAME): RegionPx {
+  const placed = regionInFrame(region, frame, content);
+  return {
+    x: Math.round(placed.x * frame.width),
+    y: Math.round(placed.y * frame.height),
+    width: Math.round(placed.width * frame.width),
+    height: Math.round(placed.height * frame.height),
+  };
+}
+
+/** CSS for drawing a region's box over an image/video that fills its container at the frame's own aspect — the frame-mapped 0-1 fractions are already the right percentages. */
+export function regionPercentStyle(region: RegionFrac, frame: FrameSize, content: RegionFrac = FULL_FRAME) {
+  const placed = regionInFrame(region, frame, content);
+  return {
+    left: `${placed.x * 100}%`,
+    top: `${placed.y * 100}%`,
+    width: `${placed.width * 100}%`,
+    height: `${placed.height * 100}%`,
+  };
+}
+
+/** CSS for drawing the game's area itself (contentRect.ts) over the same image/video — a plain frame fraction, no aspect mapping. */
+export function contentPercentStyle(content: RegionFrac) {
+  return {
+    left: `${content.x * 100}%`,
+    top: `${content.y * 100}%`,
+    width: `${content.width * 100}%`,
+    height: `${content.height * 100}%`,
+  };
 }

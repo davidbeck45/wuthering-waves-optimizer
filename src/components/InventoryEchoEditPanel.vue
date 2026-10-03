@@ -3,7 +3,7 @@
     context="inventory"
     :echo-id="echoId"
     :is-open="isOpen"
-    @close="isOpen = false"></CalculatorEchoEditPanel>
+    @close="handleClose"></CalculatorEchoEditPanel>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +25,9 @@ function setEchoId(id: string | null) {
 }
 function handleOpenModal() {
   isOpen.value = true;
+}
+function handleClose() {
+  isOpen.value = false;
 }
 
 defineExpose({ setEchoId, handleOpenModal });

@@ -9,6 +9,7 @@
  */
 import { onBeforeUnmount, ref, computed } from "vue";
 import { trackEvent } from "../utils/analytics";
+import { describeAspect, describeContent, describeError } from "../scanner/analytics";
 import {
   createScreenShareSource,
   createVideoFileSource,
@@ -19,7 +20,9 @@ import {
   grabRegionBitmap,
   grabRegionWithPreview,
   grabFullFrameSnapshot,
+  grabFullFrameImageData,
   grabCircularMaskedBitmap,
+  grabRegionPreviewJpeg,
   type FrameSource,
   type VideoFileHandle,
   type VideoScanOptions,
@@ -27,7 +30,12 @@ import {
 import { computeFingerprint, STATS_FINGERPRINT_GRID } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
+import { createSerialQueue, type SerialQueue } from "../scanner/queue";
+import { createCaptureCue } from "../scanner/captureCue";
+import { needsAttention } from "../scanner/review";
 import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
+import { detectContentRect, type ContentKind } from "../scanner/contentRect";
+import { createLayoutCheck, readsAsPanel } from "../scanner/layoutCheck";
 import {
   PANEL_BOX,
   STATS_BLOCK,
@@ -36,8 +44,12 @@ import {
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
   SUBSTAT_BLOCK,
+  SUBSTAT_LABEL_COLUMN,
+  SUBSTAT_VALUE_COLUMN,
   SET_ICON_BOX,
   DEBUG_REGIONS,
+  FULL_FRAME,
+  contentSize,
   isSupportedAspect,
 } from "../scanner/layout";
 import { echoSetImageMap, getEchoSetLabelByType } from "../echoes/stats";
@@ -45,7 +57,7 @@ import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
-import type { ScanCandidate } from "../scanner/types";
+import type { FrameSize, OcrLine, RegionFrac, ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
@@ -104,9 +116,204 @@ export type ScannerStatus =
   | "trimming" // a video file is open and previewable, waiting for the user to confirm a range/rate and start scanning
   | "starting"
   | "running"
-  | "stopping"
+  | "stopping" // capture has ended; still OCR'ing whatever was queued before it did
   | "stopped"
   | "error";
+
+/**
+ * A video file can simply wait for OCR to catch up, so its seek loop pauses
+ * once this many snapshots are queued — keeps memory bounded on a long clip.
+ * A live share can't wait (the user is still clicking), so it has no cap;
+ * each snapshot is only a few MB of small crops. See docs/scanner.md's
+ * "Capture queue".
+ */
+const VIDEO_MAX_PENDING = 3;
+
+/**
+ * How many candidates in a row may fail to read as an Echo panel before
+ * the session is flagged as a likely layout mismatch — see checkLayout and
+ * layoutCheck.ts.
+ * More than one, so a single echo mid-transition or a garbled read can't
+ * trip it.
+ */
+const LAYOUT_CHECK_CANDIDATES = 3;
+
+/**
+ * Every crop one candidate could need, all drawn from the *same* frame at
+ * the tick it settled — see snapshotFrame. The set icon and fallback crops
+ * are only sometimes used, but grabbing them later would read whatever
+ * echo the user has clicked to since.
+ */
+type FrameSnapshot = {
+  primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues", ImageBitmap>;
+  setIcon: ImageBitmap;
+  /** substatBlock + sub0..sub4 — the per-row/block fallback passes. */
+  fallback: Record<string, ImageBitmap>;
+  /** The review list's "in-game capture" — see capture.ts's grabRegionPreviewJpeg. */
+  panelPreview: string;
+  debug?: Awaited<ReturnType<typeof captureDebugCropsFromVideo>>;
+  /**
+   * The name + secondary stat crops under each of contentRect.ts's
+   * unconfirmed alternate game areas (`alt<i>Name`/`alt<i>Secondary`),
+   * only while the session's layout check is still open — see checkLayout.
+   */
+  alternates: { rects: RegionFrac[]; crops: Record<string, ImageBitmap> };
+};
+
+type ScanJob = {
+  snapshot: Promise<FrameSnapshot>;
+  capturedAt: number;
+  /** 1-based capture order within the session — see ScanCandidate.captureIndex. */
+  captureIndex: number;
+  session: number;
+};
+
+/** Running min/avg/max of a series of millisecond samples — for the debug view's timing readout. */
+type TimingStat = { count: number; avgMs: number; maxMs: number };
+
+export type ScannerTimings = {
+  /** Gap between live ticks while this page was visible vs. hidden (e.g. the game full screen on top). The live timer targets 125ms; a hidden page's timers get throttled by the browser. */
+  tickGap: { visible: TimingStat; hidden: TimingStat };
+  /** Settle → queued job starts processing. */
+  queueWait: TimingStat;
+  /** One job's OCR + matching + parsing. */
+  process: TimingStat;
+  /** Most jobs queued at once this session. */
+  maxPending: number;
+};
+
+function emptyStat(): TimingStat {
+  return { count: 0, avgMs: 0, maxMs: 0 };
+}
+
+function recordStat(stat: TimingStat, ms: number) {
+  stat.avgMs = (stat.avgMs * stat.count + ms) / (stat.count + 1);
+  stat.count++;
+  stat.maxMs = Math.max(stat.maxMs, ms);
+}
+
+function emptyTimings(): ScannerTimings {
+  return {
+    tickGap: { visible: emptyStat(), hidden: emptyStat() },
+    queueWait: emptyStat(),
+    process: emptyStat(),
+    maxPending: 0,
+  };
+}
+
+function closeSnapshot(snapshot: FrameSnapshot) {
+  // Transferred bitmaps are already detached; close() on them is a no-op.
+  for (const bitmap of Object.values(snapshot.primary)) bitmap.close();
+  for (const bitmap of Object.values(snapshot.fallback)) bitmap.close();
+  for (const bitmap of Object.values(snapshot.alternates.crops)) bitmap.close();
+  snapshot.setIcon.close();
+}
+
+/**
+ * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry, plus a
+ * whole-frame snapshot to draw all of them on top of as one reviewable
+ * image (EchoScannerCapture.vue), from the current (stable,
+ * about-to-be-scanned) frame. Independent of the OCR-dedicated
+ * grabRegionBitmap calls in snapshotFrame — these are their own draws, so
+ * nothing here competes with what the worker actually OCR's. Text is
+ * filled in by the caller once `texts`/`matchedSet` are known; `panel`
+ * (fingerprint-only, not OCR'd or matched) keeps a placeholder.
+ *
+ * `setIcon`'s thumbnail is the actual circularly-masked crop
+ * (grabCircularMaskedBitmap) that gets sent to matchSetFirst, not the
+ * plain rectangle every other region shows — the mask is the fix for
+ * the background-color contamination bug (see capture.ts's doc
+ * comment), so the debug view should make it visible that it's really
+ * being applied, not just describe it.
+ *
+ * Every draw here happens synchronously on call (before any await), so
+ * snapshotFrame can start this alongside its own grabs and get the same frame.
+ */
+async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement, content: RegionFrac) {
+  const [crops, fullFrame] = await Promise.all([
+    Promise.all(
+      DEBUG_REGIONS.map(async ({ key, label, region }) => {
+        if (key === "setIcon") {
+          const masked = await grabCircularMaskedBitmap(videoEl, region, content);
+          const canvas = document.createElement("canvas");
+          canvas.width = masked.width;
+          canvas.height = masked.height;
+          const ctx = canvas.getContext("2d");
+          // A mid-gray backdrop so the masked-out (transparent) corners
+          // are visibly different from the page background either theme.
+          if (ctx) {
+            ctx.fillStyle = "#80808080";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(masked, 0, 0);
+          }
+          masked.close();
+          return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
+        }
+        const { bitmap, dataUrl } = await grabRegionWithPreview(videoEl, region, content);
+        bitmap.close();
+        return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
+      }),
+    ),
+    grabFullFrameSnapshot(videoEl),
+  ]);
+  return { crops, fullFrame };
+}
+
+/**
+ * Starts every crop a candidate could need from the video's *current*
+ * frame. Each grab* helper in capture.ts draws to its own canvas
+ * synchronously before its first await, so starting them all in this one
+ * synchronous call pins every crop to the same frame, even though the
+ * returned promise settles later. The caller must not await anything
+ * between the stability check and this call.
+ *
+ * `alternates` are game areas to also grab the name + secondary stat
+ * under, for checkLayout to try if `content` doesn't read as a panel.
+ */
+function snapshotFrame(
+  videoEl: HTMLVideoElement,
+  content: RegionFrac,
+  withDebug: boolean,
+  alternates: RegionFrac[],
+): Promise<FrameSnapshot> {
+  const primary = Promise.all([
+    grabRegionBitmap(videoEl, NAME_BLOCK, content),
+    grabRegionBitmap(videoEl, MAIN_STAT_ROW, content),
+    grabRegionBitmap(videoEl, SECONDARY_STAT_ROW, content),
+    grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN, content),
+    grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN, content),
+  ]);
+  const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX, content);
+  const fallback = Promise.all([
+    grabRegionBitmap(videoEl, SUBSTAT_BLOCK, content),
+    ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region, content)),
+  ]);
+  const debug = withDebug ? captureDebugCropsFromVideo(videoEl, content) : Promise.resolve(undefined);
+  const panelPreview = grabRegionPreviewJpeg(videoEl, PANEL_BOX, content);
+  const alternateCrops = Promise.all(
+    alternates.flatMap((rect, i) => [
+      grabRegionBitmap(videoEl, NAME_BLOCK, rect).then((bitmap) => [`alt${i}Name`, bitmap] as const),
+      grabRegionBitmap(videoEl, SECONDARY_STAT_ROW, rect).then((bitmap) => [`alt${i}Secondary`, bitmap] as const),
+    ]),
+  );
+
+  return Promise.all([primary, setIcon, fallback, debug, alternateCrops]).then(
+    ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops, altCrops]) => {
+      const fallbackBitmaps: Record<string, ImageBitmap> = { substatBlock: block };
+      rows.forEach((bitmap, i) => {
+        fallbackBitmaps[`sub${i}`] = bitmap;
+      });
+      return {
+        primary: { name, main, secondary, substatLabels, substatValues },
+        setIcon: setIconBitmap,
+        fallback: fallbackBitmaps,
+        panelPreview,
+        debug: debugCrops,
+        alternates: { rects: alternates, crops: Object.fromEntries(altCrops) },
+      };
+    },
+  );
+}
 
 export function useEchoScanner() {
   const status = ref<ScannerStatus>("idle");
@@ -116,6 +323,18 @@ export function useEchoScanner() {
   const duplicateCount = ref(0);
   const progress = ref<{ current: number; total: number | null }>({ current: 0, total: null });
   const unsupportedAspect = ref(false);
+  /**
+   * The game's area within the captured frame (contentRect.ts) — the whole
+   * frame unless window chrome or black bars were found. Every crop and
+   * debug overlay is placed inside it. See docs/scanner.md's "Aspect ratios".
+   */
+  const contentRect = ref<RegionFrac>(FULL_FRAME);
+  /**
+   * Set when the first few candidates of a session all fail to read as an
+   * Echo panel — the crops likely aren't landing on it, whatever the
+   * capture's size. See LAYOUT_CHECK_CANDIDATES.
+   */
+  const layoutMismatch = ref(false);
   /** The FrameSource's <video> element, for the component to mount as a live preview. Not reactive data — just a handle. */
   const previewVideoEl = ref<HTMLVideoElement | null>(null);
   /** Set once a video file is open (status "trimming") — lets the trim UI show/scrub a range before scanning starts. */
@@ -128,18 +347,19 @@ export function useEchoScanner() {
    * sessions don't need it.
    */
   const debugMode = ref(false);
+  /** Settled echoes captured but not yet OCR'd (queued + in flight). */
+  const pendingCount = ref(0);
+  /** Tick/queue/OCR timings for the debug view — see ScannerTimings. */
+  const timings = ref<ScannerTimings>(emptyTimings());
 
-  const reviewNeededCount = computed(
-    () =>
-      candidates.value.filter(
-        (c) =>
-          c.confidence.name === "low" ||
-          c.confidence.cost === "low" ||
-          c.confidence.mainStat === "low" ||
-          c.confidence.set === "low" ||
-          c.confidence.substats.some((s) => s === "low"),
-      ).length,
-  );
+  const reviewNeededCount = computed(() => candidates.value.filter((c) => needsAttention(c)).length);
+  /**
+   * Play a short blip on each live capture — see captureCue.ts. Set by the
+   * component before starting; only live shares use it (a video scan has
+   * no one clicking along).
+   */
+  const captureCueEnabled = ref(false);
+  const captureCue = createCaptureCue();
 
   let frameSource: FrameSource | null = null;
   let openVideoHandle: VideoFileHandle | null = null;
@@ -148,6 +368,41 @@ export function useEchoScanner() {
   let setWorkerReady: Promise<void> | null = null;
   const stability = createStableFrameDetector();
   const dedupe = createDedupeSet();
+  /**
+   * Bumped whenever a session is reset or aborted, so a job still in
+   * flight from an older session can tell it's stale and drop its result.
+   */
+  let session = 0;
+  let lastTickAt: number | null = null;
+  let captureCount = 0;
+  /**
+   * detectLayout's cache: the frame size it was detected for, and the
+   * result. `alternates` are contentRect.ts's unconfirmed guesses, tried by
+   * checkLayout until the session's layout check settles.
+   */
+  let detectedLayout: {
+    frame: FrameSize;
+    content: RegionFrac;
+    kind: ContentKind;
+    alternates: RegionFrac[];
+    bandStd?: number;
+  } | null = null;
+  /** Whether this session's candidates read as an Echo panel — see checkLayout. */
+  let layoutCheck = createLayoutCheck(LAYOUT_CHECK_CANDIDATES);
+  // A fresh queue per session: aborting terminates the OCR worker, which
+  // can leave the in-flight job's promise unresolved forever — it must not
+  // block the next session's queue.
+  let queue: SerialQueue<ScanJob> = createScanQueue();
+
+  function createScanQueue() {
+    return createSerialQueue<ScanJob>(processJob, {
+      onDiscard: (job) => void job.snapshot.then(closeSnapshot, () => {}),
+      onPendingChange: (pending) => {
+        pendingCount.value = pending;
+        if (pending > timings.value.maxPending) timings.value.maxPending = pending;
+      },
+    });
+  }
 
   // Usage analytics (Umami, see utils/analytics.ts) — one "scanner-started"
   // and at most one "scanner-finished" per scan session. Mode/outcome/timing
@@ -155,11 +410,13 @@ export function useEchoScanner() {
   let trackedMode: "live" | "video" | null = null;
   let trackedStartedAt = 0;
   let trackedAspect = false;
+  let trackedLayout = false;
 
   function trackSessionStart(mode: "live" | "video", data: Record<string, unknown> = {}) {
     trackedMode = mode;
     trackedStartedAt = Date.now();
     trackedAspect = false;
+    trackedLayout = false;
     trackEvent("scanner-started", { mode, ...data });
   }
 
@@ -178,7 +435,7 @@ export function useEchoScanner() {
     trackEvent("scanner-error", {
       mode,
       stage,
-      error: err instanceof Error ? err.name : "unknown",
+      ...describeError(err),
     });
     trackedMode = null;
   }
@@ -190,7 +447,18 @@ export function useEchoScanner() {
     progress.value = { current: 0, total: null };
     errorMessage.value = null;
     unsupportedAspect.value = false;
+    layoutMismatch.value = false;
+    contentRect.value = FULL_FRAME;
+    detectedLayout = null;
+    layoutCheck = createLayoutCheck(LAYOUT_CHECK_CANDIDATES);
     stability.reset();
+    session++;
+    queue.clear();
+    queue = createScanQueue();
+    pendingCount.value = 0;
+    timings.value = emptyTimings();
+    lastTickAt = null;
+    captureCount = 0;
   }
 
   async function initWorkers() {
@@ -231,12 +499,12 @@ export function useEchoScanner() {
     const id = randomString();
     const keys = Object.keys(regions);
     const bitmaps = keys.map((key) => regions[key]);
-    return new Promise<Record<string, string>>((resolve, reject) => {
+    return new Promise<{ texts: Record<string, string>; lines: Record<string, OcrLine[]> }>((resolve, reject) => {
       const handler = (e: MessageEvent) => {
         if (e.data?.id !== id) return;
         ocrWorker?.removeEventListener("message", handler);
         if (e.data.type === "candidateResult") {
-          resolve(e.data.texts as Record<string, string>);
+          resolve({ texts: e.data.texts, lines: e.data.lines });
         } else {
           reject(new Error(e.data.error ?? "OCR failed"));
         }
@@ -254,23 +522,22 @@ export function useEchoScanner() {
   }
 
   /**
-   * Shared plumbing for both set-matching calls below: grab and circularly
-   * mask the icon crop (see capture.ts's grabCircularMaskedBitmap — the
-   * worker's own black-only masking is wrong for this scanner's actual
-   * game-UI background, so the crop is pre-masked before it ever reaches
-   * the worker), send it as the source image, then post whichever match
+   * Shared plumbing for both set-matching calls below: send the snapshot's
+   * circularly-masked icon crop (see capture.ts's grabCircularMaskedBitmap
+   * — the worker's own black-only masking is wrong for this scanner's
+   * actual game-UI background, so the crop is pre-masked before it ever
+   * reaches the worker) as the source image, then post whichever match
    * message the caller wants against it. setCoords covers the whole
    * already-cropped, already-masked bitmap (no further cropping needed
    * from the worker's own — now effectively no-op for this path —
-   * masking pass).
+   * masking pass). Transfers maskedBitmap to the worker.
    */
   async function runSetMatch(
-    videoEl: HTMLVideoElement,
+    maskedBitmap: ImageBitmap,
     message: { type: "matchSetFirst" | "matchSet"; data: Record<string, unknown> },
   ): Promise<string | null> {
     if (!setWorker) return null;
     await setWorkerReady;
-    const maskedBitmap = await grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
     const setCoords = { x: 0, y: 0, width: maskedBitmap.width, height: maskedBitmap.height };
     return new Promise<string | null>((resolve) => {
       const readyHandler = (e: MessageEvent) => {
@@ -304,8 +571,8 @@ export function useEchoScanner() {
    * file's SCANNER_SET_MATCH_WEIGHTS doc comment and docs/scanner.md's
    * "Echo identification" section for why this stopped being primary.
    */
-  async function matchSetIcon(videoEl: HTMLVideoElement): Promise<string | null> {
-    return runSetMatch(videoEl, {
+  async function matchSetIcon(maskedBitmap: ImageBitmap): Promise<string | null> {
+    return runSetMatch(maskedBitmap, {
       type: "matchSetFirst",
       data: { allSetImageUrls: echoSetImageMap, setMatchWeights: SCANNER_SET_MATCH_WEIGHTS },
     });
@@ -322,12 +589,12 @@ export function useEchoScanner() {
    * (usually) visually distinct, since the echo itself is already resolved
    * by name.
    */
-  async function matchSetNarrowed(videoEl: HTMLVideoElement, candidateSets: string[]): Promise<string | null> {
+  async function matchSetNarrowed(maskedBitmap: ImageBitmap, candidateSets: string[]): Promise<string | null> {
     const setImageUrls: Record<string, string> = {};
     for (const key of candidateSets) {
       if (echoSetImageMap[key]) setImageUrls[key] = echoSetImageMap[key];
     }
-    return runSetMatch(videoEl, { type: "matchSet", data: { possibleSets: candidateSets, setImageUrls } });
+    return runSetMatch(maskedBitmap, { type: "matchSet", data: { possibleSets: candidateSets, setImageUrls } });
   }
 
   /**
@@ -347,7 +614,7 @@ export function useEchoScanner() {
    * information now that there's more than one path.
    */
   async function resolveEchoIdentity(
-    videoEl: HTMLVideoElement,
+    setIconBitmap: ImageBitmap,
     nameText: string,
     secondaryStatText: string,
   ): Promise<{ preResolvedEcho: string | null; matchedSet: string | null; debugLabel: string }> {
@@ -364,7 +631,7 @@ export function useEchoScanner() {
             : "Resolved by name (no set on file for this echo)",
         };
       }
-      const narrowedSet = await matchSetNarrowed(videoEl, byName.candidateSets);
+      const narrowedSet = await matchSetNarrowed(setIconBitmap, byName.candidateSets);
       return {
         preResolvedEcho: byName.echo,
         matchedSet: narrowedSet,
@@ -377,7 +644,7 @@ export function useEchoScanner() {
     // Name+cost couldn't confidently resolve an echo at all — fall back to
     // the old set-icon-first path (full 30-set image match, then name
     // breaks ties within that set).
-    const fallbackSet = await matchSetIcon(videoEl);
+    const fallbackSet = await matchSetIcon(setIconBitmap);
     return {
       preResolvedEcho: null,
       matchedSet: fallbackSet,
@@ -387,140 +654,231 @@ export function useEchoScanner() {
     };
   }
 
-  /**
-   * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry, plus a
-   * whole-frame snapshot to draw all of them on top of as one reviewable
-   * image (EchoScannerCapture.vue), from the current (stable,
-   * about-to-be-scanned) frame. Independent of the OCR-dedicated
-   * grabRegionBitmap calls in handleTick — these are their own draws, so
-   * nothing here competes with what the worker actually OCR's. Text is
-   * filled in by the caller once `texts`/`matchedSet` are known; `panel`
-   * (fingerprint-only, not OCR'd or matched) keeps a placeholder.
-   *
-   * `setIcon`'s thumbnail is the actual circularly-masked crop
-   * (grabCircularMaskedBitmap) that gets sent to matchSetFirst, not the
-   * plain rectangle every other region shows — the mask is the fix for
-   * the background-color contamination bug (see capture.ts's doc
-   * comment), so the debug view should make it visible that it's really
-   * being applied, not just describe it.
-   */
-  async function captureDebugCrops(videoEl: HTMLVideoElement) {
-    const [crops, fullFrame] = await Promise.all([
-      Promise.all(
-        DEBUG_REGIONS.map(async ({ key, label, region }) => {
-          if (key === "setIcon") {
-            const masked = await grabCircularMaskedBitmap(videoEl, region);
-            const canvas = document.createElement("canvas");
-            canvas.width = masked.width;
-            canvas.height = masked.height;
-            const ctx = canvas.getContext("2d");
-            // A mid-gray backdrop so the masked-out (transparent) corners
-            // are visibly different from the page background either theme.
-            if (ctx) {
-              ctx.fillStyle = "#80808080";
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(masked, 0, 0);
-            }
-            return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
-          }
-          const { dataUrl } = await grabRegionWithPreview(videoEl, region);
-          return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
-        }),
-      ),
-      grabFullFrameSnapshot(videoEl),
-    ]);
-    return { crops, fullFrame };
+  function recordTickGap() {
+    const now = performance.now();
+    if (lastTickAt !== null) {
+      const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
+      recordStat(hidden ? timings.value.tickGap.hidden : timings.value.tickGap.visible, now - lastTickAt);
+    }
+    lastTickAt = now;
   }
 
-  async function handleTick() {
+  /**
+   * Finds the game's area in the frame (contentRect.ts), once per frame
+   * size: a live share's size changes when the window is resized, so a
+   * new size re-detects. Null while the frame is still blank (a share or
+   * video that hasn't drawn yet), so the caller skips that tick.
+   */
+  function detectLayout(videoEl: HTMLVideoElement, frame: FrameSize) {
+    if (
+      detectedLayout &&
+      detectedLayout.frame.width === frame.width &&
+      detectedLayout.frame.height === frame.height
+    ) {
+      return detectedLayout;
+    }
+    const pixels = grabFullFrameImageData(videoEl);
+    const detection = detectContentRect(pixels.data, pixels.width, pixels.height, frame);
+    if (!detection) return null;
+    detectedLayout = {
+      frame: { ...frame },
+      content: detection.rect,
+      kind: detection.kind,
+      alternates: detection.alternates,
+      bandStd: detection.bandStd,
+    };
+    contentRect.value = detection.rect;
+    trackedLayout = false;
+    return detectedLayout;
+  }
+
+  /**
+   * Whether the crops are landing on the Echo panel, judged by what they
+   * read rather than by the capture's size (layoutCheck.ts). If the current
+   * game area doesn't read as a panel but one of contentRect.ts's
+   * unconfirmed alternates does (a title bar that wasn't flat enough to
+   * trust from pixels alone), switch to that alternate for the rest of the
+   * session. If none of the session's first LAYOUT_CHECK_CANDIDATES
+   * candidates read as a panel either way, flag it so the user can check
+   * with debug mode. Scanning carries on either way.
+   *
+   * Returns true when it switched layouts: this candidate's crops came
+   * from the wrong area, so the caller drops it. The stability detector is
+   * reset so the echo still on screen is captured again under the new area.
+   */
+  async function checkLayout(
+    snapshot: FrameSnapshot,
+    secondaryText: string,
+    nameResolved: boolean,
+    jobSession: number,
+  ): Promise<boolean> {
+    if (layoutCheck.settled) return false;
+    const current = readsAsPanel(secondaryText, nameResolved);
+    const { rects, crops } = snapshot.alternates;
+    let alternateReads: boolean[] = [];
+    if (!current && rects.length > 0) {
+      const { texts } = await recognizeCandidate({ ...crops });
+      if (jobSession !== session || layoutCheck.settled) return false;
+      alternateReads = rects.map((_, i) => {
+        const altSecondary = texts[`alt${i}Secondary`] ?? "";
+        const altName = texts[`alt${i}Name`] ?? "";
+        return readsAsPanel(altSecondary, resolveEchoByNameAndCost(altName, altSecondary).echo !== null);
+      });
+    }
+
+    const verdict = layoutCheck.observe(current, alternateReads);
+    if (verdict.kind === "confirmed") {
+      if (detectedLayout) detectedLayout.alternates = [];
+      return false;
+    }
+    if (verdict.kind === "adopt") {
+      // The frame size changed (and was re-detected) since this snapshot —
+      // its alternate belongs to the old size, so don't apply it.
+      if (!detectedLayout || detectedLayout.alternates !== rects) return false;
+      const rect = rects[verdict.index];
+      detectedLayout.content = rect;
+      detectedLayout.kind = "titlebar";
+      detectedLayout.alternates = [];
+      contentRect.value = rect;
+      stability.reset();
+      if (trackedMode) {
+        trackEvent("scanner-layout-fallback", {
+          mode: trackedMode,
+          ...describeAspect(detectedLayout.frame),
+          ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+        });
+      }
+      return true;
+    }
+    if (verdict.kind === "mismatch") {
+      layoutMismatch.value = true;
+      if (trackedMode && detectedLayout) {
+        trackEvent("scanner-layout-mismatch", {
+          mode: trackedMode,
+          ...describeAspect(detectedLayout.frame),
+          ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+          alternatesTried: rects.length,
+        });
+      }
+    }
+    return false;
+  }
+
+  /**
+   * The per-tick gate: fingerprint the frame, and once it settles on a new
+   * echo, snapshot every crop from that frame and queue it. Never awaits
+   * OCR, so the live tick loop keeps sampling while earlier echoes are
+   * still being read — see docs/scanner.md's "Capture queue".
+   */
+  function handleTick() {
     if (!frameSource) return;
+    recordTickGap();
     const videoEl = frameSource.videoEl;
     const frame = frameSource.frameSize();
     if (frame.width === 0 || frame.height === 0) return;
 
-    if (!isSupportedAspect(frame)) {
+    const layout = detectLayout(videoEl, frame);
+    if (!layout) return;
+    if (trackedMode && !trackedLayout) {
+      trackedLayout = true;
+      trackEvent("scanner-layout", {
+        mode: trackedMode,
+        ...describeAspect(frame),
+        ...describeContent(frame, layout.content, layout.kind),
+        ...(layout.bandStd !== undefined ? { bandStd: layout.bandStd } : {}),
+      });
+    }
+    if (!isSupportedAspect(contentSize(frame, layout.content))) {
       unsupportedAspect.value = true;
       if (trackedMode && !trackedAspect) {
         trackedAspect = true;
         trackEvent("scanner-unsupported-aspect", {
           mode: trackedMode,
-          aspect: (frame.width / frame.height).toFixed(2),
+          ...describeAspect(frame),
+          ...describeContent(frame, layout.content, layout.kind),
         });
       }
       return;
     }
+    unsupportedAspect.value = false;
 
     const fingerprint = {
-      panel: computeFingerprint(grabRegionImageData(videoEl, PANEL_BOX)),
-      stats: computeFingerprint(grabRegionImageData(videoEl, STATS_BLOCK), STATS_FINGERPRINT_GRID),
+      panel: computeFingerprint(grabRegionImageData(videoEl, PANEL_BOX, layout.content)),
+      stats: computeFingerprint(grabRegionImageData(videoEl, STATS_BLOCK, layout.content), STATS_FINGERPRINT_GRID),
     };
     const event = stability.observe(fingerprint);
     if (event !== "stable-novel") return;
 
+    // No await between observe() and here — the snapshot must be this frame.
+    const alternates = layoutCheck.settled ? [] : layout.alternates;
+    const snapshot = snapshotFrame(videoEl, layout.content, debugMode.value, alternates);
+    // processJob awaits it later; this only stops an early rejection from
+    // being reported as unhandled while the job waits its turn.
+    snapshot.catch(() => {});
+    // Committed at capture, not after OCR: the next ticks must see this
+    // echo as already taken, or it would be queued again on every tick
+    // until its OCR finished.
+    stability.commitScan(fingerprint);
+    captureCount++;
+    queue.enqueue({ snapshot, capturedAt: performance.now(), captureIndex: captureCount, session });
+    captureCue.play();
+  }
+
+  /** OCR + match + parse one queued snapshot, then add it to the candidate list. Runs one at a time, in capture order (see queue.ts). */
+  async function processJob(job: ScanJob) {
+    const snapshot = await job.snapshot;
+    if (job.session !== session) {
+      closeSnapshot(snapshot);
+      return;
+    }
+    const startedAt = performance.now();
+    recordStat(timings.value.queueWait, startedAt - job.capturedAt);
     try {
-      const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
-      const [nameBitmap, mainBitmap, secondaryBitmap, ...substatBitmaps] = await Promise.all([
-        grabRegionBitmap(videoEl, NAME_BLOCK),
-        grabRegionBitmap(videoEl, MAIN_STAT_ROW),
-        grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
-        ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
-      ]);
+      const { primary, fallback, debug } = snapshot;
+      const { texts, lines } = await recognizeCandidate({ ...primary });
+      if (job.session !== session) return;
 
-      const regions: Record<string, ImageBitmap> = {
-        name: nameBitmap,
-        main: mainBitmap,
-        secondary: secondaryBitmap,
-      };
-      substatKeys.forEach((key, i) => {
-        regions[key] = substatBitmaps[i];
-      });
+      const identity = await resolveEchoIdentity(snapshot.setIcon, texts.name ?? "", texts.secondary ?? "");
+      if (job.session !== session) return;
+      const switchedLayout = await checkLayout(
+        snapshot,
+        texts.secondary ?? "",
+        identity.preResolvedEcho !== null,
+        job.session,
+      );
+      if (job.session !== session) return;
+      if (switchedLayout) {
+        skippedCount.value++;
+        return;
+      }
 
-      // Debug crops don't depend on OCR text, so they still run in
-      // parallel with it — but echo/set identity now does (name+cost
-      // matching needs the name and secondary-stat text first, and only
-      // *sometimes* needs a follow-up image-match call after that), so it
-      // can no longer run alongside OCR the way the old unconditional
-      // matchSetIcon call did. See resolveEchoIdentity's doc comment.
-      const [texts, debugCrops] = await Promise.all([
-        recognizeCandidate(regions),
-        debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
-      ]);
-
-      const identity = await resolveEchoIdentity(videoEl, texts.name ?? "", texts.secondary ?? "");
-
-      let parsed = parseEchoCandidate({
+      const candidateInput = {
         nameText: texts.name ?? "",
         mainStatText: texts.main ?? "",
         secondaryStatText: texts.secondary ?? "",
-        substatTexts: substatKeys.map((key) => texts[key] ?? ""),
+        substatLabelLines: lines.substatLabels ?? [],
+        substatValueLines: lines.substatValues ?? [],
         matchedSet: identity.matchedSet,
         preResolvedEcho: identity.preResolvedEcho,
-      });
+      };
+      let parsed = parseEchoCandidate(candidateInput);
 
-      // The 5 per-row crops didn't add up to all 5 substats — most often a
-      // wrapped label upstream having shifted every row below it down by
-      // an amount the fixed-position crops didn't anticipate. Re-OCR one
-      // wider block spanning all 5 rows (+ wrap allowance) and re-parse
-      // with that as a fallback — see parse.ts's parseEchoCandidate and
-      // layout.ts's SUBSTAT_BLOCK doc comments.
+      // The label/value column pass didn't add up to all 5 substats. OCR
+      // the older per-row crops and the whole substat block in one batch
+      // and let parseEchoCandidate keep whichever pass recovers the most —
+      // see its doc comment and docs/scanner.md's "Substat OCR".
       if (parsed.slot.substats.some((s) => !s.subStat)) {
-        const blockBitmap = await grabRegionBitmap(videoEl, SUBSTAT_BLOCK);
-        const blockTexts = await recognizeCandidate({ substatBlock: blockBitmap });
+        const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
+        const fallbackResult = await recognizeCandidate({ ...fallback });
+        if (job.session !== session) return;
+        Object.assign(texts, fallbackResult.texts);
         parsed = parseEchoCandidate({
-          nameText: texts.name ?? "",
-          mainStatText: texts.main ?? "",
-          secondaryStatText: texts.secondary ?? "",
-          substatTexts: substatKeys.map((key) => texts[key] ?? ""),
-          substatBlockText: blockTexts.substatBlock ?? "",
-          matchedSet: identity.matchedSet,
-          preResolvedEcho: identity.preResolvedEcho,
+          ...candidateInput,
+          substatTexts: substatKeys.map((key) => fallbackResult.texts[key] ?? ""),
+          substatBlockText: fallbackResult.texts.substatBlock ?? "",
         });
-        if (debugCrops && parsed.usedSubstatBlockFallback) {
-          const blockCrop = debugCrops.crops.find((c) => c.key === "substatBlock");
-          if (blockCrop) blockCrop.text = blockTexts.substatBlock ?? "";
-        }
       }
-      stability.commitScan(fingerprint);
+      recordStat(timings.value.process, performance.now() - startedAt);
 
       if (parsed.needsMainStatSelection) {
         skippedCount.value++;
@@ -539,25 +897,32 @@ export function useEchoScanner() {
         slot: parsed.slot,
         confidence: parsed.confidence,
         needsMainStatSelection: false,
-        usedSubstatBlockFallback: parsed.usedSubstatBlockFallback,
+        captureIndex: job.captureIndex,
+        panelPreviewUrl: snapshot.panelPreview,
+        substatSource: parsed.substatSource,
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,
-        debugCrops: debugCrops?.crops.map((crop) => ({
+        debugCrops: debug?.crops.map((crop) => ({
           ...crop,
           text: crop.key === "setIcon" ? identity.debugLabel : (texts[crop.key] ?? crop.text),
         })),
-        debugFullFrame: debugCrops?.fullFrame,
+        debugFullFrame: debug?.fullFrame,
+        debugContentRect: debug ? detectedLayout?.content : undefined,
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the
       // low-confidence path implicitly (candidate just won't appear) and
       // keep going. Log for diagnosis.
       console.error("Echo scanner: failed to process a candidate frame", err);
+    } finally {
+      closeSnapshot(snapshot);
     }
   }
 
-  function releaseResources() {
+  /** Ends capture (and with it the screen share / video file) without touching the OCR workers — queued snapshots can still finish. */
+  function releaseCapture() {
+    captureCue.close();
     frameSource?.stop();
     frameSource = null;
     if (openVideoHandle) {
@@ -566,6 +931,9 @@ export function useEchoScanner() {
     }
     previewVideoEl.value = null;
     videoDuration.value = null;
+  }
+
+  function releaseWorkers() {
     ocrWorker?.postMessage({ type: "terminate" });
     ocrWorker?.terminate();
     ocrWorker = null;
@@ -573,27 +941,60 @@ export function useEchoScanner() {
     setWorker = null;
   }
 
-  function stop() {
-    trackSessionEnd("stopped");
+  /**
+   * Stops capturing immediately, then finishes OCR'ing whatever was
+   * already queued (status "stopping") before releasing the workers.
+   * Shared by the Stop button and a video scan reaching its end; a no-op
+   * if a finish is already under way.
+   */
+  async function finishSession(outcome: "completed" | "stopped") {
+    if (status.value === "stopping" || status.value === "stopped") return;
+    trackSessionEnd(outcome);
     status.value = "stopping";
-    releaseResources();
+    releaseCapture();
+    const finishing = session;
+    await queue.onIdle();
+    if (finishing !== session) return; // aborted or restarted meanwhile
+    releaseWorkers();
+    status.value = "stopped";
+  }
+
+  function stop() {
+    return finishSession("stopped");
+  }
+
+  /** Tears everything down right away, dropping queued snapshots — for when the component itself is going away. */
+  function abort() {
+    trackSessionEnd("stopped");
+    session++;
+    queue.clear();
+    releaseCapture();
+    releaseWorkers();
     status.value = "stopped";
   }
 
   async function startLive() {
     resetState();
     status.value = "starting";
+    // Opened here, inside the Start click, or the browser keeps it suspended.
+    if (captureCueEnabled.value) captureCue.open();
     try {
-      await initWorkers();
+      // Share first: getDisplayMedia needs the Start click's transient
+      // activation, which a cold Tesseract load in initWorkers can outlast
+      // (Chrome ~5s, stricter elsewhere) → InvalidStateError.
       frameSource = await createScreenShareSource();
       previewVideoEl.value = frameSource.videoEl;
+      await initWorkers();
       status.value = "running";
       trackSessionStart("live");
       frameSource.start((tick) => {
         progress.value = { current: tick.frameIndex, total: null };
-        return handleTick();
+        handleTick();
       });
     } catch (err) {
+      // Worker init can fail after the share is already up — end it, or
+      // the browser's sharing indicator stays on.
+      releaseCapture();
       trackError("live", "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
       status.value = "error";
@@ -609,6 +1010,7 @@ export function useEchoScanner() {
       openVideoHandle = handle;
       previewVideoEl.value = handle.videoEl;
       videoDuration.value = handle.duration;
+      detectPreviewLayout();
       status.value = "trimming";
     } catch (err) {
       trackError("video", "open", err);
@@ -621,6 +1023,14 @@ export function useEchoScanner() {
   async function previewSeek(timeSeconds: number) {
     if (!openVideoHandle) return;
     await seekPreview(openVideoHandle, timeSeconds);
+    detectPreviewLayout();
+  }
+
+  /** Detects the game's area on the trim preview too, so the debug overlay lines up before scanning starts. A blank frame just waits for the next seek. */
+  function detectPreviewLayout() {
+    const videoEl = openVideoHandle?.videoEl;
+    if (!videoEl?.videoWidth || !videoEl.videoHeight) return;
+    detectLayout(videoEl, { width: videoEl.videoWidth, height: videoEl.videoHeight });
   }
 
   /** Discards an opened-but-not-yet-scanned video file (the trim step's "Cancel"). */
@@ -652,11 +1062,12 @@ export function useEchoScanner() {
       });
       await frameSource.start(async (tick) => {
         progress.value = { current: tick.frameIndex, total: tick.totalFrames };
-        await handleTick();
+        handleTick();
+        // Unlike a live share, a video can wait for OCR to catch up.
+        await queue.waitForRoom(VIDEO_MAX_PENDING);
       });
-      trackSessionEnd("completed");
-      releaseResources();
-      status.value = "stopped";
+      // No-op if Stop was already pressed mid-scan (it owns the finish then).
+      await finishSession("completed");
     } catch (err) {
       trackError("video", trackedMode ? "scan" : "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
@@ -675,8 +1086,8 @@ export function useEchoScanner() {
    * duplicate-review "Continue" step would eventually use) and drops it
    * from the pending list, so it isn't saved a second time when the rest
    * of the session finishes. Used by "Edit" — see EchoScannerCapture.vue —
-   * so editing can reuse the real InventoryEchoEdit.vue/EditPanel (which
-   * only knows how to edit an echo that already exists in the store)
+   * so editing can reuse the real inventory edit fields (EchoEditFields.vue,
+   * which only knows how to edit an echo that already exists in the store)
    * instead of a second, parallel edit UI. Returns the assigned echoId, or
    * null if the candidate is gone already.
    */
@@ -694,8 +1105,10 @@ export function useEchoScanner() {
   }
 
   onBeforeUnmount(() => {
-    if (status.value === "running" || status.value === "starting" || status.value === "trimming") {
-      stop();
+    // Includes "stopping": a Stop that's still draining the queue has
+    // nowhere to deliver its results once the component is gone.
+    if (["running", "starting", "trimming", "stopping"].includes(status.value)) {
+      abort();
     }
   });
 
@@ -708,9 +1121,14 @@ export function useEchoScanner() {
     reviewNeededCount,
     progress,
     unsupportedAspect,
+    layoutMismatch,
+    contentRect,
     previewVideoEl,
     videoDuration,
     debugMode,
+    captureCueEnabled,
+    pendingCount,
+    timings,
     debugRegions: DEBUG_REGIONS,
     isEchoNameKnown: (key: string) => Boolean(mainEchoesData?.[key]),
     startLive,

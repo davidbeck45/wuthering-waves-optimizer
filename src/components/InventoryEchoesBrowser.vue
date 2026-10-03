@@ -8,8 +8,7 @@
     inventory-only></CalculatorEchoImporter>
   <EchoScannerModal
     v-if="isEchoScanningEnabled"
-    ref="echoScanner"
-    @edit-candidate="handleEditEcho"></EchoScannerModal>
+    ref="echoScanner"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">

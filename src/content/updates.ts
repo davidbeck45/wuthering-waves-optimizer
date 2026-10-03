@@ -10,7 +10,102 @@ export interface UpdateEntry {
   items: string[];
 }
 
+export interface Announcement {
+  /**
+   * ISO date the announcement was posted, e.g. "2026-09-29". Doubles as the
+   * dismissal key: the banner stays hidden for anyone whose stored dismissal
+   * date is on or after this, so only bump it when posting a new announcement.
+   */
+  date: string;
+  headline: string;
+}
+
+/**
+ * The site-wide banner (AppUpdateBanner.vue) shows this, independent of
+ * updateEntries - routine changelog entries never re-show a dismissed banner.
+ * Set to null to hide the banner entirely.
+ */
+// export const currentAnnouncement: Announcement | null = {
+//   date: "2026-09-29",
+//   headline: "Version 3.7 (first half) is up!",
+// };
+export const currentAnnouncement: Announcement | null = null;
+
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-03",
+    dateLabel: "October 4, 2026",
+    items: [
+      "Fixes Firstlight's Herald ATK buffs, R2-R5 were off, R1 was correct",
+      "Fixes Hsin's Tides of Succession buffs: one was missing the stacks, the other had text udpated",
+      "For the echo scanner, when you're editing an echo, it improves the UX for the edit mode"
+    ],
+  },
+  {
+    date: "2026-10-02",
+    dateLabel: "October 2, 2026",
+    items: [
+      "Echo scanner (lab feature) now works with windowed and letterboxed captures - it finds the game's area inside the frame (e.g. a window title bar or black bars) instead of rejecting anything that isn't exactly 16:9 or 16:10",
+      "Echo scanner (lab feature): Edit now opens the editor right in the scan results, next to the echo's in-game capture - it used to open behind the scanner window when the new layout lab was on",
+      "Echo scanner (lab feature) now also handles windows whose title bar it couldn't spot at first (e.g. a centered window title) - if the first echo doesn't read, it tries the area under the title bar and switches to it when that reads correctly",
+      "The announcement bar below the main nav no longer pops back up after you close it just because the changelog was updated - it only returns for a new announcement",
+    ],
+  },
+  {
+    date: "2026-10-01",
+    dateLabel: "October 1, 2026",
+    items: ["Adds Electro Flare and Unison preset rotations for Hsin (thanks Dorito)"],
+  },
+  {
+    date: "2026-09-30",
+    dateLabel: "September 30, 2026",
+    items: ["Updates Hsin resonance chain text, splits one of her S6 buffs"],
+  },
+  {
+    date: "2026-09-29",
+    dateLabel: "September 29, 2026",
+    items: ["Version 3.7 (first half) is up!"],
+  },
+  {
+    date: "2026-09-26",
+    dateLabel: "September 26, 2026",
+    items: [
+      "Fixed Denia's buffs with her s2 and dark core buffs",
+      "Echo scanner (lab feature) now suports 16:9 ratio",
+      "Echo scanner (lab feature) fixed a bug where on some browsers it was having issues with the background jobs and live scanning mode",
+    ],
+  },
+  {
+    date: "2026-09-25",
+    dateLabel: "September 25, 2026",
+    items: [
+      "Update to the Labs feature: Echo Scanner - Added a \"How to scan\" guide, an optional beep each time an echo is captured, and a faster review: results are in two columns with filters (Needs attention, Unknown echo, Already in inventory), each echo is numbered in the order you clicked it, and you can see the in-game capture of each echo (also shown while editing) to fix anything it misread. The save button now tells you exactly what it will do, and short echo names like Jué are recognized more reliably",
+    ],
+  },
+  {
+    date: "2026-09-25",
+    dateLabel: "September 25, 2026",
+    items: [
+      "Update to the Labs feature: Echo Scanner - Added a \"How to scan\" guide, an optional beep each time an echo is captured, and a faster review: results are in two columns with filters (Needs attention, Unknown echo, Already in inventory), each echo is numbered in the order you clicked it, and you can see the in-game capture of each echo (also shown while editing) to fix anything it misread. The save button now tells you exactly what it will do, and short echo names like Jué are recognized more reliably",
+    ],
+  },
+  {
+    date: "2026-09-24",
+    dateLabel: "September 24, 2026",
+    items: [
+      "Added a new toggle on team buffs (classic and v3 UI) to hide impossible buffs. it mostly applies to Weapons right now, so it hides weapons that your teammates cannot use",
+      "On v3 UI, on team buffs, i removed the top level stat aggregations since there are a lot of buffs don't line up really well with that, so it added more confusion than value. i did update the list of active buffs so that they're categorized by \"where they came from\"",
+      "Update to the Labs feature: Echo Scanner - Released two improvements on how it processes and matches echoes and substats. Made a good improvement. The video reference I linked above has processed with 100% accuracy (36 echoes)",
+    ],
+  },
+  {
+    date: "2026-09-23",
+    dateLabel: "September 23, 2026",
+    items: [
+      "New labs feature! Echo scanner! In the Inventory page, there's a new option to Scan Echoes. It allows you to upload a video, or screen share in your browser, and you can click through the game's Inventory > Echoes page one by one to auto-import echoes into the app. You can do that using screen share or record your own video and upload it. And it's all done safely, securly, with privacy-first so none of your data leaves your computer.",
+      "Update to the Teams feature: you can now customize the resist for each element of the team (in case you end up fighting more than one enemy for example)"
+    ],
+  },
   {
     date: "2026-09-19",
     dateLabel: "September 19, 2026",
