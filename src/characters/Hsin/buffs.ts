@@ -20,7 +20,7 @@ export const buffs = [
     name: `Inherent Skill: Tides of Succession`,
     stance: "Electro Flare",
     details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, after Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span>, Hsin gains 25% Electro DMG Bonus, stacking up to 2 times. Each Resonator can trigger this effect only once.</div>`,
-    hasStacks: false,
+    hasStacks: true,
     modifiers: [
       {
         modifier: "Electro",
@@ -28,14 +28,14 @@ export const buffs = [
       }
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 2,
     alwaysEnabled: false,
   },
   {
     key: `InherentSkillTidesOfSuccessionElectroFlareERover`,
     name: `Inherent Skill: Tides of Succession`,
     stance: "Electro Flare",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, after Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span>. In addition, if Rover: Electro is in the same team, when Rover: Electro casts <span style="color:#ffd12f;" class="font-bold">Intro Skill - Thunderous Fury</span>, both Hsin and Rover: Electro gain 20% Electro DMG Bonus for 7s.<br>This effect resets when a Resonator is added to the team or when Hsin switches Resonance Mode.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, after Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Electro Flare</span>. In addition, if Rover: Electro is in the same team, when Rover: Electro casts <span style="color:#ffd12f;" class="font-bold">Intro Skill - Thunderous Fury</span>, both Hsin and Rover: Electro gain 20% Electro DMG Bonus for 30s.<br>This effect resets when a Resonator is added to the team or when Hsin switches Resonance Mode.</div>`,
     hasStacks: false,
     modifiers: [
       {
