@@ -25,12 +25,22 @@ export interface Announcement {
  * updateEntries - routine changelog entries never re-show a dismissed banner.
  * Set to null to hide the banner entirely.
  */
-export const currentAnnouncement: Announcement | null = {
-  date: "2026-09-29",
-  headline: "Version 3.7 (first half) is up!",
-};
+// export const currentAnnouncement: Announcement | null = {
+//   date: "2026-09-29",
+//   headline: "Version 3.7 (first half) is up!",
+// };
+export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-03",
+    dateLabel: "October 4, 2026",
+    items: [
+      "Fixes Firstlight's Herald ATK buffs, R2-R5 were off, R1 was correct",
+      "Fixes Hsin's Tides of Succession buffs: one was missing the stacks, the other had text udpated",
+      "For the echo scanner, when you're editing an echo, it improves the UX for the edit mode"
+    ],
+  },
   {
     date: "2026-10-02",
     dateLabel: "October 2, 2026",

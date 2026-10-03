@@ -4,7 +4,7 @@ import { createRouter, createMemoryHistory } from "vue-router";
 import { render, fireEvent } from "@testing-library/vue";
 import AppUpdateBanner from "../../src/components/AppUpdateBanner.vue";
 import { useSettingsStore } from "../../src/stores/settings";
-import { currentAnnouncement, type Announcement } from "../../src/content/updates";
+import type { Announcement } from "../../src/content/updates";
 
 const router = createRouter({
   history: createMemoryHistory(),
@@ -14,12 +14,22 @@ const router = createRouter({
   ],
 });
 
+// Fixed fixture so these tests don't depend on (or break when hiding) the
+// shipped currentAnnouncement.
+const testAnnouncement: Announcement = {
+  date: "2026-09-29",
+  headline: "Version 3.7 (first half) is up!",
+};
+
 // The action buttons are hidden by default (see showActions in the
 // component); tests exercising them opt back in.
 function renderBanner(
   props: { showActions?: boolean; announcement?: Announcement | null } = { showActions: true },
 ) {
-  return render(AppUpdateBanner, { props, global: { plugins: [router] } });
+  return render(AppUpdateBanner, {
+    props: { announcement: testAnnouncement, ...props },
+    global: { plugins: [router] },
+  });
 }
 
 describe("AppUpdateBanner", () => {
@@ -162,13 +172,13 @@ describe("AppUpdateBanner", () => {
     const settingsStore = useSettingsStore() as any;
     const { getByLabelText, container } = renderBanner();
     await fireEvent.click(getByLabelText("Dismiss"));
-    expect(settingsStore.config?.dismissedUpdateBannerDate).toBe(currentAnnouncement!.date);
+    expect(settingsStore.config?.dismissedUpdateBannerDate).toBe(testAnnouncement.date);
     expect(container.querySelector("[data-test-update-banner]")).toBeNull();
   });
 
   it("stays hidden across remounts once the current announcement is dismissed", () => {
     const settingsStore = useSettingsStore() as any;
-    settingsStore.addToConfig({ dismissedUpdateBannerDate: currentAnnouncement!.date });
+    settingsStore.addToConfig({ dismissedUpdateBannerDate: testAnnouncement.date });
     const { container } = renderBanner();
     expect(container.querySelector("[data-test-update-banner]")).toBeNull();
   });
