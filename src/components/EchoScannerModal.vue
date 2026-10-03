@@ -13,8 +13,7 @@
         <EchoScannerCapture
           v-if="!isReviewingDuplicates"
           inventory-only
-          @echoes-parsed="handleEchoesParsed"
-          @edit-candidate="emit('edit-candidate', $event)"></EchoScannerCapture>
+          @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
         <EchoDuplicateReviewList
           v-else
           :items="duplicateReviewItems"
@@ -49,11 +48,6 @@ import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
-
-const emit = defineEmits<{
-  /** Pass-through from EchoScannerCapture.vue — see its own doc comment on the same event. */
-  "edit-candidate": [payload: { echoId: string; referenceImageUrl?: string }];
-}>();
 
 const modalId = "modal-echo-scanner-inventory";
 

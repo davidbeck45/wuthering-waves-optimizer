@@ -1086,8 +1086,8 @@ export function useEchoScanner() {
    * duplicate-review "Continue" step would eventually use) and drops it
    * from the pending list, so it isn't saved a second time when the rest
    * of the session finishes. Used by "Edit" — see EchoScannerCapture.vue —
-   * so editing can reuse the real InventoryEchoEdit.vue/EditPanel (which
-   * only knows how to edit an echo that already exists in the store)
+   * so editing can reuse the real inventory edit fields (EchoEditFields.vue,
+   * which only knows how to edit an echo that already exists in the store)
    * instead of a second, parallel edit UI. Returns the assigned echoId, or
    * null if the candidate is gone already.
    */
