@@ -50,6 +50,7 @@ describe("detectContentRect", () => {
       const result = detectContentRect(frame.data, frame.width, frame.height, size);
       expect(result?.kind).toBe("full");
       expect(result?.rect).toEqual({ x: 0, y: 0, width: 1, height: 1 });
+      expect(result?.alternates).toEqual([]);
     }
   });
 
@@ -82,6 +83,8 @@ describe("detectContentRect", () => {
       expect(Math.abs(result!.rect.y * real.height - (real.height - gameHeight))).toBeLessThanOrEqual(3);
       const aspect = real.width / (result!.rect.height * real.height);
       expect([16 / 10, 16 / 9].some((a) => Math.abs(aspect - a) < 0.01)).toBe(true);
+      expect(result?.alternates).toEqual([]);
+      expect(result?.bandStd).toBeLessThanOrEqual(12);
     }
   });
 
@@ -90,6 +93,32 @@ describe("detectContentRect", () => {
     const frame = makeFrame(640, 371);
     const result = detectContentRect(frame.data, 640, 371, real);
     expect(result?.kind).toBe("full");
+    expect(result?.rect).toEqual({ x: 0, y: 0, width: 1, height: 1 });
+    // Still offered as an alternate, for the scanner to try by OCR result.
+    expect(result?.alternates).toHaveLength(1);
+    expect(Math.abs(result!.alternates[0].y * real.height - 32)).toBeLessThanOrEqual(3);
+    expect(result?.bandStd).toBeGreaterThan(12);
+  });
+
+  // Reported in analytics as content: full, then scanner-layout-mismatch:
+  // a 16:9 game (~1866x1050) under a ~30px band whose middle isn't flat
+  // (a centered title, a translucent bar, an overlay).
+  it("offers a non-flat title bar over a 1866x1080 frame as an alternate", () => {
+    const real = { width: 1866, height: 1080 };
+    const width = 640;
+    const height = Math.round(real.height * (width / real.width));
+    const frame = makeFrame(width, height);
+    const bandRows = Math.round(30 * (width / real.width));
+    paintTitlebar(frame, bandRows, [32, 32, 32], [230, 230, 230]);
+    // A centered window title, right where the flatness check samples.
+    frame.fill(Math.floor(width * 0.42), 3, Math.floor(width * 0.58), bandRows - 3, [230, 230, 230]);
+
+    const result = detectContentRect(frame.data, width, height, real);
+    expect(result?.kind).toBe("full");
+    expect(result?.alternates).toHaveLength(1);
+    const alt = result!.alternates[0];
+    expect(Math.abs(alt.y * real.height - 30)).toBeLessThanOrEqual(1);
+    expect(real.width / (alt.height * real.height)).toBeCloseTo(16 / 9, 2);
   });
 
   it("finds a 16:9 game letterboxed in a 16:10 frame", () => {
@@ -99,6 +128,7 @@ describe("detectContentRect", () => {
     frame.fill(0, 380, 640, 400, [3, 3, 3]);
     const result = detectContentRect(frame.data, 640, 400, { width: 1920, height: 1200 });
     expect(result?.kind).toBe("letterbox");
+    expect(result?.alternates).toEqual([]);
     expect(result!.rect.y).toBeCloseTo(0.05);
     expect(result!.rect.height).toBeCloseTo(0.9);
   });
@@ -133,5 +163,6 @@ describe("detectContentRect", () => {
     const frame = makeFrame(640, 274);
     const result = detectContentRect(frame.data, 640, 274, { width: 3440, height: 1440 });
     expect(result?.kind).toBe("full");
+    expect(result?.alternates).toEqual([]);
   });
 });

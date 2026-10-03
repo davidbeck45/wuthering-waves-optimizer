@@ -33,8 +33,9 @@ import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { createSerialQueue, type SerialQueue } from "../scanner/queue";
 import { createCaptureCue } from "../scanner/captureCue";
 import { needsAttention } from "../scanner/review";
-import { inferCostFromSecondaryStat, parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
+import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
 import { detectContentRect, type ContentKind } from "../scanner/contentRect";
+import { createLayoutCheck, readsAsPanel } from "../scanner/layoutCheck";
 import {
   PANEL_BOX,
   STATS_BLOCK,
@@ -130,7 +131,8 @@ const VIDEO_MAX_PENDING = 3;
 
 /**
  * How many candidates in a row may fail to read as an Echo panel before
- * the session is flagged as a likely layout mismatch — see checkLayout.
+ * the session is flagged as a likely layout mismatch — see checkLayout and
+ * layoutCheck.ts.
  * More than one, so a single echo mid-transition or a garbled read can't
  * trip it.
  */
@@ -150,6 +152,12 @@ type FrameSnapshot = {
   /** The review list's "in-game capture" — see capture.ts's grabRegionPreviewJpeg. */
   panelPreview: string;
   debug?: Awaited<ReturnType<typeof captureDebugCropsFromVideo>>;
+  /**
+   * The name + secondary stat crops under each of contentRect.ts's
+   * unconfirmed alternate game areas (`alt<i>Name`/`alt<i>Secondary`),
+   * only while the session's layout check is still open — see checkLayout.
+   */
+  alternates: { rects: RegionFrac[]; crops: Record<string, ImageBitmap> };
 };
 
 type ScanJob = {
@@ -197,6 +205,7 @@ function closeSnapshot(snapshot: FrameSnapshot) {
   // Transferred bitmaps are already detached; close() on them is a no-op.
   for (const bitmap of Object.values(snapshot.primary)) bitmap.close();
   for (const bitmap of Object.values(snapshot.fallback)) bitmap.close();
+  for (const bitmap of Object.values(snapshot.alternates.crops)) bitmap.close();
   snapshot.setIcon.close();
 }
 
@@ -257,8 +266,16 @@ async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement, content: Re
  * synchronous call pins every crop to the same frame, even though the
  * returned promise settles later. The caller must not await anything
  * between the stability check and this call.
+ *
+ * `alternates` are game areas to also grab the name + secondary stat
+ * under, for checkLayout to try if `content` doesn't read as a panel.
  */
-function snapshotFrame(videoEl: HTMLVideoElement, content: RegionFrac, withDebug: boolean): Promise<FrameSnapshot> {
+function snapshotFrame(
+  videoEl: HTMLVideoElement,
+  content: RegionFrac,
+  withDebug: boolean,
+  alternates: RegionFrac[],
+): Promise<FrameSnapshot> {
   const primary = Promise.all([
     grabRegionBitmap(videoEl, NAME_BLOCK, content),
     grabRegionBitmap(videoEl, MAIN_STAT_ROW, content),
@@ -273,9 +290,15 @@ function snapshotFrame(videoEl: HTMLVideoElement, content: RegionFrac, withDebug
   ]);
   const debug = withDebug ? captureDebugCropsFromVideo(videoEl, content) : Promise.resolve(undefined);
   const panelPreview = grabRegionPreviewJpeg(videoEl, PANEL_BOX, content);
+  const alternateCrops = Promise.all(
+    alternates.flatMap((rect, i) => [
+      grabRegionBitmap(videoEl, NAME_BLOCK, rect).then((bitmap) => [`alt${i}Name`, bitmap] as const),
+      grabRegionBitmap(videoEl, SECONDARY_STAT_ROW, rect).then((bitmap) => [`alt${i}Secondary`, bitmap] as const),
+    ]),
+  );
 
-  return Promise.all([primary, setIcon, fallback, debug]).then(
-    ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops]) => {
+  return Promise.all([primary, setIcon, fallback, debug, alternateCrops]).then(
+    ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops, altCrops]) => {
       const fallbackBitmaps: Record<string, ImageBitmap> = { substatBlock: block };
       rows.forEach((bitmap, i) => {
         fallbackBitmaps[`sub${i}`] = bitmap;
@@ -286,6 +309,7 @@ function snapshotFrame(videoEl: HTMLVideoElement, content: RegionFrac, withDebug
         fallback: fallbackBitmaps,
         panelPreview,
         debug: debugCrops,
+        alternates: { rects: alternates, crops: Object.fromEntries(altCrops) },
       };
     },
   );
@@ -351,11 +375,20 @@ export function useEchoScanner() {
   let session = 0;
   let lastTickAt: number | null = null;
   let captureCount = 0;
-  /** detectLayout's cache: the frame size it was detected for, and the result. */
-  let detectedLayout: { frame: FrameSize; content: RegionFrac; kind: ContentKind } | null = null;
-  /** Candidates checked by checkLayout so far this session, and whether any read as an Echo panel. */
-  let layoutChecked = 0;
-  let layoutConfirmed = false;
+  /**
+   * detectLayout's cache: the frame size it was detected for, and the
+   * result. `alternates` are contentRect.ts's unconfirmed guesses, tried by
+   * checkLayout until the session's layout check settles.
+   */
+  let detectedLayout: {
+    frame: FrameSize;
+    content: RegionFrac;
+    kind: ContentKind;
+    alternates: RegionFrac[];
+    bandStd?: number;
+  } | null = null;
+  /** Whether this session's candidates read as an Echo panel — see checkLayout. */
+  let layoutCheck = createLayoutCheck(LAYOUT_CHECK_CANDIDATES);
   // A fresh queue per session: aborting terminates the OCR worker, which
   // can leave the in-flight job's promise unresolved forever — it must not
   // block the next session's queue.
@@ -417,8 +450,7 @@ export function useEchoScanner() {
     layoutMismatch.value = false;
     contentRect.value = FULL_FRAME;
     detectedLayout = null;
-    layoutChecked = 0;
-    layoutConfirmed = false;
+    layoutCheck = createLayoutCheck(LAYOUT_CHECK_CANDIDATES);
     stability.reset();
     session++;
     queue.clear();
@@ -648,7 +680,13 @@ export function useEchoScanner() {
     const pixels = grabFullFrameImageData(videoEl);
     const detection = detectContentRect(pixels.data, pixels.width, pixels.height, frame);
     if (!detection) return null;
-    detectedLayout = { frame: { ...frame }, content: detection.rect, kind: detection.kind };
+    detectedLayout = {
+      frame: { ...frame },
+      content: detection.rect,
+      kind: detection.kind,
+      alternates: detection.alternates,
+      bandStd: detection.bandStd,
+    };
     contentRect.value = detection.rect;
     trackedLayout = false;
     return detectedLayout;
@@ -656,28 +694,74 @@ export function useEchoScanner() {
 
   /**
    * Whether the crops are landing on the Echo panel, judged by what they
-   * read rather than by the capture's size: a real panel's fixed secondary
-   * stat is always one of three known values (inferCostFromSecondaryStat),
-   * and its name usually resolves. If none of the session's first
-   * LAYOUT_CHECK_CANDIDATES candidates show either, flag it so the user
-   * can check with debug mode. Scanning carries on either way.
+   * read rather than by the capture's size (layoutCheck.ts). If the current
+   * game area doesn't read as a panel but one of contentRect.ts's
+   * unconfirmed alternates does (a title bar that wasn't flat enough to
+   * trust from pixels alone), switch to that alternate for the rest of the
+   * session. If none of the session's first LAYOUT_CHECK_CANDIDATES
+   * candidates read as a panel either way, flag it so the user can check
+   * with debug mode. Scanning carries on either way.
+   *
+   * Returns true when it switched layouts: this candidate's crops came
+   * from the wrong area, so the caller drops it. The stability detector is
+   * reset so the echo still on screen is captured again under the new area.
    */
-  function checkLayout(secondaryText: string, nameResolved: boolean) {
-    if (layoutConfirmed || layoutMismatch.value) return;
-    if (nameResolved || inferCostFromSecondaryStat(secondaryText) !== null) {
-      layoutConfirmed = true;
-      return;
-    }
-    layoutChecked++;
-    if (layoutChecked < LAYOUT_CHECK_CANDIDATES) return;
-    layoutMismatch.value = true;
-    if (trackedMode && detectedLayout) {
-      trackEvent("scanner-layout-mismatch", {
-        mode: trackedMode,
-        ...describeAspect(detectedLayout.frame),
-        ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+  async function checkLayout(
+    snapshot: FrameSnapshot,
+    secondaryText: string,
+    nameResolved: boolean,
+    jobSession: number,
+  ): Promise<boolean> {
+    if (layoutCheck.settled) return false;
+    const current = readsAsPanel(secondaryText, nameResolved);
+    const { rects, crops } = snapshot.alternates;
+    let alternateReads: boolean[] = [];
+    if (!current && rects.length > 0) {
+      const { texts } = await recognizeCandidate({ ...crops });
+      if (jobSession !== session || layoutCheck.settled) return false;
+      alternateReads = rects.map((_, i) => {
+        const altSecondary = texts[`alt${i}Secondary`] ?? "";
+        const altName = texts[`alt${i}Name`] ?? "";
+        return readsAsPanel(altSecondary, resolveEchoByNameAndCost(altName, altSecondary).echo !== null);
       });
     }
+
+    const verdict = layoutCheck.observe(current, alternateReads);
+    if (verdict.kind === "confirmed") {
+      if (detectedLayout) detectedLayout.alternates = [];
+      return false;
+    }
+    if (verdict.kind === "adopt") {
+      // The frame size changed (and was re-detected) since this snapshot —
+      // its alternate belongs to the old size, so don't apply it.
+      if (!detectedLayout || detectedLayout.alternates !== rects) return false;
+      const rect = rects[verdict.index];
+      detectedLayout.content = rect;
+      detectedLayout.kind = "titlebar";
+      detectedLayout.alternates = [];
+      contentRect.value = rect;
+      stability.reset();
+      if (trackedMode) {
+        trackEvent("scanner-layout-fallback", {
+          mode: trackedMode,
+          ...describeAspect(detectedLayout.frame),
+          ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+        });
+      }
+      return true;
+    }
+    if (verdict.kind === "mismatch") {
+      layoutMismatch.value = true;
+      if (trackedMode && detectedLayout) {
+        trackEvent("scanner-layout-mismatch", {
+          mode: trackedMode,
+          ...describeAspect(detectedLayout.frame),
+          ...describeContent(detectedLayout.frame, detectedLayout.content, detectedLayout.kind),
+          alternatesTried: rects.length,
+        });
+      }
+    }
+    return false;
   }
 
   /**
@@ -701,6 +785,7 @@ export function useEchoScanner() {
         mode: trackedMode,
         ...describeAspect(frame),
         ...describeContent(frame, layout.content, layout.kind),
+        ...(layout.bandStd !== undefined ? { bandStd: layout.bandStd } : {}),
       });
     }
     if (!isSupportedAspect(contentSize(frame, layout.content))) {
@@ -725,7 +810,8 @@ export function useEchoScanner() {
     if (event !== "stable-novel") return;
 
     // No await between observe() and here — the snapshot must be this frame.
-    const snapshot = snapshotFrame(videoEl, layout.content, debugMode.value);
+    const alternates = layoutCheck.settled ? [] : layout.alternates;
+    const snapshot = snapshotFrame(videoEl, layout.content, debugMode.value, alternates);
     // processJob awaits it later; this only stops an early rejection from
     // being reported as unhandled while the job waits its turn.
     snapshot.catch(() => {});
@@ -754,7 +840,17 @@ export function useEchoScanner() {
 
       const identity = await resolveEchoIdentity(snapshot.setIcon, texts.name ?? "", texts.secondary ?? "");
       if (job.session !== session) return;
-      checkLayout(texts.secondary ?? "", identity.preResolvedEcho !== null);
+      const switchedLayout = await checkLayout(
+        snapshot,
+        texts.secondary ?? "",
+        identity.preResolvedEcho !== null,
+        job.session,
+      );
+      if (job.session !== session) return;
+      if (switchedLayout) {
+        skippedCount.value++;
+        return;
+      }
 
       const candidateInput = {
         nameText: texts.name ?? "",

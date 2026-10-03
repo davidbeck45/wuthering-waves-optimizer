@@ -36,6 +36,7 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "October 2, 2026",
     items: [
       "Echo scanner (lab feature) now works with windowed and letterboxed captures - it finds the game's area inside the frame (e.g. a window title bar or black bars) instead of rejecting anything that isn't exactly 16:9 or 16:10",
+      "Echo scanner (lab feature) now also handles windows whose title bar it couldn't spot at first (e.g. a centered window title) - if the first echo doesn't read, it tries the area under the title bar and switches to it when that reads correctly",
       "The announcement bar below the main nav no longer pops back up after you close it just because the changelog was updated - it only returns for a new announcement",
     ],
   },
