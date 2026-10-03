@@ -319,6 +319,12 @@ confirming:
 - Otherwise the whole frame is the game (`full`), which is the old behavior.
   An all-black frame returns null, and the tick is skipped until something
   draws.
+- A band that fits the title bar geometry but **isn't flat** (a centered
+  title, a gradient or translucent bar, an overlay) is not trimmed, since
+  pixels alone can't tell it from real game rows. Its rect comes back in
+  `alternates` instead, for the result check below to try. The band's
+  measured flatness is reported as `bandStd` on `scanner-layout`, so
+  `TITLEBAR_MAX_STD` can be tuned from real captures instead of guessed.
 
 The game's area (`contentRect`, a `RegionFrac` of the frame) is then passed
 to every `grab*` helper and overlay. `regionForFrame` maps by the **game
@@ -339,11 +345,27 @@ within 1px of where it lands on the bare game area. Unit tests in
 "fits the geometry but isn't flat" case that must not trim.
 
 **Checking by result, not by size.** A detection miss shouldn't fail
-silently. `useEchoScanner.ts`'s `checkLayout` looks at each candidate's
-fixed secondary stat (always 2280/100/150 on a real panel,
-`inferCostFromSecondaryStat`) and whether its name resolved. If the
-session's first 3 candidates show neither, `layoutMismatch` shows a warning
-pointing at debug mode, and scanning carries on. Debug mode draws the
+silently. `useEchoScanner.ts`'s `checkLayout` (state in
+`src/scanner/layoutCheck.ts`) looks at each candidate's fixed secondary
+stat (always 2280/100/150 on a real panel, `inferCostFromSecondaryStat`)
+and whether its name resolved. The first candidate that reads as a panel
+confirms the layout and ends the check.
+
+While the check is open and detection returned `alternates`, each snapshot
+also grabs the name and secondary stat crops under every alternate (same
+frame, same synchronous call). Those are only OCR'd when the current area
+fails. If an alternate reads as a panel, the scanner switches to it for the
+rest of the session (`kind` becomes `titlebar`, `scanner-layout-fallback`
+fires). It drops that one candidate, whose full crops came from the wrong
+area, and resets the stability detector so the echo still on screen is
+captured again. The current area always wins when it reads, so sessions
+that worked before never switch. This is how a 1866x1080 window (a 16:9 game
+under a ~30px title bar with a centered title) recovers without a
+screenshot of that setup.
+
+If the session's first 3 candidates read as a panel under neither,
+`layoutMismatch` shows a warning pointing at debug mode, and scanning
+carries on. Debug mode draws the
 detected game area as a solid box around the dashed ROI boxes, on both the
 live preview and each candidate's full-frame snapshot.
 
@@ -979,9 +1001,10 @@ text, or frames.
 | `scanner-started` | `useEchoScanner` | `mode` (`live`/`video`); video adds `fps`, `scanSeconds` |
 | `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `durationSeconds` |
 | `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share; for a non-Error throw, `Event:<type>`, `string`, etc.), `message` (the error message, truncated to 120 chars, or `null`) — see `describeError` in `src/scanner/analytics.ts` |
-| `scanner-layout` | `useEchoScanner` | `mode`, the frame's `aspect`/`ratio`/`resolution` (as below), plus `content` (`full`/`titlebar`/`letterbox` — which `detectContentRect` branch ran), `contentAspect`, `contentResolution`, `contentOffset` (`x,y` px) — once per session, and again if the frame size changes |
+| `scanner-layout` | `useEchoScanner` | `mode`, the frame's `aspect`/`ratio`/`resolution` (as below), plus `content` (`full`/`titlebar`/`letterbox` — which `detectContentRect` branch ran), `contentAspect`, `contentResolution`, `contentOffset` (`x,y` px), and `bandStd` (the title-bar band's luma std dev, only when a band's geometry fit; trimmed at ≤ 12) — once per session, and again if the frame size changes |
 | `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp), `ratio` (nearest common ratio — `16:9`, `21:9`, `32:9`, `4:3`, …, or `portrait`/`other`), `resolution` (`<width>x<height>` of the captured frame), plus the `content*` fields above — once per session, when the game's area is outside `SUPPORTED_ASPECT_RANGE` |
-| `scanner-layout-mismatch` | `useEchoScanner` | the same fields as `scanner-layout` — once per session, when the first 3 candidates don't read as an Echo panel (see "Aspect ratios") |
+| `scanner-layout-fallback` | `useEchoScanner` | `mode`, the frame fields, and the `content*` fields for the adopted area — once per session, when the detected area didn't read as an Echo panel but an unconfirmed title-bar alternate did (see "Aspect ratios") |
+| `scanner-layout-mismatch` | `useEchoScanner` | the same fields as `scanner-layout` (minus `bandStd`), plus `alternatesTried` (how many alternate areas were also tried) — once per session, when the first 3 candidates don't read as an Echo panel (see "Aspect ratios") |
 
 `scanner-finished` fires at most once per session: for video, `stop()`
 reports `stopped` and clears the session, so the scan loop's own exit
