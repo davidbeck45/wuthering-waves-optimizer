@@ -38,7 +38,8 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Fixes Firstlight's Herald ATK buffs, R2-R5 were off, R1 was correct",
       "Fixes Hsin's Tides of Succession buffs: one was missing the stacks, the other had text udpated",
-      "For the echo scanner, when you're editing an echo, it improves the UX for the edit mode"
+      "For the echo scanner, when you're editing an echo, it improves the UX for the edit mode",
+      "Adds the ability in rotations to add a duration for manual buffs (e.g. ATK%)",
     ],
   },
   {
