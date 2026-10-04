@@ -33,8 +33,15 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
-    date: "2026-10-03",
+    date: "2026-10-04",
     dateLabel: "October 4, 2026",
+    items: [
+      "Fixed an issue where the teams feature wouldn't always use the right build in the listing of teams calculations or the summary page for a team",
+    ],
+  },
+  {
+    date: "2026-10-03",
+    dateLabel: "October 3, 2026",
     items: [
       "Fixes Firstlight's Herald ATK buffs, R2-R5 were off, R1 was correct",
       "Fixes Hsin's Tides of Succession buffs: one was missing the stacks, the other had text udpated",
