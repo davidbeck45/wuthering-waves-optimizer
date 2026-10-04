@@ -80,7 +80,8 @@ export interface SlotResolution {
 
 export interface TeamResolution {
   characters: Record<string, any>;
-  /** pass these to the engine instead of the team's own — pins are already baked into `characters` */
+  /** pins and by-name builds are baked into `characters` (each stamped as its record's `activeBuildId`), so these
+   *  nulls and the team's own `buildIds` give the engine the same records */
   buildIds: Array<string | null>;
   slots: SlotResolution[];
   auto: boolean;
@@ -354,6 +355,9 @@ export async function resolveTeamCharacters(
     const teammates = present.filter((m) => m !== id);
     const pick = pickBuild(characters[id], pins[slot], teammates);
     resolved = resolveCharactersForBuild(resolved, id, pick.buildId);
+    // the record now *is* that build: stamped as its active one, so the engine resolving the team's own pin again
+    // (calcTeamRotationDamage's buildIds) is a no-op instead of re-applying the stored build over the team buffs below
+    if (pick.buildId) resolved = { ...resolved, [id]: { ...resolved[id], activeBuildId: pick.buildId } };
     slots.push({ slot, characterId: id, ...pick, teammates, buffSource: "derived", enabled: [], skipped: [] });
   }
 

@@ -929,7 +929,7 @@ async function computeStatsForTeam(team: any): Promise<TeamSummaryStats> {
     {
       name: team.name,
       characterIds: team.characterIds,
-      buildIds: teamResolution.auto ? teamResolution.buildIds : team.buildIds,
+      buildIds: team.buildIds,
       actions: team.actions,
       duration: team.duration,
     },
