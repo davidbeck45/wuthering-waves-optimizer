@@ -120,6 +120,9 @@ export const OVERRIDES: Record<string, Overrides> = {
   Danjin: { "Skill - Crimson Erosion 1": "CrimsonErosion1" },
   // a fixed 666-point hit, flat in the app's table (no MV to match on)
   Galbrena: { "Dodge - Hellstride": "HellstrideDMG" },
+  // × 3.49: her S3 Confession Starflash, which the app applies through the chain (+249%); the Ring's extra Starflash
+  // is too far from the row's name for the ratio rule
+  Phoebe: { "Forte Heavy - Starflash (Ring of Mirrors, S3 Confession)": "HeavyAttackStarflashDMG" },
 };
 
 /** a set's own damage, pressed in the app as an echo-set attack (Midnight Veil 5pc: 480% Havoc DMG on the Outro) */
@@ -346,13 +349,18 @@ export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [Ma
   const nHint = hitsSuffix(name);
   const pref = NODE_PREF[cast.node ?? ""] ?? CAST_PREF[cast.cast ?? ""] ?? [];
   const perHit: Array<[AppRow, number]> = [];
+  // an echo cast that is a whole number of hits of exactly one of its echo's rows: Riley folds a summon's coordinated
+  // hits into one cast since his frame-accurate engine (Jué's "Blessing of Time" = 15 × Coordinated DMG 16%)
+  const divides = rows.filter((r) => r.mv && r.mv <= want + tol && Math.abs(want / r.mv - Math.round(want / r.mv)) < 0.01 && Math.round(want / r.mv) >= 2 && Math.round(want / r.mv) <= 40);
+  const echoOne = name.startsWith("Echo - ") && divides.length === 1;
   for (const r of rows) {
     if (!r.mv || r.mv > want + tol) continue;
     const q = want / r.mv;
     const n = Math.round(q);
     // an echo with a single damage row (Hecate's Crescent Servants) needs no name resemblance
     if (Math.abs(q - n) < 0.01 && n >= 2 && n <= 40 && (nHint === null || n % nHint === 0 || nHint % n === 0)
-      && (sim(name, r) >= 0.5 || rows.filter((x) => x.mv).length === 1 || (pref.includes(r.group) && n <= 4 && sim(name, r) >= 0.3))) {
+      && (sim(name, r) >= 0.5 || rows.filter((x) => x.mv).length === 1 || (echoOne && r === divides[0])
+        || (pref.includes(r.group) && n <= 4 && sim(name, r) >= 0.3))) {
       perHit.push([r, n]);
     }
   }
@@ -367,7 +375,10 @@ export function matchCast(cast: Cast, rows: AppRow[], overrides: Overrides): [Ma
   const pairs: Array<[AppRow, AppRow]> = [];
   for (let i = 0; i < damage.length; i++) for (let j = i + 1; j < damage.length; j++) {
     const a = damage[i], b = damage[j];
-    if (Math.abs((a.mv as number) + (b.mv as number) - want) < tol && Math.max(sim(name, a), sim(name, b)) >= 0.5) pairs.push([a, b]);
+    // ...or both rows sit in the cast's own group: Riley's Liberation that carries its 20 Tonic hits as one press since his
+    // frame-accurate engine (Ciaccona's Singer's Triple Cadenza = Improvised Symphonic Poem + Symphonic Poem: Tonic)
+    if (Math.abs((a.mv as number) + (b.mv as number) - want) < tol
+      && (Math.max(sim(name, a), sim(name, b)) >= 0.5 || (pref.length > 0 && a.group === pref[0] && b.group === pref[0]))) pairs.push([a, b]);
   }
   if (pairs.length === 1) return [pairs[0], "sum2", count];
   // 4. ratio: same action, a multiplier the app models elsewhere — never a healing / shield row
