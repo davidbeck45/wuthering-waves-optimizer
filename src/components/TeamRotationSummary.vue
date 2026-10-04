@@ -208,6 +208,7 @@ import {
   type TeamRotationCharacterResult,
   type TimelinePoint,
 } from "../calculator/teamRotation";
+import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import TeamRotationTimelineChart from "./TeamRotationTimelineChart.vue";
 import TeamRotationCharacterTimelineChart from "./TeamRotationCharacterTimelineChart.vue";
@@ -306,12 +307,22 @@ async function recompute() {
 
   const enemyConfig: TeamEnemyConfig = { ...t.enemyConfig };
 
+  // Each slot's characters map with its pinned build (if any) swapped in,
+  // so the stat panel and weapon card match what the damage calc uses.
+  const slotCharacters: Record<number, Record<string, any>> = {};
+  for (const slot of [0, 1, 2]) {
+    const characterId = t.characterIds[slot];
+    slotCharacters[slot] = characterId
+      ? resolveCharactersForBuild(characters.value, characterId, t.buildIds?.[slot] ?? null)
+      : characters.value;
+  }
+
   const nextContexts: Record<number, CharacterCalculationContext | null> = {};
   await Promise.all(
     [0, 1, 2].map(async (slot) => {
       const characterId = t.characterIds[slot];
       nextContexts[slot] = characterId
-        ? await buildCharacterCalculationContext(characterId, characters.value, enemyConfig, inventoryEchoes.value)
+        ? await buildCharacterCalculationContext(characterId, slotCharacters[slot], enemyConfig, inventoryEchoes.value)
         : null;
     }),
   );
@@ -322,7 +333,8 @@ async function recompute() {
   await Promise.all(
     [0, 1, 2].map(async (slot) => {
       const characterId = t.characterIds[slot];
-      const weaponKey = characterId ? characters.value[characterId]?.weapon : null;
+      const characterData = characterId ? slotCharacters[slot][characterId] : null;
+      const weaponKey = characterData?.weapon ?? null;
       const weaponType = (nextContexts[slot]?.chosenChar as { basic?: { weapon?: string } } | undefined)
         ?.basic?.weapon;
       if (!characterId || !weaponKey || !weaponType) {
@@ -335,7 +347,7 @@ async function recompute() {
             name: weaponModule.info.name,
             nameKey: weaponKey,
             rarity: weaponModule.info.rarity,
-            refinement: characters.value[characterId]?.weapons?.[weaponKey]?.refinement ?? "1",
+            refinement: characterData?.weapons?.[weaponKey]?.refinement ?? "1",
           }
         : null;
     }),
@@ -347,6 +359,7 @@ async function recompute() {
     {
       name: t.name,
       characterIds: t.characterIds,
+      buildIds: t.buildIds,
       actions: t.actions,
       duration: t.duration,
     },
