@@ -1,22 +1,14 @@
 [
  {
   "name": "Phoebe S6 Luminous Hymn R5 · Suisui + Spectro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Suisui + Spectro Rover (main DPS): 3,062,861 DPR for Phoebe of 3,659,538 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 12 Stacks, 1x Spectro Frazzle - 11 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Suisui + Spectro Rover (main DPS): 3,026,705 DPR for Phoebe of 3,657,986 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 12 Stacks, 1x Spectro Frazzle - 11 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phoebe S6 Luminous Hymn R5 · Suisui + Spectro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Suisui + Spectro Rover (main DPS): 3,062,861 DPR for Phoebe of 3,659,538 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 12 Stacks, 1x Spectro Frazzle - 11 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Suisui + Spectro Rover (main DPS): 3,026,705 DPR for Phoebe of 3,657,986 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 12 Stacks, 1x Spectro Frazzle - 11 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "AttentiveHeartDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -25,7 +17,7 @@
      "negativeStatusStacks": 12
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -34,7 +26,7 @@
      "negativeStatusStacks": 11
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -43,7 +35,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "GoldenGraceDMG",
      "type": "intro",
      "count": 1,
@@ -51,7 +43,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "AbsolutionLitanyDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -59,7 +51,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "DawnofEnlightenmentDMG",
      "type": "liberation",
      "count": 1,
@@ -67,7 +59,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "ToWhereLightShinesDMG",
      "type": "skill",
      "count": 1,
@@ -75,7 +67,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -83,7 +75,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -92,8 +84,16 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -101,7 +101,7 @@
     },
     {
      "order": 12,
-     "key": "ChamuelsStarStage2DMG",
+     "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -109,14 +109,6 @@
     },
     {
      "order": 13,
-     "key": "ChamuelsStarStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -124,7 +116,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -132,7 +124,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -140,7 +132,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -148,7 +140,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -157,7 +149,7 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -165,7 +157,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -173,7 +165,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -181,12 +173,21 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 23,
@@ -198,15 +199,6 @@
     },
     {
      "order": 24,
-     "key": "ElementalEffectSpectroFrazzle",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    },
-    {
-     "order": 25,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -214,7 +206,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 25,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -222,7 +214,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 26,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -230,7 +222,7 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 27,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -238,7 +230,7 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 28,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -247,7 +239,7 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 30,
+     "order": 29,
      "key": "CapitaneusDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -255,28 +247,28 @@
      "isDisabled": false,
      "mainEcho": "Capitaneus",
      "mainEchoRank": 5
+    },
+    {
+     "order": 30,
+     "key": "PlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Phoebe S6 Luminous Hymn R5 · Mornye + Spectro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Spectro Rover (main DPS): 2,845,312 DPR for Phoebe of 3,650,369 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Spectro Rover (main DPS): 2,813,589 DPR for Phoebe of 3,609,845 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phoebe S6 Luminous Hymn R5 · Mornye + Spectro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Spectro Rover (main DPS): 2,845,312 DPR for Phoebe of 3,650,369 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Mornye + Spectro Rover (main DPS): 2,813,589 DPR for Phoebe of 3,609,845 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "AttentiveHeartDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -285,7 +277,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -294,7 +286,7 @@
      "negativeStatusStacks": 8
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -303,7 +295,7 @@
      "negativeStatusStacks": 7
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "GoldenGraceDMG",
      "type": "intro",
      "count": 1,
@@ -311,7 +303,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "AbsolutionLitanyDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -319,7 +311,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "DawnofEnlightenmentDMG",
      "type": "liberation",
      "count": 1,
@@ -327,7 +319,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "ToWhereLightShinesDMG",
      "type": "skill",
      "count": 1,
@@ -335,7 +327,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -343,7 +335,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -352,8 +344,16 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -361,7 +361,7 @@
     },
     {
      "order": 12,
-     "key": "ChamuelsStarStage2DMG",
+     "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -369,14 +369,6 @@
     },
     {
      "order": 13,
-     "key": "ChamuelsStarStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -384,8 +376,16 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -393,7 +393,7 @@
     },
     {
      "order": 16,
-     "key": "ChamuelsStarStage2DMG",
+     "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -401,14 +401,6 @@
     },
     {
      "order": 17,
-     "key": "ChamuelsStarStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -417,7 +409,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -425,8 +417,16 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -434,14 +434,6 @@
     },
     {
      "order": 21,
-     "key": "ChamuelsStarStage2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -449,7 +441,7 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 22,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -458,7 +450,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 24,
+     "order": 23,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -466,7 +458,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 24,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -474,7 +466,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 25,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -482,7 +474,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 26,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -490,12 +482,22 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 27,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "CapitaneusDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Capitaneus",
+     "mainEchoRank": 5
     },
     {
      "order": 29,
@@ -508,35 +510,25 @@
     },
     {
      "order": 30,
-     "key": "CapitaneusDMG",
-     "type": "echoAttacks",
+     "key": "PlungingAttackDMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Capitaneus",
-     "mainEchoRank": 5
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Phoebe S6 Luminous Hymn R5 · Shorekeeper + Spectro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Shorekeeper + Spectro Rover (main DPS): 2,688,034 DPR for Phoebe of 3,221,306 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Shorekeeper + Spectro Rover (main DPS): 2,715,609 DPR for Phoebe of 3,287,833 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phoebe S6 Luminous Hymn R5 · Shorekeeper + Spectro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Shorekeeper + Spectro Rover (main DPS): 2,688,034 DPR for Phoebe of 3,221,306 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R5, Eternal Radiance 5pc, main stats 43311 CD Spectro Spectro atk atk. Team: Shorekeeper + Spectro Rover (main DPS): 2,715,609 DPR for Phoebe of 3,287,833 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "AttentiveHeartDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -545,7 +537,7 @@
      "negativeStatusStacks": 8
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -554,7 +546,7 @@
      "negativeStatusStacks": 7
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "GoldenGraceDMG",
      "type": "intro",
      "count": 1,
@@ -562,7 +554,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "AbsolutionLitanyDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -570,7 +562,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "DawnofEnlightenmentDMG",
      "type": "liberation",
      "count": 1,
@@ -578,7 +570,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "ToWhereLightShinesDMG",
      "type": "skill",
      "count": 1,
@@ -586,7 +578,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -594,7 +586,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -603,8 +595,16 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -612,7 +612,7 @@
     },
     {
      "order": 11,
-     "key": "ChamuelsStarStage2DMG",
+     "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -620,14 +620,6 @@
     },
     {
      "order": 12,
-     "key": "ChamuelsStarStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -635,7 +627,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -643,7 +635,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -651,7 +643,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -659,7 +651,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -668,7 +660,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -676,7 +668,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -684,7 +676,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -692,12 +684,21 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "ElementalEffectSpectroFrazzle",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 10
     },
     {
      "order": 22,
@@ -709,15 +710,6 @@
     },
     {
      "order": 23,
-     "key": "ElementalEffectSpectroFrazzle",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10
-    },
-    {
-     "order": 24,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -725,7 +717,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 24,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -733,7 +725,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 25,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -741,7 +733,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 26,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -749,7 +741,7 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 27,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -758,7 +750,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 29,
+     "order": 28,
      "key": "CapitaneusDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -766,28 +758,28 @@
      "isDisabled": false,
      "mainEcho": "Capitaneus",
      "mainEchoRank": 5
+    },
+    {
+     "order": 29,
+     "key": "PlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Phoebe S6 Luminous Hymn R1 · Spectro Rover + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R1, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Spectro Rover + Lynae (main DPS): 1,951,849 DPR for Phoebe of 2,686,048 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R1, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Spectro Rover + Lynae (main DPS): 1,929,902 DPR for Phoebe of 2,658,206 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phoebe S6 Luminous Hymn R1 · Spectro Rover + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R1, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Spectro Rover + Lynae (main DPS): 1,951,849 DPR for Phoebe of 2,686,048 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Luminous Hymn R1, Eternal Radiance 5pc, main stats 43311 CD ATK Spectro atk atk. Team: Spectro Rover + Lynae (main DPS): 1,929,902 DPR for Phoebe of 2,658,206 team. Sequence procs in the loop: 1x Forte Heavy - Starflash (Ring of Mirrors). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Dawn of Enlightenment (Absolution S1) = DawnofEnlightenmentDMG × 5.80; Outro - Attentive Heart = PlungingAttackDMG × 5.80. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 9 Stacks, 1x Spectro Frazzle - 8 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "AttentiveHeartDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -796,7 +788,7 @@
      "negativeStatusStacks": 7
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "GoldenGraceDMG",
      "type": "intro",
      "count": 1,
@@ -804,7 +796,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "AbsolutionLitanyDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -812,7 +804,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "DawnofEnlightenmentDMG",
      "type": "liberation",
      "count": 1,
@@ -820,7 +812,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "ToWhereLightShinesDMG",
      "type": "skill",
      "count": 1,
@@ -828,7 +820,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -836,7 +828,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -844,7 +836,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -852,7 +844,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -860,7 +852,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -869,7 +861,7 @@
      "negativeStatusStacks": 10
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -877,7 +869,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -885,7 +877,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -893,7 +885,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -901,7 +893,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -909,7 +901,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -918,8 +910,16 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "ChamuelsStarStage1DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -927,7 +927,7 @@
     },
     {
      "order": 19,
-     "key": "ChamuelsStarStage2DMG",
+     "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -935,14 +935,6 @@
     },
     {
      "order": 20,
-     "key": "ChamuelsStarStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -950,7 +942,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "ChamuelsStarStage1DMG",
      "type": "skill",
      "count": 1,
@@ -958,7 +950,7 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 22,
      "key": "ChamuelsStarStage2DMG",
      "type": "skill",
      "count": 1,
@@ -966,7 +958,7 @@
      "isDisabled": false
     },
     {
-     "order": 24,
+     "order": 23,
      "key": "ChamuelsStarStage3DMG",
      "type": "skill",
      "count": 1,
@@ -974,7 +966,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 24,
      "key": "ElementalEffectSpectroFrazzle",
      "type": "negativeStatus",
      "count": 1,
@@ -983,7 +975,7 @@
      "negativeStatusStacks": 8
     },
     {
-     "order": 26,
+     "order": 25,
      "key": "HeavyAttackStarflashDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -991,7 +983,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 26,
      "key": "CapitaneusDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -999,6 +991,14 @@
      "isDisabled": false,
      "mainEcho": "Capitaneus",
      "mainEchoRank": 5
+    },
+    {
+     "order": 27,
+     "key": "PlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

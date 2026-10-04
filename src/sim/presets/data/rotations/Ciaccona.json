@@ -1,22 +1,14 @@
 [
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,143,240 DPR for Ciaccona of 7,758,455 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,088,733 DPR for Ciaccona of 7,785,724 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 13x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,143,240 DPR for Ciaccona of 7,758,455 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 1,088,733 DPR for Ciaccona of 7,785,724 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 13x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
@@ -24,7 +16,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -32,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -41,7 +33,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -49,7 +41,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -57,7 +49,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -65,7 +57,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -74,7 +66,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -82,7 +74,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -90,7 +82,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
@@ -98,7 +90,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "QuadrupleDownbeatDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -106,7 +98,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -115,7 +107,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -123,7 +115,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "SymphonicPoemTonicDMG",
      "type": "liberation",
      "count": 1,
@@ -131,7 +123,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "NightmareKelpieOutroDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -139,158 +131,48 @@
      "isDisabled": false,
      "mainEcho": "NightmareKelpie",
      "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 13,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
     },
     {
      "order": 17,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 22,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 24,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 25,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 28,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 29,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 30,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 1,084,366 DPR for Ciaccona of 3,940,951 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 1,050,797 DPR for Ciaccona of 3,916,502 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 1,084,366 DPR for Ciaccona of 3,940,951 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 1,050,797 DPR for Ciaccona of 3,916,502 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks.",
    "actions": [
     {
      "order": 1,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 6
     },
     {
      "order": 2,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -306,23 +188,6 @@
     },
     {
      "order": 4,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 6,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
@@ -330,7 +195,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 5,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -338,7 +203,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 6,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -346,7 +211,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 7,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -354,7 +219,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 8,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -362,7 +227,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 9,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -370,7 +235,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 10,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -378,7 +243,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
@@ -386,7 +251,16 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
+     "order": 13,
      "key": "QuadrupleDownbeatDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -394,16 +268,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 16,
+     "order": 14,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -411,57 +276,28 @@
      "isDisabled": false
     },
     {
+     "order": 15,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
+    },
+    {
      "order": 17,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 18,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 19,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 22,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 6
@@ -471,22 +307,14 @@
  },
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Qiuyuan: 1,033,094 DPR for Ciaccona of 4,366,499 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Qiuyuan: 975,820 DPR for Ciaccona of 4,263,834 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 4x Aero Erosion - 3 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Qiuyuan: 1,033,094 DPR for Ciaccona of 4,366,499 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Qiuyuan: 975,820 DPR for Ciaccona of 4,263,834 team. Sequence procs in the loop: 1x Basic - Solo Concert (S6), 1x Basic - Solo Concert (S6). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 3 Stacks, 4x Aero Erosion - 3 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -495,7 +323,7 @@
      "negativeStatusStacks": 3
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "RoamingwiththeWindDMG",
      "type": "intro",
      "count": 1,
@@ -503,7 +331,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -512,7 +340,7 @@
      "negativeStatusStacks": 3
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
@@ -520,7 +348,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -528,7 +356,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -536,7 +364,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -544,7 +372,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -552,7 +380,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -560,7 +388,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "SequenceNode6UnendingCadence",
      "type": "liberation",
      "count": 1,
@@ -568,12 +396,21 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 3
     },
     {
      "order": 13,
@@ -585,15 +422,6 @@
     },
     {
      "order": 14,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 3
-    },
-    {
-     "order": 15,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -601,26 +429,24 @@
      "isDisabled": false
     },
     {
+     "order": 15,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 16,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "negativeStatusStacks": 3
     },
     {
      "order": 17,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 3
-    },
-    {
-     "order": 18,
      "key": "NightmareKelpieOutroDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -630,37 +456,10 @@
      "mainEchoRank": 5
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 3
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 3
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 3
-    },
-    {
-     "order": 22,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
+     "count": 4,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 3
@@ -670,19 +469,20 @@
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 664,099 DPR for Ciaccona of 4,436,821 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 636,156 DPR for Ciaccona of 4,463,577 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 14x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 664,099 DPR for Ciaccona of 4,436,821 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 636,156 DPR for Ciaccona of 4,463,577 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 14x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 9
     },
     {
      "order": 2,
@@ -702,15 +502,6 @@
     },
     {
      "order": 4,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 5,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -718,7 +509,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -726,7 +517,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -735,7 +526,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -743,12 +534,21 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
     },
     {
      "order": 10,
@@ -760,15 +560,6 @@
     },
     {
      "order": 11,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 12,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -776,7 +567,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "SymphonicPoemTonicDMG",
      "type": "liberation",
      "count": 1,
@@ -784,7 +575,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "NightmareKelpieOutroDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -792,164 +583,37 @@
      "isDisabled": false,
      "mainEcho": "NightmareKelpie",
      "mainEchoRank": 5
+    },
+    {
+     "order": 14,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 14,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
     },
     {
      "order": 15,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 16,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 17,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 22,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 24,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 25,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 28,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 589,843 DPR for Ciaccona of 3,662,016 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 591,363 DPR for Ciaccona of 3,826,310 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 8x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 589,843 DPR for Ciaccona of 3,662,016 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 591,363 DPR for Ciaccona of 3,826,310 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 8x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks.",
    "actions": [
     {
      "order": 1,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 3,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
@@ -957,7 +621,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 2,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -965,7 +629,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 3,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -973,7 +637,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 4,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -981,7 +645,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 5,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -990,7 +654,7 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 8,
+     "order": 6,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -998,7 +662,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 7,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
@@ -1006,15 +670,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
-     "key": "QuadrupleDownbeatDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
+     "order": 8,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -1023,7 +679,15 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 12,
+     "order": 9,
+     "key": "QuadrupleDownbeatDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -1031,15 +695,24 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "SymphonicPoemTonicDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
+     "order": 13,
      "key": "NightmareKelpieOutroDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -1049,14 +722,22 @@
      "mainEchoRank": 5
     },
     {
+     "order": 14,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 9
+    },
+    {
      "order": 15,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "negativeStatusStacks": 8
     },
     {
      "order": 16,
@@ -1074,37 +755,10 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 9
+     "negativeStatusStacks": 8
     },
     {
      "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 21,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 2,
@@ -1113,87 +767,23 @@
      "negativeStatusStacks": 9
     },
     {
-     "order": 22,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
+     "order": 19,
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 23,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 24,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 25,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 26,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
-    },
-    {
-     "order": 27,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 28,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 8
-    },
-    {
-     "order": 29,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 9
+     "isDisabled": false
     }
    ]
   }
  },
  {
-  "name": "Ciaccona S0 Woodland Aria R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 507,872 DPR for Ciaccona of 2,405,658 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+  "name": "Ciaccona S0 Woodland Aria R1 · Sanhua + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Sanhua + Cartethyia: 464,718 DPR for Ciaccona of 3,660,417 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 4x Aero Erosion - 6 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Ciaccona S0 Woodland Aria R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Qiuyuan: 507,872 DPR for Ciaccona of 2,405,658 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks.",
+   "name": "Ciaccona S0 Woodland Aria R1 · Sanhua + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Sanhua + Cartethyia: 464,718 DPR for Ciaccona of 3,660,417 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks, 1x Aero Erosion - 5 Stacks, 4x Aero Erosion - 6 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -1206,31 +796,22 @@
     },
     {
      "order": 2,
-     "key": "SymphonicPoemTonicDMG",
-     "type": "liberation",
+     "key": "Stage3DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 4,
-     "key": "RoamingwiththeWindDMG",
-     "type": "intro",
+     "key": "Stage4DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -1239,8 +820,16 @@
      "negativeStatusStacks": 6
     },
     {
+     "order": 5,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 6,
-     "key": "Stage3DMG",
+     "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -1256,30 +845,15 @@
     },
     {
      "order": 8,
-     "key": "MidairAttackStage1DMG",
-     "type": "basic",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "negativeStatusStacks": 6
     },
     {
      "order": 9,
-     "key": "MidairAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
      "key": "HarmonicAllegroDMG",
      "type": "skill",
      "count": 1,
@@ -1287,7 +861,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 10,
      "key": "QuadrupleDownbeatDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -1295,7 +869,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -1304,7 +878,7 @@
      "negativeStatusStacks": 6
     },
     {
-     "order": 14,
+     "order": 12,
      "key": "ImprovisedSymphonicPoemSkillDMG",
      "type": "liberation",
      "count": 1,
@@ -1312,7 +886,15 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 13,
+     "key": "SymphonicPoemTonicDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "NightmareKelpieOutroDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -1322,50 +904,39 @@
      "mainEchoRank": 5
     },
     {
+     "order": 15,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 6
+    },
+    {
      "order": 16,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "negativeStatusStacks": 5
     },
     {
      "order": 17,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 1,
+     "count": 4,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 6
     },
     {
      "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
+     "key": "RoamingwiththeWindDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 19,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 6
+     "isDisabled": false
     }
    ]
   }

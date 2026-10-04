@@ -1,22 +1,14 @@
 [
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,696,391 DPR for Luuk Herssen of 11,059,744 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,696,391 DPR for Luuk Herssen of 11,059,744 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "BowtotheLastLightDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "BeforeInjectionofDawnDMG",
      "type": "intro",
      "count": 1,
@@ -24,8 +16,16 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "MidairAttackStage2ScytheResctionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -33,15 +33,15 @@
     },
     {
      "order": 4,
-     "key": "MidairAttackStage3ScytheResctionDMG",
-     "type": "basic",
+     "key": "AureoleofExecutionRingDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 5,
-     "key": "AureoleofExecutionRingDMG",
+     "key": "BasicAttackGoldenImpaleDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -49,15 +49,15 @@
     },
     {
      "order": 6,
-     "key": "BasicAttackGoldenImpaleDMG",
-     "type": "skill",
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 7,
-     "key": "MidairAttackStage1DMG",
+     "key": "MidairAttackStage2ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -65,7 +65,7 @@
     },
     {
      "order": 8,
-     "key": "MidairAttackStage2ScytheResctionDMG",
+     "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -73,14 +73,6 @@
     },
     {
      "order": 9,
-     "key": "MidairAttackStage3ScytheResctionDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
      "key": "AureoleofExecutionBreachDMG",
      "type": "skill",
      "count": 1,
@@ -88,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "BasicAttackGoldenImpaleDMG",
      "type": "skill",
      "count": 1,
@@ -96,8 +88,16 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MidairAttackStage2ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -105,7 +105,7 @@
     },
     {
      "order": 13,
-     "key": "MidairAttackStage2ScytheResctionDMG",
+     "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -113,14 +113,6 @@
     },
     {
      "order": 14,
-     "key": "MidairAttackStage3ScytheResctionDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
      "key": "AureoleofExecutionGlareDMG",
      "type": "skill",
      "count": 1,
@@ -128,7 +120,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "GavelofEarthshakerDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -136,7 +128,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "IchorDepositDMG",
      "type": "skill",
      "count": 1,
@@ -144,7 +136,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "RewritteninWintersMargins",
      "type": "liberation",
      "count": 1,
@@ -152,7 +144,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -160,7 +152,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "MidairAttackStage2ScytheResctionDMG",
      "type": "basic",
      "count": 1,
@@ -168,7 +160,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
@@ -176,9 +168,17 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "AureoleofExecutionRingDMG",
      "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BowtotheLastLightDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -188,22 +188,14 @@
  },
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,261,950 DPR for Luuk Herssen of 9,305,447 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,261,950 DPR for Luuk Herssen of 9,305,447 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "BowtotheLastLightDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "BeforeInjectionofDawnDMG",
      "type": "intro",
      "count": 1,
@@ -211,8 +203,16 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "MidairAttackStage2ScytheResctionDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -220,14 +220,6 @@
     },
     {
      "order": 4,
-     "key": "MidairAttackStage3ScytheResctionDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
      "key": "AureoleofExecutionRingDMG",
      "type": "skill",
      "count": 1,
@@ -235,7 +227,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "BasicAttackGoldenImpaleDMG",
      "type": "skill",
      "count": 1,
@@ -243,8 +235,16 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage2ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -252,7 +252,7 @@
     },
     {
      "order": 8,
-     "key": "MidairAttackStage2ScytheResctionDMG",
+     "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -260,14 +260,6 @@
     },
     {
      "order": 9,
-     "key": "MidairAttackStage3ScytheResctionDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
      "key": "AureoleofExecutionBreachDMG",
      "type": "skill",
      "count": 1,
@@ -275,7 +267,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "BasicAttackGoldenImpaleDMG",
      "type": "skill",
      "count": 1,
@@ -283,7 +275,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -291,7 +283,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "MidairAttackStage2ScytheResctionDMG",
      "type": "basic",
      "count": 1,
@@ -299,7 +291,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "MidairAttackStage3ScytheResctionDMG",
      "type": "basic",
      "count": 1,
@@ -307,7 +299,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "AureoleofExecutionGlareDMG",
      "type": "skill",
      "count": 1,
@@ -315,7 +307,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "GavelofEarthshakerDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -323,7 +315,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "IchorDepositDMG",
      "type": "skill",
      "count": 1,
@@ -331,7 +323,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "RewritteninWintersMargins",
      "type": "liberation",
      "count": 1,
@@ -339,9 +331,17 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "GoldenRefluxDMG",
      "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BowtotheLastLightDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

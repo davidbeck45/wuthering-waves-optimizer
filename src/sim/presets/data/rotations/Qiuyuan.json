@@ -1,22 +1,14 @@
 [
  {
   "name": "Qiuyuan S6 Emerald Sentence R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,428,146 DPR for Qiuyuan of 5,227,080 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,380,801 DPR for Qiuyuan of 5,156,118 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Qiuyuan S6 Emerald Sentence R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,428,146 DPR for Qiuyuan of 5,227,080 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,380,801 DPR for Qiuyuan of 5,156,118 team. Sequence procs in the loop: 1x Forte - Inksplash of Mind (S6), 1x Forte - Inksplash of Mind (S6).",
    "actions": [
     {
      "order": 1,
-     "key": "SequenceNode3OBladeIWhoSaveNoMore2",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "AttacktheMustDefendDMG",
      "type": "intro",
      "count": 1,
@@ -24,8 +16,16 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "ThusSpoketheBladeInkwashStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ThusSpoketheBladeInkwashStage4DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -33,7 +33,7 @@
     },
     {
      "order": 4,
-     "key": "ThusSpoketheBladeInkwashStage4DMG",
+     "key": "ThusSpoketheBladeToTeachDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -41,7 +41,7 @@
     },
     {
      "order": 5,
-     "key": "ThusSpoketheBladeToTeachDMG",
+     "key": "ThusSpoketheBladeToSaveDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -49,7 +49,7 @@
     },
     {
      "order": 6,
-     "key": "ThusSpoketheBladeToSaveDMG",
+     "key": "ThusSpoketheBladeToSacrificeDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -57,7 +57,7 @@
     },
     {
      "order": 7,
-     "key": "ThusSpoketheBladeToSacrificeDMG",
+     "key": "SequenceNode6ThusIHeardThusISawThusISpoke",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -65,14 +65,6 @@
     },
     {
      "order": 8,
-     "key": "SequenceNode6ThusIHeardThusISawThusISpoke",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "SequenceNode3OBladeIWhoSaveNoMore",
      "type": "skill",
      "count": 1,
@@ -80,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ThusSpoketheBladeInkwashStage3DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -88,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "ThusSpoketheBladeInkwashStage4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -96,7 +88,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "ThusSpoketheBladeToTeachDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -104,7 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "ThusSpoketheBladeToSaveDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -112,7 +104,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "ThusSpoketheBladeToSacrificeDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -120,7 +112,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "SequenceNode6ThusIHeardThusISawThusISpoke",
      "type": "forteCircuit",
      "count": 1,
@@ -128,9 +120,17 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "SunderingStrikeDMG",
      "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "SequenceNode3OBladeIWhoSaveNoMore2",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

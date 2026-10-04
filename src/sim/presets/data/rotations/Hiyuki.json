@@ -1,11 +1,11 @@
 [
  {
   "name": "Hiyuki S6 Frostburn R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,890,185 DPR for Hiyuki of 10,169,650 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,787,207 DPR for Hiyuki of 10,113,498 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hiyuki S6 Frostburn R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,890,185 DPR for Hiyuki of 10,169,650 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lynae (main DPS): 8,787,207 DPR for Hiyuki of 10,113,498 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 21x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 4x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -184,23 +184,6 @@
     },
     {
      "order": 22,
-     "key": "ElementalEffectGlacioBite",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    },
-    {
-     "order": 23,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
      "key": "BasicAttackForeclaimedSelfStage1DMG",
      "type": "basic",
      "count": 1,
@@ -208,7 +191,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 23,
      "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
@@ -216,7 +199,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 24,
      "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
@@ -224,7 +207,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 25,
      "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 1,
@@ -233,7 +216,7 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 28,
+     "order": 26,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -241,7 +224,7 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 27,
      "key": "BasicAttackIaiDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -249,10 +232,27 @@
      "isDisabled": false
     },
     {
-     "order": 30,
+     "order": 28,
      "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 29,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 13
@@ -261,7 +261,7 @@
      "order": 31,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
-     "count": 3,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -387,11 +387,11 @@
  },
  {
   "name": "Hiyuki S6 Frostburn R5 · Suisui + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,820,632 DPR for Hiyuki of 10,973,833 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,714,166 DPR for Hiyuki of 10,899,129 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hiyuki S6 Frostburn R5 · Suisui + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,820,632 DPR for Hiyuki of 10,973,833 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R5, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Lucilla (main DPS): 8,714,166 DPR for Hiyuki of 10,899,129 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -570,23 +570,6 @@
     },
     {
      "order": 22,
-     "key": "ElementalEffectGlacioBite",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13
-    },
-    {
-     "order": 23,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 24,
      "key": "BasicAttackForeclaimedSelfStage1DMG",
      "type": "basic",
      "count": 1,
@@ -594,7 +577,7 @@
      "isDisabled": false
     },
     {
-     "order": 25,
+     "order": 23,
      "key": "BasicAttackForeclaimedSelfStage2DMG",
      "type": "basic",
      "count": 1,
@@ -602,7 +585,7 @@
      "isDisabled": false
     },
     {
-     "order": 26,
+     "order": 24,
      "key": "BasicAttackForeclaimedSelfStage3DMG",
      "type": "basic",
      "count": 1,
@@ -610,7 +593,7 @@
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 25,
      "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 3,
@@ -619,7 +602,7 @@
      "negativeStatusStacks": 13
     },
     {
-     "order": 28,
+     "order": 26,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
      "count": 3,
@@ -627,7 +610,7 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 27,
      "key": "BasicAttackIaiDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -635,10 +618,27 @@
      "isDisabled": false
     },
     {
-     "order": 30,
+     "order": 28,
      "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 5,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 29,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 13
@@ -647,7 +647,7 @@
      "order": 31,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
-     "count": 5,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
@@ -772,12 +772,12 @@
   }
  },
  {
-  "name": "Hiyuki S6 Frostburn R1 · Shorekeeper + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R1, Wishes of Quiet Snowfall 5pc, main stats 43311 ATK Glacio Glacio atk atk. Team: Shorekeeper + Lucilla (main DPS): 4,671,855 DPR for Hiyuki of 5,149,938 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 6x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 5x Glacio Chafe - 10 Stacks, 5x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 1x Glacio Chafe - 10 Stacks.",
+  "name": "Hiyuki S6 Frostburn R1 · Chisa + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R1, Wishes of Quiet Snowfall 5pc, main stats 43311 ATK Glacio Glacio atk atk. Team: Chisa + Lucilla (main DPS): 4,745,121 DPR for Hiyuki of 5,428,814 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Hiyuki S6 Frostburn R1 · Shorekeeper + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R1, Wishes of Quiet Snowfall 5pc, main stats 43311 ATK Glacio Glacio atk atk. Team: Shorekeeper + Lucilla (main DPS): 4,671,855 DPR for Hiyuki of 5,149,938 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 6x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 5x Glacio Chafe - 10 Stacks, 5x Glacio Chafe - 10 Stacks, 3x Glacio Chafe - 10 Stacks, 1x Glacio Chafe - 10 Stacks.",
+   "name": "Hiyuki S6 Frostburn R1 · Chisa + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Frostburn R1, Wishes of Quiet Snowfall 5pc, main stats 43311 ATK Glacio Glacio atk atk. Team: Chisa + Lucilla (main DPS): 4,745,121 DPR for Hiyuki of 5,428,814 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 41x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 6x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 5x Glacio Chafe - 13 Stacks, 3x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -794,7 +794,7 @@
      "count": 41,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 3,
@@ -811,7 +811,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 5,
@@ -836,7 +836,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 8,
@@ -861,7 +861,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 11,
@@ -886,7 +886,7 @@
      "count": 6,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 14,
@@ -927,7 +927,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 19,
@@ -944,7 +944,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 21,
@@ -961,7 +961,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 23,
@@ -997,23 +997,6 @@
     },
     {
      "order": 27,
-     "key": "ElementalEffectGlacioBite",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 10
-    },
-    {
-     "order": 28,
-     "key": "GlacioBiteDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 29,
      "key": "BasicAttackIaiDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -1021,19 +1004,36 @@
      "isDisabled": false
     },
     {
-     "order": 30,
+     "order": 28,
      "key": "ElementalEffectGlacioBite",
      "type": "forteCircuit",
      "count": 5,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
+    },
+    {
+     "order": 29,
+     "key": "GlacioBiteDMG",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "ElementalEffectGlacioBite",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13
     },
     {
      "order": 31,
      "key": "GlacioBiteDMG",
      "type": "forteCircuit",
-     "count": 5,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
@@ -1060,7 +1060,7 @@
      "count": 5,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 35,
@@ -1093,7 +1093,7 @@
      "count": 3,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 39,
@@ -1128,7 +1128,7 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "negativeStatusStacks": 10
+     "negativeStatusStacks": 13
     },
     {
      "order": 43,

@@ -1,22 +1,14 @@
 [
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,066,518 DPR for Jingran of 10,907,773 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,066,518 DPR for Jingran of 10,907,773 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
    "actions": [
     {
      "order": 1,
-     "key": "RisingFortuneAndEbbingEvilDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "QuestiontheTombsDMG",
      "type": "intro",
      "count": 1,
@@ -24,7 +16,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "BurialOfThousandSoulsDMG",
      "type": "liberation",
      "count": 1,
@@ -32,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 6,
@@ -40,7 +32,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -48,7 +40,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -56,7 +48,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "BasicAttackDevilSBaneStage2DMG",
      "type": "basic",
      "count": 1,
@@ -64,7 +56,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "BasicAttackDevilSBaneStage3DMG",
      "type": "basic",
      "count": 1,
@@ -72,7 +64,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "BasicAttackDevilSBaneStage4DMG",
      "type": "basic",
      "count": 1,
@@ -80,7 +72,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 3,
@@ -88,7 +80,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -96,7 +88,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 3,
@@ -104,7 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "GroundEncroachingYinDMG",
      "type": "skill",
      "count": 1,
@@ -112,7 +104,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
@@ -120,7 +112,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -128,7 +120,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -136,7 +128,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 1,
@@ -144,7 +136,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "GroundScorchingYangDMG",
      "type": "skill",
      "count": 1,
@@ -152,7 +144,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
@@ -160,7 +152,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -168,7 +160,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 1,
@@ -176,7 +168,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -184,28 +176,28 @@
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "RisingFortuneAndEbbingEvilDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,901,968 DPR for Jingran of 10,369,740 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,901,968 DPR for Jingran of 10,369,740 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
    "actions": [
     {
      "order": 1,
-     "key": "RisingFortuneAndEbbingEvilDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "QuestiontheTombsDMG",
      "type": "intro",
      "count": 1,
@@ -213,7 +205,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "BurialOfThousandSoulsDMG",
      "type": "liberation",
      "count": 1,
@@ -221,7 +213,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 6,
@@ -229,7 +221,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -237,7 +229,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 3,
@@ -245,7 +237,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "BasicAttackDevilSBaneStage2DMG",
      "type": "basic",
      "count": 1,
@@ -253,7 +245,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "BasicAttackDevilSBaneStage3DMG",
      "type": "basic",
      "count": 1,
@@ -261,7 +253,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "BasicAttackDevilSBaneStage4DMG",
      "type": "basic",
      "count": 1,
@@ -269,7 +261,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 3,
@@ -277,7 +269,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -285,7 +277,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -293,7 +285,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "GroundEncroachingYinDMG",
      "type": "skill",
      "count": 1,
@@ -301,7 +293,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
@@ -309,7 +301,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -317,7 +309,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -325,7 +317,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 1,
@@ -333,7 +325,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "GroundScorchingYangDMG",
      "type": "skill",
      "count": 1,
@@ -341,7 +333,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
@@ -349,7 +341,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -357,7 +349,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 1,
@@ -365,7 +357,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -373,28 +365,28 @@
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "RisingFortuneAndEbbingEvilDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,896,914 DPR for Jingran of 9,589,464 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,896,914 DPR for Jingran of 9,589,464 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
    "actions": [
     {
      "order": 1,
-     "key": "RisingFortuneAndEbbingEvilDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "QuestiontheTombsDMG",
      "type": "intro",
      "count": 1,
@@ -402,7 +394,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "BurialOfThousandSoulsDMG",
      "type": "liberation",
      "count": 1,
@@ -410,7 +402,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 5,
@@ -418,7 +410,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -426,7 +418,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -434,7 +426,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "BasicAttackDevilSBaneStage2DMG",
      "type": "basic",
      "count": 1,
@@ -442,7 +434,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "BasicAttackDevilSBaneStage3DMG",
      "type": "basic",
      "count": 1,
@@ -450,7 +442,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "BasicAttackDevilSBaneStage4DMG",
      "type": "basic",
      "count": 1,
@@ -458,7 +450,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 3,
@@ -466,7 +458,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -474,7 +466,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -482,7 +474,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "GroundEncroachingYinDMG",
      "type": "skill",
      "count": 1,
@@ -490,7 +482,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "NetherworldTraverseDMG",
      "type": "skill",
      "count": 1,
@@ -498,7 +490,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -506,7 +498,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "HeavyAttackSoulRaidDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -514,7 +506,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 2,
@@ -522,7 +514,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "GroundScorchingYangDMG",
      "type": "skill",
      "count": 1,
@@ -530,7 +522,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "AfterlifeSGuideDMG",
      "type": "skill",
      "count": 1,
@@ -538,7 +530,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "HeavyAttackStardomeMeanderDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -546,7 +538,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
      "count": 1,
@@ -554,7 +546,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 21,
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -562,6 +554,14 @@
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "RisingFortuneAndEbbingEvilDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

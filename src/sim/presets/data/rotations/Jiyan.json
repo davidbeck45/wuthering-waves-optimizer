@@ -1,17 +1,17 @@
 [
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,832,741 DPR for Jiyan of 4,491,352 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,779,560 DPR for Jiyan of 4,416,594 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,832,741 DPR for Jiyan of 4,491,352 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,779,560 DPR for Jiyan of 4,416,594 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
      "key": "OutroSkillDMG",
      "type": "outro",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -49,29 +49,25 @@
     },
     {
      "order": 6,
-     "key": "NightmareFeilianAttackDMG",
-     "type": "echoAttacks",
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareFeilianBeringal",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 7,
-     "key": "NightmareFeilianWhirlwindDMG",
-     "type": "echoAttacks",
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareFeilianBeringal",
-     "mainEchoRank": 5
+     "isDisabled": false
     },
     {
      "order": 8,
      "key": "LanceOfQingloongPart1DMG",
      "type": "liberation",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -87,25 +83,29 @@
      "order": 10,
      "key": "LanceOfQingloongPart1DMG",
      "type": "liberation",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 11,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
+     "key": "NightmareFeilianAttackDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareFeilianBeringal",
+     "mainEchoRank": 5
     },
     {
      "order": 12,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
+     "key": "NightmareFeilianWhirlwindDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareFeilianBeringal",
+     "mainEchoRank": 5
     },
     {
      "order": 13,
@@ -120,32 +120,22 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,734,398 DPR for Jiyan of 3,997,293 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,646,797 DPR for Jiyan of 3,886,413 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,734,398 DPR for Jiyan of 3,997,293 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,646,797 DPR for Jiyan of 3,886,413 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 2,
      "key": "OutroSkillDMG",
      "type": "outro",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "SkillDMG",
      "type": "intro",
      "count": 1,
@@ -153,7 +143,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "EmeraldStormFinaleDamage",
      "type": "forteCircuit",
      "count": 1,
@@ -161,7 +151,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "LanceOfQingloongPart1DMG",
      "type": "liberation",
      "count": 1,
@@ -169,7 +159,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "Windqueller",
      "type": "skill",
      "count": 1,
@@ -177,14 +167,20 @@
      "isDisabled": false
     },
     {
-     "order": 7,
-     "key": "NightmareKelpieOutroDMG",
-     "type": "echoAttacks",
+     "order": 6,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "NightmareKelpie",
-     "mainEchoRank": 5
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 8,
@@ -220,44 +216,48 @@
     },
     {
      "order": 12,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
     },
     {
      "order": 13,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
+     "key": "Windqueller",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 14,
-     "key": "Windqueller",
-     "type": "skill",
+     "key": "NightmareKelpieOutroDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "NightmareKelpie",
+     "mainEchoRank": 5
     }
    ]
   }
  },
  {
-  "name": "Jiyan S6 Verdant Summit R1 · Shorekeeper + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Shorekeeper + Mortefi (main DPS): 1,886,917 DPR for Jiyan of 2,184,894 team. Sequence procs in the loop: none.",
+  "name": "Jiyan S6 Verdant Summit R5 · Mornye + Mortefi · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Mortefi (main DPS): 2,558,261 DPR for Jiyan of 3,206,720 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Jiyan S6 Verdant Summit R1 · Shorekeeper + Mortefi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R1, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Shorekeeper + Mortefi (main DPS): 1,886,917 DPR for Jiyan of 2,184,894 team. Sequence procs in the loop: none.",
+   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Mortefi · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Mortefi (main DPS): 2,558,261 DPR for Jiyan of 3,206,720 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
      "key": "OutroSkillDMG",
      "type": "outro",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -295,6 +295,54 @@
     },
     {
      "order": 6,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "LanceOfQingloongPart1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "NightmareFeilianAttackDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -304,7 +352,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 7,
+     "order": 13,
      "key": "NightmareFeilianWhirlwindDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -312,54 +360,6 @@
      "isDisabled": false,
      "mainEcho": "NightmareFeilianBeringal",
      "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "LanceOfQingloongPart1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
     },
     {
      "order": 14,

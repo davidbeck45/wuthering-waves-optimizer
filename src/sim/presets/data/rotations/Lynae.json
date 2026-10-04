@@ -1,11 +1,11 @@
 [
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,271,442 DPR for Lynae of 9,305,447 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,254,529 DPR for Lynae of 9,230,077 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,271,442 DPR for Lynae of 9,305,447 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Reel of Spliced Memories 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Luuk Herssen: 1,254,529 DPR for Lynae of 9,230,077 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -84,11 +84,11 @@
  },
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,240,862 DPR for Lynae of 10,259,812 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,222,992 DPR for Lynae of 10,118,772 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,240,862 DPR for Lynae of 10,259,812 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,222,992 DPR for Lynae of 10,118,772 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -185,11 +185,11 @@
  },
  {
   "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 1,238,507 DPR for Lynae of 5,227,080 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 1,221,402 DPR for Lynae of 5,156,118 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S6 Spectrum Blaster R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 1,238,507 DPR for Lynae of 5,227,080 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectrum Blaster R5, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 1,221,402 DPR for Lynae of 5,156,118 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -237,6 +237,107 @@
      "order": 6,
      "key": "BasicAttackSparkCollisionLv3DMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackPolychromeLeap1",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackPolychromeLeap2",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackPolychromeLeap3",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackVisualImpactDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "LetsHittheRoadDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Aemeath: 486,673 DPR for Lynae of 5,180,478 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Aemeath: 486,673 DPR for Lynae of 5,180,478 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "TimetoShowSomeColorsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "LynaeStylePalettesDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Hyvatia",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "PrismaticOverblastDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackSparkCollisionLv3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "TuneRuptureResponseSpectralAnalysisDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -286,213 +387,11 @@
  },
  {
   "name": "Lynae S0 Spectrum Blaster R1 · Phrolova + Mornye · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Phrolova + Mornye: 493,660 DPR for Lynae of 4,194,651 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Phrolova + Mornye: 485,572 DPR for Lynae of 4,157,913 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lynae S0 Spectrum Blaster R1 · Phrolova + Mornye · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Phrolova + Mornye: 493,660 DPR for Lynae of 4,194,651 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "LetsHittheRoadDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "TimetoShowSomeColorsDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "LynaeStylePalettesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Hyvatia",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 6,
-     "key": "PrismaticOverblastDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackSparkCollisionLv3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackPolychromeLeap1",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "BasicAttackPolychromeLeap2",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackPolychromeLeap3",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackVisualImpactDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Aemeath: 493,625 DPR for Lynae of 5,252,214 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Aemeath: 493,625 DPR for Lynae of 5,252,214 team. Sequence procs in the loop: none.",
-   "actions": [
-    {
-     "order": 1,
-     "key": "TimetoShowSomeColorsDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "LynaeStylePalettesDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Hyvatia",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 4,
-     "key": "PrismaticOverblastDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackSparkCollisionLv3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "TuneRuptureResponseSpectralAnalysisDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackPolychromeLeap1",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackPolychromeLeap2",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "BasicAttackPolychromeLeap3",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackVisualImpactDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "LetsHittheRoadDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 486,138 DPR for Lynae of 2,562,150 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Lynae S0 Spectrum Blaster R1 · Mornye + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Qiuyuan: 486,138 DPR for Lynae of 2,562,150 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Spectrum Blaster R1, Pact of Neonlight Leap 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Phrolova + Mornye: 485,572 DPR for Lynae of 4,157,913 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

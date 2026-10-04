@@ -1,11 +1,11 @@
 [
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 8,404,849 DPR for Aemeath of 10,259,812 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 8,288,771 DPR for Aemeath of 10,118,772 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 8,404,849 DPR for Aemeath of 10,259,812 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 8,288,771 DPR for Aemeath of 10,118,772 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -158,11 +158,201 @@
  },
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 8,018,168 DPR for Aemeath of 13,868,240 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 7,983,073 DPR for Aemeath of 14,002,007 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 8,018,168 DPR for Aemeath of 13,868,240 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 7,983,073 DPR for Aemeath of 14,002,007 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "SongsAcrosstheUniverseDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 10,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 15,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 7,882,832 DPR for Aemeath of 12,653,495 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 7,882,832 DPR for Aemeath of 12,653,495 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -329,11 +519,11 @@
  },
  {
   "name": "Aemeath S6 Everbright Polestar R1 · Suisui + Denia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 4,842,672 DPR for Aemeath of 5,677,327 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 4,743,099 DPR for Aemeath of 5,643,630 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R1 · Suisui + Denia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 4,842,672 DPR for Aemeath of 5,677,327 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 4,743,099 DPR for Aemeath of 5,643,630 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -361,25 +551,6 @@
     },
     {
      "order": 4,
-     "key": "ElementalEffectFusionBurst",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "advancedConfig": {
-      "buffs": {
-       "SeraphicDuetFusionBurst": {
-        "isEnabled": false
-       },
-       "StardustResonance": {
-        "isEnabled": false
-       }
-      }
-     }
-    },
-    {
-     "order": 5,
      "key": "HeavenfallEdictOverdriveDMG",
      "type": "liberation",
      "count": 1,
@@ -387,7 +558,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "BasicAttackMechStage2DMG",
      "type": "skill",
      "count": 1,
@@ -395,7 +566,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "BasicAttackMechStage3DMG",
      "type": "skill",
      "count": 1,
@@ -403,7 +574,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "BasicAttackMechStage4DMG",
      "type": "skill",
      "count": 1,
@@ -411,7 +582,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "SeraphicDuetEncoreDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -419,7 +590,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "BasicAttackAemeathStage2DMG",
      "type": "basic",
      "count": 1,
@@ -427,7 +598,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "BasicAttackAemeathStage3DMG",
      "type": "basic",
      "count": 1,
@@ -435,7 +606,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "BasicAttackAemeathStage4DMG",
      "type": "basic",
      "count": 1,
@@ -443,7 +614,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,
@@ -462,7 +633,7 @@
      }
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "SeraphicDuetOvertureDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -470,7 +641,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "HeavyAttackMechChargedIIDMG",
      "type": "skill",
      "count": 1,
@@ -478,7 +649,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
      "count": 1,
@@ -486,7 +657,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -500,11 +671,11 @@
  },
  {
   "name": "Aemeath S6 Everbright Polestar R1 · Chisa + Denia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 4,723,624 DPR for Aemeath of 5,735,400 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 4,682,808 DPR for Aemeath of 5,690,749 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R1 · Chisa + Denia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 4,723,624 DPR for Aemeath of 5,735,400 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 4,682,808 DPR for Aemeath of 5,690,749 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks.",
    "actions": [
     {
      "order": 1,
@@ -516,6 +687,22 @@
     },
     {
      "order": 2,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,
@@ -532,22 +719,6 @@
        }
       }
      }
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
     },
     {
      "order": 5,
@@ -671,11 +842,11 @@
  },
  {
   "name": "Aemeath S6 Everbright Polestar R1 · Mornye + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Lynae (main DPS): 4,529,654 DPR for Aemeath of 5,252,214 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Lynae (main DPS): 4,467,096 DPR for Aemeath of 5,180,478 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R1 · Mornye + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Lynae (main DPS): 4,529,654 DPR for Aemeath of 5,252,214 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R1, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Lynae (main DPS): 4,467,096 DPR for Aemeath of 5,180,478 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,

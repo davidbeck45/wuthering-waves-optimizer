@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-02T22:51:43.984Z",
- "wuwaCalcCommit": "32e43fc",
+ "generated": "2026-10-04T18:59:19.075Z",
+ "wuwaCalcCommit": "195a22f",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -403,12 +403,12 @@
     {
      "level": 1,
      "name": "Carlotta S1: Beauty Blazes Brightest Before It Fades",
-     "note": "S1: +12.5% Crit Rate on any hit into a Deconstruction target, and Chromatic Splendor restores 30 more Substance — it always follows Art of Violence, whose Dispersion is what it asks for."
+     "note": "S1: +12.5% Crit Rate on any hit into a Deconstruction target, and Chromatic Splendor restores 30 more Substance on its first hit (wuwalab's trigger_s2_dispersion) — it always follows Art of Violence, whose Dispersion is what it asks for."
     },
     {
      "level": 2,
      "name": "Carlotta S2: Fallen Petals Give Life to New Blooms",
-     "note": "S2: Fatal Finale's multiplier +126%."
+     "note": "S2: Fatal Finale's multiplier +126% — FatalFinaleS2, which the rotation's resolver plays."
     },
     {
      "level": 3,
@@ -428,7 +428,7 @@
     {
      "level": 6,
      "name": "Carlotta S6: As the Curtain Falls, I Remain What I Am",
-     "note": "S6: Death Knell's shots hit harder and double up — +186.6% multiplier in total."
+     "note": "S6: Death Knell's shots hit harder and double up — DeathKnellS6, which the rotation's Death Knell resolves to while this is held. Scattering's immobilize is nothing this engine models."
     }
    ]
   },
@@ -528,7 +528,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 25
+     "intendedTeams": 27
     }
    ],
    "sequences": [
@@ -572,7 +572,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 27
+     "intendedTeams": 38
     }
    ],
    "sequences": [
@@ -669,7 +669,7 @@
         "Basic - Stagecraft Form 4 ×1",
         "Skill - Phantom Bubble ×1"
        ],
-       "note": "opener: drops Skill - Phantom Bubble ×1, Basic - Breakdown Form 1 ×1, Basic - Breakdown Form 2 ×1, Jump Placeholder ×1"
+       "note": "opener: adds Basic - Breakdown Form 3 ×1, Basic - Breakdown Form 4 ×1, drops Skill - Phantom Bubble ×1, Jump Placeholder ×1, Mid-air - Breakdown Form 1 ×1, Mid-air - Breakdown Form 2 ×1, Mid-air - Breakdown Form 3 ×1, Mid-air - Breakdown Form 4 ×1"
       }
      },
      "intendedTeams": 15
@@ -1428,7 +1428,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 35
+     "intendedTeams": 39
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -1523,7 +1523,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 16
+     "intendedTeams": 20
     }
    ],
    "sequences": [
@@ -1567,14 +1567,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 11
     },
     {
      "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 7
     }
    ],
    "sequences": [
@@ -1591,7 +1591,7 @@
     {
      "level": 3,
      "name": "Phoebe S3: Daisy Wreaths and Dreams",
-     "note": "S3: Starflash's multiplier, x1.91 in Absolution and x3.49 in Confession — nanoka's own twin rows for that hit (82.69% -> 157.92% and 288.56%)."
+     "note": "S3: Starflash's multiplier x1.91 in Absolution — nanoka's twin row (82.69% -> 157.92%). In Confession it is FHA_S3, which the rotation's Starflash resolves to while this is held."
     },
     {
      "level": 4,
@@ -1785,7 +1785,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 23
+     "intendedTeams": 27
     }
    ],
    "sequences": [
@@ -1947,7 +1947,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 55
+     "intendedTeams": 57
     }
    ],
    "sequences": [
@@ -2035,7 +2035,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -2371,7 +2371,7 @@
        "removed": []
       }
      },
-     "intendedTeams": 3
+     "intendedTeams": 16
     }
    ],
    "sequences": [

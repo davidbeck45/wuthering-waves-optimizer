@@ -1,22 +1,14 @@
 [
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 547,608 DPR for Mornye of 9,653,214 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 541,950 DPR for Mornye of 9,519,308 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 547,608 DPR for Mornye of 9,653,214 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 541,950 DPR for Mornye of 9,519,308 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -24,7 +16,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "CriticalProtocolDMG",
      "type": "liberation",
      "count": 1,
@@ -32,7 +24,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "BasicAttackWideFieldObservationModeStage1DMG",
      "type": "basic",
      "count": 1,
@@ -40,7 +32,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "BasicAttackWideFieldObservationModeStage2DMG",
      "type": "basic",
      "count": 1,
@@ -48,7 +40,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "BasicAttackWideFieldObservationModeStage3DMG",
      "type": "basic",
      "count": 1,
@@ -56,7 +48,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "DistributedArrayDMG",
      "type": "skill",
      "count": 1,
@@ -64,7 +56,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "HeavyAttackInversionDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -72,7 +64,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HyvatiaLasersDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -82,8 +74,24 @@
      "mainEchoRank": 5
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "TuneRuptureResponseParticleJetDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -94,22 +102,14 @@
  },
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lynae + Luuk Herssen · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Luuk Herssen: 516,228 DPR for Mornye of 9,305,447 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Luuk Herssen: 511,225 DPR for Mornye of 9,230,077 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lynae + Luuk Herssen · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Luuk Herssen: 516,228 DPR for Mornye of 9,305,447 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lynae + Luuk Herssen: 511,225 DPR for Mornye of 9,230,077 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -117,7 +117,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "CriticalProtocolDMG",
      "type": "liberation",
      "count": 1,
@@ -125,7 +125,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "BasicAttackWideFieldObservationModeStage1DMG",
      "type": "basic",
      "count": 1,
@@ -133,7 +133,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "BasicAttackWideFieldObservationModeStage2DMG",
      "type": "basic",
      "count": 1,
@@ -141,7 +141,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "BasicAttackWideFieldObservationModeStage3DMG",
      "type": "basic",
      "count": 1,
@@ -149,7 +149,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "DistributedArrayDMG",
      "type": "skill",
      "count": 1,
@@ -157,7 +157,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "HeavyAttackInversionDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -165,7 +165,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HyvatiaLasersDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -173,17 +173,33 @@
      "isDisabled": false,
      "mainEcho": "ReactorHusk",
      "mainEchoRank": 5
+    },
+    {
+     "order": 9,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Phrolova + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Phrolova + Lynae: 455,099 DPR for Mornye of 7,575,677 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Phrolova + Lynae: 447,642 DPR for Mornye of 7,513,134 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Phrolova + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Phrolova + Lynae: 455,099 DPR for Mornye of 7,575,677 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Phrolova + Lynae: 447,642 DPR for Mornye of 7,513,134 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -272,22 +288,14 @@
  },
  {
   "name": "Mornye S0 Starfield Calibrator R1 · Lupa + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 128,166 DPR for Mornye of 5,005,027 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 127,813 DPR for Mornye of 4,935,964 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S0 Starfield Calibrator R1 · Lupa + Aemeath · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 128,166 DPR for Mornye of 5,005,027 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 127,813 DPR for Mornye of 4,935,964 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "ConvergenceDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -295,7 +303,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "CriticalProtocolDMG",
      "type": "liberation",
      "count": 1,
@@ -303,7 +311,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "BasicAttackWideFieldObservationModeStage1DMG",
      "type": "basic",
      "count": 1,
@@ -311,7 +319,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "BasicAttackWideFieldObservationModeStage2DMG",
      "type": "basic",
      "count": 1,
@@ -319,7 +327,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "BasicAttackWideFieldObservationModeStage3DMG",
      "type": "basic",
      "count": 1,
@@ -327,7 +335,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 6,
      "key": "DistributedArrayDMG",
      "type": "skill",
      "count": 1,
@@ -335,7 +343,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 7,
      "key": "HeavyAttackInversionDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -343,7 +351,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "HyvatiaLasersDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -353,10 +361,26 @@
      "mainEchoRank": 5
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "TuneRuptureResponseParticleJetDMG",
      "type": "forteCircuit",
      "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ConvergenceDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SyntonyFieldDMG",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     }

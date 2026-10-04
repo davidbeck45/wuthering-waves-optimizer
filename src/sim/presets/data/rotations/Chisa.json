@@ -1,11 +1,11 @@
 [
  {
-  "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Cartethyia: 1,560,603 DPR for Chisa of 5,749,478 team. Sequence procs in the loop: none.",
+  "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 1,601,381 DPR for Chisa of 6,311,857 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK ATK atk atk. Team: Shorekeeper + Cartethyia: 1,560,603 DPR for Chisa of 5,749,478 team. Sequence procs in the loop: none.",
+   "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 1,601,381 DPR for Chisa of 6,311,857 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -119,12 +119,12 @@
   }
  },
  {
-  "name": "Chisa S6 Kumokiri R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK Havoc atk atk. Team: Mornye + Hsin: 1,513,240 DPR for Chisa of 9,903,108 team. Sequence procs in the loop: none.",
+  "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 1,445,565 DPR for Chisa of 10,304,240 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Chisa S6 Kumokiri R5 · Mornye + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CD ATK Havoc atk atk. Team: Mornye + Hsin: 1,513,240 DPR for Chisa of 9,903,108 team. Sequence procs in the loop: none.",
+   "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 1,445,565 DPR for Chisa of 10,304,240 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
@@ -168,12 +168,113 @@
     },
     {
      "order": 6,
-     "key": "FallacyOfNoReturnDiffraction",
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chisa S0 Kumokiri R1 · Sanhua + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK Havoc atk atk. Team: Sanhua + Cartethyia: 318,898 DPR for Chisa of 3,022,494 team. Sequence procs in the loop: none.",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Chisa S0 Kumokiri R1 · Sanhua + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK Havoc atk atk. Team: Sanhua + Cartethyia: 318,898 DPR for Chisa of 3,022,494 team. Sequence procs in the loop: none.",
+   "actions": [
+    {
+     "order": 1,
+     "key": "EyeofUnravelingDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "DeathSnipAdditionalDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "CollapsingHorizonDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
      "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
+     "mainEcho": "ReminiscenceThrenodianLeviathan",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 6,
+     "key": "CoreofCollapseDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceThrenodianLeviathan",
      "mainEchoRank": 5
     },
     {
@@ -223,102 +324,11 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 1,465,176 DPR for Chisa of 10,387,671 team. Sequence procs in the loop: none.",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 1,465,176 DPR for Chisa of 10,387,671 team. Sequence procs in the loop: none.",
-   "actions": [
+    },
     {
-     "order": 1,
+     "order": 13,
      "key": "ReverberanceReturnDMG",
      "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "EyeofUnravelingDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "RendingLungeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "DeathSnipDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "DeathSnipAdditionalDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "MomentofNihilityDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "SerratedLoopDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "SawringBlitzStage3HoldDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SawringBlitzStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SawringBlitzStage3HoldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SawringEradicationDMG",
-     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false

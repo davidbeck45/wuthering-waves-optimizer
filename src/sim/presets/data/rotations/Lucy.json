@@ -1,11 +1,11 @@
 [
  {
   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,604,623 DPR for Lucy of 8,891,743 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,526,751 DPR for Lucy of 8,784,524 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,604,623 DPR for Lucy of 8,891,743 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Rebecca (main DPS): 6,526,751 DPR for Lucy of 8,784,524 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
    "actions": [
     {
      "order": 1,
@@ -198,11 +198,11 @@
  },
  {
   "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,047,944 DPR for Lucy of 8,347,423 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,003,880 DPR for Lucy of 8,325,705 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R5 · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,047,944 DPR for Lucy of 8,347,423 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Rebecca (main DPS): 6,003,880 DPR for Lucy of 8,325,705 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
    "actions": [
     {
      "order": 1,
@@ -387,11 +387,11 @@
  },
  {
   "name": "Lucy S6 Spectral Trigger R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,826,385 DPR for Lucy of 7,482,722 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,756,378 DPR for Lucy of 7,391,514 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,826,385 DPR for Lucy of 7,482,722 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 5,756,378 DPR for Lucy of 7,391,514 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
    "actions": [
     {
      "order": 1,
@@ -568,11 +568,11 @@
  },
  {
   "name": "Lucy S6 Spectral Trigger R1 · Mornye + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,371,706 DPR for Lucy of 4,128,073 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,331,399 DPR for Lucy of 4,078,388 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucy S6 Spectral Trigger R1 · Mornye + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,371,706 DPR for Lucy of 4,128,073 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional).",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Rebecca (main DPS): 3,331,399 DPR for Lucy of 4,078,388 team. Sequence procs in the loop: 1x Skill - Pulse Interference (S2 Additional). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Heavy - Multi-threading (SQL S2) = HeavyAttackMultithreadingDMG × 6.60.",
    "actions": [
     {
      "order": 1,

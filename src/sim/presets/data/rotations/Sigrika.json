@@ -1,22 +1,14 @@
 [
  {
   "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,942,630 DPR for Sigrika of 11,045,319 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,818,887 DPR for Sigrika of 10,895,007 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,942,630 DPR for Sigrika of 11,045,319 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,818,887 DPR for Sigrika of 10,895,007 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "InThisVeryMomentDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "SolswornEtymologyDMG",
      "type": "intro",
      "count": 1,
@@ -24,7 +16,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "NamelessExplorerAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -34,8 +26,16 @@
      "mainEchoRank": 5
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -43,7 +43,7 @@
     },
     {
      "order": 5,
-     "key": "BasicAttackStage3DMG",
+     "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -51,7 +51,7 @@
     },
     {
      "order": 6,
-     "key": "BasicAttackStage4DMG",
+     "key": "BasicAttackElucidatedDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -59,14 +59,6 @@
     },
     {
      "order": 7,
-     "key": "BasicAttackElucidatedDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
      "key": "HeavyAttackSchemataofRunesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -74,7 +66,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "RunicChainWhipDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -82,7 +74,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "WhereTrustLeadsMeDMG",
      "type": "liberation",
      "count": 1,
@@ -90,7 +82,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "BasicAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -98,7 +90,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -106,7 +98,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
@@ -114,7 +106,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "BasicAttackElucidatedDMG",
      "type": "basic",
      "count": 1,
@@ -122,7 +114,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "HeavyAttackSchemataofRunesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -130,7 +122,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "RunicOutburstDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -138,9 +130,17 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ForteCircuitLearnMyTrueNameDMG",
      "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "InThisVeryMomentDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -150,22 +150,14 @@
  },
  {
   "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,640,010 DPR for Sigrika of 9,518,006 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,591,451 DPR for Sigrika of 9,496,196 team. Sequence procs in the loop: none.",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,640,010 DPR for Sigrika of 9,518,006 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,591,451 DPR for Sigrika of 9,496,196 team. Sequence procs in the loop: none.",
    "actions": [
     {
      "order": 1,
-     "key": "InThisVeryMomentDMG",
-     "type": "outro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
      "key": "SolswornEtymologyDMG",
      "type": "intro",
      "count": 1,
@@ -173,7 +165,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 2,
      "key": "NamelessExplorerAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -183,8 +175,16 @@
      "mainEchoRank": 5
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -192,7 +192,7 @@
     },
     {
      "order": 5,
-     "key": "BasicAttackStage3DMG",
+     "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -200,7 +200,7 @@
     },
     {
      "order": 6,
-     "key": "BasicAttackStage4DMG",
+     "key": "BasicAttackElucidatedDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -208,14 +208,6 @@
     },
     {
      "order": 7,
-     "key": "BasicAttackElucidatedDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
      "key": "HeavyAttackSchemataofRunesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -223,7 +215,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "RunicChainWhipDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -231,7 +223,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "WhereTrustLeadsMeDMG",
      "type": "liberation",
      "count": 1,
@@ -239,7 +231,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "BasicAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -247,8 +239,16 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -256,7 +256,7 @@
     },
     {
      "order": 13,
-     "key": "BasicAttackStage4DMG",
+     "key": "BasicAttackElucidatedDMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -264,14 +264,6 @@
     },
     {
      "order": 14,
-     "key": "BasicAttackElucidatedDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
      "key": "HeavyAttackSchemataofRunesDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -279,7 +271,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 15,
      "key": "RunicOutburstDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -287,7 +279,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 16,
      "key": "ForteCircuitLearnMyTrueNameDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -295,7 +287,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 17,
      "key": "BoomyBoomDMG",
      "type": "skill",
      "count": 1,
@@ -303,7 +295,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "BasicAttackStage3DMG",
      "type": "basic",
      "count": 1,
@@ -311,7 +303,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "BasicAttackStage4DMG",
      "type": "basic",
      "count": 1,
@@ -319,9 +311,17 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 20,
      "key": "BasicAttackElucidatedDMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "InThisVeryMomentDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

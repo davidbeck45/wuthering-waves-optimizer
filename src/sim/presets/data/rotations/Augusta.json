@@ -1,11 +1,11 @@
 [
  {
   "name": "Augusta S6 Thunderflare Dominion R5 · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,110,166 DPR for Augusta of 8,696,381 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Augusta S6 Thunderflare Dominion R5 · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,110,166 DPR for Augusta of 8,696,381 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
    "actions": [
     {
      "order": 1,
@@ -133,20 +133,12 @@
      "order": 16,
      "key": "SublimeistheSunSunborneDMG",
      "type": "liberation",
-     "count": 9,
+     "count": 19,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 17,
-     "key": "SublimeistheSunEverbrightProtectorDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
      "key": "HeavyAttackThunderoarUppercutDMG",
      "type": "basic",
      "count": 1,
@@ -154,7 +146,7 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 18,
      "key": "SequenceNode6EngravedinRadiantLight",
      "type": "basic",
      "count": 1,
@@ -162,7 +154,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 19,
      "key": "TheFalseSovereignSpinning",
      "type": "echoAttacks",
      "count": 1,
