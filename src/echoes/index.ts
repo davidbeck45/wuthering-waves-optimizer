@@ -770,7 +770,7 @@ CD: <span class="param">20</span>s</span>`,
     name: "Cuddle Wuddle",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CuddleWuddle.webp",
+      "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32030_UI.webp",
     details: `An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.`,
     modifiers: [],
     actions: [],

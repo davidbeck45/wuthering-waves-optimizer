@@ -210,6 +210,27 @@ describe("computeTeamImportBase", () => {
 describe("calcTeamRotationDamage", () => {
   const characters = { Calcharo: {} };
 
+  it("uses each slot's pinned build from buildIds instead of the active build", async () => {
+    const buffedBuild = { id: "buffed-build", name: "Buffed", buffs: { StatBonusATK1: { isEnabled: true } } };
+    const buildCharacters = {
+      // Active (top-level) data is unbuffed; the buffed data only exists in builds[].
+      Calcharo: { buffs: {}, builds: [buffedBuild], activeBuildId: "plain-build" },
+    };
+    const actions: TeamRotationAction[] = [
+      { id: "a1", slot: 0, order: 0, type: "basic", key: "Part1Damage", count: 1 },
+    ];
+    const team = { characterIds: ["Calcharo", null, null], actions, duration: 10 };
+
+    const active = await calcTeamRotationDamage(team, buildCharacters, enemyConfig);
+    const pinned = await calcTeamRotationDamage(
+      { ...team, buildIds: ["buffed-build", null, null] },
+      buildCharacters,
+      enemyConfig,
+    );
+
+    expect(pinned.total.avgDamage ?? 0).toBeGreaterThan(active.total.avgDamage ?? 0);
+  });
+
   it("applies per-attribute resistance to each slot by that character's own element (#530)", async () => {
     const mixedCharacters = { Calcharo: {}, Changli: {} };
     const actions: TeamRotationAction[] = [

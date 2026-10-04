@@ -578,6 +578,7 @@ import { getCharacterRosterDisplayName, getCharactersAvailable } from "../charac
 import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRotation";
 import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
 import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
+import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
@@ -885,16 +886,39 @@ interface TeamSummaryStats {
 const teamStats = ref<Record<string, TeamSummaryStats>>({});
 let statsComputeToken = 0;
 
-// Fingerprint of just the fields that feed calcTeamRotationDamage, so an
-// edit to unrelated team fields (name, favorite, buildStatus) doesn't count
-// as "changed" and force a recompute.
-function computeTeamFingerprint(team: any): string {
+// The character data a slot's calculation actually reads: its (build-
+// resolved, so a pinned build counts) character record plus the inventory
+// echoes that record's echo slots point at. `builds[]` is dropped since only
+// the resolved top-level fields feed the calc — keeping it would recompute
+// on unrelated build-cache churn and bloat the fingerprint.
+function slotDataFingerprint(team: any, slot: number, echoesById: Map<string, any>) {
+  const characterId = team.characterIds?.[slot];
+  if (!characterId) {
+    return null;
+  }
+  const resolved = resolveCharactersForBuild(characters.value, characterId, team.buildIds?.[slot] ?? null);
+  const data = { ...(resolved[characterId] ?? {}) };
+  delete data.builds;
+  const echoes = [0, 1, 2, 3, 4].map((index) => {
+    const echoId = data.echoes?.[index]?.echoId;
+    return echoId ? (echoesById.get(echoId) ?? null) : null;
+  });
+  return { data, echoes };
+}
+
+// Fingerprint of just the inputs that feed calcTeamRotationDamage, so an
+// edit to unrelated team fields (name, favorite, buildStatus) or to a
+// character not on the team doesn't count as "changed" and force a
+// recompute — while an edit to a slot's character/build/echoes does.
+function computeTeamFingerprint(team: any, echoesById: Map<string, any>): string {
   return JSON.stringify({
     characterIds: team.characterIds,
+    buildIds: team.buildIds,
     actions: team.actions,
     duration: team.duration,
     enemyConfig: team.enemyConfig,
     autoTeamBuffs: autoTeamBuffs.value, // Wuthering Tools+
+    slotData: [0, 1, 2].map((slot) => slotDataFingerprint(team, slot, echoesById)),
   });
 }
 
@@ -905,7 +929,7 @@ async function computeStatsForTeam(team: any): Promise<TeamSummaryStats> {
     {
       name: team.name,
       characterIds: team.characterIds,
-      buildIds: teamResolution.auto ? teamResolution.buildIds : undefined,
+      buildIds: teamResolution.auto ? teamResolution.buildIds : team.buildIds,
       actions: team.actions,
       duration: team.duration,
     },
@@ -975,9 +999,15 @@ async function recomputeTeamStats() {
 
   // Only the currently-filtered teams are ever shown (cards or leaderboard),
   // so that's the whole working set — not every team ever saved.
+  const echoesById = new Map<string, any>(
+    (inventoryEchoes.value ?? []).map((echo: any) => [echo.echoId, echo]),
+  );
+  const fingerprints = new Map<string, string>(
+    filteredTeams.value.map((team: any) => [team.id, computeTeamFingerprint(team, echoesById)]),
+  );
   const stale = filteredTeams.value.filter((team: any) => {
     const cached = teamStatsCache.get(team.id);
-    return !cached || cached.fingerprint !== computeTeamFingerprint(team);
+    return !cached || cached.fingerprint !== fingerprints.get(team.id);
   });
 
   if (stale.length === 0) {
@@ -993,7 +1023,7 @@ async function recomputeTeamStats() {
     await Promise.all(
       batch.map(async (team: any) => {
         const stats = await computeStatsForTeam(team);
-        teamStatsCache.set(team.id, { fingerprint: computeTeamFingerprint(team), stats });
+        teamStatsCache.set(team.id, { fingerprint: fingerprints.get(team.id) as string, stats });
       }),
     );
     if (token !== statsComputeToken) {
@@ -1022,6 +1052,11 @@ function scheduleRecomputeTeamStats() {
 }
 
 watch(teams, scheduleRecomputeTeamStats, { deep: true, immediate: true });
+// Character/build/echo edits change what a team's slots calculate with, even
+// though `teams` itself is untouched. The per-team fingerprint (which folds
+// in each slot's resolved character data) limits the recompute to teams
+// whose slots actually changed.
+watch([characters, inventoryEchoes], scheduleRecomputeTeamStats, { deep: true });
 // A filter change can reveal teams that were never in the previously-visible
 // set (so never cached) without necessarily mutating `teams` itself.
 watch(filteredTeams, scheduleRecomputeTeamStats);

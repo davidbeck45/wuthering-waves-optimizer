@@ -292,7 +292,10 @@
             :modifier="buff.modifier"
             :modifier-value="buff.modifierValue"
             :all-buffs="buffData"
+            :range-actions="rangeActions"
+            :action-id="id"
             @updated-buff="handleUpdatedBuff"
+            @bulk-apply="onBulkApplyBuff"
             @remove-buff="handleRemoveBuff"
             :data-test-rotation-action-buff="
               buff.modifier
@@ -339,6 +342,7 @@ import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
 import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
+import type { DurationRangeAction } from "../utils/rotationDurationRange";
 
 type AttackRow = {
   key: string;
@@ -440,6 +444,9 @@ const props = withDefaults(
     /** Rotation Flow (Labs) — wrapper-resolved display chips for this
      * action's currently-enabled advancedConfig entries (see AdvancedBuffChip). */
     advancedBuffChips?: AdvancedBuffChip[];
+    /** The rotation's actions in sequence — forwarded to each custom buff
+     * row's "Duration" control (issue #564). */
+    rangeActions?: DurationRangeAction[];
     /** Rotation Flow (Labs) — this action's real computed damage, when the
      * caller has it available (see CalculatorRotation.vue's allDamages wiring). */
     damageValue?: number | null;
@@ -461,6 +468,7 @@ const props = withDefaults(
     showDisabledOption: true,
     canReorder: false,
     advancedBuffChips: () => [],
+    rangeActions: () => [],
     damageValue: null,
     damageLabel: null,
   },
@@ -486,6 +494,9 @@ const emit = defineEmits<{
    * wrapper-owned (no leaf-side panel to mirror, unlike buffs), so this just
    * tells the wrapper to show/hide its "Configure Enemy Settings" panel. */
   "toggle-manage-enemy": [payload: { open: boolean }];
+  /** A custom buff row's "Duration" apply — the array-owning parent writes
+   * it into every listed action via `applyBulkActionBuff`. */
+  "bulk-apply-action-buff": [payload: { modifier: string; modifierValue: unknown; actionIds: string[] }];
 }>();
 
 const characterStore = useCharacterStore();
@@ -883,6 +894,10 @@ function handleUpdatedBuff(buffRow: BuffRow & Record<string, unknown>) {
   emit("action-update", buildActionPayload());
 }
 
+function onBulkApplyBuff(payload: { modifier: string; modifierValue: unknown; actionIds: string[] }) {
+  emit("bulk-apply-action-buff", payload);
+}
+
 function removeAction() {
   emit("remove-action", { id: props.id });
 }
@@ -975,6 +990,25 @@ function isAttackDisabled(attack: AttackRow) {
   }
   return true;
 }
+
+// A custom buff Duration apply started from another action rewrites this
+// action's `buffs` from the parent, so the local copy must follow the prop.
+// Skipped when the content already matches — the common case, where the
+// prop change is just this component's own emit echoing back. A freshly
+// added row with no modifier picked yet only exists locally (addBuff doesn't
+// emit), so it's carried over rather than dropped.
+watch(
+  () => props.buffs,
+  (buffs) => {
+    const incoming = JSON.parse(JSON.stringify(buffs ?? [])) as BuffRow[];
+    const incomingIds = new Set(incoming.map((buff) => buff.id));
+    const pendingRows = buffData.value.filter((buff) => !buff.modifier && !incomingIds.has(buff.id));
+    const next = [...incoming, ...pendingRows];
+    if (JSON.stringify(next) === JSON.stringify(buffData.value)) return;
+    buffData.value = next;
+  },
+  { deep: true },
+);
 
 watch(
   () => props.order,

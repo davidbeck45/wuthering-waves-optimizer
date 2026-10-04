@@ -10,7 +10,55 @@ export interface UpdateEntry {
   items: string[];
 }
 
+export interface Announcement {
+  /**
+   * ISO date the announcement was posted, e.g. "2026-09-29". Doubles as the
+   * dismissal key: the banner stays hidden for anyone whose stored dismissal
+   * date is on or after this, so only bump it when posting a new announcement.
+   */
+  date: string;
+  headline: string;
+}
+
+/**
+ * The site-wide banner (AppUpdateBanner.vue) shows this, independent of
+ * updateEntries - routine changelog entries never re-show a dismissed banner.
+ * Set to null to hide the banner entirely.
+ */
+// export const currentAnnouncement: Announcement | null = {
+//   date: "2026-09-29",
+//   headline: "Version 3.7 (first half) is up!",
+// };
+export const currentAnnouncement: Announcement | null = null;
+
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-04",
+    dateLabel: "October 4, 2026",
+    items: [
+      "Fixed an issue where the teams feature wouldn't always use the right build in the listing of teams calculations or the summary page for a team",
+    ],
+  },
+  {
+    date: "2026-10-03",
+    dateLabel: "October 3, 2026",
+    items: [
+      "Fixes Firstlight's Herald ATK buffs, R2-R5 were off, R1 was correct",
+      "Fixes Hsin's Tides of Succession buffs: one was missing the stacks, the other had text udpated",
+      "For the echo scanner, when you're editing an echo, it improves the UX for the edit mode",
+      "Adds the ability in rotations to add a duration for manual buffs (e.g. ATK%)",
+    ],
+  },
+  {
+    date: "2026-10-02",
+    dateLabel: "October 2, 2026",
+    items: [
+      "Echo scanner (lab feature) now works with windowed and letterboxed captures - it finds the game's area inside the frame (e.g. a window title bar or black bars) instead of rejecting anything that isn't exactly 16:9 or 16:10",
+      "Echo scanner (lab feature): Edit now opens the editor right in the scan results, next to the echo's in-game capture - it used to open behind the scanner window when the new layout lab was on",
+      "Echo scanner (lab feature) now also handles windows whose title bar it couldn't spot at first (e.g. a centered window title) - if the first echo doesn't read, it tries the area under the title bar and switches to it when that reads correctly",
+      "The announcement bar below the main nav no longer pops back up after you close it just because the changelog was updated - it only returns for a new announcement",
+    ],
+  },
   {
     date: "2026-10-01",
     dateLabel: "October 1, 2026",

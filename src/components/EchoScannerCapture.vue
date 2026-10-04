@@ -280,7 +280,7 @@
 
     <template v-else-if="status === 'stopped' || status === 'stopping'">
       <h2 class="text-xl font-bold mb-2">
-        {{ candidates.length }} echo{{ candidates.length === 1 ? "" : "es" }}
+        {{ capturedCount }} echo{{ capturedCount === 1 ? "" : "es" }}
         captured
       </h2>
       <p v-if="status === 'stopping'" class="mb-4 flex items-center gap-2 text-sm">
@@ -289,12 +289,12 @@
         echo{{ pendingCount === 1 ? "" : "es" }}…
       </p>
       <EchoScannerTimings v-if="scanner.debugMode.value" :timings="timings" class="mb-4" />
-      <p v-if="!candidates.length && status === 'stopped'" class="mb-4 opacity-80">
+      <p v-if="!capturedCount && status === 'stopped'" class="mb-4 opacity-80">
         Nothing was captured. Try again and make sure the Echo detail panel
         (right side of the Echo Management screen) is visible while you
         click through echoes.
       </p>
-      <template v-else-if="candidates.length">
+      <template v-else-if="capturedCount">
         <div role="tablist" class="tabs tabs-boxed tabs-sm mb-3 w-fit flex-wrap" data-test-scanner-filters>
           <button
             v-for="tab in filterTabs"
@@ -310,32 +310,43 @@
           </button>
         </div>
         <div class="max-h-[60vh] overflow-y-auto mb-4">
-          <div v-if="!filteredCandidates.length" class="py-8 text-center text-sm opacity-80">
+          <div v-if="!resultItems.length" class="py-8 text-center text-sm opacity-80">
             <p class="mb-2">{{ emptyFilterMessage }}</p>
             <button type="button" class="btn btn-sm btn-ghost" @click="activeFilter = 'all'">
               Show all {{ summary.total }}
             </button>
           </div>
           <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
-            <EchoScannerResultCard
-              v-for="candidate in filteredCandidates"
-              :key="candidate.id"
-              :candidate="candidate"
-              :attention="stillNeedsAttention(candidate, reviewContext)"
-              :reviewed="reviewedIds.has(candidate.id)"
-              :in-inventory="inventoryIds.has(candidate.id)"
-              :inventory-only="inventoryOnly"
-              @edit="handleEditCandidate(candidate)"
-              @remove="scanner.removeCandidate(candidate.id)"
-              @toggle-reviewed="toggleReviewed(candidate.id)"
-              @open-capture="openCapture(candidate)" />
+            <template v-for="item in resultItems" :key="item.key">
+              <EchoScannerSavedCard
+                v-if="item.saved"
+                :ref="(el) => setSavedCardEl(item.saved!.echoId, el)"
+                :echo-id="item.saved.echoId"
+                :capture-index="item.saved.candidate.captureIndex"
+                :panel-preview-url="item.saved.candidate.panelPreviewUrl"
+                :expanded="expandedEchoId === item.saved.echoId"
+                @toggle-edit="toggleSavedEdit(item.saved!.echoId)"
+                @delete="handleDeleteSaved(item.saved!.echoId)"
+                @open-capture="openCapture(item.saved!.candidate)" />
+              <EchoScannerResultCard
+                v-else
+                :candidate="item.candidate"
+                :attention="stillNeedsAttention(item.candidate, reviewContext)"
+                :reviewed="reviewedIds.has(item.candidate.id)"
+                :in-inventory="inventoryIds.has(item.candidate.id)"
+                :inventory-only="inventoryOnly"
+                @edit="handleEditCandidate(item.candidate)"
+                @remove="scanner.removeCandidate(item.candidate.id)"
+                @toggle-reviewed="toggleReviewed(item.candidate.id)"
+                @open-capture="openCapture(item.candidate)" />
+            </template>
           </div>
         </div>
       </template>
       <p v-if="candidates.length && inventoryOnly" class="text-xs opacity-70 mb-2">
-        "Edit" opens the same editor as your inventory, with this echo's
-        in-game capture shown for reference, and saves this echo right away
-        — the rest still wait for the save button below.
+        "Edit" saves that echo to your inventory right away and opens its
+        editor in place, next to its in-game capture — the rest still wait
+        for the save button below.
       </p>
       <div
         v-if="!inventoryOnly"
@@ -417,6 +428,10 @@ import {
 import EchoScannerTimings from "./EchoScannerTimings.vue";
 import EchoScannerGuide from "./EchoScannerGuide.vue";
 import EchoScannerResultCard from "./EchoScannerResultCard.vue";
+import EchoScannerSavedCard from "./EchoScannerSavedCard.vue";
+import { useEchoInventory } from "../composables/useEchoInventory";
+import { useConfirm } from "../composables/useConfirm";
+import { useToast } from "../composables/useToast";
 import type { FrameSize, RegionFrac, ScanCandidate } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
@@ -425,15 +440,6 @@ const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
 
 const emit = defineEmits<{
   "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean];
-  /**
-   * Fired when the user edits a candidate — it's already been saved to the
-   * inventory (this echoId) by the time this fires. Only emitted when
-   * inventoryOnly, since editing reuses InventoryEchoesBrowser.vue's
-   * existing edit modal (InventoryEchoEdit.vue/InventoryEchoEditPanel.vue),
-   * which this component deliberately doesn't mount a second copy of — see
-   * CalculatorEchoImporter.vue's pass-through of this event.
-   */
-  "edit-candidate": [payload: { echoId: string; referenceImageUrl?: string }];
 }>();
 
 const scanner = useEchoScanner();
@@ -529,10 +535,72 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+// --- Inline edit -----------------------------------------------------------
+
+/**
+ * Candidates the user clicked Edit on. saveCandidateNow saves each straight
+ * to the inventory (EchoEditFields only edits a stored echo) and drops it
+ * from `candidates`, so it isn't saved twice by the button below — this
+ * keeps it on screen, at its capture position, as an inline editor
+ * (EchoScannerSavedCard.vue). Editing inline rather than in
+ * InventoryEchoEditPanel.vue's side panel, because that fixed panel can
+ * never render above this component's own <dialog> (EchoScannerModal.vue):
+ * showModal() puts the dialog in the browser's top layer.
+ */
+interface SavedScanEdit {
+  echoId: string;
+  candidate: ScanCandidate;
+}
+const savedEdits = ref<SavedScanEdit[]>([]);
+/** One editor open at a time, same as the Echoes tab's tiles. */
+const expandedEchoId = ref<string | null>(null);
+
+const savedCardEls = new Map<string, HTMLElement>();
+function setSavedCardEl(echoId: string, el: unknown) {
+  const node = (el as { $el?: unknown } | null)?.$el;
+  if (node instanceof HTMLElement) savedCardEls.set(echoId, node);
+  else savedCardEls.delete(echoId);
+}
+
+async function expandSavedEdit(echoId: string) {
+  expandedEchoId.value = echoId;
+  await nextTick();
+  // The results list scrolls inside its own max-h box; bring the opened editor into view.
+  savedCardEls.get(echoId)?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+}
+
+function toggleSavedEdit(echoId: string) {
+  if (expandedEchoId.value === echoId) expandedEchoId.value = null;
+  else void expandSavedEdit(echoId);
+}
+
 function handleEditCandidate(candidate: ScanCandidate) {
   if (!props.inventoryOnly) return;
   const echoId = scanner.saveCandidateNow(candidate.id);
-  if (echoId) emit("edit-candidate", { echoId, referenceImageUrl: candidate.panelPreviewUrl });
+  if (!echoId) return;
+  savedEdits.value = [...savedEdits.value, { echoId, candidate }];
+  void expandSavedEdit(echoId);
+}
+
+const { getEchoFlags, removeEchoFully } = useEchoInventory();
+const { confirm } = useConfirm();
+const { showToast } = useToast();
+
+/** It's a real inventory echo by now, so this is a real delete — same guard and confirm as InventoryEchoesBrowser.vue's removeEcho. */
+async function handleDeleteSaved(echoId: string) {
+  if (getEchoFlags(echoId).locked) {
+    showToast("This echo is locked and cannot be deleted.", "warning");
+    return;
+  }
+  const confirmed = await confirm("Do you really want to delete this echo from your inventory?", {
+    title: "Delete echo",
+    confirmLabel: "Delete",
+    variant: "error",
+  });
+  if (!confirmed) return;
+  await removeEchoFully(echoId);
+  savedEdits.value = savedEdits.value.filter((s) => s.echoId !== echoId);
+  if (expandedEchoId.value === echoId) expandedEchoId.value = null;
 }
 
 function triggerFileSelect() {
@@ -638,6 +706,8 @@ const activeFilter = ref<ReviewFilter>("all");
 watch(status, (next, previous) => {
   if (next !== "stopped" || previous === "stopped") return;
   reviewedIds.value = new Set();
+  savedEdits.value = [];
+  expandedEchoId.value = null;
   activeFilter.value = summary.value.attentionCount > 0 ? "attention" : "all";
 });
 
@@ -666,6 +736,37 @@ const filterTabs = computed(() => [
 const filteredCandidates = computed(() =>
   filterCandidates(candidates.value, activeFilter.value, reviewContext.value),
 );
+
+/** Saved-from-edit echoes still in the inventory (one deleted elsewhere drops out). */
+const liveSavedEdits = computed(() =>
+  savedEdits.value.filter((s) => inventoryStore.getEchoById(s.echoId)),
+);
+
+const capturedCount = computed(() => candidates.value.length + liveSavedEdits.value.length);
+
+/**
+ * The grid's rows in capture order. Saved edits show under every filter —
+ * they're no longer review candidates, and one shouldn't vanish from the
+ * "Needs attention" view mid-edit just because Edit saved it.
+ */
+const resultItems = computed(() => {
+  const items: Array<
+    | { key: string; order: number; saved: SavedScanEdit; candidate?: undefined }
+    | { key: string; order: number; saved?: undefined; candidate: ScanCandidate }
+  > = [
+    ...filteredCandidates.value.map((candidate) => ({
+      key: `c:${candidate.id}`,
+      order: candidate.captureIndex,
+      candidate,
+    })),
+    ...liveSavedEdits.value.map((saved) => ({
+      key: `s:${saved.echoId}`,
+      order: saved.candidate.captureIndex,
+      saved,
+    })),
+  ];
+  return items.sort((a, b) => a.order - b.order);
+});
 
 const emptyFilterMessage = computed(() => {
   switch (activeFilter.value) {

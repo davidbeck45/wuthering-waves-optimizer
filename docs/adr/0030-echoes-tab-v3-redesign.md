@@ -84,6 +84,12 @@ is for building that, not the review itself.
    `<EchoPickerDialog ref="pickerRef" :target="target" />` — and keeps
    serving the Inventory context exactly as before (see "Not done here").
 
+   **Superseded 2026-10-02 (in part):** the docked panel's header chrome
+   (and its picker) moved into **`EchoEditHeader.vue`**, so the echo
+   scanner's inline editor (`EchoScannerSavedCard.vue`, see
+   [docs/scanner.md](../scanner.md)) can share it. `CalculatorEchoTile.vue`
+   still has its own header variant; the panel's behavior is unchanged.
+
    `CalculatorEchoTile.vue` then embeds those same two components directly:
    clicking Edit (or the tile itself, while collapsed) expands that tile in
    place to show a header variant plus `<EchoEditFields :scrollable="false" />`;

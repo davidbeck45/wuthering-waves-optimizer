@@ -41,6 +41,7 @@
         :show-disabled-option="false"
         :can-reorder="canReorder"
         :advanced-buff-chips="advancedBuffChips"
+        :range-actions="rangeActions"
         :damage-value="damageValue"
         :damage-label="damageLabel"
         :data-test-rotation-action-by-attack-key="action.key || 'none'"
@@ -52,6 +53,7 @@
         @toggle-manage-buffs="onToggleManageBuffs"
         @toggle-manage-enemy="onToggleManageEnemy"
         @toggle-advanced-buff="onToggleAdvancedBuff"
+        @bulk-apply-action-buff="onBulkApplyActionBuff"
         @drag-reorder-start="onDragReorderStart"
         @drag-reorder-end="onDragReorderEnd">
         <template v-if="team.characterIds[action.slot]" #extra-buttons>
@@ -209,6 +211,7 @@ const emit = defineEmits<{
   duplicate: [id: string];
   "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
   "bulk-apply-enemy-stacks": [payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }];
+  "bulk-apply-action-buff": [payload: { modifier: string; modifierValue: unknown; actionIds: string[] }];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
 }>();
@@ -395,6 +398,10 @@ function onEnemyStacksUpdate(patch: { key: EnemyStackKey; value: RotationBuffOve
 function onResetEnemyStacksField(payload: { key: EnemyStackKey }) {
   const next = removeEnemyStacksOverride(props.action.enemyStacksOverride, payload.key);
   emit("update", { ...props.action, enemyStacksOverride: next });
+}
+
+function onBulkApplyActionBuff(payload: { modifier: string; modifierValue: unknown; actionIds: string[] }) {
+  emit("bulk-apply-action-buff", payload);
 }
 
 function onEnemyStacksBulkApply(payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }) {

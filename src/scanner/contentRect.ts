@@ -15,6 +15,12 @@
  * near-black, a title bar is mostly flat). Anything that doesn't fit either
  * shape is treated as all game, which is the old behavior.
  *
+ * A band that fits a title bar's geometry but isn't flat (a centered title,
+ * a translucent or gradient bar, an overlay) can't be told apart from real
+ * game rows by pixels alone, so it isn't trimmed — but its rect comes back
+ * as an `alternate`, for the scanner to try if the whole frame doesn't read
+ * as an Echo panel (layoutCheck.ts).
+ *
  * Pure: runs over raw RGBA so it's unit-testable without a canvas, like
  * capture.ts's detectIconBounds.
  */
@@ -26,6 +32,13 @@ export type ContentDetection = {
   /** The game's area, as fractions of the captured frame. */
   rect: RegionFrac;
   kind: ContentKind;
+  /**
+   * Other plausible game areas the pixels couldn't confirm — today only a
+   * title-bar-shaped band that isn't flat. Empty when `rect` was confirmed.
+   */
+  alternates: RegionFrac[];
+  /** The title-bar band's luma standard deviation, when a band's geometry fit — for tuning TITLEBAR_MAX_STD from analytics. */
+  bandStd?: number;
 };
 
 /** Aspects WuWa actually renders at — the game area must come out at one of these. */
@@ -74,15 +87,16 @@ export function detectContentRect(
   if (maxLuma < BLACK_LUMA) return null;
 
   const letterbox = detectLetterbox(luma, width, height, frame);
-  if (letterbox) return { rect: letterbox, kind: "letterbox" };
+  if (letterbox) return { rect: letterbox, kind: "letterbox", alternates: [] };
 
   const frameAspect = frame.width / frame.height;
-  if (isGameAspect(frameAspect)) return { rect: FULL, kind: "full" };
+  if (isGameAspect(frameAspect)) return { rect: FULL, kind: "full", alternates: [] };
 
-  const titlebar = detectTitlebar(luma, width, height, frame);
-  if (titlebar) return { rect: titlebar, kind: "titlebar" };
-
-  return { rect: FULL, kind: "full" };
+  const band = measureTitlebar(luma, width, height, frame);
+  if (!band) return { rect: FULL, kind: "full", alternates: [] };
+  const bandStd = Math.round(band.std);
+  if (band.std <= TITLEBAR_MAX_STD) return { rect: band.rect, kind: "titlebar", alternates: [], bandStd };
+  return { rect: FULL, kind: "full", alternates: [band.rect], bandStd };
 }
 
 function rowBlackShare(luma: Uint8Array, width: number, y: number, x0: number, x1: number): number {
@@ -138,11 +152,17 @@ function detectLetterbox(luma: Uint8Array, width: number, height: number, frame:
 /**
  * A window title bar above a 16:10 or 16:9 game: the frame is exactly a
  * game aspect plus a thin band on top. Only one game aspect can fit
- * (16:10 and 16:9 need bands ~10% of the height apart), and the band's
- * middle must be flat — a title bar's text is at the left and its buttons
- * at the right.
+ * (16:10 and 16:9 need bands ~10% of the height apart). Returns that band's
+ * game rect plus how flat its middle is — the caller decides whether it's
+ * flat enough to trust (a title bar's text is at the left and its buttons
+ * at the right). Null when no band fits the geometry.
  */
-function detectTitlebar(luma: Uint8Array, width: number, height: number, frame: FrameSize): RegionFrac | null {
+function measureTitlebar(
+  luma: Uint8Array,
+  width: number,
+  height: number,
+  frame: FrameSize,
+): { rect: RegionFrac; std: number } | null {
   for (const aspect of GAME_ASPECTS) {
     const band = 1 - frame.width / aspect / frame.height;
     if (band < TITLEBAR_MIN || band > TITLEBAR_MAX) continue;
@@ -163,8 +183,7 @@ function detectTitlebar(luma: Uint8Array, width: number, height: number, frame: 
     }
     const mean = sum / n;
     const std = Math.sqrt(Math.max(0, sumSq / n - mean * mean));
-    if (std > TITLEBAR_MAX_STD) continue;
-    return { x: 0, y: band, width: 1, height: 1 - band };
+    return { rect: { x: 0, y: band, width: 1, height: 1 - band }, std };
   }
   return null;
 }
