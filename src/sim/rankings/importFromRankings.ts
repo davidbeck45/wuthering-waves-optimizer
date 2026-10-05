@@ -9,7 +9,7 @@
 // with no store or page in sight, so the headless CLI (`sync-teams`,
 // syncTeamsHeadless.ts) shares it; `importTeamFromRankings()` is the browser
 // path that resolves the run from the page model and writes the stores.
-import { getCharByName } from "../../characters/characters";
+import { allCharactersList, getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
 import { randomString } from "../../utils/strings";
 import {
@@ -227,6 +227,12 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const names: string[] = members.map((m) => m.name);
   const keys = names.map(appKeyOf);
 
+  // a character Ryan ships but has not released (Suoming, 2026-09-29: her folder loads, her registry entry is commented
+  // out) would land in a team the app cannot pick her for
+  const hidden = notInApp(keys);
+  if (hidden.length) {
+    throw new Error(`${hidden.map((k) => names[keys.indexOf(k)]).join(" and ")} ${hidden.length > 1 ? "are" : "is"} not released in this app yet, so this team can't be imported.`);
+  }
   const rowsByKey = new Map<string, AppRow[]>();
   for (const k of new Set(keys)) {
     let data: Record<string, unknown> | null = null;
@@ -402,6 +408,12 @@ export const toImportedActions = (actions: TeamAction[]): ImportedAction[] =>
     ...(a.mainEcho ? { mainEcho: a.mainEcho } : {}),
     ...(a.negativeStatusStacks != null ? { stacks: a.negativeStatusStacks } : {}),
   }));
+
+/** The app keys among `keys` the app does not list (`allCharactersList`) — a kit shipped ahead of its release. */
+export function notInApp(keys: string[]): string[] {
+  const listed = new Set(allCharactersList.map((c) => c.key));
+  return [...new Set(keys.filter((k) => !listed.has(k)))];
+}
 
 /** A traced run's loop length in seconds, rounded to the hundredth: its last section, the loop Riley's table times
  *  ("25.1s") and the one this import presses. Null where the run carries no section times. */

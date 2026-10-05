@@ -1,9 +1,14 @@
 // Wuthering Tools+: the plain-data half of "Sync my teams" (the engine half runs on the rankings page).
 import { describe, expect, it } from "vitest";
 import { actionCounts, diffActions, diffEnemy, humanKey, isWuwaCalcTeam, rileyTeamKeysFor } from "./syncTeams";
-import { loopSecondsOf } from "./importFromRankings";
+import { loopSecondsOf, notInApp } from "./importFromRankings";
 
 describe("sync my teams", () => {
+  it("refuses a team with a character the app has not released (Suoming)", () => {
+    expect(notInApp(["Hsin", "Shorekeeper", "Suoming"])).toEqual(["Suoming"]);
+    expect(notInApp(["Aemeath", "Mornye", "Lynae"])).toEqual([]);
+  });
+
   it("times a rotation by Riley's last loop, the rotation time his table shows", () => {
     expect(loopSecondsOf({ sectionSeconds: [25.983333, 25, 25.0833333, 25.1166666] })).toBe(25.12);
     expect(loopSecondsOf({ sectionSeconds: [] })).toBeNull();
