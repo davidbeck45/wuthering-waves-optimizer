@@ -66,6 +66,9 @@
           </template>
           <span v-if="t.deltas.length > 12"> · +{{ t.deltas.length - 12 }} more</span>
         </span>
+        <span v-if="t.durationDelta" class="text-xs opacity-80 w-full pl-2 tabular-nums" data-test-rankings-sync-duration>
+          rotation time: {{ t.durationDelta.from == null ? "none" : `${t.durationDelta.from}s` }} → {{ t.durationDelta.to }}s
+        </span>
         <span v-if="t.enemyDeltas.length" class="text-xs opacity-80 w-full pl-2" data-test-rankings-sync-enemy>
           enemy settings:
           <template v-for="(e, i) in t.enemyDeltas" :key="e.key">

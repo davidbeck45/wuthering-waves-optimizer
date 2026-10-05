@@ -98,8 +98,11 @@ export interface PreparedTeam {
   members: PreparedMember[];
   statuses: string[];
   notPorted: string[];
-  /** each member's own loop as a character rotation (no actions when nothing mapped) */
-  rotations: Array<{ name: string; key: string; rotationName: string; description: string; actions: MappedAction[] }>;
+  /** the loop's length in seconds — Riley's rotation time for the run (the last loop's frames / 60, the "25.1s" his
+   *  table shows); the app's DPS reads a rotation's `duration`. Null on an engine before the frame-accurate one */
+  duration: number | null;
+  /** each member's own loop as a character rotation (no actions when nothing mapped), timed as the team's loop */
+  rotations: Array<{ name: string; key: string; rotationName: string; description: string; duration: number | null; actions: MappedAction[] }>;
 }
 
 export interface ImportResult {
@@ -118,6 +121,8 @@ export interface ImportResult {
   characterRotationsSkipped: string[];
   notPorted: string[];
   statuses: string[];
+  /** the loop's length in seconds written to the team (`PreparedTeam.duration`) */
+  duration: number | null;
 }
 
 /** Riley's engine scores against a level-100 target with a flat 20% resistance. */
@@ -338,6 +343,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
     };
   });
 
+  const duration = loopSecondsOf(traced);
   const rotations: PreparedTeam["rotations"] = [];
   for (let i = 0; i < members.length; i++) {
     const name = names[i];
@@ -357,6 +363,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
       key: k,
       rotationName: `${name} ${tags[i]} ${combos[i].weapon?.name ?? ""} · ${others.join(" + ")} · ${tag} (wuwa_calc)`,
       description: `Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): ${tags[i]}, ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, main stats ${combos[i].mainstat?.name ?? ""}; team ${ordered.join(" + ")}, ${Math.round(traced.total).toLocaleString()} team DPR.${report.unmatched.length ? ` Not ported: ${report.unmatched.map((u) => u.replace(/ \(.*\)$/, "")).join(", ")}.` : ""}`,
+      duration,
       actions,
     });
   }
@@ -373,6 +380,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
     members: memberDetails,
     statuses: [...statuses],
     notPorted: [...notPorted],
+    duration,
     rotations,
   };
 }
@@ -395,12 +403,20 @@ export const toImportedActions = (actions: TeamAction[]): ImportedAction[] =>
     ...(a.negativeStatusStacks != null ? { stacks: a.negativeStatusStacks } : {}),
   }));
 
+/** A traced run's loop length in seconds, rounded to the hundredth: its last section, the loop Riley's table times
+ *  ("25.1s") and the one this import presses. Null where the run carries no section times. */
+export function loopSecondsOf(run: { sectionSeconds?: number[] | null } | null | undefined): number | null {
+  const s = run?.sectionSeconds;
+  const v = Array.isArray(s) && s.length ? Number(s[s.length - 1]) : NaN;
+  return Number.isFinite(v) && v > 0 ? Math.round(v * 100) / 100 : null;
+}
+
 /** The character rotation record a prepared member loop becomes (ids fresh, order after the existing ones). */
 export const toCharacterRotation = (r: PreparedTeam["rotations"][number], order: number): Record<string, unknown> => ({
   id: randomString(),
   name: r.rotationName,
   description: r.description,
-  duration: null,
+  duration: r.duration ?? null,
   order,
   actions: r.actions.map((a) => ({ ...cleanAction(a), id: randomString() })),
 });
@@ -433,6 +449,7 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     written = reslotted;
     teamStore.setTeamActions(existing.id, written.map((a) => ({ ...a, id: randomString(12) })));
     teamStore.setTeamEnemyConfig(existing.id, { ...prepared.enemyConfig });
+    if (prepared.duration != null) teamStore.setTeamDuration(existing.id, prepared.duration);
     if (isGeneratedTeamName(existing.name)) teamStore.renameTeam(existing.id, prepared.teamName);
     // the store has no setters for these; the record is the store's own reactive object
     existing.description = prepared.description;
@@ -444,7 +461,7 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
       characterIds: prepared.keys,
       buildIds: [null, null, null],
       actions: prepared.actions,
-      duration: null,
+      duration: prepared.duration,
       enemyConfig: { ...prepared.enemyConfig },
       description: prepared.description,
       handoffs: prepared.handoffs,
@@ -480,5 +497,6 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     characterRotationsSkipped: skipped,
     notPorted: prepared.notPorted,
     statuses: prepared.statuses,
+    duration: prepared.duration,
   };
 }

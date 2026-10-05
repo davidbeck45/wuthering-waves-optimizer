@@ -1,11 +1,12 @@
 [
  {
   "name": "Sanhua S6 Blazing Brilliance R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Cartethyia: 233,829 DPR for Sanhua of 4,055,216 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Cartethyia: 233,829 DPR for Sanhua of 4,055,216 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Sanhua S6 Blazing Brilliance R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Cartethyia: 233,829 DPR for Sanhua of 4,055,216 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 44111 CR CR atk atk atk. Team: Mornye + Cartethyia: 233,829 DPR for Sanhua of 4,055,216 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,

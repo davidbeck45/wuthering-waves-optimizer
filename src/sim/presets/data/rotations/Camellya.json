@@ -1,11 +1,12 @@
 [
  {
   "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,144,049 DPR for Camellya of 3,388,100 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,144,049 DPR for Camellya of 3,388,100 team. Sequence procs in the loop: none. Rotation time 27.85 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Camellya S6 Red Spring R5 · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,144,049 DPR for Camellya of 3,388,100 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 44111 CR CD atk atk atk. Team: Shorekeeper + Sanhua (main DPS): 3,144,049 DPR for Camellya of 3,388,100 team. Sequence procs in the loop: none. Rotation time 27.85 s (the team's loop).",
+   "duration": 27.85,
    "actions": [
     {
      "order": 1,
@@ -158,11 +159,12 @@
  },
  {
   "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,117,474 DPR for Camellya of 4,584,901 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,117,474 DPR for Camellya of 4,584,901 team. Sequence procs in the loop: none. Rotation time 28.52 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Camellya S6 Red Spring R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,117,474 DPR for Camellya of 4,584,901 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R5, Havoc Eclipse 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 3,117,474 DPR for Camellya of 4,584,901 team. Sequence procs in the loop: none. Rotation time 28.52 s (the team's loop).",
+   "duration": 28.52,
    "actions": [
     {
      "order": 1,
@@ -313,11 +315,12 @@
  },
  {
   "name": "Camellya S6 Red Spring R1 · Verina + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,256,919 DPR for Camellya of 2,408,631 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,256,919 DPR for Camellya of 2,408,631 team. Sequence procs in the loop: none. Rotation time 34.28 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Camellya S6 Red Spring R1 · Verina + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,256,919 DPR for Camellya of 2,408,631 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Red Spring R1, Havoc Eclipse 5pc, main stats 43311 CR Havoc Havoc atk atk. Team: Verina + Sanhua (main DPS): 2,256,919 DPR for Camellya of 2,408,631 team. Sequence procs in the loop: none. Rotation time 34.28 s (the team's loop).",
+   "duration": 34.28,
    "actions": [
     {
      "order": 1,

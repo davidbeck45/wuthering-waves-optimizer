@@ -1,11 +1,12 @@
 [
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 27.17 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 27.17 s (the team's loop).",
+   "duration": 27.17,
    "actions": [
     {
      "order": 1,
@@ -190,11 +191,12 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 29.88 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 29.88 s (the team's loop).",
+   "duration": 29.88,
    "actions": [
     {
      "order": 1,
@@ -379,11 +381,12 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 25.63 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 25.63 s (the team's loop).",
+   "duration": 25.63,
    "actions": [
     {
      "order": 1,

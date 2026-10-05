@@ -1,11 +1,12 @@
 [
  {
   "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 83,653 DPR for Buling of 8,400,819 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 83,653 DPR for Buling of 8,400,819 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks. Rotation time 27.07 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Chisa + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 83,653 DPR for Buling of 8,400,819 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Chisa + Hsin: 83,653 DPR for Buling of 8,400,819 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks. Rotation time 27.07 s (the team's loop).",
+   "duration": 27.07,
    "actions": [
     {
      "order": 1,
@@ -172,11 +173,12 @@
  },
  {
   "name": "Buling S6 Variation R5 · Suisui + Hsin · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 69,682 DPR for Buling of 7,649,018 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 69,682 DPR for Buling of 7,649,018 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Suisui + Hsin · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 69,682 DPR for Buling of 7,649,018 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Hsin: 69,682 DPR for Buling of 7,649,018 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Flare - 13 Stacks. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -343,11 +345,12 @@
  },
  {
   "name": "Buling S6 Variation R5 · Lynae + Electro Rover · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,054 DPR for Buling of 2,243,130 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,054 DPR for Buling of 2,243,130 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks. Rotation time 27.47 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Buling S6 Variation R5 · Lynae + Electro Rover · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,054 DPR for Buling of 2,243,130 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 CD ER ER atk atk. Team: Lynae + Electro Rover: 61,054 DPR for Buling of 2,243,130 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 3 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 1 Stack, 1x Electro Flare - 9 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 10 Stacks. Rotation time 27.47 s (the team's loop).",
+   "duration": 27.47,
    "actions": [
     {
      "order": 1,

@@ -1,8 +1,16 @@
 // Wuthering Tools+: the plain-data half of "Sync my teams" (the engine half runs on the rankings page).
 import { describe, expect, it } from "vitest";
 import { actionCounts, diffActions, diffEnemy, humanKey, isWuwaCalcTeam, rileyTeamKeysFor } from "./syncTeams";
+import { loopSecondsOf } from "./importFromRankings";
 
 describe("sync my teams", () => {
+  it("times a rotation by Riley's last loop, the rotation time his table shows", () => {
+    expect(loopSecondsOf({ sectionSeconds: [25.983333, 25, 25.0833333, 25.1166666] })).toBe(25.12);
+    expect(loopSecondsOf({ sectionSeconds: [] })).toBeNull();
+    expect(loopSecondsOf({})).toBeNull(); // an engine before the frame-accurate one
+    expect(loopSecondsOf({ sectionSeconds: [0] })).toBeNull();
+  });
+
   it("touches only wuwa_calc-named teams", () => {
     expect(isWuwaCalcTeam({ name: "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae" })).toBe(true);
     expect(isWuwaCalcTeam({ name: "Chisa + Denia + Aemeath · S6R5 (wuwa_calc t307)" })).toBe(true);

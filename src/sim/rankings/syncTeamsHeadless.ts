@@ -94,6 +94,7 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
     if (!written) throw new Error(`${target.name} does not hold the same three characters as the rankings row.`);
     target.actions = written.map((a) => ({ ...a, id: randomString(12) }));
     target.enemyConfig = { ...(target.enemyConfig ?? {}), ...prepared.enemyConfig };
+    if (prepared.duration != null) target.duration = prepared.duration;
     if (isGeneratedTeamName(target.name)) target.name = prepared.teamName;
     target.description = prepared.description;
     target.handoffs = prepared.handoffs;
@@ -124,6 +125,7 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
       characterRotationsSkipped: skipped,
       notPorted: prepared.notPorted,
       statuses: prepared.statuses,
+      duration: prepared.duration,
     };
   };
 

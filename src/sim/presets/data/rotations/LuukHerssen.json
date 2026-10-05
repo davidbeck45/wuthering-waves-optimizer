@@ -1,11 +1,12 @@
 [
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none. Rotation time 25.67 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 44111 CR CD atk atk atk. Team: Mornye + Denia (main DPS): 8,640,854 DPR for Luuk Herssen of 10,992,249 team. Sequence procs in the loop: none. Rotation time 25.67 s (the team's loop).",
+   "duration": 25.67,
    "actions": [
     {
      "order": 1,
@@ -188,11 +189,12 @@
  },
  {
   "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none. Rotation time 25.75 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Luuk Herssen S6 Daybreaker's Spine R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 7,211,899 DPR for Luuk Herssen of 9,230,077 team. Sequence procs in the loop: none. Rotation time 25.75 s (the team's loop).",
+   "duration": 25.75,
    "actions": [
     {
      "order": 1,

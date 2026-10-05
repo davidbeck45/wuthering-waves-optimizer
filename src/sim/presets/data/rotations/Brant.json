@@ -1,11 +1,12 @@
 [
  {
   "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,408,997 DPR for Brant of 4,530,419 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,408,997 DPR for Brant of 4,530,419 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). Rotation time 33.38 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,408,997 DPR for Brant of 4,530,419 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,408,997 DPR for Brant of 4,530,419 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). Rotation time 33.38 s (the team's loop).",
+   "duration": 33.38,
    "actions": [
     {
      "order": 1,
@@ -188,11 +189,12 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,651,436 DPR for Brant of 4,877,768 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,651,436 DPR for Brant of 4,877,768 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Rotation time 33.52 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,651,436 DPR for Brant of 4,877,768 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,651,436 DPR for Brant of 4,877,768 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Rotation time 33.52 s (the team's loop).",
+   "duration": 33.52,
    "actions": [
     {
      "order": 1,
@@ -375,11 +377,12 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,692,556 DPR for Brant of 6,616,469 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,692,556 DPR for Brant of 6,616,469 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Rotation time 29.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,692,556 DPR for Brant of 6,616,469 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lupa + Aemeath: 1,692,556 DPR for Brant of 6,616,469 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Rotation time 29.00 s (the team's loop).",
+   "duration": 29,
    "actions": [
     {
      "order": 1,
@@ -466,11 +469,12 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R1 · Denia + Lupa · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 1,993,835 DPR for Brant of 2,537,419 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 1,993,835 DPR for Brant of 2,537,419 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 33.82 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R1 · Denia + Lupa · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 1,993,835 DPR for Brant of 2,537,419 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 1,993,835 DPR for Brant of 2,537,419 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 33.82 s (the team's loop).",
+   "duration": 33.82,
    "actions": [
     {
      "order": 1,
@@ -662,11 +666,12 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R1 · Denia + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Sanhua (main DPS): 1,716,644 DPR for Brant of 2,155,680 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Sanhua (main DPS): 1,716,644 DPR for Brant of 2,155,680 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. Rotation time 29.50 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R1 · Denia + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Sanhua (main DPS): 1,716,644 DPR for Brant of 2,155,680 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R1, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Sanhua (main DPS): 1,716,644 DPR for Brant of 2,155,680 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast), 1x Outro - The Course is Set! (S2 Blast). Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks, 1x Fusion Burst - 10 Stacks. Rotation time 29.50 s (the team's loop).",
+   "duration": 29.5,
    "actions": [
     {
      "order": 1,

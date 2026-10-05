@@ -1,11 +1,12 @@
 [
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none. Rotation time 25.42 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none. Rotation time 25.42 s (the team's loop).",
+   "duration": 25.42,
    "actions": [
     {
      "order": 1,
@@ -206,11 +207,12 @@
  },
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none. Rotation time 26.27 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none. Rotation time 26.27 s (the team's loop).",
+   "duration": 26.27,
    "actions": [
     {
      "order": 1,
@@ -403,11 +405,12 @@
  },
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Suisui + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none. Rotation time 27.25 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Suisui + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none. Rotation time 27.25 s (the team's loop).",
+   "duration": 27.25,
    "actions": [
     {
      "order": 1,

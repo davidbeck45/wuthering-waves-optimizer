@@ -391,6 +391,7 @@ export function registerPlusCommands(program: Command): void {
               ...t.deltas.slice(0, 4).map((d) => `${d.characterId ?? "?"} ${d.key}${d.stacks != null ? `@${d.stacks}` : ""} ${d.from}→${d.to}`),
               ...(t.deltas.length > 4 ? [`+${t.deltas.length - 4} more`] : []),
               ...t.enemyDeltas.map((e) => `enemy ${e.label} ${e.from}→${e.to}`),
+              ...(t.durationDelta ? [`rotation time ${t.durationDelta.from ?? "none"}→${t.durationDelta.to}s`] : []),
               ...t.members.filter((m) => m.nextLoopChange).map((m) => `${m.name} S${m.sequence}→S${m.nextLoopChange} switches loop`),
             ];
             return [`  ${t.newName ?? t.name}`, t.status, t.total == null ? "-" : int(t.total), t.reason ?? moves.join("; ")];

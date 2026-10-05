@@ -15,6 +15,8 @@ export interface TeamLike {
   characterIds: Array<string | null>;
   actions: Array<Record<string, any>>;
   enemyConfig?: Record<string, any> | null;
+  /** the rotation's length in seconds, what the app's DPS divides by */
+  duration?: string | number | null;
 }
 
 export interface ActionDelta {
@@ -58,6 +60,8 @@ export interface SyncTeamReport {
   deltas: ActionDelta[];
   /** the enemy settings that moved (negative-status stacks read off the run) */
   enemyDeltas: EnemyDelta[];
+  /** the loop's length in seconds when the sync moved it (Riley's rotation time); null when it stayed */
+  durationDelta: { from: number | null; to: number } | null;
   /** the stack fields the run set above zero */
   enemy: Partial<EnemyStacks>;
   members: SyncMember[];
@@ -163,7 +167,7 @@ export async function runSync(deps: SyncDeps): Promise<SyncReport> {
     report[r.status] += 1;
   };
   const blank = (team: TeamLike, status: SyncStatus, reason: string, rileyKey: string | null = null, total: number | null = null): SyncTeamReport => ({
-    id: team.id, name: team.name, newName: null, status, reason, rileyKey, total, deltas: [], enemyDeltas: [], enemy: {}, members: [],
+    id: team.id, name: team.name, newName: null, status, reason, rileyKey, total, deltas: [], enemyDeltas: [], durationDelta: null, enemy: {}, members: [],
   });
 
   const candidates: Array<{ team: TeamLike; keys: string[] }> = [];
@@ -195,20 +199,23 @@ export async function runSync(deps: SyncDeps): Promise<SyncReport> {
     }
     const before = team.actions ?? [];
     const enemyBefore = team.enemyConfig ?? null;
+    const durationBefore = Number(team.duration) > 0 ? Number(team.duration) : null;
     try {
       const result = await deps.importInto(team, best);
       const deltas = diffActions(before, result.actionList as ImportedAction[], team.characterIds);
       const enemyDeltas = diffEnemy(enemyBefore, result.enemyConfig);
+      const durationDelta = result.duration != null && result.duration !== durationBefore ? { from: durationBefore, to: result.duration } : null;
       file({
         id: team.id,
         name: team.name,
         newName: result.teamName !== team.name && isGeneratedTeamName(team.name) ? result.teamName : null,
-        status: deltas.length || enemyDeltas.length ? "updated" : "unchanged",
+        status: deltas.length || enemyDeltas.length || durationDelta ? "updated" : "unchanged",
         reason: null,
         rileyKey: best.key,
         total: best.total,
         deltas,
         enemyDeltas,
+        durationDelta,
         enemy: result.enemySeen,
         members: result.memberDetails.slice().sort((a, b) => a.slot - b.slot).map((m) => ({ name: m.name, sequence: m.sequence, nextLoopChange: m.nextLoopChange })),
       });

@@ -1,11 +1,12 @@
 [
  {
   "name": "Augusta S6 Thunderflare Dominion R5 · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). Rotation time 25.27 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Augusta S6 Thunderflare Dominion R5 · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Iuno (main DPS): 7,023,519 DPR for Augusta of 8,629,336 team. Sequence procs in the loop: 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6), 1x Heavy - Thunder Rage (S6). Rotation time 25.27 s (the team's loop).",
+   "duration": 25.27,
    "actions": [
     {
      "order": 1,

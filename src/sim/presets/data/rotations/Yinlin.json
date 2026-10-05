@@ -1,11 +1,12 @@
 [
  {
   "name": "Yinlin S6 Stringmaster R5 · Mornye + Xiangli Yao · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 801,081 DPR for Yinlin of 3,864,424 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 801,081 DPR for Yinlin of 3,864,424 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 27.33 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S6 Stringmaster R5 · Mornye + Xiangli Yao · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 801,081 DPR for Yinlin of 3,864,424 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Xiangli Yao: 801,081 DPR for Yinlin of 3,864,424 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 27.33 s (the team's loop).",
+   "duration": 27.33,
    "actions": [
     {
      "order": 1,
@@ -190,11 +191,12 @@
  },
  {
   "name": "Yinlin S6 Stringmaster R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 776,916 DPR for Yinlin of 3,233,112 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 776,916 DPR for Yinlin of 3,233,112 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 25.85 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S6 Stringmaster R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 776,916 DPR for Yinlin of 3,233,112 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 776,916 DPR for Yinlin of 3,233,112 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 25.85 s (the team's loop).",
+   "duration": 25.85,
    "actions": [
     {
      "order": 1,
@@ -403,11 +405,12 @@
  },
  {
   "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Xiangli Yao · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 711,302 DPR for Yinlin of 3,635,682 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 711,302 DPR for Yinlin of 3,635,682 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 26.47 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S6 Stringmaster R5 · Shorekeeper + Xiangli Yao · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 711,302 DPR for Yinlin of 3,635,682 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stringmaster R5, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Xiangli Yao: 711,302 DPR for Yinlin of 3,635,682 team. Sequence procs in the loop: 1x Skill - Furious Thunder (S6), 2x Skill - Furious Thunder (S6), 1x Skill - Furious Thunder (S6). Rotation time 26.47 s (the team's loop).",
+   "duration": 26.47,
    "actions": [
     {
      "order": 1,
@@ -584,11 +587,12 @@
  },
  {
   "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 285,377 DPR for Yinlin of 1,768,360 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 285,377 DPR for Yinlin of 1,768,360 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S0 Stringmaster R1 · Suisui + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 285,377 DPR for Yinlin of 1,768,360 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Suisui + Jinhsi: 285,377 DPR for Yinlin of 1,768,360 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
+   "duration": 25.85,
    "actions": [
     {
      "order": 1,
@@ -749,11 +753,12 @@
  },
  {
   "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 274,729 DPR for Yinlin of 1,698,697 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 274,729 DPR for Yinlin of 1,698,697 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S0 Stringmaster R1 · Shorekeeper + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 274,729 DPR for Yinlin of 1,698,697 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Jinhsi: 274,729 DPR for Yinlin of 1,698,697 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
+   "duration": 25.85,
    "actions": [
     {
      "order": 1,
@@ -898,11 +903,12 @@
  },
  {
   "name": "Yinlin S0 Stringmaster R1 · Mornye + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 270,114 DPR for Yinlin of 1,700,561 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 270,114 DPR for Yinlin of 1,700,561 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Yinlin S0 Stringmaster R1 · Mornye + Jinhsi · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 270,114 DPR for Yinlin of 1,700,561 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stringmaster R1, Empyrean Anthem 5pc, main stats 43311 CD Electro Electro atk atk. Team: Mornye + Jinhsi: 270,114 DPR for Yinlin of 1,700,561 team. Sequence procs in the loop: none. Rotation time 25.85 s (the team's loop).",
+   "duration": 25.85,
    "actions": [
     {
      "order": 1,

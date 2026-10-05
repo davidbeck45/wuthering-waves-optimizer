@@ -1,11 +1,12 @@
 [
  {
   "name": "Verina S6 Variation R5 · Lynae + Lucy · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 24,160 DPR for Verina of 5,429,947 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 24,160 DPR for Verina of 5,429,947 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S6 Variation R5 · Lynae + Lucy · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 24,160 DPR for Verina of 5,429,947 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 24,160 DPR for Verina of 5,429,947 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -102,11 +103,12 @@
  },
  {
   "name": "Verina S6 Variation R5 · Rebecca + Lucy · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Rebecca + Lucy: 22,409 DPR for Verina of 6,410,481 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Rebecca + Lucy: 22,409 DPR for Verina of 6,410,481 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S6 Variation R5 · Rebecca + Lucy · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Rebecca + Lucy: 22,409 DPR for Verina of 6,410,481 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Rebecca + Lucy: 22,409 DPR for Verina of 6,410,481 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -211,11 +213,12 @@
  },
  {
   "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 21,849 DPR for Verina of 5,722,782 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 21,849 DPR for Verina of 5,722,782 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S6 Variation R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 21,849 DPR for Verina of 5,722,782 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark.",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Variation R5, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 21,849 DPR for Verina of 5,722,782 team. Sequence procs in the loop: 1x Liberation - Photosynthesis Mark, 2x Liberation - Photosynthesis Mark. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -328,11 +331,12 @@
  },
  {
   "name": "Verina S0 Variation R1 · Lynae + Lucy · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 19,266 DPR for Verina of 3,149,475 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 19,266 DPR for Verina of 3,149,475 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S0 Variation R1 · Lynae + Lucy · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 19,266 DPR for Verina of 3,149,475 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Lynae + Lucy: 19,266 DPR for Verina of 3,149,475 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -421,11 +425,12 @@
  },
  {
   "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 17,631 DPR for Verina of 3,977,657 team. Sequence procs in the loop: none.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 17,631 DPR for Verina of 3,977,657 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S0 Variation R1 · Phrolova + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 17,631 DPR for Verina of 3,977,657 team. Sequence procs in the loop: none.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Phrolova + Qiuyuan: 17,631 DPR for Verina of 3,977,657 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -530,11 +535,12 @@
  },
  {
   "name": "Verina S0 Variation R1 · Denia + Brant · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Denia + Brant: 17,335 DPR for Verina of 1,682,025 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks.",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Denia + Brant: 17,335 DPR for Verina of 1,682,025 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 29.63 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Verina S0 Variation R1 · Denia + Brant · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Denia + Brant: 17,335 DPR for Verina of 1,682,025 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks.",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Variation R1, Rejuvenating Glow 5pc, main stats 43311 ATK ER ER atk atk. Team: Denia + Brant: 17,335 DPR for Verina of 1,682,025 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 29.63 s (the team's loop).",
+   "duration": 29.63,
    "actions": [
     {
      "order": 1,
