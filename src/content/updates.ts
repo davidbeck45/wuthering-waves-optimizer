@@ -37,6 +37,8 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "October 4, 2026",
     items: [
       "Fixed an issue where the teams feature wouldn't always use the right build in the listing of teams calculations or the summary page for a team",
+      "Adds missing Phantom echoes",
+      "Fixes Stay Tuned echo buff in team buffs",
     ],
   },
   {
