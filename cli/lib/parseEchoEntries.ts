@@ -3,6 +3,8 @@ import fs from "fs";
 export interface ParsedEchoEntry {
   objectKey: string;
   name: string;
+  /** Current `image` URL, or null when absent/not a plain string literal. */
+  image: string | null;
   details: string;
   modifiers: string;
   actions: string;
@@ -248,6 +250,9 @@ function parsePropertyStringValue(propertyText: string): string | null {
   return propertyText.slice(valueStart + 1, valueEnd - 1);
 }
 
+/** Comfortably longer than any echo key plus the `: {` and whitespace before its body. */
+const KEY_LOOKBACK_CHARS = 256;
+
 function findMainEchoEntries(
   content: string,
 ): Array<{ objectKey: string; entryStart: number; bodyStart: number; end: number }> {
@@ -309,12 +314,16 @@ function findMainEchoEntries(
 
     if (character === "{") {
       if (objectDepth === 1) {
-        const preceding = content.slice(scanStart, index + 1);
-        const keyMatch = /([A-Za-z][A-Za-z0-9]*)\s*:\s*\{$/.exec(preceding);
+        // Only look back a short window for the key — matching against the
+        // whole prefix made this quadratic in file size.
+        const windowStart = Math.max(scanStart, index + 1 - KEY_LOOKBACK_CHARS);
+        const preceding = content.slice(windowStart, index + 1);
+        // Unicode-aware: keys like `Jué` must parse, or the import silently drops the entry.
+        const keyMatch = /([\p{L}_$][\p{L}\p{N}_$]*)\s*:\s*\{$/u.exec(preceding);
         entryKey = keyMatch?.[1] ?? null;
         entryStart =
           keyMatch?.index !== undefined
-            ? scanStart + keyMatch.index
+            ? windowStart + keyMatch.index
             : index;
         bodyStart = index;
       }
@@ -381,6 +390,7 @@ export function parseEchoEntries(content: string): ParsedEchoFile {
     const entry: ParsedEchoEntry = {
       objectKey,
       name,
+      image: parsePropertyStringValue(getPropertyText(properties, "image") ?? ""),
       details: getPropertyText(properties, "details") ?? "    details: ``,",
       modifiers: getPropertyText(properties, "modifiers") ?? "    modifiers: [],",
       actions: getPropertyText(properties, "actions") ?? "    actions: [],",

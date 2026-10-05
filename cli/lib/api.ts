@@ -5,6 +5,14 @@ const WEAPON_LIST_URL = `${WEAPON_API_BASE}?v=Beta`;
 const ECHO_API_BASE = "https://api-v2.encore.moe/api/en/echo";
 const ECHO_LIST_URL = `${ECHO_API_BASE}`;
 
+/** Appends Encore's `v=Beta` query param, which switches responses to the beta-server dataset (may include unreleased content). */
+export function withBetaParam(url: string, beta: boolean): string {
+  if (!beta) {
+    return url;
+  }
+  return `${url}${url.includes("?") ? "&" : "?"}v=Beta`;
+}
+
 export interface ApiCharacterListItem {
   Id: number;
   Name: string;
@@ -304,6 +312,8 @@ export interface ApiEchoListItem {
   Id: number;
   Name: string;
   Rarity: number;
+  /** Absolute URL to the echo's icon on Encore's CDN; hot-linked as the echo image. */
+  Icon?: string;
   FetterGroups: ApiEchoFetterGroup[];
 }
 
@@ -311,8 +321,12 @@ interface EchoListResponse {
   Echo: ApiEchoListItem[];
 }
 
-export async function fetchEchoList(): Promise<ApiEchoListItem[]> {
-  const data = await fetchJson<EchoListResponse>(ECHO_LIST_URL);
+export async function fetchEchoList(
+  options: { beta?: boolean } = {},
+): Promise<ApiEchoListItem[]> {
+  const data = await fetchJson<EchoListResponse>(
+    withBetaParam(ECHO_LIST_URL, options.beta ?? false),
+  );
   return data.Echo;
 }
 
