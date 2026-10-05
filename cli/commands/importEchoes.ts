@@ -1,6 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { confirm } from "@inquirer/prompts";
 import { fetchEchoList } from "../lib/api.js";
 import {
   buildImportedEchoesFile,
@@ -15,10 +16,26 @@ const projectRoot = path.resolve(__dirname, "../..");
 const echoesIndexPath = path.join(projectRoot, "src/echoes/index.ts");
 const echoStatsPath = path.join(projectRoot, "src/echoes/stats.ts");
 
-export async function runImportEchoes(): Promise<void> {
+export async function runImportEchoes(options: {
+  /** Use Encore's beta dataset; prompts when undefined. */
+  beta?: boolean;
+  /** Only import these echo groups (e.g. "phantom"); all groups when empty. */
+  groups?: string[];
+} = {}): Promise<void> {
+  const beta =
+    options.beta ??
+    (await confirm({
+      message: "Use the Beta API (may include unreleased echoes)?",
+      default: false,
+    }));
+  const groups = (options.groups ?? [])
+    .flatMap((group) => group.split(","))
+    .map((group) => group.trim())
+    .filter(Boolean);
+
   const apiEchoes = await withSpinner(
-    "Fetching echo list from Encore API",
-    () => fetchEchoList(),
+    `Fetching ${beta ? "beta " : ""}echo list from Encore API`,
+    () => fetchEchoList({ beta }),
     (result) => `Loaded ${result.length} echoes`,
   );
 
@@ -28,6 +45,7 @@ export async function runImportEchoes(): Promise<void> {
     echoesFileContent,
     apiEchoes,
     labelToKey,
+    groups,
   });
 
   fs.writeFileSync(echoesIndexPath, result.content);

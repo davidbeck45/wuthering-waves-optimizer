@@ -94,9 +94,18 @@ const importCommand = program
 importCommand
   .command("echoes")
   .description("Import echoes from Encore API into src/echoes/index.ts")
-  .action(async () => {
+  .option(
+    "--group <groups...>",
+    "Only import echoes whose name starts with '<group>:' (e.g. --group phantom nightmare); everything else is left untouched",
+  )
+  .option("--beta", "Use the Beta API without prompting")
+  .option("--no-beta", "Use the live API without prompting")
+  .action(async (commandOptions: { group?: string[]; beta?: boolean }) => {
     try {
-      await runImportEchoes();
+      await runImportEchoes({
+        beta: commandOptions.beta,
+        groups: commandOptions.group,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);
