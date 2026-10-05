@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      // Shared scanner logic (ADR 0034); resolved from source here, published to npm.
+      "@wutheringtools/scanner-core": path.resolve(__dirname, "packages/scanner-core/src"),
     },
   },
   test: {
