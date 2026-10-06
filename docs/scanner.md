@@ -6,6 +6,10 @@ each newly displayed echo, OCRs it, and queues it for review instead of
 requiring the Discord-bot image or manual entry. All client-side — no
 server, no upload. See [ADR 0032](./adr/0032-echo-screen-scanner.md) for why.
 
+## Where the code lives
+
+The scanner's pure logic (layouts, stability, parsing, matching, review, dedupe) lives in **`packages/scanner-core/`** and is published as `@wutheringtools/scanner-core` so Wavescan can share it ([ADR 0034](adr/0034-scanner-core-package.md)). The old paths under `src/scanner/` (and `src/echoes/parsedEchoMapping.ts`, `src/utils/echoIdentity.ts`) are one-line re-exports, so imports throughout this doc still work. Edit the real files in `packages/scanner-core/src/`. The package gets game data from `src/scanner/gameData.ts` instead of importing `src/echoes/*`. Browser-only pieces (`capture.ts`, `captureCue.ts`, `analytics.ts`, the workers) stay in `src/`.
+
 ## Mental model
 
 ```
