@@ -3,9 +3,9 @@
  * (same name, set, cost, main stat, substats) collapse to one — there is no
  * grid-position tracking (see docs/scanner.md's "Decision" note).
  */
-import { getEchoIdentityKey } from "./echoIdentity";
-import { mapParsedEchoes } from "./parsedEchoMapping";
-import type { ParsedEchoSlot } from "./types";
+import { getEchoIdentityKey } from "./echoIdentity.js";
+import { mapParsedEchoes } from "./parsedEchoMapping.js";
+import type { ParsedEchoSlot } from "./types.js";
 
 export function computeSignature(slot: ParsedEchoSlot): string {
   const [mapped] = mapParsedEchoes([slot], false);

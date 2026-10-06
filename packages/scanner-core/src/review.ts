@@ -5,7 +5,7 @@
  * state (which ids the user marked "Looks right", which are already in
  * the inventory) and passes it in.
  */
-import type { ScanCandidate } from "./types";
+import type { ScanCandidate } from "./types.js";
 
 export type ReviewFilter = "all" | "attention" | "unknown" | "inventory";
 

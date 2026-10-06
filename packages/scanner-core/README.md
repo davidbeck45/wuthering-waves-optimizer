@@ -23,7 +23,7 @@ setScannerGameData({
 
 Modules can also be imported individually, e.g. `@wutheringtools/scanner-core/layout`.
 
-The published build is ESM for bundlers (Vite, webpack, esbuild).
+The published build is standard ESM: it works in Node and in bundlers (Vite, webpack, esbuild). Relative imports in the source use `.js` extensions for that reason; keep that when adding files.
 
 ## Development
 

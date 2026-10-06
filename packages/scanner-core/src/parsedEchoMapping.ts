@@ -5,8 +5,8 @@
  * scanner (src/scanner/) feed the exact same mapping logic — one place to
  * fix a parsing bug, both flows benefit.
  */
-import { scannerGameData } from "./gameData";
-import { randomString } from "./strings";
+import { scannerGameData } from "./gameData.js";
+import { randomString } from "./strings.js";
 
 export type ParsedSubstat = { subStat?: string; subStatValue?: string };
 

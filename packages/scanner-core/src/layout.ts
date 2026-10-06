@@ -62,7 +62,7 @@
  * echo to echo — something no *fixed*-position per-row crop can fully
  * account for, but a wide-enough block re-read still generally recovers.
  */
-import type { FrameSize, RegionFrac, RegionPx } from "./types";
+import type { FrameSize, RegionFrac, RegionPx } from "./types.js";
 
 export const FULL_FRAME: RegionFrac = { x: 0, y: 0, width: 1, height: 1 };
 

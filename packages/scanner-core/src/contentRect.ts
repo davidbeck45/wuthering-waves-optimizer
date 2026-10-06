@@ -24,7 +24,7 @@
  * Pure: runs over raw RGBA so it's unit-testable without a canvas, like
  * capture.ts's detectIconBounds.
  */
-import type { FrameSize, RegionFrac } from "./types";
+import type { FrameSize, RegionFrac } from "./types.js";
 
 export type ContentKind = "full" | "titlebar" | "letterbox";
 
