@@ -1,10 +1,35 @@
-import { defineConfig } from "vite";
+import { createHash } from "node:crypto";
+import { defineConfig, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
+import { buildScannerDataFile } from "./src/scanner/scannerData";
+
+/**
+ * Publishes /scanner-data.json (game data for the Wavescan desktop scanner, ADR 0035):
+ * emitted into every production build and served by the dev server. Generated from the
+ * app's own tables at build time, so it is never committed and can't go stale.
+ */
+function scannerDataPlugin(): Plugin {
+  const fileName = "scanner-data.json";
+  const render = () =>
+    JSON.stringify(buildScannerDataFile((text) => createHash("sha256").update(text).digest("hex")));
+  return {
+    name: "wutheringtools:scanner-data",
+    configureServer(server) {
+      server.middlewares.use(`/${fileName}`, (_req, res) => {
+        res.setHeader("Content-Type", "application/json");
+        res.end(render());
+      });
+    },
+    generateBundle() {
+      this.emitFile({ type: "asset", fileName, source: render() });
+    },
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), scannerDataPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

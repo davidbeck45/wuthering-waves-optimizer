@@ -34,6 +34,7 @@ npm run cli -- backfill icons        # or: backfill icons --character <Key> for 
 |------|------|
 | `src/calculator/` | Pure TS engine: stats, damage, attacks, optimizer context — **no Vue** |
 | `src/workers/` | Optimizer + echo OCR; serializable messages only |
+| `src/scanner/scannerData.ts` | Builds the public `/scanner-data.json` (game data for Wavescan, ADR 0035); emitted by a Vite plugin at build |
 | `packages/scanner-core/` | Echo scanner logic shared with Wavescan (`@wutheringtools/scanner-core`, ADR 0034); `src/scanner/*` are re-export shims. Bump its version to publish |
 | `src/characters/<Name>/` | Per-character game data (attacks, buffs, RCs, presets) |
 | `src/weapons/`, `src/echoes/`, `src/buffs/` | Game data registries |
