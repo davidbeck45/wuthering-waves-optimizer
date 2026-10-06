@@ -11,6 +11,7 @@ on:
     branches: [master]
     paths:
       - "packages/scanner-core/**"
+      - ".github/workflows/publish-scanner-core.yml"
   workflow_dispatch:
 
 permissions:
@@ -28,7 +29,7 @@ jobs:
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
       - run: npm ci
-      # Trusted Publishing needs npm CLI >= 11.5.1.
+      # Trusted Publishing needs npm >= 11.5.1; `npm stage` needs a recent npm 11 too.
       - run: npm install -g npm@11
       - name: Check whether this version is already published
         id: check
@@ -47,7 +48,10 @@ jobs:
       - name: Build
         if: steps.check.outputs.publish == 'true'
         run: npx tsc -p packages/scanner-core/tsconfig.build.json
-      - name: Publish
+      # Staged publishing is required for this package, so CI may only *stage* a version
+      # (a plain `npm publish` is refused with "OIDC permission denied for this action").
+      # A maintainer then approves it on npmjs.com (or `npm stage approve <id>`) with 2FA.
+      - name: Stage for publishing
         if: steps.check.outputs.publish == 'true'
         working-directory: packages/scanner-core
-        run: npm publish --access public
+        run: npm stage publish . --access public
