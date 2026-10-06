@@ -10,7 +10,7 @@
  * that shows either is strong evidence the crops are in the right place.
  * Pure: the composable feeds it each candidate's reads.
  */
-import { inferCostFromSecondaryStat } from "./parse";
+import { inferCostFromSecondaryStat } from "./parse.js";
 
 export function readsAsPanel(secondaryText: string, nameResolved: boolean): boolean {
   return nameResolved || inferCostFromSecondaryStat(secondaryText) !== null;

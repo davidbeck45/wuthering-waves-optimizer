@@ -20,7 +20,7 @@
  *
  * Factory/closure, not a class, per CLAUDE.md's "no classes for domain logic".
  */
-import { countChangedCells, fingerprintDistance } from "./fingerprint";
+import { countChangedCells, fingerprintDistance } from "./fingerprint.js";
 
 export type StabilityEvent = "unstable" | "stable-repeat" | "stable-novel";
 

@@ -52,10 +52,10 @@ import {
   getScannerEcho,
   scannerGameData,
   type ScannerEcho as Echo,
-} from "./gameData";
-import { getSubstatType, getSubstatValue } from "./parsedEchoMapping";
-import { levenshteinSimilarity, prefixTolerantSimilarity } from "./levenshtein";
-import type { FieldConfidence, OcrLine, ParsedEchoSlot, ParsedSubstat, SubstatSource } from "./types";
+} from "./gameData.js";
+import { getSubstatType, getSubstatValue } from "./parsedEchoMapping.js";
+import { levenshteinSimilarity, prefixTolerantSimilarity } from "./levenshtein.js";
+import type { FieldConfidence, OcrLine, ParsedEchoSlot, ParsedSubstat, SubstatSource } from "./types.js";
 
 export const NAME_MATCH_THRESHOLD = 0.68;
 /** Loose sanity floor for the "set already narrowed to one echo" case — just enough to catch a set icon that was clearly misread, not to require a strong text match. */
