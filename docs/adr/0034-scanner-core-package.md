@@ -23,7 +23,10 @@ Copying it would fork it; the API proof of concept already drifted that way. The
 - **Logic only; the app supplies the data.** The package reads the tables through `scannerGameData()`. `src/scanner/gameData.ts` calls `setScannerGameData(...)` with the existing tables. Every shim that re-exports a data-dependent module imports it first, so the data is always set before use. The two values `parse.ts` used to precompute at import time now recompute whenever new data is supplied (`derivedFromGameData`).
 - **Every old path is a one-line re-export shim** (e.g. `src/scanner/parse.ts`), so no app code or test changed. The existing tests run unchanged through the shims: 132 files, 1,342 tests, same as before the move.
 - **In-repo resolution is a path alias, not npm workspaces.** `vite.config.ts`, `vitest.config.ts` and `tsconfig.json` map `@wutheringtools/scanner-core` to the package source. This avoids lockfile or deploy changes.
-- **Publishing:** `.github/workflows/publish-scanner-core.yml` builds with `tsc` and publishes to npm (with provenance) when `packages/scanner-core/package.json`'s version changes on `master`. Wavescan pins a version.
+- **Publishing:** `.github/workflows/publish-scanner-core.yml` builds with `tsc` and publishes to npm when `packages/scanner-core/package.json`'s version changes on `master`. Wavescan pins a version.
+  - Auth is **npm Trusted Publishing** (OIDC), so no npm token is stored anywhere. It's limited to `npm publish` (no dist-tag rights).
+  - **Staged publishing** is on: CI uploads each version, and it only goes live after the maintainer approves it on npmjs.com with 2FA.
+  - CI-published versions carry provenance automatically. 0.1.0 was published by hand to create the package.
 - Set-icon matching (`workers/echoParser.worker.ts`) isn't part of this move. It's canvas-bound and will be split into pure scoring functions separately.
 
 ## Consequences

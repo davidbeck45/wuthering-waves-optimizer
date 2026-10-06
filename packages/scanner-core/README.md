@@ -27,6 +27,6 @@ The published build is ESM for bundlers (Vite, webpack, esbuild).
 
 ## Development
 
-The source lives in the Wuthering Tools repo, and that repo's test suite (`tests/scanner/`) covers it. Bump `version` in `package.json` to publish; CI publishes new versions to npm with provenance.
+The source lives in the Wuthering Tools repo, and that repo's test suite (`tests/scanner/`) covers it. To release, bump `version` in `package.json` and merge to `master`. CI tests, builds and **stages** the version on npm via Trusted Publishing, and it goes live once a maintainer approves it on npmjs.com.
 
 License: GPL-3.0-or-later.

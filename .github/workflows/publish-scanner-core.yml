@@ -1,6 +1,9 @@
 # Publishes packages/scanner-core to npm as @wutheringtools/scanner-core when its
-# version in package.json changes on master (ADR 0034). Needs the NPM_TOKEN secret
-# (an npm "automation" token for the wutheringtools account).
+# version in package.json changes on master (ADR 0034).
+#
+# Auth is npm Trusted Publishing (OIDC): npm trusts this workflow file in this repo, so
+# there is no npm token stored anywhere. Staged publishing is on: CI uploads the
+# version, and it only goes live after a maintainer approves it on npmjs.com with 2FA.
 name: Publish scanner-core
 
 on:
@@ -12,7 +15,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # npm provenance
+  id-token: write # OIDC token for npm Trusted Publishing (and provenance)
 
 jobs:
   publish:
@@ -25,6 +28,8 @@ jobs:
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
       - run: npm ci
+      # Trusted Publishing needs npm CLI >= 11.5.1.
+      - run: npm install -g npm@11
       - name: Check whether this version is already published
         id: check
         working-directory: packages/scanner-core
@@ -45,6 +50,4 @@ jobs:
       - name: Publish
         if: steps.check.outputs.publish == 'true'
         working-directory: packages/scanner-core
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
