@@ -1790,7 +1790,7 @@ CD: 8s.</span>`,
   },
   JadeNetherSerpent: {
     key: "JadeNetherSerpent",
-    name: "Jade Nethe rSerpent",
+    name: "Jade Nether Serpent",
     class: "Common",
     image:
       "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31103_UI.webp",
