@@ -418,7 +418,12 @@ value is right-aligned to the label's *first* line. `parse.ts`'s
   and the Echo Skill text below the last substat ≥ 3x;
 - drops any pair whose label isn't a plausible stat name. The columns run
   past the last substat into the Echo Skill description, which otherwise
-  pairs stray digits with description text.
+  pairs stray digits with description text;
+- keeps a value with no label line at its height only when the value alone
+  names the stat: a whole number that's a legal roll for exactly one flat
+  substat (320-580 is flat HP; 40-60 could be flat ATK or DEF, so it's
+  dropped). The row is marked `inferred` and gets low confidence. Windows'
+  built-in OCR (used by Wavescan) never reads a lone "HP" label.
 
 Pairing by position rather than list index means one dropped or garbled
 line only costs its own row. ATK vs ATK% (and HP/DEF) still comes from the

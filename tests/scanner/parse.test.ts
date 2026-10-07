@@ -758,6 +758,25 @@ describe("parseSubstatColumns (real column-crop OCR)", () => {
     ]);
   });
 
+  it("keeps a flat HP row whose label OCR missed, marked inferred (Windows OCR never reads a lone 'HP')", () => {
+    const rows = parseSubstatColumns(
+      [line("Crit. Rate", 19, 111), line("Basic Attack DMG Bonus", 420, 519), line("ATK", 627, 722)],
+      [line("10.5%", 12, 111), line("430", 216, 312), line("10.1%", 417, 516), line("60", 621, 717)],
+    );
+    expect(rows).toEqual([
+      { rawLabel: "Crit. Rate", rawValue: "10.5%" },
+      { rawLabel: "HP", rawValue: "430", inferred: true },
+      { rawLabel: "Basic Attack DMG Bonus", rawValue: "10.1%" },
+      { rawLabel: "ATK", rawValue: "60" },
+    ]);
+  });
+
+  it("doesn't infer a label the value can't pin down", () => {
+    // 40 is a legal flat ATK and flat DEF roll; 8.6% fits most percent substats.
+    const rows = parseSubstatColumns([line("Crit. Rate", 19, 111)], [line("10.5%", 12, 111), line("40", 216, 312), line("8.6%", 417, 516)]);
+    expect(rows).toEqual([{ rawLabel: "Crit. Rate", rawValue: "10.5%" }]);
+  });
+
   it("cleans punctuation OCR sometimes attaches to a value", () => {
     const rows = parseSubstatColumns([line("Crit. Rate", 16, 114)], [line(",10.5%.", 12, 111)]);
     expect(rows).toEqual([{ rawLabel: "Crit. Rate", rawValue: "10.5%" }]);
@@ -792,6 +811,20 @@ describe("parseEchoCandidate substat pass selection", () => {
       { subStat: "Resonance Skill DMG Bonus", subStatValue: "10.9%" },
     ]);
     expect(result.confidence.substats.every((c) => c === "high")).toBe(true);
+  });
+
+  it("gives an inferred flat HP substat low confidence", () => {
+    const result = parseEchoCandidate({
+      ...base,
+      substatLabelLines: [line("Crit. Rate", 19, 111), line("Crit. DMG", 420, 519)],
+      substatValueLines: [line("6.9%", 12, 111), line("430", 216, 312), line("21.0%", 417, 516)],
+    });
+    expect(result.slot.substats.slice(0, 3)).toEqual([
+      { subStat: "Crit. Rate", subStatValue: "6.9%" },
+      { subStat: "HP", subStatValue: "430" },
+      { subStat: "Crit. DMG", subStatValue: "21%" },
+    ]);
+    expect(result.confidence.substats.slice(0, 3)).toEqual(["high", "low", "high"]);
   });
 
   it("falls back to the per-row pass when it recovers more than the columns did", () => {
