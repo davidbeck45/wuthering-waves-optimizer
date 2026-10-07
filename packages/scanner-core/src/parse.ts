@@ -71,8 +71,9 @@ const TRAILING_DROP_WEIGHT = 0.5;
 /** How many substats a max-level echo has — the app doesn't track echo level, so every scanned echo is assumed to be at this many. */
 const EXPECTED_SUBSTAT_COUNT = 5;
 
-type StatRow = { rawLabel: string; rawValue: string };
-type ResolvedRow = { label: string; formatted: string; exact: boolean };
+/** `inferred`: the label wasn't read, it was worked out from the value (see inferFlatLabel). */
+type StatRow = { rawLabel: string; rawValue: string; inferred?: boolean };
+type ResolvedRow = { label: string; formatted: string; exact: boolean; inferred?: boolean };
 
 /**
  * Lowercases, transliterates accented Latin letters to their base form
@@ -355,6 +356,25 @@ function cleanValueText(text: string): string {
   return text.replace(/\s+/g, "").replace(/^[^\d+-]+/, "").replace(/[^\d%]+$/, "");
 }
 
+/** Panel label for each flat substat key, for rows whose label has to be inferred. */
+const FLAT_SUBSTAT_LABELS: Record<string, string> = { HP_FLAT: "HP", ATK_FLAT: "ATK", DEF_FLAT: "DEF" };
+
+/**
+ * A value with no label beside it can still be identified when it's a whole
+ * number that is a legal roll for exactly one flat substat: 320-580 can only
+ * be flat HP, while 40-60 could be flat ATK or flat DEF and stays unknown.
+ * Percentages are never inferred, since most percent substats share a roll
+ * table. Windows' built-in OCR (used by Wavescan) never reads a lone "HP"
+ * label, which made every flat-HP row disappear.
+ */
+function inferFlatLabel(valueText: string): string | null {
+  if (valueText.includes("%")) return null;
+  const value = Number(valueText);
+  const table = scannerGameData().subStatsTable;
+  const fits = Object.keys(FLAT_SUBSTAT_LABELS).filter((key) => table[key]?.includes(value));
+  return fits.length === 1 ? FLAT_SUBSTAT_LABELS[fits[0]] : null;
+}
+
 /**
  * The primary substat pass: SUBSTAT_LABEL_COLUMN and SUBSTAT_VALUE_COLUMN
  * are OCR'd separately, then each value is paired with the label line at
@@ -368,6 +388,10 @@ function cleanValueText(text: string): string {
  * is its continuation and gets appended. Pairing by position (rather than
  * list index) means one dropped or garbled line only costs its own row.
  *
+ * A value with no label line at its height keeps its row only when the
+ * value alone identifies the stat (inferFlatLabel); the row is marked
+ * `inferred` so its confidence is low.
+ *
  * The columns extend past the last substat into the Echo Skill
  * description, so pairs whose label isn't a plausible stat name are
  * dropped, and a continuation is only appended when it's close below
@@ -380,6 +404,7 @@ export function parseSubstatColumns(labelLines: OcrLine[], valueLines: OcrLine[]
     .sort((a, b) => a.y0 - b.y0);
   const labels = labelLines.filter((line) => line.text.trim()).sort((a, b) => a.y0 - b.y0);
 
+  // labelIndex -1: no label line at this value's height (the OCR missed it).
   const anchors: { value: OcrLine; labelIndex: number }[] = [];
   const anchored = new Set<number>();
   for (const value of values) {
@@ -394,13 +419,21 @@ export function parseSubstatColumns(labelLines: OcrLine[], valueLines: OcrLine[]
         bestDistance = distance;
       }
     });
-    if (bestIndex < 0 || bestDistance > tolerance) continue;
+    if (bestIndex < 0 || bestDistance > tolerance) {
+      anchors.push({ value, labelIndex: -1 });
+      continue;
+    }
     anchored.add(bestIndex);
     anchors.push({ value, labelIndex: bestIndex });
   }
 
   const rows: StatRow[] = [];
   for (const { value, labelIndex } of anchors) {
+    if (labelIndex < 0) {
+      const inferred = inferFlatLabel(value.text);
+      if (inferred) rows.push({ rawLabel: inferred, rawValue: value.text, inferred: true });
+      continue;
+    }
     let rawLabel = labels[labelIndex].text.trim();
     const next = labels[labelIndex + 1];
     const maxOffset = (value.y1 - value.y0) * CONTINUATION_MAX_OFFSET_RATIO;
@@ -671,7 +704,7 @@ function resolveSubstatValue(rawLabel: string, rawValue: string): { formatted: s
 
 function resolveRow(row: StatRow): ResolvedRow {
   const label = normalizeStatLabel(row.rawLabel) ?? row.rawLabel;
-  return { label, ...resolveSubstatValue(label, row.rawValue) };
+  return { label, ...resolveSubstatValue(label, row.rawValue), inferred: row.inferred };
 }
 
 export type ParseCandidateResult = {
@@ -770,7 +803,7 @@ export function parseEchoCandidate(input: {
   const substatConfidence: FieldConfidence[] = resolvedSubstats.map((resolved) => {
     if (!resolved) return "low"; // max level is assumed for every echo now, so a missing slot is a miss, not a legitimately-absent row
     const known = Boolean(scannerGameData().verboseStatLabelMap[resolved.label] || ["ATK", "DEF", "HP"].includes(resolved.label));
-    return known && resolved.exact ? "high" : "low";
+    return known && resolved.exact && !resolved.inferred ? "high" : "low";
   });
 
   const needsMainStatSelection = !mainRow || !mainStatLabel;
