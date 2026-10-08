@@ -11,6 +11,8 @@ export default defineConfig({
       "@wutheringtools/scanner-core": path.resolve(__dirname, "packages/scanner-core/src"),
       // Damage/heal/shield formulas (ADR 0036); resolved from source here, published to npm.
       "@wutheringtools/formulas": path.resolve(__dirname, "packages/formulas/src"),
+      // Build card (Discord bot image) parser (ADR 0037); resolved from source here, published to npm.
+      "@wutheringtools/build-card-scanner": path.resolve(__dirname, "packages/build-card-scanner/src"),
     },
   },
   test: {
