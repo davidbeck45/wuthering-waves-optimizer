@@ -14,9 +14,6 @@ const RARITY_CLASS_MAP: Record<number, string> = {
   3: "Calamity",
 };
 
-const IMAGE_BASE_URL =
-  "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes";
-
 const ECHO_NAME_BLACKLIST = new Set([
   "Jinhsi",
   "Changli",
@@ -59,8 +56,41 @@ export function getEchoClassFromRarity(rarity: number): string {
   return echoClass;
 }
 
-export function getEchoImageUrl(key: string): string {
-  return `${IMAGE_BASE_URL}/${key}.webp`;
+/**
+ * Normalizes an echo group name for matching: lowercase, trimmed, trailing
+ * ":" dropped — so "Phantom", "phantom", and "phantom:" are the same group.
+ */
+export function normalizeEchoGroup(group: string): string {
+  return group.trim().replace(/:+$/, "").trim().toLowerCase();
+}
+
+/**
+ * The group an API echo name belongs to: the prefix before its first ":"
+ * (e.g. "Phantom: Crownless" → "phantom", "Nightmare: Inferno Rider" →
+ * "nightmare"). Unprefixed names have no group.
+ */
+export function getEchoGroup(name: string): string | null {
+  const colonIndex = name.indexOf(":");
+  if (colonIndex <= 0) {
+    return null;
+  }
+  return normalizeEchoGroup(name.slice(0, colonIndex));
+}
+
+/** Distinct groups present in the API response, with echo counts, sorted by name. */
+export function getAvailableEchoGroups(
+  apiEchoes: ApiEchoListItem[],
+): Array<{ group: string; count: number }> {
+  const counts = new Map<string, number>();
+  for (const echo of apiEchoes) {
+    const group = getEchoGroup(echo.Name);
+    if (group) {
+      counts.set(group, (counts.get(group) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([group, count]) => ({ group, count }))
+    .sort((a, b) => a.group.localeCompare(b.group));
 }
 
 function formatSets(sets: string[]): string {
@@ -167,25 +197,27 @@ function findExistingEchoEntry(
   );
 }
 
-function shouldSkipApiEcho(name: string): boolean {
+/** Placeholders and character-named entries — never imported, and dropped from the file if present. */
+function isExcludedEcho(name: string): boolean {
   const trimmed = name.trim();
-  if (trimmed.toLowerCase() === "stay tuned") {
-    return true;
-  }
-  if (trimmed.startsWith("Phantom")) {
-    return true;
-  }
-  if (ECHO_NAME_BLACKLIST.has(trimmed)) {
-    return true;
-  }
-  return false;
+  return trimmed.toLowerCase() === "stay tuned" || ECHO_NAME_BLACKLIST.has(trimmed);
+}
+
+function isPhantomEcho(name: string): boolean {
+  return name.trim().startsWith("Phantom");
+}
+
+/** Base echo a Phantom skin shares its effect with ("Phantom: Crownless" → "Crownless"). */
+function getPhantomBaseName(name: string): string | null {
+  const match = /^Phantom:\s*(.+)$/.exec(name.trim());
+  return match ? match[1]!.trim() : null;
 }
 
 function dedupeApiEchoes(echoes: ApiEchoListItem[]): ApiEchoListItem[] {
   const byKey = new Map<string, ApiEchoListItem>();
 
   for (const echo of echoes) {
-    if (shouldSkipApiEcho(echo.Name)) {
+    if (isExcludedEcho(echo.Name)) {
       continue;
     }
 
@@ -223,7 +255,13 @@ function buildEchoEntryFromApi(
   existing: ParsedEchoFile | undefined,
   notices: string[],
   notifiedUnknownSets: Set<string>,
-): { objectKey: string; block: string; isNew: boolean; echoClass: string } {
+): {
+  objectKey: string;
+  block: string;
+  isNew: boolean;
+  echoClass: string;
+  hasImage: boolean;
+} {
   const echoClass = getEchoClassFromRarity(echo.Rarity);
   const sets = mapEchoSets(echo, labelToKey, notices, notifiedUnknownSets);
   const existingEntry = existing
@@ -231,12 +269,14 @@ function buildEchoEntryFromApi(
     : undefined;
   const objectKey = existingEntry?.objectKey ?? toEchoKey(echo.Name);
   const isNew = !existingEntry;
+  // Keep an existing entry's image (often hand-fixed); new entries hot-link the API icon.
+  const imageUrl = existingEntry?.image || echo.Icon || "";
 
   const block = formatEchoEntryBlock({
     objectKey,
     name: echo.Name,
     echoClass,
-    imageUrl: getEchoImageUrl(objectKey),
+    imageUrl,
     sets,
     details: existingEntry?.details ?? "    details: ``,",
     modifiers: existingEntry?.modifiers ?? "    modifiers: [],",
@@ -244,7 +284,7 @@ function buildEchoEntryFromApi(
     actions: existingEntry?.actions ?? "    actions: [],",
   });
 
-  return { objectKey, block, isNew, echoClass };
+  return { objectKey, block, isNew, echoClass, hasImage: imageUrl !== "" };
 }
 
 export interface ImportEchoesResult {
@@ -252,6 +292,8 @@ export interface ImportEchoesResult {
   addedCount: number;
   updatedCount: number;
   preservedCount: number;
+  /** Group imports only: existing entries outside the requested groups, kept as-is. */
+  untouchedCount: number;
   notices: string[];
 }
 
@@ -259,10 +301,48 @@ export function buildImportedEchoesFile(options: {
   echoesFileContent: string;
   apiEchoes: ApiEchoListItem[];
   labelToKey: Map<string, string>;
+  /**
+   * Only import echoes in these groups (name prefix before ":", e.g.
+   * "phantom"); every other existing entry is kept untouched. Omit/empty to
+   * import everything.
+   */
+  groups?: string[];
 }): ImportEchoesResult {
   const { echoesFileContent, apiEchoes, labelToKey } = options;
+  const groups = new Set((options.groups ?? []).map(normalizeEchoGroup));
+  const isGroupImport = groups.size > 0;
   const existing = parseEchoEntries(echoesFileContent);
-  const dedupedApiEchoes = dedupeApiEchoes(apiEchoes);
+
+  if (isGroupImport) {
+    const available = new Set(
+      getAvailableEchoGroups(apiEchoes).map(({ group }) => group),
+    );
+    const unknown = [...groups].filter((group) => !available.has(group));
+    if (unknown.length > 0) {
+      throw new Error(
+        `No echoes found for group(s): ${unknown.join(", ")}. Available groups: ${[...available].join(", ")}`,
+      );
+    }
+  }
+
+  const isInRequestedGroups = (name: string): boolean => {
+    const group = getEchoGroup(name);
+    return group !== null && groups.has(group);
+  };
+
+  // Group import: only the requested groups. Full import: everything except
+  // Phantom skins, unless that Phantom is already in the file (added via a
+  // group import) — then it's kept in sync rather than dropped.
+  const dedupedApiEchoes = dedupeApiEchoes(
+    isGroupImport
+      ? apiEchoes.filter((echo) => isInRequestedGroups(echo.Name))
+      : apiEchoes,
+  ).filter(
+    (echo) =>
+      isGroupImport ||
+      !isPhantomEcho(echo.Name) ||
+      findExistingEchoEntry(echo, existing) !== undefined,
+  );
   const notices: string[] = [];
   const usedExistingKeys = new Set<string>();
   const outputBlocks: Array<{ objectKey: string; block: string }> = [];
@@ -287,8 +367,19 @@ export function buildImportedEchoesFile(options: {
         !notifiedNewEchoKeys.has(built.objectKey)
       ) {
         notifiedNewEchoKeys.add(built.objectKey);
+        const phantomBaseName = getPhantomBaseName(echo.Name);
+        const phantomBase = phantomBaseName
+          ? existing.entriesByName.get(phantomBaseName.toLowerCase())
+          : undefined;
         notices.push(
-          `New ${built.echoClass} echo "${echo.Name}" (${built.objectKey}) — fill in details, modifiers, and actions`,
+          phantomBase
+            ? `New ${built.echoClass} echo "${echo.Name}" (${built.objectKey}) — Phantom skin of ${phantomBase.objectKey}; copy its details, modifiers, and actions`
+            : `New ${built.echoClass} echo "${echo.Name}" (${built.objectKey}) — fill in details, modifiers, and actions`,
+        );
+      }
+      if (!built.hasImage) {
+        notices.push(
+          `New echo "${echo.Name}" (${built.objectKey}) has no Icon in the API response — set its image manually`,
         );
       }
     } else {
@@ -303,13 +394,13 @@ export function buildImportedEchoesFile(options: {
   }
 
   let preservedCount = 0;
+  let untouchedCount = 0;
   for (const existingEntry of existing.entriesInOrder) {
     if (!usedExistingKeys.has(existingEntry.objectKey)) {
-      if (shouldSkipApiEcho(existingEntry.name)) {
+      if (isExcludedEcho(existingEntry.name)) {
         continue;
       }
 
-      preservedCount += 1;
       const preservedBlock = existingEntry.rawEntry.startsWith("  ")
         ? existingEntry.rawEntry.trimEnd()
         : `  ${existingEntry.rawEntry.trimEnd()}`;
@@ -317,9 +408,15 @@ export function buildImportedEchoesFile(options: {
         objectKey: existingEntry.objectKey,
         block: compactEchoEntryBlock(preservedBlock),
       });
-      notices.push(
-        `Echo "${existingEntry.name}" (${existingEntry.objectKey}) was not found in API response and was kept`,
-      );
+      // Outside the requested groups, absence from the import is expected — not worth a notice.
+      if (!isGroupImport || isInRequestedGroups(existingEntry.name)) {
+        preservedCount += 1;
+        notices.push(
+          `Echo "${existingEntry.name}" (${existingEntry.objectKey}) was not found in API response and was kept`,
+        );
+      } else {
+        untouchedCount += 1;
+      }
     }
   }
 
@@ -344,6 +441,7 @@ export function buildImportedEchoesFile(options: {
     addedCount,
     updatedCount,
     preservedCount,
+    untouchedCount,
     notices,
   };
 }
@@ -357,6 +455,12 @@ export function getEchoImportNotices(result: ImportEchoesResult): string[] {
   if (result.preservedCount > 0) {
     summary.push(
       `Kept ${result.preservedCount} echo${result.preservedCount === 1 ? "" : "s"} missing from API`,
+    );
+  }
+
+  if (result.untouchedCount > 0) {
+    summary.push(
+      `Left ${result.untouchedCount} echo${result.untouchedCount === 1 ? "" : "s"} outside the selected groups untouched`,
     );
   }
 

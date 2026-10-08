@@ -1,0 +1,57 @@
+# Publishes packages/scanner-core to npm as @wutheringtools/scanner-core when its
+# version in package.json changes on master (ADR 0034).
+#
+# Auth is npm Trusted Publishing (OIDC): npm trusts this workflow file in this repo, so
+# there is no npm token stored anywhere. Staged publishing is on: CI uploads the
+# version, and it only goes live after a maintainer approves it on npmjs.com with 2FA.
+name: Publish scanner-core
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "packages/scanner-core/**"
+      - ".github/workflows/publish-scanner-core.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for npm Trusted Publishing (and provenance)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      # Trusted Publishing needs npm >= 11.5.1; `npm stage` needs a recent npm 11 too.
+      - run: npm install -g npm@11
+      - name: Check whether this version is already published
+        id: check
+        working-directory: packages/scanner-core
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "@wutheringtools/scanner-core@${VERSION}" version >/dev/null 2>&1; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "Version ${VERSION} already on npm; nothing to do."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Test
+        if: steps.check.outputs.publish == 'true'
+        run: npx vitest run tests/scanner tests/echoes/parsedEchoMapping.test.ts
+      - name: Build
+        if: steps.check.outputs.publish == 'true'
+        run: npx tsc -p packages/scanner-core/tsconfig.build.json
+      # Staged publishing is required for this package, so CI may only *stage* a version
+      # (a plain `npm publish` is refused with "OIDC permission denied for this action").
+      # A maintainer then approves it on npmjs.com (or `npm stage approve <id>`) with 2FA.
+      - name: Stage for publishing
+        if: steps.check.outputs.publish == 'true'
+        working-directory: packages/scanner-core
+        run: npm stage publish . --access public

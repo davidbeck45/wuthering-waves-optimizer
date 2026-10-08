@@ -83,176 +83,6 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
-  ReminiscenceSuhsintheInevitable: {
-    key: "ReminiscenceSuhsintheInevitable",
-    name: "Reminiscence: Suhsin the Inevitable",
-    class: "Calamity",
-    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34033_2_UI.webp",
-    details: `<span>Cast Echo Skill to deal 4 instances of 27.36% Electro DMG and 1 instance of 164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus. Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s.<br>CD: 20s</span>`,
-    modifiers: [
-      {
-        key: "_StayTunedCalamity1Electro1",
-        details: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus`,
-        modifier: "Electro",
-        modifierValue: 0.1,
-        alwaysEnabled: true,
-      },
-      {
-        key: "_StayTunedCalamity1Electro2",
-        details: `Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s`,
-        modifier: "Electro",
-        modifierValue: 0.1,
-      },
-    ],
-    actions: [
-      {
-        key: "CastDMG",
-        label: "Cast DMG",
-        description: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.`,
-        talents: {
-          "1": "18.24%*4 + 109.44%",
-          "2": "18.24%*4 + 109.44%",
-          "3": "21.28%*4 + 127.68%",
-          "4": "24.32%*4 + 145.92%",
-          "5": "27.36%*4 + 164.16%",
-        },
-        type: "Echo",
-        element: "Electro",
-      },
-      {
-        key: "HsinCastDMG",
-        label: "Hsin Cast DMG",
-        description: `When equipped by Hsin, the Echo Skill instead deals 5 instances of 9.12%/10.64%/12.16%/13.68% Electro DMG and 1 instance of 155.04%/180.88%/206.72%/232.56% Electro DMG to targets within a larger range.`,
-        talents: {
-          "1": "9.12%*5 + 155.04%",
-          "2": "9.12%*5 + 155.04%",
-          "3": "10.64%*5 + 127.68%",
-          "4": "12.16%*5 + 206.72%",
-          "5": "13.68%*5 + 232.56%",
-        },
-        type: "Echo",
-        element: "Electro",
-      },
-    ],
-    sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
-  },
-  Soulfrayer: {
-    key: "Soulfrayer",
-    name: "Soulfrayer",
-    class: "Elite",
-    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32071_UI.webp",
-    details: `<span>Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
-Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
-CD: 20s</span>`,
-    modifiers: [],
-    actions: [
-      {
-        key: "SoulfrayerSummonDMG",
-        label: "Summon DMG",
-        description: `Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
-Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
-CD: 20s`,
-        talents: {
-          "1": "60.79%*3",
-          "2": "60.79%*3",
-          "3": "70.92%*3",
-          "4": "81.05%*3",
-          "5": "91.18%*3",
-        },
-        type: "Echo",
-        element: "Electro",
-      },
-    ],
-    sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
-  },
-  Formrender: {
-    key: "Formrender",
-    name: "Formrender",
-    class: "Elite",
-    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32070_UI.webp",
-    details: `<span>Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.
-The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.
-CD: 20s</span>`,
-    modifiers: [
-      {
-        key: "_StayTunedElite2ER",
-        details: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.<br>The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
-        modifier: "EnergyRegen",
-        modifierValue: 0.1,
-        alwaysEnabled: true,
-      },
-    ],
-    actions: [
-      {
-        key: "_StayTunedElite2DMG",
-        label: "Summon DMG",
-        description: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.`,
-        talents: {
-          "1": "182.40%",
-          "2": "182.40%",
-          "3": "212.80%",
-          "4": "243.20%",
-          "5": "273.60%",
-        },
-        type: "Echo",
-        element: "Fusion",
-      },
-    ],
-    sets: ["HeartofSwornVigil", "FlowerofTingedYearning"],
-  },
-  BloomburstPuppet: {
-    key: "BloomburstPuppet",
-    name: "Bloomburst Puppet",
-    class: "Common",
-    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31104_UI.webp",
-    details: `<span>Summon a Bloomburst Puppet to startle the target, dealing 1 instance of 25.92% Glacio DMG, followed by 2 instances of 12.96% Glacio DMG and 1 instance of 77.76% Glacio DMG.
-CD: 8s</span>`,
-    modifiers: [],
-    actions: [],
-    sets: ["HeartofSwornVigil"],
-  },
-  CalamityEffigy: {
-    key: "CalamityEffigy",
-    name: "Calamity Effigy",
-    class: "Overlord",
-    image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CalamityEffigy.webp",
-    details: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG.
-The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.
-CD: 15s`,
-    modifiers: [
-      {
-        key: "CalamityEffigyAero",
-        details: `The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus`,
-        modifier: "Aero",
-        modifierValue: 0.1,
-        alwaysEnabled: true,
-      },
-      {
-        key: "CalamityEffigyAeroStrain",
-        details: `Additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.`,
-        modifier: "Aero",
-        modifierValue: 0.1,
-      },
-    ],
-    actions: [
-      {
-        key: "TransformDMG",
-        label: "Transform DMG",
-        description: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG. The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus,`,
-        talents: {
-          "1": "405.00%",
-          "2": "405.00%",
-          "3": "405.00%",
-          "4": "405.00%",
-          "5": "405.00%",
-        },
-        type: "Echo",
-        element: "Aero",
-      },
-    ],
-    sets: ["HeartofEvilsPurge", "LampofNetherRoad"],
-  },
   AbyssalGladius: {
     key: "AbyssalGladius",
     name: "Abyssal Gladius",
@@ -463,6 +293,59 @@ CD: <span class="param">20</span>s</span>`,
       },
     ],
     sets: ["MoonlitClouds", "RejuvenatingGlow"],
+  },
+  BloomburstPuppet: {
+    key: "BloomburstPuppet",
+    name: "Bloomburst Puppet",
+    class: "Common",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31104_UI.webp",
+    details: `<span>Summon a Bloomburst Puppet to startle the target, dealing 1 instance of 25.92% Glacio DMG, followed by 2 instances of 12.96% Glacio DMG and 1 instance of 77.76% Glacio DMG.
+CD: 8s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["HeartofSwornVigil"],
+  },
+  CalamityEffigy: {
+    key: "CalamityEffigy",
+    name: "Calamity Effigy",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CalamityEffigy.webp",
+    details: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG.
+The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.
+CD: 15s`,
+    modifiers: [
+      {
+        key: "CalamityEffigyAero",
+        details: `The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus`,
+        modifier: "Aero",
+        modifierValue: 0.1,
+        alwaysEnabled: true,
+      },
+      {
+        key: "CalamityEffigyAeroStrain",
+        details: `Additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.`,
+        modifier: "Aero",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "TransformDMG",
+        label: "Transform DMG",
+        description: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG. The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus,`,
+        talents: {
+          "1": "405.00%",
+          "2": "405.00%",
+          "3": "405.00%",
+          "4": "405.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["HeartofEvilsPurge", "LampofNetherRoad"],
   },
   CalcifiedJunrock: {
     key: "CalcifiedJunrock",
@@ -1258,6 +1141,41 @@ CD: 20s`,
     ],
     sets: ["SongofFeatheredTrace", "HeartofEvilsPurge", "LampofNetherRoad"],
   },
+  Formrender: {
+    key: "Formrender",
+    name: "Formrender",
+    class: "Elite",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32070_UI.webp",
+    details: `<span>Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.
+The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.
+CD: 20s</span>`,
+    modifiers: [
+      {
+        key: "_StayTunedElite2ER",
+        details: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.<br>The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+        alwaysEnabled: true,
+      },
+    ],
+    actions: [
+      {
+        key: "_StayTunedElite2DMG",
+        label: "Summon DMG",
+        description: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["HeartofSwornVigil", "FlowerofTingedYearning"],
+  },
   FractsidusThruster: {
     key: "FractsidusThruster",
     name: "Fractsidus Thruster",
@@ -1872,7 +1790,7 @@ CD: 8s.</span>`,
   },
   JadeNetherSerpent: {
     key: "JadeNetherSerpent",
-    name: "Jade Nethe rSerpent",
+    name: "Jade Nether Serpent",
     class: "Common",
     image:
       "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31103_UI.webp",
@@ -3289,6 +3207,1339 @@ CD: <span class="param">15</span>s</span>`,
     actions: [],
     sets: ["MidnightVeil", "EmpyreanAnthem"],
   },
+  PhantomCapitaneus: {
+    key: "PhantomCapitaneus",
+    name: "Phantom: Capitaneus",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_32033_1_UI.webp",
+    alwaysEnabled: true,
+    details: `Summon a Capitaneus to jump up and smash enemies, dealing 79.20% Spectro DMG. This attack generates 4 extra Merciless Judgements, each dealing 39.60% Spectro DMG.<br>
+The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.<br>
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "CapitaneusDMG",
+        label: "Capitaneus DMG",
+        description: `Summon a Capitaneus to jump up and smash enemies, dealing 79.20%/92.40%/105.60%/118.80% Spectro DMG. This attack generates 4 extra Merciless Judgements, each dealing 39.60%/46.20%/52.80%/59.40% Spectro DMG.`,
+        talents: {
+          "1": "79.20% + 39.60%*4",
+          "2": "79.20% + 39.60%*4",
+          "3": "92.40% + 46.20%%*4",
+          "4": "105.60% + 52.80%*4",
+          "5": "118.00% + 59.50%*4",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["GustsofWelkin", "EternalRadiance"],
+  },
+  PhantomChestMimic: {
+    key: "PhantomChestMimic",
+    name: "Phantom: Chest Mimic",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31048_UI.webp",
+    details: `A deceptive Tacet Discord disguised as a supply chest, preying on the greed of its victims and devouring those who approach.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EmpyreanAnthem", "FrostyResolve"],
+  },
+  PhantomChopChop: {
+    key: "PhantomChopChop",
+    name: "Phantom: Chop Chop",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32028_UI.webp",
+    details: `A Tacet Discord often seen hovering atop large structures, feigning an imposing posture as if the buildings are extensions of its body. Its silhouette blends with the architecture, towering like a menacing giant.`,
+    modifiers: [],
+    actions: [],
+    sets: ["TidebreakingCourage", "EmpyreanAnthem", "DreamoftheLost"],
+  },
+  PhantomClangBang: {
+    key: "PhantomClangBang",
+    name: "Phantom: Clang Bang",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1015_UI.webp",
+    details: `<span class="description">Summon a Clang Bang that follows the enemy and eventually self-combusts, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Glacio DMG.
+    CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["CelestialLight", "FreezingFrost"],
+  },
+  PhantomCrownless: {
+    key: "PhantomCrownless",
+    name: "Phantom: Crownless",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_9991_UI.webp",
+    details: `<span class="description">Transform into Crownless and perform up to 4 consecutive attacks. The first 2 attacks deal <span class="param">83.80%/96.37%/108.94%/121.51%/134.08%</span> Havoc DMG each, the 3rd attack deals <span class="param">62.85%/72.28%/81.71%/91.13%/100.56%</span> Havoc DMG 2 times, and the 4th attack deals <span class="param">41.90%/48.19%/54.47%/60.76%/67.04%</span> Havoc DMG 3 times.
+    After the transformation, increase current character's Havoc DMG by <span class="param">12.00%</span> and Resonance Skill DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "CrownlessAttack",
+        label: "Attacks DMG",
+        description: `Transform into Crownless and perform up to 4 consecutive attacks. The first 2 attacks deal <span class="param">83.80%/96.37%/108.94%/121.51%/134.08%</span> Havoc DMG each, the 3rd attack deals <span class="param">62.85%/72.28%/81.71%/91.13%/100.56%</span> Havoc DMG 2 times, and the 4th attack deals <span class="param">41.90%/48.19%/54.47%/60.76%/67.04%</span> Havoc DMG 3 times.`,
+        talents: {
+          "1": "83.80%*2 + 62.85%*2 + 41.90%*3",
+          "2": "96.37%*2 + 72.28%*2 + 48.19%*3",
+          "3": "108.94%*2 + 81.71%*2 + 54.47%*3",
+          "4": "121.51%*2 + 91.13%*2 + 60.76%*3",
+          "5": "134.08%*2 + 100.56%*2 + 67.04%*3",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["HavocEclipse"],
+  },
+  PhantomCuddleWuddle: {
+    key: "PhantomCuddleWuddle",
+    name: "Phantom: Cuddle Wuddle",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32030_UI.webp",
+    details: `An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "FrostyResolve"],
+  },
+  PhantomDiggyDuggy: {
+    key: "PhantomDiggyDuggy",
+    name: "Phantom: Diggy Duggy",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31047_UI.webp",
+    details: `An incorporeal Tacet Discord inhabiting the body of a sturdy, diligent plushie.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MoonlitClouds", "LingeringTunes", "CelestialLight"],
+  },
+  PhantomDreamless: {
+    key: "PhantomDreamless",
+    name: "Phantom: Dreamless",
+    class: "Calamity",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.webp",
+    details: `<span class="description">Transform into Dreamless and perform 6 consecutive strikes. The first 5 strikes deal <span class="param">33.80%/38.87%/43.94%/49.01%/54.08%</span> Havoc DMG each, and the last strike deal <span class="param">169.00%/194.35%/219.70%/245.05%/270.40%</span> Havoc DMG.
+    The DMG of this Echo Skill is increased by <span class="param">50.00%</span> during the first <span class="param">5</span>s after Rover: Havoc casts Resonance Liberation: Deadening Abyss.
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "DreamlessFirstStrikes",
+          "DreamlessFinalStrike",
+        ],
+        modifierValue: 0.5,
+        specificCharacters: ["RoverHavocFemale", "RoverHavocMale"],
+      },
+    ],
+    actions: [
+      {
+        key: "DreamlessFirstStrikes",
+        label: "Strikes DMG",
+        description: `Transform into Dreamless and perform 6 consecutive strikes. The first 5 strikes deal <span class="param">33.80%/38.87%/43.94%/49.01%/54.08%</span> Havoc DMG each`,
+        talents: {
+          "1": "33.80%*5",
+          "2": "38.87%*5",
+          "3": "43.94%*5",
+          "4": "49.01%*5",
+          "5": "54.08%*5",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "DreamlessFinalStrike",
+        label: "Final Strike DMG",
+        description: `The last strike deals <span class="param">169.00%/194.35%/219.70%/245.05%/270.40%</span> Havoc DMG.`,
+        talents: {
+          "1": "169.00%",
+          "2": "194.35%",
+          "3": "219.70%",
+          "4": "245.05%",
+          "5": "270.40%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["HavocEclipse"],
+  },
+  PhantomFaeIgnis: {
+    key: "PhantomFaeIgnis",
+    name: "Phantom: Fae Ignis",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31043_UI.webp",
+    details: `An avian Tacet Discord prowling the Penitent's End. In darkness, its form blends into shadow, leaving only its mask flickering like ignis fatuus.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EternalRadiance"],
+  },
+  PhantomFallacyOfNoReturn: {
+    key: "PhantomFallacyOfNoReturn",
+    name: "Phantom: Fallacy of No Return",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_350_UI.webp",
+    details: `<span class="description">Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP, after which the Resonator gains 10% bonus Energy Regen and all team members 10% bonus ATK for 20s.<br><br>
+Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP; Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP.<br><br>
+CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+      },
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "FallacyOfNoReturnDiffraction",
+        label: "Blast DMG",
+        description: `Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP`,
+        talents: {
+          "1": "9.91%",
+          "2": "11.40%",
+          "3": "12.88%",
+          "4": "14.37%",
+          "5": "15.86%",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnSoundCorpseDoT",
+        label: "Flurry Assault DMG",
+        description: `Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP`,
+        talents: {
+          "1": "0.99%",
+          "2": "1.14%",
+          "3": "1.29%",
+          "4": "1.44%",
+          "5": "1.58%",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnFinalBlow",
+        label: "Final Blow DMG",
+        description: `Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP`,
+        talents: {
+          "1": "12.39%",
+          "2": "14.25%",
+          "3": "16.11%",
+          "4": "17.97%",
+          "5": "19.82%",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+    ],
+    sets: ["RejuvenatingGlow"],
+  },
+  PhantomFeilianBeringal: {
+    key: "PhantomFeilianBeringal",
+    name: "Phantom: Feilian Beringal",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1009_UI.webp",
+    details: `<span class="description">Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. The kick deals <span class="param">144.90%/166.64%/188.37%/210.11%/231.84%</span> Aero DMG, and the follow-up strike deals <span class="param">177.10%/203.67%/230.23%/256.80%/283.36%</span> Aero DMG.
+    After the follow-up strike hits, the current character's Aero DMG increases by <span class="param">12.00%</span>, and the Heavy Attack DMG increases by <span class="param">12.00%</span> for <span class="param">15</span>s
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "FeilianBeringalKick",
+        label: "Kick DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. The kick deals <span class="param">144.90%/166.64%/188.37%/210.11%/231.84%</span> Aero DMG.`,
+        talents: {
+          "1": "144.90%",
+          "2": "166.64%",
+          "3": "188.37%",
+          "4": "210.11%",
+          "5": "231.84%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "FeilianBeringalFollowUp",
+        label: "Follow-Up Strike DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. the follow-up strike deals <span class="param">177.10%/203.67%/230.23%/256.80%/283.36%</span> Aero DMG.`,
+        talents: {
+          "1": "177.10%",
+          "2": "203.67%",
+          "3": "230.23%",
+          "4": "256.80%",
+          "5": "283.36%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["SierraGale", "RejuvenatingGlow"],
+  },
+  PhantomForbiddenBastion: {
+    key: "PhantomForbiddenBastion",
+    name: "Phantom: Forbidden Bastion",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32068_UI.webp",
+    alwaysEnabled: true,
+    details: `Use Echo Skill to summon Forbidden Bastion to bash over enemies, dealing 158.40%/184.80%/211.20%/237.60% Glacio DMG.<br><br>
+    Resonators with this Echo equipped in the main slot gain 10.00% Healing Bonus.
+<br><br>
+CD: 20s`,
+    modifiers: [
+      {
+        modifier: "HealingBonus",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "ForbiddenBastionBashDMG",
+        label: "Bash DMG",
+        description: `Use Echo Skill to summon Forbidden Bastion to bash over enemies, dealing 158.40%/184.80%/211.20%/237.60% Glacio DMG.`,
+        talents: {
+          "1": "158.40%",
+          "2": "158.40%",
+          "3": "184.80%",
+          "4": "211.20%",
+          "5": "237.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["SongofFeatheredTrace", "HeartofEvilsPurge", "LampofNetherRoad"],
+  },
+  PhantomGlommoth: {
+    key: "PhantomGlommoth",
+    name: "Phantom: Glommoth",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32061_UI.webp",
+    details: `<span class="description">Summon a Glommoth to stomp enemies, dealing 212.80%/212.80%/243.20%/273.60% Glacio DMG.
+Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
+CD: 20s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "GlommothStomp",
+        label: "Stomp DMG",
+        description: `Summon a Glommoth to stomp enemies, dealing 212.80%/212.80%/243.20%/273.60% Glacio DMG.`,
+        talents: {
+          "1": "212.80%",
+          "2": "212.80%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["TrailblazingStar", "WishesofQuietSnowfall"],
+  },
+  PhantomGulpuff: {
+    key: "PhantomGulpuff",
+    name: "Phantom: Gulpuff",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_115_1_UI.webp",
+    details: `<span class="description">Summon a Gulpuff that blows bubbles <span class="param">5</span> times, each time dealing <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Glacio DMG.
+    CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["CelestialLight", "FreezingFrost"],
+  },
+  PhantomHoartoise: {
+    key: "PhantomHoartoise",
+    name: "Phantom: Hoartoise",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.webp",
+    details: `<span class="description">Transform into Hoartoise and slowly restore HP. Use the Echo skill again to exit the transformation state.
+    CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["CelestialLight", "FreezingFrost", "FrostyResolve", "EmpyreanAnthem"],
+  },
+  PhantomIceglintDancer: {
+    key: "PhantomIceglintDancer",
+    name: "Phantom: Iceglint Dancer",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31083_UI.webp",
+    details: `<span class="description">Transform into an Iceglint Dancer to attack enemies, dealing 205.20% Glacio DMG.
+CD: 8s.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar"],
+  },
+  PhantomImpermanenceHeron: {
+    key: "PhantomImpermanenceHeron",
+    name: "Phantom: Impermanence Heron",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.webp",
+    details: `<span class="description">Transform into Impermanence Heron to fly up and smack down, dealing <span class="param">194.10%/223.22%/252.33%/281.45%/310.56%</span> Havoc DMG.
+    Long press to stay as Impermanence Heron and continuously spit flames, each attack dealing <span class="param">34.83%/40.05%/45.28%/50.50%/55.73%</span> Havoc DMG.
+    Once the initial attack lands on any enemy, the current character regains 10 Resonance Energy. If the current character uses their Outro Skill within the next 15s, the next character’s damage dealt will be boosted by 12% for 15s.
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "ImpermanenceHeronFlySmack",
+        label: "Fly Up & Smack Down DMG",
+        description: `Transform into Impermanence Heron to fly up and smack down, dealing <span class="param">194.10%/223.22%/252.33%/281.45%/310.56%</span> Havoc DMG.`,
+        talents: {
+          "1": "194.10%",
+          "2": "223.22%",
+          "3": "252.33%",
+          "4": "281.45%",
+          "5": "310.56%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "ImpermanenceHeronFlames",
+        label: "Flames Continuous DMG",
+        description: `Long press to stay as Impermanence Heron and continuously spit flames, each attack dealing <span class="param">34.83%/40.05%/45.28%/50.50%/55.73%</span> Havoc DMG.`,
+        talents: {
+          "1": "34.83%",
+          "2": "40.05%",
+          "3": "45.28%",
+          "4": "50.50%",
+          "5": "55.73%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["MoonlitClouds"],
+  },
+  PhantomInfernoRider: {
+    key: "PhantomInfernoRider",
+    name: "Phantom: Inferno Rider",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_325_1_UI.webp",
+    details: `<span class="description">Transform into Inferno Rider to launch up to 3 consecutive slashes in a row, each slash dealing <span class="param">151.50%/174.23%/196.95%/219.68%/242.40%</span>, <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span>, and <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG respectively.
+    After the final hit, increase the current character’s Fusion DMG by <span class="param">12.00%</span> and Basic Attack DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
+    Long press the Echo Skill to transform into Inferno Rider and enter the Riding Mode. When exiting the Riding Mode, deal <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG to enemies in front.
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "InfernoRiderSlash",
+        label: "Slash DMG",
+        description: `Transform into Inferno Rider to launch up to 3 consecutive slashes in a row, each slash dealing <span class="param">151.50%/174.23%/196.95%/219.68%/242.40%</span>, <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span>, and <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG respectively.`,
+        talents: {
+          "1": "151.50% + 175.75%*2",
+          "2": "174.23% + 203.26%*2",
+          "3": "196.85% + 229.78%*2",
+          "4": "219.68% + 256.29%*2",
+          "5": "242.40% + 282.80%*2",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+      {
+        key: "InfernoRiderSlash",
+        label: "Exit Rider DMG",
+        description: `When exiting the Riding Mode, deal <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG to enemies in front.`,
+        talents: {
+          "1": "176.75%",
+          "2": "203.26%",
+          "3": "203.26%",
+          "4": "229.78%",
+          "5": "282.80%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["MoltenRift"],
+  },
+  PhantomKerasaur: {
+    key: "PhantomKerasaur",
+    name: "Phantom: Kerasaur",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31062_UI.webp",
+    alwaysEnabled: true,
+    details: `Transform into Kerasaur to leap into the air and slam down, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG. Shortly after hitting the target, cast Echo Skill again to charge at the target, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.<br>The Resonator with this Echo equipped in the main slot gains 12.00% Aero DMG Bonus and 12.00% Resonance Liberation DMG Bonus.<br>CD: 15s`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "KerasaurSlamDMG",
+        label: "Slam DMG",
+        description: `Transform into Kerasaur to leap into the air and slam down, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.`,
+        talents: {
+          "1": "178.80%",
+          "2": "178.80%",
+          "3": "208.60%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "KerasaurChargeDMG",
+        label: "Charge DMG",
+        description: `Shortly after hitting the target, cast Echo Skill again to charge at the target, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG`,
+        talents: {
+          "1": "178.80%",
+          "2": "178.80%",
+          "3": "208.60%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["WindwardPilgrimage", "FlamingClawprint"],
+  },
+  PhantomKronaclaw: {
+    key: "PhantomKronaclaw",
+    name: "Phantom: Kronaclaw",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32060_UI.webp",
+    details: `<span class="description">Transform into a Kronaclaw and soar into the air to deal 8.04% Aero DMG up to 8 times and 24.13% Aero DMG 2 times, then dive to deal 131.41% Aero DMG 1 time.
+CD: 15s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar", "ChromaticFoam"],
+  },
+  PhantomLightcrusher: {
+    key: "PhantomLightcrusher",
+    name: "Phantom: Lightcrusher",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1016_UI.webp",
+    details: `<span class="description">Lunge forward as a Lightcrusher, dealing <span class="param">84.60%/97.29%/109.98%/122.67%/135.36%</span> Spectro DMG. Generate <span class="param">6</span> Ablucence on hit. Each Ablucence explosion deals <span class="param">9.40%/10.81%/12.22%/13.63%/15.04%</span> Spectro DMG.
+    Hold the Echo Skill to stay in the Lightcrusher form, which allows you to leap up and pounce forward in the air for a short distance.
+    Cooldown: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "LightcrusherLunge",
+        label: "Lunge DMG",
+        description: `Lunge forward as a Lightcrusher, dealing <span class="param">84.60%/97.29%/109.98%/122.67%/135.36%</span> Spectro DMG. Generate <span class="param">6</span> Ablucence on hit.`,
+        talents: {
+          "1": "84.60%",
+          "2": "97.29%",
+          "3": "109.98%",
+          "4": "122.67%",
+          "5": "135.36%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "LightcrusherAblucence",
+        label: "Ablucence DMG",
+        description: `Each Ablucence explosion deals <span class="param">9.40%/10.81%/12.22%/13.63%/15.04%</span> Spectro DMG.`,
+        talents: {
+          "1": "9.40%*6",
+          "2": "10.81%*6",
+          "3": "12.22%*6",
+          "4": "13.63%*6",
+          "5": "15.04%*6",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["HavocEclipse"],
+  },
+  PhantomLorelei: {
+    key: "PhantomLorelei",
+    name: "Phantom: Lorelei",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33011_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into Lorelei and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Basic Attack DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "LoreleiDMG",
+        label: "Lorelei DMG",
+        description: `Transform into Lorelei and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["MidnightVeil"],
+  },
+  PhantomLumiscaleConstruct: {
+    key: "PhantomLumiscaleConstruct",
+    name: "Phantom: Lumiscale Construct",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_1_UI.webp",
+    details: `<span class="description">Transform into a Lumiscale Construct and enter a Parry Stance. If you are not attacked during the Parry Stance, slash to deal <span class="param">346.00%/397.90%/449.80%/501.70%/553.60%</span> Glacio DMG when the stance finishes. If attacked, counterattack instantly, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG. When hit with a <color=highlight>Special Skill attack while in the Parry Stance, break the <color=highlight>Special Skill and counterattack, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.
+    CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "LumiscaleConstructSlash",
+        label: "Slash DMG",
+        description: `Transform into a Lumiscale Construct and enter a Parry Stance. If you are not attacked during the Parry Stance, slash to deal <span class="param">346.00%/397.90%/449.80%/501.70%/553.60%</span> Glacio DMG when the stance finishes.`,
+        talents: {
+          "1": "346.00%",
+          "2": "397.90%",
+          "3": "449.80%",
+          "4": "501.70%",
+          "5": "553.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "LumiscaleConstructCounter",
+        label: "Counter Attack DMG",
+        description: `If attacked, counterattack instantly, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.`,
+        talents: {
+          "1": "346.00%+173.00%",
+          "2": "397.90%+198.95%",
+          "3": "449.80%+224.90%",
+          "4": "501.70%+250.85%",
+          "5": "553.60%+276.80%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "LumiscaleConstructSkillCounter",
+        label: "Skill Counter Attack DMG",
+        description: `When hit with a <color=highlight>Special Skill attack while in the Parry Stance, break the <color=highlight>Special Skill and counterattack, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.`,
+        talents: {
+          "1": "346.00%+173.00%",
+          "2": "397.90%+198.95%",
+          "3": "449.80%+224.90%",
+          "4": "501.70%+250.85%",
+          "5": "553.60%+276.80%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["VoidThunder", "FreezingFrost"],
+  },
+  PhantomMourningAix: {
+    key: "PhantomMourningAix",
+    name: "Phantom: Mourning Aix",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1006_UI.webp",
+    details: `<span class="description">Transform into Mourning Aix and perform 2 consecutive claw attacks, each attack dealing <span class="param">98.40%/113.16%/127.92%/142.68%/157.44%</span> and <span class="param">147.60%/169.74%/191.88%/214.02%/236.16%</span> Spectro DMG respectively.
+    After the transformation, increase current character's Spectro DMG by <span class="param">12.00%</span> and Resonance Liberation DMG by <span class="param">12.00%</span> for <span class="param">15</span>s
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "MourningAixClaw",
+        label: "Claw DMG",
+        description: `Transform into Mourning Aix and perform 2 consecutive claw attacks, each attack dealing <span class="param">98.40%/113.16%/127.92%/142.68%/157.44%</span> and <span class="param">147.60%/169.74%/191.88%/214.02%/236.16%</span> Spectro DMG respectively.`,
+        talents: {
+          "1": "98.40% + 147.60%",
+          "2": "113.16% + 169.74%",
+          "3": "127.92% + 191.88%",
+          "4": "142.68% + 214.02%",
+          "5": "157.44% + 236.16%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["CelestialLight"],
+  },
+  PhantomMyriadSnareRustfireChassis: {
+    key: "PhantomMyriadSnareRustfireChassis",
+    name: "Phantom: Myriad Snare: Rustfire Chassis",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34030_UI.webp",
+    alwaysEnabled: true,
+    details: `Summon Myriad Snare: Rustfire Chassis, dealing Fusion DMG equal to 6.80%/7.93%/9.07%/10.20% of the Max HP on initial impact. During its duration, it repeatedly crushes enemies along its path up to 19 times, dealing Fusion DMG equal to 0.24%/0.29%/0.33%/0.37% of the Max HP each time.<br><br>
+    Resonators with this Echo equipped in the main slot gain 12.00% Fusion DMG Bonus and 12.00% Heavy Attack DMG Bonus.
+<br><br>
+CD: 20s`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "MyriadSnareRustfireChassisSummonDMG",
+        label: "Summon DMG",
+        description: `Summon Myriad Snare: Rustfire Chassis, dealing Fusion DMG equal to 6.80%/7.93%/9.07%/10.20% of the Max HP on initial impact. During its duration, it repeatedly crushes enemies along its path up to 19 times, dealing Fusion DMG equal to 0.24%/0.29%/0.33%/0.37% of the Max HP each time.`,
+        talents: {
+          "1": "6.80%+0.24%*19",
+          "2": "6.80%+0.24%*19",
+          "3": "7.93%+0.29%*19",
+          "4": "9.07%+0.33%*19",
+          "5": "10.20%+0.37%*19",
+        },
+        type: "Echo",
+        element: "Fusion",
+        attribute: "hp",
+      },
+    ],
+    sets: ["HeartofEvilsPurge", "LampofNetherRoad"],
+  },
+  PhantomNightmareCrownless: {
+    key: "PhantomNightmareCrownless",
+    name: "Phantom: Nightmare Crownless",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33018_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into Nightmare: Crownless and attack enemies in front, dealing <span class="param">147.00%/176.40%/205.80%/235.20%/264.60%</span> Havoc DMG. The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Basic Attack DMG Bonus.
+This skill has <span class="param">3</span> initial charges, replenished once every <span class="param">12</span>s, max <span class="param">3</span> charges. When Nightmare: Crownless hits a target, DMG dealt by this skill is increased by <span class="param">20.00%</span>. This effect lasts for <span class="param">2</span>s and does not stack.
+CD: <span class="param">12</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareCrownlessAttackDMG",
+        label: "Nightmare Crownless Attack DMG",
+        description: `Transform into Nightmare: Crownless and attack enemies in front, dealing <span class="param">147.00%/176.40%/205.80%/235.20%/264.60%</span> Havoc DMG.`,
+        talents: {
+          "1": "147.00%",
+          "2": "176.40%",
+          "3": "205.80%",
+          "4": "235.20%",
+          "5": "264.60%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["HavocEclipse"],
+  },
+  PhantomNightmareInfernoRider: {
+    key: "PhantomNightmareInfernoRider",
+    name: "Phantom: Nightmare Inferno Rider",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33019_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into Nightmare: Inferno Rider and jump to attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Fusion DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Fusion DMG Bonus and <span class="param">12.00%</span> Resonance Skill DMG Bonus.
+Hold Echo Skill to transform into Nightmare: Inferno Rider and enter Riding Mode. When exiting Riding Mode, deal <span class="param">157.50%/189.00%/220.50%/252.00%/283.50%</span> Fusion DMG to enemies in front.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareInfernoRiderJumpDMG",
+        label: "Nightmare Inferno Rider Jump DMG",
+        description: `Transform into Nightmare: Inferno Rider and jump to attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Fusion DMG.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+      {
+        key: "NightmareInfernoRiderRidingDMG",
+        label: "Nightmare Inferno Rider Riding DMG",
+        description: `Hold Echo Skill to transform into Nightmare: Inferno Rider and enter Riding Mode. When exiting Riding Mode, deal <span class="param">157.50%/189.00%/220.50%/252.00%/283.50%</span> Fusion DMG to enemies in front.`,
+        talents: {
+          "1": "157.50%",
+          "2": "189.00%",
+          "3": "220.50%",
+          "4": "252.00%",
+          "5": "283.50%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["MoltenRift"],
+  },
+  PhantomNimbusWraith: {
+    key: "PhantomNimbusWraith",
+    name: "Phantom: Nimbus Wraith",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31044_UI.webp",
+    details: `Once a remnant creature in Nimbus Sanctum, it decayed into a Tacet Discord as its frequency wanes, leaving it wandering in perpetual sorrow.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EmpyreanAnthem", "MidnightVeil"],
+  },
+  PhantomQuestlessKnight: {
+    key: "PhantomQuestlessKnight",
+    name: "Phantom: Questless Knight",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32022_UI.webp",
+    details: `A humanoid Tacet Discord clad in fine attire, wielding a sharp blade and extraordinary might existing only in legends.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MoltenRift", "VoidThunder"],
+  },
+  PhantomReactorHusk: {
+    key: "PhantomReactorHusk",
+    name: "Phantom: Reactor Husk",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34022_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into Reactor Husk, jumping into the air and unleashing a heavy slash that deals <span class="Highlight">234.00%/273.00%/312.00%/351.00%</span> Fusion DMG to enemies.
+<br><br>
+The Resonator with this Echo equipped in their main slot gain 10.00% Energy Regen.
+<br><br>
+CD: 20s.</span>`,
+    modifiers: [
+      {
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "HyvatiaLasersDMG",
+        label: "Lasers DMG",
+        description: `Transform into Reactor Husk, jumping into the air and unleashing a heavy slash that deals <span class="Highlight">234.00%/273.00%/312.00%/351.00%</span> Fusion DMG to enemies.`,
+        talents: {
+          "1": "234.00%",
+          "2": "234.00%",
+          "3": "273.00%",
+          "4": "312.00%",
+          "5": "351.00%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["HaloofStarryRadiance", "ChromaticFoam"],
+  },
+  PhantomRocksteadyGuardian: {
+    key: "PhantomRocksteadyGuardian",
+    name: "Phantom: Rocksteady Guardian",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.webp",
+    details: `<span class="description">Transform into Rocksteady Guardian and enter a Parry State. Upon being attacked, deal Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP, and perform a follow-up attack that deals Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP.
+    Use the Echo Skill again to exit the transformation.
+    If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP, and perform a two-stage follow-up attack, each dealing Spectro DMG equal to <span class="param">3.45%/3.97%/4.49%/5.00%/5.52%</span> of the Resonator's Max HP. These follow-up attacks simultaneously launch three ground-breaking waves, each dealing Spectro DMG equal to <span class="param">2.87%/3.30%/3.73%/4.16%/4.59%</span> of the Resonator's Max HP.
+    CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "RocksteadyGuardianParry",
+        label: "Parry DMG",
+        description: `Transform into Rocksteady Guardian and enter a Parry State. Upon being attacked, deal Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP, and perform a follow-up attack that deals Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP.`,
+        talents: {
+          "1": "5.18%*2",
+          "2": "5.96%*2",
+          "3": "6.73%*2",
+          "4": "7.51%*2",
+          "5": "8.29%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "RocksteadyGuardianSpecialParry",
+        label: "Special Attack Parry DMG",
+        description: `If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, perform a two-stage follow-up attack, each dealing Spectro DMG equal to <span class="param">3.45%/3.97%/4.49%/5.00%/5.52%</span> of the Resonator's Max HP. These follow-up attacks simultaneously launch three ground-breaking waves, each dealing Spectro DMG equal to <span class="param">2.87%/3.30%/3.73%/4.16%/4.59%</span> of the Resonator's Max HP.`,
+        talents: {
+          "1": "3.45%*2 + 2.87%*3",
+          "2": "3.97%*2 + 3.30%*3",
+          "3": "4.49%*2 + 3.73%*3",
+          "4": "5.00%*2 + 4.16%*3",
+          "5": "5.52%*2 + 4.59%*3",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "RocksteadyGuardianSpecialShield",
+        label: "Special Attack Shield",
+        description: `If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP.`,
+        talents: {
+          "1": "30%",
+          "2": "30%",
+          "3": "30%",
+          "4": "30%",
+          "5": "30%",
+        },
+        type: "Shield",
+        element: "Spectro",
+        attribute: "hp",
+      },
+    ],
+    sets: ["RejuvenatingGlow", "CelestialLight", "FrostyResolve"],
+  },
+  PhantomSentryConstruct: {
+    key: "PhantomSentryConstruct",
+    name: "Phantom: Sentry Construct",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33009_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into Sentry Construct and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG. Each time the Resonator with this Echo casts Resonance Liberation, it enhances the Strike Capacitor.
+Once Strike Capacitor is at max level, the Echo Skill cooldown will be reset. Use Echo Skill to transform into Sentry Construct and dive into enemies from the air, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG and freezing the target.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Glacio DMG Bonus and <span class="param">12.00%</span> Resonance Skill DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "SentryConstructAttack",
+        label: "Attack DMG",
+        description: `Transform into Sentry Construct and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG. Each time the Resonator with this Echo casts Resonance Liberation, it enhances the Strike Capacitor.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "SentryConstructUpgradedAttack",
+        label: "Upgraded Attack DMG",
+        description: `Once Strike Capacitor is at max level, the Echo Skill cooldown will be reset. Use Echo Skill to transform into Sentry Construct and dive into enemies from the air, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG and freezing the target.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["VoidThunder"],
+  },
+  PhantomSigillum: {
+    key: "PhantomSigillum",
+    name: "Phantom: Sigillum",
+    class: "Calamity",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34025_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Summon Sigillum to unleash two attacks, dealing 45.60%/53.20%/60.80%/68.40% and 136.80%/159.60%/182.40%/205.20% Fusion DMG respectively.
+When equipped in the main slot by Aemeath, it grants 25.00% Resonance Liberation DMG Bonus.
+CD: 20s</span>`,
+    modifiers: [
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.25,
+        specificCharacters: ["Aemeath"],
+      },
+    ],
+    actions: [
+      {
+        key: "SigillumAttacksDMG",
+        label: "Attack DMG",
+        description: `Summon Sigillum to unleash two attacks, dealing 45.60%/53.20%/60.80%/68.40% and 136.80%/159.60%/182.40%/205.20% Fusion DMG respectively.`,
+        talents: {
+          "1": "45.60%+136.80%",
+          "2": "45.60%+136.80%",
+          "3": "53.20%+159.60%",
+          "4": "60.80%+182.40%",
+          "5": "68.40%+205.20%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["TrailblazingStar"],
+  },
+  PhantomSkywatchLancer: {
+    key: "PhantomSkywatchLancer",
+    name: "Phantom: Skywatch Lancer",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32069_UI.webp",
+    details: `Summon a Skywatch Lancer to attack the target, dealing 32.09% Aero DMG 6 times.
+CD: 15s`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlashofElectricReflection", "FlowerofTingedYearning"],
+  },
+  PhantomSmiter: {
+    key: "PhantomSmiter",
+    name: "Phantom: Smiter",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31090_UI.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["SongofFeatheredTrace"],
+  },
+  PhantomSmolder: {
+    key: "PhantomSmolder",
+    name: "Phantom: Smolder",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31102_UI.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["SongofFeatheredTrace"],
+  },
+  PhantomTheFalseSovereign: {
+    key: "PhantomTheFalseSovereign",
+    name: "Phantom: The False Sovereign",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34017_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="description">Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%K</span> Electro DMG 4 times.
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus. Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.
+CD: 8s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TheFalseSovereignSpinning",
+        label: "Spinning DMG",
+        description: `Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%</span> Electro DMG 4 times.`,
+        talents: {
+          "1": "36.90%*4",
+          "2": "36.90%*4",
+          "3": "43.05%*4",
+          "4": "49.20%*4",
+          "5": "55.35%*4",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "TheFalseSovereignSummon",
+        label: "Summon DMG",
+        description: `Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
+  PhantomThunderingMephis: {
+    key: "PhantomThunderingMephis",
+    name: "Phantom: Thundering Mephis",
+    class: "Overlord",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1008_UI.webp",
+    details: `<span class="description">Transform into Thundering Mephis, engaging in a rapid assault of up to 6 strikes. The first 5 strikes deal <span class="param">82.88%/95.31%/107.74%/120.18%/132.61%</span> Electro DMG each, while the final strike inflicts <span class="param">118.40%/136.16%/153.92%/171.68%/189.44%</span> Electro DMG, with an additional <span class="param">19.73%/22.69%/25.65%/28.61%/31.57%</span> Electro DMG from the thunder.
+    After the final hit, increase the current character’s Electro DMG by <span class="param">12.00%</span> and Resonance Liberation DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ThunderingMephisStrike",
+        label: "Strike DMG",
+        description: `Transform into Thundering Mephis, engaging in a rapid assault of up to 6 strikes. The first 5 strikes deal <span class="param">82.88%/95.31%/107.74%/120.18%/132.61%</span> Electro DMG each, while the final strike inflicts <span class="param">118.40%/136.16%/153.92%/171.68%/189.44%</span> Electro DMG, with an additional <span class="param">19.73%/22.69%/25.65%/28.61%/31.57%</span> Electro DMG from the thunder.`,
+        talents: {
+          "1": "82.88%*5 + 118.40% + 19.73%",
+          "2": "95.31%*5 + 136.16% + 22.69%",
+          "3": "107.74%*5 + 153.92% + 25.65%",
+          "4": "120.18%*5 + 171.68% + 28.61%",
+          "5": "132.61%*5 + 189.44% + 31.57%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["VoidThunder"],
+  },
+  PhantomTwinNovaCollapsarBlade: {
+    key: "PhantomTwinNovaCollapsarBlade",
+    name: "Phantom: Twin Nova - Collapsar Blade",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32050_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="skilldescription">Transform into Twin Nova: Collapsar Blade to rapidly fire at enemies for 5s, with each attack dealing <span class="Highlight">1.34%/1.56%/1.79%/2.01%</span> Electro DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains 12.00% Electro DMG Bonus and 12.00% Basic Attack DMG Bonus.<br><br>
+CD: 8s.<br><br>
+If Twin Nova: Nebulous Cannon is equipped in another slot on the Resonator:<br>
+- Casting Echo Skill unleashes both Nebulous Cannon and Collapsar Blade skills in quick succession, but is still considered performing the same Echo Skill.<br>
+- DMG dealt by Twin Nova: Collapsar Blade becomes Spectro DMG. The Electro DMG Bonus gained from equipping it in the main slot is turned into Spectro DMG Bonus.<br>
+- Casting Basic Attacks grants 1 stack of Dyad Origins. Casting Resonance Skill grants 3 stacks of Dyad Origins. Dyad Origins can stack up to 6 times and lasts for 8s. Each stack increases Echo Skill DMG by 10%, and all stacks are cleared after this Echo Skill ends.<br>
+- This skill is capped at 2 uses. Initially, this skill can be used 2 times, with 1 use added every 8s.</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TwinNovaCollapsarBladeRapidFireDMG",
+        label: "Rapid Fire DMG",
+        description: `Transform into Twin Nova: Collapsar Blade to rapidly fire at enemies for 5s, with each attack dealing 1.34%/1.56%/1.79%/2.01% Electro DMG.`,
+        talents: {
+          "1": "1.34%",
+          "2": "1.34%",
+          "3": "1.56%",
+          "4": "1.79%",
+          "5": "2.01%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
+  PhantomTwinNovaNebulousCannon: {
+    key: "PhantomTwinNovaNebulousCannon",
+    name: "Phantom: Twin Nova - Nebulous Cannon",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32049_UI.webp",
+    alwaysEnabled: true,
+    details: `<span class="skilldescription">Transform into a Twin Nova: Nebulous Cannon to slash enemies twice, with each attack dealing <span class="Highlight">53.67%/62.62%/71.56%/80.51%</span> Spectro DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="Highlight">12.00%</span> Spectro DMG Bonus and <span class="Highlight">12.00%</span> Basic Attack DMG Bonus.<br><br>
+CD: 8s.<br><br>
+If Twin Nova: Collapsar Blade is equipped in another slot on the Resonator:<br>
+- Casting Echo Skill unleashes both Nebulous Cannon and Collapsar Blade skills in quick succession, but the DMG Bonus from the Echo in the main slot remains unchanged.<br>
+- DMG dealt by Twin Nova: Collapsar Blade becomes Spectro DMG.<br>
+- Casting Basic Attacks grants 1 stack of Dyad Origins. Casting Resonance Skill grants 3 stacks of Dyad Origins. Dyad Origins can stack up to 6 times and lasts for 8s. Each stack increases Echo Skill DMG by 10%, and all stacks are cleared after this Echo Skill ends.<br>
+-This skill is capped at 2 uses. Initially, this skill can be used 2 times, with 1 use added every 8s.</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TwinNovaNebulousCannonSlashDMG",
+        label: "Slash DMG",
+        description: `Transform into a Twin Nova: Nebulous Cannon to slash enemies twice, with each attack dealing <span class="Highlight">53.67%/62.62%/71.56%/80.51%</span> Spectro DMG.`,
+        talents: {
+          "1": "53.67%*2",
+          "2": "53.67%*2",
+          "3": "62.62%*2",
+          "4": "71.56%*2",
+          "5": "80.51%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
+  PhantomVitreumDancer: {
+    key: "PhantomVitreumDancer",
+    name: "Phantom: Vitreum Dancer",
+    class: "Elite",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32029_UI.webp",
+    alwaysEnabled: true,
+    details: `Transform into Vitreum Dancer and attack surrounding enemies, dealing 313.20% Electro DMG.
+The Resonator with this Echo equipped in their main slot gains 12.00% Electro DMG Bonus.
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "VitreumDancerDMG",
+        label: "Vitreum Dancer DMG",
+        description: `Transform into Vitreum Dancer and attack surrounding enemies, dealing 208.80%/243.60%/278.40%/313.20% Electro DMG.`,
+        talents: {
+          "1": "208.80%",
+          "2": "208.80%",
+          "3": "243.60%",
+          "4": "278.40%",
+          "5": "313.20%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["MoltenRift", "VoidThunder"],
+  },
+  PhantomZipZap: {
+    key: "PhantomZipZap",
+    name: "Phantom: Zip Zap",
+    class: "Common",
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31082_UI.webp",
+    details: `<span class="description">Summon a Zip Zap to launch spinning attacks at enemies, dealing <span class="Highlight">17.28%/20.16%/23.04%/25.92%</span> Electro DMG 5 times.<br><br>CD: 8s.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+  },
   PilgrimsShell: {
     key: "PilgrimsShell",
     name: "Pilgrim's Shell",
@@ -3617,6 +4868,59 @@ CD: 20s`,
       },
     ],
     sets: ["ShadowofShatteredDreams"],
+  },
+  ReminiscenceSuhsintheInevitable: {
+    key: "ReminiscenceSuhsintheInevitable",
+    name: "Reminiscence: Suhsin the Inevitable",
+    class: "Calamity",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34033_2_UI.webp",
+    details: `<span>Cast Echo Skill to deal 4 instances of 27.36% Electro DMG and 1 instance of 164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus. Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s.<br>CD: 20s</span>`,
+    modifiers: [
+      {
+        key: "_StayTunedCalamity1Electro1",
+        details: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus`,
+        modifier: "Electro",
+        modifierValue: 0.1,
+        alwaysEnabled: true,
+      },
+      {
+        key: "_StayTunedCalamity1Electro2",
+        details: `Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s`,
+        modifier: "Electro",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "CastDMG",
+        label: "Cast DMG",
+        description: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.`,
+        talents: {
+          "1": "18.24%*4 + 109.44%",
+          "2": "18.24%*4 + 109.44%",
+          "3": "21.28%*4 + 127.68%",
+          "4": "24.32%*4 + 145.92%",
+          "5": "27.36%*4 + 164.16%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "HsinCastDMG",
+        label: "Hsin Cast DMG",
+        description: `When equipped by Hsin, the Echo Skill instead deals 5 instances of 9.12%/10.64%/12.16%/13.68% Electro DMG and 1 instance of 155.04%/180.88%/206.72%/232.56% Electro DMG to targets within a larger range.`,
+        talents: {
+          "1": "9.12%*5 + 155.04%",
+          "2": "9.12%*5 + 155.04%",
+          "3": "10.64%*5 + 127.68%",
+          "4": "12.16%*5 + 206.72%",
+          "5": "13.68%*5 + 232.56%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
   },
   ReminiscenceThrenodianLeviathan: {
     key: "ReminiscenceThrenodianLeviathan",
@@ -4029,6 +5333,35 @@ CD: 15s`,
     modifiers: [],
     actions: [],
     sets: ["LingeringTunes", "RejuvenatingGlow", "MoltenRift"],
+  },
+  Soulfrayer: {
+    key: "Soulfrayer",
+    name: "Soulfrayer",
+    class: "Elite",
+    image: "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32071_UI.webp",
+    details: `<span>Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
+Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
+CD: 20s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "SoulfrayerSummonDMG",
+        label: "Summon DMG",
+        description: `Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
+Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
+CD: 20s`,
+        talents: {
+          "1": "60.79%*3",
+          "2": "60.79%*3",
+          "3": "70.92%*3",
+          "4": "81.05%*3",
+          "5": "91.18%*3",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
   },
   SpacetrekExplorer: {
     key: "SpacetrekExplorer",

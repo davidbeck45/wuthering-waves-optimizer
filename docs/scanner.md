@@ -6,6 +6,14 @@ each newly displayed echo, OCRs it, and queues it for review instead of
 requiring the Discord-bot image or manual entry. All client-side — no
 server, no upload. See [ADR 0032](./adr/0032-echo-screen-scanner.md) for why.
 
+## Where the code lives
+
+The scanner's pure logic (layouts, stability, parsing, matching, review, dedupe) lives in **`packages/scanner-core/`** and is published as `@wutheringtools/scanner-core` so Wavescan can share it ([ADR 0034](adr/0034-scanner-core-package.md)). The old paths under `src/scanner/` (and `src/echoes/parsedEchoMapping.ts`, `src/utils/echoIdentity.ts`) are one-line re-exports, so imports throughout this doc still work. Edit the real files in `packages/scanner-core/src/`. The package gets game data from `src/scanner/gameData.ts` instead of importing `src/echoes/*`. Browser-only pieces (`capture.ts`, `captureCue.ts`, `analytics.ts`, the workers) stay in `src/`.
+
+The older **build card** import (`CalculatorEchoParser.vue`, the Discord bot's 1920×1080 image) is a separate parser: its layout, text parsing and read order live in **`packages/build-card-scanner/`**, published as `@wutheringtools/build-card-scanner` ([ADR 0037](adr/0037-build-card-scanner-package.md)). The component supplies tesseract.js and the `echoParser.worker` image matching as adapters.
+
+The same game data is published for the desktop scanner as **`/scanner-data.json`**. It's generated at build time by `src/scanner/scannerData.ts` via a Vite plugin, and is never committed ([ADR 0035](adr/0035-publish-scanner-data-json.md)). Its shape is a public contract: add fields additively.
+
 ## Mental model
 
 ```
@@ -412,7 +420,12 @@ value is right-aligned to the label's *first* line. `parse.ts`'s
   and the Echo Skill text below the last substat ≥ 3x;
 - drops any pair whose label isn't a plausible stat name. The columns run
   past the last substat into the Echo Skill description, which otherwise
-  pairs stray digits with description text.
+  pairs stray digits with description text;
+- keeps a value with no label line at its height only when the value alone
+  names the stat: a whole number that's a legal roll for exactly one flat
+  substat (320-580 is flat HP; 40-60 could be flat ATK or DEF, so it's
+  dropped). The row is marked `inferred` and gets low confidence. Windows'
+  built-in OCR (used by Wavescan) never reads a lone "HP" label.
 
 Pairing by position rather than list index means one dropped or garbled
 line only costs its own row. ATK vs ATK% (and HP/DEF) still comes from the

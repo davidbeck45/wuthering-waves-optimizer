@@ -38,7 +38,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 
 ## Index
 
-Architecture ADRs (0001–0012, 0029, 0031, 0032) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
+Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
 
 | ADR | Title | Status | Superseded by | Tags |
 |-----|-------|--------|----------------|------|
@@ -57,6 +57,10 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032) first, then redesign-chapter A
 | [0029](./0029-buff-realistic-max-stacks.md) | `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap | accepted | | calculator, characters, buffs |
 | [0031](./0031-mutually-exclusive-buffs.md) | `mutuallyExclusiveWith` for buffs/passives/resonance-chain nodes that can't be active together | accepted | | calculator, characters, weapons, buffs, components |
 | [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | | echoes, workers, components, inventory |
+| [0034](./0034-scanner-core-package.md) | Extract the echo scanner's logic into `@wutheringtools/scanner-core` | accepted | | scanner, packages, architecture |
+| [0035](./0035-publish-scanner-data-json.md) | Publish `scanner-data.json` for the desktop scanner | accepted | | scanner, data, interop |
+| [0036](./0036-formulas-package.md) | Publish the damage formulas as `@wutheringtools/formulas` | accepted | | calculator, packages, architecture |
+| [0037](./0037-build-card-scanner-package.md) | Extract the build card parser into `@wutheringtools/build-card-scanner` | accepted | | scanner, packages, architecture |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, stores |

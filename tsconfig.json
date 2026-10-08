@@ -18,8 +18,16 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Shared packages (ADR 0034, 0036, 0037), resolved from source */
+    "paths": {
+      "@wutheringtools/scanner-core": ["./packages/scanner-core/src/index.ts"],
+      "@wutheringtools/scanner-core/*": ["./packages/scanner-core/src/*"],
+      "@wutheringtools/formulas": ["./packages/formulas/src/index.ts"],
+      "@wutheringtools/build-card-scanner": ["./packages/build-card-scanner/src/index.ts"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "api/**/*.ts", ".d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "api/**/*.ts", ".d.ts", "packages/scanner-core/src/**/*.ts", "packages/formulas/src/**/*.ts", "packages/build-card-scanner/src/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

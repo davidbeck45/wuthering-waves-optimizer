@@ -163,6 +163,7 @@ cypress/downloads
 
 # AI
 .serena
+packages/*/dist/
 .vercel
 .env*
 
