@@ -1,6 +1,6 @@
 {
   "name": "@wutheringtools/formulas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Wuthering Waves damage, healing, shield, Tune Break and negative-status formulas used by Wuthering Tools, verified against in-game numbers.",
   "license": "GPL-3.0-or-later",
   "type": "module",
