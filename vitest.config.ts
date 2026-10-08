@@ -9,6 +9,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
       // Shared scanner logic (ADR 0034); resolved from source here, published to npm.
       "@wutheringtools/scanner-core": path.resolve(__dirname, "packages/scanner-core/src"),
+      // Damage/heal/shield formulas (ADR 0036); resolved from source here, published to npm.
+      "@wutheringtools/formulas": path.resolve(__dirname, "packages/formulas/src"),
     },
   },
   test: {
