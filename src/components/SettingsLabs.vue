@@ -71,16 +71,16 @@ type LabFeature = { key: string; label: string; details: string };
 
 const labsFeatures = ref<LabFeature[]>([
   {
-    key: "liveResultBar",
-    label: "UI Overhaul 3.0",
-    details:
-      "A major UI overhaul. It seeks to improve the overall user experience, give you more access to insights while still providing the data you need.",
-  },
-  {
     key: "echoScanning",
     label: "Echo scanning",
     details:
       "Adds a \"Scan echoes\" button to your inventory. Share your game window (or upload a recording) while browsing your in-game Echo list and it reads each echo's stats automatically — everything runs in your browser, nothing is uploaded anywhere. Still being tuned for accuracy.",
+  },
+  {
+    key: "wavescanImport",
+    label: "Import with Wavescan",
+    details:
+      "Adds a Wavescan section to Settings for importing the file exported by Wavescan, the desktop scanner. Echoes only for now — add them to your inventory or replace it.",
   },
 ]);
 </script>

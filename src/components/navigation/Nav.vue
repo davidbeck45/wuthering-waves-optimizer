@@ -290,6 +290,7 @@ import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
+import { isV3UiEnabled } from "../../utils/uiVersion";
 import { trackEvent } from "../../utils/analytics";
 
 defineOptions({
@@ -322,7 +323,7 @@ const settingsStore = useSettingsStore();
 const characterBrowserRef = ref<InstanceType<typeof CalculatorCharacterBrowser> | null>(null);
 
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 // v3's tuning icon replaces the character-avatar slot everywhere the flag

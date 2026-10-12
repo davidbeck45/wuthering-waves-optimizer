@@ -4527,7 +4527,7 @@ CD: 20s.`,
         element: "Electro",
       },
     ],
-    sets: ["MoltenRift", "VoidThunder"],
+    sets: ["EternalRadiance", "EmpyreanAnthem"],
   },
   PhantomZipZap: {
     key: "PhantomZipZap",
