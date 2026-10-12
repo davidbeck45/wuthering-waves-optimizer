@@ -101,6 +101,38 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/ (character browser)");
   });
 
+  // v3 is the default UI since Ryan #602 (ADR 0038); the support file seeds classic for every other
+  // spec here, so this one seeds v3 itself, with the phone's 130 % text and a wuwa_calc-length
+  // rotation name as the live result bar's headline. At David's S26 width: at 360 px and 130 % the
+  // nav fits a phone by 0.2 px, and Electron's 15 px scrollbar takes more than that.
+  it("keeps the v3 calculator and updates pages inside the viewport at 130 % text", () => {
+    cy.viewport(412, 915);
+    const character = JSON.parse(configOptimizer.data.character);
+    character.characters.Cartethyia.rotations[0].name =
+      "Cartethyia S6R5 Defier's Thorn R5 · Ciaccona + Shorekeeper · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)";
+    const seed = {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    };
+    cy.visit("/", seed);
+    cy.get("[data-test-live-result-bar-hero]").should("contain.text", "(wuwa_calc)");
+    expectNavFits("/ (v3)");
+    expectNoHorizontalScroll("/ (v3)");
+    cy.visit("/updates", seed);
+    cy.get(".page-updates--v3").should("be.visible");
+    expectNoHorizontalScroll("/updates (v3)");
+  });
+
   it("reviews phone screenshots as cards inside the echo importer", () => {
     cy.visit("/inventory");
     cy.contains("button", "Import echoes").click({ force: true });

@@ -444,8 +444,9 @@
 }
 
 /* ---------------------------------------------------------------------------------------------
-   10. v3 workspace (Labs "UI Overhaul 3.0"): the weapon / build-score strip, the build meta line
-       and the section headers with button groups do not wrap at 130 % text. */
+   10. v3 workspace (the default UI since Ryan #602, ADR 0038; was the Labs flag "UI Overhaul 3.0"):
+       the weapon / build-score strip, the build meta line and the section headers with button
+       groups do not wrap at 130 % text. */
 @media (max-width: 767px) {
   .calculator-character-workspace .flex.items-stretch.divide-x,
   .calculator-character-workspace .flex.items-center.gap-3,
@@ -478,4 +479,55 @@
    under the bar and the page scrolls by as much. The offset is the bar's pixel height, at any width. */
 .contain.mt-20 {
   margin-top: 80px;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   12. /updates (UpdatesView.vue): the page keeps a desktop `padding: 2rem 3rem` (62 px a side at 130 %
+       text, a 288 px column on a 412 px phone), and an entry can carry a bare URL (the npm package
+       links of 2026-10-09), one unbreakable word wider than the column - in both UIs. */
+@media (max-width: 767px) {
+  .content > .page-updates.page-updates {
+    padding: 1rem;
+  }
+  .prose.page-updates li,
+  .updates-workspace li > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  /* v3: "Expand all" + the search box share a row that never shrinks (the input's own 20-character
+     width), 10 px past the column at 412 px */
+  .updates-workspace > .flex.flex-wrap > .flex.items-center {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .updates-workspace label.input.input-sm {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .updates-workspace label.input.input-sm > input {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   13. v3 live result bar (CalculatorCommandBar.vue): the hero label above the damage number is
+       `whitespace-nowrap`, and a wuwa_calc rotation's name ("Aemeath S6R5 Everbright Polestar R5 ·
+       Mornye + Lynae · S6R5 DPS · …") is 530 px of text at 130 % - the row spilled past both edges
+       and the whole page grew to 592 px. On a phone the label wraps and its column may shrink. */
+@media (max-width: 767px) {
+  .command-bar > .flex.flex-col.items-end,
+  .command-bar > .flex.flex-col.items-end > .flex.items-end {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .command-bar [data-test-live-result-bar-hero] {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  .command-bar [data-test-live-result-bar-hero] > .whitespace-nowrap {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: right;
+  }
 }

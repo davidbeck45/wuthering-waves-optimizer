@@ -67,6 +67,13 @@ utility menu, the two card tables reflowed (and back to tables at 1440), the cal
 reflowed with the character browser at two per row, real OCR review inside the importer; `themes.cy.ts` for the
 Gruvbox dark theme (`tailwind.config.js` `gruvbox`, listed in `useTheme.ts`; morhetz's medium palette — orange / blue
 / aqua as primary / secondary / accent, bg0 page, bg0_s / bg1 cards and nav).
+**v3 is the default UI since Ryan #602 (2026-10-10, ADR 0038; classic is an opt-in).** `cypress/support/e2e.ts` seeds
+classic for every spec without its own settings, so all the plus specs above run classic, and `cy.importCharacterData`
+only works there (it clicks the classic Settings import). The v3 gate is `phoneLayout.cy.ts`'s own v3 test: it seeds
+the fixture and `useClassicUi: false` through `onBeforeLoad`, 130 % text, a wuwa_calc-length rotation name as the live
+result bar's headline, at 412 × 915 (at 360 px the nav fits a real phone by 0.2 px, less than Electron's scrollbar).
+`phone.css` § 12–13 came from that pass: `/updates` padding, bare URLs and the search row (both UIs), and the v3 bar's
+`whitespace-nowrap` headline, which had grown the calculator page to 592 px.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
