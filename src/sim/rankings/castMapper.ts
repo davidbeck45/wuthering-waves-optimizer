@@ -17,6 +17,8 @@ export interface AppRow {
   label: string | null;
   mv: number | null;
   echoKey?: string;
+  /** the row's MV formula as the app writes it ("10.20%+0.37%*19"), where `landedRepeats` needs it */
+  expr?: string | null;
 }
 
 export interface EchoRows {
@@ -435,6 +437,22 @@ export function stageFraction(cast: Cast, rows: AppRow[]): [AppRow, number] | nu
   return null;
 }
 
+/** An echo cast landing its lead hit and only some of the repeats the app row counts in full: a row written
+ *  `A%+B%*N` cast at A + B×k for k < N (Myriad Snare's "10.20%+0.37%*19", the text's "up to 19" crushes, which
+ *  Riley lands as the impact and five crushes, 12.05 — 2026-10-20). Mirrors map_rotations.py's `landed_repeats`. */
+export function landedRepeats(cast: Cast, rows: AppRow[]): [AppRow, number, number] | null {
+  const want = cast.mv;
+  if (!want) return null;
+  for (const r of rows) {
+    const m = /^([\d.]+)%\+([\d.]+)%\*(\d+)$/.exec(String(r.expr ?? "").replace(/\s/g, ""));
+    if (!m || !r.mv) continue;
+    const [a, b, n] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const k = Math.round((want - a) / b);
+    if (k >= 0 && k < n && Math.abs(a + b * k - want) <= 0.06) return [r, k, n];
+  }
+  return null;
+}
+
 function matchWithRatios(cast: Cast, rows: AppRow[], ratios: Set<number>): [AppRow | null, string | null] {
   const want = cast.mv as number;
   const cands: Array<[AppRow, number]> = [];
@@ -538,7 +556,7 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
   // the cap her Duet burst fires at comes from the loop's own ticks; a caller mapping one hit at a time passes it in
   const fbCap = fusionBurstCap ?? fusionBurstCapOf(casts);
   const bump = (how: string): void => {
-    const m = how.startsWith("mv×") ? "ratio" : how.startsWith("tick/") ? "tick" : how.startsWith("per-hit") ? "per-hit" : how;
+    const m = how.startsWith("mv×") ? "ratio" : how.startsWith("tick/") ? "tick" : how.startsWith("per-hit") ? "per-hit" : how.startsWith("repeats") ? "repeats" : how;
     report.methods[m] = (report.methods[m] ?? 0) + 1;
   };
   for (const c of casts) {
@@ -591,10 +609,16 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     let hit: MatchHit = null;
     let how = "";
     let count = c.count;
+    let why = "cut at its cancel frame";
     if (c.cast === "Echo" || nm.startsWith("Echo - ")) {
       const ekey = findEcho(nm, c.by, echoRows);
       if (ekey) {
         [hit, how, count] = matchCast(cm, echoRows[ekey].rows, overrides);
+        const lr = hit === null && !cut ? landedRepeats(c, echoRows[ekey].rows) : null;
+        if (lr) {
+          [hit, how, count, cut] = [lr[0], `repeats${lr[1]}/${lr[2]}`, c.count, c.mv / lr[0].mv!];
+          why = `${lr[1]} of its ${lr[2]} repeat hits landed`;
+        }
         if (Array.isArray(hit)) hit = hit.map((r) => ({ ...r, echoKey: ekey }));
         else if (hit) hit = { ...hit, echoKey: ekey };
       } else if (nm.startsWith("Echo - ")) {
@@ -647,7 +671,7 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     if (cut) {
       a.buffs = [{ modifier: "talentModifierMultiply", modifierValue: Math.round((cut - 1) * 10000) / 100 }];
       bump("cut");
-      report.multipliers.push(`${nm} = ${hit.key} × ${cut.toFixed(2)} (cut at its cancel frame)`);
+      report.multipliers.push(`${nm} = ${hit.key} × ${cut.toFixed(2)} (${why})`);
     }
     actions.push(a);
   }
@@ -686,7 +710,8 @@ export function echoRowsOf(mainEchoes: Record<string, { name: string; actions?: 
       name: e.name,
       rows: (e.actions ?? []).map((a) => {
         const talents = a.talents as Record<string, unknown> | undefined;
-        return { group: "echoAttacks", key: String(a.key), label: (a.label as string | undefined) ?? null, mv: mvOf(talents?.["10"] ?? talents?.["5"] ?? null), echoKey: key };
+        const expr = talents?.["10"] ?? talents?.["5"] ?? null;
+        return { group: "echoAttacks", key: String(a.key), label: (a.label as string | undefined) ?? null, mv: mvOf(expr), echoKey: key, expr: expr == null ? null : String(expr) };
       }),
     };
   }

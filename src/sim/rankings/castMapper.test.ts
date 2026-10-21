@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import loops from "./__fixtures__/wuwaCalcLoops.json";
 import { getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
-import { OVERRIDES, appKeyOf, appRowsOf, duetBurstOf, echoRowsOf, fusionBurstCapOf, emptyReport, enemyConfigOf, enemyStacksOf, finishTicks, knownRatios, mvOf, ratio, rileyNameOf, toActions, type AppRow, type Cast, type TickState } from "./castMapper";
+import { OVERRIDES, appKeyOf, appRowsOf, duetBurstOf, echoRowsOf, fusionBurstCapOf, emptyReport, enemyConfigOf, enemyStacksOf, finishTicks, knownRatios, landedRepeats, mvOf, ratio, rileyNameOf, toActions, type AppRow, type Cast, type TickState } from "./castMapper";
 // Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
 vi.setConfig({ testTimeout: 60_000 });
 
@@ -90,6 +90,23 @@ describe("cast mapper: primitives", () => {
     // without sharing, every hit became a full row — the 2026-09-14 team-import bug (31 rows, 21× the damage)
     const unshared = Array.from({ length: 31 }, () => toActions([tick()], rows, {}, {}, emptyReport(), new Set())).flat();
     expect(unshared).toHaveLength(31);
+  });
+  it("presses an echo cast that lands only some of its row's repeat hits at that share", () => {
+    // Myriad Snare: the app's row is the impact + 19 crushes (10.20%+0.37%*19 = 17.23), Riley lands the impact + 5
+    const echoRows = echoRowsOf(mainEchoesData as never);
+    const rows = echoRows.MyriadSnareRustfireChassis.rows;
+    expect(rows.map((r) => [r.key, r.mv, r.expr])).toEqual([["MyriadSnareRustfireChassisSummonDMG", 17.23, "10.20%+0.37%*19"]]);
+    const cast: Cast = { name: "Echo - Myriad Snare", mv: 12.05, count: 1, cast: null, node: null };
+    expect(landedRepeats(cast, rows)?.slice(1)).toEqual([5, 19]);
+    const report = emptyReport();
+    const acts = toActions([cast], [], echoRows, {}, report, new Set());
+    expect(acts.map((a) => [a.key, a.mainEcho, a.buffs])).toEqual([
+      ["MyriadSnareRustfireChassisSummonDMG", "MyriadSnareRustfireChassis", [{ modifier: "talentModifierMultiply", modifierValue: -30.06 }]],
+    ]);
+    expect(report.multipliers).toEqual(["Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed)"]);
+    // the full count, or one the row can't make, is no partial landing
+    expect(landedRepeats({ ...cast, mv: 17.23 }, rows)).toBeNull();
+    expect(landedRepeats({ ...cast, mv: 11.15 }, rows)).toBeNull();
   });
   it("maps Riley's resonator names to app keys and back", () => {
     expect(appKeyOf("Xuanling")).toBe("YangyangXuanling");
