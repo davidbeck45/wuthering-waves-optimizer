@@ -470,8 +470,19 @@
     min-height: 80px;
     max-height: 80px;
   }
-  .navbar .menu.menu-horizontal :where(li > summary) {
-    padding-block: 0.4rem;
+}
+/* The theme and utility menus (Ryan's two `btn-square` dropdowns since 2026-10, `gap-2` apart) are
+   3 rem squares — 62 px at 130 % text — and with the hamburger and five icons need 372 px at 360 px
+   wide at 100 %: the theme button covered the Rankings icon. Below `sm` they are 36 px squares, side by side. */
+@media (max-width: 639px) {
+  .navbar-end > .flex {
+    gap: 0;
+  }
+  .navbar-end .btn-square {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
   }
 }
 /* AppLayout pushes the page down with `mt-20` (5 rem) to clear the 80 px bar, and sizes it with
