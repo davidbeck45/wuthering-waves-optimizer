@@ -100,7 +100,8 @@ describe("wuwa_calc stock presets (generated data)", () => {
 describe("wuwa_calc sequence breakpoints (generated data)", () => {
   it("names the sequence at which a kit's loop switches, for both Rover forms alike", async () => {
     const xuanling = await loadSequenceBreakpoints("YangyangXuanling");
-    expect(xuanling?.loadouts.some((l) => l.loopChangesAt.includes(1) && l.changes["1"].kind === "chain"), "Xuanling's S1 changes her start of combat, not the loop").toBe(true);
+    // S1 until Riley's 2026-10-20 kit (9dbffa1) moved her second start-of-combat form to S2
+    expect(xuanling?.loadouts.some((l) => l.loopChangesAt.includes(2) && l.changes["2"].kind === "chain"), "Xuanling's S2 changes her start of combat, not the loop").toBe(true);
     const denia = await loadSequenceBreakpoints("Denia");
     expect(denia?.loadouts.some((l) => l.changes["3"]?.kind === "loop"), "Denia's S3 switches the loop").toBe(true);
     expect(await loadSequenceBreakpoints("Jiyan"), "two identical Rotation objects are no breakpoint").toMatchObject({ loadouts: [{ loopChangesAt: [] }] });

@@ -1,12 +1,12 @@
 [
  {
   "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,452,147 DPR for Galbrena of 7,701,410 team. Sequence procs in the loop: none. Rotation time 27.62 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,518,920 DPR for Galbrena of 7,739,096 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,452,147 DPR for Galbrena of 7,701,410 team. Sequence procs in the loop: none. Rotation time 27.62 s (the team's loop).",
-   "duration": 27.62,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,518,920 DPR for Galbrena of 7,739,096 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
+   "duration": 26.37,
    "actions": [
     {
      "order": 1,
@@ -18,30 +18,6 @@
     },
     {
      "order": 2,
-     "key": "BasicAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HeavyAttackVolleyofDeathStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
      "key": "HeavyAttackVolleyofDeathStage2DMG",
      "type": "basic",
      "count": 1,
@@ -49,7 +25,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 3,
      "key": "HeavyAttackVolleyofDeathStage3DMG",
      "type": "basic",
      "count": 1,
@@ -57,7 +33,39 @@
      "isDisabled": false
     },
     {
+     "order": 4,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceSkillEncroachDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackAshfallBarragePlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 7,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
      "key": "ResonanceSkillAscentofMaliceDMG",
      "type": "skill",
      "count": 1,
@@ -65,7 +73,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "HellfireAbsolutionDMG",
      "type": "liberation",
      "count": 1,
@@ -73,7 +81,17 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
+     "key": "CorrosaurusAttack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Corrosaurus",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 11,
      "key": "BasicAttackSeraphicExecutionStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -81,24 +99,8 @@
      "isDisabled": false
     },
     {
-     "order": 10,
-     "key": "BasicAttackSeraphicExecutionStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackSeraphicExecutionStage4DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 12,
-     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -106,22 +108,6 @@
     },
     {
      "order": 13,
-     "key": "HellstrideDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BasicAttackSeraphicExecutionStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
      "key": "BasicAttackSeraphicExecutionStage4DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -129,7 +115,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 14,
      "key": "BasicAttackSeraphicExecutionStage5DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -137,7 +123,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 15,
      "key": "HellstrideDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -145,8 +131,24 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 16,
      "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],

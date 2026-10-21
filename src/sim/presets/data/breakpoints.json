@@ -1,12 +1,12 @@
 {
- "generated": "2026-10-04T18:59:19.075Z",
- "wuwaCalcCommit": "195a22f",
+ "generated": "2026-10-21T19:27:03.742Z",
+ "wuwaCalcCommit": "9dbffa1",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
    "loadouts": [
     {
-     "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Fusion Burst",
+     "label": "Everbright Polestar R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Trailblazing Star 5pc · Resonance Mode - Fusion Burst",
      "minSequence": 0,
      "loopChangesAt": [
       1
@@ -16,13 +16,13 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+       "note": "start of combat (position 3): adds Basic - Aemeath 1 ×1, Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 17
+     "intendedTeams": 15
     },
     {
-     "label": "Everbright Polestar R1 / Emerald of Genesis R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
+     "label": "Everbright Polestar R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
      "minSequence": 0,
      "loopChangesAt": [
       1
@@ -32,10 +32,10 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 3): adds Heavy - Aemeath: Charged II ×1"
+       "note": "start of combat (position 3): adds Basic - Aemeath 1 ×1, Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 10
+     "intendedTeams": 8
     }
    ],
    "sequences": [
@@ -75,11 +75,11 @@
    "appKey": "RoverAeroFemale",
    "loadouts": [
     {
-     "label": "Bloodpact's Pledge R5 · Rejuvenating Glow 5pc + Fallacy of No Return",
+     "label": "Bloodpact's Pledge R5 / Lumingloss R1 / Feather Edge R1 · Rejuvenating Glow 5pc + Fallacy of No Return",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -119,7 +119,7 @@
    "appKey": "Augusta",
    "loadouts": [
     {
-     "label": "Thunderflare Dominion R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Verdant Summit R1 · Crown of Valor 3pc + Void Thunder 2pc",
+     "label": "Thunderflare Dominion R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Verdant Summit R1 / Autumntrace R1 / Aureate Zenith R1 · Crown of Valor 3pc + Void Thunder 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -163,11 +163,11 @@
    "appKey": "Brant",
    "loadouts": [
     {
-     "label": "Unflickering Valor R1 / Emerald of Genesis R1 / Laser Shearer R1 / Bloodpact's Pledge R5 · Tidebreaking Courage 5pc",
+     "label": "Unflickering Valor R1 / Emerald of Genesis R1 / Laser Shearer R1 / Bloodpact's Pledge R5 / Lumingloss R1 / Feather Edge R1 · Tidebreaking Courage 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 12
+     "intendedTeams": 11
     }
    ],
    "sequences": [
@@ -238,7 +238,7 @@
     {
      "level": 5,
      "name": "Buling S5",
-     "note": "The Array inflicts 6 more Electro Flare the moment it is generated."
+     "note": "The Array inflicts 6 more Electro Flare the moment it is generated: Harmony's frame-0 bullet."
     },
     {
      "level": 6,
@@ -251,7 +251,7 @@
    "appKey": "Camellya",
    "loadouts": [
     {
-     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 1",
+     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 1",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -265,26 +265,23 @@
         "Basic - Vining Waltz 3 ×1",
         "Basic - Blazing Waltz ×1",
         "Basic - Vining Waltz 4 ×1",
-        "Echo Placeholder (on field) ×1",
         "Forte Skill - Perennial (S6) ×1"
        ],
-       "removed": [
-        "Echo Placeholder (insta swap) ×1"
-       ],
-       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo Placeholder (on field) ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage ×1"
+       "removed": [],
+       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo - Nightmare: Crownless ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage ×1"
       }
      },
      "intendedTeams": 2
     },
     {
-     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 2",
+     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 2",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 2
     },
     {
-     "label": "Red Spring R1 / Emerald of Genesis R1 · Havoc Eclipse 5pc · variant 3",
+     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 3",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -297,7 +294,7 @@
         "Forte Skill - Perennial (S6) ×1"
        ],
        "removed": [
-        "Echo Placeholder (insta swap) ×1"
+        "Echo - Nightmare: Crownless ×1"
        ]
       }
      },
@@ -341,14 +338,14 @@
    "appKey": "Cantarella",
    "loadouts": [
     {
-     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Midnight Veil 5pc",
+     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 / Augment R1 / Radiant Dawn R1 · Midnight Veil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 8
     },
     {
-     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 · Havoc Eclipse 5pc",
+     "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 / Augment R1 / Radiant Dawn R1 · Havoc Eclipse 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -392,7 +389,7 @@
    "appKey": "Carlotta",
    "loadouts": [
     {
-     "label": "The Last Dance R1 / Phasic Homogenizer R1 / Static Mist R1 · Frosty Resolve 5pc",
+     "label": "The Last Dance R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Frosty Resolve 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -403,7 +400,7 @@
     {
      "level": 1,
      "name": "Carlotta S1: Beauty Blazes Brightest Before It Fades",
-     "note": "S1: +12.5% Crit Rate on any hit into a Deconstruction target, and Chromatic Splendor restores 30 more Substance on its first hit (wuwalab's trigger_s2_dispersion) — it always follows Art of Violence, whose Dispersion is what it asks for."
+     "note": "S1: +12.5% Crit Rate on any hit into a Deconstruction target, and Chromatic Splendor's first hit (wuwalab's trigger_s2_dispersion) restores 30 more Substance on a target still under Dispersion."
     },
     {
      "level": 2,
@@ -436,7 +433,7 @@
    "appKey": "Cartethyia",
    "loadouts": [
     {
-     "label": "Defier's Thorn R1 / Emerald of Genesis R1 / Red Spring R1 · Windward Pilgrimage 5pc",
+     "label": "Defier's Thorn R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Windward Pilgrimage 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -472,7 +469,7 @@
     {
      "level": 6,
      "name": "Cartethyia S6: Freedom Found in Storm's Wake",
-     "note": "S6: the Blade tops the target's Aero Erosion up instead of stripping it (see the Blade's own afterAction), any teammate inflicting Aero Erosion at the cap fires an instance of it, and the target takes 40% more DMG from Fleurdelys. The…"
+     "note": "S6: the Blade tops the target's Aero Erosion up instead of stripping it (see the Blade's own 316 bullet), any teammate inflicting Aero Erosion at the cap fires an instance of it, and the target takes 40% more DMG from Fleurdelys. The…"
     }
    ]
   },
@@ -480,11 +477,11 @@
    "appKey": "Changli",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 · Molten Rift 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Molten Rift 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 2
     }
    ],
    "sequences": [
@@ -524,11 +521,11 @@
    "appKey": "Chisa",
    "loadouts": [
     {
-     "label": "Kumokiri R1 / Lustrous Razor R1 / Radiance Cleaver R1 / Discord R1 / Wildfire Mark R1 · Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan",
+     "label": "Kumokiri R1 / Lustrous Razor R1 / Radiance Cleaver R1 / Discord R1 / Wildfire Mark R1 / Autumntrace R1 / Aureate Zenith R1 · Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 27
+     "intendedTeams": 26
     }
    ],
    "sequences": [
@@ -568,11 +565,11 @@
    "appKey": "Ciaccona",
    "loadouts": [
     {
-     "label": "Woodland Aria R1 / Phasic Homogenizer R1 / Static Mist R1 · Gusts of Welkin 5pc",
+     "label": "Woodland Aria R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Gusts of Welkin 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 38
+     "intendedTeams": 39
     }
    ],
    "sequences": [
@@ -604,7 +601,7 @@
     {
      "level": 6,
      "name": "Ciaccona S6: Unending Cadence",
-     "note": "S6: the Solo Concert hit above, off every Stage 4 that opens one."
+     "note": "S6: the Solo Concert hit above, queued by every Stage 4 that opens one."
     }
    ]
   },
@@ -612,11 +609,11 @@
    "appKey": "Danjin",
    "loadouts": [
     {
-     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Blazing Brilliance R1 · Midnight Veil 5pc",
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Blazing Brilliance R1 / Lumingloss R1 / Feather Edge R1 · Midnight Veil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 9
     }
    ],
    "sequences": [
@@ -656,7 +653,7 @@
    "appKey": "Denia",
    "loadouts": [
     {
-     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Chromatic Foam 5pc · Resonance Mode - Fusion Burst",
+     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Chromatic Foam 5pc · Resonance Mode - Fusion Burst",
      "minSequence": 0,
      "loopChangesAt": [
       3
@@ -672,10 +669,10 @@
        "note": "opener: adds Basic - Breakdown Form 3 ×1, Basic - Breakdown Form 4 ×1, drops Skill - Phantom Bubble ×1, Jump Placeholder ×1, Mid-air - Breakdown Form 1 ×1, Mid-air - Breakdown Form 2 ×1, Mid-air - Breakdown Form 3 ×1, Mid-air - Breakdown Form 4 ×1"
       }
      },
-     "intendedTeams": 15
+     "intendedTeams": 14
     },
     {
-     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
+     "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
      "minSequence": 0,
      "loopChangesAt": [
       3
@@ -731,14 +728,14 @@
    "appKey": "Roverelectrofemale",
    "loadouts": [
     {
-     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Unspoken Rue R1 · Moonlit Clouds 5pc",
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Unspoken Rue R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 9
     },
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 · Heart of Sworn Vigil 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Unspoken Rue R1 / Lumingloss R1 / Feather Edge R1 · Heart of Sworn Vigil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -778,55 +775,11 @@
     }
    ]
   },
-  "Encore": {
-   "appKey": "Encore",
-   "loadouts": [
-    {
-     "label": "Stringmaster R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Lethean Elegy R1 / Whispers of Sirens R1 / Rime-Draped Sprouts R1 · Molten Rift 5pc",
-     "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
-     "intendedTeams": 1
-    }
-   ],
-   "sequences": [
-    {
-     "level": 1,
-     "name": "Encore S1",
-     "note": ""
-    },
-    {
-     "level": 2,
-     "name": "Encore S2",
-     "note": ""
-    },
-    {
-     "level": 3,
-     "name": "Encore S3",
-     "note": ""
-    },
-    {
-     "level": 4,
-     "name": "Encore S4",
-     "note": ""
-    },
-    {
-     "level": 5,
-     "name": "Encore S5",
-     "note": ""
-    },
-    {
-     "level": 6,
-     "name": "Encore S6",
-     "note": ""
-    }
-   ]
-  },
   "Galbrena": {
    "appKey": "Galbrena",
    "loadouts": [
     {
-     "label": "Lux & Umbra R1 / Phasic Homogenizer R1 / Static Mist R1 · Flamewing's Shadow 3pc + Flaming Clawprint 2pc",
+     "label": "Lux & Umbra R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Flamewing's Shadow 3pc + Flaming Clawprint 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -862,7 +815,7 @@
     {
      "level": 6,
      "name": "Galbrena S6: I Remain Who I am, Eternal My Flame",
-     "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every Seraphic Execution and Flamewing Verdict at x1.6 — over the Hellfire window rather than beside it, which nanoka's rows settle: 174.61% is 58.99% x 1.85 x 1.6.…"
+     "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every enhanced form (Ravage aside) at x1.6 — over the Hellfire window rather than beside it, which nanoka's rows settle: 174.61% is 58.99% x 1.85 x 1.6. Multipliers…"
     }
    ]
   },
@@ -870,7 +823,7 @@
    "appKey": "Hiyuki",
    "loadouts": [
     {
-     "label": "Frostburn R1 / Emerald of Genesis R1 · Wishes of Quiet Snowfall 5pc",
+     "label": "Frostburn R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Wishes of Quiet Snowfall 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       2
@@ -923,7 +876,7 @@
    "appKey": "Hsin",
    "loadouts": [
     {
-     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 / Augment R1 / Radiant Dawn R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Electro Flare",
      "minSequence": 0,
      "loopChangesAt": [
       2
@@ -933,16 +886,25 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "first visit: adds Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Echo Placeholder (on field) ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1, Forte Skill - Illumining Form: Pillars Aligned ×1, Basic - Illumining Form: Pillars Aligned 1 ×1, Basic - Illumining Form: Pillars Aligned 2 ×1, Basic - Illumining Form: Pillars Aligned 3 ×1, Basic - Illumining Form: Pillars Aligned 4 ×1, Forte Heavy - Illumining Form: Stilling All Horizons ×1, Liberation - Pillars Across Heaven ×1, Skill - Answering Form ×1"
+       "note": "first visit: adds Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Echo - Reminiscence: Suhsin (Hsin) ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1, Forte Skill - Illumining Form: Pillars Aligned ×1, Basic - Illumining Form: Pillars Aligned 1 ×2, Basic - Illumining Form: Pillars Aligned 2 ×2, Dodge Placeholder ×1, Basic - Illumining Form: Pillars Aligned 3 ×1, Forte Heavy - Illumining Form: Stilling All Horizons ×1, Liberation - Pillars Across Heaven ×1, Basic - Answering Form 1 ×1"
       }
      },
-     "intendedTeams": 10
+     "intendedTeams": 9
     },
     {
-     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
+     "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 / Augment R1 / Radiant Dawn R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
      "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
+     "loopChangesAt": [
+      2
+     ],
+     "changes": {
+      "2": {
+       "kind": "chain",
+       "added": [],
+       "removed": [],
+       "note": "first double intro: adds Double Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1"
+      }
+     },
      "intendedTeams": 4
     }
    ],
@@ -950,7 +912,7 @@
     {
      "level": 1,
      "name": "Hsin S1: A Boat to Cross the Rising Tide",
-     "note": "S1. Unison: both Manifold Unison Intros hit for +15% DMG Multiplier, and +10% more a Unison Boon stack the team holds, four at most — a fourth only ever exists at S6, which is what raises the Boon's own cap that far. Flare: entering…"
+     "note": "S1. In Unison mode only: both Manifold Unison Intros hit for +15% DMG Multiplier, and +10% more a Unison Boon stack the team holds, four at most — a fourth only ever exists at S6, which is what raises the Boon's own cap that far. In…"
     },
     {
      "level": 2,
@@ -983,14 +945,14 @@
    "appKey": "Iuno",
    "loadouts": [
     {
-     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Marcato R1 / Abyss Surges R1 / Verity's Handle R1 · Crown of Valor 3pc + Sierra Gale 2pc",
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Marcato R1 / Abyss Surges R1 / Verity's Handle R1 / Stonard R1 / Aether Strike R1 · Crown of Valor 3pc + Sierra Gale 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 13
     },
     {
-     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Abyss Surges R1 / Verity's Handle R1 · Crown of Valor 3pc + Sierra Gale 2pc",
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Abyss Surges R1 / Verity's Handle R1 / Stonard R1 / Aether Strike R1 · Crown of Valor 3pc + Sierra Gale 2pc",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -1002,6 +964,7 @@
         "Forte Skill - Enhanced Arc Beyond the Edge ×2"
        ],
        "removed": [
+        "Skill - Closing Refrain ×1",
         "Basic - Moonbow 1 ×1",
         "Basic - Moonbow 2 ×1",
         "Basic - Moonbow 3 ×1"
@@ -1015,7 +978,7 @@
     {
      "level": 1,
      "name": "Iuno S1: Wax or Wane, All Gild the Bough",
-     "note": "S1: +40% ATK while in Lunar Cycle; the point of Energy a second inside the domain is paid by the domain itself (above). The interrupt immunity is no stat."
+     "note": "S1: +40% ATK while Lunar Cycle is held, and the domain's Energy above. The interrupt immunity is no stat."
     },
     {
      "level": 2,
@@ -1040,7 +1003,7 @@
     {
      "level": 6,
      "name": "Iuno S6: I Am the Constant in the Chaos",
-     "note": "S6: Absolute Fullness gains 1600% of ATK on its multiplier — additive, nanoka's own S6 row is 1759.05% against the plain 159.05% — and casting it puts her straight back into New Moon with a full 100 Sentience and both Arc charges: the…"
+     "note": "S6: Absolute Fullness gains 1600% of ATK on its multiplier — additive, nanoka's own S6 row is 1759.05% against the plain 159.05% — and casting it puts her straight back into New Moon (FHA's own updateBuffs) with a full 100 Sentience and…"
     }
    ]
   },
@@ -1092,7 +1055,7 @@
    "appKey": "Jingran",
    "loadouts": [
     {
-     "label": "Thousandfold Deliverance R1 / Radiance Cleaver R1 / Thunderflare Dominion R1 / Lustrous Razor R1 / Verdant Summit R1 · Lamp of Nether Road 5pc",
+     "label": "Thousandfold Deliverance R1 / Radiance Cleaver R1 / Thunderflare Dominion R1 / Lustrous Razor R1 / Verdant Summit R1 / Autumntrace R1 / Aureate Zenith R1 · Lamp of Nether Road 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       2
@@ -1110,7 +1073,7 @@
         "Basic - Drink Soul 3 ×1",
         "Basic - Drink Soul 4 ×1"
        ],
-       "note": "start of combat (position 3): adds Forte Heavy - Stardome Meander ×1"
+       "note": "start of combat (position 3): adds Basic - Devil's Bane 1 ×1, Forte Heavy - Stardome Meander ×1"
       }
      },
      "intendedTeams": 9
@@ -1153,7 +1116,7 @@
    "appKey": "Jinhsi",
    "loadouts": [
     {
-     "label": "Ages of Harvest R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Celestial Light 5pc",
+     "label": "Ages of Harvest R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Autumntrace R1 / Aureate Zenith R1 · Celestial Light 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1197,7 +1160,7 @@
    "appKey": "Jiyan",
    "loadouts": [
     {
-     "label": "Verdant Summit R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Sierra Gale 5pc",
+     "label": "Verdant Summit R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Autumntrace R1 / Aureate Zenith R1 · Sierra Gale 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1241,14 +1204,14 @@
    "appKey": "Lucilla",
    "loadouts": [
     {
-     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 · Dream of the Lost 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone · Resonance Mode - Echo",
+     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Augment R1 / Radiant Dawn R1 · Dream of the Lost 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone · Resonance Mode - Echo",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 15
+     "intendedTeams": 16
     },
     {
-     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
+     "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1292,7 +1255,7 @@
    "appKey": "Lucy",
    "loadouts": [
     {
-     "label": "Spectral Trigger R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc",
+     "label": "Spectral Trigger R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1336,11 +1299,11 @@
    "appKey": "Lupa",
    "loadouts": [
     {
-     "label": "Wildfire Mark R1 / Radiance Cleaver R1 / Lustrous Razor R1 · Flaming Clawprint 5pc",
+     "label": "Wildfire Mark R1 / Radiance Cleaver R1 / Lustrous Razor R1 / Autumntrace R1 / Aureate Zenith R1 · Flaming Clawprint 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 29
+     "intendedTeams": 26
     }
    ],
    "sequences": [
@@ -1380,7 +1343,7 @@
    "appKey": "LuukHerssen",
    "loadouts": [
     {
-     "label": "Daybreaker's Spine R1 / Pulsation Bracer R1 / Abyss Surges R1 · Rite of Gilded Revelation 5pc",
+     "label": "Daybreaker's Spine R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Rite of Gilded Revelation 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1424,14 +1387,14 @@
    "appKey": "Lynae",
    "loadouts": [
     {
-     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Rupture",
+     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Rupture",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 39
     },
     {
-     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
+     "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1479,7 +1442,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 48
+     "intendedTeams": 49
     }
    ],
    "sequences": [
@@ -1519,7 +1482,7 @@
    "appKey": "Mortefi",
    "loadouts": [
     {
-     "label": "Static Mist R1 / Cadenza R1 / Phasic Homogenizer R1 / The Last Dance R1 · Moonlit Clouds 5pc + Impermanence Heron",
+     "label": "Static Mist R1 / Cadenza R1 / Phasic Homogenizer R1 / The Last Dance R1 / Thunderbolt R1 / Solar Flame R1 · Moonlit Clouds 5pc + Impermanence Heron",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1563,14 +1526,14 @@
    "appKey": "Phoebe",
    "loadouts": [
     {
-     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Eternal Radiance 5pc",
+     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Eternal Radiance 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 11
     },
     {
-     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 · Moonlit Clouds 5pc",
+     "label": "Luminous Hymn R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1614,20 +1577,11 @@
    "appKey": "Phrolova",
    "loadouts": [
     {
-     "label": "Lethean Elegy R1 / Cosmic Ripples R1 / Stringmaster R1 · Dream of the Lost 3pc + Havoc Eclipse 2pc",
+     "label": "Lethean Elegy R1 / Cosmic Ripples R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Dream of the Lost 3pc + Havoc Eclipse 2pc",
      "minSequence": 0,
-     "loopChangesAt": [
-      2
-     ],
-     "changes": {
-      "2": {
-       "kind": "order",
-       "added": [],
-       "removed": [],
-       "note": "opener: drops Basic - Movement of Life and Death 2 ×1, Basic - Movement of Life and Death 3 ×1, Forte Basic - Movement of Fate and Finality ×1, Dodge Placeholder ×2, Basic - Movement of Life and Death 1 ×1"
-      }
-     },
-     "intendedTeams": 33
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 37
     }
    ],
    "sequences": [
@@ -1667,7 +1621,7 @@
    "appKey": "Qingxiao",
    "loadouts": [
     {
-     "label": "Glint of Clouds R1 / Emerald of Genesis R1 / Laser Shearer R1 / Red Spring R1 · Heart of Evil's Purge 5pc",
+     "label": "Glint of Clouds R1 / Emerald of Genesis R1 / Laser Shearer R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Heart of Evil's Purge 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1711,14 +1665,14 @@
    "appKey": "Qiuyuan",
    "loadouts": [
     {
-     "label": "Emerald Sentence R1 / Emerald of Genesis R1 · Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico",
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Law of Harmony 3pc + Sierra Gale 2pc + Reminiscence: Fenrico",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 16
     },
     {
-     "label": "Emerald Sentence R1 / Emerald of Genesis R1 · Law of Harmony 3pc + Sierra Gale 2pc",
+     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Law of Harmony 3pc + Sierra Gale 2pc",
      "minSequence": 0,
      "loopChangesAt": [
       3
@@ -1732,13 +1686,11 @@
        ],
        "removed": [
         "Basic - Thus Spoke the Blade: Inkwash 4 ×1",
-        "Echo Placeholder (on field) ×1",
         "Heavy - Inkwash ×2",
         "Dodge Placeholder ×2",
         "Basic - Thus Spoke the Blade: Inkwash 1 ×2",
         "Basic - Thus Spoke the Blade: Inkwash 2 ×2"
-       ],
-       "note": "start of combat (position 2): adds Liberation - Sundering Strike ×1, Skill - Through the Groves ×1"
+       ]
       }
      },
      "intendedTeams": 12
@@ -1781,7 +1733,7 @@
    "appKey": "Rebecca",
    "loadouts": [
     {
-     "label": "Skull Thrasher R1 / Phasic Homogenizer R1 / Static Mist R1 · Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc",
+     "label": "Skull Thrasher R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -1825,7 +1777,7 @@
    "appKey": "Roccia",
    "loadouts": [
     {
-     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Midnight Veil 5pc",
+     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Midnight Veil 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       1
@@ -1843,7 +1795,7 @@
      "intendedTeams": 7
     },
     {
-     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 · Havoc Eclipse 5pc",
+     "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Havoc Eclipse 5pc",
      "minSequence": 6,
      "loopChangesAt": [],
      "changes": {},
@@ -1887,7 +1839,7 @@
    "appKey": "Sanhua",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Overture R1 · Moonlit Clouds 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Overture R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       5
@@ -1897,8 +1849,7 @@
        "kind": "loop",
        "added": [],
        "removed": [
-        "Basic - Frigid Light 2 ×1",
-        "Basic - Frigid Light 3 ×1"
+        "Forte Heavy - Detonate ×1"
        ],
        "note": "opener: drops Basic - Frigid Light 4 ×1"
       }
@@ -1987,7 +1938,7 @@
    "appKey": "Sigrika",
    "loadouts": [
     {
-     "label": "Solsworn Ciphers R1 / Pulsation Bracer R1 / Abyss Surges R1 · Sound of True Name 5pc",
+     "label": "Solsworn Ciphers R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Sound of True Name 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2031,7 +1982,7 @@
    "appKey": "RoverSpectroFemale",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 · Rejuvenating Glow 5pc",
+     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Rejuvenating Glow 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2079,7 +2030,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 24
+     "intendedTeams": 25
     }
    ],
    "sequences": [
@@ -2119,14 +2070,14 @@
    "appKey": "Suoming",
    "loadouts": [
     {
-     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Moonlit Clouds 5pc",
+     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 4
     },
     {
-     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 · Heart of Sworn Vigil 5pc",
+     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Heart of Sworn Vigil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2181,7 +2132,7 @@
     {
      "level": 1,
      "name": "Verina S1: Moment of Emergence",
-     "note": ""
+     "note": "S1 Moment of Emergence: Blossom heals the incoming resonator every 5s for 30s — her healing marker per tick; the first lands on the Outro's cast, these are the five after it."
     },
     {
      "level": 2,
@@ -2214,7 +2165,7 @@
    "appKey": "XiangliYao",
    "loadouts": [
     {
-     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Verity's Handle R1 / Abyss Surges R1 · Void Thunder 5pc",
+     "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Verity's Handle R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Void Thunder 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2258,17 +2209,17 @@
    "appKey": "YangyangXuanling",
    "loadouts": [
     {
-     "label": "Azure Oath R1 / Emerald of Genesis R1 / Emerald Sentence R1 · Song of Feathered Trace 5pc",
+     "label": "Azure Oath R1 / Emerald of Genesis R1 / Emerald Sentence R1 / Lumingloss R1 / Feather Edge R1 · Song of Feathered Trace 5pc",
      "minSequence": 0,
      "loopChangesAt": [
-      1
+      2
      ],
      "changes": {
-      "1": {
+      "2": {
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "start of combat (position 2): adds Forte Heavy - Azure Sword Stance ×1"
+       "note": "start of combat (position 2): adds Basic - Azure Sword Stance 1 ×1, Forte Heavy - Azure Sword Stance ×1"
       }
      },
      "intendedTeams": 9
@@ -2311,7 +2262,7 @@
    "appKey": "Yinlin",
    "loadouts": [
     {
-     "label": "Stringmaster R1 / Cosmic Ripples R1 / Lethean Elegy R1 / Boson Astrolabe R1 · Empyrean Anthem 5pc",
+     "label": "Stringmaster R1 / Cosmic Ripples R1 / Lethean Elegy R1 / Boson Astrolabe R1 / Augment R1 / Radiant Dawn R1 · Empyrean Anthem 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2355,7 +2306,7 @@
    "appKey": "Zani",
    "loadouts": [
     {
-     "label": "Blazing Justice R1 / Pulsation Bracer R1 / Abyss Surges R1 / Tragicomedy R1 · Eternal Radiance 5pc + Capitaneus",
+     "label": "Blazing Justice R1 / Pulsation Bracer R1 / Abyss Surges R1 / Tragicomedy R1 / Stonard R1 / Aether Strike R1 · Eternal Radiance 5pc + Capitaneus",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -2411,7 +2362,7 @@
    "appKey": "Zhezhi",
    "loadouts": [
     {
-     "label": "Rime-Draped Sprouts R1 / Cosmic Ripples R1 / Variation R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Whispers of Sirens R1 · Empyrean Anthem 5pc",
+     "label": "Rime-Draped Sprouts R1 / Cosmic Ripples R1 / Variation R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Whispers of Sirens R1 / Augment R1 / Radiant Dawn R1 · Empyrean Anthem 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},

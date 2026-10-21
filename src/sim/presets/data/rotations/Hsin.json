@@ -1,12 +1,12 @@
 [
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none. Rotation time 25.42 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,881,483 DPR for Hsin of 13,955,880 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,453,966 DPR for Hsin of 13,501,232 team. Sequence procs in the loop: none. Rotation time 25.42 s (the team's loop).",
-   "duration": 25.42,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD Electro Electro atk atk. Team: Shorekeeper + Suoming (main DPS): 11,881,483 DPR for Hsin of 13,955,880 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -26,14 +26,6 @@
     },
     {
      "order": 3,
-     "key": "SoaringPillarDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
      "key": "BasicAttackAnsweringFormStage3DMG",
      "type": "basic",
      "count": 1,
@@ -41,7 +33,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 4,
      "key": "BasicAttackAnsweringFormStage4DMG",
      "type": "basic",
      "count": 1,
@@ -49,17 +41,25 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 5,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 7,
-     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
-     "type": "forteCircuit",
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -68,20 +68,28 @@
      "order": 8,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SoaringPillarDMG",
-     "type": "liberation",
      "count": 13,
      "buffs": [],
      "isDisabled": false
     },
     {
+     "order": 9,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 10,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
      "count": 1,
@@ -89,17 +97,9 @@
      "isDisabled": false
     },
     {
-     "order": 11,
-     "key": "SoaringPillarDMG",
-     "type": "liberation",
-     "count": 6,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 12,
-     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
-     "type": "intro",
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -108,13 +108,29 @@
      "order": 13,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 6,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 14,
-     "key": "HsinCastDMG",
+     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "CastDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -123,7 +139,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 15,
+     "order": 17,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
      "type": "basic",
      "count": 1,
@@ -131,24 +147,8 @@
      "isDisabled": false
     },
     {
-     "order": 16,
-     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 18,
-     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -158,12 +158,44 @@
      "order": 19,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 4,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 20,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
      "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -171,7 +203,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 25,
      "key": "PillarsAcrossHeavenDMG",
      "type": "liberation",
      "count": 1,
@@ -179,7 +211,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 26,
      "key": "ResonanceSkillAnsweringFormDMG",
      "type": "skill",
      "count": 1,
@@ -187,7 +219,15 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 27,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
      "count": 1,
@@ -195,7 +235,7 @@
      "isDisabled": false
     },
     {
-     "order": 24,
+     "order": 29,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,
@@ -207,12 +247,12 @@
  },
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none. Rotation time 26.27 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,544,815 DPR for Hsin of 13,892,334 team. Sequence procs in the loop: none. Rotation time 25.45 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Mornye + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,194,736 DPR for Hsin of 13,482,885 team. Sequence procs in the loop: none. Rotation time 26.27 s (the team's loop).",
-   "duration": 26.27,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Suoming (main DPS): 11,544,815 DPR for Hsin of 13,892,334 team. Sequence procs in the loop: none. Rotation time 25.45 s (the team's loop).",
+   "duration": 25.45,
    "actions": [
     {
      "order": 1,
@@ -258,7 +298,7 @@
      "order": 6,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 3,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -288,6 +328,22 @@
     },
     {
      "order": 10,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
      "count": 1,
@@ -295,7 +351,15 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 13,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 6,
@@ -303,7 +367,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 15,
      "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
      "type": "intro",
      "count": 1,
@@ -311,7 +375,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 16,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 2,
@@ -319,8 +383,8 @@
      "isDisabled": false
     },
     {
-     "order": 14,
-     "key": "HsinCastDMG",
+     "order": 17,
+     "key": "CastDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -329,7 +393,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 15,
+     "order": 18,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
      "type": "basic",
      "count": 1,
@@ -337,7 +401,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 19,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
      "type": "basic",
      "count": 1,
@@ -345,7 +409,31 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 20,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
      "type": "basic",
      "count": 1,
@@ -353,23 +441,15 @@
      "isDisabled": false
     },
     {
-     "order": 18,
-     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
-     "type": "basic",
+     "order": 24,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 19,
-     "key": "SoaringPillarDMG",
-     "type": "liberation",
-     "count": 4,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
+     "order": 25,
      "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -377,7 +457,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 26,
      "key": "PillarsAcrossHeavenDMG",
      "type": "liberation",
      "count": 1,
@@ -385,7 +465,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 27,
      "key": "ResonanceSkillAnsweringFormDMG",
      "type": "skill",
      "count": 1,
@@ -393,9 +473,17 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 28,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -405,12 +493,12 @@
  },
  {
   "name": "Hsin S6 Blooming Jadehaven R5 · Suisui + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none. Rotation time 27.25 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,706,518 DPR for Hsin of 11,529,273 team. Sequence procs in the loop: none. Rotation time 26.52 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Hsin S6 Blooming Jadehaven R5 · Suisui + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,666,261 DPR for Hsin of 11,461,042 team. Sequence procs in the loop: none. Rotation time 27.25 s (the team's loop).",
-   "duration": 27.25,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Suisui + Suoming (main DPS): 9,706,518 DPR for Hsin of 11,529,273 team. Sequence procs in the loop: none. Rotation time 26.52 s (the team's loop).",
+   "duration": 26.52,
    "actions": [
     {
      "order": 1,
@@ -472,12 +560,36 @@
      "order": 8,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 13,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 9,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 12,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
      "count": 1,
@@ -485,7 +597,15 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 13,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 6,
@@ -493,7 +613,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 15,
      "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
      "type": "intro",
      "count": 1,
@@ -501,7 +621,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 16,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 2,
@@ -509,8 +629,8 @@
      "isDisabled": false
     },
     {
-     "order": 13,
-     "key": "HsinCastDMG",
+     "order": 17,
+     "key": "CastDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -519,7 +639,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 14,
+     "order": 18,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
      "type": "basic",
      "count": 1,
@@ -527,7 +647,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 19,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
      "type": "basic",
      "count": 1,
@@ -535,7 +655,31 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 20,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
      "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
      "type": "basic",
      "count": 1,
@@ -543,8 +687,198 @@
      "isDisabled": false
     },
     {
+     "order": 24,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "PillarsAcrossHeavenDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "ResonanceSkillAnsweringFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hsin S6 Blooming Jadehaven R5 · Buling + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Buling + Suoming (main DPS): 7,396,318 DPR for Hsin of 7,993,985 team. Sequence procs in the loop: none. Rotation time 26.77 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Hsin S6 Blooming Jadehaven R5 · Buling + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK ATK atk atk. Team: Buling + Suoming (main DPS): 7,396,318 DPR for Hsin of 7,993,985 team. Sequence procs in the loop: none. Rotation time 26.77 s (the team's loop).",
+   "duration": 26.77,
+   "actions": [
+    {
+     "order": 1,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 7,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "IntroSkillAnsweringFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAnsweringFormStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAnsweringFormStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackAnsweringFormRealmProtectorDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 12,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackIlluminingFormStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ResonanceSkillIlluminingFormDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HerselfAThousandLanternsDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackIlluminingFormModularHeartlockDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 6,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "IntroSkillIlluminingFormManifoldUnisonDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "CastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceSuhsintheInevitable",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 17,
-     "key": "BasicAttackIlluminingFormPillarsAlignedStage4DMG",
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -554,12 +888,44 @@
      "order": 18,
      "key": "SoaringPillarDMG",
      "type": "liberation",
-     "count": 4,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 19,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackIlluminingFormPillarsAlignedStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "SoaringPillarDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
      "key": "HeavyAttackIlluminingFormStillingAllHorizonsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -567,7 +933,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 24,
      "key": "PillarsAcrossHeavenDMG",
      "type": "liberation",
      "count": 1,
@@ -575,7 +941,7 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 25,
      "key": "ResonanceSkillAnsweringFormDMG",
      "type": "skill",
      "count": 1,
@@ -583,7 +949,7 @@
      "isDisabled": false
     },
     {
-     "order": 22,
+     "order": 26,
      "key": "HerselfAThousandLanternsDMG",
      "type": "outro",
      "count": 1,
@@ -591,7 +957,7 @@
      "isDisabled": false
     },
     {
-     "order": 23,
+     "order": 27,
      "key": "SoaringPillarDMG",
      "type": "liberation",
      "count": 1,

@@ -1,11 +1,11 @@
 [
  {
   "name": "Jianxin S6 Marcato R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 113,343 DPR for Jianxin of 5,881,769 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 153,547 DPR for Jianxin of 6,396,049 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jianxin S6 Marcato R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 113,343 DPR for Jianxin of 5,881,769 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Marcato R5, Moonlit Clouds 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Aemeath: 153,547 DPR for Jianxin of 6,396,049 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Liberation - Purification Force Field = PurificationForceFieldResonanceLiberationExplosionDamage × 1.70. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -34,7 +34,7 @@
     },
     {
      "order": 4,
-     "key": "PrimordialChiSpiralPushingPunchDMG",
+     "key": "PrimordialChiSpiralMinorZhoutianShockDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -42,6 +42,38 @@
     },
     {
      "order": 5,
+     "key": "PrimordialChiSpiralZhoutianProgressContinuousDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "PrimordialChiSpiralMajorZhoutianInnerShockDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "PrimordialChiSpiralZhoutianProgressContinuousDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "PrimordialChiSpiralMajorZhoutianOuterShockDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
      "key": "ImpermanenceHeronFlySmack",
      "type": "echoAttacks",
      "count": 1,

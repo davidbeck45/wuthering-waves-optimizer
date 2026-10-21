@@ -2,15 +2,17 @@
  "source": "Riley31415/wuwa_calc",
  "states": [
   "s6r5",
+  "s6r5mdps",
   "s6r1mdps"
  ],
  "stateTags": {
   "s6r5": "S6R5",
+  "s6r5mdps": "S6R5 DPS \u00b7 S0R1 team",
   "s6r1mdps": "S6R1 DPS \u00b7 S0R1 team"
  },
- "generatedAt": "2026-10-05T18:51:20+00:00",
- "wuwaCalcCommit": "195a22f",
- "appCommit": "b2b146f1",
+ "generatedAt": "2026-10-21T19:23:20+00:00",
+ "wuwaCalcCommit": "9dbffa1",
+ "appCommit": "4d4c2009",
  "characters": [
   "Aemeath",
   "Augusta",
@@ -61,20 +63,22 @@
   "Zani",
   "Zhezhi"
  ],
- "rotationPresets": 156,
- "teamPresets": 136,
+ "rotationPresets": 148,
+ "teamPresets": 143,
  "mapping": {
   "rotations": {
    "unmatched": 0,
-   "rotations:s6r5": 109,
-   "deduped": 121,
-   "rotations:s6r1mdps": 47
+   "rotations:s6r5": 105,
+   "deduped": 266,
+   "rotations:s6r5mdps": 38,
+   "rotations:s6r1mdps": 5
   },
   "teams": {
    "unmatched": 0,
-   "teams:s6r5": 81,
-   "teams:s6r1mdps": 78,
-   "deduped": 23
+   "teams:s6r5": 80,
+   "teams:s6r5mdps": 80,
+   "teams:s6r1mdps": 80,
+   "deduped": 97
   }
  }
 }

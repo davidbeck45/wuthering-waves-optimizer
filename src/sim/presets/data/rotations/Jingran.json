@@ -1,12 +1,12 @@
 [
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 27.17 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,049,392 DPR for Jingran of 10,884,455 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.87 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 8,979,665 DPR for Jingran of 10,798,258 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 27.17 s (the team's loop).",
-   "duration": 27.17,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 9,049,392 DPR for Jingran of 10,884,455 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.87 s (the team's loop).",
+   "duration": 26.87,
    "actions": [
     {
      "order": 1,
@@ -28,7 +28,7 @@
      "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
-     "count": 6,
+     "count": 8,
      "buffs": [],
      "isDisabled": false
     },
@@ -173,7 +173,12 @@
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
-     "buffs": [],
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -30.06
+      }
+     ],
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5
@@ -191,12 +196,12 @@
  },
  {
   "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 29.88 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,936,795 DPR for Jingran of 10,414,200 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 28.83 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jingran S6 Thousandfold Deliverance R5 · Lupa + Iuno · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,847,304 DPR for Jingran of 10,360,009 team. Sequence procs in the loop: 6x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 29.88 s (the team's loop).",
-   "duration": 29.88,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Lupa + Iuno (main DPS): 8,936,795 DPR for Jingran of 10,414,200 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 28.83 s (the team's loop).",
+   "duration": 28.83,
    "actions": [
     {
      "order": 1,
@@ -218,7 +223,7 @@
      "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
-     "count": 6,
+     "count": 8,
      "buffs": [],
      "isDisabled": false
     },
@@ -363,7 +368,12 @@
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
-     "buffs": [],
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -30.06
+      }
+     ],
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5
@@ -380,13 +390,13 @@
   }
  },
  {
-  "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 25.63 s (the team's loop).",
+  "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 8,366,818 DPR for Jingran of 9,925,827 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.95 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lynae (main DPS): 7,826,742 DPR for Jingran of 9,497,729 team. Sequence procs in the loop: 5x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. Rotation time 25.63 s (the team's loop).",
-   "duration": 25.63,
+   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 8,366,818 DPR for Jingran of 9,925,827 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 4x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.95 s (the team's loop).",
+   "duration": 26.95,
    "actions": [
     {
      "order": 1,
@@ -408,7 +418,202 @@
      "order": 3,
      "key": "ChimeiWangliangDMG",
      "type": "liberation",
-     "count": 5,
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackSoulRaidDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackDevilSBaneStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackDevilSBaneStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackDevilSBaneStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackStardomeMeanderDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "GroundEncroachingYinDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "NetherworldTraverseDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackSoulRaidDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "GroundScorchingYangDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "AfterlifeSGuideDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "HeavyAttackStardomeMeanderDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "MyriadSnareRustfireChassisSummonDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -30.06
+      }
+     ],
+     "isDisabled": false,
+     "mainEcho": "MyriadSnareRustfireChassis",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "RisingFortuneAndEbbingEvilDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,362,933 DPR for Jingran of 6,872,671 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.87 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Iuno (main DPS): 6,362,933 DPR for Jingran of 6,872,671 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 2x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.87 s (the team's loop).",
+   "duration": 26.87,
+   "actions": [
+    {
+     "order": 1,
+     "key": "QuestiontheTombsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BurialOfThousandSoulsDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 8,
      "buffs": [],
      "isDisabled": false
     },
@@ -553,7 +758,207 @@
      "key": "MyriadSnareRustfireChassisSummonDMG",
      "type": "echoAttacks",
      "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -30.06
+      }
+     ],
+     "isDisabled": false,
+     "mainEcho": "MyriadSnareRustfireChassis",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 22,
+     "key": "RisingFortuneAndEbbingEvilDMG",
+     "type": "outro",
+     "count": 1,
      "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 6,011,265 DPR for Jingran of 6,438,911 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.95 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Jingran S6 Thousandfold Deliverance R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Thousandfold Deliverance R5, Lamp of Nether Road 5pc, main stats 44111 CD CD hp hp hp. Team: Mornye + Lupa (main DPS): 6,011,265 DPR for Jingran of 6,438,911 team. Sequence procs in the loop: 8x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang, 3x Liberation - Chimei Wangliang. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Myriad Snare = MyriadSnareRustfireChassisSummonDMG × 0.70 (5 of its 19 repeat hits landed). Rotation time 26.95 s (the team's loop).",
+   "duration": 26.95,
+   "actions": [
+    {
+     "order": 1,
+     "key": "QuestiontheTombsDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BurialOfThousandSoulsDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 8,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "HeavyAttackSoulRaidDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackDevilSBaneStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackDevilSBaneStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackDevilSBaneStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HeavyAttackStardomeMeanderDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "GroundEncroachingYinDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "NetherworldTraverseDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackSoulRaidDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "GroundScorchingYangDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "AfterlifeSGuideDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "HeavyAttackStardomeMeanderDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ChimeiWangliangDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "MyriadSnareRustfireChassisSummonDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -30.06
+      }
+     ],
      "isDisabled": false,
      "mainEcho": "MyriadSnareRustfireChassis",
      "mainEchoRank": 5

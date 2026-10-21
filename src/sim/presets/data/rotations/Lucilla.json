@@ -1,12 +1,107 @@
 [
  {
+  "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,262,915 DPR for Lucilla of 5,735,017 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,262,915 DPR for Lucilla of 5,735,017 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "ClipItDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ElementalEffectGlacioChafe",
+     "type": "negativeStatus",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 1
+    },
+    {
+     "order": 3,
+     "key": "SpotlightDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ClearAsDayDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackTracingFormsStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackTracingFormsStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackTracingFormsStage3DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "OblivionDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LettingItGoDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
   "name": "Lucilla S6 Freeze Frame R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,288,233 DPR for Lucilla of 5,233,177 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,241,183 DPR for Lucilla of 5,164,941 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 13 Stacks. Rotation time 25.23 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucilla S6 Freeze Frame R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,288,233 DPR for Lucilla of 5,233,177 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (the team's loop).",
-   "duration": 25,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Qiuyuan: 2,241,183 DPR for Lucilla of 5,164,941 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 13 Stacks. Rotation time 25.23 s (the team's loop).",
+   "duration": 25.23,
    "actions": [
     {
      "order": 1,
@@ -95,107 +190,12 @@
   }
  },
  {
-  "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,285,197 DPR for Lucilla of 5,639,777 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Lucilla S6 Freeze Frame R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Qiuyuan: 2,285,197 DPR for Lucilla of 5,639,777 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
-   "duration": 25,
-   "actions": [
-    {
-     "order": 1,
-     "key": "ClipItDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "ElementalEffectGlacioChafe",
-     "type": "negativeStatus",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 1
-    },
-    {
-     "order": 3,
-     "key": "SpotlightDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ClearAsDayDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackTracingFormsStage1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackTracingFormsStage2DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackTracingFormsStage3DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "OblivionDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "LettingItGoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
   "name": "Lucilla S6 Freeze Frame R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,080,714 DPR for Lucilla of 9,008,907 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,134,768 DPR for Lucilla of 9,303,356 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lucilla S6 Freeze Frame R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,080,714 DPR for Lucilla of 9,008,907 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, main stats 43311 CD ATK ATK atk atk. Team: Phrolova + Qiuyuan: 2,134,768 DPR for Lucilla of 9,303,356 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Glacio Chafe - 1 Stack. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -217,54 +217,6 @@
     },
     {
      "order": 3,
-     "key": "ClearAsDayDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackTracingFormsStage1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackTracingFormsStage2DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackTracingFormsStage3DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "OblivionDMG",
-     "type": "forteCircuit",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "LettingItGoDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
@@ -274,6 +226,54 @@
      "mainEchoRank": 5
     },
     {
+     "order": 4,
+     "key": "ClearAsDayDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackTracingFormsStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackTracingFormsStage2DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackTracingFormsStage3DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "OblivionDMG",
+     "type": "forteCircuit",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "LettingItGoDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 10,
      "key": "SpotlightDMG",
      "type": "skill",
@@ -285,13 +285,13 @@
   }
  },
  {
-  "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 402,959 DPR for Lucilla of 6,208,518 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.05 s (the team's loop).",
+  "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 403,016 DPR for Lucilla of 7,475,511 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 402,959 DPR for Lucilla of 6,208,518 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.05 s (the team's loop).",
-   "duration": 25.05,
+   "name": "Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Freeze Frame R1, Wishes of Quiet Snowfall 5pc, main stats 43311 CD Glacio Glacio atk atk. Team: Suisui + Hiyuki: 403,016 DPR for Lucilla of 7,475,511 team. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - Spotlight = SpotlightDMG × 1.07. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 6x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,

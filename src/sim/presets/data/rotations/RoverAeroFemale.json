@@ -1,12 +1,12 @@
 [
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 425,081 DPR for Aero Rover of 3,265,161 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 30.85 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 404,568 DPR for Aero Rover of 3,800,472 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 425,081 DPR for Aero Rover of 3,265,161 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 30.85 s (the team's loop).",
-   "duration": 30.85,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 404,568 DPR for Aero Rover of 3,800,472 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
+   "duration": 29.87,
    "actions": [
     {
      "order": 1,
@@ -18,23 +18,6 @@
     },
     {
      "order": 2,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 4,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -42,7 +25,7 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 3,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -50,8 +33,24 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 4,
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
      "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -68,14 +67,6 @@
     },
     {
      "order": 8,
-     "key": "Stage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
      "key": "WindcleaverDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -85,7 +76,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "OmegaStormDMG",
      "type": "liberation",
      "count": 1,
@@ -93,7 +84,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "AwakeningGaleDMG",
      "type": "skill",
      "count": 1,
@@ -101,16 +92,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 13,
+     "order": 11,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -118,7 +100,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -126,7 +108,15 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 13,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -135,17 +125,25 @@
      "negativeStatusStacks": 12
     },
     {
-     "order": 16,
-     "key": "MidAirAttackDMG",
+     "order": 15,
+     "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
+     "order": 16,
+     "key": "UnboundFlowStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 17,
-     "key": "Stage4DMG",
-     "type": "basic",
+     "key": "UnboundFlowStage2DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -158,43 +156,18 @@
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 12
-    },
-    {
-     "order": 19,
-     "key": "UnboundFlowStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
-     "key": "UnboundFlowStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 21,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
     }
    ]
   }
  },
  {
-  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 354,309 DPR for Aero Rover of 3,314,083 team. Sequence procs in the loop: none. Rotation time 29.88 s (the team's loop).",
+  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Sigrika · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 270,820 DPR for Aero Rover of 5,373,805 team. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 354,309 DPR for Aero Rover of 3,314,083 team. Sequence procs in the loop: none. Rotation time 29.88 s (the team's loop).",
-   "duration": 29.88,
+   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Sigrika · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 270,820 DPR for Aero Rover of 5,373,805 team. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
+   "duration": 26.72,
    "actions": [
     {
      "order": 1,
@@ -206,14 +179,6 @@
     },
     {
      "order": 2,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -221,9 +186,17 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -246,16 +219,6 @@
     },
     {
      "order": 7,
-     "key": "WindcleaverDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceFleurdelys",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
      "key": "OmegaStormDMG",
      "type": "liberation",
      "count": 1,
@@ -263,7 +226,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "AwakeningGaleDMG",
      "type": "skill",
      "count": 1,
@@ -271,7 +234,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -279,7 +242,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 10,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -287,7 +250,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 11,
      "key": "MidAirAttackDMG",
      "type": "basic",
      "count": 1,
@@ -295,7 +258,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 12,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -303,7 +266,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 13,
      "key": "UnboundFlowStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -311,7 +274,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 14,
      "key": "UnboundFlowStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -323,17 +286,17 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 326,856 DPR for Aero Rover of 4,213,639 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 5x Aero Erosion - 12 Stacks. Rotation time 33.15 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 236,994 DPR for Aero Rover of 5,214,452 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Rejuvenating Glow 5pc + Fallacy of No Return, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 326,856 DPR for Aero Rover of 4,213,639 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 5x Aero Erosion - 12 Stacks. Rotation time 33.15 s (the team's loop).",
-   "duration": 33.15,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 236,994 DPR for Aero Rover of 5,214,452 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
+   "duration": 32.17,
    "actions": [
     {
      "order": 1,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
+     "key": "RelentlessSquallDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -348,17 +311,16 @@
     },
     {
      "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
+     "isDisabled": false
     },
     {
      "order": 4,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -390,16 +352,6 @@
     },
     {
      "order": 8,
-     "key": "FallacyOfNoReturnDiffraction",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 9,
      "key": "OmegaStormDMG",
      "type": "liberation",
      "count": 1,
@@ -407,7 +359,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "AwakeningGaleDMG",
      "type": "skill",
      "count": 1,
@@ -415,16 +367,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 12,
+     "order": 10,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -432,7 +375,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -440,7 +383,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
      "key": "MidAirAttackDMG",
      "type": "basic",
      "count": 1,
@@ -448,16 +391,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 16,
+     "order": 13,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -465,7 +399,16 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 14,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 12
+    },
+    {
+     "order": 15,
      "key": "UnboundFlowStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -473,7 +416,67 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 16,
+     "key": "UnboundFlowStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 232,808 DPR for Aero Rover of 3,187,636 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 232,808 DPR for Aero Rover of 3,187,636 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
+   "duration": 29.97,
+   "actions": [
+    {
+     "order": 1,
+     "key": "RelentlessSquallDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
      "count": 1,
@@ -482,7 +485,80 @@
      "negativeStatusStacks": 12
     },
     {
-     "order": 19,
+     "order": 7,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "OmegaStormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "AwakeningGaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ElementalEffectAeroErosion",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 12
+    },
+    {
+     "order": 14,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "UnboundFlowStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
      "key": "UnboundFlowStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -490,16 +566,142 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 17,
      "key": "ElementalEffectAeroErosion",
      "type": "negativeStatus",
-     "count": 5,
+     "count": 1,
      "buffs": [],
      "isDisabled": false,
      "negativeStatusStacks": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 217,117 DPR for Aero Rover of 3,288,318 team. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 217,117 DPR for Aero Rover of 3,288,318 team. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
+   "duration": 26.97,
+   "actions": [
+    {
+     "order": 1,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 2,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "WindcleaverDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceFleurdelys",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 7,
+     "key": "OmegaStormDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "AwakeningGaleDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "CloudburstDanceStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "MidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Stage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "UnboundFlowStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "UnboundFlowStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
      "key": "RelentlessSquallDMG",
      "type": "intro",
      "count": 1,
@@ -510,18 +712,18 @@
   }
  },
  {
-  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 306,899 DPR for Aero Rover of 2,555,755 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 5x Aero Erosion - 12 Stacks. Rotation time 33.25 s (the team's loop).",
+  "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 272,558 DPR for Aero Rover of 2,722,719 team. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 306,899 DPR for Aero Rover of 2,555,755 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 5x Aero Erosion - 12 Stacks. Rotation time 33.25 s (the team's loop).",
-   "duration": 33.25,
+   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 272,558 DPR for Aero Rover of 2,722,719 team. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
+   "duration": 28.8,
    "actions": [
     {
      "order": 1,
-     "key": "SkyfallSeveranceDMG",
-     "type": "skill",
+     "key": "RelentlessSquallDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -536,17 +738,16 @@
     },
     {
      "order": 3,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
+     "key": "CloudburstDanceStage2DMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
+     "isDisabled": false
     },
     {
      "order": 4,
-     "key": "CloudburstDanceStage2DMG",
-     "type": "forteCircuit",
+     "key": "SkyfallSeveranceDMG",
+     "type": "skill",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -569,15 +770,6 @@
     },
     {
      "order": 7,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 8,
      "key": "WindcleaverDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -587,7 +779,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 9,
+     "order": 8,
      "key": "OmegaStormDMG",
      "type": "liberation",
      "count": 1,
@@ -595,7 +787,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 9,
      "key": "AwakeningGaleDMG",
      "type": "skill",
      "count": 1,
@@ -603,16 +795,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 12,
+     "order": 10,
      "key": "CloudburstDanceStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -620,7 +803,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "CloudburstDanceStage2DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -628,7 +811,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
      "key": "MidAirAttackDMG",
      "type": "basic",
      "count": 1,
@@ -636,16 +819,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 16,
+     "order": 13,
      "key": "Stage4DMG",
      "type": "basic",
      "count": 1,
@@ -653,7 +827,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 14,
      "key": "UnboundFlowStage1DMG",
      "type": "forteCircuit",
      "count": 1,
@@ -661,35 +835,9 @@
      "isDisabled": false
     },
     {
-     "order": 18,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 19,
+     "order": 15,
      "key": "UnboundFlowStage2DMG",
      "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
-     "key": "ElementalEffectAeroErosion",
-     "type": "negativeStatus",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 12
-    },
-    {
-     "order": 21,
-     "key": "RelentlessSquallDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
