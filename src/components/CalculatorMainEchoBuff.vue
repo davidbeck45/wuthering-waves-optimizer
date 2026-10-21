@@ -1,9 +1,17 @@
 <template>
   <div
     class="main-echo-buff card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10"
-    :class="{ 'cursor-default': alwaysEnabled }"
+    :class="{
+      'cursor-default': alwaysEnabled,
+      'border-l-4 border-warning': showStatus && needsAttention(resolved.status),
+    }"
     @click="toggleEnabled">
     <div class="card-body">
+      <OptimizerWorkspaceBuffStatus
+        v-if="showStatus"
+        :resolved="resolved"
+        :has-stacks="hasStacks"
+        @use-calculator-setting="useCalculatorSetting"></OptimizerWorkspaceBuffStatus>
       <div class="main-echo__details" v-html="details"></div>
 
       <div class="flex gap-2 items-center">
@@ -60,6 +68,14 @@ import {
   type OptimizerMainEchoBuffEntry,
 } from "../echoes/mainEchoBuffs";
 import { applyMainEchoBuffEffects } from "../echoes/applyMainEchoBuffEffects";
+import OptimizerWorkspaceBuffStatus from "./optimizerWorkspace/OptimizerWorkspaceBuffStatus.vue";
+import {
+  getCalculatorMainEchoBuffEntry,
+  getMainEchoBuffEntry,
+  needsAttention,
+  resolveOptimizerBuff,
+  type OptimizerBuffEntry,
+} from "../calculator/optimizerBuffStatus";
 
 const props = withDefaults(
   defineProps<{
@@ -75,8 +91,13 @@ const props = withDefaults(
     storageMode?: "calculator" | "optimizer";
     /** Required when storageMode is optimizer */
     echoKey?: string;
+    /** v3 optimizer (storageMode optimizer only): fall back to the calculator's
+     *  setting for this buff and show its status
+     *  (src/calculator/optimizerBuffStatus.ts). */
+    calculatorFallback?: boolean;
   }>(),
   {
+    calculatorFallback: false,
     hasStacks: false,
     minStacks: 0,
     maxStacks: 0,
@@ -125,61 +146,79 @@ const buffStateSource = computed(() =>
 
 const testKey = computed(() => props.buffKey);
 
-const isEnabled = computed({
-  get() {
-    return isMainEchoBuffEnabled(buffStateSource.value, props.buffKey);
-  },
-  async set(value: boolean) {
-    if (props.storageMode === "optimizer") {
-      await characterStore.setCharacterData(props.character, {
-        optimizer: {
-          mainEchoBuffs: {
-            [props.echoKey ?? ""]: {
-              buffs: {
-                [props.buffKey]: { isEnabled: value },
-              },
+const showStatus = computed(
+  () => props.storageMode === "optimizer" && props.calculatorFallback,
+);
+
+const resolved = computed(() =>
+  resolveOptimizerBuff({
+    optimizerEntry: getMainEchoBuffEntry(optimizerEchoState.value, props.buffKey),
+    calculatorEntry: getCalculatorMainEchoBuffEntry(
+      mainEchoState.value,
+      props.echoKey ?? "",
+      props.buffKey,
+    ),
+    hasStacks: props.hasStacks,
+    alwaysEnabled: props.alwaysEnabled,
+    calculatorFallback: showStatus.value,
+  }),
+);
+
+async function saveSetting(patch: OptimizerBuffEntry) {
+  if (props.storageMode === "optimizer") {
+    // The first change to a buff that's following the calculator saves the
+    // whole setting, so e.g. unticking then reticking keeps its stacks.
+    const seed =
+      showStatus.value && resolved.value.source === "calculator"
+        ? { isEnabled: resolved.value.isEnabled, stacks: resolved.value.stacks }
+        : {};
+    await characterStore.setCharacterData(props.character, {
+      optimizer: {
+        mainEchoBuffs: {
+          [props.echoKey ?? ""]: {
+            buffs: {
+              [props.buffKey]: { ...seed, ...patch },
             },
           },
         },
-      });
-      return;
-    }
-    await characterStore.setCharacterData(props.character, {
-      mainEcho: {
-        buffs: {
-          [props.buffKey]: { isEnabled: value },
-        },
       },
     });
+    return;
+  }
+  await characterStore.setCharacterData(props.character, {
+    mainEcho: {
+      buffs: {
+        [props.buffKey]: patch,
+      },
+    },
+  });
+}
+
+function useCalculatorSetting() {
+  characterStore.clearOptimizerMainEchoBuff(
+    props.character,
+    props.echoKey ?? "",
+    props.buffKey,
+  );
+}
+
+const isEnabled = computed({
+  get() {
+    if (showStatus.value) return resolved.value.isEnabled;
+    return isMainEchoBuffEnabled(buffStateSource.value, props.buffKey);
+  },
+  async set(value: boolean) {
+    await saveSetting({ isEnabled: value });
   },
 });
 
 const stacks = computed({
   get() {
+    if (showStatus.value) return resolved.value.stacks;
     return getMainEchoBuffStacks(buffStateSource.value, props.buffKey);
   },
   async set(value: number) {
-    if (props.storageMode === "optimizer") {
-      await characterStore.setCharacterData(props.character, {
-        optimizer: {
-          mainEchoBuffs: {
-            [props.echoKey ?? ""]: {
-              buffs: {
-                [props.buffKey]: { stacks: value },
-              },
-            },
-          },
-        },
-      });
-      return;
-    }
-    await characterStore.setCharacterData(props.character, {
-      mainEcho: {
-        buffs: {
-          [props.buffKey]: { stacks: value },
-        },
-      },
-    });
+    await saveSetting({ stacks: value });
   },
 });
 

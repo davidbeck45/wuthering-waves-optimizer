@@ -209,7 +209,7 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
 }
 .empty-state {
   padding: 20px 4px;
-  font-size: 13.5px;
+  font-size: 15px;
   color: oklch(var(--bc) / 0.6);
 }
 
@@ -220,7 +220,7 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
 .live-dmg-table {
   :deep(td) {
     padding: 3px 6px;
-    font-size: 13px;
+    font-size: 15px;
   }
   :deep(td:not(:first-child)) {
     font-family:
@@ -244,7 +244,7 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
   padding: 8px 10px;
 }
 .rotation__summary-block-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -261,11 +261,11 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
   flex-direction: column;
 }
 .rotation__summary-cell-label {
-  font-size: 9.5px;
+  font-size: 11px;
   color: oklch(var(--bc) / 0.5);
 }
 .rotation__summary-cell-value {
-  font-size: 13px;
+  font-size: 15px;
 }
 .rotation__summary-chip {
   display: flex;
@@ -274,14 +274,14 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
   background: oklch(var(--b2));
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 11.5px;
+  font-size: 13px;
 }
 .rotation__summary-chip-label {
   font-weight: 700;
   opacity: 0.75;
 }
 .rotation__summary-chip-value {
-  font-size: 12px;
+  font-size: 14px;
 }
 .rotation__summary-chip--healing {
   color: #3bea3b;

@@ -2,6 +2,10 @@
   <InventoryEchoEditPanel
     v-if="isLiveResultBarEnabled"
     ref="inventoryEchoEditRef"></InventoryEchoEditPanel>
+  <EchoOddsDialog
+    v-if="isLiveResultBarEnabled"
+    ref="oddsDialogRef"
+    :target="{ context: 'inventory', echoId: oddsEchoId }" />
   <InventoryEchoEdit v-else ref="inventoryEchoEditRef"></InventoryEchoEdit>
   <CalculatorEchoImporter
     ref="echoesImporter"
@@ -86,6 +90,23 @@
             class="badge badge-sm"
             :class="incompleteFilter ? 'badge-neutral' : 'badge-warning'">
             {{ incompleteEchoCount }}
+          </span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-neutral"
+          :class="{ 'btn-active btn-primary': unfinishedFilter }"
+          v-tooltip="
+            'Show echoes with untuned slots, ranked by their chance of reaching your tuning goal'
+          "
+          data-test-find-unfinished
+          @click="unfinishedFilter = !unfinishedFilter">
+          Finish these first
+          <span
+            v-if="unfinishedEchoCount > 0"
+            class="badge badge-sm"
+            :class="unfinishedFilter ? 'badge-neutral' : 'badge-primary'">
+            {{ unfinishedEchoCount }}
           </span>
         </button>
       </div>
@@ -440,6 +461,31 @@
         Delete
       </button>
     </AppBulkActionBar>
+    <div
+      v-if="unfinishedFilter"
+      class="card card-bordered bg-base-100 mb-6"
+      data-test-unfinished-goal>
+      <div class="card-body p-4 gap-3">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide opacity-60">
+            Finish these first
+          </h2>
+          <RouterLink to="/info/tuning-odds" class="link text-xs">How the odds work</RouterLink>
+        </div>
+        <p class="text-sm">
+          A fresh +0 echo meets this goal
+          <span class="font-semibold tabular-nums" data-test-unfinished-fresh-chance>{{
+            formatTuningChance(freshChance)
+          }}</span>
+          of the time. Echoes tagged <strong>Keep</strong> beat that — tune
+          them before you farm more.
+        </p>
+        <TuningGoalEditor
+          class="max-w-md"
+          :model-value="tuningGoal"
+          @update:model-value="setTuningGoal" />
+      </div>
+    </div>
     <div class="echoes__list">
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
@@ -452,6 +498,11 @@
           <template v-if="incompleteFilter">
             <div class="mt-2 text-sm opacity-70">
               No echoes are missing an echo, set, main stat, or a substat.
+            </div>
+          </template>
+          <template v-if="unfinishedFilter">
+            <div class="mt-2 text-sm opacity-70">
+              Every echo has all 5 substats tuned.
             </div>
           </template>
         </div>
@@ -467,148 +518,186 @@
               ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
               : 'grid-cols-1 md:grid-cols-2'
           ">
-          <div
-            v-for="echoRow in paginatedEchoesList"
-            :key="echoRow.echoId"
-            class="echo__item-wrap relative"
-            :class="{ 'echo__item--selected': isSelected(echoRow.echoId) }">
-            <label
-              class="echo__item__select absolute top-0 left-0 z-10 flex items-center justify-center rounded-md p-1 cursor-pointer"
-              :aria-label="`Select echo ${echoRow.echoId}`">
-              <input
-                type="checkbox"
-                class="checkbox checkbox-sm"
-                :checked="isSelected(echoRow.echoId)"
-                :data-test-echo-select="echoRow.echoId"
-                @change="toggleSelect(echoRow.echoId)" />
-            </label>
-            <InventoryEchoTile
-              v-if="isLiveResultBarEnabled && !isCompact"
-              v-bind="echoCardBinder(echoRow)"
-              :locked="Boolean(echoRow.locked)"
-              @edit="handleEditEcho(echoRow.echoId)"
-              @duplicate="duplicateEcho(echoRow.echoId)"
-              @delete="removeEcho(echoRow.echoId)">
-              <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse mt-1">
-                <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
-                  <div class="w-8 bg-accent-content">
-                    <img :src="getCharImg(char)" />
-                  </div>
-                </div>
-              </div>
-            </InventoryEchoTile>
-            <CalculatorEchoCard
-              v-else
-              class="echo__item"
-              v-bind="echoCardBinder(echoRow)"
-              :hide-inventory="true"
-              :hide-rating="true"
-              :compact="isCompact">
-              <template v-if="isLiveResultBarEnabled" #status>
-                <EchoLockTrashActions :echo-id="echoRow.echoId" layout="row" size="xs" />
-              </template>
-              <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
-                   optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
-                   as two distinct clusters instead of one crowded button row —
-                   see docs/adr/0014 decision #14. -->
-              <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-1" data-test-echo-action-cluster>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-square btn-primary"
-                    v-tooltip="'Edit'"
-                    aria-label="Edit"
-                    @click="handleEditEcho(echoRow.echoId)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
-                      <path
-                        d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c31.2-31.2 31.2-81.9 0-113.1L473.1 12.1C441.9-19.1 391.2-19.1 360 12.1L373.1 25zM64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32L32 96c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32z"
-                        fill="currentColor" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-square"
-                    v-tooltip="'Duplicate'"
-                    aria-label="Duplicate"
-                    @click="duplicateEcho(echoRow.echoId)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
-                      <path
-                        d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"
-                        fill="currentColor" />
-                    </svg>
-                  </button>
-                  <span
-                    v-tooltip="
-                      echoRow.locked
-                        ? 'This echo is locked and cannot be deleted'
-                        : 'Delete this echo from your inventory'
-                    ">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-square btn-error"
-                      aria-label="Delete"
-                      :disabled="echoRow.locked"
-                      @click="removeEcho(echoRow.echoId)">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
-                        <path
-                          d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
-                          fill="currentColor" />
-                      </svg>
-                    </button>
-                  </span>
-                </div>
-                <div
-                  v-if="getCharsEquipped(echoRow).length"
-                  class="avatar-group -space-x-6 rtl:space-x-reverse ml-auto"
-                  data-test-echo-status-cluster>
+          <template v-for="echoRow in paginatedEchoesList" :key="echoRow.echoId">
+            <div
+              v-if="unfinishedFilter && echoRow.echoId === baselineDividerEchoId"
+              class="divider col-span-full my-0 text-xs uppercase tracking-wide opacity-70"
+              data-test-unfinished-divider>
+              Fresh echo · {{ formatTuningChance(freshChance) }}
+            </div>
+            <div
+              class="echo__item-wrap relative"
+              :class="{ 'echo__item--selected': isSelected(echoRow.echoId) }">
+              <label
+                class="echo__item__select absolute top-0 left-0 z-10 flex items-center justify-center rounded-md p-1 cursor-pointer"
+                :aria-label="`Select echo ${echoRow.echoId}`">
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-sm"
+                  :checked="isSelected(echoRow.echoId)"
+                  :data-test-echo-select="echoRow.echoId"
+                  @change="toggleSelect(echoRow.echoId)" />
+              </label>
+              <!-- The tag opens the echo's odds (the Odds dialog). -->
+              <button
+                v-if="unfinishedFilter && unfinishedOdds.get(echoRow.echoId)"
+                type="button"
+                class="absolute top-1 right-1 z-10 flex items-center gap-1 rounded-md bg-base-100/90 px-1.5 py-0.5 shadow hover:bg-base-200"
+                v-tooltip="'Tune odds for this echo'"
+                :data-test-unfinished-tag="unfinishedOdds.get(echoRow.echoId)!.tag"
+                @click="openOdds(echoRow.echoId)">
+                <span class="text-sm font-semibold tabular-nums">{{
+                  formatTuningChance(unfinishedOdds.get(echoRow.echoId)!.chance)
+                }}</span>
+                <span
+                  class="badge badge-sm"
+                  :class="UNFINISHED_TAG_CLASSES[unfinishedOdds.get(echoRow.echoId)!.tag]">
+                  {{ UNFINISHED_TAG_LABELS[unfinishedOdds.get(echoRow.echoId)!.tag] }}
+                </span>
+              </button>
+              <InventoryEchoTile
+                v-if="isLiveResultBarEnabled && !isCompact"
+                v-bind="echoCardBinder(echoRow)"
+                :locked="Boolean(echoRow.locked)"
+                show-odds
+                @edit="handleEditEcho(echoRow.echoId)"
+                @odds="openOdds(echoRow.echoId)"
+                @duplicate="duplicateEcho(echoRow.echoId)"
+                @delete="removeEcho(echoRow.echoId)">
+                <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse mt-1">
                   <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
                     <div class="w-8 bg-accent-content">
                       <img :src="getCharImg(char)" />
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- Flag-off footer — unchanged from before decision #14. -->
-              <div v-else class="echoes__item__foot flex gap-2 justify-between items-center">
-                <div class="echoes__items__foot__equipped">
-                  <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
-                      <div class="w-12 bg-accent-content">
+              </InventoryEchoTile>
+              <CalculatorEchoCard
+                v-else
+                class="echo__item"
+                v-bind="echoCardBinder(echoRow)"
+                :hide-inventory="true"
+                :hide-rating="true"
+                :compact="isCompact">
+                <template v-if="isLiveResultBarEnabled" #status>
+                  <EchoLockTrashActions :echo-id="echoRow.echoId" layout="row" size="xs" />
+                </template>
+                <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
+                     optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
+                     as two distinct clusters instead of one crowded button row —
+                     see docs/adr/0014 decision #14. -->
+                <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-1" data-test-echo-action-cluster>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-square btn-primary"
+                      v-tooltip="'Edit'"
+                      aria-label="Edit"
+                      @click="handleEditEcho(echoRow.echoId)">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
+                        <path
+                          d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c31.2-31.2 31.2-81.9 0-113.1L473.1 12.1C441.9-19.1 391.2-19.1 360 12.1L373.1 25zM64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32L32 96c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32z"
+                          fill="currentColor" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-square"
+                      v-tooltip="'Duplicate'"
+                      aria-label="Duplicate"
+                      @click="duplicateEcho(echoRow.echoId)">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
+                        <path
+                          d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"
+                          fill="currentColor" />
+                      </svg>
+                    </button>
+                    <button
+                      v-if="echoRow.echo && isEchoUnfinished(echoRow)"
+                      type="button"
+                      class="btn btn-sm btn-square"
+                      v-tooltip="'Odds'"
+                      aria-label="Odds"
+                      :data-test-echo-action-odds="echoRow.echoId"
+                      @click="openOdds(echoRow.echoId)">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 17l6-6 4 4 6-8" />
+                        <path d="M14 7h6v6" />
+                      </svg>
+                    </button>
+                    <span
+                      v-tooltip="
+                        echoRow.locked
+                          ? 'This echo is locked and cannot be deleted'
+                          : 'Delete this echo from your inventory'
+                      ">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-square btn-error"
+                        aria-label="Delete"
+                        :disabled="echoRow.locked"
+                        @click="removeEcho(echoRow.echoId)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
+                          <path
+                            d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
+                            fill="currentColor" />
+                        </svg>
+                      </button>
+                    </span>
+                  </div>
+                  <div
+                    v-if="getCharsEquipped(echoRow).length"
+                    class="avatar-group -space-x-6 rtl:space-x-reverse ml-auto"
+                    data-test-echo-status-cluster>
+                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
+                      <div class="w-8 bg-accent-content">
                         <img :src="getCharImg(char)" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="echoes__item__foot__actions flex gap-2 items-center flex-wrap justify-end">
-                  <EchoLockTrashActions :echo-id="echoRow.echoId" />
-                  <button
-                    @click="handleEditEcho(echoRow.echoId)"
-                    class="btn btn-primary btn-sm min-w-16">
-                    Edit
-                  </button>
-                  <button
-                    @click="duplicateEcho(echoRow.echoId)"
-                    class="btn btn-primary btn-sm min-w-16">
-                    Duplicate
-                  </button>
-                  <span
-                    v-tooltip="
-                      echoRow.locked
-                        ? 'This echo is locked and cannot be deleted'
-                        : 'Delete this echo from your inventory'
-                    ">
+
+                <!-- Flag-off footer — unchanged from before decision #14. -->
+                <div v-else class="echoes__item__foot flex gap-2 justify-between items-center">
+                  <div class="echoes__items__foot__equipped">
+                    <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                      <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
+                        <div class="w-12 bg-accent-content">
+                          <img :src="getCharImg(char)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="echoes__item__foot__actions flex gap-2 items-center flex-wrap justify-end">
+                    <EchoLockTrashActions :echo-id="echoRow.echoId" />
                     <button
-                      @click="removeEcho(echoRow.echoId)"
-                      class="btn btn-error btn-sm min-w-16"
-                      :disabled="echoRow.locked">
-                      Delete
+                      @click="handleEditEcho(echoRow.echoId)"
+                      class="btn btn-primary btn-sm min-w-16">
+                      Edit
                     </button>
-                  </span>
+                    <button
+                      @click="duplicateEcho(echoRow.echoId)"
+                      class="btn btn-primary btn-sm min-w-16">
+                      Duplicate
+                    </button>
+                    <span
+                      v-tooltip="
+                        echoRow.locked
+                          ? 'This echo is locked and cannot be deleted'
+                          : 'Delete this echo from your inventory'
+                      ">
+                      <button
+                        @click="removeEcho(echoRow.echoId)"
+                        class="btn btn-error btn-sm min-w-16"
+                        :disabled="echoRow.locked">
+                        Delete
+                      </button>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </CalculatorEchoCard>
-          </div>
+              </CalculatorEchoCard>
+            </div>
+          </template>
         </div>
         <div class="echoes__list__pagination flex justify-center py-4">
           <PaginationControls v-model="page" :total-pages="totalPages" />
@@ -669,6 +758,7 @@ import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
+import EchoOddsDialog from "./EchoOddsDialog.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import EchoScannerModal from "./EchoScannerModal.vue";
 import PaginationControls from "./PaginationControls.vue";
@@ -688,6 +778,13 @@ import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useToast } from "../composables/useToast";
 import { useUiDensity } from "../composables/useUiDensity";
+import { useTuningGoal } from "../composables/useTuningGoal";
+import {
+  isEchoUnfinished,
+  useUnfinishedEchoRanking,
+} from "../composables/useUnfinishedEchoRanking";
+import { formatTuningChance, type UnfinishedEchoTag } from "../echoes/tuningOdds";
+import TuningGoalEditor from "./TuningGoalEditor.vue";
 
 const { confirm } = useConfirm();
 const { showToast } = useToast();
@@ -733,6 +830,7 @@ const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
 const duplicatesFilter = ref(false);
 const incompleteFilter = ref(false);
+const unfinishedFilter = ref(false);
 const substatFilter = ref<string[]>([]);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
@@ -753,6 +851,7 @@ const activeFilterCount = computed(() => {
   if (favoriteFilter.value) count += 1;
   if (duplicatesFilter.value) count += 1;
   if (incompleteFilter.value) count += 1;
+  if (unfinishedFilter.value) count += 1;
   if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
@@ -808,6 +907,31 @@ function isEchoIncomplete(e: InventoryEchoRow) {
   return filledSubStatCount < 5;
 }
 
+const unfinishedEchoCount = computed(
+  () => ((echoes.value ?? []) as InventoryEchoRow[]).filter((e) => isEchoUnfinished(e)).length,
+);
+
+const { goal: tuningGoal, setGoal: setTuningGoal } = useTuningGoal();
+const {
+  freshChance,
+  oddsByEchoId: unfinishedOdds,
+  rankUnfinished,
+  getBaselineDividerEchoId,
+} = useUnfinishedEchoRanking(
+  computed(() => (unfinishedFilter.value ? ((echoes.value ?? []) as InventoryEchoRow[]) : [])),
+  tuningGoal,
+);
+const UNFINISHED_TAG_LABELS: Record<UnfinishedEchoTag, string> = {
+  keep: "Keep",
+  baseline: "Baseline",
+  fodder: "Fodder",
+};
+const UNFINISHED_TAG_CLASSES: Record<UnfinishedEchoTag, string> = {
+  keep: "badge-info",
+  baseline: "badge-ghost",
+  fodder: "badge-warning",
+};
+
 const incompleteEchoCount = computed(() => {
   let count = 0;
   for (const inventoryEcho of (echoes.value ?? []) as InventoryEchoRow[]) {
@@ -831,6 +955,7 @@ watch(
     favoriteFilter,
     duplicatesFilter,
     incompleteFilter,
+    unfinishedFilter,
     substatFilter,
     cvMin,
     cvMax,
@@ -892,6 +1017,9 @@ const echoesList = computed(() => {
   if (incompleteFilter.value) {
     allEchoes = allEchoes.filter((e) => isEchoIncomplete(e));
   }
+  if (unfinishedFilter.value) {
+    allEchoes = rankUnfinished(allEchoes);
+  }
   if (substatFilter.value.length > 0) {
     allEchoes = allEchoes.filter((e) =>
       getEchoSubStatEntries(e).some(([type]) =>
@@ -916,6 +1044,12 @@ const echoesList = computed(() => {
   }
   return allEchoes;
 });
+
+// "Fresh echo" divider: sits before the first ranked echo that doesn't beat
+// a fresh one, on whichever page that echo lands.
+const baselineDividerEchoId = computed(() =>
+  unfinishedFilter.value ? getBaselineDividerEchoId(echoesList.value) : null,
+);
 
 const paginatedEchoesList = computed(() => {
   const start = (page.value - 1) * perPage;
@@ -1014,6 +1148,17 @@ function handleEditEcho(echoId: string) {
   inventoryEchoEditRef.value?.handleOpenModal();
 }
 
+// Tile "Odds" buttons (and the Finish-these-first tags) share one dialog.
+// Unfinished echoes only: a finished echo's odds (beating its Substat
+// Score) depend on a character's weights, which belong to a build — the
+// calculator's Odds answers that. See docs/adr/0044-echo-tuning-odds.md.
+const oddsEchoId = ref<string | null>(null);
+const oddsDialogRef = ref<InstanceType<typeof EchoOddsDialog> | null>(null);
+function openOdds(echoId: string) {
+  oddsEchoId.value = echoId;
+  oddsDialogRef.value?.open();
+}
+
 function toggleDuplicatesFilter() {
   duplicatesFilter.value = !duplicatesFilter.value;
 }
@@ -1034,6 +1179,7 @@ function resetFilters() {
   favoriteFilter.value = false;
   duplicatesFilter.value = false;
   incompleteFilter.value = false;
+  unfinishedFilter.value = false;
   substatFilter.value = [];
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;

@@ -24,7 +24,7 @@ To decide when to retire classic, we need to know how many people still choose i
 
    The "What's new" modal also offers the switch.
 5. **Analytics (Umami):**
-   - `classic-ui-enabled` / `classic-ui-disabled`, with `source: "theme-menu" | "settings" | "whats-new"`, on each switch.
+   - `classic-ui-enabled` / `classic-ui-disabled`, with `source: "theme-menu" | "utility-menu" | "settings" | "whats-new"`, on each switch.
    - `classic-ui-session`, once per browser session while classic is on, from `main.ts`. Switch events count decisions; this counts people actually *using* classic, which is what matters for retiring it. It's queued until Umami's deferred script loads (`trackEventWhenReady`) so it isn't lost on startup.
 6. **Launch announcement.** `currentAnnouncement` (dated 2026-10-10, which also resets earlier dismissals) carries `whatsNew: true`, which shows the existing "See what's new" button and v3 highlights modal. The banner itself has no call to action. The `showActions` prop it replaces is gone, along with the banner's beta "Try the v3 UI" buttons and their `v3-ui-enabled`/`v3-ui-disabled` events.
 7. **Tests keep covering classic.** `cypress/support/e2e.ts` seeds `useClassicUi: true` for specs that don't seed their own settings, so the existing classic e2e suite still runs against classic. v3 specs seed their own settings. Unit tests for classic-only markup set `config.useClassicUi` explicitly. `cypress/e2e/uiVersion.cy.ts` covers the default and both switches.

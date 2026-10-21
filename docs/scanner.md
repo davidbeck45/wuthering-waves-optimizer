@@ -12,7 +12,7 @@ The scanner's pure logic (layouts, stability, parsing, matching, review, dedupe)
 
 The older **build card** import (`CalculatorEchoParser.vue`, the Discord bot's 1920×1080 image) is a separate parser: its layout, text parsing and read order live in **`packages/build-card-scanner/`**, published as `@wutheringtools/build-card-scanner` ([ADR 0037](adr/0037-build-card-scanner-package.md)). The component supplies tesseract.js and the `echoParser.worker` image matching as adapters.
 
-The same game data is published for the desktop scanner as **`/scanner-data.json`**. It's generated at build time by `src/scanner/scannerData.ts` via a Vite plugin, and is never committed ([ADR 0035](adr/0035-publish-scanner-data-json.md)). Its shape is a public contract: add fields additively.
+The same game data is published for the desktop scanner as **`/scanner-data.json`**. It's generated at build time by `src/scanner/scannerData.ts` via a Vite plugin, and is never committed ([ADR 0035](adr/0035-publish-scanner-data-json.md)). Its shape is a public contract: add fields additively. It's signed for Wavescan, which downloads it on every launch, and it names **`/scanner-assets.json`**: the set-icon references and echo pictures, made by `npm run scanner:icons` and committed as `src/scanner/scanner-icons.json` ([ADR 0041](adr/0041-signed-scanner-data-and-assets.md)). After adding an echo or a set, CI runs `npm run scanner:icons` on the PR and commits any new pictures to it ([ADR 0042](adr/0042-ci-commits-scanner-pictures.md)). Running it yourself works too; `tests/scanner/scannerAssets.test.ts` fails until one of you has.
 
 ## Mental model
 

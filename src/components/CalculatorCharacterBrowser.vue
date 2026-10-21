@@ -18,8 +18,8 @@
           :active-count="activeFilterCount"
           :clear-disabled="!activeFilterCount"
           @clear="resetFilters">
-        <div class="characters__filters flex flex-wrap align-center gap-2">
-          <div class="characters__filters__sets">
+        <div class="characters__filters flex flex-wrap items-center gap-2">
+          <div class="characters__filters__sets flex">
             <button
               v-for="(elementIcon, element) in characterElementsSetImageMap"
               :key="element"
@@ -53,7 +53,7 @@
               4✦
             </button>
           </div>
-          <div class="characters__filter__weapon ml-2">
+          <div class="characters__filter__weapon ml-2 flex">
             <button
               v-for="(weaponIcon, weapon) in weaponTypesImageMap"
               :key="weapon"

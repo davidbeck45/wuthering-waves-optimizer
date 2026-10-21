@@ -21,6 +21,10 @@ export const resonanceChains = [
         modifier: "ATK",
         modifierValue: 0.4,
       },
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode2NightsGiftandRefusal"],
+      },
     ],
     minStacks: 0,
     maxStacks: 0,

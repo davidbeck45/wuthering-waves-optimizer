@@ -99,7 +99,7 @@ const peekValue = computed(() => {
 .live-dmg-table {
   :deep(td) {
     padding: 3px 6px;
-    font-size: 13px;
+    font-size: 15px;
   }
   :deep(td:not(:first-child)) {
     // Matches Tailwind's `font-mono` stack exactly (can't apply the utility
@@ -137,17 +137,17 @@ const peekValue = computed(() => {
 }
 .attack-group__title {
   flex: 1;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
 }
 .attack-group__count {
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 500;
   color: oklch(var(--bc) / 0.45);
   margin-left: 4px;
 }
 .attack-group__target-badge {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -158,11 +158,11 @@ const peekValue = computed(() => {
   margin-left: 6px;
 }
 .attack-group__peek {
-  font-size: 11.5px;
+  font-size: 13px;
   color: oklch(var(--bc) / 0.6);
 
   span {
-    font-size: 12.5px;
+    font-size: 14px;
     color: oklch(var(--bc) / 0.85);
   }
 }

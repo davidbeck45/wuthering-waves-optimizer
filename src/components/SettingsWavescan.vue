@@ -2,8 +2,8 @@
   <div class="flex flex-col gap-4">
     <p class="text-sm opacity-70 max-w-xl">
       Import the file exported by Wavescan, the desktop app that scans your
-      data straight from the game. Echoes are supported for now — characters
-      and weapons will follow.
+      data straight from the game. Echoes are supported for now, including
+      who has them equipped. Characters and weapons will follow.
     </p>
 
     <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
@@ -102,10 +102,108 @@
         </label>
       </div>
 
+      <div
+        v-if="loadoutCards.length || unmatchedText"
+        class="flex flex-col gap-3 pt-2"
+        data-test-wavescan-loadouts>
+        <div class="flex flex-col gap-1">
+          <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
+            Equipped echoes
+          </div>
+          <p class="text-sm opacity-70 max-w-2xl">
+            Wavescan saw these echoes equipped in game. Check the slot order:
+            <strong class="text-warning">slot 1 is the main echo</strong>,
+            which sets the Echo Skill and main echo buffs. They're sorted by
+            cost, highest first. Drag the handle or use the arrows to reorder.
+          </p>
+        </div>
+
+        <div
+          v-if="loadoutCards.length"
+          class="flex flex-col gap-2"
+          role="radiogroup"
+          aria-label="Where to save loadouts">
+          <span class="text-sm font-semibold">Save loadouts to</span>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              v-model="buildTarget"
+              type="radio"
+              value="active"
+              class="radio radio-primary radio-sm mt-0.5"
+              data-test-wavescan-build-active />
+            <span class="flex flex-col">
+              <span class="font-bold text-sm">Each character's active build</span>
+              <span class="text-xs opacity-70">
+                Replaces the echoes on the build that's selected now. Weapon,
+                buffs and rotations stay as they are.
+              </span>
+            </span>
+          </label>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              v-model="buildTarget"
+              type="radio"
+              value="new"
+              class="radio radio-primary radio-sm mt-0.5"
+              data-test-wavescan-build-new />
+            <span class="flex flex-col">
+              <span class="font-bold text-sm">A new build, “{{ newBuildBaseName }}”</span>
+              <span class="text-xs opacity-70">
+                Copies the active build, swaps in the scanned echoes, and makes
+                it active. Your current builds stay as they are.
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <div
+          v-if="replaceLossesText"
+          role="note"
+          class="alert alert-warning text-sm"
+          data-test-wavescan-replace-losses>
+          <span>
+            <strong>Replace removes every unlocked echo in your inventory</strong>,
+            including ones equipped on characters you aren't equipping here.
+            {{ replaceLossesText }} Locked echoes are kept. To keep everything,
+            use Add instead.
+          </span>
+        </div>
+
+        <p v-if="unmatchedText" class="text-sm text-warning" data-test-wavescan-unmatched>
+          Couldn't match a character for {{ unmatchedText }}. Those echoes are
+          imported but not equipped.
+        </p>
+
+        <SettingsWavescanLoadout
+          v-for="card in loadoutCards"
+          :key="card.wearer"
+          :title="card.title"
+          :portrait="card.portrait"
+          :is-new="card.isNew"
+          :tiles="card.tiles"
+          :included="card.included"
+          :toggle-label="mode === 'append' ? 'Use the scanned loadout' : 'Equip on import'"
+          :toggle-disabled="card.toggleDisabled"
+          :current="card.current"
+          :rover-options="card.roverOptions"
+          :rover-value="card.roverValue"
+          :notes="card.notes"
+          @reorder="(from, to) => reorderLoadout(card.wearer, from, to)"
+          @update:included="(value) => setLoadoutIncluded(card.wearer, value)"
+          @update:rover="(value) => setLoadoutRover(card.wearer, value)" />
+      </div>
+
+      <p v-if="importBlockedReason" class="text-sm text-error" data-test-wavescan-blocked>
+        {{ importBlockedReason }}
+      </p>
       <button
         class="btn btn-sm self-start"
         :class="mode === 'replace' ? 'btn-error' : 'btn-primary'"
-        :disabled="isImporting || (!mapped.echoes.length && mode === 'append')"
+        :disabled="
+          isImporting ||
+          Boolean(importBlockedReason) ||
+          (!mapped.echoes.length && mode === 'append')
+        "
         @click="handleImportEchoes"
         data-test-wavescan-import-echoes>
         {{ mode === "replace" ? "Replace echoes" : "Import echoes" }}
@@ -116,21 +214,21 @@
 
 <script setup lang="ts">
 /**
- * Labs-gated (`wavescanImport`) import of a Wavescan export, uploaded as a
- * file or pasted as text. Parsing,
+ * Import of a Wavescan export, uploaded as a file or pasted as text. Parsing,
  * validation and the append/replace plan live in src/wavescan/ (pure);
  * this panel only reads the file, asks how to apply it, and applies it.
  * See docs/wavescan-import.md and ADR 0038.
  */
 import { computed, ref } from "vue";
+import SettingsWavescanLoadout from "./SettingsWavescanLoadout.vue";
 import { useInventoryStore } from "../stores/inventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useToast } from "../composables/useToast";
+import { pluralEchoes, useWavescanLoadouts } from "../composables/useWavescanLoadouts";
 import { parseWavescanFile, type WavescanMeta } from "../wavescan/format";
 import {
   mapWavescanEchoes,
-  planWavescanEchoImport,
   type WavescanEchoMapResult,
   type WavescanImportMode,
 } from "../wavescan/echoes";
@@ -146,6 +244,22 @@ const mapped = ref<WavescanEchoMapResult | null>(null);
 const mode = ref<WavescanImportMode>("append");
 const isImporting = ref(false);
 const pastedText = ref("");
+
+const {
+  buildTarget,
+  importPlan,
+  loadoutCards,
+  importBlockedReason,
+  unmatchedText,
+  replaceLossesText,
+  newBuildBaseName,
+  initLoadouts,
+  reorderLoadout,
+  setLoadoutIncluded,
+  setLoadoutRover,
+  snapshotLoadoutWrites,
+  applyLoadoutWrites,
+} = useWavescanLoadouts({ mapped, meta, mode });
 
 const scannedAtLabel = computed(() => {
   const scannedAt = meta.value?.scannedAt;
@@ -200,20 +314,19 @@ function loadRaw(raw: string) {
     result.file.echoes ?? [],
     inventoryStore.echoes.map((echo: { echoId: string }) => echo.echoId),
   );
+  initLoadouts();
 }
 
-function pluralEchoes(count: number) {
-  return `${count} ${count === 1 ? "echo" : "echoes"}`;
+function pluralCharacters(count: number) {
+  return `${count} ${count === 1 ? "character" : "characters"}`;
 }
 
 async function handleImportEchoes() {
   if (!mapped.value || isImporting.value) return;
 
-  const plan = planWavescanEchoImport(
-    mapped.value.echoes,
-    inventoryStore.echoes,
-    mode.value,
-  );
+  const plan = importPlan.value;
+  if (!plan || importBlockedReason.value) return;
+  const writes = snapshotLoadoutWrites();
 
   if (mode.value === "replace") {
     const items = [
@@ -222,6 +335,9 @@ async function handleImportEchoes() {
     ];
     if (plan.keptLockedCount) {
       items.push(`Keep ${pluralEchoes(plan.keptLockedCount)} you've locked`);
+    }
+    if (writes.length) {
+      items.push(`Equip ${pluralCharacters(writes.length)} as scanned`);
     }
     const confirmed = await confirm(
       "This can't be undone. Back up your data first if you might want your current inventory back.",
@@ -243,12 +359,16 @@ async function handleImportEchoes() {
     for (const echo of plan.toAdd) {
       await inventoryStore.saveEcho(echo);
     }
+    applyLoadoutWrites(writes);
     const parts = [`Imported ${pluralEchoes(plan.toAdd.length)}`];
     if (plan.alreadyOwnedCount) {
       parts.push(`${plan.alreadyOwnedCount} already in your inventory`);
     }
     if (plan.toRemoveIds.length) {
       parts.push(`${plan.toRemoveIds.length} removed`);
+    }
+    if (writes.length) {
+      parts.push(`equipped ${pluralCharacters(writes.length)}`);
     }
     showToast(`${parts.join(", ")}.`, "success");
   } catch (e) {

@@ -3,24 +3,15 @@
     <div
       tabindex="0"
       role="button"
-      class="btn group btn-sm gap-1.5 px-1.5 btn-ghost"
+      class="btn group btn-ghost btn-square"
       aria-label="Change Theme">
       <div
-        class="bg-base-100 group-hover:border-base-content/20 border-base-content/10 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1 transition-colors">
-        <div class="bg-base-content size-1 rounded-full"></div>
-        <div class="bg-primary size-1 rounded-full"></div>
-        <div class="bg-secondary size-1 rounded-full"></div>
-        <div class="bg-accent size-1 rounded-full"></div>
+        class="bg-base-100 group-hover:border-base-content/20 border-base-content/10 grid size-6 shrink-0 grid-cols-[repeat(2,auto)] place-content-center gap-1 rounded-md border transition-colors">
+        <div class="bg-base-content size-1.5 rounded-full"></div>
+        <div class="bg-primary size-1.5 rounded-full"></div>
+        <div class="bg-secondary size-1.5 rounded-full"></div>
+        <div class="bg-accent size-1.5 rounded-full"></div>
       </div>
-      <svg
-        width="12px"
-        height="12px"
-        class="mt-px hidden size-2 fill-current opacity-60 sm:inline-block"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 2048 2048">
-        <path
-          d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-      </svg>
     </div>
     <div
       tabindex="0"

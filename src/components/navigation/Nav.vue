@@ -105,27 +105,29 @@
         <slot></slot>
       </div>
       <div class="navbar-end max-sm:w-auto max-sm:shrink-0">
-        <ul class="menu menu-horizontal px-0 sm:px-1">
+        <!-- relative z-[100]: keeps both dropdowns above the page content. -->
+        <div class="flex gap-2 relative z-[100]">
           <ThemeChooser></ThemeChooser>
-          <li>
-            <details class="options-menu" data-test-options-menu>
-              <summary class="max-sm:px-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  class="inline-block h-5 w-5 stroke-current">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-                </svg>
-              </summary>
-              <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy flat list, untouched. -->
-              <ul
-                v-if="!isLiveResultBarEnabled"
-                class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+          <!-- Same focus-driven dropdown as ThemeChooser.vue: it closes on click-away. -->
+          <div class="dropdown dropdown-end block" data-test-options-menu>
+            <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="More">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block size-6 stroke-current">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+              </svg>
+            </div>
+            <div
+              tabindex="0"
+              class="dropdown-content bg-base-200 text-base-content rounded-box top-px border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16">
+              <!-- Classic UI: flat list. -->
+              <ul v-if="!isLiveResultBarEnabled" class="menu w-56">
                 <li class="mb-2">
                   <RouterLink
                     to="/settings"
@@ -185,11 +187,8 @@
                 </li>
               </ul>
 
-              <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: grouped, icon dropdown. -->
-              <ul
-                v-else
-                class="subnav subnav--v3 bg-base-300 rounded-t-none p-2 right-0 z-50 w-52"
-                data-test-options-menu-v3>
+              <!-- v3 UI: grouped, with icons. -->
+              <ul v-else class="menu subnav--v3 w-56" data-test-options-menu-v3>
                 <li class="subnav__eyebrow">Workspace</li>
                 <li class="mb-1">
                   <RouterLink
@@ -270,9 +269,9 @@
                   </a>
                 </li>
               </ul>
-            </details>
-          </li>
-        </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <CalculatorCharacterBrowser
@@ -291,7 +290,7 @@ import { allCharactersList, getCharactersAvailable } from "../../characters/char
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
 import { isV3UiEnabled } from "../../utils/uiVersion";
-import { trackEvent } from "../../utils/analytics";
+import { useClassicUi } from "../../composables/useClassicUi";
 
 defineOptions({
   name: "Nav",
@@ -360,25 +359,18 @@ function handleChosenCharacter(characterKey: string) {
 }
 
 function toggleOptionsMenu() {
-  const optionsMenu = document.querySelector(".options-menu");
-  if (optionsMenu) {
-    optionsMenu.removeAttribute("open");
-  }
+  (document.activeElement as HTMLElement | null)?.blur();
 }
 
-// Quick escape hatch back to the legacy UI while trying v3 - the same flag
-// SettingsLab.vue's toggle flips, just reachable without a trip to Settings.
+// Same switch as the theme menu's Interface → Classic (ADR 0038).
+const { setClassicUi } = useClassicUi();
 function switchToClassicUi() {
-  settingsStore.upsertLab({ liveResultBar: { isEnabled: false } });
-  trackEvent("v3-ui-disabled", { source: "nav" });
+  setClassicUi(true, "utility-menu");
   toggleOptionsMenu();
 }
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  z-index: 100;
-}
 // The global stylesheet still carries the Vite scaffold's default
 // `a:hover { color: #535bf2 }` (leftover boilerplate purple). It's invisible
 // on the image-based nav icons (img ignores `color`), but the home icon is
@@ -390,12 +382,6 @@ function switchToClassicUi() {
     color: inherit;
   }
 }
-.options-menu {
-  summary:after {
-    display: none;
-  }
-}
-
 .subnav--v3 {
   .subnav__eyebrow {
     font-size: 0.65rem;

@@ -19,6 +19,7 @@ tags: [scanner, data, interop]
 - A Vite plugin (`scannerDataPlugin` in `vite.config.ts`) emits `scanner-data.json` into every production build and serves it from the dev server. It's never committed, so it can't go stale. Every deploy publishes it at **`https://wutheringtools.com/scanner-data.json`**, which static hosting serves ahead of the SPA rewrite.
 - `version` is bumped only for breaking shape changes; adding fields isn't breaking.
 - Wavescan bundles a copy at build time and (opt-in) refreshes it at launch. A detached signature is planned for when that runtime refresh ships (Wavescan ADR 0010).
+  - **Superseded 2026-10-15:** see ADR 0041. The file is signed (the signature sits inside it, not detached), and Wavescan downloads it on every launch, not opt-in.
 
 ## Consequences
 
@@ -33,7 +34,7 @@ tags: [scanner, data, interop]
 ## Guidance
 
 - **Do** add new fields additively. Bump `SCANNER_DATA_VERSION` only for breaking changes, and coordinate with Wavescan.
-- **Don't** add anything user-specific or large (images are URLs only).
+- **Don't** add anything user-specific or large (images are URLs only). Pictures go in `scanner-assets.json` (ADR 0041).
 
 ## Updates
 

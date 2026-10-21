@@ -58,6 +58,10 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
 
 Every `talentModifierMultiply` source on the same attack (self buffs, resonance chains, rotation buffs) is **summed** before being applied as `MV * (1 + sum)`. If an effect multiplies on top of the other multiplier bonuses in game instead (e.g. Denia S2: `MV * (1 + 150% * Dark Cores) * 1.4`), use `talentModifierSpecialMultiply` — a separate layer applied after, as `* (1 + value)`. Other examples: Qingxiao S3, Mornye S4.
 
+### Attacks unlocked by a chain or buff
+
+An attack that only exists once a resonance chain (or self buff) is active gets `requiresResonanceChain: "<UnlockKey>"`, and the chain/buff that unlocks it **must** carry an `EnableAttack` modifier listing that same key — e.g. Jianxin S6 (`SequenceNode6TruthfromWithin`) has `{ modifier: "EnableAttack", modifierValue: ["SequenceNode6TruthfromWithinSpecialChiCounter"] }`. The unlock key doesn't have to match the chain's own key, and one chain can unlock several attacks (Aalto S3). Without the `EnableAttack` modifier the attack never unlocks — in the damage panel or in rotations. See `src/calculator/enabledAttacks.ts`.
+
 ### Base talent multiplier additional
 
 When you need to add a multiplier to the base talent value (e.g. Changli R5), but it's a straight addition to the multiplier (e.g. Zani S3). Only works with Resonance Chains right now.

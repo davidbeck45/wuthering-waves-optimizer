@@ -1,8 +1,17 @@
 <template>
   <div
-    :class="{ 'weapon-passive': !alwaysEnabled }"
+    :class="{
+      'weapon-passive': !alwaysEnabled,
+      'border-l-4 border-warning pl-3': calculatorFallback && needsAttention(resolved.status),
+    }"
     @click="toggleEnabled"
     :data-test-echo-set-passive="passiveKey">
+    <OptimizerWorkspaceBuffStatus
+      v-if="calculatorFallback"
+      class="mb-1"
+      :resolved="resolved"
+      :has-stacks="hasStacks"
+      @use-calculator-setting="useCalculatorSetting"></OptimizerWorkspaceBuffStatus>
     <div v-html="details"></div>
     <div class="flex gap-2 items-center">
       <div class="form-control" @click.stop>
@@ -44,6 +53,12 @@
 import { computed, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import OptimizerWorkspaceBuffStatus from "./optimizerWorkspace/OptimizerWorkspaceBuffStatus.vue";
+import {
+  needsAttention,
+  resolveOptimizerBuff,
+  type OptimizerBuffEntry,
+} from "../calculator/optimizerBuffStatus";
 
 type TalentLevels = Record<string, string | number | undefined>;
 
@@ -78,6 +93,9 @@ const props = withDefaults(
     alwaysEnabled?: boolean;
     passiveKey?: string;
     modifiers?: unknown[];
+    /** v3 optimizer: fall back to the calculator's setting for this passive
+     *  and show its status (src/calculator/optimizerBuffStatus.ts). */
+    calculatorFallback?: boolean;
   }>(),
   {
     hasStacks: false,
@@ -87,6 +105,7 @@ const props = withDefaults(
     alwaysEnabled: false,
     passiveKey: "",
     modifiers: () => [] as unknown[],
+    calculatorFallback: false,
   },
 );
 
@@ -111,39 +130,63 @@ const optimizer = computed(
   () => (currentCharacter.value.optimizer ?? {}) as Record<string, unknown>,
 );
 
+const resolved = computed(() =>
+  resolveOptimizerBuff({
+    optimizerEntry: (
+      optimizer.value.echoSetPassives as Record<string, OptimizerBuffEntry> | undefined
+    )?.[props.passiveKey],
+    calculatorEntry: (
+      currentCharacter.value.echoSetPassives as Record<string, OptimizerBuffEntry> | undefined
+    )?.[props.passiveKey],
+    hasStacks: props.hasStacks,
+    alwaysEnabled: props.alwaysEnabled,
+    calculatorFallback: props.calculatorFallback,
+  }),
+);
+
+// The first change to a buff that's following the calculator saves the whole
+// setting, so e.g. unticking then reticking keeps the calculator's stacks.
+async function saveOptimizerSetting(patch: OptimizerBuffEntry) {
+  const seed =
+    resolved.value.source === "calculator"
+      ? { isEnabled: resolved.value.isEnabled, stacks: resolved.value.stacks }
+      : {};
+  await characterStore.setCharacterData(props.character, {
+    optimizer: {
+      echoSetPassives: {
+        [props.passiveKey]: { ...seed, ...patch },
+      },
+    },
+  });
+}
+
+function useCalculatorSetting() {
+  characterStore.clearOptimizerEchoSetPassive(props.character, props.passiveKey);
+}
+
 const isEnabled = computed({
   get() {
+    if (props.calculatorFallback) return resolved.value.isEnabled;
     const passives = optimizer.value.echoSetPassives as
       | Record<string, { isEnabled?: boolean }>
       | undefined;
     return passives?.[props.passiveKey]?.isEnabled ?? false;
   },
   async set(value: boolean) {
-    await characterStore.setCharacterData(props.character, {
-      optimizer: {
-        echoSetPassives: {
-          [props.passiveKey]: { isEnabled: value },
-        },
-      },
-    });
+    await saveOptimizerSetting({ isEnabled: value });
   },
 });
 
 const stacks = computed({
   get() {
+    if (props.calculatorFallback) return resolved.value.stacks;
     const passives = optimizer.value.echoSetPassives as
       | Record<string, { stacks?: number }>
       | undefined;
     return passives?.[props.passiveKey]?.stacks ?? 0;
   },
   async set(value: number) {
-    await characterStore.setCharacterData(props.character, {
-      optimizer: {
-        echoSetPassives: {
-          [props.passiveKey]: { stacks: value },
-        },
-      },
-    });
+    await saveOptimizerSetting({ stacks: value });
   },
 });
 

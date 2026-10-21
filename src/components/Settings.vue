@@ -33,7 +33,6 @@
           Import
         </a>
         <a
-          v-if="isWavescanEnabled"
           href="#"
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('wavescan')"
@@ -64,7 +63,7 @@
         <SettingsPreferences v-if="tab === 'preferences'" />
         <SettingsExport v-if="tab === 'export'" />
         <SettingsImport v-if="tab === 'import'" />
-        <SettingsWavescan v-if="tab === 'wavescan' && isWavescanEnabled" />
+        <SettingsWavescan v-if="tab === 'wavescan'" />
         <SettingsDelete v-if="tab === 'advanced'" />
         <SettingsLabs v-if="tab === 'labs'" />
       </div>
@@ -73,14 +72,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
 import SettingsLabs from "./SettingsLabs.vue";
 import SettingsPreferences from "./SettingsPreferences.vue";
 import SettingsWavescan from "./SettingsWavescan.vue";
-import { useSettingsStore } from "../stores/settings";
 
 type SettingsTab =
   | "preferences"
@@ -91,11 +89,6 @@ type SettingsTab =
   | "labs";
 
 const tab = ref<SettingsTab>("preferences");
-
-const settingsStore = useSettingsStore();
-const isWavescanEnabled = computed(
-  () => settingsStore.labs?.wavescanImport?.isEnabled ?? false,
-);
 
 function setTab(next: SettingsTab) {
   tab.value = next;

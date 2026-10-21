@@ -25,6 +25,8 @@ import { getOriginalForteFromAttackKey } from "../characters/characters.ts";
 
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes";
 
+import { getEnabledAttackKeys, isAttackUnlocked } from "./enabledAttacks.ts";
+
 type NegativeStatusSubType =
   | "GlacioChafe"
   | "SpectroFrazzle"
@@ -75,6 +77,10 @@ export const processAttacks = (
   providedStats: any = null, // use this set of base stats instead of the global stats
   providedEchoStats: any = null, // use this set of echo stats instead of the global echo stats
 ) => {
+  const enabledAttackKeys = getEnabledAttackKeys(
+    context.buffs.charResonanceChainsData,
+    context.buffs.charBuffsData,
+  );
   return (
     (attacks ?? [])
       .map((attack: any) => {
@@ -83,19 +89,8 @@ export const processAttacks = (
         // if this attack requires a resonance chain to be unlocked, verify it's enabled
         const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
         if (requiresResonanceChain) {
-          const resonanceChainsEnabledAttacks =
-            context.buffs.charResonanceChainsData?.EnableAttack ?? [];
-          const charBuffsEnabledAttacks =
-            context.buffs.charBuffsData?.EnableAttack ?? [];
-          // merge all possible enabled attack arrays together
-          const enabledAttacks: any[] = []
-            .concat(resonanceChainsEnabledAttacks)
-            .concat(charBuffsEnabledAttacks);
-          const isAttackEnabled = enabledAttacks.includes(
-            attack.requiresResonanceChain,
-          );
           // flag this attack as enabled or not based on the resonance chain
-          isEnabled = isAttackEnabled;
+          isEnabled = isAttackUnlocked(attack, enabledAttackKeys);
           originalIsEnabled = isEnabled;
         }
         if (

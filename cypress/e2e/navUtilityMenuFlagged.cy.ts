@@ -44,6 +44,14 @@ describe("Utility nav dropdown (liveResultBar flag)", () => {
     cy.location("pathname").should("eq", "/legal");
   });
 
+  it("closes when clicking elsewhere on the page", () => {
+    visitWithFlagEnabled();
+    cy.get("[data-test-options-menu]").click();
+    cy.get("[data-test-options-menu-v3]").should("be.visible");
+    cy.get("body").click(10, 400);
+    cy.get("[data-test-options-menu-v3]").should("not.be.visible");
+  });
+
   it("shows no badge, dot, or count anywhere in the menu", () => {
     visitWithFlagEnabled();
     cy.get("[data-test-options-menu]").click();

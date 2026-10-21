@@ -17,6 +17,7 @@
           :always-enabled="passive.alwaysEnabled"
           :passive-key="passive.key"
           :modifiers="passive.modifiers ?? []"
+          :calculator-fallback="calculatorFallback"
           @updated-optimizer-echo-passive-stats="
             handlePassiveStatsUpdate
           "></CalculatorOptimizerEchoSetPassive>
@@ -40,13 +41,18 @@ type OptimizerEchoPassive = {
   modifiers?: unknown[];
 };
 
-const props = defineProps<{
-  character: string;
-  name: string;
-  passives: OptimizerEchoPassive[];
-  details: string;
-  setKey: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    name: string;
+    passives: OptimizerEchoPassive[];
+    details: string;
+    setKey: string;
+    /** v3 optimizer: see CalculatorOptimizerEchoSetPassive's prop of the same name. */
+    calculatorFallback?: boolean;
+  }>(),
+  { calculatorFallback: false },
+);
 
 const emit = defineEmits<{
   "updated-optimizer-echo-set-stats": [

@@ -102,6 +102,17 @@ describe("mapWavescanEchoes", () => {
     expect(skipped[0].reason).toContain(reason);
   });
 
+  it("keeps who each echo is equipped by, apart from the inventory rows", () => {
+    const { echoes, skipped, equippedBy } = mapWavescanEchoes([
+      { ...validRow, equippedBy: "YangyangXuanling" },
+      validRow,
+      { ...validRow, echo: "NotAnEcho", equippedBy: "Carlotta" },
+    ]);
+    expect(equippedBy).toEqual({ [echoes[0]!.echoId]: "YangyangXuanling" });
+    expect(echoes[0]).not.toHaveProperty("equippedBy");
+    expect(skipped[0]!.equippedBy).toBe("Carlotta");
+  });
+
   it("skips non-object rows without throwing", () => {
     const { skipped } = mapWavescanEchoes([null, "echo"]);
     expect(skipped.map((s) => s.position)).toEqual([1, 2]);
@@ -128,6 +139,14 @@ describe("planWavescanEchoImport", () => {
     expect(plan.toRemoveIds).toEqual([]);
     expect(plan.toAdd).toEqual([other]);
     expect(plan.alreadyOwnedCount).toBe(1);
+    // The matched scan echo resolves to the owned one; the added one to itself.
+    expect(plan.resolvedIds).toEqual({ [scanned.echoId]: "x", other: "other" });
+  });
+
+  it("resolves identical copies to different owned echoes", () => {
+    const copy = { ...scanned, echoId: "copy" };
+    const plan = planWavescanEchoImport([scanned, copy], [owned("x"), owned("y")], "append");
+    expect(plan.resolvedIds).toEqual({ [scanned.echoId]: "x", copy: "y" });
   });
 
   it("counts identical copies instead of collapsing them", () => {

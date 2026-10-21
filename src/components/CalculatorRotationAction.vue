@@ -343,6 +343,10 @@ import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
 import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
+import {
+  getEnabledAttackKeysForCharacter,
+  isAttackUnlocked,
+} from "../calculator/enabledAttacks";
 import type { DurationRangeAction } from "../utils/rotationDurationRange";
 
 type AttackRow = {
@@ -523,9 +527,20 @@ const heartOfThunderStacksLocal = ref(0);
 const currentCharacter = computed(
   () =>
     (characters.value[props.character] ?? {}) as {
-      resonanceChains?: Record<string, { isEnabled?: boolean }>;
-      buffs?: Record<string, { isEnabled?: boolean }>;
+      activeStance?: string;
+      resonanceChains?: Record<string, { isEnabled?: boolean; stacks?: number }>;
+      buffs?: Record<string, { isEnabled?: boolean; stacks?: number }>;
     },
+);
+
+// Same unlock rules as the damage panel (#622) — computed from this action's
+// character, which in a team rotation isn't necessarily the active one.
+const enabledAttackKeys = computed(() =>
+  getEnabledAttackKeysForCharacter(
+    props.character,
+    props.characterData as Parameters<typeof getEnabledAttackKeysForCharacter>[1],
+    currentCharacter.value,
+  ),
 );
 
 const skillType = computed(() => {
@@ -975,21 +990,7 @@ function isAttackDisabled(attack: AttackRow) {
   if (!isAttackAvailableForCharacter(attack, props.character)) {
     return true;
   }
-  if (!attack?.requiresResonanceChain) {
-    return false;
-  }
-  let requiredKey = attack.requiresResonanceChain;
-  if (requiredKey === "SequenceNode3OBladeIWhoSaveNoMore2") {
-    requiredKey = "SequenceNode3OBladeIWhoSaveNoMore";
-  }
-  const isResonanceChainEnabled =
-    currentCharacter.value?.resonanceChains?.[requiredKey]?.isEnabled ?? false;
-  const isSelfBuffEnabled =
-    currentCharacter.value?.buffs?.[requiredKey]?.isEnabled ?? false;
-  if (isResonanceChainEnabled || isSelfBuffEnabled) {
-    return false;
-  }
-  return true;
+  return !isAttackUnlocked(attack, enabledAttackKeys.value);
 }
 
 // A custom buff Duration apply started from another action rewrites this

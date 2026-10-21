@@ -3,6 +3,7 @@ status: accepted
 date: 2026-09-01
 tags: [calculator, components, stores]
 supersedes: [0013]
+superseded_by: [0039]
 ---
 
 # 18. Full breakdown panel — Overview/Attacks/Rotations redesign
@@ -89,6 +90,10 @@ Ships behind the existing `liveResultBar` Labs flag — no new flag.
    Standard (420px) is now the default width, 40px wider than the old fixed
    380px, addressing "too narrow" directly rather than only through
    restructuring.
+
+   **Superseded 2026-10-12:** the presets were replaced by a drag-to-resize
+   handle storing a px width (legacy preset strings are still read). See
+   [ADR 0039](./0039-resizable-live-result-panel.md).
 
 5. **Discovered and fixed in passing**: `CalculatorLiveResultDetail.vue`
    never passed `element-filter` to `CalculatorStats`, unlike

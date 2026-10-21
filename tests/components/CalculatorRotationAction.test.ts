@@ -4,6 +4,10 @@ import { createPinia, setActivePinia } from "pinia";
 import { render, fireEvent } from "@testing-library/vue";
 import CalculatorRotationAction from "../../src/components/CalculatorRotationAction.vue";
 import { useSettingsStore } from "../../src/stores/settings";
+import { useCharacterStore } from "../../src/stores/character";
+import { mount } from "@vue/test-utils";
+import AppRichSelect, { type AppRichSelectOption } from "../../src/components/AppRichSelect.vue";
+import { getCharByName } from "../../src/characters/characters";
 
 function renderAction(canReorder = false, overrideProps: Record<string, unknown> = {}) {
   return render(CalculatorRotationAction, {
@@ -135,5 +139,47 @@ describe("CalculatorRotationAction Rotation Flow (Labs)", () => {
     await fireEvent.click(removeBtn);
 
     expect(emitted("toggle-advanced-buff")).toEqual([[{ category: "buffs", key: "someBuff" }]]);
+  });
+});
+
+// #622: chain-locked attacks were looked up by their unlock key as if it were
+// the chain key, so attacks whose `requiresResonanceChain` differs from the
+// chain's own key (Jianxin S6, Aalto S3, …) stayed disabled in the attack
+// picker even with the chain enabled.
+describe("CalculatorRotationAction chain-locked attacks (#622)", () => {
+  const attackKey = "SequenceNode6TruthfromWithinSpecialChiCounter";
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  async function jianxinS6Option(resonanceChains: Record<string, unknown>) {
+    useCharacterStore().characters = { Jianxin: { buffs: {}, resonanceChains } } as never;
+    const wrapper = mount(CalculatorRotationAction, {
+      props: {
+        character: "Jianxin",
+        id: "action-1",
+        order: 1,
+        count: 1,
+        characterData: (await getCharByName("Jianxin")) as Record<string, unknown>,
+      },
+      global: { directives: { tooltip: () => {} } },
+    });
+    (wrapper.vm as unknown as { toggleEdit: () => void }).toggleEdit();
+    await nextTick();
+    const options = wrapper
+      .findComponent(AppRichSelect)
+      .props("options") as AppRichSelectOption[];
+    return options.find((option) => option.value === attackKey);
+  }
+
+  it("keeps the attack disabled while its chain is off", async () => {
+    expect((await jianxinS6Option({}))?.disabled).toBe(true);
+  });
+
+  it("enables the attack once the chain granting its unlock key is on", async () => {
+    const option = await jianxinS6Option({ SequenceNode6TruthfromWithin: { isEnabled: true } });
+    expect(option).toBeDefined();
+    expect(option?.disabled).toBe(false);
   });
 });

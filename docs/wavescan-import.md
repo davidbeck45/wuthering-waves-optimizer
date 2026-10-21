@@ -1,6 +1,6 @@
 # Wavescan import
 
-Imports the JSON exported by Wavescan, the desktop scanner — uploaded as a file or pasted as text. It's behind the **Import with Wavescan** Labs flag (`settingsStore.labs.wavescanImport`). When the flag is on, Settings shows a **Wavescan** section: under "Your Data" in the v3 workspace, or as a tab in the legacy settings page. For the reasoning behind it, see [ADR 0038](adr/0038-wavescan-import.md).
+Imports the JSON exported by Wavescan, the desktop scanner — uploaded as a file or pasted as text. Settings always shows a **Wavescan** section: under "Your Data" in the v3 workspace, or as a tab in the legacy settings page. (It started behind a Labs flag, `wavescanImport`, which was removed on 2026-10-16.) For the reasoning behind it, see [ADR 0038](adr/0038-wavescan-import.md).
 
 ## Where the code lives
 
@@ -9,6 +9,9 @@ Imports the JSON exported by Wavescan, the desktop scanner — uploaded as a fil
 | `src/wavescan/format.ts` | File types and `parseWavescanFile`, which checks format and version only |
 | `src/wavescan/echoes.ts` | `mapWavescanEchoes` (validate and map rows) and `planWavescanEchoImport` (append/replace diff). Pure code |
 | `src/components/SettingsWavescan.vue` | Reads the uploaded file or pasted text, picks the mode, confirms a replace, and applies the plan to the inventory store |
+| `src/wavescan/loadouts.ts` | `groupWavescanLoadouts` and helpers for equipped echoes. Pure |
+| `src/composables/useWavescanLoadouts.ts` | Review state for equipped echoes, and the apply step that writes loadouts to the character and inventory stores |
+| `src/components/SettingsWavescanLoadout.vue` | One character's loadout card in the review |
 | `fixtures/wavescan.json` | A real sample export, used by the tests |
 | `tests/wavescan/`, `tests/components/SettingsWavescan.test.ts` | Unit and component tests |
 
@@ -49,7 +52,23 @@ Values use this app's keys (`mainEchoesData`, `echoSetLabelMap`, `statsTable`, `
 - **Add to my inventory** (append) keeps every existing echo.
 - **Replace my inventory** removes every *unlocked* echo with `removeEchoesFully`, after a confirmation, and keeps locked echoes.
 - **Duplicates.** In both modes, scanned echoes that exactly match a kept echo (`getEchoIdentityKey`) aren't added. Matches are counted, so two identical scanned copies against one owned copy still add one.
-- **Ignored for now.** `level` (inventory echoes have no level) and `equippedBy` (characters aren't imported yet).
+- **Ignored for now.** `level` (inventory echoes have no level).
+
+## Equipped echoes (`equippedBy`)
+
+`equippedBy` is the character key Wavescan saw wearing the echo (`"YangyangXuanling"`), `"Rover"` for the main character, or `null`. When any echo has one, the Echoes card shows an **Equipped echoes** review before the import button. See [ADR 0040](adr/0040-wavescan-equipped-loadouts.md) for the reasoning.
+
+- **Grouping.** `groupWavescanLoadouts` (`src/wavescan/loadouts.ts`) groups valid echoes per character and sorts them by cost, highest first, keeping file order within a cost. It flags:
+  - a guessed main echo, when two echoes share the top cost;
+  - equipped echoes that were skipped as invalid (their slots stay empty);
+  - more than 5 echoes or a cost over 12, which blocks that character;
+  - unknown keys, whose echoes are imported but not equipped.
+- **Review.** One card per character (`SettingsWavescanLoadout.vue`). Slot 1 is the main echo. The user reorders with the drag handle (`useDragReorder`, as in rotations), the arrows, or "Make main", and can turn each character off. On phones the slots stack as rows.
+- **Rover.** The user picks which Rover entry. It's preselected when they have exactly one Rover set up, or the active character is a Rover. Otherwise the import button is disabled until they pick or turn it off.
+- **Save loadouts to.** Asked on every import: each character's active build, or a new build named "Wavescan <scan date>" (`createBuild` from the active build, numbered if the name is taken). A character that's not in the profile yet is created with one default build either way.
+- **Add mode.** A scanned echo you already own is equipped by its existing id (`planWavescanEchoImport`'s `resolvedIds`), so no copy is added. Characters whose loadout already matches the scan show "Already matches" and are skipped. An echo another character wears now moves to the scanned character, and the card says so.
+- **Replace mode.** Same review. The panel warns which characters you aren't equipping will lose unlocked echoes, and how many.
+- **What's written** (`useWavescanLoadouts`'s `applyLoadoutWrites`, after the echoes are added): `ensureCharacterBuilds`, optionally `createBuild`, then for each echo worn elsewhere the old slot is emptied and its `equipped` entry removed, then `applyEchoLoadout` (5 slots, preset cleared), then `characters[id].mainEcho = { echo, rank }` from slot 1. No store shape changes, so no migration.
 
 ## Extending
 

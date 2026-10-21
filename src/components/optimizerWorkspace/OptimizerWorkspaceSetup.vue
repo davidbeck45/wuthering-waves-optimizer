@@ -51,7 +51,8 @@
                 </div>
                 <button
                   @click="chooseMainEcho(echoesToChoose.key)"
-                  class="btn btn-sm btn-primary">
+                  class="btn btn-sm btn-primary"
+                  :data-test-optimizer-workspace-pick-echo="echoesToChoose.key">
                   Use echo
                 </button>
               </div>
@@ -61,10 +62,21 @@
       </div>
     </dialog>
 
+    <div class="run-bar-sticky">
+      <OptimizerWorkspaceRunBar
+        :echo-set-count="setFilters.length"
+        :main-echo-count="mainEchoes.length"
+        :has-target="hasValidTarget"
+        :buffs-not-set-count="buffsNotSetCount"
+        :min-stats-count="minStats.length"
+        @run="handleOptimizeClick"
+        @jump="jumpToSection"></OptimizerWorkspaceRunBar>
+    </div>
+
     <div class="grid gap-4 lg:grid-cols-3">
       <!-- Echo sets + main echo -->
       <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
-        <div>
+        <div ref="setsSection" class="scroll-mt-20">
           <div class="text-xs font-bold uppercase tracking-wider opacity-50">
             Eligible echo sets
           </div>
@@ -79,7 +91,7 @@
 
         <div class="divider my-0"></div>
 
-        <div>
+        <div ref="mainEchoSection" class="scroll-mt-20">
           <div class="text-xs font-bold uppercase tracking-wider opacity-50">
             Main echo &middot; slot 1
           </div>
@@ -127,52 +139,10 @@
             </div>
           </div>
         </div>
-
-        <div v-if="currentSetBonuses.length || mainEchoes.length" class="collapse collapse-arrow">
-          <input type="checkbox" />
-          <div class="collapse-title text-sm font-semibold px-0">
-            Configure buffs
-          </div>
-          <div class="collapse-content px-0">
-            <template v-if="currentSetBonuses.length">
-              <CalculatorOptimizerEchoSet
-                v-for="setBonus in currentSetBonuses"
-                :key="setBonus.key"
-                :set-key="setBonus.key"
-                :character="character"
-                :name="setBonus.name"
-                :passives="setBonus.passives"
-                :details="setBonus.details"
-                @updated-optimizer-echo-set-stats="
-                  handleUpdatedSetStats
-                "></CalculatorOptimizerEchoSet>
-            </template>
-            <template v-if="mainEchoes.length">
-              <CalculatorOptimizerMainEcho
-                v-for="echo in allMainEchoesData"
-                :key="echo.key"
-                :character="character"
-                :echo-key="echo.key"
-                :name="echo.name"
-                :echo-class="echo.class"
-                :image="echo.image"
-                :sets="echo.sets"
-                :details="echo.details"
-                :modifiers="echo.modifiers"
-                :actions="echo.actions"
-                :has-stacks="echo.hasStacks"
-                :min-stacks="echo.minStacks"
-                :max-stacks="echo.maxStacks"
-                @updated-main-echo-buffs="
-                  handleUpdatedMainEchoBuffs
-                "></CalculatorOptimizerMainEcho>
-            </template>
-          </div>
-        </div>
       </div>
 
       <!-- Target -->
-      <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
+      <div ref="targetSection" class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 scroll-mt-20">
         <div>
           <div class="text-xs font-bold uppercase tracking-wider opacity-50">
             Optimize for
@@ -223,47 +193,97 @@
       </div>
     </div>
 
-    <!-- Run bar -->
-    <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
-      <div
-        v-if="!isValid"
-        role="alert"
-        class="alert alert-warning py-2 text-sm"
-        data-test-optimizer-workspace-invalid-notice>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="size-4 shrink-0"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 9v3.75m0 3.75h.008M10.29 3.86l-8.18 14.16A1.5 1.5 0 0 0 3.5 20.25h17a1.5 1.5 0 0 0 1.39-2.23L13.71 3.86a1.5 1.5 0 0 0-2.42 0Z" />
-        </svg>
-        Choose at least one echo, echo set, and a valid target.
-      </div>
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div class="flex flex-wrap gap-1.5">
-          <span class="badge">{{ setFilters.length }} echo set{{ setFilters.length === 1 ? "" : "s" }}</span>
-          <span class="badge">{{ mainEchoes.length }} main echo{{ mainEchoes.length === 1 ? "" : "es" }}</span>
-          <span v-if="minStats.length" class="badge">{{ minStats.length }} stat floor{{ minStats.length === 1 ? "" : "s" }}</span>
-        </div>
+    <!-- Echo buffs -->
+    <div
+      v-if="currentSetBonuses.length || mainEchoes.length"
+      ref="buffsSection"
+      class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 scroll-mt-20"
+      data-test-optimizer-workspace-buffs>
+      <div class="flex flex-wrap items-center justify-between gap-2">
         <button
-          class="btn btn-primary"
-          @click="handleOptimizeClick"
-          :disabled="!isValid"
-          data-test-optimizer-workspace-optimize-btn>
-          Run Optimizer
+          type="button"
+          class="flex items-center gap-2 text-left"
+          :aria-expanded="isBuffsOpen"
+          data-test-optimizer-workspace-buffs-toggle
+          @click="isBuffsOpen = !isBuffsOpen">
+          <svg
+            class="size-4 transition-transform"
+            :class="{ 'rotate-90': isBuffsOpen }"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true">
+            <path d="M6 3.5 10.5 8 6 12.5 5 11.5 8.5 8 5 4.5z" />
+          </svg>
+          <span class="font-semibold">Echo buffs</span>
+          <span
+            v-if="buffsNotSetCount"
+            class="badge badge-warning badge-sm"
+            data-test-optimizer-workspace-buffs-not-set>
+            {{ buffsNotSetCount }} not set
+          </span>
         </button>
+        <div v-if="hasOptionalBuffs" class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-sm"
+            data-test-optimizer-workspace-buffs-enable-all
+            @click="enableAllBuffs">
+            Enable All
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm"
+            data-test-optimizer-workspace-buffs-max-all
+            @click="maxAllBuffs">
+            Max All
+          </button>
+        </div>
+      </div>
+      <!-- v-show, not v-if: the buff rows report their stats to this
+           component, so they must stay mounted while collapsed. -->
+      <div v-show="isBuffsOpen" class="flex flex-col gap-1">
+        <template v-if="currentSetBonuses.length">
+          <CalculatorOptimizerEchoSet
+            v-for="setBonus in currentSetBonuses"
+            :key="setBonus.key"
+            :set-key="setBonus.key"
+            :character="character"
+            :name="setBonus.name"
+            :passives="setBonus.passives"
+            :details="setBonus.details"
+            calculator-fallback
+            @updated-optimizer-echo-set-stats="
+              handleUpdatedSetStats
+            "></CalculatorOptimizerEchoSet>
+        </template>
+        <template v-if="mainEchoes.length">
+          <CalculatorOptimizerMainEcho
+            v-for="echo in allMainEchoesData"
+            :key="echo.key"
+            :character="character"
+            :echo-key="echo.key"
+            :name="echo.name"
+            :echo-class="echo.class"
+            :image="echo.image"
+            :sets="echo.sets"
+            :details="echo.details"
+            :modifiers="echo.modifiers"
+            :actions="echo.actions"
+            :has-stacks="echo.hasStacks"
+            :min-stacks="echo.minStacks"
+            :max-stacks="echo.maxStacks"
+            calculator-fallback
+            @updated-main-echo-buffs="
+              handleUpdatedMainEchoBuffs
+            "></CalculatorOptimizerMainEcho>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, toRef } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import {
   getSetBonusEffectsFromListOfSetKeys,
@@ -278,6 +298,10 @@ import CalculatorOptimizerMainEcho from "../CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerSettings from "../CalculatorOptimizerSettings.vue";
 import OptimizerWorkspaceEchoSets from "./OptimizerWorkspaceEchoSets.vue";
 import OptimizerWorkspaceTarget from "./OptimizerWorkspaceTarget.vue";
+import OptimizerWorkspaceRunBar, {
+  type OptimizerSetupSection,
+} from "./OptimizerWorkspaceRunBar.vue";
+import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
@@ -327,17 +351,41 @@ const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
 );
 
-const isValid = computed(() => {
-  const echoSetsCount = setFilters.value.length;
-  const mainEchoesCount = mainEchoes.value.length;
-  let hasValidTarget = false;
+const hasValidTarget = computed(() => {
   if (Array.isArray(optimizationTarget.value)) {
-    hasValidTarget = optimizationTarget.value.length > 0;
-  } else {
-    hasValidTarget = !!optimizationTarget.value;
+    return optimizationTarget.value.length > 0;
   }
-  return hasValidTarget && echoSetsCount > 0 && mainEchoesCount > 0;
+  return !!optimizationTarget.value;
 });
+
+const {
+  attentionCount: buffsNotSetCount,
+  hasOptionalBuffs,
+  enableAll: enableAllBuffs,
+  maxAll: maxAllBuffs,
+} = useOptimizerEchoBuffs(toRef(props, "character"), setFilters, mainEchoes);
+
+// Open every time the setup loads; deliberately not saved (issue #618).
+const isBuffsOpen = ref(true);
+
+const setsSection = ref<HTMLElement | null>(null);
+const mainEchoSection = ref<HTMLElement | null>(null);
+const targetSection = ref<HTMLElement | null>(null);
+const buffsSection = ref<HTMLElement | null>(null);
+
+async function jumpToSection(section: OptimizerSetupSection) {
+  if (section === "buffs") isBuffsOpen.value = true;
+  // Let an opened section render first, or there may be nothing to scroll to.
+  await nextTick();
+  const el = {
+    sets: setsSection,
+    mainEcho: mainEchoSection,
+    target: targetSection,
+    buffs: buffsSection,
+    minStats: null,
+  }[section]?.value;
+  el?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
 const echoSets = computed(() => Object.keys(echoSetLabelMap));
 
@@ -553,3 +601,23 @@ onMounted(() => {
   isLoading.value = false;
 });
 </script>
+
+<style scoped lang="scss">
+// Pins the run bar while the setup scrolls. The scroll container
+// (Calculator.vue's .calculations__screens) has 2rem padding (1rem on
+// phones), and sticky offsets are measured inside it, so a plain top: 0
+// would leave page content showing above the bar. Pin the strip at the real
+// edge instead, on the page background, with the bar a little below it.
+.run-bar-sticky {
+  position: sticky;
+  top: -2rem;
+  z-index: 20;
+  margin-top: -0.75rem;
+  padding-top: 0.75rem;
+  background: oklch(var(--b1));
+
+  @media (max-width: 480px) {
+    top: -1rem;
+  }
+}
+</style>

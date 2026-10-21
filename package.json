@@ -27,7 +27,9 @@
     "cypress:run:calculator-core": "cypress run --spec \"cypress/e2e/calculator/*.cy.ts\"",
     "cypress:run:plus": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run",
-    "cli": "tsx cli/index.ts"
+    "cli": "tsx cli/index.ts",
+    "scanner:icons": "tsx scripts/scanner-icons.ts",
+    "scanner:keygen": "tsx scripts/scanner-data-keygen.ts"
   },
   "dependencies": {
     "chart.js": "^4.5.0",
@@ -66,6 +68,7 @@
     "ora": "^9.4.0",
     "postcss": "^8.4.47",
     "sass": "^1.77.4",
+    "sharp": "0.35.5",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.22.4",
     "typescript": "^5.9.3",

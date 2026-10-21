@@ -31,13 +31,80 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = {
-  date: "2026-10-10",
-  headline: "The redesigned v3 UI is now the default!",
-  whatsNew: true,
-};
+export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-19",
+    dateLabel: "October 19, 2026",
+    items: [
+      "New Odds button on echoes in the calculator. It shows which Substat Score grade an echo is likely to end up at for that character. For a fully tuned echo, it shows the chance that a new echo reaches a better grade (the next one up, or one you pick), and the EXP, tuners and Shell Credits that would take",
+      "The Odds button is in the inventory too: for an echo that isn't fully tuned yet, it shows how likely it is to reach your goal",
+      "New \"Finish these first\" filter in the inventory: it lists your unfinished echoes, starting with the ones most likely to reach your tuning goal",
+      "New Tuning Planner on the Info page: pick the substats and rolls you want, and see your chance per echo, how many echoes you may need to farm, and the EXP, tuners and Shell Credits it costs, with or without feeding failed echoes back in",
+      "Fixed an empty gray bar on the right edge, and the page shifting left, when a popup window opens",
+    ],
+  },
+  {
+    date: "2026-10-18",
+    dateLabel: "October 18, 2026",
+    items: [
+      "Fixed the 5-piece bonus for Heart of Sworn Vigil and Sound of True Name turning itself back on after you switched it off",
+    ],
+  },
+  {
+    date: "2026-10-17",
+    dateLabel: "October 17, 2026",
+    items: [
+      "Header bar buttons are now the same size everywhere, and the delete buttons for rotations and teams now show a tooltip",
+    ],
+  },
+  {
+    date: "2026-10-16",
+    dateLabel: "October 16, 2026",
+    items: [
+      "The filter buttons in the character picker now line up properly",
+      "The character browser now shows your favorites at the top",
+      "Fixed the \"Switch to classic UI\" option, and the settings menu now matches the theme menu",
+      "Fixed a typo in the Frosty Resolve 5-piece description: it now says Resonance Skill DMG +18%",
+      "The echo presets menu is easier to understand",
+    ],
+  },
+  {
+    date: "2026-10-16",
+    dateLabel: "October 16, 2026",
+    items: [
+      "Import with Wavescan is out of Labs: the Wavescan section is now always in Settings, no flag needed",
+    ],
+  },
+  {
+    date: "2026-10-15",
+    dateLabel: "October 15, 2026",
+    items: [
+      "Fixed echo sets for Phantom: Fae Ignis",
+      "Fixed echo sets for 13 more Phantom echoes to match their regular versions: Capitaneus, Diggy Duggy, Feilian Beringal, Hoartoise, Iceglint Dancer, Kerasaur, Lightcrusher, Nimbus Wraith, Rocksteady Guardian, Sentry Construct, Twin Nova - Collapsar Blade, Twin Nova - Nebulous Cannon, and Zip Zap",
+    ],
+  },
+  {
+    date: "2026-10-14",
+    dateLabel: "October 14, 2026",
+    items: [
+      "Echo presets are easier to find in the v3 UI: a single Presets button holds saving, theorycrafter builds and the guide, the preset badge reopens the presets window, and empty builds now show a setup panel to import, pull from your inventory, or start from a saved or theorycrafter preset",
+      "Fixed resonance chain-unlocked attacks (e.g. Jianxin S6, Aalto S3, Camellya S6, Roccia S6) staying disabled in the rotation editor even though the damage panel showed them",
+      "Fixed echo sets for Questless Knight",
+    ],
+  },
+  {
+    date: "2026-10-12",
+    dateLabel: "October 12, 2026",
+    items: [
+      "Bumped up the font size in the app. let me know if you preferred the smaller font size, i could make it customizeable",
+      "Made the pinnable sidebar width customizeable so you can drag the width wherever you want",
+      "Removes Lupa rotation that wasn't right",
+      "Improves optimizer UI to auto-sync echo set and main echo buffs into optimizer settings, and make requirements and runner easier to use",
+      "Labs: Import from Wavescan now reads which character each echo is equipped on, lets you review and reorder each loadout, and equips them on import",
+    ],
+  },
   {
     date: "2026-10-11",
     dateLabel: "October 11, 2026",

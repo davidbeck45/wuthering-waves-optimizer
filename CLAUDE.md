@@ -34,7 +34,8 @@ npm run cli -- backfill icons        # or: backfill icons --character <Key> for 
 |------|------|
 | `src/calculator/` | Pure TS engine: stats, damage, attacks, optimizer context — **no Vue** |
 | `src/workers/` | Optimizer + echo OCR; serializable messages only |
-| `src/scanner/scannerData.ts` | Builds the public `/scanner-data.json` (game data for Wavescan, ADR 0035); emitted by a Vite plugin at build |
+| `src/scanner/scannerData.ts` | Builds the public `/scanner-data.json` (game data for Wavescan, ADR 0035); emitted by a Vite plugin at build, signed with `SCANNER_DATA_SIGNING_KEY` (ADR 0041) |
+| `src/scanner/scannerAssets.ts` | Builds `/scanner-assets.json` (set-icon references + echo pictures for Wavescan, ADR 0041) from `scanner-icons.json`. After adding an echo or set, CI runs `npm run scanner:icons` on the PR and commits the result (ADR 0042) |
 | `packages/formulas/` | Damage/heal/shield/Tune Break/negative-status formulas (`@wutheringtools/formulas`, ADR 0036); `src/calculator/calculator.ts` is a re-export shim. Bump its version to publish |
 | `packages/build-card-scanner/` | Discord-bot build card parser: layout, OCR text parsing, match order (`@wutheringtools/build-card-scanner`, ADR 0037); `CalculatorEchoParser.vue` supplies OCR + image matching. Bump its version to publish |
 | `packages/scanner-core/` | Echo scanner logic shared with Wavescan (`@wutheringtools/scanner-core`, ADR 0034); `src/scanner/*` are re-export shims. Bump its version to publish |
@@ -87,6 +88,7 @@ Optimizer: main thread builds OptimizerContext
 ## Skills
 
 - `new-character`, `new-weapon`, `import-echoes` (`.claude/skills/`) — CLI scaffold + manual-review workflow for adding game content.
+- `pr-review` — review the local branch or a PR (`/pr-review [<PR#>|<branch>] [--post]`) against these rules; reports only Blockers, Should fix and Nitpicks as one body comment.
 
 ## Deeper reading
 

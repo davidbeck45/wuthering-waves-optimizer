@@ -10,7 +10,7 @@
           class="btn btn-sm"
           @click="handleReset"
           data-test-custom-buffs-workspace-reset>
-          Reset all
+          Reset All
         </button>
       </div>
     </div>

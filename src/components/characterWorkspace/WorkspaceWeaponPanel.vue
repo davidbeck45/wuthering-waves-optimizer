@@ -7,25 +7,25 @@
         <button
           v-if="hasWeaponPassive"
           type="button"
-          class="btn btn-xs"
+          class="btn btn-sm"
           data-test-workspace-weapon-enable-all
           @click="enableAllWeapons">
-          Enable all
+          Enable All
         </button>
         <button
           v-if="hasWeaponPassive"
           type="button"
-          class="btn btn-xs"
+          class="btn btn-sm"
           data-test-workspace-weapon-max-all
           @click="maxAllWeapons">
-          Max all
+          Max All
         </button>
         <button
           type="button"
-          class="btn btn-xs"
+          class="btn btn-sm"
           data-test-workspace-weapon-browse
           @click="openBrowser">
-          Browse weapons
+          Browse Weapons
         </button>
       </div>
     </div>

@@ -6,12 +6,12 @@
 
 import { config as cartethyiaConfig } from "./data/Cartethyia/data";
 
-function enableLiveResultBarLab() {
+function enableLiveResultBarLab(config: Record<string, unknown> = {}) {
   cy.visit("/", {
     onBeforeLoad(win) {
       win.localStorage.setItem(
         "settings",
-        JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+        JSON.stringify({ config, labs: { liveResultBar: { isEnabled: true } } }),
       );
     },
   });
@@ -150,28 +150,48 @@ describe("Live Result panel tabs (Labs flag)", () => {
     );
   });
 
-  it("cycling the width preset resizes the panel and persists across a reload", () => {
+  it("dragging the resize handle resizes the panel and persists across a reload", () => {
+    cy.viewport(1600, 900);
     enableLiveResultBarLab();
     openBreakdown("Brant");
 
-    cy.get("[data-test-live-result-detail-width-wide]").click();
-    cy.get("[data-test-live-result-detail]").should(
-      "have.class",
-      "live-result-detail--wide",
-    );
+    const panelWidth = () =>
+      cy.get("[data-test-live-result-detail]").invoke("outerWidth");
+
+    panelWidth().should("be.closeTo", 420, 2);
+
+    // Drag the left edge 100px left: the panel grows by 100px.
+    cy.get("[data-test-live-result-detail-resizer]").then(($handle) => {
+      const rect = $handle[0].getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      cy.wrap($handle).trigger("pointerdown", {
+        button: 0,
+        clientX: x,
+        clientY: y,
+        force: true,
+      });
+      cy.window().trigger("pointermove", { clientX: x - 100, clientY: y });
+      cy.window().trigger("pointerup", { clientX: x - 100, clientY: y });
+    });
+    panelWidth().should("be.closeTo", 520, 2);
 
     cy.reload();
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-live-result-bar-toggle]").click();
-    cy.get("[data-test-live-result-detail]").should(
-      "have.class",
-      "live-result-detail--wide",
-    );
+    panelWidth().should("be.closeTo", 520, 2);
 
-    cy.get("[data-test-live-result-detail-width-compact]").click();
-    cy.get("[data-test-live-result-detail]").should(
-      "have.class",
-      "live-result-detail--compact",
-    );
+    // Double-click resets to the default width.
+    cy.get("[data-test-live-result-detail-resizer]").dblclick({ force: true });
+    panelWidth().should("be.closeTo", 420, 2);
+  });
+
+  it("reads a legacy width preset as its old pixel width", () => {
+    cy.viewport(1600, 900);
+    enableLiveResultBarLab({ liveResultDetailPanelWidth: "wide" });
+    openBreakdown("Brant");
+    cy.get("[data-test-live-result-detail]")
+      .invoke("outerWidth")
+      .should("be.closeTo", 480, 2);
   });
 });

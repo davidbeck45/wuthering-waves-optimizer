@@ -16,12 +16,18 @@
       <EchoEditHeader
         :target="target"
         :show-browse="context === 'build'"
+        show-odds
         @close="emit('close')"
-        @open-echoes-browser="emit('open-echoes-browser')" />
+        @open-echoes-browser="emit('open-echoes-browser')"
+        @open-odds="oddsDialogRef?.open()" />
 
       <EchoEditFields :target="target" />
     </div>
   </template>
+  <EchoOddsDialog
+    ref="oddsDialogRef"
+    :target="target"
+    @edit-weights="emit('open-weights-editor')" />
 </template>
 
 <script setup lang="ts">
@@ -29,6 +35,7 @@ import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import type { EchoEditTarget } from "../composables/useEchoEditFields";
 import EchoEditFields from "./EchoEditFields.vue";
 import EchoEditHeader from "./EchoEditHeader.vue";
+import EchoOddsDialog from "./EchoOddsDialog.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
 
@@ -43,6 +50,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: [];
   "open-echoes-browser": [];
+  "open-weights-editor": [];
 }>();
 
 const target = computed<EchoEditTarget>(() =>
@@ -50,6 +58,9 @@ const target = computed<EchoEditTarget>(() =>
     ? { context: "build", character: props.character ?? "", index: props.index ?? 0 }
     : { context: "inventory", echoId: props.echoId },
 );
+
+// The header's "Odds" button opens the echo's odds in a dialog.
+const oddsDialogRef = ref<InstanceType<typeof EchoOddsDialog> | null>(null);
 
 // Focus the panel on open so Escape (bound via @keydown.esc on this element)
 // actually has something to bubble from.

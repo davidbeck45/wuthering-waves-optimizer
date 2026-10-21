@@ -42,6 +42,10 @@ import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useSettingsStore } from "../stores/settings";
 import {
+  getEnabledAttackKeys,
+  isAttackUnlocked,
+} from "../calculator/enabledAttacks";
+import {
   CHART_DAMAGE_METRIC_OPTIONS,
   resolveChartDamageMetric,
   resolveChartGroupBy,
@@ -147,22 +151,16 @@ const forteLabelByActionType: Record<string, string> = {
   utilityAttacks: "Utility",
 };
 
+const enabledAttackKeys = computed(() =>
+  getEnabledAttackKeys(
+    props.charResonanceChainsData?.value,
+    props.charBuffsData?.value,
+  ),
+);
+
 function isAttackIncluded(attack: ChartAttack): boolean {
-  const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
-  if (requiresResonanceChain) {
-    const resonanceChainsEnabledAttacks =
-      props.charResonanceChainsData?.value?.EnableAttack ?? [];
-    const charBuffsEnabledAttacks =
-      props.charBuffsData?.value?.EnableAttack ?? [];
-    const enabledAttacks: string[] = []
-      .concat(resonanceChainsEnabledAttacks)
-      .concat(charBuffsEnabledAttacks);
-    const isAttackEnabled = enabledAttacks.includes(
-      attack.requiresResonanceChain as string,
-    );
-    if (!isAttackEnabled) {
-      return false;
-    }
+  if (!isAttackUnlocked(attack, enabledAttackKeys.value)) {
+    return false;
   }
   if (attack.originalIsEnabled === false) {
     return false;

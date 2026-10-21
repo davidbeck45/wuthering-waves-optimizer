@@ -5,8 +5,34 @@
     @click="emit('close')"></div>
   <div
     class="live-result-detail flex flex-col"
-    :class="widthClass"
+    :class="{ 'live-result-detail--resizing': isResizing }"
+    :style="{ '--live-result-detail-width': `${panelWidth}px` }"
     data-test-live-result-detail>
+    <div
+      class="live-result-detail__resizer"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize panel"
+      :aria-valuenow="panelWidth"
+      :aria-valuemin="MIN_PANEL_WIDTH"
+      :aria-valuemax="MAX_PANEL_WIDTH"
+      tabindex="0"
+      v-tooltip="'Drag to resize · double-click to reset'"
+      data-test-live-result-detail-resizer
+      @pointerdown="startResize"
+      @dblclick="resetWidth"
+      @keydown="onResizerKeydown">
+      <span class="live-result-detail__grip" aria-hidden="true">
+        <svg viewBox="0 0 6 16" fill="currentColor">
+          <circle cx="1.5" cy="3" r="1.1" />
+          <circle cx="4.5" cy="3" r="1.1" />
+          <circle cx="1.5" cy="8" r="1.1" />
+          <circle cx="4.5" cy="8" r="1.1" />
+          <circle cx="1.5" cy="13" r="1.1" />
+          <circle cx="4.5" cy="13" r="1.1" />
+        </svg>
+      </span>
+    </div>
     <div class="live-result-detail__handle" aria-hidden="true"></div>
     <div
       class="flex items-center justify-between gap-2 px-4 py-2 border-b border-base-300 shrink-0">
@@ -65,36 +91,6 @@
       v-if="isPinned"
       class="text-xs text-primary bg-primary/10 px-4 py-1.5 shrink-0">
       Pinned — stays open while you switch tabs and after a reload.
-    </div>
-
-    <div class="control-row shrink-0">
-      <span class="control-row__label">Width</span>
-      <div class="width-seg" data-test-live-result-detail-width>
-        <button
-          type="button"
-          class="width-seg__btn"
-          :class="{ 'width-seg__btn--active': widthPreset === 'compact' }"
-          data-test-live-result-detail-width-compact
-          @click="widthPreset = 'compact'">
-          Compact
-        </button>
-        <button
-          type="button"
-          class="width-seg__btn"
-          :class="{ 'width-seg__btn--active': widthPreset === 'standard' }"
-          data-test-live-result-detail-width-standard
-          @click="widthPreset = 'standard'">
-          Standard
-        </button>
-        <button
-          type="button"
-          class="width-seg__btn"
-          :class="{ 'width-seg__btn--active': widthPreset === 'wide' }"
-          data-test-live-result-detail-width-wide
-          @click="widthPreset = 'wide'">
-          Wide
-        </button>
-      </div>
     </div>
 
     <div v-if="pinnedRows.length" class="pin-strip shrink-0" data-test-live-result-detail-pin-strip>
@@ -189,7 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, ref } from "vue";
 import { storeToRefs } from "pinia";
 import CalculatorLiveResultOverview from "./CalculatorLiveResultOverview.vue";
 import CalculatorLiveResultAttacks from "./CalculatorLiveResultAttacks.vue";
@@ -288,68 +284,160 @@ const pinnedRows = computed(() => {
 
 const settingsStore = useSettingsStore();
 const { config } = storeToRefs(settingsStore);
-const WIDTH_PRESETS = { compact: "380px", standard: "420px", wide: "480px" } as const;
-type WidthPreset = keyof typeof WIDTH_PRESETS;
+// Drag-to-resize width in px, persisted as a number. Older saves hold one of
+// the former presets ("compact"/"standard"/"wide", ADR 0018); read those as
+// their old px widths so nobody's panel jumps.
+const DEFAULT_PANEL_WIDTH = 420;
+const MIN_PANEL_WIDTH = 320;
+const MAX_PANEL_WIDTH = 900;
+const LEGACY_WIDTH_PRESETS: Record<string, number> = {
+  compact: 380,
+  standard: 420,
+  wide: 480,
+};
 
-const widthPreset = computed<WidthPreset>({
-  get: () => (config.value?.liveResultDetailPanelWidth as WidthPreset) ?? "standard",
-  set: (value) => settingsStore.addToConfig({ liveResultDetailPanelWidth: value }),
+function clampWidth(width: number): number {
+  // Also leave the main column at least 30% of the window.
+  const viewportMax = Math.floor(window.innerWidth * 0.7);
+  const max = Math.max(MIN_PANEL_WIDTH, Math.min(MAX_PANEL_WIDTH, viewportMax));
+  return Math.round(Math.min(max, Math.max(MIN_PANEL_WIDTH, width)));
+}
+
+const savedWidth = computed<number>(() => {
+  const raw = config.value?.liveResultDetailPanelWidth;
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  if (typeof raw === "string" && raw in LEGACY_WIDTH_PRESETS) {
+    return LEGACY_WIDTH_PRESETS[raw];
+  }
+  return DEFAULT_PANEL_WIDTH;
 });
-const widthClass = computed(() => `live-result-detail--${widthPreset.value}`);
+
+// Local while dragging so pointermove doesn't write to localStorage each frame.
+const dragWidth = ref<number | null>(null);
+const isResizing = computed(() => dragWidth.value !== null);
+const panelWidth = computed(() => clampWidth(dragWidth.value ?? savedWidth.value));
+
+function saveWidth(width: number) {
+  settingsStore.addToConfig({ liveResultDetailPanelWidth: clampWidth(width) });
+}
+
+let dragStartX = 0;
+let dragStartWidth = 0;
+
+function onResizeMove(event: PointerEvent) {
+  // The panel sits on the right, so dragging its left edge leftwards widens it.
+  dragWidth.value = clampWidth(dragStartWidth + (dragStartX - event.clientX));
+}
+
+function stopResize() {
+  window.removeEventListener("pointermove", onResizeMove);
+  window.removeEventListener("pointerup", stopResize);
+  window.removeEventListener("pointercancel", stopResize);
+  document.body.classList.remove("live-result-detail-resizing");
+  if (dragWidth.value !== null) {
+    saveWidth(dragWidth.value);
+    dragWidth.value = null;
+  }
+}
+
+function startResize(event: PointerEvent) {
+  if (event.button !== 0) return;
+  event.preventDefault();
+  dragStartX = event.clientX;
+  dragStartWidth = panelWidth.value;
+  dragWidth.value = panelWidth.value;
+  document.body.classList.add("live-result-detail-resizing");
+  window.addEventListener("pointermove", onResizeMove);
+  window.addEventListener("pointerup", stopResize);
+  window.addEventListener("pointercancel", stopResize);
+}
+
+function resetWidth() {
+  saveWidth(DEFAULT_PANEL_WIDTH);
+}
+
+function onResizerKeydown(event: KeyboardEvent) {
+  const step = event.shiftKey ? 50 : 10;
+  if (event.key === "ArrowLeft") saveWidth(panelWidth.value + step);
+  else if (event.key === "ArrowRight") saveWidth(panelWidth.value - step);
+  else if (event.key === "Home") saveWidth(MIN_PANEL_WIDTH);
+  else if (event.key === "End") saveWidth(MAX_PANEL_WIDTH);
+  else return;
+  event.preventDefault();
+}
+
+onBeforeUnmount(stopResize);
 </script>
 
 <style scoped lang="scss">
 .live-result-detail {
-  flex: 0 0 420px;
+  position: relative;
+  flex: 0 0 var(--live-result-detail-width, 420px);
   min-width: 0;
+  max-width: 70vw;
   border-left: 1px solid oklch(var(--b3));
   background: oklch(var(--b1));
 }
-.live-result-detail--compact {
-  flex-basis: 380px;
-}
-.live-result-detail--standard {
-  flex-basis: 420px;
-}
-.live-result-detail--wide {
-  flex-basis: 480px;
-}
 
-.control-row {
+// Sits over the left border; wider than it looks so it's easy to grab.
+.live-result-detail__resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 10px;
+  z-index: 2;
+  cursor: col-resize;
+  touch-action: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 6px 16px;
-  border-bottom: 1px solid oklch(var(--b3));
-}
-.control-row__label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: oklch(var(--bc) / 0.5);
-}
+  justify-content: center;
 
-.width-seg {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 4px;
+    width: 2px;
+    background: transparent;
+    transition: background 0.15s ease;
+  }
+
+  &:hover::before,
+  &:focus-visible::before,
+  .live-result-detail--resizing &::before {
+    background: oklch(var(--p));
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+.live-result-detail__grip {
+  position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 28px;
+  border-radius: 999px;
   background: oklch(var(--b2));
-  border-radius: 999px;
-  padding: 2px;
-  gap: 2px;
-}
-.width-seg__btn {
-  border: none;
-  background: transparent;
-  color: oklch(var(--bc) / 0.6);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 4px 8px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.width-seg__btn--active {
-  background: oklch(var(--p));
-  color: oklch(var(--pc));
+  border: 1px solid oklch(var(--b3));
+  color: oklch(var(--bc) / 0.5);
+
+  svg {
+    width: 6px;
+    height: 16px;
+  }
+
+  .live-result-detail__resizer:hover &,
+  .live-result-detail__resizer:focus-visible &,
+  .live-result-detail--resizing & {
+    color: oklch(var(--pc));
+    background: oklch(var(--p));
+    border-color: oklch(var(--p));
+  }
 }
 
 .pin-strip {
@@ -371,13 +459,13 @@ const widthClass = computed(() => `live-result-detail--${widthPreset.value}`);
   cursor: pointer;
 }
 .pin-strip__label {
-  font-size: 9.5px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: oklch(var(--bc) / 0.55);
 }
 .pin-strip__value {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .live-result-detail-scrim {
@@ -405,10 +493,7 @@ const widthClass = computed(() => `live-result-detail--${widthPreset.value}`);
     z-index: 49;
   }
 
-  .live-result-detail,
-  .live-result-detail--compact,
-  .live-result-detail--standard,
-  .live-result-detail--wide {
+  .live-result-detail {
     position: fixed;
     left: 0;
     right: 0;
@@ -416,11 +501,16 @@ const widthClass = computed(() => `live-result-detail--${widthPreset.value}`);
     top: auto;
     flex: none;
     width: 100%;
+    max-width: none;
     max-height: 80vh;
     border-left: none;
     border-radius: 1rem 1rem 0 0;
     box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.25);
     z-index: 50;
+  }
+
+  .live-result-detail__resizer {
+    display: none;
   }
 
   .live-result-detail__handle {
@@ -432,5 +522,14 @@ const widthClass = computed(() => `live-result-detail--${widthPreset.value}`);
     margin: 8px auto 0;
     flex: none;
   }
+}
+</style>
+
+<style lang="scss">
+// Keeps the col-resize cursor and stops text selection while the pointer
+// is off the handle mid-drag.
+body.live-result-detail-resizing {
+  cursor: col-resize;
+  user-select: none;
 }
 </style>

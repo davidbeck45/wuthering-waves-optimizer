@@ -67,6 +67,58 @@ h6 {
 #wt-app {
   width: 100%;
 }
+
+/* daisyUI locks page scroll while a modal is open (overflow: hidden + scrollbar-gutter:
+ * stable). On a page without a scrollbar that reserves an empty gray gutter and shifts
+ * the layout left. Leave page scrolling alone instead, so nothing moves either way.
+ * Wheel and keyboard scrolling still stop at the dialog: daisyUI sets
+ * overscroll-behavior: contain on .modal and .modal-box.
+ * The selector mirrors daisyUI 4's modal scroll-lock rule; recheck it on upgrade
+ * (daisyUI 5.7 reserves the gutter only when the page scrolls, so this may go). */
+:root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+  overflow: revert;
+  scrollbar-gutter: revert;
+}
+
+/**** v3 UI type scale ****/
+/* Larger text in the v3 UI only; classic keeps Tailwind/daisyUI defaults.
+ * `data-ui` is set by AppLayout.vue. Body text (text-sm) is 16px. */
+html[data-ui="v3"] {
+  --text-sm: 1rem;
+  --text-sm-lh: 1.5rem;
+  --text-xs: 0.875rem;
+  --text-xs-lh: 1.25rem;
+}
+
+/* daisyUI hardcodes its component sizes, so bump the common ones here. Inside
+ * the components layer with :where() so a text-* utility on the same element
+ * still wins, as it does in classic. */
+@layer components {
+  :where(html[data-ui="v3"]) .btn,
+  :where(html[data-ui="v3"]) .btn-md,
+  :where(html[data-ui="v3"]) .input,
+  :where(html[data-ui="v3"]) .select,
+  :where(html[data-ui="v3"]) .tab,
+  :where(html[data-ui="v3"]) .menu {
+    font-size: 1rem;
+  }
+  :where(html[data-ui="v3"]) .label-text-alt,
+  :where(html[data-ui="v3"]) .btn-sm,
+  :where(html[data-ui="v3"]) .input-sm,
+  :where(html[data-ui="v3"]) .select-sm,
+  :where(html[data-ui="v3"]) .badge-sm,
+  :where(html[data-ui="v3"]) .badge-md,
+  :where(html[data-ui="v3"]) .badge {
+    font-size: 0.875rem;
+  }
+  :where(html[data-ui="v3"]) .btn-xs,
+  :where(html[data-ui="v3"]) .input-xs,
+  :where(html[data-ui="v3"]) .select-xs,
+  :where(html[data-ui="v3"]) .badge-xs {
+    font-size: 0.8125rem;
+  }
+}
+
 html[data-theme-style="light"] {
   :root {
     color: #213547;

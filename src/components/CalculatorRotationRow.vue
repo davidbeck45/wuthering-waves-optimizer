@@ -37,8 +37,9 @@
         <FavoriteHeartButton :active="favorite" :test-id="name" @toggle="$emit('toggle-favorite')" />
         <button
           type="button"
-          class="btn btn-ghost btn-xs"
-          title="Delete rotation"
+          class="btn btn-ghost btn-sm btn-square"
+          v-tooltip="'Delete rotation'"
+          aria-label="Delete rotation"
           :data-test-rotations-row-delete="name"
           @click="$emit('delete')">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">

@@ -395,7 +395,8 @@
                   <button
                     type="button"
                     class="btn btn-ghost btn-xs"
-                    title="Delete team"
+                    v-tooltip="'Delete team'"
+                    aria-label="Delete team"
                     :data-test-team-rotations-delete="team.name"
                     @click="handleDeleteTeam(team.id, team.name)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
@@ -501,7 +502,8 @@
                 <button
                   type="button"
                   class="btn btn-ghost btn-xs"
-                  title="Delete team"
+                  v-tooltip="'Delete team'"
+                  aria-label="Delete team"
                   :data-test-team-rotations-delete="team.name"
                   @click="handleDeleteTeam(team.id, team.name)">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">

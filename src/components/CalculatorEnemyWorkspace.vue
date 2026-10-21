@@ -22,10 +22,10 @@
       <div class="flex flex-wrap gap-2">
         <button
           type="button"
-          class="btn btn-xs"
+          class="btn btn-sm"
           data-test-enemy-workspace-reset
           @click="handleReset">
-          Reset all
+          Reset All
         </button>
       </div>
     </div>

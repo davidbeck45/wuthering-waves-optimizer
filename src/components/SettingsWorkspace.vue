@@ -16,7 +16,7 @@
         <SettingsPreferences v-if="activeSection === 'preferences'" variant="v3" />
         <SettingsBackupRestore v-else-if="activeSection === 'backup-restore'" />
         <SettingsDelete v-else-if="activeSection === 'danger-zone'" variant="v3" />
-        <SettingsWavescan v-else-if="activeSection === 'wavescan' && isWavescanEnabled" />
+        <SettingsWavescan v-else-if="activeSection === 'wavescan'" />
         <SettingsLabs v-else-if="activeSection === 'labs'" variant="v3" />
       </div>
     </div>
@@ -38,7 +38,6 @@ import SettingsDelete from "./SettingsDelete.vue";
 import SettingsLabs from "./SettingsLabs.vue";
 import SettingsPreferences from "./SettingsPreferences.vue";
 import SettingsWavescan from "./SettingsWavescan.vue";
-import { useSettingsStore } from "../stores/settings";
 import WorkspaceSideNav, { type WorkspaceNavGroup } from "./WorkspaceSideNav.vue";
 
 // Hand-inlined icons (rendered via v-html), matching the convention already
@@ -66,11 +65,6 @@ const ICONS = {
   ),
 };
 
-const settingsStore = useSettingsStore();
-const isWavescanEnabled = computed(
-  () => settingsStore.labs?.wavescanImport?.isEnabled ?? false,
-);
-
 const sectionGroups = computed<WorkspaceNavGroup[]>(() => [
   {
     label: "General",
@@ -80,9 +74,7 @@ const sectionGroups = computed<WorkspaceNavGroup[]>(() => [
     label: "Your Data",
     items: [
       { id: "backup-restore", label: "Backup & Restore", icon: ICONS.backupRestore },
-      ...(isWavescanEnabled.value
-        ? [{ id: "wavescan", label: "Wavescan", icon: ICONS.wavescan }]
-        : []),
+      { id: "wavescan", label: "Wavescan", icon: ICONS.wavescan },
       { id: "danger-zone", label: "Danger Zone", icon: ICONS.dangerZone },
     ],
   },

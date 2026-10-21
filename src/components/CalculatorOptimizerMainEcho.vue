@@ -14,6 +14,7 @@
       :max-stacks="buff.maxStacks"
       :always-enabled="buff.alwaysEnabled || alwaysEnabled"
       storage-mode="optimizer"
+      :calculator-fallback="calculatorFallback"
       @updated-buff-stats="handleBuffStats" />
   </div>
 </template>
@@ -38,8 +39,11 @@ const props = withDefaults(
     minStacks?: number;
     maxStacks?: number;
     alwaysEnabled?: boolean;
+    /** v3 optimizer: see CalculatorMainEchoBuff's prop of the same name. */
+    calculatorFallback?: boolean;
   }>(),
   {
+    calculatorFallback: false,
     actions: () => [],
     hasStacks: false,
     minStacks: 0,

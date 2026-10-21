@@ -7,12 +7,90 @@ on:
       - master
       - plus
   pull_request:
+  # The scanner-icons job starts a run this way after it pushes: a push made with the
+  # workflow token doesn't start workflows by itself.
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  # Keeps src/scanner/scanner-icons.json (Wavescan's set-icon references and echo pictures,
+  # ADR 0041) in step with the echo data, so nobody has to remember `npm run scanner:icons`.
+  # On a pull request that changes the echoes, it runs the script and commits any new
+  # pictures to the PR branch. The tests then run on that new commit (see e2e below).
+  scanner-icons:
+    # Not for forks: their PRs get a read-only token. Their tests say to run the script.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    outputs:
+      pushed: ${{ steps.commit.outputs.pushed }}
+
+    steps:
+      - name: Checkout the PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Did the echoes change?
+        id: changes
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # Everything the pictures are made from: the echo and set tables, and the script.
+          if git diff --quiet "$BASE"...HEAD -- src/echoes src/scanner scripts/scanner-icons.ts; then
+            echo "No echo changes: nothing to do."
+            echo "echoes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "echoes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node.js
+        if: steps.changes.outputs.echoes == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install dependencies
+        if: steps.changes.outputs.echoes == 'true'
+        run: npm ci
+
+      - name: Make the scanner pictures
+        if: steps.changes.outputs.echoes == 'true'
+        run: npm run scanner:icons
+
+      - name: Commit new pictures to the PR
+        id: commit
+        if: steps.changes.outputs.echoes == 'true'
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- src/scanner/scanner-icons.json; then
+            echo "Pictures are already up to date."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/scanner/scanner-icons.json
+          git commit -m "chore: update scanner pictures"
+          git push origin "HEAD:$BRANCH"
+          # Test the new commit; its checks show on the PR.
+          gh workflow run ci.yml --ref "$BRANCH"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
   e2e:
+    needs: scanner-icons
+    # Runs when scanner-icons was skipped (pushes to master, forks, dispatched runs) or had
+    # nothing to commit. When it pushed, this commit is already out of date: the run it
+    # started tests the new one, so this run doesn't fail on the missing pictures.
+    if: always() && needs.scanner-icons.result != 'failure' && needs.scanner-icons.outputs.pushed != 'true'
     runs-on: ubuntu-latest
 
     steps:

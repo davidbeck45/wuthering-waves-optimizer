@@ -46,6 +46,14 @@
           @click="emit('open-echoes-browser')">
           Browse
         </button>
+        <button
+          v-if="showOdds && echo && (target.context === 'build' || !isFullyTuned)"
+          type="button"
+          class="btn btn-xs btn-ghost"
+          data-test-echo-edit-odds
+          @click="emit('open-odds')">
+          Odds
+        </button>
       </div>
       <div v-if="echoSets.length" class="flex items-center gap-1.5 mt-1.5">
         <button
@@ -88,6 +96,7 @@ import { computed, ref } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
+import { ECHO_SUBSTAT_SLOTS } from "../echoes/tuningOdds";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import EchoPickerDialog from "./EchoPickerDialog.vue";
@@ -98,14 +107,21 @@ const props = withDefaults(
   defineProps<{
     target: EchoEditTarget;
     showBrowse?: boolean;
+    /**
+     * Show an "Odds" button; the host opens EchoOddsDialog on `open-odds`.
+     * In the inventory it's hidden on finished echoes, whose only odds
+     * (beating its score) need a build's character.
+     */
+    showOdds?: boolean;
     closeLabel?: string;
   }>(),
-  { showBrowse: false, closeLabel: "Close" },
+  { showBrowse: false, showOdds: false, closeLabel: "Close" },
 );
 
 const emit = defineEmits<{
   close: [];
   "open-echoes-browser": [];
+  "open-odds": [];
 }>();
 
 const {
@@ -122,6 +138,10 @@ const {
   handleChooseEchoSet: handleChooseEchoSetField,
   isSetSelected,
 } = useEchoEditFields(() => props.target);
+
+const isFullyTuned = computed(
+  () => slots.filter((slot) => slot.type.value && slot.type.value !== "none").length >= ECHO_SUBSTAT_SLOTS,
+);
 
 const { getEchoFlags } = useEchoInventory();
 const isEchoLocked = computed(() =>

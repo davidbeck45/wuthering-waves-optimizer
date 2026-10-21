@@ -8,8 +8,9 @@ tags: [components, navigation]
 
 ## Context
 
-The top-right utility dropdown in `Nav.vue` (the `<details class="options-menu">`
-block) is a flat list of six links — Settings, Info, Updates, Privacy, Legal,
+The top-right utility dropdown in `Nav.vue` (now the `data-test-options-menu`
+dropdown; a `<details class="options-menu">` block when this ADR was written)
+is a flat list of six links — Settings, Info, Updates, Privacy, Legal,
 Discord — with no grouping and no visual distinction between an interactive
 workspace (Settings), static reference pages (Info/Updates/Privacy/Legal),
 and an external community link (Discord). A design review covering this
@@ -38,6 +39,10 @@ made for this whole redesign wave.
    convention of inlining icons directly rather than pulling in an icon
    library. The flag-off `<ul>` is untouched, byte-for-byte.
 
+   **Superseded 2026-10-17:** both `<ul>`s now sit in a focus-driven DaisyUI
+   `dropdown`, the same box as the theme menu (`ThemeChooser.vue`), so the
+   menu closes on click-away; the flag-off list's classes changed with it.
+
 2. **No unread indicator of any kind — deliberately.** Updates and Info get
    ~1% and ~2% of site traffic respectively. A "new since last visit" badge
    would mean tracking a per-visitor last-seen timestamp and rendering an
@@ -60,7 +65,7 @@ made for this whole redesign wave.
 
 ## Related
 
-- `src/components/navigation/Nav.vue` — `.options-menu` block
+- `src/components/navigation/Nav.vue` — the `data-test-options-menu` dropdown
 - `cypress/e2e/navUtilityMenuFlagged.cy.ts` (new)
 - ADRs [0013](./0013-live-result-bar-labs-flag.md)–[0020](./0020-enemy-workspace-redesign.md)
   — the shared-flag pattern this follows

@@ -784,7 +784,7 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     key: "SoundofTrueName2Set",
     passives: [
       {
-        key: "SoundofTrueName2Set",
+        key: "SoundofTrueName2SetAero",
         details: `Aero DMG + 10%`,
         modifiers: [
           {
@@ -924,7 +924,7 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     key: "HeartofSwornVigil2Set",
     passives: [
       {
-        key: "HeartofSwornVigilElectro",
+        key: "HeartofSwornVigil2SetElectro",
         details: `Electro DMG + 10%`,
         modifiers: [
           {
@@ -1160,7 +1160,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
   "Frosty Resolve 5 Set": {
     key: "FrostyResolve5Set",
     name: "Frosty Resolve",
-    details: `Casting Resonance Skill grants <span class="Param">22.5%</span> <span class="Ice">Glacio</span> DMG Bonus for 15s and casting Resonance Liberation increases Resonance Skill DMG by <span class="Param">22.5%</span>, lasting for 5s. This effect stacks up to 2 times.`,
+    details: `Casting Resonance Skill grants <span class="Param">22.5%</span> <span class="Ice">Glacio</span> DMG Bonus for 15s and casting Resonance Liberation increases Resonance Skill DMG by <span class="Param">18%</span>, lasting for 5s. This effect stacks up to 2 times.`,
     passives: [
       {
         key: "FrostyResolve5Set5SetGlacioDMGBonus",
@@ -1617,6 +1617,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
     key: "SoundofTrueName5Set",
     passives: [
       {
+        // Kept from when the 2-piece shared it: saved builds store this toggle under this key.
         key: "SoundofTrueName2Set",
         details: `Dealing Echo Skill DMG to enemies increases the Resonator's Echo Skill Crit. Rate by 20%, and grants 15% Aero DMG Bonus for 5s.`,
         modifiers: [

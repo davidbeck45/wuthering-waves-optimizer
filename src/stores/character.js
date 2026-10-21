@@ -124,6 +124,26 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].optimizer.minStats = data;
       }
     },
+    // "Use calculator setting" in the v3 optimizer: drop the optimizer's own
+    // setting so the buff falls back to the calculator's (see
+    // src/calculator/optimizerBuffStatus.ts). setCharacterData merges, so it
+    // can't remove a key.
+    clearOptimizerEchoSetPassive(characterId, passiveKey) {
+      delete this.characters[characterId]?.optimizer?.echoSetPassives?.[passiveKey];
+    },
+    clearOptimizerMainEchoBuff(characterId, echoKey, buffKey) {
+      const entry = this.characters[characterId]?.optimizer?.mainEchoBuffs?.[echoKey];
+      if (!entry) {
+        return;
+      }
+      if (entry.buffs && Object.keys(entry.buffs).length > 0) {
+        delete entry.buffs[buffKey];
+        return;
+      }
+      // Legacy shape: one isEnabled/stacks for every buff of this echo.
+      delete entry.isEnabled;
+      delete entry.stacks;
+    },
     setCharacterEchoes(characterId, echoes) {
       if (this.characters[characterId]) {
         this.characters[characterId].echoes = echoes;

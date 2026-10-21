@@ -118,7 +118,7 @@ function setAllExpanded(open: boolean) {
     border: none;
     background: none;
     color: oklch(var(--p));
-    font-size: 11.5px;
+    font-size: 13px;
     font-weight: 700;
     padding: 0;
   }

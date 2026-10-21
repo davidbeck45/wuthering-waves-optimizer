@@ -36,11 +36,18 @@ export type WavescanSkippedEcho = {
   scanId: string | null;
   echo: string | null;
   reason: string;
+  /** Who Wavescan saw wearing it, so a loadout can say a slot was skipped. */
+  equippedBy: string | null;
 };
 
 export type WavescanEchoMapResult = {
   echoes: WavescanInventoryEcho[];
   skipped: WavescanSkippedEcho[];
+  /**
+   * Mapped echo id → the character key Wavescan saw wearing it. Kept apart
+   * from the echoes so the rows saved to the inventory don't carry it.
+   */
+  equippedBy: Record<string, string>;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -149,21 +156,29 @@ export function mapWavescanEchoes(
 
   const echoes: WavescanInventoryEcho[] = [];
   const skipped: WavescanSkippedEcho[] = [];
+  const equippedBy: Record<string, string> = {};
   rows.forEach((row, index) => {
+    const record = isRecord(row) ? row : {};
+    const wearer =
+      typeof record.equippedBy === "string" && record.equippedBy.trim()
+        ? record.equippedBy.trim()
+        : null;
     const reason = getInvalidReason(row);
     if (reason) {
-      const record = isRecord(row) ? row : {};
       skipped.push({
         position: index + 1,
         scanId: typeof record.scanId === "string" ? record.scanId : null,
         echo: typeof record.echo === "string" ? record.echo : null,
         reason,
+        equippedBy: wearer,
       });
       return;
     }
-    echoes.push(toInventoryEcho(row as WavescanEcho, nextId()));
+    const echo = toInventoryEcho(row as WavescanEcho, nextId());
+    echoes.push(echo);
+    if (wearer) equippedBy[echo.echoId] = wearer;
   });
-  return { echoes, skipped };
+  return { echoes, skipped, equippedBy };
 }
 
 export type WavescanImportMode = "append" | "replace";
@@ -181,6 +196,11 @@ export type WavescanEchoImportPlan = {
   alreadyOwnedCount: number;
   /** Locked echoes that replace mode keeps. */
   keptLockedCount: number;
+  /**
+   * Scanned echo id → the inventory id it ends up as: its own id when it's
+   * added, or the kept echo it matched. Loadouts equip these ids.
+   */
+  resolvedIds: Record<string, string>;
 };
 
 /**
@@ -201,21 +221,26 @@ export function planWavescanEchoImport(
       ? inventory.filter((echo) => !echo.locked).map((echo) => echo.echoId)
       : [];
 
-  const ownedCounts = new Map<string, number>();
+  // Ids rather than a count, so a matched scan echo knows which owned
+  // echo it is (a loadout equips that one instead of adding a copy).
+  const ownedIds = new Map<string, string[]>();
   for (const echo of kept) {
     const key = getEchoIdentityKey(echo);
-    ownedCounts.set(key, (ownedCounts.get(key) ?? 0) + 1);
+    const ids = ownedIds.get(key);
+    if (ids) ids.push(echo.echoId);
+    else ownedIds.set(key, [echo.echoId]);
   }
 
   const toAdd: WavescanInventoryEcho[] = [];
+  const resolvedIds: Record<string, string> = {};
   let alreadyOwnedCount = 0;
   for (const echo of scanned) {
-    const key = getEchoIdentityKey(echo);
-    const owned = ownedCounts.get(key) ?? 0;
-    if (owned > 0) {
-      ownedCounts.set(key, owned - 1);
+    const ownedId = ownedIds.get(getEchoIdentityKey(echo))?.shift();
+    if (ownedId !== undefined) {
+      resolvedIds[echo.echoId] = ownedId;
       alreadyOwnedCount++;
     } else {
+      resolvedIds[echo.echoId] = echo.echoId;
       toAdd.push(echo);
     }
   }
@@ -225,5 +250,6 @@ export function planWavescanEchoImport(
     toRemoveIds,
     alreadyOwnedCount,
     keptLockedCount: mode === "replace" ? kept.length : 0,
+    resolvedIds,
   };
 }

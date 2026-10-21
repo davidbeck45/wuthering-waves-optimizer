@@ -9,7 +9,7 @@ import { CLASSIC_UI_CONFIG_KEY, isClassicUiEnabled } from "../utils/uiVersion";
 import { trackEvent, trackEventWhenReady } from "../utils/analytics";
 
 /** Where a switch happened, for analytics. */
-export type ClassicUiToggleSource = "theme-menu" | "settings" | "whats-new";
+export type ClassicUiToggleSource = "theme-menu" | "utility-menu" | "settings" | "whats-new";
 
 const SESSION_REPORTED_KEY = "wt-classic-ui-session-reported";
 

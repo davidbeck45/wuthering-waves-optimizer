@@ -15,11 +15,23 @@
 <script setup lang="ts">
 import { onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
+import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import ToastContainer from "../components/ToastContainer.vue";
 import ConfirmDialog from "../components/ConfirmDialog.vue";
 import AppUpdateBanner from "../components/AppUpdateBanner.vue";
 
 const route = useRoute();
+const settingsStore = useSettingsStore();
+
+// Global CSS scoped to one UI (e.g. v3's larger type in style.css) keys off this.
+const stopUiWatch = watch(
+  () => isV3UiEnabled(settingsStore),
+  (isV3) => {
+    document.documentElement.setAttribute("data-ui", isV3 ? "v3" : "classic");
+  },
+  { immediate: true },
+);
 
 function updateBodyOverflow(routeName: string | symbol | undefined | null) {
   if (routeName === "HomeView") {
@@ -39,6 +51,7 @@ const stopRouteWatch = watch(
 
 onBeforeUnmount(() => {
   stopRouteWatch();
+  stopUiWatch();
 });
 </script>
 

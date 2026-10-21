@@ -51,6 +51,14 @@ describe("UI version (v3 default, classic opt-in)", () => {
     storedConfig().its("useClassicUi").should("equal", false);
   });
 
+  it("switches to classic from the workspace (…) menu", () => {
+    visitAsNewUser();
+    cy.get("[data-test-options-menu]").click();
+    cy.get("[data-test-options-classic-ui]").click();
+    cy.get("[data-test-workspace-avatar]").should("not.exist");
+    storedConfig().its("useClassicUi").should("equal", true);
+  });
+
   it("switches to classic from Settings → Preferences, and the choice survives a reload", () => {
     visitAsNewUser("/settings");
     cy.get("[data-test-use-classic-ui]").should("not.be.checked").check({ force: true });
