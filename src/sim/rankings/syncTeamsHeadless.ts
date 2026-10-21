@@ -44,7 +44,7 @@ export interface HeadlessSyncResult {
 const VENDOR = new URL("../../../vendor/wuwa_calc/src/", import.meta.url).href;
 async function loadEngine(): Promise<{ S: any; T: any; R: any; St: any; SUB: any }> {
   const load = (file: string): Promise<any> => import(/* @vite-ignore */ VENDOR + file);
-  const [S, T, R, St, SUB] = await Promise.all([load("solver.ts"), load("teams.ts"), load("teamrun.ts"), load("engine/stats.ts"), load("shared/substats.ts")]);
+  const [S, T, R, St, SUB] = await Promise.all([load("solve/solver.ts"), load("resonators/teams.ts"), load("solve/teamrun.ts"), load("engine/stats.ts"), load("shared/substats.ts")]);
   return { S, T, R, St, SUB };
 }
 

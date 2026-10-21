@@ -1,7 +1,7 @@
 /**
  * Hosts Riley31415/wuwa_calc's comparison table + detail pages inside this app.
  *
- * A port of his `src/index.ts` (the page controller) with three changes: the DOM his page modules
+ * A port of his `src/page/index.ts` (the page controller) with three changes: the DOM his page modules
  * look up at import time (`#app`, `#topbar`, `#backLink`, `#loading`) is built here inside a
  * persistent `.skittle-root` element that survives route changes; his modules are imported lazily
  * after that DOM exists; and detail navigation goes through vue-router so its history state is not
@@ -20,7 +20,7 @@ type Member = { name: string; mainDps: boolean };
 type TeamRow = { key: string; teamKey: string; members: Member[]; combo: any[] };
 type Solved = { picks: any; rows: any[]; scores: any; hidden: any[]; hiddenScores: any[] };
 interface Mods {
-  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; stats: any; substats: any;
+  display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; pickmenu: any; stats: any; substats: any;
 }
 
 const TEMPLATE = `
@@ -80,12 +80,13 @@ function buildDom(): HTMLElement {
 }
 
 async function loadModules(): Promise<Mods> {
-  const [display, solver, teamrun, model, panels, table, detail, stats, substats] = await Promise.all([
-    import("@skittle/display"), import("@skittle/solver"), import("@skittle/teamrun"),
+  // Riley moved the solver and team run into solve/, display.ts into page/, teams.ts into resonators/ (Oct 2026)
+  const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats] = await Promise.all([
+    import("@skittle/page/display"), import("@skittle/solve/solver"), import("@skittle/solve/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
-    import("@skittle/engine/stats"), import("@skittle/shared/substats"),
+    import("@skittle/page/pickmenu"), import("@skittle/engine/stats"), import("@skittle/shared/substats"),
   ]);
-  return { display, solver, teamrun, model, panels, table, detail, stats, substats };
+  return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats };
 }
 
 /* ---------------------------------------------------------------------------------- overlay */
@@ -106,7 +107,7 @@ function overlayPhase(text: string, now = false): void {
   if (now) { clearTimeout(overlayTimer); overlayTimer = undefined; overlay.hidden = false; return; }
   if (overlayTimer === undefined) overlayTimer = setTimeout(() => { overlayTimer = undefined; overlay.hidden = false; }, 100);
 }
-const OVERLAY_ROWS = 200;
+const OVERLAY_ROWS = 1_000;
 async function overlayNow(text: string, rows = Infinity): Promise<void> {
   overlayPhase(text, rows >= OVERLAY_ROWS);
   await paint();
@@ -210,8 +211,9 @@ function workerPool(): Worker[] | null {
 function solveOnWorkers(
   workers: Worker[], teams: [string, Member[]][],
   onDone: (members: Member[]) => void, onShare?: (members: Member[], share: number) => void,
+  filters: any = mods!.model.filters,
 ): Promise<void> {
-  const { filters, picksCache, storeSolved, solveFits } = mods!.model;
+  const { picksCache, storeSolved, solveFits } = mods!.model;
   const { picksKey, bestKey, isProgress, solveTeam } = mods!.solver;
   return new Promise((resolve) => {
     let next = 0, live = 0, id = 0;
@@ -246,13 +248,13 @@ function solveOnWorkers(
   });
 }
 
-async function ensureBestPicks(inPlay: [string, Member[]][]): Promise<boolean> {
-  const { filters, bestPicks, picksCache, storeSolved, loadShipped, estimatedRowCount } = mods!.model;
+async function ensureBestPicks(inPlay: [string, Member[]][], filters: any = mods!.model.filters): Promise<boolean> {
+  const { bestPicks, picksCache, storeSolved, loadShipped, estimatedRowCount } = mods!.model;
   const { hasBuild, bestKey, picksKey, solveTeam } = mods!.solver;
   await loadShipped(filters);
   const teams = inPlay.filter(([key, members]) => !bestPicks.has(bestKey(key, members, filters)));
   if (!teams.length) return false;
-  const rowsOf = (members: Member[]): number => (members.every((m) => hasBuild(m, filters)) ? estimatedRowCount(members) : 0);
+  const rowsOf = (members: Member[]): number => (members.every((m) => hasBuild(m, filters)) ? estimatedRowCount(members, filters) : 0);
   const solvable = teams.filter(([, members]) => members.every((m) => hasBuild(m, filters)))
     .map((t) => [t, rowsOf(t[1])] as const).sort((a, b) => b[1] - a[1]).map(([t]) => t);
   if (!solvable.length) return false;
@@ -271,7 +273,7 @@ async function ensureBestPicks(inPlay: [string, Member[]][]): Promise<boolean> {
     progress();
   };
   const workers = workerPool();
-  if (workers) await solveOnWorkers(workers, solvable, (members) => share(members, 1), share);
+  if (workers) await solveOnWorkers(workers, solvable, (members) => share(members, 1), share, filters);
   else {
     for (const [key, members] of solvable) {
       const known = picksCache.get(picksKey(key, members, filters)) ?? null;
@@ -310,7 +312,7 @@ function mountImportControls(key: string): void {
 async function runImport(): Promise<void> {
   if (importBusy || !mods) return;
   const box = root?.querySelector<HTMLElement>(".wt-import");
-  const key = box?.dataset.team ?? (mods.model.hashParams() as URLSearchParams).get("team");
+  const key = box?.dataset.team ?? mods.model.hashTeam();
   if (!key) return;
   const { showToast } = useToast();
   const button = box?.querySelector<HTMLButtonElement>("button");
@@ -386,6 +388,8 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
 }
 
 let tableRequested = false;
+/** Whether the filters moved under a detail page (a pick menu's switch) since the table's rows were expanded. */
+let tableStale = false;
 /** the team whose detail is on screen, null while the comparison table is */
 let renderedKey: string | null = null;
 let routerSyncing = false;
@@ -412,7 +416,7 @@ function route(): void {
   root?.classList.toggle("wt-detail", !!key);
   renderedKey = key;
   if (key) { openSide(false); mods!.detail.renderDetail(key); mountImportControls(key); return; }
-  if (!tableRequested) { void refresh(); return; }
+  if (!tableRequested || tableStale) { void refresh(); return; }
   mods!.table.renderComparison();
 }
 
@@ -420,6 +424,7 @@ async function refresh(): Promise<void> {
   const M = mods!.model;
   const { bestKey } = mods!.solver;
   tableRequested = true;
+  tableStale = false;
   await syncRouter();
   barReset();
   try {
@@ -459,9 +464,20 @@ async function refresh(): Promise<void> {
   overlayHide();
 }
 
+/** A `#team=` load served off its key alone: one traced run, no table build. A team code (Riley's
+ *  teamcode.ts) leaving gear to the solver reads back once that one team is solved with its gear
+ *  compares shut. */
 async function bootDetail(): Promise<boolean> {
-  const { hashParams, results, rowFromKey } = mods!.model;
-  const key = hashParams().get("team");
+  const { hashTeam, results, rowFromKey, tagTeam, gearShut, filters } = mods!.model;
+  let key: string | null = hashTeam();
+  const pending = key && !rowFromKey(key) ? tagTeam(key) : null;
+  if (pending) {
+    overlayPhase("Solving Team…", true);
+    await paint();
+    await solveQuiet(pending, gearShut(filters));
+    key = hashTeam();
+    if (key && !rowFromKey(key)) overlayHide();
+  }
   if (!key || results.has(key)) return false;
   const row = rowFromKey(key);
   if (!row) return false;
@@ -472,6 +488,60 @@ async function bootDetail(): Promise<boolean> {
   mountImportControls(key);
   overlayHide();
   return true;
+}
+
+/** A detail pick (Riley's pickmenu.ts): solve the one team under each try's filters in turn, open the
+ *  first row one names, and let the table catch up when next shown. `undo` puts the filters back if none. */
+let switchGen = 0;
+async function switchTo(teamKey: string, attempts: { setUp: () => boolean; choose: (rows: TeamRow[]) => TeamRow | null }[], undo: () => void): Promise<void> {
+  const M = mods!.model;
+  tableStale = true;
+  const gen = ++switchGen;
+  const stale = (): boolean => gen !== switchGen;
+  barReset();
+  try {
+    for (const attempt of attempts) {
+      if (!attempt.setUp()) continue;
+      await ensureBestPicks([[teamKey, M.TEAMS[teamKey] as Member[]]], structuredClone(M.filters));
+      if (stale()) return;
+      M.saveSolves();
+      const row = attempt.choose(M.solvedRows(teamKey));
+      if (!row) continue;
+      // a teammate re-picked past the guess the pick was costed on can still trip a filter
+      M.admitBuild(row.members, row.combo);
+      await overlayNow("Running Rotation…", 1);
+      if (stale()) return;
+      await reopenDetail(row.key);
+      overlayHide();
+      return;
+    }
+  } catch (err) {
+    if (!stale()) showBootError(err);
+    return;
+  }
+  undo();
+  overlayHide();
+}
+
+/** One team solved under `f` with no overlay and no redraw — what an open pick menu reads its
+ *  Compare figures off (pickmenu.ts), and what a team code's gear is read back from. */
+async function solveQuiet(teamKey: string, f: any): Promise<void> {
+  const M = mods!.model, S = mods!.solver;
+  const members = M.TEAMS[teamKey] as Member[];
+  await M.loadShipped(f);
+  if (M.bestPicks.has(S.bestKey(teamKey, members, f)) || !members.every((m) => S.hasBuild(m, f))) return;
+  const workers = workerPool();
+  if (workers) await solveOnWorkers(workers, [[teamKey, members]], () => {}, undefined, f);
+  else M.storeSolved(teamKey, S.solveTeam(teamKey, members, f, M.picksCache.get(S.picksKey(teamKey, members, f)) ?? null));
+  M.saveSolves();
+}
+
+/** Riley's `reopenDetail()` through vue-router: the entry under the detail page becomes the table on
+ *  the new filters, so Back lands on a table that can show the new row, and the new row goes on top. */
+async function reopenDetail(key: string): Promise<void> {
+  mods!.model.syncHash(null);
+  await syncRouter();
+  await goToDetail(key);
 }
 
 /** Navigate to a team's detail page through vue-router (a real history entry, its state kept). */
@@ -497,8 +567,17 @@ export function onLocationChange(): void {
   if (!mods || !booted || routerSyncing) return;
   const M = mods.model;
   if (M.applyHash()) { void refresh(); return; }
-  const key = M.hashParams().get("team");
-  if (key && !M.results.has(key) && M.rowFromKey(key)) { void bootDetail(); return; }
+  const key = M.hashTeam();
+  if (key && !M.results.has(key) && (M.rowFromKey(key) || M.tagTeam(key))) {
+    // a code that still names no row once its team is solved comes back off the URL, and one that
+    // opens is written back as it reads (Riley's hashchange)
+    void bootDetail().then(async (shown) => {
+      M.syncHash();
+      await syncRouter();
+      if (!shown) route();
+    });
+    return;
+  }
   if (tableRequested && M.routeTeam() === renderedKey) return; // the location moved without changing what is on screen
   route();
 }
@@ -506,6 +585,8 @@ export function onLocationChange(): void {
 async function boot(): Promise<void> {
   const M = mods!.model;
   mods!.table.onRefresh(refresh);
+  mods!.pickmenu.onSwitch(switchTo);
+  mods!.pickmenu.onSolve(solveQuiet);
   M.applyHash();
   await M.loadSolves();
   const detail = await bootDetail().catch((err: unknown) => {
@@ -580,5 +661,5 @@ export function unmountRankings(): void {
   openSide(false);
   root?.remove();
   mods?.panels?.clearPops?.();
-  document.body.querySelectorAll(":scope > .ctxmenu").forEach((el) => el.remove());
+  document.body.querySelectorAll(":scope > .ctxmenu, :scope > .pickbox").forEach((el) => el.remove());
 }

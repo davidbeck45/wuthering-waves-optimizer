@@ -10,8 +10,9 @@ import postcss from "postcss";
 const SUB = "vendor/wuwa_calc";
 const commit = execSync("git rev-parse --short HEAD", { cwd: SUB }).toString().trim();
 const ROOT = ".skittle-root";
-// selectors for elements Riley appends to document.body — they must stay global
-const GLOBAL = [/^\.pop\b/, /^\.ctxmenu\b/, /^body\.coldrag/];
+// selectors for elements Riley appends to document.body — they must stay global (the damage chart's
+// `.barpop` hover and the pick menu's `.pickbox` outline included)
+const GLOBAL = [/^\.pop\b/, /^\.ctxmenu\b/, /^\.barpop\b/, /^\.pickbox\b/, /^body\.coldrag/];
 // ...and what he renders INSIDE those (the DPR breakdown's `.rtable` grid, `.gear`/`.stat` tables, `.cols`)
 // is styled by the same generic rules as the page, so every scoped rule also applies under them
 const HOSTS = [ROOT, ".pop", ".ctxmenu"];
