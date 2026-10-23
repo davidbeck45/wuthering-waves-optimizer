@@ -24,7 +24,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
         label: "Stat Stick",
       },
       {
-        key: "EmeraldofGenesis",
+        key: "EmeraldOfGenesis",
         label: "Standard",
       },
       {
