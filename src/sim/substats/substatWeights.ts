@@ -85,7 +85,7 @@ export const isFlatSubstat = (key: SubstatKey): boolean => key.endsWith("_FLAT")
 // How often a roll lands on each tier of `subStatsTable[key]`, low to high — Kuro's KR product info
 // as vendor/wuwa_calc/src/shared/substats.ts carries it (WEIGHTS / CRIT_WEIGHTS and the flat pairs;
 // not exported there). The eight percent-shaped stats and flat HP share one spread; crit has its own.
-const TIER_WEIGHTS: Record<SubstatKey, readonly number[]> = (() => {
+export const TIER_WEIGHTS: Record<SubstatKey, readonly number[]> = (() => {
   const spread = [7, 8, 21, 25, 18, 15, 6, 3];
   const crit = [70, 70, 70, 24, 24, 24, 9, 9];
   return {

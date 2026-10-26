@@ -223,7 +223,8 @@ function resolveCandidateEchoConfig(
  * single-slot swap gets. `touchesMainSlot` gates the slot-0 main-echo logic
  * the same way the old `slotIndex === 0` check did.
  */
-function resolveCandidateEchoPointersConfig(
+// Wuthering Tools+: exported so src/sim/echoLab scores its swaps through this exact recompute
+export function resolveCandidateEchoPointersConfig(
   characterId: string,
   characters: Record<string, any>,
   nextEchoPointers: Record<string | number, any>,

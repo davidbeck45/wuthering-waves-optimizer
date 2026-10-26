@@ -413,3 +413,113 @@ CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each sl
 plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
 whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
 (real Augusta / Iuno / Shorekeeper / Sanhua data).
+
+## Echo Lab engine — `src/sim/echoLab/` (stage 1: engine, worker, tests; 2026-10-12)
+
+Engine-backed echo decisions — every number is the app's own damage engine on the character's best rotation
+(`rotationCandidates` + `scoreRotation`, the /my-rankings pick at Riley's level-100 / 20 % RES target), never a
+stat weight. Every hypothetical build is a clone scored through `calcCharacterRotationDamage`; a swap goes through
+upstream's `resolveCandidateEchoPointersConfig` (echoImpact.ts, exported for this with a one-line hook), so set
+bonuses that break or complete, newly active set passives and the main-echo buff recompute exactly as the v3 swap
+badges do (a test pins our swap gain to `estimateEchoSwapImpact`'s on the same rotation). The page and the calculator
+panel are the next section.
+
+| Piece | Role |
+|---|---|
+| `core.ts` | `createLabSession(account)` (plain `{ characters, echoes, equipped, teams }`; caches prepared characters, their best rotation, per-point prices and set deltas), `prepareCharacter`, `scoreBuild`, `swapInto`, `withSlotRecord`, the slot rules (`slotChecks` / `legalSlots`), `wornByIndex` (inventory `equipped` ∪ slot pointers, stale map entries flagged), the pacer (progress, cancel, yielding) |
+| `prescore.ts` | the cheap linear pre-score: the set-bonus change at that slot scored exactly once per distinct outcome + the stat change at the build's per-point values (finite differences through the engine; element / Healing main stats priced the same way). Partial echoes count their missing lines at expectation |
+| `bestOwner.ts` | `bestOwners(session, options)`: every inventory echo × every built character with five echoes; the top K (4) characters by pre-score are scored exactly in every slot the echo may go into. Per echo: owners best first (`gain`, `damageGain`, `erChange`, replaced echo), `upgradeFor`, `wornBy`, `blocked` counts, Tune-or-Feed for partial echoes, verdict + reason. Per character: upgrades available, the best one |
+| `echoPotential.ts` | "Tune or Feed?": the 5 − n lines still to roll, types uniform over the ones the echo lacks (stated in `assumptions`), values by Kuro's tier odds; exact enumeration up to the sample count (a 4-line echo: ≤ 72 outcomes), else seeded Monte Carlo (≥ 1000, memoised per distinct outcome). Output: current gain, P(beats the slot's echo), expected gain, p10/p50/p90, verdict tune / gamble / feed / done, cost labelled approx. |
+| `rerollAdvice.ts` | Transducer advice for an equipped 5-line echo: each line's worth (build without it) vs a fresh random line in its place (every open type × tier, exact) → lock / re-roll per line, ranked; one plan per lock count with P(improve), expected gain keeping the better lines, Transducers per success. One re-rolled line is exact; two or more add the new lines' exact single-line values (MC over that, no engine per sample). Lock costs default 1/1/1/2/3, "verify in game" |
+| `benchmarkScore.ts` | Fribbels-style damage benchmark: B = substats blanked (mains, sets, main echo kept), R = ChemX32 (5/5/2/2/2 median rolls over Crit Rate, Crit DMG and the three stats the engine values most **on B**, one median roll of each other stat — 24 of 25, as Riley's `shared/substats.ts` spends them), P = 25 best-tier rolls placed greedily where the engine gains most (≤ 5 per stat, one line per echo); score = (D−B)/(R−B) below R, 1 + (D−R)/(P−R) above, clamped 0–200 %. Returns all three spreads and yours |
+| `rolls.ts`, `fingerprint.ts` | the roll model (tier odds from `substatWeights.ts`'s `TIER_WEIGHTS`, now exported; subsets, exact outcomes, sampling) · cyrb53 account fingerprint, stable option keys, mulberry32 PRNG |
+| `pass.ts` | `runEchoLabPass` (best owner + Tune or Feed, optional benchmarks) and `runJob` — the job kinds `pass`, `bestOwner`, `benchmark`, `potential`, `reroll` |
+| `workerHost.ts` + `echoLab.worker.ts` | the message host: jobs one at a time, progress, cancel, a session per account fingerprint and a result per (fingerprint, job) |
+| `echoLabClient.ts` | `getEchoLabClient().run(job, labAccountOf(stores), { onProgress, signal, onInfo, extraEchoes })` → typed result; runs the same host inline where no Worker exists. `extraEchoes` judges fresh scans before they are saved |
+| `echoLab.test.ts` + `__fixtures__/echoLabAccount.json` | public data only: Cartethyia (my-rankings fixture), Galbrena and Zani (upstream's Cypress golden fixtures), synthesised `lab*` echoes |
+
+Rules (and why):
+- **Slots:** same cost; slot 0 (the main echo) only takes another copy of the same echo — a different main echo is
+  a different build, the optimizer's job; a species once per build (the optimizer's rule). Characters need five
+  echoes to be owners (Zhezhi with a weapon and no echoes would otherwise "gain" from every echo).
+- **Swap rules (`SwapRules`, defaults on):** keep every active set bonus, lose at most 12.4 Energy Regen (one
+  best ER roll), and never lower the build's Healing Bonus (`keepHealingBonus`). Without them every support
+  "gained" 10–30 % by trading their ER main stat and their team-buff 5-piece (Moonlit Clouds, Rejuvenating Glow)
+  for ATK, and every healer by trading their Healing Bonus main echo for a Crit DMG copy of it — the static engine
+  values none of the three. A pinned `setOverride` skips the set rule. `blocked` counts each closed character once,
+  under the first of set → er → heal its slots name.
+- **Verdicts:** keep = upgrade for someone (exact gain > 0), worn (stale map entries included), or a partial echo
+  whose potential says tune; spare = no upgrade but within 2 % of its best owner's current echo, a gamble to tune,
+  or no slot today with substats at least as good as the median echo some build wears; feed = the rest
+  (`no-gain` / `no-slot`).
+- **Costs and odds:** tier odds are Kuro's (published); substat *type* odds and tuner / EXP / Transducer costs are
+  not — the outputs say so (`assumptions`, `approx.`, "verify in game").
+
+Things learned:
+- Per-point prices mislead near the crit cap and on set changes (mean |pre − exact| 0.7 %, 18 of 248 signs flipped
+  on David's export), so the pre-score only picks candidates; verdicts read exact numbers only, every slot exact.
+- Supports read ~0 for ER and team sets; rank owners by `damageGain` when a carry's +2 % should beat a healer's +30 %.
+- Vite builds workers as IIFE (`worker.format` default), which inlines every `getCharByName` character module: the
+  worker is 3.3 MB / 504 kB gzip. `worker.format: "es"` (all app workers are `{ type: "module" }` already) makes it
+  468 kB / 93 kB gzip with character data loaded per character — a shared `vite.config.ts` call, not made here.
+
+Measured on David's export (258 echoes, 24 built characters): the pass (best owner + Tune or Feed) 1.4–1.5 s in Node,
+928 engine scorings, 128 keep / 59 spare / 71 feed (2026-10-26, Healing Bonus rule in); the pass plus all 23
+benchmarks 3.7–4.1 s (4899 scorings). In headless
+Chromium through the worker: pass 2.1 s with the main thread never blocked over 11 ms, cached re-ask 5 ms, all
+benchmarks 3.3 s on the warm session, one re-roll advice 0.7 s, cancel honoured within ms. Gates: `echoLab.test.ts`
+(16), `vue-tsc`, the CLI snapshot diff (no number moved).
+
+## Echo Lab page and the calculator's engine panel — `/echo-lab` (stage 2, 2026-10-26)
+
+`/echo-lab` (lazy route in `main.ts`, no nav entry yet — `plusPages.ts` gets it at integration) puts the engine above
+in four tabs, every number from the worker; the v3 calculator's Echo Insights shows a small "Engine view for this
+build" panel that links into it. Works in v3 (default) and classic; tab title through `useDocumentTitle`.
+
+| Piece | Role |
+|---|---|
+| `EchoLabView.vue` | the page: header (engine runs, time or "cached", Re-run, an (i) on how it decides), six KPIs (Keep / Spare / Feed jump to that verdict filter), a three-segment progress bar with Cancel, error and cancelled states, the tab strip (`?tab=` and `?character=` in the URL so links land on a tab), empty state with Import / Scan / Build CTAs — also shown when the pass found no character with a weapon *and* five echoes, where every unworn echo would otherwise read Feed. Phones: short KPI and tab labels, 3 × 2 KPIs, one-line subtitle |
+| `useEchoLab.ts` | page state at module level (switching tabs or pages never recomputes): the pass, the benchmarks, re-roll advice per (fingerprint, character, slot), progress, cancel; results for another account fingerprint are dropped, never shown (re-roll advice included); the last pass + benchmarks also in `sessionStorage["wtplus:echoLab:cache"]` (`{ v, fingerprint, pass, benchmarks }` — a cache of another `v` is ignored) so a reload of the same account is instant |
+| `EchoLabVerdicts.vue` | **Inventory verdicts**: a dense CSS-grid table (echo picture with rarity ring, set icon, cost, main, substat chips coloured by worth on the reference build, best owner portrait + gain, "+N more", worn-by portraits with stale ones greyed, Keep / Spare / Feed chip + reason), sortable headers, verdict segment, cost segment, set / main / owner / worn selects, search, 60 rows a page; a row opens the exact per-owner scores and how many characters the slot rules blocked. The **feed list** groups the feed verdicts by Sonata · Cost · Main Stat (the game's own echo filter) with Copy list and "Show" per group. Below 1024 px the same markup becomes cards (two columns from 640 px); on a phone the owner and worn cells share the footer row (one grid area, start / end) so neither widens the verdict column |
+| `EchoLabTune.vue` | **Tune or Feed**: partly levelled echoes with their most promising owner and slot, chance to upgrade, expected gain, a p10–p90 band with median tick and the echo-as-is diamond on one shared axis, verdict, "to +25" tuner / EXP cost marked approx.; echoes nobody can slot listed apart |
+| `EchoLabReroll.vue` | **Re-roll advisor**: a character rail (a swipe strip below `lg`, the picked portrait kept in view), the five echoes with worth / fresh / Lock or Re-roll #n per line (icon-only chips on a phone), the recommended plan, all lock plans, "Transducer costs: verify in game"; one `reroll` job per echo, cancelled when another character is picked. **Re-roll first** marks the echo `pickRerollFirst` names, once every echo's advice is in |
+| `EchoLabBenchmark.vue` | **Build benchmark**: 0–200 % bars with the 100 % mark and B / R / P axis, score bands (low < 60, fair < 90, good < 120, great), a row opens yours / reference / perfect rolls per substat (every stat any of the three holds); the (i) explains B, R (Riley31415's ChemX32), P and the formula |
+| `EchoLabEcho.vue`, `EchoLabPopover.vue`, `echoLabView.ts`, `echoLab.css` | the echo cell; an (i) button whose panel is a bottom sheet below 640 px; the pure view model (names, pictures, filters, sort, feed groups and their clipboard text, line colours, formatters); the shared chips, bars and table grid — DaisyUI tokens only, light themes darken state text |
+| `EchoLabEngineHook.vue` → `EchoLabEngineView.vue` | the calculator panel: upstream's `CalculatorEchoInsightsPanel.vue` renders the hook (one template line + its import) at the end of the Echo Insights details; the hook lazy-loads the panel: benchmark score + bar, the three substats one more roll is worth most on the best rotation, and the echo / line to re-roll first with its plan, "Echo Lab ›" to `/echo-lab?tab=reroll&character=<id>` |
+| `engineView.ts` | the panel's engine job: benchmark, `substatWeights`, `equippedSubstatWorth`, and (unless `reroll: false`) every full echo's advice picked with `pickRerollFirst` |
+| `rerollPick.ts` | `MIN_PLAN_GAIN` (0.05 %) and `pickRerollFirst` (best recommended plan per Transducer; ties → bigger gain → lower slot). No engine imports, so the page and the panel share the engine's exact rule |
+| `echoLabView.test.ts` | the pick rule; the engine view naming the same echo as the tab's rule over every full echo (Galbrena); filters, sort, feed groups and their text, line tiers, score bands on the fixture's real best-owner result |
+| `cypress/e2e/echoLab.cy.ts` | v3 seeded through `onBeforeLoad` with the unit-test fixture: verdict chips and the no-slot echo fed, KPI → filter, feed groups, search / clear, row detail, Tune / Re-roll / Benchmark render with their (i) panels, every tab inside 412 px at 130 % text, the empty state's CTAs, the empty state (no KPIs, no feed list) for weapons without five echoes, the calculator panel's numbers, its link landing on the re-roll tab with the same echo marked "Re-roll first" |
+
+Rules:
+- **One "re-roll first" everywhere.** The panel and the tab both pick with `pickRerollFirst` over every full echo's
+  advice (they disagreed before: the panel took the echo whose substats add least, the tab the best gain per
+  Transducer). The panel runs `engineView` with `reroll: false` first (numbers in ~0.75 s on the fixture), then the
+  same `{ kind: "reroll", characterId, slot }` jobs the tab runs, so the worker's result cache answers the tab at once.
+- **The panel runs only where it is displayed.** Upstream renders two Echo Insights panels (desktop sidebar, phone
+  bar; CSS hides one) and mounts the calculator's screens hidden (`v-show`). An IntersectionObserver answers at once in
+  a browser; a 1 s `getClientRects()` check backs it up — the observer never fires in Cypress's headless Electron
+  (like rAF, see the first section). Edits re-run it 0.9 s after they settle; the old numbers dim meanwhile.
+- **Single-column grids are `grid-cols-1`.** A grid with no column template sizes its implicit `auto` track to the
+  min-content of a `truncate` (nowrap) child, so the panel ran 40 px past its card on a phone (clipped, not
+  scrolled — the overflow probe of the page saw nothing). Every one-column state in these components names its track.
+- Labels: the app's damage per rotation (`avg per rotation`, `vs R …`), never Riley's DPS; tuning costs approx.,
+  Transducer costs "verify in game", tier odds Kuro's.
+
+Things learned:
+- With Ryan's larger v3 fonts the echo column needs ~14 rem before "Bell-Borne Geochelone" fits at 1440 px; the
+  substat column gives it up (19 rem holds five chips).
+- A shared `auto` column in a phone card is a trap: the reason text under the verdict chip sized that column and
+  squeezed the echo's set name to "M.". Overlapping two cells in one grid area (start / end) keeps the card's columns
+  independent.
+- Upstream spec `calculator/echoInsights.cy.ts` "pins the Build Score panel above the strip on a mobile viewport"
+  fails on this branch with and without the hook (checked by removing the two hook lines) — inherited.
+- Verify pass (2026-10-26): 5 of the 32 "upgrades" on David's export were Crit DMG / ATK copies of Verina's and
+  Shorekeeper's Healing Bonus main echo (+2.8 to +17.4 % "damage" for a healer). `keepHealingBonus` closes those
+  slots; exactly those five verdicts moved (two Fallacy of No Return → spare, good subs; the Bell-Borne Geochelones →
+  worn, a +1.4 % upgrade for Rover, a backup). No damage number moved.
+
+Measured (David's export, Vite dev, headless Chromium): the pass 1.4–2.0 s with 935 engine runs, all 23 benchmarks
+3.0–3.4 s, the re-roll tab opened on a character done 3.3 s after load (pass included); the calculator panel (Aemeath)
+shows its first numbers after 0.75–1.3 s and its re-roll pick after 3.3–4.0 s. Gates: `vue-tsc`, full vitest, `echoLab.cy.ts` (6) + `phoneLayout.cy.ts` (6),
+`vite build` (the `echoLab.worker` chunk emitted, no `import.meta.glob` in `dist/`).

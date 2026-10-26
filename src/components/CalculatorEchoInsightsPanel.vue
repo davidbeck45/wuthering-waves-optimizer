@@ -157,6 +157,7 @@
             </div>
           </div>
         </template>
+        <EchoLabEngineHook :character="character" /><!-- Wuthering Tools+: Echo Lab's engine view for this build (src/sim/echoLab/) -->
       </template>
     </div>
   </div>
@@ -167,6 +168,7 @@ import { ref, computed } from "vue";
 import { useEchoInsights } from "../composables/useEchoInsights";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { getRatingAccentClasses } from "../composables/useEchoRating";
+import EchoLabEngineHook from "../sim/echoLab/EchoLabEngineHook.vue"; // Wuthering Tools+: Echo Lab engine view
 
 defineOptions({ name: "CalculatorEchoInsightsPanel" });
 

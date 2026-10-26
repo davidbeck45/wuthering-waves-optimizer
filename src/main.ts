@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: Echo Lab — engine-backed keep / tune / re-roll / feed decisions (src/sim/echoLab/)
+  { path: "/echo-lab", component: () => import("./sim/echoLab/EchoLabView.vue"), name: "EchoLabView" },
 ];
 
 const router = createRouter({
