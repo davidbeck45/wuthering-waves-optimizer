@@ -226,3 +226,74 @@ describe("resolveTeamCharacters: the 2026-09-15 audit rules", () => {
     expect(aemeath.CarelessLandscape?.isEnabled).toBe(true);
   });
 });
+
+describe("resolveTeamCharacters: a mode's add-on tier needs the receiver to inflict the mode's status", () => {
+  // Aemeath's Silent Protection: everyone but her gets 10 % All DMG Amplification in her mode, "increased to 20 % for
+  // Resonators who inflict Tune Rupture - Shifting" (Tune Rupture) / "… Fusion Burst" (Fusion Burst). Riley's kit
+  // upgrades a member only once they apply the status themselves; the kits that lay it are the ones in that mode.
+  const blank = { selectedCharacter1: null, selectedCharacter2: null, buffs: {} };
+  type Buffs = Record<string, { isEnabled: boolean }>;
+
+  it("Tune Rupture: Lynae (lays Shifting) gets 10 % + 10 %, Mornye only the base 10 %", async () => {
+    const characters = {
+      Aemeath: { weapon: "EverbrightPolestar", activeStance: "Tune Rupture", teamBuffs: blank },
+      Mornye: { teamBuffs: blank },
+      Lynae: { activeStance: "Tune Rupture", teamBuffs: blank },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Aemeath", "Mornye", "Lynae"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    const lynae = res.characters.Lynae.teamBuffs.buffs as Buffs;
+    const mornye = res.characters.Mornye.teamBuffs.buffs as Buffs;
+    expect(lynae.SilentProtectionTuneRupture?.isEnabled).toBe(true);
+    expect(lynae.SilentProtectionTuneRuptureShifting?.isEnabled).toBe(true);
+    expect(mornye.SilentProtectionTuneRupture?.isEnabled).toBe(true);
+    expect(mornye.SilentProtectionTuneRuptureShifting).toBeUndefined();
+    expect(res.slots[1].skipped.find((x) => x.key === "SilentProtectionTuneRuptureShifting")?.reason).toBe(
+      "only for a member who inflicts Tune Rupture - Shifting; Mornye doesn't",
+    );
+    // Aemeath never receives her own Outro
+    expect((res.characters.Aemeath.teamBuffs.buffs as Buffs).SilentProtectionTuneRupture).toBeUndefined();
+  });
+
+  it("Fusion Burst: Denia in Fusion Burst gets the Appliers tier, Chisa only the base", async () => {
+    const characters = {
+      Aemeath: { weapon: "EverbrightPolestar", activeStance: "Fusion Burst", teamBuffs: blank },
+      Denia: { activeStance: "Fusion Burst", teamBuffs: blank },
+      Chisa: { teamBuffs: blank },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Chisa", "Denia", "Aemeath"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    const denia = res.characters.Denia.teamBuffs.buffs as Buffs;
+    const chisa = res.characters.Chisa.teamBuffs.buffs as Buffs;
+    expect(denia.SilentProtectionFusionBurst?.isEnabled).toBe(true);
+    expect(denia.SilentProtectionFusionBurstAppliers?.isEnabled).toBe(true);
+    expect(chisa.SilentProtectionFusionBurst?.isEnabled).toBe(true);
+    expect(chisa.SilentProtectionFusionBurstAppliers).toBeUndefined();
+    expect(res.slots[0].skipped.find((x) => x.key === "SilentProtectionFusionBurstAppliers")?.reason).toBe(
+      "only for a member who inflicts Fusion Burst; Chisa doesn't",
+    );
+  });
+
+  it("a member in another mode lays another status: Denia in Fusion Burst and Lynae in Tune Strain keep the base tier", async () => {
+    const characters = {
+      Aemeath: { weapon: "EverbrightPolestar", activeStance: "Tune Rupture", teamBuffs: blank },
+      Denia: { activeStance: "Fusion Burst", teamBuffs: blank },
+      Lynae: { activeStance: "Tune Strain", teamBuffs: blank },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Denia", "Lynae", "Aemeath"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    for (const id of ["Denia", "Lynae"]) {
+      const buffs = res.characters[id].teamBuffs.buffs as Buffs;
+      expect(buffs.SilentProtectionTuneRupture?.isEnabled).toBe(true);
+      expect(buffs.SilentProtectionTuneRuptureShifting).toBeUndefined();
+    }
+  });
+
+  it("a member with no stored mode is in their kit's default one (Lynae: Tune Rupture) and qualifies by it", async () => {
+    const characters = {
+      Aemeath: { weapon: "EverbrightPolestar", activeStance: "Tune Rupture", teamBuffs: blank },
+      Mornye: { teamBuffs: blank },
+      Lynae: { teamBuffs: blank },
+    } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Aemeath", "Mornye", "Lynae"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    expect((res.characters.Lynae.teamBuffs.buffs as Buffs).SilentProtectionTuneRuptureShifting?.isEnabled).toBe(true);
+    expect((res.characters.Mornye.teamBuffs.buffs as Buffs).SilentProtectionTuneRuptureShifting).toBeUndefined();
+  });
+});

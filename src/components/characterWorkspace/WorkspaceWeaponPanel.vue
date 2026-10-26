@@ -213,8 +213,15 @@
                     {{ entry.label }}
                   </span>
                 </div>
+                <!-- Wuthering Tools+: the equipped weapon is the baseline every delta is measured against -->
                 <span
-                  v-if="impactByKey[entry.key]"
+                  v-if="entry.key === weapon"
+                  class="badge badge-xs badge-ghost mt-1"
+                  data-test-workspace-weapon-recommended-baseline>
+                  Baseline
+                </span>
+                <span
+                  v-else-if="impactByKey[entry.key]"
                   class="badge badge-xs mt-1"
                   :class="impactBadgeClasses(impactByKey[entry.key])">
                   {{ formatImpact(impactByKey[entry.key]) }}
@@ -241,10 +248,12 @@
             </div>
           </div>
         </div>
+        <!-- Wuthering Tools+: the footnote's last sentence (weapons set up for the character keep their refinement) -->
         <p class="text-[.65rem] opacity-40">
           Estimated dmg/% assumes every weapon buff is enabled at max stacks,
           with your echoes, team and rotation unchanged. Treat it as "is this
-          worth switching?" — not a guarantee.
+          worth switching?" — not a guarantee. Weapons you have set up for
+          this character keep your refinement; the rest are scored at R1.
         </p>
       </div>
     </div>
@@ -285,6 +294,7 @@ import { useInventoryStore } from "../../stores/inventory";
 import { subStatLabelMap } from "../../echoes/stats";
 import { displayInt, displayPercentage } from "../../utils/numbers";
 import { aggregateWeaponPassiveStats } from "../../weapons/weaponPassives";
+import { ownedWeaponCandidate } from "../../sim/weapons/ownedWeaponCandidate"; // Wuthering Tools+
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
@@ -735,9 +745,10 @@ function impactBadgeClasses(range: WeaponImpactRange | null | undefined) {
 let impactRequestId = 0;
 async function refreshImpacts() {
   const requestId = ++impactRequestId;
-  const candidates: WeaponSwapCandidate[] = recommendedEntries.value.map(
-    (entry) => ({ weaponKey: entry.key }),
-  );
+  // Wuthering Tools+: skip the equipped (baseline) row; score held weapons at their saved refinement, not R1
+  const candidates: WeaponSwapCandidate[] = recommendedEntries.value
+    .filter((entry) => entry.key !== weapon.value)
+    .map((entry) => ownedWeaponCandidate(currentCharacter.value, entry.key));
   if (!candidates.length) {
     impactByKey.value = {};
     return;

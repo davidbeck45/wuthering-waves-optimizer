@@ -86,7 +86,7 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamSubstatScoreRollup } from "../../composables/useTeamSubstatScoreRollup";
 import { getRatingAccentClasses } from "../../composables/useEchoRating";
-import { getWeaponByName } from "../../weapons/weapons";
+import { getWeaponByName, getWeaponsByType } from "../../weapons/weapons";
 import { getCharacterBuildStatus } from "../../characters/characterBuildStatus";
 import CharacterBuildStatus from "../CharacterBuildStatus.vue";
 import WorkspaceProgress from "./WorkspaceProgress.vue";
@@ -152,7 +152,13 @@ const weaponKey = computed(
   () => (currentCharacter.value as { weapon?: string | null }).weapon ?? null,
 );
 
-const weaponName = computed(() => weaponKey.value ?? "No weapon assigned");
+// Wuthering Tools+: the chip shows the weapon's display name ("Everbright Polestar"), not its registry key
+const weaponName = computed(() => {
+  const key = weaponKey.value;
+  if (!key) return "No weapon assigned";
+  const tiers = Object.values(getWeaponsByType(props.weaponType)) as Array<Array<{ key: string; name: string }>>;
+  return tiers.flat().find((w) => w.key === key)?.name ?? key;
+});
 
 const weaponRefinement = computed(() => {
   if (!weaponKey.value) return null;
