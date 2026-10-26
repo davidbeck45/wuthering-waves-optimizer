@@ -413,3 +413,133 @@ CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each sl
 plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
 whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
 (real Augusta / Iuno / Shorekeeper / Sanhua data).
+
+## Convene history, pity and the banner calendar (track "convene", stage 1: data layer) — `src/sim/convene/`
+
+Import the player's Convene (gacha) history straight from Kuro, keep it past the game's six-month window, read pity /
+50-50 / luck off it, hand the state to upstream's odds simulator (`src/convene/simulateConvene.ts`, driven by
+`ConveneView.vue`), and list every released banner from Kuro's own news feed. The UI and the pull advisor are stage 2
+(next section). Every request detail was checked against public importers first — the URLs are in the file headers
+(wuwatracker `import.ps1` / `import.sh`, juliy819 `fetcher.rs` / `parser.rs`, GoneTone `gacha_fetcher.dart` /
+`record_merge.dart` / `gacha_types.dart`, ningnao `gacha.rs`, lyndon0na `wuwa_gacha.py`).
+
+| File | Role |
+|---|---|
+| `pools.ts` | the 13 `cardPoolType`s (1 Featured Resonator — Anniversary banners share it — 2 Featured Weapon, 3/4 Standard, 5 Beginner (pity 50), 6/7 Beginner's Choice, 8/9 New Voyage, 10/11 Collab, 12/13 Reverb), hard pity 80 / 10 (Kuro's article 758), which pools flip a 50/50 (1, 8, 10, 12) or always give the featured item (weapon pools); the five standard 5★ resonators by `resourceId` (1104 Lingyang, 1203 Encore, 1301 Calcharo, 1405 Jianxin, 1503 Verina) and name |
+| `gachaImport.ts` | `parseConveneLink` (all four `aki-gm-resources(-oversea).aki-game.(net\|com)` hosts, a link buried in text — the last wins, a cloud link's top-level query — the fragment wins, JSON escapes, a bare `player_id=…` query; region from `-oversea` → `svr_area` → TLD → CN ids start with 1), `manualConveneQuery` (console players), `extractConveneLinkFromLog` (Client.log plain or XOR-obfuscated — odd byte ^ 0xA5, even ^ 0xEF — and the KRSDK debug.log; bytes or pasted text), `fetchConvenePool` / `fetchConveneHistory` (POST JSON `{playerId, cardPoolId, cardPoolType, languageCode: "en", recordId, serverId}` to `gmserver-api.aki-game2.net` / `.com`, `credentials: omit`, `referrerPolicy: no-referrer`; one pool at a time, 350 ms apart; stops after code -1 expired or -4 unknown server), `mergePoolRecords` / `mergeIntoHistory` / `importConveneHistory`, the compact storage codec, `parseConveneFile` (WuWa Tracker exports — UTC → CST — and our own backups) + `exportConveneBackup`, `CONVENE_LINK_ERRORS` / `CONVENE_IMPORT_ERRORS` (user-facing lines) |
+| `pity.ts` | `poolPity` / `historyPity`: 5★ pity (0–79) and 4★ pity (0–9, reset by a 4★ or 5★), each 5★'s pity and outcome (won / lost / guaranteed / unknown / featured / standard), the guarantee, 50/50 win rate, averages over complete intervals, luck percentiles from upstream's own pity curve (`luckPercentile`: exact convolution ≤ 60 intervals, normal beyond; `coinFlipPercentile`), a cross-pool 5★ timeline, Astrite value; `isLikelyTruncated`; `simulatorPrefill(pools, mode)` → `{ startingPity, guaranteedNextFeatured, clamped, certain }` for the simulator's Advanced panel |
+| `banners.ts` | Kuro's news feed (`…/json/G152/en/ArticleMenu.json` + `article/<id>.json`): `parseConveneArticle` (every notice format since 2024-06), `buildBannerList` (fold duplicates, resolve starts, version / phase labels, released only, newest first, on a chosen server clock — `SERVER_REGIONS`), `versionReleases` / `releasedVersionOf` (each version's go-live time from its patch-notes entry in the menu), `liveBanners`, `featuredRuns` (rerun gaps), `linkRecordsToBanners` (pull → banner), `loadBanners` (seed ∪ localStorage cache, 24 h stale-while-revalidate — 1 h while a version-update banner waits for its release (`awaitingRelease`); offline → cached or empty list + message; `listAll` for a caller that filters on its own live clock), `unreleasedArticleIds` |
+| `items.ts` | Kuro's English names → the app's character / weapon keys (case / spacing / punctuation-insensitive over `characters.ts` and `weapons.ts`; Rover forms skipped) |
+| `data/bannerSeed.json` + `tools/emitBannerSeed.ts` | GENERATED — every Convene notice parsed (132 notices, 160 notice banners folding to 158 on 2026-10-12, 60 KB) so a first visit fetches only the menu; regenerate with `npx tsx src/sim/convene/tools/emitBannerSeed.ts [--update \| --from <dir>]` (`--update` starts from the current seed: one menu request plus the notices it lacks); a notice still announcing an unstarted banner is held back (the app fetches it once live); also carries `releases` (version → patch-notes time, 1.1–3.7) |
+| `*.test.ts` + `__fixtures__/kuroNotices.json`, `kuroArticleMenu.json` | 60 tests, no live network: link parsing on every host variant, plain + XOR logs, the API mocked (body, endpoints, -1 / -4 / HTTP / malformed / offline / abort), merge / dedupe / idempotence / an empty answer never deletes, storage refusals, files; pity on synthetic histories; banner parsing on trimmed REAL notices (four with their full HTML), SWR with a mocked feed; the shipped seed decodes, is all released, and every featured item resolves to an app key |
+
+Storage: `wtplus:convene:history` (`{ v: 1, active, players: { <playerId>: { region, updatedAt, imports[≤30], pools:
+{ "<type>": [[time, resourceId, quality, name], …] } } } }`, oldest first, a multi-pull's records in pull order) and
+`wtplus:convene:banners` (`{ v: 1, fetchedAt, articles, releases }` — only the notices and release times the seed
+lacks; `releases` is optional, so a cache written before 2026-10-26 still decodes).
+
+Rules:
+- **The record link is a bearer token.** It never goes into the app's route, hash or query (`vercel.json` forwards page
+  views to analytics), is never logged, never persisted; error messages never echo it. Only the player id is stored
+  (`maskPlayerId` for display). The UI must keep the link in component state and send it nowhere but Kuro's API.
+- **Merge, never replace.** An expired or bogus token can answer `code: 0, data: []`; an empty pool changes nothing.
+  Records match per timestamp batch: pool + time + item (id when both sides have one, else the name) + position among
+  that batch's identical items; a batch only one side has is taken whole. Re-imports add nothing.
+- **Never overwrite what can't be read.** A corrupt or newer-version history makes the import refuse before any request;
+  the history is re-read after the (slow) fetch so a second tab's import isn't lost.
+- **Released content only.** A banner is listed once its start has passed on the chosen server clock; the seed tool holds
+  back notices that still announce an unstarted banner. A banner that opens "with the version update" starts at that
+  version's patch-notes entry; until the menu has one it is not started (48 h after its notice the publish-time
+  estimate stands in, so a renamed title can't hide a running banner for long).
+- **Pity numbers:** Kuro's are 80 / 10 (50 on the Beginner banner); upstream's empirical curve reaches 100 % on pull 79,
+  so `simulatorPrefill` caps a counter of 79 at 78 and says so (`clamped`).
+
+Things learned:
+- Kuro answers `code: -4, "当前serverId查询不到区服信息!"` for an unknown `svr_id` (probed with made-up ids): the server id is
+  validated, so the manual path needs it. The POST response carries `access-control-allow-origin: *` like the preflight;
+  so do both news endpoints. Verified from headless Chromium through the dev server (seeded loader: one request).
+- Record times are the CST (UTC+8) wall clock on every server (GoneTone converts WuWa Tracker's UTC instants with a fixed
+  +8); banner times are "server time" (America UTC-5, Europe UTC+1, Asia / HMT / SEA / CN UTC+8). Linking uses both.
+- The API lists newest first, inside a 10-pull too — every importer reverses the whole list. A pool's history is a
+  6-month window, so the first 5★ of an old account is a lower bound (`isLikelyTruncated`: oldest pull more than 150
+  days before the first API import) and kept out of averages; its 50/50 is "unknown".
+- Notices: "Version 3.7 update - <end>" has no start minute. Kuro posts that notice the DAY BEFORE release (16–25 h
+  early on every version 1.1–3.7; 3.7's at 11:15 CST on Sep 29, servers open Sep 30 11:00 after a 04:00–11:00
+  maintenance), so the notice's publish time read 22 h early — the verify pass (2026-10-26) moved the start to the
+  version's patch notes (menu titles "Version 1.1: … Patch Notes", "Patch Notes for Version 2.1: …", "Patch Notes for
+  Wuthering Waves Version 3.7: …", 3.5's "… Content Overview"; posted at 10:00 CST since 2.1). The publish-time estimate
+  (never before the end of the phase it replaces; every such banner of one version shares the earliest start — 3.6's
+  Qingxiao notice went up three hours after Denia's) is now only the fallback. Per-phase notices (3.1+) sometimes drop a banner's header line or prefix it with
+  an NBSP; single-banner notices are posted beside them and fold into one banner. 1.0's Jiyan banner was never in the
+  feed. Kuro posts some notices the evening before release (2.3's at 18:16 CST), so those starts read a few hours early.
+- Collab pity is shared per collab campaign, not across campaigns — not modelled (one campaign so far).
+
+Stage 2 (UI) hooks: `/convene` gets an import panel (paste link / drop Client.log / manual ids / WuWa Tracker file),
+per-pool pity cards, the 5★ timeline and the banner calendar; "use in simulator" needs a one-line hook in upstream's
+`ConveneView.vue` that reads `simulatorPrefill(...)` into its `startingPity` / `guaranteedNextFeatured` refs.
+
+
+## Convene UI and the pull advisor (track "convene", stage 2) — `src/sim/convene/ui/`, `advisor*.ts`
+
+`/convene` gains four tabs above upstream's page: **Simulator** (upstream's odds page, untouched) · **My pulls** ·
+**Banners** · **Pull advisor**. Upstream's `ConveneView.vue` carries two lines: the import, and
+`<ConvenePlus v-model:mode v-model:pity v-model:guaranteed v-model:owned v-model:target />` bound to its own
+simulator refs, which is how "use my pity" and the advisor's "odds for S3" fill the Advanced panel. While another tab
+is open, one global rule (`[data-wtplus-convene-tab]:not(…simulator) + .page-convene { display: none }`) hides
+upstream's page, so its markup and state stay as they are and come back as they were.
+
+| Piece | Role |
+|---|---|
+| `ui/ConvenePlus.vue` | the tab strip (`?tab=pulls\|banners\|advisor`, `router.replace`, remembered in prefs), the live-banner chip, the Simulator strip ("Featured Resonator 58/80 → simulator" per imported pool), the prefill hand-off (sets the five models, switches to Simulator, opens and scrolls to upstream's `<details>`), and a per-tab title through `useDocumentTitle` (Simulator keeps "Convene odds"). The three tabs are `defineAsyncComponent` chunks |
+| `ui/ConvenePullsTab.vue` | headline tiles (pulls, 5★ and mean pity vs the model's 54.1, 50/50 record, featured pity), the 5★ timeline (portrait, pull it landed on, won / lost / guaranteed, the banner it came from via `linkRecordsToBanners` — a lost 50/50 gets the phase label its candidates share), one `ConvenePoolCard` per pool, the player switcher, export backup / delete (confirm dialog), and the unreadable-history state (download the raw copy, reset only on request) |
+| `ui/ConveneImportPanel.vue` | PC / Android-iOS / PlayStation-Xbox steps. PC gives the real `Client.log` path (wuwatracker's `import.ps1`: `…\Wuthering Waves Game\Client\Saved\Logs\Client.log`) and says Convene › History must be opened first. Phones and consoles say plainly that the link has to be captured another way and link to wuwatracker's public guide (`https://wuwatracker.com/import`) instead of steps we can't verify. Also: drop/choose the log (scanned in `logScan.worker.ts`), paste the link, type the ids (consoles), and import a WuWa Tracker export or backup. Progress per pool with Cancel. The link is cleared after every attempt |
+| `ui/ConvenePoolCard.vue` | 5★ pity with a soft-pity track (66+), pulls left to the hard pity, 4★ pity, the guarantee badge, average pity, 50/50, "luckier than N % of players" (the model's percentile), every 5★ chip, and "Use my pity in the simulator" on the pools the simulator models (1, 2, 8–13) |
+| `ui/ConveneBannersTab.vue` | the server clock select, "Running now" cards (portraits, 4★s, dates, countdown, elapsed bar, "Rerun · last ran 3.4 Phase II, 3 months before this one", a link to Kuro's notice `…/en/main/news/detail/<id>`), the rerun watch (limited 5★s by days since their last run ended, resonators / weapons), and the history grouped by version, with search and a kind filter. Revalidates Kuro's feed when it opens |
+| `ui/ConveneAdvisorTab.vue` | pity per pool (from the history, editable, "use my history" to undo), an optional Astrite budget, the ranked rows (gain, expected Astrite, % per 1k, a bar, p50 / p90 pulls, the budget chance), the ladder to S6 / R5 (cumulative and per-step rates), "odds for S3 in the simulator", plain-language rows for not owned (→ `/rankings`), not set up (→ the calculator with that character active), maxed, no owner, not in app, and "How this is worked out" |
+| `advisor.ts` | pure arithmetic: `featuredCost` convolves upstream's `fiveStarChance` exactly (first copy from the current pity and guarantee, then fresh copies with a 50/50 or straight for weapons), `chanceWithin`, `advisorTargets` (every featured 5★ on the live banners with its pool), `priceAdvice` (ranks on the next copy's % per 1,000 Astrite), `stepTitle`, and `adviceSummary` (one sentence, numbers only). `advisor.test.ts` checks it against `runMonteCarlo` |
+| `advisorEngine.ts` | the damage side: the character's best rotation (`rotationCandidates` + `scoreRotation`, as on `/my-rankings`; enemy `RANKING_ENEMY`), then `withSequence` for S+1…S6 and `withWeapon` for refinements on that same rotation. A signature the owner doesn't use yet is bracketed like `weaponImpact.ts`: passives `all-max` is the headline, `all-off` is "stats only". The owner comes from `basic.signatureWeapon`, featured / owned characters first. Main thread, yielding between scorings |
+| `prefs.ts` | `wtplus:convene:prefs` v1: tab, server clock (null = guessed from the time zone), budget, typed pity per pool |
+| `ui/useConvene.ts` | one shared history (kept in sync with other tabs through the `storage` event), the banner feed (seed ∪ cache; network only on Banners / Advisor), the prefs, and a 30 s clock |
+| `cypress/e2e/conveneTracker.cy.ts` + `cypress/fixtures/convene/` | the import from a pasted link (13 intercepted pools, `languageCode: "en"`, the token never in the URL or storage, a re-import adds nothing, prefill into upstream's input), an expired link (code -1: one request, nothing stored), a non-link that never leaves the page, Banners from an intercepted menu + notice 5668 (4 live, countdown, rerun, search, server pref), the advisor on the Cartethyia fixture with the clock pinned in 3.4 Phase II (Cartethyia S3 and Defier's Thorn R2 scored, Lucilla not owned → `/rankings`, the ladder, odds hand-off with S2 → S3 at pity 70), and every tab at 412 px / 130 % with no horizontal scroll and the layout viewport still 412. `gachaRecords.json` is **synthetic** (made-up pulls in the API's shape); `article5668.json` is Kuro's real 3.7 Phase II notice |
+
+Rules:
+- **Engine numbers only.** The advisor shows what `scoreRotation` returns and what the convolution gives, nothing
+  else. A resonator the account doesn't own isn't scored (that would need a made-up S0 build): the row says so and
+  links to `/rankings`. The damage is one character's rotation damage from the app's engine, never Riley's team DPS.
+  If a Riley number is ever shown beside it, label it DPS and compare it only with damage ÷ the rotation's duration.
+- **The record link is a bearer token** (stage 1's rule). The input has no `name`, isn't in a `<form>`, and is cleared
+  after every attempt, including the log path. The tab state is the only thing in the query string.
+- **One hook in upstream.** Logic stays in `src/sim/convene/`. The prefill writes upstream's own refs through
+  `v-model`, and the hidden-page rule is the only CSS reaching into `.page-convene`.
+- Phones: every grid is `grid-cols-1` (`minmax(0,1fr)`) below its breakpoint. An implicit `auto` track grows to a
+  `truncate` child's full text width.
+
+Things learned:
+- `emit()` from a component that has already unmounted is dropped silently (Vue checks `isUnmounted`). The first
+  import used to unmount its own panel mid-import, because the history appearing flipped the panel's `v-if`, so its
+  "Added N pulls" line never arrived. The panel now stays open (`importOpen`) until it reports back, and the outcome
+  moves up to the page.
+- In a wrapping flex row, `flex: 1 1 0` items fit on the first line at width 0 and get crushed to 1 px; their text
+  then overflows. On Chrome mobile that widens the layout viewport, so every `position: fixed` element grows with it
+  (the nav's `…` slid off-screen) while `scrollWidth` looks fine. Give such items a real basis or a full-width
+  wrapper. The spec checks `innerWidth` as well as `scrollWidth`.
+- `cy.clock(now, ["Date"])` pins the banner phase without faking timers: the importer's 350 ms gaps, the advisor's
+  yields and the debounces keep running.
+- Regenerate the seed after a phase starts: `npx tsx src/sim/convene/tools/emitBannerSeed.ts --update` (2026-10-26:
+  notice 5668, 3.7 Phase II — Lucilla, Lynae, Freeze Frame, Spectrum Blaster; 133 notices, 164 banners, 21 releases).
+
+Verify-and-harden pass (2026-10-26):
+- **Version-update starts** come from the patch notes (above). 80 of 162 banners moved, every one by 16–25 h; no explicit
+  start and no label changed.
+- **The banner list follows the clock.** The feed is loaded with `listAll` and `useBannerFeed().banners` keeps
+  `startMs <= now` on the shared 30 s clock (same array while nothing new has started), so a phase that starts while the
+  page is open appears without a reload. Revalidation may run again after 5 minutes (it used to be once per page life);
+  `loadBanners` still goes to the network only when the cache is stale.
+- **Pity in a cut-off history.** With no 5★ inside the six-month window the counter is a minimum: `pity5LowerBound` /
+  `pity4LowerBound` show as "30+", "at most 50 to a sure 5★", and the simulator hand-off and the advisor say so
+  (`ui/prefill.ts` is the one prefill sentence for the Simulator strip and the pool cards). `firstApiImportAt` counts
+  only imports that brought pulls: an empty answer (bogus or expired token, `code: 0`) says nothing about the window.
+- **The advisor yields** between rotation candidates and steps too. Measured on David's export: four targets in about
+  200 ms, no task over 50 ms. Its cache key (stringify of both stores) costs about 3 ms.
+- The wip commit carried `vendor/wuwa_calc` at e1181a9 and skittle.css's header from it, a rebase artifact one commit
+  behind `plus` (653fee7). The worktree is back on 653fee7; this track touches neither.
