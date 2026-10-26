@@ -219,6 +219,7 @@
               </div>
             </div>
           </div>
+          <!-- Wuthering Tools+: the five cards' values print with thousands separators -->
           <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 text-sm">
             <button
               v-if="strongestTeamByDamage"
@@ -228,7 +229,7 @@
               @click="selectedTeamId = strongestTeamByDamage!.team.id; showSummary = false">
               <div class="text-xs opacity-70 mb-1">Strongest Team (Dmg)</div>
               <div class="font-semibold truncate">{{ strongestTeamByDamage.team.name }}</div>
-              <div>{{ displayDamage(strongestTeamByDamage.value) }}</div>
+              <div>{{ displayDamage(strongestTeamByDamage.value).toLocaleString() }}</div>
             </button>
             <button
               v-if="bestDpsTeam"
@@ -238,7 +239,7 @@
               @click="selectedTeamId = bestDpsTeam!.team.id; showSummary = false">
               <div class="text-xs opacity-70 mb-1">Best DPS</div>
               <div class="font-semibold truncate">{{ bestDpsTeam.team.name }}</div>
-              <div>{{ displayDamage(bestDpsTeam.value) }}</div>
+              <div>{{ displayDamage(bestDpsTeam.value).toLocaleString() }}</div>
             </button>
             <button
               v-if="strongestHitTeam"
@@ -248,7 +249,7 @@
               @click="selectedTeamId = strongestHitTeam!.team.id; showSummary = false">
               <div class="text-xs opacity-70 mb-1">Strongest Hit</div>
               <div class="font-semibold truncate">{{ strongestHitTeam.team.name }}</div>
-              <div>{{ displayDamage(strongestHitTeam.value) }}</div>
+              <div>{{ displayDamage(strongestHitTeam.value).toLocaleString() }}</div>
             </button>
             <button
               v-if="mostHealingTeam"
@@ -258,7 +259,7 @@
               @click="selectedTeamId = mostHealingTeam!.team.id; showSummary = false">
               <div class="text-xs opacity-70 mb-1">Most Healing</div>
               <div class="font-semibold truncate">{{ mostHealingTeam.team.name }}</div>
-              <div>{{ displayDamage(mostHealingTeam.value) }}</div>
+              <div>{{ displayDamage(mostHealingTeam.value).toLocaleString() }}</div>
             </button>
             <button
               v-if="mostShieldTeam"
@@ -268,7 +269,7 @@
               @click="selectedTeamId = mostShieldTeam!.team.id; showSummary = false">
               <div class="text-xs opacity-70 mb-1">Most Shield</div>
               <div class="font-semibold truncate">{{ mostShieldTeam.team.name }}</div>
-              <div>{{ displayDamage(mostShieldTeam.value) }}</div>
+              <div>{{ displayDamage(mostShieldTeam.value).toLocaleString() }}</div>
             </button>
           </div>
         </div>
@@ -1065,7 +1066,8 @@ watch(filteredTeams, scheduleRecomputeTeamStats);
 
 function teamTotalDamage(teamId: string, variant: "normal" | "avg" | "crit"): string {
   const stats = teamStats.value[teamId];
-  return stats !== undefined ? String(displayDamage(stats[variant])) : "—";
+  // Wuthering Tools+: thousands separators, as the Summary page and the editor's per-action values print them
+  return stats !== undefined ? displayDamage(stats[variant]).toLocaleString() : "—";
 }
 
 // Cross-team leaderboard — one "strongest team" per metric, scoped to

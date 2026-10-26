@@ -100,8 +100,9 @@ export const dataAttacks: AttackTests = [
     values: ["Spectro Frazzle", "20686"],
   },
   {
+    // Wuthering Tools+ 2026-10-12: Capitaneus rank 5 is 118.80% + 59.40%*4 (was 118.00% + 59.50%*4): 28055 / 102061 before
     selector: ".capitaneus-dmg",
-    values: ["Capitaneus DMG", "28055", "102061", "102061"],
+    values: ["Capitaneus DMG", "28086", "102176", "102176"],
   },
 ];
 export const dataStats: StatTests = [
@@ -125,12 +126,13 @@ export const dataStats: StatTests = [
 ];
 
 export const optimizerResults: Record<string, string> = {
-  totalNormal: `1761718`,
-  totalAverage: `5905278`,
-  totalCrit: `5905278`,
-  totalNormalAfterEquip: `1761718`,
-  totalAverageAfterEquip: `5905278`,
-  totalCritAfterEquip: `5905278`,
+  // Wuthering Tools+ 2026-10-12: the Capitaneus rank-5 fix moved these from 1761718 / 5905278
+  totalNormal: `1761746`,
+  totalAverage: `5905371`,
+  totalCrit: `5905371`,
+  totalNormalAfterEquip: `1761746`,
+  totalAverageAfterEquip: `5905371`,
+  totalCritAfterEquip: `5905371`,
   percentNormal: `(+3.0%)`,
   percentAvg: `(+8.4%)`,
   percentCrit: `(+1.1%)`,

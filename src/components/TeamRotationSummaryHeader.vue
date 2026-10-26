@@ -25,12 +25,13 @@
           :style="characterId ? { backgroundImage: `url(${characterImage(characterId)})` } : {}"></div>
       </div>
       <span class="opacity-70 shrink-0">{{ actionCount }} action{{ actionCount === 1 ? "" : "s" }}</span>
+      <!-- Wuthering Tools+: same separators and DPS basis as the full header below -->
       <span class="font-semibold shrink-0">
-        Normal: {{ displayDamage(result.total.normalDamage ?? 0) }} /
-        Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
-        Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
+        Normal: {{ displayDamage(result.total.normalDamage ?? 0).toLocaleString() }} /
+        Average: {{ displayDamage(result.total.avgDamage ?? 0).toLocaleString() }} /
+        Crit: {{ displayDamage(result.total.critDamage ?? 0).toLocaleString() }}
       </span>
-      <span v-if="duration" class="opacity-70 shrink-0">{{ displayDamage(result.dps.normal) }} DPS</span>
+      <span v-if="duration" class="opacity-70 shrink-0">{{ displayDamage(result.dps.avg).toLocaleString() }} DPS (avg)</span>
       <div class="flex-1 min-w-[100px] max-w-xs">
         <TeamRotationDamageBar :per-character="result.perCharacter" compact />
       </div>
@@ -70,13 +71,14 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+        <!-- Wuthering Tools+: thousands separators like the Summary page, and the DPS on the Average basis the team list sorts by -->
         <span>
           <span class="font-bold">Total DMG:</span>
-          Normal: {{ displayDamage(result.total.normalDamage ?? 0) }} /
-          Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
-          Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
+          Normal: {{ displayDamage(result.total.normalDamage ?? 0).toLocaleString() }} /
+          Average: {{ displayDamage(result.total.avgDamage ?? 0).toLocaleString() }} /
+          Crit: {{ displayDamage(result.total.critDamage ?? 0).toLocaleString() }}
         </span>
-        <span v-if="duration"><span class="font-bold">DPS:</span> {{ displayDamage(result.dps.normal) }}</span>
+        <span v-if="duration" data-test-team-rotation-summary-header-dps><span class="font-bold">DPS (avg):</span> {{ displayDamage(result.dps.avg).toLocaleString() }}</span>
         <span class="opacity-70">{{ actionCount }} action{{ actionCount === 1 ? "" : "s" }}</span>
       </div>
       <TeamRotationDamageBar :per-character="result.perCharacter" />

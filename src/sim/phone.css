@@ -433,13 +433,31 @@
 
 /* ---------------------------------------------------------------------------------------------
    9. Team Rotations editor (TeamRotationTeamEditor.vue): the per-slot "Configure Character /
-      Import Rotation" join wraps its labels inside btn-xs at 130 % text — let the buttons grow. */
+      Import Rotation" join wraps its labels inside btn-xs at 130 % text — let the buttons grow.
+      The scrolled (stuck) summary header (TeamRotationSummaryHeader.vue) keeps "Normal / Average /
+      Crit" as one `shrink-0` run, ~520 px at 130 %: it spilled past the screen, so it may wrap.
+      The "Damage by action" strip (also CalculatorRotation.vue) gives each bar a 0.5 rem minimum
+      plus a 0.375 rem gap: 40 actions came to ~720 px and grew the whole page to 761 px. On a phone
+      the bars and gaps go down to 2 px, so about 80 actions fit, and a longer rotation scrolls
+      inside the strip. */
 @media (max-width: 767px) {
   [data-test-team-rotation-editor] .join.w-full > .btn.btn-xs {
     height: auto;
     min-height: 2rem;
     padding-block: 0.3rem;
     line-height: 1.15;
+  }
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .font-semibold.shrink-0 {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .rotation__damage-strip .rotation__damage-strip__bars.rotation__damage-strip__bars {
+    gap: 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .rotation__damage-strip .rotation__damage-strip__bars .rotation__damage-strip__bar.rotation__damage-strip__bar {
+    min-width: 2px;
   }
 }
 

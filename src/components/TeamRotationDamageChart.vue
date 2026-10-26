@@ -15,8 +15,9 @@
           <span class="size-3 rounded-full shrink-0" :style="{ backgroundColor: palette[index % palette.length] }"></span>
           <span class="truncate">{{ entry.label }}</span>
         </span>
+        <!-- Wuthering Tools+: thousands separators, like the totals above it -->
         <span class="shrink-0 opacity-80">
-          {{ displayDamage(entry.value) }} ({{ entry.percentage.toFixed(1) }}%)
+          {{ displayDamage(entry.value).toLocaleString() }} ({{ entry.percentage.toFixed(1) }}%)
         </span>
       </li>
     </ul>

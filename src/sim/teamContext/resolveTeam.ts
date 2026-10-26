@@ -24,6 +24,10 @@
 //     it (a team with no actions keeps the old everyone-gets-it behaviour);
 //   • a sequence-node buff is recognised by "Sequence Node N:" or "SN:" in its name (Suisui's
 //     "S2: Clouds Pour…" used to leak at S0).
+// One more (2026-10-12): a mode's add-on tier — "increased to 20% for Resonators who inflict <the mode's status>"
+// (Aemeath's Silent Protection …TuneRuptureShifting / …FusionBurstAppliers) — reaches only a member who inflicts that
+// status, i.e. who is in the same status mode themselves (Lynae in Tune Rupture lays Tune Rupture - Shifting, Denia in
+// Fusion Burst lays Fusion Burst); everyone else keeps the base tier.
 // Pure/async; no Vue. Consumers: Team Rotations pages, /my-rankings, the CLI.
 import { allEchoBuffs, allWeaponTeamBuffs, buffsByCharacter } from "../../buffs/index";
 import {
@@ -147,6 +151,22 @@ interface ProviderMode {
   others: string[];
 }
 const modeRe = (stance: string): RegExp => new RegExp(`${compact(stance)}(\\d+|appliers?|shifting)?$`, "i");
+/** A mode's add-on tier: the mode's name plus "Appliers" / "Shifting" at the end of the key. Game text: "The All DMG
+ *  Amplification effect is increased to 20% for Resonators who inflict Tune Rupture - Shifting / Fusion Burst" — Riley's
+ *  kit upgrades a member's Silent Protection only once that member applies the status themselves
+ *  (`appliedByMember(TUNE_RUPTURE_SHIFTING | FUSION_BURST, member)`, vendor/wuwa_calc aemeath.ts). */
+const addOnRe = (stance: string): RegExp => new RegExp(`${compact(stance)}(appliers?|shifting)$`, "i");
+/** The status a mode's add-on tier asks the receiver to inflict, when `def` is one — null otherwise. A status is laid by
+ *  the kits whose Resonance Mode carries its name (Tune Rupture - Shifting: Aemeath, Lynae in Tune Rupture; Fusion Burst:
+ *  Aemeath, Denia in Fusion Burst — the app's kit text and Riley's engine agree), so the receiver qualifies by being in
+ *  that mode. The team's status rows can't say it: a Fusion Burst tick is calculated on whoever is on field, and a
+ *  Shifting is no damage row at all. */
+function addOnStatus(def: BuffDef, mode: ProviderMode): string | null {
+  if (!mode.active || def.stance) return null;
+  const m = addOnRe(mode.active).exec(def.key.toLowerCase());
+  if (!m) return null;
+  return m[1].startsWith("shifting") ? `${mode.active} - Shifting` : mode.active;
+}
 /** True when a team buff belongs to one of the provider's modes and it is not the one they are in. */
 function boundToAnotherMode(def: BuffDef, mode: ProviderMode): string | null {
   if (!mode.active) return null;
@@ -244,6 +264,8 @@ function providedBy(
   /** who the provider's Outro hands off to; null when the team's actions don't say */
   outroTo: Set<string> | null,
   receiver: string,
+  /** the receiver's own mode: a mode's add-on tier needs the receiver to inflict that mode's status */
+  receiverMode: ProviderMode,
 ): Record<string, TeamBuffEntry> {
   const entries: Record<string, TeamBuffEntry> = {};
   const isSetUp = providerData !== undefined;
@@ -255,6 +277,11 @@ function providedBy(
     const other = boundToAnotherMode(def, mode);
     if (other) {
       skipped.push({ key: def.key, from: provider, reason: `${other} mode; ${provider} is in ${mode.active}` });
+      continue;
+    }
+    const status = addOnStatus(def, mode);
+    if (status && receiverMode.active !== mode.active) {
+      skipped.push({ key: def.key, from: provider, reason: `only for a member who inflicts ${status}; ${receiver} doesn't` });
       continue;
     }
     if (outroTo && isHandoff(def.details) && !outroTo.has(receiver)) {
@@ -423,7 +450,7 @@ export async function resolveTeamCharacters(
         buffs,
         providedBy(
           teammate, resolved[teammate], await statsOf(teammate), inventoryEchoes, slotInfo.skipped, await assumedSequenceOf(teammate),
-          await modeOf(teammate), handoffs.get(teammate) ?? null, slotInfo.characterId,
+          await modeOf(teammate), handoffs.get(teammate) ?? null, slotInfo.characterId, await modeOf(slotInfo.characterId),
         ),
       );
     }
