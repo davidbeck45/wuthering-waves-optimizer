@@ -82,7 +82,7 @@ export type TeamAction = Record<string, unknown> & { slot: number; order: number
 export interface PreparedTeam {
   teamName: string;
   description: string;
-  /** Riley's team DPR for the run */
+  /** Riley's team DPS for the run (his "adjusted DPR", DPS × 26, before his 7bcbb24) */
   total: number;
   /** app character keys in slot order (main DPS first) */
   keys: string[];
@@ -329,7 +329,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const spec = slotOrder
     .map((i) => `${names[i]} ${tags[i]} ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, ${combos[i].mainstat?.name ?? ""}`)
     .join("; ");
-  let description = `Imported from the Team Rankings page (Riley31415/wuwa_calc): ${Math.round(traced.total).toLocaleString()} team DPR against a level 100 target with 20% RES. Slots: ${spec}. One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.`;
+  let description = `Imported from the Team Rankings page (Riley31415/wuwa_calc): ${Math.round(traced.total).toLocaleString()} team DPS against a level 100 target with 20% RES. Slots: ${spec}. One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.`;
   if (Object.keys(enemySeen).length) description += ` Enemy settings from the run: ${stacksLabel(enemySeen)}.`;
   if (statuses.size) description += ` Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): ${[...statuses].join(", ")}.`;
   if (notPorted.size) description += ` Not ported (no matching action in this app): ${[...notPorted].join(", ")}.`;
@@ -368,7 +368,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
       name,
       key: k,
       rotationName: `${name} ${tags[i]} ${combos[i].weapon?.name ?? ""} · ${others.join(" + ")} · ${tag} (wuwa_calc)`,
-      description: `Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): ${tags[i]}, ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, main stats ${combos[i].mainstat?.name ?? ""}; team ${ordered.join(" + ")}, ${Math.round(traced.total).toLocaleString()} team DPR.${report.unmatched.length ? ` Not ported: ${report.unmatched.map((u) => u.replace(/ \(.*\)$/, "")).join(", ")}.` : ""}`,
+      description: `Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): ${tags[i]}, ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, main stats ${combos[i].mainstat?.name ?? ""}; team ${ordered.join(" + ")}, ${Math.round(traced.total).toLocaleString()} team DPS.${report.unmatched.length ? ` Not ported: ${report.unmatched.map((u) => u.replace(/ \(.*\)$/, "")).join(", ")}.` : ""}`,
       duration,
       actions,
     });

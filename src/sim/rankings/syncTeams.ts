@@ -55,7 +55,7 @@ export interface SyncTeamReport {
   reason: string | null;
   /** Riley's team key the row came from */
   rileyKey: string | null;
-  /** his team DPR for that row */
+  /** his team DPS for that row (DPS × 26 before his 7bcbb24) */
   total: number | null;
   deltas: ActionDelta[];
   /** the enemy settings that moved (negative-status stacks read off the run) */
@@ -143,7 +143,7 @@ export const humanKey = (key: string): string =>
 
 /** The best row solved for one composition at the account's state, as the engine side hands it back. */
 export interface SolvedBest {
-  /** Riley's team DPR */
+  /** Riley's team DPS */
   total: number;
   /** whatever `importInto` needs to re-import that row (a row key on the page, a traced run headless) */
   ref: unknown;

@@ -385,7 +385,7 @@ export function registerPlusCommands(program: Command): void {
       console.log(`${path}\naccount ${result.account} · ${r.updated} updated · ${r.unchanged} unchanged · ${r.skipped} left alone${r.failed ? ` · ${r.failed} failed` : ""} · ${result.seconds.toFixed(1)} s (${result.subs} substats)\n`);
       console.log(
         table([
-          ["  Team", "Status", "Riley DPR", "What moved"],
+          ["  Team", "Status", "Riley DPS", "What moved"],
           ...r.teams.map((t) => {
             const moves = [
               ...t.deltas.slice(0, 4).map((d) => `${d.characterId ?? "?"} ${d.key}${d.stacks != null ? `@${d.stacks}` : ""} ${d.from}→${d.to}`),

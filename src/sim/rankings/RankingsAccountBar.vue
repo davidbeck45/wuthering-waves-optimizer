@@ -58,7 +58,7 @@
         <span class="badge badge-xs" :class="badgeClass(t.status)">{{ t.status }}</span>
         <span class="font-medium">{{ t.name }}</span>
         <span v-if="t.newName" class="text-xs opacity-70">→ {{ t.newName }}</span>
-        <span v-if="t.total" class="text-xs opacity-60 tabular-nums">Riley {{ Math.round(t.total).toLocaleString() }}</span>
+        <span v-if="t.total" class="text-xs opacity-60 tabular-nums">Riley {{ Math.round(t.total).toLocaleString() }} DPS</span>
         <span v-if="t.reason" class="text-xs opacity-70">{{ t.reason }}</span>
         <span v-if="t.deltas.length" class="text-xs opacity-80 w-full pl-2">
           <template v-for="(d, i) in t.deltas.slice(0, 12)" :key="i">
