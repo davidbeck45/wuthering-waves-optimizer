@@ -1,11 +1,11 @@
 [
  {
   "name": "Spectro Rover S6 Blazing Brilliance R5 · Mornye + Phoebe · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Phoebe: 345,850 DPR for Spectro Rover of 3,473,741 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Phoebe: 13,302 DPS for Spectro Rover of 133,605 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Spectro Rover S6 Blazing Brilliance R5 · Mornye + Phoebe · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Phoebe: 345,850 DPR for Spectro Rover of 3,473,741 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR ATK Spectro atk atk. Team: Mornye + Phoebe: 13,302 DPS for Spectro Rover of 133,605 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
    "duration": 25.18,
    "actions": [
     {
@@ -154,11 +154,11 @@
  },
  {
   "name": "Spectro Rover S6 Blazing Brilliance R5 · Suisui + Phoebe · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Suisui + Phoebe: 336,031 DPR for Spectro Rover of 3,503,442 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks. Rotation time 26.25 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Suisui + Phoebe: 12,924 DPS for Spectro Rover of 134,748 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks. Rotation time 26.25 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Spectro Rover S6 Blazing Brilliance R5 · Suisui + Phoebe · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Suisui + Phoebe: 336,031 DPR for Spectro Rover of 3,503,442 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks. Rotation time 26.25 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Suisui + Phoebe: 12,924 DPS for Spectro Rover of 134,748 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 13 Stacks. Rotation time 26.25 s (the team's loop).",
    "duration": 26.25,
    "actions": [
     {
@@ -307,11 +307,11 @@
  },
  {
   "name": "Spectro Rover S6 Blazing Brilliance R5 · Shorekeeper + Phoebe · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Phoebe: 307,969 DPR for Spectro Rover of 3,222,786 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Phoebe: 11,845 DPS for Spectro Rover of 123,953 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Spectro Rover S6 Blazing Brilliance R5 · Shorekeeper + Phoebe · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Phoebe: 307,969 DPR for Spectro Rover of 3,222,786 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Shorekeeper + Phoebe: 11,845 DPS for Spectro Rover of 123,953 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -451,11 +451,11 @@
  },
  {
   "name": "Spectro Rover S6 Blazing Brilliance R1 · Mornye + Phoebe · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R1, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 235,799 DPR for Spectro Rover of 2,435,171 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R1, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 9,069 DPS for Spectro Rover of 93,660 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Spectro Rover S6 Blazing Brilliance R1 · Mornye + Phoebe · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R1, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 235,799 DPR for Spectro Rover of 2,435,171 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R1, Moonlit Clouds 5pc, main stats 43311 CR Spectro Spectro atk atk. Team: Mornye + Phoebe: 9,069 DPS for Spectro Rover of 93,660 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 10 Stacks. Rotation time 25.18 s (the team's loop).",
    "duration": 25.18,
    "actions": [
     {

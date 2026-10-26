@@ -1,11 +1,11 @@
 [
  {
   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Galbrena · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 1,242,762 DPR for Lupa of 6,646,369 team. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 47,799 DPS for Lupa of 255,630 team DPS. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Mornye + Galbrena · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 1,242,762 DPR for Lupa of 6,646,369 team. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 47,799 DPS for Lupa of 255,630 team DPS. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
    "duration": 26.65,
    "actions": [
     {
@@ -105,11 +105,11 @@
  },
  {
   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,174,581 DPR for Lupa of 9,567,794 team. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 45,176 DPS for Lupa of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 1,174,581 DPR for Lupa of 9,567,794 team. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 45,176 DPS for Lupa of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
    "duration": 25.22,
    "actions": [
     {
@@ -189,11 +189,11 @@
  },
  {
   "name": "Lupa S6 Wildfire Mark R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 885,566 DPR for Lupa of 9,657,830 team. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 34,060 DPS for Lupa of 371,455 team DPS. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 885,566 DPR for Lupa of 9,657,830 team. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 34,060 DPS for Lupa of 371,455 team DPS. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
    "duration": 26.08,
    "actions": [
     {

@@ -1,12 +1,236 @@
 [
  {
-  "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,518,920 DPR for Galbrena of 7,739,096 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
+  "name": "Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 263,087 DPS for Galbrena of 310,150 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 27.05 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Galbrena S6 Lux & Umbra R5 · Lupa + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lupa + Qiuyuan (main DPS): 6,518,920 DPR for Galbrena of 7,739,096 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
-   "duration": 26.37,
+   "name": "Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 263,087 DPS for Galbrena of 310,150 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 27.05 s (the team's loop).",
+   "duration": 27.05,
+   "actions": [
+    {
+     "order": 1,
+     "key": "HellflareOverloadDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeavyAttackVolleyofDeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "HeavyAttackVolleyofDeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceSkillEncroachDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackAshfallBarragePlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ResonanceSkillAscentofMaliceDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "HellfireAbsolutionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "CorrosaurusAttack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Corrosaurus",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackSeraphicExecutionStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -60.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "BasicAttackSeraphicExecutionStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "HellstrideDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "BasicAttackSeraphicExecutionStage4DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "BasicAttackSeraphicExecutionStage5DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "AshenPursuitDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Galbrena S6 Lux & Umbra R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 205,125 DPS for Galbrena of 294,702 team DPS. Sequence procs in the loop: none. Rotation time 26.92 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Galbrena S6 Lux & Umbra R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 205,125 DPS for Galbrena of 294,702 team DPS. Sequence procs in the loop: none. Rotation time 26.92 s (the team's loop).",
+   "duration": 26.92,
    "actions": [
     {
      "order": 1,

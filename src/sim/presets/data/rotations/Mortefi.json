@@ -1,11 +1,11 @@
 [
  {
   "name": "Mortefi S6 Static Mist R5 · Mornye + Jiyan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Mornye + Jiyan: 350,521 DPR for Mortefi of 3,137,175 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Mornye + Jiyan: 13,482 DPS for Mortefi of 120,661 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R5 · Mornye + Jiyan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Mornye + Jiyan: 350,521 DPR for Mortefi of 3,137,175 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CR ATK Fusion atk atk. Team: Mornye + Jiyan: 13,482 DPS for Mortefi of 120,661 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -143,11 +143,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R5 · Shorekeeper + Jingran · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jingran: 344,372 DPR for Mortefi of 6,902,534 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jingran: 13,245 DPS for Mortefi of 265,482 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R5 · Shorekeeper + Jingran · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jingran: 344,372 DPR for Mortefi of 6,902,534 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jingran: 13,245 DPS for Mortefi of 265,482 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -285,11 +285,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R5 · Shorekeeper + Jiyan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jiyan: 339,856 DPR for Mortefi of 2,915,048 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jiyan: 13,071 DPS for Mortefi of 112,117 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R5 · Shorekeeper + Jiyan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jiyan: 339,856 DPR for Mortefi of 2,915,048 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R5, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Jiyan: 13,071 DPS for Mortefi of 112,117 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -427,11 +427,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Roccia: 266,083 DPR for Mortefi of 1,891,463 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.18 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Roccia: 10,234 DPS for Mortefi of 72,749 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.18 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Roccia: 266,083 DPR for Mortefi of 1,891,463 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.18 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CD Fusion Fusion atk atk. Team: Shorekeeper + Roccia: 10,234 DPS for Mortefi of 72,749 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.18 s (the team's loop).",
    "duration": 25.18,
    "actions": [
     {
@@ -569,11 +569,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Qiuyuan: 323,930 DPR for Mortefi of 2,224,328 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Qiuyuan: 12,459 DPS for Mortefi of 85,551 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R1 · Shorekeeper + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Qiuyuan: 323,930 DPR for Mortefi of 2,224,328 team. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Qiuyuan: 12,459 DPS for Mortefi of 85,551 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -711,11 +711,11 @@
  },
  {
   "name": "Mortefi S6 Static Mist R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Qiuyuan: 322,827 DPR for Mortefi of 2,294,059 team. Sequence procs in the loop: 11x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Qiuyuan: 12,416 DPS for Mortefi of 88,233 team DPS. Sequence procs in the loop: 11x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mortefi S6 Static Mist R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Qiuyuan: 322,827 DPR for Mortefi of 2,294,059 team. Sequence procs in the loop: 11x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Suisui + Qiuyuan: 12,416 DPS for Mortefi of 88,233 team DPS. Sequence procs in the loop: 11x Liberation - Marcato, 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -723,6 +723,148 @@
      "key": "MarcatoDamage",
      "type": "liberation",
      "count": 11,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "DissonanceSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "PassionateVariation",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ImpromptuShowStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "ImpromptuShowStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpromptuShowStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ImpromptuShowStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FuryFugueDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "ViolentFinaleDamage",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 52,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "CrescentServantsDMG",
+     "type": "echoAttacks",
+     "count": 9,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Hecate",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 52,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortefi S6 Static Mist R1 · Lily + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan: 12,113 DPS for Mortefi of 88,579 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Mortefi S6 Static Mist R1 · Lily + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Static Mist R1, Empyrean Anthem 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan: 12,113 DPS for Mortefi of 88,579 team DPS. Sequence procs in the loop: 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet), 4x Liberation - Marcato (S5 Funerary Quartet). Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "MarcatoDamage",
+     "type": "liberation",
+     "count": 14,
      "buffs": [],
      "isDisabled": false
     },

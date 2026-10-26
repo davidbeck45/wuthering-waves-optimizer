@@ -1,11 +1,11 @@
 [
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Cartethyia: 1,112,393 DPR for Ciaccona of 7,610,364 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Cartethyia: 42,784 DPS for Ciaccona of 292,706 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Cartethyia: 1,112,393 DPR for Ciaccona of 7,610,364 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK Aero atk atk. Team: Suisui + Cartethyia: 42,784 DPS for Ciaccona of 292,706 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
    "duration": 25.48,
    "actions": [
     {
@@ -146,11 +146,11 @@
  },
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,044,298 DPR for Ciaccona of 7,985,255 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 7x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 40,165 DPS for Ciaccona of 307,125 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 7x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 1,044,298 DPR for Ciaccona of 7,985,255 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 7x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Cartethyia: 40,165 DPS for Ciaccona of 307,125 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 7x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -291,11 +291,11 @@
  },
  {
   "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 1,027,422 DPR for Ciaccona of 3,900,162 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 39,516 DPS for Ciaccona of 150,006 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S6 Woodland Aria R5 · Suisui + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 1,027,422 DPR for Ciaccona of 3,900,162 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Woodland Aria R5, Gusts of Welkin 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Qiuyuan: 39,516 DPS for Ciaccona of 150,006 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 1x Aero Erosion - 6 Stacks, 5x Aero Erosion - 6 Stacks. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -445,11 +445,11 @@
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Suisui + Cartethyia: 564,959 DPR for Ciaccona of 5,297,798 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Suisui + Cartethyia: 21,729 DPS for Ciaccona of 203,761 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Suisui + Cartethyia: 564,959 DPR for Ciaccona of 5,297,798 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Suisui + Cartethyia: 21,729 DPS for Ciaccona of 203,761 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 2x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks. Rotation time 25.48 s (the team's loop).",
    "duration": 25.48,
    "actions": [
     {
@@ -574,11 +574,11 @@
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 542,169 DPR for Ciaccona of 5,709,260 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 7x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks. Rotation time 27.78 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 20,853 DPS for Ciaccona of 219,587 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 7x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks. Rotation time 27.78 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Chisa + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 542,169 DPR for Ciaccona of 5,709,260 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 7x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks. Rotation time 27.78 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Cartethyia: 20,853 DPS for Ciaccona of 219,587 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 7x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks. Rotation time 27.78 s (the team's loop).",
    "duration": 27.78,
    "actions": [
     {
@@ -712,11 +712,11 @@
  },
  {
   "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 519,013 DPR for Ciaccona of 4,884,888 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks. Rotation time 28.83 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 19,962 DPS for Ciaccona of 187,880 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks. Rotation time 28.83 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 519,013 DPR for Ciaccona of 4,884,888 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks. Rotation time 28.83 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Woodland Aria R1, Gusts of Welkin 5pc, main stats 43311 CD ATK Aero atk atk. Team: Aero Rover + Cartethyia: 19,962 DPS for Ciaccona of 187,880 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Aero Erosion - 9 Stacks, 6x Aero Erosion - 9 Stacks, 1x Aero Erosion - 8 Stacks, 2x Aero Erosion - 9 Stacks. Rotation time 28.83 s (the team's loop).",
    "duration": 28.83,
    "actions": [
     {

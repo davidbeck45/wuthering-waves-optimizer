@@ -1,11 +1,11 @@
 [
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 1,911,059 DPR for Electro Rover of 3,115,152 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 73,502 DPS for Electro Rover of 119,814 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 1,911,059 DPR for Electro Rover of 3,115,152 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 73,502 DPS for Electro Rover of 119,814 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
    "duration": 25.67,
    "actions": [
     {
@@ -213,11 +213,11 @@
  },
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 1,870,257 DPR for Electro Rover of 3,024,957 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 71,933 DPS for Electro Rover of 116,345 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 1,870,257 DPR for Electro Rover of 3,024,957 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 71,933 DPS for Electro Rover of 116,345 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
    "duration": 27.55,
    "actions": [
     {
@@ -425,11 +425,11 @@
  },
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 1,318,308 DPR for Electro Rover of 2,097,664 team. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 50,704 DPS for Electro Rover of 80,679 team DPS. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 1,318,308 DPR for Electro Rover of 2,097,664 team. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 50,704 DPS for Electro Rover of 80,679 team DPS. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
    "duration": 27.78,
    "actions": [
     {

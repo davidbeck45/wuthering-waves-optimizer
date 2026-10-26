@@ -1,11 +1,11 @@
 [
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 546,109 DPR for Mornye of 9,567,794 team. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 21,004 DPS for Mornye of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 546,109 DPR for Mornye of 9,567,794 team. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 21,004 DPS for Mornye of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
    "duration": 25.22,
    "actions": [
     {

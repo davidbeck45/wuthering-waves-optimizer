@@ -9006,822 +9006,6 @@
     "count": 1,
     "mv": 94.12,
     "mvFull": null,
-    "avg": 9730,
-    "cast": "Intro",
-    "node": "Intro",
-    "type": "Intro",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Heavy - Volley of Death 2",
-    "count": 1,
-    "mv": 69.18,
-    "mvFull": null,
-    "avg": 11646,
-    "cast": "Heavy",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Heavy - Volley of Death 3",
-    "count": 1,
-    "mv": 167.7,
-    "mvFull": null,
-    "avg": 41330,
-    "cast": "Heavy",
-    "node": "Normal",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Slayer's Trigger 3",
-    "count": 1,
-    "mv": 142.98,
-    "mvFull": null,
-    "avg": 44900,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Encroach",
-    "count": 1,
-    "mv": 35.78,
-    "mvFull": null,
-    "avg": 28091,
-    "cast": "Skill",
-    "node": "Skill",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Mid-air - Ashfall Barrage (Plunge)",
-    "count": 1,
-    "mv": 143.15,
-    "mvFull": null,
-    "avg": 44955,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Slayer's Trigger 3",
-    "count": 1,
-    "mv": 142.98,
-    "mvFull": null,
-    "avg": 44900,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Ascent of Malice",
-    "count": 1,
-    "mv": 103.14,
-    "mvFull": null,
-    "avg": 80976,
-    "cast": "Skill",
-    "node": "Skill",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Liberation - Hellfire Absolution",
-    "count": 1,
-    "mv": 1109.04,
-    "mvFull": null,
-    "avg": 639306,
-    "cast": "Liberation",
-    "node": "Liberation",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Corrosaurus",
-    "count": 1,
-    "mv": 273.6,
-    "mvFull": null,
-    "avg": 68573,
-    "cast": "Echo",
-    "node": null,
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 2",
-    "count": 1,
-    "mv": 139.19,
-    "mvFull": null,
-    "avg": 187032,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 3",
-    "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 326752,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 4",
-    "count": 1,
-    "mv": 181.47,
-    "mvFull": null,
-    "avg": 197510,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 5",
-    "count": 1,
-    "mv": 224.27,
-    "mvFull": null,
-    "avg": 244094,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Dodge - Hellstride",
-    "count": 1,
-    "mv": 666,
-    "mvFull": null,
-    "avg": 666,
-    "cast": "Dodge",
-    "node": null,
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 3",
-    "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 326752,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 4",
-    "count": 1,
-    "mv": 181.47,
-    "mvFull": null,
-    "avg": 194759,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 5",
-    "count": 1,
-    "mv": 224.27,
-    "mvFull": null,
-    "avg": 233387,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Outro - Ashen Pursuit",
-    "count": 1,
-    "mv": 795,
-    "mvFull": null,
-    "avg": 110633,
-    "cast": "Outro",
-    "node": null,
-    "type": "Outro",
-    "queued": false,
-    "by": null
-   }
-  ],
-  "expected": [
-   [
-    "HellflareOverloadDMG",
-    "intro",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HeavyAttackVolleyofDeathStage2DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HeavyAttackVolleyofDeathStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ResonanceSkillEncroachDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "MidairAttackAshfallBarragePlungingAttackDMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ResonanceSkillAscentofMaliceDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HellfireAbsolutionDMG",
-    "liberation",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "CorrosaurusAttack",
-    "echoAttacks",
-    1,
-    "Corrosaurus",
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage5DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HellstrideDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage5DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "AshenPursuitDMG",
-    "outro",
-    1,
-    null,
-    null,
-    null
-   ]
-  ],
-  "unmatched": [],
-  "status": [],
-  "enemy": {
-   "spectroFrazzleStacks": 0,
-   "aeroErosionStacks": 0,
-   "havocBaneStacks": 0,
-   "fusionBurstStacks": 0,
-   "electroFlareStacks": 0,
-   "electroRageStacks": 0,
-   "glacioChafeStacks": 0,
-   "strainStacks": 0
-  },
-  "ratiosPooled": [],
-  "ratiosTop3": []
- },
- {
-  "resonator": "Galbrena",
-  "appKey": "Galbrena",
-  "casts": [
-   {
-    "name": "Intro - Hellflare Overload",
-    "count": 1,
-    "mv": 94.12,
-    "mvFull": null,
-    "avg": 12735,
-    "cast": "Intro",
-    "node": "Intro",
-    "type": "Intro",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Heavy - Volley of Death 2",
-    "count": 1,
-    "mv": 69.18,
-    "mvFull": null,
-    "avg": 10602,
-    "cast": "Heavy",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Heavy - Volley of Death 3",
-    "count": 1,
-    "mv": 167.7,
-    "mvFull": null,
-    "avg": 90921,
-    "cast": "Heavy",
-    "node": "Normal",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Slayer's Trigger 3",
-    "count": 1,
-    "mv": 142.98,
-    "mvFull": null,
-    "avg": 44288,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Encroach",
-    "count": 1,
-    "mv": 35.78,
-    "mvFull": null,
-    "avg": 27708,
-    "cast": "Skill",
-    "node": "Skill",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Mid-air - Ashfall Barrage (Plunge)",
-    "count": 1,
-    "mv": 143.15,
-    "mvFull": null,
-    "avg": 44342,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Basic - Slayer's Trigger 3",
-    "count": 1,
-    "mv": 142.98,
-    "mvFull": null,
-    "avg": 44288,
-    "cast": "Basic",
-    "node": "Normal",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Skill - Ascent of Malice",
-    "count": 1,
-    "mv": 103.14,
-    "mvFull": null,
-    "avg": 79872,
-    "cast": "Skill",
-    "node": "Skill",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Liberation - Hellfire Absolution",
-    "count": 1,
-    "mv": 1109.04,
-    "mvFull": null,
-    "avg": 1402457,
-    "cast": "Liberation",
-    "node": "Liberation",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Echo - Corrosaurus",
-    "count": 1,
-    "mv": 273.6,
-    "mvFull": null,
-    "avg": 150428,
-    "cast": "Echo",
-    "node": null,
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 2",
-    "count": 1,
-    "mv": 139.19,
-    "mvFull": null,
-    "avg": 288301,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 3",
-    "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 503672,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 4",
-    "count": 1,
-    "mv": 181.47,
-    "mvFull": null,
-    "avg": 637148,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 5",
-    "count": 1,
-    "mv": 224.27,
-    "mvFull": null,
-    "avg": 787422,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Dodge - Hellstride",
-    "count": 1,
-    "mv": 666,
-    "mvFull": null,
-    "avg": 666,
-    "cast": "Dodge",
-    "node": null,
-    "type": "Basic",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 3",
-    "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 503672,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Heavy",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 4",
-    "count": 1,
-    "mv": 181.47,
-    "mvFull": null,
-    "avg": 619351,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Forte Basic - Seraphic Execution 5",
-    "count": 1,
-    "mv": 224.27,
-    "mvFull": null,
-    "avg": 765428,
-    "cast": "Basic",
-    "node": "Forte",
-    "type": "Echo",
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Wait 0.60s for Liberation - Critical Protocol's cooldown",
-    "count": 1,
-    "mv": 0,
-    "mvFull": null,
-    "avg": 0,
-    "cast": null,
-    "node": null,
-    "type": null,
-    "queued": false,
-    "by": null
-   },
-   {
-    "name": "Outro - Ashen Pursuit",
-    "count": 1,
-    "mv": 795,
-    "mvFull": null,
-    "avg": 19835,
-    "cast": "Outro",
-    "node": null,
-    "type": "Outro",
-    "queued": false,
-    "by": null
-   }
-  ],
-  "expected": [
-   [
-    "HellflareOverloadDMG",
-    "intro",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HeavyAttackVolleyofDeathStage2DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HeavyAttackVolleyofDeathStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ResonanceSkillEncroachDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "MidairAttackAshfallBarragePlungingAttackDMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackStage3DMG",
-    "basic",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "ResonanceSkillAscentofMaliceDMG",
-    "skill",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HellfireAbsolutionDMG",
-    "liberation",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "CorrosaurusAttack",
-    "echoAttacks",
-    1,
-    "Corrosaurus",
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage2DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage5DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "HellstrideDMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage3DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage4DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "BasicAttackSeraphicExecutionStage5DMG",
-    "forteCircuit",
-    1,
-    null,
-    null,
-    null
-   ],
-   [
-    "AshenPursuitDMG",
-    "outro",
-    1,
-    null,
-    null,
-    null
-   ]
-  ],
-  "unmatched": [],
-  "status": [],
-  "enemy": {
-   "spectroFrazzleStacks": 0,
-   "aeroErosionStacks": 0,
-   "havocBaneStacks": 0,
-   "fusionBurstStacks": 0,
-   "electroFlareStacks": 0,
-   "electroRageStacks": 0,
-   "glacioChafeStacks": 0,
-   "strainStacks": 0
-  },
-  "ratiosPooled": [],
-  "ratiosTop3": []
- },
- {
-  "resonator": "Galbrena",
-  "appKey": "Galbrena",
-  "casts": [
-   {
-    "name": "Intro - Hellflare Overload",
-    "count": 1,
-    "mv": 94.12,
-    "mvFull": null,
     "avg": 11348,
     "cast": "Intro",
     "node": "Intro",
@@ -9940,9 +9124,9 @@
    {
     "name": "Forte Basic - Seraphic Execution 2",
     "count": 1,
-    "mv": 139.19,
-    "mvFull": null,
-    "avg": 274267,
+    "mv": 55.68,
+    "mvFull": 139.19,
+    "avg": 109714,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
@@ -9950,14 +9134,38 @@
     "by": null
    },
    {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
     "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 479156,
+    "mv": 0,
+    "mvFull": 243.17,
+    "avg": 0,
     "cast": "Basic",
     "node": "Forte",
-    "type": "Heavy",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
     "queued": false,
     "by": null
    },
@@ -10000,12 +9208,24 @@
    {
     "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
-    "mv": 243.17,
-    "mvFull": null,
-    "avg": 479156,
+    "mv": 72.96,
+    "mvFull": 243.17,
+    "avg": 143763,
     "cast": "Basic",
     "node": "Forte",
     "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
     "queued": false,
     "by": null
    },
@@ -10034,14 +9254,62 @@
     "by": null
    },
    {
-    "name": "Wait 1.30s for Liberation - End Loop's cooldown",
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
     "count": 1,
     "mv": 0,
-    "mvFull": null,
+    "mvFull": 243.17,
     "avg": 0,
-    "cast": null,
-    "node": null,
+    "cast": "Basic",
+    "node": "Forte",
     "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 632498,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 673876,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
     "queued": false,
     "by": null
    },
@@ -10050,7 +9318,497 @@
     "count": 1,
     "mv": 795,
     "mvFull": null,
-    "avg": 97782,
+    "avg": 94760,
+    "cast": "Outro",
+    "node": null,
+    "type": "Outro",
+    "queued": false,
+    "by": null
+   }
+  ],
+  "expected": [
+   [
+    "HellflareOverloadDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackVolleyofDeathStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackVolleyofDeathStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillEncroachDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "MidairAttackAshfallBarragePlungingAttackDMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillAscentofMaliceDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellfireAbsolutionDMG",
+    "liberation",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "CorrosaurusAttack",
+    "echoAttacks",
+    1,
+    "Corrosaurus",
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    -60.0
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    -70.0
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "AshenPursuitDMG",
+    "outro",
+    1,
+    null,
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [
+   1.24
+  ],
+  "ratiosTop3": [
+   1.24
+  ]
+ },
+ {
+  "resonator": "Galbrena",
+  "appKey": "Galbrena",
+  "casts": [
+   {
+    "name": "Intro - Hellflare Overload",
+    "count": 1,
+    "mv": 94.12,
+    "mvFull": null,
+    "avg": 7991,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Heavy - Volley of Death 2",
+    "count": 1,
+    "mv": 69.18,
+    "mvFull": null,
+    "avg": 6824,
+    "cast": "Heavy",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Heavy - Volley of Death 3",
+    "count": 1,
+    "mv": 167.7,
+    "mvFull": null,
+    "avg": 93946,
+    "cast": "Heavy",
+    "node": "Normal",
+    "type": "Echo",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Basic - Slayer's Trigger 3",
+    "count": 1,
+    "mv": 142.98,
+    "mvFull": null,
+    "avg": 30332,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Skill - Encroach",
+    "count": 1,
+    "mv": 35.78,
+    "mvFull": null,
+    "avg": 18977,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Mid-air - Ashfall Barrage (Plunge)",
+    "count": 1,
+    "mv": 143.15,
+    "mvFull": null,
+    "avg": 30371,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Basic - Slayer's Trigger 3",
+    "count": 1,
+    "mv": 142.98,
+    "mvFull": null,
+    "avg": 30332,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Skill - Ascent of Malice",
+    "count": 1,
+    "mv": 103.14,
+    "mvFull": null,
+    "avg": 54706,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Liberation - Hellfire Absolution",
+    "count": 1,
+    "mv": 1109.04,
+    "mvFull": null,
+    "avg": 1448732,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": "Echo",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Echo - Corrosaurus",
+    "count": 1,
+    "mv": 273.6,
+    "mvFull": null,
+    "avg": 155393,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 2",
+    "count": 1,
+    "mv": 139.19,
+    "mvFull": null,
+    "avg": 209001,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
+    "count": 1,
+    "mv": 243.17,
+    "mvFull": null,
+    "avg": 365131,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null,
+    "held": {
+     "glacioChafe": 1
+    }
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 661428,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 813257,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
+    "count": 1,
+    "mv": 243.17,
+    "mvFull": null,
+    "avg": 356009,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 658054,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 813257,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Outro - Ashen Pursuit",
+    "count": 1,
+    "mv": 795,
+    "mvFull": null,
+    "avg": 25512,
     "cast": "Outro",
     "node": null,
     "type": "Outro",
@@ -10224,8 +9982,574 @@
    "glacioChafeStacks": 0,
    "strainStacks": 0
   },
-  "ratiosPooled": [],
-  "ratiosTop3": []
+  "ratiosPooled": [
+   1.24
+  ],
+  "ratiosTop3": [
+   1.24
+  ]
+ },
+ {
+  "resonator": "Galbrena",
+  "appKey": "Galbrena",
+  "casts": [
+   {
+    "name": "Intro - Hellflare Overload",
+    "count": 1,
+    "mv": 94.12,
+    "mvFull": null,
+    "avg": 8452,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Heavy - Volley of Death 2",
+    "count": 1,
+    "mv": 69.18,
+    "mvFull": null,
+    "avg": 7152,
+    "cast": "Heavy",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Heavy - Volley of Death 3",
+    "count": 1,
+    "mv": 167.7,
+    "mvFull": null,
+    "avg": 65034,
+    "cast": "Heavy",
+    "node": "Normal",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Slayer's Trigger 3",
+    "count": 1,
+    "mv": 142.98,
+    "mvFull": null,
+    "avg": 30252,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Encroach",
+    "count": 1,
+    "mv": 35.78,
+    "mvFull": null,
+    "avg": 18927,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Mid-air - Ashfall Barrage (Plunge)",
+    "count": 1,
+    "mv": 143.15,
+    "mvFull": null,
+    "avg": 30290,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Slayer's Trigger 3",
+    "count": 1,
+    "mv": 142.98,
+    "mvFull": null,
+    "avg": 30252,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Ascent of Malice",
+    "count": 1,
+    "mv": 103.14,
+    "mvFull": null,
+    "avg": 54560,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Hellfire Absolution",
+    "count": 1,
+    "mv": 1109.04,
+    "mvFull": null,
+    "avg": 1003722,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Corrosaurus",
+    "count": 1,
+    "mv": 273.6,
+    "mvFull": null,
+    "avg": 107661,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 2",
+    "count": 1,
+    "mv": 55.68,
+    "mvFull": 139.19,
+    "avg": 82936,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
+    "count": 1,
+    "mv": 0,
+    "mvFull": 243.17,
+    "avg": 0,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 478121,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 590886,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
+    "count": 1,
+    "mv": 72.96,
+    "mvFull": 243.17,
+    "avg": 108675,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 478121,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 590886,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 3",
+    "count": 1,
+    "mv": 0,
+    "mvFull": 243.17,
+    "avg": 0,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Dodge - Hellstride",
+    "count": 1,
+    "mv": 666,
+    "mvFull": null,
+    "avg": 666,
+    "cast": "Dodge",
+    "node": null,
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 4",
+    "count": 1,
+    "mv": 181.47,
+    "mvFull": null,
+    "avg": 478121,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Basic - Seraphic Execution 5",
+    "count": 1,
+    "mv": 224.27,
+    "mvFull": null,
+    "avg": 480684,
+    "cast": "Basic",
+    "node": "Forte",
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Wait 0.05s for Liberation - Arboreal Flourish's cooldown",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": null,
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Outro - Ashen Pursuit",
+    "count": 1,
+    "mv": 795,
+    "mvFull": null,
+    "avg": 63684,
+    "cast": "Outro",
+    "node": null,
+    "type": "Outro",
+    "queued": false,
+    "by": null
+   }
+  ],
+  "expected": [
+   [
+    "HellflareOverloadDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackVolleyofDeathStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackVolleyofDeathStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillEncroachDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "MidairAttackAshfallBarragePlungingAttackDMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillAscentofMaliceDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellfireAbsolutionDMG",
+    "liberation",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "CorrosaurusAttack",
+    "echoAttacks",
+    1,
+    "Corrosaurus",
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage2DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    -60.0
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage3DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    -70.0
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HellstrideDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage4DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackSeraphicExecutionStage5DMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "AshenPursuitDMG",
+    "outro",
+    1,
+    null,
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [
+   1.24
+  ],
+  "ratiosTop3": [
+   1.24
+  ]
  },
  {
   "resonator": "Hiyuki",
@@ -14801,7 +15125,7 @@
     "count": 1,
     "mv": 159.05,
     "mvFull": null,
-    "avg": 25252,
+    "avg": 25503,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -14837,7 +15161,7 @@
     "count": 1,
     "mv": 88.62,
     "mvFull": null,
-    "avg": 14589,
+    "avg": 14734,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -14849,7 +15173,7 @@
     "count": 1,
     "mv": 129.95,
     "mvFull": null,
-    "avg": 21392,
+    "avg": 21606,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -14861,7 +15185,7 @@
     "count": 1,
     "mv": 503.8,
     "mvFull": null,
-    "avg": 82941,
+    "avg": 83766,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -14873,7 +15197,7 @@
     "count": 1,
     "mv": 165.74,
     "mvFull": null,
-    "avg": 27286,
+    "avg": 27556,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -14885,7 +15209,7 @@
     "count": 1,
     "mv": 186.69,
     "mvFull": null,
-    "avg": 32126,
+    "avg": 32445,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -14897,7 +15221,7 @@
     "count": 1,
     "mv": 243.22,
     "mvFull": null,
-    "avg": 25739,
+    "avg": 34400,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -14909,7 +15233,7 @@
     "count": 1,
     "mv": 240,
     "mvFull": null,
-    "avg": 44387,
+    "avg": 45526,
     "cast": null,
     "node": null,
     "type": "Skill",
@@ -14921,7 +15245,7 @@
     "count": 1,
     "mv": 467.26,
     "mvFull": null,
-    "avg": 754659,
+    "avg": 762170,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -14933,7 +15257,7 @@
     "count": 1,
     "mv": 1666.03,
     "mvFull": null,
-    "avg": 404405,
+    "avg": 408429,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Liberation",
@@ -14957,7 +15281,7 @@
     "count": 1,
     "mv": 159.05,
     "mvFull": null,
-    "avg": 27179,
+    "avg": 27567,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -14993,7 +15317,7 @@
     "count": 1,
     "mv": 88.62,
     "mvFull": null,
-    "avg": 20081,
+    "avg": 20076,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -15005,7 +15329,7 @@
     "count": 1,
     "mv": 129.95,
     "mvFull": null,
-    "avg": 29445,
+    "avg": 29440,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -15017,7 +15341,7 @@
     "count": 1,
     "mv": 503.8,
     "mvFull": null,
-    "avg": 114156,
+    "avg": 114134,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -15029,7 +15353,7 @@
     "count": 1,
     "mv": 165.74,
     "mvFull": null,
-    "avg": 37555,
+    "avg": 37548,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -15041,7 +15365,7 @@
     "count": 1,
     "mv": 186.69,
     "mvFull": null,
-    "avg": 42300,
+    "avg": 42290,
     "cast": "Basic",
     "node": "Forte",
     "type": "Skill",
@@ -15053,7 +15377,7 @@
     "count": 1,
     "mv": 467.26,
     "mvFull": null,
-    "avg": 879955,
+    "avg": 879774,
     "cast": "Skill",
     "node": "Forte",
     "type": "Skill",
@@ -15061,7 +15385,7 @@
     "by": null
    },
    {
-    "name": "Wait 2.95s for Liberation - End Loop's cooldown",
+    "name": "Wait 1.37s for Liberation - Into the Dream Cradle's cooldown",
     "count": 1,
     "mv": 0,
     "mvFull": null,
@@ -20668,7 +20992,7 @@
     "count": 1,
     "mv": 95.43,
     "mvFull": null,
-    "avg": 20156,
+    "avg": 19137,
     "cast": "Intro",
     "node": "Intro",
     "type": "Intro",
@@ -20684,7 +21008,7 @@
     "count": 1,
     "mv": 35.79,
     "mvFull": null,
-    "avg": 8468,
+    "avg": 8151,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -20700,7 +21024,7 @@
     "count": 1,
     "mv": 151.1,
     "mvFull": null,
-    "avg": 35751,
+    "avg": 34413,
     "cast": "Basic",
     "node": "Normal",
     "type": "Basic",
@@ -20716,7 +21040,7 @@
     "count": 1,
     "mv": 196.84,
     "mvFull": null,
-    "avg": 63677,
+    "avg": 61297,
     "cast": "Basic",
     "node": "Normal",
     "type": "Liberation",
@@ -20732,7 +21056,7 @@
     "count": 1,
     "mv": 262.08,
     "mvFull": null,
-    "avg": 60016,
+    "avg": 77764,
     "cast": "Echo",
     "node": null,
     "type": "Echo",
@@ -20748,7 +21072,7 @@
     "count": 1,
     "mv": 954.29,
     "mvFull": null,
-    "avg": 392769,
+    "avg": 378086,
     "cast": "Liberation",
     "node": "Liberation",
     "type": "Liberation",
@@ -20764,7 +21088,7 @@
     "count": 1,
     "mv": 196.56,
     "mvFull": null,
-    "avg": 77160,
+    "avg": 99976,
     "cast": null,
     "node": null,
     "type": "Echo",
@@ -20780,7 +21104,7 @@
     "count": 1,
     "mv": 139.6,
     "mvFull": null,
-    "avg": 33024,
+    "avg": 31792,
     "cast": "Skill",
     "node": "Skill",
     "type": "Skill",
@@ -20796,7 +21120,7 @@
     "count": 1,
     "mv": 191.52,
     "mvFull": null,
-    "avg": 210654,
+    "avg": 202770,
     "cast": "Basic",
     "node": "Forte",
     "type": "Liberation",
@@ -20812,7 +21136,7 @@
     "count": 1,
     "mv": 223.72,
     "mvFull": null,
-    "avg": 246064,
+    "avg": 236866,
     "cast": "Basic",
     "node": "Forte",
     "type": "Liberation",
@@ -20828,7 +21152,7 @@
     "count": 1,
     "mv": 257.67,
     "mvFull": null,
-    "avg": 612379,
+    "avg": 608457,
     "cast": "Basic",
     "node": "Forte",
     "type": "Liberation",
@@ -20836,7 +21160,7 @@
     "by": null,
     "held": {
      "havocBane": 6,
-     "aeroErosion": 9
+     "aeroErosion": 2
     }
    },
    {

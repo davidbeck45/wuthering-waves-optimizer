@@ -1,11 +1,11 @@
 [
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,747,560 DPR for Jiyan of 4,384,692 team. Sequence procs in the loop: none. Rotation time 25.02 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 105,675 DPS for Jiyan of 168,642 team DPS. Sequence procs in the loop: none. Rotation time 25.02 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 2,747,560 DPR for Jiyan of 4,384,692 team. Sequence procs in the loop: none. Rotation time 25.02 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 105,675 DPS for Jiyan of 168,642 team DPS. Sequence procs in the loop: none. Rotation time 25.02 s (the team's loop).",
    "duration": 25.02,
    "actions": [
     {
@@ -121,11 +121,11 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,610,869 DPR for Jiyan of 3,855,373 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 100,418 DPS for Jiyan of 148,284 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Ciaccona · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 2,610,869 DPR for Jiyan of 3,855,373 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Ciaccona (main DPS): 100,418 DPS for Jiyan of 148,284 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -239,11 +239,11 @@
  },
  {
   "name": "Jiyan S6 Verdant Summit R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Rebecca (main DPS): 2,522,283 DPR for Jiyan of 4,721,939 team. Sequence procs in the loop: none. Rotation time 25.05 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Rebecca (main DPS): 97,011 DPS for Jiyan of 181,613 team DPS. Sequence procs in the loop: none. Rotation time 25.05 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Jiyan S6 Verdant Summit R5 · Mornye + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Rebecca (main DPS): 2,522,283 DPR for Jiyan of 4,721,939 team. Sequence procs in the loop: none. Rotation time 25.05 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Verdant Summit R5, Sierra Gale 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Rebecca (main DPS): 97,011 DPS for Jiyan of 181,613 team DPS. Sequence procs in the loop: none. Rotation time 25.05 s (the team's loop).",
    "duration": 25.05,
    "actions": [
     {

@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-21T19:27:03.742Z",
- "wuwaCalcCommit": "9dbffa1",
+ "generated": "2026-10-26T21:55:13.741Z",
+ "wuwaCalcCommit": "7bcbb24",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -79,7 +79,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 5
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -211,7 +211,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 6
+     "intendedTeams": 7
     }
    ],
    "sequences": [
@@ -342,14 +342,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 8
+     "intendedTeams": 12
     },
     {
      "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 / Augment R1 / Radiant Dawn R1 · Havoc Eclipse 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -569,7 +569,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 39
+     "intendedTeams": 42
     }
    ],
    "sequences": [
@@ -613,7 +613,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 9
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -783,7 +783,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 14
+     "intendedTeams": 24
     }
    ],
    "sequences": [
@@ -905,7 +905,7 @@
        "note": "first double intro: adds Double Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1"
       }
      },
-     "intendedTeams": 4
+     "intendedTeams": 7
     }
    ],
    "sequences": [
@@ -949,7 +949,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 13
+     "intendedTeams": 15
     },
     {
      "label": "Moongazer's Sigil R1 / Pulsation Bracer R1 / Abyss Surges R1 / Verity's Handle R1 / Stonard R1 / Aether Strike R1 · Crown of Valor 3pc + Sierra Gale 2pc",
@@ -971,7 +971,7 @@
        ]
       }
      },
-     "intendedTeams": 5
+     "intendedTeams": 8
     }
    ],
    "sequences": [
@@ -1015,7 +1015,7 @@
      "minSequence": 2,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 13
+     "intendedTeams": 14
     }
    ],
    "sequences": [
@@ -1120,7 +1120,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 10
+     "intendedTeams": 19
     }
    ],
    "sequences": [
@@ -1200,6 +1200,50 @@
     }
    ]
   },
+  "Lily": {
+   "appKey": "Lily",
+   "loadouts": [
+    {
+     "label": "Lullaby R1 / Cadenza R1 / Static Mist R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 48
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lily S1: Look, White Flowers from the Ruins of Dreams",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Lily S2: Listen, a Requiem from the Dream Cradle",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Lily S3: May Your Soul Wander No More",
+     "note": "S3: Eternal Bloom's cast adds 25 Concerto and 170 Dream Perfume. Its faster Dreambell Chime and +50% healing reach no formula here."
+    },
+    {
+     "level": 4,
+     "name": "Lily S4: May Your Past Sink into Silence",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Lily S5: May You Find Peace in Endless Light",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Lily S6: May My Reverie Never End",
+     "note": "S6: those three deal 500% more Spectro DMG, read as Mornye's S6 \"deals 400% more DMG\" is."
+    }
+   ]
+  },
   "Lucilla": {
    "appKey": "Lucilla",
    "loadouts": [
@@ -1208,7 +1252,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 16
+     "intendedTeams": 23
     },
     {
      "label": "Freeze Frame R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Dream of the Lost 3pc + Wishes of Quiet Snowfall 2pc · Resonance Mode - Glacio Chafe",
@@ -1303,7 +1347,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 26
+     "intendedTeams": 28
     }
    ],
    "sequences": [
@@ -1391,7 +1435,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 39
+     "intendedTeams": 44
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -1486,7 +1530,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 20
+     "intendedTeams": 22
     }
    ],
    "sequences": [
@@ -1581,7 +1625,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 37
+     "intendedTeams": 53
     }
    ],
    "sequences": [
@@ -1669,31 +1713,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 16
+     "intendedTeams": 22
     },
     {
      "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Law of Harmony 3pc + Sierra Gale 2pc",
-     "minSequence": 0,
-     "loopChangesAt": [
-      3
-     ],
-     "changes": {
-      "3": {
-       "kind": "loop",
-       "added": [
-        "Basic - Thus Spoke the Blade: Inkwash 3 ×1",
-        "Skill - Straw Cape in Drizzly Rain (S3) ×1"
-       ],
-       "removed": [
-        "Basic - Thus Spoke the Blade: Inkwash 4 ×1",
-        "Heavy - Inkwash ×2",
-        "Dodge Placeholder ×2",
-        "Basic - Thus Spoke the Blade: Inkwash 1 ×2",
-        "Basic - Thus Spoke the Blade: Inkwash 2 ×2"
-       ]
-      }
-     },
-     "intendedTeams": 12
+     "minSequence": 3,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 19
     }
    ],
    "sequences": [
@@ -1737,7 +1764,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 27
+     "intendedTeams": 31
     }
    ],
    "sequences": [
@@ -1792,7 +1819,7 @@
        "note": "opener: drops Basic - Pero, Easy 4 ×1"
       }
      },
-     "intendedTeams": 7
+     "intendedTeams": 10
     },
     {
      "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Havoc Eclipse 5pc",
@@ -1854,7 +1881,7 @@
        "note": "opener: drops Basic - Frigid Light 4 ×1"
       }
      },
-     "intendedTeams": 13
+     "intendedTeams": 15
     }
    ],
    "sequences": [
@@ -1942,7 +1969,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 12
+     "intendedTeams": 19
     }
    ],
    "sequences": [
@@ -2074,14 +2101,14 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 6
     },
     {
      "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Heart of Sworn Vigil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 8
     }
    ],
    "sequences": [
@@ -2266,7 +2293,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 2
+     "intendedTeams": 3
     }
    ],
    "sequences": [
@@ -2366,7 +2393,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 2
+     "intendedTeams": 3
     }
    ],
    "sequences": [

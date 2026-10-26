@@ -1,11 +1,11 @@
 [
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 404,568 DPR for Aero Rover of 3,800,472 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 15,560 DPS for Aero Rover of 146,172 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 404,568 DPR for Aero Rover of 3,800,472 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 15,560 DPS for Aero Rover of 146,172 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.87 s (the team's loop).",
    "duration": 29.87,
    "actions": [
     {
@@ -162,11 +162,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Sigrika · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 270,820 DPR for Aero Rover of 5,373,805 team. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 10,416 DPS for Aero Rover of 206,685 team DPS. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Sigrika · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 270,820 DPR for Aero Rover of 5,373,805 team. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Sigrika: 10,416 DPS for Aero Rover of 206,685 team DPS. Sequence procs in the loop: none. Rotation time 26.72 s (the team's loop).",
    "duration": 26.72,
    "actions": [
     {
@@ -286,11 +286,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 236,994 DPR for Aero Rover of 5,214,452 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 9,115 DPS for Aero Rover of 200,556 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Chisa + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 236,994 DPR for Aero Rover of 5,214,452 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR ATK Aero atk atk. Team: Chisa + Cartethyia: 9,115 DPS for Aero Rover of 200,556 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 32.17 s (the team's loop).",
    "duration": 32.17,
    "actions": [
     {
@@ -428,11 +428,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 232,808 DPR for Aero Rover of 3,187,636 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 8,954 DPS for Aero Rover of 122,601 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Suisui + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 232,808 DPR for Aero Rover of 3,187,636 team. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Moonlit Clouds 5pc + Impermanence Heron, main stats 43311 CR Aero Aero atk atk. Team: Suisui + Cartethyia: 8,954 DPS for Aero Rover of 122,601 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks, 1x Aero Erosion - 12 Stacks. Rotation time 29.97 s (the team's loop).",
    "duration": 29.97,
    "actions": [
     {
@@ -579,11 +579,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 217,117 DPR for Aero Rover of 3,288,318 team. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 8,351 DPS for Aero Rover of 126,474 team DPS. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 217,117 DPR for Aero Rover of 3,288,318 team. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR ATK Aero atk atk. Team: Sanhua + Cartethyia: 8,351 DPS for Aero Rover of 126,474 team DPS. Sequence procs in the loop: none. Rotation time 26.97 s (the team's loop).",
    "duration": 26.97,
    "actions": [
     {
@@ -713,11 +713,11 @@
  },
  {
   "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 272,558 DPR for Aero Rover of 2,722,719 team. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 10,483 DPS for Aero Rover of 104,720 team DPS. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aero Rover S6 Bloodpact's Pledge R5 · Mornye + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 272,558 DPR for Aero Rover of 2,722,719 team. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Bloodpact's Pledge R5, Windward Pilgrimage 5pc, main stats 43311 CR Aero Aero atk atk. Team: Mornye + Cartethyia: 10,483 DPS for Aero Rover of 104,720 team DPS. Sequence procs in the loop: none. Rotation time 28.80 s (the team's loop).",
    "duration": 28.8,
    "actions": [
     {

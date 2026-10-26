@@ -1,11 +1,11 @@
 [
  {
   "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ER Havoc atk atk. Team: Mornye + Lynae (main DPS): 2,287,471 DPR for Roccia of 3,817,220 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ER Havoc atk atk. Team: Mornye + Lynae (main DPS): 87,980 DPS for Roccia of 146,816 team DPS. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Roccia S6 Tragicomedy R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ER Havoc atk atk. Team: Mornye + Lynae (main DPS): 2,287,471 DPR for Roccia of 3,817,220 team. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Havoc Eclipse 5pc, main stats 43311 CR ER Havoc atk atk. Team: Mornye + Lynae (main DPS): 87,980 DPS for Roccia of 146,816 team DPS. Sequence procs in the loop: none. Rotation time 26.37 s (the team's loop).",
    "duration": 26.37,
    "actions": [
     {
@@ -77,11 +77,11 @@
  },
  {
   "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Mornye: 727,267 DPR for Roccia of 5,934,529 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Mornye: 27,972 DPS for Roccia of 228,251 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Roccia S6 Tragicomedy R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Mornye: 727,267 DPR for Roccia of 5,934,529 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Tragicomedy R5, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Mornye: 27,972 DPS for Roccia of 228,251 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -147,11 +147,11 @@
  },
  {
   "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Shorekeeper: 279,862 DPR for Roccia of 3,663,882 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Shorekeeper: 10,764 DPS for Roccia of 140,919 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Roccia S0 Tragicomedy R1 · Phrolova + Shorekeeper · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Shorekeeper: 279,862 DPR for Roccia of 3,663,882 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Tragicomedy R1, Midnight Veil 5pc, main stats 43311 CR ER Havoc atk atk. Team: Phrolova + Shorekeeper: 10,764 DPS for Roccia of 140,919 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {

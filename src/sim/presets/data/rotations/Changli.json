@@ -1,11 +1,11 @@
 [
  {
   "name": "Changli S6 Blazing Brilliance R5 · Denia + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Denia + Lupa (main DPS): 2,031,156 DPR for Changli of 5,352,953 team. Sequence procs in the loop: none. Rotation time 26.13 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Denia + Lupa (main DPS): 78,121 DPS for Changli of 205,883 team DPS. Sequence procs in the loop: none. Rotation time 26.13 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Changli S6 Blazing Brilliance R5 · Denia + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Denia + Lupa (main DPS): 2,031,156 DPR for Changli of 5,352,953 team. Sequence procs in the loop: none. Rotation time 26.13 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Molten Rift 5pc, main stats 44111 CR CD atk atk atk. Team: Denia + Lupa (main DPS): 78,121 DPS for Changli of 205,883 team DPS. Sequence procs in the loop: none. Rotation time 26.13 s (the team's loop).",
    "duration": 26.13,
    "actions": [
     {

@@ -1,12 +1,12 @@
 [
  {
-  "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,812,064 DPR for Sigrika of 10,890,110 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "name": "Sigrika S6 Solsworn Ciphers R5 · Lily + Lucilla · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Lily + Lucilla (main DPS): 366,198 DPS for Sigrika of 447,936 team DPS. Sequence procs in the loop: none. Rotation time 25.62 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Sigrika S6 Solsworn Ciphers R5 · Mornye + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Mornye + Lucilla (main DPS): 8,812,064 DPR for Sigrika of 10,890,110 team. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
-   "duration": 25,
+   "name": "Sigrika S6 Solsworn Ciphers R5 · Lily + Lucilla · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Lily + Lucilla (main DPS): 366,198 DPS for Sigrika of 447,936 team DPS. Sequence procs in the loop: none. Rotation time 25.62 s (the team's loop).",
+   "duration": 25.62,
    "actions": [
     {
      "order": 1,
@@ -150,13 +150,13 @@
   }
  },
  {
-  "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,309,372 DPR for Sigrika of 9,174,765 team. Sequence procs in the loop: none. Rotation time 25.87 s (the team's loop).",
+  "name": "Sigrika S6 Solsworn Ciphers R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Lily + Qiuyuan (main DPS): 335,314 DPS for Sigrika of 382,192 team DPS. Sequence procs in the loop: none. Rotation time 27.45 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Sigrika S6 Solsworn Ciphers R5 · Shorekeeper + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Shorekeeper + Qiuyuan (main DPS): 8,309,372 DPR for Sigrika of 9,174,765 team. Sequence procs in the loop: none. Rotation time 25.87 s (the team's loop).",
-   "duration": 25.87,
+   "name": "Sigrika S6 Solsworn Ciphers R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Solsworn Ciphers R5, Sound of True Name 5pc, main stats 43311 CR ATK ER atk atk. Team: Lily + Qiuyuan (main DPS): 335,314 DPS for Sigrika of 382,192 team DPS. Sequence procs in the loop: none. Rotation time 27.45 s (the team's loop).",
+   "duration": 27.45,
    "actions": [
     {
      "order": 1,

@@ -1,11 +1,11 @@
 [
  {
   "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,520,945 DPR for Brant of 4,690,977 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 135,421 DPS for Brant of 180,422 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 3,520,945 DPR for Brant of 4,690,977 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 135,421 DPS for Brant of 180,422 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
    "duration": 32.33,
    "actions": [
     {
@@ -210,11 +210,11 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 2,981,643 DPR for Brant of 3,777,693 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 114,679 DPS for Brant of 145,296 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 2,981,643 DPR for Brant of 3,777,693 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 114,679 DPS for Brant of 145,296 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
    "duration": 33.4,
    "actions": [
     {
@@ -419,11 +419,11 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 2,348,382 DPR for Brant of 2,726,228 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 90,322 DPS for Brant of 104,855 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 2,348,382 DPR for Brant of 2,726,228 team. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 90,322 DPS for Brant of 104,855 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
    "duration": 32.33,
    "actions": [
     {
@@ -620,11 +620,11 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,327,228 DPR for Brant of 2,908,293 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 89,509 DPS for Brant of 111,858 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 2,327,228 DPR for Brant of 2,908,293 team. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 89,509 DPS for Brant of 111,858 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
    "duration": 32.73,
    "actions": [
     {
