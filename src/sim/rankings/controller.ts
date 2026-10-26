@@ -8,12 +8,16 @@
  * clobbered. Everything else — the solve/run passes, the overlay, the worker pool — is his logic.
  * The engine, kits and page modules themselves come straight from the submodule via `@skittle/*`.
  */
+import { shallowRef } from "vue";
 import type { Router } from "vue-router";
 import type { BuildRolls } from "./myBuilds";
 import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
 import { importTeamFromRankings, type ImportResult } from "./importFromRankings";
 import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
+import { rosterOf, type RosterEntry } from "./filterChips";
+import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
+import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -25,8 +29,8 @@ interface Mods {
 
 const TEMPLATE = `
   <div class="wt-toolbar">
-    <button type="button" class="btn btn-sm btn-primary" data-test-rankings-filters>Filters &amp; options</button>
-    <span class="wt-toolbar__hint">team cost · resonators · standards</span>
+    <button type="button" class="btn btn-sm btn-primary" data-test-rankings-filters><svg viewBox="0 0 24 24" class="wt-toolbar__icon" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" stroke-linecap="round"/></svg><span class="wt-toolbar__long">Search &amp; compare</span><span class="wt-toolbar__short">Filters</span></button>
+    <span class="wt-toolbar__hint">weapons · echoes · sequences</span>
     <button type="button" class="wt-sheet-close btn btn-sm btn-circle btn-ghost" aria-label="Close" data-test-rankings-filters-close>&#x2715;</button>
   </div>
   <div class="wt-backdrop"></div>
@@ -67,6 +71,8 @@ function buildDom(): HTMLElement {
   const el = document.createElement("div");
   el.className = "skittle-root";
   el.innerHTML = TEMPLATE;
+  // Wuthering Tools+: a phone's card list puts its count and DPR / DPS switch in this toolbar (RankingsCards.vue)
+  el.querySelector(".wt-toolbar__hint")!.after(cardsHeadHost());
   el.querySelector("[data-test-rankings-filters]")!.addEventListener("click", () => el.classList.toggle("wt-side-open"));
   el.querySelector(".wt-backdrop")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
   el.querySelector("[data-test-rankings-filters-close]")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
@@ -293,6 +299,8 @@ async function ensureBestPicks(inPlay: [string, Member[]][], filters: any = mods
  * next to Back and are re-pointed at the current team on each detail render.
  */
 let importBusy = false;
+/** the Import button's label: in full on a desktop, "Import team" on a phone (skittle-theme.css), so it shares Back's line */
+const IMPORT_LABEL = `<span class="wt-import__long">Import team into Wuthering Tools+</span><span class="wt-import__short">Import team</span>`;
 function mountImportControls(key: string): void {
   const topbar = root?.querySelector<HTMLElement>("#topbar");
   if (!topbar) return;
@@ -301,12 +309,59 @@ function mountImportControls(key: string): void {
     box = document.createElement("div");
     box.className = "wt-import";
     box.innerHTML = `
-      <label class="wt-import__opt"><input type="checkbox" data-test-rankings-import-rotations checked> also save each member's rotation</label>
-      <button type="button" class="btn btn-primary btn-xs" data-test-rankings-import-team>Import team into Wuthering Tools+</button>`;
+      <label class="wt-import__opt" title="also save each member's rotation to that character"><input type="checkbox" data-test-rankings-import-rotations checked> <span class="wt-import__long">also save each member's rotation</span><span class="wt-import__short">+ rotations</span></label>
+      <button type="button" class="btn btn-primary btn-xs" title="Import team into Wuthering Tools+" data-test-rankings-import-team>${IMPORT_LABEL}</button>`;
     topbar.appendChild(box);
     box.querySelector("button")!.addEventListener("click", () => void runImport());
   }
   box.dataset.team = key;
+  mountMemberStrip(topbar, key);
+}
+
+/**
+ * Wuthering Tools+: the detail page's member strip — each member's portrait, the investment the row runs,
+ * the account's own S/R and build, and the weapon — between Back and the Import controls. The controller
+ * keeps a host element in his topbar and publishes the members (`rankingsDetail`); RankingsMemberStrip.vue
+ * teleports into the host and reads the account from the stores.
+ */
+export interface DetailView {
+  key: string;
+  /** main DPS first (phoneCards.ts `mainFirst`) */
+  members: CardMember[];
+  /** the row runs at My account (the members' S/R are the account's own) */
+  mine: boolean;
+}
+export const rankingsDetail = shallowRef<DetailView | null>(null);
+let stripEl: HTMLElement | null = null;
+/** The element RankingsMemberStrip.vue teleports into: lives in his `#topbar`, right after Back. */
+export function stripHost(): HTMLElement {
+  stripEl ??= Object.assign(document.createElement("div"), { className: "wt-strip-host" });
+  return stripEl;
+}
+function mountMemberStrip(topbar: HTMLElement, key: string): void {
+  const host = stripHost();
+  if (host.parentElement !== topbar) backLink.after(host);
+  const run = mods?.model.results.get(key) as RunRowLike | undefined;
+  if (!run || !mods) { rankingsDetail.value = null; return; }
+  const M = mods.model;
+  const members = run.members.map((m, j) => cardMemberOf(m, run.combo[j]!, j, run.members.length, rankShown(run, j)));
+  rankingsDetail.value = { key, members: mainFirst(members), mine: M.filters.cost === "mine" };
+}
+/** The two solver questions behind his table's `rankToken` beyond the weapon itself: the member's rank is a
+ *  compared axis on the row (`compares(m, filters, "refines", combo)`), or that weapon's ranks are shown at
+ *  this sequence (`shownRanks`) — either way the token reads the rank, never "R0". */
+function rankShown(run: RunRowLike, j: number): boolean {
+  if (!mods) return false;
+  const S = mods.solver, f = mods.model.filters;
+  const m = run.members[j] as any, combo = run.combo[j] as any;
+  try {
+    if (S.compares(m, f, "refines", combo)) return true;
+    const base = S.weaponBase(combo.weapon);
+    return (S.shownRanks(m, f) as [number, number, number][]).some(([w, , seq]) =>
+      seq === combo.sequence && !!m.loadout?.weapons?.[w] && S.weaponBase(m.loadout.weapons[w]) === base);
+  } catch {
+    return false;
+  }
 }
 
 async function runImport(): Promise<void> {
@@ -333,7 +388,7 @@ async function runImport(): Promise<void> {
     showToast(err instanceof Error ? err.message : String(err), "error", 8000);
   } finally {
     importBusy = false;
-    if (button) { button.disabled = false; button.textContent = "Import team into Wuthering Tools+"; }
+    if (button) { button.disabled = false; button.innerHTML = IMPORT_LABEL; }
   }
 }
 
@@ -387,6 +442,264 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
   }
 }
 
+/* -------------------------------------------------------- Wuthering Tools+ post-render passes */
+// Riley's page draws its own DOM: the table's scroll window on every scroll (`drawWindow`), the whole
+// page on every filter change (`renderComparison`), the detail page on every visit (`renderDetail`).
+// The passes below re-dress what he drew. A MutationObserver on #app runs them after each of his
+// draws — a microtask, so before the browser paints and nothing flickers. Each pass only writes
+// what differs, and the observer is off while they write.
+
+/** His roster as the account bar's chips need it (filterChips.ts), filled once his modules load. */
+export const rankingsRoster = shallowRef<RosterEntry[]>([]);
+
+/** The team the player pinned as the Compare reference — his `baselineTeam` is module-private, so it
+ *  is mirrored from the same click (capture phase: ahead of his own handler and the redraw it causes)
+ *  and re-synced from the `.isbaseline` row whenever that row is drawn. */
+let pinnedTeam: string | null = null;
+function onBaselineClick(e: MouseEvent): void {
+  const el = (e.target as Element | null)?.closest?.<HTMLElement>(".skittle-root .trow .c.baseline[data-team]");
+  const team = el?.dataset.team;
+  if (team) pinnedTeam = pinnedTeam === team ? null : team;
+}
+
+let scaleMemo: { rows: unknown; mode: TeamMode; pinned: string | null; runs: number; scale: CompareScale } | null = null;
+/** Top / weakest / reference figure over every listed row, drawn or not (only a window is in the DOM). */
+function tableScale(): CompareScale {
+  const M = mods!.model;
+  const mode: TeamMode = mods!.table.teamMode === "dps" ? "dps" : "dpr";
+  const rows = M.visibleRows as TeamRow[];
+  const runs = M.results.size as number;
+  if (scaleMemo && scaleMemo.rows === rows && scaleMemo.mode === mode && scaleMemo.pinned === pinnedTeam && scaleMemo.runs === runs) return scaleMemo.scale;
+  const totals: number[] = [];
+  let pinnedTotal: number | null = null;
+  for (const row of rows) {
+    const run = M.results.get(row.key);
+    if (!run) continue;
+    const t = teamFigureOf(run, mode);
+    totals.push(t);
+    if (row.key === pinnedTeam) pinnedTotal = t;
+  }
+  const scale = compareScale(totals, pinnedTotal);
+  scaleMemo = { rows, mode, pinned: pinnedTeam, runs, scale };
+  return scale;
+}
+
+/** The Compare column as "% of the top row" (or of the pinned row) on a neutral → accent scale
+ *  (compareColumn.ts; the colours are skittle-theme.css `.c.baseline.wt-pct`). */
+function comparePass(): void {
+  const grid = app.querySelector<HTMLElement>(".tgrid");
+  if (!grid || !mods) return;
+  const rows = [...grid.querySelectorAll<HTMLElement>(".trow[data-team][data-total]")];
+  // his own pin wins wherever the pinned row is drawn
+  const marked = rows.find((r) => r.classList.contains("isbaseline"))?.dataset.team ?? null;
+  if (marked && marked !== pinnedTeam) pinnedTeam = marked;
+  else if (!marked && pinnedTeam && rows.some((r) => r.dataset.team === pinnedTeam)) pinnedTeam = null;
+  let scale = tableScale();
+  // his drawn figures are the truth: should his formula ever move away from `teamFigureOf`, a drawn
+  // row above the computed top still reads as the top
+  const drawnTop = Math.max(0, ...rows.map((r) => Number(r.dataset.total) || 0));
+  if (drawnTop > scale.top) scale = { ...scale, top: drawnTop, ref: scale.pinned ? scale.ref : drawnTop };
+  for (const row of rows) {
+    const cell = row.querySelector<HTMLElement>(".c.baseline");
+    if (!cell) continue;
+    const total = Number(row.dataset.total) || 0;
+    const text = shareText(total, scale.ref);
+    if (cell.textContent !== text) cell.textContent = text;
+    cell.classList.add("wt-pct");
+    cell.style.setProperty("--wt-share", shareWidth(total, scale.ref).toFixed(4));
+    cell.style.setProperty("--wt-k", strengthOf(total, scale).toFixed(4));
+  }
+  // the zero-height sizing row: the column is as wide as its widest share, not his old figures
+  const ghost = grid.querySelector<HTMLElement>(".trow.tghost .c.baseline");
+  if (ghost) {
+    const a = shareText(scale.top, scale.ref), b = shareText(scale.low, scale.ref);
+    const widest = (b.length > a.length ? b : a) || "100.0%";
+    if (ghost.textContent !== widest) ghost.textContent = widest;
+  }
+  const head = grid.querySelector<HTMLElement>(".trow.thead .c.huehead");
+  if (head) {
+    const label = scale.pinned ? "% of pinned" : "% of top";
+    if (head.textContent !== label) head.textContent = label;
+    head.title = scale.pinned
+      ? "Each team as a share of the pinned row. Click that row's figure again to measure against the top row; click here to switch the colour scale off or on."
+      : "Each team as a share of the top row. Click a row's figure to measure everything against that team instead; click here to switch the colour scale off or on.";
+  }
+}
+
+/** The detail page's rotation log keeps its Member and Action columns in view while it scrolls
+ *  sideways: whichever of the two lead the log (his columns can be dragged into any order — a
+ *  stylesheet hands each cell position a grid `order`, nothing is re-rendered) stick at their offset. */
+let stickyStyle: HTMLStyleElement | null = null;
+function stickyLogPass(): void {
+  const grid = app.querySelector<HTMLElement>(".gridwrap .grid");
+  const head = grid?.querySelector<HTMLElement>(":scope > .r.head");
+  let css = "";
+  if (head) {
+    const cells = [...head.children] as HTMLElement[];
+    const visual = cells
+      .map((c, i) => ({ c, i, order: Number(getComputedStyle(c).order) || 0 }))
+      .sort((a, b) => a.order - b.order || a.i - b.i);
+    let left = 0;
+    const stuck: number[] = [];
+    for (const { c, i } of visual) {
+      const col = c.dataset.col;
+      if (col !== "member" && col !== "action") break;
+      css += `.skittle-root .gridwrap .grid .r>.c:nth-child(${i + 1}){position:sticky;left:${left}px;z-index:3}`;
+      stuck.push(i + 1);
+      left += parseFloat(getComputedStyle(c).width) || 0;
+    }
+    // the last stuck column draws the edge the rest of the log slides under; the action column has no
+    // wash of its own, so it takes its row's
+    const last = stuck[stuck.length - 1];
+    if (last) css += `.skittle-root .gridwrap .grid .r>.c:nth-child(${last}){box-shadow:inset -1px 0 0 var(--line-2)}`;
+    for (const n of stuck) css += `.skittle-root .gridwrap .grid .r>.c:nth-child(${n}):not(.member){background-color:inherit}`;
+  }
+  if (!css && !stickyStyle) return;
+  stickyStyle ??= document.head.appendChild(Object.assign(document.createElement("style"), { id: "wt-log-sticky" }));
+  if (stickyStyle.textContent !== css) stickyStyle.textContent = css;
+}
+
+/* ------------------------------------------------------------- Wuthering Tools+ phone cards */
+// Below 768 px his grid scrolls sideways inside its own box (Slot 1 and the team's figure off-screen), so a
+// phone reads the same rows as cards (phoneCards.ts, RankingsCards.vue): the controller keeps one host
+// element and re-attaches it inside his `.tcbody` after each of his draws (he rewrites `#app` wholesale,
+// the host and the Vue DOM inside it survive the move), publishes the rows in table order
+// (`rankingsCards`), and a `wt-cards` class on the root hides his grid. His aside (the "Search & compare"
+// bottom sheet), filters, hash and solves are untouched — the cards are another face of `visibleRows`.
+
+export interface CardsView {
+  cards: TeamCard[];
+  mode: TeamMode;
+  /** the shares are of a pinned row, not the top one */
+  pinned: boolean;
+  /** bumps whenever the listed rows change (a filter, a tier), not on a DPR/DPS switch */
+  listId: number;
+  /** the rows run at My account */
+  mine: boolean;
+  /** a phone (the card list); false = a desktop, where only the empty state is drawn (his grid has none) */
+  phone: boolean;
+  /** his rows are still being solved / run: an empty list means "not yet", not "no match" */
+  loading: boolean;
+}
+export const rankingsCards = shallowRef<CardsView | null>(null);
+const PHONE_QUERY = "(max-width: 767px)";
+let phoneMedia: MediaQueryList | null = null;
+let cardsClaims = 0;
+let cardsEl: HTMLElement | null = null;
+/** The element RankingsCards.vue teleports into. */
+export function cardsHost(): HTMLElement {
+  cardsEl ??= Object.assign(document.createElement("div"), { className: "wt-cards-host" });
+  return cardsEl;
+}
+let cardsHeadEl: HTMLElement | null = null;
+/** The element RankingsCards.vue teleports its heading into: in the phone toolbar, beside "Search & compare". */
+export function cardsHeadHost(): HTMLElement {
+  cardsHeadEl ??= Object.assign(document.createElement("div"), { className: "wt-toolbar__cards" });
+  return cardsHeadEl;
+}
+/** RankingsCards.vue says it is mounted (or gone): only then does a phone trade his grid for the cards. */
+export function claimCards(on: boolean): void {
+  cardsClaims = Math.max(0, cardsClaims + (on ? 1 : -1));
+  if (root && mods && booted) runPasses();
+}
+const onPhoneChange = (): void => {
+  if (!root || !mods) return;
+  runPasses();
+  // back on a desktop his grid shows again: his own resize handler redrew its scroll window first, while the
+  // cards still hid it, so draw it once more now that it is visible
+  if (!phoneMedia?.matches && !renderedKey) mods.table.drawWindow?.(true);
+};
+
+let cardsMemo: { rows: unknown; mode: TeamMode; runs: number; pinned: string | null; pins: string; mine: boolean; phone: boolean; loading: boolean } | null = null;
+let listRows: unknown = null;
+let listId = 0;
+/** where the card list was scrolled when a card opened its team, restored on the way back */
+let cardScroll: { listId: number; top: number } | null = null;
+
+function cardsPass(): void {
+  if (!root || !mods) return;
+  const M = mods.model;
+  const rows = M.visibleRows as TeamRow[];
+  const phone = !!phoneMedia?.matches;
+  // a phone trades his grid for the cards; a desktop keeps the grid and only borrows the host for the
+  // empty state his grid lacks (no team matches, or nothing set up at My account)
+  const wanted = cardsClaims > 0 && (phone || !rows.length);
+  const body = wanted && !renderedKey ? app.querySelector<HTMLElement>(".tcbody") : null;
+  root.classList.toggle("wt-cards", phone && !!body);
+  root.classList.toggle("wt-cards-empty", !phone && !!body);
+  if (!wanted) {
+    if (rankingsCards.value) rankingsCards.value = null;
+    cardsMemo = null;
+    cardsEl?.remove();
+    return;
+  }
+  if (!body) return; // a detail page, or his table not drawn yet: the list keeps its state for the way back
+  const host = cardsHost();
+  if (host.parentElement !== body) {
+    body.appendChild(host);
+    if (cardScroll && cardScroll.listId === listId) {
+      const main = app.querySelector<HTMLElement>("main");
+      if (main) main.scrollTop = cardScroll.top;
+    }
+    cardScroll = null;
+  }
+  const mode: TeamMode = mods.table.teamMode === "dps" ? "dps" : "dpr";
+  const runs = M.results.size as number;
+  const mine = M.filters.cost === "mine";
+  const loading = refreshing > 0;
+  // his pinned rows (`pinnedRows`, hash `pin=`) stand above the rest, as in his table
+  const pinSet = M.pinnedRows as Set<string> | undefined;
+  const pins = pinSet?.size ? [...pinSet].join(",") : "";
+  const m = cardsMemo;
+  if (m && m.rows === rows && m.mode === mode && m.runs === runs && m.pinned === pinnedTeam && m.pins === pins && m.mine === mine
+    && m.phone === phone && m.loading === loading) return;
+  cardsMemo = { rows, mode, runs, pinned: pinnedTeam, pins, mine, phone, loading };
+  if (rows !== listRows) {
+    listRows = rows;
+    listId++;
+  }
+  const ordered = tableOrder(rows, (k) => M.results.get(k) as RunRowLike | undefined, mode, (k) => !!pinSet?.has(k));
+  const scale = tableScale();
+  rankingsCards.value = { cards: teamCards(ordered, scale, mode, rankShown), mode, pinned: scale.pinned, listId, mine, phone, loading };
+}
+
+/** A card opens its team's detail page — the same navigation as his "view rotation" link. */
+export function openRankingsTeam(key: string): void {
+  if (!mods || !router) return;
+  cardScroll = { listId, top: app.querySelector<HTMLElement>("main")?.scrollTop ?? 0 };
+  void goToDetail(key);
+}
+/** DPR / DPS from the cards: his own switch is the hidden grid's heading (table.ts `teamMode`), clicked. */
+export function setRankingsTeamMode(mode: TeamMode): void {
+  if (!mods || (mods.table.teamMode === "dps" ? "dps" : "dpr") === mode) return;
+  app.querySelector<HTMLElement>(".tgrid .trow.thead .c.dprhead")?.click();
+}
+
+let passObserver: MutationObserver | null = null;
+const OBSERVE: MutationObserverInit = { childList: true, subtree: true };
+function runPasses(): void {
+  passObserver?.disconnect();
+  try {
+    comparePass();
+    stickyLogPass();
+    cardsPass();
+  } catch (err) {
+    console.warn("Wuthering Tools+ rankings pass failed:", err);
+  } finally {
+    passObserver?.observe(app, OBSERVE);
+  }
+}
+function observeRenders(): void {
+  if (passObserver) return;
+  passObserver = new MutationObserver((records) => {
+    // the search list redraws on every keystroke, and the cards are Vue's own DOM: nothing in either is
+    // ours to re-dress
+    if (records.every((r) => (r.target as Element).id === "searchResults" || !!cardsEl?.contains(r.target))) return;
+    runPasses();
+  });
+  passObserver.observe(app, OBSERVE);
+}
+
 let tableRequested = false;
 /** Whether the filters moved under a detail page (a pick menu's switch) since the table's rows were expanded. */
 let tableStale = false;
@@ -416,11 +729,25 @@ function route(): void {
   root?.classList.toggle("wt-detail", !!key);
   renderedKey = key;
   if (key) { openSide(false); mods!.detail.renderDetail(key); mountImportControls(key); return; }
+  rankingsDetail.value = null;
   if (!tableRequested || tableStale) { void refresh(); return; }
   mods!.table.renderComparison();
 }
 
+/** refreshes in flight: while one runs, an empty table means "not solved yet" (the cards' empty state waits) */
+let refreshing = 0;
 async function refresh(): Promise<void> {
+  refreshing++;
+  try {
+    await refreshRows();
+  } finally {
+    refreshing--;
+    // nothing of his may redraw once the last pass ends, so the passes learn it here
+    if (!refreshing && root && mods) runPasses();
+  }
+}
+
+async function refreshRows(): Promise<void> {
   const M = mods!.model;
   const { bestKey } = mods!.solver;
   tableRequested = true;
@@ -456,7 +783,7 @@ async function refresh(): Promise<void> {
     if (M.discardRestoredSolves()) {
       console.warn("restored solves failed to load; solving the roster here instead", err);
       M.setVisibleRows([]);
-      await refresh();
+      await refreshRows();
       return;
     }
     showBootError(err);
@@ -484,6 +811,9 @@ async function bootDetail(): Promise<boolean> {
   overlayPhase("Running Rotation…", true);
   await paint();
   results.set(key, mods!.teamrun.runTeam(row.teamKey, row.members, row.combo, true));
+  // a detail page opened straight from a link is a detail page too (no phone toolbar, no cards)
+  root?.classList.add("wt-detail");
+  renderedKey = key;
   mods!.detail.renderDetail(key);
   mountImportControls(key);
   overlayHide();
@@ -645,8 +975,13 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
   if (!root) root = buildDom();
   host.appendChild(root);
   document.addEventListener("keydown", onKeydown);
+  document.addEventListener("click", onBaselineClick, true);
+  phoneMedia ??= matchMedia(PHONE_QUERY);
+  phoneMedia.addEventListener("change", onPhoneChange);
+  observeRenders();
   try {
     if (!mods) mods = await loadModules();
+    if (!rankingsRoster.value.length) rankingsRoster.value = rosterOf(mods.model.TEAMS);
     applyMyBuilds();
     applyAccountState();
     if (!booted) { booted = boot(); await booted; }
@@ -658,6 +993,8 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
 
 export function unmountRankings(): void {
   document.removeEventListener("keydown", onKeydown);
+  document.removeEventListener("click", onBaselineClick, true);
+  phoneMedia?.removeEventListener("change", onPhoneChange);
   openSide(false);
   root?.remove();
   mods?.panels?.clearPops?.();

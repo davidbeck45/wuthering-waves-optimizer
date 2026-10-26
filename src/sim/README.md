@@ -567,3 +567,100 @@ Verify pass (2026-10-26, fresh eyes before the merge):
 - Measured: a forced Recompute on David's export (24 characters, 96 team rotations, 72 investments) takes 5.4 s in the dev build
   with no long task (> 50 ms) on the main thread. The CLI `snapshot` diff against plus is empty, and `rank --investment` differs
   only in the Rover label ("Rover Aero (Male)" for the kit's "RoverAeroFemale").
+
+## `/rankings` re-skin and the account bar's chips (2026-10-12)
+
+Riley's page dressed as part of the app (the UI audit's "/rankings" list): one typeface, readable kit colours,
+no empty gutter, one state control, the Compare column as a share of the top row, Main DPS / With / Without
+chips, a neutral "Beta · how to read" chip, sticky Member / Action columns in the rotation log, and a bar that
+fits a phone in two rows. Nothing inside `vendor/wuwa_calc` changed; everything is CSS over his class names,
+a hash edit, or a pass over the DOM he drew.
+
+| Piece | Role |
+|---|---|
+| `skittle-theme.css` | `--mono: var(--sans)` (his tables were set in mono; `tabular-nums` keeps the figure columns, and his detail-log tracks are character counts × 7.7 px of mono, which the sans always fits); dark themes clamp every kit colour to `oklch(from var(--mem) max(l, 0.78) min(c, 0.15) h)` (Chisa's / Phrolova's crimson, Lupa's red, Xuanling's indigo were below a readable contrast on their tinted cells), light themes keep the old darkening and, where relative colour syntax exists, a `min(l, 0.47)` ceiling; the `.tclayout::before` band that centred the table (≈195 px empty gutter at 1440 px) is gone beside the aside; his README box and Team Cost box (`.tcopt:has(#cost)`) are hidden, `#cost` stays in the DOM; his "Shown / Hidden" resonator bubbles are hidden (the bar's chips show the same `r=` / `x=`), his gear / level / compare / Matrix bubbles stay; the Compare cells' heat colours (`.c.baseline.wt-pct`) |
+| `compareColumn.ts` (+ test) | pure: `teamFigureOf(run, mode)` (his table's private `teamFigure()`: DPR = the four rotations' average, DPS = over their seconds), `compareScale(totals, pinned)`, `shareText` (one decimal truncated, his `pctTrunc` rule: never rounded up), `strengthOf` (0 neutral at the weakest row → 1 accent at the top, cubed so the accent gathers at the top of a 250-team table) |
+| `filterChips.ts` (+ test) | pure: `rosterOf(TEAMS)` (name, kit colour, leads a team, `Tier.Free`), `readResonatorFilters` / `chipGroups` / `withResonatorFilter` over the hash, `pickerOptions` (Main DPS lists only leaders; the account's S6 resonators first, then the rest it owns, then the ones it lacks; a free resonator the account never set up is owned at S6, his `accountOf()` rule), `RILEY_TIERS` (his `TEAM_COSTS` minus `mine`, with his `COST_CODE` hash codes) |
+| `controller.ts` — post-render passes | a `MutationObserver` on `#app` runs after each of his draws (scroll window, filter change, detail visit) — a microtask, so before paint; the observer is off while the passes write, and each pass writes only what differs. `comparePass`: every drawn `.c.baseline` becomes the team's share of the top row (`data-total` / the best figure over `model.visibleRows`, drawn or not) or of the pinned row, with `--wt-k` for the colour; the ghost row is resized to the widest share, the heading reads "% of top" / "% of pinned". His `baselineTeam` is module-private, so the pin is mirrored from the same click (capture phase) and re-synced from `.isbaseline` whenever that row is drawn. `stickyLogPass`: whichever of Member / Action lead the log (his columns are dragged into any order by a generated `order` stylesheet, nothing re-rendered) get `position: sticky` at their offset through one `<style id="wt-log-sticky">`. `rankingsRoster` (a `shallowRef`) hands his roster to the bar once his modules load |
+| `RankingsAccountBar.vue` | **one state control**: My account \| Riley's tiers, and in Riley's mode a tier select (`tc=`; his own box is hidden — both wrote the same parameter); "Riley's tiers" returns to the tier last picked. **Main DPS / With / Without** chips: a picker per group (search, the account's resonators first with their S badge, "Picked" on top), chips that come off on a click, Clear; Main DPS and With both write `r=` (his `teamWanted()` reads an added leader as "the teams they lead", a support as "teams fielding them"), Without writes `x=`; which group an `r=` name shows under is where the player put it this visit, else whether that resonator leads a team. **Views** is one menu (list, Save current view…, Forget); a view matches the current hash in canonical parameter order, since his `syncHash()` rewrites the URL in his own order. **Beta · how to read**: the README's notes (beta, DPR ignores rotation time, the target, Riley's credit and Discord) plus what the plus columns mean. Popovers: one at a time, a press outside the panel and its own trigger closes it, Escape too |
+| phones (< 768 px, `matchMedia`) | two rows at 412 px and 130 % text: state control + ⓘ account popover (summary, Teams I can field) or tier select + ⋯ menu (Substats, Sync my teams, Saved views, How to read) on the first, the chip strip on the second — a group's button shows what it holds ("Main DPS Cartethyia", "With 2"), the strip scrolls sideways with a fade at its end. Riley's toolbar button reads "Search & compare" (his aside holds the search and the gear / compare bubbles now) |
+
+Rules: never edit `vendor/wuwa_calc` for looks — a class name he renames breaks a rule silently, so the
+E2E checks the visible result (the `% of top` heading, hidden boxes, the chips' hash). The Compare text is the
+plus reading; his own figure (vs the weakest row) is gone from the cell, his pin still works. Kit colours are
+only ever clamped, never replaced, so a resonator keeps its hue everywhere.
+
+Things learned:
+- His `tclayout.stack` grid keeps a 360 px column for the boxes beside the search; with the README and Team
+  Cost hidden that column was empty — the stacked grid is one column now.
+- `getComputedStyle(cell).order` is the reliable visual column order of the log (bounding boxes move once a
+  column is stuck); `getComputedStyle(cell).width` is in layout px whatever the page zoom.
+- A native `<select>` is as wide as its widest option: on a phone the tier select has to be `w-0 flex-1` or
+  it pushes the bar past the viewport.
+- 250 rows of "% of top" mostly sit between 80 and 100 %: data bars that long all read as full, so the column
+  is a heat scale (`--wt-share` is still written if a bar is ever wanted).
+
+Gates: `filterChips.test.ts`, `compareColumn.test.ts`; `cypress/e2e/rankings.cy.ts` (the tier select with his
+box hidden, the Compare column top / pinned, the chips' `r=` / `x=` and the owned-first picker, the phone bar's
+two rows at 412 px / 130 %, the Views menu); `phoneLayout.cy.ts`.
+
+## `/rankings` on a phone (team cards) and the detail page's member strip (2026-10-12, finished 2026-10-26)
+
+Below 768 px Riley's comparison grid scrolled sideways inside its own box (Slot 1 and the team's figure off-screen):
+a phone now reads the same rows as cards. His rotation detail gains a member strip over his Equipment table — who is
+in the team, against the player's own account. Nothing inside `vendor/wuwa_calc` changed; the cards are another face
+of his model's `visibleRows` / `results`, the strip reads the run his detail page draws.
+
+| Piece | Role |
+|---|---|
+| `phoneCards.ts` (+ test) | pure: `tableOrder` (his `table.ts` row order — one row per team best first; a compare's rows nested inside their team by substat spread, chain, weapon, rank, sonata, each group where its best row would stand, ties to the deeper chain then the higher rank), `cardMemberOf` (slot numbered from the end, a Resonance Mode as "(Unison)", the weapon without its rank, `free` = his `Tier.Free`), `rankToken` / `investmentToken` (his `rankToken`: a standard or 4★ weapon at R1 reads R0 = no signature, unless refines are compared), `mainFirst` (the main DPS first — his slots are support-first), `teamCards` (rank, figure, last loop's seconds in DPR mode, share / width / strength off `compareColumn.ts`), `ownStatus` (the member against the account: under My account only a missing resonator says anything; under Riley's tiers ✓ / ✓ S6R3 / "you S2" / "no sig" / "not owned", with `weaponGap`; a free resonator never set up is owned at S6, his `accountOf()`), `buildStatus` (five echoes on the build the calculator runs = "build"), `ownByRileyName` (both Rover genders are his one form: the owned one wins) |
+| `controller.ts` — `cardsPass` | a post-render pass (with `comparePass` / `stickyLogPass`): when `RankingsCards.vue` has claimed the list (`claimCards`) and `(max-width: 767px)` matches, it re-attaches one host element inside his `.tcbody` after each of his draws (he rewrites `#app` wholesale; the host and the Vue DOM in it survive the move), puts `wt-cards` on the root (his grid and "N teams" label hidden) and publishes `rankingsCards` — memoised on his `visibleRows` array, the DPR / DPS mode, the run count, the pin and the tier, so his scroll redraws cost nothing. `openRankingsTeam` = his "view rotation" navigation (`goToDetail`, vue-router), remembering the list's scroll for the way back; `setRankingsTeamMode` clicks his own (hidden) DPR / DPS heading. `cardsHeadHost()` sits in the phone toolbar beside the Filters button |
+| `RankingsCards.vue` | teleports into the host: one card per row — rank, the share pill on the Compare column's heat, the figure big (and the loop's seconds in DPR), three portraits main DPS first with each member's S/R token and badge (Riley's tiers: where the account stands; My account: "no build" / "3/5" when a set-up member lacks echoes, "not owned" with Teams I can field off), a hairline bar of the share. **50 at a time**: "Show 50 more" plus an `IntersectionObserver` that loads the next 50 as the end nears; the count resets when the listed rows change. Each card is a real link (`#…&team=<key>`) whose click goes through the router. The toolbar heading: "N teams", "% of top" / "% of pinned", a DPR · DPS switch. Empty states for no match and for an account with nothing set up |
+| `RankingsMemberStrip.vue` | teleports into a host the controller keeps in his `#topbar` right after Back (`mountImportControls` → `mountMemberStrip`, publishing `rankingsDetail`): per member, main DPS first — portrait (DPS tag on it), the weapon's icon and name, "runs S6R1" under Riley's tiers, the account's own S/R chip ("Own S2R1", amber with "· no sig" when it wears another weapon than the row's signature, "4★ · S6", "not owned") and the build chip ("✓ build", "3/5 echoes", "no build"; none for a resonator not set up). The Import controls stay beside it; on a phone Back and Import share the first line and the strip takes its own, each member stacked (portrait over its lines) |
+| `RankingsPortrait.vue` | the app's portrait (`characterPortraitUrl`) ringed in his kit colour (the primary for the main DPS), initials if it fails (Lily has no app character) |
+| `weaponIcon.ts` | his weapon name → this app's weapon registry (`getWeaponsByType`, names compared like his `normWeapon()`), the module's own `info.image` loaded lazily and cached; a weapon the app lacks gets the asset host's `<Key>.png` guess, and the strip shows a neutral glyph when the image fails |
+| `accountState.ts` | an active build's slots are read off the character's live top-level record (its `builds[]` entry only catches up on a switch — David's export has every active build's cached `echoes` null while five are worn), so "build" is right |
+| `filterChips.ts` `RILEY_TIERS` | Riley's two new tiers (`s6ms2` S6R1 DPS · S2R1 supports, `s6r5m` S6R5 DPS · S0R1 supports); a test reads his `model.ts` `COST_CODE` so a tier he adds cannot go missing behind the hidden Team Cost box |
+
+Rules: the cards never compute a figure of their own that the grid would not show — the figure is his `teamFigure()`
+(`compareColumn.ts` copy, DPR or DPS by his own switch), the order his table's, the share the Compare column's. The
+grid stays the desktop face (and the phone face when `RankingsCards.vue` is not mounted). A Rover's portrait follows
+the gender the account set up. Light themes darken DaisyUI's success / warning for the chips' text.
+
+Things learned:
+- In a scoped `<style>`, `:global(html[data-theme-style="light"]) .chip` compiles to `html[data-theme-style="light"]`
+  alone — the rest of the selector is swallowed, and the rule recoloured the whole page in light themes. An ancestor
+  needs no `:global`: write `html[data-theme-style="light"] .chip` and the scope attribute lands on `.chip`.
+- Never hide his grid with `display: none`: his `drawWindow()` measures the row pitch once per visit off the rows it
+  draws (his rows are `display: contents`), and under `display: none` that read 0 — after a page that started below
+  768 px was widened, the desktop grid drew every row with no spacers. Under the cards `.tcwrap` is clipped to zero
+  height and `visibility: hidden` instead, still laid out. Read the cards' order off `visibleRows`, never off his DOM
+  (only a scroll window of it is drawn). His heading is still clickable while hidden.
+- Headless Electron (Cypress) never reports a media-query `change` after `cy.viewport()`: a spec that needs the phone
+  layout sets the viewport first and visits (or `cy.reload()`s); Chromium (shot.mjs) does fire it.
+- His list scrolls inside `#app > main`, not the window: the card list's scroll is saved / restored on that element,
+  and an `IntersectionObserver` with the default root still sees the sentinel clipped by it.
+
+**Verify-and-harden pass (2026-10-26):**
+- Rows the player pinned (his `pinnedRows`, hash `pin=`) stand first on the cards as in his grid (`tableOrder`'s
+  `isPinned`), with a pin mark.
+- The rank token asks both of his solver's questions (`rankShown`: a compared refine, or that weapon's ranks shown at
+  this sequence, `shownRanks`), so a card never reads R0 where his grid reads R1.
+- A desktop gets the empty state his grid lacks: `cardsPass` lends the host to an empty table (`wt-cards-empty`), with
+  "No team you can field yet" + **Open the calculator** at My account with nothing set up, else "No team matches".
+  `refresh()` counts itself (`refreshing`), so "no match" never shows while his rows are still being solved.
+- Phone → desktop: `onPhoneChange` redraws his scroll window once the grid shows (his own resize handler ran while the
+  cards still hid it); see the `display: none` lesson above.
+- The account bar's summary truncates between 768 px and a wide desktop (it ran under Beta / Sync / Views at 800 px).
+- Below 1280 px the detail's member strip takes its own line under Back and Import (weapon names were cut to "Bloo…");
+  on a phone the Import button reads "Import team", so Back and Import share the first line at 130 %.
+- Below 390 px the phone toolbar's Filters button is its icon (the word stays for screen readers), so "279 teams" fits.
+- `accountState.ts`: with no `activeBuildId`, the first saved build keeps its own snapshot (only the entry that IS the
+  live build takes the live slots).
+
+Gates: `phoneCards.test.ts` (16), `filterChips.test.ts` (the `COST_CODE` drift guard), `accountState.test.ts`;
+`cypress/e2e/rankings.cy.ts` "phone cards and the detail's member strip" (412 × 915 at 130 %: 50 cards, best first,
+main DPS first, "Show more" → 100, DPR / DPS through his switch, the Filters sheet over the cards, a tap → the detail
+with its strip, Back and the short Import on one line, Back → the cards; a pinned row first on the cards; the desktop
+empty state at My account with nothing set up, gone under Riley's tiers; desktop: the grid and no cards, the strip's
+Own S2R1 / build / weapon at My account and "runs S6R5" at S6R5); `phoneLayout.cy.ts`, `themes.cy.ts`.

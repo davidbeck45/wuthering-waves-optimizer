@@ -23,6 +23,10 @@
   --amber: oklch(var(--wa));
   --mint: oklch(var(--su));
   --sans: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* one face for the whole page: his tables are set in --mono, which read as a terminal beside the app.
+     The figures keep their columns through `tabular-nums` (every `.c` of his sets it); his detail-log
+     tracks are character counts × 7.7 px of mono, which the narrower sans always fits inside. */
+  --mono: var(--sans);
   --r: var(--rounded-box, 0.5rem);
   --r-s: var(--rounded-btn, 0.375rem);
   --sh-1: 0 1px 2px oklch(var(--bc) / 0.15);
@@ -50,11 +54,30 @@ html[data-theme-style="light"] .skittle-root .error h2 { color: oklch(var(--er))
 html[data-theme-style="light"] .skittle-root .trow .c.name,
 html[data-theme-style="light"] .skittle-root .rtrow .c.name,
 html[data-theme-style="light"] .skittle-root .res-label,
+html[data-theme-style="light"] .skittle-root .c.member,
+html[data-theme-style="light"] .skittle-root .trow .c.slotdpr,
+html[data-theme-style="light"] .skittle-root .trow .c.slotcompare,
 html[data-theme-style="light"] .pop .mem,
 html[data-theme-style="light"] .skittle-root .mem {
   color: color-mix(in srgb, var(--mem, var(--ink)) 55%, #000) !important;
+  /* where relative colour syntax is supported: a lightness ceiling instead, so a pale kit (Mornye's lilac,
+     Suisui's yellow) darkens as far as a saturated one and every name clears the white cells */
+  color: oklch(from var(--mem, var(--ink)) min(l, 0.47) c h) !important;
 }
-html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline {
+/* ...and on dark themes the dark kits (Chisa's and Phrolova's crimson, Lupa's red, Xuanling's indigo)
+   sank below a readable contrast on their own tinted cells: their lightness is clamped up and their
+   chroma down, so every name reads while keeping its hue. Browsers without relative colour syntax drop
+   the declaration and keep his colour. */
+html:not([data-theme-style="light"]) .skittle-root .trow .c.name,
+html:not([data-theme-style="light"]) .skittle-root .rtrow .c.name,
+html:not([data-theme-style="light"]) .skittle-root .c.member,
+html:not([data-theme-style="light"]) .skittle-root .trow .c.slotdpr,
+html:not([data-theme-style="light"]) .skittle-root .trow .c.slotcompare,
+html:not([data-theme-style="light"]) .skittle-root .rtrow.rthead .c.mem,
+html:not([data-theme-style="light"]) .pop .mem {
+  color: oklch(from var(--mem, var(--ink)) max(l, 0.78) min(c, 0.15) h) !important;
+}
+html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.wt-pct) {
   color: hsl(var(--hue, 120) 60% 32%);
 }
 
@@ -125,4 +148,121 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline {
   .skittle-root .wt-sheet-close { display: none; margin-left: auto; }
   .skittle-root.wt-side-open:not(.wt-detail) .wt-toolbar { position: relative; z-index: 72; }
   .skittle-root.wt-side-open:not(.wt-detail) .wt-sheet-close { display: inline-flex; }
+}
+
+/* ------------------------------------------------------------------ Wuthering Tools+ re-skin (2026-10-12) */
+
+/* The empty band his layout keeps the aside's width on the left so the table reads as centred (≈195 px at
+   1440 px): gone. The table starts at the page's edge with the aside (search and chips) right beside it,
+   one block, the slack on the right. Stacked (the aside above the table) is left to his `fitSide()`,
+   which centres the two together. */
+@media (min-width: 900px) {
+  .skittle-root .tclayout:not(.stack)::before { display: none; }
+  .skittle-root .tclayout:not(.stack) .tcbody { margin-left: 0; margin-right: 0; }
+}
+
+/* His README box (red / yellow / green underlined lines) is the account bar's neutral "Beta · how to read"
+   chip now, and his Team Cost box is the bar's tier control (both write the same `tc=` hash), so the aside
+   keeps the search and its chips. The functionality is untouched: `#cost` stays in the DOM, hidden. */
+.skittle-root .tcopt.note[data-note="readme"],
+.skittle-root .tcopt:has(#cost) { display: none !important; }
+/* His "Shown / Hidden" bubbles for a resonator are the bar's Main DPS / With / Without chips (the same r= / x=
+   hash), so only his other bubbles stay: gear, levels, compares, Matrix — and a section (or the whole block,
+   with its Clear Filters) that holds nothing else goes with them. */
+.skittle-root .tcchips .rchip[data-resonator]:not([data-axis]),
+.skittle-root .tcchips .chipsec:not(:has(.rchip:is([data-kind], [data-scoped], [data-matrix], [data-axis]))),
+.skittle-root .tcchips:not(:has(.rchip:is([data-kind], [data-scoped], [data-matrix], [data-axis]))) { display: none; }
+/* stacked, his grid kept a 360 px column for those boxes beside the search */
+.skittle-root .tclayout.stack .tcfilter-row.note { grid-template-columns: minmax(0, 1fr); }
+.skittle-root .tclayout.stack .tcsearchrow { grid-column: 1; grid-row: auto; }
+
+/* The Compare column, re-read by controller.ts `comparePass` as each team's share of the top row (or of the
+   pinned one), tinted from neutral at the weakest row to the theme's accent at the best (`--wt-k`, eased) —
+   a heat column rather than a bar: on a 250-team table most shares sit between 80 and 100 %, and bars that
+   long all read as full. Replaces his red-best / green-baseline / purple-worst ramp; his heading still
+   switches the colour off and on (`.tgrid.hued`). `--wt-share` (0-1) is there for a bar if one is wanted. */
+.skittle-root .trow .c.baseline.wt-pct { color: var(--ink-2); }
+.skittle-root .tgrid.hued .trow .c.baseline.wt-pct {
+  color: color-mix(in oklch, var(--accent) calc(var(--wt-k, 0) * 45%), var(--ink-2));
+  background: color-mix(in oklch, var(--accent) calc(var(--wt-k, 0) * 30%), var(--surface));
+}
+.skittle-root .tgrid.hued .trow:not(.thead):hover .c.baseline.wt-pct {
+  background: color-mix(in oklch, var(--accent) calc(6% + var(--wt-k, 0) * 30%), var(--surface-2));
+}
+.skittle-root .trow.isbaseline .c.baseline.wt-pct {
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 75%, transparent);
+  color: var(--ink);
+}
+/* the figures a row is read by: the team's DPR a touch heavier than the cells around it */
+.skittle-root .trow:not(.thead):not(.tghost) .c.teamdpr { font-weight: 600; }
+/* the "view rotation ›" link reads as a link, not as another column of text */
+.skittle-root .trow:not(.thead) .c.gotodetail { color: var(--dim); }
+.skittle-root .trow:not(.thead):hover .c.gotodetail { color: var(--accent); }
+
+/* The rotation log's sticky Member / Action columns are a stylesheet controller.ts `stickyLogPass` writes
+   (`#wt-log-sticky`, per the log's current column order). */
+
+/* ---------------------------------------------- Wuthering Tools+ phone cards + detail strip (2026-10-12) */
+
+/* A phone reads his rows as cards (RankingsCards.vue, teleported into the host controller.ts keeps inside
+   his `.tcbody`): while the root carries `wt-cards` his grid and its "N teams" heading are hidden (the
+   card list has its own sticky heading), and the 420 px he keeps under the table for the last rows to
+   scroll up is not needed under a list. His aside (the "Search & compare" sheet) is untouched. */
+.skittle-root .wt-cards-host,
+.skittle-root .wt-toolbar__cards { display: none; }
+/* a desktop keeps his grid and borrows the host only for the empty state his grid lacks (`wt-cards-empty`) */
+.skittle-root.wt-cards-empty:not(.wt-detail) .wt-cards-host { display: block; width: 100%; max-width: 40rem; }
+@media (max-width: 767px) {
+  .skittle-root.wt-cards:not(.wt-detail) .wt-cards-host { display: block; width: 100%; }
+  /* the toolbar carries the list's count and its DPR / DPS switch instead of the hint (not while the sheet is
+     open: its ✕ needs the room) */
+  .skittle-root.wt-cards:not(.wt-detail):not(.wt-side-open) .wt-toolbar__cards { display: flex; min-width: 0; flex: 1; }
+  .skittle-root.wt-cards:not(.wt-detail):not(.wt-side-open) .wt-toolbar__hint { display: none; }
+  .skittle-root.wt-cards:not(.wt-detail) [data-test-rankings-filters] { flex: none; }
+  /* the button says "Filters" beside the list's heading, "Search & compare" over his own grid */
+  .skittle-root .wt-toolbar__icon { display: none; width: 1rem; height: 1rem; }
+  .skittle-root .wt-toolbar__short { display: none; }
+  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__icon { display: block; }
+  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__short { display: inline; }
+  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__long { display: none; }
+  /* the narrowest phones at 130 % text: the icon alone, so "279 teams" keeps its room (the word stays for screen readers) */
+  @media (max-width: 389px) {
+    .skittle-root.wt-cards:not(.wt-detail) [data-test-rankings-filters] { padding-left: 0.6rem; padding-right: 0.6rem; }
+    .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__short {
+      position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+    }
+  }
+  .skittle-root.wt-cards:not(.wt-detail) .tcbody > .summary-label { display: none; }
+  /* his grid stays laid out, only clipped to nothing: his drawWindow() measures the row pitch once per visit
+     off the rows it draws, and under display: none that read 0 (his rows are display: contents) — the desktop
+     grid then drew every row with no spacers after a page that started narrow was widened */
+  .skittle-root.wt-cards:not(.wt-detail) .tcwrap {
+    height: 0 !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important;
+    overflow: hidden !important; visibility: hidden; pointer-events: none;
+  }
+  .skittle-root.wt-cards:not(.wt-detail) main { padding-bottom: 1.25rem; }
+  /* stacked, his layout is as wide as his table (`width: max-content`): the list is as wide as the screen */
+  .skittle-root.wt-cards:not(.wt-detail) .tclayout { width: auto; min-width: 0; max-width: 100%; }
+  .skittle-root.wt-cards:not(.wt-detail) .tclayout > .tcbody { width: 100%; min-width: 0; }
+}
+
+/* The detail page's member strip (RankingsMemberStrip.vue) sits between Back and the Import controls;
+   on a phone Back and Import share the first line and the strip takes a line of its own under them. */
+.skittle-root .topbar .wt-strip-host { flex: 1 1 32rem; min-width: 0; }
+.skittle-root .topbar .wt-strip-host:empty { display: none; }
+/* up to a wide desktop the three members beside Back and Import cut their weapon names to a few letters:
+   Back and Import share the first line there too, the strip a line of its own */
+@media (max-width: 1279px) {
+  .skittle-root .topbar { row-gap: 0.5rem; }
+  .skittle-root .topbar .wt-strip-host { order: 3; flex-basis: 100%; }
+  .skittle-root .topbar .wt-import { margin-left: auto; }
+}
+@media (max-width: 767px) {
+  .skittle-root .topbar { gap: 0.5rem 0.75rem; padding-left: 12px; padding-right: 12px; }
+  .skittle-root .wt-import { gap: 0.5rem; }
+  /* "Import team" and "+ rotations": short enough to share Back's line at 130 % text */
+  .skittle-root .wt-import__long { display: none; }
+}
+@media (min-width: 768px) {
+  .skittle-root .wt-import__short { display: none; }
 }

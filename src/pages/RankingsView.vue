@@ -3,6 +3,9 @@
   <div class="rankings-page">
     <RankingsAccountBar :account="account" :built-count="myBuilds.length" />
     <div ref="host" class="skittle-host"></div>
+    <!-- Wuthering Tools+: both teleport into Riley's page (a phone's card list, the detail's member strip) -->
+    <RankingsCards :account="account" />
+    <RankingsMemberStrip :account="account" />
     <p class="rankings-credit text-xs opacity-60 px-3 py-1">
       Team rankings engine, rotations and solves by
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
@@ -25,6 +28,8 @@ import { mountRankings, onLocationChange, unmountRankings, updateAccountState, u
 import { buildRollsOf } from "../sim/rankings/myBuilds";
 import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../sim/account/accountState";
 import RankingsAccountBar from "../sim/rankings/RankingsAccountBar.vue";
+import RankingsCards from "../sim/rankings/RankingsCards.vue";
+import RankingsMemberStrip from "../sim/rankings/RankingsMemberStrip.vue";
 import "../sim/skittle.css";
 import "../sim/skittle-theme.css";
 
