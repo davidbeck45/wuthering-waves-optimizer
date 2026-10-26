@@ -63,7 +63,6 @@ const routes = [
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
   // Wuthering Tools+: "My account", the account dashboard (src/sim/account/AccountView.vue)
   { path: "/account", component: () => import("./sim/account/AccountView.vue"), name: "AccountView" },
-
   // Wuthering Tools+: Echo Lab — engine-backed keep / tune / re-roll / feed decisions (src/sim/echoLab/)
   { path: "/echo-lab", component: () => import("./sim/echoLab/EchoLabView.vue"), name: "EchoLabView" },
 ];

@@ -37,7 +37,9 @@ function roster(iunoSequenceTwo: boolean) {
 }
 const team = { characterIds: ["Augusta", "Iuno", "Shorekeeper"], enemyConfig: {} };
 
-describe("resolveTeamCharacters", () => {
+// each test loads several character kits through the calculator; under a busy machine (parallel builds, 2026-10-26)
+// that ran past vitest's 5 s default although a test takes ~1 s alone
+describe("resolveTeamCharacters", { timeout: 30_000 }, () => {
   it("keeps a Team Buffs panel that already names exactly these teammates", async () => {
     const characters = roster(true);
     const res = await resolveTeamCharacters(team, characters, [], { enemyConfig: enemy });
