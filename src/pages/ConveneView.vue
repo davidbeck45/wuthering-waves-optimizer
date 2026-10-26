@@ -1,5 +1,6 @@
 <template>
   <Nav cur-page="convene" :disable-mobile-nav="true"></Nav>
+  <ConvenePlus v-model:mode="mode" v-model:pity="startingPity" v-model:guaranteed="guaranteedNextFeatured" v-model:owned="currentOwnedIndex" v-model:target="targetIndex" /><!-- Wuthering Tools+: My pulls · Banners · Pull advisor tabs (src/sim/convene/ui) -->
   <div class="page-convene w-full px-4 py-6 md:px-6 lg:px-10 text-base-content">
     <header class="mb-8 max-w-4xl">
       <h1 class="text-2xl md:text-3xl font-semibold mb-2">Convene odds</h1>
@@ -412,6 +413,7 @@ import {
   astriteFromStaticContentRuns,
 } from "../convene/contentAstrite";
 import { useDocumentTitle } from "../composables/useDocumentTitle";
+import ConvenePlus from "../sim/convene/ui/ConvenePlus.vue"; // Wuthering Tools+: My pulls · Banners · Pull advisor tabs above the simulator (src/sim/convene/ui)
 
 useDocumentTitle(
   "Convene odds — Wuthering Waves Calculator & Optimizer",
