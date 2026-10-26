@@ -31,13 +31,12 @@
  */
 
 import {
-  generateLoadouts,
-  getOptimizerLoadoutHash,
-  normalizeOptimizerLoadout,
   filterEchoesForOptimizer,
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
 } from "../calculator/optimizer";
+// Wuthering Tools+: the loadout loop (upstream's dedup by default; the deduped-pool fast path when asked)
+import { optimizerLoadoutStream } from "../sim/optimizer/optimizerPool";
 
 /**
  * Message sent from main thread to generator worker
@@ -53,6 +52,10 @@ interface GeneratorMessage {
     shardIndex?: number;
     /** Total number of generator shards; 1 (default) means no sharding. */
     shardCount?: number;
+    /** Wuthering Tools+: `echoes` is a signature-deduped pool (planOptimizerGeneration) — skip the per-loadout hash. */
+    uniquePool?: boolean;
+    /** Wuthering Tools+: under "Any", skip partial loadouts with at least this many extensions (0 = off). */
+    skipDominatedPartials?: number;
   };
 }
 
@@ -118,6 +121,8 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
     loadoutFormat,
     shardIndex = 0,
     shardCount = 1,
+    uniquePool = false,
+    skipDominatedPartials = 0,
   } = data;
   const format = normalizeLoadoutFormat(loadoutFormat);
   const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
@@ -136,41 +141,22 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
       return;
     }
 
-    // Track seen combinations as compact 53-bit signature hashes (same uniqueness as full keys, far less RAM)
-    const seenCombinations = new Set<number>();
-
-    // Generate loadouts in batches
-    // @ts-ignore - generateLoadouts returns a generator with any[] items
-    // @ts-ignore
-    for (const loadout of generateLoadouts(
+    // Generate loadouts in batches. Wuthering Tools+: optimizerLoadoutStream runs upstream's loop (normalise, hash,
+    // skip repeats, snapshot the mutated combo) unless the main thread sent a deduped pool — see src/sim/README.md.
+    for (const loadout of optimizerLoadoutStream(
       optimizerEchoes,
       mainEchoKeys,
-      0,
-      [],
-      0,
-      new Set(),
-      new Set(),
       format,
-      undefined,
       shardIndex,
       shardCount,
+      { uniquePool, skipDominatedPartials },
     )) {
       if (stopped) {
         break;
       }
 
-      const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
-      const hash = getOptimizerLoadoutHash(normalizedLoadout);
-
-      // Skip if we've already seen this combination
-      if (seenCombinations.has(hash)) {
-        continue;
-      }
-      seenCombinations.add(hash);
-
-      // CRITICAL: Snapshot the loadout array because generateLoadouts mutates the combo via push/pop.
       // Echo objects are immutable here; postMessage structured-clones the batch for the main thread.
-      batch.push(normalizedLoadout.slice());
+      batch.push(loadout);
       totalGenerated++;
 
       // Send batch when it reaches the target size, then wait for backpressure clearance

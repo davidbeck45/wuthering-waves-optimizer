@@ -86,21 +86,10 @@ export interface MapReport {
 
 export type Overrides = Record<string, string | null>;
 
-/** Riley's resonator names that don't simply lose their space to become this app's key. */
-export const ALIAS: Record<string, string> = {
-  Xuanling: "YangyangXuanling",
-  "Electro Rover": "Roverelectrofemale",
-  "Aero Rover": "RoverAeroFemale",
-  "Spectro Rover": "RoverSpectroFemale",
-  "Havoc Rover": "RoverHavocFemale",
-  "Luuk Herssen": "LuukHerssen",
-  "Xiangli Yao": "XiangliYao",
-};
-export const appKeyOf = (name: string): string => ALIAS[name] ?? name.replace(/ /g, "");
-/** app character key -> Riley's resonator name (ALIAS inverted; both Rover genders are his one form) */
-const RILEY_NAME: Record<string, string> = Object.fromEntries(Object.entries(ALIAS).map(([riley, app]) => [app, riley]));
-for (const [riley, app] of Object.entries(ALIAS)) if (/female$/i.test(app)) RILEY_NAME[app.replace(/(f)emale$/i, (_, f) => (f === "F" ? "Male" : "male"))] = riley;
-export const rileyNameOf = (appKey: string): string => RILEY_NAME[appKey] ?? appKey;
+// Riley-name ⇄ app-key aliases live in rileyNames.ts (dependency-free) so the presets / account code that only needs
+// rileyNameOf does not pull this whole mapper into the entry chunk; re-exported here for the existing importers.
+import { ALIAS, appKeyOf, rileyNameOf } from "./rileyNames";
+export { ALIAS, appKeyOf, rileyNameOf };
 
 /** Hand-checked corrections (wuwa-tools/rotation-port/overrides.json); null drops the cast. */
 export const OVERRIDES: Record<string, Overrides> = {

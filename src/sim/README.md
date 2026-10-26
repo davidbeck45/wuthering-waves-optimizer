@@ -413,3 +413,104 @@ CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each sl
 plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
 whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
 (real Augusta / Iuno / Shorekeeper / Sanhua data).
+
+## Performance: exact optimizer speedups, asset caching, bundle diet — `src/sim/optimizer/`, `src/sim/perf/` (2026-10-12, re-checked 2026-10-26)
+
+Three changes and none of them moves a number: the CLI snapshot gate shows 0 changes on both exports, and an
+equivalence harness (below) ran plus's optimizer pipeline and the new one side by side on 39 configs.
+
+| Piece | Role |
+|---|---|
+| `optimizer/optimizerPool.ts` | pure (no Vue, no stores): `prepareOptimizerEchoPool` (one echo per optimizer signature, first copy kept), `optimizerLoadoutStream` (the generator's loop: upstream's normalise + hash + skip-repeats by default, the deduped-pool fast path when asked), `hasLoadoutExtensions`, `canSkipDominatedPartials` (the preconditions), `planOptimizerGeneration` (one call per run), `normalizeOptimizerLoadoutCached` (upstream's slot sort with each echo's signature memoised) |
+| hooks (upstream files) | `Calculator.vue` `optimizeWithWorkers`: one `planOptimizerGeneration` call, the generator's start message carries the plan's pool plus `uniquePool` / `skipDominatedPartials`, the main-thread cross-shard hash runs only when the pool is not unique. `generator.worker.ts` walks `optimizerLoadoutStream`. `processor.worker.ts` imports `normalizeOptimizerLoadoutCached` under upstream's name. `optimizer.ts` is untouched |
+| `optimizer/optimizerPool.test.ts` | the deduped stream is upstream's stream (same loadouts, echo ids, order; all three formats; two main species; sharded); the skip drops exactly the partials with ≥ topN extensions; the cached sort equals upstream's on 2000 random loadouts; every guard; and the game-data preconditions of the monotonicity argument: every `AdditionalBase` / `CritOverflow` modifier has a positive step and non-negative values, no set bonus has a negative modifier, and adding an echo never removes an active set bonus (`getSetBonusEffects`, every pair of sets at every split plus 4000 random multisets) |
+| `perf/chunkReload.ts` | `vite:preloadError` → one reload (guarded by `sessionStorage["wtplus:chunkReloadAt"]`, once a minute): a tab opened before a deploy asks for chunk names that no longer exist; the reload fetches the new no-store `index.html`. No reload when offline (the import failed for want of a network; a reload would only show the browser's offline page) or when sessionStorage is blocked (nothing could stop a reload loop): the error then surfaces as before. Installed in `main.ts` |
+| `vercel.json` | `/assets/*` (Vite's hashed output) → `Cache-Control: public, max-age=31536000, immutable`; everything else stays `no-store`. The SPA fallback no longer answers `/assets/*`, so a missing chunk 404s instead of returning `index.html` under a year-long cache header. The api and umami rewrites are unchanged |
+| bundle (upstream files, one or two lines each) | `main.ts`: every page but the calculator home is `() => import(...)` (the info children too, `/info/tuning-odds` included). `CalculatorDamages.vue` / `CalculatorLiveResultRotations.vue`: `CalculatorDamageChart` through `defineAsyncComponent` (chart.js and its datalabels plugin leave the entry). `CalculatorEchoImporter.vue`: both parsers async (tesseract.js, the build-card scanner, `sim/echoScan` load when the importer opens). `utils/exportCardImage.ts`: `html-to-image` imported on the first export. `stores/{settings,inventory,character}.js`: `import merge from "lodash/merge"` (the whole CJS lodash was in a preloaded chunk; same function, same lodash 4.18.1 — a 20 000-case differential run against `_.merge`, result and mutated target, found no difference). `sim/rankings/rileyNames.ts`: `ALIAS` / `appKeyOf` / `rileyNameOf` moved out of `castMapper.ts` (re-exported there), so presets / account code no longer pull the cast mapper into the entry |
+
+**Pool dedup (exact).** Two echoes with the same signature are the same species (the signature's first field), and
+`generateLoadouts` never puts a species in a loadout twice, so a loadout holds at most one copy of any signature.
+Swapping every echo for the first copy of its signature gives a valid loadout with the same key that the walk reaches
+earlier (its sorted index tuple is element-wise smaller), and upstream's hash keeps exactly that first loadout of each
+key. So the deduped pool yields the same loadouts, the same echo objects (owned echoes — nothing is synthesised, no id
+mapping needed) in the same order, and the generator hashes nothing. `prepareOptimizerEchoPool` falls back to the
+untouched pool (upstream's dedup still runs) when that argument does not hold: no main echo (slot 0 is then the
+lowest-index echo, which a swap can change), a species that is not a plain string or contains ":", a signature with
+"|" in it, or two kept echoes sharing an `echoId`.
+
+**Dominated partial loadouts (exact top-N scores).** Under "Any" with a main echo and a deduped pool, a loadout with
+fewer than five echoes is not scored when at least topN (5) single echoes could still be added to it. Each extension is
+generated and, by monotonicity, matches or beats it on the score and on every min-stat floor; by induction every
+skipped loadout is matched by ≥ topN distinct scored ones, so the top-N score list cannot change. Monotonicity — every
+final stat and every score is non-decreasing in an added echo — was checked in the code for all three target types:
+
+- stats: an echo adds non-negative main/sub stats; `combineBuffObjects` / `addEchoBuffs` add them as one more term of
+  a sum; `totalAtk/Hp/Def` = base × (1 + % / 100) + flat; set bonuses only grow (at most two non-1-piece bonuses fit in
+  five echoes and `getSetBonusEffects` has two slots for them — pinned by the test); `AdditionalBase` is
+  `floor((stat − min) / step) × value` capped and clamped ≥ 0, `CritOverflow` likewise; Rebecca's ×1.4 edge case is a
+  positive factor; the main echo is slot 0 and never changes;
+- `Attack:` / `Rotation:` damage: a product of non-negative factors, each non-decreasing in the echo-side inputs
+  (ATK/HP/DEF/ER value, the bonus sum, deepen, `(800+8L) / (… × (1 − defIgnore))`, the piecewise resistance, crit
+  average `1 + min(CR, 1) × (CD − 1)` with CD ≥ 1.5); heal / shield / tune break / negative status / fixed hits are the
+  same shape or constant; a rotation sums its actions in a fixed order; the `a || b` fallbacks in `attacks.ts` read the
+  same loadout's `finalStats` on both sides in the optimizer path; attack unlocks (`enabledAttacks.ts`, Ryan's #622)
+  come from resonance-chain and self buffs, which are loadout-independent in a run, and a set's own `EnableAttack`
+  (Midnight Veil 5) only switches on with the set; IEEE rounding is monotone, so the computed values keep the order (an
+  echo that adds nothing to a stat leaves it bit-identical);
+- preconditions checked per run by `canSkipDominatedPartials` (else nothing is skipped): no negative substat value,
+  set-passive stat, custom buff, per-action rotation buff or hit count (the editor clamps counts to ≥ 1, an imported
+  rotation might not), enemy resistance ≤ 100 %, and a `Stat:` / `Attack:` / `Rotation:` target. Game data (talent
+  maps, modifiers) is pinned by the test.
+
+**Ties.** When several loadouts share the 5th score, which of them fills the last places — and the display order
+inside a group of equal scores — can differ from before. Upstream does not define it either: which tied loadout lands
+first depends on batch size, worker count and worker timing. Scores never differ.
+
+Equivalence harness (outside the repo, `/tmp/perf-harness/`: `prep.mjs` writes importable copies of plus's
+`generator.worker.ts` / `processor.worker.ts` (from `git show plus:…`) and of the worktree's, one copy per simulated
+worker; `equiv.mts` drives each pipeline through a port of `optimizeWithWorkers` — FIFO message delivery, every message
+structured-cloned, the generator's continue back-pressure honoured — in one thread; run from the worktree with
+`npx tsx`). The context, set-passive and main-echo stats are built from the export, close to what the panel emits (both pipelines
+get the same inputs). 39 configs:
+every saved optimizer config in both exports (stale rotation targets swapped for the character's longest rotation, or
+`Stat:totalAtk` where it has none), plus Stat / Attack / Crit / Normal targets, min-stat floors, 43311 / 44111, batch
+500, 16 and 32 workers (2 and 4 generator shards), two main species (Cartethyia's Fleurdelys + Kelpie, four and three
+copies; Galbrena's Corrosaurus + Leviathan), injected stat-identical copies (with shards), no main echo, and a negative
+custom buff (skip off). Result (2026-10-26, on plus 5fc8af7b): 39/39 equal score lists, 33 identical result lists,
+6 differing only in the order or the pick inside equal-score groups; every reported echo is an owned inventory echo,
+field for field; 8,709,188 domination checks on the 27 configs where the skip applies (each of the 417,560 skipped
+loadouts against every one-echo extension, scored by plus's own processor), 0 violations.
+
+| Measured (Node, one thread, simulated workers) | plus | now |
+|---|---|---|
+| generation, Galbrena (54 echoes, 3 sets, Any; 469,462 loadouts) | 8.8 s | 0.22 s |
+| generation, Aemeath / Xuanling (43311) | 279 ms / 688 ms | 10 ms / 26 ms |
+| generation, Aemeath pool with 13 stat-identical copies | 1.5 s | 10 ms |
+| loadouts scored, Galbrena / Aemeath / Sigrika (Any) | 469,462 / 19,152 / 2,124 | 390,824 / 13,240 / 1,266 |
+| whole pipeline, Galbrena rotation / Galbrena `Stat:totalAtk` | 96.9 s / 20.0 s | 78.0 s / 8.0 s |
+| whole pipeline, Aemeath rotation / Xuanling 43311 rotation | 4.8 s / 15.3 s | 3.2 s / 14.1 s |
+| **browser**, dev server (8 workers, David's data), Galbrena `Stat:totalAtk` / Aemeath rotation | 7.9 s / 2.5 s | 1.5 s / 2.4 s |
+| **browser**, production build (`vite preview`), same two runs | 7.8 s / 2.1 s | 1.2 s / 1.6 s |
+
+The browser's "Evaluated N loadouts" now counts the loadouts scored (13,240 for Aemeath, was 19,152); the top five
+are the same numbers in both builds.
+
+| Bundle (`npx vite build`, 2026-10-26) | plus 5fc8af7b | now |
+|---|---|---|
+| entry chunk `index-*.js` (Vite's figures) | 2,456.57 kB, 630.25 kB gzip | 1,390.35 kB, 344.02 kB gzip |
+| JS on first load (entry + every modulepreload, gzip -9) | 2,631 kB, 686 kB gzip | 1,848 kB, 452 kB gzip |
+| JS + CSS on first load | 2,912 kB, 731 kB gzip | 2,116 kB, 495 kB gzip |
+
+Things learned:
+- Vercel turns each `headers` entry into a route with `continue: true` (`convertHeaders` in `@vercel/routing-utils`),
+  and the router assigns the headers of every matching route in order into one object, so a later entry that sets the
+  same key wins (Next.js documents the same rule: "the last header key will override the first"). So the catch-all
+  `no-store` comes first and the `/assets/` rule last; it excludes `/assets/init.js`, which is the umami script behind
+  a rewrite, not a hashed file. If the order rule ever flipped, the result is today's no-store.
+- `content/updates.ts` (95 kB, the whole changelog) stays in the entry: `AppUpdateBanner` reads `currentAnnouncement`
+  from the same module. Splitting that constant into its own file is an upstream PR candidate.
+- Still in the entry and left alone: `buffs/index.ts` (97 kB), `enemies/index.ts` (66 kB), the v3 workspaces, and
+  `calcDamage` building three HTML breakdown strings per attack for every scored loadout (a scoring-time cost inside
+  the published formulas package).
+- The first harness lived in /tmp and was wiped between sessions; `prep.mjs` + `equiv.mts` rebuild the comparison from
+  `git show plus:` in a few minutes, so keep the recipe above rather than a copy of the old code.

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { merge } from "lodash";
+import merge from "lodash/merge"; // Wuthering Tools+: the one lodash function used (not the whole CJS lodash)
 import { useCharacterStore } from "./character";
 import { applyEchoLoadout as applyEchoLoadoutState } from "../echoes/echoLoadout";
 

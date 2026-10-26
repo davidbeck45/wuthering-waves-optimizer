@@ -10,21 +10,24 @@ import { createPinia } from "pinia";
 import { createPersistedState } from "pinia-plugin-persistedstate";
 import { runMigrations } from "./migrations";
 import { injectAnalytics } from "./utils/analytics";
+import { installChunkReload } from "./sim/perf/chunkReload"; // Wuthering Tools+: a stale tab reloads once after a deploy
 
 import HomeView from "./pages/HomeView.vue";
-import UpdatesView from "./pages/UpdatesView.vue";
-import InfoView from "./pages/InfoView.vue";
-import InfoOverview from "./components/info/InfoOverview.vue";
-import InfoCvRv from "./components/info/InfoCvRv.vue";
-import InfoTuningOdds from "./components/info/InfoTuningOdds.vue";
-import InfoFormulas from "./components/info/InfoFormulas.vue";
-import InfoCredits from "./components/info/InfoCredits.vue";
-import PrivacyView from "./pages/PrivacyView.vue";
-import SettingsView from "./pages/SettingsView.vue";
-import LegalView from "./pages/LegalView.vue";
-import InventoryView from "./pages/InventoryView.vue";
-import ConveneView from "./pages/ConveneView.vue";
-import TeamRotationsView from "./pages/TeamRotationsView.vue";
+// Wuthering Tools+: every page but the calculator home loads on first visit, so the entry chunk only carries the
+// calculator (src/sim/README.md, "Bundle diet").
+const UpdatesView = () => import("./pages/UpdatesView.vue");
+const InfoView = () => import("./pages/InfoView.vue");
+const InfoOverview = () => import("./components/info/InfoOverview.vue");
+const InfoCvRv = () => import("./components/info/InfoCvRv.vue");
+const InfoTuningOdds = () => import("./components/info/InfoTuningOdds.vue");
+const InfoFormulas = () => import("./components/info/InfoFormulas.vue");
+const InfoCredits = () => import("./components/info/InfoCredits.vue");
+const PrivacyView = () => import("./pages/PrivacyView.vue");
+const SettingsView = () => import("./pages/SettingsView.vue");
+const LegalView = () => import("./pages/LegalView.vue");
+const InventoryView = () => import("./pages/InventoryView.vue");
+const ConveneView = () => import("./pages/ConveneView.vue");
+const TeamRotationsView = () => import("./pages/TeamRotationsView.vue");
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -66,6 +69,7 @@ const router = createRouter({
 });
 
 injectAnalytics();
+installChunkReload();
 
 console.time("runMigrations");
 // Upgrade persisted localStorage before Pinia hydrates stores from it

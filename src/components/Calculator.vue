@@ -555,6 +555,8 @@ import {
   splitOptimizerWorkerCount,
   type OptimizerEmptyReason,
 } from "../calculator/optimizer";
+// Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials) — src/sim/README.md
+import { planOptimizerGeneration } from "../sim/optimizer/optimizerPool";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1825,12 +1827,23 @@ export default defineComponent({
         return sum;
       };
       const seenCombinations = new Set<number>();
+      // Wuthering Tools+: dedupe the echo pool once and plan the exact fast paths (src/sim/optimizer/optimizerPool.ts)
+      const generationPlan = planOptimizerGeneration({
+        echoes: serializeEchoes(echoes),
+        mainEchoKeys: Array.isArray(mainEchoKeys) ? [...mainEchoKeys] : [],
+        loadoutFormat,
+        topN,
+        target,
+        echoSetPassiveBuffs,
+        context,
+        rotationData,
+      });
       // Cross-shard dedup for generated (not-yet-processed) loadouts: local per-worker
       // dedup only catches duplicates within one shard; distinct shards can independently
       // discover the same loadout signature (e.g. two stat-identical main echoes assigned
       // to different shards). Only needed when there's more than one generator shard.
       const seenGeneratedHashes =
-        generatorCount > 1 ? new Set<number>() : null;
+        generatorCount > 1 && !generationPlan.uniquePool ? new Set<number>() : null;
       const dedupeBatchAcrossShards = (batch: any[]): any[] => {
         if (!seenGeneratedHashes) return batch;
         const deduped: any[] = [];
@@ -2129,9 +2142,6 @@ export default defineComponent({
           if (e.data.type === "ready") {
             // Start generation - ensure echoes are serializable
             try {
-              // Serialize echoes by only including needed properties
-              const serializedEchoes = serializeEchoes(echoes);
-
               // Convert Vue reactive arrays/objects to plain arrays/objects
               // Vue reactive proxies cannot be cloned, so we need to convert them first
               const plainMainEchoKeys = Array.isArray(mainEchoKeys)
@@ -2141,12 +2151,15 @@ export default defineComponent({
               const messageData = {
                 type: "start",
                 data: {
-                  echoes: serializedEchoes,
+                  // Serialized echoes (only the needed properties), deduped when that is exact
+                  echoes: generationPlan.echoes,
                   mainEchoKeys: plainMainEchoKeys,
                   batchSize,
                   loadoutFormat,
                   shardIndex,
                   shardCount: generatorCount,
+                  uniquePool: generationPlan.uniquePool,
+                  skipDominatedPartials: generationPlan.skipDominatedPartials,
                 },
               };
 

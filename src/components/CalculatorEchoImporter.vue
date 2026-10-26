@@ -31,9 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
-import CalculatorEchoParser from "./CalculatorEchoParser.vue";
-import PhoneEchoBatchParser from "../sim/echoScan/PhoneEchoBatchParser.vue";
+import { computed, defineAsyncComponent, nextTick, ref } from "vue";
+// Wuthering Tools+: both parsers (tesseract.js, the build-card scanner, the phone-screenshot scanner) load the
+// first time the importer opens, not with the calculator
+const CalculatorEchoParser = defineAsyncComponent(() => import("./CalculatorEchoParser.vue"));
+const PhoneEchoBatchParser = defineAsyncComponent(() => import("../sim/echoScan/PhoneEchoBatchParser.vue"));
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 

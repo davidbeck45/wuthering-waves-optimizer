@@ -1,5 +1,3 @@
-import { toBlob } from "html-to-image";
-
 export const EXPORT_WIDTH = 1920;
 export const EXPORT_HEIGHT = 1080;
 
@@ -22,6 +20,8 @@ function excludeExportHiddenNodes(domNode: HTMLElement): boolean {
 const EXPORT_PIXEL_RATIO = 2;
 
 export async function captureCardAsPngBlob(node: HTMLElement): Promise<Blob> {
+  // Wuthering Tools+: loaded on the first export instead of in the entry chunk
+  const { toBlob } = await import("html-to-image");
   const blob = await toBlob(node, {
     width: EXPORT_WIDTH,
     height: EXPORT_HEIGHT,
