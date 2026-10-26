@@ -9,7 +9,7 @@
 // getCharByName stays exactly upstream's.
 import type { CharacterRotationPreset } from "../../characters/rotationExportImport";
 import type { TeamRotationPreset } from "../../teamRotations/presets";
-import { rileyNameOf } from "../rankings/castMapper";
+import { rileyNameOf } from "../rankings/rileyNames";
 
 /** Author tag carried by every preset generated from wuwa_calc. */
 export const WUWA_CALC_AUTHOR = "Riley31415 (wuwa_calc)";

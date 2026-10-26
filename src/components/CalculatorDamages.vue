@@ -682,12 +682,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import { calcRotationDps } from "../calculator/teamRotation";
 import CalculatorDamage from "./CalculatorDamage.vue";
-import CalculatorDamageChart from "./CalculatorDamageChart.vue";
+// Wuthering Tools+: lazy, so chart.js (~200 kB) is not in the entry chunk
+const CalculatorDamageChart = defineAsyncComponent(() => import("./CalculatorDamageChart.vue"));
 
 type DamageMap = Record<string, any>;
 

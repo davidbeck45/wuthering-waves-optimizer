@@ -9,7 +9,7 @@
 //   refinement = weapons[weapon].refinement, 1 when unset
 //   owned      = the character has a weapon equipped (the bar my-rankings and Riley's loadouts set);
 //                a character opened in the calculator but never armed is "not set up", not owned
-import { rileyNameOf } from "../rankings/castMapper";
+import { rileyNameOf } from "../rankings/rileyNames";
 import { nodeOf, refinementOf, sequenceOf } from "../myRankings/rankRoster";
 
 export { nodeOf, refinementOf, sequenceOf };

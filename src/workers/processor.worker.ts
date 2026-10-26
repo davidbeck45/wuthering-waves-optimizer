@@ -35,7 +35,6 @@
  */
 
 import {
-  normalizeOptimizerLoadout,
   computeLoadoutFinalStats,
   buildOptimizerCalculationContext,
   computeOverrideBuffVariants,
@@ -47,6 +46,8 @@ import { getAttackData } from "../characters/characters";
 import { computeSelfBuffs, computeResonanceChainsBuffs } from "../calculator/stats";
 import { processAttacks } from "../calculator/attacks";
 import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
+// Wuthering Tools+: upstream's normalizeOptimizerLoadout with each echo's signature memoised (same order)
+import { normalizeOptimizerLoadoutCached as normalizeOptimizerLoadout } from "../sim/optimizer/optimizerPool";
 
 /**
  * Static config stored after init (sent once per optimization run)
