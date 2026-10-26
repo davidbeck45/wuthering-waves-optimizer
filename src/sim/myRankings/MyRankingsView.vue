@@ -242,6 +242,7 @@
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import Nav from "../../components/navigation/Nav.vue";
+import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { characterPortraitUrl, getCharacterRosterDisplayName } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
@@ -266,6 +267,11 @@ import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
 import { accountStateOf, rankingsMineHash } from "../account/accountState";
 import "../phone-tables.css";
 
+// each page sets its own tab title (Ryan's #672)
+useDocumentTitle(
+  "My roster rankings — Wuthering Waves Calculator & Optimizer",
+  "Your own characters and teams ranked by the calculator's engine on your real builds, with what-if sequences, weapons and substat weights.",
+);
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const teamStore = useTeamRotationsStore();

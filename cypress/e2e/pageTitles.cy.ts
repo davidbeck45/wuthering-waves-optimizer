@@ -1,7 +1,8 @@
 // Each page sets its own tab title, and the calculator, which uses the
 // site-wide one from index.html, gets it back when you return.
 const SUFFIX = " — Wuthering Waves Calculator & Optimizer";
-const BASE_TITLE = "Wuthering Waves Calculator & Optimizer";
+// Wuthering Tools+: the site-wide title in index.html carries the product name
+const BASE_TITLE = "Wuthering Tools+ · Wuthering Waves Calculator & Optimizer";
 
 const pages = [
   { path: "/updates", title: "Updates" },

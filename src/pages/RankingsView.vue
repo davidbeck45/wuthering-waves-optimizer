@@ -17,6 +17,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useTeamRotationsStore } from "../stores/teamRotations";
@@ -28,6 +29,11 @@ import "../sim/skittle.css";
 import "../sim/skittle-theme.css";
 
 const host = ref<HTMLElement | null>(null);
+// each page sets its own tab title (Ryan's #672)
+useDocumentTitle(
+  "Team rankings — Wuthering Waves Calculator & Optimizer",
+  "Riley31415's wuwa_calc team comparison inside Wuthering Tools+: every team's damage per second, solved at fixed or your own account's sequences, weapons and echoes.",
+);
 const router = useRouter();
 const route = useRoute();
 // the player's equipped echoes, as the engine's "My build" substat rows (see src/sim/rankings/myBuilds.ts)
