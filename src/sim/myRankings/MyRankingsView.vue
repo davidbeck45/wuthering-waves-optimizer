@@ -1,270 +1,98 @@
 <template>
-  <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
-  <div class="my-rankings px-4 py-4 mx-auto w-full max-w-6xl" data-test-my-rankings>
-    <div class="flex flex-wrap items-center gap-3 mb-3">
-      <h1 class="text-2xl font-bold">My roster rankings</h1>
-      <div class="join">
-        <RouterLink to="/rankings" class="btn btn-sm join-item" data-test-rankings-switch-calc>wuwa_calc rankings</RouterLink>
-        <span class="btn btn-sm btn-primary join-item no-animation pointer-events-none">My roster</span>
+  <Nav cur-page="my-rankings" :disable-mobile-nav="true"></Nav>
+  <div class="my-rankings" data-test-my-rankings>
+    <header class="mr-head">
+      <div class="mr-head__title">
+        <h1 class="mr-h1">My roster rankings</h1>
+        <MyRankingsInfo />
       </div>
-      <div class="ml-auto flex flex-wrap items-center gap-2 max-md:w-full max-md:ml-0">
-        <label class="label cursor-pointer gap-2 py-0">
-          <input v-model="investment" type="checkbox" class="checkbox checkbox-sm" :disabled="isRunning" />
-          <span class="label-text text-sm">estimate next sequence &amp; R5</span>
-        </label>
-          <AutoTeamBuffsToggle />
-        <button type="button" class="btn btn-primary btn-sm" :disabled="isRunning || !characterCount" data-test-my-rankings-compute @click="compute">
-          <span v-if="isRunning" class="loading loading-spinner loading-xs"></span>
-          {{ isRunning ? "Ranking…" : ranking ? "Recompute" : "Rank my roster" }}
-        </button>
-      </div>
-    </div>
-    <p class="text-sm opacity-70 mb-3">
-      Your characters and teams, scored by this app's own damage engine on your real builds — weapon, echoes,
-      resonance chains and buffs as you have them set up. Every saved rotation, curated preset and wuwa_calc loop is
-      tried and the best one counts. Enemy: level 100, 20 % resistance, no stacks (Riley's target, so the numbers sit
-      beside the wuwa_calc rankings).
-    </p>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm mb-3 px-3 py-2 rounded-box bg-base-200/60" data-test-my-rankings-account>
-      <span class="font-semibold">Account</span>
-      <span><b class="tabular-nums">{{ account.summary.owned }}</b> characters set up <span class="opacity-60">(of {{ account.summary.characters }} in the calculator)</span></span>
-      <span><b class="tabular-nums">{{ account.summary.s6 }}</b> at S6</span>
-      <span><b class="tabular-nums">{{ account.echoes.total }}</b> echoes <span class="opacity-60">({{ account.echoes.equipped }} equipped)</span></span>
-      <span><b class="tabular-nums">{{ account.summary.teamsFieldable }}</b> of {{ account.summary.teams }} teams fieldable</span>
-      <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="link link-primary ml-auto" data-test-my-rankings-open-mine>wuwa_calc rankings at my account ▸</RouterLink>
-    </div>
-
-    <div v-if="!characterCount" class="alert" data-test-my-rankings-empty>
-      <span>No character has a weapon equipped yet. Build a character in the calculator (weapon, echoes, chains), or import your data under Settings › Backup &amp; Restore.</span>
-    </div>
-
-    <div v-if="isRunning" class="mb-3">
-      <progress class="progress progress-primary w-full" :value="progress.done" :max="progress.total || 1"></progress>
-      <div class="text-xs opacity-70" data-test-my-rankings-progress>{{ progress.done }} / {{ progress.total }} · {{ progress.label }}</div>
-    </div>
-
-    <template v-if="ranking">
-      <h2 class="text-lg font-bold mt-2 mb-1">Characters</h2>
-      <div class="overflow-x-auto">
-        <table class="table table-sm table--cards" data-test-my-rankings-characters>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Character</th>
-              <th>Weapon</th>
-              <th>Best rotation</th>
-              <th class="text-right">Avg DMG / rotation</th>
-              <th></th>
-              <th v-if="investment" class="text-right" title="estimate: the next sequence node's chains switched on, best rotation">next S</th>
-              <th v-if="investment" class="text-right" title="estimate: the weapon at R5, best rotation">R5</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(c, i) in ranking.characters" :key="c.id">
-            <tr :data-test-my-rankings-row="c.id">
-              <td class="opacity-60 cell--rank">{{ i + 1 }}</td>
-              <td class="cell--who">
-                <div class="flex items-center gap-2">
-                  <div class="size-9 rounded-full bg-cover bg-center border border-base-300 shrink-0" :style="{ backgroundImage: `url(${characterPortraitUrl(c.id)})` }"></div>
-                  <div>
-                    <div class="font-semibold">{{ c.name }}</div>
-                    <div class="text-xs opacity-60">S{{ c.sequence }} · R{{ c.refinement }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-sm cell--weapon" data-label="Weapon">{{ c.weapon ?? "—" }}</td>
-              <td class="text-sm cell--best" data-label="Best rotation">
-                <template v-if="c.best">
-                  <div>{{ c.best.name }}</div>
-                  <div class="text-xs opacity-60">{{ sourceLabel(c.best.source) }} · {{ c.rotationsEvaluated }} tried</div>
-                </template>
-                <span v-else class="opacity-60">no rotation with actions</span>
-              </td>
-              <td class="text-right tabular-nums font-semibold cell--dmg" data-test-my-rankings-damage>{{ c.best ? fmt(c.best.avgDamage) : "—" }}</td>
-              <td class="w-40 cell--bar"><progress class="progress progress-primary w-full" :value="c.best?.avgDamage ?? 0" :max="maxCharacterDamage || 1"></progress></td>
-              <td v-if="investment" class="text-right tabular-nums text-sm cell--delta" data-label="next S" :class="deltaClass(c.nextSequence)">{{ c.nextSequence ? `${c.nextSequence.label} ${pct(c.nextSequence.gain)}` : c.sequence >= 6 ? "S6" : "—" }}</td>
-              <td v-if="investment" class="text-right tabular-nums text-sm cell--delta" data-label="R5" :class="deltaClass(c.refineFive)">{{ c.refineFive ? pct(c.refineFive.gain) : c.refinement >= 5 ? "R5" : "—" }}</td>
-              <td class="cell--actions">
-                <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-whatif="c.id" title="score this character at another sequence, weapon or refinement on the same rotation" @click="toggleWhatIf(c)">
-                  what if…
-                </button>
-                <button type="button" class="btn btn-ghost btn-xs whitespace-nowrap" :disabled="!c.bestRotation" :data-test-my-rankings-substats="c.id" title="what one more roll of each substat is worth on this build, on the same rotation — what to look for as you roll echoes" @click="toggleSubstats(c)">
-                  substats
-                </button>
-                <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash([c.id]) }" class="btn btn-ghost btn-xs whitespace-nowrap" title="wuwa_calc's teams with this character, at your account's sequences and weapons" :data-test-my-rankings-mine-link="c.id">rankings ▸</RouterLink>
-              </td>
-            </tr>
-            <tr v-if="whatIfs[c.id]?.open" class="row--panel" :data-test-my-rankings-whatif-panel="c.id">
-              <td :colspan="investment ? 9 : 7" class="bg-base-200/40 cell--panel">
-                <div class="flex flex-wrap items-end gap-3 py-1">
-                  <label class="form-control">
-                    <span class="label-text text-xs">Sequence</span>
-                    <select v-model.number="whatIfs[c.id].sequence" class="select select-bordered select-xs" data-test-my-rankings-whatif-sequence>
-                      <option v-for="n in [0, 1, 2, 3, 4, 5, 6]" :key="n" :value="n">S{{ n }}{{ n === c.sequence ? " (now)" : "" }}</option>
-                    </select>
-                  </label>
-                  <label class="form-control">
-                    <span class="label-text text-xs">Weapon</span>
-                    <select v-model="whatIfs[c.id].weapon" class="select select-bordered select-xs max-w-60" data-test-my-rankings-whatif-weapon>
-                      <option v-for="w in whatIfs[c.id].weapons" :key="w.key" :value="w.key">{{ weaponLabel(w) }}{{ w.key === c.weapon ? " (now)" : ownedWeapons(c.id).has(w.key) ? " (owned)" : "" }}</option>
-                    </select>
-                  </label>
-                  <label class="form-control">
-                    <span class="label-text text-xs">Refinement</span>
-                    <select v-model.number="whatIfs[c.id].refinement" class="select select-bordered select-xs" data-test-my-rankings-whatif-refinement>
-                      <option v-for="n in [1, 2, 3, 4, 5]" :key="n" :value="n">R{{ n }}{{ n === c.refinement && whatIfs[c.id].weapon === c.weapon ? " (now)" : "" }}</option>
-                    </select>
-                  </label>
-                  <button type="button" class="btn btn-primary btn-xs" :disabled="whatIfs[c.id].running" data-test-my-rankings-whatif-run @click="runWhatIf(c)">
-                    <span v-if="whatIfs[c.id].running" class="loading loading-spinner loading-xs"></span>
-                    Score this build
-                  </button>
-                  <span v-if="whatIfs[c.id].result" class="text-sm tabular-nums" data-test-my-rankings-whatif-result>
-                    {{ whatIfs[c.id].result?.label }}: <b>{{ fmt(whatIfs[c.id].result?.avgDamage ?? 0) }}</b>
-                    <span :class="gainClass(whatIfs[c.id].result?.gain ?? 0)">{{ pct(whatIfs[c.id].result?.gain ?? 0) }}</span>
-                    <span class="opacity-60">vs {{ fmt(whatIfs[c.id].result?.base ?? 0) }} now, on {{ whatIfs[c.id].result?.rotation }}</span>
-                  </span>
-                  <span v-if="whatIfs[c.id].error" class="text-xs text-error">{{ whatIfs[c.id].error }}</span>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="substats[c.id]?.open" class="row--panel" :data-test-my-rankings-substats-panel="c.id">
-              <td :colspan="investment ? 9 : 7" class="bg-base-200/40 cell--panel">
-                <div class="subs py-1">
-                  <div class="text-xs opacity-70 mb-1">
-                    Substat weights: what one more line of each substat on one of your equipped echoes would add to this build's
-                    <template v-if="substats[c.id].result">{{ fmt(substats[c.id].result!.baseline) }} average damage</template><template v-else>damage</template>
-                    on {{ c.best?.name }}. Left of each arrow is the size of the roll, right of it the damage it adds. The top of the list is what to look for.
-                  </div>
-                  <details class="subs__help text-xs mb-2" data-test-my-rankings-substats-help>
-                    <summary class="cursor-pointer opacity-70 hover:opacity-100">How to read these numbers</summary>
-                    <ul class="subs__help-list opacity-80">
-                      <li><b>Expected roll</b>: the average roll of the stat, every tier weighted by how often it drops. An average, so not always a tier the game can show — flat ATK averages {{ rollLabel(expectedRoll("ATK_FLAT"), true) }} between the 40 and 50 tiers.</li>
-                      <li><b>Median roll</b>: the middle tier, half of all rolls land on it or lower. Always a real tier ({{ rollLabel(medianRoll("ATK_FLAT"), true) }} flat ATK, {{ rollLabel(medianRoll("CritDMG"), false) }} Crit DMG).</li>
-                      <li><b>Best roll</b>: the top tier, the most one line can pay.</li>
-                      <li><b>+1 tier</b>: one step up the tier ladder ({{ rollLabel(tierStep("CritRate"), false) }} Crit Rate, {{ rollLabel(tierStep("CritDMG"), false) }} Crit DMG, {{ rollLabel(tierStep("ATK_FLAT"), true) }} flat ATK). What a line you already have gains from rolling one tier higher — the gap between two echoes whose lines differ by one tier.</li>
-                      <li><b>The bar</b>: the expected gain next to the best substat's. A full bar is the stat to look for, an empty one does nothing on this rotation.</li>
-                      <li>The gains do not follow the roll sizes: what a roll pays depends on what the build already has (Crit Rate past 100 % is wasted, a stat you stack pays a little less each time). Compare rolls, not points — every substat line on an echo is one roll.</li>
-                      <li>A stat at +0.0 % does not feed this rotation. Energy Regen always reads 0 here: the engine has no energy model, so keep the ER the rotation needs.</li>
-                    </ul>
-                  </details>
-                  <div v-if="substats[c.id].running" class="text-sm"><span class="loading loading-spinner loading-xs"></span> scoring…</div>
-                  <span v-if="substats[c.id].error" class="text-xs text-error">{{ substats[c.id].error }}</span>
-                  <div v-if="substats[c.id].result" class="subs__grid tabular-nums text-sm" data-test-my-rankings-substats-result>
-                    <div class="subs__row subs__row--head">
-                      <div class="subs__head">Substat</div>
-                      <div class="subs__head" title="the average roll, every tier weighted by how often it drops">Expected roll</div>
-                      <div class="subs__head" title="the middle tier: half of all rolls land on it or lower">Median roll</div>
-                      <div class="subs__head" title="the top tier">Best roll</div>
-                      <div class="subs__head" title="one tier step: what an existing line gains from rolling one tier higher">+1 tier</div>
-                      <div class="subs__head"></div>
-                    </div>
-                    <div v-for="w in substats[c.id].result?.weights ?? []" :key="w.key" class="subs__row">
-                      <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span></div>
-                      <div class="subs__gain" :class="gainClass(w.gain)" :data-test-my-rankings-substat="w.key"><span class="opacity-60">{{ rollLabel(w.roll, w.flat) }} →</span> {{ pct(w.gain) }}</div>
-                      <div class="subs__more">
-                        <div class="subs__gain subs__gain--more" :class="gainClass(w.medianGain)" :data-test-my-rankings-substat-median="w.key"><span class="opacity-60"><span class="md:hidden">median </span>{{ rollLabel(w.medianRoll, w.flat) }} →</span> {{ pct(w.medianGain) }}</div>
-                        <div class="subs__gain subs__gain--more" :class="gainClass(w.maxGain)"><span class="opacity-60"><span class="md:hidden">best </span>{{ rollLabel(w.maxRoll, w.flat) }} →</span> {{ pct(w.maxGain) }}</div>
-                        <div class="subs__gain subs__gain--more" :class="gainClass(w.stepGain)" :data-test-my-rankings-substat-step="w.key"><span class="opacity-60"><span class="md:hidden">+1 tier </span>{{ rollLabel(w.step, w.flat) }} →</span> {{ pct2(w.stepGain) }}</div>
-                      </div>
-                      <div class="subs__bar"><div class="subs__fill" :style="{ width: `${Math.round(w.weight * 100)}%` }"></div></div>
-                    </div>
-                  </div>
-                  <p v-if="substats[c.id].result" class="text-xs mt-1">
-                    <span class="opacity-70">Look for:</span> <b>{{ lookFor(substats[c.id].result!) }}</b>
-                    <span v-if="erReadsZero(substats[c.id].result!)" class="opacity-70"> · Energy Regen reads 0 here — the engine has no energy model, keep the ER the rotation needs</span>
-                  </p>
-                  <div v-if="substats[c.id].echoes?.length" class="mt-2 text-xs flex flex-wrap items-center gap-1" data-test-my-rankings-substats-echoes>
-                    <span class="opacity-70 mr-1">Your echoes' substats on this rotation (lowest = re-roll first):</span>
-                    <span v-for="e in echoesWorstFirst(substats[c.id].echoes ?? [])" :key="e.slot" class="badge badge-ghost badge-sm tabular-nums">
-                      {{ e.cost }}-cost {{ echoLabel(e.echo) }} · {{ e.main }} · <b class="ml-1" :class="gainClass(e.worth)">{{ pct(e.worth) }}</b>
-                    </span>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-      <p v-if="errorCount" class="text-xs text-warning mt-1">{{ errorCount }} rotation{{ errorCount === 1 ? "" : "s" }} could not be scored (unknown actions on this build); they were skipped.</p>
-
-      <h2 class="text-lg font-bold mt-6 mb-1">Teams</h2>
-      <p v-if="!ranking.teams.length" class="text-sm opacity-70" data-test-my-rankings-no-teams>
-        No team to rank yet: a team needs actions and all three members present in your data. Import one from the
-        wuwa_calc rankings page or Teams › List Presets, then recompute.
+      <nav class="mr-pages" aria-label="Rankings">
+        <RouterLink to="/account" class="mr-pages__item" title="Your account dashboard" data-test-my-rankings-to-account>Account</RouterLink>
+        <span class="mr-pages__item mr-pages__item--on" aria-current="page">My roster</span>
+        <RouterLink to="/rankings" class="mr-pages__item" title="Riley31415's wuwa_calc team table" data-test-rankings-switch-calc>Team rankings</RouterLink>
+      </nav>
+      <MyRankingsToolbar
+        v-if="characterCount"
+        v-model:investment="investment"
+        v-model:sort="sort"
+        class="mr-head__tools"
+        :running="isRunning"
+        :can-compute="characterCount > 0"
+        :has-ranking="!!ranking"
+        @compute="compute" />
+      <p class="mr-head__sub">
+        Your characters and teams on their real builds, scored by this app's engine — every rotation tried, the best one
+        counts. Enemy level 100 · 20 % RES.
       </p>
-      <div v-else class="overflow-x-auto">
-        <table class="table table-sm table--cards" data-test-my-rankings-teams>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Team</th>
-              <th>Source</th>
-              <th class="text-right">Team avg DMG / rotation</th>
-              <th class="text-right">Per slot</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(t, i) in ranking.teams" :key="t.id" :data-test-my-rankings-team="t.name">
-              <td class="opacity-60 cell--rank">{{ i + 1 }}</td>
-              <td class="cell--who">
-                <div class="flex items-center gap-2">
-                  <div class="flex -space-x-2 shrink-0">
-                    <div v-for="cid in t.characterIds" :key="cid" class="size-8 rounded-full bg-cover bg-center border border-base-300" :style="{ backgroundImage: `url(${characterPortraitUrl(cid)})` }" :title="getCharacterRosterDisplayName(cid)"></div>
-                  </div>
-                  <div class="text-sm">
-                    {{ t.name }}
-                    <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash(t.characterIds) }" class="link link-primary text-xs ml-2" title="wuwa_calc's teams with these three, at your account's sequences and weapons" :data-test-my-rankings-team-mine-link="t.name">rankings ▸</RouterLink>
-                    <div v-if="t.unarmed.length" class="text-xs text-warning">no weapon: {{ t.unarmed.map((cid) => getCharacterRosterDisplayName(cid)).join(", ") }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-xs opacity-70 cell--weapon" data-label="Source">{{ sourceLabel(t.source) }}</td>
-              <td class="text-right tabular-nums font-semibold cell--dmg">{{ fmt(t.avgDamage) }}</td>
-              <td class="text-right tabular-nums text-xs opacity-80 cell--best" data-label="Per slot">{{ t.perSlot.map((d) => fmt(d)).join(" · ") }}</td>
-              <td class="w-40 cell--bar"><progress class="progress progress-secondary w-full" :value="t.avgDamage" :max="maxTeamDamage || 1"></progress></td>
-            </tr>
-          </tbody>
-        </table>
-        <p v-if="ranking.teamsSkipped" class="text-xs opacity-60 mt-1">{{ ranking.teamsSkipped }} team{{ ranking.teamsSkipped === 1 ? "" : "s" }} skipped (no actions, or a member not set up).</p>
-      </div>
-      <p class="text-xs opacity-50 mt-4">Computed {{ new Date(ranking.computedAt).toLocaleString() }}.</p>
+    </header>
+
+    <MyRankingsEmpty v-if="!characterCount" />
+    <template v-else>
+      <MyRankingsKpis :account="account" :status="status" />
+
+      <section class="mr-section">
+        <div class="mr-section-head">
+          <h2 class="mr-h2">
+            Characters
+            <span v-if="shown" class="mr-count">{{ shown.characters.length }}</span>
+          </h2>
+          <span class="mr-section-head__meta">{{ sortLabel }}</span>
+        </div>
+        <div v-if="error" class="alert alert-error text-sm mb-2">{{ error }}</div>
+        <div v-if="isRunning" class="mr-progress" aria-hidden="true"><span :style="{ width: `${progress.total ? (progress.done / progress.total) * 100 : 3}%` }"></span></div>
+        <MyRankingsCharacters
+          v-if="shown || isRunning"
+          v-model:sort="sort"
+          :ranks="shown?.characters ?? []"
+          :investment="shownInvestment"
+          :pending="pendingCharacters"
+          :owned="ownedKeys"
+          :focus="focus" />
+        <p v-if="errorCount" class="text-xs text-warning mt-2">
+          {{ errorCount }} rotation{{ errorCount === 1 ? "" : "s" }} could not be scored (unknown actions on this build) and
+          {{ errorCount === 1 ? "was" : "were" }} skipped — open a row's Rotations tab for which.
+        </p>
+      </section>
+
+      <MyRankingsTeams
+        v-if="shown || isRunning"
+        class="mr-section"
+        :teams="shown?.teams ?? []"
+        :pending="pendingTeams"
+        :teams-skipped="ranking && !isRunning ? ranking.teamsSkipped : 0"
+        :owned="ownedKeys" />
+
+      <p v-if="ranking && !isRunning" class="mr-foot">
+        Computed {{ new Date(ranking.computedAt).toLocaleString() }} · enemy level {{ ranking.enemy.enemyLevel }},
+        {{ Math.round(ranking.enemy.enemyResist * 100) }} % RES · {{ rotationsScored }} rotations and {{ ranking.teams.length }} teams scored.
+      </p>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-// Wuthering Tools+ phase E — see rankRoster.ts for the scoring.
-import { computed, onMounted, ref } from "vue";
+// Wuthering Tools+ phase E — /my-rankings, the app's own engine ranking the roster you have set up
+// (rankRoster.ts does the scoring). This file only orchestrates: the cache (rankingCache.ts), the
+// progressive run, the options; the tables and panels are the MyRankings*.vue children.
+import { computed, onMounted, ref, shallowRef, toRaw, watch } from "vue";
+import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
-import { characterPortraitUrl, getCharacterRosterDisplayName } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
-import {
-  isSetUp,
-  rankRoster,
-  weaponOptionsFor,
-  whatIf,
-  type CharacterRank,
-  type InvestmentDelta,
-  type RosterRanking,
-  type RotationSource,
-  type WeaponOption,
-  type WhatIfResult,
-} from "./rankRoster";
-import { RANKING_ENEMY } from "./rankRoster";
-import { equippedSubstatWorth, rotationScorer, substatWeights, type EchoSubstatWorth, type SubstatWeightsResult, expectedRoll, medianRoll, tierStep } from "../substats/substatWeights";
-import { mainEchoesData } from "../../echoes/index";
+import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "./rankRoster";
+import { rankingFingerprint, readCachedRanking, writeCachedRanking } from "./rankingCache";
+import type { SortDir, SortKey } from "./rows";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
-import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
-import { accountStateOf, rankingsMineHash } from "../account/accountState";
+import { accountStateOf } from "../account/accountState";
+import MyRankingsInfo from "./MyRankingsInfo.vue";
+import MyRankingsToolbar from "./MyRankingsToolbar.vue";
+import MyRankingsKpis, { type RankingStatus } from "./MyRankingsKpis.vue";
+import MyRankingsEmpty from "./MyRankingsEmpty.vue";
+import MyRankingsCharacters from "./MyRankingsCharacters.vue";
+import MyRankingsTeams from "./MyRankingsTeams.vue";
 import "../phone-tables.css";
 
 // each page sets its own tab title (Ryan's #672)
@@ -272,296 +100,313 @@ useDocumentTitle(
   "My roster rankings — Wuthering Waves Calculator & Optimizer",
   "Your own characters and teams ranked by the calculator's engine on your real builds, with what-if sequences, weapons and substat weights.",
 );
+// `?focus=<id>&tab=substats|whatif|rotations` (from /account's drawer) opens that row on that tab once it is scored
+const route = useRoute();
+const focus = computed<{ id: string; tab: "whatif" | "substats" | "rotations" } | null>(() => {
+  const id = typeof route?.query.focus === "string" ? route.query.focus : null;
+  const tab = route?.query.tab;
+  if (!id) return null;
+  return { id, tab: tab === "whatif" || tab === "rotations" ? tab : "substats" };
+});
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const teamStore = useTeamRotationsStore();
-const { characters } = storeToRefs(characterStore) as unknown as { characters: { value: Record<string, unknown> } };
-const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: unknown[] } };
+const { characters } = storeToRefs(characterStore) as unknown as { characters: { value: Record<string, Record<string, unknown>> } };
+const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: Array<Record<string, unknown>> } };
 
-/** kept across visits so coming back to the page doesn't recompute */
-let cachedRanking: RosterRanking | null = null;
-let cachedKey = "";
+// ---- preferences (per browser)
+const PREFS_KEY = "wtplus:myRankings:prefs";
+interface Prefs {
+  investment: boolean;
+  sort: { key: SortKey; dir: SortDir };
+}
+function readPrefs(): Prefs {
+  const fallback: Prefs = { investment: true, sort: { key: "damage", dir: "desc" } };
+  try {
+    const raw = JSON.parse(localStorage.getItem(PREFS_KEY) ?? "null") as Partial<Prefs> | null;
+    const key = raw?.sort?.key;
+    return {
+      investment: typeof raw?.investment === "boolean" ? raw.investment : fallback.investment,
+      sort: key === "damage" || key === "upgrade" || key === "name" ? { key, dir: raw?.sort?.dir === "asc" ? "asc" : "desc" } : fallback.sort,
+    };
+  } catch {
+    return fallback;
+  }
+}
+const prefs = readPrefs();
+const investment = ref(prefs.investment);
+const sort = ref<Prefs["sort"]>(prefs.sort);
+watch([investment, sort], () => {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ investment: investment.value, sort: sort.value }));
+  } catch {
+    /* storage unavailable: the choice lasts this visit */
+  }
+});
 
-const ranking = ref<RosterRanking | null>(cachedRanking);
-const isRunning = ref(false);
-const investment = ref(true);
-const progress = ref({ done: 0, total: 0, label: "" });
-
-const characterCount = computed(() => Object.values((characters.value ?? {}) as Record<string, Record<string, unknown>>).filter((c) => isSetUp(c)).length);
+// ---- the data the ranking reads
+const characterCount = computed(() => Object.values(characters.value ?? {}).filter((c) => isSetUp(c)).length);
+const ownedKeys = computed(() => Object.keys(characters.value ?? {}).filter((k) => isSetUp(characters.value[k])));
 // the Account State (src/sim/account): what the `mine` cost on /rankings runs, summarised
 const account = computed(() =>
-  accountStateOf(
-    (characters.value ?? {}) as Record<string, Record<string, unknown>>,
-    { echoes: inventoryStore.echoes ?? [], equipped: inventoryStore.equipped ?? {} },
-    (teams.value ?? []) as Array<Record<string, unknown>>,
-  ),
+  accountStateOf(characters.value ?? {}, { echoes: inventoryStore.echoes ?? [], equipped: inventoryStore.equipped ?? {} }, teams.value ?? []),
 );
-const maxCharacterDamage = computed(() => Math.max(0, ...(ranking.value?.characters.map((c) => c.best?.avgDamage ?? 0) ?? [0])));
-const maxTeamDamage = computed(() => Math.max(0, ...(ranking.value?.teams.map((t) => t.avgDamage) ?? [0])));
-const errorCount = computed(() => ranking.value?.characters.reduce((n, c) => n + c.errors.length, 0) ?? 0);
+const fingerprint = (): string =>
+  rankingFingerprint({
+    characters: toRaw(characters.value ?? {}),
+    echoes: toRaw(inventoryStore.echoes ?? []),
+    teams: toRaw(teams.value ?? []),
+    investment: investment.value,
+    autoTeamBuffs: autoTeamBuffs.value,
+  });
 
-const fmt = (n: number): string => Math.round(n).toLocaleString();
-const pct = (g: number): string => `${g >= 0 ? "+" : ""}${(g * 100).toFixed(1)}%`;
-/** two decimals for the one-tier column, whose gains sit an order below a whole roll's */
-const pct2 = (g: number): string => `${g >= 0 ? "+" : ""}${(g * 100).toFixed(2)}%`;
-const deltaClass = (d: InvestmentDelta | null): string => (d ? (d.gain > 0.0005 ? "text-success" : "opacity-60") : "opacity-40");
-const gainClass = (g: number): string => (g > 0.0005 ? "text-success" : g < -0.0005 ? "text-error" : "opacity-60");
+// ---- results: the finished ranking, and the rows of a run in progress
+const ranking = shallowRef<RosterRanking | null>(null);
+const rankedInvestment = ref(investment.value);
+const restored = ref(false);
+const live = shallowRef<{ characters: CharacterRank[]; teams: TeamRank[]; investment: boolean } | null>(null);
+const isRunning = ref(false);
+const progress = ref({ done: 0, total: 0, label: "" });
+const error = ref<string | null>(null);
 
-// ---- what-if builds: the character at another sequence / weapon / refinement, scored on the same best rotation
-interface WhatIfState {
-  open: boolean;
-  sequence: number;
-  weapon: string;
-  refinement: number;
-  weapons: WeaponOption[];
-  running: boolean;
-  result: WhatIfResult | null;
-  error: string | null;
-}
-const whatIfs = ref<Record<string, WhatIfState>>({});
-const weaponLabel = (w: WeaponOption): string => `${w.rarity ? `${w.rarity}★ ` : ""}${w.name}`;
-function ownedWeapons(id: string): Set<string> {
-  const data = ((characters.value ?? {}) as Record<string, { weapons?: Record<string, unknown> }>)[id];
-  return new Set(Object.keys(data?.weapons ?? {}));
-}
-async function toggleWhatIf(c: CharacterRank): Promise<void> {
-  const current = whatIfs.value[c.id];
-  if (current) {
-    current.open = !current.open;
-    return;
-  }
-  whatIfs.value = { ...whatIfs.value, [c.id]: { open: true, sequence: c.sequence, weapon: c.weapon ?? "", refinement: c.refinement, weapons: [], running: false, result: null, error: null } };
-  const state = whatIfs.value[c.id];
-  let options: WeaponOption[] = [];
-  try {
-    options = await weaponOptionsFor(c.id);
-  } catch {
-    /* no registry list: the equipped weapon alone */
-  }
-  if (c.weapon && !options.some((w) => w.key === c.weapon)) options.unshift({ key: c.weapon, name: c.weapon, rarity: 0 });
-  state.weapons = options;
-}
-async function runWhatIf(c: CharacterRank): Promise<void> {
-  const state = whatIfs.value[c.id];
-  if (!state || !c.bestRotation || state.running) return;
-  state.running = true;
-  state.error = null;
-  try {
-    state.result = await whatIf(
-      c.id,
-      JSON.parse(JSON.stringify(characters.value ?? {})),
-      JSON.parse(JSON.stringify(inventoryStore.echoes ?? [])),
-      c.bestRotation,
-      { sequence: state.sequence, weapon: state.weapon || undefined, refinement: state.refinement },
-    );
-  } catch (error) {
-    state.error = error instanceof Error ? error.message : String(error);
-  } finally {
-    state.running = false;
-  }
-}
-const sourceLabel = (s: RotationSource): string => (s === "yours" ? "your rotation" : s === "curated" ? "curated preset" : "wuwa_calc");
+const shown = computed(() => live.value ?? ranking.value);
+const shownInvestment = computed(() => (live.value ? live.value.investment : rankedInvestment.value));
+const pendingCharacters = computed(() => (isRunning.value ? Math.max(0, Math.min(8, characterCount.value - (live.value?.characters.length ?? 0))) : 0));
+const pendingTeams = computed(() => (isRunning.value && !(live.value?.teams.length ?? 0) ? 3 : 0));
+const errorCount = computed(() => shown.value?.characters.reduce((n, c) => n + c.errors.length, 0) ?? 0);
+const rotationsScored = computed(() => ranking.value?.characters.reduce((n, c) => n + c.rotationsEvaluated, 0) ?? 0);
+const sortLabel = computed(() => {
+  const by = sort.value.key === "damage" ? "damage" : sort.value.key === "upgrade" ? "best upgrade" : "name";
+  return `sorted by ${by}${sort.value.dir === "asc" ? " ↑" : " ↓"}`;
+});
+const status = computed<RankingStatus>(() => ({
+  state: isRunning.value ? "scoring" : ranking.value ? "live" : "idle",
+  done: progress.value.done,
+  total: progress.value.total,
+  label: progress.value.label,
+  computedAt: ranking.value?.computedAt ?? null,
+  restored: restored.value,
+}));
 
-// ---- substat weights: one more roll of each substat on the build, scored on the same best rotation (src/sim/substats)
-interface SubstatsState {
-  open: boolean;
-  running: boolean;
-  result: SubstatWeightsResult | null;
-  echoes: EchoSubstatWorth[] | null;
-  error: string | null;
-}
-const substats = ref<Record<string, SubstatsState>>({});
-const rollLabel = (value: number, flat: boolean): string => (flat ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
-const echoLabel = (key: string | null): string => (key ? ((mainEchoesData as Record<string, { name?: string }>)[key]?.name ?? key) : "echo");
-const lookFor = (r: SubstatWeightsResult): string => r.weights.filter((w) => w.weight >= 0.5).map((w) => w.label).join(", ") || "nothing moves this number";
-const erReadsZero = (r: SubstatWeightsResult): boolean => Math.abs(r.weights.find((w) => w.key === "EnergyRegen")?.gain ?? 0) < 0.0005;
-const echoesWorstFirst = (list: EchoSubstatWorth[]): EchoSubstatWorth[] => [...list].sort((a, b) => a.worth - b.worth);
-async function toggleSubstats(c: CharacterRank): Promise<void> {
-  const current = substats.value[c.id];
-  if (current) {
-    current.open = !current.open;
-    return;
-  }
-  substats.value = { ...substats.value, [c.id]: { open: true, running: true, result: null, echoes: null, error: null } };
-  const state = substats.value[c.id];
-  if (!c.bestRotation) {
-    state.running = false;
-    state.error = "no rotation to score";
-    return;
-  }
-  try {
-    const chars = JSON.parse(JSON.stringify(characters.value ?? {}));
-    const echoes = JSON.parse(JSON.stringify(inventoryStore.echoes ?? []));
-    const score = rotationScorer(c.id, c.bestRotation, RANKING_ENEMY);
-    const baseline = await score(chars, echoes);
-    state.result = await substatWeights(c.id, chars, echoes, score, { baseline });
-    state.echoes = await equippedSubstatWorth(c.id, chars, echoes, score, { baseline });
-  } catch (error) {
-    state.error = error instanceof Error ? error.message : String(error);
-  } finally {
-    state.running = false;
-  }
-}
-
-function fingerprint(): string {
-  return `${JSON.stringify(characters.value ?? {}).length}:${(inventoryStore.echoes ?? []).length}:${JSON.stringify(teams.value ?? []).length}:${investment.value}:${autoTeamBuffs.value}`;
-}
+const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(toRaw(value) ?? null)) as T;
+let rerun = false;
 
 async function compute(): Promise<void> {
-  if (isRunning.value) return;
+  if (isRunning.value) {
+    rerun = true; // an option changed mid-run: run again with it when this one ends
+    return;
+  }
   isRunning.value = true;
+  error.value = null;
+  const key = fingerprint();
+  const withInvestment = investment.value;
+  live.value = { characters: [], teams: [], investment: withInvestment };
   progress.value = { done: 0, total: 0, label: "starting" };
   try {
-    const result = await rankRoster(
-      JSON.parse(JSON.stringify(characters.value ?? {})),
-      JSON.parse(JSON.stringify(inventoryStore.echoes ?? [])),
-      JSON.parse(JSON.stringify(teams.value ?? [])),
-      {
-        investment: investment.value,
-        autoTeamBuffs: autoTeamBuffs.value,
-        onProgress: (done, total, label) => {
-          progress.value = { done, total, label };
-        },
+    const result = await rankRoster(clone(characters.value ?? {}), clone(inventoryStore.echoes ?? []), clone(teams.value ?? []), {
+      investment: withInvestment,
+      autoTeamBuffs: autoTeamBuffs.value,
+      onProgress: (done, total, label, finished) => {
+        progress.value = { done, total, label };
+        const run = live.value;
+        if (!run || !finished) return;
+        // hand each scored row to the table as it lands (the same objects as the final result's)
+        if (finished.kind === "character") live.value = { ...run, characters: [...run.characters, finished.rank] };
+        else live.value = { ...run, teams: [...run.teams, finished.rank] };
       },
-    );
+    });
     ranking.value = result;
-    cachedRanking = result;
-    cachedKey = fingerprint();
-    substats.value = {}; // scored on the previous data
-
+    rankedInvestment.value = withInvestment;
+    restored.value = false;
+    writeCachedRanking(key, result);
+  } catch (err) {
+    error.value = `Ranking failed: ${err instanceof Error ? err.message : String(err)}`;
   } finally {
+    live.value = null;
     isRunning.value = false;
+    if (rerun) {
+      rerun = false;
+      void refresh();
+    }
   }
 }
 
-onMounted(() => {
-  if (characterCount.value && (!cachedRanking || cachedKey !== fingerprint())) void compute();
-});
+/** Show the cached ranking for the data as it is now, else score it. */
+function refresh(): void {
+  if (!characterCount.value) return;
+  const cached = readCachedRanking(fingerprint());
+  if (cached) {
+    ranking.value = cached;
+    rankedInvestment.value = investment.value;
+    restored.value = true;
+    return;
+  }
+  void compute();
+}
+
+onMounted(refresh);
+watch([investment, autoTeamBuffs], refresh);
 </script>
 
-<style scoped lang="scss">
-/* the substat weights panel: a grid, not a nested table (the phone card rules turn every td into a block);
-   each row is a `display: contents` wrapper so a phone can turn it into a wrapping flex line instead */
-.subs__grid {
-  display: grid;
-  grid-template-columns: max-content max-content max-content max-content max-content minmax(4rem, 1fr);
-  column-gap: 1rem;
-  row-gap: 0.15rem;
+<style scoped>
+.my-rankings {
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 2.5rem;
+}
+.mr-head {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  max-width: 60rem;
+  gap: 0.6rem 1rem;
+  margin-bottom: 1rem;
 }
-.subs__row,
-.subs__more {
-  display: contents;
+.mr-head__title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
-.subs__help {
-  max-width: 60rem;
+.mr-h1 {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
 }
-.subs__help-list {
-  list-style: disc;
-  padding-left: 1.1rem;
-  margin-top: 0.25rem;
-  display: grid;
-  row-gap: 0.15rem;
+.mr-pages {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 0.6rem;
+  background: oklch(var(--b2));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);
 }
-.subs__head {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.55;
+.mr-pages__item {
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: oklch(var(--bc) / 0.6);
+  white-space: nowrap;
 }
-.subs__bar {
-  height: 0.5rem;
-  border-radius: 9999px;
-  background: oklch(var(--bc) / 0.1);
-  overflow: hidden;
+a.mr-pages__item:hover {
+  color: oklch(var(--bc));
 }
-.subs__fill {
-  height: 100%;
-  border-radius: 9999px;
+.mr-pages__item--on {
+  color: oklch(var(--pc));
   background: oklch(var(--p));
 }
+.mr-head__tools {
+  margin-left: auto;
+}
+.mr-head__sub {
+  flex-basis: 100%;
+  font-size: 0.8rem;
+  color: oklch(var(--bc) / 0.55);
+}
+.mr-section {
+  margin-top: 1.5rem;
+}
+.mr-progress {
+  height: 2px;
+  margin-bottom: -2px;
+  border-radius: 9999px;
+  background: oklch(var(--bc) / 0.06);
+  overflow: hidden;
+}
+.mr-progress > span {
+  display: block;
+  height: 100%;
+  background: oklch(var(--in));
+  transition: width 0.2s ease;
+}
+.mr-foot {
+  margin-top: 1.25rem;
+  font-size: 0.72rem;
+  color: oklch(var(--bc) / 0.45);
+}
 @media (max-width: 767px) {
-  /* one wrapping line per substat: name · expected roll → gain · bar; the median, best and one-tier rolls underneath in small print */
-  .subs__grid {
-    display: block;
+  .my-rankings {
+    padding: 0.9rem 0.75rem 2rem;
   }
-  .subs__row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 0.6rem;
-    padding: 0.15rem 0;
+  .mr-head {
+    gap: 0.5rem 0.6rem;
+    margin-bottom: 0.75rem;
   }
-  .subs__row--head {
+  .mr-head__title {
+    flex-basis: 100%;
+  }
+  .mr-h1 {
+    font-size: 1.25rem;
+  }
+  .mr-pages__item {
+    padding: 0.3rem 0.55rem;
+  }
+  .mr-head__sub {
     display: none;
   }
-  .subs__gain {
-    font-size: 0.8rem;
-  }
-  .subs__bar {
-    flex: 1 1 4rem;
-    order: 1;
-  }
-  .subs__more {
-    order: 2;
-    flex-basis: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 0.75rem;
-  }
-  .subs__gain--more {
-    font-size: 0.7rem;
-    opacity: 0.85;
+  .mr-section {
+    margin-top: 1.1rem;
   }
 }
+</style>
 
-/* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
-@media (max-width: 767px) {
-  .table--cards {
-    .cell--rank {
-      order: 0;
-      min-width: 1.25rem;
-    }
-    .cell--who {
-      order: 0;
-      flex: 1 1 0;
-      min-width: 0;
-    }
-    .cell--dmg {
-      order: 0;
-      margin-left: auto;
-    }
-    .cell--weapon,
-    .cell--best {
-      order: 1;
-      flex-basis: 100%;
-      text-align: left;
-    }
-    .cell--bar {
-      order: 2;
-      flex-basis: 100%;
-      width: auto;
-    }
-    .cell--delta {
-      order: 3;
-      text-align: left;
-    }
-    .cell--actions {
-      order: 4;
-      flex-basis: 100%;
-      display: flex;
-      gap: 0.25rem;
-    }
-    .row--panel {
-      padding: 0;
-      border-bottom: 0;
-    }
-    .cell--panel {
-      flex-basis: 100%;
-      min-width: 0;
-      padding: 0.5rem;
-    }
-  }
+<style>
+/* shared by the /my-rankings children (section heads, counts, segmented filters) */
+.my-rankings .mr-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.4rem;
+}
+.my-rankings .mr-section-head__meta {
+  font-size: 0.72rem;
+  color: oklch(var(--bc) / 0.45);
+}
+.my-rankings .mr-h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.my-rankings .mr-count {
+  padding: 0.05rem 0.45rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: oklch(var(--bc) / 0.6);
+  background: oklch(var(--bc) / 0.08);
+}
+.my-rankings .mr-note {
+  font-size: 0.85rem;
+  color: oklch(var(--bc) / 0.65);
+}
+.my-rankings .mr-seg {
+  display: inline-flex;
+  padding: 0.15rem;
+  border-radius: 0.55rem;
+  background: oklch(var(--b2));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);
+}
+.my-rankings .mr-seg__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: oklch(var(--bc) / 0.6);
+}
+.my-rankings .mr-seg__btn--on {
+  color: oklch(var(--bc));
+  background: oklch(var(--b1));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+}
+.my-rankings .mr-seg__n {
+  font-size: 0.65rem;
+  opacity: 0.6;
 }
 </style>

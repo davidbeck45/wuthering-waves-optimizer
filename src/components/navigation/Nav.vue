@@ -90,16 +90,8 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/teams.webp"
             class="size-8" />
         </RouterLink>
-        <RouterLink
-          to="/rankings"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[40px] sm:basis-[48px] mr-1 sm:mr-2 relative"
-          :class="{ 'btn-active': curPage === 'rankings' }"
-          title="Team Rankings (wuwa_calc)"
-          data-test-nav-rankings>
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
-          </svg>
-        </RouterLink>
+        <!-- Wuthering Tools+: the rankings hub, a menu of every plus page (src/sim/nav/PlusNavMenu.vue) -->
+        <PlusNavMenu :cur-page="curPage" />
       </div>
       <div class="navbar-center hidden lg:flex">
         <slot></slot>
@@ -285,6 +277,7 @@
 import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
+import PlusNavMenu from "../../sim/nav/PlusNavMenu.vue"; // Wuthering Tools+: rankings hub
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";

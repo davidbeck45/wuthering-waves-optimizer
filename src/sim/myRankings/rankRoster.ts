@@ -10,6 +10,7 @@ import { resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/b
 import { teamRotationPresets } from "../../teamRotations/presets";
 import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets } from "../presets";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
+import { characterDisplayName, weaponDisplayName } from "../display/names";
 
 export type RotationSource = "yours" | "curated" | "wuwa_calc";
 
@@ -66,9 +67,13 @@ export interface RosterRanking {
   computedAt: string;
 }
 
+/** What `onProgress` hands over as each character / team finishes, so a page can draw rows as they are scored. */
+export type RankProgressItem = { kind: "character"; rank: CharacterRank } | { kind: "team"; rank: TeamRank };
+
 export interface RankOptions {
+  /** called before each item with what is about to be scored, and again after it with the finished rank */
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
-  onProgress?: (done: number, total: number, label: string) => void;
+  onProgress?: (done: number, total: number, label: string, finished?: RankProgressItem) => void;
   /** also estimate the next sequence node and R5 for each character's best rotation (slower) */
   investment?: boolean;
   /** keep the UI responsive between calculations */
@@ -150,8 +155,9 @@ export async function scoreRotation(rotation: CharacterRotationInput, id: string
   };
 }
 
-/** A copy of the character with the next sequence node's chains enabled (first entry of a node when it has variants). */
-async function withNextSequence(id: string, characterData: Record<string, any>, sequence: number): Promise<Record<string, any> | null> {
+/** A copy of the character with the next sequence node's chains enabled (first entry of a node when it has variants);
+ *  null at S6 or when the kit lists no entry for the next node. */
+export async function withNextSequence(id: string, characterData: Record<string, any>, sequence: number): Promise<Record<string, any> | null> {
   if (sequence >= 6) return null;
   const chosen = (await getCharByName(id)) as Record<string, any> | null;
   const defs: any[] = chosen?.resonanceChains ?? [];
@@ -242,14 +248,73 @@ export async function whatIf(id: string, characters: Record<string, any>, invent
   if (options.sequence !== undefined && options.sequence !== sequenceOf(data)) hypo = await withSequence(id, hypo, options.sequence);
   if (options.weapon !== undefined || options.refinement !== undefined) hypo = withWeapon(hypo, options.weapon ?? null, options.refinement);
   const scored = await scoreRotation(rotation, id, { ...characters, [id]: hypo }, RANKING_ENEMY, inventoryEchoes);
-  const label = `S${options.sequence ?? sequenceOf(data)} · ${hypo.weapon ?? "no weapon"} R${refinementOf(hypo)}`;
+  const label = `S${options.sequence ?? sequenceOf(data)} · ${hypo.weapon ? weaponDisplayName(hypo.weapon) : "no weapon"} R${refinementOf(hypo)}`;
   return { label, avgDamage: scored.avgDamage, base: base.avgDamage, gain: base.avgDamage > 0 ? scored.avgDamage / base.avgDamage - 1 : 0, rotation: rotation.name };
 }
 
-function withRefineFive(characterData: Record<string, any>): Record<string, any> | null {
+export function withRefineFive(characterData: Record<string, any>): Record<string, any> | null {
   const weapon = characterData.weapon;
   if (!weapon || refinementOf(characterData) >= 5) return null;
   return { ...characterData, weapons: { ...(characterData.weapons ?? {}), [weapon]: { ...(characterData.weapons?.[weapon] ?? {}), refinement: "5" } } };
+}
+
+export interface TeamCandidate {
+  /** your team's id, or `curated:<name>` / `wuwa_calc:<name>` for a preset — the `TeamRank.id` it ranks under */
+  id: string;
+  name: string;
+  source: RotationSource;
+  team: { name: string; characterIds: string[]; actions: TeamRotationAction[]; duration: number | string | null; handoffs?: Record<string, string[]> | null; buildIds?: Array<string | null> };
+}
+
+/** Every team the roster can be scored on: your saved teams with actions, then the curated and wuwa_calc team presets,
+ *  each kept when its three members exist in your data (members without a weapon are flagged by the scorer, not excluded).
+ *  `skipped` counts your own teams that could not run. */
+export async function teamCandidatesOf(characters: Record<string, any>, teams: any[]): Promise<{ candidates: TeamCandidate[]; skipped: number }> {
+  const wuwaTeams = await loadWuwaCalcTeamPresets();
+  const candidates: TeamCandidate[] = [];
+  let skipped = 0;
+  const owned = (cids: Array<string | null>): cids is string[] => cids.length === 3 && cids.every((c) => !!c && !!characters[c]);
+  for (const t of teams ?? []) {
+    if (!t?.actions?.length || !owned(t.characterIds ?? [])) { skipped += 1; continue; }
+    candidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
+  }
+  for (const [source, list] of [["curated", teamRotationPresets], ["wuwa_calc", wuwaTeams]] as const) {
+    for (const p of list) {
+      const actions = (p.data.actions ?? []) as TeamRotationAction[];
+      if (!actions.length || !owned(p.data.characterIds)) continue;
+      candidates.push({ id: `${source}:${p.name}`, name: p.name, source, team: { name: p.name, characterIds: p.data.characterIds as string[], actions, duration: p.data.duration ?? null, handoffs: (p.data as { handoffs?: Record<string, string[]> }).handoffs ?? null } });
+    }
+  }
+  return { candidates, skipped };
+}
+
+/** One team scored the way the rankings score it: builds and team buffs from its real members (`autoTeamBuffs`), then
+ *  `calcTeamRotationDamage` against `enemy`. Throws when the engine cannot run the team. */
+export async function scoreTeamCandidate(
+  c: TeamCandidate,
+  characters: Record<string, any>,
+  inventoryEchoes: any[],
+  options: { autoTeamBuffs?: boolean; enemy?: TeamEnemyConfig } = {},
+): Promise<TeamRank> {
+  const enemy = options.enemy ?? RANKING_ENEMY;
+  const resolution = await resolveTeamCharacters(c.team, characters, inventoryEchoes, { auto: options.autoTeamBuffs ?? true, enemyConfig: enemy });
+  const result = await calcTeamRotationDamage(
+    { ...c.team, buildIds: resolution.auto ? resolution.buildIds : undefined },
+    resolution.characters,
+    enemy,
+    inventoryEchoes,
+  );
+  const seconds = Number(c.team.duration);
+  return {
+    id: c.id,
+    name: c.name,
+    source: c.source,
+    characterIds: c.team.characterIds,
+    avgDamage: result.total.avgDamage ?? 0,
+    perSlot: c.team.characterIds.map((cid) => result.perCharacter[cid]?.damageAggregation?.avgDamage ?? 0),
+    dps: Number.isFinite(seconds) && seconds > 0 ? result.dps?.avg ?? null : null,
+    unarmed: c.team.characterIds.filter((cid) => !isSetUp(characters[cid])),
+  };
 }
 
 export async function rankRoster(
@@ -260,22 +325,8 @@ export async function rankRoster(
 ): Promise<RosterRanking> {
   const enemy = RANKING_ENEMY;
   const ids = Object.keys(characters ?? {}).filter((id) => isSetUp(characters[id])).sort();
-  const wuwaTeams = await loadWuwaCalcTeamPresets();
-  const teamCandidates: Array<{ id: string; name: string; source: RotationSource; team: { name: string; characterIds: string[]; actions: TeamRotationAction[]; duration: number | string | null; handoffs?: Record<string, string[]> | null } }> = [];
-  let teamsSkipped = 0;
-  // a team ranks when its three members exist in your data; members without a weapon are flagged, not excluded
-  const owned = (cids: Array<string | null>): cids is string[] => cids.length === 3 && cids.every((c) => !!c && !!characters[c]);
-  for (const t of teams ?? []) {
-    if (!t?.actions?.length || !owned(t.characterIds ?? [])) { teamsSkipped += 1; continue; }
-    teamCandidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
-  }
-  for (const [source, list] of [["curated", teamRotationPresets], ["wuwa_calc", wuwaTeams]] as const) {
-    for (const p of list) {
-      const actions = (p.data.actions ?? []) as TeamRotationAction[];
-      if (!actions.length || !owned(p.data.characterIds)) continue;
-      teamCandidates.push({ id: `${source}:${p.name}`, name: p.name, source, team: { name: p.name, characterIds: p.data.characterIds as string[], actions, duration: p.data.duration ?? null, handoffs: (p.data as { handoffs?: Record<string, string[]> }).handoffs ?? null } });
-    }
-  }
+  const { candidates: teamCandidates, skipped } = await teamCandidatesOf(characters, teams);
+  let teamsSkipped = skipped;
   const total = ids.length + teamCandidates.length;
   let done = 0;
   const progress = (label: string): void => options.onProgress?.(done, total, label);
@@ -285,7 +336,9 @@ export async function rankRoster(
     const data = characters[id] ?? {};
     let name: string;
     try {
-      name = ((await getCharByName(id)) as any)?.basic?.name ?? id;
+      // the roster's label ("Rover Aero (Female)"), never the kit's internal name ("RoverAeroFemale" for both genders)
+      const kit = (await getCharByName(id)) as any;
+      name = characterDisplayName(id) || kit?.basic?.name || id;
     } catch {
       done += 1;
       continue; // not a character this app knows
@@ -342,6 +395,7 @@ export async function rankRoster(
     }
     characterRanks.push(rank);
     done += 1;
+    options.onProgress?.(done, total, name, { kind: "character", rank });
     if (options.yieldToUi !== false) await yieldNow();
   }
   characterRanks.sort((a, b) => (b.best?.avgDamage ?? -1) - (a.best?.avgDamage ?? -1));
@@ -349,29 +403,15 @@ export async function rankRoster(
   const teamRanks: TeamRank[] = [];
   for (const c of teamCandidates) {
     progress(c.name);
+    let teamRank: TeamRank | null = null;
     try {
-      const resolution = await resolveTeamCharacters(c.team, characters, inventoryEchoes, { auto: options.autoTeamBuffs ?? true, enemyConfig: enemy });
-      const result = await calcTeamRotationDamage(
-        { ...c.team, buildIds: resolution.auto ? resolution.buildIds : undefined },
-        resolution.characters,
-        enemy,
-        inventoryEchoes,
-      );
-      const seconds = Number(c.team.duration);
-      teamRanks.push({
-        id: c.id,
-        name: c.name,
-        source: c.source,
-        characterIds: c.team.characterIds,
-        avgDamage: result.total.avgDamage ?? 0,
-        perSlot: c.team.characterIds.map((cid) => result.perCharacter[cid]?.damageAggregation?.avgDamage ?? 0),
-        dps: Number.isFinite(seconds) && seconds > 0 ? result.dps?.avg ?? null : null,
-        unarmed: c.team.characterIds.filter((cid) => !isSetUp(characters[cid])),
-      });
+      teamRank = await scoreTeamCandidate(c, characters, inventoryEchoes, { autoTeamBuffs: options.autoTeamBuffs, enemy });
+      teamRanks.push(teamRank);
     } catch {
       teamsSkipped += 1;
     }
     done += 1;
+    if (teamRank) options.onProgress?.(done, total, c.name, { kind: "team", rank: teamRank });
     if (options.yieldToUi !== false) await yieldNow();
   }
   teamRanks.sort((a, b) => b.avgDamage - a.avgDamage);

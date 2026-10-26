@@ -30,7 +30,7 @@ describe("phone layout", () => {
   it("keeps every page inside the viewport and the nav icons clear of the utility menu", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
-    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings"]) {
+    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account"]) {
       cy.visit(route);
       cy.get(".navbar").should("be.visible");
       expectNavFits(route);
@@ -59,7 +59,8 @@ describe("phone layout", () => {
     cy.get('[data-test-my-rankings-row="Cartethyia"]').should("have.css", "display", "flex");
     cy.get('[data-test-my-rankings-row="Cartethyia"] [data-label="Weapon"]').should("be.visible");
     expectNoHorizontalScroll("/my-rankings");
-    // the what-if panel row still opens under its card
+    // the row opens into its tabs under its card, What if first
+    cy.get('[data-test-my-rankings-expand="Cartethyia"]').click();
     cy.get('[data-test-my-rankings-whatif="Cartethyia"]').click();
     cy.get('[data-test-my-rankings-whatif-panel="Cartethyia"]').should("be.visible");
     expectNoHorizontalScroll("/my-rankings (what-if open)");

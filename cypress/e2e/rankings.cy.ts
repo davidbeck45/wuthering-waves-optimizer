@@ -46,7 +46,9 @@ describe("Team Rankings (wuwa_calc)", () => {
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get("[data-test-nav-convene]").click();
     cy.location("pathname").should("eq", "/convene");
+    // the nav's rankings icon opens the plus-page hub (src/sim/nav/PlusNavMenu.vue)
     cy.get("[data-test-nav-rankings]").click();
+    cy.get('[data-test-nav-plus-page="/rankings"]').click();
     cy.location("pathname").should("eq", "/rankings");
     cy.get(".skittle-root #app .gotodetail", { timeout: 60000 }).should("have.length.greaterThan", 10);
   });
