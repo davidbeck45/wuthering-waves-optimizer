@@ -2,7 +2,7 @@
 // Cartethyia optimizer fixture: full build, echoes, one saved rotation).
 import { describe, expect, it } from "vitest";
 import account from "./__fixtures__/cartethyiaAccount.json";
-import { isSetUp, nodeOf, rankRoster, refinementOf, sequenceOf, weaponOptionsFor, whatIf, withSequence, withWeapon } from "./rankRoster";
+import { isSetUp, nodeOf, rankRoster, refinementOf, sequenceOf, weaponOptionsFor, whatIf, withSequence, withWeapon, type RankProgressItem } from "./rankRoster";
 
 describe("rank roster", () => {
   it("reads sequence and refinement off the stored character", () => {
@@ -44,6 +44,20 @@ describe("rank roster", () => {
     expect(c.bestRotation?.name).toBe(c.best?.name);
   });
 
+  it("hands each finished character to onProgress and names Rover forms the way the roster does", async () => {
+    const finished: RankProgressItem[] = [];
+    const ranking = await rankRoster({ ...account.characters, RoverAeroMale: { weapon: "BloodpactsPledge" } }, account.echoes, [], {
+      investment: false,
+      yieldToUi: false,
+      onProgress: (_done, _total, _label, item) => {
+        if (item) finished.push(item);
+      },
+    });
+    expect(finished.map((f) => f.kind)).toEqual(["character", "character"]);
+    expect(finished.map((f) => f.rank)).toEqual(expect.arrayContaining(ranking.characters));
+    expect(ranking.characters.find((c) => c.id === "RoverAeroMale")?.name).toBe("Rover Aero (Male)"); // was the kit's "RoverAeroFemale"
+  });
+
   it("builds what-if copies: a sequence level, a weapon and a refinement", async () => {
     const c = account.characters.Cartethyia as Record<string, unknown>;
     const s6 = await withSequence("Cartethyia", c, 6);
@@ -71,6 +85,7 @@ describe("rank roster", () => {
     expect(same.gain).toBeCloseTo(0, 6);
     const better = await whatIf("Cartethyia", account.characters, account.echoes, c.bestRotation!, { sequence: 6, refinement: 5 });
     expect(better.label).toMatch(/^S6 · .* R5$/);
+    expect(better.label).not.toMatch(/[a-z][A-Z]/); // the weapon's display name, not its registry key
     expect(better.base).toBeCloseTo(c.best!.avgDamage, 0);
     expect(better.avgDamage).toBeGreaterThan(same.avgDamage);
     expect(better.gain).toBeGreaterThan(0);

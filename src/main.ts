@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: "My account", the account dashboard (src/sim/account/AccountView.vue)
+  { path: "/account", component: () => import("./sim/account/AccountView.vue"), name: "AccountView" },
 ];
 
 const router = createRouter({
