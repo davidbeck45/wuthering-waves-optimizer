@@ -103,7 +103,10 @@ describe("wuwa_calc rankings on a phone", () => {
     cy.get("[data-test-rankings-filters]", { timeout: 60000 }).should("be.visible");
     cy.get(".skittle-root .tcside").should("not.be.visible");
     cy.get("[data-test-rankings-filters]").click();
-    cy.get(".skittle-root .tcside").should("be.visible").and("contain.text", "Team Cost");
+    // his Team Cost box is the account bar's tier control now (hidden, still in the DOM); the sheet keeps his search
+    cy.get(".skittle-root .tcside").should("be.visible");
+    cy.get(".skittle-root .tcside #optionSearch").should("be.visible");
+    cy.get(".skittle-root .tcside #cost").should("exist").and("not.be.visible");
     cy.get("[data-test-rankings-filters-close]").click({ force: true });
     cy.get(".skittle-root .tcside").should("not.be.visible");
     // desktop keeps the aside beside the table and no toolbar
@@ -177,16 +180,26 @@ describe("wuwa_calc rankings: My account tier (Wuthering Tools+)", () => {
   it("saves the current filters as a named view and applies it again", () => {
     cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // Save and Forget live in one Views menu
+    cy.get("[data-test-rankings-views]").click();
+    cy.get("[data-test-rankings-view]").should("not.exist");
     cy.get("[data-test-rankings-view-new]").click();
     cy.get("[data-test-rankings-view-name]").type("Cartethyia at mine");
     cy.get("[data-test-rankings-view-save]").click();
-    cy.get("[data-test-rankings-views]").should("have.value", "Cartethyia at mine");
+    cy.get("[data-test-rankings-views-current]").should("have.text", "Cartethyia at mine");
+    // a press outside the menu closes it
     cy.get("[data-test-rankings-riley]").click();
+    cy.get("[data-test-rankings-pop]").should("not.exist");
     cy.location("hash", { timeout: 60000 }).should("not.include", "tc=mine");
-    cy.get("[data-test-rankings-views]").select("Cartethyia at mine");
+    cy.get("[data-test-rankings-views-current]").should("have.text", "Views");
+    cy.get("[data-test-rankings-views]").click();
+    cy.get('[data-test-rankings-view="Cartethyia at mine"]').click();
     cy.location("hash", { timeout: 60000 }).should("include", "tc=mine").and("include", "own=0").and("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-views-current]").should("have.text", "Cartethyia at mine");
+    cy.get("[data-test-rankings-views]").click();
     cy.get("[data-test-rankings-view-forget]").click();
-    cy.get("[data-test-rankings-views] option").should("have.length", 1);
+    cy.get("[data-test-rankings-view]").should("not.exist");
+    cy.window().should((win) => expect(win.localStorage.getItem("wtplus:rankings:views")).to.eq("[]"));
   });
 });
 
@@ -248,5 +261,303 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     cy.get(".toast .alert", { timeout: 20000 }).should("not.exist");
     cy.get("[data-test-rankings-sync-close]").click();
     cy.get("[data-test-rankings-sync-report]").should("not.exist");
+  });
+});
+
+// Wuthering Tools+ (2026-10-12): one state control (Riley's tiers in the bar), Main DPS / With / Without
+// chips over his r= / x= hash, the Compare column as % of the top row, the compact bar on a phone.
+describe("wuwa_calc rankings: the account bar's tier, chips and Compare column (Wuthering Tools+)", () => {
+  const rows = ".skittle-root .tgrid .trow:not(.thead):not(.tghost)";
+
+  it("sets Riley's tier from the bar, with his own Team Cost box hidden", () => {
+    cy.visit("/rankings#r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(rows, { timeout: 60000 }).should("have.length.greaterThan", 0);
+    cy.get(".skittle-root .tcopt:has(#cost)").should("not.be.visible");
+    cy.get(".skittle-root .tcopt.note[data-note='readme']").should("not.be.visible");
+    cy.get("[data-test-rankings-tier]").should("have.value", "").select("s6r5");
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=s6r5").and("include", "r=Cartethyia");
+    cy.get(".skittle-root #cost", { timeout: 60000 }).should("have.value", "s6r5");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S6R5");
+    // My account and back: Riley's tiers returns to the tier last picked
+    cy.get("[data-test-rankings-mine]").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=mine");
+    cy.get("[data-test-rankings-tier]").should("not.exist");
+    cy.get("[data-test-rankings-riley]").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=s6r5");
+    // the neutral "Beta · how to read" chip replaces his README box
+    cy.get("[data-test-rankings-beta]").click();
+    cy.get("[data-test-rankings-howto]").should("be.visible").and("contain.text", "% of top").and("contain.text", "Riley31415");
+  });
+
+  it("reads the Compare column as each team's share of the top row, or of a pinned row", () => {
+    cy.visit("/rankings#r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .trow.thead .c.huehead", { timeout: 60000 }).should("have.text", "% of top");
+    cy.get(`${rows} .c.baseline`).first().should("have.text", "100.0%").and("have.class", "wt-pct");
+    cy.get(`${rows} .c.baseline`).then(($cells) => {
+      const shares = [...$cells].map((c) => parseFloat((c.textContent ?? "").replace(/,/g, "")));
+      expect(shares.every((v) => v > 0 && v <= 100)).to.eq(true);
+      // the column runs down with the table (Team Avg DPR, best first)
+      expect(shares[shares.length - 1]).to.be.lessThan(shares[0]!);
+    });
+    // pinning the last row measures every team against it; clicking it again goes back to the top row
+    cy.get(`${rows} .c.baseline`).last().click({ scrollBehavior: false });
+    cy.get(".skittle-root .trow.thead .c.huehead").should("have.text", "% of pinned");
+    cy.get(`${rows} .c.baseline`).first().invoke("text").then((t) => expect(parseFloat(t.replace(/,/g, ""))).to.be.greaterThan(100));
+    cy.get(`${rows}.isbaseline .c.baseline`).should("have.text", "100.0%").click({ scrollBehavior: false });
+    cy.get(".skittle-root .trow.thead .c.huehead").should("have.text", "% of top");
+  });
+
+  it("filters by Main DPS / With / Without chips written to Riley's r= / x= hash, the account's resonators first", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(rows, { timeout: 60000 }).should("have.length.greaterThan", 10);
+    // Main DPS: the picker lists the account's resonators ahead of the ones it lacks (Cartethyia is set up, S2)
+    cy.get("[data-test-rankings-chip-add='main']").click();
+    cy.get("[data-test-rankings-pop='pick-main'] [data-test-rankings-chip-option]").then(($opts) => {
+      const names = [...$opts].map((o) => o.getAttribute("data-test-rankings-chip-option"));
+      expect(names.indexOf("Cartethyia")).to.be.greaterThan(-1);
+      // Phrolova leads teams and is not on this account
+      expect(names.indexOf("Cartethyia")).to.be.lessThan(names.indexOf("Phrolova"));
+    });
+    cy.get("[data-test-rankings-chip-option='Cartethyia']").should("contain.text", "S2");
+    cy.get("[data-test-rankings-chip-search]").type("carte");
+    cy.get("[data-test-rankings-chip-option]").should("have.length", 1);
+    cy.get("[data-test-rankings-chip-option='Cartethyia']").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-chip-group='main'] [data-test-rankings-chip='Cartethyia']").should("exist");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // retried until his redraw lands: every row fields her
+    cy.get(rows, { timeout: 60000 }).should(($rows) => {
+      expect($rows.length).to.be.greaterThan(0);
+      expect([...$rows].every((r) => (r.textContent ?? "").includes("Cartethyia")), "every row fields Cartethyia").to.eq(true);
+    });
+    // Without: hides every team fielding Ciaccona (x=); his own resonator bubbles stay hidden behind the bar's
+    cy.get("body").type("{esc}");
+    cy.get("[data-test-rankings-chip-add='without']").click();
+    cy.get("[data-test-rankings-chip-search]").type("Ciaccona");
+    cy.get("[data-test-rankings-chip-option='Ciaccona']").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "x=Ciaccona").and("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-chip-group='without'] [data-test-rankings-chip='Ciaccona']").should("exist");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(rows, { timeout: 60000 }).should(($rows) => {
+      expect($rows.length).to.be.greaterThan(0);
+      expect([...$rows].some((r) => (r.textContent ?? "").includes("Ciaccona")), "no row fields Ciaccona").to.eq(false);
+    });
+    cy.get(".skittle-root .tcchips .rchip[data-resonator='Ciaccona']").should("not.be.visible");
+    // a chip comes off on a click; Clear takes the rest
+    cy.get("[data-test-rankings-chip='Ciaccona']").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "x=").and("include", "r=Cartethyia");
+    cy.get("[data-test-rankings-chip-add='with']").click();
+    cy.get("[data-test-rankings-chip-search]").type("Sanhua");
+    cy.get("[data-test-rankings-chip-option='Sanhua']").click();
+    cy.get("[data-test-rankings-chip-group='with'] [data-test-rankings-chip='Sanhua']").should("exist");
+    cy.location("hash", { timeout: 60000 }).should("include", "r=Cartethyia,Sanhua");
+    cy.get("[data-test-rankings-chips-clear]").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "r=");
+    cy.get("[data-test-rankings-chip]").should("not.exist");
+  });
+
+  it("folds into two rows on a phone at 130 % text: summary and Teams I can field in a popover, views in one menu", () => {
+    cy.viewport(412, 915);
+    cy.visit("/rankings#tc=mine&r=Cartethyia&x=Ciaccona", {
+      onBeforeLoad(win) {
+        win.document.documentElement.style.fontSize = "130%";
+      },
+    });
+    cy.document().then((doc) => {
+      const style = doc.createElement("style");
+      style.textContent = "html { font-size: 130% !important; }";
+      doc.head.appendChild(style);
+    });
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-account-bar]").should(($bar) => {
+      // two rows of xs controls at 130 %: the state control and the menu, then the chip strip
+      expect($bar[0]!.getBoundingClientRect().height).to.be.lessThan(100);
+    });
+    cy.get("[data-test-rankings-account-summary]").should("not.exist");
+    cy.get("[data-test-rankings-chip-summary='main']").should("have.text", "Cartethyia");
+    cy.get("[data-test-rankings-chip-summary='without']").should("have.text", "Ciaccona");
+    cy.get("[data-test-rankings-info]").click();
+    cy.get("[data-test-rankings-account-summary]").should("be.visible").and("contain.text", "set up");
+    cy.get("[data-test-rankings-owned-only]").should("be.visible").and("be.checked");
+    cy.get("[data-test-rankings-menu]").click();
+    cy.get("[data-test-rankings-account-summary]").should("not.exist");
+    cy.get("[data-test-rankings-subs]").should("be.visible");
+    cy.get("[data-test-rankings-views]").click();
+    cy.get("[data-test-rankings-view-new]").should("be.visible");
+    cy.document().then((doc) => {
+      expect(doc.documentElement.scrollWidth, "no sideways scroll").to.be.at.most(doc.documentElement.clientWidth);
+    });
+  });
+});
+
+// Wuthering Tools+ (2026-10-12, Stage 2): a phone reads Riley's rows as cards (RankingsCards.vue over his model's
+// visibleRows, in his table's order); the rotation detail carries a member strip (RankingsMemberStrip.vue).
+describe("wuwa_calc rankings: phone cards and the detail's member strip (Wuthering Tools+)", () => {
+  const cards = "[data-test-rankings-card]";
+  const figureOf = (el: Element): number => parseFloat((el.querySelector("[data-test-rankings-card-figure]")?.firstChild?.textContent ?? "").replace(/,/g, ""));
+
+  it("lists his rows as cards on a phone, 50 at a time, and a tap opens the team's rotation with the member strip", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.viewport(412, 915);
+    cy.visit("/rankings", {
+      onBeforeLoad(win) {
+        win.document.documentElement.style.fontSize = "130%";
+      },
+    });
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(cards, { timeout: 60000 }).should("have.length", 50);
+    // his grid is hidden behind the cards; the toolbar holds the list's count and DPR / DPS
+    cy.get(".skittle-root").should("have.class", "wt-cards");
+    cy.get(".skittle-root .tcwrap").should("not.be.visible");
+    cy.get("[data-test-rankings-cards-count]").invoke("text").should("match", /^\d[\d,]* teams$/);
+    cy.get("[data-test-rankings-card-share]").first().should("have.text", "100.0%");
+    cy.get(cards).should(($cards) => {
+      const figures = [...$cards].map(figureOf);
+      // one row per team (no compare open): best first, as his table
+      expect(figures.every((f, i) => i === 0 || f <= figures[i - 1]!), "figures run down").to.eq(true);
+      // three portraits per card, whoever the team is built around first (his slots are support-first)
+      for (const card of [...$cards]) {
+        const members = [...card.querySelectorAll<HTMLElement>("[data-test-rankings-card-member]")];
+        expect(members).to.have.length(3);
+        if (members.some((m) => m.dataset.main === "1")) expect(members[0]!.dataset.main, card.getAttribute("data-team") ?? "").to.eq("1");
+      }
+    });
+    // under one of Riley's tiers each member says where the account stands (this account owns only Cartethyia)
+    cy.get("[data-test-rankings-card-own][data-kind='missing']").should("exist");
+    cy.document().then((doc) => {
+      expect(doc.documentElement.scrollWidth, "no sideways scroll").to.be.at.most(doc.documentElement.clientWidth);
+    });
+    // the next 50
+    cy.get("[data-test-rankings-cards-more]").click();
+    cy.get(cards).should("have.length", 100);
+    // DPS through his own switch: the figures become damage over each run's seconds
+    cy.get(cards).first().then(($c) => {
+      const dpr = figureOf($c[0]!);
+      cy.get("[data-test-rankings-cards-mode='dps']").click();
+      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team DPS");
+      cy.get(cards).first().should(($n) => expect(figureOf($n[0]!)).to.be.lessThan(dpr));
+      cy.get("[data-test-rankings-cards-mode='dpr']").click();
+      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team Avg DPR");
+    });
+    // the Search & compare sheet still opens over the cards
+    cy.get("[data-test-rankings-filters]").click();
+    cy.get(".skittle-root .tcside #optionSearch").should("be.visible");
+    cy.get("[data-test-rankings-filters-close]").click({ force: true });
+    // a tap opens the team's rotation through the router, the member strip on top
+    cy.get(cards).first().invoke("attr", "data-team").then((team) => {
+      cy.get(cards).first().click();
+      cy.location("hash", { timeout: 60000 }).should("include", `team=${team}`);
+    });
+    cy.get(".skittle-root").should("have.class", "wt-detail");
+    cy.get("[data-test-rankings-strip-member]", { timeout: 60000 }).should("have.length", 3).first().should("have.attr", "data-main", "1");
+    cy.get("[data-test-rankings-strip-own]").should("have.length", 3);
+    cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("be.visible");
+    cy.get(".skittle-root #topbar [data-test-rankings-import-team] .wt-import__short").should("be.visible").and("have.text", "Import team");
+    cy.get(".skittle-root #topbar [data-test-rankings-import-team] .wt-import__long").should("not.be.visible");
+    // Back and the short Import share the first line; the strip takes its own under them
+    cy.get("#backLink").then(($back) => {
+      const back = $back[0]!.getBoundingClientRect();
+      cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should(($b) => {
+        const b = $b[0]!.getBoundingClientRect();
+        expect(Math.abs((b.top + b.bottom) / 2 - (back.top + back.bottom) / 2), "Back and Import on one line").to.be.lessThan(16);
+      });
+      cy.get("[data-test-rankings-strip]").should(($s) => expect($s[0]!.getBoundingClientRect().top).to.be.greaterThan(back.bottom));
+    });
+    cy.document().then((doc) => {
+      expect(doc.documentElement.scrollWidth, "no sideways scroll on the detail").to.be.at.most(doc.documentElement.clientWidth);
+    });
+    // and Back lands on the cards again
+    cy.get("#backLink").click();
+    cy.location("hash").should("not.include", "team=");
+    cy.get(cards, { timeout: 60000 }).should("have.length.greaterThan", 0);
+    cy.get("[data-test-rankings-strip]").should("not.exist");
+  });
+
+  it("lists the rows the player pinned first on the cards, as his grid does", () => {
+    cy.visit("/rankings");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    const rows = ".skittle-root .tgrid .trow[data-team]:not(.thead):not(.tghost)";
+    cy.get(rows, { timeout: 60000 }).should("have.length.greaterThan", 10);
+    cy.get(rows).eq(6).invoke("attr", "data-team").then((team) => {
+      cy.get(rows).eq(6).find(".c.pin").click({ scrollBehavior: false });
+      cy.location("hash", { timeout: 60000 }).should("include", "pin=");
+      // his grid lists it first; the same link on a phone lists that card first too, marked as pinned
+      // (reloaded at the phone's size: headless Electron never reports a media-query change after cy.viewport)
+      cy.get(rows, { timeout: 60000 }).first().should("have.attr", "data-team", team);
+      cy.viewport(412, 915);
+      cy.reload();
+      cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+      cy.location("hash").should("include", "pin=");
+      cy.get(cards, { timeout: 60000 }).first().should("have.attr", "data-team", team).find("[data-test-rankings-card-pinned]").should("exist");
+      cy.get(cards).eq(1).find("[data-test-rankings-card-pinned]").should("not.exist");
+    });
+  });
+
+  it("says why the table is empty on a desktop: nothing set up at My account, or no match", () => {
+    // no account imported: My account with Teams I can field lists nothing
+    cy.visit("/rankings#tc=mine");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-cards-empty]", { timeout: 60000 }).should("be.visible").and("contain.text", "No team you can field yet");
+    cy.get("[data-test-rankings-cards-setup]").should("have.attr", "href", "/");
+    cy.get(cards).should("not.exist");
+    cy.get(".skittle-root .tcwrap").should("be.visible");
+    // Riley's tiers list every team again, and the note goes
+    cy.get("[data-test-rankings-riley]").click();
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 60000 }).should("have.length.greaterThan", 10);
+    cy.get("[data-test-rankings-cards-empty]").should("not.exist");
+  });
+
+  it("keeps Riley's grid on a desktop, and reads the account in the detail's member strip", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tcwrap").should("be.visible");
+    cy.get(cards).should("not.exist");
+    cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.location("hash", { timeout: 60000 }).should("include", "team=");
+    // My account: Cartethyia runs the account's own S2 on Defier's Thorn, with five echoes on her build
+    cy.get("[data-test-rankings-strip-member][data-name='Cartethyia']", { timeout: 60000 })
+      .should("have.attr", "data-own", "same")
+      .and("have.attr", "data-build", "full")
+      .within(() => {
+        cy.get("[data-test-rankings-strip-own]").should("have.text", "Own S2R1");
+        cy.get("[data-test-rankings-strip-build]").should("contain.text", "build");
+        cy.get("[data-test-rankings-strip-weapon-name]").should("contain.text", "Defier");
+      });
+    // Teams I can field: her teammates are 4★ / Rover forms the account never set up, counted at S6 (his rule), no build to show
+    cy.get("[data-test-rankings-strip-member]:not([data-name='Cartethyia'])").should(($m) => {
+      expect($m).to.have.length(2);
+      for (const m of [...$m]) {
+        const own = m.getAttribute("data-own");
+        expect(["assumed", "same"], `${m.getAttribute("data-name")}: ${own}`).to.include(own);
+        if (own !== "assumed") continue;
+        expect(m.querySelector("[data-test-rankings-strip-own]")?.textContent).to.eq("4★ · S6");
+        expect(m.querySelector("[data-test-rankings-strip-build]")).to.eq(null);
+      }
+      expect([...$m].some((m) => m.getAttribute("data-own") === "assumed"), "a free teammate counted at S6").to.eq(true);
+    });
+    cy.get("#backLink").click();
+    // at Riley's S6R5 the same resonator is a step above the account
+    cy.get("[data-test-rankings-riley]").click();
+    cy.get("[data-test-rankings-tier]").select("s6r5");
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=s6r5");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S6R5");
+    cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 60000 }).first().click();
+    cy.get("[data-test-rankings-strip-member][data-name='Cartethyia']", { timeout: 60000 })
+      .should("have.attr", "data-own", "below")
+      .within(() => {
+        cy.get("[data-test-rankings-strip-token]").should("have.text", "runs S6R5");
+        cy.get("[data-test-rankings-strip-own]").should("contain.text", "Own S2R1");
+      });
   });
 });

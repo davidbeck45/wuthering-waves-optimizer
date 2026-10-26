@@ -43,6 +43,31 @@ describe("account state", () => {
     expect(built.builds).toHaveLength(2);
   });
 
+  it("reads the active build's slots off the live record, which its builds[] entry only catches up with on a switch", () => {
+    // David's export: every active build's cached `echoes` is null while the character wears five
+    const live = { 0: { echoId: "e0" }, 1: { echoId: "e1" }, 2: { echo: "Hecate" }, 3: { echoId: null }, 4: {} };
+    const c = accountCharacterOf("Chisa", {
+      weapon: "Kumokiri",
+      activeBuildId: "b2",
+      echoes: live,
+      builds: [
+        { id: "b1", name: "Other", echoes: { 0: { echoId: "x" } } },
+        { id: "b2", name: "Moonlit Chisa", echoes: null },
+      ],
+    });
+    expect(c.build?.name).toBe("Moonlit Chisa");
+    expect(c.build?.echoes).toEqual(["e0", "e1", "Hecate", null, null]);
+    expect(c.builds.find((b) => b.id === "b2")?.echoes).toEqual(["e0", "e1", "Hecate", null, null]);
+    // another saved build keeps its own slots
+    expect(c.builds.find((b) => b.id === "b1")?.echoes).toEqual(["x", null, null, null, null]);
+    // no builds list at all: the live slots are still the build the calculator runs
+    expect(accountCharacterOf("Lupa", { weapon: "WildfireMark", echoes: live }).build?.echoes).toEqual(["e0", "e1", "Hecate", null, null]);
+    // no activeBuildId: the live slots are what runs, but the first saved build keeps its own snapshot
+    const unpicked = accountCharacterOf("Lupa", { weapon: "WildfireMark", echoes: live, builds: [{ id: "b1", name: "Saved", echoes: { 0: { echoId: "x" } } }] });
+    expect(unpicked.build?.echoes).toEqual(["e0", "e1", "Hecate", null, null]);
+    expect(unpicked.builds[0]?.echoes).toEqual(["x", null, null, null, null]);
+  });
+
   it("treats a character without a weapon as not owned, and derives teams and totals", () => {
     const state = accountStateOf(
       {

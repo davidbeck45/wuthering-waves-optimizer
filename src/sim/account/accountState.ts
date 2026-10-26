@@ -75,7 +75,22 @@ const buildOf = (b: Record<string, any> | undefined): AccountBuild | null => {
 
 export function accountCharacterOf(key: string, data: Record<string, any> | undefined): AccountCharacter {
   const builds = ((data?.builds ?? []) as Array<Record<string, any>>).map((b) => buildOf(b)!).filter(Boolean);
-  const active = builds.find((b) => b.id && b.id === data?.activeBuildId) ?? builds[0] ?? null;
+  let active = builds.find((b) => b.id && b.id === data?.activeBuildId) ?? builds[0] ?? null;
+  // The build the calculator runs is the character's live top-level record: an active build's own
+  // `builds[]` entry is only refreshed when the store switches away from it (src/calculator/buildOverride.ts),
+  // so its cached slots can be empty while five echoes are equipped. Read the live slots for it — and for
+  // a record with no builds list at all.
+  if (data?.echoes && typeof data.echoes === "object" && (!active || !data.activeBuildId || active.id === data.activeBuildId)) {
+    const live = buildOf({ echoes: data.echoes })!.echoes;
+    active = active ? { ...active, echoes: live } : { id: null, name: "", echoes: live };
+    // the saved list keeps its own snapshots — except the entry that IS the live build (with no
+    // activeBuildId, builds[0] only stands in for it and keeps what it saved)
+    if (active.id && active.id === data.activeBuildId) {
+      const id = active.id;
+      const i = builds.findIndex((b) => b.id === id);
+      if (i >= 0) builds[i] = active;
+    }
+  }
   const weapon: string | null = data?.weapon ? String(data.weapon) : null;
   return {
     key,
