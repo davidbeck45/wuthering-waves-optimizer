@@ -1,0 +1,398 @@
+/* Wuthering Tools+ Echo Lab — shared look of the /echo-lab page and the calculator's engine panel: verdict and
+   advice chips, substat line chips coloured by worth, score and range bars, the inventory table grid. Every colour
+   is a DaisyUI token, so each theme (dark and light) recolours it; light themes darken state text for contrast. */
+
+.el-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.05rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.25rem;
+  white-space: nowrap;
+}
+.el-chip--keep,
+.el-chip--tune {
+  color: oklch(var(--su));
+  background: oklch(var(--su) / 0.13);
+  border-color: oklch(var(--su) / 0.35);
+}
+.el-chip--spare,
+.el-chip--gamble {
+  color: oklch(var(--in));
+  background: oklch(var(--in) / 0.13);
+  border-color: oklch(var(--in) / 0.35);
+}
+.el-chip--feed {
+  color: oklch(var(--wa));
+  background: oklch(var(--wa) / 0.13);
+  border-color: oklch(var(--wa) / 0.35);
+}
+.el-chip--done,
+.el-chip--lock {
+  color: oklch(var(--bc) / 0.8);
+  background: oklch(var(--bc) / 0.07);
+  border-color: oklch(var(--bc) / 0.18);
+}
+.el-chip--reroll {
+  color: oklch(var(--p));
+  background: oklch(var(--p) / 0.13);
+  border-color: oklch(var(--p) / 0.4);
+}
+
+/* state colours are tuned for dark surfaces; on light themes the text needs more weight */
+html[data-theme-style="light"] .el-chip--keep,
+html[data-theme-style="light"] .el-chip--tune,
+html[data-theme-style="light"] .el-up {
+  color: color-mix(in oklch, oklch(var(--su)) 62%, black);
+}
+html[data-theme-style="light"] .el-chip--spare,
+html[data-theme-style="light"] .el-chip--gamble {
+  color: color-mix(in oklch, oklch(var(--in)) 62%, black);
+}
+html[data-theme-style="light"] .el-chip--feed {
+  color: color-mix(in oklch, oklch(var(--wa)) 50%, black);
+}
+html[data-theme-style="light"] .el-chip--reroll {
+  color: color-mix(in oklch, oklch(var(--p)) 75%, black);
+}
+
+.el-up {
+  color: oklch(var(--su));
+}
+.el-dot--keep {
+  background: oklch(var(--su));
+}
+.el-dot--spare {
+  background: oklch(var(--in));
+}
+.el-dot--feed {
+  background: oklch(var(--wa));
+}
+
+/* segmented control (verdict, cost): wraps into a grid on a phone instead of growing the page */
+.el-seg {
+  gap: 0.2rem;
+  border-radius: 0.6rem;
+  background: oklch(var(--b2));
+  padding: 0.2rem;
+}
+.el-seg__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.875rem;
+  font-weight: 550;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.el-seg__btn:hover {
+  opacity: 1;
+}
+.el-seg__btn--xs {
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+}
+.el-seg__btn--on {
+  background: oklch(var(--b1));
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
+  opacity: 1;
+}
+@media (max-width: 639px) {
+  .el-seg.grid .el-seg__btn {
+    flex-direction: column;
+    gap: 0;
+    padding: 0.25rem 0.2rem;
+    line-height: 1.15;
+  }
+}
+.el-select {
+  max-width: 12rem;
+}
+@media (max-width: 1023px) {
+  .el-select {
+    flex: 1 1 9rem;
+    max-width: none;
+  }
+}
+
+/* a substat line: icon + abbreviation + value, its frame coloured by what the line is worth on the build */
+.el-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.375rem;
+  border: 1px solid oklch(var(--bc) / 0.1);
+  background: oklch(var(--b2));
+  padding: 0.05rem 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.el-line--great {
+  border-color: oklch(var(--su) / 0.55);
+  background: oklch(var(--su) / 0.13);
+  font-weight: 650;
+}
+.el-line--good {
+  border-color: oklch(var(--bc) / 0.22);
+}
+.el-line--weak {
+  opacity: 0.72;
+}
+.el-line--dead {
+  opacity: 0.42;
+  border-style: dashed;
+  background: transparent;
+}
+.el-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+}
+html[data-theme-style="light"] .el-icon {
+  filter: contrast(0);
+}
+
+.el-portrait {
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: oklch(var(--b3));
+  object-fit: cover;
+}
+
+/* 0–200 % benchmark bar: a track, the fill, the 100 % (reference) mark */
+.el-score-track {
+  position: relative;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: oklch(var(--b3));
+  overflow: hidden;
+}
+.el-score-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+}
+.el-score-fill--low {
+  background: oklch(var(--er) / 0.85);
+}
+.el-score-fill--fair {
+  background: oklch(var(--wa) / 0.9);
+}
+.el-score-fill--good {
+  background: oklch(var(--su) / 0.9);
+}
+.el-score-fill--great {
+  background: linear-gradient(90deg, oklch(var(--su)), oklch(var(--p)));
+}
+.el-score-mark {
+  position: absolute;
+  top: -0.15rem;
+  bottom: -0.15rem;
+  width: 2px;
+  background: oklch(var(--bc) / 0.55);
+}
+.el-score-text--low {
+  color: oklch(var(--er));
+}
+.el-score-text--fair {
+  color: oklch(var(--wa));
+}
+.el-score-text--good {
+  color: oklch(var(--su));
+}
+.el-score-text--great {
+  color: oklch(var(--p));
+}
+html[data-theme-style="light"] .el-score-text--low {
+  color: color-mix(in oklch, oklch(var(--er)) 70%, black);
+}
+html[data-theme-style="light"] .el-score-text--fair {
+  color: color-mix(in oklch, oklch(var(--wa)) 50%, black);
+}
+html[data-theme-style="light"] .el-score-text--good {
+  color: color-mix(in oklch, oklch(var(--su)) 62%, black);
+}
+
+/* p10–p90 range of a gain distribution on a shared axis: zero line, band, median tick, current marker */
+.el-range {
+  position: relative;
+  height: 1.5rem;
+}
+.el-range__axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: oklch(var(--b3));
+}
+.el-range__zero {
+  position: absolute;
+  top: 0.1rem;
+  bottom: 0.1rem;
+  width: 1px;
+  background: oklch(var(--bc) / 0.5);
+}
+.el-range__band {
+  position: absolute;
+  top: 50%;
+  height: 0.55rem;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: oklch(var(--p) / 0.45);
+}
+.el-range__median {
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 3px;
+  border-radius: 2px;
+  background: oklch(var(--p));
+}
+.el-range__now {
+  position: absolute;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: oklch(var(--bc));
+  border: 1px solid oklch(var(--b1));
+}
+
+/* ── the inventory verdict table: a CSS grid, one markup for desktop rows and phone cards ── */
+.el-table {
+  --el-cols: minmax(14rem, 1.7fr) 2rem 2rem minmax(5.5rem, 0.6fr) minmax(19rem, 2.4fr) minmax(10.5rem, 1.1fr) 4.5rem 7.75rem;
+}
+.el-thead,
+.el-row {
+  display: grid;
+  grid-template-columns: var(--el-cols);
+  align-items: center;
+  column-gap: 0.6rem;
+}
+.el-thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid oklch(var(--bc) / 0.1);
+  background: oklch(var(--b2));
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.el-row {
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid oklch(var(--bc) / 0.07);
+  cursor: pointer;
+}
+.el-row:hover {
+  background: oklch(var(--b2) / 0.7);
+}
+.el-row--open {
+  background: oklch(var(--b2));
+}
+.el-cell-subs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.el-cell-card,
+.el-reason-card {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .el-table .el-echo-sub,
+  .el-table .el-echo-cost {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .el-thead {
+    display: none;
+  }
+  .el-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .el-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "echo verdict"
+      "subs subs"
+      "foot foot";
+    row-gap: 0.55rem;
+    border: 1px solid oklch(var(--bc) / 0.1);
+    border-radius: var(--rounded-box, 1rem);
+    background: oklch(var(--b1));
+    padding: 0.7rem 0.8rem;
+  }
+  .el-cell-echo {
+    grid-area: echo;
+  }
+  .el-cell-verdict {
+    grid-area: verdict;
+    align-self: start;
+    justify-self: end;
+  }
+  .el-cell-subs {
+    grid-area: subs;
+  }
+  /* owner and worn share the footer row (one grid area, start / end) so neither widens the verdict column */
+  .el-cell-owner {
+    grid-area: foot;
+    justify-self: start;
+    max-width: 62%;
+  }
+  .el-cell-worn {
+    grid-area: foot;
+    justify-self: end;
+    max-width: 40%;
+  }
+  .el-reason-card {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .el-cell-set,
+  .el-cell-cost,
+  .el-cell-main {
+    display: none;
+  }
+  .el-cell-card,
+  .el-reason-card {
+    display: block;
+  }
+  .el-reason {
+    display: none;
+  }
+  .el-detail {
+    margin-top: -0.4rem;
+    border-radius: 0 0 var(--rounded-box, 1rem) var(--rounded-box, 1rem);
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .el-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .el-rows > .el-detail {
+    grid-column: 1 / -1;
+    margin-top: 0;
+    border-radius: var(--rounded-box, 1rem);
+  }
+}
