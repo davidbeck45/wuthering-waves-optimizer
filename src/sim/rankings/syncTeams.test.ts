@@ -4,9 +4,11 @@ import { actionCounts, diffActions, diffEnemy, humanKey, isWuwaCalcTeam, rileyTe
 import { loopSecondsOf, notInApp } from "./importFromRankings";
 
 describe("sync my teams", () => {
-  it("refuses a team with a character the app has not released (Suoming)", () => {
-    expect(notInApp(["Hsin", "Shorekeeper", "Suoming"])).toEqual(["Suoming"]);
+  it("refuses a team with a character the app has not released (Lily, Riley 7bcbb24)", () => {
+    expect(notInApp(["Lily", "Shorekeeper", "Verina"])).toEqual(["Lily"]);
     expect(notInApp(["Aemeath", "Mornye", "Lynae"])).toEqual([]);
+    // Ryan released Suoming in #655 (2026-10-24): her teams import now
+    expect(notInApp(["Hsin", "Shorekeeper", "Suoming"])).toEqual([]);
   });
 
   it("times a rotation by Riley's last loop, the rotation time his table shows", () => {
