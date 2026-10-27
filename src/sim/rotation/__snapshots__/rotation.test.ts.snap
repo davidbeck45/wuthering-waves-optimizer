@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`the Discord export > writes one line per swap with the loop target 1`] = `
+"**Shorekeeper · Lynae · Iuno** — 86,783 DPS · wuwa_calc abc1234 · my echoes
+Opener 27.5 s · Loop 26.6 s ×3 · fight 1:48.5
+
+__Opener__ (27.5 s)
+> **Shorekeeper** BA×3 [jump] › Plunge › HA › E › BA2–3 [dodge] › BA×2 [hold] › HA › R › Echo [swap] › Outro · 5.4 s
+> **Lynae** Intro › E › Echo › R › BA › BA×3 › BA › Outro · 7.1 s
+> **Iuno** Intro › E › Echo › HA › E › BA×3 › R › BA×3 › E › BA×3 › HA [swap] › Outro · 15.0 s
+
+__Loop ×3__ (26.6 s)
+> **Shorekeeper** Intro › BA×3 [jump] › Plunge › HA › E › R › Echo [swap] › Outro · 4.4 s
+> **Lynae** Intro › E › Echo › R › BA › BA×3 › BA › Outro · 7.1 s
+> **Iuno** Intro › E › Echo › HA › E › BA×3 › R › BA×3 › E › BA×3 › HA [swap] › Outro · 15.0 s
+…then Shorekeeper again: the loop starts over.
+
+<https://example.test/rotation#team=t404>"
+`;

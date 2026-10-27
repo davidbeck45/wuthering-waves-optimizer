@@ -64,4 +64,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["tower of adversity", "toa", "endgame", "hazard zone", "crests", "stars", "vigor", "floors", "clear time", "abyss"],
     icon: "M6 21V8l6-5 6 5v13M10 21v-5h4v5M9 11h6",
   },
+  {
+    path: "/rotation",
+    title: "Rotation cue cards",
+    description: "Any wuwa_calc team's frame-timed rotation at your account: one line per swap, a play-along timer, and a fight timeline of field time, buff uptime and kill times",
+    keywords: ["rotation", "cue", "combo", "play along", "practice", "timeline", "uptime", "buffs", "kill time", "wuwa_calc", "riley", "discord"],
+    icon: "M12 22a10 10 0 100-20 10 10 0 000 20zm0-15v5l3 2",
+  },
 ];

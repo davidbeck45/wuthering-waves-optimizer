@@ -71,6 +71,8 @@ const routes = [
   { path: "/share", component: () => import("./sim/share/ShareView.vue"), name: "ShareView" },
   // Wuthering Tools+: the ToA clear check (src/sim/endgame/)
   { path: "/endgame", component: () => import("./sim/endgame/ToaView.vue"), name: "ToaView" },
+  // Wuthering Tools+: a wuwa_calc rotation as a cue card + fight timeline, at the player's account (src/sim/rotation/)
+  { path: "/rotation", component: () => import("./sim/rotation/RotationView.vue"), name: "RotationView" },
 ];
 
 const router = createRouter({
