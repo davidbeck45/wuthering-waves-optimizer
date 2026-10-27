@@ -17,7 +17,8 @@
 // upgrade was scored on the active build), or a weapon swap takes the weapon off a teammate in the same team.
 //
 // Pure/async (no Vue, no stores); time-sliced so the page stays responsive (yieldToUi), and cancellable.
-import { RANKING_ENEMY, refinementOf, scoreRotation, scoreTeamCandidate, teamCandidatesOf, withNextSequence, withRefineFive, withWeapon, type CharacterRank, type RosterRanking, type TeamCandidate, type TeamRank } from "../myRankings/rankRoster";
+import { RANKING_ENEMY, refinementOf, scoreRotation, scoreTeamCandidate, teamCandidatesOf, withNextSequence, withRefineFive, withWeapon, type RosterRanking, type TeamCandidate, type TeamRank } from "../myRankings/rankRoster";
+import type { TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { SUBSTAT_KEYS, SUBSTAT_LABELS, expectedRoll, isFlatSubstat, withSubstat, type SubstatKey } from "../substats/substatWeights";
 import { characterDisplayName, characterMeta, weaponDisplayName, weaponMeta } from "../display/names";
@@ -119,8 +120,8 @@ export const MIN_GAIN = 0.0005;
 
 const now = (): number => (typeof performance !== "undefined" ? performance.now() : Date.now());
 
-/** A yield that only gives the event loop a turn when ~`budget` ms of work ran since the last one. */
-function slicer(enabled: boolean, budget = 12): () => Promise<void> {
+/** A yield that only gives the event loop a turn when ~`budget` ms of work ran since the last one (also /weapons'). */
+export function slicer(enabled: boolean, budget = 12): () => Promise<void> {
   let last = now();
   return async () => {
     if (!enabled || now() - last < budget) return;
@@ -173,13 +174,87 @@ const weaponBucket = (type: string | null | undefined): string | null => (type ?
 
 const rollText = (key: SubstatKey, value: number): string => (isFlatSubstat(key) ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
 
-interface TeamContext {
+export interface TeamContext {
   candidate: TeamCandidate;
   rank: TeamRank;
   /** the team as it is, scored here (equal to the ranking's figure; scored again so both sides share inputs) */
   base: number;
   /** null when the result can be exact; otherwise why not */
   blocked: string | null;
+}
+
+/** "How does this upgrade move the character's strongest fieldable team?" — the team half of the plan, shared with
+ *  /weapons (src/sim/weaponValue/weaponValue.ts) so a support's weapon lifting the carry is scored one way only. */
+/* eslint-disable no-unused-vars -- the parameters of method types */
+export interface TeamScorer {
+  /** the character's strongest fieldable team (`bestFieldableTeam` over the ranking's teams), scored as it is now;
+   *  null when there is none or it could not be scored (the error is in `errors`) */
+  teamFor(characterId: string): Promise<TeamContext | null>;
+  /** null when the team runs the character's active build (an upgrade applies as scored), else why not */
+  buildBlock(ctx: TeamContext, characterId: string): Promise<string | null>;
+  /** the team re-scored on `hypoCharacters` / `hypoEchoes` (the character upgraded), or why there is no figure */
+  impact(ctx: TeamContext | null, block: string | null, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<{ team: TeamImpact | null; note: string | null }>;
+}
+/* eslint-enable no-unused-vars */
+
+/** The team scorer over one data set: `rankingTeams` must come from the same `characters` / `inventoryEchoes` /
+ *  `teams` (the ranking fingerprint ties them). Team errors are pushed onto `options.errors`. */
+export async function createTeamScorer(
+  characters: Record<string, any>,
+  inventoryEchoes: any[],
+  teams: any[],
+  rankingTeams: TeamRank[],
+  options: { autoTeamBuffs?: boolean; enemy?: TeamEnemyConfig; errors?: string[] } = {},
+): Promise<TeamScorer> {
+  const auto = options.autoTeamBuffs ?? true;
+  const enemy = options.enemy ?? RANKING_ENEMY;
+  const errors = options.errors ?? [];
+  const { candidates } = await teamCandidatesOf(characters, teams);
+  const candidateById = new Map(candidates.map((c) => [c.id, c]));
+  const teamContexts = new Map<string, TeamContext | null>();
+
+  async function teamFor(characterId: string): Promise<TeamContext | null> {
+    const best = bestFieldableTeam(rankingTeams, characterId);
+    if (!best) return null;
+    if (teamContexts.has(best.id)) return teamContexts.get(best.id)!;
+    const candidate = candidateById.get(best.id);
+    let ctx: TeamContext | null = null;
+    if (candidate) {
+      try {
+        const scored = await scoreTeamCandidate(candidate, characters, inventoryEchoes, { autoTeamBuffs: auto, enemy });
+        ctx = { candidate, rank: best, base: scored.avgDamage, blocked: null };
+      } catch (err) {
+        errors.push(`${best.name}: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
+    teamContexts.set(best.id, ctx);
+    return ctx;
+  }
+
+  async function buildBlock(ctx: TeamContext, characterId: string): Promise<string | null> {
+    const resolution = await resolveTeamCharacters(ctx.candidate.team, characters, inventoryEchoes, { auto, enemyConfig: enemy });
+    const slot = resolution.slots.find((s) => s.characterId === characterId);
+    const activeId = characters[characterId]?.activeBuildId ?? null;
+    const other = resolution.auto ? slot && slot.buildSource !== "active" && slot.buildId !== activeId : slot?.buildId && slot.buildId !== activeId;
+    return other ? `the team runs ${characterDisplayName(characterId)}'s "${slot?.buildName ?? "other"}" build` : null;
+  }
+
+  async function impact(ctx: TeamContext | null, block: string | null, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<{ team: TeamImpact | null; note: string | null }> {
+    if (!ctx) return { team: null, note: "not in a team you can field" };
+    if (block) return { team: null, note: block };
+    if (ctx.base <= 0) return { team: null, note: "the team scores no damage" };
+    try {
+      const scored = await scoreTeamCandidate(ctx.candidate, hypoCharacters, hypoEchoes, { autoTeamBuffs: auto, enemy });
+      return {
+        team: { teamId: ctx.rank.id, teamName: ctx.rank.name, characterIds: ctx.rank.characterIds, base: ctx.base, avgDamage: scored.avgDamage, gain: scored.avgDamage / ctx.base - 1 },
+        note: null,
+      };
+    } catch (err) {
+      return { team: null, note: `the team could not be scored (${err instanceof Error ? err.message : String(err)})` };
+    }
+  }
+
+  return { teamFor, buildBlock, impact };
 }
 
 /**
@@ -203,52 +278,7 @@ export async function investPlan(
   const items: InvestItem[] = [];
   const ranks = ranking.characters.filter((c) => c.best && c.bestRotation && characters[c.id]);
   const owned = ownedWeapons(characters);
-
-  const { candidates } = await teamCandidatesOf(characters, teams);
-  const candidateById = new Map(candidates.map((c) => [c.id, c]));
-  const teamContexts = new Map<string, TeamContext | null>();
-
-  async function teamFor(rank: CharacterRank): Promise<TeamContext | null> {
-    const best = bestFieldableTeam(ranking.teams, rank.id);
-    if (!best) return null;
-    if (teamContexts.has(best.id)) return teamContexts.get(best.id)!;
-    const candidate = candidateById.get(best.id);
-    let ctx: TeamContext | null = null;
-    if (candidate) {
-      try {
-        const scored = await scoreTeamCandidate(candidate, characters, inventoryEchoes, { autoTeamBuffs: auto, enemy });
-        ctx = { candidate, rank: best, base: scored.avgDamage, blocked: null };
-      } catch (err) {
-        errors.push(`${best.name}: ${err instanceof Error ? err.message : String(err)}`);
-      }
-    }
-    teamContexts.set(best.id, ctx);
-    return ctx;
-  }
-
-  /** null when the team runs the character's active build (the upgrade applies as scored), else why not */
-  async function buildBlock(ctx: TeamContext, characterId: string): Promise<string | null> {
-    const resolution = await resolveTeamCharacters(ctx.candidate.team, characters, inventoryEchoes, { auto, enemyConfig: enemy });
-    const slot = resolution.slots.find((s) => s.characterId === characterId);
-    const activeId = characters[characterId]?.activeBuildId ?? null;
-    const other = resolution.auto ? slot && slot.buildSource !== "active" && slot.buildId !== activeId : slot?.buildId && slot.buildId !== activeId;
-    return other ? `the team runs ${characterDisplayName(characterId)}'s "${slot?.buildName ?? "other"}" build` : null;
-  }
-
-  async function teamImpact(ctx: TeamContext | null, block: string | null, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<{ team: TeamImpact | null; note: string | null }> {
-    if (!ctx) return { team: null, note: "not in a team you can field" };
-    if (block) return { team: null, note: block };
-    if (ctx.base <= 0) return { team: null, note: "the team scores no damage" };
-    try {
-      const scored = await scoreTeamCandidate(ctx.candidate, hypoCharacters, hypoEchoes, { autoTeamBuffs: auto, enemy });
-      return {
-        team: { teamId: ctx.rank.id, teamName: ctx.rank.name, characterIds: ctx.rank.characterIds, base: ctx.base, avgDamage: scored.avgDamage, gain: scored.avgDamage / ctx.base - 1 },
-        note: null,
-      };
-    } catch (err) {
-      return { team: null, note: `the team could not be scored (${err instanceof Error ? err.message : String(err)})` };
-    }
-  }
+  const scorer = await createTeamScorer(characters, inventoryEchoes, teams, ranking.teams, { autoTeamBuffs: auto, enemy, errors });
 
   let done = 0;
   for (const rank of ranks) {
@@ -266,13 +296,13 @@ export async function investPlan(
       const ownGain = async (avgDamage: number, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<number> =>
         erFactor ? erAdjustedGain(avgDamage / base - 1, erBase, await erFactor(hypoCharacters, hypoEchoes)) : avgDamage / base - 1;
       if (base > 0) {
-        const ctx = await teamFor(rank);
-        const block = ctx ? await buildBlock(ctx, id) : null;
+        const ctx = await scorer.teamFor(id);
+        const block = ctx ? await scorer.buildBlock(ctx, id) : null;
         const push = async (item: Omit<InvestItem, "base" | "avgDamage" | "gain" | "team" | "teamNote" | "rotation" | "characterId">, hypo: { characters: Record<string, any>; inventoryEchoes: any[] }, extraBlock: string | null = null): Promise<void> => {
           const avgDamage = (await scoreRotation(rotation, id, hypo.characters, enemy, hypo.inventoryEchoes)).avgDamage;
           await pause();
           const gain = await ownGain(avgDamage, hypo.characters, hypo.inventoryEchoes);
-          const { team, note } = await teamImpact(ctx, extraBlock ?? block, hypo.characters, hypo.inventoryEchoes);
+          const { team, note } = await scorer.impact(ctx, extraBlock ?? block, hypo.characters, hypo.inventoryEchoes);
           await pause();
           // an upgrade a support's own rotation does not show can still lift their team (an outro buff, a sequence node)
           if (gain < MIN_GAIN && !(team && team.gain >= MIN_GAIN)) return;

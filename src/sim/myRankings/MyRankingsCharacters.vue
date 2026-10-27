@@ -145,6 +145,14 @@
                   Rankings
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </RouterLink>
+                <RouterLink
+                  :to="{ path: '/weapons', query: { focus: c.id } }"
+                  class="mr-tab mr-tab--link"
+                  title="what their signature, each refinement and the other weapons are worth on this build and their team"
+                  :data-test-my-rankings-weapons-link="c.id">
+                  Weapons
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </RouterLink>
               </div>
               <div class="mr-panel__body" role="tabpanel">
                 <MyRankingsWhatIf v-if="open[c.id] === 'whatif'" :rank="c" />

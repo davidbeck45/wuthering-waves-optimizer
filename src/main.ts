@@ -77,6 +77,8 @@ const routes = [
   { path: "/energy", component: () => import("./sim/energy/EnergyView.vue"), name: "EnergyView" },
   // Wuthering Tools+: Today — resets, Waveplates, events ending soon from Kuro's notices (src/sim/today/)
   { path: "/today", component: () => import("./sim/today/TodayView.vue"), name: "TodayView" },
+  // Wuthering Tools+: Weapon value — signatures, refinements and selector picks on your roster (src/sim/weaponValue/)
+  { path: "/weapons", component: () => import("./sim/weaponValue/WeaponValueView.vue"), name: "WeaponValueView" },
 ];
 
 const router = createRouter({

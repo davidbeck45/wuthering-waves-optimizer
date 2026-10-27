@@ -85,4 +85,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["daily", "weekly", "reset", "waveplates", "stamina", "events", "timer", "countdown", "double drop", "tower of adversity", "whimpering wastes", "checklist"],
     icon: "M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2.5 2.5M9 2h6",
   },
+  {
+    path: "/weapons",
+    title: "Weapon value",
+    description: "Is that signature worth it? Every signature, refinement and selector pick scored on your roster and teams",
+    keywords: ["weapon", "signature", "refinement", "r5", "selector", "standard", "moonlit path", "4 star", "worth it"],
+    icon: "M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2",
+  },
 ];
