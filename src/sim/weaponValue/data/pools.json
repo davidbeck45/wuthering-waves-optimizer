@@ -1,0 +1,51 @@
+{
+  "v": 1,
+  "gameVersion": "3.7",
+  "checked": "2026-10-26",
+  "pools": [
+    {
+      "id": "standard-resonator",
+      "kind": "resonator",
+      "title": "Standard 5★ resonator",
+      "subtitle": "Beginner's Choice, the Voyage Goals pick and other standard selectors",
+      "items": ["Verina", "Encore", "Calcharo", "Lingyang", "Jianxin"],
+      "version": "3.7",
+      "verified": true,
+      "source": "Kuro, Convene Details (news 758): the Beginner's Choice targets. Patch notes 1.1–3.7 add no 5★ to the Standard Resonator Convene.",
+      "sourceUrl": "https://wutheringwaves.kurogames.com/en/main/news/detail/758"
+    },
+    {
+      "id": "standard-weapon",
+      "kind": "weapon",
+      "title": "Standard 5★ weapon",
+      "subtitle": "Standard Weapon Convene picks and weapon selectors",
+      "items": [
+        "EmeraldOfGenesis",
+        "LustrousRazor",
+        "StaticMist",
+        "AbyssSurges",
+        "CosmicRipples",
+        "LaserShearer",
+        "RadianceCleaver",
+        "PhasicHomogenizer",
+        "PulsationBracer",
+        "BosonAstrolabe"
+      ],
+      "version": "3.7",
+      "verified": true,
+      "source": "Kuro, Convene Details (news 758): the Standard Weapon Convene's 5★ list. Version 3.0 patch notes (news 3920): the Synth Armament series joined the Standard Weapon Convene.",
+      "sourceUrl": "https://wutheringwaves.kurogames.com/en/main/news/detail/3920"
+    },
+    {
+      "id": "moonlit-path",
+      "kind": "resonator",
+      "title": "Moonlit Path pick",
+      "subtitle": "The resonator pick players report from the 3.7 Moonlit Path",
+      "items": ["Shorekeeper", "Carlotta", "Phoebe"],
+      "version": "3.7",
+      "verified": false,
+      "source": "Player reports (r/WutheringWavesGuide, October 2026). Kuro's 3.7 patch notes (news 5571) list only Moonlit Path cosmetics, so check the pick in game.",
+      "sourceUrl": "https://www.reddit.com/r/WutheringWavesGuide/comments/1xaj0t7/"
+    }
+  ]
+}

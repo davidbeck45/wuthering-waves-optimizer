@@ -1059,3 +1059,66 @@ Capture the fixture again after a submodule bump (the test compares it field for
 `npx tsx scripts/capture-runlite.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
+
+## Weapon value — `/weapons`, `src/sim/weaponValue/` (batch 2, track "weapon-value", 2026-10-26)
+
+"How much does X's signature add?" across the whole roster, on the player's own builds and teams: one bar per set-up
+character for the signature's next copy (R1 of a signature they don't hold, the next refinement of one they do) with
+every further refinement to R5, the standard 5★ and best 4★ alternatives behind each row, and a **Selector** tab that
+ranks the options of a standard 5★ / Moonlit Path / custom selector for this account. The weapon maths is batch 1's
+(the pull advisor's ladder, /account's team scorer), moved out once rather than written a third time. Lazy route in
+`main.ts`, the last entry of `PLUS_PAGES`, the tab title through `useDocumentTitle`; v3 and classic alike.
+
+| Piece | Role |
+|---|---|
+| `weapons/weaponLadder.ts` | **moved out of `convene/advisorEngine.ts`** (which now calls it): `scoreWeaponCopy` (the held weapon refined = one number on the player's own passive toggles; another weapon = headline at full stacks, `weaponPassiveMode: "all-max"`, plus the stats-only `low`, `"all-off"`), `weaponLadder` (R(n+1)…R5 or R1…R5), `signatureWeaponOf`, `weaponName`, and `withWeaponAtFullStacks` — every passive of the new weapon written into the character's own `weaponPassives` at max stacks, the stored-toggle twin of "all-max", so a team run (which has no passive-mode option) carries the headline's weapon. `advisorEngine.test.ts` unchanged and green |
+| `account/investPlan.ts` | refactor only: the plan's team half is `createTeamScorer(characters, echoes, teams, ranking.teams, { autoTeamBuffs, enemy, errors })` → `teamFor(id)` (`bestFieldableTeam`, scored as it is) / `buildBlock` / `impact(ctx, block, hypoCharacters, hypoEchoes)`, and `slicer` is exported; `investPlan` runs through both, numbers unchanged (its tests green) |
+| `weaponValue.ts` | pure / async, time-sliced (a frame every ~12 ms), cancellable: per set-up character, on the ranking's best rotation — `signature` (status `swap` / `held` / `maxed` / `none` / `not-in-app`, steps through `weaponLadder`), `standard` (each Standard Weapon Convene 5★ of their type at R1), `four` (every 4★ of the type at R5 on the headline, the winner bracketed), `refine` (the held non-signature weapon +1). Every option also carries the strongest fieldable team re-run through `createTeamScorer` with the weapon in hand. Rows with an unknown equipped weapon (`unknown-weapon`), no rotation or an engine throw come back with a status and no number; characters without a weapon are listed in `notSetUp` |
+| `teamPanels.ts` | **the hand-set panel rule** (see Things learned): for the hypothetical only, a teammate whose own Team Buffs panel resolveTeam keeps verbatim follows the provider's weapon — old weapon's team buffs off, the new weapon's on, each entry exactly as resolveTeam derives it for that member (one resolve with their picks cleared: stacks, refinement, Outro handoffs), a refinement step written onto the entries the panel has. The base is never touched. `option.panels` says which panel moved; the detail shows "panel follows" |
+| `pools.ts` + `data/pools.json` | hand-entered selector pools per game version, each with `source`, `sourceUrl`, `version`, `verified`: the **standard 5★ resonators** (Beginner's Choice targets in Kuro's Convene Details, news 758; patch notes 1.1–3.7 add no 5★ to the Standard Resonator Convene), the **standard 5★ weapons** (758's Standard Weapon Convene list — an image, read — plus the 3.0 patch notes, news 3920: the Synth Armament series joined it; two per weapon type, and Riley's `weapons/standard.ts` names the same ten), the **Moonlit Path pick** (Shorekeeper / Carlotta / Phoebe, player reports only — Kuro's 3.7 notes list Moonlit Path cosmetics — `verified: false`, the page says "check in game"). `releasedItems` filters to what the app lists. Refresh at each upstream sync |
+| `selector.ts` | `rankWeaponPool(items, weaponValueResult, characters)` — read off the chart, nothing scored twice: per weapon every set-up user of its type (a new copy at R1, or R+1 for a wearer = the dupe), ranked on team gain where there is one, plus the best own gain. `rankResonatorPool(input, SelectorRiley)` — Riley's engine at the account: `candidateAccount` registers an unowned candidate `{ owned, S0, weapon: STANDARD_PICK, R1 }` (a name no loadout lists, so `accountWeapon` runs `standardWeapon(l)` — his best non-signature pick — instead of index 0, the signature, which `mine` hands a resonator with no weapon) and an owned one at S+1; one batch at the account as it is (every fieldable team of each main DPS the candidates' teams serve), then one batch per candidate; **team uplift** = the largest rise of some main DPS's best `mine` team, **new teams** = compositions only the pick makes fieldable with their best DPS, **dupe** = the app engine's next sequence through `createTeamScorer` (the /account plan's S+1). `notInApp` candidates and teams with an unreleased member are never registered or solved |
+| `selectorRiley.ts` | the browser adapter over the shared `rileyClient()` worker, with a page-session solve cache keyed by the seam's `memoKey` (a run's base batch can outgrow the client's 200-entry LRU), bounded at `MAX_SOLVES` = 1200 with the least recently used dropped first; a failed or aborted batch is never kept (`selectorRiley.test.ts`, a fake client) |
+| `valueCache.ts` | `createValueCache(storageKey, version)`: module memory + sessionStorage (the investCache pattern); `wtplus:weapons:value` keyed by the ranking fingerprint, `wtplus:weapons:selector` by fingerprint + account + builds keys + the options picked |
+| `useWeaponValueData.ts` | the ranking from the cache entry /my-rankings and /account share (`investment: true`), else a progressive `rankRoster`; then `weaponValue` (own cache, same fingerprint), rows handed over as they finish, a generation counter, cancelled on unmount |
+| `weaponValueView.ts` | pure view model: `barModel(row, scope)` (head = next copy, `low` in own scope only, ladder ticks, R5, best alternative), `sortBars` / `filterBars` / `filterCounts`, `axisOf` / `axisTicks` / `at`, `kpisOf`, `unscored` (the footer's "could not be scored"), `prydwenUrl` (link out only; Rover forms and compound names go to the list), `pctFine` ("+0.04%" rather than "+0.0%"), prefs `wtplus:weapons:prefs` |
+| `WeaponValueView.vue` | header (Live chip, Signatures / Selector tabs mirrored in `?tab=`, Recompute), four KPI tiles, the toolbar (Team / Own, filters with counts, sort, not set up) inline on desktop and one **Options** bottom sheet on a phone, a legend, progress, the chart (shared axis with gridlines), skeleton rows, greyed not-set-up rows, the method notes, a footer that says how many characters or teams could not be scored (the messages in its tooltip); `?focus=<id>` opens and scrolls to that row once scored (the /my-rankings link). `SelectorChooser` is a `defineAsyncComponent` chunk (it carries the wuwa_calc client) |
+| `WeaponValueBar.vue` · `WeaponValueDetail.vue` | a row: who (S pill, held weapon), the signature, the bar (solid = next copy, hatched run with ticks = every refinement to R5, whisker = stats-only floor in own scope), the figure; a phone card with the steps as chips. The detail: now / signature R1…R5 / your weapon +1 / standard 5★ / best 4★ with own and team damage and change, "measured on" rotation and team, Open in calculator, What if (`/my-rankings?focus=&tab=whatif`), Prydwen guide ↗ |
+| `SelectorChooser.vue` | pool cards (the unverified one badged), the source line ("Selector list for 3.7, last checked …"), option chips to leave out what your copy of the selector lacks, a custom pick with an in-page suggestion list (released roster only), Rank / Cancel with progress, ranked rows with three metrics each and a detail (uplift team vs today's best, the best new teams, the dupe, Open on Team rankings — `own=0` for a pick you don't own) |
+| `myRankings/MyRankingsCharacters.vue` | a **Weapons ↗** tab link beside Rankings ↗ on every opened row → `/weapons?focus=<id>` |
+| `weaponValue.test.ts` · `selector.test.ts` | Cartethyia fixture + Ciaccona (Cadenza) + Chisa (Kumokiri): ladder monotonic, R5 ≥ R1, equal to `scoreAdvisorTargets` for the same featured weapon (held and swap), stored full stacks = all-max, a team-buff signature lifts the carry's own slot (with and without a hand-set panel), the panel rule (on / off / refinement), standard / 4★ / refine options, unknown weapons and signatures skipped with a status, cancel, the weapon pool (deterministic, dupes), the pools.json schema, the cache; stubbed Riley for the resonator ranking (order, the release guard, one base batch, cancel) and the real engine for the standard pick (`pick.weapon ≠ 0`, `weaponApproximated`, the same team without registration runs index 0) |
+| `cypress/e2e/weaponValue.cy.ts` + `phoneLayout.cy.ts` | empty state + hub entry; rows, KPIs, scope / filter / sort / not set up, an opened row's options, the cached reload; `?focus=`; weapon pool + leaving an option out, resonator pool solved in the worker, the unverified badge, custom suggestions (Lily never offered); phone 412 / 130 % and 360 (cards, open row, sheet, selector, no horizontal scroll). `phoneLayout.cy.ts` gained its own `/weapons` test at 360 / 100 % and 412 / 130 % |
+
+Rules:
+- **Engine numbers only, never mixed.** % of damage are this app's engine (best rotation, RANKING_ENEMY); the
+  selector's team uplift and new teams are wuwa_calc DPS at the account, labelled as such; the dupe is the app's.
+- **A weapon the character doesn't hold is a bracket**; its team figure runs the headline (full stacks). The held
+  weapon refined is one number on their own toggles.
+- **Released content only**: pools filter through `releasedItems`, the resonator ranking through `notInApp` / the
+  client's blocked keys; the custom pick offers the roster pickers' characters only.
+- **The cache key is the ranking fingerprint**, not `accountKeyOf` as the spec suggested: that key covers sequences,
+  weapons and ranks only, so an echo edit would have served stale figures.
+- Pools are hand-entered with their source; a pool only players report stays `verified: false` with "check in game".
+
+Things learned:
+- **resolveTeam keeps a hand-set panel verbatim**, so a support's new weapon never reached the carry: on David's 9-16
+  export Sigrika's panel names Shorekeeper + Qiuyuan, and Stellar Symphony read +0.2 % team (Qiuyuan, derived, got the
+  +14 % ATK; Sigrika didn't). With `teamPanels.ts` it reads +4.0 % (R5 +8.0 %); Lynae's Spectrum Blaster R2 0.7 → 2.0 %,
+  Ciaccona's Woodland Aria R2 0.3 → 1.8 %, and swapping a support *off* a team-buff weapon now shows the real loss
+  (Lynae → Solar Flame −4.0 → −9.4 %). /account's plan still keeps panels verbatim — a one-line `panelsFollowWeapon`
+  call in its `push` would align the two, but moves /account's numbers, so it is left for David to decide.
+- The Cartethyia fixture's panel ticks Woodland Aria's shred (Ciaccona wore it in that export); with Ciaccona on
+  Cadenza that tick is stale and hid the effect — the test drops it.
+- Riley has **no team at all** for Encore, Calcharo or Lingyang (671 teams at 653fee7): the standard selector can only
+  say so ("No wuwa_calc team"). Jianxin runs at his kit baseline S2 even registered at S0 (`baseSequence`).
+- A native `<datalist>` popup segfaults Cypress's headless Electron (exit 139) — and is clumsy on Android anyway; the
+  custom pick uses an in-page suggestion list.
+- Cypress counts an element below the fold inside a scroll container as hidden (`scrollIntoView()` first), and a
+  spec looping over viewports must clear `wtplus:weapons:prefs` — the remembered tab (now mirrored in `?tab=`) carries.
+- Measured, dev server, David's 9-16 export: Node `weaponValue` 1.1–1.4 s for 24 characters (≈ 34 scorings each);
+  browser first visit 4.3 s cold (app boot, ranking and the run), a forced recompute 2.4 s with no long task; the
+  Moonlit Path selector 11 s in the worker on a first run (291 solves, most of them the base batch), the standard
+  resonator pool ~2.5 s.
+
+Gates: `weaponValue.test.ts`, `selector.test.ts`, `selectorRiley.test.ts`, `advisorEngine.test.ts`, `investPlan.test.ts`;
+`cypress/e2e/weaponValue.cy.ts`, `phoneLayout.cy.ts`, `themes.cy.ts`. The CLI `snapshot` diff is empty (nothing on the
+calc / team / rank paths moved).

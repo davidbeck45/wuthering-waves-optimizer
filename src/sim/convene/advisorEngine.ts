@@ -6,7 +6,7 @@
 // A signature weapon the owner doesn't wield yet is bracketed the way upstream's weapon-impact preview does it
 // (src/weapons/weaponImpact.ts): the headline is the weapon with every passive at full stacks (`weaponPassiveMode:
 // "all-max"`), `low` the stats alone (`"all-off"`). A refinement of the weapon already wielded is one number: the
-// player's own passive toggles apply to both sides.
+// player's own passive toggles apply to both sides. Both live in src/sim/weapons/weaponLadder.ts, shared with /weapons.
 //
 // Never invents a number: an item the account can't score (not owned, no weapon equipped, not in the app) comes back
 // with a status and no steps. A resonator the player doesn't own would need a hypothetical S0 build — out of scope.
@@ -15,8 +15,7 @@
 // worker bundle would inline every lazy character module and the wuwa_calc presets (2.6 MB, measured 2026-10-12)
 // while the scoring itself is small — David's export, 3.7 Phase II: four targets in ~200 ms with no task over 50 ms
 // (Long Tasks API, 2026-10-26). No Vue, no Pinia: the caller passes plain copies of the stores.
-import { allCharactersList, getCharByName, getCharacterRosterDisplayName } from "../../characters/characters";
-import { getWeaponsByType } from "../../weapons/weapons";
+import { allCharactersList, getCharacterRosterDisplayName } from "../../characters/characters";
 import {
   RANKING_ENEMY,
   isSetUp,
@@ -25,10 +24,14 @@ import {
   scoreRotation,
   sequenceOf,
   withSequence,
-  withWeapon,
 } from "../myRankings/rankRoster";
-import { calcCharacterRotationDamage, type CharacterRotationInput } from "../../calculator/characterRotation";
+import type { CharacterRotationInput } from "../../calculator/characterRotation";
+// the weapon ladder (held weapon: one number; another weapon: full stacks / stats-only bracket) lives in one place,
+// shared with /weapons (src/sim/weaponValue/)
+import { signatureWeaponOf, weaponLadder, weaponName } from "../weapons/weaponLadder";
 import type { AdviceDamage, AdviceTarget, DamageStep } from "./advisor";
+
+export { weaponName };
 
 export interface AdvisorInput {
   targets: readonly AdviceTarget[];
@@ -53,34 +56,6 @@ interface BestRotation {
 }
 
 const yieldNow = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
-
-const weaponNames = new Map<string, string>();
-/** the app's display name for a weapon key */
-export function weaponName(key: string): string {
-  if (!weaponNames.size) {
-    for (const type of ["Swords", "Broadblades", "Pistols", "Gauntlets", "Rectifiers"]) {
-      const list = getWeaponsByType(type) as unknown as Record<string, Array<{ key: string; name: string }>>;
-      for (const rows of Object.values(list ?? {})) for (const w of rows ?? []) weaponNames.set(w.key, w.name);
-    }
-  }
-  return weaponNames.get(key) ?? key;
-}
-
-const signatureOf = new Map<string, string | null>();
-
-/** a resonator's signature weapon key (its `basic.signatureWeapon`), null when it names none */
-async function signatureWeaponOf(characterKey: string): Promise<string | null> {
-  if (signatureOf.has(characterKey)) return signatureOf.get(characterKey)!;
-  let sig: string | null = null;
-  try {
-    const data = (await getCharByName(characterKey)) as { basic?: { signatureWeapon?: string } } | null;
-    sig = data?.basic?.signatureWeapon ?? null;
-  } catch {
-    sig = null;
-  }
-  signatureOf.set(characterKey, sig);
-  return sig;
-}
 
 /**
  * The resonator whose signature this weapon is. Looks at the likeliest owners first (the resonators featured beside it,
@@ -180,27 +155,9 @@ export async function scoreAdvisorTargets(input: AdvisorInput, deps: AdvisorDeps
     if (refine >= 5) return empty(target, "maxed", { characterKey: owner, characterName: name, current });
     const rot = await bestFor(owner);
     if (!rot) return empty(target, "error", { characterKey: owner, characterName: name, current, note: "no rotation this build can score" });
-    const steps: DamageStep[] = [];
-    for (let r = refine + 1; r <= 5; r++) {
-      await pause();
-      const hypo = { ...characters, [owner]: withWeapon(data, key, r) };
-      if (wielding) {
-        const scored = await scoreRotation(rot.rotation, owner, hypo, RANKING_ENEMY, echoes);
-        steps.push({ label: `R${r}`, copies: r - refine, avgDamage: scored.avgDamage, gain: scored.avgDamage / rot.avgDamage - 1 });
-        continue;
-      }
-      const run = async (mode: "all-max" | "all-off") =>
-        (await calcCharacterRotationDamage(rot.rotation, null, owner, hypo, RANKING_ENEMY, echoes, null, { weaponPassiveMode: mode })).damageAggregation.avgDamage ?? 0;
-      const high = await run("all-max");
-      const low = await run("all-off");
-      steps.push({
-        label: `${weaponName(key)} R${r}`,
-        copies: r - refine,
-        avgDamage: high,
-        gain: high / rot.avgDamage - 1,
-        low: { avgDamage: low, gain: low / rot.avgDamage - 1 },
-      });
-    }
+    const steps: DamageStep[] = (await weaponLadder(rot.rotation, owner, characters, echoes, key, rot.avgDamage, pause)).map(({ label, copies, avgDamage, gain, low }) =>
+      low ? { label, copies, avgDamage, gain, low } : { label, copies, avgDamage, gain },
+    );
     return { targetId: target.id, status: "ok", characterKey: owner, characterName: name, current, baseDamage: rot.avgDamage, rotation: rot.name, steps, note: wielding ? null : `swaps out ${current}` };
   }
 }

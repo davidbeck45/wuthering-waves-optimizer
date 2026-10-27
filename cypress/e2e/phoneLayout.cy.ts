@@ -149,4 +149,47 @@ describe("phone layout", () => {
     cy.get('[data-test-phone-echo-batch-row="done"]').first().find('[data-label="Substats"]').should("have.css", "display", "block");
     expectNoHorizontalScroll("/inventory (importer)");
   });
+  // /weapons (src/sim/weaponValue/, Weapon value) in the v3 UI: the narrowest phone at 100 % text, David's S26 width at
+  // 130 % — the chart rows as cards, an opened row's option table as cards, the selector's pool cards and ranked list.
+  it("keeps Weapon value inside the viewport with its cards, an open row and the selector", () => {
+    const seed = (fontScale: number) => ({
+      onBeforeLoad(win: Window) {
+        win.sessionStorage.clear();
+        win.localStorage.removeItem("wtplus:weapons:prefs"); // the last loop ended on the Selector tab
+        const character = JSON.parse(configOptimizer.data.character);
+        character.characters.Ciaccona = { weapon: "Cadenza" };
+        character.characters.Chisa = { weapon: "Kumokiri" };
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = `html { font-size: ${fontScale * 100}%; }`;
+        win.document.head.appendChild(style);
+      },
+    });
+    for (const [width, height, fontScale] of [
+      [360, 800, 1],
+      [412, 915, 1.3],
+    ]) {
+      cy.viewport(width, height);
+      cy.visit("/weapons", seed(fontScale));
+      cy.get('[data-test-weapons-row="Ciaccona"]', { timeout: 120000 }).scrollIntoView();
+      cy.get('[data-test-weapons-row="Ciaccona"]').should("be.visible");
+      cy.get("[data-test-weapons-progress]", { timeout: 120000 }).should("not.exist");
+      expectNoHorizontalScroll(`/weapons ${width} px`);
+      cy.get('[data-test-weapons-toggle="Ciaccona"]').click();
+      cy.get('[data-test-weapons-detail="Ciaccona"]').then(($d) => {
+        expect($d[0].getBoundingClientRect().right, "open row inside the viewport").to.be.at.most(width);
+      });
+      expectNoHorizontalScroll(`/weapons ${width} px (row open)`);
+      cy.get('[data-test-weapons-tab="selector"]').click();
+      cy.get('[data-test-weapons-pool="standard-weapon"]').click();
+      cy.get("[data-test-weapons-pick]", { timeout: 60000 }).should("have.length", 10);
+      expectNoHorizontalScroll(`/weapons selector ${width} px`);
+    }
+  });
 });
