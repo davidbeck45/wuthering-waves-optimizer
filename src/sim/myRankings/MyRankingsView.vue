@@ -32,7 +32,8 @@
       <span><b class="tabular-nums">{{ account.summary.s6 }}</b> at S6</span>
       <span><b class="tabular-nums">{{ account.echoes.total }}</b> echoes <span class="opacity-60">({{ account.echoes.equipped }} equipped)</span></span>
       <span><b class="tabular-nums">{{ account.summary.teamsFieldable }}</b> of {{ account.summary.teams }} teams fieldable</span>
-      <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="link link-primary ml-auto" data-test-my-rankings-open-mine>wuwa_calc rankings at my account ▸</RouterLink>
+      <EnergySummaryTile variant="inline" class="ml-auto" data-test-my-rankings-energy-link />
+      <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="link link-primary" data-test-my-rankings-open-mine>wuwa_calc rankings at my account ▸</RouterLink>
     </div>
 
     <div v-if="!characterCount" class="alert" data-test-my-rankings-empty>
@@ -71,6 +72,7 @@
                   <div>
                     <div class="font-semibold">{{ c.name }}</div>
                     <div class="text-xs opacity-60">S{{ c.sequence }} · R{{ c.refinement }}</div>
+                    <EnergyCharacterFloor :character-id="c.id" />
                   </div>
                 </div>
               </td>
@@ -135,7 +137,7 @@
                 <div class="subs py-1">
                   <div class="text-xs opacity-70 mb-1">
                     Substat weights: what one more line of each substat on one of your equipped echoes would add to this build's
-                    <template v-if="substats[c.id].result">{{ fmt(substats[c.id].result!.baseline) }} average damage</template><template v-else>damage</template>
+                    <template v-if="substats[c.id].result">{{ fmt(substats[c.id].result!.baselineExtra.raw ?? substats[c.id].result!.baseline) }} average damage</template><template v-else>damage</template>
                     on {{ c.best?.name }}. Left of each arrow is the size of the roll, right of it the damage it adds. The top of the list is what to look for.
                   </div>
                   <details class="subs__help text-xs mb-2" data-test-my-rankings-substats-help>
@@ -147,7 +149,7 @@
                       <li><b>+1 tier</b>: one step up the tier ladder ({{ rollLabel(tierStep("CritRate"), false) }} Crit Rate, {{ rollLabel(tierStep("CritDMG"), false) }} Crit DMG, {{ rollLabel(tierStep("ATK_FLAT"), true) }} flat ATK). What a line you already have gains from rolling one tier higher — the gap between two echoes whose lines differ by one tier.</li>
                       <li><b>The bar</b>: the expected gain next to the best substat's. A full bar is the stat to look for, an empty one does nothing on this rotation.</li>
                       <li>The gains do not follow the roll sizes: what a roll pays depends on what the build already has (Crit Rate past 100 % is wasted, a stat you stack pays a little less each time). Compare rolls, not points — every substat line on an echo is one roll.</li>
-                      <li>A stat at +0.0 % does not feed this rotation. Energy Regen always reads 0 here: the engine has no energy model, so keep the ER the rotation needs.</li>
+                      <li>A stat at +0.0 % does not feed this rotation. Energy Regen is a floor: the damage engine has no energy model, so it counts up to the need wuwa_calc measures for the character's saved teams (the Energy check) — below it an ER roll is worth the share of the deficit it closes, at or above it nothing.</li>
                     </ul>
                   </details>
                   <div v-if="substats[c.id].running" class="text-sm"><span class="loading loading-spinner loading-xs"></span> scoring…</div>
@@ -162,7 +164,7 @@
                       <div class="subs__head"></div>
                     </div>
                     <div v-for="w in substats[c.id].result?.weights ?? []" :key="w.key" class="subs__row">
-                      <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span></div>
+                      <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span><span v-if="w.key === 'EnergyRegen' && substats[c.id].er?.floor" class="badge badge-ghost badge-xs ml-1" data-test-my-rankings-er-floor>floor</span></div>
                       <div class="subs__gain" :class="gainClass(w.gain)" :data-test-my-rankings-substat="w.key"><span class="opacity-60">{{ rollLabel(w.roll, w.flat) }} →</span> {{ pct(w.gain) }}</div>
                       <div class="subs__more">
                         <div class="subs__gain subs__gain--more" :class="gainClass(w.medianGain)" :data-test-my-rankings-substat-median="w.key"><span class="opacity-60"><span class="md:hidden">median </span>{{ rollLabel(w.medianRoll, w.flat) }} →</span> {{ pct(w.medianGain) }}</div>
@@ -174,8 +176,8 @@
                   </div>
                   <p v-if="substats[c.id].result" class="text-xs mt-1">
                     <span class="opacity-70">Look for:</span> <b>{{ lookFor(substats[c.id].result!) }}</b>
-                    <span v-if="erReadsZero(substats[c.id].result!)" class="opacity-70"> · Energy Regen reads 0 here — the engine has no energy model, keep the ER the rotation needs</span>
                   </p>
+                  <EnergySubstatNote v-if="substats[c.id].result || substats[c.id].er" :er="substats[c.id].er" :character-id="c.id" class="mt-1" />
                   <div v-if="substats[c.id].echoes?.length" class="mt-2 text-xs flex flex-wrap items-center gap-1" data-test-my-rankings-substats-echoes>
                     <span class="opacity-70 mr-1">Your echoes' substats on this rotation (lowest = re-roll first):</span>
                     <span v-for="e in echoesWorstFirst(substats[c.id].echoes ?? [])" :key="e.slot" class="badge badge-ghost badge-sm tabular-nums">
@@ -220,6 +222,7 @@
                     {{ t.name }}
                     <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash(t.characterIds) }" class="link link-primary text-xs ml-2" title="wuwa_calc's teams with these three, at your account's sequences and weapons" :data-test-my-rankings-team-mine-link="t.name">rankings ▸</RouterLink>
                     <div v-if="t.unarmed.length" class="text-xs text-warning">no weapon: {{ t.unarmed.map((cid) => getCharacterRosterDisplayName(cid)).join(", ") }}</div>
+                    <EnergyTeamChips :character-ids="t.characterIds" :name="t.name" class="mt-1" />
                   </div>
                 </div>
               </td>
@@ -265,6 +268,13 @@ import { mainEchoesData } from "../../echoes/index";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import AutoTeamBuffsToggle from "../teamContext/AutoTeamBuffsToggle.vue";
 import { accountStateOf, rankingsMineHash } from "../account/accountState";
+// Wuthering Tools+ energy check (src/sim/energy/): ER chips per team member, the ER floor per character, ER as a floor in the weights
+import EnergyCharacterFloor from "../energy/EnergyCharacterFloor.vue";
+import EnergySubstatNote from "../energy/EnergySubstatNote.vue";
+import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
+import EnergyTeamChips from "../energy/EnergyTeamChips.vue";
+import { erFloorScorer, type ErFloorScorer } from "../energy/energySubstats";
+import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import "../phone-tables.css";
 
 // each page sets its own tab title (Ryan's #672)
@@ -369,12 +379,14 @@ interface SubstatsState {
   result: SubstatWeightsResult | null;
   echoes: EchoSubstatWorth[] | null;
   error: string | null;
+  /** Energy Regen as a floor (the energy check's need for this character), null until read */
+  er: ErFloorScorer | null;
 }
+const energy = useEnergyNeeds();
 const substats = ref<Record<string, SubstatsState>>({});
 const rollLabel = (value: number, flat: boolean): string => (flat ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
 const echoLabel = (key: string | null): string => (key ? ((mainEchoesData as Record<string, { name?: string }>)[key]?.name ?? key) : "echo");
 const lookFor = (r: SubstatWeightsResult): string => r.weights.filter((w) => w.weight >= 0.5).map((w) => w.label).join(", ") || "nothing moves this number";
-const erReadsZero = (r: SubstatWeightsResult): boolean => Math.abs(r.weights.find((w) => w.key === "EnergyRegen")?.gain ?? 0) < 0.0005;
 const echoesWorstFirst = (list: EchoSubstatWorth[]): EchoSubstatWorth[] => [...list].sort((a, b) => a.worth - b.worth);
 async function toggleSubstats(c: CharacterRank): Promise<void> {
   const current = substats.value[c.id];
@@ -382,7 +394,7 @@ async function toggleSubstats(c: CharacterRank): Promise<void> {
     current.open = !current.open;
     return;
   }
-  substats.value = { ...substats.value, [c.id]: { open: true, running: true, result: null, echoes: null, error: null } };
+  substats.value = { ...substats.value, [c.id]: { open: true, running: true, result: null, echoes: null, error: null, er: null } };
   const state = substats.value[c.id];
   if (!c.bestRotation) {
     state.running = false;
@@ -392,7 +404,9 @@ async function toggleSubstats(c: CharacterRank): Promise<void> {
   try {
     const chars = JSON.parse(JSON.stringify(characters.value ?? {}));
     const echoes = JSON.parse(JSON.stringify(inventoryStore.echoes ?? []));
-    const score = rotationScorer(c.id, c.bestRotation, RANKING_ENEMY);
+    const er = await erFloorScorer(energy, c.id, rotationScorer(c.id, c.bestRotation, RANKING_ENEMY));
+    state.er = er;
+    const score = er.score;
     const baseline = await score(chars, echoes);
     state.result = await substatWeights(c.id, chars, echoes, score, { baseline });
     state.echoes = await equippedSubstatWorth(c.id, chars, echoes, score, { baseline });

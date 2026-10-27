@@ -165,7 +165,7 @@ function printWeights(w: WeightsCalc): void {
   const top = w.weights.filter((s) => s.weight >= 0.5).map((s) => s.label);
   console.log(`\nLook for: ${top.join(", ") || "(nothing moves this number)"}`);
   const er = w.weights.find((s) => s.key === "EnergyRegen");
-  if (er && Math.abs(er.gain) < 0.0005) console.log("Energy Regen reads 0 here: the engine has no energy model, so keep whatever ER the rotation needs.");
+  if (er && Math.abs(er.gain) < 0.0005) console.log("Energy Regen reads 0 here: the damage engine has no energy model. `er` measures the ER each saved team needs (wuwa_calc's loop); the app's substat weights count ER up to it.");
   if (w.echoes) {
     console.log("\nEquipped echoes — what each one's substats add over that echo without any (lowest = re-roll first)");
     console.log(
@@ -260,6 +260,23 @@ export function registerPlusCommands(program: Command): void {
       if (options.full) return printJson(result.run);
       if (!wantsPretty(options)) return printJson({ export: exp.path, ...result.summary });
       printTrace(result.summary);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("er")
+      .description("Energy check: each member's ER need in your saved teams (Riley's wuwa_calc loop at your account) beside the ER their build has, the ER floor per character, crit overcap (Wuthering Tools+)")
+      .option("--team <team>", "one saved team (name, id or 1-based index)")
+      .option("--all", "also every other composition your account can field (~0.1 s each)")
+      .option("--no-auto-buffs", "read each team member's active build (the default picks the build the team runs, as the team editor does)"),
+  ).action(
+    guarded(async (options: CommonOptions & { team?: string; all?: boolean; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const { energyReport, printEnergy } = await import("../energy/energyCli");
+      const report = await quiet(() => energyReport(exp, { team: options.team, all: options.all, auto: options.autoBuffs }));
+      if (!wantsPretty(options)) return printJson(report);
+      printEnergy(report);
     }),
   );
 

@@ -169,3 +169,5 @@ packages/*/dist/
 
 ### Wuthering Tools+: Riley's shipped solves are served from /dist/solves/ (scripts/skittle-sync.mjs)
 !public/dist/
+# Wuthering Tools+: other sites' ER figures for the energy check's soft report — their editorial work, never committed
+src/sim/energy/__fixtures__/*.local.json

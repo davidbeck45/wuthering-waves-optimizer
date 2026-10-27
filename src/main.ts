@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: the energy check — ER need per team member from wuwa_calc's energy model (src/sim/energy/)
+  { path: "/energy", component: () => import("./sim/energy/EnergyView.vue"), name: "EnergyView" },
 ];
 
 const router = createRouter({
