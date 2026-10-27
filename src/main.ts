@@ -69,6 +69,8 @@ const routes = [
   { path: "/echo-plan", component: () => import("./sim/echoPlan/EchoPlanView.vue"), name: "EchoPlanView" },
   // Wuthering Tools+: share cards with the build inside the PNG, compact links, the import drop target (src/sim/share/).
   { path: "/share", component: () => import("./sim/share/ShareView.vue"), name: "ShareView" },
+  // Wuthering Tools+: the ToA clear check (src/sim/endgame/)
+  { path: "/endgame", component: () => import("./sim/endgame/ToaView.vue"), name: "ToaView" },
 ];
 
 const router = createRouter({

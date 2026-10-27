@@ -57,4 +57,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["share", "card", "import", "link", "png", "showcase", "export", "transfer", "phone", "tacet lab"],
     icon: "M12 3v12m0-12L8 7m4-4l4 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7",
   },
+  {
+    path: "/endgame",
+    title: "Tower of Adversity",
+    description: "ToA clear check: every Hazard Zone floor's HP and effects against your teams, with kill time, crests and a Vigor-legal plan for all 12 stages",
+    keywords: ["tower of adversity", "toa", "endgame", "hazard zone", "crests", "stars", "vigor", "floors", "clear time", "abyss"],
+    icon: "M6 21V8l6-5 6 5v13M10 21v-5h4v5M9 11h6",
+  },
 ];

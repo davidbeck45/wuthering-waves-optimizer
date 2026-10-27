@@ -233,4 +233,46 @@ describe("phone layout", () => {
       cy.get("[data-test-echo-plan-sheet-close]").click({ force: true });
     }
   });
+
+  // /endgame (src/sim/endgame/, the ToA clear check) in the v3 UI: the narrowest phone at 100 % text, David's S26 width
+  // at 130 % — floor cards one per screen width, team rows and time bars inside it, the plan as a vertical list.
+  it("keeps the ToA clear check inside the viewport with its floor cards, team rows and plan", () => {
+    const seed = (fontScale: number) => ({
+      onBeforeLoad(win: Window) {
+        win.localStorage.removeItem("wtplus:endgame:check");
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = `html { font-size: ${fontScale * 100}%; }`;
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
+    for (const [width, height, fontScale] of [
+      [360, 800, 1],
+      [412, 915, 1.3],
+    ]) {
+      cy.viewport(width, height);
+      cy.visit("/endgame", seed(fontScale));
+      cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-team]', { timeout: 120000 }).should("have.length.at.least", 1);
+      expectNoHorizontalScroll(`/endgame ${width} px`);
+      cy.get('[data-test-toa-floor="hazard-1"]').then(($card) => {
+        expect($card[0].getBoundingClientRect().right, "floor card inside the viewport").to.be.at.most(width);
+      });
+      cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-timebar]').first().then(($bar) => {
+        expect($bar[0].getBoundingClientRect().right, "time bar inside the viewport").to.be.at.most(width);
+      });
+      cy.get('[data-test-toa-tab="plan"]').click();
+      cy.get("[data-test-toa-stage]").should("have.length", 12);
+      expectNoHorizontalScroll(`/endgame plan ${width} px`);
+      cy.get('[data-test-toa-tab="calibrate"]').click();
+      cy.get("[data-test-toa-calibrate-team]").should("have.length.at.least", 1);
+      expectNoHorizontalScroll(`/endgame calibrate ${width} px`);
+    }
+  });
 });

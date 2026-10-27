@@ -44,15 +44,22 @@ let engine: Promise<RileyEngine> | null = null;
 export function loadRileyEngine(): Promise<RileyEngine> {
   engine ??= (async () => {
     const load = (file: string): Promise<any> => import(/* @vite-ignore */ VENDOR + file);
-    const [solver, teamrun, stats, model, substats] = await Promise.all([
+    const [solver, teamrun, stats, model, substats, gear, context, status, unison, profile] = await Promise.all([
       load("solve/solver.ts"),
       load("solve/teamrun.ts"),
       load("engine/stats.ts"),
       load("page/model.ts"),
       load("shared/substats.ts"),
+      // the enemy profile's modules (the ToA clear check, src/sim/endgame/effects.ts)
+      load("engine/gear.ts"),
+      load("engine/context.ts"),
+      load("shared/status.ts"),
+      load("shared/unison.ts"),
+      load("shared/profile.ts").catch(() => null),
     ]);
     if (typeof solver.setAccountState !== "function") throw new Error("this engine has no `mine` Team Cost — vendor/wuwa_calc must be the fork's plus branch");
-    return { solver, teamrun, stats, model, substats, commit: engineCommitFromGit() };
+    const floor = profile ? { gear, context, status, unison, profile } : undefined;
+    return { solver, teamrun, stats, model, substats, commit: engineCommitFromGit(), ...(floor ? { floor } : {}) };
   })();
   return engine;
 }

@@ -12,7 +12,8 @@
 import { notInApp } from "../rankings/importFromRankings";
 import { rileyTeamKeysFor } from "../rankings/syncTeams";
 import { WUWA_CALC_COMMIT } from "./engineCommit";
-import { bestOf, blockedKeysOf, DEFAULT_SUBS, memoKey, type MineSolve, type RileyAccount, type RileyPick, type RileyTeamInfo, type RunError, type RunLite, type SubsMode } from "./rileyRun";
+import { bestOf, blockedKeysOf, DEFAULT_SUBS, memoKey, type FightCurve, type MineSolve, type RileyAccount, type RileyPick, type RileyTeamInfo, type RunError, type RunLite, type SubsMode } from "./rileyRun";
+import { profileSignature, type FloorProfileSpec } from "../endgame/effects";
 import { RILEY_CANCEL, RILEY_MESSAGE, RILEY_PROGRESS, type RileyRequest, type RileyResponse, type RileyResult, type RileyTeamsResult } from "./rileyWorker";
 
 /** What the client needs of a worker — a real `Worker`, or an in-process stand-in in tests. */
@@ -45,6 +46,9 @@ export interface RileyClient {
   /** the traced run on these picks (null: the best `mine` row); rejects with a `RunError` (reason "notInApp",
    *  "stalePicks", …) or an AbortError */
   tracedRun(teamKey: string, picks?: RileyPick[] | null, opts?: ClientRunOptions): Promise<RunLite>;
+  /** the ToA clear check: an untraced run of fixed picks against each enemy profile (null = the engine's own
+   *  level-100 / 20 % enemy) as its damage curve, index-aligned; memoised per profile */
+  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: ClientRunOptions & { onProgress?: (done: number, total: number) => void }): Promise<FightCurve[]>;
   /** forget every memoised solve and run (the worker stays) */
   clear(): void;
   dispose(): void;
@@ -193,6 +197,29 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
       const subs = opts.subs ?? DEFAULT_SUBS;
       const key = memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks });
       return recall<RunLite>(key) ?? remember(key, request<RunLite>({ op: "trace", teamKey, picks, opts: { account, subs, blocked } }, opts.signal));
+    },
+
+    async curves(teamKey, picks, profiles, opts = {}) {
+      const { blocked } = await teamData(opts.signal);
+      const account = opts.account ?? null;
+      const subs = opts.subs ?? DEFAULT_SUBS;
+      const keyOf = (spec: FloorProfileSpec | null): string =>
+        `curve|${memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks })}|${spec ? profileSignature(spec) : "-"}`;
+      const found = new Map<number, Promise<FightCurve>>();
+      const missing: number[] = [];
+      profiles.forEach((spec, i) => {
+        const hit = recall<FightCurve>(keyOf(spec));
+        if (hit) found.set(i, hit);
+        else missing.push(i);
+      });
+      const known = profiles.length - missing.length;
+      if (missing.length) {
+        const batch = request<FightCurve[]>({ op: "curves", teamKey, picks, profiles: missing.map((i) => profiles[i]!), opts: { account, subs, blocked } }, opts.signal, (done) =>
+          opts.onProgress?.(known + done, profiles.length),
+        );
+        missing.forEach((i, j) => found.set(i, remember(keyOf(profiles[i]!), batch.then((r) => r[j]!))));
+      } else opts.onProgress?.(profiles.length, profiles.length);
+      return Promise.all(profiles.map((_, i) => found.get(i)!));
     },
 
     clear: () => memo.clear(),

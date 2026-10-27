@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "seasons": [
+    {
+      "season": 41,
+      "start": "2026-10-12",
+      "end": "2026-11-09",
+      "resetHour": 4,
+      "file": "s41.json"
+    }
+  ]
+}

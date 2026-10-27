@@ -1,0 +1,1033 @@
+{
+  "v": 1,
+  "season": 41,
+  "start": "2026-10-12",
+  "end": "2026-11-09",
+  "resetHour": 4,
+  "generatedAt": "2026-10-26T23:38:22.989Z",
+  "credits": {
+    "hp": "Floor HP: ChemX32's DPR Calc sheet (data from Sleep)",
+    "hpUrl": "https://docs.google.com/spreadsheets/d/1eoCTrwYIsRpacvL3KrcQpR5rwY3pbJ6gEljZdBj_DHs"
+  },
+  "towers": [
+    {
+      "id": "resonant",
+      "name": "Resonant Tower",
+      "floors": [
+        {
+          "id": "resonant-1",
+          "floor": 1,
+          "cost": 1,
+          "level": 70,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Baby Viridblaze Saurian",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            },
+            {
+              "name": "Viridblaze Saurian",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Fusion"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007115,
+              "text": "Enemy Havoc RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Havoc RES −10%",
+                  "res": {
+                    "Havoc": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008066,
+              "text": "Casting an Echo Skill increases Attribute DMG by 6% for all Resonators in the team, stacking up to 4 times. The same Resonator with identical Echoes cannot trigger this effect multiple times. At 4 stacks, Crit. DMG of all Resonators in the team is increased by 36%.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+6% DMG per Echo Skill caster (max 4)",
+                  "on": "echoCast",
+                  "stats": [
+                    {
+                      "stat": "dmgBonus",
+                      "value": 6
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "stacks": {
+                    "max": 4,
+                    "distinctMembers": true
+                  },
+                  "fidelity": "approx",
+                  "note": "One stack per resonator who casts an Echo Skill: a three-member team reaches 3 stacks (+18%), so the 4-stack +36% Crit DMG is never reached."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "Crit DMG +36% at 4 stacks",
+                  "note": "Needs four different resonator/echo triggers; a team of three tops out at 3 stacks."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-2",
+          "floor": 2,
+          "cost": 2,
+          "level": 75,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Fusion Dreadmane",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            },
+            {
+              "name": "Chop Chop: Headless",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            },
+            {
+              "name": "Chop Chop: Leftless",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Spectro"
+            },
+            {
+              "name": "Chop Chop: Rightless",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007115,
+              "text": "Enemy Havoc RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Havoc RES −10%",
+                  "res": {
+                    "Havoc": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008066,
+              "text": "Casting an Echo Skill increases Attribute DMG by 6% for all Resonators in the team, stacking up to 4 times. The same Resonator with identical Echoes cannot trigger this effect multiple times. At 4 stacks, Crit. DMG of all Resonators in the team is increased by 36%.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+6% DMG per Echo Skill caster (max 4)",
+                  "on": "echoCast",
+                  "stats": [
+                    {
+                      "stat": "dmgBonus",
+                      "value": 6
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "stacks": {
+                    "max": 4,
+                    "distinctMembers": true
+                  },
+                  "fidelity": "approx",
+                  "note": "One stack per resonator who casts an Echo Skill: a three-member team reaches 3 stacks (+18%), so the 4-stack +36% Crit DMG is never reached."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "Crit DMG +36% at 4 stacks",
+                  "note": "Needs four different resonator/echo triggers; a team of three tops out at 3 stacks."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-3",
+          "floor": 3,
+          "cost": 3,
+          "level": 80,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Snip Snap",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            },
+            {
+              "name": "Stonewall Bracer",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Physical"
+            },
+            {
+              "name": "Fusion Warrior",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            },
+            {
+              "name": "Spearback",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Physical"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007115,
+              "text": "Enemy Havoc RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Havoc RES −10%",
+                  "res": {
+                    "Havoc": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008066,
+              "text": "Casting an Echo Skill increases Attribute DMG by 6% for all Resonators in the team, stacking up to 4 times. The same Resonator with identical Echoes cannot trigger this effect multiple times. At 4 stacks, Crit. DMG of all Resonators in the team is increased by 36%.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+6% DMG per Echo Skill caster (max 4)",
+                  "on": "echoCast",
+                  "stats": [
+                    {
+                      "stat": "dmgBonus",
+                      "value": 6
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "stacks": {
+                    "max": 4,
+                    "distinctMembers": true
+                  },
+                  "fidelity": "approx",
+                  "note": "One stack per resonator who casts an Echo Skill: a three-member team reaches 3 stacks (+18%), so the 4-stack +36% Crit DMG is never reached."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "Crit DMG +36% at 4 stacks",
+                  "note": "Needs four different resonator/echo triggers; a team of three tops out at 3 stacks."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-4",
+          "floor": 4,
+          "cost": 4,
+          "level": 90,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Chop Chop",
+              "count": 2,
+              "hp": 630254,
+              "class": "Elite",
+              "element": "Fusion"
+            },
+            {
+              "name": "Dragon of Dirge",
+              "count": 1,
+              "hp": 2494756,
+              "class": "Overlord",
+              "element": "Fusion"
+            }
+          ],
+          "hp": 3125010,
+          "hpRaw": 3755264,
+          "hpType": "adjusted",
+          "effects": [
+            {
+              "id": 92007115,
+              "text": "Enemy Havoc RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Havoc RES −10%",
+                  "res": {
+                    "Havoc": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008066,
+              "text": "Casting an Echo Skill increases Attribute DMG by 6% for all Resonators in the team, stacking up to 4 times. The same Resonator with identical Echoes cannot trigger this effect multiple times. At 4 stacks, Crit. DMG of all Resonators in the team is increased by 36%.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+6% DMG per Echo Skill caster (max 4)",
+                  "on": "echoCast",
+                  "stats": [
+                    {
+                      "stat": "dmgBonus",
+                      "value": 6
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "stacks": {
+                    "max": 4,
+                    "distinctMembers": true
+                  },
+                  "fidelity": "approx",
+                  "note": "One stack per resonator who casts an Echo Skill: a three-member team reaches 3 stacks (+18%), so the 4-stack +36% Crit DMG is never reached."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "Crit DMG +36% at 4 stacks",
+                  "note": "Needs four different resonator/echo triggers; a team of three tops out at 3 stacks."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hazard",
+      "name": "Hazard Tower",
+      "floors": [
+        {
+          "id": "hazard-1",
+          "floor": 1,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            90,
+            150,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Lampylumen Myriad",
+              "count": 1,
+              "hp": 5510473,
+              "class": "Overlord",
+              "element": "Glacio"
+            }
+          ],
+          "hp": 5510473,
+          "hpRaw": 5510473,
+          "hpType": "raw",
+          "effects": [
+            {
+              "id": 92007153,
+              "text": "Enemy Electro RES and Fusion RES are decreased by 10%, and their Spectro RES and Glacio RES are increased by 10%.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Electro & Fusion RES −10%",
+                  "res": {
+                    "Electro": -10,
+                    "Fusion": -10
+                  }
+                },
+                {
+                  "kind": "res",
+                  "label": "Spectro & Glacio RES +10%",
+                  "res": {
+                    "Spectro": 10,
+                    "Glacio": 10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008201,
+              "text": "Grants 30% Electro and Fusion DMG Bonus. Inflicting Negative Statuses increases Crit. DMG by 25% for 20s.",
+              "model": [
+                {
+                  "kind": "dmgBonus",
+                  "label": "+30% Electro & Fusion DMG",
+                  "value": 30,
+                  "elements": [
+                    "Electro",
+                    "Fusion"
+                  ]
+                },
+                {
+                  "kind": "buff",
+                  "label": "Crit DMG +25% on a Negative Status",
+                  "on": "negativeStatus",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 25
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self",
+                  "fidelity": "approx",
+                  "note": "Given to the resonator whose hit inflicts any of the six Negative Statuses, for 20 s (the text does not say who receives it)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-2",
+          "floor": 2,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            90,
+            150,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Rocksteady Guardian",
+              "count": 2,
+              "hp": 612274,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
+              "name": "Exile Technician",
+              "count": 1,
+              "hp": 612274,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
+              "name": "Fallacy of No Return",
+              "count": 1,
+              "hp": 3981608,
+              "class": "Overlord",
+              "element": "Spectro"
+            }
+          ],
+          "hp": 5206156,
+          "hpRaw": 5818430,
+          "hpType": "adjusted",
+          "effects": [
+            {
+              "id": 92007153,
+              "text": "Enemy Electro RES and Fusion RES are decreased by 10%, and their Spectro RES and Glacio RES are increased by 10%.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Electro & Fusion RES −10%",
+                  "res": {
+                    "Electro": -10,
+                    "Fusion": -10
+                  }
+                },
+                {
+                  "kind": "res",
+                  "label": "Spectro & Glacio RES +10%",
+                  "res": {
+                    "Spectro": 10,
+                    "Glacio": 10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008201,
+              "text": "Grants 30% Electro and Fusion DMG Bonus. Inflicting Negative Statuses increases Crit. DMG by 25% for 20s.",
+              "model": [
+                {
+                  "kind": "dmgBonus",
+                  "label": "+30% Electro & Fusion DMG",
+                  "value": 30,
+                  "elements": [
+                    "Electro",
+                    "Fusion"
+                  ]
+                },
+                {
+                  "kind": "buff",
+                  "label": "Crit DMG +25% on a Negative Status",
+                  "on": "negativeStatus",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 25
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self",
+                  "fidelity": "approx",
+                  "note": "Given to the resonator whose hit inflicts any of the six Negative Statuses, for 20 s (the text does not say who receives it)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-3",
+          "floor": 3,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            60,
+            120,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Chasm Guardian",
+              "count": 2,
+              "hp": 549225,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Havoc Warrior",
+              "count": 4,
+              "hp": 367000,
+              "class": "Standard",
+              "element": "Havoc"
+            },
+            {
+              "name": "Fractsidus Milliner",
+              "count": 2,
+              "hp": 824748,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Nocturnus Knight",
+              "count": 1,
+              "hp": 1740974,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Impermanence Heron",
+              "count": 1,
+              "hp": 5412072,
+              "class": "Overlord",
+              "element": "Havoc"
+            }
+          ],
+          "hp": 8894019,
+          "hpRaw": 11368992,
+          "hpType": "adjusted",
+          "effects": [
+            {
+              "id": 92008205,
+              "text": "60s after the battle starts, after a Resonator's attacks hit an enemy, that enemy takes 5% more total DMG. This value increases by 5% every 5s, up to a maximum of 60%.",
+              "model": [
+                {
+                  "kind": "ramp",
+                  "label": "DMG taken +5% from 60 s, +5% / 5 s (max 60%)",
+                  "start": 60,
+                  "first": 5,
+                  "step": 5,
+                  "every": 5,
+                  "cap": 60,
+                  "fidelity": "approx",
+                  "note": "Played on the fight clock as DMG taken for every hit from 60 s on (it reaches 60% at 115 s); Negative Status ticks don't read it, as in the engine's other DMG-taken debuffs."
+                }
+              ]
+            },
+            {
+              "id": 92008199,
+              "text": "Enemies' All-Attribute RES is increased by 15%. This effect does not affect the Electro DMG and Spectro DMG they take.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Enemy RES +15% (not Electro / Spectro)",
+                  "res": {
+                    "Aero": 15,
+                    "Fusion": 15,
+                    "Glacio": 15,
+                    "Havoc": 15,
+                    "Physical": 15
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008200,
+              "text": "Casting Intro Skill increases the total DMG dealt by all Resonators in the team by 15% for 20s. When a Resonator inflicts Electro Flare, they deal 55% more total DMG for 20s. When a Resonator triggers Unison Response, they deal 50% more total Electro DMG for 20s.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+15% team DMG on Intro (20 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 15
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "team"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+55% DMG on inflicting Electro Flare (20 s)",
+                  "on": "electroFlare",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 55
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Electro DMG on Unison Response (20 s)",
+                  "on": "unisonResponse",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "element": "Electro"
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-4",
+          "floor": 4,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            60,
+            120,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Sentry Construct",
+              "count": 1,
+              "hp": 3299723,
+              "class": "Overlord",
+              "element": "Glacio"
+            },
+            {
+              "name": "Crownless",
+              "count": 1,
+              "hp": 6717893,
+              "class": "Overlord",
+              "element": "Havoc"
+            }
+          ],
+          "hp": 10017616,
+          "hpRaw": 10017616,
+          "hpType": "adjusted",
+          "effects": [
+            {
+              "id": 92008205,
+              "text": "60s after the battle starts, after a Resonator's attacks hit an enemy, that enemy takes 5% more total DMG. This value increases by 5% every 5s, up to a maximum of 60%.",
+              "model": [
+                {
+                  "kind": "ramp",
+                  "label": "DMG taken +5% from 60 s, +5% / 5 s (max 60%)",
+                  "start": 60,
+                  "first": 5,
+                  "step": 5,
+                  "every": 5,
+                  "cap": 60,
+                  "fidelity": "approx",
+                  "note": "Played on the fight clock as DMG taken for every hit from 60 s on (it reaches 60% at 115 s); Negative Status ticks don't read it, as in the engine's other DMG-taken debuffs."
+                }
+              ]
+            },
+            {
+              "id": 92008199,
+              "text": "Enemies' All-Attribute RES is increased by 15%. This effect does not affect the Electro DMG and Spectro DMG they take.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Enemy RES +15% (not Electro / Spectro)",
+                  "res": {
+                    "Aero": 15,
+                    "Fusion": 15,
+                    "Glacio": 15,
+                    "Havoc": 15,
+                    "Physical": 15
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008200,
+              "text": "Casting Intro Skill increases the total DMG dealt by all Resonators in the team by 15% for 20s. When a Resonator inflicts Electro Flare, they deal 55% more total DMG for 20s. When a Resonator triggers Unison Response, they deal 50% more total Electro DMG for 20s.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+15% team DMG on Intro (20 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 15
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "team"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+55% DMG on inflicting Electro Flare (20 s)",
+                  "on": "electroFlare",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 55
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Electro DMG on Unison Response (20 s)",
+                  "on": "unisonResponse",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "element": "Electro"
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "echoing",
+      "name": "Echoing Tower",
+      "floors": [
+        {
+          "id": "echoing-1",
+          "floor": 1,
+          "cost": 1,
+          "level": 70,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Aero Drake",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Aero"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007110,
+              "text": "Enemy Glacio RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Glacio RES −10%",
+                  "res": {
+                    "Glacio": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008038,
+              "text": "When Resonators cast Intro Skill, their ATK is increased by 5% per second, stacking up to 4 times. At max stack, they gain 40% Resonance Skill DMG Bonus. The effect ends when the Resonator is switched off the field.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: ATK +20%, Skill DMG +40% while on field",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "atk",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Skill"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "self",
+                  "lostOnSwap": true,
+                  "fidelity": "approx",
+                  "note": "Played at full stacks from the Intro on (the game builds ATK +5% a second for 4 s first) and dropped when the resonator swaps out."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-2",
+          "floor": 2,
+          "cost": 2,
+          "level": 75,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Cyan-Feathered Heron",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Aero"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007110,
+              "text": "Enemy Glacio RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Glacio RES −10%",
+                  "res": {
+                    "Glacio": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008038,
+              "text": "When Resonators cast Intro Skill, their ATK is increased by 5% per second, stacking up to 4 times. At max stack, they gain 40% Resonance Skill DMG Bonus. The effect ends when the Resonator is switched off the field.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: ATK +20%, Skill DMG +40% while on field",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "atk",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Skill"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "self",
+                  "lostOnSwap": true,
+                  "fidelity": "approx",
+                  "note": "Played at full stacks from the Intro on (the game builds ATK +5% a second for 4 s first) and dropped when the resonator swaps out."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-3",
+          "floor": 3,
+          "cost": 3,
+          "level": 80,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Hurriclaw",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Aero"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007110,
+              "text": "Enemy Glacio RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Glacio RES −10%",
+                  "res": {
+                    "Glacio": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008038,
+              "text": "When Resonators cast Intro Skill, their ATK is increased by 5% per second, stacking up to 4 times. At max stack, they gain 40% Resonance Skill DMG Bonus. The effect ends when the Resonator is switched off the field.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: ATK +20%, Skill DMG +40% while on field",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "atk",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Skill"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "self",
+                  "lostOnSwap": true,
+                  "fidelity": "approx",
+                  "note": "Played at full stacks from the Intro on (the game builds ATK +5% a second for 4 s first) and dropped when the resonator swaps out."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-4",
+          "floor": 4,
+          "cost": 4,
+          "level": 90,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Fleurdelys",
+              "count": 1,
+              "hp": 3371859,
+              "class": "Calamity",
+              "element": "Aero"
+            }
+          ],
+          "hp": 3371859,
+          "hpRaw": 3371859,
+          "hpType": "raw",
+          "effects": [
+            {
+              "id": 92007110,
+              "text": "Enemy Glacio RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Glacio RES −10%",
+                  "res": {
+                    "Glacio": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008038,
+              "text": "When Resonators cast Intro Skill, their ATK is increased by 5% per second, stacking up to 4 times. At max stack, they gain 40% Resonance Skill DMG Bonus. The effect ends when the Resonator is switched off the field.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: ATK +20%, Skill DMG +40% while on field",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "atk",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Skill"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "self",
+                  "lostOnSwap": true,
+                  "fidelity": "approx",
+                  "note": "Played at full stacks from the Intro on (the game builds ATK +5% a second for 4 s first) and dropped when the resonator swaps out."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
