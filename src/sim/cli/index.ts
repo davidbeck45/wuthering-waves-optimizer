@@ -247,6 +247,24 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("trace <team>")
+      .description("Riley's traced team run at your account's own state (the Riley run seam): members, DPS, seconds, energy needs — <team> is a wuwa_calc key (t404), a saved team, or three names (Shorekeeper,Lynae,Iuno) (Wuthering Tools+)")
+      .option("--subs <mode>", "the substat spread: mine (your equipped echoes, ChemX32 where none), standard (ChemX32), high (High Invest)", "mine")
+      .option("--full", "print the whole RunLite (rows, hits, buffs) as JSON"),
+  ).action(
+    guarded(async (team: string, options: CommonOptions & { subs: string; full?: boolean }) => {
+      if (!["standard", "high", "mine"].includes(options.subs)) throw new Error("--subs must be mine, standard or high");
+      const exp = load(options);
+      const { traceTeam, printTrace } = await import("../engine/traceCli");
+      const result = await traceTeam(exp, team, options.subs as "standard" | "high" | "mine");
+      if (options.full) return printJson(result.run);
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...result.summary });
+      printTrace(result.summary);
+    }),
+  );
+
+  withCommon(
+    program
       .command("calc <character>")
       .description("Stats, every attack's damage and each saved rotation for one character, from the app's own engine")
       .option("--no-attacks", "skip the per-attack table")
