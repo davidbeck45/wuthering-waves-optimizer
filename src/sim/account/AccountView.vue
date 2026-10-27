@@ -37,6 +37,8 @@
       </p>
     </header>
 
+    <TodayCard class="mb-4" />
+
     <section v-if="!setUpCount" data-test-account-empty>
       <MyRankingsEmpty
         title="Your account, scored on your real builds"
@@ -109,6 +111,7 @@ import AccountInvest from "./AccountInvest.vue";
 import AccountRoster from "./AccountRoster.vue";
 import AccountTeams from "./AccountTeams.vue";
 import AccountCharacterDrawer from "./AccountCharacterDrawer.vue";
+import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",

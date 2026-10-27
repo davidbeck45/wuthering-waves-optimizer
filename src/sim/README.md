@@ -1059,3 +1059,79 @@ Capture the fixture again after a submodule bump (the test compares it field for
 `npx tsx scripts/capture-runlite.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
+
+
+## Today — `/today`, resets, Waveplates and events from Kuro's own text (batch 2, track "today", 2026-10-26)
+
+A phone-first daily page: "what do I need to do before the reset?". The player's server clock with the daily (04:00)
+and weekly (Monday 04:00) countdowns, a Waveplate "full at" clock, events ending soon / running / starting soon read from
+Kuro's patch notes, the endgame cycles, the live Convene banners, a caps checklist that clears itself at each item's own
+reset, a double-drop banner stated as numbers, `.ics` files for the phone's calendar and an opt-in browser notification.
+One column of cards on a phone; two from 768 px with a 14-day timeline below them, three from 1280 px. A compact strip
+of it sits on top of `/account` (`TodayCard.vue`, cache only, no network).
+
+| File | Role |
+|---|---|
+| `durations.ts` | pure: `parseDuration` (the three `✦Duration:` forms — a range with "(server time)" or "(UTC+8)", "Version 3.7 Update - <end>", "Permanently available…" → dropped; slashed dates and "~" too; any other clock such as "(PT)" → null), `parseNewsArticle` (each Duration line paired with the nearest bracketed heading above it inside its section — "[Special Events] [Cubie Wars] Leisure Event" → "Cubie Wars" / "Leisure Event"; stand-alone notices use the "✦Duration✦ + next line" form and name the event from their title), `buildEventList` (resolved on the player's clock — "server" rows move with the region, "utc+8" rows don't; a version-update start = that version's patch-notes time from convene's `versionReleases`; unreleased versions dropped; upcoming rows only inside the live version; hand-entered rows give way to Kuro's text and appear only once their post's publish time has passed; ids carry the end wall clock, so one notice may list a name twice), `bucketEvents` (ending ≤ 3 days / live / starting ≤ 14 days), `doubleDropsAt` + `doubleDropMath` |
+| `news.ts` | which notices to read (`pickTodayNotices`: the two newest released patch notes + double-drop and "Event Preview" notices of the last 60 days — only notices whose publish time has passed), `refreshNewsCache` (keeps notices whose publish time didn't change, retries failures next time), `loadNews` (24 h stale-while-revalidate; offline → the cache + a message), `shareMenuFetch` (one ArticleMenu.json read serves this refresh and convene's `loadBanners` in the same page load) |
+| `resets.ts` | pure: `lastDailyReset` / `nextDailyReset`, `lastWeeklyReset` / `nextWeeklyReset`, `cycleWindow` (28-day cycles from a Monday 04:00 anchor, with the community season number), `progressOf`, `utcLabel` |
+| `waveplates.ts` | pure: `projectWaveplates` (1 per 6 min to 240, then crystals 1 per 12 min to 480; a typed count is taken as just ticked, so ± one tick; above 240 no regeneration), `normalizeEntry`, `dailyRegen` |
+| `checklist.ts` | pure: `periodOf` (daily / weekly / `cycle:<id>` / the Matrix phase = the live version), `itemState` (a tick made before its period began reads 0 — nothing is rewritten on a timer), `setCount`, `visibleItems` (hidden items out; the doubled-claims counter only while a double drop runs) |
+| `ics.ts` | pure RFC 5545: `buildIcs` (UTC `…Z` stamps, stable UIDs + a growing `SEQUENCE` (`icsSequence`: minutes since 2026-01-01) so a re-import updates in calendars that honour it, a display alarm, CRLF, 75-octet folding that never splits a UTF-8 character, TEXT escaping) |
+| `state.ts` | `wtplus:today:v1` = `{ v: 1, waveplates: { value, crystals, atMs } \| null, ticks: { <id>: { n, at } }, hidden, timeMode: "local" \| "server", notify, showLive }`; decoded field by field, defaults on anything unreadable |
+| `format.ts` | "21:34 today", "Thu 14:00", "Nov 9, 03:59", "in 3h 10m" — on the device's zone or the server's |
+| `rules.ts` + `data/rules.json` | the static rules, each with its source: Waveplate constants (wiki "Waveplate"), the reset hour (Kuro 4188), the ToA / Whimpering Wastes anchors (community — "check in game"), the Endstate Matrix cycle (Kuro 5150, an image post), version ends (3.7 → 2026-11-12, Kuro 5529), hand-entered rows for image-only posts (Chord Cleansing Nov 4–11, Kuro 5653), the double-drop rules (Kuro 4368 / 4466) and the checklist caps (Kuro 3920 / 4188 / 4819, wiki Weekly Challenge / Data Bank / Guidebook) |
+| `useToday.ts` | the shared state for the page and the card: the region (convene's `server` preference — one setting for both pages; `useBannerFeed().serverId`), a 1 s clock while mounted and visible (everything else on minute resolution), the news feed + the banner cache refresh (on mount and whenever the tab becomes visible again — a no-op while both caches are fresh), the derived view model, the `.ics` downloads (an event's description states its end as an absolute date on Kuro's clock, never "tomorrow"), `useWaveplateReminder` (Notification API, only after a click, only while a tab is open, desktop browsers only — phones notify only through a service worker, which the site doesn't have, so they get the calendar file) |
+| `TodayView.vue` + `ui/*.vue` | the page (`useDocumentTitle`), cards injected with the model: `TodayNowCard` (clock, region, resets), `TodayWaveplatesCard`, `TodayEndingCard`, `TodayLiveCard` (collapsible), `TodayEndgameCard`, `TodayBannersCard` (convene's live banners + `ConveneItemIcon`), `TodayChecklistCard`, `TodayDoubleDrop`, `TodayTimeline` (≥ 768 px), `TodayEventRow` |
+| `TodayCard.vue` | the `/account` strip (one import + one tag in `AccountView.vue`) |
+| `today.test.ts` + `__fixtures__/` | 37 tests, no live network: `patch37.json` = article 5571 (the 3.7 patch notes, cut after the events), `eventNotices.json` = 4368 / 4466 / 5365 whole, `kuroMenu.json` = a trimmed real menu (fetched 2026-10-26) |
+| `cypress/e2e/today.cy.ts` | the feed from the same fixtures (Date pinned on the Asia clock): buckets, an event's `.ics` (absolute UTC+8 date, `SEQUENCE`), the Waveplate clock and its `.ics`, ticks surviving a reload and the weekly reset, the double-drop banner, the region guess, the feed down, a phone at 130 % and the `/account` strip; `phoneLayout.cy.ts` covers `/today` at 360 (classic) and 412 (v3, 130 %) |
+
+Rules:
+- **Kuro's text wins.** Dates come from the official notices; a hand-entered row exists only for a post Kuro made as an
+  image, carries its article id, and gives way to a parsed row of the same event. wuwatracker's timeline had Artisan's
+  Search ending 11-26 and Cubie Wars 11-12 03:59; the patch notes say 10-26 03:59 and 11-11 11:59.
+- **Released content only.** Only released versions' patch notes and notices already posted are read; an event of a
+  version that hasn't gone live is never listed, and an upcoming event is listed only while it starts before the live
+  version's end (`rules.versionEnds`, else its release + 40 days) — the day-before "Event Preview" of the next version's
+  event stays hidden.
+- **Every rule row carries a source.** The ToA and Whimpering Wastes calendars are community-sourced (the wiki's dated
+  Hazard Zone floors keep a 28-day Monday cadence — 2025-09-15, 2025-10-13, 2026-01-05 — and agree with wuwatracker), so
+  they say "check in game". Re-check caps and anchors at every version (`rules.json` `checked`).
+- **Each event keeps its clock.** Server-time rows are drawn on the region's offset; UTC+8 rows (web events) are one
+  global moment, and in "server time" mode they still print in UTC+8 with the label.
+- **No push, no service worker.** The calendar file is the reminder that works with the browser closed; the
+  notification is an explicit opt-in that fires only while a tab is open.
+
+Things learned:
+- **The spec's "Fantasies 2 free claims" is out of date.** 3.0 (article 3920) added 2 Waveplate-free Remnant Crystal
+  claims a week; 3.4 (4819) removed the Remnant Crystal claim and folded those rewards into **Weekly Activity**, whose
+  points and rewards reset every Monday 04:00. The checklist tracks "Weekly Activity milestones" instead; the 160-Astrite
+  figure isn't stated in Kuro's text, so it isn't shown.
+- Endstate Matrix cycle 2 "lasts from Version 3.5 to Version 3.8" and its phases "reset with version updates" (5150, an
+  image post); 3.7 runs to "2026-11-12, before maintenance" (5529, image). So 3.7 is Phase 3 of 4 and resets with the
+  3.8 update; the page shows that date as "≈" (04:00 UTC+8, when 3.7's own maintenance began).
+- The 3.7 double drops were announced only in images (5529, 5653); the stand-alone "[Chord Cleansing] … Double Drop
+  Event" text notices stopped after 4368 / 4466 (early 2026). Both rules are the same: 3 doubled claims a day, refreshed
+  04:00 server time; Simulation and Forgery share Bountiful Crescendo's. Purification & Separation stacks since 3.0 (2
+  claims for 4×) — the same +1 run per claim. 3 × 60 = 180 Waveplates a day for Tacet, below the 240 a day regenerates,
+  so banking for the event gains nothing.
+- Patch-notes headings are `<strong>` lines; `articleLines` drops the tags, so the parser keys on the brackets. Reward
+  lines like "[Log in for 1 day in total]: …" also start with a bracket — a heading never continues with ":".
+- `wallClockMs` + the region offset is all the time-zone handling needed: Kuro's servers have no daylight saving; the
+  device's zone (which does) only matters for "your time" display, which `Date`'s local fields handle (the America
+  server's 04:00 is 04:00 CDT until Nov 1 and 03:00 CST after — both shown right).
+
+- Verified against Kuro's own posts on 2026-10-26 (verify pass): the hand-entered Chord Cleansing row matches the
+  image in 5653 ("2026-11-04 04:00 - 2026-11-11 03:59 (server time)"), and every other event in that image is also in
+  the 5571 patch notes with the same dates; 5529's image says "2026-09-30, after update - 2026-11-12, before
+  maintenance"; the 3.7 maintenance notice (5476) ran 04:00–11:00 UTC+8, which is why the version end is drawn at
+  04:00 UTC+8 with "≈". The next version's maintenance notice (posted about a week ahead) states that end exactly — a
+  candidate for a parsed row instead of `rules.versionEnds`.
+- Don't use "ⓘ" (U+24D8) as an icon: the app's font has no glyph for it and it falls back to a box. The checklist's
+  source link is an inline SVG.
+
+Hooks for later (not wired here): the command palette can open `/today` from `PLUS_PAGES` and could add "Waveplates
+full at…" / "What ends today?" commands that read `useToday()`; "Explain" could quote `doubleDropMath`; the ToA row
+links to `/endgame` as soon as that route exists (`router.resolve` check — the toa-clear track adds it); an ER check
+(er-check track) has no place on this page.

@@ -43,4 +43,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["echo", "feed", "tune", "reroll", "transducer", "benchmark", "keep", "upgrade", "substats"],
     icon: "M9 3h6M10 3v6.5L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9.5V3M7.5 15h9",
   },
+  {
+    path: "/today",
+    title: "Today",
+    description: "Resets on your server's clock, when your Waveplates are full, events ending soon and your weekly caps",
+    keywords: ["daily", "weekly", "reset", "waveplates", "stamina", "events", "timer", "countdown", "double drop", "tower of adversity", "whimpering wastes", "checklist"],
+    icon: "M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2.5 2.5M9 2h6",
+  },
 ];
