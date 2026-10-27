@@ -1610,3 +1610,86 @@ Things learned:
   `rotationLines.flat()` parity excludes his field-summary lines (`aggregate`), which RunLite drops.
 - Not built: links from the synced team rows and the stock-preset modal (both live in Ryan's `TeamRotations.vue`; the
   picker lists both sets instead); palette commands (batch 1's palette — see the integration notes of this track).
+
+## Energy check — `src/sim/energy/` + `/energy` (batch 2, 2026-10-26)
+
+"How much Energy Regen does this character need **in this team**?" — answered by Riley's engine, not a rule of thumb:
+his solver raises ER until every Liberation of the team's loop is paid on time and records each member's worst
+charge (`detailFor(run).needs`). The check runs that traced run at the player's own account (the Wave 0 seam:
+`solveMine` → best `mine` row across every loadout variant of the composition → `tracedRun`) for every saved team,
+and sets it beside the ER the build has in this app. ER stops reading as dead weight in every score built on a
+`BuildScorer`: below the need an ER roll is worth the share of the deficit it closes, at or above it nothing.
+
+| Piece | Role |
+|---|---|
+| `energyNeed.ts` | pure: `needOf` (need = `max(bar ?? 0, minEr)`, `setBy` loop / kit, null = no energy gate), `bandOf` (short · tight within `TIGHT_MARGIN` 5 points · ok · noGate · unknown = no build), `shortBy` / `rollsShort` (`ceil(gap / medianRoll("EnergyRegen"))`, 9.2 % = Riley's `ER_ROLL`), `deficitFactor` (`1 − max(0, need − have)/100`), `erWeight`, `breakdownOf` (own hits and each ally's half share × bar/100, flat gains, the remainder = ER buffs on own hits), `overcapOf` (share of a member's damage at ≥ 100 % Crit Rate from `RunRow.critOver`, the top casts, the rest's Crit Rate), `teamEnergyOf(RunLite)` → `TeamEnergy` (~1.7 KB, what the cache keeps), `compositionKey` |
+| `energyHave.ts` | the "have": `menuEnergyRegen` = the character screen's ER of a build (`buildCharacterCalculationContext(…, { alwaysEnabledOnly: true })` — base, weapon, echoes, sets, always-on passives, permanent nodes; never a toggled conditional / team buff, which Riley's `bar` already contains) + `KIT_CONSTANT_ER` (Mornye's unconditional +10 % inherent, a toggle in the app, constant in wuwa_calc; a test recomputes the table from his `menuStats`); `erSignature` / `memoMenuEr` (a clone that only moves non-ER lines shares its ER) |
+| `energyCheck.ts` | `measureComposition(engine, ids)` / `measureKeys` → `ok` + `TeamEnergy`, or `notMeasured` with a reason (`incomplete`, `notRiley`, `notInApp`, `noBuild`, `error`) — never a fallback formula; `teamHaves` (the build the team really runs: `resolveTeamCharacters` — a pin, a build named after the teammates, else the active one); `memberChecks`, `characterFloors` (worst need per character across saved teams = the floor), `energySummary`, `scanCandidates` (his list grouped by composition, every member owned or free — 4-stars, Rovers — unreleased ones out) |
+| `energyCache.ts` | localStorage `wtplus:energy:v1`: one entry per composition keyed `energy \| engine commit \| accountKeyOf \| buildsKey \| composition`; other commits dropped on save, failures never kept, the 220 most recent, halves itself over quota |
+| `useEnergyNeeds.ts` | the app's one shared check (detached effect scope): pages `activate()` / `release()` it; measures saved teams on the seam's `rileyClient()` worker, reads haves from the stores in ~12 ms slices (one calculator build per character — 40 in one task held a phone's main thread for half a second), watches the stores only while a page is active (debounced 500 ms), `viewOf(ids)` for any composition ("Check ER" on a preset), `ready()` for one-shot readers (follows a haves job a data change superseded), the opt-in `scanAll` on a pool of up to three extra solver workers with progress, cancel and a count of compositions that failed |
+| `erAwareScorer.ts` | `erAwareScorer(score, id, floor)` wraps a `BuildScorer`: `avg × deficitFactor(need, have(clone))`, `extra.raw` / `extra.er` keep the undiscounted damage and the ER. Hooks for direct engine callers (batch 1): `erFactorFor`, `erAdjustedGain`, `erReferenceCounts` (ChemX32 with ER promoted to third — 2 rolls on 5/5/2/2/2, 3 on 5/4/3/2/2, his `PROMOTIONS`, capped at three), `erRollsToFloor`, `erBenchmarkNote` |
+| `energySubstats.ts` | `erFloorScorer(energy, id, score)` → the scorer with the character's floor, or the plain one with a reason (`noTeam`, `noGate`, `notMeasured`, `failed`); `erNeedsOf(energy)` → `{ id: need }` for a worker job / cache key, `erNeedsKey` |
+| `EnergyView.vue` (`/energy`) | KPIs (teams checked, short, tight, crit past 100 %), saved teams worst first (order frozen while measuring) with filters and a show-more past eight, the ER floor per character, the opt-in scan ("Other teams you can field": ~170 compositions in ~9 s on David's account), how to read it, the credit line |
+| `EnergyTeamCard.vue` / `EnergyMeter.vue` / `EnergyBreakdown.vue` / `EnergySheet.vue` | a team's members as meters (fill = have from 100 %, tick = need) + chips; a member opens the breakdown inline (stacked bar against the spend in a validated three-slot palette, legend with energy and share, crit overcap, what being short costs a score); the chips elsewhere open it in a native `<dialog>` — centred on desktop, a bottom sheet under 768 px (phone.css § 6) |
+| `EnergyChip.vue` / `EnergyStatusIcon.vue` | "110.8% / 115.2% short 4.4% · 1 roll": icon (✓ △ ! – ◌ ×) + numbers + word, colour never alone; `compact`, `small`, `mini` (a pill beside S/R badges — icon + "ER" on a phone, the numbers in its label) |
+| `EnergyTeamChips.vue` / `EnergyCharacterFloor.vue` / `EnergySubstatNote.vue` / `EnergySummaryTile.vue` | self-contained hooks: chips per team row, a character's floor (the `mini` pill and, as a block, a wrapping "needs 115.2% with Mornye + Lynae" / "kit floor 240.0%" line — a full chip there widened today's roster table and squeezed its Best rotation column), the line under substat weights, the "2 characters short on ER · 1 overcapping crit" tile (`tile` for /account, `inline` for a header link) |
+| `energyCli.ts` + `cli/index.ts` | `npm run cli -- er [--team <t>] [--all] [--no-auto-buffs] [--pretty]`: every saved team's members (have, need, set by, status, rolls short, crit ≥ 100 %, DPS), the floor per character, the summary; `--all` adds every fieldable composition. David's 9-14 export: 33 teams in ~4 s |
+| `energy.test.ts` | the pure reading (bands, rounding as printed, deficit factor, ER weight); the synthetic run fixture (Shorekeeper's 240 % kit floor over her ~187 % loop, the breakdown identity, overcap in [0, 1]); the cache (keys, commit, failures); ER as a floor inside `substatWeights` on the Cartethyia fixture (ER > 0 one roll short, 0 at 20 % over, Crit Rate's gain untouched); the batch-1 hooks; `KIT_CONSTANT_ER` against his engine; on the real engine: t0 at S0 R1 (Shorekeeper 240 over a ~212 loop), determinism and equality with the seam fixture, Phrolova no gate, every not-measured reason; the oracle soft report |
+| `cypress/e2e/energyCheck.cy.ts` | v3, seeded through `onBeforeLoad`: a wuwa_calc composition measured (breakdown opens, kept in `wtplus:energy:v1`) and a hand-built one "not measured"; the floor and sheet on /my-rankings, ER as a floor in the substat weights; empty states; a dead engine worker (error + retry, nothing kept, weights fall back); 360 / 412 px at 130 % with no horizontal scroll and the sheet on the bottom edge. `phoneLayout.cy.ts` lists `/energy` |
+
+Rules:
+- **The need belongs to the loop.** It is the constant ER at which every Liberation of *that team's* wuwa_calc rotation
+  is paid on time, from each kit's own steady state (not from a full bar, as wudamage starts). Say "for this team's
+  wuwa_calc loop"; a team that is not one of his compositions is **not measured** — no formula stands in (the
+  community outro rule is licence-encumbered, and a guess is worse than none).
+- **Compare constant with constant.** The have is the character screen's ER; never add a conditional ER buff the
+  fight grants (it is inside the bar). The app's `finalStats.energyRegen` is a decimal: `erPercent(1.184) = 118.4`.
+- **Printed rounding.** Have rounds to one decimal, the need rounds **up** (113.04 % asks for 113.1 %); bands compare
+  the printed figures, so "short" never shows two equal numbers.
+- **Released content only.** Teams with a member the app does not list (`notInApp`, Lily) are "not measured" with the
+  seam's message; the scan leaves them out.
+- **Cost.** Saved teams measure on open (~0.1 s each warm, kept per account + engine commit, so a revisit paints from
+  localStorage); the full scan is a button. A support whose ER turns into buffs (Shorekeeper, Mornye) reads its
+  kit floor, labelled "kit floor".
+- **Scores.** With a floor every weight is read on `damage × (1 − deficit)`: other stats' relative gains are unchanged
+  (the factor multiplies both sides) unless the roll also moves ER. Without one (no saved team, no gate, engine
+  failure) the scorer is the plain one and the note says why.
+
+Things learned:
+- Riley's `minEr` is a loadout floor, not a loop result: Shorekeeper's 240 % and Mornye's 260 % sit far above their
+  loops (~187 % / ~179 %), so `setBy: "kit"` matters for the words ("the kit's own floor") and the breakdown (which
+  explains the loop's bar, not the floor).
+- `(hit + Σ shared) × bar/100 + flat = spend` holds to ~0.6 % on members without ER buffs on their own hits; with them
+  (Shorekeeper's Stellarealm) the remainder is those buffs, shown as a striped "ER buffs on own hits" part rather than
+  forced into the identity.
+- The app's build card leaves Mornye's unconditional inherent +10 % as a toggle; his engine counts it as kit-constant.
+  `KIT_CONSTANT_ER` is the only correction, and the test fails if his kits gain another.
+- Phrolova-style kits (Liberation costs no energy) have `maxEnergy = 0`: the bar is null and the chip says "no energy
+  gate" rather than a 100 % need.
+- A saved team synced on an older engine commit carries an old key in its name ("wuwa_calc t307"); the check maps the
+  composition fresh (`teamKeysFor`) and shows the key it measured, so the two can differ — never key anything on the
+  name. A composition can also leave his list (David's "Phrolova + Lucilla + Galbrena (wuwa_calc t365)": at e1181a9
+  t365 is Shorekeeper + Phrolova + Galbrena and no team has those three), so the words are "not one of wuwa_calc's
+  **current** compositions".
+- A kit floor is not a loop result and no team sets it: the meter tick, the chip's label, the floor table's "Set by"
+  and the substat note all say "kit floor" / "the kit's own floor" rather than "needs … with <team>".
+- The fixture-derived numbers the tests pin (Shorekeeper 240 over a 187.47 loop, Lynae 113.85, Iuno 99.10) are the
+  same at 653fee7 / e95d4e6 (plus-next's recaptured `runLite.json`), and the real-engine tests pass there.
+
+Hooks into batch 1's pages (written and tested against `plus-next` at merge time; each is a line or two):
+- `MyRankingsTeams.vue`: `<EnergyTeamChips :character-ids="t.characterIds" :name="t.name" class="mt-1" />` under the name.
+- `MyRankingsCharacters.vue`: `<EnergyCharacterFloor :character-id="c.id" inline />` inside `.mr-who__pills` (the
+  `mini` pill keeps the 56 px rows).
+- `MyRankingsSubstats.vue` + `panelState.ts`: `er: ErFloorScorer | null` in the state; score with
+  `(await erFloorScorer(useEnergyNeeds(), id, rotationScorer(…))).score`; `<EnergySubstatNote>` replaces the
+  "Energy Regen reads 0" line, a `floor` badge on the ER row, the baseline text reads `baselineExtra.raw`.
+- `AccountView.vue`: `<EnergySummaryTile />` under the hero.
+- `echoLab/benchmarkScore.ts`: `BenchmarkOptions.erNeeds` → `erFactorFor` on every scoring and on D, the reference
+  from `erReferenceCounts(priority, erRollsToFloor(need, ER of B))`, `EnergyRegen` among the perfect spread's
+  candidates, `erBenchmarkNote` as the last note, `erNeed` / `erHave` on the result; `useEchoLab.runBenchmarks`
+  passes `erNeedsOf(useEnergyNeeds())`; `EchoLabBenchmark.vue` shows a `mini` "ER" chip per row.
+- `account/investPlan.ts`: `InvestOptions.erNeeds` → own gains through `erAdjustedGain(gain, factor(base),
+  factor(hypo))`; `useAccountData.ts` passes `erNeedsOf(…)` and appends `erNeedsKey` to the plan cache key.
+- Their test, `src/sim/energy/energyHooks.batch1.test.ts`, lands with them (Galbrena's benchmark 12 points short:
+  D × 0.88, ≥ 2 reference ER rolls, ER third; Cartethyia 8 short: an Energy Regen roll tops the invest plan at
+  1/0.92 − 1; a met need leaves both unchanged).

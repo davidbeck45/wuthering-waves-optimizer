@@ -30,7 +30,7 @@ describe("phone layout", () => {
   it("keeps every page inside the viewport and the nav icons clear of the utility menu", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
-    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account"]) {
+    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/energy"]) {
       cy.visit(route);
       cy.get(".navbar").should("be.visible");
       expectNavFits(route);

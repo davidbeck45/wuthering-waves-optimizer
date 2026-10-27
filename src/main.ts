@@ -73,6 +73,8 @@ const routes = [
   { path: "/endgame", component: () => import("./sim/endgame/ToaView.vue"), name: "ToaView" },
   // Wuthering Tools+: a wuwa_calc rotation as a cue card + fight timeline, at the player's account (src/sim/rotation/)
   { path: "/rotation", component: () => import("./sim/rotation/RotationView.vue"), name: "RotationView" },
+  // Wuthering Tools+: the energy check — ER need per team member from wuwa_calc's energy model (src/sim/energy/)
+  { path: "/energy", component: () => import("./sim/energy/EnergyView.vue"), name: "EnergyView" },
 ];
 
 const router = createRouter({
