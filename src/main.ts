@@ -79,6 +79,8 @@ const routes = [
   { path: "/today", component: () => import("./sim/today/TodayView.vue"), name: "TodayView" },
   // Wuthering Tools+: Weapon value — signatures, refinements and selector picks on your roster (src/sim/weaponValue/)
   { path: "/weapons", component: () => import("./sim/weaponValue/WeaponValueView.vue"), name: "WeaponValueView" },
+  // Wuthering Tools+: "Build my team" — re-gear a team from the echo inventory (src/sim/buildTeam/)
+  { path: "/build-team", component: () => import("./sim/buildTeam/BuildTeamView.vue"), name: "BuildTeamView" },
 ];
 
 const router = createRouter({

@@ -14,11 +14,12 @@ import { mountRotationLink } from "../rotation/rankingsLink";
 import type { BuildRolls } from "./myBuilds";
 import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
-import { importTeamFromRankings, type ImportResult } from "./importFromRankings";
+import { importTeamFromRankings, notInApp, type ImportResult } from "./importFromRankings";
 import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
 import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
+import { appKeyOf } from "./rileyNames";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -311,13 +312,40 @@ function mountImportControls(key: string): void {
     box.className = "wt-import";
     box.innerHTML = `
       <label class="wt-import__opt" title="also save each member's rotation to that character"><input type="checkbox" data-test-rankings-import-rotations checked> <span class="wt-import__long">also save each member's rotation</span><span class="wt-import__short">+ rotations</span></label>
-      <button type="button" class="btn btn-primary btn-xs" title="Import team into Wuthering Tools+" data-test-rankings-import-team>${IMPORT_LABEL}</button>`;
+      <button type="button" class="btn btn-primary btn-xs" title="Import team into Wuthering Tools+" data-test-rankings-import-team>${IMPORT_LABEL}</button>
+      ${BUILD_TEAM_LINK}`;
     topbar.appendChild(box);
     box.querySelector("button")!.addEventListener("click", () => void runImport());
+    // Wuthering Tools+ build-my-team: these three, re-geared from the player's echoes (src/sim/buildTeam/)
+    box.querySelector<HTMLAnchorElement>("[data-test-rankings-build-team]")!.addEventListener("click", (e) => {
+      e.preventDefault();
+      const href = (e.currentTarget as HTMLAnchorElement).getAttribute("href");
+      if (href) void router?.push(href);
+    });
   }
   box.dataset.team = key;
+  pointBuildTeamLink(box, key);
   mountMemberStrip(topbar, key);
   mountRotationLink(box, key, (path) => void router?.push(path)); // Wuthering Tools+: the rotation view (src/sim/rotation/)
+}
+
+/** Wuthering Tools+ build-my-team: the topbar link beside Import (an icon on a phone, where Back and Import share a line). */
+const BUILD_TEAM_LINK = `<a class="btn btn-ghost btn-xs wt-import__build" href="/build-team" title="Build my team: re-gear these three from your echoes" aria-label="Build my team from your echoes" data-test-rankings-build-team>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-linejoin="round"/></svg>
+  <span class="wt-import__long">Build from my echoes</span></a>`;
+/** Points the link at this row's three (main DPS first) and its wuwa_calc team key. */
+function pointBuildTeamLink(box: HTMLElement, key: string): void {
+  const link = box.querySelector<HTMLAnchorElement>("[data-test-rankings-build-team]");
+  const run = mods?.model.results.get(key) as { teamKey?: string; members?: Array<{ name: string; mainDps?: boolean }> } | undefined;
+  if (!link) return;
+  const members = [...(run?.members ?? [])].sort((a, b) => Number(!!b.mainDps) - Number(!!a.mainDps)).map((m) => appKeyOf(m.name));
+  const teamKey = run?.teamKey ?? (/^t\d+/.exec(key)?.[0] ?? "");
+  const query = new URLSearchParams();
+  if (members.length) query.set("members", members.join(","));
+  if (teamKey) query.set("key", teamKey);
+  link.setAttribute("href", `/build-team${query.size ? `?${query.toString()}` : ""}`);
+  // released content only: no link for a team with a kit the app does not list yet
+  link.hidden = !members.length || notInApp(members).length > 0;
 }
 
 /**

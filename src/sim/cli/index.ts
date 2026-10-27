@@ -297,6 +297,49 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("build-team <team>")
+      .description("Build it for me, headless: re-gear a team from the export's echo inventory with no echo used twice, from wuwa_calc's pick at your account (sets, main echo, main stats, ER floor) — prints, never writes. <team> is a saved team or three names (Wuthering Tools+)")
+      .option("--any-set", "ignore the plan's sets")
+      .option("--any-main-stat", "ignore the plan's main stats per cost")
+      .option("--keep-main-echo", "keep each member's current main echo")
+      .option("--take-from-others", "also use echoes worn by characters outside the team")
+      .option("--one-order", "only the priority order (no permutations)")
+      .option("--er <floors>", 'ER floors in %, e.g. "Mornye=260,Lynae=none"')
+      .option("--order <names>", "priority, first served first, e.g. Aemeath,Lynae,Mornye")
+      .option("--no-auto-buffs", "team buffs from each character's own Team Buffs panel (upstream's behaviour)"),
+  ).action(
+    guarded(async (team: string, options: CommonOptions & { anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; takeFromOthers?: boolean; oneOrder?: boolean; er?: string; order?: string; autoBuffs?: boolean }) => {
+      const exp = load(options);
+      const { runBuildTeam, printBuildTeam } = await import("../buildTeam/buildTeamCli");
+      const out = await quiet(() =>
+        runBuildTeam(exp, team, {
+          useSets: !options.anySet,
+          useMainStats: !options.anyMainStat,
+          keepMainEcho: !!options.keepMainEcho,
+          takeFromOthers: !!options.takeFromOthers,
+          tryAllOrders: !options.oneOrder,
+          er: options.er,
+          order: options.order,
+          autoBuffs: options.autoBuffs !== false,
+        }),
+      );
+      if (!wantsPretty(options)) {
+        const { result, plans } = out;
+        return printJson({
+          export: exp.path,
+          teamName: out.team.name,
+          riley: plans.riley ? { teamKey: plans.riley.teamKey, dpsMine: plans.dpsMine, dpsHigh: plans.dpsHigh } : { note: plans.rileyNote },
+          plans: plans.plans,
+          ...result,
+          members: result.members.map((m) => ({ ...m, draft: undefined, after: m.after ? { ...m.after, picks: m.after.picks.map((p) => ({ echoId: p.echo.echoId, echo: p.echo.echo, set: p.echo.echoSet, cost: p.echo.type, main: p.echo.stat, source: p.source, wornBy: p.wornBy, sharedWith: p.sharedWith })) } : null })),
+        });
+      }
+      console.log(printBuildTeam(out));
+    }),
+  );
+
+  withCommon(
+    program
       .command("calc <character>")
       .description("Stats, every attack's damage and each saved rotation for one character, from the app's own engine")
       .option("--no-attacks", "skip the per-attack table")
