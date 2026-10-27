@@ -265,6 +265,21 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("toa")
+      .description("The ToA clear check (the /endgame page) at your account: this season's timed Tower of Adversity floors with the best teams' kill times and crests, then a Vigor-legal plan for all 12 stages (Wuthering Tools+)")
+      .option("--limit <n>", "teams to time on every floor (the saved ones always, then by DPS)", "30"),
+  ).action(
+    guarded(async (options: CommonOptions & { limit: string }) => {
+      const exp = load(options);
+      const { toaCheck, printToa } = await import("../endgame/toaCli");
+      const { season, result } = await toaCheck(exp, { limit: Number(options.limit) || 30 });
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...result });
+      printToa(season, result);
+    }),
+  );
+
+  withCommon(
+    program
       .command("calc <character>")
       .description("Stats, every attack's damage and each saved rotation for one character, from the app's own engine")
       .option("--no-attacks", "skip the per-attack table")

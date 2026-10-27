@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: the ToA clear check (src/sim/endgame/)
+  { path: "/endgame", component: () => import("./sim/endgame/ToaView.vue"), name: "ToaView" },
 ];
 
 const router = createRouter({

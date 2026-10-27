@@ -30,6 +30,19 @@ export interface RileyEngine {
   substats: any;
   /** the wuwa_calc commit these modules came from (engineCommit.ts in the browser, git on Node) */
   commit: string;
+  /** the modules an enemy profile is built from (the ToA clear check, src/sim/endgame/effects.ts): the fork's
+   *  shared/profile.ts and the gear vocabulary its floor effects are written in. Optional — only `fightCurve`
+   *  under a profile needs them. */
+  floor?: RileyFloorModules;
+}
+
+/** engine/gear.ts, engine/context.ts, shared/status.ts, shared/unison.ts and the fork's shared/profile.ts */
+export interface RileyFloorModules {
+  gear: any;
+  context: any;
+  status: any;
+  unison: any;
+  profile: any;
 }
 
 /** The substat spread every row wears (his `SUBS_MODES`): ChemX32, his High Invest, or the player's equipped
@@ -230,7 +243,8 @@ const runError = (reason: RunError["reason"], message: string, extra: Partial<Ru
 /** One team of his list as plain data — what the client keeps to map a saved team onto his keys. */
 export interface RileyTeamInfo {
   key: string;
-  members: Array<{ name: string; appKey: string; mainDps: boolean }>;
+  /** `free`: a 4-star or Rover form (his `Tier.Free`) — owned by every account under `mine` (solver.ts `accountOf`) */
+  members: Array<{ name: string; appKey: string; mainDps: boolean; free?: boolean }>;
 }
 
 /* -------------------------------------------------------------------------------------------- helpers */
@@ -290,9 +304,11 @@ export function registerAccount(E: RileyEngine, account: RileyAccount | null): v
 
 /** His team list as plain data (the client's map from a saved team to his keys). */
 export function listTeams(E: RileyEngine): RileyTeamInfo[] {
+  // his `Tier` is a const enum: the runtime object where the build kept it, else Free = 2
+  const FREE = E.stats.Tier?.Free ?? 2;
   return Object.entries(E.model.TEAMS as Record<string, any[]>).map(([key, members]) => ({
     key,
-    members: members.map((m) => ({ name: String(m.name), appKey: appKeyOf(m.name), mainDps: !!m.mainDps })),
+    members: members.map((m) => ({ name: String(m.name), appKey: appKeyOf(m.name), mainDps: !!m.mainDps, ...(m.loadout?.resonator?.tier === FREE ? { free: true } : {}) })),
   }));
 }
 
@@ -475,6 +491,52 @@ export function toRunLite(E: RileyEngine, run: any, meta: { picks: RileyPick[]; 
   };
 }
 
+/** A run's cumulative damage over the fight — what a kill time reads (the ToA clear check). Small where a RunLite
+ *  is 55–230 KB: no rows, no buffs, one point per frame a hit landed on. */
+export interface FightCurve {
+  teamKey: string;
+  rowKey: string;
+  commit: string;
+  /** team DPS over the fight (opener + 3 loops) */
+  total: number;
+  /** the fight's length; nothing lands after it — a kill past it is an extrapolation */
+  seconds: number;
+  sectionSeconds: number[];
+  sectionTotals: number[];
+  /** [frame (60 per second), damage dealt up to and including that frame], frames ascending */
+  points: Array<[frame: number, cumulative: number]>;
+}
+
+/** A finished run (traced or not) as its damage curve. Reads the same fields `toRunLite` does — the hits
+ *  runTeam counted, dropped past the fight's last frame — and nothing else. */
+export function toFightCurve(E: RileyEngine, run: any): FightCurve {
+  if (!run?.state) throw new Error("toFightCurve: the run kept no fight state");
+  const frames = Math.round(Number(run.seconds) * FPS);
+  const byFrame = new Map<number, number>();
+  for (const h of run.state.hits as any[]) {
+    if (h.at > frames) continue;
+    const at = Number(h.at);
+    byFrame.set(at, (byFrame.get(at) ?? 0) + (Number(h.avg) || 0));
+  }
+  const points: Array<[number, number]> = [];
+  let sum = 0;
+  for (const at of [...byFrame.keys()].sort((a, b) => a - b)) {
+    sum += byFrame.get(at)!;
+    points.push([at, Math.round(sum)]);
+  }
+  const combos: any[] = run.combo;
+  return {
+    teamKey: String(run.teamKey),
+    rowKey: `${run.teamKey}-${combos.map((c) => c.key).join("-")}`,
+    commit: E.commit,
+    total: r2(Number(run.total)),
+    seconds: r4(Number(run.seconds)),
+    sectionSeconds: (run.sectionSeconds as number[]).map(r4),
+    sectionTotals: (run.sectionTotals as number[]).map((x) => Math.round(x)),
+    points,
+  };
+}
+
 /** A RunRow's held buffs in the documented `{ name, source, left }` shape. */
 export function heldOf(run: Pick<RunLite, "buffs">, row: RunRow, kind: keyof RunRow["held"]): Array<{ name: string; source: string; left: number }> {
   return row.held[kind].map(([i, left]) => ({ name: run.buffs[i]![0], source: run.buffs[i]![1], left }));
@@ -585,6 +647,19 @@ export function traceLive(E: RileyEngine, teamKey: string, picks: RileyPick[] | 
   }
   const combos = combosOf(E, teamKey, members, chosen);
   return { run: E.teamrun.runTeam(teamKey, members, combos, true), picks: chosen };
+}
+
+/** An untraced `runTeam` on fixed picks as its damage curve — under whatever enemy profile the caller set around
+ *  it (src/sim/endgame/effects.ts `withFloorProfile`). Picks are required: a solve never runs profiled (the
+ *  solver's caches don't key on the profile), so the best row comes from an unprofiled `solveMine` first. */
+export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], opts: RunOptions = {}): FightCurve {
+  registerAccount(E, opts.account ?? null);
+  const members = teamOf(E, teamKey);
+  if (!members) throw runError("unknownTeam", `wuwa_calc ${E.commit} has no team ${teamKey}`);
+  const hidden = hiddenOf(members.map((m) => appKeyOf(m.name)), opts.blocked);
+  if (hidden.length) throw runError("notInApp", `${hidden.join(" and ")} ${hidden.length > 1 ? "are" : "is"} not released in this app yet`, { notInApp: hidden });
+  const combos = combosOf(E, teamKey, members, picks.map(normPick));
+  return toFightCurve(E, E.teamrun.runTeam(teamKey, members, combos, false));
 }
 
 /** `runTeam(…, true)` on these picks (null: the best `mine` row) as a RunLite. Throws a `RunError` for a team

@@ -3,7 +3,8 @@
 // `@skittle/*` imports (the existing worker entry — no second one), tests wire it to the fork's sources under
 // Node. Requests queue and run one unit at a time (one team of a solve, one traced run), yielding between units
 // so a cancel can land; everything posted is plain data (structured-clone and JSON safe).
-import { listTeams, solveOne, tracedRun, type MineSolve, type RileyEngine, type RileyPick, type RileyTeamInfo, type RunLite, type RunOptions } from "./rileyRun";
+import { fightCurve, listTeams, solveOne, tracedRun, type FightCurve, type MineSolve, type RileyEngine, type RileyPick, type RileyTeamInfo, type RunLite, type RunOptions } from "./rileyRun";
+import { withFloorProfile, type FloorProfileSpec } from "../endgame/effects";
 
 export const RILEY_MESSAGE = "wtplus:riley";
 export const RILEY_CANCEL = "wtplus:riley:cancel";
@@ -12,11 +13,13 @@ export const RILEY_PROGRESS = "wtplus:riley:progress";
 export type RileyRequest =
   | { type: typeof RILEY_MESSAGE; id: number; op: "teams" }
   | { type: typeof RILEY_MESSAGE; id: number; op: "solveMine"; teamKeys: string[]; opts: RunOptions }
-  | { type: typeof RILEY_MESSAGE; id: number; op: "trace"; teamKey: string; picks: RileyPick[] | null; opts: RunOptions };
+  | { type: typeof RILEY_MESSAGE; id: number; op: "trace"; teamKey: string; picks: RileyPick[] | null; opts: RunOptions }
+  // the ToA clear check: fixed picks against each floor profile (null = the engine's own enemy), one curve per profile
+  | { type: typeof RILEY_MESSAGE; id: number; op: "curves"; teamKey: string; picks: RileyPick[]; profiles: Array<FloorProfileSpec | null>; opts: RunOptions };
 export interface RileyCancel { type: typeof RILEY_CANCEL; id: number }
 
 export interface RileyTeamsResult { commit: string; teams: RileyTeamInfo[] }
-export type RileyResult = RileyTeamsResult | MineSolve[] | RunLite;
+export type RileyResult = RileyTeamsResult | MineSolve[] | RunLite | FightCurve[];
 
 export type RileyResponse =
   | { type: typeof RILEY_MESSAGE; id: number; ok: true; result: RileyResult; ms: number }
@@ -31,6 +34,7 @@ interface Job {
   req: RileyRequest;
   next: number;
   solves: MineSolve[];
+  curves: FightCurve[];
   ms: number;
 }
 
@@ -69,6 +73,15 @@ export function createRileyHandler(E: RileyEngine, post: (message: RileyResponse
         const run = tracedRun(E, req.teamKey, req.picks, req.opts);
         job.ms += now() - t0;
         finish(job, run);
+      } else if (req.op === "curves") {
+        // one profile per unit (a few ms each untraced), so a cancel lands between floors
+        if (job.next < req.profiles.length) {
+          const spec = req.profiles[job.next++]!;
+          job.curves.push(withFloorProfile(E, spec, () => fightCurve(E, req.teamKey, req.picks, req.opts)));
+          job.ms += now() - t0;
+          post({ type: RILEY_PROGRESS, id: req.id, done: job.next, total: req.profiles.length });
+        }
+        if (job.next >= req.profiles.length) finish(job, job.curves);
       } else {
         if (job.next < req.teamKeys.length) {
           job.solves.push(solveOne(E, req.teamKeys[job.next++]!, req.opts));
@@ -92,7 +105,7 @@ export function createRileyHandler(E: RileyEngine, post: (message: RileyResponse
       }
       return true;
     }
-    queue.push({ req: data, next: 0, solves: [], ms: 0 });
+    queue.push({ req: data, next: 0, solves: [], curves: [], ms: 0 });
     schedule();
     return true;
   };
