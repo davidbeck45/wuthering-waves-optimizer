@@ -133,6 +133,43 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/updates (v3)");
   });
 
+  // Share cards (src/sim/share/): the page, its share sheet as a bottom sheet with the scaled card preview, and
+  // the import preview of a link — all inside 360 px (v3).
+  it("keeps /share, its share sheet and an import preview inside 360 px", () => {
+    const seed = {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    };
+    cy.visit("/share", seed);
+    cy.get("[data-test-share-export-panel]").should("be.visible");
+    expectNavFits("/share");
+    expectNoHorizontalScroll("/share");
+    cy.get("[data-test-share-open-build]").click();
+    cy.get("[data-test-share-sheet] [data-test-share-post-card]", { timeout: 30000 }).should("exist");
+    cy.get("[data-test-share-sheet] [data-test-share-preview]").then(($p) => {
+      expect($p[0].getBoundingClientRect().right, "card preview inside the viewport").to.be.at.most(PHONE.width);
+    });
+    cy.get("[data-test-share-download]").then(($b) => {
+      expect($b[0].getBoundingClientRect().right, "sheet buttons inside the viewport").to.be.at.most(PHONE.width);
+    });
+    expectNoHorizontalScroll("/share (sheet)");
+    cy.get("[data-test-share-copy-link]")
+      .should("not.be.disabled")
+      .invoke("attr", "data-test-share-link-url")
+      .then((url) => {
+        const u = new URL(url as string);
+        cy.visit(u.pathname + u.hash, seed);
+      });
+    cy.get("[data-test-share-import-preview]", { timeout: 30000 }).should("be.visible");
+    cy.get("[data-test-share-import-confirm]").should("be.visible");
+    expectNoHorizontalScroll("/share (import preview)");
+  });
+
   it("reviews phone screenshots as cards inside the echo importer", () => {
     cy.visit("/inventory");
     cy.contains("button", "Import echoes").click({ force: true });

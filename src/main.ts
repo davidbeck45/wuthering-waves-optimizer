@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createApp } from "vue";
+import { createApp, defineAsyncComponent } from "vue";
 import "./style.css";
 import "./sim/phone.css"; // Wuthering Tools+: phone-only overrides for upstream's components
 import App from "./App.vue";
@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: share cards with the build inside the PNG, compact links, the import drop target (src/sim/share/).
+  { path: "/share", component: () => import("./sim/share/ShareView.vue"), name: "ShareView" },
 ];
 
 const router = createRouter({
@@ -80,6 +82,8 @@ pinia.use(
 );
 
 const app = createApp(App).use(pinia).use(router).use(FloatingVue);
+// Wuthering Tools+: the share strip over the calculator's build card (one tag in Calculator.vue), loaded on first use
+app.component("WtPlusShareStrip", defineAsyncComponent(() => import("./sim/share/ShareBuildStrip.vue")));
 
 import { useCharacterStore } from "./stores/character";
 const characterStore = useCharacterStore();

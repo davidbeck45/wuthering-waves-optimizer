@@ -11,6 +11,7 @@ export function injectAnalytics() {
   script.src = "/assets/init.js";
   script.dataset.websiteId = websiteId;
   script.dataset.hostUrl = "/e";
+  script.dataset.excludeHash = "true"; // Wuthering Tools+: /share#b=… links carry a whole build in the fragment (src/sim/share/)
   script.addEventListener("load", flushPendingEvents);
   document.head.appendChild(script);
 }
