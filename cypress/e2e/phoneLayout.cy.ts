@@ -133,6 +133,42 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/updates (v3)");
   });
 
+  // Wuthering Tools+ rotation view (src/sim/rotation/): both tabs and the play mode on v3 at 130 % text, at David's
+  // S26 width and at 360 px — the timeline's phone layout (time flows down) must never scroll sideways.
+  it("keeps the rotation view's cue card, play mode and timeline inside a phone at 130 % text", () => {
+    const seed = {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    };
+    for (const [width, height] of [[412, 915], [360, 800]] as const) {
+      cy.viewport(width, height);
+      cy.visit("/rotation#team=t404", seed);
+      cy.get('[data-test-rotation-block="loop1"]', { timeout: 90000 }).should("be.visible");
+      expectNoHorizontalScroll(`/rotation cue card at ${width}`);
+      cy.get("[data-test-rotation-play-open]").click();
+      cy.get("[data-test-rotation-next-button]").should("be.visible").click();
+      cy.get("[data-test-rotation-play]").then(($el) => {
+        expect($el[0].scrollWidth, `play mode width at ${width}`).to.be.at.most($el[0].clientWidth);
+      });
+      cy.get("[data-test-rotation-play-exit]").click();
+      cy.visit("/rotation#team=t404&tab=timeline", seed);
+      cy.get("[data-test-rotation-timeline-phone]", { timeout: 90000 }).should("be.visible");
+      cy.get("[data-test-rotation-phone-lane]").should("have.length", 3);
+      cy.get("[data-test-rotation-kill]").should("have.length.greaterThan", 0);
+      expectNoHorizontalScroll(`/rotation timeline at ${width}`);
+    }
+  });
+
   it("reviews phone screenshots as cards inside the echo importer", () => {
     cy.visit("/inventory");
     cy.contains("button", "Import echoes").click({ force: true });

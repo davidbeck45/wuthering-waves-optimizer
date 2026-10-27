@@ -230,7 +230,9 @@ const runError = (reason: RunError["reason"], message: string, extra: Partial<Ru
 /** One team of his list as plain data — what the client keeps to map a saved team onto his keys. */
 export interface RileyTeamInfo {
   key: string;
-  members: Array<{ name: string; appKey: string; mainDps: boolean }>;
+  /** added for the rotation view (src/sim/rotation/): `hue` the kit's own colour (his `resonator.color`, what
+   *  `RESONATOR_HUE` maps), `loadout` his `LoadoutDef.id` (what a /rankings team code names — rotation/teamCode.ts) */
+  members: Array<{ name: string; appKey: string; mainDps: boolean; hue?: string; loadout?: number }>;
 }
 
 /* -------------------------------------------------------------------------------------------- helpers */
@@ -292,7 +294,13 @@ export function registerAccount(E: RileyEngine, account: RileyAccount | null): v
 export function listTeams(E: RileyEngine): RileyTeamInfo[] {
   return Object.entries(E.model.TEAMS as Record<string, any[]>).map(([key, members]) => ({
     key,
-    members: members.map((m) => ({ name: String(m.name), appKey: appKeyOf(m.name), mainDps: !!m.mainDps })),
+    members: members.map((m) => ({
+      name: String(m.name),
+      appKey: appKeyOf(m.name),
+      mainDps: !!m.mainDps,
+      hue: String(m.loadout?.resonator?.color ?? ""),
+      loadout: Number(m.loadout?.id ?? 0),
+    })),
   }));
 }
 

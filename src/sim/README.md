@@ -467,3 +467,72 @@ Capture the fixture again after a submodule bump (the test compares it field for
 `npx tsx /tmp/wave0/capture.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
+
+## Rotation view — `src/sim/rotation/` + `/rotation` (batch 2, 2026-10-26)
+
+A wuwa_calc rotation as something to follow in game: Riley's traced run of a team **at the player's own account**
+(Wave 0's `tracedRun`, `mine` Team Cost, their echoes as the spread) on one page with two tabs. **Cue card:** one line
+per swap (`Shorekeeper: Intro › BA×3 [jump] › Plunge › HA › E › R › Echo [swap] › Outro · 4.4 s`) with the moments a
+gauge fills (R ready, Outro ready, Tune Break), the opener and the loop (identical loops folded, "Loop ×3"), the loop
+target, a play-along mode (big text, tap / Space, Screen Wake Lock, optional beep, a lap stopwatch against the engine's
+time, auto-advance at 100 / 85 / 70 % pace), a desktop pop-out (Document Picture-in-Picture, popup fallback) and a
+Discord export. **Fight timeline:** member lanes (on-field bars in the kit's hue, press ticks and labels, energy and
+concerto step lines with their checkpoints), the cumulative damage curve with kill-time chips (1.5M / 3M / 4M + the
+player's own HP line; extrapolated past the fight at the last loop's DPS), and every buff as windows with uptime and
+"share of damage dealt while held", grouped Team / Self · member / Enemy. Whole fight, opener or loop, drag to zoom,
+a hover read-out (who is on field, the press, each member's gauges, damage so far). On a phone time flows down:
+three columns, buffs as a list by uptime, the curve as a sparkline. The app's own team timeline spreads actions
+evenly (`teamRotation.ts`: "exact per-action timing isn't tracked"); this one is his frame clock.
+
+| Piece | Role |
+|---|---|
+| `extract.ts` | **the only reader of RunLite's rows / hits / held buffs** — `extractRotation(run)` → `visits` (one per swap: start / end frames, chips, checkpoints, entry Intro / swap, exit Outro / swap, damage while on field, `wrap` for the fight's last swap-in), `sections`, `lanes`, `buffs` (`BuffTrack`: windows, `permanent`, `maxStacks`), `gauges`, `cumulative`, `fightTotal`, `loopDps`, `killAt(hp)`; `uptime` / `damageCovered` / `union` / `covered` / `clockOf` |
+| `tokens.ts` | a row → the press: BA / HA / E / R / Intro / Outro / Echo / Plunge / Air / Jump / Wait / Tune Break, read off the action's own prefix ("Heavy - …" is a heavy input even where his cast kind files it as Basic), then his cast kind, then a short display name (never blank); folded chain digits ("Moonbow 123" → ×3, "23" → 2–3), groups ("+1"), repeats ("x4"), the cancel it ends on (dodge / jump / swap / hold) and the Forte state |
+| `cueModel.ts` | `cuePlan(model)` → blocks (opener, loops; back-to-back loops pressing the same buttons fold, `varies` when only a cancel / wait differs), `loopTarget`, `passSeconds`, the play order (`steps`, wrapping to `loopStart`) |
+| `player.ts` + `usePlayer.ts` | the play clock as pure state transitions over `performance.now()` (start on first tap, advance / back / pause / jump, a lap per section, `isDue` at a pace) + the live composable (ticks on the animation frames of whichever window shows the cue — the pop-out's own while open — and only redraws; Web Audio beep) |
+| `exportText.ts` | `discordText` / `discordMessage` (drops the cancel marks to fit 2,000 characters). **No FloatRotationBoard exporter**: its README shows the DSL's steps only by example and reads character names from a Chinese alias table the player maintains |
+| `hash.ts` + `teamCode.ts` | `/rotation#team=<t404 \| row key \| /rankings team code>` or `#chars=A,B,C`, `&subs=mine\|standard\|high` (`tier=` accepted), `&tab=timeline`; `rotationPath(target)` for links. A team code is read to its team by `teamOfCode` (the 72-bit team part, mirrored from his `teamcode.ts`; the test pins it to his `tagTeam()` on every team) and runs at the account — the code's own S / R are not used, and a notice says so |
+| `useRotationRun.ts` | target → team list + blocked keys → every loadout variant solved at `mine` (the Loadout picker) → the chosen row traced → model + plan; a stale row falls back to the team's best row with a notice; problems: `code`, `notInApp`, `noBuild`, `unknownTeam`, `error` (retry) |
+| `RotationView.vue` (route `/rotation`, lazy in `main.ts`) | page shell: tabs, loading skeleton, problem states, not-fieldable notice (a member the account lacks, with the sequence and weapon rank the run gave them — Wave 0's stand-in under a solve, the row's own on a /rankings row), `useDocumentTitle` per team; `RotationPicker.vue` (no target: the player's saved teams wuwa_calc can run, synced ones badged, and the stock-preset compositions, filterable; "Continue" from `prefs.last`); `RotationHeader.vue` (members with weapon / sets / DPS share, DPS, spread switch, loadout variant) |
+| `CueCard.vue`, `CueChips.vue`, `CuePlay.vue`, `CueStage.vue`, `MemberAvatar.vue` | the cue tab, a visit's chips + checkpoint badges, the full-screen play overlay (`100dvh`, safe-area insets, settings: beep / pace / text size / full screen), the stage shared by the overlay and the pop-out (`compact`) |
+| `RotationTimeline.vue`, `GanttSvg.vue`, `CumulativeStrip.vue`, `BuffUptimeTable.vue`, `TimelinePhone.vue`, `timelineScale.ts` | the timeline tab (hand-written SVG, no chart library): range / zoom / hover, lanes, curve + kills, buff rows; the phone layout (one or the other renders, `matchMedia(max-width: 767px)`); ranges, x scale, ruler steps, step lookups, HP parsing |
+| `useWakeLock.ts`, `usePip.ts` | Screen Wake Lock (re-taken when the page is visible again; "unsupported" / "refused" states shown); Document PiP or `window.open` popup, the page's stylesheets and theme attributes copied in, the theme followed while open, content teleported in |
+| `prefs.ts` | localStorage **`wtplus:rotation:v1`**: beep, play text size, pace, custom HP line, last rotation (a broken value reads as defaults) |
+| `rotation.css` | global (the pop-out copies it): kit-hue helpers (darkened on light themes), chips, checkpoint badges, the play overlay, SVG fills |
+| `rankingsLink.ts` + `rankings/controller.ts` (one line) | the **Rotation** button in Riley's detail topbar, inside the import box `mountImportControls` re-points at every detail render: `/rotation#team=<row key>` (that exact row; plain click routes in-app, a modified click opens a tab). It lets that box wrap, right-aligned (inline styles, so his topbar CSS is untouched): a third control in a box sized for two pushed Import off a 412 px screen |
+| `engine/rileyRun.ts` `listTeams` | each member now carries `hue` (his `resonator.color`) and `loadout` (his `LoadoutDef.id`, what a team code names) — additive |
+| `rotation.test.ts` | on Wave 0's fixture + hand-made runs + the real engine: visits split exactly at member changes and tile the fight; pass seconds = his section seconds within a frame; R ready where energy reaches `maxEnergy`; Tune Break / Outro-ready filing; lanes never overlap; uptime ∈ [0, 1], "xN" grouped, permanent buffs; curve monotonic and ending on `fightTotal`; `killAt(2 × fightTotal)` at loop-3 DPS; tokens (unknown actions fall back to the display name); loop folding; the Discord snapshot (engine commit pinned); hash round trips; team codes vs `tagTeam()` on 200+ teams; the play clock; parity: rows = his `rotationLines.flat()` minus field summaries |
+| `cypress/e2e/rotation.cy.ts` + `phoneLayout.cy.ts` case | v3 seeded through `onBeforeLoad`, the real worker: cue blocks and checkpoints, spread switch, play mode by Space / tap with a stubbed Wake Lock, the pop-out into a stubbed window, the timeline (lanes, kill chips, buffs, loop range, custom HP), the /rankings Rotation button → that row, problems (Lily, unknown code, a real code), the picker; phone: both tabs and the play mode at 412 and 360 px, 130 % text, no sideways scroll |
+
+Rules:
+- **Released content only.** `notInApp` teams are refused before anything is solved (the page says which member);
+  the picker never lists them. The /rankings button shows on every row; the page explains the refusal.
+- **Timing is his frame clock, never Σ `frames`.** A line starts at its own `frame`, a folded line where the press
+  before it ended; a visit runs to the next visit's start. Expected seconds are frame-tight (every cancel and swap on
+  its earliest frame): the stopwatch shows a gap, never a failure.
+- **DPS only**, labelled DPS, from the run (`run.total`); a block's damage is damage dealt while it runs, every member.
+- **Buffs are sampled at presses**: a timed buff covers `[frame, frame + left)`, an untimed one runs to the next
+  sample of its kind (every line for Team / Enemy, the owner's lines for Self); the page says so.
+- Hash reading: a `team=` value is a team key, a row key or a team code read by `teamCode.ts` — never used unread.
+- **What a member wore is read off the run**, never assumed: a /rankings row keeps its own sequences and ranks (an
+  S6R5 row runs a member the account lacks at S6R5, not Wave 0's S0R1 stand-in), and the notice, the "not yours"
+  tooltip and the Discord header's spread ("Team rankings row, ChemX32 substats") follow the run.
+
+Things learned:
+- A folded chain line ("Basic - Origin Calculus 123") carries the `frame` / `frames` of the press it shows, its last
+  stage: summing `frames` loses every earlier stage — the fixture's 28.9 s opener sums to 21.0 s.
+- His loops open across a section boundary: the opener's last line is the first member's Intro and the loop carries
+  on with their presses. A visit is filed under the section holding most of it, so a loop block starts with that
+  swap-in and the fight's very last swap-in (cut by the end of the fight) is the `wrap`, not a fourth pass.
+- `teamcode.ts` imports `mainstats` → `gear` → `context` / `runtime`: his decoder would put the engine core on the main
+  thread, hence the mirrored team part. The worker protocol was left alone (another track adds ops to it).
+- The Wave 0 fixture is recaptured on every submodule bump (plus-next stamped 653fee7 the same day, rows unchanged):
+  tests on it assert structure, and the snapshot pins the commit string.
+- Cypress on Riley's table: an alias re-queries the chain against a table he re-renders — pick the row in one `.then`.
+  Play mode: the stage has no key handler of its own (the window's handles Space / Enter once), Next / Back keep
+  focus off themselves (`mousedown.prevent`), or a focused control would advance twice.
+- Where the batch-2 spec and the code differ: segment seconds are not Σ frames / 60 (above); "Outro ready" is concerto
+  ≥ 100 % of the bar (10,000 in his ×100 units); the cumulative strip is SVG, not a lazy Chart.js; the
+  `rotationLines.flat()` parity excludes his field-summary lines (`aggregate`), which RunLite drops.
+- Not built: links from the synced team rows and the stock-preset modal (both live in Ryan's `TeamRotations.vue`; the
+  picker lists both sets instead); palette commands (batch 1's palette — see the integration notes of this track).

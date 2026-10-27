@@ -1,0 +1,109 @@
+/* Wuthering Tools+ — the rotation view's shared styles (chips, kit hues). Global (imported by RotationView.vue) so
+   the pop-out window, which copies the page's stylesheets, reads them too. Everything sits under .rv-* names. */
+
+/* a member's kit colour (Riley's resonator.color) as --hue; darkened on light themes so text and thin lines read */
+.rv-hue-text { color: var(--hue, currentColor); }
+html[data-theme-style="light"] .rv-hue-text { color: color-mix(in oklab, var(--hue, currentColor) 60%, black); }
+.rv-hue-ring { box-shadow: 0 0 0 2px var(--hue, oklch(var(--bc) / 0.3)); }
+.rv-hue-bar { background: color-mix(in oklab, var(--hue, oklch(var(--bc))) 55%, transparent); border: 1px solid var(--hue, oklch(var(--bc))); }
+html[data-theme-style="light"] .rv-hue-bar { background: color-mix(in oklab, var(--hue, oklch(var(--bc))) 45%, white); border-color: color-mix(in oklab, var(--hue, oklch(var(--bc))) 70%, black); }
+.rv-hue-dot { background: var(--hue, oklch(var(--bc) / 0.4)); }
+html[data-theme-style="light"] .rv-hue-dot { background: color-mix(in oklab, var(--hue, oklch(var(--bc) / 0.4)) 75%, black); }
+.rv-hue-stroke { stroke: var(--hue, currentColor); }
+html[data-theme-style="light"] .rv-hue-stroke { stroke: color-mix(in oklab, var(--hue, currentColor) 65%, black); }
+
+/* "not on your account" marks: DaisyUI's warning is a light yellow, unreadable as text on a light page */
+.rv-warn-text { color: oklch(var(--wa)); }
+html[data-theme-style="light"] .rv-warn-text { color: color-mix(in oklab, oklch(var(--wa)) 45%, black); }
+
+/* a press */
+.rv-chip {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 0.05em 0.45em;
+  border-radius: 0.4rem;
+  border: 1px solid oklch(var(--bc) / 0.14);
+  background: oklch(var(--b2));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  position: relative;
+}
+.rv-chip__suffix { font-weight: 500; opacity: 0.8; }
+.rv-chip__cancel {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.7em;
+  opacity: 0.7;
+  margin-left: 0.4em;
+  padding-left: 0.4em;
+  border-left: 1px solid oklch(var(--bc) / 0.25);
+}
+.rv-chip--forte::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: oklch(var(--p));
+}
+.rv-chip--skill { background: oklch(var(--in) / 0.14); border-color: oklch(var(--in) / 0.45); }
+.rv-chip--liberation { background: oklch(var(--wa) / 0.2); border-color: oklch(var(--wa) / 0.7); }
+.rv-chip--echo { background: oklch(var(--su) / 0.14); border-color: oklch(var(--su) / 0.5); }
+.rv-chip--heavy { border-color: oklch(var(--bc) / 0.35); }
+.rv-chip--intro,
+.rv-chip--outro { background: transparent; border-style: dashed; font-weight: 500; opacity: 0.75; }
+.rv-chip--wait { background: transparent; border-style: dotted; font-style: italic; font-weight: 500; opacity: 0.8; }
+.rv-chip--other { font-family: inherit; font-weight: 500; }
+.rv-sep { opacity: 0.35; padding: 0 0.1em; user-select: none; }
+
+/* a checkpoint between presses */
+.rv-cp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0 0.4em;
+  border-radius: 9999px;
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+  border: 1px solid currentColor;
+}
+.rv-cp::before { content: ""; width: 0.45em; height: 0.45em; transform: rotate(45deg); background: currentColor; }
+.rv-cp--energy { color: oklch(var(--wa)); }
+.rv-cp--concerto { color: oklch(var(--s)); }
+.rv-cp--tune { color: oklch(var(--a)); }
+html[data-theme-style="light"] .rv-cp--energy { color: color-mix(in oklab, oklch(var(--wa)) 60%, black); }
+/* the phone timeline's checkpoint diamonds: the same colours as a fill */
+.rv-cp-dot { background: currentColor; }
+
+/* the play mode: tall phones, notches, the URL bar */
+.rv-play {
+  height: 100vh;
+  height: 100dvh;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+.rv-play--m { --rv-now: 1.6rem; }
+.rv-play--l { --rv-now: 2.2rem; }
+.rv-play--xl { --rv-now: 3rem; }
+.rv-now-chips { font-size: var(--rv-now, 2.2rem); line-height: 1.35; }
+@media (max-width: 480px) {
+  .rv-play--l { --rv-now: 1.75rem; }
+  .rv-play--xl { --rv-now: 2.3rem; }
+}
+
+/* the fight timeline (SVG reads fill / stroke, not background) */
+.rv-svg-bar { fill: color-mix(in oklab, var(--hue, oklch(var(--bc))) 34%, transparent); stroke: var(--hue, oklch(var(--bc))); stroke-width: 1; }
+html[data-theme-style="light"] .rv-svg-bar { fill: color-mix(in oklab, var(--hue, oklch(var(--bc))) 30%, white); stroke: color-mix(in oklab, var(--hue, oklch(var(--bc))) 70%, black); }
+.rv-svg-fill { fill: var(--hue, oklch(var(--bc) / 0.5)); }
+html[data-theme-style="light"] .rv-svg-fill { fill: color-mix(in oklab, var(--hue, oklch(var(--bc) / 0.5)) 75%, black); }
+.rv-tl { --rv-gutter: 15rem; position: relative; }
+.rv-tl-row { display: grid; grid-template-columns: var(--rv-gutter) minmax(0, 1fr); align-items: center; column-gap: 0.75rem; }
+.rv-tl-gutter { min-width: 0; }
+.rv-tl-row--buff:hover { background: oklch(var(--bc) / 0.04); }
+.rv-hue-soft { background: color-mix(in oklab, var(--hue, oklch(var(--bc))) 20%, oklch(var(--b1))); border: 1px solid color-mix(in oklab, var(--hue, oklch(var(--bc))) 70%, transparent); }
+.rv-hue-soft ~ div .rv-chip--intro, .rv-hue-soft ~ div .rv-chip--outro, .rv-hue-soft ~ div .rv-chip--wait { background: oklch(var(--b1)); }

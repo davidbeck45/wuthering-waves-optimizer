@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: a wuwa_calc rotation as a cue card + fight timeline, at the player's account (src/sim/rotation/)
+  { path: "/rotation", component: () => import("./sim/rotation/RotationView.vue"), name: "RotationView" },
 ];
 
 const router = createRouter({

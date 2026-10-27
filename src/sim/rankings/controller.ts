@@ -9,6 +9,7 @@
  * The engine, kits and page modules themselves come straight from the submodule via `@skittle/*`.
  */
 import type { Router } from "vue-router";
+import { mountRotationLink } from "../rotation/rankingsLink";
 import type { BuildRolls } from "./myBuilds";
 import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
@@ -307,6 +308,7 @@ function mountImportControls(key: string): void {
     box.querySelector("button")!.addEventListener("click", () => void runImport());
   }
   box.dataset.team = key;
+  mountRotationLink(box, key, (path) => void router?.push(path)); // Wuthering Tools+: the rotation view (src/sim/rotation/)
 }
 
 async function runImport(): Promise<void> {
