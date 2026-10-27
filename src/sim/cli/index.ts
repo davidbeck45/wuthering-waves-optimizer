@@ -420,6 +420,40 @@ export function registerPlusCommands(program: Command): void {
     }),
   );
 
+  withCommon(
+    program
+      .command("ask <question>")
+      .description(
+        "Ask the in-app assistant (Claude) about the export, with the app's engine as its tools — calls the paid Anthropic API " +
+          "(credentials: ANTHROPIC_API_KEY or `ant auth login`) (Wuthering Tools+)",
+      )
+      .option("--model <model>", "claude-opus-5-5 (default), claude-sonnet-5-5 or claude-haiku-5-5")
+      .option("--effort <effort>", "low | medium (default) | high | xhigh | max")
+      .option("--max-rounds <n>", "tool rounds before Claude must answer (default 6)")
+      .option("--budget <usd>", "stop before the next request once the answer has cost this much (default 0.50)")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (question: string, options: CommonOptions & { model?: string; effort?: string; maxRounds?: string; budget?: string; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const { runAsk } = await import("../ai/cliAsk");
+      const pretty = wantsPretty(options);
+      const { result, model, effort, tools } = await quiet(() =>
+        runAsk(question, exp, {
+          model: options.model,
+          effort: options.effort,
+          maxRounds: options.maxRounds != null ? Number(options.maxRounds) : undefined,
+          budgetUsd: options.budget != null ? Number(options.budget) : undefined,
+          autoBuffs: options.autoBuffs,
+          stream: pretty,
+          out: (text) => process.stdout.write(text),
+          err: (text) => process.stderr.write(text),
+        }),
+      );
+      if (!pretty) printJson({ export: exp.path, model, effort, status: result.status, text: result.text, tools, usage: result.usage, refusal: result.refusal ?? null, error: result.error ?? null });
+      if (result.status === "error" || result.status === "refusal") process.exitCode = 1;
+    }),
+  );
+
   program
     .command("diff <before> <after>")
     .description("Compare two snapshots and print every number that moved")

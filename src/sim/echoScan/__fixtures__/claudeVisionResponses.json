@@ -1,0 +1,292 @@
+{
+ "sabercat": {
+  "id": "msg_vision_sabercat",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_sabercat"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"phone Echo inventory, detail panel of the selected echo\", \"echoes\": [{\"printedName\": \"Sabercat Prowler\", \"echo\": \"Sabercat Prowler\", \"cost\": 3, \"level\": 25, \"rarity\": 5, \"set\": \"Sound of True Name\", \"setSource\": \"printed\", \"setGlyphBox\": {\"x\": 0.7478, \"y\": 0.1806, \"width\": 0.0167, \"height\": 0.0333}, \"mainStat\": {\"type\": \"ATK\", \"value\": \"30.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"100\"}, \"substats\": [{\"type\": \"Crit. Rate\", \"value\": \"9.3%\"}, {\"type\": \"HP\", \"value\": \"10.9%\"}, {\"type\": \"Basic Attack DMG Bonus\", \"value\": \"8.6%\"}, {\"type\": \"Energy Regen\", \"value\": \"7.6%\"}, {\"type\": \"Resonance Liberation DMG Bonus\", \"value\": \"10.9%\"}], \"equippedBy\": null, \"confidence\": 0.96, \"notes\": \"Set from the Sonata filter chip.\"}]}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "puppetGlyph": {
+  "id": "msg_vision_puppet",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_puppet"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"phone Echo inventory, detail panel of the selected echo\", \"echoes\": [{\"printedName\": \"Thousand-Puppet Pavilion\", \"echo\": \"Thousand-Puppet Pavilion\", \"cost\": 4, \"level\": 25, \"rarity\": 5, \"set\": null, \"setSource\": \"glyph_only\", \"setGlyphBox\": {\"x\": 0.7478, \"y\": 0.1806, \"width\": 0.0167, \"height\": 0.0333}, \"mainStat\": {\"type\": \"Crit. DMG\", \"value\": \"44.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"150\"}, \"substats\": [{\"type\": \"Crit. DMG\", \"value\": \"19.8%\"}, {\"type\": \"HP\", \"value\": \"10.9%\"}, {\"type\": \"Heavy Attack DMG Bonus\", \"value\": \"8.6%\"}, {\"type\": \"ATK\", \"value\": \"8.6%\"}, {\"type\": \"Energy Regen\", \"value\": \"9.2%\"}], \"equippedBy\": null, \"confidence\": 0.93, \"notes\": \"\"}]}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "puppetSetPick": {
+  "id": "msg_vision_puppet_set",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_puppet_set"
+   },
+   {
+    "type": "text",
+    "text": "{\"echo_1\": {\"set\": \"Song of Feathered Trace\", \"confidence\": 0.88}}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 742,
+   "output_tokens": 188,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "puppetSetNone": {
+  "id": "msg_vision_puppet_none",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_puppet_none"
+   },
+   {
+    "type": "text",
+    "text": "{\"echo_1\": {\"set\": \"none of these\", \"confidence\": 0.3}}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 742,
+   "output_tokens": 160,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "impossible": {
+  "id": "msg_vision_impossible",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_impossible"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"phone Echo inventory, detail panel of the selected echo\", \"echoes\": [{\"printedName\": \"Thousand-Puppet Pavilion\", \"echo\": \"Thousand-Puppet Pavilion\", \"cost\": 4, \"level\": 25, \"rarity\": 5, \"set\": \"Song of Feathered Trace\", \"setSource\": \"printed\", \"setGlyphBox\": null, \"mainStat\": {\"type\": \"Crit. DMG\", \"value\": \"40.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"100\"}, \"substats\": [{\"type\": \"Crit. Rate\", \"value\": \"8.8%\"}, {\"type\": \"ATK\", \"value\": \"55\"}, {\"type\": \"Crit. Rate\", \"value\": \"6.3%\"}, {\"type\": \"HP\", \"value\": \"1O.9%\"}, {\"type\": \"Energy Regen\", \"value\": \"9.2%\"}, {\"type\": \"Heavy Attack DMG Bonus\", \"value\": \"8.6%\"}], \"equippedBy\": null, \"confidence\": 0.41, \"notes\": \"Rows 3-6 are blurred.\"}]}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "unknownEcho": {
+  "id": "msg_vision_unknown",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_unknown"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"phone Echo inventory, detail panel of the selected echo\", \"echoes\": [{\"printedName\": \"Mecha Godzilla\", \"echo\": \"Mecha Godzilla\", \"cost\": 4, \"level\": 25, \"rarity\": 5, \"set\": null, \"setSource\": \"not_visible\", \"setGlyphBox\": null, \"mainStat\": {\"type\": \"Crit. Rate\", \"value\": \"22.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"150\"}, \"substats\": [{\"type\": \"Crit. Rate\", \"value\": \"9.3%\"}, {\"type\": \"Crit. DMG\", \"value\": \"18.6%\"}, {\"type\": \"ATK\", \"value\": \"50\"}, {\"type\": \"HP\", \"value\": \"470\"}, {\"type\": \"Energy Regen\", \"value\": \"10.0%\"}], \"equippedBy\": null, \"confidence\": 0.95, \"notes\": \"\"}, {\"printedName\": \"Sabercat Prowlr\", \"echo\": null, \"cost\": 3, \"level\": 25, \"rarity\": 5, \"set\": \"Sound of True Name\", \"setSource\": \"printed\", \"setGlyphBox\": null, \"mainStat\": {\"type\": \"ATK\", \"value\": \"30.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"100\"}, \"substats\": [{\"type\": \"Crit. Rate\", \"value\": \"9.3%\"}, {\"type\": \"HP\", \"value\": \"10.9%\"}, {\"type\": \"Basic Attack DMG Bonus\", \"value\": \"8.6%\"}, {\"type\": \"Energy Regen\", \"value\": \"7.6%\"}, {\"type\": \"Resonance Liberation DMG Bonus\", \"value\": \"10.9%\"}], \"equippedBy\": null, \"confidence\": 0.7, \"notes\": \"The name is partly covered.\"}]}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "pcTwoEchoes": {
+  "id": "msg_vision_pc",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_pc"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"PC resonator page, Echoes tab with two echo cards\", \"echoes\": [{\"printedName\": \"Phantom: Crownless\", \"echo\": \"Phantom: Crownless\", \"cost\": 4, \"level\": 25, \"rarity\": 5, \"set\": null, \"setSource\": \"glyph_only\", \"setGlyphBox\": {\"x\": 0.12, \"y\": 0.2, \"width\": 0.012, \"height\": 0.02}, \"mainStat\": {\"type\": \"Crit. Rate\", \"value\": \"22.0%\"}, \"secondaryStat\": {\"type\": \"ATK\", \"value\": \"150\"}, \"substats\": [{\"type\": \"Crit. DMG\", \"value\": \"21.0%\"}, {\"type\": \"Crit. Rate\", \"value\": \"6.9%\"}, {\"type\": \"ATK\", \"value\": \"10.1%\"}, {\"type\": \"Resonance Skill DMG Bonus\", \"value\": \"7.9%\"}, {\"type\": \"DEF\", \"value\": \"60\"}], \"equippedBy\": \"Rover\", \"confidence\": 0.95, \"notes\": \"\"}, {\"printedName\": \"Havoc Warrior\", \"echo\": \"Havoc Warrior\", \"cost\": 1, \"level\": 25, \"rarity\": 5, \"set\": null, \"setSource\": \"glyph_only\", \"setGlyphBox\": null, \"mainStat\": {\"type\": \"HP\", \"value\": \"22.8%\"}, \"secondaryStat\": {\"type\": \"HP\", \"value\": \"2,280\"}, \"substats\": [{\"type\": \"Crit. Rate\", \"value\": \"8.1%\"}, {\"type\": \"ATK\", \"value\": \"40\"}, {\"type\": \"HP\", \"value\": \"390\"}, {\"type\": \"DEF\", \"value\": \"11.8%\"}, {\"type\": \"Energy Regen\", \"value\": \"6.8%\"}], \"equippedBy\": \"Rover\", \"confidence\": 0.88, \"notes\": \"\"}]}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 5410,
+   "output_tokens": 1630,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "pcSetPick": {
+  "id": "msg_vision_pc_set",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_pc_set"
+   },
+   {
+    "type": "text",
+    "text": "{\"echo_1\": {\"set\": \"Havoc Eclipse\", \"confidence\": 0.9}}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 3120,
+   "output_tokens": 150,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "noEchoes": {
+  "id": "msg_vision_none",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_none"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\": \"phone home screen\", \"echoes\": []}",
+    "citations": null
+   }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "refusal": {
+  "id": "msg_vision_refusal",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [],
+  "stop_reason": "refusal",
+  "stop_sequence": null,
+  "stop_details": {
+   "type": "refusal",
+   "category": null,
+   "explanation": null
+  },
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ },
+ "truncated": {
+  "id": "msg_vision_truncated",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-5-5",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "sig_truncated"
+   },
+   {
+    "type": "text",
+    "text": "{\"screen\":\"phone Echo inventory\",\"echoes\":[{\"printedName\":\"Sabe",
+    "citations": null
+   }
+  ],
+  "stop_reason": "max_tokens",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 6512,
+   "output_tokens": 912,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  }
+ }
+}
