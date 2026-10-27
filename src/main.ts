@@ -65,6 +65,8 @@ const routes = [
   { path: "/account", component: () => import("./sim/account/AccountView.vue"), name: "AccountView" },
   // Wuthering Tools+: Echo Lab — engine-backed keep / tune / re-roll / feed decisions (src/sim/echoLab/)
   { path: "/echo-lab", component: () => import("./sim/echoLab/EchoLabView.vue"), name: "EchoLabView" },
+  // Wuthering Tools+: the in-game Echo Management plan built from the roster (src/sim/echoPlan/).
+  { path: "/echo-plan", component: () => import("./sim/echoPlan/EchoPlanView.vue"), name: "EchoPlanView" },
 ];
 
 const router = createRouter({

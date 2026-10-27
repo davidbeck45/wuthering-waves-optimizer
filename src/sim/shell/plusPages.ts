@@ -43,4 +43,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["echo", "feed", "tune", "reroll", "transducer", "benchmark", "keep", "upgrade", "substats"],
     icon: "M9 3h6M10 3v6.5L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9.5V3M7.5 15h9",
   },
+  {
+    path: "/echo-plan",
+    title: "Echo plan",
+    description: "The in-game Echo Management lock / discard grid built from your roster, with what changed since the last patch",
+    keywords: ["echo management", "discard", "lock", "plan code", "sonata", "main stat", "auto discard", "keep"],
+    icon: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14.5 17l2 2 3.5-4",
+  },
 ];

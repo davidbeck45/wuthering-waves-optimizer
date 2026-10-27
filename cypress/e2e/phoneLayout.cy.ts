@@ -149,4 +149,51 @@ describe("phone layout", () => {
     cy.get('[data-test-phone-echo-batch-row="done"]').first().find('[data-label="Substats"]').should("have.css", "display", "block");
     expectNoHorizontalScroll("/inventory (importer)");
   });
+
+  // /echo-plan (src/sim/echoPlan/) in the v3 UI: the narrowest phone at 100 % text, David's S26 width at 130 %
+  // (the nav itself only fits 360 px at 130 % without Electron's scrollbar - see the v3 test above).
+  it("keeps the echo plan inside the viewport with its chips wrapping and the tap sheet as a bottom sheet", () => {
+    const seed = (fontScale: number) => ({
+      onBeforeLoad(win: Window) {
+        win.localStorage.removeItem("wtplus:echoPlan:v1");
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = `html { font-size: ${fontScale * 100}%; }`;
+        win.document.head.appendChild(style);
+      },
+    });
+    for (const [width, height, fontScale] of [
+      [360, 800, 1],
+      [412, 915, 1.3],
+    ]) {
+      cy.viewport(width, height);
+      cy.visit("/echo-plan", seed(fontScale));
+      cy.get('[data-test-echo-plan-card="WindwardPilgrimage"] [data-test-echo-plan-row="3"]', { timeout: 60000 }).should("be.visible");
+      expectNoHorizontalScroll(`/echo-plan ${width} px`);
+      // the rules fold behind one button; the 3-cost row wraps; the cards still to set stay in reach
+      cy.get("[data-test-echo-plan-options]").should("not.be.visible");
+      cy.get("[data-test-echo-plan-phone-settings]").click();
+      cy.get("[data-test-echo-plan-options]").should("be.visible");
+      expectNoHorizontalScroll(`/echo-plan ${width} px (rules open)`);
+      cy.get('[data-test-echo-plan-card="WindwardPilgrimage"] [data-test-echo-plan-row="3"]').then(($row) => {
+        expect($row[0].getBoundingClientRect().height, "3-cost row wraps").to.be.greaterThan(60);
+        expect($row[0].getBoundingClientRect().right, "3-cost row inside the viewport").to.be.at.most(width);
+      });
+      cy.get("[data-test-echo-plan-phone-bar]").should("be.visible");
+      cy.get('[data-test-echo-plan-card="WindwardPilgrimage"] [data-test-echo-plan-chip="4:CritRate"]').click();
+      cy.get("[data-test-echo-plan-sheet]").should("have.attr", "open");
+      cy.get("[data-test-echo-plan-sheet] .modal-box").then(($box) => {
+        const r = $box[0].getBoundingClientRect();
+        expect(r.right, "sheet inside the viewport").to.be.at.most(width + 1);
+        expect(r.bottom, "sheet sits on the bottom edge").to.be.closeTo(height, 2);
+      });
+      cy.get("[data-test-echo-plan-sheet-close]").click({ force: true });
+    }
+  });
 });

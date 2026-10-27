@@ -1059,3 +1059,65 @@ Capture the fixture again after a submodule bump (the test compares it field for
 `npx tsx scripts/capture-runlite.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
+
+## Echo plan — the in-game Echo Management grid from the roster (batch 2, 2026-10-26) — `src/sim/echoPlan/`
+
+`/echo-plan` builds the plan the game applies since 3.2 (Kuro's notes, article 4447): per Sonata Effect, every new
+echo is locked or marked for discard by the main stat of its COST 4 / 3 / 1 row. WT+ works out which main stats the
+roster wants, shows one card per Sonata in the in-game shape, and tracks what the player has tapped in. Plan Codes are
+server-side IDs, so WT+ never makes or reads one: the grid is tapped in by hand once, and only the player's own code
+text is kept per server.
+
+| Piece | Role |
+|---|---|
+| `catalog.ts` | pure: the Sonatas the app ships (`echoSetLabelMap` order = release order), the cost rows each one has (read off `mainEchoesData` classes — Shadow of Shattered Dreams is a lone 4-cost, so its card has one row), `COST_MAINS` (4: HP ATK DEF Crit. Rate Crit. DMG Healing Bonus · 3: HP ATK DEF Energy Regen + six elements · 1: HP ATK DEF), in-game labels, `normaliseMain` (store keys, older exports' `AeroDMGBonus`, in-game text, wuwa_calc's `CR`/`ER`/`atk`), `costOfEcho` (the echo's own class), `IN_GAME_SET_NAME` |
+| `wants.ts` | pure: who wants which (Sonata, cost, main stat), with the source of each want — `equipped` (what the character wears: `characters[key].echoes`, inventory echo by `echoId` first, the `resolveCharacterEchoes` rule), `build` (every other saved build), `preset` (Ryan's curated `presets.ts` `echoes[].data.echoes`), `engine` (Riley's loadouts as the generated stock rotations describe them — `parseEngineLoadout` reads "…, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + …, main stats 44111 CD CD atk atk atk"), `default` (nothing else: from the kit's element and role — `kitFactsOf` reads the character's own data: a healer gets Rejuvenating Glow with Healing Bonus / scaling-stat / Energy Regen main stats, anyone else their element's 1.0 set with crit 4-costs, the element 3-cost and their scaling stat). `collectWants` = owned characters (a weapon — the Account State's rule) + planned ones (switch), minus `notInApp` and excluded ones; a Rover form with no loadouts of its own reads his wuwa_calc twin's |
+| `plan.ts` | pure: wants + switches + overrides → `EchoPlan` (cards → rows → chips with verdict, reason — `wanted` / `critPair` / `keepAll4` / `override` / `unwanted` / `thrown` / `off` — and who wants it), `planText` (the "Copy as text" lock list) |
+| `diff.ts` | pure: `snapshotOf` a card, `planProgress` against the saved ticks — `done` / `changed` (the chips that flipped since the tick) / `todo` / `idle` (no plan, nothing to do) — and `newSets` (Sonatas the page had never shown: a patch's new sets) |
+| `storage.ts` | localStorage `wtplus:echoPlan:v1` = `{v, savedAt, appVersion, sets, grid, done, codes, server, planned, excluded, overrides, options}`; `parseState` never throws and keeps only well-formed fields |
+| `sources.ts` | lazy loaders: `import.meta.glob("../../characters/*/presets.ts", { import: "echoes" })` and `loadWuwaCalcRotationPresets` (src/sim/presets) — only for the characters on the plan; for a character with neither, upstream's `getCharByName` (the calculator's own per-character chunk) for the kit facts |
+| `useEchoPlan.ts` | the page state: stores in, sources loaded once per character, plan + progress computed, state written back on every change |
+| `EchoPlanView.vue`, `SonataCard.vue`, `EchoPlanChipSheet.vue`, `EchoPlanRoster.vue`, `EchoPlanCodes.vue`, `echoPlan.css` | the page: header + "How it works", KPIs, plan rules and sources, the Plan Code per server (America / Europe / Asia / SEA / TW-HK-MO), the characters panel (owned + planned, include / exclude, kit-default flag), the diff banner, filters (All / To set / Changed / Done) and search (Sonata or character), then three sections — cards to set (full grid), "Set in game" (ticked, folded to tiles) and "No plan" (tiles). Each chip opens a tap sheet (bottom sheet on a phone): why, who wants it from which source, and Auto / Lock / Discard |
+| `echoPlan.test.ts` | the Cartethyia fixture's equipped echoes become KEEP chips; every curated preset reads legal main stats only (a 4-cost and 1-costs in every build); every generated wuwa_calc loadout parses; kit facts from real character data (Baizhi / Shorekeeper / Youhu heal, Taoqi / Yuanwu scale on DEF, Brant's self-heals don't make him a healer) and the kit default that follows; `loadSources` reads the role only where nothing else exists; Rover twin; `notInApp` and unarmed characters ignored; planned / excluded; off vs thrown; the crit pair (and its switch); keep-all-4; overrides; determinism; the diff (new set, changed chips); the saved state survives garbage and round-trips |
+
+Rules:
+- A chip somebody on the roster wants is **Lock**; every other chip of a planned card is **Discard**. A split build
+  (3pc + 2pc) is wanted in both Sonatas — which echo sits where isn't stated, so the plan errs towards keeping.
+- **Pair the crit 4-costs** (on by default): a wanted COST 4 Crit. Rate keeps COST 4 Crit. DMG too, and the other way
+  round — a build takes whichever its substats balance (Ryan's presets ship "Standard CR" and "Standard CD" builds side
+  by side), so the exact one alone would discard a usable 4-cost of a set the roster wears.
+- **Keep every 4-cost** locks a planned card's whole 4-cost row (Batch Mainstat Modification can re-roll it since 3.1).
+- A Sonata nobody wants has **no plan** (the game leaves its echoes alone); **Throw unused Sonatas** makes it discard
+  everything instead. A thrown set is thrown whole — keep-all-4 doesn't reach it.
+- The player's per-chip override beats everything; an override on an unused Sonata gives it a plan.
+- Done ticks store the card's snapshot; a card whose verdicts move afterwards (patch, roster, switch, override) comes
+  back up as Changed with the flipped chips outlined. A first visit takes the current Sonatas as the baseline, so
+  only a later patch's sets read as New.
+- Released content only: the set list is the app's; characters go through `notInApp`; planned characters can only be
+  picked from `allCharactersList`.
+
+Things learned:
+- The calculator calls Havoc's 1.0 set "Havoc Eclipse"; the game says **Sun-sinking Eclipse** (the old
+  `SunSinkingEclipse` key was removed upstream on 2026-07-18). The card shows the in-game name and notes the app's.
+- Ryan's curated presets carry slot errors the app never noticed: Suoming's SubDPS builds swap their slots' `type`s
+  (the echo's own class fixes them), Denia's and Lucilla's "Standard" builds put Crit Rate / Crit DMG on a 3-cost
+  (VoidwingMoth / Glommoth are Elite) — those slots are skipped, never kept — and Cartethyia's preset has a 1-cost with
+  no main stat. Upstream data, left alone (solo phase).
+- The glob over `presets.ts` makes Rollup split each character's presets into its own chunk (it was inlined into the
+  character chunk): loading a character in the calculator now fetches one more small chunk, preloaded in parallel.
+  The alternative — `getCharByName` per owned character — would pull ~1 MB of attack/buff data into this page.
+- The crit pair matters: on David's export 7 of the 26 planned cards wanted only one of Crit. Rate / Crit. DMG at COST 4
+  (Carlotta's Frosty Resolve would have discarded every Crit. DMG 4-cost). With the pair on: 132 chips to lock.
+- Kit role from the app's data, two signals: the attack entries' `attribute` (`"hp"` / `"defense"`, none = ATK —
+  Yuanwu's say `defense`) and the live result bar's first stat (`basic.liveResultBarStats`: `totalHp` for Shorekeeper,
+  whose attacks carry no attribute). Neither is enough alone. Healer = four or more `type: "Healing"` entries (Brant
+  and Aero Rover have three self-heals). 12 released characters have no preset and no loadout today (Aalto, Baizhi,
+  Calcharo, Chixia, Lingyang, Lumi, both Havoc Rovers, Taoqi, Yangyang, Youhu, Yuanwu); the role is only read for them.
+- The plan is a few milliseconds for a 24-character account (David's export: 26 of 37 Sonatas planned, 132 chips to
+  lock), so it runs on the main thread; only the preset chunks are awaited, behind a skeleton.
+
+Gates: `echoPlan.test.ts`, `cypress/e2e/echoPlan.cy.ts` (v3 seeded via onBeforeLoad: grid from the account, switches,
+done ticks across a reload, the changed state and banner, the tap sheet and an override, the Plan Code, the empty state
+→ planned characters, classic UI), `phoneLayout.cy.ts` ("keeps the echo plan inside the viewport…": 360 px at 100 %
+and 412 px at 130 % — no horizontal scroll, the rules folded, the 3-cost row wrapping, the phone bar, the bottom sheet).
+Not done: Riley's per-team `mine` picks (Wave 0 `solveMine`) as a source, and an ER-aware 3-cost choice (er-check).
