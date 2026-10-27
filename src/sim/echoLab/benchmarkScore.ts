@@ -22,6 +22,9 @@ import {
   type LabSession,
   type RunControl,
 } from "./core";
+// Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
+import { menuEnergyRegen } from "../energy/energyHave";
+import { erBenchmarkNote, erFactorFor, erReferenceCounts, erRollsToFloor } from "../energy/erAwareScorer";
 
 /** ChemX32's roll counts for its five named stats, most important first (the other eight take one roll each). */
 export const REFERENCE_SHAPE = [5, 5, 2, 2, 2] as const;
@@ -45,6 +48,9 @@ export interface SpreadLine {
 export interface BenchmarkOptions {
   /** stats the perfect spread may pick from: the best this many on B (Crit Rate and Crit DMG always; default 8) */
   greedyTypes?: number;
+  /** per character, the ER need (%) of their saved teams (`erNeedsOf(useEnergyNeeds())`): every build scores
+   *  damage × (1 − ER deficit) and the reference spends ER rolls up to it, as ChemX32 does */
+  erNeeds?: Record<string, number>;
 }
 
 export interface BenchmarkResult {
@@ -67,6 +73,9 @@ export interface BenchmarkResult {
   yours: SpreadLine[];
   notes: readonly string[];
   scorings: number;
+  /** the ER floor the scores respect (%), null without one; the ER your build has (%) */
+  erNeed: number | null;
+  erHave: number | null;
 }
 
 /** The benchmark score from the four damage numbers (null when R ≤ B). */
@@ -133,13 +142,15 @@ export async function benchmarkScore(session: LabSession, characterId: string, o
   if (!lab) throw new Error(`${characterId} can't be scored: ${session.skipped.get(characterId) ?? "unknown"}`);
   if (!lab.slots.every(Boolean)) throw new Error(`${lab.name} needs five echoes for a benchmark`);
   const startScorings = session.scorings;
+  const erNeed = options.erNeeds?.[lab.id] ?? null;
+  const erFactor = erFactorFor(lab.id, erNeed);
   let work = 0;
   const score = async (perEcho: Array<Array<{ key: string; value: number }>>): Promise<number> => {
     const clone = withEchoLines(session, lab, perEcho);
     const avg = await scoreBuild(session, lab, clone.characters, clone.echoes);
     work += 1;
     await pace({ phase: "benchmark", done: work, total: 230, label: lab.name });
-    return avg;
+    return erFactor ? avg * (await erFactor(clone.characters, clone.echoes)) : avg;
   };
   const empty: Array<Array<{ key: string; value: number }>> = [[], [], [], [], []];
 
@@ -151,14 +162,21 @@ export async function benchmarkScore(session: LabSession, characterId: string, o
 
   // R: ChemX32 — crit first, then the three stats this build values most
   const crit: SubstatKey[] = (["CritRate", "CritDMG"] as SubstatKey[]).sort((a, b) => (onB.get(b) ?? 0) - (onB.get(a) ?? 0));
-  const named = [...crit, ...byValue.filter((k) => k !== "CritRate" && k !== "CritDMG").slice(0, 3)];
-  const refCounts: Counts = new Map(SUBSTAT_KEYS.map((k) => [k, 1]));
+  let named = [...crit, ...byValue.filter((k) => k !== "CritRate" && k !== "CritDMG").slice(0, 3)];
+  let refCounts: Counts = new Map(SUBSTAT_KEYS.map((k) => [k, 1]));
   named.forEach((k, i) => refCounts.set(k, REFERENCE_SHAPE[i]));
+  if (erFactor) {
+    // with a floor, ER is placed by the need (promoted to third, at most three rolls) and never named for its value
+    const blank = withEchoLines(session, lab, empty);
+    const ref = erReferenceCounts([...crit, ...byValue.filter((k) => k !== "CritRate" && k !== "CritDMG")], erRollsToFloor(erNeed, await menuEnergyRegen(lab.id, blank.characters, blank.echoes)));
+    named = ref.named;
+    refCounts = ref.counts;
+  }
   const R = await score(placeSpread(refCounts, medianRoll));
 
   // P: 25 best-tier rolls, greedily where the engine gains most
   const greedyTypes = Math.max(2, options.greedyTypes ?? 8);
-  const candidates = [...new Set<SubstatKey>(["CritRate", "CritDMG", ...byValue.slice(0, greedyTypes)])];
+  const candidates = [...new Set<SubstatKey>(["CritRate", "CritDMG", ...(erFactor ? (["EnergyRegen"] as SubstatKey[]) : []), ...byValue.slice(0, greedyTypes)])];
   const perfect: Counts = new Map();
   let P = B;
   for (let step = 0; step < 25; step++) {
@@ -180,7 +198,7 @@ export async function benchmarkScore(session: LabSession, characterId: string, o
   }
 
   // D: your build as it is
-  const D = lab.base;
+  const D = erFactor ? lab.base * (await erFactor(session.account.characters, session.account.echoes)) : lab.base;
   const yoursCounts: Counts = new Map();
   const yoursTotals = new Map<SubstatKey, number>();
   for (const s of lab.slots) {
@@ -207,7 +225,9 @@ export async function benchmarkScore(session: LabSession, characterId: string, o
     reference: spreadLines(refCounts, medianRoll),
     perfect: spreadLines(perfect, maxRoll),
     yours: spreadLines(yoursCounts, (key) => (yoursTotals.get(key) ?? 0) / (yoursCounts.get(key) || 1)),
-    notes: BENCHMARK_NOTES,
+    notes: erFactor ? [...BENCHMARK_NOTES.slice(0, 3), erBenchmarkNote(erNeed, refCounts.get("EnergyRegen") ?? 1)] : BENCHMARK_NOTES,
     scorings: session.scorings - startScorings,
+    erNeed,
+    erHave: erFactor ? await menuEnergyRegen(lab.id, session.account.characters, session.account.echoes) : null,
   };
 }

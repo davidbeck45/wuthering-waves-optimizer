@@ -2,7 +2,7 @@
   <div class="subs" :data-test-my-rankings-substats-panel="rank.id">
     <div class="text-xs opacity-70 mb-1">
       Substat weights: what one more line of each substat on one of your equipped echoes would add to this build's
-      <template v-if="state.result">{{ fmt(state.result.baseline) }} average damage</template><template v-else>damage</template>
+      <template v-if="state.result">{{ fmt(state.result.baselineExtra.raw ?? state.result.baseline) }} average damage</template><template v-else>damage</template>
       on {{ rotationTitle }}. Left of each arrow is the size of the roll, right of it the damage it adds. The top of the list is what to look for.
     </div>
     <details class="subs__help text-xs mb-2" data-test-my-rankings-substats-help>
@@ -14,7 +14,7 @@
         <li><b>+1 tier</b>: one step up the tier ladder ({{ rollLabel(tierStep("CritRate"), false) }} Crit Rate, {{ rollLabel(tierStep("CritDMG"), false) }} Crit DMG, {{ rollLabel(tierStep("ATK_FLAT"), true) }} flat ATK). What a line you already have gains from rolling one tier higher — the gap between two echoes whose lines differ by one tier.</li>
         <li><b>The bar</b>: the expected gain next to the best substat's. A full bar is the stat to look for, an empty one does nothing on this rotation.</li>
         <li>The gains do not follow the roll sizes: what a roll pays depends on what the build already has (Crit Rate past 100 % is wasted, a stat you stack pays a little less each time). Compare rolls, not points — every substat line on an echo is one roll.</li>
-        <li>A stat at +0.0 % does not feed this rotation. Energy Regen always reads 0 here: the engine has no energy model, so keep the ER the rotation needs.</li>
+        <li>A stat at +0.0 % does not feed this rotation. Energy Regen is a floor: the damage engine has no energy model, so it counts up to the need wuwa_calc measures for the character's saved teams (the Energy check) — below it an ER roll is worth the share of the deficit it closes, at or above it nothing.</li>
       </ul>
     </details>
     <div v-if="state.running" class="text-sm"><span class="loading loading-spinner loading-xs"></span> scoring…</div>
@@ -29,7 +29,7 @@
         <div class="subs__head"></div>
       </div>
       <div v-for="w in state.result.weights" :key="w.key" class="subs__row">
-        <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span></div>
+        <div class="subs__name"><span class="max-md:hidden">{{ w.label }}</span><span class="md:hidden">{{ w.short }}</span><span v-if="w.key === 'EnergyRegen' && state.er?.floor" class="badge badge-ghost badge-xs ml-1" data-test-my-rankings-er-floor>floor</span></div>
         <div class="subs__gain" :class="gainClass(w.gain)" :data-test-my-rankings-substat="w.key"><span class="opacity-60">{{ rollLabel(w.roll, w.flat) }} →</span> {{ pct(w.gain) }}</div>
         <div class="subs__more">
           <div class="subs__gain subs__gain--more" :class="gainClass(w.medianGain)" :data-test-my-rankings-substat-median="w.key"><span class="opacity-60"><span class="md:hidden">median </span>{{ rollLabel(w.medianRoll, w.flat) }} →</span> {{ pct(w.medianGain) }}</div>
@@ -41,8 +41,8 @@
     </div>
     <p v-if="state.result" class="text-xs mt-2">
       <span class="opacity-70">Look for:</span> <b>{{ lookFor(state.result) }}</b>
-      <span v-if="erReadsZero(state.result)" class="opacity-70"> · Energy Regen reads 0 here — the engine has no energy model, keep the ER the rotation needs</span>
     </p>
+    <EnergySubstatNote v-if="state.result || state.er" :er="state.er" :character-id="rank.id" class="mt-1" />
     <div v-if="state.echoes?.length" class="mt-2 text-xs flex flex-wrap items-center gap-1" data-test-my-rankings-substats-echoes>
       <span class="opacity-70 mr-1">Your echoes' substats on this rotation (lowest = re-roll first):</span>
       <span v-for="e in echoesWorstFirst(state.echoes)" :key="e.slot" class="badge badge-ghost badge-sm tabular-nums">
@@ -65,6 +65,9 @@ import { equippedSubstatWorth, expectedRoll, medianRoll, rotationScorer, substat
 import { mainEchoesData } from "../../echoes/index";
 import { parsePresetName } from "../presets/presetName";
 import { fmt, gainClass, pct, pct2 } from "./format";
+import EnergySubstatNote from "../energy/EnergySubstatNote.vue";
+import { erFloorScorer } from "../energy/energySubstats";
+import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 
 const props = defineProps<{ rank: CharacterRank }>();
 
@@ -78,7 +81,6 @@ const rotationTitle = computed(() => parsePresetName(props.rank.best?.name).titl
 const rollLabel = (value: number, flat: boolean): string => (flat ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
 const echoLabel = (key: string | null): string => (key ? ((mainEchoesData as Record<string, { name?: string }>)[key]?.name ?? key) : "echo");
 const lookFor = (r: SubstatWeightsResult): string => r.weights.filter((w) => w.weight >= 0.5).map((w) => w.label).join(", ") || "nothing moves this number";
-const erReadsZero = (r: SubstatWeightsResult): boolean => Math.abs(r.weights.find((w) => w.key === "EnergyRegen")?.gain ?? 0) < 0.0005;
 const echoesWorstFirst = (list: EchoSubstatWorth[]): EchoSubstatWorth[] => [...list].sort((a, b) => a.worth - b.worth);
 
 watch(
@@ -94,7 +96,10 @@ watch(
     try {
       const chars = JSON.parse(JSON.stringify(characters.value ?? {}));
       const echoes = JSON.parse(JSON.stringify(inventoryStore.echoes ?? []));
-      const score = rotationScorer(props.rank.id, props.rank.bestRotation, RANKING_ENEMY);
+      // Wuthering Tools+ energy check: Energy Regen counts up to the character's ER need (src/sim/energy/)
+      const er = await erFloorScorer(useEnergyNeeds(), props.rank.id, rotationScorer(props.rank.id, props.rank.bestRotation, RANKING_ENEMY));
+      s.er = er;
+      const score = er.score;
       const baseline = await score(chars, echoes);
       s.result = await substatWeights(props.rank.id, chars, echoes, score, { baseline });
       s.echoes = await equippedSubstatWorth(props.rank.id, chars, echoes, score, { baseline });

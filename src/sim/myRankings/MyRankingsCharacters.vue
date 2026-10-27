@@ -46,6 +46,7 @@
                 <div class="mr-who__pills">
                   <span class="mr-pill" :class="{ 'mr-pill--max': c.sequence >= 6 }" :title="`Sequence ${c.sequence}`">S{{ c.sequence }}</span>
                   <span class="mr-pill" :class="{ 'mr-pill--max': c.refinement >= 5 }" :title="`Weapon refinement ${c.refinement}`">R{{ c.refinement }}</span>
+                  <EnergyCharacterFloor :character-id="c.id" inline />
                 </div>
               </div>
             </div>
@@ -182,6 +183,7 @@
 // Wuthering Tools+ — the /my-rankings characters table: ~56 px rows (portrait with element dot, S/R pills,
 // weapon art, the best rotation as title + chips, damage with a bar, one "best upgrade"), sortable columns,
 // a row opens into tabs (What if · Substats · Rotations · Rankings ▸), skeleton rows while scoring.
+import EnergyCharacterFloor from "../energy/EnergyCharacterFloor.vue";
 import { computed, nextTick, ref, watch } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WeaponIcon from "../display/WeaponIcon.vue";

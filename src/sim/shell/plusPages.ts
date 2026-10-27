@@ -44,6 +44,13 @@ export const PLUS_PAGES: PlusPage[] = [
     icon: "M9 3h6M10 3v6.5L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9.5V3M7.5 15h9",
   },
   {
+    path: "/energy",
+    title: "Energy check",
+    description: "How much Energy Regen each member of your teams needs, measured in wuwa_calc at your account, against your builds",
+    keywords: ["energy", "er", "energy regen", "recharge", "liberation", "requirement", "crit cap", "overcap", "breakpoint"],
+    icon: "M13 2 4.5 13.5H11L10 22l8.5-11.5H12z",
+  },
+  {
     path: "/echo-plan",
     title: "Echo plan",
     description: "The in-game Echo Management lock / discard grid built from your roster, with what changed since the last patch",

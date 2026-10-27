@@ -2,6 +2,8 @@
 // /my-rankings cache when it holds this exact data, else a progressive rankRoster run), then the investment plan
 // on top of it (its own cache, keyed by the same fingerprint). Both runs stay on the main thread, in slices: the
 // ranking yields between characters and teams, the plan every ~12 ms of engine work, so the page never freezes.
+import { erNeedsKey, erNeedsOf } from "../energy/energySubstats";
+import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import { computed, onBeforeUnmount, ref, shallowRef, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
@@ -77,6 +79,10 @@ export function useAccountData() {
   let unmounted = false;
 
   async function runPlan(fp: string, gen: number, data: { characters: any; echoes: any[]; teams: any[] }, base: RosterRanking, force: boolean): Promise<void> {
+    // Wuthering Tools+ energy check: ER counts as a floor in the gains, so the cache keys on the needs too
+    const erNeeds = await erNeedsOf(useEnergyNeeds()).catch(() => ({}));
+    if (gen !== generation) return;
+    fp = `${fp}|er:${erNeedsKey(erNeeds)}`;
     const cached = force ? null : readCachedPlan(fp);
     if (cached) {
       plan.value = cached;
@@ -91,6 +97,7 @@ export function useAccountData() {
     try {
       const result = await investPlan(data.characters, data.echoes, data.teams, base, {
         autoTeamBuffs: autoTeamBuffs.value,
+        erNeeds,
         signal,
         onProgress: (p: InvestProgress, items) => {
           if (gen !== generation) return;

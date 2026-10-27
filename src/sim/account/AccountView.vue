@@ -49,6 +49,8 @@
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
+      <!-- Wuthering Tools+ energy check: "2 characters short on ER · 1 overcapping crit" (src/sim/energy/) -->
+      <EnergySummaryTile class="acc-energy" data-test-account-energy />
 
       <div class="acc-grid">
         <AccountInvest
@@ -109,6 +111,7 @@ import AccountInvest from "./AccountInvest.vue";
 import AccountRoster from "./AccountRoster.vue";
 import AccountTeams from "./AccountTeams.vue";
 import AccountCharacterDrawer from "./AccountCharacterDrawer.vue";
+import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",
@@ -435,5 +438,8 @@ a.acc-pages__item:hover {
 }
 :root[data-theme-style="light"] .acc .acc-gain-up {
   color: color-mix(in oklab, oklch(var(--su)) 70%, black);
+}
+.acc-energy {
+  margin-top: 0.75rem;
 }
 </style>

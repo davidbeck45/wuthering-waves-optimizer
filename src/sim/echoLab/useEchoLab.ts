@@ -13,6 +13,8 @@ import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { accountFingerprint } from "./fingerprint";
 import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult } from "./pass";
 import type { RerollAdviceResult } from "./rerollAdvice";
+import { erNeedsOf } from "../energy/energySubstats";
+import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 
 /** sessionStorage: the last pass and benchmarks of one account fingerprint (derived data, safe to drop) */
 export const ECHO_LAB_CACHE_KEY = "wtplus:echoLab:cache";
@@ -161,7 +163,9 @@ export function useEchoLab() {
     benchAbort?.abort();
     const controller = new AbortController();
     benchAbort = controller;
-    const result = await run({ kind: "benchmark" }, benchStatus, controller.signal, account);
+    // Wuthering Tools+ energy check: ER counts as a floor up to each character's need in their saved teams
+    const erNeeds = await erNeedsOf(useEnergyNeeds()).catch(() => ({}));
+    const result = await run({ kind: "benchmark", options: { erNeeds } }, benchStatus, controller.signal, account);
     if (benchAbort === controller) benchAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       benchmarks.value = result;

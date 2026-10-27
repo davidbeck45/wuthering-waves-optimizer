@@ -29,6 +29,8 @@
     <MyRankingsEmpty v-if="!characterCount" />
     <template v-else>
       <MyRankingsKpis :account="account" :status="status" />
+      <!-- Wuthering Tools+ energy check: the account's ER summary, a link to /energy (src/sim/energy/) -->
+      <EnergySummaryTile variant="inline" class="mr-energy-link" data-test-my-rankings-energy-link />
 
       <section class="mr-section">
         <div class="mr-section-head">
@@ -90,6 +92,7 @@ import { accountStateOf } from "../account/accountState";
 import MyRankingsInfo from "./MyRankingsInfo.vue";
 import MyRankingsToolbar from "./MyRankingsToolbar.vue";
 import MyRankingsKpis, { type RankingStatus } from "./MyRankingsKpis.vue";
+import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import MyRankingsEmpty from "./MyRankingsEmpty.vue";
 import MyRankingsCharacters from "./MyRankingsCharacters.vue";
 import MyRankingsTeams from "./MyRankingsTeams.vue";
@@ -302,6 +305,10 @@ a.mr-pages__item:hover {
   flex-basis: 100%;
   font-size: 0.8rem;
   color: oklch(var(--bc) / 0.55);
+}
+.mr-energy-link {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
 }
 .mr-section {
   margin-top: 1.5rem;

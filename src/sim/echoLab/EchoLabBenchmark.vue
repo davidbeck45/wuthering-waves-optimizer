@@ -10,7 +10,7 @@
           <li><b>200 %, P (perfect):</b> 25 best-tier rolls, each placed where the engine gains most, at most one line of a stat per echo.</li>
         </ul>
         <p>Score = (D − B) / (R − B) below the reference, 1 + (D − R) / (P − R) above it, where D is your build.</p>
-        <p class="opacity-70">Compare builds of one character, not characters with each other. Energy Regen and team buffs are worth nothing to a damage engine, so supports read low.</p>
+        <p class="opacity-70">Compare builds of one character, not characters with each other. Team buffs are worth nothing to a damage engine, so supports read low. Energy Regen is a floor: up to the need wuwa_calc measures in the character's saved teams (the Energy check) every build scores damage × (1 − ER deficit), and the reference spends its ER rolls there first.</p>
       </EchoLabPopover>
       <div class="ml-auto flex items-center gap-2">
         <span v-if="status.ms !== null && result && !status.running" class="text-xs opacity-60">{{ status.cached ? "cached" : `${(status.ms / 1000).toFixed(1)} s` }}</span>
@@ -46,7 +46,10 @@
         <div class="bench-row__who flex min-w-0 items-center gap-3">
           <img :src="portrait(r.characterId)" :alt="characterName(r.characterId)" class="el-portrait size-10" loading="lazy" />
           <div class="min-w-0">
-            <div class="truncate font-semibold">{{ characterName(r.characterId) }}</div>
+            <div class="flex min-w-0 items-center gap-1.5">
+              <span class="truncate font-semibold">{{ characterName(r.characterId) }}</span>
+              <EnergyChip v-if="r.erNeed != null" :check="checkOf(r.erNeed, r.erHave)" :character-id="r.characterId" label="ER" mini note="Scores count Energy Regen up to this need (damage × (1 − ER deficit))" data-test-echo-lab-benchmark-er />
+            </div>
             <div class="truncate text-xs opacity-60" :title="r.rotationName">{{ r.rotationName }}</div>
           </div>
         </div>
@@ -104,6 +107,8 @@ import { SUBSTAT_KEYS, SUBSTAT_LABELS, isFlatSubstat, type SubstatKey } from "..
 import type { BenchmarkResult, SpreadLine } from "./benchmarkScore";
 import type { BenchmarkBatchResult } from "./pass";
 import EchoLabPopover from "./EchoLabPopover.vue";
+import EnergyChip from "../energy/EnergyChip.vue";
+import { checkOf } from "../energy/energyNeed";
 import { characterName, compact, pct, portrait, scoreBand, substatIcon } from "./echoLabView";
 import type { JobStatus } from "./useEchoLab";
 

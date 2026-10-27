@@ -5,6 +5,7 @@
 import { reactive, toRaw } from "vue";
 import type { CharacterRank, WeaponOption, WhatIfResult } from "./rankRoster";
 import type { EchoSubstatWorth, SubstatWeightsResult } from "../substats/substatWeights";
+import type { ErFloorScorer } from "../energy/energySubstats";
 
 export interface WhatIfState {
   sequence: number;
@@ -23,6 +24,8 @@ export interface SubstatsState {
   result: SubstatWeightsResult | null;
   echoes: EchoSubstatWorth[] | null;
   error: string | null;
+  /** Energy Regen as a floor (the energy check's need for this character), null until read */
+  er: ErFloorScorer | null;
 }
 
 const whatIfs = new WeakMap<object, WhatIfState>();
@@ -51,7 +54,7 @@ export function substatsStateOf(rank: CharacterRank): SubstatsState {
   const key = toRaw(rank);
   let state = substats.get(key);
   if (!state) {
-    state = reactive<SubstatsState>({ started: false, running: false, result: null, echoes: null, error: null }) as SubstatsState;
+    state = reactive<SubstatsState>({ started: false, running: false, result: null, echoes: null, error: null, er: null }) as SubstatsState;
     substats.set(key, state);
   }
   return state;

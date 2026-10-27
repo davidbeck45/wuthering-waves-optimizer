@@ -22,6 +22,8 @@ import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { SUBSTAT_KEYS, SUBSTAT_LABELS, expectedRoll, isFlatSubstat, withSubstat, type SubstatKey } from "../substats/substatWeights";
 import { characterDisplayName, characterMeta, weaponDisplayName, weaponMeta } from "../display/names";
 import { equippedEchoCount } from "./buildScore";
+// Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
+import { erAdjustedGain, erFactorFor } from "../energy/erAwareScorer";
 
 export type InvestKind = "sequence" | "refine" | "weapon" | "substat";
 
@@ -89,6 +91,9 @@ export interface InvestOptions {
   signal?: { cancelled: boolean };
   /** substats tried for the roll (default all 13) */
   substatKeys?: readonly SubstatKey[];
+  /** per character, the ER need (%) of their saved teams (`erNeedsOf(useEnergyNeeds())`): own gains are read on
+   *  damage × (1 − ER deficit), so an ER roll below the need is worth the deficit it closes */
+  erNeeds?: Record<string, number>;
 }
 
 export interface InvestPlan {
@@ -256,13 +261,17 @@ export async function investPlan(
     try {
       const base = (await scoreRotation(rotation, id, characters, enemy, inventoryEchoes)).avgDamage;
       await pause();
+      const erFactor = erFactorFor(id, options.erNeeds?.[id]);
+      const erBase = erFactor ? await erFactor(characters, inventoryEchoes) : 1;
+      const ownGain = async (avgDamage: number, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<number> =>
+        erFactor ? erAdjustedGain(avgDamage / base - 1, erBase, await erFactor(hypoCharacters, hypoEchoes)) : avgDamage / base - 1;
       if (base > 0) {
         const ctx = await teamFor(rank);
         const block = ctx ? await buildBlock(ctx, id) : null;
         const push = async (item: Omit<InvestItem, "base" | "avgDamage" | "gain" | "team" | "teamNote" | "rotation" | "characterId">, hypo: { characters: Record<string, any>; inventoryEchoes: any[] }, extraBlock: string | null = null): Promise<void> => {
           const avgDamage = (await scoreRotation(rotation, id, hypo.characters, enemy, hypo.inventoryEchoes)).avgDamage;
           await pause();
-          const gain = avgDamage / base - 1;
+          const gain = await ownGain(avgDamage, hypo.characters, hypo.inventoryEchoes);
           const { team, note } = await teamImpact(ctx, extraBlock ?? block, hypo.characters, hypo.inventoryEchoes);
           await pause();
           // an upgrade a support's own rotation does not show can still lift their team (an outro buff, a sequence node)
@@ -297,7 +306,7 @@ export async function investPlan(
           const hypo = withData(withWeapon(data, key, copy.refinement));
           const avgDamage = (await scoreRotation(rotation, id, hypo.characters, enemy, inventoryEchoes)).avgDamage;
           await pause();
-          const gain = avgDamage / base - 1;
+          const gain = await ownGain(avgDamage, hypo.characters, inventoryEchoes);
           if (gain >= MIN_GAIN && (!bestSwap || gain > bestSwap.gain)) bestSwap = { key, refinement: copy.refinement, wornBy, gain };
         }
         if (bestSwap && !cancelled()) {
@@ -327,7 +336,7 @@ export async function investPlan(
             const clone = withSubstat(id, characters, inventoryEchoes, key, roll);
             const avgDamage = (await scoreRotation(rotation, id, clone.characters, enemy, clone.inventoryEchoes)).avgDamage;
             await pause();
-            const gain = avgDamage / base - 1;
+            const gain = await ownGain(avgDamage, clone.characters, clone.inventoryEchoes);
             if (!top || gain > top.gain) top = { key, roll, gain };
           }
           if (top && top.gain >= MIN_GAIN && !cancelled()) {

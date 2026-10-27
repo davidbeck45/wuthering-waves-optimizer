@@ -61,6 +61,8 @@
                   </span>
                   <span v-if="t.unarmed.length" class="text-warning">no weapon: {{ t.unarmed.map((cid) => characterDisplayName(cid)).join(", ") }}</span>
                 </div>
+                <!-- Wuthering Tools+ energy check: each member's ER against this team's wuwa_calc need -->
+                <EnergyTeamChips :character-ids="t.characterIds" :name="t.name" class="mt-1" />
               </div>
             </div>
           </td>
@@ -125,6 +127,7 @@ import { rankingsMineHash } from "../account/accountState";
 import { dedupeTeams, memberShares, type MemberShare, type TeamRow } from "./rows";
 import type { TeamRank } from "./rankRoster";
 import { fmt } from "./format";
+import EnergyTeamChips from "../energy/EnergyTeamChips.vue";
 
 const props = withDefaults(defineProps<{ teams: TeamRank[]; pending?: number; teamsSkipped?: number; owned?: string[] }>(), {
   pending: 0,
