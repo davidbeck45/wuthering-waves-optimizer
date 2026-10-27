@@ -30,7 +30,7 @@ describe("phone layout", () => {
   it("keeps every page inside the viewport and the nav icons clear of the utility menu", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
-    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account"]) {
+    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/build-team"]) {
       cy.visit(route);
       cy.get(".navbar").should("be.visible");
       expectNavFits(route);
@@ -40,6 +40,31 @@ describe("phone layout", () => {
     cy.visit("/settings");
     cy.get("[data-test-settings-labs]").should("be.visible");
     expectNoHorizontalScroll("/settings");
+  });
+
+  // Wuthering Tools+ build-my-team: the plan and the result at 360 px (v3, a saved team of the three seeded through
+  // onBeforeLoad; cypress/e2e/buildTeam.cy.ts has the full flow at 412 px / 130 %)
+  it("keeps /build-team's plan and result inside 360 px", () => {
+    const character = JSON.parse(configOptimizer.data.character);
+    character.characters.Ciaccona = { weapon: "WoodlandAria" };
+    character.characters.Chisa = { weapon: "Kumokiri" };
+    const team = { id: "btphone", name: "Phone team", characterIds: ["Cartethyia", "Ciaccona", "Chisa"], buildIds: [null, null, null], actions: [], duration: null, enemyConfig: {} };
+    cy.visit("/build-team?team=btphone", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
+    cy.get('[data-test-build-team][data-phase="plan"]', { timeout: 90000 }).should("exist");
+    expectNoHorizontalScroll("/build-team plan");
+    cy.get("[data-test-build-team-run]").click();
+    cy.get('[data-test-build-team][data-phase="result"]', { timeout: 90000 }).should("exist");
+    cy.get("[data-test-build-team-result]:visible").should("have.length", 1);
+    expectNoHorizontalScroll("/build-team result");
   });
 
   it("keeps the wuwa_calc rankings page inside the viewport with its phone toolbar", () => {

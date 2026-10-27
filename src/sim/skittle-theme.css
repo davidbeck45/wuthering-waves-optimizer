@@ -86,6 +86,9 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
 .skittle-root .wt-import { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; font: 12px var(--sans); color: var(--ink-2); }
 .skittle-root .wt-import__opt { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
 .skittle-root .wt-import__opt input { accent-color: oklch(var(--p)); }
+/* Wuthering Tools+ build-my-team: the link beside Import (src/sim/buildTeam/) */
+.skittle-root .wt-import__build { gap: 0.3rem; font-weight: 600; text-decoration: none; }
+.skittle-root .wt-import__build[hidden] { display: none; }
 
 /* Wuthering Tools+: Riley's stacked layout (`main.stack`, `.tclayout.stack`) collides with DaisyUI's
    global `.stack` (stacked cards) component, which turns the container into an inline grid and

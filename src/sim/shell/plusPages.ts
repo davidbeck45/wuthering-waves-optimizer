@@ -43,4 +43,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["echo", "feed", "tune", "reroll", "transducer", "benchmark", "keep", "upgrade", "substats"],
     icon: "M9 3h6M10 3v6.5L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9.5V3M7.5 15h9",
   },
+  {
+    path: "/build-team",
+    title: "Build my team",
+    description: "Re-gear a team from your echo inventory: wuwa_calc's pick per member, no echo used twice",
+    keywords: ["build", "team", "echoes", "inventory", "optimizer", "regear", "allocate", "er", "energy", "wuwa_calc"],
+    icon: "M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z",
+  },
 ];

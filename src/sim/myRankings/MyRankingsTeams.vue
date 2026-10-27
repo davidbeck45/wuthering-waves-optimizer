@@ -80,6 +80,15 @@
             </div>
           </td>
           <td class="tcell--link">
+            <!-- Wuthering Tools+ build-my-team: re-gear this team from the echo inventory -->
+            <RouterLink
+              :to="buildTeamLink(t)"
+              class="btn btn-ghost btn-sm btn-square"
+              title="Build my team: re-gear these three from your echoes"
+              :aria-label="`Build ${t.name} from your echoes`"
+              :data-test-my-rankings-team-build="t.name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-linejoin="round" /></svg>
+            </RouterLink>
             <RouterLink
               :to="{ path: '/rankings', hash: rankingsMineHash(t.characterIds) }"
               class="btn btn-ghost btn-sm btn-square"
@@ -152,6 +161,12 @@ const filtered = computed(() => rows.value.filter((t) => filter.value === "all" 
 const visible = computed(() => (showAll.value ? filtered.value : filtered.value.slice(0, LIMIT)));
 const maxDamage = computed(() => Math.max(0, ...rows.value.map((t) => t.avgDamage)));
 
+/** /build-team for this row: the saved team itself, or a preset's three members (the page uses a saved team of the
+ *  same three when there is one). */
+function buildTeamLink(t: TeamRow): { path: string; query: Record<string, string> } {
+  return t.source === "yours" ? { path: "/build-team", query: { team: t.id } } : { path: "/build-team", query: { members: t.characterIds.join(",") } };
+}
+
 const shareCache = new WeakMap<object, MemberShare[]>();
 function sharesOf(t: TeamRow): MemberShare[] {
   let s = shareCache.get(t);
@@ -177,7 +192,10 @@ function sharesOf(t: TeamRow): MemberShare[] {
   width: 20rem;
 }
 .mr-tcol-link {
-  width: 3rem;
+  width: 5.5rem;
+}
+.tcell--link {
+  white-space: nowrap;
 }
 @media (max-width: 1023px) {
   .mr-tcol-dmg {

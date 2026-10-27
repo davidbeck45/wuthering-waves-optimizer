@@ -1059,3 +1059,88 @@ Capture the fixture again after a submodule bump (the test compares it field for
 `npx tsx scripts/capture-runlite.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
+
+## Build my team — re-gear a team from the echo inventory, `/build-team` (batch 2, Roadmap Phase 4, 2026-10-26)
+
+David's own Phase 4 spec ("create my builds for me … echoes cannot be reused"). A team — a saved one (`?team=<id>`) or
+three characters (`?members=A,B,C`, optionally `&key=<wuwa_calc team key>`) — gets one new build per member from the
+player's real echo inventory, never one echo twice, from wuwa_calc's best `mine` pick per member (the Riley run seam,
+Wave 0). Entry points: the `/rankings` detail topbar ("Build from my echoes" beside Import), a wrench button on every
+`/my-rankings` team row, the plus hub (`PLUS_PAGES`). Lazy route in `main.ts`; v3 and classic alike; the tab title
+through `useDocumentTitle`.
+
+| Piece | Role |
+|---|---|
+| `buildTeam/rileyPlan.ts` | Riley's `RunMember` → a `MemberPlan` in app keys: sets with piece counts (`setKeyOf` over `echoSetLabelMap`), the main-slot echo and its Phantom skin (`echoKeysOf` over `mainEchoesData`, 4 name overrides: False Sovereign, Nightmare: Adam Smasher, Reminiscence: Suhsin, Reminiscence: Threnodian - Voidborne), the layout and main stat per slot (`parseMainStats("43311 CD ATK Fusion atk atk")` — his labels, lowercase = 1-cost), the ER need `max(bar ?? 0, minEr)` from the traced run's `needs` (er-check's rule). `planFromPreset` reads Ryan's first curated echo preset, `planFromCurrent` the member's own build; `priorityOrder` = Riley's `bySlot` share, highest first |
+| `buildTeam/plans.ts` | `plansForTeam(ids, RileySource)`: his keys for the composition → `solveMine(keys, "mine")` → best row → `tracedRun` (ER needs) → `solveMine([key], "high")` (High Invest DPS); a team he does not list, one with an unreleased member (Lily) or one he cannot solve falls back to presets, then to the member's current build, and says why. `RileySource` = `rileyClient` in the browser, `rileyHeadless` on Node |
+| `buildTeam/constraints.ts` | a plan + the options → `MemberConstraints`: allowed sets, main-echo species, the format (43311 / 44111 as themselves; **41111 runs as "Any"** with every 3-cost and every 4-cost but the main echo dropped — slot 0 is the main echo and a species never repeats, so only 4+1+1+1+1 is left), main stats per cost as a **pool pre-filter** (upstream's optimizer has none; the main echo's own copies keep any main stat), the ER floor. `filterPool` (why each echo is out: ignored / set / cost / main stat / taken by a teammate / worn outside the team), `mainEchoCandidates` (the plan's echo if the pool holds a copy, else every species of that slot's cost), `shortfallOf` (per cost: need vs distinct species held), `relaxLevels` (plan → any main stat → any layout; **sets are never relaxed automatically**), `legalInSlot` (the swap pass) |
+| `buildTeam/headlessOptimizer.ts` | upstream's optimizer without the Calculator page. `prepareMemberJob`: the context from `buildCharacterCalculationContext` laid out field for field like Calculator.vue's `handleOptimize` (`optimizerContextOf`), the rotation through `buildOptimizerRotationData`, set-bonus buffs per label through `resolveSetBonusStats`, main-echo buffs through `applyMainEchoBuffEffects` + `mergeMainEchoBuffStats` — from the **exact settings the saved build will carry** (`buffConfigOf`: the optimizer's own setting, else the calculator's, else on at max stacks). `erOffset` = full ER − character-screen ER of today's build, so a floor on the screen ER becomes a min-stat row on the optimizer's `energyRegen` (`erMinStat`). `inlineBackend()`: perf's `planOptimizerGeneration` + `optimizerLoadoutStream` and the processor's scoring (`computeLoadoutFinalStats`, `scoreOptimizerRotation`) in one thread — upstream's inline `optimize()` ignores the cost format |
+| `buildTeam/workerBackend.ts` | the browser backend: upstream's `generator.worker.ts` / `processor.worker.ts` driven from the main thread exactly as `optimizeWithWorkers` drives them (init → ready → start, pull-based `continue`, slim `process` batches, merged top-N), one generator shard, processors per Settings › Preferences (`splitOptimizerWorkerCount`); `score()` reuses a processor initialised with a top-N above any batch as the swap pass's batch scorer. Calculator.vue's private `serializeEchoes` / `createSerializableContext` are re-stated (`serializeOptimizerEchoes`, a JSON round trip) |
+| `buildTeam/allocate.ts` | pure, the optimizer comes in as `AllocationApi`: greedy in priority order with an exclusion set; every order (≤ 4 members) when the members' pools overlap; a swap pass (a member takes one echo from a teammate, who backfills with the echo given up or one of the 16 likeliest free echoes, scored exactly) kept only when the allocation is better — more members on a loadout, then more ER floors met, then a higher team value — and no floor that held is lost |
+| `buildTeam/buildTeam.ts` | the store-free orchestrator `buildMyTeam(input, backend, hooks)`: team context through `resolveTeamCharacters` (pins, builds named for the team, auto team buffs — the Team Rotations switch), objective = **the team's own slot actions** (one unit: the team's damage) or each member's best rotation (`rotationCandidates` + `scoreRotation`, the /my-rankings pick, weighted by Riley's share over today's damage); per member the relax levels in two passes (floor met, then the most ER); **today's build competes** (when it keeps the plan's sets and nobody before took its echoes), so the result is never worse than what they wear for no reason. Then every number is the calculator's: `calcCharacterRotationDamage` on the draft build, the character-screen ER (`alwaysEnabledOnly`), the team total with every draft pinned (`calcTeamRotationDamage`), the source of every echo (already worn / unworn / a teammate's / worn outside the team). `draftBuildFields` = the slot's build with the echoes as inventory pointers (`buildEchoLoadoutFromIds`), slot 0 as `mainEcho` with the run's buff settings, `echoSetBonus` from `getSetBonusEffects` (what the echoes panel writes), the run's set-passive settings |
+| `buildTeam/apply.ts` | after the player confirms: a **new** build per member named for the team ("Built for Mornye + Lynae", " (2)" … never an existing name — resolveTeam's by-name rule reads it too), pinned through upstream's `setTeamCharacterBuild` (`team.buildIds`); "Also make active" = upstream's `equipBuild`. Undo (`wtplus:buildTeam:undo:v1`, the last apply): created ids, previous pins, members whose builds list was synthesized, and with make-active their records and the `equipped` / `equippedPresets` maps; restored verbatim while the touched records still fingerprint as right after the apply, else only what is still unused is removed and the page says what it kept. Storage refused → the undo lives in page memory and the page says so |
+| `buildTeam/useBuildTeam.ts`, `BuildTeamView.vue`, `BuildTeamPlanCard.vue`, `BuildTeamResultCard.vue`, `BuildTeamEchoTile.vue`, `BuildTeamPicker.vue`, `BuildTeamSwitch.vue`, `buildTeamView.ts`, `buildTeam.css` | the page: picker (saved teams, set-up first) → **Plan** (per member: priority with up/down, plan source, sets, main echo, layout chips, an editable ER floor with today's ER, the objective; options in `localStorage["wtplus:buildTeam:options:v1"]`, known booleans only) → **Build** (progress per member, combinations checked, Cancel) → **Review & save** (team rotation before → after, Riley's DPS at the account before → after with the new echoes, the gap to his High Invest, per member now → built with Δ, ER vs need, why it changed — an ER trade, a relaxed plan, buffs switched on, same echoes — five echo tiles with their source, a Save tick per member, the save bar with "Also make active", Undo). Phone: one member card at a time behind a portrait switcher, tiles two a row, the Build / Save bars fixed at the bottom |
+| `buildTeam/buildTeamCli.ts` + `cli/index.ts` | `npm run cli -- build-team <team \| "A,B,C"> [--any-set] [--any-main-stat] [--keep-main-echo] [--take-from-others] [--one-order] [--er "Mornye=260,Lynae=none"] [--order a,b,c] [--no-auto-buffs] [--pretty]` — read-only, prints the plan and the result |
+| hooks | `main.ts` (upstream, one route line), `shell/plusPages.ts`, `myRankings/MyRankingsTeams.vue` (a wrench link per row: the saved team, or `?members=` for a preset row — the page uses a saved team of the same three when there is one), `rankings/controller.ts` (`BUILD_TEAM_LINK` + `pointBuildTeamLink` in the Import box: the row's three, main DPS first, and its team key; an icon on a phone), `skittle-theme.css` (two rules) |
+
+Rules:
+- **Nothing is written without a preview and a confirm.** New builds only; the active build changes only with "Also make
+  active"; echoes are never taken off anyone (a pinned build points at inventory echoes, and upstream lets builds share
+  one); by default echoes worn by characters outside the team are left out of the search entirely.
+- **No echo twice in the team.** A member who gets no new build (skipped, no echoes of their sets, no rotation) keeps
+  the build they wear here, and its echoes stay out of every other member's search — the current build of a member
+  that shares one with them cannot compete either. Every pick carries `sharedWith`: the teammates whose build in this
+  team (pin, named, active) wears it today. The Save ticks open on `defaultSaveSlots` (`buildTeamView.ts`): builds
+  that score at least as much, or less only to meet an ER floor today's build misses, plus any teammate a ticked build
+  takes echoes from; unticking one names the echoes the team would wear twice in the save bar and the confirm dialog
+  (`shareConflicts`).
+- **Every number shown is the calculator's** on the produced build (parity below); the optimizer only ranks. Riley's
+  figures are labelled DPS and only ever compared with his own (before / after / High Invest).
+- **Released content only:** the seam's `blocked` keys (Lily) skip a team, and the plan falls back to presets; the
+  `/rankings` link hides itself and `?members=` refuses a composition with a key `notInApp` lists.
+- **Supports** are scored on their own part of the rotation with their teammates' current gear providing the team buffs;
+  the team total after the run re-resolves the team with every new build pinned, so a support's new 5-piece reaches its
+  teammates there. Team-objective scoring (a support optimised for the carry's damage) is a follow-up.
+- Set passives and main-echo buffs **nobody had set are switched on at max stacks** (Riley's run plays them) and listed
+  per member; the saved build carries exactly those settings, which is what keeps the calculator's number equal to the
+  optimizer's.
+
+Things learned:
+- Headless contexts read `mainEcho.echo` and `echoSetBonus` off the record — the calculator only derives them from the
+  slots while it is mounted (`CalculatorEchoTile`'s slot-0 watch, `updateEchoSets`). A build that only swaps the echo
+  pointers keeps the old main echo and set bonus in every team calculation; the draft writes both.
+- Riley's main slot can be an Elite (Suisui's Forbidden Bastion in a 43311): the fallback main echo's cost is the plan
+  echo's own (`speciesCost`), not the layout's first cost.
+- On David's 9-16 export 100 of 258 echoes are worn by characters outside a three-member team, and supports often lack
+  a full set of Riley's 3-cost element pieces (Chisa / Lucilla one Havoc / Glacio 3-cost short, Suisui no 4-cost HP of
+  Song of Feathered Trace that Xuanling doesn't wear) — hence the relax levels, each said in words on the card.
+- A member with no plan at all (no pick, no preset, no build) used to mean an "Any" search over ~160 echoes: millions
+  of loadouts. The member is skipped with a sentence instead; turning "The plan's sets" off is the explicit way in.
+- Upstream's `combineBuffObjects` (optimizer.ts) folds a main-echo buff that is talent-specific (`specificTalentBuffs`,
+  `modifySpecificTalents`) to 0 while the calculator applies it: for such echoes the optimizer ranks without the buff.
+  Every common main echo's buff is plain numbers (parity holds); not changed here (upstream code).
+- Upstream's processor keeps its heap across batches and never answers a batch it crashed on: the swap-pass scorer
+  (`workerBackend.ts` `score()`) drops the worker on an error or a cancel mid-batch, so a late reply can never answer
+  the next batch and a crash rejects instead of hanging the run.
+- Two echo tiles a row on a 360 px phone at 130 % text leave ~60 px for the name: a container query (`bttile`, content
+  box under 6.5rem — 360 / 375 px phones, not 412 px or desktop) moves the main stat under the name and shrinks the
+  picture, so names break between words.
+- Measured (David's export): CLI inline backend 0.3–5 s per team (Xuanling's, 6 orders, 15 s single-threaded); the
+  page through the workers 0.9–8.8 s. `cli -- build-team 1` on 9-16: Aemeath −1.5 % (today's build is 4.4 points short
+  of the 115.2 % ER her loop needs, the new one meets it), team −1.2 %; the Xuanling team +1.8 % (Suisui +9.5 % from
+  shedding ER she did not need, Xuanling +3.2 % from Song of Feathered Trace 5pc's buff, which she had not set).
+
+Gates: `allocate.test.ts` (fake scorer, 20 echoes: no reuse in any order, priority, floors before value, the swap pass
+never lowers the value and finds the swap greedy misses, all orders, deterministic, cancel), `buildTeam.test.ts` (names
+and layouts, ER need, preset plans, 41111 → Any + the 4-cost rule, main-stat filter, shortfall, relax levels, swap
+legality; **parity**: the headless job ranks exactly as upstream's `optimize()` on the same pool, and the produced build
+reads in the calculator the optimizer's score to 6 decimals; her own build competes; the floor out of reach keeps the
+most ER; apply / undo on real Pinia stores — new build, pin, active untouched, make-active and its `equipped` map, a
+synthesized builds list, exact undo, partial undo after an edit; a teammate who gets no new build keeps their echoes),
+`workerBackend.test.ts` (fake workers: results matched to the loadouts asked for, a crash and a cancel mid-batch
+reject), `rileyPlan.test.ts` (node: every set piece, main echo
+and layout of his whole loadout list maps — 0 unmapped; plans for the Wave 0 synthetic account), `buildTeamView.test.ts` (default Save ticks, conflicts, notes);
+`cypress/e2e/buildTeam.cy.ts` (picker + hub, empty, /my-rankings → plan → build → confirm → saved and pinned → the Teams
+editor's slot reads "Built for …" → undo, cancel, phone 412 px / 130 %), `phoneLayout.cy.ts` (`/build-team` in the
+route loop, plan and result at 360 px), `themes.cy.ts`; the CLI snapshot diff against the base commit is empty on both
+exports.
