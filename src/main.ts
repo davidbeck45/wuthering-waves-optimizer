@@ -58,6 +58,8 @@ const routes = [
   // engine only loads when the page is opened (src/sim/rankings/).
   { path: "/rankings", component: () => import("./pages/RankingsView.vue"), name: "RankingsView" },
   { path: "/my-rankings", component: () => import("./sim/myRankings/MyRankingsView.vue"), name: "MyRankingsView" },
+  // Wuthering Tools+: the in-game Echo Management plan built from the roster (src/sim/echoPlan/).
+  { path: "/echo-plan", component: () => import("./sim/echoPlan/EchoPlanView.vue"), name: "EchoPlanView" },
 ];
 
 const router = createRouter({

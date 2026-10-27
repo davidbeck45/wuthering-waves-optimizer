@@ -1,0 +1,159 @@
+/* Wuthering Tools+ /echo-plan — the KEEP / DISCARD chips of the Echo Management grid, the status ribbons and the
+   element dots. Every colour is a DaisyUI token, so each theme (dark and light) recolours it; light themes darken
+   state text for contrast. */
+
+.ep-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.1rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.ep-chip:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+.ep-chip--keep {
+  color: oklch(var(--su));
+  background: oklch(var(--su) / 0.14);
+  border-color: oklch(var(--su) / 0.45);
+}
+.ep-chip--keep:hover {
+  background: oklch(var(--su) / 0.22);
+}
+.ep-chip--discard {
+  color: oklch(var(--bc) / 0.55);
+  background: oklch(var(--bc) / 0.04);
+  border-color: oklch(var(--bc) / 0.14);
+}
+.ep-chip--discard:hover {
+  color: oklch(var(--bc) / 0.8);
+  border-color: oklch(var(--bc) / 0.3);
+}
+.ep-chip--off {
+  color: oklch(var(--bc) / 0.42);
+  background: transparent;
+  border-color: oklch(var(--bc) / 0.12);
+  border-style: dashed;
+}
+.ep-chip--off:hover {
+  color: oklch(var(--bc) / 0.75);
+}
+/* a chip whose verdict moved since the card was ticked done */
+.ep-chip--moved {
+  box-shadow: 0 0 0 2px oklch(var(--wa) / 0.85);
+}
+/* the player's own override: a dot in the corner */
+.ep-chip__pin {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: oklch(var(--p));
+  box-shadow: 0 0 0 2px oklch(var(--b1));
+}
+.ep-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.ep-dot--Glacio { background: #41aefb; }
+.ep-dot--Fusion { background: #f0744e; }
+.ep-dot--Electro { background: #b46bff; }
+.ep-dot--Aero { background: #2fd99a; }
+.ep-dot--Spectro { background: #e9cf3f; }
+.ep-dot--Havoc { background: #e649a6; }
+
+.ep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.ep-badge--new {
+  color: oklch(var(--in));
+  background: oklch(var(--in) / 0.14);
+  border-color: oklch(var(--in) / 0.4);
+}
+.ep-badge--changed {
+  color: oklch(var(--wa));
+  background: oklch(var(--wa) / 0.14);
+  border-color: oklch(var(--wa) / 0.45);
+}
+.ep-badge--done {
+  color: oklch(var(--su));
+  background: oklch(var(--su) / 0.12);
+  border-color: oklch(var(--su) / 0.35);
+}
+.ep-badge--thrown {
+  color: oklch(var(--er));
+  background: oklch(var(--er) / 0.1);
+  border-color: oklch(var(--er) / 0.35);
+}
+.ep-badge--muted {
+  color: oklch(var(--bc) / 0.65);
+  background: oklch(var(--bc) / 0.06);
+  border-color: oklch(var(--bc) / 0.15);
+}
+
+/* state colours are tuned for dark surfaces; on light themes the text needs more weight */
+html[data-theme-style="light"] .ep-chip--keep,
+html[data-theme-style="light"] .ep-badge--done,
+html[data-theme-style="light"] .ep-text-keep {
+  color: color-mix(in oklch, oklch(var(--su)) 58%, black);
+}
+html[data-theme-style="light"] .ep-badge--changed,
+html[data-theme-style="light"] .ep-text-changed {
+  color: color-mix(in oklch, oklch(var(--wa)) 48%, black);
+}
+html[data-theme-style="light"] .ep-badge--new {
+  color: color-mix(in oklch, oklch(var(--in)) 60%, black);
+}
+html[data-theme-style="light"] .ep-badge--thrown {
+  color: color-mix(in oklch, oklch(var(--er)) 70%, black);
+}
+.ep-text-keep {
+  color: oklch(var(--su));
+}
+.ep-text-changed {
+  color: oklch(var(--wa));
+}
+
+/* a card whose plan needs a tap in game */
+.ep-card--changed {
+  border-color: oklch(var(--wa) / 0.55);
+}
+.ep-card--done {
+  border-color: oklch(var(--su) / 0.4);
+}
+
+/* phones: bigger touch targets for the chips (the budget is 360–412 px at 130 % text) */
+@media (max-width: 639px) {
+  .ep-chip {
+    min-height: 2rem;
+    padding: 0.15rem 0.6rem;
+  }
+}
