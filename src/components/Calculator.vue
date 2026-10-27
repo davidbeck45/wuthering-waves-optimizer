@@ -170,6 +170,7 @@
         v-if="hasVisitedBuildCard"
         class="screen--build-card"
         v-show="curScreen === 'build-card'">
+        <WtPlusShareStrip :character="character" /><!-- Wuthering Tools+: lossless share card (src/sim/share/, registered in main.ts) -->
         <CalculatorBuildCard
           :key="characterBuildKey"
           :character="character"

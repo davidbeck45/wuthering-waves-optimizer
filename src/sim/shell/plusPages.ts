@@ -50,4 +50,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["echo management", "discard", "lock", "plan code", "sonata", "main stat", "auto discard", "keep"],
     icon: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14.5 17l2 2 3.5-4",
   },
+  {
+    path: "/share",
+    title: "Share & import builds",
+    description: "Share a build or team as a card that carries the build inside the PNG, or as a link, and load one back exactly",
+    keywords: ["share", "card", "import", "link", "png", "showcase", "export", "transfer", "phone", "tacet lab"],
+    icon: "M12 3v12m0-12L8 7m4-4l4 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7",
+  },
 ];

@@ -1121,3 +1121,106 @@ done ticks across a reload, the changed state and banner, the tap sheet and an o
 → planned characters, classic UI), `phoneLayout.cy.ts` ("keeps the echo plan inside the viewport…": 360 px at 100 %
 and 412 px at 130 % — no horizontal scroll, the rules folded, the 3-cost row wrapping, the phone bar, the bottom sheet).
 Not done: Riley's per-team `mine` picks (Wave 0 `solveMine`) as a source, and an ER-aware 3-cost choice (er-check).
+
+## Share cards — `src/sim/share/` (batch 2, 2026-10-26)
+
+`/share` and a share sheet: a build or a team becomes a **PNG that carries the build itself** (a 1200 × 630 post card,
+a 1080 × 1350 team card in Fribbels' "Team Showcase" layout) or a **compact link**; dropping the card (or opening the
+link) on any WT+ restores it exactly — no OCR — as a *new* build after a merge preview. Desktop ↔ phone with no server.
+
+| Piece | Role |
+|---|---|
+| `pngMeta.ts` | PNG `iTXt` write / read: chunk walk, table CRC-32, 16 KB cap on the stored data (512 KB once inflated), the chunk goes just before IEND and replaces an earlier one under the same keyword; compressed iTXt (flag 1, zlib through `CompressionStream("deflate")`) on write, both forms on read; a chunk with a bad CRC, over the cap or malformed is **skipped**, never thrown, so one bad chunk can't hide a good one. Port of Tacet Lab's `src/scanner/card-metadata.ts` (DJ12421/Tacet-Lab, **GPL-3.0**, commit 5386bfa — attribution in the file header) |
+| `buildCodec.ts` | **the share format** (below): `buildPayload` / `teamPayload` from the store records (echoes inlined from the inventory through `resolveCharacterEchoes`), `withDetail` (full → lean → gear), `parseSharePayload` (validation, `sanitize` drops `__proto__`/`constructor` keys and non-JSON values, `cleanReceivedConfig` drops every never-shared key from a received config and any engine-read field in the wrong shape (`rotations` not a list, `buffs` not an object …), non-object actions are dropped, **version gate**: a newer `v` comes back read-only), `buildFieldsFromMember` (back to store fields; a gear-only member gets its set bonuses from `getSetBonusEffects` and its main echo from slot 1), the "is it in this app" checks (`isKnownCharacter` = `allCharactersList`, released only; `isKnownWeapon` per weapon type; `echoProblem`: known echo and set, cost 1/3/4, a main stat with a `statsTable` value at that rarity, substats in `subStatsTable`'s range — a received `mainEcho` the app lacks and non-plain team enemy settings are dropped too), and `fromTacetCard` (a `TacetLabCard` chunk → a gear payload, with a warning per thing that can't come across) |
+| `tacetIds.ts` + `scripts/share-tacet-ids.ts` | GENERATED: Tacet Lab's in-game catalogue ids → app keys (64 characters, 124 weapons, all matched by name; Rover by element + gender). Only ids that land on something the app lists are written. Echo and set names map at runtime through `mainEchoesData` / `echoSetLabelMap` (the "Phantom:" skin prefix dropped) |
+| `link.ts` | `/share#b=<base64url(deflate-raw(JSON))>` — the data is in the fragment, which browsers never send to a server; the Umami tracker would (it reports `location.href`), so `src/utils/analytics.ts` sets `data-exclude-hash` (one upstream hook line). `shareLink` walks the tiers until the URL is ≤ 1,900 characters (Discord's 2,000 less a sentence) or returns null ("share the card") |
+| `mergePreview.ts` | `planImport` (pure): per member "adds build *Shared · <date>*, active build unchanged" / "new character" / "skip: not in this app"; each echo **owned** (matched by `echoFingerprint` — name, set, cost, rarity, main stat, substats order-free to 0.01, so "5" vs 5 and slot order don't matter) / **new** / **skipped** (with the reason); notes when talents or level differ (those belong to the character, so the user's stay). `applyImport` returns the records to write: an existing character gets one more entry in `builds` and nothing else; a missing one is created with the build as its only (active) build; new echoes get fresh ids; a team becomes a new saved team pinned (`buildIds`) to the new builds |
+| `headline.ts` | the engine number: the build's best rotation (`rotationCandidates` + `scoreRotation` — the /my-rankings pick, on a non-active build through `charactersWithBuild`) or the team's own rotation (`resolveTeamCharacters` + `calcTeamRotationDamage`, pinned builds, the auto team-buffs switch), both at `RANKING_ENEMY`; **DPS only when the rotation has a duration**, else "avg DMG / rotation". `verifyBuildHeadline` re-scores a received card's own rotation on its own build in THIS app ("Checked here: … the same as the card") |
+| `cardView.ts` | what a card shows, from the payload alone (no stores): character / weapon modules, stat list from `buildCharacterCalculationContext(…, { alwaysEnabledOnly: true })` on the card's inline echoes (upstream's build-card semantics, issue #383) formatted with upstream's `displayInt` / `displayPercentage` (flat stats floored, so the card reads exactly what the build card reads), echo tiles with roll-quality buckets (upstream's ≤ 40 / 60 / 80 thresholds), CV. The sheet and the import preview render the same view from the same data |
+| `PostCard.vue` / `TeamCard.vue` | the templates — **fixed px, not rem** (a phone's 130 % text must not reflow an image) and their **own `data-theme`** (dark / light toggle), so an export looks the same in every app theme; accent = the element colour (darkened for text on the light card) |
+| `CardPreview.vue` | the card at design size inside a frame scaled to the box (height-capped for the tall team card); the capture takes the unscaled card node |
+| `capture.ts` | html-to-image `toBlob` at the card's size × 2 (upstream's `exportCardImage.ts` is fixed at 1920 × 1080 and left alone), `data-export-hide` filter, a transparent placeholder for a failed image, then `embedPayload` (the tier that fits the chunk cap); html-to-image is imported on the first export; download, clipboard (picture only — see below), Web Share Level 2 with a file where `navigator.canShare({ files })` (a `NotAllowedError` comes back as "needs-tap") |
+| `readCard.ts` | what a dropped / picked / pasted file is: WT+ card → `WTPlusBuild`; Tacet Lab card → `TacetLabCard`; a JPEG / WebP / AVIF → "re-compressed, no data"; a PNG without either → "no data (screenshot or re-saved)" plus the pointer to upstream's OCR importer (Echoes › Import) |
+| `ShareSheet.vue` | the share dialog (DaisyUI `modal`, so `phone.css` § 6 makes it a bottom sheet): live preview, engine numbers on/off, name & UID (off every time it opens; the values are upstream's `settings.config.buildCard.username/uid`), dark / light card, Download PNG, Share… (only where file sharing exists), Copy link (length shown, `data-test-share-link-url` carries it), Copy picture only; the last card rendered with its data is kept (keyed by everything on it), so Download then Share — or the second tap Share sometimes needs — doesn't capture again; remembered choices in `localStorage["wtplus:share:prefs"]` |
+| `ShareView.vue` | route `/share` (lazy, `main.ts`): the whole page is a drop target (plus file input and Ctrl+V paste of an image or a link), `#b=` links open on arrival, the import preview (the card rendered from the data, the plan, warnings, read-only banner) and **Add to my account** → store writes in one `$patch` per store, then the fragment is cleared; "Share from your account" pickers (character + build, team) |
+| `ShareButton.vue` | one button → the sheet (`:source="{ kind: 'build', charId, buildId? }"` or `{ kind: 'team', teamId }`); the sheet mounts on first click, so a table full of them costs nothing — the hook for batch-1's /my-rankings rows |
+| `ShareBuildStrip.vue` | the bar over upstream's build card: `<WtPlusShareStrip>` is one tag in `Calculator.vue`'s build-card screen, registered globally (async, so the share code loads on first use) by one line in `main.ts` — `CalculatorBuildCard.vue` is not edited |
+| `share.test.ts` | chunk round trip (CRC valid, corrupt chunk skipped, a good chunk after a bad one found, truncated file, > 16 KB refused on write and skipped on read), a Tacet Lab card built byte-for-byte like its embed (bitwise CRC), format round trip on the Cartethyia fixture (substats exact), version gate, prototype keys, never-shared / mis-shaped keys dropped on read (and the imported build keeps its own id), notes never shared, the rAF fallback (overlapping captures restore the browser's functions, a cancelled frame never runs), link ≤ 1,900 (lean 1,399 chars on the fixture, full 2,940, gear 684), the plan (5 owned by fingerprint; active build, live fields and other builds untouched; inputs not mutated), **an empty account restores identical `finalStats` and identical rotation damage**, skips with reasons, gear-only sequence + set bonuses; the verify pass added: local card dates (time-zone proof), `echoProblem` refusing impossible echoes, a received unknown `mainEcho` / non-plain enemy settings dropped, a team import (new team pinned to the new builds, active builds untouched, empty slots' actions dropped) |
+| `cypress/e2e/share.cy.ts` | v3, seeded through `onBeforeLoad`: export through the real Download button → the PNG back through the file input → 5 echoes "owned", "Checked here … the same", confirm → one more build, active build and weapon unchanged, no duplicate echoes; a link (≤ 1,900) into an empty account → new character with the build active and 5 new echoes, fragment cleared; a JPEG → the "no data" explanation; a link whose only character the app lacks → the "nothing to show" note and a disabled import (no endless spinner); the strip over the calculator's build card. `phoneLayout.cy.ts` covers `/share`, the sheet and an import preview at 360 px |
+
+**Share format v1** (`format: "wtplus-build"`; PNG keyword `WTPlusBuild`, compressed iTXt):
+
+```
+{ format: "wtplus-build", v: 1, kind: "build" | "team", app: "wtplus@<commit>", createdAt: "YYYY-MM-DD",
+  detail: "full" | "lean" | "gear",
+  members: [{ charId, buildName, level|null, sequence, talents|null, weapon: { id, level|null, rank } | null,
+              mainEcho|null, echoes: [{ key, set, cost, rarity, main, subs: [[stat, value] ×≤5] } | null ×5],
+              config?: { …every other build field verbatim } }],
+  team?: { name, characterIds[3], actions?, duration?, enemyConfig?, handoffs?, description? },
+  rotation?: { name, duration, actions },            // the headline's rotation (full, builds only)
+  headline?: { metric: "dps"|"dpr", value, avgDamage, dps|null, rotationName, source, enemy, perSlot?,
+               benchmarkPct?, erNeedMet? },          // the last two reserved for batch-1's benchmark / ER check
+  owner?: { name?, uid? } }                          // only when the sharer switched it on
+```
+
+Rules:
+- **Imports only add.** Never `activeBuildId`, never the live fields, never another build; a team is a new team. A
+  character, weapon or echo the app doesn't list is skipped and named (released content only — `allCharactersList`,
+  the same list as the `notInApp` guard).
+- **Inventory integrity:** an echo goes into the inventory only if the game could drop it (`echoProblem`); a
+  hand-made card's 500 % Crit Rate roll is skipped and named, never stored.
+- **Never shared:** inventory ids (echoes travel inline), `echoPresetId`, the custom portrait (a data URL), the
+  build-card colour, personal `notes` and `progressOverrides` (private text and checkmarks the card never shows),
+  account keys; the UID only on request. The **reader drops the same keys** from a received config, and the
+  imported build's `id` / `name` / timestamps are written after its fields — a hand-made card can't plant a build
+  id, a `builds` list, a portrait URL or a character level. `characterLevel` / `talents` travel but are the
+  character's, so an existing character keeps its own.
+- **Detail tiers:** full (everything; the card) → lean (no member rotations, optimizer settings, Team Buffs panel or
+  headline rotation; most single-build links) → gear (what a Tacet Lab card holds; team links). On David's export every
+  build fits a link at full or lean; teams (~5 KB compressed in a card) go gear in a link. Biggest build chunk 2.4 KB.
+- A received card that is a newer `v` shows read-only; bump `SHARE_VERSION` only for a breaking change, and keep the
+  reader accepting every older version.
+
+Things learned:
+- **html-to-image 1.11 waits for a `requestAnimationFrame` after decoding every image** (`util.js createImage`). rAF
+  never fires in a background tab or headless Electron, so a capture there hangs forever — upstream's own
+  `buildCard.cy.ts` "downloads the build card as a PNG" times out in this sandbox for that reason. `captureCard` races
+  rAF against a 50 ms timer for the length of a capture (`withFrameFallback`); with it the export works in Cypress and
+  when a phone user switches apps mid-export.
+- **Copying an image never carries the data:** browsers decode and re-encode clipboard images. The sheet says so;
+  Download and Share keep the file. Reddit, X and Imgur re-encode uploads too; Discord attachments, mail and drives keep
+  them. The fallback for a stripped card is the link.
+- `source.value === src` is never true for an object kept in a `ref` (the ref returns a reactive proxy) — the first cut
+  of the sheet kept "scoring…" forever that way; a load token decides which load is current.
+- The CRC sample PNG in Tacet Lab's own test has a bad IDAT CRC (its reader never checks other chunks); the tests use
+  a clean 1 × 1 PNG.
+- DaisyUI's dialog reports opacity 0 to Cypress while it fades in: assert `exist` and click with `force` inside it.
+- The rAF patch is shared by overlapping captures (a depth count; the last one out restores the browser's functions)
+  and keeps each request's fallback timer in a closure, with `cancelAnimationFrame` patched alongside. The first cut
+  saved and restored `window.requestAnimationFrame` per capture, so two overlapping captures left the patch on for
+  good, and keying timers by frame id lost callbacks when ids repeated.
+- `navigator.share` must start within a few seconds of the tap; a 2× team card can take longer than that on a
+  phone, so the sheet keeps the rendered file and asks for one more tap. Safari also refuses a clipboard write that
+  starts after an await — the `ClipboardItem` gets the PNG as a promise.
+- Upstream's build card floors HP / ATK / DEF (`displayInt`); `Math.round` put the share card 1 above it.
+- Vercel exposes the commit to Vite as `VITE_VERCEL_GIT_COMMIT_SHA`; locally a card says `wtplus@dev`.
+
+Verify pass (2026-10-26):
+- **Umami reports `location.href`, fragment included**, unless the script tag carries `data-exclude-hash="true"`
+  (checked in cloud.umami.is/script.js: the first pageview, every route change and the referrer all go through the
+  same URL filter). Without it every opened share link would have sent the whole build — and a UID the sharer chose to
+  show — to the analytics. `analytics.ts` sets it; Ryan's app has no hash routes, so his numbers don't change.
+- **Read one env variable by its full name.** `appStamp` first read `import.meta.env` as an object, which makes Vite
+  inline every `VITE_*` variable into the share chunk (on Vercel: the commit message, author and branch URLs). It now
+  spells out `import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA` inside a `try` (plain tsx has no `import.meta.env`);
+  checked with a build that set dummy `VITE_*` values: only the SHA lands in the chunk.
+- **Card dates are local** (`localDate`): `toISOString()` is UTC, so a card made at 9 pm in the Americas was dated
+  tomorrow and imported as "Shared · <tomorrow>". Tests pin `NOW` to local noon so they pass in every time zone.
+- The sheet holds Download / Share / Copy link while the engine number is still being scored (an early export left it
+  off the card and out of the link). Web Share sends a one-line caption, not the 1,700-character link: most apps paste
+  the text beside the picture, and the picture already carries the build.
+- A card with no character this app has used to leave the import preview on "Rendering the card…" forever; it says so
+  now. A team card keeps three columns in slot order, with an "Empty slot" tile for a missing member.
+
+Credit: Tacet Lab (DJ12421, GPL-3.0) for the card-in-a-PNG idea and the `TacetLabCard` format; Fribbels' HSR optimizer
+for the Team Showcase layout.

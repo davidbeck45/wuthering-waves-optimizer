@@ -70,7 +70,9 @@ describe("UI version (v3 default, classic opt-in)", () => {
     cy.get("h1").should("contain.text", "Settings");
   });
 
-  it("announces v3 with a 'See what's new' modal", () => {
+  // Wuthering Tools+: Ryan removed the v3 banner (fa020580, 2026-10-12) and set currentAnnouncement to null
+  // (5ba38294, 2026-10-24); this test still expects the banner and fails on his master too — skipped until he updates it
+  it.skip("announces v3 with a 'See what's new' modal", () => {
     visitAsNewUser();
     cy.get("[data-test-update-banner]").should("contain.text", "v3");
     cy.get("[data-test-update-banner-changelog]").click();
