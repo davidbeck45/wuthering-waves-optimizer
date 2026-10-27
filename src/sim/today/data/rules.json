@@ -1,0 +1,167 @@
+{
+  "v": 1,
+  "checked": "2026-10-26",
+  "waveplates": {
+    "max": 240,
+    "regenMinutes": 6,
+    "crystalMax": 480,
+    "crystalRegenMinutes": 12,
+    "solvent": 60,
+    "source": { "label": "Wiki: Waveplate", "url": "https://wutheringwaves.fandom.com/wiki/Waveplate" }
+  },
+  "resets": {
+    "hour": 4,
+    "weekday": 1,
+    "source": { "label": "Kuro, 3.1 patch notes (\"resets at 04:00 (server time) every Monday\")", "articleId": 4188 }
+  },
+  "cycles": [
+    {
+      "id": "toa",
+      "name": "Tower of Adversity",
+      "detail": "Hazard Zone",
+      "anchor": "2026-10-12 04:00",
+      "anchorSeason": 41,
+      "periodDays": 28,
+      "link": "/endgame",
+      "confidence": "community",
+      "source": {
+        "label": "Community schedule: the wiki's dated Hazard Zone floors (2025-09-15, 2025-10-13, 2026-01-05) keep a 28-day Monday cadence",
+        "url": "https://wutheringwaves.fandom.com/wiki/Tower_of_Adversity/Floors"
+      }
+    },
+    {
+      "id": "ww",
+      "name": "Whimpering Wastes",
+      "detail": "Respawning Waters: Chasm & Torrents",
+      "anchor": "2026-10-26 04:00",
+      "periodDays": 28,
+      "link": null,
+      "confidence": "community",
+      "source": { "label": "Community schedule (wuwatracker timeline: 09-28 → 10-26 → 11-23)", "url": "https://wuwatracker.com/timeline" }
+    }
+  ],
+  "matrix": {
+    "name": "Endstate Matrix",
+    "cycle": "Adversity Vanguard",
+    "cycleNumber": 2,
+    "fromVersion": "3.5",
+    "toVersion": "3.8",
+    "source": { "label": "Kuro: cycle 2 \"lasts from Version 3.5 to Version 3.8\"; phases reset with version updates", "articleId": 5150 }
+  },
+  "versionEnds": {
+    "3.7": { "date": "2026-11-12", "note": "before the 3.8 update maintenance", "articleId": 5529 }
+  },
+  "manualEvents": [
+    {
+      "name": "Chord Cleansing",
+      "type": "Limited-Time Echo Double Drop Event",
+      "start": "2026-11-04 04:00",
+      "end": "2026-11-11 03:59",
+      "tz": "server",
+      "articleId": 5653,
+      "published": "2026-10-20 18:00:00",
+      "note": "Kuro posted this one as an image (\"Upcoming Events in Version 3.7\"); transcribed by hand"
+    }
+  ],
+  "doubleDrops": [
+    {
+      "id": "chord-cleansing",
+      "match": "chord cleansing",
+      "label": "Echo double drop",
+      "activity": "Tacet Suppression",
+      "claimsPerDay": 3,
+      "costPerClaim": 60,
+      "articleId": 4368
+    },
+    {
+      "id": "bountiful-crescendo",
+      "match": "bountiful crescendo",
+      "label": "Material double drop",
+      "activity": "Simulation & Forgery",
+      "note": "Simulation and Forgery Challenges share the claims.",
+      "claimsPerDay": 3,
+      "costPerClaim": 40,
+      "articleId": 4466
+    }
+  ],
+  "checklist": [
+    {
+      "id": "daily-activity",
+      "label": "Daily Activity",
+      "detail": "Guidebook › Activity, 100 points",
+      "max": 1,
+      "reset": "daily",
+      "source": { "label": "Wiki: Guidebook", "url": "https://wutheringwaves.fandom.com/wiki/Guidebook" }
+    },
+    {
+      "id": "double-claims",
+      "label": "Doubled claims",
+      "detail": "while a double-drop event runs",
+      "max": 3,
+      "reset": "daily",
+      "doubleDropOnly": true,
+      "source": { "label": "Kuro: \"claim double rewards 3 times a day\", refreshed 04:00 server time", "articleId": 4368 }
+    },
+    {
+      "id": "weekly-boss",
+      "label": "Weekly Challenge rewards",
+      "detail": "60 Waveplates a claim",
+      "max": 3,
+      "reset": "weekly",
+      "source": { "label": "Wiki: Weekly Challenge (3 reward claims a week)", "url": "https://wutheringwaves.fandom.com/wiki/Weekly_Challenge" }
+    },
+    {
+      "id": "weekly-activity",
+      "label": "Weekly Activity milestones",
+      "detail": "Fantasies of the Thousand Gateways · Phantasma Dreamland: Rhapsody",
+      "max": 1,
+      "reset": "weekly",
+      "source": { "label": "Kuro, 3.4 patch notes: points and rewards reset every Monday 04:00; Fantasies' free Remnant Crystal claims moved into these rewards", "articleId": 4819 }
+    },
+    {
+      "id": "targeted-merge",
+      "label": "Targeted Merge",
+      "detail": "5 un-upgraded 5★ echoes → 1 of a chosen set",
+      "max": 10,
+      "reset": "weekly",
+      "source": { "label": "Kuro, 3.1 patch notes: up to 10 times a week", "articleId": 4188 }
+    },
+    {
+      "id": "absorption-4",
+      "label": "Enhanced Absorption · COST\u00a04",
+      "detail": "20 a week at Data Bank 30 (15 below)",
+      "max": 20,
+      "reset": "weekly",
+      "source": { "label": "Kuro, 3.0 patch notes", "articleId": 3920 }
+    },
+    {
+      "id": "absorption-13",
+      "label": "Enhanced Absorption · COST\u00a01\u00a0&\u00a03",
+      "detail": "5 a week from Data Bank 27",
+      "max": 5,
+      "reset": "weekly",
+      "source": { "label": "Wiki: Data Bank", "url": "https://wutheringwaves.fandom.com/wiki/Data_Bank" }
+    },
+    {
+      "id": "toa-hazard",
+      "label": "Tower of Adversity · Hazard Zone",
+      "detail": "rewards refresh each cycle",
+      "max": 1,
+      "reset": "cycle:toa"
+    },
+    {
+      "id": "ww-respawn",
+      "label": "Whimpering Wastes · Respawning Waters",
+      "detail": "Chasm & Torrents rewards refresh each cycle",
+      "max": 1,
+      "reset": "cycle:ww"
+    },
+    {
+      "id": "matrix-phase",
+      "label": "Endstate Matrix phase",
+      "detail": "resets with the version update",
+      "max": 1,
+      "reset": "matrix"
+    }
+  ]
+}

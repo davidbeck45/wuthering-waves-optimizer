@@ -75,6 +75,8 @@ const routes = [
   { path: "/rotation", component: () => import("./sim/rotation/RotationView.vue"), name: "RotationView" },
   // Wuthering Tools+: the energy check — ER need per team member from wuwa_calc's energy model (src/sim/energy/)
   { path: "/energy", component: () => import("./sim/energy/EnergyView.vue"), name: "EnergyView" },
+  // Wuthering Tools+: Today — resets, Waveplates, events ending soon from Kuro's notices (src/sim/today/)
+  { path: "/today", component: () => import("./sim/today/TodayView.vue"), name: "TodayView" },
 ];
 
 const router = createRouter({

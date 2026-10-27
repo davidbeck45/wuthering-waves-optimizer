@@ -78,4 +78,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["rotation", "cue", "combo", "play along", "practice", "timeline", "uptime", "buffs", "kill time", "wuwa_calc", "riley", "discord"],
     icon: "M12 22a10 10 0 100-20 10 10 0 000 20zm0-15v5l3 2",
   },
+  {
+    path: "/today",
+    title: "Today",
+    description: "Resets on your server's clock, when your Waveplates are full, events ending soon and your weekly caps",
+    keywords: ["daily", "weekly", "reset", "waveplates", "stamina", "events", "timer", "countdown", "double drop", "tower of adversity", "whimpering wastes", "checklist"],
+    icon: "M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2.5 2.5M9 2h6",
+  },
 ];

@@ -22,6 +22,15 @@ function expectNavFits(route: string): void {
   });
 }
 
+// /today reads Kuro's news feed: answer it from the unit-test fixtures (the 3.7 patch notes) so the page has events to lay out
+function interceptKuroNews(): void {
+  const news = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/json/G152/en";
+  cy.readFile("src/sim/today/__fixtures__/kuroMenu.json").then((body) => cy.intercept("GET", `${news}/ArticleMenu.json`, { body }));
+  cy.readFile("src/sim/today/__fixtures__/patch37.json").then((patch) =>
+    cy.intercept("GET", `${news}/article/*.json`, (req) => req.reply(req.url.endsWith("/5571.json") ? { body: patch } : { statusCode: 404, body: "" })),
+  );
+}
+
 describe("phone layout", () => {
   beforeEach(() => {
     cy.viewport(PHONE.width, PHONE.height);
@@ -30,7 +39,8 @@ describe("phone layout", () => {
   it("keeps every page inside the viewport and the nav icons clear of the utility menu", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
-    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/energy"]) {
+    interceptKuroNews();
+    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/energy", "/today"]) {
       cy.visit(route);
       cy.get(".navbar").should("be.visible");
       expectNavFits(route);
@@ -132,6 +142,13 @@ describe("phone layout", () => {
     cy.visit("/updates", seed);
     cy.get(".page-updates--v3").should("be.visible");
     expectNoHorizontalScroll("/updates (v3)");
+    // Wuthering Tools+ /today: one column of cards, the events list filled from the fixture feed
+    interceptKuroNews();
+    cy.clock(Date.UTC(2026, 9, 26, 4, 0), ["Date"]); // inside 3.7, while the fixture's events run
+    cy.visit("/today", seed);
+    cy.get("[data-test-today-live-list]").should("contain.text", "Back to Solaris");
+    expectNavFits("/today (v3)");
+    expectNoHorizontalScroll("/today (v3)");
   });
 
   // Share cards (src/sim/share/): the page, its share sheet as a bottom sheet with the scaled card preview, and
