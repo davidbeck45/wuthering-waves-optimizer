@@ -1,4 +1,5 @@
 {
+  "buildCommand": "ROLLDOWN_WORKER_THREADS=4 ROLLDOWN_MAX_BLOCKING_THREADS=32 npm run build",
   "rewrites": [
     {
       "source": "/api/(.*)",

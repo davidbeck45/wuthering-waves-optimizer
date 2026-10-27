@@ -1917,3 +1917,23 @@ and layout of his whole loadout list maps — 0 unmapped; plans for the Wave 0 s
 editor's slot reads "Built for …" → undo, cancel, phone 412 px / 130 %), `phoneLayout.cy.ts` (`/build-team` in the
 route loop, plan and result at 360 px), `themes.cy.ts`; the CLI snapshot diff against the base commit is empty on both
 exports.
+
+## Vercel build — rolldown thread pools pinned in `vercel.json` (2026-10-27)
+
+Both production builds after the batch (6a27ea71, 480c3db4) hung at `transforming...` until Vercel's 45-minute limit,
+while every local build passed in seconds. The cause is a deadlock inside rolldown, not in our code. Vite bundles
+every `new Worker(new URL(…))` target in a nested `rolldown()` build started from the main build's transform hook.
+The batch took that from 2 sites to 7 (`rankings/controller.ts`, `engine/rileyClient.ts`, `buildTeam/workerBackend.ts`,
+`echoLab/echoLabClient.ts`, `Calculator.vue`, `ai/toolWorker.ts`, `convene/ui/scanLog.ts`), and the nested builds all
+run at once. Rolldown sizes its tokio runtime from the *physical* core count. Vercel's build VM reports
+`cpu cores: 1` (2 hyperthreads), which gives rolldown one worker thread, and the 7 nested builds starve on it. The
+main build waits on 7 pending transforms that never return.
+
+- **Reproduce locally:** `ROLLDOWN_WORKER_THREADS=1 ROLLDOWN_MAX_BLOCKING_THREADS=1 npx vite build` hangs. `taskset`
+  does not reproduce it, because the physical-core count ignores CPU affinity.
+- **What does not help:** queuing the worker builds one at a time doesn't fix it either.
+- **What does:** 2 worker threads, or 1 worker thread with 16 blocking threads, build normally.
+- **The fix:** `vercel.json` sets `buildCommand` to
+  `ROLLDOWN_WORKER_THREADS=4 ROLLDOWN_MAX_BLOCKING_THREADS=32 npm run build`, so the build no longer depends on the
+  machine's core count. Verified on Vercel with a no-cache preview build of 480c3db4.
+- **When Vite or rolldown is bumped:** re-check with the 1/1 command above, and drop the override once it builds.
