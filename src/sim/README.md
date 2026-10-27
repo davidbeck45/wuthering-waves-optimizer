@@ -1056,6 +1056,6 @@ Things learned:
   pin `// @vitest-environment node`.
 
 Capture the fixture again after a submodule bump (the test compares it field for field while its commit matches):
-`npx tsx /tmp/wave0/capture.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
+`npx tsx scripts/capture-runlite.mts --write` — the script is `rileyHeadless(SYNTHETIC_ACCOUNT)` → `bestFor(SYNTHETIC_TEAM)`
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
