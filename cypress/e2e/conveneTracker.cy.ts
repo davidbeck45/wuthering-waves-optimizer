@@ -144,7 +144,9 @@ describe("Convene tracker", () => {
     cy.get("[data-test-convene-history-search]").type("Chisa");
     cy.get("[data-test-convene-version]").first().should("contain.text", "Chisa");
     cy.get("[data-test-convene-version='3.6']").should("not.exist");
-    // the server clock is a preference
+    // the server clock is a preference (pick another server first: the select shows the time zone's guess, and on a UTC
+    // runner that guess is already Europe, so choosing it again would fire no change)
+    cy.get("[data-test-convene-server]").select("asia");
     cy.get("[data-test-convene-server]").select("europe");
     cy.window().its("localStorage").invoke("getItem", "wtplus:convene:prefs").should("contain", '"server":"europe"');
   });

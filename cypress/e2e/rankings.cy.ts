@@ -438,7 +438,8 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     });
     // the next 50
     cy.get("[data-test-rankings-cards-more]").click();
-    cy.get(cards).should("have.length", 100);
+    // at least the next 50 (the auto-load sentinel may bring another batch on a slower runner)
+    cy.get(cards).should("have.length.at.least", 100);
     // DPS through his own switch: the figures become damage over each run's seconds
     cy.get(cards).first().then(($c) => {
       const dpr = figureOf($c[0]!);

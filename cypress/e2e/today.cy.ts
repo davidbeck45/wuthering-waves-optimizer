@@ -157,10 +157,15 @@ describe("Today", () => {
     interceptNews();
     cy.visit("/today", seed({ server: null }));
     cy.get("[data-test-today-region-guess]").should("be.visible");
-    cy.get("[data-test-today-region-pick]").select("europe");
+    // answer with a server other than the guess (on a UTC runner the guess is already Europe, and re-choosing the shown
+    // option fires no change), then set Europe on the page's own select
+    cy.get("[data-test-today-region-pick]").then(($pick) => {
+      cy.wrap($pick).select($pick.val() === "europe" ? "asia" : "europe");
+    });
     cy.get("[data-test-today-region-guess]").should("not.exist");
+    cy.get("[data-test-today-region]").select("europe");
     cy.get("[data-test-today-region]").should("have.value", "europe");
-    cy.window().then((win) => expect(JSON.parse(win.localStorage.getItem("wtplus:convene:prefs") ?? "{}").server).to.equal("europe"));
+    cy.window().its("localStorage").invoke("getItem", "wtplus:convene:prefs").should("contain", '"server":"europe"');
     cy.reload();
     cy.get("[data-test-today-region-guess]").should("not.exist");
   });

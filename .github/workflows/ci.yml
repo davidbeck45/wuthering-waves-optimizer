@@ -96,6 +96,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          submodules: true # Wuthering Tools+: vendor/wuwa_calc — the Riley-engine unit tests load it (src/sim/engine/rileyNode.ts)
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
