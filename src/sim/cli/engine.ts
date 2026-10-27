@@ -1,7 +1,7 @@
 // Wuthering Tools+ CLI — the app's own engine, headless. Every number comes from the same functions
 // the pages call (buildCharacterCalculationContext → calcDamages / calcCharacterRotationDamage /
 // calcTeamRotationDamage / rankRoster), so the CLI's numbers are the site's numbers at this commit.
-// Pure/async: no Vue, no stores; input is a parsed export (exportFile.ts).
+// Pure/async: no Vue, no stores; input is a parsed export (exportShape.ts) — a file on the CLI, the live stores in the app.
 import {
   buildCharacterCalculationContext,
   resolveTeamEnemyConfig,
@@ -22,7 +22,7 @@ import {
   type SubstatWeight,
 } from "../substats/substatWeights";
 import { resolveTeamCharacters, type SlotResolution } from "../teamContext/resolveTeam";
-import type { ExportFile } from "./exportFile";
+import type { ExportFile } from "./exportShape";
 
 /** The stat cards of the calculator page, in its order; `selector` = the Cypress class the golden fixtures assert on. */
 export const STAT_ROWS: ReadonlyArray<{ selector: string; key: string; label: string; kind: "int" | "pct100" | "pct" }> = [

@@ -6,7 +6,7 @@
       right, and take one screenshot per echo — then drop them all here (on the phone itself, pick them
       straight from the gallery). Landscape 3120×1440 (Galaxy S26 Ultra) or the same shape. Turn a
       Sonata filter on first so the set name shows bottom-left; otherwise the set is read from the
-      small glyph next to +25.
+      small glyph next to +25. Other screenshots (PC, other phones): use Read with Claude below.
     </p>
     <div class="rounded-box border border-base-300 p-3 mb-3" data-test-phone-echo-album>
       <div class="text-sm font-semibold mb-1">From a Google Photos album</div>
@@ -67,16 +67,110 @@
       <button
         type="button"
         class="btn btn-primary btn-sm"
-        :disabled="!queuedCount || isScanning"
+        :disabled="!queuedCount || isScanning || claude.running"
         data-test-phone-echo-batch-scan
         @click="scanAll">
         <span v-if="isScanning" class="loading loading-spinner loading-xs"></span>
         {{ isScanning ? `Scanning ${progress.done} / ${progress.total}…` : `Scan ${queuedCount} screenshot${queuedCount === 1 ? "" : "s"}` }}
       </button>
-      <button type="button" class="btn btn-ghost btn-sm" :disabled="!items.length || isScanning" @click="clearAll">
+      <button type="button" class="btn btn-ghost btn-sm" :disabled="!items.length || isScanning || claude.running" @click="clearAll">
         Clear
       </button>
       <span v-if="isScanning" class="text-xs opacity-70" data-test-phone-echo-batch-step>{{ currentStep }}</span>
+    </div>
+
+    <!-- Wuthering Tools+ AI: Claude reads what the OCR can't (claudeVision.ts); results land in the table below -->
+    <div class="mb-3 rounded-box border border-primary/25 bg-primary/5 p-3" data-test-claude-read>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="size-4" fill="currentColor"><path :d="SPARKLE" /></svg>
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h3 class="text-sm font-semibold">Read with Claude</h3>
+            <button
+              type="button"
+              class="badge badge-outline badge-sm h-auto cursor-pointer gap-1 py-0.5 hover:border-primary hover:text-primary"
+              title="Model and effort for reading screenshots — AI settings"
+              data-test-claude-read-model
+              @click="claude.openSettings()">
+              {{ claude.modelLabel }}
+              <svg viewBox="0 0 20 20" class="size-3 opacity-70" fill="currentColor" aria-hidden="true"><path d="M5.3 7.3a1 1 0 011.4 0L10 10.6l3.3-3.3a1 1 0 111.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4z" /></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <p class="mt-1.5 text-xs leading-relaxed opacity-75 sm:pl-11">
+        For screenshots the scanner can't read — PC, other phones, no Sonata filter — or to double-check
+        flagged rows. Every value is checked against the game's roll tables; anything off is flagged, never
+        changed. Screenshots go straight from this browser to Anthropic, with your own key.
+      </p>
+
+      <div v-if="!claude.hasKey" class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:pl-11">
+        <button type="button" class="btn btn-primary btn-sm" data-test-claude-read-key @click="claude.openSettings()">Add your Anthropic key</button>
+        <span class="text-xs opacity-70">Bring your own key; it stays in this browser.</span>
+      </div>
+      <template v-else-if="items.length && (claude.all.length || claude.flagged.length || claude.running)">
+        <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:pl-11">
+          <div class="join rounded-lg border border-base-300" role="radiogroup" aria-label="Screenshots to read">
+            <button
+              type="button"
+              role="radio"
+              :aria-checked="claude.scope === 'flagged'"
+              class="join-item btn btn-xs"
+              :class="claude.scope === 'flagged' ? 'scope--on' : 'btn-ghost'"
+              :disabled="claude.running"
+              data-test-claude-read-scope="flagged"
+              @click="claude.setScope('flagged')">
+              Flagged &amp; failed · {{ claude.flagged.length }}
+            </button>
+            <button
+              type="button"
+              role="radio"
+              :aria-checked="claude.scope === 'all'"
+              class="join-item btn btn-xs"
+              :class="claude.scope === 'all' ? 'scope--on' : 'btn-ghost'"
+              :disabled="claude.running"
+              data-test-claude-read-scope="all"
+              @click="claude.setScope('all')">
+              All unread · {{ claude.all.length }}
+            </button>
+          </div>
+          <span
+            v-if="claude.targets.length"
+            class="text-xs tabular-nums"
+            :class="claude.overBudget ? 'text-warning' : 'opacity-75'"
+            :title="estimateTitle"
+            data-test-claude-read-estimate>
+            ≈ {{ formatUsd(claude.estimate.usd) }} for {{ claude.estimate.count }} screenshot{{ claude.estimate.count === 1 ? "" : "s" }}<template v-if="claude.overBudget"> · above your {{ formatUsd(budgetUsd) }} budget</template>
+          </span>
+          <span v-else class="text-xs opacity-60">Nothing to read in this group.</span>
+        </div>
+        <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 sm:pl-11">
+          <button
+            v-if="!claude.running"
+            type="button"
+            class="btn btn-primary btn-sm"
+            :disabled="!claude.targets.length || isScanning"
+            data-test-claude-read-run
+            @click="claude.run()">
+            <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true"><path :d="SPARKLE" /></svg>
+            Read {{ claude.targets.length }} with Claude
+          </button>
+          <template v-else>
+            <button type="button" class="btn btn-sm btn-outline" data-test-claude-read-stop @click="claude.stop()">Stop</button>
+            <progress class="progress progress-primary w-24" :value="claude.progress.done" :max="claude.progress.total || 1"></progress>
+            <span class="text-xs tabular-nums" data-test-claude-read-progress>
+              Reading {{ Math.min(claude.progress.done + 1, claude.progress.total) }} of {{ claude.progress.total }} · {{ formatUsd(claude.spentUsd) }} so far
+            </span>
+          </template>
+        </div>
+      </template>
+      <p v-else-if="!items.length" class="mt-2 text-xs opacity-70 sm:pl-11">Add screenshots above, then read them here.</p>
+      <p v-if="claude.summary && !claude.running" class="mt-2 text-xs sm:pl-11" data-test-claude-read-summary>
+        {{ summaryText }}
+      </p>
+      <p v-if="claude.runError" class="mt-2 text-xs text-error sm:pl-11" data-test-claude-read-error>{{ claude.runError }}</p>
     </div>
 
     <div v-if="items.length" class="overflow-x-auto max-h-[50vh]">
@@ -85,85 +179,93 @@
           <tr>
             <th></th>
             <th>Screenshot</th>
-            <th>Echo</th>
-            <th>Set</th>
+            <th>Echo · set</th>
             <th>Cost</th>
             <th>Main stat</th>
             <th>Substats</th>
-            <th>Notes</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="item in items"
-            :key="item.id"
-            :class="{ 'bg-warning/10': item.record?.flags.length, 'bg-error/10': item.status === 'error' || item.status === 'unsupported' }"
-            :data-test-phone-echo-batch-row="item.status">
-            <td class="cell--check">
-              <input v-model="item.include" type="checkbox" class="checkbox checkbox-xs" :disabled="!item.record" />
-            </td>
-            <td class="whitespace-nowrap cell--shot">
-              <div class="flex items-center gap-2">
-                <div
-                  v-if="item.thumb"
-                  class="size-10 rounded bg-cover bg-center shrink-0"
-                  :style="{ backgroundImage: `url(${item.thumb})` }"></div>
-                <div>
-                  <div class="text-xs">{{ item.name }}</div>
-                  <div class="text-[10px] opacity-60">{{ statusLabel(item) }}</div>
+          <template v-for="item in items" :key="item.id">
+            <tr
+              :class="[rowTone(item), { 'row--noted': hasNotes(item), 'row--pending': !item.record }]"
+              :data-test-phone-echo-batch-row="item.status"
+              :data-test-claude-row="item.claudeState">
+              <td class="cell--check">
+                <input v-model="item.include" type="checkbox" class="checkbox checkbox-xs" :disabled="!item.record" :aria-label="`Add ${item.name}`" />
+              </td>
+              <td class="whitespace-nowrap cell--shot">
+                <div class="flex items-center gap-2">
+                  <div
+                    v-if="item.thumb"
+                    class="size-10 rounded bg-cover bg-center shrink-0"
+                    :style="{ backgroundImage: `url(${item.thumb})` }"></div>
+                  <div class="min-w-0">
+                    <div class="max-w-[10rem] truncate text-xs" :title="item.name">{{ item.name }}</div>
+                    <div class="flex items-center gap-1 text-[10px]">
+                      <span v-if="item.claudeState === 'reading'" class="loading loading-spinner loading-xs text-primary"></span>
+                      <span v-else-if="item.source === 'claude'" class="rounded bg-primary/15 px-1 font-semibold leading-4 text-primary" data-test-claude-row-badge>Claude</span>
+                      <span class="opacity-60">{{ statusLabel(item) }}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td class="cell--full" data-label="Echo">
-              <select
-                v-if="item.record"
-                v-model="item.record.echo"
-                class="select select-bordered select-xs max-w-44"
-                data-test-phone-echo-batch-echo
-                @change="onEchoChanged(item)">
-                <option :value="null">—</option>
-                <option v-for="echo in echoOptions" :key="echo.key" :value="echo.key">{{ echo.name }}</option>
-              </select>
-            </td>
-            <td class="cell--full" data-label="Set">
-              <select
-                v-if="item.record"
-                v-model="item.record.set"
-                class="select select-bordered select-xs max-w-44"
-                data-test-phone-echo-batch-set>
-                <option :value="null">—</option>
-                <option v-for="set in setOptions(item)" :key="set" :value="set">{{ setLabel(set) }}</option>
-              </select>
-            </td>
-            <td class="cell--cost" data-label="Cost">{{ item.record?.cost ?? "" }}</td>
-            <td class="cell--full" data-label="Main stat">
-              <select
-                v-if="item.record"
-                class="select select-bordered select-xs"
-                :value="item.record.main?.[0] ?? ''"
-                @change="onMainChanged(item, $event)">
-                <option value="">—</option>
-                <option v-for="key in mainOptions(item)" :key="key" :value="key">{{ statLabel(key) }}</option>
-              </select>
-            </td>
-            <td class="cell--full cell--subs" data-label="Substats">
-              <div v-if="item.record" class="flex flex-col gap-1">
-                <div v-for="(sub, index) in item.record.subs" :key="index" class="flex gap-1">
-                  <select v-model="sub[0]" class="select select-bordered select-xs">
-                    <option v-for="key in SUBSTAT_KEYS" :key="key" :value="key">{{ statLabel(key) }}</option>
+              </td>
+              <td class="cell--full cell--echo" data-label="Echo · set">
+                <div v-if="item.record" class="flex flex-col gap-1">
+                  <select
+                    v-model="item.record.echo"
+                    class="select select-bordered select-xs w-44 max-w-full lg:w-52"
+                    aria-label="Echo"
+                    data-test-phone-echo-batch-echo
+                    @change="onEchoChanged(item)">
+                    <option :value="null">—</option>
+                    <option v-for="echo in echoOptions" :key="echo.key" :value="echo.key">{{ echo.name }}</option>
                   </select>
-                  <input v-model="sub[1]" class="input input-bordered input-xs w-16" />
+                  <select v-model="item.record.set" class="select select-bordered select-xs w-44 max-w-full lg:w-52" aria-label="Set" data-test-phone-echo-batch-set>
+                    <option :value="null">—</option>
+                    <option v-for="set in setOptions(item)" :key="set" :value="set">{{ setLabel(set) }}</option>
+                  </select>
                 </div>
-              </div>
-            </td>
-            <td class="text-xs max-w-72 cell--full" data-label="Notes">
-              <div v-if="item.error" class="text-error">{{ item.error }}</div>
-              <ul v-else-if="item.record?.flags.length" class="text-warning list-disc pl-3">
-                <li v-for="flag in item.record.flags" :key="flag">{{ flag }}</li>
-              </ul>
-              <span v-else-if="item.record" class="text-success">ok</span>
-            </td>
-          </tr>
+              </td>
+              <td class="cell--cost" data-label="Cost">{{ item.record?.cost ?? "" }}</td>
+              <td class="cell--full" data-label="Main stat">
+                <select
+                  v-if="item.record"
+                  class="select select-bordered select-xs w-36 max-w-full"
+                  aria-label="Main stat"
+                  :value="item.record.main?.[0] ?? ''"
+                  @change="onMainChanged(item, $event)">
+                  <option value="">—</option>
+                  <option v-for="key in mainOptions(item)" :key="key" :value="key">{{ statLabel(key) }}</option>
+                </select>
+              </td>
+              <td class="cell--full cell--subs" data-label="Substats">
+                <div v-if="item.record" class="flex flex-col gap-1">
+                  <div v-for="(sub, index) in item.record.subs" :key="index" class="flex gap-1">
+                    <select v-model="sub[0]" class="select select-bordered select-xs w-40 min-w-0 lg:w-52" :aria-label="`Substat ${index + 1}`">
+                      <option v-for="key in SUBSTAT_KEYS" :key="key" :value="key">{{ statLabel(key) }}</option>
+                    </select>
+                    <input v-model="sub[1]" class="input input-bordered input-xs w-16" :aria-label="`Substat ${index + 1} value`" />
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- the row's notes span the table below it: flags, errors, what Claude said -->
+            <tr v-if="hasNotes(item)" class="notes-row" :class="rowTone(item)" data-test-phone-echo-batch-notes>
+              <td class="cell--notes-pad"></td>
+              <td colspan="5" class="cell--full cell--notes text-xs">
+                <div v-if="item.error" class="font-medium text-error">{{ item.error }}</div>
+                <ul v-else-if="item.record?.flags.length" class="notes-list" data-test-phone-echo-batch-flags>
+                  <li v-for="flag in item.record.flags" :key="flag">{{ flag }}</li>
+                </ul>
+                <div v-if="item.claude && (item.claude.equippedBy || item.claude.notes)" class="mt-0.5 opacity-70" data-test-claude-row-info>
+                  <span class="font-semibold">Claude:</span>
+                  <template v-if="item.claude.equippedBy"> worn by {{ item.claude.equippedBy }}</template><template v-if="item.claude.equippedBy && item.claude.notes"> ·</template><template v-if="item.claude.notes"> “{{ item.claude.notes }}”</template>
+                </div>
+                <div v-if="item.claudeError && item.claudeError !== item.error" class="mt-0.5 text-error" data-test-claude-row-error>Claude: {{ item.claudeError }}</div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -172,7 +274,7 @@
       <button
         type="button"
         class="btn btn-primary btn-sm"
-        :disabled="!includedCount || isScanning"
+        :disabled="!includedCount || isScanning || claude.running"
         data-test-phone-echo-batch-add
         @click="addToInventory">
         Add {{ includedCount }} echo{{ includedCount === 1 ? "" : "es" }} to inventory
@@ -186,10 +288,14 @@
 
 <script setup lang="ts">
 // Wuthering Tools+: batch import of echoes from phone screenshots (see phoneEchoScan.ts).
-import { computed, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import "../phone-tables.css";
 import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, statsTable } from "../../echoes/stats";
+import { useAiSettings } from "../ai/aiSettings";
+import { formatUsd } from "../ai/pricing";
+import { newScanItem, type AlbumPhoto, type ScanItem } from "./batchItems";
+import { VISION_OUTPUT_TOKENS, VISION_PROMPT_TOKENS } from "./claudeVisionCost";
 import { EchoImageMatcher } from "./imageMatch";
 import { EchoOcr, PSM } from "./ocr";
 import {
@@ -208,31 +314,13 @@ import {
   type ScanInput,
   type ScanRecord,
 } from "./phoneEchoScan";
+import { useClaudeEchoRead } from "./useClaudeEchoRead";
+import { useConfirm } from "../../composables/useConfirm";
 
-type ScanStatus = "queued" | "scanning" | "done" | "error" | "unsupported";
-
-interface AlbumPhoto {
-  id: string;
-  url: string;
-}
 interface AlbumInfo {
   albumId: string | null;
   resolvedUrl: string;
   photos: AlbumPhoto[];
-}
-
-interface ScanItem {
-  id: string;
-  /** the screenshot; album photos are fetched right before their scan and dropped after it */
-  file: File | null;
-  /** set when the item came from a Google Photos album */
-  photo?: AlbumPhoto;
-  name: string;
-  status: ScanStatus;
-  record: ScanRecord | null;
-  include: boolean;
-  thumb: string | null;
-  error: string | null;
 }
 
 const emit = defineEmits<{
@@ -309,17 +397,7 @@ async function scanAlbum(): Promise<void> {
   const photos = albumPhotosToScan.value;
   for (const photo of photos) {
     const position = album.value.photos.indexOf(photo) + 1;
-    items.value.push({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      file: null,
-      photo,
-      name: `album photo ${position}`,
-      status: "queued",
-      record: null,
-      include: false,
-      thumb: null,
-      error: null,
-    });
+    items.value.push(newScanItem({ file: null, photo, name: `album photo ${position}` }));
   }
   await scanAll();
 }
@@ -344,6 +422,38 @@ function forgetAlbum(): void {
   saveImportedIds(key, importedIds.value);
 }
 
+// ---- Read with Claude (useClaudeEchoRead.ts): reactive() unwraps its refs for the template
+const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";
+async function fileFor(item: ScanItem): Promise<File> {
+  if (item.file) return item.file;
+  if (item.photo) return fetchPhotoFile(item.photo, item.name.replace(/\s+/g, "-"));
+  throw new Error("no image to read");
+}
+const { confirm } = useConfirm();
+const confirmOverBudget = (estimateUsd: number, budget: number): Promise<boolean> =>
+  confirm(`Reading these screenshots should cost about ${formatUsd(estimateUsd)}, above your ${formatUsd(budget)} soft budget (AI settings). Read them anyway?`, {
+    title: "Read with Claude",
+    confirmLabel: "Read anyway",
+    variant: "warning",
+  });
+const claude = reactive(useClaudeEchoRead({ items, busy: isScanning, fileFor, confirmOverBudget }));
+const aiSettings = useAiSettings();
+const budgetUsd = computed(() => aiSettings.settings.value.budgetUsd);
+const estimateTitle = computed(
+  () =>
+    `About ${claude.estimate.imageTokens.toLocaleString()} image tokens + ${VISION_PROMPT_TOKENS.toLocaleString()} prompt tokens in and up to ` +
+    `${VISION_OUTPUT_TOKENS.toLocaleString()} out per screenshot, at Claude ${claude.modelLabel}'s list price; when a set's name isn't printed, a small ` +
+    "second request matches its glyph. Your soft budget is in AI settings.",
+);
+const summaryText = computed(() => {
+  const s = claude.summary;
+  if (!s) return "";
+  const parts = [`Read ${s.screenshots} screenshot${s.screenshots === 1 ? "" : "s"}`, `${s.echoes} echo${s.echoes === 1 ? "" : "es"}`, `${formatUsd(s.costUsd)} spent`];
+  if (s.failed) parts.push(`${s.failed} failed`);
+  if (s.stopped) parts.push("stopped");
+  return `${parts.join(" · ")}. Check the flagged rows, then add the checked ones.`;
+});
+
 const queuedCount = computed(() => items.value.filter((item) => item.status === "queued").length);
 const includedCount = computed(() => items.value.filter((item) => item.include && item.record).length);
 
@@ -367,7 +477,20 @@ function mainOptions(item: ScanItem): string[] {
   const table = cost ? (statsTable as Record<number, Record<string, unknown>>)[cost] : null;
   return table ? Object.keys(table) : MAIN_STAT_KEYS;
 }
+function hasNotes(item: ScanItem): boolean {
+  return Boolean(item.error || item.record?.flags.length || item.claudeError || (item.claude && (item.claude.equippedBy || item.claude.notes)));
+}
+function rowTone(item: ScanItem): string {
+  if (item.claudeState === "reading") return "bg-primary/5";
+  if (item.status === "error" || item.status === "unsupported") return "bg-error/10";
+  return item.record?.flags.length ? "bg-warning/10" : "";
+}
 function statusLabel(item: ScanItem): string {
+  if (item.claudeState === "reading") return "reading with Claude…";
+  if (item.source === "claude" && item.status === "done") {
+    const sure = item.claude ? `${Math.round(item.claude.confidence * 100)}% sure · ` : "";
+    return `${sure}${item.record?.flags.length ? "check the notes" : "ok"}`;
+  }
   switch (item.status) {
     case "queued":
       return "queued";
@@ -386,16 +509,7 @@ function onFilesChosen(event: Event): void {
   const input = event.target as HTMLInputElement;
   const files = Array.from(input.files ?? []).filter((file) => file.type.startsWith("image/"));
   for (const file of files) {
-    items.value.push({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      file,
-      name: file.name,
-      status: "queued",
-      record: null,
-      include: false,
-      thumb: null,
-      error: null,
-    });
+    items.value.push(newScanItem({ file, name: file.name }));
   }
   input.value = "";
 }
@@ -569,6 +683,40 @@ function addToInventory(): void {
 </script>
 
 <style scoped>
+/* the selected group in "Read with Claude" */
+.scope--on,
+.scope--on:hover {
+  background: oklch(var(--p) / 0.16);
+  color: oklch(var(--p));
+  border-color: transparent;
+}
+/* a row with notes: its notes row continues it (no rule between them) */
+.table--cards tr.row--noted {
+  border-bottom-width: 0;
+}
+.table--cards tr.notes-row > td {
+  padding-top: 0;
+}
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.notes-list li {
+  position: relative;
+  padding-left: 0.85rem;
+  color: oklch(var(--bc) / 0.82);
+}
+.notes-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.45em;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 9999px;
+  background: oklch(var(--wa));
+}
 /* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
 @media (max-width: 767px) {
   .table--cards .cell--check {
@@ -590,6 +738,24 @@ function addToInventory(): void {
   .table--cards .cell--subs::before {
     display: block;
     margin-bottom: 0.15rem;
+  }
+  .table--cards tr.row--noted {
+    border-bottom: 0;
+    padding-bottom: 0.2rem;
+  }
+  .table--cards tr.notes-row {
+    padding-top: 0;
+  }
+  .table--cards .cell--notes-pad {
+    display: none;
+  }
+  .table--cards tr.row--pending .cell--full,
+  .table--cards tr.row--pending .cell--cost {
+    display: none;
+  }
+  .table--cards .cell--echo > div {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }
 </style>

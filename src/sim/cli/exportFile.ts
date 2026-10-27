@@ -1,20 +1,13 @@
 // Wuthering Tools+ CLI — the export file is the CLI's database: Settings › Backup › Download
 // writes `character_data_YYYY-M-D.json`; every command reads one (newest in ~/Downloads by
-// default) and never modifies it. Shape: docs in the vault's "WuWa Export Format" note —
-// `data.character` / `data.inventory` / `data.teamRotations` are JSON *strings* (double-encoded).
+// default) and never modifies it. Shape and parser: exportShape.ts (pure, shared with the browser).
 import { readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
+import { parseExport, parseStore, type ExportFile } from "./exportShape";
 
-export interface ExportFile {
-  path: string;
-  version: string | null;
-  source: string | null;
-  characters: Record<string, any>;
-  activeCharacter: string | null;
-  inventory: { echoes: any[]; equipped: Record<string, any>; echoPresets: any[]; equippedPresets: Record<string, any> };
-  teams: any[];
-}
+// the pure half (type + parser) lives in exportShape.ts so the browser can use it; re-exported here for the CLI
+export { parseExport, type ExportFile };
 
 const EXPORT_NAME = /^character_data_.*\.json$/;
 
@@ -28,41 +21,6 @@ export function findNewestExport(dir = join(homedir(), "Downloads")): string | n
     if (!newest || mtime > newest.mtime) newest = { path, mtime };
   }
   return newest?.path ?? null;
-}
-
-function parseStore<T>(value: unknown, fallback: T): T {
-  if (value == null) return fallback;
-  if (typeof value === "string") {
-    try {
-      return JSON.parse(value) as T;
-    } catch {
-      return fallback;
-    }
-  }
-  return value as T;
-}
-
-/** Parses an export (any data version ≥ 2; a v1 file is the bare character payload). */
-export function parseExport(raw: unknown, path = "<memory>"): ExportFile {
-  const file = (raw ?? {}) as Record<string, any>;
-  const data = (file.data ?? file) as Record<string, any>;
-  const character = parseStore<Record<string, any>>(data.character, {});
-  const inventory = parseStore<Record<string, any>>(data.inventory, {});
-  const teamRotations = parseStore<Record<string, any>>(data.teamRotations, {});
-  return {
-    path,
-    version: file.meta?.version != null ? String(file.meta.version) : null,
-    source: file.meta?.source ?? null,
-    characters: character.characters ?? {},
-    activeCharacter: character.activeCharacter ?? null,
-    inventory: {
-      echoes: inventory.echoes ?? [],
-      equipped: inventory.equipped ?? {},
-      echoPresets: inventory.echoPresets ?? [],
-      equippedPresets: inventory.equippedPresets ?? {},
-    },
-    teams: teamRotations.teams ?? [],
-  };
 }
 
 export function readExport(path: string): ExportFile {

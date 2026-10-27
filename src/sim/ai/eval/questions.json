@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "about": "David-style questions for the in-app assistant (src/sim/ai). `expect`: tools a good answer calls (all of them); `acceptable`: tools it may also call; `grounding`: what the answer must rest on. Run with `npm run cli -- ask \"<question>\" --export <file>` (paid API) and grade by hand or with an LLM judge; src/sim/ai/eval/questions.test.ts keeps every tool name valid.",
+  "questions": [
+    {
+      "id": "best-team",
+      "question": "What's the best team I can field right now?",
+      "expect": ["rank_roster"],
+      "acceptable": ["calc_team", "rankings_link", "list_team_presets"],
+      "grounding": "Names the top team from rank_roster with its average damage or DPS and members; says the enemy is Lv 100 / 20 % RES; may offer the /rankings link for Riley's timeline engine."
+    },
+    {
+      "id": "strongest-character",
+      "question": "Who is my strongest character?",
+      "expect": ["rank_roster"],
+      "acceptable": ["calc_character"],
+      "grounding": "Top character and their best rotation's average damage from rank_roster; notes rotations of different lengths compare on DPS only."
+    },
+    {
+      "id": "mornye-s2-aemeath-team",
+      "question": "What does S2 Mornye add to my Aemeath team?",
+      "expect": ["what_if"],
+      "acceptable": ["get_kit", "calc_team", "get_account_summary", "sequence_breakpoints"],
+      "grounding": "what_if with character Mornye, sequence 2 and the Aemeath team: the team total's % gain and per-member change; explains the node from get_kit; says if a part of the node is not modelled."
+    },
+    {
+      "id": "xuanling-next-substat",
+      "question": "Which substat should Xuanling roll for next?",
+      "expect": ["substat_weights"],
+      "acceptable": ["list_rotations"],
+      "grounding": "The weight-100 substat and the runner-up with their % gains per expected roll; mentions crit diminishing returns if Crit Rate is near the cap; never says to drop Energy Regen."
+    },
+    {
+      "id": "r5-polestar-vs-s1-aemeath",
+      "question": "Is R5 Everbright Polestar worth it over S1 Aemeath?",
+      "expect": ["what_if"],
+      "acceptable": ["get_kit", "sequence_breakpoints", "get_account_summary"],
+      "grounding": "Two what_if calls from the account's current Aemeath (or a stated baseline): one at R5 Everbright Polestar, one at S1, each with its % gain on the same rotation; a clear pick by damage; says pulls/currency trade-offs are the player's call."
+    },
+    {
+      "id": "feed-echoes",
+      "question": "Which of my echoes can I feed?",
+      "expect": ["search_inventory"],
+      "acceptable": ["substat_weights"],
+      "grounding": "search_inventory with equipped = unequipped and sort = crit_value_asc; lists low-CV unequipped echoes; warns CV ignores non-crit stats (supports may want ER / HP%)."
+    },
+    {
+      "id": "reroll-first",
+      "question": "Which of Aemeath's echoes should I replace first?",
+      "expect": ["substat_weights"],
+      "acceptable": ["search_inventory"],
+      "grounding": "The equipped echo with the lowest substat worth from substat_weights; may suggest a better unequipped candidate found with search_inventory."
+    },
+    {
+      "id": "team-buff-sources",
+      "question": "Why does Mornye do so little damage in my Aemeath team?",
+      "expect": ["calc_team"],
+      "acceptable": ["get_kit"],
+      "grounding": "Mornye's share of the team total from calc_team; explains she is a support whose value shows in teammates' numbers; points to what_if with team for her investment."
+    },
+    {
+      "id": "invest-next",
+      "question": "Where should my next pulls go to get the most damage?",
+      "expect": ["rank_roster"],
+      "acceptable": ["what_if"],
+      "grounding": "The biggest nextSequence / r5GainPct numbers from rank_roster, labelled as estimates on each character's own rotation; no invented banner or pity advice."
+    },
+    {
+      "id": "aemeath-page-numbers",
+      "question": "What are Aemeath's crit stats and her biggest hit?",
+      "expect": ["calc_character"],
+      "acceptable": [],
+      "grounding": "Crit Rate, Crit DMG and the top attack from calc_character, labelled as the calculator page's numbers with her own enemy settings."
+    },
+    {
+      "id": "rotation-choice",
+      "question": "Which rotation should I use for Sigrika?",
+      "expect": ["list_rotations"],
+      "acceptable": [],
+      "grounding": "The best-scoring rotation and the runner-up with average damage; notes DPS needs a duration."
+    },
+    {
+      "id": "does-s2-change-loop",
+      "question": "Does S2 change how I should play Aemeath?",
+      "expect": ["sequence_breakpoints"],
+      "acceptable": ["get_kit"],
+      "grounding": "Whether wuwa_calc's loop switches at S2 for each loadout (loop vs opener only); the node's effect from get_kit."
+    },
+    {
+      "id": "what-does-node-do",
+      "question": "What does Phoebe's S2 do?",
+      "expect": ["get_kit"],
+      "acceptable": [],
+      "grounding": "The node text from get_kit, paraphrased; says the player doesn't have Phoebe set up, so no damage number."
+    },
+    {
+      "id": "teams-with-character",
+      "question": "What teams can I run with Galbrena?",
+      "expect": ["list_team_presets"],
+      "acceptable": ["rank_roster", "rankings_link"],
+      "grounding": "Fieldable presets containing Galbrena; may rank them with rank_roster; offers the /rankings link filtered to Galbrena."
+    },
+    {
+      "id": "find-echo",
+      "question": "Do I have a spare Crit DMG Sigillum?",
+      "expect": ["search_inventory"],
+      "acceptable": [],
+      "grounding": "search_inventory with echo Sigillum, main crit dmg (and unequipped); lists matches with substats and CV."
+    },
+    {
+      "id": "weapon-swap",
+      "question": "How much worse is Xuanling with a 4-star weapon instead of Azure Oath?",
+      "expect": ["what_if"],
+      "acceptable": ["get_kit"],
+      "grounding": "what_if with a named 4-star weapon of her type (the tool lists options if the name is wrong) and the % change."
+    },
+    {
+      "id": "energy-regen",
+      "question": "Should I stop building Energy Regen on Sigrika since it shows 0?",
+      "expect": [],
+      "acceptable": ["substat_weights", "get_kit"],
+      "grounding": "Explains the engine has no energy model, so ER reads 0 unless a buff scales with it; keep the ER the rotation needs; no invented ER thresholds."
+    },
+    {
+      "id": "import-warning",
+      "question": "Can I import a friend's export to compare our accounts?",
+      "expect": [],
+      "acceptable": [],
+      "grounding": "Warns that Settings › Import replaces the whole database; suggests a backup first; does not walk them into overwriting their data."
+    },
+    {
+      "id": "compare-to-riley",
+      "question": "Why is my team's number lower than on Team rankings?",
+      "expect": [],
+      "acceptable": ["calc_team", "rankings_link", "rank_roster"],
+      "grounding": "Compares DPS with DPS (Riley's /rankings numbers are damage per second, never set against a rotation's total damage); states the app's team DPS is about 0.96 of Riley's at the median; static engine vs Riley's timeline; different enemy settings per team."
+    },
+    {
+      "id": "account-overview",
+      "question": "Give me a quick overview of my account.",
+      "expect": [],
+      "acceptable": ["get_account_summary", "rank_roster"],
+      "grounding": "Counts from the snapshot or get_account_summary; no damage numbers unless a tool ran."
+    }
+  ]
+}

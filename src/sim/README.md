@@ -413,3 +413,244 @@ CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each sl
 plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
 whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
 (real Augusta / Iuno / Shorekeeper / Sanhua data).
+
+## In-app AI, stage 1: the foundation and the engine tool registry — `src/sim/ai/` + `src/sim/live/` (Track "ai", 2026-10-12)
+
+David's ask (2026-10-12): "more AI integration into the app itself". Claude is the interface, **the app's engine is
+the source of truth**: every number Claude states must come from a tool result in the conversation. Stage 1 is the pure,
+tested layer — bring-your-own key, client, pricing, a read-only tool registry over the engine, the prompt, the agent
+loop, the conversation store, a CLI twin. Stage 2 builds the drawer UI on it; stage 3 the vision echo reader. Nothing
+here is imported by the app yet, so the main bundle is unchanged; the drawer imports these modules lazily.
+
+| Piece | What it does |
+|---|---|
+| `cli/exportShape.ts` | the pure half of `exportFile.ts` (which imports `node:fs`): `ExportFile`, `parseStore`, `parseExport`. `exportFile.ts` re-exports them, so the CLI and its tests are unchanged |
+| `live/liveExport.ts` | `exportFromStores()` — the three persisted Pinia stores (character, inventory, teamRotations) as an `ExportFile`, JSON-cloned (Pinia proxies can't be structuredCloned and a tool must never mutate a store). `exportFromState()` is the pure core. Call it per question: a snapshot, not a view |
+| `ai/models.ts` | the three model ids (never date-suffixed) — `claude-opus-5-5` default, `claude-sonnet-5-5`, `claude-haiku-5-5` — effort levels, which models take the server-side refusal fallback |
+| `ai/aiSettings.ts` | the key: sessionStorage `wtplus:ai:key` by default, localStorage (same name) when "remember on this device" — one place at a time. Model / per-feature effort (chat medium, explain low, vision low, critique high) / soft budget per conversation (default $0.50) / remember flag in localStorage `wtplus:ai:settings`. Storage functions pure over a `StorageLike`; `useAiSettings()` is the reactive wrapper (module-level `ref`s, not Pinia) exposing `key.present` + a masked hint and `getApiKey()` on demand — the key never sits in reactive state. `redactKeys()` masks anything key-shaped in error text |
+| `ai/client.ts` | `loadAnthropicSdk()` (dynamic `import("@anthropic-ai/sdk")`, once), `createAnthropicClient({ apiKey, browser })` (`dangerouslyAllowBrowser` in the browser, credential resolution under Node), `fallbackFields(model)` (`betas: ["server-side-fallback-2026-07-01"]` + `fallbacks: "default"` for Opus / Sonnet, nothing for Haiku), `describeError(err, sdk)` — the SDK's typed classes most specific first (abort → timeout → connection → 401 → 403 → 404 → 429 → 5xx / overloaded → 402 billing → 413 → 400 / 422) to one friendly sentence + `retryable` + request id, `refusalMessage()` |
+| `ai/pricing.ts` | USD per request from `usage` (input, output, cache read, cache write at 1.25 × input; Haiku's >100K-prompt rates; a refusal fallback's `fallback_message` iterations at that model's price), running `UsageTotals`, `cacheHitRate`, `formatUsd` (four decimals under a cent) |
+| `ai/schema.ts` | the flat schema type the tools use and `validateInput()` — run on every tool input before the tool (with `eager_input_streaming` the API no longer validates and the SDK's tolerant parser returns `{"team": 1}` for `{"team": 1x}` and `{}` for a cut-off `{"te`). String enums match case-insensitively (Claude may change the case). `strictSchemaProblems()` / `optionalParamCount()` keep the schemas inside what strict tool use accepts |
+| `ai/tools/*.ts` + `index.ts` | twelve read-only tools in a FIXED order (`AI_TOOLS`; tools render first in the cache prefix): `get_account_summary`, `calc_character`, `calc_team`, `rank_roster`, `substat_weights`, `what_if`, `list_rotations`, `list_team_presets`, `sequence_breakpoints`, `get_kit`, `search_inventory`, `rankings_link`. Each = `{ name, description (what the numbers mean and where they stop), input_schema (strict), provenance, run(input, ctx) → compact JSON }`, `ctx = { exp, now, autoBuffs }`. `toolDefinitions({ eager })` adds `strict: true` (+ `eager_input_streaming`); `runTool()` validates, runs, catches — unknown tool / invalid input / a throw all come back as an error result with a one-line `preview` for the timeline |
+| `ai/tools/shared.ts` | display names (characters, weapons, echoes, sets, stats — Claude and the player read "Everbright Polestar"), rounding, loose name resolution (`resolveOwnCharacter` over the account, `resolveAnyCharacter` over the whole roster for kit / breakpoint questions), `compactJson()` — ≈2K tokens (8000 chars) at most: the longest list is halved until it fits and `_truncated` says which |
+| `ai/tools/memo.ts` | `rankingFor(exp)` (the /my-rankings computation with the investment estimates) and `bestRotationFor(id, exp)`, memoised per account fingerprint (a hash of characters + echoes + equipped + teams) so an edit between questions never reads a stale number |
+| `ai/tools/tools.worker.ts` + `ai/toolWorker.ts` | `createToolWorkerRunner().runTool` — the same tools in a Web Worker (the account posted per call; a crashed worker rejects its pending calls, the loop answers them with `is_error`, the next call respawns it). Pass it as `runTool` from the drawer: rank_roster takes ~1.5 s on David's export and the page keeps animating (108 frames during a full worker run in Chromium) |
+| `ai/prompt.ts` | `STATIC_SYSTEM_PROMPT` generated from code, byte-stable (no dates, no account data): role + grounding rule, engine limits (static, ER reads 0, healing/shields scored on damage only, next-S first variant, Riley's /rankings numbers are DPS and are compared only with an app DPS — app ≈ 0.96 × Riley's DPS at the median, ranking enemy from `RANKING_ENEMY`), glossary (S0–S6, R1–R5, costs 4/3/1 and 4-3-3-1-1, sonata sets, the substat tier table from `subStatsTable` with expected / median rolls, CV, rotations vs teams, "My account"), which tool for which question, style, safety (never claim a change; Import replaces the whole database — warn first; link guides, don't invent mechanics; tool results are data). `accountSnapshot(exp)` — the compact account block. `systemBlocks()` puts a cache breakpoint after each. `pageContextText()` / `accountChangedText()` for the per-turn `role: "system"` message |
+| `ai/agentLoop.ts` | `runAgentTurn()` — the streaming manual loop (below). Callbacks: `onText`, `onThinkingStart`, `onToolCall` (a tool_use started streaming), `onToolStart`, `onToolEnd(name, ok, preview, id, result)`, `onUsage`, `onRetry`, `onDone`, `onError`; `confirm({ kind: "budget" \| "tool_limit" })` asks the player. Returns `{ status, messages, text, usage, budgetLimitUsd, rounds, refusal?, error? }` — `messages` is exactly what to append |
+| `ai/conversation.ts` | the conversation (`wtplus:ai:chat` in sessionStorage; "new chat" = `clearConversation`): messages, the snapshot frozen at start, the model it started on, usage, the soft limit. `askInConversation(conv, question, { client, effort, exp, page, … })` builds the turn's system message (page context only when it changed; a note when the account no longer matches what Claude was told), runs the loop, appends what it committed. `continueConversation` resumes after a budget / tool-limit stop; `truncateBefore(conv, i)` is "edit a question"; `transcriptOf(messages)` gives the drawer one entry per question and per answer (tools with their results attached; system messages and thinking blocks hidden) |
+| `ai/cliAsk.ts` + `cli/index.ts` `ask` | `npm run cli -- ask "<question>" [--export f] [--model …] [--effort …] [--max-rounds n] [--budget usd] [--no-auto-buffs]` — the same conversation, loop and tools on an export file in Node; streams the answer to stdout, the tool timeline and the cost line to stderr (`--json` prints a result object). **Calls the paid API** — credentials from `ANTHROPIC_API_KEY` or an `ant auth login` profile |
+| `ai/eval/questions.json` | the question bank (20 David-style questions — best team, S2 Mornye on the Aemeath team, Xuanling's next substat, R5 Polestar vs S1 Aemeath, echoes to feed, …) with the tools that should answer each and what the answer must rest on |
+| tests | `tools/tools.test.ts` (every tool on `__fixtures__/aiAccount.json` — Aemeath / Mornye / Lynae, their equipped echoes, five spares and their team, trimmed from a real export; strictness, the 24-optional-parameter / 20-strict-tool limits, byte-stable definitions), `schema`, `pricing`, `aiSettings`, `client` (typed errors from real SDK classes), `agentLoop` (`__fixtures__/fakeClaude.ts`: tool round, request shape, parallel tools, a throwing runner, pause_turn, max_tokens ×3 cases, refusal ×2, abort ×3, unparseable JSON, the round cap yes/no, the budget yes/no/start), `conversation` (store, turn context, a simulated prompt cache that only hits byte-identical prefixes), `sdkIntegration` (the loop on the **real** SDK client with `fetch` replaced by scripted SSE: headers, body, thinking signature and parsed tool input sent back unchanged, a 401), `prompt`, `cliAsk`, `toolWorker`, `live/liveExport`, `eval/questions` (tool names valid; no `node:` import anywhere under `ai/` or `live/`) |
+
+**The loop's rules.** Streaming (`client.beta.messages.stream` + `finalMessage()`); `thinking` omitted (Opus 5.5
+always thinks — depth is `output_config.effort`, set per feature); tools `strict` + `eager_input_streaming`;
+`tool_choice` stays auto (forced choice is a 400 on Opus / Sonnet 5.5) except `none` for the one answer after the
+player declined more tool rounds; every assistant turn goes back unchanged (JSON-cloned: thinking blocks with their
+signatures, `fallback` blocks), history append-only. `tool_use` → all tools in parallel, every result in ONE user
+message (`is_error` on failures, none dropped); `end_turn` → done; `pause_turn` → append, continue; `max_tokens` with a
+tool_use → never run the cut-off input, re-send once with twice the room (cap 64000), then stop; `max_tokens` on text →
+keep it; `refusal` → no tools, nothing kept, a polite line; `model_context_window_exceeded` → "start a new chat". Max
+6 tool rounds per answer, then `confirm("tool_limit")`: yes resets the count, no answers the pending calls with
+`is_error` and asks once more with `tool_choice: none`. Before every request, past the conversation's soft limit,
+`confirm("budget")`: yes raises the limit by one budget step, no stops (the conversation then ends on a user turn and
+`continueConversation` picks it up). An unparseable streamed tool input (the SDK raises a bare `AnthropicError`, not an
+`APIError`) is re-issued twice at most; API errors are never retried by the loop (the SDK retries 429 / 5xx twice
+itself). Abort: the request's `AbortSignal`; a tool round is committed only with its results.
+
+**Prompt caching.** Prefix = tools (fixed order, byte-identical every request, ≈3.1K tokens) → static system block (≈1.5K tokens, breakpoint — together above 4,096 tokens, the largest per-model minimum for a cacheable prefix) →
+the account snapshot frozen into the conversation (breakpoint) → messages (top-level automatic `cache_control`, the
+third breakpoint). Per-turn context is a mid-conversation `{ role: "system" }` message placed right after the user's
+question (it must follow a user message and be last or followed by an assistant turn). When nothing is committed
+(refusal, abort or error before Claude's first complete turn) the loop returns `messages: []` — appending a dangling
+question + system note would leave a system message followed by the next user message, which the API rejects — and
+the drawer puts the question back in the input box. `sdkIntegration.test.ts` and `conversation.test.ts` check that turn
+two re-sends turn one byte for byte.
+
+**Gates.** `npx vue-tsc --noEmit`; `npx vitest run src/sim/ai src/sim/live` (97 tests, no network); the snapshot
+gate (`npm run cli -- snapshot` before / after → `diff`: 0 changes — stage 1 moves no number); a browser probe (Vite
+dev + `shot.mjs --eval-file`) ran all twelve tools on David's seeded stores on the main thread and in the worker with
+the same outputs as the Node CLI. Never call the real API from tests or CI: script `fetch` or the client.
+
+Things learned:
+- `@anthropic-ai/sdk` 0.133 (and 1.3, see stage 2) already types `fallbacks: "default"`, `output_config.effort`, `eager_input_streaming`,
+  `strict` and `role: "system"` messages on the beta namespace — no casts. It sends `betas` as the `anthropic-beta`
+  header (never in the body) and the real `Anthropic` client satisfies the loop's small `ClientLike` structurally.
+- Strict tool schemas reject `minimum` / `maximum` / `minLength`: bounded integers are enums (`sequence: [0…6]`,
+  `refinement: [1…5]`, `cost: [1, 3, 4]`), open ones are clamped inside the tool (`top`, `limit`). The request-wide caps
+  are 20 strict tools, 24 optional parameters (we use 21), 16 union-typed parameters (we use none).
+- The tolerant partial-JSON parser rarely throws: `{"team": 1x}` → `{team: 1}`, a cut-off `{"te` → `{}`. Validation,
+  not the exception, is what catches a bad input.
+- The streamed `params.messages` array is the loop's working array; pass a copy per request (`[...working]`) or later
+  appends show up in anything that kept a reference (the tests' first draft did).
+- The SDK chunk carries a guarded `import("node:buffer")` (its Node file helpers); Vite builds it fine and the browser
+  path never runs it.
+- `@anthropic-ai/sdk` is installed in the main clone's node_modules but **not listed in package.json / package-lock**
+  — the integrator adds it (`npm install @anthropic-ai/sdk@1.3.0` in the main clone, which updates both; stage 2 moved to 1.3).
+
+## In-app AI, stage 2: the assistant panel and the command palette — `src/sim/ai/ui/` + `src/sim/shell/` (Track "ai", 2026-10-26)
+
+David's asks (2026-10-12, 2026-10-26): AI inside the app and a pro-level UI. Stage 2 puts stage 1's loop and tools behind
+a floating **Ask** button, a Claude panel (a right-side panel on desktop, a bottom sheet on phones), AI settings, and a
+**Ctrl/Cmd+K command palette** with an "Ask Claude" row. Mounted once from `App.vue` (two lines); everything else is
+plus code. No real Anthropic request is made by the app's tests or the Cypress spec.
+
+| Piece | What it does |
+|---|---|
+| `src/App.vue` (upstream, 2 lines) | `import PlusShell` + `<PlusShell />` after `<AppLayout>` — inside the app, so Pinia, the router, toasts and `useConfirm` all work |
+| `shell/PlusShell.vue` | eager and small: the Ask button (bottom-right, `z-[55]`; hidden while the panel or any modal `<dialog>` / `aria-modal` bottom sheet is open — a `MutationObserver` on `open` attributes and `<body>`'s children, throttled with a timer), the window-level shortcuts (capture phase: Ctrl/Cmd+K palette, Ctrl/Cmd+J panel, Esc closes the panel from inside it or from `<body>` only), the page provider (route, page title, the calculator's active character, the team open on /teams from `teamRotationsActiveTeamId`). The panel, the palette and the settings dialog are `defineAsyncComponent` chunks loaded on first open |
+| `ai/useAssistant.ts` | **the public API** — `useAssistant()`: `open()`, `close()`, `toggle()`, `ask(question, { context?, title? })`, `explain({ title, data, question? })` (the data goes as a fenced JSON attachment in the same user turn, at the Explain effort — low by default). Module-level state (one assistant per tab): open / collapsed / busy, the pending question, the live answer (streamed text, tool rows with status and timing, thinking, retrying), the turn's usage, the notice (error / refusal / stopped / budget / max_tokens / context_full / tool_limit), the budget or tool-round confirm, the composer draft with an optional attachment. Light: everything heavy loads through one `import("./assistantRuntime")` on the first question; `setAssistantRuntimeLoader()` is the test seam |
+| `ai/conversationStore.ts` | the light half of `conversation.ts` (split out so the eager state and the panel stay out of the engine's import graph): `Conversation`, load / save / clear (`wtplus:ai:chat`, sessionStorage), `canContinue`, `transcriptOf`. `conversation.ts` re-exports it, so stage 1's callers and tests are unchanged |
+| `ai/assistantRuntime.ts` | the one lazy chunk with the conversation + loop + tools + engine, `exportFromStores`, the worker tool runner (falls back to the main thread when the worker can't start or crashes) |
+| `ai/ui/AssistantPanel.vue` | the panel. Desktop: fixed under the nav (its top measured from `#navbar-container`), 420 px, `z-[60]`, non-modal; a collapse button shrinks it to a tab on the right edge so the v3 result bar and the Full breakdown dock are free. Phones (< 768 px): a full-width bottom sheet, `min(85dvh, 760px)`, over a tap-to-close backdrop. Header: model chip (opens settings; a tooltip says when the chat runs on another model than the setting), the conversation's live cost (tooltip: requests, tokens, cache hit rate, soft budget), settings, new chat, collapse, close. Body: onboarding without a key; otherwise the empty state with per-page suggestions, the transcript (questions with attachment chips and Edit; answers), the inline budget / tool-round confirm, the notice with Retry / Continue / Open AI settings / New chat. Composer: auto-growing textarea (16 px on phones so iOS doesn't zoom), Enter sends, Shift+Enter breaks, Send turns into Stop while an answer runs. Its keydown handler stops propagation: Riley's document-level handlers on /rankings would otherwise take Enter and the arrows |
+| `ai/ui/AssistantAnswer.vue` + `AssistantToolRow.vue` | one answer: the tool timeline ("Used 2 engine tools · 1.4 s", collapsible; each row `Team damage · Aemeath · Mornye · Lynae → 9.47M · 379K DPS` with a spinner / check / cross and its time, expandable to the tool name, provenance, input and result JSON), "thinking…" with elapsed seconds, the markdown, the **Sources** chips (`provenanceOf`), deep-link buttons (`deepLinksOf`: a route, "Aemeath in the calculator", `Open "<team>"`), Copy |
+| `ai/ui/AssistantOnboarding.vue` | BYOK explained, console.anthropic.com, the dedicated-key-with-a-monthly-spend-limit advice, the key field (format check `sk-ant-…`) with "Remember on this device", the privacy note (questions + an account summary go from the browser straight to Anthropic, only when you ask; nothing to our servers; Claude reads through the engine and can't change data), the typical cost per question per model (`typicalQuestionCost`) |
+| `ai/ui/AiSettingsDialog.vue` | native `<dialog class="modal">` (toasts re-teleport into it; `modal-bottom` on phones): the masked key and where it lives, Test key (`client.ts testApiKey` — `GET /v1/models/{model}`, free, only on click), Forget key (confirm), paste a new key, remember toggle (reflects where the key really is), model radio cards with list prices and ≈ cost per question, effort for chat and Explain, the soft budget per conversation |
+| `ai/ui/markdown.ts` + `MarkdownView.ts` | (stage 1 draft, now tested) the markdown subset → VNodes; every piece of model text is a text node, no `v-html` anywhere. Links: http(s) in a new tab with `noopener noreferrer nofollow`, or a path the router resolves (bare `/my-rankings` in prose too) through `router.push` |
+| `ai/ui/toolSummary.ts` | timeline rows, deep links, provenance, `toolViewsOf` (transcript tools → rows with this tab's timings), `prettyJson` |
+| `ai/ui/suggestions.ts` | three or four questions per route (/ about the active character, /my-rankings "What should I invest in next?", /rankings "Which of these teams can I field best?", /teams "Why is my team lower than Riley's?", /inventory "Which echoes can I feed?", /convene "Who should I pull for?") |
+| `shell/CommandPalette.vue` + `paletteItems.ts` | native `<dialog>` at the top of the screen (on phones too — the keyboard can't cover it). Pages (`CORE_PAGES` + the shared `PLUS_PAGES`, each only when the router resolves it), actions (Rank my roster, open the assistant, new chat when one exists, AI settings, theme light/dark via `useTheme`, classic / v3 via `useClassicUi`), characters (portrait, rarity · element · weapon, `S<n>` badge when set up — `characterRowsOf`; Enter makes it active and goes to the calculator), saved teams (→ /teams with that team open), and "Ask Claude: <text>" (first for a question or a weak match, last otherwise). `rankPalette`: word-prefix / initials / substring / subsequence scoring, groups in the order of their best item, scattered-letter noise dropped next to a real match. Focus stays in the input; ↑/↓ move `aria-activedescendant` (`useSuggestNavigation`), Enter runs, Esc closes |
+| `shell/navigation.ts`, `shell/shellDom.ts` | shared jumps (`openCharacter`, `openTeam`, `isAppRoute`, `characterKeyByName`) and DOM helpers (`anyModalOpen`, `isTypingTarget`, `modKeyLabel`) |
+| tests | `useAssistant.test.ts` (the real conversation + loop + tools with a scripted client: ask, explain with attachment + low effort, no key → onboarding with the question parked, stop, budget confirm no → Continue → yes, a second question while busy, an overloaded error → Retry, Edit), `ui/markdown.test.ts` (subset, unsafe links, raw HTML stays text, MarkdownView mounted under a router renders no `<img>`), `ui/toolSummary.test.ts`, `ui/suggestions.test.ts`, `attachments.test.ts`, `shell/paletteItems.test.ts`; Cypress `cypress/e2e/assistant.cy.ts` |
+
+Rules:
+- **The SDK never lands in the main bundle.** `client.ts` (`import("@anthropic-ai/sdk")`), `assistantRuntime.ts`, the panel,
+  the palette and the dialog are all lazy; the entry chunk only holds PlusShell, `useAssistant`, `conversationStore`,
+  `attachments`, `aiSettings`, `paletteItems` / `plusPages` (for page titles) and the shell helpers. Gate: `npx vite build`, then
+  `grep -c "api.anthropic.com" dist/assets/index-*.js` → 0 (the one "anthropic" there is a palette keyword).
+- **Append-only, one answer at a time.** A second `ask` / `explain` while an answer runs goes into the composer; Edit
+  rewinds with `truncateBefore` (a confirm when later questions would go) and puts the text back; nothing rewrites history.
+- **When nothing was kept** (stopped, refused, failed before Claude's first complete turn) a typed question goes back in
+  the box; Retry re-sends the last question, or continues when the conversation ends on a user turn (a declined budget
+  confirm, a stop after a tool round).
+- **The key** is read from storage for each request (`getApiKey()`), never held in component state; the settings show
+  only `sk-ant-…AbCd`.
+- **Every plus `<dialog>` emits its close itself** as well as on the native `close` event (queued — a palette run that
+  navigates must not wait for it).
+- **phone.css § 6 pads every phone `.modal-box`** (`.modal .modal-box.modal-box`, 1 rem, bottom-sheet corners): the palette
+  and the settings dialog override it with a higher-specificity selector of their own.
+- **The nav's dropdowns open over the panel.** The panel is `z-[60]` under the nav (`#navbar-container`, fixed, `z-50`), so
+  the utility menu and the theme chooser (focus-driven DaisyUI dropdowns) used to open behind it. AssistantPanel's global
+  style lifts the nav to 61 only while one of its dropdowns (or the phone hamburger `<details>`) is open:
+  `#navbar-container:has(.dropdown:focus-within, details[open])`. Any nav dropdown another track adds is covered.
+
+Gates (2026-10-26): `npx vue-tsc --noEmit` clean; `npx vitest run` — 192 files / 1879 tests (131 under `src/sim/ai` +
+`src/sim/live` + `src/sim/shell`); Cypress `assistant.cy.ts` 5/5 (onboarding → stubbed key → Test key; ask → tool row →
+safe markdown → route link → reload keeps the chat → Esc; Stop; Ctrl+K → /my-rankings and a question → Claude; 412 × 915
+at 130 % text with no sideways scroll), `phoneLayout.cy.ts`, `themes.cy.ts`; `npx vite build` (no `import.meta.glob` left,
+SDK in `sdk-*.js`). The whole Cypress suite in this sandbox: 22 of 67 specs red with the shell mounted, the same 21 red with the `App.vue`
+hook taken out (frozen frames: DaisyUI / Vue transitions stuck at `opacity: 0`, `cy.screenshot` timeouts); the 22nd
+(`calculator/optimizer/workspaceFlagged`) was a flake and passes twice on a rerun with the shell — no failure mentions the Ask button. Screenshots: `/tmp/wtplus-shots/ai/` (desktop dark + light, phone 412 at 130 %: closed, onboarding,
+conversation, palette, empty state, settings); the conversation shots seed `wtplus:ai:chat` in sessionStorage with a chat
+built by the real loop and tools on David's data and a scripted client (`--pre`), then click Ask.
+
+Things learned:
+- **Nothing may depend on animation frames in Cypress.** Headless Electron never advances frames: Vue's `<Transition>` waits
+  on `requestAnimationFrame` (a leave never finished, the panel stayed visible after Esc), and a CSS animation from
+  `opacity: 0` stays at 0 (Cypress reports the element hidden). The panel, sheet and Ask button use transform-only
+  keyframes (a small offset that never completes still leaves them usable) and the modal watcher a 30 ms timer.
+- **The dialog `close` event is queued** and in headless Electron it may not arrive before the next command: the palette
+  and settings emit their close directly as well.
+- **SDK 1.x** (API version `2026-10-21`): the key goes out as `Authorization: Bearer …` (no `x-api-key`), beta routes have
+  no `?beta=true`, and `BetaMessageParam` is a union with one type per role — build an assistant turn's content as
+  `BetaMessageContentParam`, not `BetaMessageParam["content"]` (the system-message variant allows `undefined`). The
+  Cypress stubs answer the CORS preflight with the requested headers echoed (`Authorization` isn't covered by `*`).
+- The Ask button covers the bottom-right corner of the page (on /rankings phones, the end of Riley's credit line); the
+  panel's collapse tab is the answer on desktop, closing the sheet on phones.
+
+## In-app AI, stage 3: "Read with Claude" in the echo importer — `src/sim/echoScan/` (Track "ai", 2026-10-26)
+
+The phone-screenshot importer's OCR (phase D) reads one layout: a 3120 × 1440 S26 Ultra shot, best with the Sonata filter
+on. Stage 3 adds **Read with Claude** to the same panel (Inventory › Import echoes › Phone screenshots): Claude reads
+any screenshot with an echo's stat list (PC frames, other phones, no Sonata filter, a resonator's echo page with
+several echoes), the app checks every line with the OCR path's rules, and the rows land in the same review table, so
+upstream's duplicate review and save take them unchanged. The OCR flow is untouched unless the player presses the
+button. No test or spec sends a real request.
+
+| Piece | What it does |
+|---|---|
+| `claudeVision.ts` | pure (no DOM / Vue). **Pass 1**, one request per screenshot: the downscaled image first, then a one-line instruction (`2576×1189 px (scaled down from 3120×1440)`); structured output (`output_config.format` json_schema, strict: every object closed, every property required, no numeric constraints) whose enums are the app's own vocabulary: echo names from `mainEchoesData`, set names from `echoSetLabelMap`, stat labels from `KEY_TO_LABEL`. Per echo: printed name, echo, cost, level, rarity, set + `setSource` (printed / glyph_only / not_visible) + the glyph's box, main stat, the fixed second row, substats, `equippedBy`, confidence, notes. **Pass 2**, only for echoes whose set isn't printed and whose registry entry allows more than one set: the glyph cut from the full-resolution shot and enlarged (or the whole shot when Claude gave no box) next to the candidate sets' icons as labelled URL images (`echoSetImageMap` — `https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/<Set>.webp`), one closed answer per echo with its enum limited to that echo's sets + "none of these". `mapClaudeEcho` → the importer's `ScanRecord` with the checks below; `compareWithOcr` lists where an OCR record of the same shot disagrees. `readEchoesWithClaude(images, opts)`: concurrency 2, results in order and through `onImageDone` as they arrive, abort cancels the requests in flight and skips the rest. Lazy: only `useClaudeEchoRead`'s first run imports it (with `client.ts`) |
+| `claudeVisionCost.ts` | the light part the importer needs up front: `VISION_LONG_EDGE` (2576), `VISION_MAX_PIXELS` (3.75 MP, the API's other image limit), `visionSize` (the size sent: both limits, never upscaled), `imageTokens` (≈ w × h / 784 after `visionSize`, ≤ 4784), `estimateVisionCost` (+ 2.7K prompt tokens in, 1.5K out, +10 % for the glyph pass, at the chosen model's list price); re-exported by `claudeVision.ts` |
+| `visionImage.ts` | the canvas half: `prepareVisionImage` (decode → `visionSize` (long edge ≤ 2576 px, ≤ 3.75 MP) → JPEG 0.92 base64, a 96-px thumbnail, `crop(box)` from the full-resolution bitmap until `dispose`), `probeImage` (size + thumbnail when a file is added, for the estimate), `glyphCropRegion` (the box padded 4× around its centre, at least 6 % of the short side, clamped) |
+| `batchItems.ts` | the review table's row (`ScanItem`), shared by the OCR scan and Claude: `source` (ocr / claude), `claudeState` (none / reading / done / error), `claude` (confidence, notes, printed name, who wears it, echoes on the shot), `ocrRecord` (the OCR record a Claude read replaced), `parentId` (extra echoes of one shot), `size`. `needsALook` (failed, unsupported, no echo, or flags) and `claudeCandidates(items, "flagged" \| "all")` |
+| `useClaudeEchoRead.ts` | the importer's controller: scope (flagged & failed first when there are any, else all unread), the estimate and the soft-budget warning (`wtplus:ai:settings` budget) — a run whose estimate is above it asks first (`confirmOverBudget`, upstream's `useConfirm` in the importer; no way to ask → no run), run / Stop / progress / spent so far / the summary line, no key → `useAssistant().openSettings()`. A result takes its row (Claude's record replaces the OCR one, which is kept for the cross-check); a shot with several echoes becomes several rows; a failed read leaves the row's OCR result alone and can be retried; a row starts **checked only when** the echo is known, no check blocked it and the OCR (if any) agrees — stricter than the OCR path. Closing the importer mid-run aborts (`onScopeDispose`). Effort = AI settings › "Reading screenshots" (low by default) |
+| `PhoneEchoBatchParser.vue` (plus) | the "Read with Claude" strip under Scan / Clear: model chip (opens AI settings), what it's for, the BYOK note, the scope switch with counts, "≈ $0.19 for 3 screenshots" (tooltip: the token assumptions), Read N with Claude → Stop + progress + spent; rows get a spinner while read and a "Claude" badge with its confidence after; the Notes column became a full-width row under each row (flags, errors, Claude's notes, "worn by …") and Echo + Set share a column, so the table fits the modal and phones |
+| tests | `claudeVision.test.ts` (vocabulary + schema, request shape — image first, json_schema, effort, no `thinking` / sampling fields, the refusal fallback on Opus / Sonnet only, the icon URLs; parsing a refusal / cut-off / bad JSON / wrong shape; mapping a clean read into the OCR's shape; impossible values flagged and kept as read; unknown echo names rejected; a printed set outside the echo's sets; the glyph pass's pick, a "none of these", a pick outside the candidates; the two-pass run, a page with two echoes, the glyph pass failing, typed API errors, concurrency 2, abort; the estimate; crops; candidates) and `useClaudeEchoRead.test.ts` (no key, estimate per model, rows filled / split / unchecked, the OCR disagreement, a failed read kept retryable, the importer closing mid-run), both on `__fixtures__/claudeVisionResponses.json` — recorded-style beta Messages responses (an empty thinking block, then the JSON) whose stat lines are the Cypress fixture screenshots'. Cypress `cypress/e2e/echoScanClaude.cy.ts`: api.anthropic.com intercepted (CORS preflight too) — no key → the key from the importer → read → glyph pass with the two candidate icons and a PNG crop → impossible values flagged → "Add 2 echoes" saves through upstream's flow; 412 × 915 at 130 % with no sideways scroll |
+
+The checks (the OCR path's tables, strict parsing — nothing is repaired, unlike OCR's "108%" → 10.8):
+- echo: a name from the enum, else the printed name fuzzily (`bestEcho` ≥ 0.85, flagged), else blocking; cost from the
+  registry (Claude's read is a cross-check flag).
+- main stat: a legal one for the cost (`statsTable`), at the max-level value for the rarity (HealingBonus 26.4 % allowed, as
+  in `legalValues`); without a printed rarity, the rank whose max-level value it shows, else 5★ (flagged).
+- the second row: the fixed flat stat for cost + rank (`flatBonusesByRankByType`; at 5★ the OCR's 2280 / 100 / 150).
+- substats: every value a legal roll in `subStatsTable` (a % sign decides ATK vs ATK (flat)), no type twice, at most 5, no
+  more than one per `LEVELS_PER_TUNE` levels; fewer than 5 at +25 is a soft flag.
+- a value that fails stays exactly as read in the row with a flag; blocking flags (unknown echo, illegal or unreadable
+  value, impossible count) start the row unchecked. Claude's confidence < 0.6 is a flag.
+
+Rules:
+- Requests follow the 2026-10-21 API: `beta.messages.create` (non-streaming, `max_tokens` 16000 / 4000), no `thinking`, no
+  sampling fields, `output_config.effort` set explicitly, `fallbacks: "default"` + `server-side-fallback-2026-07-01` on Opus /
+  Sonnet (not Haiku), typed SDK errors through `describeError`. A refusal is not retried (the same image refuses again).
+- No prompt-cache breakpoint: the only static prefix (system prompt ≈ 450 tokens) is under the minimum cacheable length;
+  the schema is byte-stable so the compiled grammar is reused.
+- **Nothing of the reader is in the entry chunk.** The importer is eager (upstream's inventory modal imports it), so
+  `useClaudeEchoRead` imports only `claudeVisionCost.ts`, `batchItems.ts`, `visionImage.ts` (canvas) and the light AI
+  modules statically; `claudeVision.ts` and `client.ts` load together on the first run (`claudeVision-*.js` ≈ 18 KB,
+  `client-*.js`, then the SDK chunk). Gate: after `npx vite build`, `grep -c "api.anthropic.com\|dangerouslyAllowBrowser"
+  dist/assets/index-*.js` → 0.
+
+Gates (2026-10-26): `npx vue-tsc --noEmit` clean; `npx vitest run` — 194 files / 1911 tests (32 of them this stage's:
+`claudeVision.test.ts` + `useClaudeEchoRead.test.ts`); Cypress `echoScanClaude.cy.ts` 2/2, `echoScanBatch.cy.ts` (real OCR,
+untouched flow; run it alone — beside other browser work its CDN reference-image load stalled past the 400 s timeout once),
+`echoScanAlbum.cy.ts`, `phoneLayout.cy.ts`, `assistant.cy.ts`; `npx vite build` (no `import.meta.glob`, nothing of the reader
+in `index-*.js`). Screenshots: `/tmp/wtplus-shots/ai/importer-*.png` (v3 desktop dark + light, phone 412 at 130 %; the
+read shots stub `window.fetch` for api.anthropic.com with the fixture responses through `shot.mjs --pre`).
+
+Things learned:
+- **Strict structured outputs take no numeric or length constraints**, so a level outside +0…+25, a sixth substat or a
+  confidence of 3 can still come back: every bound is a check in `mapClaudeEcho` / `readPayloadOf`, not in the schema.
+- Ask for boxes as **fractions** of the image and reject anything above 1: a box in pixels of the downscaled image would
+  crop the wrong place of the full-resolution one.
+- "Phantom: X" and "X" are different registry entries (skins), but the same echo for the OCR cross-check.
+- Cypress's webpack build hands a JSON import over as the module namespace without a `default` export
+  (`(recorded.default ?? recorded)` in the spec).
+
+## In-app AI: verify-and-harden pass — fixes after stages 1–3 (Track "ai", 2026-10-26)
+
+A second pass over the whole track before the merge. It reviewed the code, ran every gate and took new screenshots.
+No real Anthropic request was made.
+
+| Fix | Where | Why |
+|---|---|---|
+| `vendor/wuwa_calc` back at plus's `653fee7`, `skittle.css` header too | submodule, `skittle.css` | the rebased wip commit pinned the submodule one commit back (`e1181a9`); merging it would have undone Riley's "a support group stands for the first team the account can field" |
+| Riley's numbers are **DPS** | `prompt.ts`, `tools/rank.ts`, `tools/account.ts`, `eval/questions.json` | since his 7bcbb24 a team's `total` is damage per second. Claude is told to compare it only with an app DPS, never with a rotation's total damage (app ≈ 0.96 × Riley's DPS at the median) |
+| New chat while an answer runs | `useAssistant.ts` (`chatGeneration`) | the stopped answer used to finish into the cleared chat and save it again: the old conversation came back |
+| A cut-short response still costs | `agentLoop.ts` | a Stop or an unparseable tool input after the stream started was billed but never reached the meter or the budget. `message_start` / `message_delta` usage is now added when the stream throws |
+| A chunk that fails to load | `useAssistant.ts` | it now reads "Couldn't load the assistant. Check your connection" (retryable), not "Something went wrong talking to Anthropic" |
+| The nav's menus over the panel | `AssistantPanel.vue` (global style) | with the panel open, the utility menu and the theme chooser opened behind it (see stage 2's rules) |
+| Read with Claude asks above the budget | `useClaudeEchoRead.ts` `confirmOverBudget`, `PhoneEchoBatchParser.vue` | it only showed a warning; now upstream's ConfirmDialog asks ("Read anyway") before a run whose estimate is above the soft budget, as the assistant does |
+| 3.75 MP cap on the image sent | `claudeVisionCost.ts` `visionSize`, `visionImage.ts` | the API's second image limit. A near-square tablet shot was sent at 2576 × 2576 and resized server-side, so the "scaled down from" line and the estimate were wrong |
+| Palette: Echo tuning odds, CV and echo rating | `paletteItems.ts` | Ryan's new `/info` subpages |
+| Lint | `navigation.ts` (`CharacterStoreLike`), `paletteItems.ts`, `assistant.cy.ts` | `npx eslint` is clean on every track file. The one error left in `cli/index.ts:60` is plus's |
+
+Tests added: `agentLoop.test.ts` (an abort after `message_start` counts its usage), `useAssistant.test.ts` (new chat
+mid-answer, a chunk that fails to load), `useClaudeEchoRead.test.ts` (over-budget: no → no request, yes → read, no
+confirm → no run), `claudeVision.test.ts` (`visionSize`). Cypress: `assistant.cy.ts` "lets the nav's own menus open
+over the open panel", and `echoScanClaude.cy.ts`'s phone test now goes through the over-budget confirm (Cancel → no
+request, Read anyway → one). It checks `.confirm-dialog[open]` rather than visibility, because DaisyUI's modal fades in
+from opacity 0 and headless Electron never runs that transition.
+
+Gates (2026-10-26, after the fixes):
+- `npx vue-tsc --noEmit`: clean.
+- `npx vitest run`: 194 files / 1915 tests.
+- `npx vite build`: no `import.meta.glob` left; `index-*.js` has 0 × `api.anthropic.com` and 0 × `dangerouslyAllowBrowser`; the SDK, client, assistantRuntime and claudeVision are separate chunks.
+- CLI snapshot on the 2026-9-16 export, plus (git archive) vs this tree: `diff` → 0 changes.
+- Cypress: `assistant.cy.ts`, `echoScanClaude.cy.ts`, `phoneLayout.cy.ts`, `themes.cy.ts`.
+
+Screenshots: `/tmp/wtplus-shots/ai/v-*.png`.
+
+Things learned:
+- A panel above the nav's z-index hides the nav's dropdowns: they render inside the nav's own stacking context. A
+  `:has(.dropdown:focus-within)` lift on the nav container fixes it without touching Nav.vue.
+- Very saturated DaisyUI primaries at low alpha (`border-primary/25`) look yellow in a downscaled screenshot. Check at
+  `--dpr 2 --clip` before calling it a bug.
