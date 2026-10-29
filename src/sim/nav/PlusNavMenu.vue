@@ -102,6 +102,10 @@ onBeforeUnmount(() => {
   top: calc(100% + 0.35rem);
   left: 0;
   width: 21rem;
+  /* 12+ pages outgrow a laptop screen: the menu scrolls inside itself instead of running off the bottom */
+  max-height: calc(100dvh - 5.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0.35rem;
   border-radius: 0.85rem;
   background: oklch(var(--b2));
@@ -169,6 +173,18 @@ onBeforeUnmount(() => {
 :root[data-theme-style="light"] .plus-nav__caret path {
   fill: none !important;
 }
+/* wide screens: two columns, so the whole list fits without scrolling */
+@media (min-width: 1024px) {
+  .plus-nav__menu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    width: 42rem;
+  }
+  .plus-nav__eyebrow {
+    grid-column: 1 / -1;
+  }
+}
 /* phones: a full-width sheet under the 80 px bar instead of a menu anchored to the icon */
 @media (max-width: 639px) {
   .plus-nav__menu {
@@ -177,6 +193,7 @@ onBeforeUnmount(() => {
     left: 0.5rem;
     right: 0.5rem;
     width: auto;
+    max-height: calc(100dvh - 80px - 0.5rem);
   }
 }
 </style>
