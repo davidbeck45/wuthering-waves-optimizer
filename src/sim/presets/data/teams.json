@@ -5103,7 +5103,7 @@
     {
      "slot": 2,
      "order": 8,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -6829,7 +6829,7 @@
     {
      "slot": 2,
      "order": 10,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -7477,7 +7477,7 @@
     {
      "slot": 1,
      "order": 37,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -8478,7 +8478,7 @@
     {
      "slot": 2,
      "order": 65,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -13831,7 +13831,7 @@
     {
      "slot": 1,
      "order": 1,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -15331,7 +15331,7 @@
     {
      "slot": 0,
      "order": 71,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -16064,7 +16064,7 @@
     {
      "slot": 0,
      "order": 67,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -16762,7 +16762,7 @@
     {
      "slot": 0,
      "order": 64,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -16971,7 +16971,7 @@
     {
      "slot": 1,
      "order": 10,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -21872,7 +21872,7 @@
     {
      "slot": 1,
      "order": 11,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -29236,7 +29236,7 @@
     {
      "slot": 1,
      "order": 19,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -30312,7 +30312,7 @@
     {
      "slot": 2,
      "order": 82,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -32323,7 +32323,7 @@
     {
      "slot": 0,
      "order": 31,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -32956,7 +32956,7 @@
     {
      "slot": 0,
      "order": 40,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -33427,7 +33427,7 @@
     {
      "slot": 0,
      "order": 23,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -33828,7 +33828,7 @@
     {
      "slot": 0,
      "order": 24,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -34252,7 +34252,7 @@
     {
      "slot": 0,
      "order": 19,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -34581,7 +34581,7 @@
     {
      "slot": 0,
      "order": 23,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -35220,7 +35220,7 @@
     {
      "slot": 1,
      "order": 1,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -36032,7 +36032,7 @@
     {
      "slot": 1,
      "order": 7,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -45493,7 +45493,7 @@
     {
      "slot": 2,
      "order": 9,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -46132,7 +46132,7 @@
     {
      "slot": 1,
      "order": 37,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -47115,7 +47115,7 @@
     {
      "slot": 2,
      "order": 64,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -51315,7 +51315,7 @@
     {
      "slot": 2,
      "order": 9,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -51661,7 +51661,7 @@
     {
      "slot": 1,
      "order": 1,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -54502,7 +54502,7 @@
     {
      "slot": 1,
      "order": 11,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -61418,7 +61418,7 @@
     {
      "slot": 1,
      "order": 23,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -61930,7 +61930,7 @@
     {
      "slot": 1,
      "order": 19,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -63851,7 +63851,7 @@
     {
      "slot": 0,
      "order": 28,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -64321,7 +64321,7 @@
     {
      "slot": 0,
      "order": 23,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -64770,7 +64770,7 @@
     {
      "slot": 0,
      "order": 29,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],
@@ -65219,7 +65219,7 @@
     {
      "slot": 0,
      "order": 22,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -65664,7 +65664,7 @@
     {
      "slot": 0,
      "order": 21,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -65922,7 +65922,7 @@
     {
      "slot": 1,
      "order": 1,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -66382,7 +66382,7 @@
     {
      "slot": 2,
      "order": 9,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -67116,7 +67116,7 @@
     {
      "slot": 1,
      "order": 9,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -72593,7 +72593,7 @@
     {
      "slot": 1,
      "order": 19,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [
@@ -73554,7 +73554,7 @@
     {
      "slot": 0,
      "order": 22,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],

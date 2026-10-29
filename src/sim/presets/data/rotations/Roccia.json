@@ -10,7 +10,7 @@
    "actions": [
     {
      "order": 1,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -86,7 +86,7 @@
    "actions": [
     {
      "order": 1,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],
@@ -156,7 +156,7 @@
    "actions": [
     {
      "order": 1,
-     "key": "PerloHelpDMG",
+     "key": "PeroHelpDMG",
      "type": "intro",
      "count": 1,
      "buffs": [],

@@ -44,7 +44,7 @@
     },
     {
      "order": 5,
-     "key": "Undaunted ayfarerDMG",
+     "key": "UndauntedWayfarerDMG",
      "type": "skill",
      "count": 1,
      "buffs": [],

@@ -136,7 +136,7 @@
     },
     {
      "order": 7,
-     "key": "_StayTunedElite2DMG",
+     "key": "FormrenderDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],

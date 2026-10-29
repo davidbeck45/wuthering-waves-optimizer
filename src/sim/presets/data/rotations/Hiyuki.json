@@ -334,7 +334,7 @@
     },
     {
      "order": 40,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -721,7 +721,7 @@
     },
     {
      "order": 40,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
@@ -1108,7 +1108,7 @@
     },
     {
      "order": 40,
-     "key": "Aleph-1'sCreationDMG",
+     "key": "Aleph1sCreationDMG",
      "type": "echoAttacks",
      "count": 1,
      "buffs": [],
