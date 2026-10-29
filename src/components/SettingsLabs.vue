@@ -12,9 +12,15 @@
         :label="lab.label"
         :details="lab.details"
         variant="v3"></SettingsLab>
-      <div class="bg-base-200/50 rounded-xl p-4 border border-dashed border-base-300">
+      <div
+        class="bg-base-200/50 rounded-xl p-4 border border-dashed border-base-300"
+        data-test-settings-labs-empty>
         <p class="text-xs opacity-40 text-center">
-          More experiments will land here as they're ready.
+          {{
+            labsFeatures.length
+              ? "More experiments will land here as they're ready."
+              : "No experiments running right now. New ones will land here as they're ready."
+          }}
         </p>
       </div>
     </div>
@@ -62,6 +68,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
+import { FRAME_TIMING_LAB } from "../utils/labs";
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",
@@ -69,12 +76,14 @@ withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
 
 type LabFeature = { key: string; label: string; details: string };
 
+// Echo scanning graduated on 2026-10-27; any stored `labs.echoScanning` is
+// simply ignored now.
 const labsFeatures = ref<LabFeature[]>([
   {
-    key: "echoScanning",
-    label: "Echo scanning",
+    key: FRAME_TIMING_LAB,
+    label: "Rotation timing from frame data",
     details:
-      "Adds a \"Scan echoes\" button to your inventory. Share your game window (or upload a recording) while browsing your in-game Echo list and it reads each echo's stats automatically — everything runs in your browser, nothing is uploaded anywhere. Still being tuned for accuracy.",
+      "Works out how long a character or team rotation takes from each action's frame data (thanks to wuwalab) and shows that DPS next to the one from your typed duration. Set how each action ends (cancel, dash, swap) from its frame chip.",
   },
 ]);
 </script>

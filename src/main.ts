@@ -28,6 +28,7 @@ const LegalView = () => import("./pages/LegalView.vue");
 const InventoryView = () => import("./pages/InventoryView.vue");
 const ConveneView = () => import("./pages/ConveneView.vue");
 const TeamRotationsView = () => import("./pages/TeamRotationsView.vue");
+const ScannersView = () => import("./pages/ScannersView.vue");
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -81,11 +82,19 @@ const routes = [
   { path: "/weapons", component: () => import("./sim/weaponValue/WeaponValueView.vue"), name: "WeaponValueView" },
   // Wuthering Tools+: "Build my team" — re-gear a team from the echo inventory (src/sim/buildTeam/)
   { path: "/build-team", component: () => import("./sim/buildTeam/BuildTeamView.vue"), name: "BuildTeamView" },
+  { path: "/scanners", component: ScannersView, name: "ScannersView" },
 ];
 
 const router = createRouter({
   history: createWebHistory("/"),
   routes,
+  // Back/forward returns to where you were; a new page starts at the top.
+  // Query-only changes (e.g. /settings?section=wavescan) keep the position.
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.path !== from.path) return { top: 0 };
+    return false;
+  },
 });
 
 injectAnalytics();

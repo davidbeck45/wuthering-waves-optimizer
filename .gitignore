@@ -171,3 +171,7 @@ packages/*/dist/
 !public/dist/
 # Wuthering Tools+: other sites' ER figures for the energy check's soft report — their editorial work, never committed
 src/sim/energy/__fixtures__/*.local.json
+
+# wuwalab's published rotations: test material only, never committed (ADR 0047).
+# Fetch with `npm run fixtures:wuwalab`.
+tests/fixtures/frames/reference/

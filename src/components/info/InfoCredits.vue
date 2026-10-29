@@ -48,6 +48,10 @@
           — the fight engine, S6R5 solves and rotations behind the Team Rankings page and the
           "Riley31415 (wuwa_calc)" presets in Wuthering Tools+
         </li>
+        <li data-test-credits-wuwalab>
+          <a href="https://wuwalab.com" target="_blank" rel="noopener noreferrer" class="link font-semibold">wuwalab</a>
+          for the action frame data behind rotation timing!
+        </li>
       </ul>
     </div>
 
