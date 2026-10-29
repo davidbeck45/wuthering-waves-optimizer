@@ -1,6 +1,7 @@
 // Section lists for the v3 navigation (ADR 0045): the app's main sections (the
 // side rail on desktop, the bottom bar on phones), and each page's own sections
 // (the tab row on desktop, the section switcher on phones).
+import { PLUS_PAGES } from "../../sim/shell/plusPages"; // Wuthering Tools+
 
 const ASSETS = "https://ryanbenson.github.io/wuthering-waves-assets/images";
 
@@ -153,7 +154,8 @@ const PAGE_LABELS: Record<string, string> = {
 };
 
 export function pageLabel(curPage: string): string {
-  return PAGE_LABELS[curPage] ?? "Wuthering Tools";
+  // Wuthering Tools+: a plus page's curPage is its path without the slash (src/sim/shell/plusPages.ts)
+  return PAGE_LABELS[curPage] ?? PLUS_PAGES.find((p) => p.path === `/${curPage}`)?.title ?? "Wuthering Tools";
 }
 
 /** Whether a page lives under the phone bottom bar's More (not a main section). */

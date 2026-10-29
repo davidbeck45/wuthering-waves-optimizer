@@ -479,9 +479,8 @@
 }
 
 /* ---------------------------------------------------------------------------------------------
-   11. Navbar height: AppLayout offsets the page by 80 px (`mt-20`) and the rankings page sizes
-       itself against the same 80 px, but at 130 % text DaisyUI's menu padding grows the bar to
-       88 px and the first content row slides under it. Pin the bar. */
+   11. Navbar height (classic UI): at 130 % text DaisyUI's menu padding grows the bar to 88 px and the
+       page loses 8 px of height to a taller bar. Pin it at 80 px. */
 @media (max-width: 767px) {
   .navbar.navbar {
     height: 80px;
@@ -503,12 +502,8 @@
     padding: 0;
   }
 }
-/* AppLayout pushes the page down with `mt-20` (5 rem) to clear the 80 px bar, and sizes it with
-   `calc(100vh - 80px …)`; with the root font at 130 % the rem margin is 104 px, so a 24 px band opens
-   under the bar and the page scrolls by as much. The offset is the bar's pixel height, at any width. */
-.contain.mt-20 {
-  margin-top: 80px;
-}
+/* (AppLayout's old `mt-20` rem offset is gone since Ryan's #668: the page is offset by the nav's measured
+   --nav-h, which holds at any font size.) */
 
 /* ---------------------------------------------------------------------------------------------
    12. /updates (UpdatesView.vue): the page keeps a desktop `padding: 2rem 3rem` (62 px a side at 130 %

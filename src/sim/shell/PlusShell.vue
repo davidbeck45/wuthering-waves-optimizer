@@ -144,12 +144,13 @@ onBeforeUnmount(() => {
 <style scoped>
 .wt-ask-button {
   right: max(1.25rem, env(safe-area-inset-right));
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  bottom: max(calc(1.25rem + var(--nav-bottom-h)), env(safe-area-inset-bottom));
 }
 @media (max-width: 767px) {
   .wt-ask-button {
     right: max(1rem, env(safe-area-inset-right));
-    bottom: max(1rem, env(safe-area-inset-bottom));
+    /* above Ryan's v3 phone bottom bar (--nav-bottom-h; 0 without it) */
+    bottom: max(calc(1rem + var(--nav-bottom-h)), env(safe-area-inset-bottom));
     height: 2.75rem;
     min-height: 2.75rem;
     padding-left: 0.9rem;

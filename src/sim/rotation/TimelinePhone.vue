@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4" data-test-rotation-timeline-phone>
     <!-- time flows down: a sticky row of members, a ruler, one column each -->
     <div class="rounded-box border border-base-300 bg-base-100">
-      <div class="sticky top-[80px] z-10 grid gap-1 bg-base-100/95 backdrop-blur px-1 py-1.5 border-b border-base-300 rounded-t-box" :style="{ gridTemplateColumns: COLS }">
+      <div class="sticky top-[var(--nav-h)] z-10 grid gap-1 bg-base-100/95 backdrop-blur px-1 py-1.5 border-b border-base-300 rounded-t-box" :style="{ gridTemplateColumns: COLS }">
         <div></div>
         <div v-for="(m, i) in members" :key="m.name" class="flex items-center gap-1 min-w-0" :data-test-rotation-phone-lane="m.name">
           <MemberAvatar :app-key="m.appKey" :name="m.name" :hue="hueOf(i)" :size="20" />

@@ -290,7 +290,8 @@ function measure(): void {
   isPhone.value = phoneQuery?.matches ?? false;
   const nav = document.getElementById("navbar-container");
   const bottom = nav?.getBoundingClientRect().bottom ?? 0;
-  topPx.value = Math.max(0, Math.round(bottom || 80));
+  // 0 is real on the v3 desktop rail (no top bar); 80 only when the nav has not mounted
+  topPx.value = Math.max(0, Math.round(nav ? bottom : 80));
 }
 const onPhoneChange = (): void => measure();
 

@@ -300,7 +300,7 @@
     <!-- phone: the cards still to set, always in reach -->
     <div
       v-if="phoneBar"
-      class="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-base-300 bg-base-200/95 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden"
+      class="fixed inset-x-0 bottom-[var(--nav-bottom-h)] z-30 flex items-center gap-3 border-t border-base-300 bg-base-200/95 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden"
       data-test-echo-plan-phone-bar>
       <span class="min-w-0 flex-1 text-sm">
         <b class="tabular-nums" :class="progress.changed.length ? 'ep-text-changed' : ''">{{ progress.toUpdate.length }}</b>

@@ -45,7 +45,8 @@ describe("my account", () => {
     cy.get("[data-test-account-empty] [data-test-my-rankings-cta]").should("have.length", 3);
     cy.get("[data-test-account-hero]").should("not.exist");
     cy.title().should("contain", "My account");
-    cy.get("[data-test-nav-rankings]").should("have.class", "btn-active").click();
+    // classic bar / v3 phone header: `btn-active`; v3 desktop rail: the rail item's own active class
+    cy.get("[data-test-nav-rankings]").should("match", ".btn-active, .plus-nav__tab--on").click();
     cy.get('[data-test-nav-plus-page="/account"]').should("have.attr", "aria-current", "page");
   });
 

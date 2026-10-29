@@ -66,15 +66,15 @@ watch(() => route.fullPath, () => onLocationChange());
 </script>
 
 <style>
-/* The page is a fixed-height column (Riley's #app scrolls inside it) matching .contain's own calc;
+/* The page is a fixed-height column (Riley's #app scrolls inside it) matching .contain's own calc (the nav's measured --nav-h / --nav-bottom-h, AppLayout.vue);
    on a phone the dynamic viewport unit follows the browser chrome, so the credit line and the bottom
    of his table are not hidden behind the URL bar. (It used to claim 100vw as well: the Vue root had
    lost its `width: 100%` in the #app → #wt-app rename and shrank to its content - style.css has it.) */
 .rankings-page {
   width: 100%;
   max-width: 100%;
-  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
-  height: calc(100dvh - 80px - var(--announce-banner-h, 0px));
+  height: calc(100vh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
+  height: calc(100dvh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
   display: flex;
   flex-direction: column;
   min-height: 0;

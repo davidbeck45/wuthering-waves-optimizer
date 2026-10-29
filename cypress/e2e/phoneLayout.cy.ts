@@ -1,5 +1,5 @@
-// Wuthering Tools+ on a phone: no page-wide horizontal scroll on any route, the nav's five icon
-// links clear of the utility menu, and the plus tables reflowed into cards below 768 px.
+// Wuthering Tools+ on a phone: no page-wide horizontal scroll on any route, the nav's plus icon
+// inside the viewport (classic: clear of the utility menu), and the plus tables reflowed into cards below 768 px.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 
 const PHONE = { width: 360, height: 800 }; // the narrowest common Android viewport
@@ -10,15 +10,16 @@ function expectNoHorizontalScroll(route: string): void {
   });
 }
 
+// classic: the plus icon is the bar's last link, left of the theme button; v3 (Ryan's #668): it ends his phone header,
+// which has no theme button (that moved under More)
 function expectNavFits(route: string): void {
   cy.get("[data-test-nav-rankings]").should("be.visible");
   cy.get("[data-test-nav-rankings]").then(($last) => {
-    cy.get('[aria-label="Change Theme"]').then(($theme) => {
-      const last = $last[0].getBoundingClientRect();
-      const theme = $theme[0].getBoundingClientRect();
-      expect(last.right, `${route} nav: last icon vs theme button`).to.be.at.most(theme.left + 1);
-      expect(last.right, `${route} nav: last icon inside the viewport`).to.be.at.most(PHONE.width);
-    });
+    const last = $last[0].getBoundingClientRect();
+    const width = $last[0].ownerDocument.documentElement.clientWidth; // the test's own viewport (360, or 412 for the S26)
+    expect(last.right, `${route} nav: last icon inside the viewport`).to.be.at.most(width);
+    const theme = Cypress.$('[aria-label="Change Theme"]:visible')[0];
+    if (theme) expect(last.right, `${route} nav: last icon vs theme button`).to.be.at.most(theme.getBoundingClientRect().left + 1);
   });
 }
 

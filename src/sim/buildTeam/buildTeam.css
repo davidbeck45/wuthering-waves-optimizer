@@ -860,7 +860,7 @@ html[data-theme-style="light"] .bt-savebar__warn {
   }
   .bt-switch {
     position: sticky;
-    top: 80px;
+    top: var(--nav-h);
     z-index: 15;
     display: grid;
     grid-auto-columns: minmax(0, 1fr);
@@ -930,7 +930,7 @@ html[data-theme-style="light"] .bt-savebar__warn {
   .bt-actions {
     position: fixed;
     right: 0;
-    bottom: 0;
+    bottom: var(--nav-bottom-h); /* above Ryan's v3 phone bottom bar */
     left: 0;
     z-index: 30;
     margin: 0;
@@ -950,7 +950,7 @@ html[data-theme-style="light"] .bt-savebar__warn {
   .bt-savebar {
     position: fixed;
     right: 0;
-    bottom: 0;
+    bottom: var(--nav-bottom-h); /* above Ryan's v3 phone bottom bar */
     left: 0;
     z-index: 30;
     justify-content: space-between;

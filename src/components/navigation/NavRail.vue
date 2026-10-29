@@ -25,6 +25,8 @@
       <span class="nav-rail__pill"><NavIcon :icon="section.icon" class="size-6" /></span>
       {{ section.label }}
     </RouterLink>
+    <!-- Wuthering Tools+: the plus pages menu (src/sim/nav/PlusNavMenu.vue) -->
+    <PlusNavMenu :cur-page="curPage" variant="rail" />
 
     <div class="flex-1"></div>
     <div class="h-px bg-base-content/10 mx-2.5 my-1.5"></div>
@@ -63,6 +65,7 @@ import { ref } from "vue";
 import ThemeChooser from "../ThemeChooser.vue";
 import NavIcon from "./NavIcon.vue";
 import NavUtilityMenu from "./NavUtilityMenu.vue";
+import PlusNavMenu from "../../sim/nav/PlusNavMenu.vue"; // Wuthering Tools+
 import { MAIN_SECTIONS, NAV_ICONS, SCANNERS_NEW_UNTIL, isNewUntil } from "./navSections";
 import { useSizeCssVar } from "../../composables/useSizeCssVar";
 

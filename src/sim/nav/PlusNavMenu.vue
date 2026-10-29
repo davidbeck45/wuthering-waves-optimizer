@@ -1,6 +1,12 @@
 <template>
-  <details ref="root" class="plus-nav dropdown basis-[40px] sm:basis-[48px] mr-1 sm:mr-2" data-test-nav-plus @toggle="onToggle">
+  <details
+    ref="root"
+    class="plus-nav"
+    :class="[`plus-nav--${variant}`, { 'dropdown basis-[40px] sm:basis-[48px] mr-1 sm:mr-2': variant === 'bar', 'shrink-0 w-11': variant === 'header' }]"
+    data-test-nav-plus
+    @toggle="onToggle">
     <summary
+      v-if="variant !== 'rail'"
       class="btn btn-ghost p-0 flex justify-center w-full min-w-0 relative"
       :class="{ 'btn-active': isPlusPage }"
       title="Rankings & your account (Wuthering Tools+)"
@@ -11,6 +17,21 @@
       </svg>
       <svg class="plus-nav__caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
       <span class="sr-only">Rankings and account pages</span>
+    </summary>
+    <!-- v3 desktop (Ryan's ADR 0045): a rail item styled like his; on phones the icon above sits in his header -->
+    <summary
+      v-else
+      class="plus-nav__tab"
+      :class="{ 'plus-nav__tab--on': isPlusPage }"
+      title="Rankings & your account (Wuthering Tools+)"
+      aria-haspopup="menu"
+      data-test-nav-rankings>
+      <span class="plus-nav__pill">
+        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
+        </svg>
+      </span>
+      <span class="truncate max-w-full">Tools+</span>
     </summary>
     <ul class="plus-nav__menu" role="menu" data-test-nav-plus-menu>
       <li class="plus-nav__eyebrow" role="presentation">Wuthering Tools+</li>
@@ -44,7 +65,8 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { PLUS_PAGES } from "../shell/plusPages";
 
-const props = defineProps<{ curPage: string }>();
+// "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
+const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
 const route = useRoute();
 const root = ref<HTMLDetailsElement | null>(null);
 
@@ -185,15 +207,77 @@ onBeforeUnmount(() => {
     grid-column: 1 / -1;
   }
 }
-/* phones: a full-width sheet under the 80 px bar instead of a menu anchored to the icon */
+/* phones: a full-width sheet under the bar instead of a menu anchored to the icon */
 @media (max-width: 639px) {
-  .plus-nav__menu {
+  .plus-nav--bar .plus-nav__menu {
     position: fixed;
-    top: 80px;
+    top: var(--nav-h);
     left: 0.5rem;
     right: 0.5rem;
     width: auto;
-    max-height: calc(100dvh - 80px - 0.5rem);
+    max-height: calc(100dvh - var(--nav-h) - 0.5rem);
   }
+}
+
+/* v3 desktop — the rail item copies NavRail's own (its styles are scoped) */
+.plus-nav__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.4rem 0;
+  border-radius: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: oklch(var(--bc));
+  opacity: 0.7;
+  cursor: pointer;
+}
+.plus-nav__tab:hover,
+.plus-nav__tab--on,
+.plus-nav[open] > .plus-nav__tab {
+  opacity: 1;
+}
+.plus-nav__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 2rem;
+  border-radius: 999px;
+  transition: background-color 0.15s;
+}
+.plus-nav__tab:hover .plus-nav__pill {
+  background: oklch(var(--bc) / 0.06);
+}
+.plus-nav__tab--on .plus-nav__pill {
+  background: oklch(var(--p) / 0.25);
+}
+/* desktop rail: the menu opens beside the rail, top-aligned with the screen */
+.plus-nav--rail .plus-nav__menu {
+  position: fixed;
+  top: 0.75rem;
+  left: calc(var(--nav-rail-w) + 0.5rem);
+  max-height: calc(100dvh - 1.5rem);
+}
+/* v3 phone / tablet header: a sheet under the header, right-aligned under the icon, clear of the bottom bar */
+.plus-nav--header .plus-nav__menu {
+  position: fixed;
+  top: var(--nav-h);
+  left: auto;
+  right: 0.5rem;
+  width: min(28rem, calc(100vw - 1rem));
+  max-height: calc(100dvh - var(--nav-h) - var(--nav-bottom-h) - 0.5rem);
+}
+</style>
+
+<style>
+/* The nav (#navbar-container, fixed, z-50) sits under the Ask button (z-55, src/sim/shell/PlusShell.vue); while this
+   menu is open the nav steps above it, so the button never covers a menu row. */
+#navbar-container:has(.plus-nav[open]) {
+  z-index: 61;
 }
 </style>

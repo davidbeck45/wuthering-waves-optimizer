@@ -45,12 +45,15 @@
     <span class="flex-1 min-w-0 truncate text-base font-bold px-1" data-test-nav-section-title>
       {{ activeItem?.label ?? pageLabel(curPage) }}
     </span>
+    <!-- Wuthering Tools+: the plus pages menu (src/sim/nav/PlusNavMenu.vue) -->
+    <PlusNavMenu :cur-page="curPage" variant="header" />
   </header>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import NavIcon from "./NavIcon.vue";
+import PlusNavMenu from "../../sim/nav/PlusNavMenu.vue"; // Wuthering Tools+
 import { NAV_ICONS, pageLabel, type NavSections } from "./navSections";
 import { closeDropdownOnTriggerReclick } from "../../utils/dropdownToggle";
 
