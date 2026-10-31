@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-10-28
 tags: [calculator, characters, cli, data]
+superseded_by: [50]
 ---
 
 # 47. Frame data from wuwalab and a timing engine for rotations
@@ -23,6 +24,9 @@ The research, designs and plan are in a published Artifact ("Frame-Timed Rotatio
   - A cancel happens at a chosen frame. A dash cancel adds 22 frames and a jump 3.
   - A swap happens at a chosen frame (10 by default) but never before NoSwap.
   - Hits committed before the exit still land after it.
+
+    **Superseded 2026-10-30:** that now applies to cancels only. On a swap every hit lands, since the character finishes the attack off field (ADR [0050](./0050-swapped-out-hits-still-land.md)).
+
   - Outros, off-field effects, echo set procs, negative status ticks and utility actions take no field time.
   - Two consecutive `shared` actions of one ability count its time once.
 - **DPS uses the game clock, which skips time stop.** All five reference rotations, and wuwalab's DPS, use it. Their loops are all about 25 seconds, which matches the community's rule of thumb. Real time (with time stop) is kept for the breakdown. Counting it would freeze 37–49% of a run, a different share per team, and reorder teams against the numbers players use.
@@ -39,7 +43,7 @@ The research, designs and plan are in a published Artifact ("Frame-Timed Rotatio
   - 1,142 of 1,236 attack entries across the 49 characters wuwalab covers have frames.
   - The engine reproduces 85% of the gaps in the reference rotations to the frame. Every other gap has a recorded reason, mostly waits after a swap that the frame data doesn't record.
   - The data and the engine are additive. Nothing in the UI reads them yet, so this ships with no behavior change.
-    **Updated 2026-10-29:** the character and team rotation pages now show the frame-data length and DPS beside the typed duration, and each action can set how it ends, behind the `frameTiming` Settings > Labs flag (see "Frame-data timing" in `docs/src-components.md`). The damage-over-time charts still spread actions evenly across the typed duration.
+    **Updated 2026-10-29:** the character and team rotation pages now show the frame-data length and DPS beside the typed duration, and each action can set how it ends, behind the `frameTiming` Settings > Labs flag (see "Frame-data timing" in `docs/src-components.md`). Results views and the team summary's charts followed in ADR [0048](./0048-frame-timing-in-results.md).
 - Cons:
   - A frame-data length runs 2–6% shorter than an author's own timeline (19% for a quick-swap team), because of those post-swap waits. DPS from frame data will read slightly high until we decide on a per-swap allowance.
   - Eleven characters have no data on wuwalab yet (Aalto, Calcharo, Chixia, Jianxin, Jiyan, Lumi, Havoc Rover, Xiangli Yao, Yinlin, Youhu, Yuanwu), and echoes only have frames where wuwalab has entered them.

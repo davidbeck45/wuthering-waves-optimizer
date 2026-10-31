@@ -34,6 +34,15 @@ export interface ActionEnd {
 
 const END_TYPES = new Set<ActionEnd["type"]>(["full", "cancel", "dash", "jump", "swap"]);
 
+/** What each end type is called in the UI (the end editor, the frames chip, the timeline strip). */
+export const ACTION_END_LABELS: Record<ActionEnd["type"], string> = {
+  full: "Plays out",
+  cancel: "Cancel",
+  dash: "Dash cancel",
+  jump: "Jump cancel",
+  swap: "Swap out",
+};
+
 function frameCount(value: unknown): number | undefined {
   const n = Number(value);
   return Number.isFinite(n) && n >= 0 ? Math.round(n) : undefined;
@@ -106,7 +115,8 @@ export function frozenFrames(frames: AttackFrames, from: number, to: number): nu
 
 /**
  * Where the character leaves the ability and how long until the next action,
- * on both clocks. `exitFrame` is ability-relative and decides which hits land.
+ * on both clocks. `exitFrame` is ability-relative and, for a cancel, dash or
+ * jump, decides which hits land (a swap keeps them all, ADR 0050).
  */
 export function actionLength(
   frames: AttackFrames,
@@ -183,8 +193,11 @@ export function computeRotationTiming(actions: TimingAction[]): RotationTiming {
       const length = actionLength(frames, action.end);
       const fieldTime = !frames.offField && !(continuesShared && i === 0);
       const start = continuesShared && i === 0 ? lastShared!.start : clock;
+      // A swapped-out character keeps attacking off field, so every hit
+      // lands (ADR 0050). Any other early exit drops hits not yet committed.
+      const isSwap = action.end?.type === "swap";
       const hits = frames.hits
-        .filter(([, commit]) => commit <= length.exitFrame)
+        .filter(([, commit]) => isSwap || commit <= length.exitFrame)
         .map(([frame, , energy, concerto]) => ({
           frame: start + hitGameFrame(frames, frame),
           energy,
@@ -268,6 +281,44 @@ export function buildTeamTimingActions(
   return buildTimingActions(withCharacters, (characterId) => (characterId ? dataById.get(characterId) : null), echoFrames);
 }
 
+function byOrder(actions: any[]): any[] {
+  return [...actions].sort((a, b) => Number(a.order) - Number(b.order));
+}
+
+/** Timing for one character rotation, or null when the character has no
+ * frame data at all. */
+export function characterRotationTiming(
+  actions: any[],
+  characterData: { frames?: FrameDataFile } | null | undefined,
+  echoFrames: Record<string, Record<string, AttackFrames>>,
+  mainEcho: string | null,
+): RotationTiming | null {
+  if (!characterData?.frames) return null;
+  return computeRotationTiming(buildTimingActions(byOrder(actions), () => characterData, echoFrames, mainEcho));
+}
+
+/** Timing for a team rotation, or null when no slot has frame data. */
+export function teamRotationTiming(
+  actions: any[],
+  slots: Array<TimingSlot | null>,
+  echoFrames: Record<string, Record<string, AttackFrames>>,
+): RotationTiming | null {
+  if (!slots.some((slot) => slot?.data?.frames)) return null;
+  return computeRotationTiming(buildTeamTimingActions(actions, slots, echoFrames));
+}
+
+/** The totals of a rotation's timing, small enough to carry on a damage result. */
+export interface RotationLength {
+  gameFrames: number;
+  realFrames: number;
+  /** Actions without frame data, counted as 0. */
+  missing: number;
+}
+
+export function rotationLength(timing: RotationTiming): RotationLength {
+  return { gameFrames: timing.gameFrames, realFrames: timing.realFrames, missing: timing.missing.length };
+}
+
 export function framesToSeconds(frames: number): number {
   return frames / FRAMES_PER_SECOND;
 }
@@ -275,6 +326,13 @@ export function framesToSeconds(frames: number): number {
 /** Damage per second on the game clock, or 0 when the length is unknown. */
 export function damagePerSecond(damage: number, gameFrames: number): number {
   return gameFrames > 0 ? damage / framesToSeconds(gameFrames) : 0;
+}
+
+/** Where an action's damage lands on the game clock: midway between its
+ * first and last landed hit, or its start when it has none. */
+export function landingFrame(timed: TimedAction): number {
+  if (!timed.hits.length) return timed.start;
+  return (timed.hits[0].frame + timed.hits[timed.hits.length - 1].frame) / 2;
 }
 
 export interface ActionTimingSummary {

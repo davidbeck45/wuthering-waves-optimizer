@@ -3,6 +3,8 @@ import {
   actionLength,
   buildTeamTimingActions,
   buildTimingActions,
+  characterRotationTiming,
+  rotationLength,
   computeRotationTiming,
   damagePerSecond,
   DASH_CANCEL_FRAMES,
@@ -88,10 +90,16 @@ describe("rotation timing rules", () => {
     expect(lengthOf([{ frames: suoming("Basic: Unfurled Canopy 3"), end: { type: "swap" } }]).gameFrames).toBe(10);
   });
 
-  it("still lands hits committed before a swap, after the character has left", () => {
-    const timing = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 90 } }]);
-    expect(timing.gameFrames).toBe(90);
-    expect(timing.actions[0].hits.map((hit) => hit.frame)).toEqual([61, 67, 85, 91, 97, 103]);
+  it("lands every hit of a swapped-out action at its own frame, after the character has left", () => {
+    // Swapping out at 10f, long before any hit commits: the character keeps
+    // attacking off field, so nothing is lost and field time is still 10f.
+    const early = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 10 } }]);
+    const full = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift") }]);
+    expect(early.gameFrames).toBeLessThan(full.gameFrames);
+    expect(early.actions[0].hits.map((hit) => hit.frame)).toEqual(full.actions[0].hits.map((hit) => hit.frame));
+    const late = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 90 } }]);
+    expect(late.gameFrames).toBe(90);
+    expect(late.actions[0].hits.map((hit) => hit.frame)).toEqual([61, 67, 85, 91, 97, 103]);
   });
 
   it("drops hits not yet committed when the action is cancelled early", () => {
@@ -311,5 +319,26 @@ describe("preset rotation lengths", () => {
     // summon and the six Blight Rain ticks take no field time.
     expect(timing.missing).toEqual([]);
     expect(timing.gameFrames).toBe(103 + 3 + 42 + 39 + 68 + 70 + 115 + 39 + 68 + 68 + 175);
+  });
+});
+
+describe("characterRotationTiming", () => {
+  it("is null for a character without frame data", () => {
+    expect(characterRotationTiming([{ id: "a", order: 1, type: "basic", key: "X" }], {}, echoFrames, null)).toBeNull();
+  });
+
+  it("times actions in their order and sums up to a RotationLength", () => {
+    const timing = characterRotationTiming(
+      [
+        { id: "b", order: 2, type: "basic", key: "BasicAttackUnfurledCanopyStage2DMG" },
+        { id: "a", order: 1, type: "basic", key: "BasicAttackUnfurledCanopyStage1DMG" },
+        { id: "c", order: 3, type: "basic", key: "NotAnAttack" },
+      ],
+      { frames: suomingFrames },
+      echoFrames,
+      null,
+    );
+    expect(timing?.actions.map((action) => action.id)).toEqual(["a", "b", "c"]);
+    expect(rotationLength(timing!)).toEqual({ gameFrames: 39 + 68, realFrames: 39 + 68, missing: 1 });
   });
 });

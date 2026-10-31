@@ -51,7 +51,7 @@
     <div v-else class="text-xs text-warning">No frame data for this action, so it counts as 0s.</div>
     <div class="text-xs opacity-60">
       Dash cancels add {{ DASH_CANCEL_FRAMES }}f and jump cancels {{ JUMP_CANCEL_FRAMES }}f. A swap never happens
-      before the "swap from" frame.
+      before the "swap from" frame, and the character still finishes the attack after you swap.
     </div>
   </div>
 </template>
@@ -59,6 +59,7 @@
 <script setup lang="ts">
 import type { AttackFrames } from "../calculator/frameData";
 import {
+  ACTION_END_LABELS,
   DASH_CANCEL_FRAMES,
   DEFAULT_SWAP_FRAME,
   JUMP_CANCEL_FRAMES,
@@ -73,13 +74,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{ "update:end": [end: ActionEnd | null] }>();
 
-const typeOptions: Array<{ value: ActionEnd["type"]; label: string }> = [
-  { value: "full", label: "Plays out" },
-  { value: "cancel", label: "Cancel" },
-  { value: "dash", label: "Dash cancel" },
-  { value: "jump", label: "Jump cancel" },
-  { value: "swap", label: "Swap out" },
-];
+const typeOptions = (Object.keys(ACTION_END_LABELS) as ActionEnd["type"][]).map((value) => ({
+  value,
+  label: ACTION_END_LABELS[value],
+}));
 
 function defaultFrame(type: ActionEnd["type"]): number {
   if (type === "swap") return DEFAULT_SWAP_FRAME;

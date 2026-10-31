@@ -6,6 +6,7 @@
       :action-count="team.actions.length"
       :duration="team.duration"
       :result="result"
+      :frame-length="teamFrameLength"
       @view-damages="openDamages"
       @view-summary="emit('view-summary')" />
 
@@ -170,8 +171,15 @@
             :has-frame-data="teamHasFrameData"
             :damage="result.total.avgDamage"
             :typed-duration="team.duration" />
+          <!-- With frame data the charts run on game time (ADR 0049). -->
+          <TeamRotationLanesChart
+            v-if="isLiveResultBarEnabled && timelineStrip"
+            class="mb-3"
+            :strip="timelineStrip"
+            :slot-names="team.characterIds.map((id: string | null) => (id ? displayName(id) : null))"
+            @select="scrollToAction" />
           <div
-            v-if="isLiveResultBarEnabled && damageStripBars.length"
+            v-else-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mb-3"
             data-test-team-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
@@ -366,6 +374,7 @@
             v-else
             :result="result"
             :duration="team.duration"
+            :frame-length="teamFrameLength"
             @selected-attack="onSelectedAttack" />
         </div>
       </div>
@@ -386,9 +395,11 @@ import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBr
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
+import TeamRotationLanesChart from "./TeamRotationLanesChart.vue";
+import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
-import type { TimingSlot } from "../calculator/rotationTiming";
+import { rotationLength, type RotationLength, type TimingSlot } from "../calculator/rotationTiming";
 import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
@@ -1045,6 +1056,33 @@ const {
 } = useTeamRotationTiming(
   computed(() => (team.value?.actions ?? []) as Array<Record<string, unknown>>),
   timingSlots,
+);
+const timelineStrip = computed<TimelineStrip | null>(() => {
+  if (!isFrameTimingOn.value || !teamHasFrameData.value) return null;
+  const actionsById = new Map(((team.value?.actions ?? []) as TeamRotationAction[]).map((action) => [action.id, action]));
+  const strip = buildTimelineStrip(
+    teamTiming.value,
+    result.value.actionResults.map((entry) => {
+      const id = entry.attack?.id as string;
+      const action = actionsById.get(id);
+      return {
+        id,
+        value: actionDamageById.value[id] ?? 0,
+        label: entry.attack?.label,
+        // The ability the action comes from, not the damage type.
+        type: (action as { type?: string } | undefined)?.type,
+        isDamage: entry.attack?.type !== "Healing" && entry.attack?.type !== "Shield",
+        slot: action ? Number(action.slot) : undefined,
+        end: (action as { end?: unknown } | undefined)?.end,
+      };
+    }),
+  );
+  return strip.blocks.length ? strip : null;
+});
+
+// For the header's and damages panel's DPS (ADR 0048).
+const teamFrameLength = computed<RotationLength | null>(() =>
+  isFrameTimingOn.value && teamHasFrameData.value ? rotationLength(teamTiming.value) : null,
 );
 
 const primaryCharacterElement = computed(
