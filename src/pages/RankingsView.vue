@@ -6,6 +6,7 @@
     <!-- Wuthering Tools+: both teleport into Riley's page (a phone's card list, the detail's member strip) -->
     <RankingsCards :account="account" />
     <RankingsMemberStrip :account="account" />
+    <!-- on a phone the credit and the My roster link live in the bar's ⋯ menu and "How to read" (they took 88 px under the list) -->
     <p ref="credit" class="rankings-credit text-xs opacity-60 px-3 py-1">
       Team rankings engine, rotations and solves by
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
@@ -27,6 +28,7 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { mountRankings, onLocationChange, unmountRankings, updateAccountState, updateMyBuilds } from "../sim/rankings/controller";
 import { buildRollsOf } from "../sim/rankings/myBuilds";
 import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../sim/account/accountState";
+import { initialTierHash } from "../sim/rankings/tierMemory";
 import RankingsAccountBar from "../sim/rankings/RankingsAccountBar.vue";
 import RankingsCards from "../sim/rankings/RankingsCards.vue";
 import RankingsMemberStrip from "../sim/rankings/RankingsMemberStrip.vue";
@@ -59,7 +61,11 @@ const account = computed(() =>
 const rileyEntries = computed(() => rileyAccountEntries(account.value));
 const registration = computed(() => ({ entries: rileyEntries.value, key: accountKeyOf(rileyEntries.value) }));
 
-onMounted(() => {
+onMounted(async () => {
+  // a visit with no hash opens on the tier last picked in the bar, else My account once anything is set up (it used
+  // to open on Riley's S0R1 table for everyone); his page reads the hash at boot, so it is written first
+  const hash = initialTierHash(route.hash, account.value.summary.owned);
+  if (hash) await router.replace({ path: route.path, hash });
   if (host.value) void mountRankings(host.value, router, myBuilds.value, registration.value);
 });
 watch(() => myBuilds.value.map((b) => `${b.name}:${b.key}`).join(","), () => updateMyBuilds(myBuilds.value));
@@ -83,6 +89,15 @@ watch(() => route.fullPath, () => onLocationChange());
   flex-direction: column;
   min-height: 0;
   background: oklch(var(--b1));
+}
+@media (max-width: 767px) {
+  .rankings-credit {
+    display: none;
+  }
+}
+/* the bar's Search button opens Riley's aside, which a detail page does not have */
+.rankings-page:has(.skittle-root.wt-detail) [data-test-rankings-search] {
+  display: none;
 }
 .skittle-host {
   flex: 1;

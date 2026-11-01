@@ -61,11 +61,11 @@ describe("parsePresetName", () => {
     expect(p.teammateKeys).toEqual(["Mornye", "Lucilla"]);
     expect(p.weapon).toBe("Solsworn Ciphers R2");
     // the DPS state equals her own: one chip for both
-    expect(p.chips.map((c) => c.label)).toEqual(["S6R2", "team S1R1/S0R1"]);
+    expect(p.chips.map((c) => c.label)).toEqual(["S6R2", "supports S1R1 / S0R1"]);
 
     const support = parsePresetName("Lynae S6R1 Spectrum Blaster R1 · Mornye + Aemeath · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)");
     expect(support.title).toBe("Lynae · Mornye + Aemeath");
-    expect(support.chips.map((c) => c.label)).toEqual(["S6R1", "DPS S6R5", "team S1R1/S6R1"]);
+    expect(support.chips.map((c) => c.label)).toEqual(["S6R1", "main DPS S6R5", "supports S1R1 / S6R1"]);
     expect(support.chips[0].title).toContain("Spectrum Blaster R1");
   });
 
@@ -76,7 +76,7 @@ describe("parsePresetName", () => {
     expect(danjin.title).toBe("Danjin · Phrolova + Mornye");
     expect(danjin.chips.map((c) => c.label)).toEqual(["S6R5", "Moonlit Clouds 5pc"]);
     const chisa = parsePresetName("Chisa S0 Kumokiri R1 · Sanhua + Cartethyia · S6R1 DPS · S0R1 team (wuwa_calc)");
-    expect(chisa.chips.map((c) => c.label)).toEqual(["S0R1", "DPS S6R1", "team S0R1"]);
+    expect(chisa.chips.map((c) => c.label)).toEqual(["S0R1", "main DPS S6R1", "supports S0R1"]);
   });
 
   it("reads the older import and team shapes", () => {
@@ -89,7 +89,7 @@ describe("parsePresetName", () => {
     const team = parsePresetName("wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae");
     expect(team.kind).toBe("team");
     expect(team.title).toBe("Aemeath · Mornye + Lynae");
-    expect(team.chips.map((c) => c.label)).toEqual(["DPS S6R5", "team S1R1/S6R1"]);
+    expect(team.chips.map((c) => c.label)).toEqual(["main DPS S6R5", "supports S1R1 / S6R1"]);
 
     const uniform = parsePresetName("wuwa_calc Camellya S6R5 · Shorekeeper + Sanhua");
     expect(uniform.chips.map((c) => c.label)).toEqual(["S6R5"]);

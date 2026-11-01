@@ -99,16 +99,26 @@ describe("wuwa_calc rankings: filters survive a rotation detail", () => {
 });
 
 describe("wuwa_calc rankings on a phone", () => {
-  it("keeps Riley's aside in a bottom sheet behind a Filters button on narrow viewports", () => {
+  it("keeps Riley's aside in a sheet behind the bar's Search button on narrow viewports, docked under its header", () => {
     cy.viewport(390, 844);
     cy.visit("/rankings");
-    cy.get("[data-test-rankings-filters]", { timeout: 60000 }).should("be.visible");
+    cy.get("[data-test-rankings-search]", { timeout: 60000 }).should("be.visible");
     cy.get(".skittle-root .tcside").should("not.be.visible");
-    cy.get("[data-test-rankings-filters]").click();
+    // over the cards his toolbar row is gone until the sheet opens (the list heads itself)
+    cy.get("[data-test-rankings-cards-head]", { timeout: 60000 }).should("be.visible");
+    cy.get(".skittle-root .wt-toolbar").should("not.be.visible");
+    cy.get("[data-test-rankings-search]").click();
     // his Team Cost box is the account bar's tier control now (hidden, still in the DOM); the sheet keeps his search
     cy.get(".skittle-root .tcside").should("be.visible");
     cy.get(".skittle-root .tcside #optionSearch").should("be.visible");
     cy.get(".skittle-root .tcside #cost").should("exist").and("not.be.visible");
+    // header and body touch: the sheet drops from the toolbar instead of rising from the screen's bottom edge
+    cy.get(".skittle-root .wt-toolbar").then(($head) => {
+      const head = $head[0]!.getBoundingClientRect();
+      cy.get(".skittle-root .tcside").should(($side) => {
+        expect(Math.abs($side[0]!.getBoundingClientRect().top - head.bottom), "sheet top at its header").to.be.lessThan(3);
+      });
+    });
     cy.get("[data-test-rankings-filters-close]").click({ force: true });
     cy.get(".skittle-root .tcside").should("not.be.visible");
     // desktop keeps the aside beside the table and no toolbar
@@ -250,19 +260,63 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     cy.get(".toast .alert-success", { timeout: 15000 }).should("not.exist");
     cy.get("#backLink").click();
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    // the sync asks first: Cancel writes nothing
+    cy.get("[data-test-rankings-sync]").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Re-import 1 wuwa_calc team").and("contain.text", "undo");
+    cy.get(".confirm-dialog .modal-action .btn").not(".btn-primary").click();
+    cy.get("[data-test-rankings-sync-report]").should("not.exist");
     // the sync re-imports it at the same state: same actions, so "unchanged"; the team count does not grow
     cy.get("[data-test-rankings-sync]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").should("contain.text", "Sync 1 team").click();
     cy.get("[data-test-rankings-sync-report]", { timeout: 180000 }).should("exist");
-    cy.get("[data-test-rankings-sync-team][data-test-rankings-sync-status='unchanged']", { timeout: 180000 }).should("have.length", 1).and("contain.text", "wuwa_calc Cartethyia");
+    cy.get("[data-test-rankings-sync-summary]", { timeout: 180000 }).should("contain.text", "1 unchanged");
+    // a one-line summary; the per-team lines are behind Show details, the name read as a title + chips
+    cy.get("[data-test-rankings-sync-list]").should("not.be.visible");
+    cy.get("[data-test-rankings-sync-details]").click();
+    cy.get("[data-test-rankings-sync-team][data-test-rankings-sync-status='unchanged']").should("have.length", 1).and("be.visible").and("contain.text", "Cartethyia");
+    // nothing moved, so there is nothing to undo
+    cy.get("[data-test-rankings-sync-undo]").should("not.exist");
     cy.window().should((win) => {
       const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams?: Array<{ name: string; actions: unknown[] }> };
       expect(store.teams ?? []).to.have.length(1);
       expect(store.teams![0].actions.length).to.be.greaterThan(5);
     });
-    // the sync's own toast covers the report's Close button on CI's viewport the same way: let it go first
-    cy.get(".toast .alert", { timeout: 20000 }).should("not.exist");
     cy.get("[data-test-rankings-sync-close]").click();
     cy.get("[data-test-rankings-sync-report]").should("not.exist");
+    // a team that drifted from its loop is rewritten, and Undo puts it back as it was
+    cy.window().then((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      store.teams[0]!.actions = store.teams[0]!.actions.slice(0, 3);
+      win.localStorage.setItem("teamRotations", JSON.stringify(store));
+    });
+    cy.reload();
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-sync]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-rankings-sync-summary]", { timeout: 180000 }).should("contain.text", "1 updated");
+    cy.window().should((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      expect(store.teams[0]!.actions.length).to.be.greaterThan(5);
+      expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo kept").to.not.eq(null);
+    });
+    // Undo asks first too (/build-team's pattern): Cancel keeps the synced team and the undo
+    cy.get("[data-test-rankings-sync-undo]").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Undo the last sync").and("contain.text", "Put 1 team back");
+    cy.get(".confirm-dialog .modal-action .btn").not(".btn-primary").click();
+    cy.window().should((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      expect(store.teams[0]!.actions.length).to.be.greaterThan(5);
+      expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo still kept").to.not.eq(null);
+    });
+    cy.get("[data-test-rankings-sync-undo]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").should("contain.text", "Put it back").click();
+    cy.get("[data-test-rankings-sync-summary]").should("contain.text", "Undone: 1 team put back");
+    cy.window().should((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      expect(store.teams).to.have.length(1);
+      expect(store.teams[0]!.actions).to.have.length(3);
+      expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo used up").to.eq(null);
+    });
   });
 });
 
@@ -315,6 +369,8 @@ describe("wuwa_calc rankings: the account bar's tier, chips and Compare column (
   it("filters by Main DPS / With / Without chips written to Riley's r= / x= hash, the account's resonators first", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
+    // an account that is set up opens on My account (tierMemory.ts); this test reads Riley's default tier
+    cy.window().then((win) => win.localStorage.setItem("wtplus:rankings:tier:v1", ""));
     cy.visit("/rankings");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(rows, { timeout: 60000 }).should("have.length.greaterThan", 10);
@@ -378,8 +434,12 @@ describe("wuwa_calc rankings: the account bar's tier, chips and Compare column (
     });
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get("[data-test-rankings-account-bar]").should(($bar) => {
-      // two rows of xs controls at 130 %: the state control and the menu, then the chip strip
-      expect($bar[0]!.getBoundingClientRect().height).to.be.lessThan(100);
+      // two rows at 130 %, every control a 40 px tap target: the state control and the menu, then Search and the chips
+      expect($bar[0]!.getBoundingClientRect().height).to.be.lessThan(112);
+      // layout px (offsetHeight): classic's page-enter scale never finishes in headless Electron, so boxes read 95 %
+      for (const el of [...$bar[0]!.querySelectorAll<HTMLElement>("button, select")].filter((e) => e.offsetParent)) {
+        expect(el.offsetHeight, `${el.textContent?.trim() || el.getAttribute("aria-label")} tap target`).to.be.at.least(40);
+      }
     });
     cy.get("[data-test-rankings-account-summary]").should("not.exist");
     cy.get("[data-test-rankings-chip-summary='main']").should("have.text", "Cartethyia");
@@ -411,11 +471,13 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     cy.visit("/rankings", {
       onBeforeLoad(win) {
         win.document.documentElement.style.fontSize = "130%";
+        // Riley's default tier (an account that is set up opens on My account, tierMemory.ts)
+        win.localStorage.setItem("wtplus:rankings:tier:v1", "");
       },
     });
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(cards, { timeout: 60000 }).should("have.length", 50);
-    // his grid is hidden behind the cards; the toolbar holds the list's count and DPR / DPS
+    // his grid is hidden behind the cards; the list heads itself with its count and DPR / DPS
     cy.get(".skittle-root").should("have.class", "wt-cards");
     cy.get(".skittle-root .tcwrap").should("not.be.visible");
     cy.get("[data-test-rankings-cards-count]").invoke("text").should("match", /^\d[\d,]* teams$/);
@@ -449,8 +511,8 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
       cy.get("[data-test-rankings-cards-mode='dpr']").click();
       cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team Avg DPR");
     });
-    // the Search & compare sheet still opens over the cards
-    cy.get("[data-test-rankings-filters]").click();
+    // the Search & compare sheet still opens over the cards, from the bar's Search button
+    cy.get("[data-test-rankings-search]").click();
     cy.get(".skittle-root .tcside #optionSearch").should("be.visible");
     cy.get("[data-test-rankings-filters-close]").click({ force: true });
     // a tap opens the team's rotation through the router, the member strip on top

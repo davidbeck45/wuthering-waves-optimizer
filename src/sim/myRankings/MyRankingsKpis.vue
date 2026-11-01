@@ -6,7 +6,7 @@
         {{ summary.owned }}<span class="mr-kpi__of">/ {{ summary.characters }}</span>
       </div>
       <div class="mr-kpi__meter"><span :style="{ width: ratio(summary.owned, summary.characters) }"></span></div>
-      <div class="mr-kpi__sub">armed, of {{ summary.characters }} in the calculator</div>
+      <div class="mr-kpi__sub"><span class="max-md:hidden">armed, of {{ summary.characters }} in the calculator</span><span class="md:hidden">with a weapon</span></div>
     </div>
     <div class="mr-kpi">
       <div class="mr-kpi__label">At S6</div>
@@ -14,7 +14,7 @@
         {{ summary.s6 }}<span class="mr-kpi__of">/ {{ summary.owned }}</span>
       </div>
       <div class="mr-kpi__meter mr-kpi__meter--gold"><span :style="{ width: ratio(summary.s6, summary.owned) }"></span></div>
-      <div class="mr-kpi__sub">of your set-up characters</div>
+      <div class="mr-kpi__sub"><span class="max-md:hidden">of your set-up characters</span><span class="md:hidden">of {{ summary.owned }} set up</span></div>
     </div>
     <div class="mr-kpi">
       <div class="mr-kpi__label"><span class="max-md:hidden">Echoes equipped</span><span class="md:hidden">Echoes</span></div>
@@ -22,14 +22,15 @@
         {{ echoes.equipped }}<span class="mr-kpi__of">/ {{ echoes.total }}</span>
       </div>
       <div class="mr-kpi__meter"><span :style="{ width: ratio(echoes.equipped, echoes.total) }"></span></div>
-      <div class="mr-kpi__sub">of the echoes in your inventory</div>
+      <div class="mr-kpi__sub"><span class="max-md:hidden">of the echoes in your inventory</span><span class="md:hidden">equipped</span></div>
     </div>
     <div class="mr-kpi">
-      <div class="mr-kpi__label"><span class="max-md:hidden">Teams fieldable</span><span class="md:hidden">Teams</span></div>
+      <div class="mr-kpi__label"><span class="max-md:hidden">Saved teams you can field</span><span class="md:hidden">Teams</span></div>
       <div class="mr-kpi__value">
         {{ summary.teamsFieldable }}<span class="mr-kpi__of">/ {{ summary.teams }}</span>
       </div>
       <div class="mr-kpi__meter"><span :style="{ width: ratio(summary.teamsFieldable, summary.teams) }"></span></div>
+      <div class="mr-kpi__sub md:hidden">saved, you can field</div>
       <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="mr-kpi__link" data-test-my-rankings-open-mine>
         Rankings at my account
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -223,9 +224,15 @@ const statusSub = computed(() => {
   .mr-kpi__of {
     font-size: 0.58rem;
   }
-  .mr-kpi__sub,
   .mr-kpi__link {
     display: none;
+  }
+  /* a short line under each figure (they were hidden: "12/24" with nothing to say of what) */
+  .mr-kpi__sub {
+    font-size: 0.58rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   .mr-kpi--status {
     grid-column: 1 / -1;

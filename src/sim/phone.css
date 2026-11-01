@@ -1170,3 +1170,36 @@ html[data-theme-style="light"] [data-test-workspace-forte-details] > img {
     min-height: 2rem;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   24. Plus page titles under the v3 phone header (2026-10-31, track fix-account-rankings): Ryan's phone header
+   already reads "My account" / "My roster rankings" / "Weapon value" / "Build my team" (navSections.ts pageLabel
+   falls back to the PLUS_PAGES title), and each page's own H1 repeated it, about 50 px on every plus page. The H1
+   stays for screen readers and for classic and desktop, where no header names the page. The chips beside it (Live,
+   Recompute) keep their line. */
+body:has(.nav-phone-header) :is(.acc-h1, .mr-h1, .wv-h1, .bt-h1) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/* /my-rankings: with its H1 hidden, the "How this ranking is scored" ⓘ sat alone on a row of its own (about 40 px):
+   it joins the Options row, on the left, as a 40 px tap target */
+@media (max-width: 767px) {
+  body:has(.nav-phone-header) .mr-head__title {
+    flex-basis: auto;
+    order: 1;
+  }
+  body:has(.nav-phone-header) .mr-head__tools {
+    order: 2;
+  }
+  body:has(.nav-phone-header) .mr-head__title .mr-info__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}

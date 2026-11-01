@@ -34,7 +34,7 @@
         <div class="subs__more">
           <div class="subs__gain subs__gain--more" :class="gainClass(w.medianGain)" :data-test-my-rankings-substat-median="w.key"><span class="opacity-60"><span class="md:hidden">median </span>{{ rollLabel(w.medianRoll, w.flat) }} →</span> {{ pct(w.medianGain) }}</div>
           <div class="subs__gain subs__gain--more" :class="gainClass(w.maxGain)"><span class="opacity-60"><span class="md:hidden">best </span>{{ rollLabel(w.maxRoll, w.flat) }} →</span> {{ pct(w.maxGain) }}</div>
-          <div class="subs__gain subs__gain--more" :class="gainClass(w.stepGain)" :data-test-my-rankings-substat-step="w.key"><span class="opacity-60"><span class="md:hidden">+1 tier </span>{{ rollLabel(w.step, w.flat) }} →</span> {{ pct2(w.stepGain) }}</div>
+          <div class="subs__gain subs__gain--more" :class="gainClass(w.stepGain)" :data-test-my-rankings-substat-step="w.key"><span class="opacity-60"><span class="md:hidden">one tier up </span>{{ rollLabel(w.step, w.flat) }} →</span> {{ pct2(w.stepGain) }}</div>
         </div>
         <div class="subs__bar"><div class="subs__fill" :style="{ width: `${Math.round(w.weight * 100)}%` }"></div></div>
       </div>

@@ -34,7 +34,7 @@
           <div class="bt-team__chips">
             <span class="bt-chip" :class="team.id ? 'bt-chip--saved' : 'bt-chip--adhoc'">{{ team.id ? `Saved team · ${team.actions?.length ?? 0} actions` : "Not a saved team" }}</span>
             <span v-if="plans?.riley" class="bt-chip bt-chip--riley" data-test-build-team-riley :title="`wuwa_calc team ${plans.riley.teamKey}, solved at your account's sequences, weapons and echoes`">
-              wuwa_calc {{ plans.riley.teamKey }} · {{ fmtInt(plans.dpsMine) }} DPS
+              wuwa_calc · your echoes · {{ fmtInt(plans.dpsMine) }} DPS
             </span>
             <span v-else-if="plans?.rileyNote" class="bt-chip bt-chip--muted" data-test-build-team-riley-note>{{ plans.rileyNote }}</span>
           </div>

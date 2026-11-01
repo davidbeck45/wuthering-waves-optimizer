@@ -1,28 +1,34 @@
 <template>
-  <Teleport :to="headHost">
-    <div v-if="view?.phone" class="wt-cards-head" data-test-rankings-cards-head>
-      <div class="min-w-0 flex-1 leading-tight">
-        <p class="truncate text-sm font-semibold tabular-nums" data-test-rankings-cards-count>{{ count(view.cards.length) }} team{{ view.cards.length === 1 ? "" : "s" }}</p>
-        <p v-if="view.cards.length" class="truncate text-xs opacity-60">{{ view.pinned ? "% of pinned" : "% of top" }}</p>
-      </div>
-      <div class="join shrink-0" role="group" aria-label="Rank by">
-        <button
-          v-for="m in MODES"
-          :key="m.id"
-          type="button"
-          class="btn join-item btn-xs"
-          :class="view.mode === m.id ? 'btn-primary' : 'btn-ghost border-base-300'"
-          :aria-pressed="view.mode === m.id"
-          :title="m.title"
-          :data-test-rankings-cards-mode="m.id"
-          @click="setRankingsTeamMode(m.id)">
-          {{ m.label }}
-        </button>
-      </div>
-    </div>
-  </Teleport>
   <Teleport :to="host">
     <section v-if="view" class="wt-cards" :class="{ 'wt-cards--mine': view.mine, 'wt-cards--desktop': !view.phone }" data-test-rankings-cards>
+      <!-- a phone's list heads itself (it used to sit in a toolbar row of its own): how many teams, what the figure is,
+           which substats every row wears, and the DPR / DPS switch; it scrolls away with the cards -->
+      <div v-if="view.phone" class="wt-cards-head" data-test-rankings-cards-head>
+        <div class="flex min-w-0 items-center gap-2">
+          <p class="min-w-0 flex-1 truncate text-xs">
+            <span class="text-sm font-semibold tabular-nums" data-test-rankings-cards-count>{{ count(view.cards.length) }} team{{ view.cards.length === 1 ? "" : "s" }}</span>
+            <span v-if="view.cards.length" class="opacity-70"> · {{ view.pinned ? "% of pinned" : "% of top" }}</span>
+          </p>
+          <div class="join shrink-0" role="group" aria-label="Rank by">
+            <button
+              v-for="m in MODES"
+              :key="m.id"
+              type="button"
+              class="btn join-item btn-xs"
+              :class="view.mode === m.id ? 'btn-primary' : 'btn-ghost border-base-300'"
+              :aria-pressed="view.mode === m.id"
+              :title="m.title"
+              :data-test-rankings-cards-mode="m.id"
+              @click="setRankingsTeamMode(m.id)">
+              {{ m.label }}
+            </button>
+          </div>
+        </div>
+        <p v-if="view.cards.length" class="mt-0.5 text-xs leading-snug opacity-70" data-test-rankings-cards-unit>
+          {{ view.mode === "dps" ? "Team damage per second" : "Team avg DMG per rotation" }} · wuwa_calc at
+          {{ view.mine ? "your account" : "this tier" }} · <span data-test-rankings-cards-spread>{{ spreadLabel }}</span>
+        </p>
+      </div>
       <!-- while his rows are still being solved an empty list is "not yet" (his overlay says so), not "no match" -->
       <div v-if="!view.cards.length && !view.loading" class="wt-cards__empty" data-test-rankings-cards-empty>
         <template v-if="view.mine && !ownedCount">
@@ -31,13 +37,18 @@
             Set your resonators up in the calculator (an equipped weapon counts one as owned), or switch Teams I can field off
             {{ view.phone ? "under the account button above" : "in the bar above" }}.
           </p>
-          <RouterLink to="/" class="btn btn-primary btn-sm mt-3" data-test-rankings-cards-setup>Open the calculator</RouterLink>
+          <!-- the three ways in the other plus pages offer when nothing is set up (MyRankingsEmpty) -->
+          <div class="mt-3 flex flex-wrap gap-2">
+            <RouterLink to="/" class="btn btn-primary btn-sm" data-test-rankings-cards-setup>Open the calculator</RouterLink>
+            <RouterLink to="/settings" class="btn btn-ghost btn-sm border-base-300" data-test-rankings-cards-import title="Settings › Backup & Restore: restore a Wuthering Tools export">Import your export</RouterLink>
+            <RouterLink to="/inventory" class="btn btn-ghost btn-sm border-base-300" data-test-rankings-cards-scan title="Inventory › Import echoes › Phone screenshots">Scan echoes from screenshots</RouterLink>
+          </div>
         </template>
         <template v-else>
           <p class="text-base font-semibold">No team matches these filters</p>
           <p class="mt-1 text-sm opacity-70">
             Take a Main DPS / With / Without chip off above, or
-            {{ view.phone ? "open Filters for the weapon, echo and sequence filters." : "remove a weapon, echo or sequence filter from the search panel." }}
+            {{ view.phone ? "tap Search (the magnifier above) for the weapon, echo and sequence filters." : "remove a weapon, echo or sequence filter from the search panel." }}
           </p>
         </template>
       </div>
@@ -96,8 +107,9 @@
 // inside his page after each of his draws and hides his grid while this is mounted; tapping a card opens
 // the team's rotation detail the same way his "view rotation" link does.
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import type { AccountState } from "../account/accountState";
-import { cardsHeadHost, cardsHost, claimCards, openRankingsTeam, rankingsCards, setRankingsTeamMode } from "./controller";
+import { cardsHost, claimCards, openRankingsTeam, rankingsCards, setRankingsTeamMode } from "./controller";
 import { buildStatus, ownByRileyName, ownStatus, type CardMember, type OwnLike, type OwnStatus } from "./phoneCards";
 import type { TeamMode } from "./compareColumn";
 import RankingsPortrait from "./RankingsPortrait.vue";
@@ -105,8 +117,14 @@ import RankingsPortrait from "./RankingsPortrait.vue";
 const props = defineProps<{ account: AccountState }>();
 
 const host = cardsHost();
-const headHost = cardsHeadHost();
 const view = rankingsCards;
+const route = useRoute();
+/** the substat spread every row wears (the bar's Substats, hash `sb=`): named on the list, since My account still
+ *  defaults to Riley's ChemX32 rather than the player's own echoes */
+const spreadLabel = computed(() => {
+  const sb = new URLSearchParams((route.hash ?? "").replace(/^#/, "")).get("sb");
+  return sb === "m" ? "your echoes' substats" : sb === "h" ? "High Invest substats" : "ChemX32 substats";
+});
 const PAGE = 50;
 const MODES: ReadonlyArray<{ id: TeamMode; label: string; title: string }> = [
   { id: "dpr", label: "DPR", title: "Team Avg DPR: the damage of one rotation, averaged over four" },
@@ -202,12 +220,22 @@ onBeforeUnmount(() => {
   font-family: var(--sans, inherit);
 }
 .wt-cards-head {
-  display: flex;
   min-width: 0;
-  flex: 1;
-  align-items: center;
-  gap: 0.6rem;
+  padding: 0.55rem 0.15rem 0;
   color: oklch(var(--bc));
+}
+@media (max-width: 767px) {
+  /* 40 px tap targets at 130 % text (the audit measured 31 px) */
+  .wt-cards-head .btn-xs {
+    height: 40px;
+    min-height: 40px;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  /* the last card clears the Ask button */
+  .wt-cards {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
 }
 .wt-cards__list {
   display: grid;

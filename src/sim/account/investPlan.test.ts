@@ -6,7 +6,7 @@ import { rankRoster, type RosterRanking } from "../myRankings/rankRoster";
 import { substatWeights, rotationScorer } from "../substats/substatWeights";
 import { RANKING_ENEMY } from "../myRankings/rankRoster";
 import { extractBuildFields } from "../../characters/buildFields";
-import { bestFieldableTeam, investPlan, ownedWeapons, sortInvestItems, type InvestItem, type InvestPlan } from "./investPlan";
+import { bestFieldableTeam, investPlan, ownedWeapons, sortInvestItems, type InvestItem, type InvestPlan, erGainNote, erGapOf } from "./investPlan";
 import { clearPlanMemory, readCachedPlan, writeCachedPlan } from "./investCache";
 
 const characters: Record<string, any> = {
@@ -30,6 +30,21 @@ beforeAll(async () => {
 const byKind = (kind: InvestItem["kind"]): InvestItem[] => plan.items.filter((i) => i.kind === kind);
 
 describe("investment plan", () => {
+  it("says why an Energy Regen roll's own gain and team gain differ", () => {
+    expect(erGapOf(1)).toBeNull();
+    expect(erGapOf(0.956)).toBe(4.4);
+    // with the need, read as the chips print it: 110.8 % held against a 115.14 % need is "need 115.2 % · 4.4 short"
+    expect(erGapOf(1 - (115.14 - 110.8) / 100, 115.14)).toBe(4.4);
+    const er = { kind: "substat" as const, substatKey: "EnergyRegen" as const, erGap: 4.4, team: { gain: 0 } as never };
+    expect(erGainNote(er)).toMatch(/4\.4-point Energy Regen gap.*Team damage doesn't count Energy Regen/);
+    // a roll at least the gap's size closes all of it, a smaller one part of it
+    expect(erGainNote({ ...er, roll: 9.4 })).toMatch(/closes the whole 4\.4-point Energy Regen gap/);
+    expect(erGainNote({ ...er, roll: 2.1 })).toMatch(/closes part of the 4\.4-point Energy Regen gap/);
+    expect(erGainNote({ ...er, team: null })).not.toMatch(/Team damage/);
+    expect(erGainNote({ ...er, erGap: null })).toBeNull();
+    expect(erGainNote({ ...er, substatKey: "CritDMG" })).toBeNull();
+  });
+
   it("lists the next sequence and refinements with the gains /my-rankings estimates", () => {
     const cart = ranking.characters.find((c) => c.id === "Cartethyia")!;
     expect(plan.characters).toBe(1);

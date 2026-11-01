@@ -1,5 +1,5 @@
 import { createApp, defineComponent, h, nextTick, ref } from "vue";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { PLUS_BAR_VAR, pinnedHeight, usePlusBar } from "./plusBar";
 
 const barVar = () => document.documentElement.style.getPropertyValue(PLUS_BAR_VAR);
@@ -59,5 +59,29 @@ describe("usePlusBar", () => {
     await nextTick();
     expect(barVar()).toBe("0px");
     app.unmount();
+  });
+
+  it("writes <html>'s variable only when the height moves", async () => {
+    const el = bar("fixed", 50);
+    const spy = vi.spyOn(document.documentElement.style, "setProperty");
+    const Page = defineComponent({
+      setup() {
+        usePlusBar(ref<HTMLElement | null>(el));
+        return {};
+      },
+      render: () => null,
+    });
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+    const app = createApp(Page);
+    app.mount(host);
+    await nextTick();
+    expect(barVar()).toBe("50px");
+    const writes = spy.mock.calls.filter(([name]) => name === PLUS_BAR_VAR).length;
+    // a resize that leaves the bar the same height re-measures without restyling the page
+    window.dispatchEvent(new Event("resize"));
+    expect(spy.mock.calls.filter(([name]) => name === PLUS_BAR_VAR).length).toBe(writes);
+    app.unmount();
+    spy.mockRestore();
   });
 });

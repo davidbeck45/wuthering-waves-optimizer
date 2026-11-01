@@ -21,6 +21,7 @@ import { applyBuildTeam, readUndo, undoBuildTeam, undoIsLive, type ApplyOutcome,
 import { snapshotCharacters } from "../buildHistory/history";
 import { defaultSaveSlots, shareConflicts } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
+import { showNeed } from "../energy/energyNeed";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -164,7 +165,7 @@ export function useBuildTeam() {
       // the need rounds up to one decimal, as the game prints ER (113.04 % asks for 113.1 %)
       erFloors.value = spec.characterIds.map((_, i) => {
         const need = out.plans[i]?.erNeed;
-        return need == null ? null : Math.ceil(need * 10 - 1e-6) / 10;
+        return need == null ? null : showNeed(need); // one rounding rule with the CLI (buildTeamCli.ts)
       });
       phase.value = "plan";
     } catch (e) {

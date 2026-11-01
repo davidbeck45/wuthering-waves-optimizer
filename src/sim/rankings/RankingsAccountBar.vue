@@ -26,9 +26,9 @@
               {{ account.summary.owned }} of {{ account.summary.characters }} set up · {{ account.summary.s6 }} at S6<template v-if="!account.summary.owned"> · equip a weapon on a character to count it as owned</template>
             </span>
           </template>
-          <button v-else type="button" class="btn btn-ghost btn-xs min-w-0 shrink flex-nowrap gap-1 overflow-hidden border-base-300 px-2 tabular-nums" :aria-expanded="open === 'info'" aria-label="Your account" data-test-rankings-info @click="toggle('info', $event)">
-            <svg viewBox="0 0 24 24" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" stroke-linecap="round" /></svg>
-            <span class="truncate">{{ account.summary.owned }}/{{ account.summary.characters }}</span>
+          <button v-else type="button" class="btn btn-ghost btn-xs min-w-0 shrink flex-nowrap gap-1 overflow-hidden border-base-300 px-2 tabular-nums" :aria-expanded="open === 'info'" :aria-label="`Your account: ${summaryText}`" data-test-rankings-info @click="toggle('info', $event)">
+            <svg viewBox="0 0 24 24" class="size-3.5 shrink-0 max-[429px]:hidden" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" stroke-linecap="round" /></svg>
+            <span class="truncate" data-test-rankings-info-text>{{ account.summary.owned ? `${account.summary.owned} set up` : "None set up" }}</span>
           </button>
         </div>
 
@@ -42,8 +42,20 @@
         </label>
         <span v-if="!compact && subsMode === 'm'" class="text-xs opacity-60" data-test-rankings-subs-hint>{{ builtCount }} character{{ builtCount === 1 ? "" : "s" }} with echoes in the app; the rest run ChemX32</span>
 
-        <!-- Main DPS / With / Without: Riley's own resonator filter (hash r= / x=) as chips -->
-        <div class="wt-chips flex min-w-0 items-center gap-1.5" :class="compact ? 'order-last w-full flex-nowrap overflow-x-auto' : 'flex-wrap'" data-test-rankings-chips>
+        <!-- Main DPS / With / Without: Riley's own resonator filter (hash r= / x=) as chips; on a phone the row starts with
+             Search (Riley's aside, docked under its header), which used to take a toolbar row of its own -->
+        <div :class="compact ? 'order-last flex w-full min-w-0 items-center gap-1.5' : 'contents'">
+        <button
+          v-if="compact"
+          type="button"
+          class="wt-search btn btn-ghost btn-xs btn-square shrink-0 border-base-300"
+          aria-label="Search and compare: resonators, weapons, echoes, sequences"
+          title="Search and compare: resonators, weapons, echoes, sequences"
+          data-test-rankings-search
+          @click="toggleRankingsSearch()">
+          <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" stroke-linecap="round" /></svg>
+        </button>
+        <div class="wt-chips flex min-w-0 items-center gap-1.5" :class="compact ? 'flex-1 flex-nowrap overflow-x-auto' : 'flex-wrap'" data-test-rankings-chips>
           <div v-for="g in CHIP_GROUPS" :key="g.id" class="flex shrink-0 items-center gap-1" :data-test-rankings-chip-group="g.id">
             <button
               type="button"
@@ -73,6 +85,11 @@
             </button>
           </div>
           <button v-if="chipCount > 1" type="button" class="btn btn-ghost btn-xs shrink-0 px-1.5 opacity-70" title="remove every Main DPS / With / Without filter" data-test-rankings-chips-clear @click="clearChips">Clear</button>
+          <label v-if="!compact && missingNames.length" class="flex shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap text-xs" :title="importableTitle">
+            <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" :checked="importable" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
+            <span>Only teams I can import</span>
+          </label>
+        </div>
         </div>
       </div>
 
@@ -87,6 +104,7 @@
             <span v-if="syncing" class="loading loading-spinner loading-xs"></span>
             {{ syncing ? "Syncing…" : "Sync my teams" }}
           </button>
+          <button v-if="undoRecord && !report" type="button" class="btn btn-xs btn-ghost border-base-300" :title="undoTitle" data-test-rankings-sync-undo @click="undoSync">Undo sync</button>
           <button type="button" class="btn btn-xs btn-ghost max-w-56 gap-1 border-base-300" :aria-expanded="open === 'views'" title="saved views: named copies of the current tier, filters and compares" data-test-rankings-views @click="toggle('views', $event)">
             <span class="truncate" data-test-rankings-views-current>{{ selectedView || "Views" }}</span>
             <svg viewBox="0 0 24 24" class="size-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -127,7 +145,7 @@
               @click="pick(pickGroup, o.name)">
               <span class="wt-dot" :style="{ background: o.color }"></span>
               <span class="min-w-0 flex-1 truncate">{{ o.name }}</span>
-              <span v-if="o.owned" class="badge badge-sm tabular-nums" :class="o.section === 0 ? 'badge-primary badge-outline' : 'badge-ghost'" :title="o.assumed ? '4★ / Rover form: counts as owned at S6' : `your ${o.name}: S${o.sequence}`">S{{ o.sequence }}</span>
+              <span v-if="o.owned" class="badge badge-sm whitespace-nowrap tabular-nums" :class="o.section === 0 ? 'badge-primary badge-outline' : 'badge-ghost'" :title="o.assumed ? '4★ / Rover form you have not set up: everyone owns it, so it counts at S6' : `your ${o.name}: S${o.sequence}`" :data-test-rankings-chip-free="o.assumed ? '' : undefined">{{ o.assumed ? "free · S6" : `S${o.sequence}` }}</span>
               <span v-else class="text-[11px] opacity-50">not owned</span>
               <svg v-if="inGroup(pickGroup, o.name)" viewBox="0 0 24 24" class="size-4 shrink-0 text-primary" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
@@ -157,10 +175,17 @@
           </select>
           <span v-if="subsMode === 'm'" class="opacity-60" data-test-rankings-subs-hint>{{ builtCount }} character{{ builtCount === 1 ? "" : "s" }} with echoes in the app; the rest run ChemX32</span>
         </label>
+        <label v-if="missingNames.length" class="wt-opt mt-2 cursor-pointer" :title="importableTitle">
+          <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" :checked="importable" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
+          <span class="flex-1">Only teams I can import <span class="block text-xs opacity-60">hides teams with {{ missingNames.join(", ") }}, not in this app yet</span></span>
+        </label>
         <div class="mt-2 grid gap-1">
           <button type="button" class="wt-opt" :disabled="syncing" :title="syncTitle" data-test-rankings-sync @click="sync">
             <span v-if="syncing" class="loading loading-spinner loading-xs"></span>
-            <span class="flex-1">{{ syncing ? "Syncing…" : "Sync my teams" }}</span>
+            <span class="flex-1">{{ syncing ? "Syncing…" : "Sync my teams" }} <span class="block text-xs opacity-60">re-import your wuwa_calc teams at your account</span></span>
+          </button>
+          <button v-if="undoRecord && !report" type="button" class="wt-opt" :title="undoTitle" data-test-rankings-sync-undo @click="undoSync">
+            <span class="flex-1">Undo the last sync</span>
           </button>
           <button type="button" class="wt-opt" data-test-rankings-views @click="switchTo('views')">
             <span class="flex-1">Saved views</span>
@@ -170,6 +195,14 @@
             <span class="badge badge-ghost badge-xs font-semibold uppercase tracking-wide">Beta</span>
             <span class="flex-1">How to read this table</span>
           </button>
+          <RouterLink to="/my-rankings" class="wt-opt" data-test-rankings-menu-my-rankings @click="open = null">
+            <span class="flex-1">My roster rankings <span class="block text-xs opacity-60">your characters on this app's engine</span></span>
+            <span aria-hidden="true">▸</span>
+          </RouterLink>
+          <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="wt-opt" data-test-rankings-menu-credit>
+            <span class="flex-1">Engine by Riley31415 <span class="block text-xs opacity-60">wuwa_calc (ISC): engine, kits, rotations and solves</span></span>
+            <span aria-hidden="true">↗</span>
+          </a>
         </div>
       </template>
 
@@ -215,21 +248,32 @@
       </template>
     </div>
   </div>
-  <div v-if="report" class="border-b border-base-300 bg-base-200/60 px-3 py-2 text-sm" data-test-rankings-sync-report>
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+  <!-- the report never takes the list's place: capped at 45 % of the screen and scrolling inside, Close and Undo in a
+       header that stays put, the per-team lines behind Show details -->
+  <div v-if="report" class="wt-sync-report border-b border-base-300 bg-base-200/60 text-sm" data-test-rankings-sync-report>
+    <div class="wt-sync-report__head flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
       <span class="font-semibold">Sync my teams</span>
-      <span class="text-xs opacity-70">at your account's state · {{ report.updated }} updated · {{ report.unchanged }} unchanged · {{ report.skipped }} left alone<template v-if="report.failed"> · {{ report.failed }} failed</template></span>
+      <span class="text-xs opacity-70" data-test-rankings-sync-summary>
+        <template v-if="undone">Undone: {{ undone.restored }} team{{ undone.restored === 1 ? "" : "s" }} put back<template v-if="undone.kept.length"> · {{ undone.kept.map((k) => `${k.name} ${k.why}`).join(" · ") }}</template></template>
+        <template v-else>at your account · {{ report.updated }} updated · {{ report.unchanged }} unchanged · {{ report.skipped }} left alone<template v-if="report.failed"> · {{ report.failed }} failed</template></template>
+      </span>
       <span v-if="syncError" class="text-xs text-error">{{ syncError }}</span>
-      <button type="button" class="btn btn-ghost btn-xs ml-auto" data-test-rankings-sync-close @click="report = null">Close</button>
+      <div class="ml-auto flex items-center gap-1">
+        <button v-if="undoRecord" type="button" class="btn btn-ghost btn-xs border-base-300" :title="undoTitle" data-test-rankings-sync-undo @click="undoSync">Undo</button>
+        <button v-if="report.teams.length && !undone" type="button" class="btn btn-ghost btn-xs" :aria-expanded="showDetails" data-test-rankings-sync-details @click="showDetails = !showDetails">{{ showDetails ? "Hide details" : "Show details" }}</button>
+        <button type="button" class="btn btn-ghost btn-xs" data-test-rankings-sync-close @click="closeReport">Close</button>
+      </div>
     </div>
-    <ul class="mt-1 grid gap-1">
-      <li v-for="t in report.teams" :key="t.id" class="flex flex-wrap items-baseline gap-x-2" :data-test-rankings-sync-team="t.name" :data-test-rankings-sync-status="t.status">
-        <span class="badge badge-xs" :class="badgeClass(t.status)">{{ t.status }}</span>
-        <span class="font-medium">{{ t.name }}</span>
-        <span v-if="t.newName" class="text-xs opacity-70">→ {{ t.newName }}</span>
-        <span v-if="t.total" class="text-xs tabular-nums opacity-60">Riley {{ Math.round(t.total).toLocaleString() }} DPS</span>
-        <span v-if="t.reason" class="text-xs opacity-70">{{ t.reason }}</span>
+    <ul v-show="showDetails && !undone" class="grid gap-2 px-3 pb-2" data-test-rankings-sync-list>
+      <li v-for="t in report.teams" :key="t.id" class="flex flex-wrap items-start gap-x-2 gap-y-0.5" :data-test-rankings-sync-team="t.name" :data-test-rankings-sync-status="t.status">
+        <span class="badge badge-xs mt-0.5" :class="badgeClass(t.status)">{{ t.status }}</span>
+        <PresetNameLabel class="min-w-0 flex-1" :name="t.newName ?? t.name" :max-chips="2" />
+        <span v-if="t.total" class="w-full pl-2 text-xs tabular-nums opacity-70" data-test-rankings-sync-figures>
+          wuwa_calc at your account: <template v-if="t.dpr">{{ Math.round(t.dpr).toLocaleString() }} DPR · </template>{{ Math.round(t.total).toLocaleString() }} DPS
+        </span>
+        <span v-if="t.reason" class="w-full pl-2 text-xs opacity-70">{{ t.reason }}</span>
         <span v-if="t.deltas.length" class="w-full pl-2 text-xs opacity-80">
+          actions:
           <template v-for="(d, i) in t.deltas.slice(0, 12)" :key="i">
             <span class="tabular-nums">{{ d.characterId ? getCharacterRosterDisplayName(d.characterId) + " · " : "" }}{{ humanKey(d.key) }}{{ d.mainEcho ? ` (${d.mainEcho})` : "" }}{{ d.stacks != null ? ` @${d.stacks}` : "" }} {{ d.from }}→{{ d.to }}</span><span v-if="i < Math.min(t.deltas.length, 12) - 1"> · </span>
           </template>
@@ -266,9 +310,29 @@ import type { AccountState } from "../account/accountState";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { useToast } from "../../composables/useToast";
-import { rankingsRoster, syncMyTeams } from "./controller";
-import { humanKey, type SyncReport, type SyncStatus, type TeamLike } from "./syncTeams";
-import { chipGroups, compactName, hashText, pickerOptions, RILEY_TIERS, withResonatorFilter, type ChipGroup, type OwnedInfo, type PickerOption } from "./filterChips";
+import { useConfirm } from "../../composables/useConfirm";
+import PresetNameLabel from "../display/PresetNameLabel.vue";
+import { parsePresetName } from "../presets/presetName";
+import { rankingsRoster, syncMyTeams, toggleRankingsSearch } from "./controller";
+import { notInApp } from "./importFromRankings";
+import { appKeyOf } from "./rileyNames";
+import { humanKey, isWuwaCalcTeam, type SyncReport, type SyncStatus, type TeamLike } from "./syncTeams";
+import { rememberTier } from "./tierMemory";
+import { applySyncUndo, makeSyncUndo, readSyncUndo, saveSyncUndo, type SyncUndoOutcome, type SyncUndoRecord } from "./syncUndo";
+import {
+  chipGroups,
+  compactName,
+  hashText,
+  importableOnly,
+  namesNotInApp,
+  pickerOptions,
+  RILEY_TIERS,
+  withImportableOnly,
+  withResonatorFilter,
+  type ChipGroup,
+  type OwnedInfo,
+  type PickerOption,
+} from "./filterChips";
 
 const props = defineProps<{ account: AccountState; builtCount?: number }>();
 const route = useRoute();
@@ -318,6 +382,7 @@ function setTier(code: string): void {
   else p.delete("tc");
   p.delete("own");
   lastTier = code;
+  rememberTier(code);
   void go(p);
 }
 
@@ -368,6 +433,7 @@ function setMine(on: boolean): void {
   }
   const p = new URLSearchParams(params.value);
   p.set("tc", "mine");
+  rememberTier("mine");
   void go(p);
 }
 function setOwnedOnly(on: boolean): void {
@@ -408,6 +474,14 @@ function pick(group: ChipGroup, name: string): void {
   setName(name, inGroup(group, name) ? null : group);
 }
 const removeName = (name: string): void => setName(name, null);
+// ---- "Only teams I can import" (opt-in, default off): every resonator this app has no character for (Lily) goes into
+// his own Without list, so the table drops their teams; a saved view and a shared link carry it as x=
+const missingNames = computed(() => namesNotInApp(roster.value, (name) => !notInApp([appKeyOf(name)]).length));
+const importable = computed(() => importableOnly(params.value, roster.value, missingNames.value));
+const importableTitle = computed(() => `hide teams with a resonator this app does not have yet (${missingNames.value.join(", ")}): what is left can be imported into Teams`);
+function setImportable(on: boolean): void {
+  void go(withImportableOnly(params.value, roster.value, missingNames.value, on));
+}
 function clearChips(): void {
   const p = new URLSearchParams(params.value);
   p.delete("r");
@@ -506,25 +580,53 @@ onBeforeUnmount(() => {
   document.removeEventListener("keydown", onKeydown);
 });
 
-// ---- Sync my teams: every saved wuwa_calc team re-imported at the account's own state, in place
+// ---- Sync my teams: every saved wuwa_calc team re-imported at the account's own state, in place. It asks first
+// (phones have no tooltips to explain it) and keeps an Undo for the last sync (syncUndo.ts, /build-team's pattern).
 const teamStore = useTeamRotationsStore();
 const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: TeamLike[] } };
+const { confirm } = useConfirm();
 const syncing = ref(false);
 const report = ref<SyncReport | null>(null);
 const syncError = ref<string | null>(null);
+const showDetails = ref(false);
+const undoRecord = ref<SyncUndoRecord | null>(readSyncUndo());
+const undone = ref<{ restored: number; kept: SyncUndoOutcome["kept"] } | null>(null);
 const syncTitle = "re-import every saved wuwa_calc team (imports and presets) at your account's sequences, weapons and refinements, updating each in place; your own teams are left alone";
+const undoTitle = "put the teams the last sync rewrote back as they were (a team you edited since stays as it is)";
 const badgeClass = (s: SyncStatus): string => (s === "updated" ? "badge-primary" : s === "unchanged" ? "badge-ghost" : s === "failed" ? "badge-error" : "badge-outline");
+const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`;
 async function sync(): Promise<void> {
   if (syncing.value) return;
-  syncing.value = true;
-  syncError.value = null;
   open.value = null;
   const { showToast } = useToast();
+  const list = (teams.value ?? []) as TeamLike[];
+  const ours = list.filter(isWuwaCalcTeam);
+  if (!ours.length) {
+    showToast("No wuwa_calc team to sync yet: import one from a team's rotation page, or add a wuwa_calc preset under Teams.", "info", 7000);
+    return;
+  }
+  const yours = list.length - ours.length;
+  const ok = await confirm(
+    `Re-import ${plural(ours.length, "wuwa_calc team")} at your account's sequences, weapons and refinements, and update ${ours.length === 1 ? "it" : "them"} in place?` +
+      ` Their actions, rotation time and enemy settings are rewritten.${yours ? ` ${plural(yours, "team")} you named ${yours === 1 ? "is" : "are"} left alone.` : ""} You can undo it afterwards.`,
+    {
+      title: "Sync my teams",
+      items: ours.slice(0, 8).map((t) => parsePresetName(t.name).title || t.name).concat(ours.length > 8 ? [`+${ours.length - 8} more`] : []),
+      confirmLabel: `Sync ${plural(ours.length, "team")}`,
+    },
+  );
+  if (!ok) return;
+  syncing.value = true;
+  syncError.value = null;
+  undone.value = null;
+  showDetails.value = false;
   try {
-    const snapshot: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
+    const snapshot: TeamLike[] = JSON.parse(JSON.stringify(list));
     report.value = await syncMyTeams(snapshot);
-    const r = report.value;
-    showToast(`Sync my teams: ${r.updated} updated, ${r.unchanged} unchanged, ${r.skipped} left alone${r.failed ? `, ${r.failed} failed` : ""}.`, r.failed ? "warning" : "success", 7000);
+    const after: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
+    undoRecord.value = makeSyncUndo(snapshot, after, report.value);
+    saveSyncUndo(undoRecord.value);
+    // the report under the bar is the outcome; a success toast only covered its Close button
   } catch (err) {
     syncError.value = err instanceof Error ? err.message : String(err);
     report.value ??= { at: new Date().toISOString(), cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
@@ -532,6 +634,38 @@ async function sync(): Promise<void> {
   } finally {
     syncing.value = false;
   }
+}
+async function undoSync(): Promise<void> {
+  const rec = undoRecord.value;
+  if (!rec) return;
+  open.value = null;
+  // asks first, as /build-team's Undo does: the record outlives a reload, so the tap can come long after the sync
+  const n = rec.before.length;
+  const ok = await confirm(
+    `Put ${plural(n, "team")} back as ${n === 1 ? "it was" : "they were"} before the last sync? A team you edited since the sync stays as it is.`,
+    {
+      title: "Undo the last sync",
+      items: rec.before.slice(0, 8).map((t) => parsePresetName(t.name).title || t.name).concat(n > 8 ? [`+${n - 8} more`] : []),
+      confirmLabel: n === 1 ? "Put it back" : `Put ${n} back`,
+    },
+  );
+  if (!ok || undoRecord.value !== rec) return;
+  const out = applySyncUndo((teams.value ?? []) as TeamLike[], rec);
+  const byId = new Map(out.teams.map((t) => [t.id, t]));
+  (teamStore as unknown as { $patch: (fn: (s: { teams: TeamLike[] }) => void) => void }).$patch((state) => {
+    for (const id of out.restored) {
+      const i = state.teams.findIndex((t) => t.id === id);
+      if (i >= 0) state.teams.splice(i, 1, byId.get(id)!);
+    }
+  });
+  undoRecord.value = null;
+  saveSyncUndo(null);
+  undone.value = { restored: out.restored.length, kept: out.kept };
+  report.value ??= { at: rec.at, cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
+}
+function closeReport(): void {
+  report.value = null;
+  undone.value = null;
 }
 
 const saving = ref(false);
@@ -564,6 +698,33 @@ function forgetView(): void {
 </script>
 
 <style scoped>
+/* phones: 40 px tap targets at 130 % text (the audit measured 31 px for every control in the bar) */
+.wt-account-bar--compact .btn-xs,
+.wt-account-bar--compact .select-xs {
+  height: 40px;
+  min-height: 40px;
+}
+.wt-account-bar--compact .btn-square {
+  width: 40px;
+}
+@media (max-width: 767px) {
+  .wt-sync-report .btn-xs {
+    height: 40px;
+    min-height: 40px;
+  }
+}
+.wt-sync-report {
+  max-height: 45dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: none;
+}
+.wt-sync-report__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: oklch(var(--b2));
+}
 .wt-dot {
   width: 0.5rem;
   height: 0.5rem;

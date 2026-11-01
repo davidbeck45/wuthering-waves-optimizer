@@ -91,12 +91,16 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/build-team result");
   });
 
-  it("keeps the wuwa_calc rankings page inside the viewport with its phone toolbar", () => {
+  it("keeps the wuwa_calc rankings page inside the viewport with its phone controls", () => {
     cy.visit("/rankings");
-    cy.get("[data-test-rankings-filters]", { timeout: 60000 }).should("be.visible");
+    // Search sits in the account bar's chip row; the credit and the My roster link moved into the ⋯ menu
+    cy.get("[data-test-rankings-search]", { timeout: 60000 }).should("be.visible");
     expectNavFits("/rankings");
     expectNoHorizontalScroll("/rankings");
-    cy.get("[data-test-rankings-switch-mine]").should("be.visible");
+    cy.get("[data-test-rankings-switch-mine]").should("not.be.visible");
+    cy.get("[data-test-rankings-menu]").click();
+    cy.get("[data-test-rankings-menu-my-rankings]").should("be.visible");
+    cy.get("[data-test-rankings-menu-credit]").should("be.visible").and("have.attr", "href", "https://github.com/Riley31415/wuwa_calc");
   });
 
   it("reflows the roster ranking tables into cards", () => {

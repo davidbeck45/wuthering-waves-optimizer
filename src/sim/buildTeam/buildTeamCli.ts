@@ -7,6 +7,7 @@ import { findTeam, resolveCharacterKey } from "../cli/engine";
 import { int, pct, table } from "../cli/format";
 import { rileyHeadless } from "../engine/rileyNode";
 import { characterDisplayName } from "../display/names";
+import { showNeed } from "../energy/energyNeed";
 import { buildMyTeam, currentEchoesOf, type BuildTeamResult, type TeamSpec } from "./buildTeam";
 import { DEFAULT_OPTIONS, type BuildOptions } from "./constraints";
 import { inlineBackend } from "./headlessOptimizer";
@@ -42,7 +43,12 @@ export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeam
   };
   const plans = await plansForTeam(team.characterIds, source, { currentEchoes: (id) => currentEchoesOf(id, exp.characters, exp.inventory.echoes) });
   const options: BuildOptions = { ...DEFAULT_OPTIONS, ...Object.fromEntries(Object.entries(opts).filter(([k, v]) => k in DEFAULT_OPTIONS && v !== undefined)) } as BuildOptions;
-  const erFloors: Array<number | null | undefined> = team.characterIds.map(() => undefined);
+  // the page's floors: each member's need rounded up to one decimal, as the game prints ER (useBuildTeam); the same
+  // rule here, so `build-team` and /build-team build against, and print, the same "need 115.2 %"
+  const erFloors: Array<number | null | undefined> = team.characterIds.map((_, i) => {
+    const need = plans.plans[i]?.erNeed;
+    return need == null ? undefined : showNeed(need);
+  });
   for (const part of (opts.er ?? "").split(",").map((s) => s.trim()).filter(Boolean)) {
     const [name, value] = part.split("=");
     const slot = team.characterIds.findIndex((id) => id && (norm(id) === norm(name ?? "") || norm(characterDisplayName(id)) === norm(name ?? "")));

@@ -64,6 +64,7 @@
                 <span class="dr-inv__scope">team</span>
               </template>
             </span>
+            <span v-if="erNote(item)" class="dr-inv__note" data-test-account-er-note>{{ erNote(item) }}</span>
             <span v-if="!item.team && item.teamNote" class="dr-inv__note">no team figure: {{ item.teamNote }}</span>
           </li>
         </ul>
@@ -125,12 +126,13 @@ import { characterShortName, elementColor, rarityColor, weaponDisplayName } from
 import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
 import { rankingsMineHash } from "./accountState";
-import { INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
+import { erGainNote, INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
 import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
 
+const erNote = (item: InvestItem): string | null => erGainNote(item);
 const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[] }>();
 const emit = defineEmits<{ close: []; calculator: [id: string] }>();
 const dialog = ref<HTMLDialogElement | null>(null);

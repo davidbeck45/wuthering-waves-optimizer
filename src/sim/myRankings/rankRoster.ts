@@ -10,7 +10,8 @@ import { resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/b
 import { teamRotationPresets } from "../../teamRotations/presets";
 import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets } from "../presets";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
-import { characterDisplayName, weaponDisplayName } from "../display/names";
+import { characterDisplayName, isRosterCharacter, weaponDisplayName } from "../display/names";
+import { parsePresetName } from "../presets/presetName";
 
 export type RotationSource = "yours" | "curated" | "wuwa_calc";
 
@@ -122,7 +123,15 @@ export interface RotationCandidate {
   rotation: CharacterRotationInput;
 }
 
-/** Every rotation a character can be scored on: their own saved ones, the curated presets, wuwa_calc's loops. */
+/** A wuwa_calc loop whose name lists a teammate the app has no character for (Lily: a kit in Riley's engine with no
+ *  folder here, named by 8 stock loops). Its swaps follow a team nobody can field in this app, and as a best rotation it
+ *  would put her name on /account, /my-rankings and /weapons — the rankings skip it. */
+export function namesTeammateOutsideApp(name: string | null | undefined): boolean {
+  return parsePresetName(name).teammateKeys.some((key) => !isRosterCharacter(key));
+}
+
+/** Every rotation a character can be scored on: their own saved ones, the curated presets, wuwa_calc's loops (minus the
+ *  ones played beside a teammate the app lacks, `namesTeammateOutsideApp`). */
 export async function rotationCandidates(id: string, characterData: Record<string, any>): Promise<RotationCandidate[]> {
   const out: RotationCandidate[] = [];
   for (const r of (characterData.rotations ?? []) as any[]) {
@@ -137,7 +146,7 @@ export async function rotationCandidates(id: string, characterData: Record<strin
   }
   for (const p of await loadWuwaCalcRotationPresets(id)) {
     const actions = (p.data as any)?.actions;
-    if (!actions?.length) continue;
+    if (!actions?.length || namesTeammateOutsideApp(p.name)) continue;
     out.push({ name: p.name, source: "wuwa_calc", rotation: { id: `wuwa-${out.length}`, name: p.name, description: p.description, duration: null, actions: withIds(actions) } });
   }
   return out;

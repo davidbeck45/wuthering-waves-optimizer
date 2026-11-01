@@ -57,6 +57,8 @@ export interface SyncTeamReport {
   rileyKey: string | null;
   /** his team DPS for that row (DPS × 26 before his 7bcbb24) */
   total: number | null;
+  /** his team Avg DPR for that row (the four rotations' average damage, the table's default figure); null when unknown */
+  dpr?: number | null;
   deltas: ActionDelta[];
   /** the enemy settings that moved (negative-status stacks read off the run) */
   enemyDeltas: EnemyDelta[];
@@ -145,6 +147,8 @@ export const humanKey = (key: string): string =>
 export interface SolvedBest {
   /** Riley's team DPS */
   total: number;
+  /** Riley's team Avg DPR, when the solve carries its rotations' totals */
+  dpr?: number | null;
   /** whatever `importInto` needs to re-import that row (a row key on the page, a traced run headless) */
   ref: unknown;
 }
@@ -213,6 +217,7 @@ export async function runSync(deps: SyncDeps): Promise<SyncReport> {
         reason: null,
         rileyKey: best.key,
         total: best.total,
+        dpr: best.dpr ?? null,
         deltas,
         enemyDeltas,
         durationDelta,

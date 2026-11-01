@@ -178,8 +178,8 @@ export function parsePresetName(name: string | null | undefined, options: Preset
     // a team's head carries the main DPS's state ("Aemeath S6R5 DPS"); an old stock team names one tier for all
     const dpsLabel = dps ?? ownLabel;
     if (dpsLabel && teamTier && teamTier !== dpsLabel) {
-      chips.push({ kind: "dps", label: `DPS ${dpsLabel}`, title: `${mainName} solved at ${describeState(dpsLabel)}` });
-      chips.push({ kind: "team", label: `team ${teamTier}`, title: `the other members at ${teamTier.split("/").map(describeState).join(" / ")}` });
+      chips.push({ kind: "dps", label: `main DPS ${dpsLabel}`, title: `${mainName} solved at ${describeState(dpsLabel)}` });
+      chips.push({ kind: "team", label: `supports ${teamTier.replace(/\//g, " / ")}`, title: `the other members at ${teamTier.split("/").map(describeState).join(" / ")}` });
     } else if (dpsLabel || tier) {
       const label = dpsLabel ?? tier ?? "";
       chips.push({ kind: "tier", label, title: `every member at ${describeState(label)}` });
@@ -187,12 +187,12 @@ export function parsePresetName(name: string | null | undefined, options: Preset
   } else {
     if (ownLabel) chips.push({ kind: "own", label: ownLabel, title: `${mainName} at ${describeState(ownLabel)}${weapon ? `, ${weapon}` : ""}` });
     if (dps && teamTier) {
-      if (dps !== ownLabel) chips.push({ kind: "dps", label: `DPS ${dps}`, title: `the team's main DPS at ${describeState(dps)}` });
-      chips.push({ kind: "team", label: `team ${teamTier}`, title: `the team's other members at ${teamTier.split("/").map(describeState).join(" / ")}` });
+      if (dps !== ownLabel) chips.push({ kind: "dps", label: `main DPS ${dps}`, title: `the team's main DPS at ${describeState(dps)}` });
+      chips.push({ kind: "team", label: `supports ${teamTier.replace(/\//g, " / ")}`, title: `the team's other members at ${teamTier.split("/").map(describeState).join(" / ")}` });
     } else if (tier && tier !== ownLabel) {
       chips.push({ kind: "tier", label: tier, title: `solved with every member at ${describeState(tier)}` });
     } else if (dps && dps !== ownLabel) {
-      chips.push({ kind: "dps", label: `DPS ${dps}`, title: `the team's main DPS at ${describeState(dps)}` });
+      chips.push({ kind: "dps", label: `main DPS ${dps}`, title: `the team's main DPS at ${describeState(dps)}` });
     }
   }
   if (account) chips.push(accountChip(accountNote));

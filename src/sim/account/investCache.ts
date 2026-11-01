@@ -5,7 +5,7 @@
 import type { InvestPlan } from "./investPlan";
 
 /** bump when InvestItem's shape or the plan's rules change */
-export const INVEST_CACHE_VERSION = 1;
+export const INVEST_CACHE_VERSION = 2; // 2: items carry the ER shortfall (erGap) their own gain is read against
 export const INVEST_CACHE_KEY = "wtplus:account:invest";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;

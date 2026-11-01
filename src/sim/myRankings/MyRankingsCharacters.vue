@@ -70,6 +70,8 @@
           <td class="cell--dmg">
             <div class="mr-dmg">
               <span class="mr-dmg__value" data-test-my-rankings-damage>{{ c.best ? fmt(c.best.avgDamage) : "—" }}</span>
+              <!-- a phone has no column header: the figure says what it is -->
+              <span v-if="c.best" class="mr-dmg__unit md:hidden" data-test-my-rankings-damage-unit>avg DMG / rotation</span>
               <span class="mr-bar" aria-hidden="true"><span :style="{ width: barWidth(c) }"></span></span>
             </div>
           </td>
@@ -488,6 +490,14 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
   font-weight: 700;
   font-size: 0.92rem;
 }
+.mr-dmg__unit {
+  margin-top: -0.3rem;
+  text-align: right;
+  font-size: 0.6rem;
+  line-height: 1.2;
+  color: oklch(var(--bc) / 0.55);
+  white-space: nowrap;
+}
 .mr-bar {
   display: block;
   height: 0.3rem;
@@ -710,6 +720,25 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
     flex-basis: 100%;
     min-width: 0;
     padding-left: 1.9rem;
+  }
+  /* the narrowest phones at 130 % text: the weapon takes the second line whole (its name was cut to "Ever… / Pole…"
+     in a 60 px cell), the upgrade and the chevron the line under it */
+  @media (max-width: 379px) {
+    .mr-row > td.cell--weapon {
+      flex-basis: 100%;
+    }
+    .mr-weapon__name {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cell--upgrade {
+      margin-left: 1.9rem;
+    }
+    .cell--chev {
+      margin-left: auto;
+    }
   }
   .row--panel {
     padding: 0 0 0.5rem;

@@ -37,8 +37,11 @@
         <span class="max-sm:hidden">{{ busy ? "Scoring…" : "Recompute" }}</span>
       </button>
       <p class="wv-head__sub">
-        What each signature, standard 5★ and 4★ weapon is worth on your own builds and teams — every set-up character at
-        once, scored by this app's engine on their best rotation (enemy level 100 · 20 % RES).
+        <span class="max-md:hidden">
+          What each signature, standard 5★ and 4★ weapon is worth on your own builds and teams — every set-up character at
+          once, scored by this app's engine on their best rotation (enemy level 100 · 20 % RES).
+        </span>
+        <span class="md:hidden">What each weapon adds to your own builds and teams, this app's engine.</span>
       </p>
     </header>
 
@@ -86,8 +89,8 @@
           </div>
           <div class="wv-kpi">
             <span class="wv-kpi__label">Characters scored</span>
-            <span class="wv-kpi__value">{{ rows.length }}<span class="wv-kpi__of"> / {{ setUpCount }}</span></span>
-            <span class="wv-kpi__sub">{{ notSetUp.length }} without a weapon</span>
+            <span class="wv-kpi__value" data-test-weapons-kpi-scored>{{ rows.length }}<span v-if="rows.length < setUpCount" class="wv-kpi__of"> / {{ setUpCount }}</span></span>
+            <span class="wv-kpi__sub">{{ notSetUp.length ? `${notSetUp.length} more ${notSetUp.length === 1 ? "has" : "have"} no weapon yet` : "every character with a weapon" }}</span>
           </div>
         </div>
 
@@ -907,7 +910,8 @@ onMounted(() => {
 }
 @media (max-width: 767px) {
   .wv-page {
-    padding: 0.9rem 0.75rem 2rem;
+    /* the last row clears the Ask button */
+    padding: 0.9rem 0.75rem calc(4.5rem + env(safe-area-inset-bottom));
   }
   .wv-head {
     gap: 0.5rem 0.6rem;
@@ -928,7 +932,9 @@ onMounted(() => {
     padding: 0.4rem 0.55rem;
   }
   .wv-head__sub {
-    display: none;
+    order: 4;
+    margin: 0;
+    font-size: 0.75rem;
   }
   .wv-kpis {
     gap: 0.5rem;
@@ -968,9 +974,14 @@ onMounted(() => {
     display: none;
   }
 }
+/* the narrowest phones keep the 2 × 2 grid (one tile a row stacked ~470 px before the first bar); the tiles drop
+   their portrait, the line under the figure names the character */
 @media (max-width: 380px) {
-  .wv-kpis {
-    grid-template-columns: minmax(0, 1fr);
+  .wv-kpi__body :deep(.wt-avatar) {
+    display: none;
+  }
+  .wv-kpi {
+    padding: 0.55rem 0.6rem;
   }
 }
 </style>

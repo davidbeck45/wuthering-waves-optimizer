@@ -121,23 +121,26 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
     border-bottom: 1px solid var(--line);
     background: var(--bg);
   }
-  .skittle-root .wt-toolbar__hint { font: 12px var(--sans); color: var(--dim); }
+  .skittle-root .wt-toolbar__hint { font: 12px var(--sans); color: var(--dim); min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* (2026-10-31) the sheet drops from its header — the toolbar, `--wt-sheet-top` measured by controller.ts
+     `setSide` — rather than rising from the screen's bottom edge: the header used to sit in the toolbar near the
+     top and the body (one search box, 89 px) at the bottom, over the v3 bottom bar, with the dimmed list between */
   .skittle-root:not(.wt-detail) .tclayout.stack > .tcside {
     display: none;
     position: fixed !important;
     left: 0;
     right: 0;
-    bottom: 0;
-    top: auto;
+    top: var(--wt-sheet-top, 8rem);
+    bottom: auto;
     width: auto !important;
-    max-height: 78vh !important;
+    max-height: calc(100dvh - var(--wt-sheet-top, 8rem) - var(--nav-bottom-h, 0px) - 0.5rem) !important;
     overflow: auto;
     z-index: 70;
     margin: 0 !important;
-    padding: 0.75rem 12px 1.25rem;
+    padding: 0.5rem 12px 1rem;
     background: var(--surface);
-    border-top: 1px solid var(--line-2);
-    border-radius: var(--r) var(--r) 0 0;
+    border-bottom: 1px solid var(--line-2);
+    border-radius: 0 0 var(--r) var(--r);
     box-shadow: var(--sh-2);
   }
   .skittle-root.wt-side-open:not(.wt-detail) .tclayout.stack > .tcside { display: block; }
@@ -211,30 +214,16 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
    his `.tcbody`): while the root carries `wt-cards` his grid and its "N teams" heading are hidden (the
    card list has its own sticky heading), and the 420 px he keeps under the table for the last rows to
    scroll up is not needed under a list. His aside (the "Search & compare" sheet) is untouched. */
-.skittle-root .wt-cards-host,
-.skittle-root .wt-toolbar__cards { display: none; }
+.skittle-root .wt-cards-host { display: none; }
 /* a desktop keeps his grid and borrows the host only for the empty state his grid lacks (`wt-cards-empty`) */
 .skittle-root.wt-cards-empty:not(.wt-detail) .wt-cards-host { display: block; width: 100%; max-width: 40rem; }
 @media (max-width: 767px) {
   .skittle-root.wt-cards:not(.wt-detail) .wt-cards-host { display: block; width: 100%; }
-  /* the toolbar carries the list's count and its DPR / DPS switch instead of the hint (not while the sheet is
-     open: its ✕ needs the room) */
-  .skittle-root.wt-cards:not(.wt-detail):not(.wt-side-open) .wt-toolbar__cards { display: flex; min-width: 0; flex: 1; }
-  .skittle-root.wt-cards:not(.wt-detail):not(.wt-side-open) .wt-toolbar__hint { display: none; }
-  .skittle-root.wt-cards:not(.wt-detail) [data-test-rankings-filters] { flex: none; }
-  /* the button says "Filters" beside the list's heading, "Search & compare" over his own grid */
-  .skittle-root .wt-toolbar__icon { display: none; width: 1rem; height: 1rem; }
-  .skittle-root .wt-toolbar__short { display: none; }
-  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__icon { display: block; }
-  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__short { display: inline; }
-  .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__long { display: none; }
-  /* the narrowest phones at 130 % text: the icon alone, so "279 teams" keeps its room (the word stays for screen readers) */
-  @media (max-width: 389px) {
-    .skittle-root.wt-cards:not(.wt-detail) [data-test-rankings-filters] { padding-left: 0.6rem; padding-right: 0.6rem; }
-    .skittle-root.wt-cards:not(.wt-detail) .wt-toolbar__short {
-      position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
-    }
-  }
+  /* (2026-10-31) over the cards the toolbar row is gone until the sheet opens: the account bar's chip row starts
+     with Search, and the list's count and DPR / DPS switch head the list itself (RankingsCards.vue), scrolling away
+     with it — about four cards fit at 412 px and 130 % text instead of 2.8. Open, the toolbar is the sheet's header. */
+  .skittle-root.wt-cards:not(.wt-detail):not(.wt-side-open) .wt-toolbar { display: none; }
+  .skittle-root .wt-toolbar__icon { width: 1rem; height: 1rem; }
   .skittle-root.wt-cards:not(.wt-detail) .tcbody > .summary-label { display: none; }
   /* his grid stays laid out, only clipped to nothing: his drawWindow() measures the row pitch once per visit
      off the rows it draws, and under display: none that read 0 (his rows are display: contents) — the desktop
@@ -268,4 +257,26 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
 }
 @media (min-width: 768px) {
   .skittle-root .wt-import__short { display: none; }
+}
+
+/* (2026-10-31) Phones: the detail page's Equipment table shows one member at a time — the member strip above is its
+   switch (RankingsMemberStrip.vue writes `data-wt-col` on the root: the chosen member's cell, child 2–5 of each of
+   his `display: contents` rows) — as label : value rows the width of the screen. It used to show 1.5 member columns
+   of seven rows scrolling sideways. His own cells and their pick menus are untouched; only the others are hidden. */
+@media (max-width: 767px) {
+  .skittle-root.wt-detail[data-wt-col] .rtable.loadout {
+    grid-template-columns: minmax(5.25rem, max-content) minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+  }
+  .skittle-root.wt-detail[data-wt-col] .rtable.loadout .rtrow > .c:not(.lbl) { white-space: normal; overflow-wrap: anywhere; }
+  .skittle-root.wt-detail[data-wt-col="2"] .rtable.loadout .rtrow > .c:not(.lbl):not(:nth-child(2)),
+  .skittle-root.wt-detail[data-wt-col="3"] .rtable.loadout .rtrow > .c:not(.lbl):not(:nth-child(3)),
+  .skittle-root.wt-detail[data-wt-col="4"] .rtable.loadout .rtrow > .c:not(.lbl):not(:nth-child(4)),
+  .skittle-root.wt-detail[data-wt-col="5"] .rtable.loadout .rtrow > .c:not(.lbl):not(:nth-child(5)) { display: none; }
+  /* 40 px tap targets at 130 % text: Back (43 × 19), "+ rotations" (79 × 14), the build link (37 × 31) */
+  .skittle-root #backLink { display: inline-flex; align-items: center; min-height: 40px; padding-right: 0.5rem; }
+  .skittle-root .wt-import__opt { min-height: 40px; }
+  .skittle-root .wt-import .btn-xs { min-height: 40px; height: 40px; }
+  .skittle-root .wt-import__build { min-width: 40px; justify-content: center; }
 }

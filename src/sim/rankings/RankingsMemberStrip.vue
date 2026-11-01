@@ -1,12 +1,18 @@
 <template>
   <Teleport :to="host">
     <div v-if="view" class="wt-strip" role="list" aria-label="This team against your account" data-test-rankings-strip>
+      <!-- on a phone a member is also the switch for Riley's Equipment table below, which shows one member at a time
+           (skittle-theme.css, `data-wt-col` on his root) instead of 1.5 columns scrolling sideways -->
       <div
         v-for="m in members"
         :key="m.slot"
         class="wt-strip__m"
+        :class="{ 'wt-strip__m--on': m.slot === selectedSlot }"
         role="listitem"
+        :aria-current="m.slot === selectedSlot ? 'true' : undefined"
+        :title="phone ? `Show ${m.label}'s gear in the Equipment table` : undefined"
         data-test-rankings-strip-member
+        @click="selectedSlot = m.slot"
         :data-name="m.name"
         :data-main="m.mainDps ? '1' : '0'"
         :data-own="m.status.kind"
@@ -43,7 +49,7 @@
 // the host in his topbar beside Back and publishes `rankingsDetail`): per member — main DPS first — the
 // portrait, the weapon the row runs and its investment, the account's own S/R and whether that character
 // has a build (echoes) in the calculator, all from the Account State (src/sim/account).
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import type { AccountState } from "../account/accountState";
 import { rankingsDetail, stripHost } from "./controller";
 import { buildStatus, ownByRileyName, ownStatus, type CardMember, type OwnLike, type OwnStatus } from "./phoneCards";
@@ -83,6 +89,39 @@ const members = computed(() =>
     return { ...m, appKey: own?.key ?? m.appKey, own, status: ownStatus(m, own, view.value!.mine), build: buildStatus(own), icon: icons.value[m.weapon] ?? "" };
   }),
 );
+
+// ---- phones: which member's column Riley's Equipment table shows (the main DPS until another is tapped). His columns
+// run in his slot order (support first): `slot` counts from the end, so the member's column is `count - slot`, and its
+// cell is child `count - slot + 2` of each row (the label is child 1).
+const selectedSlot = ref<number | null>(null);
+watch(
+  () => view.value?.key,
+  () => {
+    selectedSlot.value = view.value?.members.find((m) => m.mainDps)?.slot ?? view.value?.members[0]?.slot ?? null;
+  },
+  { immediate: true },
+);
+watch(
+  [selectedSlot, () => view.value?.members.length ?? 0],
+  ([slot, count]) => {
+    const root = host.closest<HTMLElement>(".skittle-root");
+    if (!root) return;
+    if (slot == null || !count) root.removeAttribute("data-wt-col");
+    else root.setAttribute("data-wt-col", String(count - slot + 2));
+  },
+  { flush: "post" },
+);
+const phone = ref(false);
+let media: MediaQueryList | null = null;
+const onMedia = (): void => {
+  phone.value = !!media?.matches;
+};
+onMounted(() => {
+  media = window.matchMedia("(max-width: 767px)");
+  onMedia();
+  media.addEventListener("change", onMedia);
+});
+onBeforeUnmount(() => media?.removeEventListener("change", onMedia));
 
 function ownText(s: OwnStatus): string {
   if (s.kind === "missing") return "not owned";
@@ -248,7 +287,16 @@ html[data-theme-style="light"] .wt-build--partial {
     flex-direction: column;
     align-items: center;
     gap: 0.35rem;
+    padding: 0.35rem 0.15rem 0.45rem;
+    border-radius: 0.75rem;
     text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* the member whose gear the Equipment table shows */
+  .wt-strip__m--on {
+    background: oklch(var(--p) / 0.1);
+    box-shadow: inset 0 -3px 0 oklch(var(--p));
   }
   .wt-strip__body {
     width: 100%;

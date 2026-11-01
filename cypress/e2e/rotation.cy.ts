@@ -118,7 +118,9 @@ describe("rotation view", () => {
 
   it("opens a Team rankings row from its detail page's Rotation button", () => {
     cy.viewport(1280, 900);
-    cy.visit("/rankings", seed());
+    // Riley's default tier: an account that is set up opens /rankings on My account (tierMemory.ts), solved in workers
+    const rileyTier = (win: Window): void => win.localStorage.setItem("wtplus:rankings:tier:v1", "");
+    cy.visit("/rankings", seed(rileyTier));
     // the first row without an unreleased member (his row keys move with his commits: never pinned here)
     cy.get(".trow .gotodetail[data-team]", { timeout: 90000 })
       .should("have.length.greaterThan", 1)
@@ -143,7 +145,7 @@ describe("rotation view", () => {
   it("keeps the /rankings detail's Rotation and Import buttons on a phone screen", () => {
     cy.viewport(412, 915);
     cy.visit("/rankings", {
-      ...seed(),
+      ...seed((win) => win.localStorage.setItem("wtplus:rankings:tier:v1", "")), // Riley's default tier (tierMemory.ts)
       onLoad(win: Window) {
         const style = win.document.createElement("style");
         style.textContent = "html { font-size: 130%; }";

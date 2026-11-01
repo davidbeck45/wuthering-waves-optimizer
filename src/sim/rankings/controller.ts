@@ -31,7 +31,7 @@ interface Mods {
 
 const TEMPLATE = `
   <div class="wt-toolbar">
-    <button type="button" class="btn btn-sm btn-primary" data-test-rankings-filters><svg viewBox="0 0 24 24" class="wt-toolbar__icon" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" stroke-linecap="round"/></svg><span class="wt-toolbar__long">Search &amp; compare</span><span class="wt-toolbar__short">Filters</span></button>
+    <button type="button" class="btn btn-sm btn-primary" data-test-rankings-filters><svg viewBox="0 0 24 24" class="wt-toolbar__icon" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5" stroke-linecap="round"/></svg><span>Search &amp; compare</span></button>
     <span class="wt-toolbar__hint">weapons · echoes · sequences</span>
     <button type="button" class="wt-sheet-close btn btn-sm btn-circle btn-ghost" aria-label="Close" data-test-rankings-filters-close>&#x2715;</button>
   </div>
@@ -63,21 +63,32 @@ let overlayStatus!: HTMLElement;
 let overlayCount!: HTMLElement;
 let overlayFill!: HTMLElement;
 
-/** phones: Riley's aside lives in a bottom sheet (skittle-theme.css) toggled from the toolbar */
-const openSide = (open: boolean): void => {
-  root?.classList.toggle("wt-side-open", open);
-};
+/** phones: Riley's aside (his search and its gear / compare bubbles) is a sheet docked right under the toolbar, which
+ *  shows only while it is open, as the sheet's header with ✕ (skittle-theme.css); the account bar's Search button opens
+ *  it. The sheet's top is measured off the header, so header and body always touch. */
+function setSide(el: HTMLElement | null, open: boolean): void {
+  if (!el) return;
+  el.classList.toggle("wt-side-open", open);
+  if (!open) return;
+  const head = el.querySelector<HTMLElement>(".wt-toolbar");
+  el.style.setProperty("--wt-sheet-top", `${Math.round(head?.getBoundingClientRect().bottom ?? 0)}px`);
+  el.querySelector<HTMLInputElement>(".tcside #optionSearch")?.focus({ preventScroll: true });
+}
+const openSide = (open: boolean): void => setSide(root, open);
+/** The account bar's Search button (phones): open or close Riley's aside. */
+export function toggleRankingsSearch(open?: boolean): void {
+  if (!root) return;
+  setSide(root, open ?? !root.classList.contains("wt-side-open"));
+}
 const onKeydown = (e: KeyboardEvent): void => { if (e.key === "Escape") openSide(false); };
 
 function buildDom(): HTMLElement {
   const el = document.createElement("div");
   el.className = "skittle-root";
   el.innerHTML = TEMPLATE;
-  // Wuthering Tools+: a phone's card list puts its count and DPR / DPS switch in this toolbar (RankingsCards.vue)
-  el.querySelector(".wt-toolbar__hint")!.after(cardsHeadHost());
-  el.querySelector("[data-test-rankings-filters]")!.addEventListener("click", () => el.classList.toggle("wt-side-open"));
-  el.querySelector(".wt-backdrop")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
-  el.querySelector("[data-test-rankings-filters-close]")!.addEventListener("click", () => el.classList.remove("wt-side-open"));
+  el.querySelector("[data-test-rankings-filters]")!.addEventListener("click", () => setSide(el, !el.classList.contains("wt-side-open")));
+  el.querySelector(".wt-backdrop")!.addEventListener("click", () => setSide(el, false));
+  el.querySelector("[data-test-rankings-filters-close]")!.addEventListener("click", () => setSide(el, false));
   app = el.querySelector<HTMLElement>("#app")!;
   backLink = el.querySelector<HTMLElement>("#backLink")!;
   overlay = el.querySelector<HTMLElement>("#loading")!;
@@ -456,7 +467,9 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
         const row = solved?.rows?.[0];
         if (!row) { out.set(key, null); continue; }
         const combo = row.map((p: any, i: number) => S.comboOf((members[i] as any).loadout, p));
-        out.set(key, { total: Number(solved!.scores?.[0]?.total ?? 0), ref: `${key}-${combo.map((c: any) => c.key).join("-")}` });
+        const score = solved!.scores?.[0] as { total?: number; sectionTotals?: number[]; seconds?: number } | undefined;
+        const dpr = score?.sectionTotals?.length ? teamFigureOf({ sectionTotals: score.sectionTotals, seconds: Number(score.seconds) || 1 }, "dpr") : null;
+        out.set(key, { total: Number(score?.total ?? 0), dpr, ref: `${key}-${combo.map((c: any) => c.key).join("-")}` });
       }
       return out;
     });
@@ -620,12 +633,6 @@ let cardsEl: HTMLElement | null = null;
 export function cardsHost(): HTMLElement {
   cardsEl ??= Object.assign(document.createElement("div"), { className: "wt-cards-host" });
   return cardsEl;
-}
-let cardsHeadEl: HTMLElement | null = null;
-/** The element RankingsCards.vue teleports its heading into: in the phone toolbar, beside "Search & compare". */
-export function cardsHeadHost(): HTMLElement {
-  cardsHeadEl ??= Object.assign(document.createElement("div"), { className: "wt-toolbar__cards" });
-  return cardsHeadEl;
 }
 /** RankingsCards.vue says it is mounted (or gone): only then does a phone trade his grid for the cards. */
 export function claimCards(on: boolean): void {

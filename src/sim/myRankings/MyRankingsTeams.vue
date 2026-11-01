@@ -20,6 +20,12 @@
       </div>
     </div>
 
+    <!-- the list counts teams with a member who has no weapon (scored on the rest); the KPIs and /account count only
+         teams you can field, so the difference is said here -->
+    <p v-if="unarmedCount" class="mr-note" data-test-my-rankings-unarmed-count>
+      {{ unarmedCount }} of these {{ unarmedCount === 1 ? "includes a member" : "include a member" }} with no weapon yet (marked "no weapon"), so
+      you can't field {{ unarmedCount === 1 ? "it" : "them" }} as {{ unarmedCount === 1 ? "it stands" : "they stand" }}.
+    </p>
     <p v-if="!teams.length && !pending" class="mr-note" data-test-my-rankings-no-teams>
       No team to rank yet: a team needs actions and all three members present in your data. Import one from the
       wuwa_calc rankings page or Teams › List Presets, then recompute.
@@ -68,7 +74,7 @@
           </td>
           <td class="tcell--dmg">
             <div class="mr-tdmg">
-              <span class="mr-tdmg__value">{{ fmt(t.avgDamage) }}</span>
+              <span class="mr-tdmg__value">{{ fmt(t.avgDamage) }}<span class="mr-tdmg__unit md:hidden"> team avg DMG / rotation</span></span>
               <span class="mr-stack" aria-hidden="true">
                 <span class="mr-stack__fill" :style="{ width: `${maxDamage > 0 ? Math.max(2, (t.avgDamage / maxDamage) * 100) : 0}%` }">
                   <span
@@ -172,6 +178,7 @@ const counts = computed<Record<Filter, number>>(() => ({
   yours: rows.value.filter((t) => t.source === "yours").length,
   presets: rows.value.filter((t) => t.source !== "yours").length,
 }));
+const unarmedCount = computed(() => filtered.value.filter((t) => t.unarmed.length).length);
 const filtered = computed(() => rows.value.filter((t) => filter.value === "all" || (filter.value === "yours" ? t.source === "yours" : t.source !== "yours")));
 const visible = computed(() => (showAll.value ? filtered.value : filtered.value.slice(0, LIMIT)));
 const maxDamage = computed(() => Math.max(0, ...rows.value.map((t) => t.avgDamage)));

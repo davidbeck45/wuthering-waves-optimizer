@@ -117,7 +117,7 @@ import WeaponIcon from "../display/WeaponIcon.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { pct } from "../myRankings/format";
-import { INVEST_KIND_LABELS, investChange, sortInvestItems, type InvestItem, type InvestKind } from "./investPlan";
+import { erGainNote, INVEST_KIND_LABELS, investChange, sortInvestItems, type InvestItem, type InvestKind } from "./investPlan";
 import type { RunStatus } from "./useAccountData";
 
 const props = defineProps<{ items: InvestItem[] | null; status: RunStatus; rankingReady: boolean; owned: string[]; investBy: "own" | "team" }>();
@@ -176,12 +176,16 @@ function subText(item: InvestItem): string {
         : item.kind === "refine"
           ? `${/R\d$/.exec(item.from)?.[0] ?? item.from} → ${item.label}` // the tag already names the weapon
           : `${item.from} → ${item.to}`;
-  return [what, other].filter(Boolean).join(" · ");
+  // an ER roll's own gain is the shortfall it closes; the team figure ignores Energy Regen (erGainNote)
+  const er = erGainNote(item) ? `closes a ${item.erGap!.toFixed(1)}-pt ER gap${item.team ? " · team ignores ER" : ""}` : "";
+  return [what, other, er].filter(Boolean).join(" · ");
 }
 function rowTitle(item: InvestItem): string {
   const lines = [`${characterShortName(item.characterId)} — ${INVEST_KIND_LABELS[item.kind]}: ${investChange(item)}`, `Own, on "${parsePresetName(item.rotation, { owned: props.owned }).title}": ${pct(item.gain)}`];
   if (item.team) lines.push(`Team "${parsePresetName(item.team.teamName, { owned: props.owned }).title}": ${pct(item.team.gain)}`);
   else if (item.teamNote) lines.push(`No team figure: ${item.teamNote}`);
+  const er = erGainNote(item);
+  if (er) lines.push(er);
   return lines.join("\n");
 }
 </script>

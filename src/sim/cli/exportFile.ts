@@ -4,6 +4,7 @@
 import { readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
+import { applyMigrationTransforms, parseMetaDataVersion } from "../../migrations";
 import { parseExport, parseStore, type ExportFile } from "./exportShape";
 
 // the pure half (type + parser) lives in exportShape.ts so the browser can use it; re-exported here for the CLI
@@ -23,8 +24,37 @@ export function findNewestExport(dir = join(homedir(), "Downloads")): string | n
   return newest?.path ?? null;
 }
 
+const STORE_KEYS = ["character", "inventory", "teamRotations"] as const;
+
+/** An export with each store brought to the app's current schema: every migration transform newer than the file's
+ *  `meta.version`, the way Settings › Import does (`utils/settingsBackup.ts` parseStorePayload). The app migrates its
+ *  own localStorage at boot (`runMigrations`), so a raw v9 file read as-is loses every key a later migration renamed
+ *  (010: Cartethyia's "BellBorne eochelone" team buff, Rover Aero's S5 node) and scores lower than the pages do.
+ *  Pure: returns a new object, a string store stays a string. A v1 file (no meta) is migrated from version 1. */
+export function migrateExport(raw: unknown): unknown {
+  if (raw == null || typeof raw !== "object") return raw;
+  const file = raw as Record<string, any>;
+  const from = file.meta ? parseMetaDataVersion(file.meta) : 1;
+  const nested = file.data != null && typeof file.data === "object";
+  const data = { ...((nested ? file.data : file) as Record<string, any>) };
+  for (const key of STORE_KEYS) {
+    const value = data[key];
+    if (typeof value === "string") {
+      try {
+        data[key] = applyMigrationTransforms(value, from);
+      } catch {
+        // an unreadable store stays as it was; parseStore falls back on it
+      }
+    } else if (value != null && typeof value === "object") {
+      data[key] = JSON.parse(applyMigrationTransforms(JSON.stringify(value), from));
+    }
+  }
+  return nested ? { ...file, data } : data;
+}
+
+/** Reads an export from disk at the app's current schema (`migrateExport`); `version` stays the file's own. */
 export function readExport(path: string): ExportFile {
-  return parseExport(JSON.parse(readFileSync(path, "utf8")), path);
+  return parseExport(migrateExport(JSON.parse(readFileSync(path, "utf8"))), path);
 }
 
 /** `--export <file>`, else $WUWA_EXPORT, else the newest download. */

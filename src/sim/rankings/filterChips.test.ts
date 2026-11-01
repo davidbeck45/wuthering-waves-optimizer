@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { chipGroups, hashText, pickerOptions, readResonatorFilters, RILEY_TIERS, rosterOf, withResonatorFilter, type OwnedInfo } from "./filterChips";
+import { chipGroups, hashText, importableOnly, namesNotInApp, pickerOptions, withImportableOnly, readResonatorFilters, RILEY_TIERS, rosterOf, withResonatorFilter, type OwnedInfo } from "./filterChips";
 
 const member = (name: string, mainDps: boolean, tier = 0) => ({ name, color: "#888888", mainDps, loadout: { resonator: { tier } } });
 // a miniature of his TEAMS: Suoming leads her own team and supports Hsin; Electro Rover is a free form
@@ -82,5 +82,21 @@ describe("rankings filter chips", () => {
     // his default (s0r1) is written as no tc= at all; My account is the bar's own button
     const want = codes.filter((c) => c.cost !== "mine").map((c) => (c.cost === "s0r1" ? "" : c.code));
     expect(RILEY_TIERS.map((t) => t.code).sort()).toEqual(want.sort());
+  });
+
+  it("hides teams with a resonator the app lacks through his own Without list, and lifts only those names again", () => {
+    const withLily = rosterOf({ ...TEAMS, t3: [member("Lily", false), member("Lynae", false), member("Hsin", true)] });
+    const missing = namesNotInApp(withLily, (name) => name !== "Lily");
+    expect(missing).toEqual(["Lily"]);
+    const start = new URLSearchParams("tc=mine&x=Mornye");
+    expect(importableOnly(start, withLily, missing)).toBe(false);
+    const on = withImportableOnly(start, withLily, missing, true);
+    expect(on.get("x")).toBe("Mornye,Lily");
+    expect(on.get("tc")).toBe("mine");
+    expect(importableOnly(on, withLily, missing)).toBe(true);
+    const off = withImportableOnly(on, withLily, missing, false);
+    expect(off.get("x")).toBe("Mornye");
+    // nothing to hide: the chip never reads as on
+    expect(importableOnly(on, withLily, [])).toBe(false);
   });
 });

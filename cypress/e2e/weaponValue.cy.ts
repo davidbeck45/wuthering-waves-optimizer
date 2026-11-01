@@ -67,7 +67,9 @@ describe("weapon value", () => {
     // Ciaccona does not hold Woodland Aria: her bar is its R1, with the further refinements behind it
     cy.get('[data-test-weapons-row="Ciaccona"]').should("contain.text", "Woodland Aria").and("contain.text", "not held");
     cy.get('[data-test-weapons-row="Ciaccona"] [data-test-weapons-value]').invoke("text").should("match", PCT);
-    cy.get("[data-test-weapons-kpis]").should("contain.text", "3").and("contain.text", "/ 3").and("contain.text", "1 without a weapon");
+    // every set-up character scored: the figure stands alone ("3 / 3" next to "1 without a weapon" read as a contradiction)
+    cy.get("[data-test-weapons-kpi-scored]").should("have.text", "3");
+    cy.get("[data-test-weapons-kpis]").should("contain.text", "1 more has no weapon yet");
 
     // own scope: the whisker (stats only) appears on the signature she does not hold
     cy.get('[data-test-weapons-scope="own"]').click();

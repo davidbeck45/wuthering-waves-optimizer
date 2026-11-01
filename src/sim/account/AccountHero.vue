@@ -10,6 +10,7 @@
           <div class="acc-hero__figure">
             <span class="acc-hero__value" data-test-account-hero-damage>{{ compact(best.avgDamage) }}</span>
             <span class="acc-hero__unit">per rotation<template v-if="best.dps"> · {{ compact(best.dps) }} DPS</template></span>
+            <span class="acc-hero__engine" data-test-account-hero-engine>this app's engine · your builds</span>
           </div>
         </div>
         <div class="acc-hero__name">
@@ -35,14 +36,23 @@
             variant="outline"
             size="xs"
             label="Explain this team" />
-          <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash(best.characterIds) }" class="acc-hero__link" data-test-account-hero-rankings>
-            This team at my account
+          <!-- the same three in Riley's engine read lower (his ChemX32 substats, not these echoes): the link names it -->
+          <RouterLink
+            :to="{ path: '/rankings', hash: rankingsMineHash(best.characterIds) }"
+            class="acc-hero__link"
+            title="Riley31415's wuwa_calc engine at your sequences and weapons, on his ChemX32 substats unless you pick My builds"
+            data-test-account-hero-rankings>
+            This team in wuwa_calc
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </RouterLink>
+          <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="acc-hero__link" data-test-account-hero-rankings-best>
+            wuwa_calc's best teams at my account
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </RouterLink>
           <!-- the calculator shows the same character with the player's own enemy and saved rotation, so the numbers
                differ: name the rotation and the enemy here -->
           <span v-if="kpis.strongest" class="acc-hero__strongest" :title="strongestTitle" data-test-account-hero-strongest>
-            Strongest: <b>{{ kpis.strongest.name }}</b> {{ compact(kpis.strongest.damage ?? 0) }} per rotation
+            Strongest character: <b>{{ kpis.strongest.name }}</b> {{ compact(kpis.strongest.damage ?? 0) }} per rotation
             <span class="acc-hero__strongest-on">on {{ strongestRotation }} · enemy Lv 100</span>
           </span>
         </div>
@@ -63,25 +73,25 @@
         <div class="kpi__label"><span class="max-md:hidden">Characters set up</span><span class="md:hidden">Set up</span></div>
         <div class="kpi__value">{{ kpis.owned }}<span class="kpi__of">/ {{ kpis.characters }}</span></div>
         <div class="kpi__meter"><span :style="{ width: ratio(kpis.owned, kpis.characters) }"></span></div>
-        <div class="kpi__sub">{{ kpis.built }} fully built · weapon + 5 echoes</div>
+        <div class="kpi__sub"><span class="max-md:hidden">{{ kpis.built }} fully built · weapon + 5 echoes</span><span class="md:hidden">with a weapon</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="s6">
         <div class="kpi__label"><span class="max-md:hidden">At S6</span><span class="md:hidden">S6</span></div>
         <div class="kpi__value">{{ kpis.s6 }}<span class="kpi__of">/ {{ kpis.owned }}</span></div>
         <div class="kpi__meter kpi__meter--gold"><span :style="{ width: ratio(kpis.s6, kpis.owned) }"></span></div>
-        <div class="kpi__sub">of your set-up characters</div>
+        <div class="kpi__sub"><span class="max-md:hidden">of your set-up characters</span><span class="md:hidden">of {{ kpis.owned }} set up</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="r5">
         <div class="kpi__label"><span class="max-md:hidden">Weapon at R5</span><span class="md:hidden">R5</span></div>
         <div class="kpi__value">{{ kpis.r5 }}<span class="kpi__of">/ {{ kpis.owned }}</span></div>
         <div class="kpi__meter kpi__meter--gold"><span :style="{ width: ratio(kpis.r5, kpis.owned) }"></span></div>
-        <div class="kpi__sub">worn weapons fully refined</div>
+        <div class="kpi__sub"><span class="max-md:hidden">worn weapons fully refined</span><span class="md:hidden">weapons at R5</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="echoes">
         <div class="kpi__label"><span class="max-md:hidden">Echoes equipped</span><span class="md:hidden">Echoes</span></div>
         <div class="kpi__value">{{ kpis.echoes.equipped }}<span class="kpi__of">/ {{ kpis.echoes.total }}</span></div>
         <div class="kpi__meter"><span :style="{ width: ratio(kpis.echoes.equipped, kpis.echoes.total) }"></span></div>
-        <div class="kpi__sub">of the echoes in your inventory</div>
+        <div class="kpi__sub"><span class="max-md:hidden">of the echoes in your inventory</span><span class="md:hidden">equipped</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="teams">
         <div class="kpi__label"><span class="max-md:hidden">Teams you can field</span><span class="md:hidden">Teams</span></div>
@@ -90,7 +100,7 @@
           <span v-else class="kpi__dash">…</span>
         </div>
         <div class="kpi__meter kpi__meter--none"></div>
-        <div class="kpi__sub">{{ kpis.teamsFieldable }} of your {{ kpis.teams }} saved · the rest stock</div>
+        <div class="kpi__sub"><span class="max-md:hidden">{{ kpis.teamsFieldable }} of your {{ kpis.teams }} saved · the rest stock</span><span class="md:hidden">you can field</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="score">
         <div class="kpi__label"><span class="max-md:hidden">Avg Build Score</span><span class="md:hidden">Build Score</span></div>
@@ -101,7 +111,7 @@
           <span v-else class="kpi__dash">—</span>
         </div>
         <div class="kpi__meter"><span :style="{ width: `${Math.min(100, kpis.averageScore ?? 0)}%` }"></span></div>
-        <div class="kpi__sub">substat quality of equipped echoes</div>
+        <div class="kpi__sub"><span class="max-md:hidden">substat quality of equipped echoes</span><span class="md:hidden">echo substats</span></div>
       </div>
     </div>
   </section>
@@ -260,6 +270,11 @@ const leadStyle = computed(() => {
 }
 .acc-hero__link:hover {
   text-decoration: underline;
+}
+.acc-hero__engine {
+  display: block;
+  font-size: 0.68rem;
+  color: oklch(var(--bc) / 0.5);
 }
 .acc-hero__strongest {
   color: oklch(var(--bc) / 0.6);
@@ -448,8 +463,12 @@ const leadStyle = computed(() => {
     font-size: 0.6rem;
     padding: 0 0.25rem;
   }
+  /* a short line under each figure, so a tile never reads as a bare "12/24" (they were hidden on phones) */
   .kpi__sub {
-    display: none;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
 </style>

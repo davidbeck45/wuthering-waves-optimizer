@@ -12,10 +12,14 @@ export const PLUS_BAR_VAR = "--plus-bar-h";
 // several bars can be up at once (a page with two): the variable is the tallest
 const heights = new Map<symbol, number>();
 
+// Writes only when the height moves: a custom property set on <html> restyles the whole page, and a write on every
+// measure restarted a dialog's opening transition (the Echo plan's chip sheet sat 40 px low; account-rankings track).
 function publish(): void {
   if (typeof document === "undefined") return;
-  const tallest = Math.max(0, ...heights.values());
-  document.documentElement.style.setProperty(PLUS_BAR_VAR, `${tallest}px`);
+  const value = `${Math.max(0, ...heights.values())}px`;
+  const root = document.documentElement.style;
+  if (root.getPropertyValue(PLUS_BAR_VAR) === value) return;
+  root.setProperty(PLUS_BAR_VAR, value);
 }
 
 /** The height a bar takes from the bottom of the screen: its own when fixed and showing, else 0. */

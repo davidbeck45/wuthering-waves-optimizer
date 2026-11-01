@@ -8,6 +8,7 @@
         :label="short(c.characterId)"
         :character-id="c.characterId"
         :compact="compact"
+        spelled
         clickable
         @open="openId = c.characterId" />
     </template>

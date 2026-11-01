@@ -21,8 +21,11 @@
         :has-ranking="!!ranking"
         @compute="compute" />
       <p class="mr-head__sub">
-        Your characters and teams on their real builds, scored by this app's engine — every rotation tried, the best one
-        counts. Enemy level 100 · 20 % RES.
+        <span class="max-md:hidden">
+          Your characters and teams on their real builds, scored by this app's engine — every rotation tried, the best one
+          counts. Enemy level 100 · 20 % RES.
+        </span>
+        <span class="md:hidden">Average damage per rotation on your real builds, this app's engine.</span>
       </p>
     </header>
 
@@ -333,7 +336,8 @@ a.mr-pages__item:hover {
 }
 @media (max-width: 767px) {
   .my-rankings {
-    padding: 0.9rem 0.75rem 2rem;
+    /* the last row clears the Ask button */
+    padding: 0.9rem 0.75rem calc(4.5rem + env(safe-area-inset-bottom));
   }
   .mr-head {
     gap: 0.5rem 0.6rem;
@@ -349,7 +353,9 @@ a.mr-pages__item:hover {
     padding: 0.3rem 0.55rem;
   }
   .mr-head__sub {
-    display: none;
+    order: 4;
+    margin: 0;
+    font-size: 0.75rem;
   }
   .mr-section {
     margin-top: 1.1rem;
@@ -396,6 +402,12 @@ a.mr-pages__item:hover {
   border-radius: 0.55rem;
   background: oklch(var(--b2));
   box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);
+}
+@media (max-width: 767px) {
+  /* 40 px tap targets at 130 % text (the team filter measured 32 px) */
+  .my-rankings .mr-seg .mr-seg__btn {
+    min-height: 40px;
+  }
 }
 .my-rankings .mr-seg__btn {
   display: inline-flex;

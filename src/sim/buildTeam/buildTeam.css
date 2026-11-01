@@ -964,4 +964,19 @@ html[data-theme-style="light"] .bt-savebar__warn {
   .bt-savebar .btn-primary {
     flex: 1 1 auto;
   }
+  /* 40 px tap targets at 130 % text (the audit measured 26 px for Save and Also make active) */
+  .bt-savebar .btn-sm,
+  .bt-actions .btn-sm {
+    min-height: 40px;
+    height: auto;
+  }
+  .bt-savebar__active,
+  .bt-save {
+    min-height: 40px;
+    padding-right: 0.25rem;
+  }
+  /* the page's last card clears the fixed bar and the Ask button above it */
+  .bt {
+    padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+  }
 }

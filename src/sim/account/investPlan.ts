@@ -25,6 +25,7 @@ import { characterDisplayName, characterMeta, weaponDisplayName, weaponMeta } fr
 import { equippedEchoCount } from "./buildScore";
 // Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
 import { erAdjustedGain, erFactorFor } from "../energy/erAwareScorer";
+import { showHave, showNeed } from "../energy/energyNeed";
 
 export type InvestKind = "sequence" | "refine" | "weapon" | "substat";
 
@@ -71,6 +72,19 @@ export interface InvestItem {
   refinement?: number;
   substatKey?: SubstatKey;
   roll?: number;
+  /** the character's Energy Regen shortfall (points under their teams' need) the own gain is read against — set
+   *  only while short, so an ER roll's own gain can say it closes that gap (the team engine ignores ER) */
+  erGap?: number | null;
+}
+
+/** The ER points a deficit factor stands for (`deficitFactor` = 1 − gap / 100); null when the need is met. With the
+ *  need, the gap is read the way the ER chips print it (need rounded up, ER held rounded: "110.8% · need 115.2% · 4.4
+ *  short"), so the drawer and the chips name the same number. */
+export function erGapOf(factor: number, need?: number | null): number | null {
+  if (!(factor < 1)) return null;
+  const raw = (1 - factor) * 100;
+  if (need == null || !Number.isFinite(need)) return Math.round(raw * 10) / 10;
+  return Math.max(0.1, Math.round((showNeed(need) - showHave(need - raw)) * 10) / 10);
 }
 
 export interface InvestProgress {
@@ -113,6 +127,19 @@ export function investChange(item: Pick<InvestItem, "kind" | "from" | "to" | "la
   if (item.kind === "refine") return `${item.from} → ${/R\d$/.exec(item.to)?.[0] ?? item.to}`;
   if (item.kind === "substat") return `${item.label} on an echo`;
   return `${item.from} → ${item.to}`;
+}
+
+/** Why an Energy Regen roll's own and team gains disagree ("+4.5 % own · +0.0 % team"): the own gain is read on damage
+ *  × (1 − ER shortfall), so it is the gap the roll closes; the team engine scores damage and ignores Energy Regen.
+ *  Null for every other investment, and for an ER roll on a character who already meets the need. */
+export function erGainNote(item: Pick<InvestItem, "kind" | "substatKey" | "erGap" | "team" | "roll">): string | null {
+  if (item.kind !== "substat" || item.substatKey !== "EnergyRegen" || !item.erGap) return null;
+  const gap = `${item.erGap.toFixed(1)}-point`;
+  // a roll at least the size of the gap closes all of it (Aemeath: +9.4 against 4.4 short), a smaller one part of it
+  const closes = item.roll != null && item.roll >= item.erGap ? `it closes the whole ${gap}` : `it closes part of the ${gap}`;
+  return item.team
+    ? `Own gain: ${closes} Energy Regen gap their team's rotation needs. Team damage doesn't count Energy Regen.`
+    : `Own gain: ${closes} Energy Regen gap their team's rotation needs.`;
 }
 
 /** a gain smaller than this is noise (rounding in the engine), not an investment */
@@ -293,6 +320,7 @@ export async function investPlan(
       await pause();
       const erFactor = erFactorFor(id, options.erNeeds?.[id]);
       const erBase = erFactor ? await erFactor(characters, inventoryEchoes) : 1;
+      const erGap = erGapOf(erBase, options.erNeeds?.[id]);
       const ownGain = async (avgDamage: number, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<number> =>
         erFactor ? erAdjustedGain(avgDamage / base - 1, erBase, await erFactor(hypoCharacters, hypoEchoes)) : avgDamage / base - 1;
       if (base > 0) {
@@ -306,7 +334,7 @@ export async function investPlan(
           await pause();
           // an upgrade a support's own rotation does not show can still lift their team (an outro buff, a sequence node)
           if (gain < MIN_GAIN && !(team && team.gain >= MIN_GAIN)) return;
-          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: note });
+          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: note, ...(erGap ? { erGap } : {}) });
         };
         const withData = (next: Record<string, any>) => ({ characters: { ...characters, [id]: next }, inventoryEchoes });
 

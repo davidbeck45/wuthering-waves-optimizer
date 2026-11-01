@@ -1,15 +1,17 @@
 <template>
   <span class="wt-portrait" :class="{ 'wt-portrait--main': main }" :style="{ '--mem': color, '--size': size, width: size, height: size }" :title="title ?? name">
-    <img v-if="!failed" :src="src" :alt="name" loading="lazy" decoding="async" draggable="false" @error="failed = true" />
+    <img v-if="drawable && !failed" :src="src" :alt="name" loading="lazy" decoding="async" draggable="false" @error="failed = true" />
     <span v-else class="wt-portrait__initials" aria-hidden="true">{{ initials }}</span>
   </span>
 </template>
 
 <script setup lang="ts">
 // Wuthering Tools+: a resonator's portrait for the /rankings cards and member strip — the app's asset host
-// (`characterPortraitUrl`) by this app's key, ringed in Riley's kit colour; initials if it fails to load.
+// (`characterPortraitUrl`) by this app's key, ringed in Riley's kit colour; initials if it fails to load, and straight
+// away for a kit the app has no character for (Lily: her portrait request failed on every visit).
 import { computed, ref, watch } from "vue";
 import { characterPortraitUrl } from "../../characters/characters";
+import { isRosterCharacter } from "../display/names";
 import { initialsOf } from "./phoneCards";
 
 const props = withDefaults(defineProps<{ appKey: string; name: string; color: string; size?: string; main?: boolean; title?: string }>(), {
@@ -18,6 +20,7 @@ const props = withDefaults(defineProps<{ appKey: string; name: string; color: st
   title: undefined,
 });
 const failed = ref(false);
+const drawable = computed(() => isRosterCharacter(props.appKey));
 const src = computed(() => characterPortraitUrl(props.appKey));
 const initials = computed(() => initialsOf(props.name));
 watch(src, () => {

@@ -3,7 +3,7 @@ import { mkdtempSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { diffSnapshots, findTeam, resolveCharacterKey, type Snapshot } from "./engine";
-import { findNewestExport, parseExport } from "./exportFile";
+import { findNewestExport, migrateExport, parseExport, readExport } from "./exportFile";
 
 describe("parseExport", () => {
   it("decodes the double-encoded v9 shape", () => {
@@ -33,6 +33,49 @@ describe("parseExport", () => {
     const v1 = parseExport({ character: JSON.stringify({ characters: { Jinhsi: {} } }) });
     expect(v1.version).toBeNull();
     expect(Object.keys(v1.characters)).toEqual(["Jinhsi"]);
+  });
+});
+
+describe("readExport runs the app's migrations (the pages read migrated localStorage)", () => {
+  // a v9 export as David's 2026-09-16 download: keys that migration 010 (Ryan #677) renamed
+  const v9 = {
+    meta: { version: "9", source: "WutheringTools" },
+    data: {
+      character: JSON.stringify({
+        characters: {
+          Cartethyia: { teamBuffs: { buffs: { "BellBorne eochelone": { isEnabled: true } } } },
+          RoverAeroMale: { resonanceChains: { "Sequence Node 5: Life and Death Intertwine": { isEnabled: true } } },
+          Zani: { teamBuffs: { buffs: { Other: { isEnabled: true } } } },
+        },
+        activeCharacter: "Zani",
+      }),
+      inventory: JSON.stringify({ echoes: [], equipped: {} }),
+      teamRotations: JSON.stringify({ teams: [{ id: "t1", actions: [{ key: "Undaunted ayfarerDMG" }] }] }),
+    },
+  };
+
+  it("renames the v10 keys in characters and teams, and leaves the rest alone", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ww-cli-"));
+    const path = join(dir, "character_data_2026-9-16.json");
+    writeFileSync(path, JSON.stringify(v9));
+    const exp = readExport(path);
+    expect(exp.version).toBe("9"); // the file's own version is still reported
+    expect(Object.keys(exp.characters.Cartethyia.teamBuffs.buffs)).toEqual(["BellBorneGeochelone"]);
+    expect(Object.keys(exp.characters.RoverAeroMale.resonanceChains)).toEqual(["SequenceNode5LifeandDeathIntertwine"]);
+    expect(exp.characters.Zani.teamBuffs.buffs.Other.isEnabled).toBe(true);
+    expect(exp.teams[0].actions[0].key).toBe("UndauntedWayfarerDMG");
+  });
+
+  it("keeps string stores strings and never touches a file at the current version", () => {
+    const migrated = migrateExport(v9) as typeof v9;
+    expect(typeof migrated.data.character).toBe("string");
+    expect(migrated.data.character).toContain("BellBorneGeochelone");
+    expect(v9.data.character).toContain("BellBorne eochelone"); // the input is not mutated
+    const current = { ...v9, meta: { version: "10" } };
+    expect(migrateExport(current)).toEqual(current);
+    // an object store (already-parsed) is migrated too
+    const parsed = migrateExport({ meta: { version: "9" }, data: { character: JSON.parse(v9.data.character) } }) as any;
+    expect(Object.keys(parsed.data.character.characters.Cartethyia.teamBuffs.buffs)).toEqual(["BellBorneGeochelone"]);
   });
 });
 

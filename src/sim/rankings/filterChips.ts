@@ -148,3 +148,24 @@ export const RILEY_TIERS: ReadonlyArray<{ code: string; label: string; title: st
   { code: "s6r5m", label: "S6R5 DPS · S0R1 supports", title: "One main DPS per team at S6 with their signature at R5; everyone else S0 on their signature at R1" },
   { code: "s6r5", label: "S6R5 all", title: "Every resonator at S6 with their best weapon at R5" },
 ];
+
+/** "Only teams I can import": his roster's resonators the app has no character for (`isInApp` answers by his
+ *  name), sorted. Lily, today — a kit in Riley's engine with no folder in this app. */
+export function namesNotInApp(roster: RosterEntry[], isInApp: (rileyName: string) => boolean): string[] {
+  return roster.filter((r) => !isInApp(r.name)).map((r) => r.name);
+}
+
+/** The chip is on when every resonator the app lacks is in his Without list (`x=`). Off with nothing to hide. */
+export function importableOnly(params: URLSearchParams, roster: RosterEntry[], missing: string[]): boolean {
+  if (!missing.length) return false;
+  const { exclude } = readResonatorFilters(params, roster);
+  return missing.every((n) => exclude.includes(n));
+}
+
+/** Turns "Only teams I can import" on (every missing resonator into `x=`, his own Without filter, so a saved view
+ *  and a shared link carry it) or off (those names out of `x=`; any other Without name stays). */
+export function withImportableOnly(params: URLSearchParams, roster: RosterEntry[], missing: string[], on: boolean): URLSearchParams {
+  let p = new URLSearchParams(params);
+  for (const name of missing) p = withResonatorFilter(p, name, on ? "exclude" : null, roster);
+  return p;
+}

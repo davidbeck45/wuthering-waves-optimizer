@@ -15,7 +15,7 @@
       </div>
       <nav class="acc-pages" aria-label="Account pages">
         <span class="acc-pages__item acc-pages__item--on" aria-current="page">Account</span>
-        <RouterLink to="/my-rankings" class="acc-pages__item" data-test-account-to-my-rankings>Roster rankings</RouterLink>
+        <RouterLink to="/my-rankings" class="acc-pages__item" data-test-account-to-my-rankings>My roster</RouterLink>
         <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash() }" class="acc-pages__item" data-test-account-to-rankings>Team rankings</RouterLink>
       </nav>
       <button
@@ -32,8 +32,11 @@
         <span class="max-sm:hidden">{{ busy ? "Scoring…" : "Recompute" }}</span>
       </button>
       <p class="acc-head__sub">
-        Your roster at a glance — builds, sequences, the teams you can field and what to invest in next, scored by this
-        app's engine on your real builds (enemy level 100 · 20 % RES).
+        <span class="max-md:hidden">
+          Your roster at a glance — builds, sequences, the teams you can field and what to invest in next, scored by this
+          app's engine on your real builds (enemy level 100 · 20 % RES).
+        </span>
+        <span class="md:hidden">Your roster and teams, scored by this app's engine on your real builds.</span>
       </p>
     </header>
 
@@ -335,7 +338,8 @@ a.acc-pages__item:hover {
 }
 @media (max-width: 767px) {
   .acc {
-    padding: 0.9rem 0.75rem 2rem;
+    /* the last line clears the Ask button */
+    padding: 0.9rem 0.75rem calc(4.5rem + env(safe-area-inset-bottom));
   }
   .acc-head {
     gap: 0.5rem 0.6rem;
@@ -359,7 +363,10 @@ a.acc-pages__item:hover {
     padding: 0.4rem 0.55rem;
   }
   .acc-head__sub {
-    display: none;
+    order: 4;
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.75rem;
   }
   .acc-grid {
     gap: 1.1rem;
@@ -444,5 +451,28 @@ a.acc-pages__item:hover {
 }
 .acc-energy {
   margin-top: 0.75rem;
+}
+</style>
+<style>
+/* phones: 40 px tap targets at 130 % text (the audit measured 28 px kind chips, 32 px filters, a 22 px "How these are
+   scored"); the selectors outrank the children's own scoped rules */
+@media (max-width: 767px) {
+  .acc .acc-seg .acc-seg__btn {
+    min-height: 40px;
+  }
+  .acc .inv__kinds .inv-chip {
+    min-height: 40px;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .acc .inv .inv__help > summary {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  .acc .roster__elements .roster__el {
+    width: 40px;
+    height: 40px;
+  }
 }
 </style>

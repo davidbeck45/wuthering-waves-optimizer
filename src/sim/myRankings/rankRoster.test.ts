@@ -2,9 +2,20 @@
 // Cartethyia optimizer fixture: full build, echoes, one saved rotation).
 import { describe, expect, it } from "vitest";
 import account from "./__fixtures__/cartethyiaAccount.json";
-import { isSetUp, nodeOf, rankRoster, refinementOf, sequenceOf, weaponOptionsFor, whatIf, withSequence, withWeapon, type RankProgressItem } from "./rankRoster";
+import { isSetUp, namesTeammateOutsideApp, nodeOf, rankRoster, rotationCandidates, refinementOf, sequenceOf, weaponOptionsFor, whatIf, withSequence, withWeapon, type RankProgressItem } from "./rankRoster";
 
 describe("rank roster", () => {
+  it("skips wuwa_calc loops played beside a teammate the app has no character for (Lily)", async () => {
+    expect(namesTeammateOutsideApp("Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)")).toBe(true);
+    expect(namesTeammateOutsideApp("Sigrika S6R2 Solsworn Ciphers R2 · Mornye + Lucilla · S6R2 DPS · S1R1/S0R1 team (wuwa_calc)")).toBe(false);
+    expect(namesTeammateOutsideApp("Ciaccona S0 Woodland Aria R1 · Aero Rover + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)")).toBe(false);
+    expect(namesTeammateOutsideApp("My own rotation")).toBe(false); // a typed name lists no teammates
+    const names = (await rotationCandidates("Galbrena", {})).filter((c) => c.source === "wuwa_calc").map((c) => c.name);
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.some((n) => n.includes("Lily"))).toBe(false);
+    expect((await rotationCandidates("Sigrika", {})).some((c) => c.name.includes("Lily"))).toBe(false);
+  });
+
   it("reads sequence and refinement off the stored character", () => {
     const c = account.characters.Cartethyia as Record<string, unknown>;
     expect(sequenceOf(c)).toBe(2);

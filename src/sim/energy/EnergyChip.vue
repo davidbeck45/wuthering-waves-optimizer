@@ -13,13 +13,18 @@
     <EnergyStatusIcon v-else :status="kind" class="en-chip__icon" />
     <span v-if="label" class="en-chip__who">{{ label }}</span>
     <template v-if="check && check.need != null && check.status !== 'noGate' && !mini">
+      <template v-if="check.have != null && spelled">
+        <!-- two pieces, so a narrow phone wraps between them rather than pushing the page wide -->
+        <span class="en-chip__nums"><span class="en-chip__sep">ER </span><b>{{ haveText(check.have) }}</b></span>
+        <span class="en-chip__nums"><span class="en-chip__sep">· need </span>{{ needText(check.need) }}<span class="en-chip__sep"> ·</span></span>
+      </template>
       <!-- full chips say which number is which; compact ones keep "has / needs" short (their list carries a legend) -->
-      <template v-if="check.have != null && !compact">
+      <template v-else-if="check.have != null && !compact">
         <span class="en-chip__nums"><span class="en-chip__sep">has </span><b>{{ haveText(check.have) }}</b></span>
         <span class="en-chip__nums"><span class="en-chip__sep">needs </span>{{ needText(check.need) }}</span>
       </template>
       <span v-else-if="check.have != null" class="en-chip__nums"><b>{{ haveText(check.have) }}</b><span class="en-chip__sep"> / </span>{{ needText(check.need) }}</span>
-      <span v-else class="en-chip__nums"><span class="en-chip__sep">needs </span>{{ needText(check.need) }}</span>
+      <span v-else class="en-chip__nums"><span class="en-chip__sep">{{ spelled ? "ER needs " : "needs " }}</span>{{ needText(check.need) }}</span>
       <span class="en-chip__word">{{ word }}</span>
     </template>
     <span v-else class="en-chip__word">{{ word }}</span>
@@ -28,8 +33,9 @@
 
 <script setup lang="ts">
 // Wuthering Tools+ — one member's ER against their team's need: "has 110.8% needs 115.2% short 4.4% · 1 roll" (compact:
-// "110.8% / 115.2% short 4.4%", with a has / needs legend where they are listed). An icon and a word always ride with the
-// colour. A button when the breakdown can open.
+// "110.8% / 115.2% short 4.4%", with a has / needs legend where they are listed; spelled, for team rows that say nothing
+// else about the numbers: "ER 110.8% · need 115.2% · 4.4 short"). An icon and a word always ride with the colour. A
+// button when the breakdown can open.
 import { computed } from "vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
 import { haveText, needText, statusDetail } from "./energyFormat";
@@ -54,8 +60,10 @@ const props = withDefaults(
     small?: boolean;
     /** a pill beside S/R badges: the icon, the label and the verdict ("ER short 4.4%"), every number in the tooltip */
     mini?: boolean;
+    /** the numbers in words, for a row that says nothing else about them: "ER 110.8% · need 115.2% · 4.4 short" */
+    spelled?: boolean;
   }>(),
-  { label: "", characterId: undefined, pending: null, note: "", clickable: false, compact: false, small: false, mini: false },
+  { label: "", characterId: undefined, pending: null, note: "", clickable: false, compact: false, small: false, mini: false, spelled: false },
 );
 defineEmits<{ open: [] }>();
 
@@ -67,7 +75,7 @@ const word = computed(() => {
   const c = props.check;
   const brief = props.compact || props.mini;
   if (brief && (c.status === "ok" || c.status === "tight")) return c.status === "ok" ? "ok" : "tight";
-  if (brief && c.status === "short") return `short ${c.short.toFixed(1)}%`;
+  if (brief && c.status === "short") return props.spelled ? `${c.short.toFixed(1)} short` : `short ${c.short.toFixed(1)}%`;
   if (props.mini && c.status === "unknown") return `needs ${needText(c.need)}`;
   if (c.status === "unknown") return "not set up";
   return statusDetail(c);
