@@ -1,6 +1,7 @@
 // Wuthering Tools+: the command palette's items, fuzzy ranking and the "Ask Claude" row.
 import { describe, expect, it } from "vitest";
-import { CORE_PAGES, characterRowsOf, fuzzyScore, looksLikeQuestion, pageTitleOf, paletteItems, rankPalette, storedSequence, type PaletteSources } from "./paletteItems";
+import { CORE_PAGES, characterRowsOf, fuzzyScore, looksLikeQuestion, pageTitleOf, paletteItems, rankPalette, storedSequence, type PaletteItem, type PaletteSources } from "./paletteItems";
+import { contextTargetOf, paletteWithCommands, type PaletteContext } from "./paletteCommands";
 import { PLUS_PAGES } from "./plusPages";
 
 const sources = (over: Partial<PaletteSources> = {}): PaletteSources => ({
@@ -105,5 +106,94 @@ describe("helpers", () => {
       { key: "Aemeath", name: "Aemeath", rarity: 5, element: "Fusion", weapon: "Sword", setUp: true, sequence: 2, portrait: "/img/Aemeath.png" },
       { key: "Lumi", name: "Lumi", rarity: null, element: null, weapon: null, setUp: false, sequence: null, portrait: "/img/Lumi.png" },
     ]);
+  });
+});
+
+describe("commands (paletteCommands.ts)", () => {
+  const teams = [
+    { id: "t1", name: "Aemeath hypercarry", members: ["Aemeath", "Mornye", "Lynae"], memberKeys: ["Aemeath", "Mornye", "Lynae"] },
+    { id: "t2", name: "Two only", members: ["Aemeath", "Mornye"], memberKeys: ["Aemeath", "Mornye"] },
+  ];
+  const ctx = (path: string, over: Partial<PaletteContext> = {}): PaletteContext => ({ path, query: {}, hash: "", activeCharacter: null, openTeamId: null, ...over });
+  const withCtx = (context: PaletteContext | undefined, over: Partial<PaletteSources> = {}) =>
+    paletteWithCommands(sources({ teams, context, characters: [...sources().characters, { key: "Lynae", name: "Lynae", rarity: 5, element: "Spectro", weapon: "Pistols", setUp: true, sequence: 0 }], ...over }));
+  const runs = (items: PaletteItem[], group: string) => items.filter((i) => i.group === group).map((i) => i.run);
+
+  it("every set-up character and three-member saved team gets its commands, all waiting for a query", () => {
+    const items = withCtx(undefined, { autoTeamBuffs: true });
+    const commands = items.filter((i) => i.group === "command");
+    expect(commands.every((c) => c.queryOnly)).toBe(true);
+    expect(items.some((i) => i.group === "context")).toBe(false);
+    const titles = commands.map((c) => c.title);
+    expect(titles).toEqual(expect.arrayContaining(["Share Aemeath's build", "Weapon value: Aemeath", "Substats & what-if: Mornye", "Rotation cue card: Aemeath + Mornye + Lynae", "Build from my echoes: Aemeath + Mornye + Lynae", "Energy check: Aemeath + Mornye + Lynae", "Share team: Aemeath + Mornye + Lynae", "ToA clear check for my teams", "Which selector pick is best for me?", "Turn team-aware buffs off"]));
+    // not set up (Rover, Yangyang) and a two-member team get none
+    expect(titles.some((t) => /Rover|Yangyang|Two only/.test(t))).toBe(false);
+    expect(commands.find((c) => c.title === "Weapon value: Aemeath")?.run).toEqual({ kind: "route", path: "/weapons?focus=Aemeath" });
+    expect(commands.find((c) => c.title === "Substats & what-if: Aemeath")?.run).toEqual({ kind: "route", path: "/my-rankings?focus=Aemeath&tab=substats" });
+    expect(commands.find((c) => c.title.startsWith("Rotation cue card"))?.run).toEqual({ kind: "route", path: "/rotation#chars=Aemeath,Mornye,Lynae" });
+    expect(commands.find((c) => c.title.startsWith("Build from my echoes"))?.run).toEqual({ kind: "route", path: "/build-team?team=t1" });
+    expect(commands.find((c) => c.title.startsWith("Energy check"))?.run).toEqual({ kind: "route", path: "/energy?team=t1" });
+    expect(commands.find((c) => c.title === "Share Aemeath's build")?.run).toEqual({ kind: "share", source: { kind: "build", charId: "Aemeath" } });
+    expect(commands.find((c) => c.title.startsWith("Share team"))?.run).toEqual({ kind: "share", source: { kind: "team", teamId: "t1" } });
+    expect(withCtx(undefined, { autoTeamBuffs: false }).find((i) => i.key === "command:team-buffs")?.title).toBe("Turn team-aware buffs on");
+    expect(withCtx(undefined).some((i) => i.key === "command:team-buffs")).toBe(false);
+  });
+
+  it("the empty list leaves the commands out; a query finds them, a character's own before its teams'", () => {
+    const items = withCtx(undefined);
+    expect(rankPalette("", items).some((i) => i.group === "command")).toBe(false);
+    // the character itself still comes first
+    expect(rankPalette("aem", items)[0]).toMatchObject({ group: "character", title: "Aemeath" });
+    const share = rankPalette("share aem", items);
+    expect(share.find((i) => i.group === "command")).toMatchObject({ title: "Share Aemeath's build" });
+    const aem = rankPalette("aemeath", items).filter((i) => i.group === "command").map((i) => i.title);
+    expect(aem.slice(0, 3).sort()).toEqual(["Share Aemeath's build", "Substats & what-if: Aemeath", "Weapon value: Aemeath"]);
+    expect(rankPalette("toa", items).find((i) => i.group === "command")?.run).toEqual({ kind: "route", path: "/endgame" });
+    expect(rankPalette("energy lynae", items).find((i) => i.group === "command")?.title).toBe("Energy check: Aemeath + Mornye + Lynae");
+  });
+
+  it("reads the page: the calculator's character, the open team, a ?focus=, ?team=, ?members= or #chars=", () => {
+    const s = { characters: [...sources().characters, { key: "Lynae", name: "Lynae", setUp: true }], teams };
+    expect(contextTargetOf(ctx("/", { activeCharacter: "Aemeath" }), s)).toEqual({ character: "Aemeath", team: null });
+    expect(contextTargetOf(ctx("/", { activeCharacter: "Yangyang" }), s).character).toBeNull(); // not set up
+    expect(contextTargetOf(ctx("/weapons", { query: { focus: "Mornye" } }), s).character).toBe("Mornye");
+    expect(contextTargetOf(ctx("/my-rankings", { query: { focus: "Aemeath", tab: "substats" } }), s).character).toBe("Aemeath");
+    expect(contextTargetOf(ctx("/teams", { openTeamId: "t1" }), s).team).toEqual({ id: "t1", name: "Aemeath hypercarry", members: ["Aemeath", "Mornye", "Lynae"] });
+    expect(contextTargetOf(ctx("/teams"), s).team).toBeNull();
+    expect(contextTargetOf(ctx("/energy", { query: { team: "t1" } }), s).team?.id).toBe("t1");
+    expect(contextTargetOf(ctx("/build-team", { query: { members: "Lynae,Aemeath,Mornye" } }), s).team?.id).toBe("t1"); // a saved team of the same three
+    expect(contextTargetOf(ctx("/build-team", { query: { members: "Aemeath,Mornye,Yangyang" } }), s).team).toEqual({ id: null, name: "", members: ["Aemeath", "Mornye", "Yangyang"] });
+    expect(contextTargetOf(ctx("/rotation", { hash: "#chars=Mornye,Lynae,Aemeath&tab=timeline" }), s).team?.id).toBe("t1");
+    // a #team= key or code is read by Riley's list in the worker, never here
+    expect(contextTargetOf(ctx("/rotation", { hash: "#team=t404" }), s).team).toBeNull();
+    expect(contextTargetOf(ctx("/inventory"), s)).toEqual({ character: null, team: null });
+    expect(contextTargetOf(undefined, s)).toEqual({ character: null, team: null });
+  });
+
+  it("lists the page's commands first, leaves out the one that reopens this page, and never twice", () => {
+    const calc = withCtx(ctx("/", { activeCharacter: "Aemeath" }));
+    const empty = rankPalette("", calc);
+    expect(empty[0].group).toBe("context");
+    expect(empty.filter((i) => i.group === "context").map((i) => i.title)).toEqual(["Share Aemeath's build", "Weapon value: Aemeath", "Substats & what-if: Aemeath", "Ask Claude how to raise Aemeath's damage"]);
+    expect(runs(calc, "context")).toContainEqual({ kind: "ask", question: "How can I raise Aemeath's damage on my account? What should I change first?" });
+    // the same command isn't listed again under Commands
+    expect(calc.filter((i) => i.title === "Share Aemeath's build")).toHaveLength(1);
+    expect(calc.filter((i) => i.title === "Share Mornye's build")).toHaveLength(1);
+
+    const weapons = withCtx(ctx("/weapons", { query: { focus: "Aemeath" } })).filter((i) => i.group === "context").map((i) => i.title);
+    expect(weapons).not.toContain("Weapon value: Aemeath");
+    expect(weapons).toContain("Substats & what-if: Aemeath");
+
+    const teamsPage = withCtx(ctx("/teams", { openTeamId: "t1" })).filter((i) => i.group === "context");
+    expect(teamsPage.map((i) => i.title)).toEqual(["Rotation cue card for this team", "Build from my echoes for this team", "Energy check for this team", "Share this team"]);
+    expect(teamsPage[0].subtitle).toMatch(/^Aemeath \+ Mornye \+ Lynae · /);
+    // on another page the open-in-the-editor jump is offered too
+    const rotation = withCtx(ctx("/rotation", { hash: "#chars=Aemeath,Mornye,Lynae" })).filter((i) => i.group === "context");
+    expect(rotation.map((i) => i.run)).toContainEqual({ kind: "team", id: "t1" });
+    expect(rotation.some((i) => i.title.startsWith("Rotation cue card"))).toBe(false);
+    expect(rotation.find((i) => i.run.kind === "team")?.title).toBe("Open this team in Team rotations");
+    // a composition with no saved team: rotation and build only (energy and share need a saved team)
+    const preset = withCtx(ctx("/build-team", { query: { members: "Aemeath,Mornye,Yangyang" } })).filter((i) => i.group === "context");
+    expect(preset.map((i) => i.run)).toEqual([{ kind: "route", path: "/rotation#chars=Aemeath,Mornye,Yangyang" }]);
   });
 });

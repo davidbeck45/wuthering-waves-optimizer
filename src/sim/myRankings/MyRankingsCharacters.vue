@@ -102,6 +102,17 @@
         <tr v-if="open[c.id]" class="row--panel" :data-test-my-rankings-details="c.id">
           <td :colspan="colspan" class="cell--panel">
             <div class="mr-panel">
+              <!-- Wuthering Tools+: ask Claude about this row, or share the build as a card / link -->
+              <div class="mr-panel__actions" :data-test-my-rankings-actions="c.id">
+                <ExplainButton
+                  :request="() => explainCharacterRank(c, { rank: damageRank(c), of: ranks.length, upgrade: upgrades.get(c.id) })"
+                  :what="`${c.name}'s ranking`"
+                  :test-id="`my-rankings:${c.id}`"
+                  variant="outline"
+                  size="xs"
+                  label="Explain" />
+                <ShareButton :source="{ kind: 'build', charId: c.id }" size="xs" label="Share build" />
+              </div>
               <div class="mr-tabs" role="tablist" :aria-label="`${c.name} details`">
                 <button
                   type="button"
@@ -199,6 +210,9 @@ import PresetNameLabel from "../display/PresetNameLabel.vue";
 import MyRankingsWhatIf from "./MyRankingsWhatIf.vue";
 import MyRankingsSubstats from "./MyRankingsSubstats.vue";
 import MyRankingsRotations from "./MyRankingsRotations.vue";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainCharacterRank } from "../ai/explain/explainPayloads";
+import ShareButton from "../share/ShareButton.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { rankingsMineHash } from "../account/accountState";
 import { damageRanks, DEFAULT_DIR, sortCharacters, upgradeOf, type SortDir, type SortKey, type UpgradeView } from "./rows";
@@ -540,6 +554,13 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
   background: oklch(var(--b1));
   box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.08);
   padding: 0.6rem 0.9rem 0.9rem;
+}
+.mr-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 .mr-tabs {
   display: flex;

@@ -352,14 +352,14 @@ function toCalculator(id: string): void {
   data.setActiveCharacter(id);
   void router.push("/");
 }
-// ?focus=<id>: open and scroll to that row once it is scored (from /my-rankings' row tabs)
-const focus = typeof route.query.focus === "string" ? route.query.focus : null;
-let focused = false;
+// ?focus=<id>: open and scroll to that row once it is scored (from /my-rankings' row tabs, the palette's "Weapon value:
+// <name>" — run on /weapons itself that only changes the query, so it is read from the route, once per id)
+let focused: string | null = null;
 watch(
-  () => rows.value.some((r) => r.id === focus),
-  (ready) => {
-    if (!focus || focused || !ready) return;
-    focused = true;
+  [() => (typeof route.query.focus === "string" ? route.query.focus : null), () => rows.value.some((r) => r.id === route.query.focus)],
+  ([focus, ready]) => {
+    if (!focus || focused === focus || !ready) return;
+    focused = focus;
     prefs.tab = "signatures";
     prefs.filter = "all";
     openId.value = focus;

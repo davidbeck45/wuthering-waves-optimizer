@@ -82,6 +82,15 @@
             </div>
           </td>
           <td class="tcell--link">
+            <!-- Wuthering Tools+: ask Claude about this team; share a saved team as a card / link (a preset row has no
+                 saved team to share) -->
+            <ExplainButton
+              :request="() => explainTeamRank(t, { rank: rows.indexOf(t) + 1, of: rows.length, page: 'my-rankings' })"
+              :what="`the team ${t.name}`"
+              :test-id="`my-rankings-team:${t.name}`"
+              phone-label
+              label="Explain" />
+            <ShareButton v-if="t.source === 'yours'" :source="{ kind: 'team', teamId: t.id }" variant="ghost" phone-label label="Share" />
             <!-- Wuthering Tools+ build-my-team: re-gear this team from the echo inventory -->
             <RouterLink
               :to="buildTeamLink(t)"
@@ -137,6 +146,9 @@ import { dedupeTeams, memberShares, type MemberShare, type TeamRow } from "./row
 import type { TeamRank } from "./rankRoster";
 import { fmt } from "./format";
 import EnergyTeamChips from "../energy/EnergyTeamChips.vue";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainTeamRank } from "../ai/explain/explainPayloads";
+import ShareButton from "../share/ShareButton.vue";
 
 const props = withDefaults(defineProps<{ teams: TeamRank[]; pending?: number; teamsSkipped?: number; owned?: string[] }>(), {
   pending: 0,
@@ -195,10 +207,11 @@ function sharesOf(t: TeamRow): MemberShare[] {
   width: 20rem;
 }
 .mr-tcol-link {
-  width: 5.5rem;
+  width: 9.5rem;
 }
 .tcell--link {
   white-space: nowrap;
+  text-align: right;
 }
 @media (max-width: 1023px) {
   .mr-tcol-dmg {
@@ -345,9 +358,23 @@ function sharesOf(t: TeamRow): MemberShare[] {
     padding-left: 1.9rem;
   }
   .tcell--link .btn {
-    width: 2rem;
     height: 2rem;
     min-height: 2rem;
+  }
+  .tcell--link .btn-square {
+    width: 2rem;
+  }
+  /* line 3: the row's actions, words first (Explain, Share), then the two icon links. The whole row wide and wrapping:
+     at its content width the four buttons ran 21 px past a 360 px phone at 130 % text */
+  .mr-trow > td.tcell--link {
+    flex: 1 1 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    padding-left: 1.9rem;
+    text-align: left;
   }
   .mr-tdmg {
     flex-direction: row-reverse;

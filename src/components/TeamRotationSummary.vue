@@ -228,6 +228,8 @@ import {
   type TimelinePoint,
 } from "../calculator/teamRotation";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
+import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
+import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import TeamRotationTimelineChart from "./TeamRotationTimelineChart.vue";
 import TeamRotationCharacterTimelineChart from "./TeamRotationCharacterTimelineChart.vue";
@@ -347,6 +349,10 @@ async function recompute() {
   const token = ++computeToken;
 
   const enemyConfig: TeamEnemyConfig = { ...t.enemyConfig };
+  // Wuthering Tools+: builds by name + team buffs from the real members (src/sim/teamContext), as the editor
+  const teamResolution = await resolveTeamCharacters(t, characters.value, inventoryEchoes.value, { auto: autoTeamBuffs.value, enemyConfig });
+  if (token !== computeToken) return;
+  const teamCharacters = teamResolution.characters;
 
   // Each slot's characters map with its pinned build (if any) swapped in,
   // so the stat panel and weapon card match what the damage calc uses.
@@ -354,8 +360,8 @@ async function recompute() {
   for (const slot of [0, 1, 2]) {
     const characterId = t.characterIds[slot];
     slotCharacters[slot] = characterId
-      ? resolveCharactersForBuild(characters.value, characterId, t.buildIds?.[slot] ?? null)
-      : characters.value;
+      ? resolveCharactersForBuild(teamCharacters, characterId, teamResolution.buildIds[slot] ?? null)
+      : teamCharacters;
   }
 
   const nextContexts: Record<number, CharacterCalculationContext | null> = {};
@@ -400,11 +406,11 @@ async function recompute() {
     {
       name: t.name,
       characterIds: t.characterIds,
-      buildIds: t.buildIds,
+      buildIds: teamResolution.buildIds,
       actions: t.actions,
       duration: t.duration,
     },
-    characters.value,
+    teamCharacters,
     enemyConfig,
     inventoryEchoes.value,
   );
@@ -413,4 +419,5 @@ async function recompute() {
 }
 
 watch(team, () => void recompute(), { deep: true, immediate: true });
+watch(autoTeamBuffs, () => void recompute()); // Wuthering Tools+
 </script>

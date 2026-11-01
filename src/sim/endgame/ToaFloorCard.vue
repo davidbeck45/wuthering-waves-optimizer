@@ -140,6 +140,10 @@
         <button v-if="rows.length > top" type="button" class="btn btn-ghost btn-xs mt-2 w-full" :data-test-toa-more="floor.id" @click="open = !open">
           {{ open ? "Show the top 3" : `All ${rows.length} teams` }}
         </button>
+        <!-- Wuthering Tools+ AI: this floor's verdict, explained by Claude with the floor and the timed teams attached -->
+        <div v-if="rows.length && !running" class="flex justify-end mt-1.5">
+          <ExplainButton :request="explainRequest" :what="`the clear check for ${towerName} floor ${floor.floor}`" :test-id="`toa:${floor.id}`" size="xs" label="Explain this floor" />
+        </div>
       </div>
     </div>
   </article>
@@ -156,6 +160,8 @@ import { enemyInfo, floorChips, hpSegments, multiEnemy, type ToaFloor } from "./
 import type { CandidateTeam, FloorResult } from "./toaRun";
 import ToaPortraits from "./ToaPortraits.vue";
 import ToaTimeBar from "./ToaTimeBar.vue";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainToaFloor } from "../ai/explain/explainPayloads";
 
 const props = withDefaults(
   defineProps<{
@@ -193,6 +199,15 @@ const resLines = computed(() =>
   })),
 );
 
+const explainRequest = () =>
+  explainToaFloor({
+    floor: props.floor,
+    towerName: props.towerName,
+    rows: props.rows,
+    res: resLines.value,
+    effects: chips.value.map((c) => ({ label: c.label, fidelity: c.fidelity, text: c.text })),
+    paceOf: props.paceOf,
+  });
 const elementIcon = (el: string): string | null => characterElementsSetImageMap[el] ?? null;
 const compact = (n: number): string =>
   n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e7 ? 1 : 2)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(Math.round(n));

@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { allCharactersList, characterPortraitUrl, getCharactersAvailable } from "../../characters/characters";
@@ -85,14 +85,18 @@ import { useSuggestNavigation } from "../../composables/useSuggestNavigation";
 import { useToast } from "../../composables/useToast";
 import { useAiSettings } from "../ai/aiSettings";
 import { useAssistant } from "../ai/useAssistant";
-import { characterRowsOf, GROUP_LABELS, paletteItems, rankPalette, type PaletteGroup, type PaletteItem } from "./paletteItems";
-import { isAppRoute, openCharacter, openTeam } from "./navigation";
+import { characterRowsOf, GROUP_LABELS, rankPalette, type PaletteGroup, type PaletteItem } from "./paletteItems";
+import { isAppRoute, openCharacter, openTeam, TEAMS_ACTIVE_KEY } from "./navigation";
+import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import { requestShare } from "../share/shareRequest";
+import { paletteWithCommands, type PaletteContext } from "./paletteCommands";
 import type { CharacterStoreLike } from "./navigation";
 import { modKeyLabel } from "./shellDom";
 
 const emit = defineEmits<{ close: [] }>();
 
 const router = useRouter();
+const route = useRoute();
 const characterStore = useCharacterStore();
 const teamStore = useTeamRotationsStore();
 const { theme, setTheme } = useTheme();
@@ -113,8 +117,9 @@ const allItems = computed<PaletteItem[]>(() => {
     id: t.id,
     name: t.name ?? "",
     members: (t.characterIds ?? []).filter((id): id is string => !!id).map((id) => roster.five.concat(roster.four).find((c) => c.key === id)?.name ?? id),
+    memberKeys: (t.characterIds ?? []).filter((id): id is string => !!id),
   }));
-  return paletteItems({
+  return paletteWithCommands({
     hasRoute: (path) => isAppRoute(router, path),
     characters: characterRowsOf([...roster.five, ...roster.four], allCharactersList, characterStore.characters as Record<string, any>, characterPortraitUrl),
     teams,
@@ -123,8 +128,25 @@ const allItems = computed<PaletteItem[]>(() => {
     aiKeySet: ai.key.value.present,
     aiChat: assistant.hasChat.value,
     mod: modKey,
+    context: pageContext(),
+    autoTeamBuffs: autoTeamBuffs.value,
   });
 });
+
+/** Where the palette was opened: the route, the calculator's character, the Teams editor's open team. */
+function pageContext(): PaletteContext {
+  const query: Record<string, string | undefined> = {};
+  for (const [k, v] of Object.entries(route.query)) query[k] = typeof v === "string" ? v : undefined;
+  let openTeamId: string | null = null;
+  if (route.path === "/teams") {
+    try {
+      openTeamId = sessionStorage.getItem(TEAMS_ACTIVE_KEY);
+    } catch {
+      openTeamId = null;
+    }
+  }
+  return { path: route.path, query, hash: route.hash, activeCharacter: (characterStore.activeCharacter as string) || null, openTeamId };
+}
 
 const items = computed(() => rankPalette(query.value, allItems.value));
 const nav = useSuggestNavigation(items, { initialIndex: () => 0 });
@@ -180,6 +202,9 @@ async function run(item: PaletteItem): Promise<void> {
     case "ask":
       assistant.ask(r.question);
       break;
+    case "share":
+      requestShare(r.source);
+      break;
     case "action":
       switch (r.action) {
         case "toggle-theme":
@@ -197,6 +222,10 @@ async function run(item: PaletteItem): Promise<void> {
         case "ai-new-chat":
           assistant.newChat();
           assistant.open();
+          break;
+        case "toggle-team-buffs":
+          autoTeamBuffs.value = !autoTeamBuffs.value;
+          showToast(autoTeamBuffs.value ? "Team-aware buffs are on: team buffs come from each team's real members." : "Team-aware buffs are off: each character's own Team Buffs panel is used.", "info");
           break;
       }
       break;

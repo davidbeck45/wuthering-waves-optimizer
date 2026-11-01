@@ -78,6 +78,8 @@
       </div>
       <div class="wvd__actions">
         <button type="button" class="btn btn-sm btn-primary" :data-test-weapons-calculator="row.id" @click="emit('calculator')">Open in calculator</button>
+        <!-- Wuthering Tools+ AI: these weapon figures, explained by Claude with the table attached -->
+        <ExplainButton v-if="row.status === 'ok'" :request="() => explainWeaponValue(row, scope)" :what="`${row.name}'s weapon options`" :test-id="`weapons:${row.id}`" variant="outline" label="Explain" />
         <RouterLink :to="{ path: '/my-rankings', query: { focus: row.id, tab: 'whatif' } }" class="btn btn-sm" :data-test-weapons-whatif="row.id">What if</RouterLink>
         <a :href="prydwenUrl(row.id)" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-ghost" title="Prydwen's character guide (opens their site)">
           Prydwen guide
@@ -100,6 +102,8 @@ import PresetNameLabel from "../display/PresetNameLabel.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { compact } from "../myRankings/format";
 import { pctFine, prydwenUrl, type Scope } from "./weaponValueView";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainWeaponValue } from "../ai/explain/explainPayloads";
 import type { CharacterWeaponValue, ValueOption } from "./weaponValue";
 
 const props = defineProps<{ row: CharacterWeaponValue; scope: Scope; owned: string[] }>();

@@ -2,17 +2,19 @@
 // feeds it the roster, the saved teams and the router's known paths, and runs whatever the chosen item names.
 import { normalize } from "../../utils/actionTextMatch";
 import { PLUS_PAGES } from "./plusPages";
+import type { PaletteContext } from "./paletteCommands";
 
-export type PaletteGroup = "ask" | "page" | "action" | "character" | "team";
+export type PaletteGroup = "ask" | "context" | "page" | "action" | "command" | "character" | "team";
 
 export type PaletteRun =
   | { kind: "route"; path: string }
   | { kind: "character"; key: string }
   | { kind: "team"; id: string }
   | { kind: "action"; action: PaletteAction }
-  | { kind: "ask"; question: string };
+  | { kind: "ask"; question: string }
+  | { kind: "share"; source: { kind: "build"; charId: string } | { kind: "team"; teamId: string } };
 
-export type PaletteAction = "toggle-theme" | "toggle-ui" | "ai-settings" | "ai-open" | "ai-new-chat";
+export type PaletteAction = "toggle-theme" | "toggle-ui" | "ai-settings" | "ai-open" | "ai-new-chat" | "toggle-team-buffs";
 
 export interface PaletteItem {
   key: string;
@@ -27,13 +29,19 @@ export interface PaletteItem {
   image?: string;
   /** a short badge on the right ("S6", "Set up", "Ctrl J") */
   badge?: string;
+  /** listed only once something is typed (a command per character / team would flood the empty list) */
+  queryOnly?: boolean;
+  /** tie-break between equal scores, lower first (a character's own commands before its teams') */
+  order?: number;
   run: PaletteRun;
 }
 
 export const GROUP_LABELS: Record<PaletteGroup, string> = {
   ask: "Claude",
+  context: "On this page",
   page: "Pages",
   action: "Actions",
+  command: "Commands",
   character: "Characters",
   team: "Saved teams",
 };
@@ -79,7 +87,8 @@ export interface PaletteSources {
   // eslint-disable-next-line no-unused-vars -- the parameter of a function type
   hasRoute: (path: string) => boolean;
   characters: Array<{ key: string; name: string; rarity?: number | null; element?: string | null; weapon?: string | null; setUp: boolean; sequence?: number | null; portrait?: string }>;
-  teams: Array<{ id: string; name: string; members: string[] }>;
+  /** `members` are display names; `memberKeys` the app keys (the team commands need them) */
+  teams: Array<{ id: string; name: string; members: string[]; memberKeys?: string[] }>;
   themeStyle: "light" | "dark";
   classicUi: boolean;
   aiKeySet: boolean;
@@ -87,6 +96,10 @@ export interface PaletteSources {
   aiChat: boolean;
   /** "Ctrl" or "⌘" */
   mod: string;
+  /** where the player is: the "On this page" commands (none without it) */
+  context?: PaletteContext;
+  /** the team-aware buffs switch (no command without it) */
+  autoTeamBuffs?: boolean;
 }
 
 export function paletteItems(s: PaletteSources): PaletteItem[] {
@@ -120,6 +133,8 @@ export function paletteItems(s: PaletteSources): PaletteItem[] {
   for (const t of s.teams) {
     items.push({ key: `team:${t.id}`, group: "team", title: t.name || "(unnamed team)", subtitle: t.members.join(" · ") || "No members yet", keywords: t.members, icon: ICON.team, run: { kind: "team", id: t.id } });
   }
+  // the commands (what you can do with a character or a team) are added by paletteCommands.ts `paletteWithCommands`,
+  // which only the lazy palette imports: this module is in the entry chunk (PlusShell reads `pageTitleOf`)
   return items;
 }
 
@@ -153,7 +168,7 @@ export function fuzzyScore(query: string, text: string): number {
   return compactQ.length >= 2 ? Math.max(0.05, 0.45 * (compactQ.length / span)) : 0;
 }
 
-const GROUP_WEIGHT: Record<PaletteGroup, number> = { page: 0.06, action: 0.05, character: 0.03, team: 0.02, ask: 0 };
+const GROUP_WEIGHT: Record<PaletteGroup, number> = { context: 0.07, page: 0.06, action: 0.05, command: 0.04, character: 0.03, team: 0.02, ask: 0 };
 const QUESTION = /\?\s*$|^(what|why|how|who|which|should|is|are|can|does|do|when|where|explain|compare)\b/i;
 
 export const looksLikeQuestion = (text: string): boolean => QUESTION.test(text.trim());
@@ -170,11 +185,12 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
   const q = query.trim();
   const perGroup = options.perGroup ?? 6;
   if (!q) {
+    const context = items.filter((i) => i.group === "context" && !i.queryOnly);
     const pages = items.filter((i) => i.group === "page");
-    const actions = items.filter((i) => i.group === "action");
+    const actions = items.filter((i) => i.group === "action" && !i.queryOnly);
     const chars = items.filter((i) => i.group === "character" && i.badge).slice(0, 8);
     const teams = items.filter((i) => i.group === "team").slice(0, 5);
-    return [...pages, ...actions, ...chars, ...teams];
+    return [...context, ...pages, ...actions, ...chars, ...teams];
   }
   const scored = items
     .map((item) => {
@@ -185,7 +201,7 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
       return { item, best, score: best > 0.04 ? best + GROUP_WEIGHT[item.group] + (item.group === "character" && item.badge ? 0.02 : 0) : 0 };
     })
     .filter((s) => s.score > 0)
-    .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title));
+    .sort((a, b) => b.score - a.score || (a.item.order ?? 0) - (b.item.order ?? 0) || a.item.title.localeCompare(b.item.title));
   // a scattered-letters match is noise next to a real one ("aem" → Aemeath, not "Rover AEro (Male)")
   const strong = scored.length ? scored[0].best : 0;
   const kept = strong >= 0.6 ? scored.filter((s) => s.best >= 0.3) : scored;

@@ -6,7 +6,7 @@
     v-bind="$attrs"
     type="button"
     class="btn gap-1.5"
-    :class="[size === 'xs' ? 'btn-xs' : size === 'md' ? '' : 'btn-sm', variant === 'primary' ? 'btn-primary' : variant === 'ghost' ? 'btn-ghost' : '']"
+    :class="[{ 'wt-share-btn--phone-label': phoneLabel }, size === 'xs' ? 'btn-xs' : size === 'md' ? '' : 'btn-sm', variant === 'primary' ? 'btn-primary' : variant === 'ghost' ? 'btn-ghost' : '']"
     :title="title"
     :aria-label="title"
     :data-test-share-button="testId"
@@ -14,7 +14,7 @@
     <svg viewBox="0 0 24 24" class="size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M12 3v12m0-12L8 7m4-4l4 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
     </svg>
-    <span v-if="label" :class="{ 'max-sm:sr-only': compact }">{{ label }}</span>
+    <span v-if="label" :class="{ 'max-sm:sr-only': compact, 'md:sr-only': phoneLabel }">{{ label }}</span>
   </button>
   <ShareSheet v-if="mounted" ref="sheet" />
 </template>
@@ -35,8 +35,10 @@ const props = withDefaults(
     variant?: "primary" | "ghost" | "default";
     /** hide the label below `sm` (icon only) */
     compact?: boolean;
+    /** the reverse: the label shows below `md` only (a desktop row of icon buttons with tooltips; a phone row has room for words) */
+    phoneLabel?: boolean;
   }>(),
-  { label: "Share", size: "sm", variant: "default", compact: false },
+  { label: "Share", size: "sm", variant: "default", compact: false, phoneLabel: false },
 );
 
 const mounted = ref(false);
@@ -50,3 +52,14 @@ async function open() {
   await sheet.value?.open(props.source);
 }
 </script>
+
+<style scoped>
+/* desktop: an icon button the size of its neighbours; the label is for phones */
+@media (min-width: 768px) {
+  .wt-share-btn--phone-label {
+    width: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+</style>

@@ -219,7 +219,9 @@
 // Wuthering Tools+ — /energy: the energy check for every saved team (src/sim/energy/). Measures on open (kept in
 // localStorage per account and engine commit, so a revisit is instant), the per-character ER floor, and an opt-in scan
 // of every composition the account can field.
-import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+import { scrollToWhenPresent } from "../shell/shellDom";
 import { storeToRefs } from "pinia";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
@@ -274,6 +276,30 @@ watchEffect(() => {
   if (!settled.value) return;
   order.value = [...teams.value].sort((a, b) => rankOf(a) - rankOf(b) || deficitOf(b) - deficitOf(a)).map((t) => t.id);
 });
+// Wuthering Tools+ palette ("Energy check: <team>"): /energy?team=<saved team id> lists every team and, once they are
+// measured and sorted, scrolls to that one. Read from the route, not once: the palette run from /energy itself only
+// changes the query (the page stays mounted).
+const route = useRoute();
+const focusTeam = computed(() => (typeof route.query.team === "string" && route.query.team ? route.query.team : null));
+let focusedTeam: string | null = null;
+watch(
+  [settled, focusTeam],
+  ([done, id]) => {
+    if (!id) {
+      focusedTeam = null;
+      return;
+    }
+    if (id !== focusedTeam) {
+      showAllTeams.value = true;
+      teamFilter.value = "all";
+    }
+    if (done && id !== focusedTeam) {
+      focusedTeam = id;
+      void scrollToWhenPresent(`[data-test-energy-team-id="${CSS.escape(id)}"]`);
+    }
+  },
+  { immediate: true },
+);
 const orderedTeams = computed(() => {
   const at = new Map(order.value.map((id, i) => [id, i]));
   return [...teams.value].sort((a, b) => (at.get(a.id) ?? 1e9) - (at.get(b.id) ?? 1e9));

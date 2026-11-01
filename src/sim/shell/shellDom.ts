@@ -29,3 +29,33 @@ export function modKeyLabel(): string {
   const platform = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ?? navigator.platform ?? "";
   return /mac|iphone|ipad|ipod/i.test(platform) ? "⌘" : "Ctrl";
 }
+
+/** Scroll to an element once it is on the page (a palette command's `?team=` / `?focus=` target), centred so the fixed
+ *  nav never covers it, and outline it for a moment. Polls on a timer (no requestAnimationFrame: it never fires in a
+ *  background tab or headless Electron). Resolves with the element, or null after `timeoutMs`. */
+export function scrollToWhenPresent(selector: string, options: { timeoutMs?: number; doc?: Document } = {}): Promise<Element | null> {
+  const doc = options.doc ?? document;
+  const until = Date.now() + (options.timeoutMs ?? 15000);
+  return new Promise((resolve) => {
+    const tick = (): void => {
+      const el = doc.querySelector(selector);
+      if (el) {
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        el.setAttribute("data-wt-focused", "");
+        const html = el as HTMLElement;
+        const before = html.style.outline;
+        html.style.outline = "2px solid oklch(var(--p))";
+        html.style.outlineOffset = "2px";
+        setTimeout(() => {
+          html.style.outline = before;
+          html.style.outlineOffset = "";
+        }, 2500);
+        resolve(el);
+        return;
+      }
+      if (Date.now() > until) resolve(null);
+      else setTimeout(tick, 150);
+    };
+    tick();
+  });
+}

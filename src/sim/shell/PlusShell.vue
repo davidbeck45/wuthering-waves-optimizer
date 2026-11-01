@@ -22,6 +22,7 @@
   <AssistantPanel v-if="panelMounted" />
   <AiSettingsDialog v-if="assistant.state.settingsOpen" @close="assistant.closeSettings()" />
   <CommandPalette v-if="assistant.state.paletteOpen" @close="assistant.setPaletteOpen(false)" />
+  <ShareSheetHost v-if="shareRequest" />
 </template>
 
 <script setup lang="ts">
@@ -34,10 +35,12 @@ import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
 import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
+import { shareRequest } from "../share/shareRequest";
 
 const AssistantPanel = defineAsyncComponent(() => import("../ai/ui/AssistantPanel.vue"));
 const AiSettingsDialog = defineAsyncComponent(() => import("../ai/ui/AiSettingsDialog.vue"));
 const CommandPalette = defineAsyncComponent(() => import("./CommandPalette.vue"));
+const ShareSheetHost = defineAsyncComponent(() => import("../share/ShareSheetHost.vue"));
 
 const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";
 

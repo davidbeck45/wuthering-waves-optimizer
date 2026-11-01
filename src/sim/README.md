@@ -414,7 +414,9 @@ rewrites the members for the team they are actually in, before the engine runs:
 Switch: `autoTeamBuffs.ts` (`localStorage["wtplus:teamBuffs:auto"]`, default on, **off under Cypress** so
 upstream's E2E numbers hold) with `AutoTeamBuffsToggle.vue` in the Team Rotations editor header and on
 `/my-rankings`. Hooks: `TeamRotations.vue` (list totals + fingerprint), `TeamRotationTeamEditor.vue`
-(`recompute()`, the per-slot snapshot the action editor shows), `rankRoster.ts` (`autoTeamBuffs` option),
+(`recompute()`, the per-slot snapshot the action editor shows), `TeamRotationSummary.vue` (`recompute()`, the team's
+Summary page — its totals, slot stats and weapon cards; added 2026-10-31, see "Wiring the pages together"),
+`rankRoster.ts` (`autoTeamBuffs` option),
 CLI `team` / `rank` / `snapshot` (`--no-auto-buffs`; `team <one>` prints each slot's build and buff source,
 plus the buffs a teammate does *not* own yet). Still static: the engine has no uptime — a buff is on for the
 whole rotation or off; Riley's engine is the one that plays the timeline. Tests: `resolveTeam.test.ts`
@@ -1181,7 +1183,8 @@ link) on any WT+ restores it exactly — no OCR — as a *new* build after a mer
 | `readCard.ts` | what a dropped / picked / pasted file is: WT+ card → `WTPlusBuild`; Tacet Lab card → `TacetLabCard`; a JPEG / WebP / AVIF → "re-compressed, no data"; a PNG without either → "no data (screenshot or re-saved)" plus the pointer to upstream's OCR importer (Echoes › Import) |
 | `ShareSheet.vue` | the share dialog (DaisyUI `modal`, so `phone.css` § 6 makes it a bottom sheet): live preview, engine numbers on/off, name & UID (off every time it opens; the values are upstream's `settings.config.buildCard.username/uid`), dark / light card, Download PNG, Share… (only where file sharing exists), Copy link (length shown, `data-test-share-link-url` carries it), Copy picture only; the last card rendered with its data is kept (keyed by everything on it), so Download then Share — or the second tap Share sometimes needs — doesn't capture again; remembered choices in `localStorage["wtplus:share:prefs"]` |
 | `ShareView.vue` | route `/share` (lazy, `main.ts`): the whole page is a drop target (plus file input and Ctrl+V paste of an image or a link), `#b=` links open on arrival, the import preview (the card rendered from the data, the plan, warnings, read-only banner) and **Add to my account** → store writes in one `$patch` per store, then the fragment is cleared; "Share from your account" pickers (character + build, team) |
-| `ShareButton.vue` | one button → the sheet (`:source="{ kind: 'build', charId, buildId? }"` or `{ kind: 'team', teamId }`); the sheet mounts on first click, so a table full of them costs nothing — the hook for batch-1's /my-rankings rows |
+| `ShareButton.vue` | one button → the sheet (`:source="{ kind: 'build', charId, buildId? }"` or `{ kind: 'team', teamId }`); the sheet mounts on first click, so a table full of them costs nothing. Used on /my-rankings (an opened character row's "Share build", a saved team row's "Share"; 2026-10-31). `phoneLabel` shows the label below `md` only (an icon button the size of its neighbours on desktop, words on a phone) |
+| `shareRequest.ts` + `ShareSheetHost.vue` | "share this" from outside a page (the command palette's Share commands, 2026-10-31): `requestShare(source)` sets a module-level request; `PlusShell.vue` mounts the host (`defineAsyncComponent`, so the sheet's code loads on the first request) and it opens the sheet over whatever page is showing |
 | `ShareBuildStrip.vue` | the bar over upstream's build card: `<WtPlusShareStrip>` is one tag in `Calculator.vue`'s build-card screen, registered globally (async, so the share code loads on first use) by one line in `main.ts` — `CalculatorBuildCard.vue` is not edited |
 | `share.test.ts` | chunk round trip (CRC valid, corrupt chunk skipped, a good chunk after a bad one found, truncated file, > 16 KB refused on write and skipped on read), a Tacet Lab card built byte-for-byte like its embed (bitwise CRC), format round trip on the Cartethyia fixture (substats exact), version gate, prototype keys, never-shared / mis-shaped keys dropped on read (and the imported build keeps its own id), notes never shared, the rAF fallback (overlapping captures restore the browser's functions, a cancelled frame never runs), link ≤ 1,900 (lean 1,399 chars on the fixture, full 2,940, gear 684), the plan (5 owned by fingerprint; active build, live fields and other builds untouched; inputs not mutated), **an empty account restores identical `finalStats` and identical rotation damage**, skips with reasons, gear-only sequence + set bonuses; the verify pass added: local card dates (time-zone proof), `echoProblem` refusing impossible echoes, a received unknown `mainEcho` / non-plain enemy settings dropped, a team import (new team pinned to the new builds, active builds untouched, empty slots' actions dropped) |
 | `cypress/e2e/share.cy.ts` | v3, seeded through `onBeforeLoad`: export through the real Download button → the PNG back through the file input → 5 echoes "owned", "Checked here … the same", confirm → one more build, active build and weapon unchanged, no duplicate echoes; a link (≤ 1,900) into an empty account → new character with the build active and 5 new echoes, fragment cleared; a JPEG → the "no data" explanation; a link whose only character the app lacks → the "nothing to show" note and a disabled import (no endless spinner); the strip over the calculator's build card. `phoneLayout.cy.ts` covers `/share`, the sheet and an import preview at 360 px |
@@ -1357,14 +1360,16 @@ plus code. No real Anthropic request is made by the app's tests or the Cypress s
 | `ai/ui/markdown.ts` + `MarkdownView.ts` | (stage 1 draft, now tested) the markdown subset → VNodes; every piece of model text is a text node, no `v-html` anywhere. Links: http(s) in a new tab with `noopener noreferrer nofollow`, or a path the router resolves (bare `/my-rankings` in prose too) through `router.push` |
 | `ai/ui/toolSummary.ts` | timeline rows, deep links, provenance, `toolViewsOf` (transcript tools → rows with this tab's timings), `prettyJson` |
 | `ai/ui/suggestions.ts` | three or four questions per route (/ about the active character, /my-rankings "What should I invest in next?", /rankings "Which of these teams can I field best?", /teams "Why is my team lower than Riley's?", /inventory "Which echoes can I feed?", /convene "Who should I pull for?") |
-| `shell/CommandPalette.vue` + `paletteItems.ts` | native `<dialog>` at the top of the screen (on phones too — the keyboard can't cover it). Pages (`CORE_PAGES` + the shared `PLUS_PAGES`, each only when the router resolves it), actions (Rank my roster, open the assistant, new chat when one exists, AI settings, theme light/dark via `useTheme`, classic / v3 via `useClassicUi`), characters (portrait, rarity · element · weapon, `S<n>` badge when set up — `characterRowsOf`; Enter makes it active and goes to the calculator), saved teams (→ /teams with that team open), and "Ask Claude: <text>" (first for a question or a weak match, last otherwise). `rankPalette`: word-prefix / initials / substring / subsequence scoring, groups in the order of their best item, scattered-letter noise dropped next to a real match. Focus stays in the input; ↑/↓ move `aria-activedescendant` (`useSuggestNavigation`), Enter runs, Esc closes |
+| `shell/CommandPalette.vue` + `paletteItems.ts` | native `<dialog>` at the top of the screen (on phones too — the keyboard can't cover it). Pages (`CORE_PAGES` + the shared `PLUS_PAGES`, each only when the router resolves it), actions (Rank my roster, open the assistant, new chat when one exists, AI settings, theme light/dark via `useTheme`, classic / v3 via `useClassicUi`), characters (portrait, rarity · element · weapon, `S<n>` badge when set up — `characterRowsOf`; Enter makes it active and goes to the calculator), saved teams (→ /teams with that team open), **commands** (`paletteCommands.ts`, 2026-10-31: "On this page" first for the character / team the page shows, and per set-up character / saved team once you type — see "Wiring the pages together"), and "Ask Claude: <text>" (first for a question or a weak match, last otherwise). `rankPalette`: word-prefix / initials / substring / subsequence scoring, groups in the order of their best item, scattered-letter noise dropped next to a real match. Focus stays in the input; ↑/↓ move `aria-activedescendant` (`useSuggestNavigation`), Enter runs, Esc closes |
 | `shell/navigation.ts`, `shell/shellDom.ts` | shared jumps (`openCharacter`, `openTeam`, `isAppRoute`, `characterKeyByName`) and DOM helpers (`anyModalOpen`, `isTypingTarget`, `modKeyLabel`) |
 | tests | `useAssistant.test.ts` (the real conversation + loop + tools with a scripted client: ask, explain with attachment + low effort, no key → onboarding with the question parked, stop, budget confirm no → Continue → yes, a second question while busy, an overloaded error → Retry, Edit), `ui/markdown.test.ts` (subset, unsafe links, raw HTML stays text, MarkdownView mounted under a router renders no `<img>`), `ui/toolSummary.test.ts`, `ui/suggestions.test.ts`, `attachments.test.ts`, `shell/paletteItems.test.ts`; Cypress `cypress/e2e/assistant.cy.ts` |
 
 Rules:
 - **The SDK never lands in the main bundle.** `client.ts` (`import("@anthropic-ai/sdk")`), `assistantRuntime.ts`, the panel,
   the palette and the dialog are all lazy; the entry chunk only holds PlusShell, `useAssistant`, `conversationStore`,
-  `attachments`, `aiSettings`, `paletteItems` / `plusPages` (for page titles) and the shell helpers. Gate: `npx vite build`, then
+  `attachments`, `aiSettings`, `paletteItems` / `plusPages` (for page titles) and the shell helpers. `paletteCommands.ts`
+  (2026-10-31) is imported by the palette only, through `paletteWithCommands`: in `paletteItems.ts` it added 9.3 kB to the
+  entry chunk. Gate: `npx vite build`, then
   `grep -c "api.anthropic.com" dist/assets/index-*.js` → 0 (the one "anthropic" there is a palette keyword).
 - **Append-only, one answer at a time.** A second `ask` / `explain` while an answer runs goes into the composer; Edit
   rewinds with `truncateBefore` (a confirm when later questions would go) and puts the text back; nothing rewrites history.
@@ -1719,7 +1724,9 @@ Things learned:
   ≥ 100 % of the bar (10,000 in his ×100 units); the cumulative strip is SVG, not a lazy Chart.js; the
   `rotationLines.flat()` parity excludes his field-summary lines (`aggregate`), which RunLite drops.
 - Not built: links from the synced team rows and the stock-preset modal (both live in Ryan's `TeamRotations.vue`; the
-  picker lists both sets instead); palette commands (batch 1's palette — see the integration notes of this track).
+  picker lists both sets instead). Palette commands came later (2026-10-31): "Rotation cue card" for a saved team, and
+  "On this page" on `/rotation#chars=` (a `#team=` key or code isn't read on the main thread — see "Wiring the pages
+  together").
 
 ## Energy check — `src/sim/energy/` + `/energy` (batch 2, 2026-10-26)
 
@@ -1739,7 +1746,7 @@ and sets it beside the ER the build has in this app. ER stops reading as dead we
 | `useEnergyNeeds.ts` | the app's one shared check (detached effect scope): pages `activate()` / `release()` it; measures saved teams on the seam's `rileyClient()` worker, reads haves from the stores in ~12 ms slices (one calculator build per character — 40 in one task held a phone's main thread for half a second), watches the stores only while a page is active (debounced 500 ms), `viewOf(ids)` for any composition ("Check ER" on a preset), `ready()` for one-shot readers (follows a haves job a data change superseded), the opt-in `scanAll` on a pool of up to three extra solver workers with progress, cancel and a count of compositions that failed |
 | `erAwareScorer.ts` | `erAwareScorer(score, id, floor)` wraps a `BuildScorer`: `avg × deficitFactor(need, have(clone))`, `extra.raw` / `extra.er` keep the undiscounted damage and the ER. Hooks for direct engine callers (batch 1): `erFactorFor`, `erAdjustedGain`, `erReferenceCounts` (ChemX32 with ER promoted to third — 2 rolls on 5/5/2/2/2, 3 on 5/4/3/2/2, his `PROMOTIONS`, capped at three), `erRollsToFloor`, `erBenchmarkNote` |
 | `energySubstats.ts` | `erFloorScorer(energy, id, score)` → the scorer with the character's floor, or the plain one with a reason (`noTeam`, `noGate`, `notMeasured`, `failed`); `erNeedsOf(energy)` → `{ id: need }` for a worker job / cache key, `erNeedsKey` |
-| `EnergyView.vue` (`/energy`) | KPIs (teams checked, short, tight, crit past 100 %), saved teams worst first (order frozen while measuring) with filters and a show-more past eight, the ER floor per character, the opt-in scan ("Other teams you can field": ~170 compositions in ~9 s on David's account), how to read it, the credit line |
+| `EnergyView.vue` (`/energy`) | KPIs (teams checked, short, tight, crit past 100 %), saved teams worst first (order frozen while measuring) with filters and a show-more past eight, the ER floor per character, the opt-in scan ("Other teams you can field": ~170 compositions in ~9 s on David's account), how to read it, the credit line. `?team=<saved team id>` (the palette's "Energy check" command, 2026-10-31) lists every team and, once they are measured and sorted, scrolls to that card and outlines it (`shellDom.scrollToWhenPresent`) |
 | `EnergyTeamCard.vue` / `EnergyMeter.vue` / `EnergyBreakdown.vue` / `EnergySheet.vue` | a team's members as meters (fill = have from 100 %, tick = need) + chips; a member opens the breakdown inline (stacked bar against the spend in a validated three-slot palette, legend with energy and share, crit overcap, what being short costs a score); the chips elsewhere open it in a native `<dialog>` — centred on desktop, a bottom sheet under 768 px (phone.css § 6) |
 | `EnergyChip.vue` / `EnergyStatusIcon.vue` | "110.8% / 115.2% short 4.4% · 1 roll": icon (✓ △ ! – ◌ ×) + numbers + word, colour never alone; `compact`, `small`, `mini` (a pill beside S/R badges — icon + "ER" on a phone, the numbers in its label) |
 | `EnergyTeamChips.vue` / `EnergyCharacterFloor.vue` / `EnergySubstatNote.vue` / `EnergySummaryTile.vue` | self-contained hooks: chips per team row, a character's floor (the `mini` pill and, as a block, a wrapping "needs 115.2% with Mornye + Lynae" / "kit floor 240.0%" line — a full chip there widened today's roster table and squeezed its Best rotation column), the line under substat weights, the "2 characters short on ER · 1 overcapping crit" tile (`tile` for /account, `inline` for a header link) |
@@ -2136,3 +2143,63 @@ cancel, the add: only the 3, unequipped, existing rows and
 `cypress/e2e/wavescanNewEchoes.cy.ts` (v3 at 412 × 915 and 130 % text: upload, counts, skins under their base, notes,
 no sideways scroll with every list open, add → cancel writes nothing → confirm → localStorage has exactly the 3 more and the same `equipped`, reload and
 re-upload → 0 new; classic tab at 1440).
+
+## Wiring the pages together — Explain, share on /my-rankings, palette commands, the team Summary (track "wiring", 2026-10-31)
+
+The 10-26 verify passes left four follow-ups between pages that each work alone: no Explain button used
+`useAssistant().explain()`, `/my-rankings` rows had no share button, the palette had no command for anything you do
+*with* a character or a team, and the Teams page's Summary computed its members without the plus team context.
+
+| Piece | Role |
+|---|---|
+| `ai/explain/explainPayloads.ts` | pure: what each Explain button sends — a chip title, the question, the numbers on screen as labelled JSON. Every key says what the number is and what it was measured against ("average damage per rotation", "team DPS in wuwa_calc", "Energy Regen the loop needs (%)", "kill time (m:ss used)", "crest goals (seconds left)"), and a `measured` line names the engine (`APP_ENGINE_NOTE`: this app's damage per rotation at RANKING_ENEMY; `RILEY_ENGINE_NOTE`: wuwa_calc DPS at the account — never compared with the app's figure). Generated names go as `parsePresetName` titles with the stored name beside them. `explainCharacterRank`, `explainTeamRank` (`/my-rankings` rows and the `/account` hero), `explainEnergyTeam` (null until measured), `explainToaFloor`, `explainWeaponValue` |
+| `ai/explain/ExplainButton.vue` | one button → `explain({ title, data, question })`; the request is a value or a function built on click (a table of them costs nothing), `null` hides it. `outline` / `ghost`, `xs` / `sm`, `iconOnly`, `phoneLabel` (words below `md`, a 2 rem icon button on desktop). No key: the panel shows its setup and keeps the question and the data in the composer (the existing `parkInDraft`); with a key it sends at once |
+| where the buttons are | `/account` hero ("Explain this team", beside "This team at my account"); `/my-rankings` an opened character row ("Explain" + "Share build" above the tabs) and every team row (Explain, and Share on saved teams — a preset row has no saved team to share; desktop icons with tooltips, words on a phone's third line); `/energy` a measured team card's footer ("Explain these needs"); `/endgame` each floor card under its teams ("Explain this floor", once timed); `/weapons` an opened row's actions ("Explain", ok rows only) |
+| `shell/paletteCommands.ts` | pure: `contextTargetOf(context, sources)` — the character / team the page is about: the calculator's active character (set up), `/weapons` / `/my-rankings` `?focus=`, the team open in the Teams editor (`teamRotationsActiveTeamId`, only on `/teams`), `/energy?team=`, `/build-team?team=` / `?members=` (a saved team of the same three when there is one), `/rotation#chars=` (parsed with `rotation/hash.ts`; a `#team=` key or code needs Riley's list in the worker and is left alone). `commandItems` — per character: Share <name>'s build (the sheet), Weapon value (`/weapons?focus=`), Substats & what-if (`/my-rankings?focus=&tab=substats`), and on its own page Ask Claude how to raise their damage; per three-member team: Rotation cue card (`rotationPath({ kind: "chars" })`), Build from my echoes (`/build-team?team=` or `?members=`), and for a saved team Energy check (`/energy?team=`), Share team, Open in Team rotations (off its own page). Plus ToA clear check (`/endgame`), "Which selector pick is best for me?" (`/weapons?tab=selector`) and Turn team-aware buffs on / off (`autoTeamBuffs`, with a toast). "On this page" rows head the empty list (group `context`, titled "… for this team" with the members first in the line below, since a phone cuts the end off); the rest are `queryOnly`. A command that would reopen this page is left out, and one listed on this page isn't repeated under Commands. `paletteWithCommands` = `paletteItems` + these |
+| `shell/paletteItems.ts` | groups `context` ("On this page", weight 0.07) and `command` ("Commands", 0.04); `PaletteItem.queryOnly` (left out of the empty list) and `order` (a tie-break before the title: a character's own commands before its teams'); `PaletteRun` `share`; action `toggle-team-buffs`; `PaletteSources.context`, `.autoTeamBuffs`, `teams[].memberKeys` |
+| `shell/CommandPalette.vue` | builds the context from `useRoute()`, the character store and sessionStorage; runs `share` through `requestShare` and `toggle-team-buffs` |
+| `shell/shellDom.ts` `scrollToWhenPresent` | polls (timer, no rAF) until a selector is on the page, centres it, outlines it for 2.5 s, sets `data-wt-focused` |
+| `src/components/TeamRotationSummary.vue` (upstream, +11 −5 lines) | the Summary page's `recompute()` runs `resolveTeamCharacters(t, characters, echoes, { auto: autoTeamBuffs, enemyConfig })` first, as the editor does, and computes the slots and the team total on its `characters` / `buildIds`; a second `watch(autoTeamBuffs, …)`. `auto: false` is upstream's path unchanged (Cypress) |
+
+The Summary page disagreed with the editor, the team list and `/my-rankings` — measured on David's 9-16 export before the
+fix (Summary vs editor, Average per rotation, team enemy): Aemeath + Mornye + Lynae 9,487,580 vs 9,458,278 (+0.3 %),
+Xuanling + Suisui + Chisa 7,356,616 vs 7,660,012 (−4.0 %), Sigrika + Mornye + Lucilla 6,702,838 vs 7,234,657 (−7.4 %).
+The Summary matched `cli team --no-auto-buffs` to the unit: it ran upstream's own team buffs. After the hook all three
+read the editor's figure (and `cli team`). `/my-rankings` agrees with them where the team's own enemy is RANKING_ENEMY
+(Aemeath, Sigrika); David's Xuanling team has a different enemy set, so `/my-rankings` (5,556,247 at level 100 / 20 %)
+differs from the Teams page by design.
+
+Rules:
+- **Never call the API from an Explain test.** The unit tests set a runtime loader that throws; `wiring.cy.ts` answers
+  every api.anthropic.com request with a 500 and asserts none arrived. With a key stored, Explain sends at once — the spec
+  saves its key only after the click (the question waits in the composer) and re-visits to clear it.
+- **Label every number.** A key without its unit ("gain", "value") is a bug in a payload: Claude reads the keys.
+- **The entry chunk stays light.** `paletteItems.ts` is in it (PlusShell's page titles); anything only the palette
+  uses goes in `paletteCommands.ts`. Entry chunk 1,511.73 kB / 379.70 kB gzip against 1,510.53 / 379.17 on plus-night.
+- **No template comment at a component's root** (`ExplainButton.vue`, `ShareSheetHost.vue`): dev builds keep it, which
+  makes the root a fragment, so a parent's scoped styles reach the button in production but not in dev.
+
+Things learned:
+- `git stash` in a worktree uses the repository's one stash list: a `stash` with nothing to save followed by `stash
+  pop` pops someone else's entry into your tree (here David's 2026-09-13 Drive-backup stash; the pop conflicted, so git
+  kept the entry, and the tree was reset). Don't stash in these worktrees; compare builds by checking out the base's
+  files and back.
+
+Gates (2026-10-31): `vue-tsc --noEmit` clean; vitest `src/sim` 72 files / 730 tests (+ `tests/components` 52 / 340);
+`explain.test.ts` 8, `paletteItems.test.ts` 12; Cypress `wiring.cy.ts` 4/4, `phoneLayout.cy.ts` 12/12, `myRankings`,
+`account`, `assistant`, `share`, `energyCheck`, `toa`, `weaponValue`, Ryan's `teamRotationSummary` /
+`teamRotationsSummaryAndStatus` all green (`teamRotationBuildOverride.cy.ts` 0/2 here and on plus 8fc83311 alike:
+DaisyUI's modal stuck at opacity 0 in headless Electron). Vercel-style build 7.9 s, no `import.meta.glob` left, no new
+Worker entry point (7 `worker-import-meta-url` transforms, as before). Phone shots 412 / 130 %, dark and light:
+`/home/doeszen/Projects/wto-wt/night/shots/wiring/`.
+
+Left for later: palette commands that read a page's state rather than its URL (`/rotation#team=<key>`, the team a
+`/build-team` run produced); an Explain on `/endgame`'s Plan tab (another track was editing `ToaPlan.vue`); Explain on
+`/today` (`doubleDropMath`) and "Waveplates full at…" commands (`useToday()`), as the Today section suggests.
+
+Verify pass (2026-10-31): a saved team's row on `/my-rankings` carries four buttons on a phone (Explain, Share, build,
+↗); at their content width they ran 21 px past a 360 px screen at 130 % text (the page scrolled sideways). The action
+line now takes the whole row and wraps (`MyRankingsTeams.vue`, `wiring.cy.ts` checks 412 and 360). `/energy?team=` and
+`/weapons?focus=` are read from the route rather than once at mount: the palette's "Energy check" / "Weapon value"
+run on that same page only changes the query, and used to do nothing. The ToA payload's clock is the card's (59.6 s →
+"1:00", not "0:60").

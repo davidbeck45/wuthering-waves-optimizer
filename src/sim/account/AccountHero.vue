@@ -27,6 +27,14 @@
           </ul>
         </div>
         <div class="acc-hero__links">
+          <!-- Wuthering Tools+ AI: the hero's number, explained by Claude with the team's figures attached -->
+          <ExplainButton
+            :request="() => (best ? explainTeamRank(best, { rank: 1, of: kpis.fieldable ?? 1, page: 'account' }) : null)"
+            what="your best team's damage"
+            test-id="account-hero"
+            variant="outline"
+            size="xs"
+            label="Explain this team" />
           <RouterLink :to="{ path: '/rankings', hash: rankingsMineHash(best.characterIds) }" class="acc-hero__link" data-test-account-hero-rankings>
             This team at my account
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -107,6 +115,8 @@ import { rankingsMineHash } from "./accountState";
 import { memberShares } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
 import { getGradeForSubstatScorePercent } from "../../echoes/rating";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainTeamRank } from "../ai/explain/explainPayloads";
 import type { AccountKpis } from "./accountView";
 import type { RunStatus } from "./useAccountData";
 

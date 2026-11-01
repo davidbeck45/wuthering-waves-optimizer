@@ -1,5 +1,5 @@
 <template>
-  <article class="en-card" :data-test-energy-team="view.name" :data-test-energy-team-state="stateKind">
+  <article class="en-card" :data-test-energy-team="view.name" :data-test-energy-team-id="view.id" :data-test-energy-team-state="stateKind">
     <header class="en-card__head">
       <div class="en-trio" aria-hidden="true">
         <img v-for="id in view.characterIds" :key="id" class="en-trio__face" :src="characterPortraitUrl(id)" alt="" loading="lazy" />
@@ -68,6 +68,10 @@
           <EnergyBreakdown :view="view" :character-id="c.characterId" inline />
         </div>
       </div>
+      <!-- Wuthering Tools+ AI: the three needs, explained by Claude with the measurement attached -->
+      <div class="en-card__foot">
+        <ExplainButton :request="() => explainEnergyTeam(view)" :what="`the Energy Regen needs of ${view.name}`" :test-id="`energy:${view.name}`" size="xs" label="Explain these needs" />
+      </div>
     </div>
   </article>
 </template>
@@ -82,6 +86,8 @@ import { rankingsMineHash } from "../account/accountState";
 import EnergyBreakdown from "./EnergyBreakdown.vue";
 import EnergyChip from "./EnergyChip.vue";
 import EnergyMeter from "./EnergyMeter.vue";
+import ExplainButton from "../ai/explain/ExplainButton.vue";
+import { explainEnergyTeam } from "../ai/explain/explainPayloads";
 import { gearText, intText, measureNote, nameOf, needLabel } from "./energyFormat";
 import type { TeamView } from "./useEnergyNeeds";
 import "./energy.css";
@@ -180,6 +186,12 @@ const shortCount = computed(() => props.view.checks?.filter((c) => c.status === 
 }
 .en-card__empty .en-card__note {
   padding: 0;
+}
+.en-card__foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.3rem 0.6rem 0.45rem;
+  border-top: 1px solid oklch(var(--bc) / 0.06);
 }
 .en-member + .en-member {
   border-top: 1px solid oklch(var(--bc) / 0.06);
