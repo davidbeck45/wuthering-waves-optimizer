@@ -20,7 +20,7 @@ import {
   type RunControl,
   type SwapRules,
 } from "./core";
-import { seededRandom } from "./fingerprint";
+import { seededRandom, stableKey } from "./fingerprint";
 import { rankSlots } from "./prescore";
 import { enumerateOutcomes, outcomeCount, outcomeKey, remainingTypes, sampleOutcome, type NewLine } from "./rolls";
 
@@ -75,6 +75,8 @@ export interface EchoPotentialResult {
   /** probability the finished echo beats the echo now in that slot */
   pBeat: number;
   expectedGain: number;
+  /** expected gain when the finished echo is only kept if it beats the slot's echo: E[max(0, gain)] */
+  expectedUpside: number;
   p10: number;
   p50: number;
   p90: number;
@@ -104,6 +106,22 @@ export async function echoPotential(
   target: PotentialTarget,
   options: PotentialOptions = {},
   control: RunControl = {},
+): Promise<EchoPotentialResult> {
+  // the pass and the Tuner plan ask for the same (echo, owner, slot): answer the second from the session
+  const memoKey = `potential|${echoId}|${target.characterId}|${target.slot ?? "auto"}|${stableKey(options)}`;
+  const memoised = session.memo.get(memoKey) as EchoPotentialResult | undefined;
+  if (memoised) return memoised;
+  const result = await computePotential(session, echoId, target, options, control);
+  session.memo.set(memoKey, result);
+  return result;
+}
+
+async function computePotential(
+  session: LabSession,
+  echoId: string,
+  target: PotentialTarget,
+  options: PotentialOptions,
+  control: RunControl,
 ): Promise<EchoPotentialResult> {
   const pace = makePacer(control);
   const echo = session.echoById.get(echoId);
@@ -162,6 +180,7 @@ export async function echoPotential(
   const total = pairs.reduce((s, [, w]) => s + w, 0);
   const pBeat = pairs.reduce((s, [g, w]) => s + (g > 0 ? w : 0), 0) / total;
   const expectedGain = pairs.reduce((s, [g, w]) => s + g * w, 0) / total;
+  const expectedUpside = pairs.reduce((s, [g, w]) => s + Math.max(0, g) * w, 0) / total;
   const tuners = remaining * APPROX_TUNERS_PER_LINE;
   const exp = APPROX_TUNING_EXP[5] - APPROX_TUNING_EXP[Math.min(5, lines.length)];
   return {
@@ -179,6 +198,7 @@ export async function echoPotential(
     current,
     pBeat,
     expectedGain,
+    expectedUpside,
     p10: weightedQuantile(pairs, 0.1),
     p50: weightedQuantile(pairs, 0.5),
     p90: weightedQuantile(pairs, 0.9),

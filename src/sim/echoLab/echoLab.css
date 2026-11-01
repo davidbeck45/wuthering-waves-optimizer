@@ -396,3 +396,10 @@ html[data-theme-style="light"] .el-score-text--good {
     border-radius: var(--rounded-box, 1rem);
   }
 }
+
+/* the tab strip on a phone is a two-column grid: an odd last tab takes the whole row */
+@media (max-width: 639px) {
+  .echo-lab__tabs > :last-child:nth-child(odd) {
+    grid-column: span 2 / span 2;
+  }
+}

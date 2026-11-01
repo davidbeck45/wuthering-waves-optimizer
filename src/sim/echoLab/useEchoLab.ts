@@ -13,6 +13,8 @@ import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { accountFingerprint } from "./fingerprint";
 import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult } from "./pass";
 import type { RerollAdviceResult } from "./rerollAdvice";
+import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
+import type { TunerCandidatesResult } from "./tunerPlan";
 import { erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 
@@ -41,6 +43,12 @@ const benchmarks = shallowRef<BenchmarkBatchResult | null>(null);
 const benchStatus = reactive<JobStatus>(idle());
 /** re-roll advice by `${fingerprint}|${characterId}|${slot}` */
 const rerolls = reactive(new Map<string, RerollAdviceResult | { error: string }>());
+/** the Tuner plan's candidates (the budget is applied on the page, tunerBudget.ts) */
+const tunerPlan = shallowRef<TunerCandidatesResult | null>(null);
+const tunerStatus = reactive<JobStatus>(idle());
+/** "How good is this roll" by `${fingerprint}|${echoId}|${characterId}|${slot}` */
+const qualities = reactive(new Map<string, RollQualityResult | { error: string }>());
+let tunerAbort: AbortController | null = null;
 const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
@@ -51,6 +59,8 @@ interface StoredCache {
   fingerprint: string;
   pass: EchoLabPassResult | null;
   benchmarks: BenchmarkBatchResult | null;
+  /** added with the Tuner plan (an older cache of the same version simply has none) */
+  tunerPlan?: TunerCandidatesResult | null;
 }
 
 function readCache(): StoredCache | null {
@@ -66,7 +76,7 @@ function readCache(): StoredCache | null {
 function writeCache(): void {
   if (!resultFingerprint.value) return;
   try {
-    const value: StoredCache = { v: CACHE_VERSION, fingerprint: resultFingerprint.value, pass: pass.value, benchmarks: benchmarks.value };
+    const value: StoredCache = { v: CACHE_VERSION, fingerprint: resultFingerprint.value, pass: pass.value, benchmarks: benchmarks.value, tunerPlan: tunerPlan.value };
     sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(value));
   } catch {
     // quota or no storage: the module cache still holds it for this page load
@@ -82,9 +92,12 @@ function adopt(fingerprint: string): void {
   resultFingerprint.value = fingerprint;
   pass.value = null;
   benchmarks.value = null;
+  tunerPlan.value = null;
   rerolls.clear();
+  qualities.clear();
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
+  Object.assign(tunerStatus, idle());
 }
 
 export function useEchoLab() {
@@ -138,6 +151,7 @@ export function useEchoLab() {
         resultFingerprint.value = fingerprint;
         pass.value = stored.pass;
         benchmarks.value = stored.benchmarks;
+        tunerPlan.value = stored.tunerPlan ?? null;
         passStatus.cached = true;
       }
     }
@@ -191,9 +205,44 @@ export function useEchoLab() {
 
   const rerollOf = (characterId: string, slot: number): RerollAdviceResult | { error: string } | null => rerolls.get(rerollKey(characterId, slot)) ?? null;
 
+  /** The Tuner plan's candidates: every unfinished echo worth a Tuner, and where a fresh echo pays most. */
+  async function runTunerPlan(options: { force?: boolean } = {}): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    if ((tunerPlan.value && !options.force) || tunerStatus.running || !builtCount.value) return;
+    tunerAbort?.abort();
+    const controller = new AbortController();
+    tunerAbort = controller;
+    const result = await run({ kind: "tunerPlan" }, tunerStatus, controller.signal, account);
+    if (tunerAbort === controller) tunerAbort = null;
+    if (result && resultFingerprint.value === fingerprint) {
+      tunerPlan.value = result;
+      writeCache();
+    }
+  }
+
+  const qualityKey = (echoId: string, target: RollQualityTarget | null): string => `${resultFingerprint.value}|${echoId}|${target?.characterId ?? ""}|${target?.slot ?? ""}`;
+
+  /** "How good is this roll" for one echo, rated where it sits (target null) or in the given owner's slot. */
+  async function runRollQuality(echoId: string, target: RollQualityTarget | null, signal: AbortSignal): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    const key = qualityKey(echoId, target);
+    if (qualities.has(key)) return;
+    try {
+      const result = await getEchoLabClient().run({ kind: "rollQuality", echoId, target }, account, { signal });
+      if (resultFingerprint.value === fingerprint) qualities.set(key, result);
+    } catch (err) {
+      if (!isCancel(err) && resultFingerprint.value === fingerprint) qualities.set(key, { error: errorText(err) });
+    }
+  }
+
+  const qualityOf = (echoId: string, target: RollQualityTarget | null): RollQualityResult | { error: string } | null => qualities.get(qualityKey(echoId, target)) ?? null;
+
   function cancel(): void {
     passAbort?.abort();
     benchAbort?.abort();
+    tunerAbort?.abort();
   }
 
   return {
@@ -207,6 +256,11 @@ export function useEchoLab() {
     runBenchmarks,
     runReroll,
     rerollOf,
+    tunerPlan,
+    tunerStatus,
+    runTunerPlan,
+    runRollQuality,
+    qualityOf,
     cancel,
     snapshot,
   };

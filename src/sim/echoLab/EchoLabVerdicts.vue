@@ -201,6 +201,7 @@
                 Tune or Feed: {{ pct(row.potential.pBeat, 0) }} chance to beat {{ characterName(row.potential.characterId) }}'s {{ slotLabel(row.potential.slot).toLowerCase() }} echo once tuned.
               </template>
             </p>
+            <EchoLabRollQuality :row="row" :characters="result.characters" />
           </div>
         </template>
       </div>
@@ -228,6 +229,7 @@ import { useToast } from "../../composables/useToast";
 import type { BestOwnerResult, EchoVerdict, LabCharacterSummary } from "./bestOwner";
 import EchoLabEcho from "./EchoLabEcho.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
+import EchoLabRollQuality from "./EchoLabRollQuality.vue";
 import {
   DEFAULT_FILTERS,
   SORT_LABELS,

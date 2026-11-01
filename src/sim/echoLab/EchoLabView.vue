@@ -124,6 +124,7 @@
 
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
+        <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" />
         <EchoLabReroll v-else-if="tab === 'reroll'" v-model:character="rerollCharacter" :result="pass.bestOwner" :benchmarks="benchmarks" :preferred="activeCharacter" />
         <EchoLabBenchmark v-else-if="tab === 'benchmark'" :result="benchmarks" :status="benchStatus" @run="(force) => lab.runBenchmarks({ force })" />
 
@@ -146,6 +147,7 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useCharacterStore } from "../../stores/character";
 import type { EchoVerdictKind } from "./bestOwner";
 import EchoLabBenchmark from "./EchoLabBenchmark.vue";
+import EchoLabPlan from "./EchoLabPlan.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import EchoLabReroll from "./EchoLabReroll.vue";
 import EchoLabTune from "./EchoLabTune.vue";
@@ -154,20 +156,20 @@ import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilte
 import { useEchoLab } from "./useEchoLab";
 import "./echoLab.css";
 
-type TabId = "verdicts" | "tune" | "reroll" | "benchmark";
-const TAB_IDS: TabId[] = ["verdicts", "tune", "reroll", "benchmark"];
+type TabId = "verdicts" | "tune" | "plan" | "reroll" | "benchmark";
+const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "reroll", "benchmark"];
 const PASS_PHASES = ["characters", "weights", "echoes"] as const;
 
 // each page sets its own tab title (Ryan's #672)
 useDocumentTitle(
   "Echo Lab — Wuthering Waves Calculator & Optimizer",
-  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, Transducer advice and a build benchmark.",
+  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, a Tuner plan for what you have, Transducer advice and a build benchmark.",
 );
 
 const route = useRoute();
 const router = useRouter();
 const lab = useEchoLab();
-const { pass, passStatus, benchmarks, benchStatus } = lab;
+const { pass, passStatus, benchmarks, benchStatus, tunerPlan, tunerStatus } = lab;
 const activeCharacter = computed(() => (useCharacterStore() as unknown as { activeCharacter: string | null }).activeCharacter ?? null);
 
 const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 0);
@@ -186,6 +188,7 @@ watch([tab, rerollCharacter], ([t, c]) => {
 });
 watch(tab, (t) => {
   if (t === "benchmark") void lab.runBenchmarks();
+  if (t === "plan") void lab.runTunerPlan();
 });
 
 const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS });
@@ -215,6 +218,7 @@ const tabs = computed(() => {
   return [
     { id: "verdicts" as const, label: "Inventory verdicts", short: "Verdicts", count: r ? r.echoes.length : null },
     { id: "tune" as const, label: "Tune or Feed", short: "Tune or Feed", count: r ? r.echoes.filter((e) => e.lines < 5).length : null },
+    { id: "plan" as const, label: "Tuner plan", short: "Tuner plan", count: null },
     { id: "reroll" as const, label: "Re-roll advisor", short: "Re-roll", count: null },
     { id: "benchmark" as const, label: "Build benchmark", short: "Benchmark", count: null },
   ];
@@ -243,6 +247,7 @@ const ctas = [
 onMounted(() => {
   void lab.refresh().then(() => {
     if (tab.value === "benchmark") void lab.runBenchmarks();
+    if (tab.value === "plan") void lab.runTunerPlan();
   });
 });
 </script>

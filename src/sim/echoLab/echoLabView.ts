@@ -236,8 +236,25 @@ export const PHASE_LABELS: Record<string, string> = {
   potential: "Simulating the lines still to roll",
   benchmark: "Benchmarking builds",
   reroll: "Simulating re-rolls",
+  tuners: "Rolling out every unfinished echo",
+  fresh: "Trying a new echo in the weakest slots",
+  rating: "Rating the roll against every outcome",
+  hope: "Trying each line it can still roll",
 };
 export const phaseLabel = (phase: string | null | undefined): string => (phase ? PHASE_LABELS[phase] ?? phase : "Starting");
 
 /** The slot as players count it: slot 0 is the main echo. */
 export const slotLabel = (slot: number): string => (slot === 0 ? "Main echo" : `Slot ${slot + 1}`);
+
+// ── how good is this roll ──
+
+/** the percentile in words: "Better than 82%", the top and bottom 1 % named as such (a simulation can't say 100 %) */
+export function ratingOf(percentile: number): { headline: string; band: string; chip: string } {
+  const n = Math.round(percentile * 100);
+  const headline = percentile >= 0.995 ? "Top 1%" : percentile < 0.01 ? "Bottom 1%" : `Better than ${n}%`;
+  if (percentile >= 0.9) return { headline, band: "Excellent roll", chip: "el-chip--keep" };
+  if (percentile >= 0.7) return { headline, band: "Good roll", chip: "el-chip--keep" };
+  if (percentile >= 0.4) return { headline, band: "Average roll", chip: "el-chip--spare" };
+  if (percentile >= 0.15) return { headline, band: "Below average", chip: "el-chip--spare" };
+  return { headline, band: "Poor roll", chip: "el-chip--feed" };
+}

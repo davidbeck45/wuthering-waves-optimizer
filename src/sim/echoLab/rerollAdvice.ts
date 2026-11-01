@@ -104,7 +104,7 @@ export { MIN_PLAN_GAIN, pickRerollFirst } from "./rerollPick";
  * its highest tier changes nothing in between (damage never falls as a stat grows), so its other tiers are not
  * scored — exact, and most of the work on a build where half the stats are dead.
  */
-async function tierScores(
+export async function tierScores(
   base: Array<{ key: string; value: number }>,
   key: SubstatKey,
   baseline: number,
@@ -252,13 +252,15 @@ async function computeRerollAdvice(
   };
 }
 
-interface AdditiveDeps {
+export interface AdditiveDeps {
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   scoreLines: (list: Array<{ key: string; value: number }>) => Promise<number>;
   base: number;
   canRepeat: boolean;
   samples: number;
   seed: number | string;
+  /** new lines drawn per outcome (default: one per re-rolled line; a fresh echo draws all five) */
+  draw?: number;
 }
 
 /**
@@ -266,7 +268,7 @@ interface AdditiveDeps {
  * engine scoring per type × tier), then the joint outcome as the sum of the new lines' values against the sum
  * of the current re-rolled lines' — sampled with a seeded PRNG. Returns (relative change vs the build, weight).
  */
-async function additivePlan(locked: EchoLine[], rerolled: EchoLine[], deps: AdditiveDeps): Promise<Array<[number, number]>> {
+export async function additivePlan(locked: EchoLine[], rerolled: EchoLine[], deps: AdditiveDeps): Promise<Array<[number, number]>> {
   const lockedLines = locked.map((l) => ({ key: l.key, value: l.value }));
   const context = await deps.scoreLines(lockedLines);
   if (!(context > 0)) return [[0, 1]];
@@ -291,7 +293,7 @@ async function additivePlan(locked: EchoLine[], rerolled: EchoLine[], deps: Addi
   for (const l of rerolled) current += await lineValue(l.key, l.value);
   const scale = context / deps.base;
   const rng = seededRandom(deps.seed);
-  const k = Math.min(rerolled.length, pool.length);
+  const k = Math.min(deps.draw ?? rerolled.length, pool.length);
   const pairs: Array<[number, number]> = [];
   for (let i = 0; i < deps.samples; i++) {
     const outcome = sampleOutcome(rng, pool, k);
