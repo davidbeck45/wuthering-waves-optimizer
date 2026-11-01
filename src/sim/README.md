@@ -85,6 +85,9 @@ the fixture and `useClassicUi: false` through `onBeforeLoad`, 130 % text, a wuwa
 result bar's headline, at 412 × 915 (at 360 px the nav fits a real phone by 0.2 px, less than Electron's scrollbar).
 `phone.css` § 12–13 came from that pass: `/updates` padding, bare URLs and the search row (both UIs), and the v3 bar's
 `whitespace-nowrap` headline, which had grown the calculator page to 592 px.
+`phone.css` § 14 came with Ryan #681/#682 (2026-10-31 sync; his rotation charts, behind the Labs "frame timing" flag):
+RotationShareBars' % labels hide when their segment is narrower than the label (a cut-off "14%" read as "1"), and
+the team lanes chart's turns-on-field table becomes two-line cards (it was 463 px wide in a 329 px scroller).
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
