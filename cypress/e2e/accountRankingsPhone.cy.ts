@@ -46,6 +46,8 @@ describe("account and rankings pages on a phone (v3, 130 % text)", () => {
     // the list heads itself: the count, what the figure is, the engine and the substats every row wears
     cy.get("[data-test-rankings-cards-head]").should("be.visible");
     cy.get("[data-test-rankings-cards-unit]").should("contain.text", "per rotation").and("contain.text", "wuwa_calc at your account");
+    // the grey seconds beside the figure say what they are
+    cy.get("[data-test-rankings-card-loop]").first().invoke("text").should("match", /^\d+\.\d s loop$/);
     cy.get("[data-test-rankings-cards-spread]").should("have.text", "ChemX32 substats");
     // the info chip says what its number counts
     cy.get("[data-test-rankings-info-text]").invoke("text").should("match", /^\d+ set up$/);
@@ -63,6 +65,11 @@ describe("account and rankings pages on a phone (v3, 130 % text)", () => {
     // the menu stays open: the same box takes it off again
     cy.get("[data-test-rankings-importable]").should("be.checked").uncheck();
     cy.location("hash", { timeout: 60000 }).should("not.match", /x=[^&]*Lily/);
+    // at 360 px the "26.2 s loop" drops under the figure instead of pushing the card past the screen
+    cy.viewport(360, 800);
+    cy.get("[data-test-rankings-card]").first().should(($c) => {
+      expect($c[0]!.getBoundingClientRect().right, "card inside a 360 px screen").to.be.at.most(360);
+    });
   });
 
   it("docks the search sheet under its header and shows one member's gear at a time on the detail page", () => {

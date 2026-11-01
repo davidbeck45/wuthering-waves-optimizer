@@ -69,7 +69,7 @@
               </span>
               <span class="wt-card__share tabular-nums" data-test-rankings-card-share>{{ c.share }}</span>
               <span class="wt-card__figure tabular-nums" data-test-rankings-card-figure>
-                {{ count(c.figure) }}<span v-if="c.loop != null" class="wt-card__loop">{{ c.loop.toFixed(1) }}s</span>
+                {{ count(c.figure) }}<span v-if="c.loop != null" class="wt-card__loop" data-test-rankings-card-loop>{{ c.loop.toFixed(1) }} s loop</span>
               </span>
               <svg viewBox="0 0 24 24" class="size-4 shrink-0 opacity-40" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </div>
@@ -307,17 +307,22 @@ onBeforeUnmount(() => {
   color: color-mix(in oklch, oklch(var(--p)) calc(var(--wt-k, 0) * 70%), oklch(var(--bc) / 0.75));
   background: color-mix(in oklch, oklch(var(--p)) calc(var(--wt-k, 0) * 22%), oklch(var(--bc) / 0.06));
 }
+/* the number never breaks (no break inside "2,944,297"); its "26.2 s loop" drops under it when the row has no room
+   (a 360 px phone at 130 % text) instead of pushing the card past the screen */
 .wt-card__figure {
   margin-left: auto;
+  min-width: 0;
   font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  white-space: nowrap;
+  text-align: right;
 }
 .wt-card__loop {
+  display: inline-block;
   margin-left: 0.25rem;
   font-size: 0.7rem;
   font-weight: 500;
+  white-space: nowrap;
   color: oklch(var(--bc) / 0.5);
 }
 .wt-card__members {
