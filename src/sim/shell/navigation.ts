@@ -2,17 +2,20 @@
 // the router and the stores (passed in), so both callers stay thin.
 import type { Router } from "vue-router";
 import { getCharactersAvailable, getCharacterRosterDisplayName } from "../../characters/characters";
+import { NOT_FOUND_ROUTE } from "./notFound";
 
 /** The Teams page re-opens this team on mount (TeamRotations.vue keeps its open team per session, #507). */
 export const TEAMS_ACTIVE_KEY = "teamRotationsActiveTeamId";
 /** Fired when a team should open while /teams is already showing (a later hook in TeamRotations.vue can listen). */
 export const OPEN_TEAM_EVENT = "wtplus:open-team";
 
-/** A router path that resolves to a page (MarkdownView only links those). */
+/** A router path that resolves to a page (MarkdownView only links those). The catch-all "page not found" route
+ *  matches every path, so it doesn't count. */
 export function isAppRoute(router: Router, path: string): boolean {
   if (!path.startsWith("/") || path.startsWith("//")) return false;
   try {
-    return router.resolve(path).matched.length > 0;
+    const resolved = router.resolve(path);
+    return resolved.matched.length > 0 && resolved.name !== NOT_FOUND_ROUTE;
   } catch {
     return false;
   }

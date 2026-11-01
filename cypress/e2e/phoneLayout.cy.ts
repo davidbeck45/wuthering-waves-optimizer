@@ -23,6 +23,19 @@ function expectNavFits(route: string): void {
   });
 }
 
+// Wuthering Tools+ Ask button (src/sim/shell/PlusShell.vue): it must not sit on any of these elements' buttons
+function expectAskClearOf(selector: string, what: string): void {
+  cy.get("[data-test-ai-open]").then(($ask) => {
+    const a = $ask[0].getBoundingClientRect();
+    Cypress.$(selector).each((_, el) => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const overlap = r.left < a.right && r.right > a.left && r.top < a.bottom && r.bottom > a.top;
+      expect(overlap, `${what}: Ask over "${(el.textContent ?? "").trim().slice(0, 30)}"`).to.equal(false);
+    });
+  });
+}
+
 // /today reads Kuro's news feed: answer it from the unit-test fixtures (the 3.7 patch notes) so the page has events to lay out
 function interceptKuroNews(): void {
   const news = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/json/G152/en";
@@ -177,6 +190,50 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/today (v3)");
   });
 
+  // The 2026-10-31 shell audit (src/sim/README.md "Shell refinements"): Settings › Backup & Restore and the tuning
+  // planner no longer scroll sideways, the calculator's big number says what it is, and the end of a page always
+  // scrolls clear of the Ask button — v3, 130 % text, at David's S26 width and at 360 px.
+  it("keeps Settings, the tuning planner and the calculator header inside a phone, with the page end clear of Ask", () => {
+    // 360 px at 100 % text: at 130 % Ryan's v3 header fits 360 by 0.2 px, less than Electron's scrollbar (see above)
+    const seed = (fontScale: number) => ({
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = `html { font-size: ${fontScale * 100}%; }`;
+        win.document.head.appendChild(style);
+      },
+    });
+    for (const [width, height, fontScale] of [
+      [412, 915, 1.3],
+      [360, 800, 1],
+    ] as const) {
+      cy.viewport(width, height);
+      cy.visit("/settings?section=backup-restore", seed(fontScale));
+      cy.get("[data-test-settings-export-copy]").should("be.visible");
+      expectNoHorizontalScroll(`/settings backup at ${width}`);
+      cy.get(".page-settings .file-input").then(($f) => {
+        expect($f[0].getBoundingClientRect().right, "file input inside the viewport").to.be.at.most(width);
+      });
+      cy.scrollTo("bottom");
+      expectAskClearOf(".content button, .content a[href], .content input, .content textarea", `/settings backup end at ${width}`);
+      cy.visit("/info/tuning-odds", seed(fontScale));
+      cy.get("[data-test-tuning-planner]").should("be.visible");
+      expectNoHorizontalScroll(`/info/tuning-odds at ${width}`);
+      cy.visit("/", seed(fontScale));
+      cy.get("[data-test-live-result-bar-hero]").then(($hero) => {
+        const caption = $hero[0].ownerDocument.defaultView!.getComputedStyle($hero[0], "::after").content;
+        expect(caption, "caption under the big number").to.equal('"avg damage"');
+      });
+      expectNoHorizontalScroll(`/ (v3) at ${width}`);
+    }
+  });
+
   // Share cards (src/sim/share/): the page, its share sheet as a bottom sheet with the scaled card preview, and
   // the import preview of a link — all inside 360 px (v3).
   it("keeps /share, its share sheet and an import preview inside 360 px", () => {
@@ -266,6 +323,8 @@ describe("phone layout", () => {
         expect($row[0].getBoundingClientRect().right, "3-cost row inside the viewport").to.be.at.most(width);
       });
       cy.get("[data-test-echo-plan-phone-bar]").should("be.visible");
+      // the Ask button sits above the bar (--plus-bar-h), not on its "Show" button
+      expectAskClearOf("[data-test-echo-plan-phone-bar] button", `/echo-plan ${width} px`);
       cy.get('[data-test-echo-plan-card="WindwardPilgrimage"] [data-test-echo-plan-chip="4:CritRate"]').click();
       cy.get("[data-test-echo-plan-sheet]").should("have.attr", "open");
       cy.get("[data-test-echo-plan-sheet] .modal-box").then(($box) => {

@@ -42,14 +42,20 @@
               <template v-if="m.phaseNumber"> · Phase {{ m.phaseNumber }} of {{ m.phases }}</template>
             </div>
           </div>
-          <div v-if="m.endMs" class="td-row__when">
+          <div v-if="m.endMs && !m.overdue" class="td-row__when">
             ≈ {{ fmtDuration(m.endMs - t.now.value) }}
             <small>to reset</small>
           </div>
+          <!-- past the stated version end and the app doesn't know the next one yet: never a stuck "≈ 0m" -->
+          <div v-else-if="m.overdue" class="td-row__when" data-test-today-matrix-overdue>
+            {{ nextVersion }} is out
+            <small>check in game</small>
+          </div>
         </div>
-        <div v-if="m.progress != null" class="td-bar td-bar--accent"><span :style="{ width: pct(m.progress) }"></span></div>
+        <div v-if="m.progress != null && !m.overdue" class="td-bar td-bar--accent"><span :style="{ width: pct(m.progress) }"></span></div>
         <div class="td-eg__foot">
-          <span v-if="m.inCycle">{{ matrixLine }}</span>
+          <span v-if="m.overdue">The {{ nextVersion }} update was due ≈ {{ fmtDate(m.endMs!, mode, offset) }}, so a new phase has most likely started — check in game</span>
+          <span v-else-if="m.inCycle">{{ matrixLine }}</span>
           <template v-else-if="m.version">
             <span>A new cycle — check in game</span>
           </template>
@@ -70,6 +76,7 @@ import { fmtDate, fmtDuration, fmtWhen } from "../format";
 import { DAY_MS as DAY } from "../resets";
 import { sourceUrl } from "../rules";
 import { TODAY_KEY, type TodayModel } from "../useToday";
+import { isAppRoute } from "../../shell/navigation";
 
 const t = inject(TODAY_KEY) as TodayModel;
 const router = useRouter();
@@ -91,12 +98,7 @@ const pct = (x: number) => `${Math.round(x * 1000) / 10}%`;
 
 /** a mode's page exists in this build (the ToA planner lives in another track until it is merged) */
 function hasRoute(path: string | null): boolean {
-  if (!path) return false;
-  try {
-    return router.resolve(path).matched.length > 0;
-  } catch {
-    return false;
-  }
+  return !!path && isAppRoute(router, path);
 }
 </script>
 
@@ -132,6 +134,14 @@ function hasRoute(path: string | null): boolean {
 }
 .td-eg__name--link:hover {
   color: oklch(var(--p));
+}
+/* phones: the mode's link is a finger-sized target (it was 23 px tall) */
+@media (max-width: 639px) {
+  .td-eg__name--link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+  }
 }
 .td-eg__detail {
   font-size: 0.74rem;

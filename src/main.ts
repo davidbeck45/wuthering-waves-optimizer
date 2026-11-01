@@ -85,6 +85,8 @@ const routes = [
   // Wuthering Tools+: build history — versions of each character's build, compare and restore (src/sim/buildHistory/)
   { path: "/build-history", component: () => import("./sim/buildHistory/BuildHistoryView.vue"), name: "BuildHistoryView" },
   { path: "/scanners", component: ScannersView, name: "ScannersView" },
+  // Wuthering Tools+: any other address gets a "page not found" page with the nav, not a blank screen (src/sim/shell/)
+  { path: "/:pathMatch(.*)*", component: () => import("./sim/shell/NotFoundView.vue"), name: "NotFoundView" },
 ];
 
 const router = createRouter({

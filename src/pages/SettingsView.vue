@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import Settings from "../components/Settings.vue";
 import SettingsWorkspace, { type SettingsSectionId } from "../components/SettingsWorkspace.vue";
@@ -34,10 +34,13 @@ const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
 
-// /settings?section=wavescan (the Scanners page's import link) opens that section.
-const activeSection = ref<SettingsSectionId>(
-  useRoute()?.query.section === "wavescan" ? "wavescan" : "preferences",
-);
+// /settings?section=wavescan (the Scanners page's import link) opens that section; Wuthering Tools+: any section key,
+// also while the page is open (the command palette links each section).
+const route = useRoute();
+const sectionOf = (key: unknown): SettingsSectionId =>
+  SETTINGS_SECTIONS.groups.some((g) => g.items.some((i) => i.key === key)) ? (key as SettingsSectionId) : "preferences";
+const activeSection = ref<SettingsSectionId>(sectionOf(route?.query.section));
+watch(() => route?.query.section, (key) => key && selectSection(sectionOf(key)));
 
 function selectSection(key: string) {
   if (key === activeSection.value) return;

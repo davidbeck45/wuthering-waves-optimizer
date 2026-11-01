@@ -6,7 +6,7 @@
     <!-- Wuthering Tools+: both teleport into Riley's page (a phone's card list, the detail's member strip) -->
     <RankingsCards :account="account" />
     <RankingsMemberStrip :account="account" />
-    <p class="rankings-credit text-xs opacity-60 px-3 py-1">
+    <p ref="credit" class="rankings-credit text-xs opacity-60 px-3 py-1">
       Team rankings engine, rotations and solves by
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
       <span class="max-sm:hidden"> (ISC), running in-page from the pinned submodule.</span><span class="sm:hidden"> (ISC).</span>
@@ -30,10 +30,14 @@ import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../sim/accoun
 import RankingsAccountBar from "../sim/rankings/RankingsAccountBar.vue";
 import RankingsCards from "../sim/rankings/RankingsCards.vue";
 import RankingsMemberStrip from "../sim/rankings/RankingsMemberStrip.vue";
+import { usePlusBar } from "../sim/shell/plusBar";
 import "../sim/skittle.css";
 import "../sim/skittle-theme.css";
 
 const host = ref<HTMLElement | null>(null);
+// the credit line ends this fixed-height page: the Ask button sits above it, off the "My roster rankings" link
+const credit = ref<HTMLElement | null>(null);
+usePlusBar(credit, { pinned: true });
 // each page sets its own tab title (Ryan's #672)
 useDocumentTitle(
   "Team rankings — Wuthering Waves Calculator & Optimizer",

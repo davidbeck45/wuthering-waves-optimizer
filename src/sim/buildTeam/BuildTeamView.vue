@@ -92,7 +92,7 @@
           </div>
         </section>
 
-        <div class="bt-actions">
+        <div ref="actionsBar" class="bt-actions wt-plus-bar">
           <button type="button" class="btn btn-primary" :disabled="!runnable" data-test-build-team-run @click="run">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-linejoin="round" /></svg>
             Build from my echoes
@@ -173,7 +173,7 @@
       </template>
 
       <!-- the save bar: sticky on a phone -->
-      <div v-if="(phase === 'result' && result) || undoLive" class="bt-savebar" data-test-build-team-savebar>
+      <div v-if="(phase === 'result' && result) || undoLive" ref="saveBar" class="bt-savebar wt-plus-bar" data-test-build-team-savebar>
         <button v-if="undoLive" type="button" class="btn btn-ghost btn-sm" data-test-build-team-undo @click="onUndo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3" stroke-linecap="round" stroke-linejoin="round" /></svg>
           Undo last build
@@ -222,6 +222,7 @@ import { menuErPercent, teamSlotRotation } from "./buildTeam";
 import { buildNameFor } from "./apply";
 import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary } from "./buildTeamView";
 import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
+import { usePlusBar } from "../shell/plusBar";
 import "./buildTeam.css";
 
 useDocumentTitle(
@@ -232,6 +233,11 @@ useDocumentTitle(
 const STEPS = ["Plan", "Build", "Review & save"];
 const STEPS_SHORT = ["Plan", "Build", "Review"];
 const route = useRoute();
+// the phone's pinned run / save bars lift the Ask button above their buttons (src/sim/shell/plusBar.ts)
+const actionsBar = ref<HTMLElement | null>(null);
+const saveBar = ref<HTMLElement | null>(null);
+usePlusBar(actionsBar);
+usePlusBar(saveBar);
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const teamStore = useTeamRotationsStore();

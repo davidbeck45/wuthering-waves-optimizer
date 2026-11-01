@@ -23,6 +23,7 @@
   <AiSettingsDialog v-if="assistant.state.settingsOpen" @close="assistant.closeSettings()" />
   <CommandPalette v-if="assistant.state.paletteOpen" @close="assistant.setPaletteOpen(false)" />
   <ShareSheetHost v-if="shareRequest" />
+  <WelcomeCard v-if="showWelcome" @dismiss="hideWelcome" />
 </template>
 
 <script setup lang="ts">
@@ -38,11 +39,13 @@ import { pageTitleOf } from "./paletteItems";
 import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
 import { shareRequest } from "../share/shareRequest";
+import { dismissWelcome, isNewVisitor, welcomeAllowed, welcomeDismissed } from "./welcome";
 
 const AssistantPanel = defineAsyncComponent(() => import("../ai/ui/AssistantPanel.vue"));
 const AiSettingsDialog = defineAsyncComponent(() => import("../ai/ui/AiSettingsDialog.vue"));
 const CommandPalette = defineAsyncComponent(() => import("./CommandPalette.vue"));
 const ShareSheetHost = defineAsyncComponent(() => import("../share/ShareSheetHost.vue"));
+const WelcomeCard = defineAsyncComponent(() => import("./WelcomeCard.vue"));
 
 const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";
 
@@ -50,9 +53,24 @@ const assistant = useAssistant();
 const route = useRoute();
 const characterStore = useCharacterStore();
 const teamStore = useTeamRotationsStore();
+const inventoryStore = useInventoryStore();
 // build history: a version of every build a Settings import is about to replace (src/sim/buildHistory/importGuard.ts)
-installImportGuard({ character: characterStore as never, inventory: useInventoryStore() as never });
+installImportGuard({ character: characterStore as never, inventory: inventoryStore as never });
 const modKey = modKeyLabel();
+
+// "New here?" on the calculator for a browser with nothing of its own yet (welcome.ts); gone for good once dismissed
+const welcomeHidden = ref(welcomeDismissed() || !welcomeAllowed());
+const showWelcome = computed(
+  () =>
+    !welcomeHidden.value &&
+    route.path === "/" &&
+    !assistant.state.open &&
+    isNewVisitor(characterStore.characters as Record<string, { weapon?: unknown }>, inventoryStore.echoes as unknown[]),
+);
+function hideWelcome(): void {
+  welcomeHidden.value = true;
+  dismissWelcome();
+}
 
 // the panel stays mounted once opened (its scroll position and open tool rows survive a close)
 const panelMounted = ref(false);
@@ -154,15 +172,17 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+/* above Ryan's v3 phone bottom bar (--nav-bottom-h; 0 without it) and a plus page's own pinned bar (--plus-bar-h,
+   src/sim/shell/plusBar.ts: the Echo plan's "Show", Build my team's run / save). phone.css § 16 keeps the page's end
+   clear of it and slides it away with Ryan's bar on a scroll down. */
 .wt-ask-button {
   right: max(1.25rem, env(safe-area-inset-right));
-  bottom: max(calc(1.25rem + var(--nav-bottom-h)), env(safe-area-inset-bottom));
+  bottom: max(calc(1.25rem + var(--nav-bottom-h) + var(--plus-bar-h, 0px)), env(safe-area-inset-bottom));
 }
 @media (max-width: 767px) {
   .wt-ask-button {
     right: max(1rem, env(safe-area-inset-right));
-    /* above Ryan's v3 phone bottom bar (--nav-bottom-h; 0 without it) */
-    bottom: max(calc(1rem + var(--nav-bottom-h)), env(safe-area-inset-bottom));
+    bottom: max(calc(1rem + var(--nav-bottom-h) + var(--plus-bar-h, 0px)), env(safe-area-inset-bottom));
     height: 2.75rem;
     min-height: 2.75rem;
     padding-left: 0.9rem;

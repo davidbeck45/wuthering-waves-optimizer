@@ -9,21 +9,21 @@
       v-if="variant !== 'rail'"
       class="btn btn-ghost p-0 flex justify-center w-full min-w-0 relative"
       :class="{ 'btn-active': isPlusPage }"
-      title="Rankings & your account (Wuthering Tools+)"
+      title="Tools+ pages: My account, rankings, Today and more"
       aria-haspopup="menu"
       data-test-nav-rankings>
       <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
       </svg>
       <svg class="plus-nav__caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-      <span class="sr-only">Rankings and account pages</span>
+      <span class="sr-only">Tools+ pages</span>
     </summary>
     <!-- v3 desktop (Ryan's ADR 0045): a rail item styled like his; on phones the icon above sits in his header -->
     <summary
       v-else
       class="plus-nav__tab"
       :class="{ 'plus-nav__tab--on': isPlusPage }"
-      title="Rankings & your account (Wuthering Tools+)"
+      title="Tools+ pages: My account, rankings, Today and more"
       aria-haspopup="menu"
       data-test-nav-rankings>
       <span class="plus-nav__pill">
@@ -35,6 +35,14 @@
     </summary>
     <ul class="plus-nav__menu" role="menu" data-test-nav-plus-menu>
       <li class="plus-nav__eyebrow" role="presentation">Wuthering Tools+</li>
+      <!-- the command palette (src/sim/shell/CommandPalette.vue): on a phone this is the only way to open it -->
+      <li class="plus-nav__search-row" role="none">
+        <button type="button" role="menuitem" class="plus-nav__search" data-test-nav-plus-search @click="openPalette">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+          <span class="plus-nav__search-text">Search pages, characters, teams…</span>
+          <kbd class="plus-nav__kbd">{{ modKey }} K</kbd>
+        </button>
+      </li>
       <li v-for="page in PLUS_PAGES" :key="page.path" role="none">
         <RouterLink
           :to="page.path"
@@ -64,6 +72,8 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { PLUS_PAGES } from "../shell/plusPages";
+import { useAssistant } from "../ai/useAssistant";
+import { modKeyLabel } from "../shell/shellDom";
 
 // "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
 const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
@@ -80,6 +90,12 @@ const isPlusPage = computed(() => activePath.value !== null);
 
 function close(): void {
   root.value?.removeAttribute("open");
+}
+const assistant = useAssistant();
+const modKey = modKeyLabel();
+function openPalette(): void {
+  close();
+  assistant.setPaletteOpen(true);
 }
 function onPointer(event: PointerEvent): void {
   if (root.value?.open && !root.value.contains(event.target as Node)) close();
@@ -144,6 +160,51 @@ onBeforeUnmount(() => {
   letter-spacing: 0.09em;
   color: oklch(var(--bc) / 0.5);
 }
+.plus-nav__search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0.1rem 0 0.3rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.6rem;
+  font-size: 0.85rem;
+  text-align: left;
+  color: oklch(var(--bc) / 0.7);
+  background: oklch(var(--b1));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.12);
+}
+.plus-nav__search:hover,
+.plus-nav__search:focus-visible {
+  color: oklch(var(--bc));
+  outline: none;
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.6);
+}
+.plus-nav__search svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+.plus-nav__search-text {
+  flex: 1;
+  min-width: 0;
+}
+.plus-nav__kbd {
+  flex-shrink: 0;
+  padding: 0 0.4rem;
+  border-radius: 0.3rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  line-height: 1.35rem;
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.2);
+}
+/* touch screens have no Ctrl K */
+@media (pointer: coarse) {
+  .plus-nav__kbd {
+    display: none;
+  }
+}
 .plus-nav__item {
   display: flex;
   align-items: flex-start;
@@ -203,7 +264,8 @@ onBeforeUnmount(() => {
     align-content: start;
     width: 42rem;
   }
-  .plus-nav__eyebrow {
+  .plus-nav__eyebrow,
+  .plus-nav__search-row {
     grid-column: 1 / -1;
   }
 }

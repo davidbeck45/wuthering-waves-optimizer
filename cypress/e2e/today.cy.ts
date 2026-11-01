@@ -181,6 +181,16 @@ describe("Today", () => {
     cy.get("[data-test-today-ending]").should("contain.text", "once Kuro's news has been read");
   });
 
+  // rules.json states 3.7's end (Nov 12); past it, before the next refresh, the matrix row says the phase has most
+  // likely rolled over instead of sitting at "≈ 0m to reset"
+  it("says the next version is out once the stated version end has passed", () => {
+    cy.clock(Date.UTC(2026, 10, 13, 4, 0), ["Date"]);
+    interceptNews();
+    cy.visit("/today", seed({ today: { timeMode: "server" } }));
+    cy.get("[data-test-today-matrix-overdue]").should("contain.text", "3.8 is out").and("contain.text", "check in game");
+    cy.get('[data-test-today-cycle="matrix"]').should("contain.text", "3.8 update was due").and("not.contain.text", "to reset");
+  });
+
   it("fits a phone at 130 % text, and the account page carries the Today strip", () => {
     cy.clock(MONDAY_NOON, ["Date"]);
     interceptNews();
@@ -197,6 +207,11 @@ describe("Today", () => {
     cy.get("[data-test-today-live-list]").should("contain.text", "Waking Moon Fishing");
     cy.get("[data-test-today-timeline]").should("not.exist");
     expectNoHorizontalScroll("/today (412, 130 %)");
+    // an event's notice and calendar buttons are finger-sized (they were 31 px squares, 6 px apart)
+    cy.get('[data-test-today-event="Waking Moon Fishing"] .td-ev__src').then(($a) => {
+      const r = $a[0].getBoundingClientRect();
+      expect(Math.min(r.width, r.height), "notice button size").to.be.at.least(40);
+    });
     cy.visit("/account", s);
     cy.get("[data-test-today-card]").should("be.visible").and("contain.text", "Daily reset").and("contain.text", "full 00:00");
     cy.get("[data-test-today-card]").click();

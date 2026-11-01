@@ -84,7 +84,7 @@
             autocomplete="off"
             autocapitalize="off"
             spellcheck="false"
-            class="input input-bordered min-w-0 flex-1 font-mono text-xs sm:text-sm"
+            class="input input-bordered min-w-0 font-mono text-xs sm:flex-1 sm:text-sm"
             placeholder="https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?…"
             :disabled="busy"
             data-test-convene-link

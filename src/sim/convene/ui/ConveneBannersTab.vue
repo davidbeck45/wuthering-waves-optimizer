@@ -10,10 +10,12 @@
           Times are server time.
         </p>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <label class="flex items-center gap-2 text-sm">
-          <span class="text-base-content/60">Server</span>
-          <select v-model="serverId" class="select select-bordered select-sm" data-test-convene-server>
+      <div class="flex min-w-0 max-w-full flex-wrap items-center gap-2">
+        <!-- min-w-0 down the chain: the select is as wide as its longest option ("HMT (TW / HK / MO) (UTC+8)"), 305 px
+             at 130 % text, and pushed a 360 px phone page sideways -->
+        <label class="flex min-w-0 max-w-full items-center gap-2 text-sm">
+          <span class="shrink-0 text-base-content/60">Server</span>
+          <select v-model="serverId" class="select select-bordered select-sm min-w-0 max-w-full flex-1 sm:flex-none" data-test-convene-server>
             <option v-for="r in SERVER_REGIONS" :key="r.id" :value="r.id">{{ r.label }} (UTC{{ r.offsetHours >= 0 ? "+" : "−" }}{{ Math.abs(r.offsetHours) }})</option>
           </select>
         </label>
@@ -89,7 +91,7 @@
             <ConveneItemIcon :name="r.name" :item-key="r.itemKey" :kind="r.kind" size="md" />
             <div class="min-w-0">
               <div class="truncate font-medium">{{ r.name }}</div>
-              <div class="truncate text-xs text-base-content/55">{{ r.runs }} run{{ r.runs === 1 ? "" : "s" }} · last {{ r.lastLabel ?? fmtServerTime(r.lastStart, offsetHours, { year: true, time: false }) }}</div>
+              <div class="text-xs text-base-content/55 sm:truncate">{{ r.runs }} run{{ r.runs === 1 ? "" : "s" }} · last {{ r.lastLabel ?? fmtServerTime(r.lastStart, offsetHours, { year: true, time: false }) }}</div>
             </div>
             <div class="rerun-row__bar" aria-hidden="true"><div :style="{ width: `${Math.min(100, (r.waitedMs / maxWait) * 100)}%` }"></div></div>
             <div class="text-right tabular-nums">
@@ -113,7 +115,7 @@
         <h2 class="text-lg font-semibold">History</h2>
         <span class="text-sm text-base-content/60">{{ filtered.length }} banners</span>
         <div class="ml-auto flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <input v-model="query" type="search" class="input input-bordered input-sm min-w-0 flex-1 sm:w-48 sm:flex-none" placeholder="Find a resonator or weapon" aria-label="Find a banner" data-test-convene-history-search />
+          <input v-model="query" type="search" class="input input-bordered input-sm min-w-0 basis-full sm:w-48 sm:basis-auto sm:flex-none" placeholder="Find a resonator or weapon" aria-label="Find a banner" data-test-convene-history-search />
           <div class="join">
             <button v-for="k in KINDS_ALL" :key="k.id" type="button" class="btn btn-sm join-item" :class="historyKind === k.id ? 'btn-active' : ''" :data-test-convene-history-kind="k.id" @click="historyKind = k.id">{{ k.label }}</button>
           </div>
@@ -129,7 +131,7 @@
               </div>
               <div class="min-w-0 flex-1">
                 <div class="truncate font-medium leading-tight">{{ b.fiveStars.map((f) => f.name).join(" · ") }}</div>
-                <div class="truncate text-xs text-base-content/55">
+                <div class="text-xs text-base-content/55 sm:truncate">
                   <span v-if="b.label">{{ b.label }} · </span>{{ fmtServerTime(b.startMs, offsetHours, { year: true, time: false }) }} – {{ fmtServerTime(b.endMs, offsetHours, { time: false }) }}
                 </div>
               </div>

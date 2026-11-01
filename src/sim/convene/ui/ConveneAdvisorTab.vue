@@ -119,9 +119,9 @@
                 <template v-if="r.status === 'ok' && r.steps[0]">{{ headline(r) }}</template>
                 <template v-else>{{ r.target.item.name }}</template>
               </div>
-              <div class="truncate text-xs text-base-content/60">
+              <div class="text-xs text-base-content/60 sm:truncate" :title="r.status === 'ok' ? (r.rotation ?? undefined) : undefined">
                 <template v-if="r.status === 'ok'">
-                  {{ r.target.kind === "weapon" ? `${r.characterName} uses ${r.current}` : `you have ${r.current}` }} · best rotation: {{ r.rotation }}
+                  {{ r.target.kind === "weapon" ? `${r.characterName} uses ${r.current}` : `you have ${r.current}` }} · best rotation: {{ shortRotation(r.rotation) }}
                 </template>
                 <template v-else>{{ r.target.bannerLabel ?? r.target.bannerTitle ?? "" }} · {{ r.target.kind === "weapon" ? "weapon" : "resonator" }}</template>
               </div>
@@ -129,8 +129,8 @@
             <div v-if="r.status === 'ok' && r.steps[0]" class="adv-metrics">
               <div class="adv-metric">
                 <div class="adv-metric__value" :class="r.steps[0].gain > 0.0005 ? 'text-success' : 'text-base-content/60'" data-test-convene-advisor-gain>{{ fmtGain(r.steps[0].gain) }}</div>
-                <div class="adv-metric__label">
-                  damage<template v-if="r.steps[0].low"> · stats only {{ fmtGain(r.steps[0].low.gain) }}</template>
+                <div class="adv-metric__label" :title="`${r.characterName}'s own rotation damage, enemy level 100; team buffs not counted`">
+                  of {{ r.characterName }}'s own damage<template v-if="r.steps[0].low"> · stats only {{ fmtGain(r.steps[0].low.gain) }}</template>
                 </div>
               </div>
               <div class="adv-metric">
@@ -146,6 +146,10 @@
 
           <template v-if="r.status === 'ok' && r.steps[0]">
             <div class="adv-bar" aria-hidden="true"><div :style="{ width: `${Math.max(2, (r.steps[0].perThousand / bestPerThousand) * 100)}%` }"></div></div>
+            <p v-if="gainDamageText(r, r.steps[0])" class="mt-2 text-xs text-base-content/70" data-test-convene-advisor-abs>
+              That is <b class="text-base-content">{{ gainDamageText(r, r.steps[0]) }}</b> damage per rotation for {{ r.characterName }} (now {{ damageText(r.baseDamage!) }} on {{ shortRotation(r.rotation) }}).
+              <template v-if="supportNote(r, rows)">{{ supportNote(r, rows) }}</template>
+            </p>
             <p class="mt-2 text-xs text-base-content/60">
               About {{ fmtInt(r.steps[0].cost.meanPulls) }} pulls on average from your pity — half of players get it within {{ r.steps[0].cost.p50Pulls }}, nine in ten within
               {{ r.steps[0].cost.p90Pulls }}<template v-if="r.steps[0].chance != null">; <b class="text-base-content">{{ fmtPct(r.steps[0].chance, 0) }}</b> with your budget</template>.
@@ -229,7 +233,7 @@ import { useInventoryStore } from "../../../stores/inventory";
 import { MAX_PULLS_SINCE_LAST_FIVE } from "../../../convene/simulateConvene";
 import { refinementOf, sequenceOf } from "../../myRankings/rankRoster";
 import { scoreAdvisorTargets } from "../advisorEngine";
-import { adviceSummary, advisorTargets, priceAdvice, pullsForAstrite, stepTitle, type AdviceDamage, type AdviceRow, type AdviceStep, type PoolPityInput } from "../advisor";
+import { adviceSummary, advisorTargets, damageText, gainDamageText, priceAdvice, pullsForAstrite, shortRotation, stepTitle, supportNote, type AdviceDamage, type AdviceRow, type AdviceStep, type PoolPityInput } from "../advisor";
 import { poolOf } from "../pools";
 import type { ConveneTab, ManualPity } from "../prefs";
 import ConveneItemIcon from "./ConveneItemIcon.vue";

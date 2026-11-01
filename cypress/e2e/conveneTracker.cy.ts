@@ -73,7 +73,7 @@ describe("Convene tracker", () => {
       interceptNews([]);
       const total = Object.values(pools).reduce((n, list) => n + list.length, 0);
       cy.visit("/convene?tab=pulls", v3());
-      cy.title().should("eq", "My Convene history — Wuthering Waves Calculator & Optimizer");
+      cy.title().should("eq", "My pulls — Wuthering Waves Calculator & Optimizer");
       cy.get("[data-test-convene-steps='pc']").should("contain.text", "Client.log");
       cy.get("[data-test-convene-platform='phone']").click();
       cy.get("[data-test-convene-guide-link]").should("have.attr", "href", "https://wuwatracker.com/import");
@@ -166,6 +166,10 @@ describe("Convene tracker", () => {
         },
       };
       cy.visit("/convene?tab=pulls", bigText);
+      // the link field keeps its full height in the phone's column (flex-1 in a flex-col once collapsed it to 22 px)
+      cy.get("[data-test-convene-link]").then(($i) => {
+        expect($i[0].getBoundingClientRect().height, "link field height").to.be.at.least(40);
+      });
       importFromLink();
       expectNoHorizontalScroll("my pulls");
       cy.get("[data-test-convene-tab='banners']").click();
@@ -177,6 +181,18 @@ describe("Convene tracker", () => {
       cy.get("[data-test-convene-tab='simulator']").click();
       cy.get("[data-test-convene-sim-fill='1']").should("be.visible");
       expectNoHorizontalScroll("simulator");
+      // a 360 px page at 130 % (Electron's 15 px scrollbar comes off a 375 px window): the Server select is as wide as
+      // "HMT (TW / HK / MO) (UTC+8)" and used to push the page to 398 px; the history search keeps a row of its own
+      cy.viewport(375, 812);
+      cy.visit("/convene?tab=banners", bigText);
+      cy.get("[data-test-convene-live-banner]").should("have.length", 4);
+      expectNoHorizontalScroll("banners at 360");
+      cy.get("[data-test-convene-server]").then(($s) => {
+        expect($s[0].getBoundingClientRect().right, "server select inside the viewport").to.be.at.most($s[0].ownerDocument.documentElement.clientWidth);
+      });
+      cy.get("[data-test-convene-history-search]").then(($i) => {
+        expect($i[0].getBoundingClientRect().width, "history search width").to.be.greaterThan(200);
+      });
     });
   });
 });
@@ -197,6 +213,9 @@ describe("pull advisor", () => {
       cy.contains("you have S2");
       cy.get("[data-test-convene-advisor-gain]").invoke("text").should("match", /^\+\d+\.\d%$/);
       cy.get("[data-test-convene-advisor-per1k]").invoke("text").should("match", /^\d+\.\d\d%$/);
+      // whose damage the % is, and what it is per rotation
+      cy.contains("of Cartethyia's own damage");
+      cy.get("[data-test-convene-advisor-abs]").invoke("text").should("match", /That is \+[\d.]+[KM]? damage per rotation for Cartethyia/);
     });
     cy.get(`[data-test-convene-advisor-row="Defier's Thorn"]`).should("have.attr", "data-status", "ok").and("contain.text", "Defier's Thorn R2 on Cartethyia");
     cy.get('[data-test-convene-advisor-row="Lucilla"]').should("have.attr", "data-status", "not-owned");

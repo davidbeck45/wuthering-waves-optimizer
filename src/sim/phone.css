@@ -675,3 +675,203 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   16. The floating Ask button (src/sim/shell/PlusShell.vue) and plus pages' pinned bars
+       (src/sim/shell/plusBar.ts, class `wt-plus-bar`): 2026-10-31 shell audit, M1 / H2 / L12.
+       - Bottom clearance: the page's end can always scroll out from under Ask (the /inventory pagination,
+         /share's "How share cards work", /teams' Total DMG, every page's footer used to sit under it for
+         good). AppLayout pads `.content` by Ryan's bar (an inline style); this adds Ask's height plus any
+         plus bar. Not on /rankings, a fixed-height column whose credit line lifts Ask instead.
+       - On a v3 phone Ryan's bottom bar slides away while the page scrolls down (`--tucked`, a transform,
+         so --nav-bottom-h keeps its value). Ask slides off with it, so nothing covers what is being read;
+         any scroll up brings both back. A plus bar drops to the screen's bottom edge instead of floating
+         over an empty band. */
+#wt-app .contain > .content {
+  padding-bottom: calc(var(--nav-bottom-h) + var(--plus-bar-h, 0px) + 5rem) !important;
+}
+#wt-app .contain > .content:has(.rankings-page) {
+  padding-bottom: var(--nav-bottom-h) !important;
+}
+.wt-plus-bar {
+  transition: transform 0.2s ease;
+}
+html:has(.nav-bottom-bar--tucked) .wt-plus-bar {
+  transform: translateY(var(--nav-bottom-h));
+}
+html:has(.nav-bottom-bar--tucked) .wt-ask-button {
+  transform: translateY(calc(100% + 1.5rem + var(--nav-bottom-h) + var(--plus-bar-h, 0px) + env(safe-area-inset-bottom, 0px)));
+  pointer-events: none;
+}
+@media (max-width: 767px) {
+  #wt-app .contain > .content {
+    padding-bottom: calc(var(--nav-bottom-h) + var(--plus-bar-h, 0px) + 4.25rem) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wt-plus-bar {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   17. Upstream pages that scrolled sideways on a phone at 130 % text (2026-10-31 shell audit, M3 / M5).
+       - Settings › Backup & Restore (SettingsBackupRestore.vue): `grid gap-4 sm:grid-cols-2` has no
+         column template below `sm`, so its implicit `auto` track grew to the file input's min-content
+         and the page became 456 px wide at 412. Any such grid on the page gets one shrinkable column;
+         the file input fills it.
+       - /info/tuning-odds (InfoTuningOdds.vue under InfoView's v3 wrapper): the wrapper keeps a desktop
+         `padding: 2rem 3rem` (62 px a side at 130 %), and the results grid (`grid md:grid-cols-2`) has the
+         same implicit track: 428 px at 412. Padding 1 rem, one shrinkable column, and the resource
+         table scrolls inside its own card if it must. */
+@media (max-width: 639px) {
+  .page-settings .grid:not([class~="grid-cols-1"]):not([class~="grid-cols-2"]):not([class~="grid-cols-3"]):not([class~="grid-cols-4"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page-settings .file-input {
+    width: 100%;
+    max-width: 100%;
+  }
+  /* the two export buttons share a row that never wrapped: 393 px at 360 */
+  .page-settings .flex.gap-2:has(> .btn + .btn) {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 767px) {
+  .page-info.page-info--v3.page-info--v3 {
+    padding: 1rem;
+  }
+  [data-test-tuning-planner] .grid.items-start {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  [data-test-tuning-planner] section {
+    min-width: 0;
+  }
+  [data-test-tuning-planner] section:has(> table),
+  [data-test-tuning-planner] section:has(> div > table) {
+    overflow-x: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   18. The v3 "What's new" dialog (AppUpdateBanner.vue) stays mounted while closed, and DaisyUI lays a
+       closed `.modal` out at opacity 0 inside the viewport, so its `loading="lazy"` images (a 3.7 MB GIF
+       and three more, ~5 MB in all) downloaded on every cold load of every page — 29.5 s vs 6.7 s to the
+       load event on a slow phone connection (2026-10-31 shell audit, M2). `display: none` while closed:
+       lazy images under it are never fetched, and showModal() (which sets `open`) still shows it. Every
+       viewport, not just phones. */
+dialog.modal[data-test-whats-new-v3-modal]:not([open]) {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   19. v3 calculator header on a phone (CalculatorCommandBar.vue; 2026-10-31 shell audit, M7): at 130 %
+       text the target button over the number (a wuwa_calc rotation name, `max-w-36`) set the width of
+       the right-hand block, so the character's name read "A…" at 412 px and vanished at 360, and the
+       pink number had no unit. The target button gets narrower (it still truncates and still opens the
+       target / damage-type popover), the number a touch smaller, and a caption under it says which
+       damage it is (the hero carries `data-damage-type`, a one-attribute hook in Ryan's file). Below
+       400 px the portrait, the gaps and the number shrink a little more so the name still reads (the
+       portrait stays: it opens the character browser). */
+@media (max-width: 767px) {
+  .command-bar [data-test-live-result-bar-target-trigger] {
+    max-width: 6rem;
+  }
+  .command-bar .command-bar__hero-value {
+    font-size: 1.05rem;
+  }
+  .command-bar [data-test-live-result-bar-hero][data-damage-type]::after {
+    font-size: 10px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+  .command-bar [data-test-live-result-bar-hero][data-damage-type="Average"]::after {
+    content: "avg damage";
+  }
+  .command-bar [data-test-live-result-bar-hero][data-damage-type="Normal"]::after {
+    content: "non-crit damage";
+  }
+  .command-bar [data-test-live-result-bar-hero][data-damage-type="Crit"]::after {
+    content: "crit damage";
+  }
+  .command-bar--compact [data-test-live-result-bar-hero]::after {
+    display: none;
+  }
+}
+@media (max-width: 399px) {
+  .command-bar.command-bar {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    column-gap: 0.5rem;
+  }
+  .command-bar .live-result-bar__avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  .command-bar [data-test-live-result-bar-target-trigger] {
+    max-width: 5rem;
+  }
+  .command-bar .command-bar__hero-value {
+    font-size: 0.95rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   20. Settings › Wavescan, the scanned loadout cards (SettingsWavescanLoadout.vue; 2026-10-31 shell
+       audit, M8): below `sm` each slot is one flex row (drag handle, picture, text, up/down arrows), which
+       left the text ~85 px at 130 % — "Reminis/cence" broke mid-word, the arrows sat on the set name and
+       "Make main" wrapped inside its outline. On a phone: picture beside the text, the arrows on their
+       own row under it, and no drag handle on a touch screen (the arrows and "Make main" reorder). */
+@media (max-width: 639px) {
+  [data-test-wavescan-loadout-slot].flex {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
+  }
+  [data-test-wavescan-loadout-slot] > span[draggable] {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+    height: 2rem;
+  }
+  [data-test-wavescan-loadout-slot] > .relative {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  [data-test-wavescan-loadout-slot] > .flex-1 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  [data-test-wavescan-loadout-slot] [data-test-wavescan-loadout-echo-name] {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  [data-test-wavescan-loadout-make-main] {
+    white-space: nowrap;
+  }
+  [data-test-wavescan-loadout-slot] > .shrink-0:last-child {
+    grid-column: 2;
+    grid-row: 2;
+    flex-direction: row;
+    justify-self: end;
+  }
+}
+@media (max-width: 639px) and (pointer: coarse) {
+  [data-test-wavescan-loadout-slot] > span[draggable] {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   21. Light themes, the v3 Forte card (WorkspaceForteRail.vue; 2026-10-31 shell audit, L10): the skill
+       icons are white-on-transparent game art, invisible on a light card (light, pastel, nord). Inverted
+       the way style.css already treats the resonance chain nodes and the damage section's skill icons.
+       Every viewport. */
+html[data-theme-style="light"] [data-test-workspace-forte-details] > img {
+  filter: invert(100%);
+}

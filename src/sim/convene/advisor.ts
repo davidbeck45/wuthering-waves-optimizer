@@ -7,6 +7,7 @@
 import { ASTRITE_PER_WISH, MAX_PULLS_SINCE_LAST_FIVE, fiveStarChance } from "../../convene/simulateConvene";
 import { isLive, type ConveneBanner } from "./banners";
 import { poolOf } from "./pools";
+import { parsePresetName } from "../presets/presetName";
 
 // ── cost of featured copies ────────────────────────────────────────────────────────────────────────────────────
 
@@ -294,6 +295,38 @@ export function stepTitle(row: Pick<AdviceRow, "target" | "characterName">, step
   return `${label} on ${row.characterName ?? "its owner"}`;
 }
 
+/** a rotation's name for a sentence: a generated wuwa_calc name shortens to "Lucilla · Suisui + Hiyuki" (the full
+ *  name is a line of state chips and team tiers); a name the player typed stays as it is */
+export function shortRotation(name: string | null | undefined): string {
+  return parsePresetName(name).title || "the best rotation";
+}
+
+/** damage per rotation, compact: "21.5K", "8.10M" */
+export function damageText(n: number): string {
+  const a = Math.abs(n);
+  if (a >= 1e6) return `${(n / 1e6).toFixed(a >= 1e7 ? 1 : 2)}M`;
+  if (a >= 1e3) return `${(n / 1e3).toFixed(a >= 1e5 ? 0 : 1)}K`;
+  return String(Math.round(n));
+}
+
+/** the next copy's gain in damage per rotation: "+21.5K" */
+export function gainDamageText(row: Pick<AdviceRow, "baseDamage">, step: Pick<DamageStep, "avgDamage">): string | null {
+  if (!(row.baseDamage && row.baseDamage > 0)) return null;
+  const d = step.avgDamage - row.baseDamage;
+  return `${d >= 0 ? "+" : "−"}${damageText(Math.abs(d))}`;
+}
+
+/** A support on this account: the character's own rotation damage is under a quarter of the strongest character
+ *  scored next to it. Then the % is of a small number, and what they give a team (buffs, healing) isn't in it. */
+export function supportNote(row: AdviceRow, rows: readonly AdviceRow[]): string | null {
+  if (row.status !== "ok" || !row.baseDamage || !row.characterName) return null;
+  let top: AdviceRow | null = null;
+  for (const r of rows) if (r.status === "ok" && r.baseDamage && (!top || r.baseDamage > top.baseDamage!)) top = r;
+  if (!top || top.characterKey === row.characterKey || row.baseDamage >= 0.25 * top.baseDamage!) return null;
+  const name = row.characterName;
+  return `That's small next to ${top.characterName ?? "the strongest here"}'s ${damageText(top.baseDamage!)}: what ${name} adds to a team as a support isn't counted.`;
+}
+
 /** one plain sentence over the ranked rows — engine and simulator numbers only, no opinion */
 export function adviceSummary(rows: readonly AdviceRow[]): string {
   const best = rows.find((r) => r.rank === 1);
@@ -306,5 +339,7 @@ export function adviceSummary(rows: readonly AdviceRow[]): string {
   const who = stepTitle(best, s);
   const runnerUp = rows.find((r) => r.rank === 2);
   const tail = runnerUp ? ` Next: ${stepTitle(runnerUp, runnerUp.steps[0]!)} at ${runnerUp.steps[0]!.perThousand.toFixed(2)}% per 1k.` : "";
-  return `Most damage per Astrite right now: ${who} — ${pctText(s.gain)} on ${best.rotation ?? "the best rotation"} for about ${kText(s.cost.meanAstrite)} Astrite expected (${s.perThousand.toFixed(2)}% per 1k).${tail}`;
+  const whose = best.characterName ? `${best.characterName}'s own damage` : "own damage";
+  const abs = gainDamageText(best, s);
+  return `Most damage per Astrite right now: ${who} — ${pctText(s.gain)} of ${whose}${abs ? ` (${abs} per rotation)` : ""} on ${shortRotation(best.rotation)}, for about ${kText(s.cost.meanAstrite)} Astrite expected (${s.perThousand.toFixed(2)}% per 1k).${tail}`;
 }

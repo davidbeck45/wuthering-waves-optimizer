@@ -116,7 +116,7 @@ const TITLES: Record<ConveneTab, [string, string]> = {
     "Estimate your chance of pulling featured 5★ resonators and weapons in Wuthering Waves from your Astrite, Lunite and wishes.",
   ],
   pulls: [
-    "My Convene history",
+    "My pulls",
     "Import your Wuthering Waves Convene history from Kuro and see your pity, 50/50 record, guarantee and luck on every banner.",
   ],
   banners: [

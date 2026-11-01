@@ -4,6 +4,10 @@ import { describe, expect, it } from "vitest";
 import { ASTRITE_PER_WISH, runMonteCarlo } from "../../convene/simulateConvene";
 import {
   adviceSummary,
+  damageText,
+  gainDamageText,
+  shortRotation,
+  supportNote,
   advisorTargets,
   chanceWithin,
   convolve,
@@ -102,7 +106,7 @@ const damage = (targetId: string, steps: [string, number, number][], extra: Part
   current: "S0",
   baseDamage: 100,
   rotation: "Loop",
-  steps: steps.map(([label, copies, gain]) => ({ label, copies, gain, avgDamage: 100 * (1 + gain) })),
+  steps: steps.map(([label, copies, gain]) => ({ label, copies, gain, avgDamage: (extra.baseDamage ?? 100) * (1 + gain) })),
   note: null,
   ...extra,
 });
@@ -134,7 +138,7 @@ describe("ranking advice", () => {
     expect(kumo!.steps[0]!.perThousand).toBeLessThan(chisa!.steps[0]!.perThousand);
     // the budget column: 16,000 Astrite = 100 pulls
     expect(chisa!.steps[0]!.chance).toBeCloseTo(chanceWithin(chisa!.steps[0]!.cost, 100), 12);
-    expect(adviceSummary(rows)).toMatch(/^Most damage per Astrite right now: Chisa S1 — \+12\.0% on Loop/);
+    expect(adviceSummary(rows)).toMatch(/^Most damage per Astrite right now: Chisa S1 — \+12\.0% of Chisa's own damage \(\+12 per rotation\) on Loop, for about/);
     expect(adviceSummary(rows)).toMatch(/Next: Kumokiri R2 on Chisa at 0\.\d\d% per 1k\./);
   });
 
@@ -153,6 +157,43 @@ describe("ranking advice", () => {
     expect(adviceSummary(priceAdvice(targets, [{ ...damage("a", []), status: "not-owned" }], { pity: {} }))).toMatch(/can be scored/);
     expect(adviceSummary(priceAdvice(targets, [{ ...damage("a", []), status: "maxed" }], { pity: {} }))).toMatch(/already maxed/);
     expect(adviceSummary([])).toMatch(/No banner/);
+  });
+});
+
+describe("advisor wording", () => {
+  it("shortens a generated wuwa_calc rotation name and keeps a typed one", () => {
+    expect(shortRotation("Lucilla S0 Freeze Frame R1 · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)")).toBe("Lucilla · Suisui + Hiyuki");
+    expect(shortRotation("My loop")).toBe("My loop");
+    expect(shortRotation(null)).toBe("the best rotation");
+  });
+
+  it("writes damage per rotation compactly, with a sign for a gain", () => {
+    expect(damageText(204_768)).toBe("205K");
+    expect(damageText(21_420)).toBe("21.4K");
+    expect(damageText(8_100_000)).toBe("8.10M");
+    expect(gainDamageText({ baseDamage: 204_768 }, { avgDamage: 226_188 })).toBe("+21.4K");
+    expect(gainDamageText({ baseDamage: null }, { avgDamage: 1 })).toBeNull();
+  });
+
+  it("says when the % is of a support's small own damage", () => {
+    const targets = [target("a", "resonator", "Lucilla", "Lucilla"), target("b", "resonator", "Aemeath", "Aemeath")];
+    const rows = priceAdvice(
+      targets,
+      [
+        damage("a", [["S1", 1, 0.105]], { characterKey: "Lucilla", characterName: "Lucilla", baseDamage: 204_768 }),
+        damage("b", [["S1", 1, 0.05]], { characterKey: "Aemeath", characterName: "Aemeath", baseDamage: 8_100_000 }),
+      ],
+      { pity: {} },
+    );
+    const lucilla = rows.find((r) => r.target.id === "a")!;
+    const aemeath = rows.find((r) => r.target.id === "b")!;
+    expect(supportNote(lucilla, rows)).toBe(
+      "That's small next to Aemeath's 8.10M: what Lucilla adds to a team as a support isn't counted.",
+    );
+    expect(supportNote(aemeath, rows)).toBeNull();
+    // alone on the banners there is nothing to compare with
+    expect(supportNote(lucilla, [lucilla])).toBeNull();
+    expect(adviceSummary(rows)).toContain("+10.5% of Lucilla's own damage (+21.5K per rotation) on ");
   });
 });
 

@@ -29,7 +29,7 @@ export interface PaletteItem {
   image?: string;
   /** a short badge on the right ("S6", "Set up", "Ctrl J") */
   badge?: string;
-  /** listed only once something is typed (a command per character / team would flood the empty list) */
+  /** listed only once something is typed (a command per character / team, or a page's tab or section, would flood the empty list) */
   queryOnly?: boolean;
   /** tie-break between equal scores, lower first (a character's own commands before its teams') */
   order?: number;
@@ -67,13 +67,24 @@ const ICON = {
 export const CORE_PAGES: Array<{ path: string; title: string; description: string; keywords: string[]; icon: string }> = [
   { path: "/", title: "Calculator", description: "Your active character's stats, damage and builds", keywords: ["home", "damage", "build", "stats", "optimizer", "echoes", "weapon"], icon: ICON.calculator },
   { path: "/inventory", title: "Inventory", description: "Every echo you own: filter, edit, import", keywords: ["echoes", "backpack", "fodder", "feed", "import"], icon: ICON.inventory },
-  { path: "/convene", title: "Convene odds", description: "Pull odds and pity planning", keywords: ["gacha", "pull", "banner", "pity", "wish"], icon: ICON.convene },
+  { path: "/convene", title: "Convene odds", description: "Pull odds and pity planning", keywords: ["gacha", "pull", "odds", "simulator", "wish", "chance"], icon: ICON.convene },
   { path: "/teams", title: "Team rotations", description: "Saved teams, their rotations and damage", keywords: ["team", "rotation", "party", "presets"], icon: ICON.teams },
   { path: "/settings", title: "Settings", description: "Theme, backup and restore, labs", keywords: ["backup", "restore", "import", "export", "preferences"], icon: ICON.settings },
   { path: "/info", title: "Info", description: "How the calculator works, formulas, credits", keywords: ["help", "formulas", "credits", "about", "cv"], icon: ICON.info },
-  { path: "/info/tuning-odds", title: "Echo tuning odds", description: "The odds of each substat roll when you tune an echo", keywords: ["tune", "tuning", "odds", "substat", "roll", "chance"], icon: ICON.info },
+  { path: "/info/tuning-odds", title: "Tuning planner", description: "The odds of each substat roll when you tune an echo", keywords: ["echo tuning odds", "tune", "tuning", "odds", "substat", "roll", "chance"], icon: ICON.info },
   { path: "/info/cv-echo-rating", title: "CV and echo rating", description: "How crit value and the echo rating are worked out", keywords: ["cv", "crit value", "rating", "score", "echo"], icon: ICON.info },
   { path: "/updates", title: "Updates", description: "What changed in the app", keywords: ["changelog", "news", "release"], icon: ICON.updates },
+];
+
+/** A page's tab or section, reachable by a query: found by searching, not listed in an empty palette. */
+export const SECTION_PAGES: Array<{ path: string; title: string; description: string; keywords: string[]; icon: string }> = [
+  { path: "/convene?tab=pulls", title: "My pulls", description: "Import your Convene history: pity, guarantee, 50/50 record and luck", keywords: ["pity", "history", "import pulls", "tracker", "guarantee", "50/50", "convene"], icon: ICON.convene },
+  { path: "/convene?tab=banners", title: "Convene banners", description: "Every released banner with countdowns and how long since each 5★ ran", keywords: ["banner", "rerun", "calendar", "schedule", "featured", "convene"], icon: ICON.convene },
+  { path: "/convene?tab=advisor", title: "Pull advisor", description: "Which featured 5★ adds the most damage to your builds per 1,000 Astrite", keywords: ["who to pull", "worth it", "astrite", "advice", "convene", "banner"], icon: ICON.convene },
+  { path: "/settings?section=backup-restore", title: "Backup & restore", description: "Save your characters, inventory and teams to a file, or load a backup", keywords: ["backup", "export", "import", "restore", "json", "transfer", "save"], icon: ICON.settings },
+  { path: "/settings?section=wavescan", title: "Import echoes from Wavescan", description: "Load your whole echo inventory from the Wavescan desktop scanner", keywords: ["wavescan", "scanner", "import echoes", "inventory", "echoes"], icon: ICON.settings },
+  { path: "/settings?section=preferences", title: "Preferences", description: "Theme, layout and display settings", keywords: ["settings", "theme", "options"], icon: ICON.settings },
+  { path: "/settings?section=labs", title: "Labs", description: "Experimental features you can switch on", keywords: ["experimental", "beta", "frame timing", "flags"], icon: ICON.settings },
 ];
 
 /** The page title for a route path (core or plus), for the assistant's page context. */
@@ -107,6 +118,10 @@ export function paletteItems(s: PaletteSources): PaletteItem[] {
   for (const p of [...CORE_PAGES, ...PLUS_PAGES]) {
     if (!s.hasRoute(p.path) || items.some((i) => i.run.kind === "route" && i.run.path === p.path)) continue;
     items.push({ key: `page:${p.path}`, group: "page", title: p.title, subtitle: p.description, keywords: [...p.keywords, p.path], icon: p.icon, run: { kind: "route", path: p.path } });
+  }
+  for (const p of SECTION_PAGES) {
+    if (!s.hasRoute(p.path)) continue;
+    items.push({ key: `page:${p.path}`, group: "page", title: p.title, subtitle: p.description, keywords: p.keywords, icon: p.icon, run: { kind: "route", path: p.path }, queryOnly: true });
   }
   items.push(
     { key: "action:rank", group: "action", title: "Rank my roster", subtitle: "Score every character and team you can field on your real builds", keywords: ["my rankings", "dps", "best team", "invest"], icon: ICON.rank, run: { kind: "route", path: "/my-rankings" } },
@@ -186,7 +201,7 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
   const perGroup = options.perGroup ?? 6;
   if (!q) {
     const context = items.filter((i) => i.group === "context" && !i.queryOnly);
-    const pages = items.filter((i) => i.group === "page");
+    const pages = items.filter((i) => i.group === "page" && !i.queryOnly);
     const actions = items.filter((i) => i.group === "action" && !i.queryOnly);
     const chars = items.filter((i) => i.group === "character" && i.badge).slice(0, 8);
     const teams = items.filter((i) => i.group === "team").slice(0, 5);

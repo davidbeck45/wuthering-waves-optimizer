@@ -12,7 +12,7 @@ export function poolPrefillRequest(p: PoolPity): ConvenePrefillRequest | null {
   let note = `${parts.join(" and ")} from your ${p.pool.short} history are in the simulator's Advanced panel.`;
   if (fill.clamped) note += " (Your counter is 79; the simulator's curve already gives a 5★ on pull 79, so it reads 78.)";
   if (fill.pityLowerBound)
-    note += ` Your history starts mid-count with no 5★ in it yet, so your real pity is at least ${p.pity5}${mode === "character" ? " and the guarantee is a guess" : ""}.`;
-  else if (!fill.certain && mode === "character") note += " Your history starts mid-count, so the guarantee is a guess.";
+    note += ` Your history starts part-way through a count (older pulls are past Kuro's 6-month window) with no 5★ in it yet, so your real pity is at least ${p.pity5}${mode === "character" ? " and the guarantee is a guess" : ""}.`;
+  else if (!fill.certain && mode === "character") note += " Your history starts part-way through a count (older pulls are past Kuro's 6-month window), so the guarantee is a guess.";
   return { prefill: { mode, startingPity: fill.startingPity, guaranteedNextFeatured: fill.guaranteedNextFeatured }, note };
 }

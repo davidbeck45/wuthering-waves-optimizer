@@ -300,7 +300,8 @@
     <!-- phone: the cards still to set, always in reach -->
     <div
       v-if="phoneBar"
-      class="fixed inset-x-0 bottom-[var(--nav-bottom-h)] z-30 flex items-center gap-3 border-t border-base-300 bg-base-200/95 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden"
+      ref="phoneBarEl"
+      class="wt-plus-bar fixed inset-x-0 bottom-[var(--nav-bottom-h)] z-30 flex items-center gap-3 border-t border-base-300 bg-base-200/95 px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden"
       data-test-echo-plan-phone-bar>
       <span class="min-w-0 flex-1 text-sm">
         <b class="tabular-nums" :class="progress.changed.length ? 'ep-text-changed' : ''">{{ progress.toUpdate.length }}</b>
@@ -327,6 +328,7 @@ import type { Verdict } from "./plan";
 import SonataCard from "./SonataCard.vue";
 import type { ServerId } from "./storage";
 import { useEchoPlan } from "./useEchoPlan";
+import { usePlusBar } from "../shell/plusBar";
 import "./echoPlan.css";
 
 useDocumentTitle(
@@ -381,6 +383,9 @@ const phoneSettings = ref(false);
 const rulesOn = computed(() => RULES.filter((r) => state.options[r.id]).length);
 const roster = ref<InstanceType<typeof EchoPlanRoster> | null>(null);
 const gridTop = ref<HTMLElement | null>(null);
+// the phone bar's height lifts the Ask button above its "Show" button (src/sim/shell/plusBar.ts)
+const phoneBarEl = ref<HTMLElement | null>(null);
+usePlusBar(phoneBarEl);
 
 type Filter = "all" | "todo" | "changed" | "done";
 const filter = ref<Filter>("all");

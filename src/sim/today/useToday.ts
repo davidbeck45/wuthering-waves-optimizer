@@ -211,6 +211,9 @@ export function useToday(opts: UseTodayOptions = {}) {
       /** only a stated version end is shown as a date */
       endMs: p?.stated ? p.endMs : null,
       progress: p?.stated && p.endMs ? progressOf(p.startMs, p.endMs, now.value) : null,
+      /** the stated version end has passed but no newer version is known yet (rules.json not refreshed): the phase has
+       *  most likely rolled over in game */
+      overdue: !!(p?.stated && p.endMs && now.value >= p.endMs),
     };
   });
 

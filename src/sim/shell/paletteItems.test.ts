@@ -1,6 +1,6 @@
 // Wuthering Tools+: the command palette's items, fuzzy ranking and the "Ask Claude" row.
 import { describe, expect, it } from "vitest";
-import { CORE_PAGES, characterRowsOf, fuzzyScore, looksLikeQuestion, pageTitleOf, paletteItems, rankPalette, storedSequence, type PaletteItem, type PaletteSources } from "./paletteItems";
+import { CORE_PAGES, SECTION_PAGES, characterRowsOf, fuzzyScore, looksLikeQuestion, pageTitleOf, paletteItems, rankPalette, storedSequence, type PaletteItem, type PaletteSources } from "./paletteItems";
 import { contextTargetOf, paletteWithCommands, type PaletteContext } from "./paletteCommands";
 import { PLUS_PAGES } from "./plusPages";
 
@@ -27,7 +27,7 @@ describe("paletteItems", () => {
     const pages = items.filter((i) => i.group === "page").map((i) => i.run);
     expect(pages).toContainEqual({ kind: "route", path: "/my-rankings" });
     expect(pages).not.toContainEqual({ kind: "route", path: "/account" });
-    expect(pages).toHaveLength(CORE_PAGES.length + PLUS_PAGES.length - 1);
+    expect(pages).toHaveLength(CORE_PAGES.length + PLUS_PAGES.length - 1 + SECTION_PAGES.length);
     const actions = items.filter((i) => i.group === "action").map((i) => i.title);
     expect(actions).toEqual(["Rank my roster", "Open the assistant", "AI settings", "Switch to light theme", "Switch to the classic UI"]);
     expect(items.filter((i) => i.group === "character").map((i) => [i.title, i.badge])).toEqual([
@@ -66,6 +66,18 @@ describe("rankPalette", () => {
     // each group appears as one run
     expect(groups.filter((g, i) => i > 0 && g !== groups[i - 1]).length).toBe(new Set(groups).size - 1);
     expect(ranked[ranked.length - 1]).toMatchObject({ group: "ask", run: { kind: "ask", question: "aem" } });
+  });
+
+  it("reaches Convene's tabs and the Settings sections by search, without listing them in an empty palette", () => {
+    const first = (q: string) => rankPalette(q, items).find((i) => i.group === "page")?.run;
+    expect(first("pull advisor")).toEqual({ kind: "route", path: "/convene?tab=advisor" });
+    expect(first("pity")).toEqual({ kind: "route", path: "/convene?tab=pulls" });
+    expect(first("banners")).toEqual({ kind: "route", path: "/convene?tab=banners" });
+    expect(first("wavescan")).toEqual({ kind: "route", path: "/settings?section=wavescan" });
+    expect(first("backup")).toEqual({ kind: "route", path: "/settings?section=backup-restore" });
+    expect(first("import echoes")).toEqual({ kind: "route", path: "/settings?section=wavescan" });
+    expect(rankPalette("", items).some((i) => i.run.kind === "route" && i.run.path.includes("?"))).toBe(false);
+    expect(pageTitleOf("/convene?tab=advisor")).toBe("Convene odds");
   });
 
   it("finds /my-rankings by its words and keywords", () => {

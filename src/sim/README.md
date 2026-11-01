@@ -91,6 +91,9 @@ the team lanes chart's turns-on-field table becomes two-line cards (it was 463 p
 `phone.css` § 15 (2026-10-31, WaveScan "add only new echoes" and build history both hit it): DaisyUI's toast is
 `nowrap` and pinned right, so a sentence-long toast ran off the left edge of a phone at 130 %; below 768 px it now
 spans the screen less a margin and wraps; see that section below.
+`phone.css` § 16–21 came from the 2026-10-31 shell audit (the Ask button and plus bars, Settings › Backup & Restore,
+the tuning planner, the What's new pictures, the v3 calculator header, Wavescan loadout cards, light-theme Forte icons;
+"Shell refinements" below).
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -1411,6 +1414,7 @@ Things learned:
   Cypress stubs answer the CORS preflight with the requested headers echoed (`Authorization` isn't covered by `*`).
 - The Ask button covers the bottom-right corner of the page (on /rankings phones, the end of Riley's credit line); the
   panel's collapse tab is the answer on desktop, closing the sheet on phones.
+  *(2026-10-31: no longer true at a page's end or over a plus bar — see "Shell refinements" below.)*
 
 ## In-app AI, stage 3: "Read with Claude" in the echo importer — `src/sim/echoScan/` (Track "ai", 2026-10-26)
 
@@ -2269,3 +2273,57 @@ line now takes the whole row and wraps (`MyRankingsTeams.vue`, `wiring.cy.ts` ch
 `/weapons?focus=` are read from the route rather than once at mount: the palette's "Energy check" / "Weapon value"
 run on that same page only changes the query, and used to do nothing. The ToA payload's clock is the card's (59.6 s →
 "1:00", not "0:60").
+
+## Shell refinements — page not found, the Ask button, phone fixes (2026-10-31 shell audit, track "fix-shell")
+
+The overnight audit of the shell (`night/reports/audit-shell.md`: /today, /convene, the Ask panel, the palette, the
+Tools+ menu, the calculator's first load, Settings, themes, titles, an unknown route, cold load, the PWA files) found 2
+high, 10 medium and 13 low items. This pass fixed both highs, every medium and most lows. Re-checked on the branch
+first: all of them still reproduced after the Ryan #681–#684 sync.
+
+| Piece | What it does |
+|---|---|
+| `shell/NotFoundView.vue` + `main.ts` (one line, the last route: `/:pathMatch(.*)*`, name `NotFoundView`) | any address the router doesn't know. It used to be a blank white page (no Nav, so not even the theme). Now: Nav and the saved theme, "Page not found" with the address asked for, a "Did you mean" link, the calculator / My account / Today, a search row that opens the palette, and every `PLUS_PAGES` entry. Title "Page not found — …". Not in `PLUS_PAGES`: nobody navigates to it |
+| `shell/notFound.ts` | `closestPage(path, pages)`: letters-only edit distance (adjacent swaps count once) against each page's path and title, first segment too: `/acount` → My account, `/calculator` → the calculator, `/echolab` → Echo Lab. `NOT_FOUND_ROUTE`: `isAppRoute` (navigation.ts) and /today's endgame links skip the catch-all, since it matches every path |
+| `shell/plusBar.ts` `usePlusBar(el, { pinned? })` | a plus page's own bar pinned to the bottom of a phone (Echo plan's "Sonatas to set · Show", Build my team's run / save bars, the welcome card) publishes its height as `--plus-bar-h` (the tallest when two are up; 0 when the bar isn't `position: fixed`, e.g. Build my team's bars on a desktop). `{ pinned: true }` counts a line that ends a fixed-height page: the /rankings credit, so Ask no longer covers "My roster rankings ▸" |
+| `PlusShell.vue` (`.wt-ask-button`) | Ask sits at `1rem + --nav-bottom-h + --plus-bar-h`: above the Echo plan bar, no longer on its "Show" button (an 8 px strip of it was tappable) |
+| `phone.css` § 16 | every page's `.content` keeps Ask's height (plus any plus bar) free below its last line, so the end of a page always scrolls clear of Ask (the /inventory pagination, /share's summary, /teams' Total DMG, every footer); not on /rankings (a fixed-height column). On a v3 phone, when Ryan's bottom bar slides away on a scroll down (`.nav-bottom-bar--tucked`), Ask slides off with it and a `.wt-plus-bar` drops to the screen's bottom edge instead of floating over an empty band |
+| `phone.css` § 17 | Settings › Backup & Restore (a column-less `grid` grew to the file input's min-content: 456 px at 412; the two export buttons wrap at 360) and /info/tuning-odds (InfoView's v3 `2rem 3rem` padding and a column-less results grid: 428 px) fit a phone |
+| `phone.css` § 18 | `dialog[data-test-whats-new-v3-modal]:not([open]) { display: none }`: the closed v3 "What's new" dialog laid out at opacity 0 inside the viewport, so its `loading="lazy"` pictures (~5 MB, a 3.7 MB GIF) downloaded on every cold load. 0 requests now until it opens; `showModal()` still shows it |
+| `phone.css` § 19 + `CalculatorCommandBar.vue` (one attribute: `:data-damage-type` on the hero) | the v3 calculator header on a phone: the target button over the number is narrower, the number a touch smaller, so the name reads in full ("Aemeath" was "A…" at 412 and gone at 360); a caption under the number says "avg damage" / "non-crit damage" / "crit damage" |
+| `phone.css` § 20 | Settings › Wavescan loadout cards on a phone: picture beside the text, the arrows on their own row, no drag handle on a touch screen ("Reminis/cence" broke mid-word, the arrows sat on the set name) |
+| `phone.css` § 21 | light themes: the v3 Forte card's white skill icons inverted (style.css already does the chain nodes) |
+| `nav/PlusNavMenu.vue` | a "Search pages, characters, teams…" row at the top of the Tools+ menu opens the palette — the only way on a phone (Ctrl K shown on desktop, hidden on touch). The menu's tooltip / screen-reader name is "Tools+ pages" |
+| `shell/paletteItems.ts` `SECTION_PAGES` | palette rows for Convene's My pulls / Banners / Pull advisor and the Settings sections (Backup & restore, Wavescan, Preferences, Labs): found by search ("pull advisor", "pity", "wavescan", "backup"), not listed in an empty palette (`queryOnly`, the flag the palette commands use). "Echo tuning odds" is now "Tuning planner", the page's own name |
+| `pages/SettingsView.vue` (upstream, ~5 lines) | `?section=` reads every `SETTINGS_SECTIONS` key, also while the page is open (was `wavescan` only) |
+| `shell/WelcomeCard.vue` + `welcome.ts` | "New here? Bring your account in" on the calculator for a browser with no character set up and no echoes: Get started (/account, whose empty state lists the ways in) or Restore a backup; × or either link hides it for good (`wtplus:welcome:dismissed`). Off under Cypress unless a spec sets `wtplus:welcome:e2e` (it would sit on every empty-browser spec's click targets — the precedent is `teamContext/autoTeamBuffs.ts`) |
+| Convene | Banners: the Server select can shrink (it pushed a 360 px page to 398 px), the history search gets its own row on a phone, rerun and history sub-lines wrap instead of cutting the date. My pulls: the link field keeps its height on a phone (`flex-1` in a `flex-col` made it 22 px), plain words ("older pulls not in history", "typical player: 54.1", "from 3 complete 5★ counts", a "soft pity 66" tick), the import message's × on the same line, and the tab, heading and title all say "My pulls". Pull advisor: "+10.5% **of Lucilla's own damage**", "That is +21.5K damage per rotation for Lucilla (now 205K on Lucilla · Suisui + Hiyuki)", and when a character's own damage is under a quarter of the strongest one scored beside it, a line saying what they add as a support isn't counted (`advisor.ts` `supportNote`, `shortRotation`, `gainDamageText`); the summary uses the short rotation name |
+| Today | event rows' notice / calendar buttons are 2.5 rem on a phone (31 px, 6 px apart before); the endgame links 2.25 rem tall. Past a stated version end with no newer version known, the Matrix row reads "3.8 is out · check in game" instead of a stuck "≈ 0m to reset" (`useToday` `matrix.overdue`) |
+| /account | "Strongest: Aemeath 8.10M per rotation, on Basic Rotation (Tune Break) · enemy Lv 100", with a tooltip on why the calculator's number differs (its own enemy and saved rotation) |
+| `public/manifest.webmanifest` + `public/icons/icon-maskable*.png` | an `id`, a description that matches the product, shortcuts (Today, My account, Convene › My pulls; Android long-press), and a real maskable icon: `icon-maskable.svg` puts the glyph inside the 0.4 × 512 safe circle on a full-bleed base (the old entry reused the rounded "any" icon, so circle masks cut the plus) |
+
+Left alone, with the reason:
+- index.html's two `apple-touch-icon` links: iOS takes the last one (ours); dropping Ryan's is an upstream edit that
+  conflicts on every sync for no visible change.
+- /rankings' Lily portrait: the request fails (not on Ryan's asset host) but the card already shows an "Li" placeholder.
+- Palette rows for each theme (L1): only the light / dark toggle; another track owns palette wiring tonight.
+- The inventory's three names (palette "Inventory", title "Echo inventory", header "Echoes") are Ryan's.
+- The entry chunk (L7): nothing was moved out tonight; this pass adds `welcome.ts`, `plusBar.ts` and the menu's search
+  row to it (a few kB). The 10-26 bundle measurement should be re-run on its own.
+
+Gates: `cypress/e2e/notFound.cy.ts`, `shell.cy.ts` (palette from the menu on a phone, Settings sections, no What's new
+request on a cold load, the welcome card), `phoneLayout.cy.ts` (Settings backup / tuning planner / calculator caption at
+412 @ 130 % and 360, the page end clear of Ask, Ask clear of the Echo plan bar), `today.cy.ts` (Matrix rollover, tap
+size), `conveneTracker.cy.ts` (link field height, Banners at a 360 px page and 130 %, the advisor's "own damage"
+wording); unit tests `shell/notFound.test.ts`, `plusBar.test.ts`, `welcome.test.ts`, `paletteItems.test.ts`,
+`convene/advisor.test.ts`.
+
+Things learned:
+- A catch-all route makes `router.resolve(path).matched` non-empty for every path: any "is this a page?" check has to
+  look at the route's name too.
+- Esc closes a native `<dialog>` through its `cancel` event, which a Cypress `{esc}` doesn't fire; run a row instead.
+- Lazy images wait on rendering frames, so headless Electron never fetches them even in an open dialog. Check "loads
+  when open" in Chromium (shot.mjs), and only "doesn't load while closed" in Cypress.
+- At 360 px and 130 % text Ryan's v3 header fits by 0.2 px; in Electron a 375 px window gives a 360 px page after the
+  scrollbar, which is the honest way to test that width at 130 %.
+

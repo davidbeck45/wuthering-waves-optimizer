@@ -243,7 +243,7 @@
           </div>
         </Teleport>
 
-        <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
+        <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero :data-damage-type="damageType">
           <!-- Some action names run 60-75 characters, so they wrap to two
           lines (the end tells similar ones apart) rather than pushing the bar. -->
           <span

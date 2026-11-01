@@ -39,8 +39,11 @@
             This team at my account
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </RouterLink>
-          <span v-if="kpis.strongest" class="acc-hero__strongest">
-            Strongest: <b>{{ kpis.strongest.name }}</b> {{ compact(kpis.strongest.damage ?? 0) }}
+          <!-- the calculator shows the same character with the player's own enemy and saved rotation, so the numbers
+               differ: name the rotation and the enemy here -->
+          <span v-if="kpis.strongest" class="acc-hero__strongest" :title="strongestTitle" data-test-account-hero-strongest>
+            Strongest: <b>{{ kpis.strongest.name }}</b> {{ compact(kpis.strongest.damage ?? 0) }} per rotation
+            <span class="acc-hero__strongest-on">on {{ strongestRotation }} · enemy Lv 100</span>
           </span>
         </div>
       </template>
@@ -112,6 +115,7 @@ import CharacterAvatar from "../display/CharacterAvatar.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import { characterMeta, characterShortName, elementColor } from "../display/names";
 import { rankingsMineHash } from "./accountState";
+import { parsePresetName } from "../presets/presetName";
 import { memberShares } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
 import { getGradeForSubstatScorePercent } from "../../echoes/rating";
@@ -123,6 +127,11 @@ import type { RunStatus } from "./useAccountData";
 const props = defineProps<{ kpis: AccountKpis; status: RunStatus; owned: string[] }>();
 
 const best = computed(() => props.kpis.bestTeam);
+const strongestRotation = computed(() => parsePresetName(props.kpis.strongest?.rotation, { owned: props.owned }).title || "the best rotation");
+const strongestTitle = computed(
+  () =>
+    `${props.kpis.strongest?.name ?? ""}'s best rotation: ${props.kpis.strongest?.rotation ?? "—"}. Average damage per rotation against a level 100 enemy with 20% resistance, the same target for every character here. The calculator uses your own enemy settings and saved rotation, so its number can differ.`,
+);
 const shares = computed(() => (best.value ? memberShares(best.value) : []));
 const ratio = (n: number, of: number): string => `${of > 0 ? Math.min(100, (n / of) * 100) : 0}%`;
 const averageGrade = computed(() => getGradeForSubstatScorePercent(props.kpis.averageScore ?? 0));
@@ -258,6 +267,11 @@ const leadStyle = computed(() => {
 .acc-hero__strongest b {
   font-weight: 650;
   color: oklch(var(--bc) / 0.85);
+}
+.acc-hero__strongest-on {
+  display: block;
+  font-size: 0.85em;
+  color: oklch(var(--bc) / 0.5);
 }
 .acc-hero__wait {
   display: flex;

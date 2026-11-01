@@ -5,7 +5,7 @@
       <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h3 class="text-base font-semibold">{{ pool.pool.name }}</h3>
         <span class="text-sm text-base-content/60 tabular-nums">{{ fmtInt(pool.pulls) }} pulls · {{ fmtK(pool.astrite) }} Astrite</span>
-        <span v-if="pool.truncated" class="badge badge-ghost badge-sm ml-auto" title="Kuro keeps six months of records; the history most likely starts after your first pull here, so the first 5★'s pity is a lower bound">starts mid-count</span>
+        <span v-if="pool.truncated" class="badge badge-ghost badge-sm ml-auto" title="Kuro keeps six months of records; the history most likely starts after your first pull here, so the first 5★'s pity is a lower bound">older pulls not in history</span>
       </header>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
@@ -17,7 +17,7 @@
               ><span
                 v-if="pool.pity5LowerBound"
                 class="text-2xl text-base-content/60"
-                title="your history starts mid-count with no 5★ in it yet, so the real pity is at least this"
+                title="your history starts part-way through a count (older pulls are past Kuro's 6-month window) with no 5★ in it yet, so the real pity is at least this"
                 data-test-convene-pity5-min>+</span></span>
             <span class="whitespace-nowrap text-sm text-base-content/60">/ {{ pool.pool.hardPity5 }} pity</span>
             <span class="ml-auto whitespace-nowrap text-xs text-base-content/60 tabular-nums">{{ pool.pity5LowerBound ? "at most " : "" }}{{ pool.toHardPity5 }} to a sure 5★</span>
@@ -27,8 +27,8 @@
           </div>
           <div class="relative mt-1 h-4 text-[0.68rem] text-base-content/45 tabular-nums" :style="{ '--soft': `${(softPityAt / pool.pool.hardPity5) * 100}%` }">
             <span class="absolute left-0">0</span>
-            <span v-if="pool.pool.hardPity5 === 80" class="soft-label absolute">{{ softPityAt }}</span>
-            <span class="absolute right-0">{{ pool.pool.hardPity5 }}</span>
+            <span v-if="pool.pool.hardPity5 === 80" class="soft-label absolute" title="from this pull on the 5★ chance rises every pull">soft pity {{ softPityAt }}</span>
+            <span class="absolute right-0" title="a 5★ is certain by this pull">{{ pool.pool.hardPity5 }}</span>
           </div>
         </div>
         <div class="flex gap-4 sm:flex-col sm:items-end sm:gap-1 text-sm">
@@ -43,7 +43,7 @@
           Next 5★ is the featured one
         </span>
         <span v-else-if="pool.guaranteed === false && pool.guaranteeKnown" class="badge badge-outline py-3" data-test-convene-guarantee="coin">Next 5★ is a 50/50</span>
-        <span v-else-if="pool.guaranteed === false" class="badge badge-ghost py-3" data-test-convene-guarantee="unknown" title="your history starts mid-count and no 5★ has settled it yet">50/50 state unknown</span>
+        <span v-else-if="pool.guaranteed === false" class="badge badge-ghost py-3" data-test-convene-guarantee="unknown" title="your history starts part-way through a count (older pulls are past Kuro's 6-month window) and no 5★ has settled it yet">50/50 state unknown</span>
         <span v-else-if="pool.pool.alwaysFeatured" class="badge badge-ghost py-3">every 5★ is the featured weapon</span>
         <button
           v-if="simulatable"
@@ -60,7 +60,7 @@
           <dt>Average pity</dt>
           <dd>
             <template v-if="pool.avgPity5 != null">{{ pool.avgPity5.toFixed(1) }}</template><template v-else>—</template>
-            <small v-if="pool.luck">model {{ pool.luck.modelAverage.toFixed(1) }}</small>
+            <small v-if="pool.luck">typical player: {{ pool.luck.modelAverage.toFixed(1) }}</small>
           </dd>
         </div>
         <div v-if="pool.fiftyFifty" class="stat-cell">
@@ -74,7 +74,7 @@
           <dt>Luckier than</dt>
           <dd>
             <template v-if="pool.luck.percentile != null">{{ Math.round(pool.luck.percentile * 100) }}%</template><template v-else>—</template>
-            <small>of players · {{ pool.luck.samples }} full count{{ pool.luck.samples === 1 ? "" : "s" }}</small>
+            <small>of players · from {{ pool.luck.samples }} complete 5★ count{{ pool.luck.samples === 1 ? "" : "s" }}</small>
           </dd>
         </div>
       </dl>
@@ -163,9 +163,11 @@ function keyOf(f: FiveStarPull): string | null {
   background: linear-gradient(90deg, oklch(var(--p) / 0.75), oklch(var(--p)));
   transition: width 0.4s ease;
 }
+/* "soft pity 66" ends at the tick where the warm part of the track starts */
 .soft-label {
   left: var(--soft);
-  transform: translateX(-50%);
+  transform: translateX(-100%);
+  white-space: nowrap;
 }
 .stat-cell {
   border-radius: 0.6rem;

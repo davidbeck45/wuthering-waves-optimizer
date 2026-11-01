@@ -51,8 +51,9 @@
       @close="importOpen = false"
       @imported="onImported" />
 
-    <div v-if="lastImport && !importOpen" class="alert mb-5 py-2.5 text-sm" :class="lastImport.kind === 'ok' ? 'alert-success' : 'alert-warning'" role="status" data-test-convene-import-message :data-kind="lastImport.kind">
-      <span>{{ lastImport.text }}</span>
+    <!-- flex row at every width (DaisyUI's alert is a grid that stacks below sm, which left the × alone on its own line) -->
+    <div v-if="lastImport && !importOpen" class="alert mb-5 flex items-start py-2.5 text-sm" :class="lastImport.kind === 'ok' ? 'alert-success' : 'alert-warning'" role="status" data-test-convene-import-message :data-kind="lastImport.kind">
+      <span class="min-w-0 flex-1">{{ lastImport.text }}</span>
       <button type="button" class="btn btn-ghost btn-xs" aria-label="Dismiss" @click="lastImport = null">✕</button>
     </div>
 
@@ -82,8 +83,8 @@
             <div class="tile__label">5★</div>
             <div class="tile__value">{{ pity.fiveStars }}</div>
             <div class="tile__sub">
-              <template v-if="overallAvg != null">{{ overallAvg.toFixed(1) }} pulls each <span class="opacity-70">(model {{ modelAvg.toFixed(1) }})</span></template>
-              <template v-else>no full count yet</template>
+              <template v-if="overallAvg != null">{{ overallAvg.toFixed(1) }} pulls each <span class="opacity-70">(typical player: {{ modelAvg.toFixed(1) }})</span></template>
+              <template v-else>no complete 5★ count yet</template>
             </div>
           </div>
           <div class="tile">

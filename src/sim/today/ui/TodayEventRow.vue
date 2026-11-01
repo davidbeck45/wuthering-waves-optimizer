@@ -86,13 +86,14 @@ const verb = computed(() => (props.mode === "upcoming" ? "starts" : "ends"));
   .td-ev__verb {
     display: none;
   }
+  /* a finger-sized target: 40 px at 100 % text (they were 31 px, 6 px apart) */
   .td-ev__cal,
   .td-ev__src {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.5rem;
-    min-height: 1.5rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
   }
 }
 </style>
