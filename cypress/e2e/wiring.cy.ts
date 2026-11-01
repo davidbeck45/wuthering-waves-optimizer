@@ -198,6 +198,16 @@ describe("wiring: explain, share and the palette across the plus pages", () => {
       }
       // on a phone the team row's new buttons carry words, not just an icon
       cy.get(`[data-test-explain="my-rankings-team:${TEAM_NAME}"]`).should("contain.text", "Explain").find("span").should("be.visible");
+      // the team's number keeps its unit and its member-share bar (the bar had 0 px beside the number + unit), and the
+      // number stays inside its cell
+      cy.get(`[data-test-my-rankings-team="${TEAM_NAME}"]`).within(() => {
+        cy.get(".mr-tdmg__unit").should("be.visible").and("contain.text", "team avg DMG / rotation");
+        cy.get(".mr-stack").should(($bar) => expect($bar[0]!.getBoundingClientRect().width, "member-share bar width").to.be.greaterThan(100));
+        cy.get(".tcell--dmg").then(($cell) => {
+          const cell = $cell[0]!.getBoundingClientRect();
+          cy.get(".mr-tdmg__value").should(($v) => expect($v[0]!.getBoundingClientRect().right, "number inside its cell").to.be.at.most(cell.right + 0.5));
+        });
+      });
       cy.document().then((doc) => {
         expect(doc.documentElement.scrollWidth, "page width").to.be.at.most(doc.documentElement.clientWidth);
       });

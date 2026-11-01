@@ -383,17 +383,29 @@ function sharesOf(t: TeamRow): MemberShare[] {
     padding-left: 1.9rem;
     text-align: left;
   }
+  /* the number and its unit on one line, the member-share bar under them: beside a number with its unit (350 px at
+     130 % text in a 327 px cell) the bar got 0 px. The unit is body text, and the number may wrap before it would
+     spill out of the cell */
   .mr-tdmg {
     flex-direction: row-reverse;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
+    row-gap: 0.3rem;
+    column-gap: 0.6rem;
   }
   .mr-tdmg__value {
-    flex: 0 0 auto;
+    flex: 0 1 auto;
+    min-width: 0;
     font-size: 0.85rem;
   }
+  .mr-tdmg__unit {
+    font-family: "Figtree", sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
   .mr-stack {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
   }
 }
 </style>
