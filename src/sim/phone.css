@@ -555,3 +555,100 @@
     text-align: right;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   14. Rotation charts (Ryan #681/#682, behind the Labs "frame timing" flag): RotationShareBars.vue
+       and the team lanes chart's turns table (TeamRotationLanesChart.vue).
+       - Share bars print a segment's % when it is 12 % or more, but at 130 % text "14%" needs about
+         46 px and a 12-15 % segment of a phone-wide bar is 24-39 px, so it showed "1" or "14" cut
+         off, which reads as a different number. Each segment becomes a size container: its label
+         drops the left padding, centres, and hides when the segment is narrower than the label;
+         the colour stays and "Show as a table" has every value.
+       - The turns table (# · on field · from – to · damage · DPS) is 463 px wide at 412 px, so the
+         damage and DPS columns sat past the edge of a sideways scroller ("106,6"). On a phone each
+         turn becomes a two-line card like section 1: the character and From – to on top, Damage and
+         DPS under them, each number with a tiny caption and never broken across lines. */
+@media (max-width: 767px) {
+  .share-bars__segment.share-bars__segment.share-bars__segment {
+    container-type: inline-size;
+    justify-content: center;
+    padding-left: 0;
+  }
+  @container (max-width: 2.2em) {
+    .share-bars__segment > span {
+      visibility: hidden;
+    }
+  }
+  .table[data-test-team-rotation-stints],
+  .table[data-test-team-rotation-stints] tbody {
+    display: block;
+    width: 100%;
+  }
+  .table[data-test-team-rotation-stints] thead {
+    display: none;
+  }
+  .table[data-test-team-rotation-stints] tbody tr {
+    display: grid;
+    grid-template-columns: auto repeat(2, minmax(0, 1fr));
+    column-gap: 0.6rem;
+    row-gap: 0.25rem;
+    align-items: end;
+    padding: 0.4rem 0.25rem;
+    border-bottom: 1px solid oklch(var(--bc) / 0.08);
+  }
+  .table[data-test-team-rotation-stints] tbody td {
+    padding: 0;
+    border: 0;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(1) {
+    grid-row: 1 / span 2;
+    align-self: start;
+    opacity: 0.6;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    white-space: normal;
+    font-weight: 600;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(3) {
+    display: none;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(4) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(5) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(6) {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(n + 4) {
+    white-space: nowrap;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(n + 4)::before {
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.75em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.55;
+    font-weight: 600;
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(4)::before {
+    content: "From – to";
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(5)::before {
+    content: "Damage";
+  }
+  .table[data-test-team-rotation-stints] tbody td:nth-child(6)::before {
+    content: "DPS";
+  }
+}
