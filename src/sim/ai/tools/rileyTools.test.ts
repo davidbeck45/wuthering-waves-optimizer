@@ -10,6 +10,8 @@ import { readOnlyStorage, runTool } from "./index";
 import { MAX_RESULT_CHARS, type ToolContext } from "./shared";
 import { teamTarget, type RileyToolEngine } from "./riley";
 import { floorIdOf, seasonCheck, TOA_CHECK_KEY } from "./endgame";
+import { memberPlanSummary } from "./teamRun";
+import { emptyPlan, parseMainStats } from "../../buildTeam/rileyPlan";
 
 const exp: ExportFile = parseExport(fixture, "aiAccount.json");
 /** inside ToA season 41 (2026-10-12 → 11-09) */
@@ -88,6 +90,21 @@ describe("tools on Riley's engine", () => {
     // a dry run: the account is exactly as it was
     expect(JSON.stringify(exp)).toBe(before);
   }, 60_000);
+
+  it("build_team_plan: a member with no plan sets or main stats gets no fittingEchoes (the whole inventory is not a fit)", () => {
+    const echoes = exp.inventory.echoes ?? [];
+    expect(echoes.length).toBeGreaterThan(10);
+    const bare = memberPlanSummary(emptyPlan("Lynae"), echoes);
+    expect(bare.planFrom).toBe("nothing to go on");
+    expect(bare).not.toHaveProperty("fittingEchoes");
+    // a plan that names a set and a layout counts what fits it, never the whole inventory
+    const planned = memberPlanSummary(
+      { ...emptyPlan("Aemeath", true), source: "riley", sets: [{ key: "MoonlitClouds", pieces: 5 }], setsLabel: "Moonlit Clouds 5pc", mainStats: parseMainStats("43311 CD ATK Fusion atk atk") },
+      echoes,
+    );
+    expect(planned.fittingEchoes).toBeGreaterThanOrEqual(0);
+    expect(planned.fittingEchoes).toBeLessThan(echoes.length);
+  });
 
   it("toa_check: a floor's best teams with kill time and crests, every floor with a Vigor plan, the page's check reused", async () => {
     const found = await seasonCheck(ctx, null);

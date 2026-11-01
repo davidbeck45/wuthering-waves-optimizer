@@ -95,6 +95,29 @@ const SOURCE_TEXT: Record<MemberPlan["source"], string> = {
 
 const COUNT_STAT = (key: string): string => statLabel(key) ?? key;
 
+/** One member of build_team_plan's answer. `fittingEchoes` only when the plan narrows the pool (sets, a cost layout or
+ *  main stats): a plan with none of them would count the whole inventory as fitting, which reads as a match it isn't. */
+export function memberPlanSummary(p: MemberPlan, echoes: Parameters<typeof filterPool>[0]) {
+  const c = constraintsOf(p, DEFAULT_OPTIONS);
+  const constrained = c.allowedSets != null || c.layout != null || c.mainStatsByCost != null;
+  const { pool } = filterPool(echoes, c);
+  const short = shortfallOf(pool, c);
+  return {
+    character: characterName(p.characterId),
+    planFrom: SOURCE_TEXT[p.source],
+    ...(p.share != null ? { dpsSharePct: round(p.share * 100, 1) } : {}),
+    sets: p.sets.length ? p.sets.map((s) => `${setName(s.key)} ${s.pieces}pc`).join(" + ") : p.setsLabel || null,
+    mainEcho: p.mainEcho ? (echoName(p.mainEcho.keys[0]) ?? p.mainEcho.name) : null,
+    layout: p.mainStats ? p.mainStats.layout : null,
+    mainStats: p.mainStats ? p.mainStats.slots.map((k, i) => `${LAYOUT_COSTS[p.mainStats!.layout][i]}-cost ${COUNT_STAT(k)}`) : null,
+    erNeedPct: p.erNeed == null ? null : showNeed(p.erNeed),
+    ...(p.erSetBy === "kit" ? { erSetBy: "the kit's own floor" } : {}),
+    ...(constrained ? { fittingEchoes: pool.length } : {}),
+    ...(short.length ? { cantFill: short.map((s) => `${s.need} × ${s.cost}-cost${s.stats.length ? ` (${s.stats.map(COUNT_STAT).join(" / ")})` : ""}: ${s.have} distinct echoes fit`) } : {}),
+    ...(p.unmapped.length ? { unmapped: p.unmapped } : {}),
+  };
+}
+
 export const buildTeamPlanTool = defineTool<{ team: string }>({
   name: "build_team_plan",
   description:
@@ -124,25 +147,7 @@ export const buildTeamPlanTool = defineTool<{ team: string }>({
     };
     const plans = await plansForTeam(target.characterIds, source);
     const echoes = ctx.exp.inventory.echoes ?? [];
-    const members = plans.plans.filter(Boolean).map((p) => {
-      const c = constraintsOf(p, DEFAULT_OPTIONS);
-      const { pool } = filterPool(echoes, c);
-      const short = shortfallOf(pool, c);
-      return {
-        character: characterName(p.characterId),
-        planFrom: SOURCE_TEXT[p.source],
-        ...(p.share != null ? { dpsSharePct: round(p.share * 100, 1) } : {}),
-        sets: p.sets.length ? p.sets.map((s) => `${setName(s.key)} ${s.pieces}pc`).join(" + ") : p.setsLabel || null,
-        mainEcho: p.mainEcho ? (echoName(p.mainEcho.keys[0]) ?? p.mainEcho.name) : null,
-        layout: p.mainStats ? p.mainStats.layout : null,
-        mainStats: p.mainStats ? p.mainStats.slots.map((k, i) => `${LAYOUT_COSTS[p.mainStats!.layout][i]}-cost ${COUNT_STAT(k)}`) : null,
-        erNeedPct: p.erNeed == null ? null : showNeed(p.erNeed),
-        ...(p.erSetBy === "kit" ? { erSetBy: "the kit's own floor" } : {}),
-        fittingEchoes: pool.length,
-        ...(short.length ? { cantFill: short.map((s) => `${s.need} × ${s.cost}-cost${s.stats.length ? ` (${s.stats.map(COUNT_STAT).join(" / ")})` : ""}: ${s.have} distinct echoes fit`) } : {}),
-        ...(p.unmapped.length ? { unmapped: p.unmapped } : {}),
-      };
-    });
+    const members = plans.plans.filter(Boolean).map((p) => memberPlanSummary(p, echoes));
     const saved = target.saved?.id != null ? `?team=${encodeURIComponent(String(target.saved.id))}` : `?members=${target.characterIds.map(encodeURIComponent).join(",")}`;
     return compactJson({
       team: target.name,
@@ -152,7 +157,7 @@ export const buildTeamPlanTool = defineTool<{ team: string }>({
       teamDpsHighInvest: int(plans.dpsHigh),
       members,
       notes: [
-        "fittingEchoes counts the inventory's echoes of the plan's sets, costs and main stats for that member alone; teammates share the pool, and the page's Build step gives no echo to two of them.",
+        "fittingEchoes counts the inventory's echoes of the plan's sets, costs and main stats for that member alone (absent when the plan names none of them); teammates share the pool, and the page's Build step gives no echo to two of them.",
         "teamDps figures are wuwa_calc's DPS at your account (today's echoes, and his High Invest substats): compare only with another DPS.",
       ],
       path: `/build-team${saved}`,
