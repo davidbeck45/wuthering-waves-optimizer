@@ -25,12 +25,16 @@
           </button>
         </div>
       </div>
+      <!-- one group per game filter: the Sonata on the first line, COST and main stat under it (they told groups apart
+      and were cut off on a phone) -->
       <ul v-if="feedOpen" class="grid grid-cols-1 gap-x-4 border-t border-base-300 px-4 py-2 sm:grid-cols-2 xl:grid-cols-3">
         <li v-for="g in groups" :key="`${g.cost}|${g.set}|${g.main}`" class="flex min-w-0 items-center gap-2 py-1.5 text-sm" :data-test-echo-lab-feed-group="`${g.cost}|${g.set}|${g.main}`">
-          <span class="w-8 shrink-0 text-right font-mono font-bold tabular-nums">{{ g.count }}×</span>
-          <span class="badge badge-sm badge-ghost shrink-0">C{{ g.cost ?? "?" }}</span>
-          <img v-if="setIcon(g.set)" :src="setIcon(g.set) ?? undefined" :alt="setLabel(g.set)" class="size-4 shrink-0" loading="lazy" />
-          <span class="min-w-0 flex-1 truncate" :title="`${setLabel(g.set)} · ${mainLabel(g.main)}`">{{ setLabel(g.set) }} <span class="opacity-60">· {{ mainLabel(g.main) }}</span></span>
+          <span class="w-7 shrink-0 text-right font-mono font-bold tabular-nums">{{ g.count }}×</span>
+          <img v-if="setIcon(g.set)" :src="setIcon(g.set) ?? undefined" :alt="setLabel(g.set)" class="size-5 shrink-0" loading="lazy" />
+          <span class="min-w-0 flex-1 leading-tight" :title="`${setLabel(g.set)} · Cost ${g.cost ?? '?'} · ${mainLabel(g.main)}`">
+            <span class="block">{{ setLabel(g.set) }}</span>
+            <span class="block text-xs opacity-70" data-test-echo-lab-feed-group-filter>Cost {{ g.cost ?? "?" }} · {{ mainLabel(g.main) }}</span>
+          </span>
           <button type="button" class="btn btn-ghost btn-xs shrink-0" @click="showGroup(g)">Show</button>
         </li>
       </ul>
@@ -105,6 +109,15 @@
       </div>
     </div>
 
+    <!-- what the substat colours mean (they were unexplained on a phone) -->
+    <p class="flex flex-wrap items-center gap-x-1.5 gap-y-1 px-1 text-xs opacity-80" data-test-echo-lab-line-legend>
+      <span>Substat colour = what the line is worth on its best owner's build:</span>
+      <span class="el-line el-line--great">great</span>
+      <span class="el-line el-line--good">good</span>
+      <span class="el-line el-line--weak">weak</span>
+      <span class="el-line el-line--dead">does nothing</span>
+    </p>
+
     <!-- the table (cards below 1024 px) -->
     <div class="el-table overflow-hidden rounded-box border border-base-300 bg-base-100 max-lg:border-0 max-lg:bg-transparent" role="table" aria-label="Inventory verdicts">
       <div class="el-thead" role="row">
@@ -147,9 +160,9 @@
               <div v-if="row.best" :title="ownerTip(row)" class="flex min-w-0 items-center gap-2">
                 <img :src="portrait(row.best.characterId)" :alt="characterName(row.best.characterId)" class="el-portrait size-7" loading="lazy" />
                 <div class="min-w-0 leading-tight">
-                  <div class="truncate text-sm">{{ characterName(row.best.characterId) }}</div>
-                  <div class="truncate text-xs tabular-nums" :class="row.best.gain > 0 ? 'el-up font-semibold' : 'opacity-60'">
-                    {{ signedPct(row.best.gain, 2) }}<span v-if="row.upgradeFor.length > 1" class="font-normal opacity-70"> · +{{ row.upgradeFor.length - 1 }} more</span>
+                  <div class="text-sm max-lg:line-clamp-2 lg:truncate"><span class="opacity-60 lg:hidden">Best for </span>{{ characterName(row.best.characterId) }}</div>
+                  <div class="text-xs tabular-nums lg:truncate" :class="row.best.gain > 0 ? 'el-up font-semibold' : 'opacity-60'">
+                    <span class="whitespace-nowrap">{{ signedPct(row.best.gain, 2) }}<span class="lg:hidden"> damage</span></span><span v-if="row.upgradeFor.length > 1" class="whitespace-nowrap font-normal opacity-70"> · +{{ row.upgradeFor.length - 1 }} more</span>
                   </div>
                 </div>
               </div>
@@ -157,7 +170,8 @@
             </div>
             <div class="el-cell-worn flex min-w-0 items-center gap-2.5" role="cell">
               <span v-if="row.reason !== 'upgrade'" class="el-reason-card min-w-0 text-xs opacity-60">{{ reasonText(row) }}</span>
-              <span class="flex items-center -space-x-1.5">
+              <span v-if="row.wornBy.length && row.reason !== 'worn'" class="shrink-0 text-xs opacity-60 lg:hidden">worn by</span>
+              <span class="flex shrink-0 items-center -space-x-1.5">
                 <img
                   v-for="w in row.wornBy.slice(0, 3)"
                   :key="`${w.characterId}|${w.slot}`"
@@ -185,7 +199,7 @@
                   <span class="text-xs opacity-60">{{ slotLabel(o.slot) }}<template v-if="o.replacedEcho">, replaces {{ echoName(o.replacedEcho) }}</template></span>
                   <span class="ml-auto text-right tabular-nums" :class="o.gain > 0 ? 'el-up font-semibold' : 'opacity-70'">
                     {{ signedPct(o.gain, 2) }}
-                    <span class="text-xs opacity-70">({{ o.damageGain >= 0 ? "+" : "" }}{{ compact(o.damageGain) }})</span>
+                    <span class="text-xs opacity-70">({{ o.damageGain >= 0 ? "+" : "" }}{{ compact(o.damageGain) }} per rotation)</span>
                   </span>
                   <span v-if="Math.abs(o.erChange) > 0.05" class="w-full text-xs opacity-60">Energy Regen {{ o.erChange > 0 ? "+" : "" }}{{ o.erChange.toFixed(1) }}</span>
                 </li>

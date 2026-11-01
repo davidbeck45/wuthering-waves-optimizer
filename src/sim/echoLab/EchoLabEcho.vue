@@ -12,13 +12,13 @@
     </div>
     <div class="min-w-0">
       <div class="truncate font-semibold leading-tight" :title="name">{{ name }}</div>
-      <div v-if="subtitle" class="el-echo-sub mt-0.5 flex min-w-0 items-center gap-1 text-xs opacity-70">
-        <img v-if="setImg" :src="setImg" :alt="setName" class="size-3.5 shrink-0" loading="lazy" />
-        <span class="truncate">{{ setName }}</span>
-        <template v-if="main">
-          <span class="opacity-50">·</span>
-          <span class="shrink-0">{{ mainLabel(main) }}</span>
-        </template>
+      <!-- wraps instead of truncating: on a narrow card the main stat drops to its own line and the set keeps its name -->
+      <div v-if="subtitle" class="el-echo-sub mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1 text-xs opacity-70">
+        <span class="flex min-w-0 max-w-full items-center gap-1">
+          <img v-if="setImg" :src="setImg" :alt="setName" class="size-3.5 shrink-0" loading="lazy" />
+          <span class="line-clamp-2 break-words" :title="setName">{{ setName }}</span>
+        </span>
+        <span v-if="main" class="shrink-0 whitespace-nowrap"><span class="opacity-50">· </span>{{ mainLabel(main) }}</span>
       </div>
       <div v-if="lines !== null && lines < 5" class="mt-1 flex items-center gap-0.5" :title="`${lines} of 5 substat lines`">
         <span

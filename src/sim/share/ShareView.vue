@@ -68,17 +68,21 @@
                   <div v-else>
                     Adds build <b>“{{ m.buildName }}”</b>; your active build <span class="whitespace-nowrap">“{{ m.activeBuildName }}”</span> stays as it is.
                   </div>
+                  <!-- each chip names its echo and says what happens to it; a skip reason is printed, not hidden in a tooltip -->
                   <div v-if="m.status !== 'skip'" class="flex flex-wrap gap-1 mt-1.5" aria-label="Echoes">
                     <span
                       v-for="e in m.echoes"
                       :key="e.slot"
-                      class="badge badge-sm gap-1"
+                      class="badge badge-sm h-auto min-h-5 max-w-full gap-1 whitespace-normal py-0.5 text-left"
                       :class="{ 'badge-success badge-outline': e.status === 'owned', 'badge-info badge-outline': e.status === 'new', 'badge-error badge-outline': e.status === 'skipped', 'badge-ghost': e.status === 'empty' }"
                       :title="e.reason ?? ''"
                       :data-test-share-echo-status="e.status">
-                      {{ e.status === "owned" ? "✓ owned" : e.status === "new" ? "+ new" : e.status === "skipped" ? "! skipped" : "empty" }}
+                      {{ echoChipText(e) }}
                     </span>
                   </div>
+                  <ul v-if="m.status !== 'skip' && m.echoes.some((e) => e.status !== 'empty')" class="mt-1 text-xs text-base-content/60" data-test-share-echo-legend>
+                    <li>✓ already in your inventory · + added to your inventory<template v-if="m.echoes.some((e) => e.status === 'skipped')"> · ! left out (slot stays empty)</template></li>
+                  </ul>
                   <ul v-if="m.notes.length" class="mt-1.5 text-xs text-base-content/70 list-disc pl-4">
                     <li v-for="(n, i) in m.notes" :key="i">{{ n }}</li>
                   </ul>
@@ -223,7 +227,8 @@ import { isKnownCharacter, type SharePayload } from "./buildCodec";
 import { cardView, type CardView } from "./cardView";
 import { compactNumber, verifyBuildHeadline } from "./headline";
 import { readShareLink, fragmentOf } from "./link";
-import { applyImport, planImport, type ImportPlan } from "./mergePreview";
+import { applyImport, planImport, type EchoMatch, type ImportPlan } from "./mergePreview";
+import { mainEchoesData } from "../../echoes/index";
 import { readCardFile, type CardRead } from "./readCard";
 
 useDocumentTitle(
@@ -494,6 +499,15 @@ function openBuild() {
 }
 function openTeam() {
   if (pickTeam.value) void sheet.value?.open({ kind: "team", teamId: pickTeam.value });
+}
+
+/** An import-preview echo chip: the echo's name and what happens to it ("Sigillum ✓", "Hecate +", "Lorelei ! reason"). */
+function echoChipText(e: EchoMatch): string {
+  if (e.status === "empty") return `Slot ${e.slot + 1} empty`;
+  const name = e.echo ? (mainEchoesData as Record<string, { name?: string }>)[e.echo.key]?.name ?? e.echo.key : `Slot ${e.slot + 1}`;
+  if (e.status === "owned") return `${name} ✓`;
+  if (e.status === "new") return `${name} +`;
+  return `${name} ! ${e.reason ?? "left out"}`;
 }
 </script>
 

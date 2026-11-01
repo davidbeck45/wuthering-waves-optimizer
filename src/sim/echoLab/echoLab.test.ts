@@ -1,6 +1,6 @@
 // Wuthering Tools+ Echo Lab on a small public test account (Cartethyia from the my-rankings fixture, Galbrena and
 // Zani from upstream's Cypress golden fixtures, plus synthesised echoes whose ids start with "lab").
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import fixture from "./__fixtures__/echoLabAccount.json";
 import { estimateEchoSwapImpact } from "../../echoes/echoImpact";
 import { SUBSTAT_KEYS, maxRoll, type SubstatKey } from "../substats/substatWeights";
@@ -23,6 +23,7 @@ import { accountFingerprint, seededRandom, stableKey } from "./fingerprint";
 import { choose, enumerateOutcomes, outcomeCount, remainingTypes, subsets, tierOdds } from "./rolls";
 import { createEchoLabHost, type EchoLabResponse } from "./workerHost";
 import { createEchoLabClient } from "./echoLabClient";
+import { menuEnergyRegen } from "../energy/energyHave";
 
 const account = fixture as unknown as LabAccount;
 const clone = (): LabAccount => JSON.parse(JSON.stringify(account));
@@ -228,6 +229,58 @@ describe("re-roll advice", () => {
     expect(advice.recommended!.gainPerTransducer).toBe(Math.max(...advice.plans.map((p) => p.gainPerTransducer)));
     expect(advice.lockCostNote).toBe("verify in game");
   }, T);
+});
+
+describe("re-roll advice with an Energy Regen need", () => {
+  // Galbrena's Nimbus Wraith (slot 2) carries an ER 9.2 % line beside dead HP % / DEF % lines
+  const slot = 2;
+  const erField = (r: Awaited<ReturnType<typeof rerollAdvice>>) => r.lines.find((l) => l.key === "EnergyRegen")!;
+  let have: number;
+  let plain: Awaited<ReturnType<typeof rerollAdvice>>;
+  beforeAll(async () => {
+    have = (await menuEnergyRegen("Galbrena", account.characters, account.echoes))!;
+    plain = await rerollAdvice(createLabSession(clone()), "Galbrena", slot, {}, quiet);
+  }, T);
+
+  it("without a need the static engine prices the ER line at nothing and may re-roll it", () => {
+    expect(plain.erNeed).toBeNull();
+    expect(plain.erHave).toBeNull();
+    expect(erField(plain).worth).toBeCloseTo(0, 9);
+    expect(erField(plain).advice).toBe("reroll");
+    expect(erField(plain).erFloor).toBeUndefined();
+  });
+
+  it(
+    "short of the need, the ER line is worth the deficit it closes and is locked; no recommended plan re-rolls it",
+    async () => {
+      const r = await rerollAdvice(createLabSession(clone()), "Galbrena", slot, { erNeed: have + 2 }, quiet);
+      expect(r.erNeed).toBeCloseTo(have + 2, 9);
+      expect(r.erHave).toBeCloseTo(have, 6);
+      const er = erField(r);
+      expect(er).toMatchObject({ advice: "lock", erFloor: true });
+      // without the 9.2 % line the build is 11.2 points short instead of 2: (1 − 0.02) / (1 − 0.112) − 1
+      expect(er.worth).toBeCloseTo(0.98 / 0.888 - 1, 3);
+      expect(er.rank).toBe(5); // re-rolled last, locked first
+      expect(r.recommended?.rerolledFields ?? []).not.toContain(er.field);
+      expect(r.assumptions[r.assumptions.length - 1]).toMatch(/Energy Regen is a floor/);
+      // the other lines keep their ranking order
+      expect(r.lines.slice(0, 4).map((l) => l.key)).toEqual(plain.lines.filter((l) => l.key !== "EnergyRegen").map((l) => l.key));
+    },
+    T,
+  );
+
+  it(
+    "met with room to spare, the hard rule still locks an ER line the build can't lose without falling short",
+    async () => {
+      const met = await rerollAdvice(createLabSession(clone()), "Galbrena", slot, { erNeed: have - 5 }, quiet);
+      expect(erField(met)).toMatchObject({ advice: "lock", erFloor: true });
+      const free = await rerollAdvice(createLabSession(clone()), "Galbrena", slot, { erNeed: have - 30 }, quiet);
+      expect(erField(free).erFloor).toBeUndefined();
+      expect(erField(free).advice).toBe("reroll");
+      expect(free.lines.map((l) => [l.key, l.rank, l.advice])).toEqual(plain.lines.map((l) => [l.key, l.rank, l.advice]));
+    },
+    T,
+  );
 });
 
 describe("benchmark score", () => {

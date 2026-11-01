@@ -63,6 +63,13 @@ html[data-theme-style="light"] .el-chip--reroll {
 .el-up {
   color: oklch(var(--su));
 }
+/* a build short of its Energy Regen need */
+.el-er-short {
+  color: oklch(var(--er));
+}
+html[data-theme-style="light"] .el-er-short {
+  color: color-mix(in oklch, oklch(var(--er)) 70%, black);
+}
 .el-dot--keep {
   background: oklch(var(--su));
 }
@@ -363,18 +370,21 @@ html[data-theme-style="light"] .el-score-text--good {
     justify-self: end;
     max-width: 40%;
   }
+  /* the reason wraps to two lines rather than cut to "Backup, withi…" */
   .el-reason-card {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.2;
+    text-align: right;
   }
   .el-cell-set,
   .el-cell-cost,
   .el-cell-main {
     display: none;
   }
-  .el-cell-card,
-  .el-reason-card {
+  .el-cell-card {
     display: block;
   }
   .el-reason {
@@ -401,5 +411,61 @@ html[data-theme-style="light"] .el-score-text--good {
 @media (max-width: 639px) {
   .echo-lab__tabs > :last-child:nth-child(odd) {
     grid-column: span 2 / span 2;
+  }
+}
+
+/* ── the benchmark row detail (yours / reference / perfect per substat): below sm each substat is two lines, the
+   name across the card, then the three values under one header row — the four-column table ran 372 px in a 323 px
+   box at 360 px and ran its headers together at 412 (2026-10-31 audit H3) ── */
+@media (max-width: 639px) {
+  .el-spread,
+  .el-spread thead,
+  .el-spread tbody {
+    display: block;
+  }
+  .el-spread tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 0.5rem;
+  }
+  .el-spread td:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 0;
+  }
+  .el-spread th:first-child {
+    display: none;
+  }
+  .el-spread td:not(:first-child) {
+    padding-top: 0;
+    white-space: nowrap;
+    font-size: 0.7rem;
+  }
+  .el-spread th,
+  .el-spread td:not(:first-child) {
+    text-align: right;
+  }
+}
+
+/* the re-roll card's "All lock plans" table: five numeric columns with wrapping two-word headers */
+.reroll__plans th {
+  white-space: normal;
+}
+.reroll__plans td {
+  padding-block: 0.1rem;
+}
+
+/* phone tap targets (2026-10-31 audit L6): xs buttons (the (i) panels, Copy list, Show groups, Show) and the "All lock
+   plans" summary were 26–31 px tall; 2.5 rem at the phone's text size */
+@media (max-width: 767px) {
+  .echo-lab .btn-xs {
+    min-height: 2.5rem;
+    height: auto;
+  }
+  .echo-lab .btn-xs.btn-circle,
+  .echo-lab .btn-xs.btn-square {
+    width: 2.5rem;
+  }
+  .echo-lab summary {
+    padding-block: 0.6rem;
   }
 }

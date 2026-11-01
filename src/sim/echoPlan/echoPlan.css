@@ -157,3 +157,11 @@ html[data-theme-style="light"] .ep-badge--thrown {
     padding: 0.15rem 0.6rem;
   }
 }
+
+/* phone tap targets (2026-10-31 audit L6): the toolbar's xs buttons ("Mark all 26 done") were 31 px tall */
+@media (max-width: 767px) {
+  .ep-tap.btn {
+    min-height: 2.5rem;
+    height: auto;
+  }
+}

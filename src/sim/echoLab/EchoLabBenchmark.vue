@@ -46,8 +46,8 @@
         <div class="bench-row__who flex min-w-0 items-center gap-3">
           <img :src="portrait(r.characterId)" :alt="characterName(r.characterId)" class="el-portrait size-10" loading="lazy" />
           <div class="min-w-0">
-            <div class="flex min-w-0 items-center gap-1.5">
-              <span class="truncate font-semibold">{{ characterName(r.characterId) }}</span>
+            <div class="flex min-w-0 flex-wrap items-center gap-x-1.5">
+              <span class="min-w-0 max-w-full truncate font-semibold">{{ characterName(r.characterId) }}</span>
               <EnergyChip v-if="r.erNeed != null" :check="checkOf(r.erNeed, r.erHave)" :character-id="r.characterId" label="ER" mini note="Scores count Energy Regen up to this need (damage × (1 − ER deficit))" data-test-echo-lab-benchmark-er />
             </div>
             <div class="truncate text-xs opacity-60" :title="r.rotationName">{{ r.rotationName }}</div>
@@ -63,10 +63,16 @@
           <div class="font-mono text-2xl font-extrabold tabular-nums leading-none" :class="`el-score-text--${scoreBand(r.score)}`" data-test-echo-lab-benchmark-score>
             {{ r.score === null ? "—" : pct(r.score, 0) }}
           </div>
-          <div class="mt-1 text-[0.7rem] tabular-nums opacity-60">{{ compact(r.D) }} vs R {{ compact(r.R) }}</div>
+          <div class="mt-1 text-[0.7rem] tabular-nums opacity-60 max-md:hidden">{{ compact(r.D) }} vs R {{ compact(r.R) }}</div>
+          <div v-if="erShort(r)" class="text-[0.7rem] leading-tight opacity-60 max-md:hidden" data-test-echo-lab-benchmark-er-adjusted>ER-adjusted</div>
+        </div>
+        <!-- phones: the damage line under the bar, in words (beside the score it squeezed the name to "A…") -->
+        <div class="bench-row__dmg text-xs tabular-nums opacity-70 md:hidden" data-test-echo-lab-benchmark-dmg>
+          Your build {{ compact(r.D) }} vs reference {{ compact(r.R) }} per rotation<template v-if="erShort(r)"> (ER-adjusted)</template>
         </div>
         <div v-if="open === r.characterId" class="bench-row__detail cursor-default" @click.stop>
-          <table class="w-full max-w-3xl text-sm tabular-nums">
+          <!-- below sm each substat takes two lines: its name, then yours · reference · perfect under one header row -->
+          <table class="el-spread w-full max-w-3xl text-sm tabular-nums" data-test-echo-lab-benchmark-spread>
             <thead>
               <tr class="text-[0.65rem] uppercase tracking-wide opacity-60">
                 <th class="pb-1 text-left font-semibold">Substat</th>
@@ -78,8 +84,8 @@
             <tbody>
               <tr v-for="s in spreadRows(r)" :key="s.key" class="border-t border-base-200">
                 <td class="py-1">
-                  <span class="flex items-center gap-1.5">
-                    <img v-if="substatIcon(s.key)" :src="substatIcon(s.key) ?? undefined" alt="" class="el-icon" loading="lazy" />{{ s.label }}
+                  <span class="flex min-w-0 items-center gap-1.5">
+                    <img v-if="substatIcon(s.key)" :src="substatIcon(s.key) ?? undefined" alt="" class="el-icon" loading="lazy" /><span class="min-w-0 truncate">{{ s.label }}</span>
                     <span v-if="r.named.includes(s.key)" class="badge badge-ghost badge-xs">valued</span>
                   </span>
                 </td>
@@ -89,7 +95,9 @@
               </tr>
             </tbody>
           </table>
-          <p class="mt-2 text-xs opacity-60">Rolls × the value of one roll (yours: the average of your lines). Damage per rotation: B {{ compact(r.B) }} · R {{ compact(r.R) }} · P {{ compact(r.P) }} · you {{ compact(r.D) }}.</p>
+          <p class="mt-2 text-xs opacity-60">
+            Rolls × the value of one roll (yours: the average of your lines). Damage per rotation: B {{ compact(r.B) }} · R {{ compact(r.R) }} · P {{ compact(r.P) }} · you {{ compact(r.D) }}<template v-if="erShort(r)">, ER-adjusted (your build is {{ checkOf(r.erNeed, r.erHave).short.toFixed(1) }} points short of its Energy Regen need, so its damage counts about {{ checkOf(r.erNeed, r.erHave).short.toFixed(1) }}% lower)</template>.
+          </p>
         </div>
       </li>
     </ul>
@@ -117,12 +125,15 @@ const props = defineProps<{ result: BenchmarkBatchResult | null; status: JobStat
 const emit = defineEmits<{ (e: "run", force: boolean): void }>();
 const open = ref<string | null>(null);
 
+/** the build is short of the ER need its score respects: its damage figure is the deficit-adjusted one */
+const erShort = (r: BenchmarkResult): boolean => r.erNeed != null && checkOf(r.erNeed, r.erHave).status === "short";
+
 const rows = computed<BenchmarkResult[]>(() => [...(props.result?.results ?? [])].sort((a, b) => (b.score ?? -1) - (a.score ?? -1)));
 
 const cell = (line: SpreadLine | undefined): string => {
   if (!line) return "—";
   const v = isFlatSubstat(line.key) ? Math.round(line.total) : `${(Math.round(line.total * 10) / 10).toFixed(1)}%`;
-  return `${line.rolls}× · ${v}`;
+  return `${line.rolls}× ${v}`;
 };
 function spreadRows(r: BenchmarkResult): Array<{ key: SubstatKey; label: string; yours: string; reference: string; perfect: string }> {
   const find = (list: SpreadLine[], key: SubstatKey): SpreadLine | undefined => list.find((l) => l.key === key);
@@ -150,8 +161,13 @@ function spreadRows(r: BenchmarkResult): Array<{ key: SubstatKey; label: string;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "who score"
-      "bar bar";
+      "bar bar"
+      "dmg dmg";
     gap: 0.6rem;
+  }
+  .bench-row__dmg {
+    grid-area: dmg;
+    margin-top: -0.3rem;
   }
   .bench-row__who {
     grid-area: who;

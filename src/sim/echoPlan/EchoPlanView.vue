@@ -224,10 +224,10 @@
           <span class="flex items-center gap-1"><span class="ep-chip ep-chip--discard pointer-events-none !min-h-0 py-0">Discard</span> nobody wants it</span>
           <span class="flex items-center gap-1"><span class="relative inline-block size-2 rounded-full bg-primary"></span> set by you</span>
           <span class="max-sm:hidden">Tap a chip for who wants it.</span>
-          <button v-if="progress.toUpdate.length" type="button" class="btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-mark-all @click="markAllDone">
+          <button v-if="progress.toUpdate.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-mark-all @click="markAllDone">
             Mark all {{ progress.toUpdate.length }} done
           </button>
-          <button v-else-if="progress.done.length" type="button" class="btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-clear-ticks @click="clearTicks">
+          <button v-else-if="progress.done.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-clear-ticks @click="clearTicks">
             Clear ticks
           </button>
         </div>
@@ -264,7 +264,7 @@
 
         <template v-if="shownDone.length">
           <h2 class="mt-5 mb-2 flex items-baseline gap-2 text-sm font-semibold">
-            Set in game <span class="font-normal opacity-60">· {{ shownDone.length }} ticked — a card comes back up here if its plan changes</span>
+            <span class="shrink-0 whitespace-nowrap">Set in game</span> <span class="font-normal opacity-60">· {{ shownDone.length }} ticked — a card comes back up here if its plan changes</span>
           </h2>
           <section class="grid items-start gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-test-echo-plan-done-list>
             <SonataCard v-for="c in shownDone" :key="c.set" :card="c" :progress="progress.cards[c.set]!" @chip="openChip" @toggle-done="toggleDone" />
@@ -273,7 +273,7 @@
 
         <template v-if="shownOff.length">
           <h2 class="mt-5 mb-2 flex items-baseline gap-2 text-sm font-semibold">
-            No plan <span class="font-normal opacity-60">· nobody on your roster uses these — leave them off in game</span>
+            <span class="shrink-0 whitespace-nowrap">No plan</span> <span class="font-normal opacity-60">· nobody on your roster uses these — leave them off in game</span>
           </h2>
           <section class="grid items-start gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-test-echo-plan-off>
             <SonataCard v-for="c in shownOff" :key="c.set" :card="c" :progress="progress.cards[c.set]!" @chip="openChip" @toggle-done="toggleDone" />

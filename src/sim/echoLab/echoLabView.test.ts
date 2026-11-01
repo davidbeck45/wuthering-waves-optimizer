@@ -6,16 +6,21 @@ import { createLabSession, type LabAccount } from "./core";
 import { bestOwners, type BestOwnerResult } from "./bestOwner";
 import { engineView } from "./engineView";
 import { rerollAdvice, type LockPlan } from "./rerollAdvice";
-import { MIN_PLAN_GAIN, pickRerollFirst } from "./rerollPick";
+import { MIN_PLAN_GAIN, pickRerollFirst, rerollOptionsFor } from "./rerollPick";
+import { benchmarkMany } from "./pass";
+import { menuEnergyRegen } from "../energy/energyHave";
 import {
   DEFAULT_FILTERS,
   activeFilterCount,
+  erFloorLine,
   applyFilters,
   feedGroups,
   feedListText,
   lineTier,
   reasonText,
   scoreBand,
+  setLabel,
+  setNames,
   sortRows,
   worthwhilePlan,
 } from "./echoLabView";
@@ -75,6 +80,36 @@ describe("re-roll first (pickRerollFirst)", () => {
   }, T);
 });
 
+describe("the calculator panel and the Echo Lab tabs agree under an Energy Regen need", () => {
+  it(
+    "the engine view's benchmark equals the benchmark tab's, and its re-roll pick equals the tab's ER-aware advice",
+    async () => {
+      const have = (await menuEnergyRegen("Galbrena", account.characters, account.echoes))!;
+      const erNeeds = { Galbrena: have + 4, Zani: 150 };
+      // the tab: one benchmark job for every built character with every need; the re-roll tab: one job per echo
+      const tab = await benchmarkMany(createLabSession(account), ["Galbrena"], { erNeeds }, quiet);
+      const view = await engineView(createLabSession(account), "Galbrena", { erNeeds }, quiet);
+      const plain = await engineView(createLabSession(account), "Galbrena", {}, quiet);
+      const bench = tab.results[0];
+      expect(view.benchmark).toMatchObject({ score: bench.score, D: bench.D, R: bench.R, erNeed: bench.erNeed, erHave: bench.erHave });
+      expect(view.benchmark!.erNeed).toBeCloseTo(have + 4, 9);
+      expect(view.benchmark!.D).toBeCloseTo(plain.benchmark!.D * 0.96, 0); // 4 points short: damage × 0.96
+      expect(plain.benchmark!.erNeed).toBeNull();
+
+      expect(rerollOptionsFor(erNeeds, "Galbrena")).toEqual({ erNeed: have + 4 });
+      expect(rerollOptionsFor(erNeeds, "Cartethyia")).toEqual({});
+      const advices = [];
+      for (const e of view.echoes.filter((x) => x.lines >= 5)) advices.push(await rerollAdvice(createLabSession(account), "Galbrena", e.slot, rerollOptionsFor(erNeeds, "Galbrena"), quiet));
+      const pick = pickRerollFirst(advices);
+      expect(view.rerollFirst?.slot).toBe(pick?.slot);
+      expect(view.rerollFirst?.recommended).toEqual(pick?.recommended);
+      // no ER line the build needs is ever named as the line to re-roll
+      expect(view.rerollFirst?.line?.key).not.toBe("EnergyRegen");
+    },
+    T,
+  );
+});
+
 describe("the inventory verdict view model", () => {
   let cached: BestOwnerResult | null = null;
   const result = async (): Promise<BestOwnerResult> => (cached ??= await bestOwners(createLabSession(account), {}, quiet));
@@ -127,6 +162,24 @@ describe("the inventory verdict view model", () => {
     expect(text).toContain(`${feeds.length} echo`);
     for (const row of echoes) expect(reasonText(row)).toMatch(/\S/);
   }, T);
+
+  it("names a Sonata as the game writes it and finds it by either name", async () => {
+    expect(setLabel("HavocEclipse")).toBe("Sun-sinking Eclipse");
+    expect(setNames("HavocEclipse")).toEqual(["Sun-sinking Eclipse", "Havoc Eclipse"]);
+    expect(setNames("MoonlitClouds")).toEqual([setLabel("MoonlitClouds")]);
+    const { echoes } = await result();
+    // one row moved onto the Havoc set: the search finds it by the in-game and the calculator name alike
+    const row = { ...echoes[0], set: "HavocEclipse" };
+    for (const search of ["Sun-sinking", "sun-sinking eclipse", "Havoc Eclipse"]) expect(applyFilters([row], { ...DEFAULT_FILTERS, search })).toHaveLength(1);
+    expect(feedListText([{ cost: 3, set: "HavocEclipse", main: "Havoc", count: 2, echoIds: ["a", "b"] }])).toContain("2 × Cost 3 · Sun-sinking Eclipse · Havoc DMG main");
+  }, T);
+
+  it("says a build's Energy Regen against its need in one plain sentence", () => {
+    expect(erFloorLine(null, 110.8)).toBeNull();
+    expect(erFloorLine(115.2, 110.8)).toEqual({ text: "Energy Regen 110.8% of the 115.2% its team needs: 4.4 short, so its damage counts about 4.4% lower.", short: true });
+    expect(erFloorLine(115.2, 125)).toEqual({ text: "Energy Regen 125.0% meets the 115.2% its team needs.", short: false });
+    expect(erFloorLine(115.2, null)?.short).toBe(false);
+  });
 
   it("colours a line by its worth against one expected roll of the build's best substat", () => {
     const perPoint = { CritRate: 0.01, CritDMG: 0.005, DEF_FLAT: 0 };

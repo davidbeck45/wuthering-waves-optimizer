@@ -65,9 +65,10 @@
           v-for="k in kpis"
           :key="k.id"
           type="button"
-          class="min-w-0 rounded-box border border-base-300 bg-base-100 px-3 py-2.5 text-left transition-colors max-sm:px-2.5 max-sm:py-2"
-          :class="k.verdict ? 'hover:border-base-content/30' : 'cursor-default'"
+          class="min-w-0 rounded-box border bg-base-100 px-3 py-2.5 text-left transition-colors max-sm:px-2.5 max-sm:py-2"
+          :class="[k.verdict ? 'hover:border-base-content/30' : 'cursor-default', kpiOn(k.verdict) ? 'border-primary ring-2 ring-primary/40' : 'border-base-300']"
           :title="k.verdict ? `Show the ${k.label.toLowerCase()} verdicts` : undefined"
+          :aria-pressed="k.verdict ? kpiOn(k.verdict) : undefined"
           :data-test-echo-lab-kpi="k.id"
           @click="k.verdict && showVerdict(k.verdict)">
           <div class="flex items-center gap-1.5 truncate text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">
@@ -140,7 +141,7 @@
 // Wuthering Tools+ Echo Lab — the /echo-lab page: the engine-backed echo decisions (src/sim/echoLab/, run in a Web
 // Worker) in four views — inventory verdicts, Tune or Feed, the re-roll advisor and the build benchmark. Header
 // KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and the classic UI.
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
@@ -192,9 +193,20 @@ watch(tab, (t) => {
 });
 
 const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS });
-function showVerdict(verdict: EchoVerdictKind): void {
+/** a Keep / Spare / Feed KPI is on while the verdict list shows that verdict */
+const kpiOn = (verdict: EchoVerdictKind | null): boolean => !!verdict && tab.value === "verdicts" && filters.value.verdict === verdict;
+async function showVerdict(verdict: EchoVerdictKind): Promise<void> {
   filters.value = { ...DEFAULT_FILTERS, verdict };
   tab.value = "verdicts";
+  // the list starts a screen or more below the KPIs on a phone: bring it up so the tap visibly does something
+  await nextTick();
+  const list = document.querySelector<HTMLElement>("[data-test-echo-lab-verdicts]");
+  if (!list) return;
+  const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+  const top = list.getBoundingClientRect().top;
+  if (top > navH && top < window.innerHeight * 0.45) return; // already in view near the top
+  const reduce = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: Math.max(0, window.scrollY + top - navH - 8), behavior: reduce ? "auto" : "smooth" });
 }
 
 const counts = computed(() => pass.value?.bestOwner.counts ?? { keep: 0, spare: 0, feed: 0 });
@@ -240,7 +252,7 @@ function phaseFill(i: number): string {
 
 const ctas = [
   { id: "import", to: "/settings", title: "Import your data", text: "Restore a Wuthering Tools export under Settings › Backup & Restore." },
-  { id: "scan", to: "/inventory", title: "Scan or add echoes", text: "Inventory › Import echoes: PC screenshots, phone screenshots or a shared album." },
+  { id: "scan", to: "/inventory?open=import", title: "Scan or add echoes", text: "Inventory › Import echoes: PC screenshots, phone screenshots or a shared album." },
   { id: "build", to: "/", title: "Build a character", text: "Pick a weapon and equip five echoes in the calculator." },
 ];
 

@@ -41,7 +41,7 @@
       :aria-label="`Show the ${card.name} grid`"
       :data-test-echo-plan-expand="card.set"
       @click="expanded = true">
-      Grid
+      Show grid
     </button>
   </article>
 

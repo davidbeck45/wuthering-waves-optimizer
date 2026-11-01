@@ -40,6 +40,8 @@ import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
 import { shareRequest } from "../share/shareRequest";
 import { dismissWelcome, isNewVisitor, welcomeAllowed, welcomeDismissed } from "./welcome";
+import { foldInventoryFiltersOnPhone, installInventoryPagerJump } from "./inventoryPager";
+import { useSettingsStore } from "../../stores/settings";
 
 const AssistantPanel = defineAsyncComponent(() => import("../ai/ui/AssistantPanel.vue"));
 const AiSettingsDialog = defineAsyncComponent(() => import("../ai/ui/AiSettingsDialog.vue"));
@@ -150,9 +152,20 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
+// the inventory's Filters panel starts folded on a phone until the player toggles it (inventoryPager.ts)
+watch(
+  () => route.path,
+  (path) => {
+    if (typeof document === "undefined") return;
+    if (path === "/inventory") foldInventoryFiltersOnPhone(useSettingsStore() as never);
+  },
+  { immediate: true },
+);
+
 let stopBodyObserver: (() => void) | null = null;
 
 onMounted(() => {
+  installInventoryPagerJump();
   window.addEventListener("keydown", onKeydown, true);
   observer = new MutationObserver(syncModal);
   // dialogs anywhere toggle `open`; bottom sheets are teleported straight into <body>

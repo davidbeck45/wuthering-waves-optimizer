@@ -8,12 +8,15 @@ import { SUBSTAT_LABELS, SUBSTAT_SHORT_LABELS, equippedSubstatWorth, substatWeig
 import { benchmarkScore } from "./benchmarkScore";
 import { isCancelled, makePacer, prepareCharacter, scoreBuild, type LabSession, type RunControl } from "./core";
 import { rerollAdvice, type LineAdvice, type LockPlan, type RerollAdviceResult } from "./rerollAdvice";
-import { pickRerollFirst } from "./rerollPick";
+import { pickRerollFirst, rerollOptionsFor } from "./rerollPick";
 
 export interface EngineViewOptions {
   /** also run the Transducer advice on every full echo and pick the one to re-roll first (default true; the costly
    * part — the calculator panel runs it as separate `reroll` jobs instead, so its first numbers show sooner) */
   reroll?: boolean;
+  /** per character, the ER need (%) of their saved teams (`erNeedsOf(useEnergyNeeds())`): the benchmark and the
+   *  re-roll advice respect it exactly as the Echo Lab tabs do, so the panel and the tabs show the same numbers */
+  erNeeds?: Record<string, number>;
 }
 
 export interface EngineSubstat {
@@ -44,7 +47,17 @@ export interface EngineViewResult {
   rotationName: string;
   rotationSource: string;
   base: number;
-  benchmark: { score: number | null; rawScore: number | null; D: number; B: number; R: number; P: number } | null;
+  benchmark: {
+    score: number | null;
+    rawScore: number | null;
+    D: number;
+    B: number;
+    R: number;
+    P: number;
+    /** the ER floor the score respects (%), null without one; the ER the build has (%) */
+    erNeed: number | null;
+    erHave: number | null;
+  } | null;
   /** why there is no benchmark (fewer than five echoes, say) */
   benchmarkNote: string | null;
   /** every substat, best first */
@@ -68,6 +81,10 @@ export interface EngineViewResult {
 
 const now = (): number => (typeof performance !== "undefined" ? performance.now() : Date.now());
 
+/** One character's entry of an `erNeeds` record (undefined without one, so a job's cache key stays `{}`). */
+const needOnly = (needs: Record<string, number> | undefined, id: string): Record<string, number> | undefined =>
+  needs?.[id] != null ? { [id]: needs[id] } : undefined;
+
 export async function engineView(session: LabSession, characterId: string, options: EngineViewOptions = {}, control: RunControl = {}): Promise<EngineViewResult> {
   const started = now();
   const startScorings = session.scorings;
@@ -86,8 +103,8 @@ export async function engineView(session: LabSession, characterId: string, optio
   let benchmark: EngineViewResult["benchmark"] = null;
   let benchmarkNote: string | null = null;
   try {
-    const b = await benchmarkScore(session, characterId, {}, control);
-    benchmark = { score: b.score, rawScore: b.rawScore, D: b.D, B: b.B, R: b.R, P: b.P };
+    const b = await benchmarkScore(session, characterId, { erNeeds: needOnly(options.erNeeds, lab.id) }, control);
+    benchmark = { score: b.score, rawScore: b.rawScore, D: b.D, B: b.B, R: b.R, P: b.P, erNeed: b.erNeed, erHave: b.erHave };
     if (b.score === null) benchmarkNote = "Substats do not move this rotation";
   } catch (err) {
     if (isCancelled(err)) throw err;
@@ -124,7 +141,7 @@ export async function engineView(session: LabSession, characterId: string, optio
   else {
     // the same pick as the Echo Lab's re-roll tab: every full echo's advice, the best plan per Transducer
     const advices: RerollAdviceResult[] = [];
-    for (const e of full) advices.push(await rerollAdvice(session, characterId, e.slot, {}, control));
+    for (const e of full) advices.push(await rerollAdvice(session, characterId, e.slot, rerollOptionsFor(options.erNeeds, lab.id), control));
     const pick = pickRerollFirst(advices);
     if (!pick) rerollNote = "No re-roll is expected to gain even 0.05 % on any echo";
     else {

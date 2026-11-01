@@ -23,6 +23,10 @@ import {
 } from "./core";
 import { seededRandom, stableKey } from "./fingerprint";
 import { outcomeKey, sampleOutcome, tierOdds, type NewLine } from "./rolls";
+// Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
+import { menuEnergyRegen } from "../energy/energyHave";
+import { showNeed, shortBy } from "../energy/energyNeed";
+import { erFactorFor } from "../energy/erAwareScorer";
 
 /** Transducers per re-roll by the number of locked lines (index 0-4) — verify in game. */
 export const DEFAULT_LOCK_COSTS: readonly number[] = [1, 1, 1, 2, 3];
@@ -42,6 +46,10 @@ export interface RerollOptions {
   /** samples for the plans that re-roll two or more lines (default 20000; no engine call per sample) */
   samples?: number;
   seed?: number | string;
+  /** the character's ER need (%) in their saved teams (`erNeedsOf(useEnergyNeeds())[id]`): every line set scores
+   *  damage × (1 − ER deficit), so an Energy Regen line the build needs is worth what its deficit costs, and an ER
+   *  line whose loss would drop the build under the need is always locked */
+  erNeed?: number;
 }
 
 export interface LineAdvice {
@@ -57,6 +65,8 @@ export interface LineAdvice {
   /** 1 = the line to re-roll first */
   rank: number;
   advice: "lock" | "reroll";
+  /** an Energy Regen line the build needs to stay at its ER need: locked whatever the numbers say */
+  erFloor?: boolean;
 }
 
 export interface LockPlan {
@@ -94,6 +104,9 @@ export interface RerollAdviceResult {
   lockCostNote: string;
   assumptions: readonly string[];
   scorings: number;
+  /** the ER floor the advice respects (%), null without one; the ER the build has (%) */
+  erNeed: number | null;
+  erHave: number | null;
 }
 
 // the threshold and the "re-roll first" pick live in rerollPick.ts (no engine imports, so the page can use them)
@@ -153,18 +166,24 @@ async function computeRerollAdvice(
   const canRepeat = options.canRepeat ?? true;
   const samples = Math.max(1000, Math.floor(options.samples ?? 20000));
   const startScorings = session.scorings;
+  // with an ER need every score is damage × (1 − ER deficit): `base` below is the build's score on that scale
+  const erNeed = options.erNeed != null && Number.isFinite(options.erNeed) && options.erNeed > 0 ? options.erNeed : null;
+  const erFactor = erFactorFor(lab.id, erNeed);
+  const erHave = erFactor ? await menuEnergyRegen(lab.id, session.account.characters, session.account.echoes) : null;
+  const base = erFactor ? lab.base * (await erFactor(session.account.characters, session.account.echoes)) : lab.base;
 
   // engine scoring of the echo with a given set of lines in this slot, memoised by the line set
   const memo = new Map<string, number>();
   const asLines = (list: Array<{ key: string; value: number }>): NewLine[] => list.map((l) => ({ key: l.key as SubstatKey, value: l.value }));
-  memo.set(outcomeKey(asLines(lines)), lab.base);
+  memo.set(outcomeKey(asLines(lines)), base);
   let work = 0;
   const scoreLines = async (list: Array<{ key: string; value: number }>): Promise<number> => {
     const key = outcomeKey(asLines(list));
     const hit = memo.get(key);
     if (hit !== undefined) return hit;
     const clone = withSlotRecord(session, lab, slot, withLines(own.record, list));
-    const avg = await scoreBuild(session, lab, clone.characters, clone.echoes);
+    const raw = await scoreBuild(session, lab, clone.characters, clone.echoes);
+    const avg = erFactor ? raw * (await erFactor(clone.characters, clone.echoes)) : raw;
     memo.set(key, avg);
     work += 1;
     await pace({ phase: "reroll", done: work, total: 750, label: lab.name });
@@ -189,14 +208,27 @@ async function computeRerollAdvice(
       for (let i = 0; i < odds.values.length; i++) {
         const p = odds.probs[i] / pool.length;
         fresh += p * relGain(without, scores[i]);
-        table.push([relGain(lab.base, scores[i]), p]);
+        table.push([relGain(base, scores[i]), p]);
       }
     }
-    const worth = relGain(without, lab.base);
+    const worth = relGain(without, base);
     tables.set(line.field, table);
-    perLine.push({ field: line.field, key: line.key, value: line.value, worth, freshWorth: fresh, delta: fresh - worth, rank: 0, advice: fresh > worth ? "reroll" : "lock" });
+    // the hard rule: an ER line the build can't lose without falling under its need is never re-rolled
+    const erFloor = line.key === "EnergyRegen" && erNeed != null && erHave != null && shortBy(erNeed, erHave - line.value) > 0;
+    perLine.push({
+      field: line.field,
+      key: line.key,
+      value: line.value,
+      worth,
+      freshWorth: fresh,
+      delta: fresh - worth,
+      rank: 0,
+      advice: fresh > worth && !erFloor ? "reroll" : "lock",
+      ...(erFloor ? { erFloor: true } : {}),
+    });
   }
-  const order = [...perLine].sort((a, b) => b.delta - a.delta || a.field - b.field);
+  // lines the ER floor locks go last (re-rolled last, locked first by every plan)
+  const order = [...perLine].sort((a, b) => Number(!!a.erFloor) - Number(!!b.erFloor) || b.delta - a.delta || a.field - b.field);
   order.forEach((l, i) => (l.rank = i + 1));
 
   // 2. per lock count: lock the lines most worth keeping, re-roll the rest
@@ -213,7 +245,7 @@ async function computeRerollAdvice(
       pairs = tables.get(rerolled[0].field) ?? [[0, 1]];
     } else {
       method = "additive";
-      pairs = await additivePlan(locked, rerolled, { scoreLines, base: lab.base, canRepeat, samples, seed: options.seed ?? `${own.echoId ?? lab.id}|${slot}|${locks}` });
+      pairs = await additivePlan(locked, rerolled, { scoreLines, base, canRepeat, samples, seed: options.seed ?? `${own.echoId ?? lab.id}|${slot}|${locks}` });
     }
     const total = pairs.reduce((s, [, w]) => s + w, 0) || 1;
     const pImprove = pairs.reduce((s, [g, w]) => s + (g > 1e-12 ? w : 0), 0) / total;
@@ -233,7 +265,9 @@ async function computeRerollAdvice(
       transducersPerSuccess: pImprove > 0 ? cost / pImprove : null,
     });
   }
-  const paying = plans.filter((p) => p.expectedGain >= MIN_PLAN_GAIN);
+  // a plan that re-rolls an ER line the floor needs is never recommended
+  const floorFields = new Set(perLine.filter((l) => l.erFloor).map((l) => l.field));
+  const paying = plans.filter((p) => p.expectedGain >= MIN_PLAN_GAIN && !p.rerolledFields.some((f) => floorFields.has(f)));
   const recommended = paying.length ? [...paying].sort((a, b) => b.gainPerTransducer - a.gainPerTransducer || a.cost - b.cost || b.locks - a.locks)[0] : null;
 
   return {
@@ -247,10 +281,16 @@ async function computeRerollAdvice(
     plans,
     recommended,
     lockCostNote: "verify in game",
-    assumptions: REROLL_ASSUMPTIONS,
+    assumptions: erNeed != null ? [...REROLL_ASSUMPTIONS, rerollErNote(erNeed)] : REROLL_ASSUMPTIONS,
     scorings: session.scorings - startScorings,
+    erNeed,
+    erHave,
   };
 }
+
+/** The assumption line the advice adds when it respects an ER need. */
+export const rerollErNote = (need: number): string =>
+  `Energy Regen is a floor: ${showNeed(need).toFixed(1)}% is this character's need in their saved teams. Every line is scored as damage × (1 − ER deficit), and an Energy Regen line the build can't lose without falling under the need is always locked.`;
 
 export interface AdditiveDeps {
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type

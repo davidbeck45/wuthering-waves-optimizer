@@ -1203,3 +1203,123 @@ body:has(.nav-phone-header) :is(.acc-h1, .mr-h1, .wv-h1, .bt-h1) {
     min-height: 40px;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   25. The inventory on a phone (Inventory.vue, InventoryEchoesBrowser.vue, the v3 tiles
+       InventoryEchoTile.vue / CalculatorEchoTile.vue; 2026-10-31 audit M6). At 412 px and 130 %
+       text the page padded 41.6 px a side (`p-8`), and the tile's shrink-0 Edit / Duplicate /
+       Delete column sat beside the substat list and left it ~150 px: 73 of 100 substat labels
+       were cut ("Crit …" for both crit stats). The action column moves under the substats as one
+       wrapping row (column-reverse keeps Ryan's DOM order), the page pads 0.75 rem, and the top
+       pager sticks under the nav so a 250-echo inventory can be paged from anywhere (a tap on
+       a pager scrolls the list back to its first echo: src/sim/shell/inventoryPager.ts). */
+@media (max-width: 767px) {
+  .inventory__content.p-8 {
+    padding: 0.75rem;
+  }
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .btn,
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > span > .btn {
+    min-height: 2.25rem;
+  }
+  /* Duplicate and Odds keep their icon (the label stays for screen readers) so the row and the equipped-by
+     portraits share one line */
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .btn[data-test-echo-action-duplicate],
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .btn[data-test-echo-action-odds] {
+    gap: 0;
+    padding-inline: 0.7rem;
+    font-size: 0;
+  }
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .btn[data-test-echo-action-duplicate] svg,
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .btn[data-test-echo-action-odds] svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .echo__tile .card-body > .flex.items-start.gap-3.mt-2 > .flex-col.shrink-0 > .avatar-group {
+    margin-top: 0;
+    margin-left: auto;
+  }
+  .echoes__list__pagination .join {
+    flex-wrap: nowrap;
+  }
+  .echoes__list__pagination .join-item.btn {
+    min-width: 2rem;
+    padding-inline: 0.3rem;
+  }
+  /* the inventory page only: the classic calculator's echo browser (CalculatorEchoesBrowser.vue) uses the same
+     pager classes inside its modal, where a pager stuck at --nav-h would float mid-sheet */
+  .inventory__content .echoes__list__pagination:has(+ .echoes__list__items) {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 20;
+    margin-inline: -0.75rem;
+    padding: 0.4rem 0.75rem;
+    background: oklch(var(--b1) / 0.94);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 1px 0 oklch(var(--bc) / 0.08);
+  }
+}
+/* below 400 px nine pager buttons don't fit one row: the first / last jumps go (the five numbered pages stay) */
+@media (max-width: 399px) {
+  .echoes__list__pagination .join-item.btn[aria-label="First page"],
+  .echoes__list__pagination .join-item.btn[aria-label="Last page"] {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   26. The calculator's v3 Echoes screen on a phone (2026-10-31 audit L5): the Set Bonuses header
+       (CalculatorEchoSetBonusPanel.vue) put its title and the "Auto | Manual override" join on one
+       row that ran to 450 px at 412 (the join was clipped); the rating guide's worked-example table
+       (CalculatorEchoRatingGuide.vue, "Points for this character") was 400 px wide at 360. The
+       header wraps with the join under the title, and the guide's table lays out fixed and wraps. */
+@media (max-width: 639px) {
+  [data-test-echo-set-bonus-panel] > .flex.items-end.justify-between {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  [data-test-echo-set-bonus-panel] [data-test-set-override-toggle] .btn {
+    min-height: 2.25rem;
+  }
+  #modal-echo-rating-guide table.table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  #modal-echo-rating-guide table.table th,
+  #modal-echo-rating-guide table.table td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    padding-inline: 0.4rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   27. The echo importer sheet on a phone (CalculatorEchoImporter.vue + the plus phone-screenshot
+       batch; 2026-10-31 audit M7): with the review cards scrolling inside the sheet, the sheet's ✕
+       (absolute, top right) scrolled away. It sticks to the top of the sheet instead; the form
+       holding it takes no height, so the content does not move. */
+@media (max-width: 767px) {
+  .modal[id^="modal-echoes-importer"] .modal-box > form[method="dialog"]:first-child {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    height: 0;
+  }
+  .modal[id^="modal-echoes-importer"] .modal-box > form[method="dialog"]:first-child > .btn-circle {
+    top: -0.25rem;
+    right: -0.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: oklch(var(--b2));
+    box-shadow: 0 1px 4px oklch(0 0 0 / 0.25);
+  }
+}

@@ -6,6 +6,8 @@ import { characterPortraitUrl, getCharacterRosterDisplayName } from "../../chara
 import { mainEchoesData } from "../../echoes/index";
 import { getEchoSetIconByType, getEchoSetLabelByType, getSubStatIconByType, rankColors } from "../../echoes/stats";
 import { SUBSTAT_ABBR, SUBSTAT_KEYS, expectedRoll, isFlatSubstat, type SubstatKey } from "../substats/substatWeights";
+import { IN_GAME_SET_NAME } from "../echoPlan/catalog";
+import { checkOf, showHave, showNeed } from "../energy/energyNeed";
 import type { EchoVerdict, EchoVerdictKind, LabCharacterSummary, VerdictReason } from "./bestOwner";
 import type { LockPlan } from "./rerollAdvice";
 import { MIN_PLAN_GAIN } from "./rerollPick";
@@ -14,7 +16,16 @@ import { MIN_PLAN_GAIN } from "./rerollPick";
 
 export const echoName = (key: string | null | undefined): string => (key ? mainEchoesData[key]?.name ?? key : "Unknown echo");
 export const echoImage = (key: string | null | undefined): string | null => (key ? mainEchoesData[key]?.image ?? null : null);
-export const setLabel = (key: string | null | undefined): string => (key ? getEchoSetLabelByType(key) ?? key : "No set");
+/** A Sonata as the game writes it (Echo plan's `IN_GAME_SET_NAME`: "Sun-sinking Eclipse", not the calculator's
+ *  "Havoc Eclipse"), so the feed list reads like the in-game filter; search matches both names (`setNames`). */
+export const setLabel = (key: string | null | undefined): string => (key ? IN_GAME_SET_NAME[key] ?? getEchoSetLabelByType(key) ?? key : "No set");
+/** Every name a Sonata goes by: the in-game one and the calculator's, when they differ. */
+export const setNames = (key: string | null | undefined): string[] => {
+  if (!key) return ["No set"];
+  const app = getEchoSetLabelByType(key) ?? key;
+  const game = IN_GAME_SET_NAME[key];
+  return game && game !== app ? [game, app] : [app];
+};
 export const setIcon = (key: string | null | undefined): string | null => (key ? getEchoSetIconByType(key) ?? null : null);
 export const characterName = (id: string): string => getCharacterRosterDisplayName(id);
 export const portrait = (id: string): string => characterPortraitUrl(id);
@@ -127,7 +138,7 @@ export function applyFilters(rows: readonly EchoVerdict[], f: VerdictFilters): E
     if (f.owner !== "all" && r.best?.characterId !== f.owner && !r.upgradeFor.includes(f.owner)) return false;
     if (f.worn === "worn" && !isWorn(r)) return false;
     if (f.worn === "free" && isWorn(r)) return false;
-    if (q && !`${echoName(r.echo)} ${setLabel(r.set)} ${mainLabel(r.main)}`.toLowerCase().includes(q)) return false;
+    if (q && !`${echoName(r.echo)} ${setNames(r.set).join(" ")} ${mainLabel(r.main)}`.toLowerCase().includes(q)) return false;
     return true;
   });
 }
@@ -257,4 +268,20 @@ export function ratingOf(percentile: number): { headline: string; band: string; 
   if (percentile >= 0.4) return { headline, band: "Average roll", chip: "el-chip--spare" };
   if (percentile >= 0.15) return { headline, band: "Below average", chip: "el-chip--spare" };
   return { headline, band: "Poor roll", chip: "el-chip--feed" };
+}
+
+// ── Energy Regen as a floor ──
+
+/** One plain sentence on a build's ER against the need its Echo Lab numbers respect — what the calculator panel and
+ *  the re-roll tab print under their score (a chip with three numbers wrapped badly on a phone). Null without a need. */
+export function erFloorLine(need: number | null | undefined, have: number | null | undefined): { text: string; short: boolean } | null {
+  if (need == null) return null;
+  const needText = (n: number): string => `${showNeed(n).toFixed(1)}%`;
+  const haveText = (n: number): string => `${showHave(n).toFixed(1)}%`;
+  const c = checkOf(need, have ?? null);
+  if (c.status === "noGate") return null;
+  if (have == null) return { text: `Energy Regen: this build's teams need ${needText(need)}.`, short: false };
+  if (c.status === "short")
+    return { text: `Energy Regen ${haveText(have)} of the ${needText(need)} its team needs: ${c.short.toFixed(1)} short, so its damage counts about ${c.short.toFixed(1)}% lower.`, short: true };
+  return { text: `Energy Regen ${haveText(have)} meets the ${needText(need)} its team needs.`, short: false };
 }

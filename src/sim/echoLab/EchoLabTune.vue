@@ -10,10 +10,12 @@
           <li v-for="a in assumptions" :key="a">{{ a }}</li>
         </ul>
       </EchoLabPopover>
-      <div v-if="rows.length" class="ml-auto hidden items-center gap-3 text-xs opacity-60 sm:flex">
-        <span class="flex items-center gap-1"><span class="inline-block h-2 w-5 rounded-full bg-primary/45"></span> p10–p90</span>
+      <!-- the bar's legend, on every screen (it used to be desktop-only): the bar is the damage change once tuned -->
+      <div v-if="rows.length" class="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-70 sm:ml-auto sm:w-auto" data-test-echo-lab-tune-legend>
+        <span class="max-sm:w-full">Damage change once tuned:</span>
+        <span class="flex items-center gap-1"><span class="inline-block h-2 w-5 rounded-full bg-primary/45"></span> likely range (10th–90th percentile)</span>
         <span class="flex items-center gap-1"><span class="inline-block h-3 w-[3px] rounded bg-primary"></span> median</span>
-        <span class="flex items-center gap-1"><span class="inline-block size-2 rotate-45 bg-base-content"></span> now</span>
+        <span class="flex items-center gap-1"><span class="inline-block size-2 rotate-45 bg-base-content"></span> as it is now</span>
       </div>
     </div>
 
@@ -45,7 +47,7 @@
             <div class="font-mono text-lg font-bold tabular-nums" data-test-echo-lab-tune-pbeat>{{ pct(row.p.pBeat, 0) }}</div>
           </div>
           <div>
-            <div class="text-[0.65rem] uppercase tracking-wide opacity-60">Expected</div>
+            <div class="text-[0.65rem] uppercase tracking-wide opacity-60">Expected damage change</div>
             <div class="font-mono text-lg font-bold tabular-nums" :class="row.p.expectedGain > 0 ? 'el-up' : 'opacity-70'">{{ signedPct(row.p.expectedGain, 1) }}</div>
           </div>
         </div>

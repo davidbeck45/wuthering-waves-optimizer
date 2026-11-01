@@ -11,8 +11,40 @@
       No Sonata filter needed: the set is read from its small icon next to +25. With a filter on
       (optional), the set's name also shows bottom-left and is checked against the icon.
     </p>
+    <!-- the main way in: a big "Pick screenshots" button right under the intro (a bare native "Choose files" used to sit
+    after the album box and read as part of it); the album is the alternative below -->
+    <div class="flex flex-wrap items-center gap-2 mb-3" data-test-phone-echo-batch-picker>
+      <label class="btn btn-primary max-sm:w-full" :class="{ 'btn-disabled': isScanning }">
+        <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="m21 16-5-5-9 9" />
+        </svg>
+        {{ queuedCount ? "Pick more screenshots" : "Pick screenshots" }}
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          class="sr-only"
+          data-test-phone-echo-batch-input
+          @change="onFilesChosen" />
+      </label>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        :class="{ 'max-sm:btn-md max-sm:flex-1': queuedCount }"
+        :disabled="!queuedCount || isScanning || claude.running"
+        data-test-phone-echo-batch-scan
+        @click="scanAll">
+        <span v-if="isScanning" class="loading loading-spinner loading-xs"></span>
+        {{ isScanning ? `Scanning ${progress.done} / ${progress.total}…` : `Scan ${queuedCount} screenshot${queuedCount === 1 ? "" : "s"}` }}
+      </button>
+      <button type="button" class="btn btn-ghost btn-sm" :disabled="!items.length || isScanning || claude.running" @click="clearAll">
+        Clear
+      </button>
+      <span v-if="isScanning" class="text-xs opacity-70" data-test-phone-echo-batch-step>{{ currentStep }}</span>
+    </div>
+
     <div class="rounded-box border border-base-300 p-3 mb-3" data-test-phone-echo-album>
-      <div class="text-sm font-semibold mb-1">From a Google Photos album</div>
+      <div class="text-sm font-semibold mb-1">Or from a Google Photos album</div>
       <p class="text-xs opacity-70 mb-2">
         Share the album (anyone with the link) and paste the link here. Photos already imported from this
         album are remembered in this browser, so later runs fetch and scan only the new ones.
@@ -59,29 +91,6 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        class="file-input file-input-bordered file-input-sm max-w-full"
-        data-test-phone-echo-batch-input
-        @change="onFilesChosen" />
-      <button
-        type="button"
-        class="btn btn-primary btn-sm"
-        :disabled="!queuedCount || isScanning || claude.running"
-        data-test-phone-echo-batch-scan
-        @click="scanAll">
-        <span v-if="isScanning" class="loading loading-spinner loading-xs"></span>
-        {{ isScanning ? `Scanning ${progress.done} / ${progress.total}…` : `Scan ${queuedCount} screenshot${queuedCount === 1 ? "" : "s"}` }}
-      </button>
-      <button type="button" class="btn btn-ghost btn-sm" :disabled="!items.length || isScanning || claude.running" @click="clearAll">
-        Clear
-      </button>
-      <span v-if="isScanning" class="text-xs opacity-70" data-test-phone-echo-batch-step>{{ currentStep }}</span>
-    </div>
-
     <!-- Wuthering Tools+ AI: Claude reads what the OCR can't (claudeVision.ts); results land in the table below -->
     <div class="mb-3 rounded-box border border-primary/25 bg-primary/5 p-3" data-test-claude-read>
       <div class="flex items-center gap-3">
@@ -109,6 +118,10 @@
       </p>
 
       <div v-if="!claude.hasKey" class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:pl-11">
+        <!-- what it would cost, before anyone is asked for a key -->
+        <span v-if="noKeyEstimate" class="w-full text-xs tabular-nums opacity-80" :title="estimateTitle" data-test-claude-read-estimate-nokey>
+          Reading {{ noKeyEstimate.count === 1 ? "this screenshot" : `all ${noKeyEstimate.count} screenshots` }} with {{ claude.modelLabel }} costs about {{ formatUsd(noKeyEstimate.usd) }}, paid to Anthropic with your own key.
+        </span>
         <button type="button" class="btn btn-primary btn-sm" data-test-claude-read-key @click="claude.openSettings()">Add your Anthropic key</button>
         <span class="text-xs opacity-70">Bring your own key; it stays in this browser.</span>
       </div>
@@ -175,7 +188,8 @@
       <p v-if="claude.runError" class="mt-2 text-xs text-error sm:pl-11" data-test-claude-read-error>{{ claude.runError }}</p>
     </div>
 
-    <div v-if="items.length" class="batch-scroll overflow-x-auto max-h-[50vh]">
+    <!-- on a phone the cards scroll with the sheet (an inner 50 vh box held about one echo and cut its notes off) -->
+    <div v-if="items.length" class="phone-batch__review overflow-x-auto md:max-h-[50vh]" data-test-phone-echo-batch-review>
       <table class="table table-xs table--cards" data-test-phone-echo-batch-table>
         <thead>
           <tr>
@@ -216,7 +230,7 @@
                 <div v-if="item.record" class="flex flex-col gap-1">
                   <select
                     v-model="item.record.echo"
-                    class="select select-bordered select-xs w-44 max-w-full lg:w-52"
+                    class="select select-bordered select-xs w-44 max-w-full max-md:w-full lg:w-52"
                     aria-label="Echo"
                     data-test-phone-echo-batch-echo
                     @change="onEchoChanged(item)">
@@ -225,7 +239,7 @@
                   </select>
                   <select
                     v-model="item.record.set"
-                    class="select select-bordered select-xs w-44 max-w-full lg:w-52"
+                    class="select select-bordered select-xs w-44 max-w-full max-md:w-full lg:w-52"
                     aria-label="Set"
                     data-test-phone-echo-batch-set
                     :data-set-source="item.record.setSource ?? undefined">
@@ -238,7 +252,7 @@
               <td class="cell--full" data-label="Main stat">
                 <select
                   v-if="item.record"
-                  class="select select-bordered select-xs w-36 max-w-full"
+                  class="select select-bordered select-xs w-36 max-w-full max-md:w-full"
                   aria-label="Main stat"
                   :value="item.record.main?.[0] ?? ''"
                   @change="onMainChanged(item, $event)">
@@ -249,7 +263,7 @@
               <td class="cell--full cell--subs" data-label="Substats">
                 <div v-if="item.record" class="flex flex-col gap-1">
                   <div v-for="(sub, index) in item.record.subs" :key="index" class="flex gap-1">
-                    <select v-model="sub[0]" class="select select-bordered select-xs w-40 min-w-0 lg:w-52" :aria-label="`Substat ${index + 1}`">
+                    <select v-model="sub[0]" class="select select-bordered select-xs w-40 min-w-0 max-md:flex-1 lg:w-52" :aria-label="`Substat ${index + 1}`">
                       <option v-for="key in SUBSTAT_KEYS" :key="key" :value="key">{{ statLabel(key) }}</option>
                     </select>
                     <input v-model="sub[1]" class="input input-bordered input-xs w-16" :aria-label="`Substat ${index + 1} value`" />
@@ -277,16 +291,17 @@
       </table>
     </div>
 
-    <div v-if="items.length" class="mt-3 flex flex-wrap items-center gap-2">
+    <!-- phones: the add button stays at the bottom of the sheet while the cards scroll -->
+    <div v-if="items.length" class="mt-3 flex flex-wrap items-center gap-2" :class="{ 'phone-batch__add': includedCount }" data-test-phone-echo-batch-addbar>
       <button
         type="button"
-        class="btn btn-primary btn-sm"
+        class="btn btn-primary btn-sm max-md:btn-md max-md:w-full"
         :disabled="!includedCount || isScanning || claude.running"
         data-test-phone-echo-batch-add
         @click="addToInventory">
         Add {{ includedCount }} echo{{ includedCount === 1 ? "" : "es" }} to inventory
       </button>
-      <span class="text-xs opacity-70">
+      <span class="text-xs opacity-70" :class="{ 'max-md:hidden': includedCount }">
         Checked rows are added as they are shown — fix flagged ones here, or later in the inventory.
       </span>
     </div>
@@ -302,7 +317,7 @@ import { echoSetLabelMap, statsTable } from "../../echoes/stats";
 import { useAiSettings } from "../ai/aiSettings";
 import { formatUsd } from "../ai/pricing";
 import { newScanItem, type AlbumPhoto, type ScanItem } from "./batchItems";
-import { VISION_OUTPUT_TOKENS, VISION_PROMPT_TOKENS } from "./claudeVisionCost";
+import { VISION_OUTPUT_TOKENS, VISION_PROMPT_TOKENS, estimateVisionCost } from "./claudeVisionCost";
 import { EchoImageMatcher } from "./imageMatch";
 import { EchoOcr, PSM } from "./ocr";
 import { matchSetIcon } from "./setGlyphCanvas";
@@ -447,6 +462,8 @@ const confirmOverBudget = (estimateUsd: number, budget: number): Promise<boolean
 const claude = reactive(useClaudeEchoRead({ items, busy: isScanning, fileFor, confirmOverBudget }));
 const aiSettings = useAiSettings();
 const budgetUsd = computed(() => aiSettings.settings.value.budgetUsd);
+/** with no key yet: what reading every unread screenshot would cost (the same estimate the run shows) */
+const noKeyEstimate = computed(() => (claude.all.length ? estimateVisionCost(claude.all.map((item) => item.size), claude.model) : null));
 const estimateTitle = computed(
   () =>
     `About ${claude.estimate.imageTokens.toLocaleString()} image tokens + ${VISION_PROMPT_TOKENS.toLocaleString()} prompt tokens in and up to ` +
@@ -746,12 +763,20 @@ function addToInventory(): void {
   border-radius: 9999px;
   background: oklch(var(--wa));
 }
+/* phones: "Add N echoes" sticks to the bottom of the importer sheet (the sheet is the scroll box, phone.css § 6) */
+@media (max-width: 767px) {
+  .phone-batch__add {
+    position: sticky;
+    bottom: -1rem; /* the sheet's own bottom padding */
+    z-index: 5;
+    margin-inline: -1rem;
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+    background: oklch(var(--b1) / 0.96);
+    box-shadow: 0 -1px 0 oklch(var(--bc) / 0.1), 0 -6px 14px oklch(0 0 0 / 0.12);
+  }
+}
 /* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
 @media (max-width: 767px) {
-  /* a 50vh box inside the modal holds about one card on a phone and cuts its notes off mid-line: the modal scrolls instead */
-  .batch-scroll {
-    max-height: none;
-  }
   .table--cards .cell--check {
     order: 0;
   }

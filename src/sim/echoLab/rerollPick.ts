@@ -27,3 +27,9 @@ export function pickRerollFirst<T extends { slot: number; recommended: LockPlan 
   }
   return best;
 }
+
+/** The re-roll options of one character with their ER need (`erNeedsOf(useEnergyNeeds())`) — the very options the
+ *  Echo Lab's re-roll tab, the calculator panel's `reroll` jobs and `engineView` use, so the worker's result cache
+ *  answers any of them from another's run. `{}` without a need (the job's cache key is then the old one). */
+export const rerollOptionsFor = (needs: Readonly<Record<string, number>> | null | undefined, id: string): { erNeed?: number } =>
+  needs?.[id] != null && Number.isFinite(needs[id]) ? { erNeed: needs[id] } : {};

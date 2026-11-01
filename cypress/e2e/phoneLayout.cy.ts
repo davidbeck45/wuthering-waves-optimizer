@@ -411,6 +411,43 @@ describe("phone layout", () => {
     }
   });
 
+  // The v3 inventory on David's S26 (412 px, 130 % text; 2026-10-31 audit M6, phone.css § 25): the tile's action column
+  // moved under the substats so the labels read in full, the page padding is a phone's, the top pager sticks under the
+  // nav, and the Filters panel starts folded until the player opens it.
+  it("lays the v3 inventory out for a phone: readable substats, actions under them, the pager in reach", () => {
+    cy.viewport(412, 915);
+    cy.visit("/inventory", {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", configOptimizer.data.character);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        delete settings.config.filterPanelsOpen;
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.get("[data-test-inventory-echo-tile]", { timeout: 30000 }).should("have.length.at.least", 1);
+    expectNoHorizontalScroll("/inventory v3 412 px");
+    cy.get("[data-test-filter-panel-toggle]").first().should("have.attr", "aria-expanded", "false");
+    cy.get(".inventory__content").should("have.css", "padding-left").then((pad) => expect(parseFloat(String(pad))).to.be.at.most(16));
+    cy.get("[data-test-inventory-echo-tile]").first().then(($tile) => {
+      const tile = $tile[0];
+      const list = tile.querySelector("[data-test-echo-card-substat]")!.parentElement!.getBoundingClientRect();
+      const edit = tile.querySelector("[data-test-echo-action-edit]")!.getBoundingClientRect();
+      expect(edit.top, "actions under the substat list").to.be.at.least(list.bottom - 0.5);
+    });
+    cy.get("[data-test-echo-card-substat] .truncate").then(($labels) => {
+      const cut = $labels.toArray().filter((el) => el.scrollWidth > el.clientWidth + 1).length;
+      expect(cut, `substat labels cut (of ${$labels.length})`).to.be.at.most(Math.ceil($labels.length * 0.15));
+    });
+    cy.get(".echoes__list__pagination").first().should("have.css", "position", "sticky");
+  });
+
   // /endgame (src/sim/endgame/, the ToA clear check) in the v3 UI: the narrowest phone at 100 % text, David's S26 width
   // at 130 % — floor cards one per screen width, team rows and time bars inside it, the plan as a vertical list.
   it("keeps the ToA clear check inside the viewport with its floor cards, team rows and plan", () => {

@@ -115,23 +115,72 @@ describe("Echo Lab", () => {
     cy.get("[data-test-echo-lab-info-panel=benchmark]").should("contain.text", "ChemX32");
   });
 
-  it("stays inside a phone at 412 px with 130 % text on every tab", () => {
+  // David's S26 is 412 px wide at 130 % text; 360 px is the narrowest phone we budget for (2026-10-31 audit H3: the
+  // re-roll line table and the benchmark row detail ran a 360 px page sideways)
+  for (const [width, height] of [
+    [412, 915],
+    [360, 800],
+  ] as const) {
+    it(`stays inside a ${width} px phone with 130 % text on every tab, tables and details open`, () => {
+      cy.viewport(width, height);
+      cy.visit("/echo-lab", seed({ fontScale: 1.3 }));
+      cy.get("[data-test-echo-lab-row]", RUN).should("have.length.at.least", 1);
+      expectNoHorizontalScroll("verdicts");
+      cy.get("[data-test-echo-lab-line-legend]").should("be.visible").and("contain.text", "Substat colour");
+      cy.get("[data-test-echo-lab-feed-toggle]").click();
+      expectNoHorizontalScroll("verdicts with the feed groups open");
+      // each group says its game filter: Sonata, then Cost and main stat
+      cy.get("[data-test-echo-lab-feed-group-filter]").first().invoke("text").should("match", /^Cost \d · \S/);
+      cy.get('[data-test-echo-lab-tab="tune"]').click();
+      cy.get("[data-test-echo-lab-tune-row]").should("exist");
+      cy.get("[data-test-echo-lab-tune-legend]").should("be.visible");
+      expectNoHorizontalScroll("tune");
+      cy.get('[data-test-echo-lab-tab="reroll"]').click();
+      cy.get('[data-test-echo-lab-reroll-line="lock"]', RUN).should("exist");
+      cy.get("[data-test-echo-lab-reroll-loading]", RUN).should("not.exist");
+      cy.get("[data-test-echo-lab-reroll-legend]").should("be.visible").and("contain.text", "Worth");
+      expectNoHorizontalScroll("re-roll");
+      // the line table never runs past its card
+      cy.get("[data-test-echo-lab-reroll-echo]").each(($card) => {
+        const card = $card[0].getBoundingClientRect();
+        const table = $card[0].querySelector("table")?.getBoundingClientRect();
+        if (table) expect(table.right, "re-roll table inside its card").to.be.at.most(card.right + 0.5);
+      });
+      cy.get(".reroll__plans summary").first().click();
+      expectNoHorizontalScroll("re-roll, all lock plans open");
+      // every header word fits its column (the long headers broke "Transducers" mid-word on a phone)
+      cy.get(".reroll__plans").first().find("th").each(($th) => {
+        expect($th[0].scrollWidth, `"${$th.text().trim()}" fits its column`).to.be.at.most($th[0].clientWidth + 1);
+      });
+      cy.get("[data-test-echo-lab-reroll-plans-legend]").first().should("be.visible").and("contain.text", "Transducers");
+      cy.get('[data-test-echo-lab-tab="benchmark"]').click();
+      cy.get("[data-test-echo-lab-benchmark-row]", RUN).should("exist");
+      expectNoHorizontalScroll("benchmark");
+      cy.get("[data-test-echo-lab-benchmark-row]").first().click();
+      cy.get("[data-test-echo-lab-benchmark-spread]").should("be.visible");
+      cy.get("[data-test-echo-lab-benchmark-dmg]").should("be.visible").and("contain.text", "per rotation");
+      expectNoHorizontalScroll("benchmark row detail");
+      cy.get("[data-test-echo-lab-benchmark-spread]").then(($t) => {
+        const box = $t[0].getBoundingClientRect();
+        for (const cell of $t[0].querySelectorAll("td")) expect(cell.getBoundingClientRect().right, "spread cell inside the table").to.be.at.most(box.right + 0.5);
+      });
+    });
+  }
+
+  it("a Keep / Spare / Feed tap on a phone brings the filtered list up and marks the tile", () => {
     cy.viewport(412, 915);
     cy.visit("/echo-lab", seed({ fontScale: 1.3 }));
     cy.get("[data-test-echo-lab-row]", RUN).should("have.length.at.least", 1);
-    expectNoHorizontalScroll("verdicts");
-    cy.get("[data-test-echo-lab-feed-toggle]").click();
-    expectNoHorizontalScroll("verdicts with the feed groups open");
-    cy.get('[data-test-echo-lab-tab="tune"]').click();
-    cy.get("[data-test-echo-lab-tune-row]").should("exist");
-    expectNoHorizontalScroll("tune");
-    cy.get('[data-test-echo-lab-tab="reroll"]').click();
-    cy.get('[data-test-echo-lab-reroll-line="lock"]', RUN).should("exist");
-    cy.get("[data-test-echo-lab-reroll-loading]", RUN).should("not.exist");
-    expectNoHorizontalScroll("re-roll");
-    cy.get('[data-test-echo-lab-tab="benchmark"]').click();
-    cy.get("[data-test-echo-lab-benchmark-row]", RUN).should("exist");
-    expectNoHorizontalScroll("benchmark");
+    cy.window().its("scrollY").should("eq", 0);
+    cy.get('[data-test-echo-lab-kpi="feed"]').click();
+    cy.get('[data-test-echo-lab-kpi="feed"]').should("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-echo-lab-kpi="keep"]').should("have.attr", "aria-pressed", "false");
+    cy.get('[data-test-echo-lab-filter-verdict="feed"]').should("have.attr", "aria-pressed", "true");
+    // the list's top lands near the top of the screen
+    cy.get("[data-test-echo-lab-verdicts]").should(($list) => {
+      const top = $list[0].getBoundingClientRect().top;
+      expect(top, "verdict list top after the tap").to.be.lessThan(915 * 0.45);
+    });
   });
 
   it("offers import and scan when there is nothing to judge", () => {
@@ -139,7 +188,7 @@ describe("Echo Lab", () => {
     cy.visit("/echo-lab", seed({ empty: true }));
     cy.get("[data-test-echo-lab-empty]").should("be.visible").and("contain.text", "Bring your echoes in");
     cy.get('[data-test-echo-lab-cta="import"]').should("have.attr", "href", "/settings");
-    cy.get('[data-test-echo-lab-cta="scan"]').should("have.attr", "href", "/inventory");
+    cy.get('[data-test-echo-lab-cta="scan"]').should("have.attr", "href", "/inventory?open=import");
   });
 
   it("never feeds the inventory when no built character wears five echoes", () => {

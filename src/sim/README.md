@@ -96,14 +96,17 @@ the tuning planner, the What's new pictures, the v3 calculator header, Wavescan 
 "Shell refinements" below).
 `phone.css` § 22–23 came from the 2026-10-31 fight-pages audit (compact rotation action cards, tap targets on /endgame,
 /rotation and /energy; "Fight pages, refined" below), with its edits to § 2, § 8, § 9 and § 13.
+`phone.css` § 25–27 came with the 2026-10-31 echoes pass (section "Echoes pages on a phone" below): the v3 inventory
+tile and its sticky pager, the calculator's Set Bonuses header and rating guide, and the importer sheet's sticky ✕.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
 
-Known, left alone: the inventory at 250 echoes is one long column of cards (a two-column tile grid would need the
-compact card, which upstream only ships under the v3 flag); the rotation log on Riley's detail page still scrolls
-sideways (Member / Action stay stuck). Fixed 2026-10-31: the account bar is two rows of 40 px controls, and the
-detail's Equipment table shows one member at a time (the section "Account and rankings refinements" at the end).
+Known, left alone: the inventory at 250 echoes is still one column of cards on a phone, but readable and pageable from
+anywhere since 2026-10-31 (§ 25 and `inventoryPager.ts`; Ryan's Density › Compact setting gives a two-column tile
+grid); the rotation log on Riley's detail page still scrolls sideways (Member / Action stay stuck). Fixed 2026-10-31:
+the account bar is two rows of 40 px controls, and the detail's Equipment table shows one member at a time (the
+section "Account and rankings refinements" at the end).
 
 
 ## Stock presets from wuwa_calc (phase C) — `src/sim/presets/`
@@ -351,7 +354,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | File | Role |
 |---|---|
 | `engine.ts` | pure wrappers over `buildCharacterCalculationContext` + `calcDamages`, `calcCharacterRotationDamage`, `calcTeamRotationDamage`, `rankRoster`; `STAT_ROWS` = the page's stat cards with their Cypress selectors; snapshot + diff |
-| `exportFile.ts` | newest-export discovery and the double-encoded export parse (v1 bare payload through v9); `readExport` runs `migrateExport` first — every migration newer than the file's `meta.version` over each store (`applyMigrationTransforms`, as Settings › Import does), since the pages read migrated localStorage (2026-10-31: a v9 file lost Cartethyia's and Rover Aero's renamed buffs, `rank` read 2–3.5 % low) |
+| `exportFile.ts` | newest-export discovery and the double-encoded export parse (v1 bare payload through v9); `readExport` runs `migrateExport` first — every migration newer than the file's `meta.version` over each store (`applyMigrationTransforms`, as Settings › Import does), since the pages read migrated localStorage (2026-10-31: a v9 file lost Cartethyia's and Rover Aero's renamed buffs, `rank` read 2–3.5 % low); `exportMigrate.test.ts` checks the engine end to end on the public Cartethyia fixture (the enabled Bell-Borne buff counts) |
 | `index.ts` | the Commander commands and printers; engine calls run under `quiet()` because `attacks.ts` still has a stray `console.log` in a hot path (`WUWA_CLI_DEBUG=1` routes it to stderr) |
 | `parity.test.ts` | **the gate**: replays every Cypress golden fixture (`cypress/e2e/calculator/data/<Name>/data.ts`, 11 characters) through `calcCharacter` and demands the page's exact formatted stats and attack rows — same semantics as the E2E specs (a class shared by several rows passes when any row carries the numbers) |
 | `cli.test.ts` | export parsing, newest-file pick, name resolution, snapshot diff |
@@ -697,7 +700,7 @@ panel are the next section.
 | `prescore.ts` | the cheap linear pre-score: the set-bonus change at that slot scored exactly once per distinct outcome + the stat change at the build's per-point values (finite differences through the engine; element / Healing main stats priced the same way). Partial echoes count their missing lines at expectation |
 | `bestOwner.ts` | `bestOwners(session, options)`: every inventory echo × every built character with five echoes; the top K (4) characters by pre-score are scored exactly in every slot the echo may go into. Per echo: owners best first (`gain`, `damageGain`, `erChange`, replaced echo), `upgradeFor`, `wornBy`, `blocked` counts, Tune-or-Feed for partial echoes, verdict + reason. Per character: upgrades available, the best one |
 | `echoPotential.ts` | "Tune or Feed?": the 5 − n lines still to roll, types uniform over the ones the echo lacks (stated in `assumptions`), values by Kuro's tier odds; exact enumeration up to the sample count (a 4-line echo: ≤ 72 outcomes), else seeded Monte Carlo (≥ 1000, memoised per distinct outcome). Output: current gain, P(beats the slot's echo), expected gain, p10/p50/p90, verdict tune / gamble / feed / done, cost labelled approx. |
-| `rerollAdvice.ts` | Transducer advice for an equipped 5-line echo: each line's worth (build without it) vs a fresh random line in its place (every open type × tier, exact) → lock / re-roll per line, ranked; one plan per lock count with P(improve), expected gain keeping the better lines, Transducers per success. One re-rolled line is exact; two or more add the new lines' exact single-line values (MC over that, no engine per sample). Lock costs default 1/1/1/2/3, "verify in game" |
+| `rerollAdvice.ts` | Transducer advice for an equipped 5-line echo: each line's worth (build without it) vs a fresh random line in its place (every open type × tier, exact) → lock / re-roll per line, ranked; one plan per lock count with P(improve), expected gain keeping the better lines, Transducers per success. One re-rolled line is exact; two or more add the new lines' exact single-line values (MC over that, no engine per sample). Lock costs default 1/1/1/2/3, "verify in game". With `erNeed` (the character's need in their saved teams) every line set scores damage × (1 − ER deficit), and an Energy Regen line the build can't lose without falling under the need is locked (`erFloor`), ranked last and never in the recommended plan (2026-10-31) |
 | `benchmarkScore.ts` | Fribbels-style damage benchmark: B = substats blanked (mains, sets, main echo kept), R = ChemX32 (5/5/2/2/2 median rolls over Crit Rate, Crit DMG and the three stats the engine values most **on B**, one median roll of each other stat — 24 of 25, as Riley's `shared/substats.ts` spends them), P = 25 best-tier rolls placed greedily where the engine gains most (≤ 5 per stat, one line per echo); score = (D−B)/(R−B) below R, 1 + (D−R)/(P−R) above, clamped 0–200 %. Returns all three spreads and yours |
 | `rolls.ts`, `fingerprint.ts` | the roll model (tier odds from `substatWeights.ts`'s `TIER_WEIGHTS`, now exported; subsets, exact outcomes, sampling) · cyrb53 account fingerprint, stable option keys, mulberry32 PRNG |
 | `pass.ts` | `runEchoLabPass` (best owner + Tune or Feed, optional benchmarks) and `runJob` — the job kinds `pass`, `bestOwner`, `benchmark`, `potential`, `reroll` |
@@ -753,8 +756,8 @@ build" panel that links into it. Works in v3 (default) and classic; tab title th
 | `EchoLabBenchmark.vue` | **Build benchmark**: 0–200 % bars with the 100 % mark and B / R / P axis, score bands (low < 60, fair < 90, good < 120, great), a row opens yours / reference / perfect rolls per substat (every stat any of the three holds); the (i) explains B, R (Riley31415's ChemX32), P and the formula |
 | `EchoLabEcho.vue`, `EchoLabPopover.vue`, `echoLabView.ts`, `echoLab.css` | the echo cell; an (i) button whose panel is a bottom sheet below 640 px; the pure view model (names, pictures, filters, sort, feed groups and their clipboard text, line colours, formatters); the shared chips, bars and table grid — DaisyUI tokens only, light themes darken state text |
 | `EchoLabEngineHook.vue` → `EchoLabEngineView.vue` | the calculator panel: upstream's `CalculatorEchoInsightsPanel.vue` renders the hook (one template line + its import) at the end of the Echo Insights details; the hook lazy-loads the panel: benchmark score + bar, the three substats one more roll is worth most on the best rotation, and the echo / line to re-roll first with its plan, "Echo Lab ›" to `/echo-lab?tab=reroll&character=<id>` |
-| `engineView.ts` | the panel's engine job: benchmark, `substatWeights`, `equippedSubstatWorth`, and (unless `reroll: false`) every full echo's advice picked with `pickRerollFirst` |
-| `rerollPick.ts` | `MIN_PLAN_GAIN` (0.05 %) and `pickRerollFirst` (best recommended plan per Transducer; ties → bigger gain → lower slot). No engine imports, so the page and the panel share the engine's exact rule |
+| `engineView.ts` | the panel's engine job: benchmark, `substatWeights`, `equippedSubstatWorth`, and (unless `reroll: false`) every full echo's advice picked with `pickRerollFirst`; `erNeeds` reaches the benchmark and the advice, so the panel and the tabs show one score (they read 140 % and 132 % for one build before 2026-10-31) |
+| `rerollPick.ts` | `MIN_PLAN_GAIN` (0.05 %) and `pickRerollFirst` (best recommended plan per Transducer; ties → bigger gain → lower slot), and `rerollOptionsFor(erNeeds, id)` — the one `reroll` job options shape the tab, the panel and `engineView` send, so the worker's cache answers each from the others. No engine imports, so the page and the panel share the engine's exact rule |
 | `echoLabView.test.ts` | the pick rule; the engine view naming the same echo as the tab's rule over every full echo (Galbrena); filters, sort, feed groups and their text, line tiers, score bands on the fixture's real best-owner result |
 | `cypress/e2e/echoLab.cy.ts` | v3 seeded through `onBeforeLoad` with the unit-test fixture: verdict chips and the no-slot echo fed, KPI → filter, feed groups, search / clear, row detail, Tune / Re-roll / Benchmark render with their (i) panels, every tab inside 412 px at 130 % text, the empty state's CTAs, the empty state (no KPIs, no feed list) for weapons without five echoes, the calculator panel's numbers, its link landing on the re-roll tab with the same echo marked "Re-roll first" |
 
@@ -2411,4 +2414,54 @@ Gates: `cli/cli.test.ts` (v9 export with "BellBorne eochelone"), `rankRoster.tes
 default, list ≥ 60 % of the screen, the importable chip's `x=`, the docked sheet, one member's gear on the detail
 page, Ask clear of /build-team's bar at 360 px, KPI lines and the hidden H1, the 360 px weapon line),
 `rankings.cy.ts` (Search sheet, Sync's confirm / Undo, 40 px bar), `phoneLayout.cy.ts`.
+
+## Echoes pages on a phone, and two Echo Lab numbers made honest — track "fix-echoes" (2026-10-31)
+
+From the night's read-only audit of `/echo-lab`, `/echo-plan`, `/share`, the inventory and its importer, and the
+calculator's echo slots (`night/reports/audit-echoes.md`). Every finding was re-checked on the synced branch first;
+all reproduced.
+
+Numbers:
+- **The re-roll advice respects the Energy Regen need** (`rerollAdvice.ts`, `erNeed` option). The static engine
+  priced an ER line at 0, so the tab told Aemeath (110.8 % ER against a 115.2 % need) to re-roll Shadow Stepper's
+  ER 10.8 % first, which would have left her about 15 points short. Each line set now scores damage × (1 − ER
+  deficit) (`erFactorFor`, as the benchmark already did), so that line is worth +12.7 %, and the hard rule locks any
+  ER line whose loss would drop the build under its need (marked "ER" on the Lock chip, with a sentence under the
+  table). The tab resolves the needs once per account state (`echoLabErNeeds` in `useEchoLab.ts`).
+- **One benchmark score** for a build: the calculator's engine panel resolves `erNeedsOf(useEnergyNeeds())` and
+  sends it through `engineView` and its `reroll` jobs (Aemeath 132 % in both places, was 140 % in the panel). The
+  panel and the re-roll tab print the ER state as one sentence (`erFloorLine`: "Energy Regen 110.8 % of the 115.2 %
+  its team needs: 4.4 short, so its damage counts about 4.4 % lower."); the benchmark tab marks its damage figures
+  "ER-adjusted" when the build is short.
+- **The CLI runs the app's store migrations.** The track built `cli/exportMigrate.ts`; the account-rankings track had
+  landed the same fix first (`migrateExport` in `cli/exportFile.ts`, the CLI section above), so the merge kept that
+  one and moved this track's engine-level test onto it (`cli/exportMigrate.test.ts`).
+
+Phone layout and wording (every rule phone-only, desktop unchanged):
+
+| Where | What changed |
+|---|---|
+| Re-roll tab | `table-fixed` line table, the line truncates, Fresh under Worth below `sm`, icon chips; a one-line "Worth = … · Fresh = …" legend under the character; "All lock plans" headers in words with Transducers named (below `lg` one short word each, "Locks / Cost / Odds / Gain / Per win", spelled out in a line under the table: the long ones broke "Transducers" mid-word in a phone-width card); the ER-floor note says how short the build is and would be |
+| Benchmark tab | the row detail reflows below `sm` (`.el-spread`: the substat across the card, then yours · reference · perfect under one header row); the damage line moves under the bar in words ("Your build 7.75M vs reference 6.86M per rotation (ER-adjusted)"); the name wraps the ER chip instead of truncating; progress counts only the characters the pass scored |
+| Verdicts tab | the substat colour legend; cards caption the owner ("Best for Qiuyuan · +11.69 % damage") and "worn by"; the reason wraps to two lines; the echo's set never truncates to "T…" (the main stat wraps under it, `EchoLabEcho.vue`); the row detail says "per rotation"; feed groups are two lines ("Song of Feathered Tracks" / "Cost 3 · Fusion DMG"); KPI tiles are pressed buttons and scroll the list into view |
+| Set names | Echo Lab shows the in-game Sonata name (`IN_GAME_SET_NAME`, "Sun-sinking Eclipse") and its search matches either name (`setNames`) |
+| Tune tab | "Expected damage change"; the bar legend shows on phones |
+| Tap targets | `.echo-lab .btn-xs` and summaries ≥ 2.5 rem below 768; Echo plan's toolbar buttons (`ep-tap`) |
+| Ask button | the track lifted Ask over the Echo plan bar with its own `--plus-page-bar-h`, a `data-plus-page` spacer and a tuck class; the shell track's `usePlusBar` (`--plus-bar-h`, phone.css § 16) had already landed the same three things for every page, so the merge kept that one and dropped this track's copy |
+| Echo plan | "No plan" / "Set in game" headings never wrap; the compact tile's button says "Show grid" |
+| Inventory (v3) | § 25: 0.75 rem page padding, the tile's actions as a row under the substats (Duplicate / Odds icon-only), so 73 of 100 cut labels became 8; the top pager sticks under the nav (the inventory page only: the classic calculator's echo browser modal shares the pager classes); a page change scrolls back to the first echo and the Filters panel starts folded on a phone's first visit (`shell/inventoryPager.ts`, a delegated listener and a settings default — no change to Ryan's files) |
+| Calculator echoes (v3) | § 26: the Set Bonuses header wraps, the rating guide table lays out fixed; the engine panel's title is "Engine view" on a phone, and its benchmark tile says how it differs from Ryan's Build Score |
+| Importer | a big "Pick screenshots" button right under the intro (the album box follows as "Or from a Google Photos album"); the review cards scroll with the sheet (no 50 vh box), full-width selects, "Add N echoes" sticks to the sheet's bottom and the ✕ to its top (§ 27); Read with Claude shows the cost before a key is added |
+| Share import | each echo chip names the echo ("Sigillum ✓", "… ! reason") with a one-line legend |
+| Empty Echo Lab | "Scan or add echoes" opens the importer (`/inventory?open=import`) |
+
+Gates: `echoLab.cy.ts` checks every tab at 412 and 360 px with 130 % text with the re-roll table, the lock plans and a
+benchmark detail open, and the KPI tap on a phone; `phoneLayout.cy.ts` checks the Ask button against the Echo plan
+bar and the v3 inventory tile (labels, actions under the substats, sticky pager, folded filters). Unit tests:
+`echoLab.test.ts` (ER floor on the advice), `echoLabView.test.ts` (panel = tab under a need, set names, the ER
+sentence), `cli/exportMigrate.test.ts`, `shell/inventoryPager.test.ts`.
+
+Left for later: one stat-label table across the plus pages ("CD" chips vs "Crit DMG" vs "Crit. DMG"); a "Tune or
+Feed in Echo Lab ›" link beside Ryan's "Finish these first" (needs a hook in his file); streaming benchmark rows as
+they finish (a result channel the worker protocol does not have yet).
 

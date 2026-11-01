@@ -13,6 +13,7 @@ import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { accountFingerprint } from "./fingerprint";
 import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult } from "./pass";
 import type { RerollAdviceResult } from "./rerollAdvice";
+import { rerollOptionsFor } from "./rerollPick";
 import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
 import type { TunerCandidatesResult } from "./tunerPlan";
 import { erNeedsOf } from "../energy/energySubstats";
@@ -53,6 +54,15 @@ const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
 let hydrated = false;
+/** the ER needs of the saved teams, resolved once per account state (the benchmark and re-roll jobs share them) */
+let needsMemo: { fingerprint: string; needs: Promise<Record<string, number>> } | null = null;
+
+/** Every character's ER need (%) in their saved teams — the floor the benchmark and the re-roll advice respect.
+ *  Empty when the energy check fails; one lookup per account state. */
+export function echoLabErNeeds(fingerprint: string): Promise<Record<string, number>> {
+  if (needsMemo?.fingerprint !== fingerprint) needsMemo = { fingerprint, needs: erNeedsOf(useEnergyNeeds()).catch(() => ({})) };
+  return needsMemo.needs;
+}
 
 interface StoredCache {
   v: number;
@@ -178,8 +188,10 @@ export function useEchoLab() {
     const controller = new AbortController();
     benchAbort = controller;
     // Wuthering Tools+ energy check: ER counts as a floor up to each character's need in their saved teams
-    const erNeeds = await erNeedsOf(useEnergyNeeds()).catch(() => ({}));
-    const result = await run({ kind: "benchmark", options: { erNeeds } }, benchStatus, controller.signal, account);
+    const erNeeds = await echoLabErNeeds(fingerprint);
+    // only the characters the pass could score (a weapon and five echoes): the progress counts what gets a row
+    const characterIds = pass.value && resultFingerprint.value === fingerprint ? pass.value.bestOwner.characters.map((c) => c.id) : undefined;
+    const result = await run({ kind: "benchmark", characterIds, options: { erNeeds } }, benchStatus, controller.signal, account);
     if (benchAbort === controller) benchAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       benchmarks.value = result;
@@ -196,7 +208,10 @@ export function useEchoLab() {
     const key = rerollKey(characterId, slot);
     if (rerolls.has(key)) return;
     try {
-      const result = await getEchoLabClient().run({ kind: "reroll", characterId, slot }, account, { signal });
+      // Wuthering Tools+ energy check: an ER line the build needs is locked, and ER counts as a floor
+      const options = rerollOptionsFor(await echoLabErNeeds(fingerprint), characterId);
+      if (signal.aborted) return;
+      const result = await getEchoLabClient().run({ kind: "reroll", characterId, slot, options }, account, { signal });
       if (resultFingerprint.value === fingerprint) rerolls.set(key, result);
     } catch (err) {
       if (!isCancel(err) && resultFingerprint.value === fingerprint) rerolls.set(key, { error: errorText(err) });

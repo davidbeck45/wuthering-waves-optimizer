@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
         <h3 class="flex items-center gap-1.5 text-sm font-semibold">
-          Engine view for this build
+          <span class="max-sm:hidden">Engine view for this build</span><span class="sm:hidden">Engine view</span>
           <span class="badge badge-primary badge-outline badge-xs">Tools+</span>
           <span v-if="loading" class="loading loading-spinner loading-xs opacity-60" data-test-echo-lab-engine-loading></span>
         </h3>
@@ -28,7 +28,7 @@
       <div class="rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-benchmark>
         <div class="flex items-baseline justify-between gap-2">
           <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Benchmark</span>
-          <span v-if="score !== null" class="font-mono text-2xl font-extrabold tabular-nums leading-none" :class="`el-score-text--${scoreBand(score)}`">{{ pct(score, 0) }}</span>
+          <span v-if="score !== null" class="font-mono text-2xl font-extrabold tabular-nums leading-none" :class="`el-score-text--${scoreBand(score)}`" data-test-echo-lab-engine-score>{{ pct(score, 0) }}</span>
           <span v-else class="text-xs opacity-60">—</span>
         </div>
         <div v-if="score !== null" class="el-score-track mt-2" role="meter" :aria-valuenow="Math.round(score * 100)" aria-valuemin="0" aria-valuemax="200" aria-label="Benchmark score">
@@ -36,6 +36,8 @@
           <div class="el-score-mark" style="left: 50%"></div>
         </div>
         <p class="mt-1 text-[0.7rem] leading-snug opacity-60">{{ score !== null ? "100 % = a realistic spread, 200 % = perfect rolls" : view.benchmarkNote }}</p>
+        <p v-if="erLine" class="mt-1 text-[0.7rem] leading-snug" :class="erLine.short ? 'el-er-short' : 'opacity-70'" data-test-echo-lab-engine-er>{{ erLine.text }}</p>
+        <p v-if="score !== null" class="mt-1 text-[0.7rem] leading-snug opacity-60" data-test-echo-lab-engine-vs-build-score>Not the Build Score above: that rates substats against a weight table, this runs the damage engine on your best rotation.</p>
       </div>
 
       <!-- substats by worth -->
@@ -88,12 +90,14 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { CANCELLED } from "./core";
+import { erNeedsOf } from "../energy/energySubstats";
+import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import EchoLabEcho from "./EchoLabEcho.vue";
 import { getEchoLabClient, labAccountOf } from "./echoLabClient";
-import { lineText, pct, scoreBand, signedPct, slotLabel, substatIcon } from "./echoLabView";
+import { erFloorLine, lineText, pct, scoreBand, signedPct, slotLabel, substatIcon } from "./echoLabView";
 import type { EngineViewResult } from "./engineView";
 import type { LineAdvice, LockPlan, RerollAdviceResult } from "./rerollAdvice";
-import { pickRerollFirst } from "./rerollPick";
+import { pickRerollFirst, rerollOptionsFor } from "./rerollPick";
 import "./echoLab.css";
 
 const props = defineProps<{ character: string }>();
@@ -120,6 +124,8 @@ const visible = ref(false);
 const reroll = reactive({ running: false, done: 0, total: 0 });
 
 const score = computed(() => view.value?.benchmark?.score ?? null);
+/** the build's ER against the need the score respects (the Echo Lab benchmark tab's need, same numbers) */
+const erLine = computed(() => erFloorLine(view.value?.benchmark?.erNeed, view.value?.benchmark?.erHave));
 const topSubstats = computed(() => (view.value?.substats ?? []).filter((s) => s.gain > 0).slice(0, 3));
 const labLink = computed(() => ({ path: "/echo-lab", query: { tab: "reroll", character: props.character } }));
 
@@ -162,7 +168,11 @@ async function run(): Promise<void> {
   const client = getEchoLabClient();
   try {
     const account = labAccountOf({ characters: characterStore.characters, echoes: inventoryStore.echoes, equipped: inventoryStore.equipped, teams: teamStore.teams });
-    const engine = await client.run({ kind: "engineView", characterId: id, options: { reroll: false } }, account, { signal: mine.signal });
+    // Wuthering Tools+ energy check: the same ER floor the Echo Lab tabs respect, so the panel and the tabs agree
+    const needs = await erNeedsOf(useEnergyNeeds()).catch(() => ({}) as Record<string, number>);
+    if (controller !== mine || id !== props.character) return;
+    const erNeed = rerollOptionsFor(needs, id).erNeed;
+    const engine = await client.run({ kind: "engineView", characterId: id, options: { reroll: false, erNeeds: erNeed != null ? { [id]: erNeed } : undefined } }, account, { signal: mine.signal });
     if (controller !== mine || id !== props.character) return;
     const next: PanelResult = { view: engine, advices: [] };
     const full = engine.echoes.filter((e) => e.lines >= 5).sort((a, b) => a.worth - b.worth || a.slot - b.slot);
@@ -171,7 +181,7 @@ async function run(): Promise<void> {
     error.value = null;
     loading.value = false;
     for (const e of full) {
-      const advice = await client.run({ kind: "reroll", characterId: id, slot: e.slot }, account, { signal: mine.signal });
+      const advice = await client.run({ kind: "reroll", characterId: id, slot: e.slot, options: rerollOptionsFor(needs, id) }, account, { signal: mine.signal });
       if (controller !== mine) return;
       next.advices = [...next.advices, advice];
       reroll.done += 1;

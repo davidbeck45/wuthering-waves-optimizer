@@ -38,6 +38,12 @@
             <li v-for="a in REROLL_ASSUMPTIONS" :key="a">{{ a }}</li>
           </ul>
         </EchoLabPopover>
+        <p v-if="erLine" class="w-full text-xs leading-snug" :class="erLine.short ? 'el-er-short' : 'opacity-70'" data-test-echo-lab-reroll-er>
+          {{ erLine.text }}<template v-if="erLine.short"> An Energy Regen line the build needs is never re-rolled.</template>
+        </p>
+        <p class="w-full text-xs leading-snug opacity-70" data-test-echo-lab-reroll-legend>
+          <b>Worth</b> = the damage the build loses without that line. <b>Fresh</b> = what a new random line in its place adds on average. Lock the lines worth more than a fresh roll.
+        </p>
       </header>
 
       <div class="grid grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
@@ -62,37 +68,44 @@
             <p class="rounded-lg bg-base-200 px-3 py-2 text-sm text-error">{{ (adviceOf(slot.slot) as { error: string }).error }}</p>
           </template>
           <template v-else>
-            <table class="w-full text-sm">
+            <!-- table-fixed: the line cell truncates instead of widening the card; below sm Fresh sits under Worth -->
+            <table class="reroll__lines w-full table-fixed text-sm">
               <thead>
                 <tr class="text-[0.65rem] uppercase tracking-wide opacity-60">
-                  <th class="pb-1 text-left font-semibold">Line</th>
-                  <th class="pb-1 text-right font-semibold" title="what the build loses without this line">Worth</th>
-                  <th class="pb-1 text-right font-semibold" title="what a fresh random line in its place is worth on average">Fresh</th>
-                  <th class="pb-1 text-right font-semibold"><span class="sr-only">Advice</span></th>
+                  <th class="pb-1 text-left align-bottom font-semibold">Line</th>
+                  <th class="w-[4.1rem] pb-1 text-right align-bottom font-semibold sm:w-[4.75rem]" title="what the build loses without this line">Worth<span class="block font-normal normal-case tracking-normal sm:hidden">fresh</span></th>
+                  <th class="w-[4.75rem] pb-1 text-right align-bottom font-semibold max-sm:hidden" title="what a fresh random line in its place is worth on average">Fresh</th>
+                  <th class="w-[3.2rem] pb-1 text-right align-bottom font-semibold sm:w-[6.25rem]"><span class="sr-only">Advice</span></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="line in linesFor(slot)" :key="line.key" class="border-t border-base-200" :data-test-echo-lab-reroll-line="line.advice ?? 'pending'">
+                <tr v-for="line in linesFor(slot)" :key="line.key" class="border-t border-base-200" :data-test-echo-lab-reroll-line="line.advice ?? 'pending'" :data-test-echo-lab-reroll-er-floor="line.erFloor ? '' : undefined">
                   <td class="py-1 pr-1">
-                    <span class="flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="flex min-w-0 items-center gap-1.5">
                       <img v-if="substatIcon(line.key)" :src="substatIcon(line.key) ?? undefined" alt="" class="el-icon" loading="lazy" />
-                      {{ lineText(line.key, line.value) }}
+                      <span class="truncate">{{ lineText(line.key, line.value) }}</span>
                     </span>
                   </td>
-                  <td class="py-1 text-right font-mono text-xs tabular-nums">{{ line.worth === null ? "…" : signedPct(line.worth, 2) }}</td>
-                  <td class="py-1 pl-2 text-right font-mono text-xs tabular-nums opacity-70">{{ line.fresh === null ? "…" : signedPct(line.fresh, 2) }}</td>
-                  <td class="py-1 pl-2 text-right">
-                    <span v-if="line.advice === 'reroll'" class="el-chip el-chip--reroll" :title="`Re-roll priority ${line.rank}`" :aria-label="`Re-roll, priority ${line.rank}`">
+                  <td class="py-1 text-right font-mono text-xs tabular-nums">
+                    <span class="block">{{ line.worth === null ? "…" : signedPct(line.worth, 2) }}</span>
+                    <span class="block opacity-60 sm:hidden">{{ line.fresh === null ? "…" : signedPct(line.fresh, 2) }}</span>
+                  </td>
+                  <td class="py-1 pl-2 text-right font-mono text-xs tabular-nums opacity-70 max-sm:hidden">{{ line.fresh === null ? "…" : signedPct(line.fresh, 2) }}</td>
+                  <td class="py-1 pl-1 text-right sm:pl-2">
+                    <span v-if="line.advice === 'reroll'" class="el-chip el-chip--reroll max-sm:px-1.5" :title="`Re-roll priority ${line.rank}`" :aria-label="`Re-roll, priority ${line.rank}`">
                       <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" /></svg><span class="max-sm:hidden">Re-roll</span><span class="opacity-60">#{{ line.rank }}</span>
                     </span>
-                    <span v-else-if="line.advice === 'lock'" class="el-chip el-chip--lock" aria-label="Lock">
-                      <svg viewBox="0 0 24 24" class="size-3" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-sm:hidden">Lock</span>
+                    <span v-else-if="line.advice === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Lock: the build needs this Energy Regen' : 'Lock'" :title="line.erFloor ? 'Lock: without this line the build falls under its Energy Regen need' : undefined">
+                      <svg viewBox="0 0 24 24" class="size-3" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-sm:hidden">Lock</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
                     </span>
                     <span v-else class="loading loading-dots loading-xs opacity-50"></span>
                   </td>
                 </tr>
               </tbody>
             </table>
+            <p v-if="erFloorNote(slot)" class="mt-1 text-xs leading-snug opacity-80" data-test-echo-lab-reroll-er-note>
+              {{ erFloorNote(slot) }}
+            </p>
 
             <div v-if="resultOf(slot.slot)" class="mt-auto pt-3">
               <div v-if="planOf(slot.slot)" class="rounded-lg bg-base-200 px-3 py-2 text-sm" data-test-echo-lab-reroll-plan>
@@ -101,20 +114,22 @@
                   <span>{{ pct(planOf(slot.slot)!.pImprove, 0) }} to improve</span>
                   <span class="el-up">{{ signedPct(planOf(slot.slot)!.expectedGain, 2) }} expected</span>
                   <span>{{ planOf(slot.slot)!.cost }} Transducer{{ planOf(slot.slot)!.cost === 1 ? "" : "s" }} / try</span>
-                  <span v-if="planOf(slot.slot)!.transducersPerSuccess">≈ {{ planOf(slot.slot)!.transducersPerSuccess!.toFixed(1) }} per success</span>
+                  <span v-if="planOf(slot.slot)!.transducersPerSuccess">≈ {{ planOf(slot.slot)!.transducersPerSuccess!.toFixed(1) }} Transducers per success</span>
                 </div>
               </div>
               <div v-else class="rounded-lg bg-base-200 px-3 py-2 text-sm opacity-80" data-test-echo-lab-reroll-keep>Keep as is: no re-roll gains even 0.05 % on average.</div>
-              <details class="mt-2 text-xs">
+              <details class="reroll__plans mt-2 text-xs">
                 <summary class="cursor-pointer select-none opacity-70 hover:opacity-100">All lock plans</summary>
-                <table class="mt-1 w-full tabular-nums">
+                <table class="mt-1 w-full table-fixed tabular-nums">
                   <thead>
-                    <tr class="opacity-60">
-                      <th class="text-left font-medium">Locks</th>
-                      <th class="text-right font-medium">Cost</th>
-                      <th class="text-right font-medium">Improve</th>
-                      <th class="text-right font-medium">Expected</th>
-                      <th class="text-right font-medium">Per success</th>
+                    <tr class="align-bottom leading-tight opacity-60">
+                      <!-- below lg a card is too narrow for the long headers ("Transducers" broke mid-word): one short
+                      word each, spelled out in the line under the table -->
+                      <th class="w-[3.5rem] pb-1 text-left font-medium"><span class="max-lg:hidden">Lines locked</span><span class="lg:hidden">Locks</span></th>
+                      <th class="pb-1 text-right font-medium"><span class="max-lg:hidden">Transducers a try</span><span class="lg:hidden">Cost</span></th>
+                      <th class="pb-1 text-right font-medium"><span class="max-lg:hidden">Chance to improve</span><span class="lg:hidden">Odds</span></th>
+                      <th class="pb-1 text-right font-medium"><span class="max-lg:hidden">Expected gain</span><span class="lg:hidden">Gain</span></th>
+                      <th class="pb-1 text-right font-medium"><span class="max-lg:hidden">Transducers per success</span><span class="lg:hidden">Per win</span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -127,7 +142,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <p class="mt-1 opacity-60">Transducer costs per lock count: verify in game.</p>
+                <p class="mt-1 opacity-60 lg:hidden" data-test-echo-lab-reroll-plans-legend>
+                  Locks = lines locked · Cost = Transducers a try · Odds = chance to improve · Gain = expected damage gain · Per win = Transducers per success.
+                </p>
+                <p class="mt-1 opacity-60">Expected gain keeps the better of the old and new lines. Transducer costs per lock count: verify in game.</p>
               </details>
             </div>
           </template>
@@ -149,7 +167,8 @@ import { REROLL_ASSUMPTIONS, type LockPlan, type RerollAdviceResult } from "./re
 import { pickRerollFirst } from "./rerollPick";
 import EchoLabEcho from "./EchoLabEcho.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
-import { characterName, compact, lineText, pct, portrait, scoreBand, signedPct, slotLabel, substatIcon, worthwhilePlan } from "./echoLabView";
+import { shortBy, showNeed } from "../energy/energyNeed";
+import { characterName, compact, erFloorLine, lineText, pct, portrait, scoreBand, signedPct, slotLabel, substatIcon, worthwhilePlan } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
 
 const props = defineProps<{ result: BestOwnerResult; benchmarks: BenchmarkBatchResult | null; preferred?: string | null }>();
@@ -212,11 +231,40 @@ interface LineRow {
   fresh: number | null;
   advice: "lock" | "reroll" | null;
   rank: number;
+  /** an Energy Regen line the build needs to stay at its ER need */
+  erFloor: boolean;
 }
 function linesFor(slot: LabSlotSummary): LineRow[] {
   const r = resultOf(slot.slot);
-  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, advice: null, rank: 0 }));
-  return [...r.lines].sort((a, b) => a.field - b.field).map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, advice: l.advice, rank: l.rank }));
+  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, advice: null, rank: 0, erFloor: false }));
+  return [...r.lines]
+    .sort((a, b) => a.field - b.field)
+    .map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, advice: l.advice, rank: l.rank, erFloor: !!l.erFloor }));
+}
+
+/** the character's ER against the need the advice respects (every echo's advice carries the same pair) */
+const erLine = computed(() => {
+  for (const s of slots.value) {
+    const r = resultOf(s.slot);
+    if (r && r.erNeed != null) return erFloorLine(r.erNeed, r.erHave);
+  }
+  return null;
+});
+/** the sentence under an echo whose ER line the floor locks */
+function erFloorNote(slot: LabSlotSummary): string | null {
+  const r = resultOf(slot.slot);
+  const line = r?.lines.find((l) => l.erFloor);
+  if (!r || !line || r.erNeed == null) return null;
+  const keep = `Keep ${lineText(line.key, line.value)}`;
+  const need = `${showNeed(r.erNeed).toFixed(1)}%`;
+  if (r.erHave == null) return `${keep}: the build needs ${need} Energy Regen, and re-rolling this line would leave it short.`;
+  const have = `${(Math.round(r.erHave * 10) / 10).toFixed(1)}%`;
+  // how short the build would be without the line, and whether it is short already
+  const without = shortBy(r.erNeed, r.erHave - line.value).toFixed(1);
+  const already = shortBy(r.erNeed, r.erHave);
+  return already > 0
+    ? `${keep}: the build has ${have} Energy Regen against a need of ${need}, already ${already.toFixed(1)} points short; re-rolling this line would leave it ${without} points short.`
+    : `${keep}: the build has ${have} Energy Regen against a need of ${need}; re-rolling this line would leave it ${without} points short.`;
 }
 
 const planTitle = (p: LockPlan): string => (p.locks ? `Lock ${p.locks}, re-roll ${p.rerolledFields.length}` : `Re-roll all ${p.rerolledFields.length}`);
