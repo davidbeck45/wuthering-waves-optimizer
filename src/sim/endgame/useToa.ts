@@ -155,6 +155,10 @@ export function useToa() {
         onProgress: (p) => {
           if (controller === ctrl) progress.value = p;
         },
+        // the saved teams paint first (about a second); never stored, and its key never matches `wantKey`
+        onPartial: (partial) => {
+          if (controller === ctrl) check.value = partial;
+        },
       });
       if (controller !== ctrl) return;
       check.value = result;

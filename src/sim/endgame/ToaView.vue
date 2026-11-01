@@ -76,12 +76,12 @@
       <!-- tabs + actions -->
       <div class="flex flex-wrap items-center gap-2 mb-3">
         <div role="tablist" class="tabs tabs-boxed w-full sm:w-auto" data-test-toa-tabs>
-          <button v-for="t in TABS" :key="t.id" type="button" role="tab" class="tab flex-1 sm:flex-none" :class="{ 'tab-active': tab === t.id }" :aria-selected="tab === t.id" :data-test-toa-tab="t.id" @click="tab = t.id">
+          <button v-for="t in TABS" :key="t.id" type="button" role="tab" class="tab flex-1 sm:flex-none whitespace-nowrap max-sm:px-2" :class="{ 'tab-active': tab === t.id }" :aria-selected="tab === t.id" :data-test-toa-tab="t.id" @click="tab = t.id">
             {{ t.label }}<span v-if="t.id === 'plan' && plan" class="ml-1.5 tabular-nums opacity-80">{{ plan.crests }}★</span>
           </button>
         </div>
         <div class="flex items-center gap-2 ml-auto max-sm:w-full max-sm:justify-between">
-          <span v-if="check && !running" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length }} teams timed · {{ check.scanned }} solved</span>
+          <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length }} teams timed · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
           <button v-if="hasAccount" type="button" class="btn btn-sm" :disabled="running || !status.current" data-test-toa-recompute @click="compute()">
             {{ check ? "Recompute" : "Check my teams" }}
           </button>
@@ -127,7 +127,7 @@
             <div v-for="f in lowFloors" :key="f.id" class="rounded-box bg-base-200/60 px-3 py-2 text-sm leading-snug" :data-test-toa-low-floor="f.id">
               <div class="flex items-baseline gap-2">
                 <b>{{ towerName(f) }} {{ f.floor }}</b>
-                <span class="text-xs opacity-60 tabular-nums">Lv {{ f.level }} · {{ f.cost }} Vigor · {{ f.goals.map((g) => (g ? `≥${g} s` : "clear")).join(" / ") }}</span>
+                <span class="text-xs opacity-60 tabular-nums">Lv {{ f.level }} · {{ f.cost }} Vigor · {{ f.goals.map((g) => (g ? `≥${g} s left` : "clear")).join(" / ") }}</span>
               </div>
               <div class="text-xs opacity-80">{{ f.enemies.map((e) => e.name).join(", ") }}</div>
             </div>

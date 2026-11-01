@@ -45,6 +45,12 @@
         <span>{{ energyText(breakdown.spend) }} energy = one Liberation</span>
       </div>
       <ul class="en-bd__legend">
+        <li class="en-bd__item en-bd__item--head" aria-hidden="true" data-test-energy-breakdown-head>
+          <span class="en-swatch en-swatch--blank"></span>
+          <span>From</span>
+          <span class="en-bd__item-value">Energy</span>
+          <span class="en-bd__item-share">Share</span>
+        </li>
         <li v-for="(p, i) in breakdown.parts" :key="i" class="en-bd__item">
           <span class="en-swatch" :class="fillOf(p)" aria-hidden="true"></span>
           <span class="en-bd__item-name">{{ partLabel(p) }}</span>
@@ -69,7 +75,7 @@
     <!-- what it means for scores -->
     <p v-if="check.status === 'short'" class="en-bd__note">
       Substat weights count Energy Regen until {{ who }} reaches the need: while short, the deficit-aware score is
-      {{ Math.round((1 - check.factor) * 1000) / 10 }}% lower, and the next ER roll is worth {{ rollWorthText }}.
+      {{ check.short.toFixed(1) }}% lower, and the next ER roll is worth {{ rollWorthText }}.
     </p>
 
     <footer class="en-bd__foot">
@@ -197,6 +203,19 @@ const stackLabel = computed(() =>
 }
 .en-bd__item-name {
   min-width: 0;
+}
+.en-bd__item--head {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--en-ink-3);
+}
+.en-bd__item--head .en-bd__item-share {
+  color: inherit;
+}
+.en-swatch--blank {
+  visibility: hidden;
 }
 .en-bd__item-value,
 .en-bd__item-share {

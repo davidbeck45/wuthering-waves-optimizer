@@ -142,6 +142,20 @@ export interface RotationModel {
 export const isPress = (row: RunRow): boolean => !row.triggered || row.cast === "Outro";
 
 const STACKS_RE = / x(\d+)$/;
+/** a count past this is a value his buff name carries (" x6030"), not a stack count */
+const MAX_STACK_COUNT = 200;
+
+/** A held buff's raw name → the track name and its stack count: "Foo x3" → Foo, 3. A name that is only " x6030" (an
+ *  unnamed buff carrying a value) reads "Unnamed buff"; a count past `MAX_STACK_COUNT` stays in the name. */
+export function splitBuffName(rawName: string): { name: string; stacks: number | null } {
+  const m = STACKS_RE.exec(rawName);
+  if (!m) return { name: rawName.trim() || "Unnamed buff", stacks: null };
+  const base = rawName.slice(0, m.index).trim();
+  if (!base) return { name: "Unnamed buff", stacks: null };
+  const n = Number(m[1]);
+  if (n > MAX_STACK_COUNT) return { name: rawName.trim(), stacks: null };
+  return { name: base, stacks: n };
+}
 
 /** The sections as frame spans, off `sectionSeconds` (rounded to whole frames, the last one ending the fight). */
 function sectionsOf(run: RunLite, frames: number): SectionSpan[] {
@@ -373,13 +387,12 @@ export function extractRotation(run: RunLite): RotationModel {
       if (group === "self" && row.member < 0) continue;
       for (const [b, left] of row.held[field]) {
         const [rawName, source] = run.buffs[b]!;
-        const stacks = STACKS_RE.exec(rawName);
-        const name = stacks ? rawName.slice(0, stacks.index) : rawName;
+        const { name, stacks } = splitBuffName(rawName);
         const owner = group === "self" ? row.member : -1;
         const key = `${group}|${owner}|${name}|${source}`;
         let a = acc.get(key);
         if (!a) acc.set(key, (a = { group, owner, name, source, windows: [], timed: false, maxStacks: 0, first: row.frame, missing: false }));
-        if (stacks) a.maxStacks = Math.max(a.maxStacks, Number(stacks[1]));
+        if (stacks != null) a.maxStacks = Math.max(a.maxStacks, stacks);
         if (left > 0) a.timed = true;
         let o = obs.get(key);
         if (!o) obs.set(key, (o = new Map()));

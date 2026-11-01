@@ -28,6 +28,14 @@ export function characterShortName(key: string | null | undefined): string {
   return full.replace(/\s*\((?:Female|Male)\)$/, "").replace(/^Yangyang: /, "");
 }
 
+/** One team's label on every plus page (night audit "fight", F19): the main DPS first, then the others in slot order,
+ *  short names ("Xuanling", "Rover Aero"), " · " between — "Aemeath · Mornye · Lynae". */
+export function teamLabel(keys: ReadonlyArray<string | null | undefined>, mainDps?: string | null): string {
+  const ids = keys.filter((k): k is string => Boolean(k));
+  const main = mainDps && ids.includes(mainDps) ? mainDps : null;
+  return (main ? [main, ...ids.filter((k) => k !== main)] : ids).map(characterShortName).join(" · ");
+}
+
 export interface CharacterMeta {
   key: string;
   element: string | null;

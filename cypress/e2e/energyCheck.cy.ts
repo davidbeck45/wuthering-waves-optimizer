@@ -86,9 +86,9 @@ describe("energy check", () => {
       .should("be.oneOf", ["short", "tight", "ok", "noGate"]);
     cy.get(`[data-test-energy-team="${MEASURED}"] [data-test-energy-member="Cartethyia"]`)
       .invoke("text")
-      .should("match", /\d+\.\d% \/ \d+\.\d%/);
+      .should("match", /has \d+\.\d%\s*needs \d+\.\d%/);
     cy.get(`[data-test-energy-team="${MEASURED}"] [data-test-energy-member="Chisa"] [data-test-energy-status="unknown"]`).should("exist");
-    cy.get(`[data-test-energy-team="${MEASURED}"]`).should("contain.text", "wuwa_calc t");
+    cy.get(`[data-test-energy-team="${MEASURED}"]`).should("contain.text", "DPS in wuwa_calc · team t");
 
     // the breakdown opens inline: the spend's sources add up, each named in the legend
     cy.get(`[data-test-energy-team="${MEASURED}"] [data-test-energy-member="Chisa"]`).click();

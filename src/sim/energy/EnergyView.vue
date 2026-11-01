@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
+  <Nav cur-page="energy" :disable-mobile-nav="true"></Nav>
   <div class="en-ui en-page px-4 py-4 mx-auto w-full max-w-6xl" data-test-energy-page>
     <header class="en-page__head">
       <div class="min-w-0">
@@ -28,17 +28,17 @@
       <div class="en-kpi" :class="{ 'en-kpi--short': summary.shortCharacters.length }" data-test-energy-kpi-short>
         <span class="en-kpi__label"><EnergyStatusIcon status="short" class="en-kpi__icon en-kpi__icon--short" />Short on ER</span>
         <span class="en-kpi__value">{{ summary.shortCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ summary.shortCharacters.length ? summary.shortCharacters.map(nameOf).join(", ") : "every Liberation paid" }}</span>
+        <span class="en-kpi__sub">{{ summary.shortCharacters.length ? summary.shortCharacters.map(shortName).join(", ") : "every Liberation paid" }}</span>
       </div>
       <div class="en-kpi" data-test-energy-kpi-tight>
         <span class="en-kpi__label"><EnergyStatusIcon status="tight" class="en-kpi__icon en-kpi__icon--tight" />Tight · within {{ TIGHT_MARGIN }}%</span>
         <span class="en-kpi__value">{{ tightCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ tightCharacters.length ? tightCharacters.map(nameOf).join(", ") : "nobody one bad loop from late" }}</span>
+        <span class="en-kpi__sub">{{ tightCharacters.length ? tightCharacters.map(shortName).join(", ") : "nobody one bad loop from late" }}</span>
       </div>
       <div class="en-kpi" data-test-energy-kpi-crit>
         <span class="en-kpi__label">Crit Rate past 100&nbsp;%</span>
         <span class="en-kpi__value">{{ summary.overcapCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ summary.overcapCharacters.length ? summary.overcapCharacters.map(nameOf).join(", ") : "no damage wasted on crit" }}</span>
+        <span class="en-kpi__sub">{{ summary.overcapCharacters.length ? summary.overcapCharacters.map(shortName).join(", ") : "no damage wasted on crit" }}</span>
       </div>
     </section>
 
@@ -64,7 +64,7 @@
     <section v-if="teams.length" class="en-section" aria-labelledby="en-teams">
       <div class="en-section__head">
         <h2 id="en-teams" class="en-h2">Your teams</h2>
-        <span class="en-section__note">Worst first. Click a member for where their energy comes from.</span>
+        <span class="en-section__note">Worst first. Tap or click a member for where their energy comes from.</span>
       </div>
       <div v-if="teams.length > 3" class="en-filter" role="group" aria-label="Which of your teams">
         <button
@@ -110,7 +110,7 @@
               <td class="cell--who">
                 <div class="flex items-center gap-2 min-w-0">
                   <img class="en-face" :src="characterPortraitUrl(r.id)" alt="" loading="lazy" />
-                  <span class="font-semibold truncate">{{ nameOf(r.id) }}</span>
+                  <span class="font-semibold truncate">{{ shortName(r.id) }}</span>
                 </div>
               </td>
               <td class="text-right tabular-nums font-semibold cell--need" data-label="Needs">{{ needText(r.floor.need) }}</td>
@@ -118,7 +118,7 @@
               <td class="cell--status">
                 <EnergyChip :check="r.check" :character-id="r.id" :clickable="Boolean(r.view?.checks)" @open="r.view && (sheet = { view: r.view, id: r.id })" />
               </td>
-              <td class="text-sm cell--team" :title="r.floor.setBy === 'kit' ? 'wuwa_calc keeps this kit at a minimum Energy Regen in every team: it turns ER into buffs' : r.floor.team.name">
+              <td class="cell--team" :title="r.floor.setBy === 'kit' ? 'wuwa_calc keeps this kit at a minimum Energy Regen in every team: it turns ER into buffs' : r.floor.team.name">
                 <!-- a kit floor is the same in every team: no team "sets" it -->
                 <span v-if="r.floor.setBy === 'kit'" class="en-floors__team">the kit's own floor</span>
                 <span v-else class="en-floors__team">
@@ -128,7 +128,7 @@
                   <span class="truncate">with {{ r.mates.map(shortName).join(" + ") }}</span>
                 </span>
                 <span class="en-floors__why">
-                  {{ r.floor.setBy === "kit" ? "ER turns into buffs" : `the ${r.view?.energy?.teamKey ?? "team's"} loop` }}<template v-if="r.floor.all.length > 1"> · {{ r.floor.all.length }} teams<template v-if="r.floor.setBy !== 'kit'"> ({{ rangeText(r.floor.all) }})</template></template>
+                  {{ r.floor.setBy === "kit" ? "ER turns into buffs" : "that team's wuwa_calc loop" }}<template v-if="r.floor.all.length > 1"> · {{ r.floor.all.length }} teams<template v-if="r.floor.setBy !== 'kit'"> ({{ rangeText(r.floor.all) }})</template></template>
                 </span>
               </td>
             </tr>
@@ -173,6 +173,7 @@
           <button v-if="scan.status !== 'running'" type="button" class="btn btn-xs btn-ghost ml-auto" data-test-energy-rescan @click="energy.scanAll()">Scan for more</button>
         </div>
         <p v-if="scan.status === 'done' && scan.message" class="text-xs text-warning">{{ scan.message }}</p>
+        <p class="en-list__legend" data-test-energy-checked-legend>Each member: the ER their build <b>has</b> / the ER this team's loop <b>needs</b>, then how it stands.</p>
         <ul class="en-list" data-test-energy-checked>
           <li v-for="t in shownChecked" :key="t.id" class="en-list__row" :data-test-energy-checked-team="t.key">
             <div class="en-list__team">
@@ -181,11 +182,11 @@
               </div>
               <div class="min-w-0">
                 <div class="en-list__name">{{ t.name }}</div>
-                <div class="en-list__meta">{{ t.energy?.teamKey }} · <span class="tabular-nums">{{ intText(t.energy?.total) }}</span> DPS</div>
+                <div class="en-list__meta"><span class="tabular-nums">{{ intText(t.energy?.total) }}</span> DPS in wuwa_calc · team {{ t.energy?.teamKey }}</div>
               </div>
             </div>
             <div class="en-list__chips">
-              <EnergyChip v-for="c in t.checks ?? []" :key="c.characterId" :check="c" :label="nameOf(c.characterId)" :character-id="c.characterId" compact clickable @open="sheet = { view: t, id: c.characterId }" />
+              <EnergyChip v-for="c in t.checks ?? []" :key="c.characterId" :check="c" :label="shortName(c.characterId)" :character-id="c.characterId" compact clickable @open="sheet = { view: t, id: c.characterId }" />
             </div>
           </li>
         </ul>
@@ -232,7 +233,8 @@ import EnergyChip from "./EnergyChip.vue";
 import EnergySheet from "./EnergySheet.vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
 import EnergyTeamCard from "./EnergyTeamCard.vue";
-import { haveText, intText, nameOf, needText, pctText } from "./energyFormat";
+import { haveText, intText, needText, pctText } from "./energyFormat";
+import { characterShortName } from "../display/names";
 import { checkOf, erRoll, OVERCAP_FLAG, overcapWeight, showNeed, TIGHT_MARGIN } from "./energyNeed";
 import { useEnergyNeeds, type TeamView } from "./useEnergyNeeds";
 import "../phone-tables.css";
@@ -324,7 +326,8 @@ const scan = energy.scan;
 const sheet = ref<{ view: TeamView; id: string } | null>(null);
 
 const FLOOR_RANK: Record<string, number> = { short: 0, tight: 1, ok: 2, noGate: 3, unknown: 4 };
-const shortName = (id: string): string => nameOf(id).split(":").pop()!.trim();
+/** one name per character on the page ("Xuanling", "Rover Aero"): display/names.ts, as the other plus pages */
+const shortName = (id: string): string => characterShortName(id);
 const floorRows = computed(() =>
   [...energy.floors.value.values()]
     .map((floor) => {
@@ -579,6 +582,10 @@ const shownChecked = computed(() => (showAll.value ? filtered.value : filtered.v
 .en-list__meta {
   font-size: 0.72rem;
   color: var(--en-ink-3);
+}
+.en-list__legend {
+  font-size: 0.75rem;
+  color: var(--en-ink-2);
 }
 .en-list__chips {
   display: flex;

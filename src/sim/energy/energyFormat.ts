@@ -1,5 +1,5 @@
 // Wuthering Tools+ — the energy check's words and numbers for the UI (chips, breakdown, page). Pure.
-import { getCharacterRosterDisplayName } from "../../characters/characters";
+import { characterShortName } from "../display/names";
 import { showHave, showNeed, type EnergyStatus } from "./energyNeed";
 import type { MeasureState } from "./useEnergyNeeds";
 import { NOT_MEASURED_TEXT } from "./energyCheck";
@@ -9,7 +9,8 @@ export const haveText = (n: number | null | undefined): string => (n == null ? "
 export const needText = (n: number | null | undefined): string => (n == null ? "—" : pctText(showNeed(n)));
 export const intText = (n: number | null | undefined): string => (n == null || !Number.isFinite(n) ? "—" : Math.round(n).toLocaleString());
 export const energyText = (n: number): string => (Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1));
-export const nameOf = (id: string): string => getCharacterRosterDisplayName(id);
+/** one name per character on every energy surface ("Xuanling", not "Yangyang: Xuanling" beside it): display/names.ts */
+export const nameOf = (id: string): string => characterShortName(id);
 
 export const STATUS_LABEL: Record<EnergyStatus, string> = {
   short: "Short",

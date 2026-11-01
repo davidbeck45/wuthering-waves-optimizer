@@ -94,6 +94,8 @@ spans the screen less a margin and wraps; see that section below.
 `phone.css` § 16–21 came from the 2026-10-31 shell audit (the Ask button and plus bars, Settings › Backup & Restore,
 the tuning planner, the What's new pictures, the v3 calculator header, Wavescan loadout cards, light-theme Forte icons;
 "Shell refinements" below).
+`phone.css` § 22–23 came from the 2026-10-31 fight-pages audit (compact rotation action cards, tap targets on /endgame,
+/rotation and /energy; "Fight pages, refined" below), with its edits to § 2, § 8, § 9 and § 13.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -2327,3 +2329,37 @@ Things learned:
 - At 360 px and 130 % text Ryan's v3 header fits by 0.2 px; in Electron a 375 px window gives a 360 px page after the
   scrollbar, which is the honest way to test that width at 130 %.
 
+## Fight pages, refined — `/energy`, `/endgame`, `/rotation`, Teams, the calculator's Rotations panel (night audit "fight", 2026-10-31)
+
+A pass over the fight pages from the 2026-10-31 night audit (findings F1–F20, report
+`wto-wt/night/reports/audit-fight.md`), phones first (412 px / 130 % text, and 360 px). Most of it is CSS in
+`phone.css`, keyed by Ryan's class names and `data-test` attributes, so his files only carry two one-line hooks.
+
+| Piece | Role |
+|---|---|
+| `EnergyView.vue` / `RotationView.vue` `<Nav cur-page>` | `energy` / `rotation` (was `rankings`): the v3 phone header and the Tools+ menu name the right page |
+| `phone.css` § 8 | team names in the Teams summary tiles and cards (every synced one starts "wuwa_calc …") clamp to 3 / 2 lines instead of one; the calculator's Rotations summary tiles the same |
+| `phone.css` § 9 | the Teams editor: the full header's team name gets its own line (it had 0 px beside the two `shrink-0` buttons, which pushed a 360 px page to 377 px); the stuck header becomes avatars + DPS and the two buttons (~85 px, was 270–350 px); member cards caption each stat (HP … Energy Regen, `::before` from the stat's `data-test`) and go two columns below 400 px; the build button grows instead of drawing over Configure / Import; less padding |
+| `phone.css` § 2 | the v3 rotation detail's name input on its own full-width line (it shrank to "Aem"); the Teams editor's name input full width |
+| `phone.css` § 13 | the live result bar collapsed on scroll keeps its headline label as one small line, so the number is never bare (the name's room beside it, and the label's width, are § 19's from "Shell refinements"; this track's own width rules were dropped at the merge) |
+| `phone.css` § 22 | action cards (`CalculatorRotationAction.vue`, calculator and Teams editor): the name on its own line under drag · # · x, Delete in the card's corner, smaller chips and buttons sharing rows, "⚙ Buffs" / "Enemy" / "✓ Synced" short labels (`content: "…" / ""`, so screen readers still read his full words), the "▮▮ 0" counter captioned "stat bonuses". 337–460 px a card → 235–300 px; the calculator's 19-action rotation 8,252 → 6,434 px |
+| `phone.css` § 23 | tap targets on the plus fight pages to ~40 px: ToA effect chips, Calibrate's select / time box / clock switch / Log, the picker's Cue card / Timeline, /energy's filters; the play-mode dots keep their look and get a taller transparent hit area |
+| (Ask button room) | pages end with room for the floating Ask button: § 16 from "Shell refinements" does it (this track's own `.content::after` spacer was dropped at the merge, so page ends don't get the room twice) |
+| `presets/RotationsEmptyState.vue` (one line in `CalculatorRotations.vue`) | the v3 Rotations panel with no rotation: what a rotation is, and List presets (with the count) / Import / Create on screen instead of behind ⋯ |
+| `teamLinks/teamLinks.ts` + `TeamPlusLinks.vue` (one line in `TeamRotationTeamEditor.vue`, beside `AutoTeamBuffsToggle`) | a saved team in the Teams editor: its **wuwa_calc** DPS at the account, labelled as that engine's against the editor's own (the app's calculator over the action list), and Cue card / Fight timeline (`rotationPath({ kind: "chars" })`) / Energy check / ToA check. It reads the energy check's measurement of the composition (`useEnergyNeeds().measure` + `viewOf`, cached per account and engine commit — no `activate()`, so no store watchers or builds' ER pass); shown only once wuwa_calc ran it, hidden for a composition that is not his; members wuwa_calc ran without a build of the player's are named (`notSetUpText`, /rotation's wording), so "at your account" is not read as theirs |
+| `toaRun.ts` `runToaCheck(… onPartial)` + `useToa.ts` | the saved teams first: solved and timed on their own and painted as a `partial` check (never stored; its key never matches), then every other fieldable team; the final check equals the one-pass run (test). First team rows on David's export: **1.5 s** (was 10.6 s); the full check 10 s as before |
+| `display/names.ts` `teamLabel` | one team label: main DPS first, short names ("Xuanling", "Rover Aero") — ToA rows, plan and Calibrate, the /rotation title; `energyFormat.nameOf` uses the short names too |
+| words | /endgame: "Enemy RES · lower takes more damage" over the RES chips, "≥90 s left" on the low floors, "m:ss left" in Calibrate, darker crest stars on light themes, "· your saved teams only" on a partial check; /rotation: "% of DPS" (phones: one "share of team DPS" caption), a visible "Substats" caption, "Move to the next swap by itself, at this share of wuwa_calc's speed", "Damage dealt · whole fight" on the phone timeline, "Not a team link" for a hash that is no team code (a decodable but retired code keeps its message and its Team rankings button); /energy: "has 110.8% needs 115.2%" on full chips and a has / needs legend over the scan list, "Tap or click", "367,567 DPS in wuwa_calc · team t269" instead of a bare key, "that team's wuwa_calc loop", legend headers From / Energy / Share in the breakdown, the deficit sentence from the printed figures (4.4 %, not 4.3 %), the floor table's team cell at its row's size |
+| `rotation/extract.ts` `splitBuffName` | a held buff named only " x6030" is "Unnamed buff", not 6,030 stacks of nothing; a count past 200 stays in the name |
+
+Gates: `cypress/e2e/fightPages.cy.ts` (the Teams editor's links and engine DPS for a wuwa_calc composition and nothing
+for a hand-built one, the empty Rotations panel and its presets, the phone header on /energy and /rotation, has / needs
+on a chip, a bad /rotation link); `phoneLayout.cy.ts` (/endgame at 360 px / 130 % too, every ToA tab on one line inside
+its pill; the v3 calculator's name width, rotation name input and action cards; the v3 Teams editor at 360 and 412 px:
+team name width, stat captions inside their columns, build button above the join, action card heights);
+`toa.test.ts` (saved teams first, each team solved and timed once, the final check equal to the plain run),
+`rotation.test.ts` (`splitBuffName`), `teamLinks.test.ts`, `names.test.ts` (`teamLabel`).
+
+Not changed, and why: the stuck Teams header isn't measured in Cypress (its IntersectionObserver never fires there —
+Ryan's own sticky test is red the same way; phone shots stand in); `TeamRotationSummary.vue` still computes without
+plus's team context (sync report); the "wuwalab" credit in Ryan's frame-data note is his text.

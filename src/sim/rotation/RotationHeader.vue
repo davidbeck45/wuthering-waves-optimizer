@@ -1,5 +1,7 @@
 <template>
   <div class="flex flex-col gap-3" data-test-rotation-header>
+    <!-- phones: the share column is too narrow to say "of DPS" on every row, so it is said once -->
+    <div class="sm:hidden -mb-2 flex justify-end text-[0.7rem] opacity-60" data-test-rotation-share-caption>share of team DPS</div>
     <div class="grid gap-2 grid-cols-1 sm:grid-cols-3">
       <div
         v-for="m in run.members"
@@ -22,7 +24,7 @@
             <div class="h-1.5 flex-1 rounded-full bg-base-300 overflow-hidden">
               <div class="h-full rv-hue-dot" :style="{ width: `${Math.round(m.share * 100)}%`, '--hue': hueOf(m.name) }"></div>
             </div>
-            <span class="text-[11px] tabular-nums opacity-70 shrink-0">{{ Math.round(m.share * 100) }} %</span>
+            <span class="text-[11px] tabular-nums opacity-70 shrink-0">{{ Math.round(m.share * 100) }} %<span class="max-sm:hidden"> of DPS</span></span>
           </div>
         </div>
       </div>
@@ -45,6 +47,7 @@
             </option>
           </select>
         </label>
+        <span class="text-sm opacity-70 max-sm:-mb-1" aria-hidden="true">Substats</span>
         <div class="join max-sm:w-full" role="group" aria-label="Substats" data-test-rotation-subs>
           <button
             v-for="s in SPREADS"

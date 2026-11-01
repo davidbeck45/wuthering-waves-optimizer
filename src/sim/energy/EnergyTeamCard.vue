@@ -8,7 +8,7 @@
         <h3 class="en-card__title" :title="view.name">{{ view.name }}</h3>
         <p class="en-card__meta">
           <template v-if="view.energy">
-            wuwa_calc {{ view.energy.teamKey }} · <span class="tabular-nums">{{ intText(view.energy.total) }}</span> DPS
+            <span class="tabular-nums">{{ intText(view.energy.total) }}</span> DPS in wuwa_calc · team {{ view.energy.teamKey }}
             <template v-if="view.energy.variants > 1"> · best of {{ view.energy.variants }} loadouts</template>
           </template>
           <template v-else>{{ view.characterIds.map(nameOf).join(" · ") }}</template>

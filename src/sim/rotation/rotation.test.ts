@@ -6,7 +6,7 @@ import fixture from "../engine/__fixtures__/runLite.json";
 import type { RunLite, RunRow } from "../engine/rileyRun";
 import { cuePlan, durationText, loopsIn, nextStep, prevStep, visitPresses } from "./cueModel";
 import { DISCORD_LIMIT, discordMessage, discordText } from "./exportText";
-import { clockOf, covered, damageCovered, extractRotation, isPress, union, uptime } from "./extract";
+import { clockOf, covered, damageCovered, extractRotation, isPress, splitBuffName, union, uptime } from "./extract";
 import { buildRotationHash, parseRotationHash, picksOfRowKey, rotationPath, targetId } from "./hash";
 import { advancePlayer, backPlayer, elapsedOf, expectedOf, gapText, initPlayer, isDue, pausePlayer, resumePlayer } from "./player";
 import { DEFAULT_PREFS, readPrefs, ROTATION_PREFS_KEY, writePrefs } from "./prefs";
@@ -165,6 +165,20 @@ describe("extract on the fixture", () => {
     expect(bar.permanent).toBe(true);
     expect(bar.sourceMember).toBe(1);
     expect(uptime(bar, 0, m.frames)).toBe(1);
+  });
+
+  it("never leaves a buff without a name: ' x6030' is an unnamed buff carrying a value, not 6030 stacks", () => {
+    expect(splitBuffName("Foo x3")).toEqual({ name: "Foo", stacks: 3 });
+    expect(splitBuffName("Foo")).toEqual({ name: "Foo", stacks: null });
+    expect(splitBuffName(" x6030")).toEqual({ name: "Unnamed buff", stacks: null });
+    expect(splitBuffName("")).toEqual({ name: "Unnamed buff", stacks: null });
+    expect(splitBuffName("Foo x6030")).toEqual({ name: "Foo x6030", stacks: null });
+    expect(splitBuffName("Foo x200")).toEqual({ name: "Foo", stacks: 200 });
+    const rows = [0, 1].map((k) => ({ member: 0, action: "Basic - A 1", cast: "Basic", frame: k * 60, frames: 60, held: { local: [[0, 120] as [number, number]], global: [], enemy: [[1, 120] as [number, number]] } }));
+    const run = synthetic(rows, { buffs: [[" x6030", "Shorekeeper"], [" x6736", "Shorekeeper"]] });
+    const m = extractRotation(run);
+    expect(m.buffs.map((b) => b.name)).toEqual(["Unnamed buff", "Unnamed buff"]);
+    expect(m.buffs.every((b) => b.maxStacks === 0)).toBe(true);
   });
 
   it("draws a monotonic damage curve that ends on the fight's damage, and extrapolates kills at the last loop's DPS", () => {

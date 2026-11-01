@@ -67,6 +67,8 @@ export interface ToaCheck {
   /** fieldable teams solved, and why the rest were skipped */
   scanned: number;
   skipped: Record<string, number>;
+  /** the saved teams' first pass, painted while the rest solves (never stored, never adopted as the check) */
+  partial?: boolean;
 }
 
 export interface Progress {
@@ -178,7 +180,10 @@ export function floorResults(season: ToaSeason, team: CandidateTeam, curves: Fig
 const failed = (season: ToaSeason, team: CandidateTeam, error: string): FloorResult[] =>
   timedFloors(season).map((f) => ({ floorId: f.id, teamId: team.id, seconds: null, extrapolated: false, crests: 0, splits: [], dps: null, error }));
 
-/** The whole check: scan → solve → time every candidate on every timed floor. */
+/** The whole check: scan → solve → time every candidate on every timed floor. With `onPartial`, the player's saved
+ *  teams go first — solved and timed on their own (about a second), handed over as a `partial` check so the page can
+ *  paint them — then the rest of the fieldable teams; the final check is the same as without it (the saved teams'
+ *  curves are reused only where the full pass picks the same row). */
 export async function runToaCheck(
   runner: ToaRunner,
   season: ToaSeason,
@@ -189,6 +194,8 @@ export async function runToaCheck(
     limit?: number;
     signal?: AbortSignal;
     onProgress?: (p: Progress) => void;
+    /** the saved teams' results first (see above) */
+    onPartial?: (check: ToaCheck) => void;
     now?: () => number;
   },
 ): Promise<ToaCheck> {
@@ -202,34 +209,70 @@ export async function runToaCheck(
   opts.onProgress?.({ phase: "teams", done: 0, total: 1, label: "Reading wuwa_calc's teams" });
   const teams = await runner.teams(signal);
   const keys = fieldableKeys(teams, account);
-  const solves = keys.length
-    ? await runner.solveMine(keys, { account, signal, onProgress: (done, total) => opts.onProgress?.({ phase: "solve", done, total, label: "Solving the teams you can field at your account" }) })
-    : [];
-  const skipped: Record<string, number> = {};
-  for (const s of solves) if (s.status !== "ok") skipped[s.reason ?? "error"] = (skipped[s.reason ?? "error"] ?? 0) + 1;
-  const candidates = pickCandidates(solves, saved, limit);
   const { profiles, byFloor } = seasonProfiles(season);
-  const results: FloorResult[] = [];
-  for (let i = 0; i < candidates.length; i++) {
-    const team = candidates[i]!;
-    opts.onProgress?.({ phase: "floors", done: i, total: candidates.length, label: `Fighting each floor with ${team.names.join(" · ")}` });
-    try {
-      const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal });
-      results.push(...floorResults(season, team, curves, byFloor));
-    } catch (e) {
-      if (signal?.aborted) throw e;
-      results.push(...failed(season, team, e instanceof Error ? e.message : String(e)));
+  const key = checkKey(runner.commit, account, season, [...saved.keys()], limit);
+  const now = opts.now ?? Date.now;
+  /** each timed candidate's results, by composition and row: the full pass reuses the saved teams' first pass */
+  const timed = new Map<string, FloorResult[]>();
+  async function time(candidates: CandidateTeam[], label: (team: CandidateTeam) => string): Promise<FloorResult[]> {
+    const results: FloorResult[] = [];
+    for (let i = 0; i < candidates.length; i++) {
+      const team = candidates[i]!;
+      const kept = timed.get(`${team.id}|${team.rowKey}`);
+      if (kept) {
+        results.push(...kept);
+        continue;
+      }
+      opts.onProgress?.({ phase: "floors", done: i, total: candidates.length, label: label(team) });
+      let mine: FloorResult[];
+      try {
+        const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal });
+        mine = floorResults(season, team, curves, byFloor);
+      } catch (e) {
+        if (signal?.aborted) throw e;
+        mine = failed(season, team, e instanceof Error ? e.message : String(e));
+      }
+      timed.set(`${team.id}|${team.rowKey}`, mine);
+      results.push(...mine);
+    }
+    return results;
+  }
+  const skippedOf = (solves: MineSolve[]): Record<string, number> => {
+    const skipped: Record<string, number> = {};
+    for (const s of solves) if (s.status !== "ok") skipped[s.reason ?? "error"] = (skipped[s.reason ?? "error"] ?? 0) + 1;
+    return skipped;
+  };
+
+  // 1. the saved teams on their own, when there are others to solve after them
+  const byKey = new Map(teams.map((t) => [t.key, t]));
+  const savedKeys = opts.onPartial ? keys.filter((k) => saved.has(teamSignature(byKey.get(k)!.members.map((m) => m.appKey)))) : [];
+  const solves: MineSolve[] = [];
+  if (opts.onPartial && savedKeys.length && savedKeys.length < keys.length) {
+    const first = await runner.solveMine(savedKeys, { account, signal, onProgress: (done, total) => opts.onProgress?.({ phase: "solve", done, total, label: "Solving your saved teams first" }) });
+    solves.push(...first);
+    const mine = pickCandidates(first, saved, limit).filter((c) => c.saved);
+    if (mine.length) {
+      const results = await time(mine, (team) => `Fighting each floor with your ${team.names.join(" · ")}`);
+      opts.onPartial({ key: `${key}|partial`, season: season.season, computedAt: now(), candidates: mine, results, scanned: first.length, skipped: skippedOf(first), partial: true });
     }
   }
+
+  // 2. every other team the account can field
+  const done = new Set(solves.map((s) => s.teamKey));
+  const rest = keys.filter((k) => !done.has(k));
+  if (rest.length)
+    solves.push(...(await runner.solveMine(rest, { account, signal, onProgress: (d, total) => opts.onProgress?.({ phase: "solve", done: d, total, label: "Solving the teams you can field at your account" }) })));
+  const candidates = pickCandidates(solves, saved, limit);
+  const results = await time(candidates, (team) => `Fighting each floor with ${team.names.join(" · ")}`);
   opts.onProgress?.({ phase: "floors", done: candidates.length, total: candidates.length, label: "Done" });
   return {
-    key: checkKey(runner.commit, account, season, [...saved.keys()], limit),
+    key,
     season: season.season,
-    computedAt: (opts.now ?? Date.now)(),
+    computedAt: now(),
     candidates,
     results,
     scanned: solves.length,
-    skipped,
+    skipped: skippedOf(solves),
   };
 }
 

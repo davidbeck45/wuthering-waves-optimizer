@@ -49,7 +49,7 @@
     <!-- damage -->
     <div class="rounded-box border border-base-300 bg-base-100 px-3 py-2" data-test-rotation-cumulative>
       <div class="flex flex-wrap items-baseline justify-between gap-x-2">
-        <span class="text-xs uppercase tracking-wider opacity-60 whitespace-nowrap">Damage dealt</span>
+        <span class="text-xs uppercase tracking-wider opacity-60 whitespace-nowrap">Damage dealt <span class="normal-case tracking-normal">· whole fight</span></span>
         <span class="text-sm font-bold tabular-nums whitespace-nowrap">{{ compact(fightTotal) }} <span class="font-normal opacity-60">in {{ durationText(model.frames / model.fps) }}</span></span>
       </div>
       <svg viewBox="0 0 100 40" preserveAspectRatio="none" class="mt-1 block w-full h-16 text-primary" aria-hidden="true">

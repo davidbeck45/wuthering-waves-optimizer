@@ -1,7 +1,7 @@
 // Wuthering Tools+: display names for registry keys (the /my-rankings audit found "EverbrightPolestar" and
 // "RoverAeroFemale" on screen).
 import { describe, expect, it } from "vitest";
-import { characterDisplayName, characterMeta, characterShortName, elementColor, isRosterCharacter, weaponDisplayName, weaponIconUrl, weaponMeta } from "./names";
+import { characterDisplayName, characterMeta, characterShortName, elementColor, isRosterCharacter, teamLabel, weaponDisplayName, weaponIconUrl, weaponMeta } from "./names";
 
 describe("display names", () => {
   it("names characters the way the pickers do, every Rover form alike", () => {
@@ -36,5 +36,12 @@ describe("display names", () => {
     expect(weaponDisplayName("SomeNewBlade")).toBe("Some New Blade");
     expect(weaponDisplayName(null)).toBe("");
     expect(weaponIconUrl("RedSpring")).toMatch(/\/weapons\/RedSpring\.png$/);
+  });
+
+  it("labels a team the same way on every plus page: main DPS first, short names", () => {
+    expect(teamLabel(["Mornye", "Lynae", "Aemeath"], "Aemeath")).toBe("Aemeath · Mornye · Lynae");
+    expect(teamLabel(["Mornye", "Lynae", "Aemeath"])).toBe("Mornye · Lynae · Aemeath");
+    expect(teamLabel(["Mornye", null, "Aemeath"], "Lynae")).toBe("Mornye · Aemeath");
+    expect(teamLabel(["RoverAeroFemale", "Sanhua", "Cartethyia"], "Cartethyia")).toBe("Cartethyia · Rover Aero · Sanhua");
   });
 });

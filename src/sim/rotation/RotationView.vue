@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
+  <Nav cur-page="rotation" :disable-mobile-nav="true"></Nav>
   <div class="rotation-page px-3 sm:px-4 py-4 mx-auto w-full max-w-6xl" data-test-rotation-page>
     <RotationPicker
       v-if="!parsed.target"
@@ -61,7 +61,7 @@
           <div class="text-sm">{{ problemText }}</div>
         </div>
         <div class="flex flex-wrap gap-2">
-          <a v-if="problem.kind === 'code' && parsed.target?.kind === 'code'" :href="`/rankings#team=${encodeURIComponent(parsed.target.code)}`" class="btn btn-sm" @click.prevent="openRankings(parsed.target.code)">Open on Team rankings</a>
+          <a v-if="problem.kind === 'code' && parsed.target?.kind === 'code' && codeReadable" :href="`/rankings#team=${encodeURIComponent(parsed.target.code)}`" class="btn btn-sm" @click.prevent="openRankings(parsed.target.code)">Open on Team rankings</a>
           <RouterLink v-if="problem.kind === 'noBuild'" to="/rankings" class="btn btn-sm">Team rankings at fixed tiers</RouterLink>
           <RouterLink v-if="problem.kind === 'unknownTeam'" to="/rankings" class="btn btn-sm">Find it on Team rankings</RouterLink>
           <button v-if="problem.kind === 'error'" type="button" class="btn btn-sm" data-test-rotation-retry @click="reload">Retry</button>
@@ -108,6 +108,7 @@ import { computed, onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
+import { teamLabel } from "../display/names";
 import { rileyClient } from "../engine/rileyClient";
 import type { RileyTeamInfo, SubsMode } from "../engine/rileyRun";
 import { useRileyAccount } from "../engine/useRileyAccount";
@@ -117,6 +118,7 @@ import { readPrefs, writePrefs } from "./prefs";
 import RotationHeader from "./RotationHeader.vue";
 import RotationPicker from "./RotationPicker.vue";
 import RotationTimeline from "./RotationTimeline.vue";
+import { membersOfCode } from "./teamCode";
 import { useRotationRun } from "./useRotationRun";
 import "./rotation.css";
 
@@ -164,7 +166,8 @@ const notOwnedText = computed(() => {
     ? `${who} ${verb} not set up in the calculator: the Team rankings row you opened runs ${worn}, not your account's state.`
     : `Not fieldable at your account yet: ${who} ${verb} not set up in the calculator, so wuwa_calc runs ${worn}.`;
 });
-const names = computed(() => run.value?.members.map((m) => m.name).join(" · ") ?? "");
+// every plus page names a team the same way: main DPS first, short names (display/names.ts teamLabel)
+const names = computed(() => (run.value ? teamLabel(run.value.members.map((m) => m.appKey), run.value.members.find((m) => m.mainDps)?.appKey) : ""));
 const heading = computed(() => names.value || "Rotation");
 // the spread the run wore: a /rankings row carries its own (mixed where its members differ)
 const spreadLabel = computed(() => {
@@ -193,9 +196,11 @@ const phaseText = computed(() =>
       ? `Solving at your account${progress.value.total > 1 ? ` (${progress.value.done} of ${progress.value.total} loadouts)` : ""}…`
       : "Tracing the rotation frame by frame…",
 );
+/** a /rankings team code it can decode (a retired team), against garbage in the hash */
+const codeReadable = computed(() => parsed.value.target?.kind === "code" && membersOfCode(parsed.value.target.code) !== null);
 const problemTitle = computed(() =>
   ({
-    code: "A team code this engine does not know",
+    code: codeReadable.value ? "A team code this engine does not know" : "Not a team link",
     notInApp: "Not released in this app",
     noBuild: "Not fieldable at your account",
     unknownTeam: "Not a wuwa_calc rotation",

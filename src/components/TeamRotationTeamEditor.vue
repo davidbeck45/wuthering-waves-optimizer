@@ -56,6 +56,7 @@
             </li>
           </AppOverflowMenu>
         </div>
+        <TeamPlusLinks :character-ids="team.characterIds" />
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div
@@ -447,6 +448,7 @@ import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
 import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
 import AutoTeamBuffsToggle from "../sim/teamContext/AutoTeamBuffsToggle.vue"; // Wuthering Tools+
+import TeamPlusLinks from "../sim/teamLinks/TeamPlusLinks.vue"; // Wuthering Tools+
 import { ref as refPlus, watch as watchPlus } from "vue"; // Wuthering Tools+
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 

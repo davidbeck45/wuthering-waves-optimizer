@@ -9,10 +9,10 @@
             <div class="flex items-baseline gap-2">
               <span class="text-4xl font-bold tabular-nums leading-none" data-test-toa-plan-crests>{{ plan.crests }}</span>
               <span class="text-lg opacity-60 tabular-nums">/ {{ plan.maxCrests }}</span>
-              <span class="text-warning text-xl" aria-hidden="true">★</span>
+              <span class="toa-star text-warning text-xl" aria-hidden="true">★</span>
             </div>
           </div>
-          <div class="text-sm leading-snug min-w-[16rem] flex-1">
+          <div class="text-sm leading-snug min-w-0 sm:min-w-[16rem] flex-1 max-sm:basis-full">
             <div><b>{{ timedFilled }}</b> of {{ timedTotal }} timed stages and <b>{{ spareFilled }}</b> of {{ spareTotal }} low floors seated; every resonator within {{ vigor }} Vigor.</div>
             <div class="text-xs opacity-70 mt-0.5">
               Vigor: {{ vigor }} per resonator for the whole zone, side floors 1 / 2 / 3 / 4, Hazard floors 5 —
@@ -46,13 +46,13 @@
               <template v-if="stageOf(f.id)?.members.length">
                 <ToaPortraits :keys="stageOf(f.id)!.members" :main="mainOf(f.id)" size="2rem" />
                 <div class="min-w-0 flex-1 leading-tight max-sm:order-last max-sm:basis-full max-sm:pl-12">
-                  <div class="text-[0.8rem] sm:text-sm line-clamp-2 break-words" :title="namesOf(stageOf(f.id)!.members)">{{ namesOf(stageOf(f.id)!.members) }}</div>
+                  <div class="text-[0.8rem] sm:text-sm line-clamp-2 break-words" :title="teamLabel(stageOf(f.id)!.members, mainOf(f.id))">{{ teamLabel(stageOf(f.id)!.members, mainOf(f.id)) }}</div>
                   <div class="text-[0.7rem] opacity-60 truncate max-sm:hidden">{{ stageNote(f.id) }}</div>
                 </div>
                 <div class="sm:hidden flex-1 min-w-0 text-right text-[0.7rem] opacity-70 truncate">{{ stageNote(f.id) }}</div>
               </template>
               <div v-else class="min-w-0 flex-1 text-sm opacity-60">{{ f.hp ? "no team left with the Vigor" : "nobody left with the Vigor" }}</div>
-              <div class="text-sm shrink-0 tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
+              <div class="text-sm shrink-0 tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
                 {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-30">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span>
               </div>
             </li>
@@ -82,7 +82,7 @@
           <p class="text-xs opacity-70">The best plan if a stage can't have the team picked for it.</p>
           <ul class="flex flex-col gap-1.5 text-sm" data-test-toa-alternatives>
             <li v-for="a in alternatives.slice(0, 6)" :key="a.stageId" class="leading-snug">
-              <b>{{ floorLabel(a.stageId) }}</b> without {{ namesOf(a.without.members) }}:
+              <b>{{ floorLabel(a.stageId) }}</b> without {{ optionLabel(a.without) }}:
               <span :class="a.crestDelta < 0 ? 'text-error' : 'text-success'">{{ a.crestDelta === 0 ? "same crests" : `${a.crestDelta} crest${Math.abs(a.crestDelta) === 1 ? "" : "s"}` }}</span><span class="opacity-70">, {{ a.secondsDelta >= 0 ? "+" : "−" }}{{ Math.abs(a.secondsDelta).toFixed(1) }} s</span>
               <span class="opacity-70"> — {{ replacement(a) }}</span>
             </li>
@@ -96,7 +96,7 @@
           <p class="text-xs opacity-70">Picked teams within 20 s of one more crest.</p>
           <ul class="flex flex-col gap-1.5 text-sm" data-test-toa-near-misses>
             <li v-for="m in misses" :key="m.stageId" class="leading-snug">
-              <b>{{ floorLabel(m.stageId) }}</b>: {{ namesOf(m.option.members) }} is <b class="tabular-nums">{{ m.faster.toFixed(1) }} s</b> short of crest {{ m.crest }}
+              <b>{{ floorLabel(m.stageId) }}</b>: {{ optionLabel(m.option) }} is <b class="tabular-nums">{{ m.faster.toFixed(1) }} s</b> short of crest {{ m.crest }}
             </li>
             <li v-if="!misses.length" class="opacity-60">{{ plan.crests === plan.maxCrests ? "Every stage at 3 crests." : "None within 20 s." }}</li>
           </ul>
@@ -112,6 +112,7 @@
 // picked teams close to one more crest.
 import { computed } from "vue";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
+import { teamLabel } from "../display/names";
 import { clockText } from "./crests";
 import { floorLabel, type ToaSeason } from "./toaData";
 import type { CandidateTeam } from "./toaRun";
@@ -138,7 +139,8 @@ const mainOf = (id: string): string | null => {
   return o ? teams.value.get(o.id)?.mainDps ?? null : null;
 };
 const nameOf = (k: string): string => getCharacterRosterDisplayName(k);
-const namesOf = (keys: string[]): string => keys.map(nameOf).join(" · ");
+/** a plan option as every plus page names a team (main DPS first, short names) */
+const optionLabel = (o: { id: string; members: string[] }): string => teamLabel(o.members, teams.value.get(o.id)?.mainDps);
 const paced = computed(() => props.usePace && props.hasClears);
 const timedTotal = computed(() => props.plan.assignments.filter((a) => a.timed).length);
 const timedFilled = computed(() => props.plan.assignments.filter((a) => a.timed && a.option).length);
@@ -164,7 +166,15 @@ const stageNote = (id: string): string => {
 };
 const replacement = (a: PlanAlternative): string => {
   const now = a.plan.assignments.find((x) => x.stageId === a.stageId);
-  return now?.option ? `${namesOf(now.option.members)} takes it` : "it stays empty";
+  return now?.option ? `${optionLabel(now.option)} takes it` : "it stays empty";
 };
 const paceHelp = "Scale each team's sim time by your own logged clear (teams without one: the median of yours). Log clears in the Calibrate tab.";
 </script>
+
+<style scoped>
+/* light themes: DaisyUI's warning yellow is near-invisible on white — a darker amber for the crest stars (a plain
+   descendant selector: `:global(html…) .x` compiles to `html[…]` alone and turned the whole site amber) */
+html[data-theme-style="light"] .toa-star {
+  color: #d97706;
+}
+</style>

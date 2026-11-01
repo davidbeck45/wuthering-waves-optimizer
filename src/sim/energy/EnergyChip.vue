@@ -13,7 +13,12 @@
     <EnergyStatusIcon v-else :status="kind" class="en-chip__icon" />
     <span v-if="label" class="en-chip__who">{{ label }}</span>
     <template v-if="check && check.need != null && check.status !== 'noGate' && !mini">
-      <span v-if="check.have != null" class="en-chip__nums"><b>{{ haveText(check.have) }}</b><span class="en-chip__sep"> / </span>{{ needText(check.need) }}</span>
+      <!-- full chips say which number is which; compact ones keep "has / needs" short (their list carries a legend) -->
+      <template v-if="check.have != null && !compact">
+        <span class="en-chip__nums"><span class="en-chip__sep">has </span><b>{{ haveText(check.have) }}</b></span>
+        <span class="en-chip__nums"><span class="en-chip__sep">needs </span>{{ needText(check.need) }}</span>
+      </template>
+      <span v-else-if="check.have != null" class="en-chip__nums"><b>{{ haveText(check.have) }}</b><span class="en-chip__sep"> / </span>{{ needText(check.need) }}</span>
       <span v-else class="en-chip__nums"><span class="en-chip__sep">needs </span>{{ needText(check.need) }}</span>
       <span class="en-chip__word">{{ word }}</span>
     </template>
@@ -22,8 +27,9 @@
 </template>
 
 <script setup lang="ts">
-// Wuthering Tools+ — one member's ER against their team's need: "110.8% / 115.2% short 4.4% · 1 roll". An icon and a
-// word always ride with the colour. A button when the breakdown can open.
+// Wuthering Tools+ — one member's ER against their team's need: "has 110.8% needs 115.2% short 4.4% · 1 roll" (compact:
+// "110.8% / 115.2% short 4.4%", with a has / needs legend where they are listed). An icon and a word always ride with the
+// colour. A button when the breakdown can open.
 import { computed } from "vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
 import { haveText, needText, statusDetail } from "./energyFormat";

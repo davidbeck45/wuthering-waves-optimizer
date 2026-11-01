@@ -9,7 +9,7 @@ import { bestOf, type MineSolve, type RileyAccount, type RileyPick, type RileyTe
 import { cuePlan, type CuePlan } from "./cueModel";
 import { extractRotation, type RotationModel } from "./extract";
 import type { RotationTarget } from "./hash";
-import { teamOfCode } from "./teamCode";
+import { membersOfCode, teamOfCode } from "./teamCode";
 
 export type RunPhase = "idle" | "engine" | "solving" | "tracing" | "ready" | "error";
 
@@ -113,6 +113,9 @@ export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<Sub
         const key = teamOfCode(t.code, teams.value);
         if (!key) {
           run.value = null;
+          // garbage is not a retired team: say which links the page reads instead
+          if (!membersOfCode(t.code))
+            return fail({ kind: "code", message: `“${t.code.slice(0, 40)}” is not a team link this page can read. It opens a wuwa_calc team key (like t269), a Team rankings row or a Team rankings team code.` });
           return fail({ kind: "code", message: `This Team rankings link names a team wuwa_calc ${client.commit} does not have — team codes outlive his list, so the team may have been retired.` });
         }
         notice.value = "This Team rankings link carried its own sequences and weapons: the cue card runs the team at your account instead.";

@@ -125,6 +125,26 @@
   .rotation__head .card-title.card-title {
     font-size: 1rem;
   }
+  /* v3 rotation detail: rank, heart, name input and Duration share one unwrapped row, and the name
+     input shrank to three letters ("Aem") at 412 px. The name takes its own full-width line under
+     rank · heart · Duration (2026-10-31). */
+  .rotation__head .card-title > .flex.items-center.min-w-0 {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  .rotation__head .card-title > .flex.items-center.min-w-0 > input[data-test-rotation-name-input] {
+    order: 9;
+    flex: 1 1 100%;
+    max-width: none;
+  }
+  .rotation__head .card-title > .flex.items-center.min-w-0 > .shrink-0:has(> [data-test-rotation-duration-quick]) {
+    margin-left: auto;
+  }
+  /* Teams editor: the team name input (`max-w-xs`) cut "wuwa_calc Aemeath S6R" — full width */
+  [data-test-team-rotation-editor] input.input[data-test-team-rotation-name] {
+    flex: 1 1 100%;
+    max-width: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -429,6 +449,30 @@
   [data-test-team-rotations-item] .card-body > .flex.gap-4 {
     justify-content: space-between;
   }
+  /* Every synced team's name starts "wuwa_calc …", so one truncated line never said which team it
+     was: the summary tiles show three lines, the cards two (2026-10-31) */
+  [data-test-team-rotations-leaderboard] > .font-semibold.truncate,
+  [data-test-team-rotations-item] .card-body h3 > .truncate {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  [data-test-team-rotations-item] .card-body h3 > .truncate {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  /* the calculator's v3 Rotations summary tiles: the same "Aemeath S6R5 Everbrig…" cut */
+  [data-test-rotations-summary] .card > .font-semibold.truncate {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -439,7 +483,20 @@
       The "Damage by action" strip (also CalculatorRotation.vue) gives each bar a 0.5 rem minimum
       plus a 0.375 rem gap: 40 actions came to ~720 px and grew the whole page to 761 px. On a phone
       the bars and gaps go down to 2 px, so about 80 actions fit, and a longer rotation scrolls
-      inside the strip. */
+      inside the strip.
+      2026-10-31 (night audit "fight"):
+      - The full header's "View Damages" + "View Summary" pair is `shrink-0` beside a `truncate`d
+        h2, so the team name got 0 px and at 360 px the pair ran to 377 px. The name takes its own
+        line (two at most) and the buttons share the next one.
+      - The stuck header held name, avatars, count, Normal / Average / Crit, DPS, bar and both
+        buttons: 270-350 px of a phone screen once scrolled. On a phone it keeps the avatars and the
+        DPS on one line and the two buttons on the next (~85 px); the full figures stay in the
+        header at the top of the editor.
+      - Member cards: six stats as icons only in three 71 px columns at 360 px, where a value
+        ran under the next icon. On a phone each value gets a caption (HP, DEF, ATK, Crit Rate,
+        Crit DMG, Energy Regen) and below 400 px the grid is two columns. The "Default build
+        (active) / Change Build" btn-xs wrapped inside a fixed height and drew over the join below:
+        it grows instead. The editor's card and the member cards lose some padding. */
 @media (max-width: 767px) {
   [data-test-team-rotation-editor] .join.w-full > .btn.btn-xs {
     height: auto;
@@ -447,9 +504,108 @@
     padding-block: 0.3rem;
     line-height: 1.15;
   }
-  [data-test-team-rotation-summary-stuck="true"] > .flex > .font-semibold.shrink-0 {
-    flex-shrink: 1;
+  [data-test-team-rotation-summary-stuck="false"] > .flex-col > .justify-between {
+    flex-wrap: wrap;
+  }
+  [data-test-team-rotation-summary-stuck="false"] > .flex-col > .justify-between > h2 {
+    flex: 1 1 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  [data-test-team-rotation-summary-stuck="false"] > .flex-col > .justify-between > .shrink-0 {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
     min-width: 0;
+  }
+  [data-test-team-rotation-summary-stuck="false"] > .flex-col > .justify-between > .shrink-0 > .btn {
+    flex: 1 1 auto;
+  }
+  [data-test-team-rotation-summary-stuck="true"].sticky {
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+  [data-test-team-rotation-summary-stuck="true"] > .flex {
+    gap: 0.4rem 0.6rem;
+  }
+  /* the name (avatars say who), the action count, the Normal / Average / Crit run and the share bar */
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .font-semibold.truncate,
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .opacity-70:not([data-test-team-rotation-header-dps]),
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .font-semibold.shrink-0,
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .flex-1 {
+    display: none;
+  }
+  [data-test-team-rotation-summary-stuck="true"] > .flex > [data-test-team-rotation-header-dps] {
+    flex: 1 1 auto;
+    opacity: 1;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  [data-test-team-rotation-summary-stuck="true"] > .flex > .btn {
+    flex: 1 1 40%;
+  }
+  [data-test-team-rotation-editor] > .card > .card-body.card-body {
+    padding: 0.75rem 0.65rem;
+    gap: 1.1rem;
+  }
+  [data-test-team-rotation-editor] [data-test-team-rotation-slot].card {
+    padding: 0.75rem;
+  }
+  [data-test-team-rotation-slot] > .grid.grid-cols-3 {
+    column-gap: 0.75rem;
+    row-gap: 0.4rem;
+  }
+  [data-test-team-rotation-slot-stat] {
+    align-items: flex-start;
+    min-width: 0;
+  }
+  [data-test-team-rotation-slot-stat] > img {
+    margin-top: 0.15rem;
+  }
+  [data-test-team-rotation-slot-stat] > span {
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  [data-test-team-rotation-slot-stat] > span::before {
+    display: block;
+    font-size: 0.68rem;
+    line-height: 1.15;
+    white-space: normal;
+    opacity: 0.65;
+    font-weight: 600;
+  }
+  [data-test-team-rotation-slot-stat="hp"] > span::before {
+    content: "HP";
+  }
+  [data-test-team-rotation-slot-stat="def"] > span::before {
+    content: "DEF";
+  }
+  [data-test-team-rotation-slot-stat="atk"] > span::before {
+    content: "ATK";
+  }
+  [data-test-team-rotation-slot-stat="critRate"] > span::before {
+    content: "Crit Rate";
+  }
+  [data-test-team-rotation-slot-stat="critDMG"] > span::before {
+    content: "Crit DMG";
+  }
+  [data-test-team-rotation-slot-stat="energyRegen"] > span::before {
+    content: "Energy Regen";
+  }
+  [data-test-team-rotation-slot] .btn.btn-xs[data-test^="team-rotation-slot-build-select"] {
+    height: auto;
+    min-height: 2rem;
+    flex-wrap: wrap;
+    row-gap: 0.1rem;
+    padding-block: 0.3rem;
+    line-height: 1.2;
+  }
+  [data-test-team-rotation-slot] .btn.btn-xs[data-test^="team-rotation-slot-build-select"] > .shrink-0 {
+    margin-left: auto;
   }
   .rotation__damage-strip .rotation__damage-strip__bars.rotation__damage-strip__bars {
     gap: 2px;
@@ -458,6 +614,11 @@
   }
   .rotation__damage-strip .rotation__damage-strip__bars .rotation__damage-strip__bar.rotation__damage-strip__bar {
     min-width: 2px;
+  }
+}
+@media (max-width: 399px) {
+  [data-test-team-rotation-slot] > .grid.grid-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -553,6 +714,13 @@
     white-space: normal;
     overflow-wrap: anywhere;
     text-align: right;
+  }
+  /* 2026-10-31 (night audit "fight"): collapsed on scroll, the bar hid the label and left the
+     damage number with nothing to say what it was (section 19 hides its "avg damage" caption
+     there too): the label stays, one small line, which fits beside the 2 rem avatar without
+     making the bar taller. Its width, and the name's room beside it, are section 19's. */
+  .command-bar.command-bar--compact [data-test-live-result-bar-hero] > [data-test-live-result-bar-target-trigger].command-bar__compact-hide {
+    display: flex;
   }
 }
 
@@ -874,4 +1042,131 @@ dialog.modal[data-test-whats-new-v3-modal]:not([open]) {
        Every viewport. */
 html[data-theme-style="light"] [data-test-workspace-forte-details] > img {
   filter: invert(100%);
+}
+
+/* ---------------------------------------------------------------------------------------------
+   22. Rotation action cards (CalculatorRotationAction.vue, in the calculator's v3 rotation detail
+       and the Teams editor; 2026-10-31, night audit "fight"). At 412 px / 130 % every card was
+       340-460 px tall: the drag handle, #, x and the name squeezed the name to three lines, then
+       Forte, DMG type, Avg, the bonus counter, Manage Buffs, Manage Enemy, copy, "Synced with
+       character" and Delete took a line each. A 40-action team ran past 16,000 px.
+       On a phone: the name wraps beside the badges (a long name or the echo-mismatch icon no longer
+       runs off the right edge); the chips and buttons are a size smaller with less padding, so
+       they share rows; Manage Buffs / Manage Enemy read "Buffs" / "Enemy" (screen readers still
+       get the full words, `content: … / ""`, after a plain `content` for browsers without the alt-text form,
+       which would otherwise drop the declaration and leave a blank 0-size button); "Synced with character" reads "✓ Synced"; the "▮▮ 0"
+       counter gets its caption ("stat bonuses", what the number counts); Delete moves to the
+       card's top-right corner, on the # / x row. About 35 % shorter. */
+@media (max-width: 767px) {
+  .rotation__action.rotation__action.p-4 {
+    position: relative;
+    padding: 0.6rem 0.65rem;
+  }
+  .rotation__action .rotation__action__info.rotation__action__info {
+    gap: 0.4rem;
+  }
+  .rotation__action .rotation__action__info .name.name {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.4rem;
+    min-height: 1.6rem;
+  }
+  /* the name on its own line under drag handle · # · x, so Delete (in the corner) never covers it */
+  .rotation__action .rotation__action__info .name.name > span.flex {
+    flex: 1 1 100%;
+    min-width: 0;
+    gap: 0.4rem;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+  .rotation__action .rotation__action__info .name.name > span.flex > .mismatch-echo {
+    flex-shrink: 0;
+  }
+  .rotation__action .rotation__action__info .rotation__action__end.rotation__action__end {
+    gap: 0.3rem;
+  }
+  .rotation__action .rotation__action__end > .badge,
+  .rotation__action .rotation__action__end > .btn.btn-xs {
+    height: auto;
+    min-height: 1.6rem;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-remove].btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.65rem;
+  }
+  .rotation__action .rotation__action__info .name.name > .badge {
+    height: auto;
+    min-height: 1.5rem;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.75rem;
+  }
+  .rotation__action .rotation__action__end > .buffsCount.badge::after {
+    content: "stat bonuses";
+    font-size: 0.65rem;
+    opacity: 0.75;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-manage-buffs].btn,
+  .rotation__action .rotation__action__end > [data-test-rotation-action-manage-enemy].btn {
+    font-size: 0;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-manage-buffs].btn::after {
+    content: "⚙ Buffs";
+    content: "⚙ Buffs" / "";
+    font-size: 0.72rem;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-manage-enemy].btn::after {
+    content: "Enemy";
+    content: "Enemy" / "";
+    font-size: 0.72rem;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-sync-status].badge-ghost,
+  .rotation__action .rotation__action__end > [data-test-team-rotation-action-sync-status].badge-ghost {
+    font-size: 0;
+  }
+  .rotation__action .rotation__action__end > [data-test-rotation-action-sync-status].badge-ghost::after,
+  .rotation__action .rotation__action__end > [data-test-team-rotation-action-sync-status].badge-ghost::after {
+    content: "✓ Synced";
+    content: "✓ Synced" / "";
+    font-size: 0.72rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   23. Tap targets on the plus fight pages (/endgame, /rotation, /energy; 2026-10-31, night audit
+       "fight"): /endgame's effect chips were 25 px tall, Calibrate's floor select, time box and
+       "time left / time used" switch 31 px, /rotation's play-mode section dots 16 px and the
+       picker's Cue card / Timeline buttons 31 px, /energy's filter buttons btn-xs. On a phone
+       they grow to about 40 px (2 rem at 130 % text); the dots keep their look and get a taller
+       hit area from a transparent ::before, about half the gap to each neighbour wide. */
+@media (max-width: 767px) {
+  [data-test-toa-effects] button[data-test-toa-effect] {
+    min-height: 2rem;
+  }
+  [data-test-toa-calibrate-reading].btn,
+  select[data-test-toa-calibrate-floor].select,
+  input[data-test-toa-calibrate-time].input,
+  [data-test-toa-calibrate-save].btn {
+    height: 2rem;
+    min-height: 2rem;
+  }
+  [data-test-rotation-dots] > button[data-test-rotation-dot] {
+    position: relative;
+  }
+  [data-test-rotation-dots] > button[data-test-rotation-dot]::before {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -0.2rem;
+  }
+  a[data-test-rotation-open-cue].btn,
+  a[data-test-rotation-open-timeline].btn,
+  [data-test-energy-filter].btn,
+  [data-test-energy-team-filter].btn,
+  [data-test-energy-rescan].btn,
+  [data-test-energy-scan-cancel].btn {
+    height: 2rem;
+    min-height: 2rem;
+  }
 }

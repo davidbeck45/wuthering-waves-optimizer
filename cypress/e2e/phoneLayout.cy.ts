@@ -178,6 +178,24 @@ describe("phone layout", () => {
     cy.get("[data-test-live-result-bar-hero]").should("contain.text", "(wuwa_calc)");
     expectNavFits("/ (v3)");
     expectNoHorizontalScroll("/ (v3)");
+    // the character's name keeps its room beside a long headline (it read "C…" at 412 px / 130 %)
+    cy.get("[data-test-live-result-bar-character-open] .truncate").first().then(($name) => {
+      expect($name[0].getBoundingClientRect().width, "live result bar: the name's width").to.be.at.least(60);
+    });
+    // the Rotations panel's detail: the name input on its own line, compact action cards inside the screen
+    cy.get('[data-test-calculator-mobile-nav="rotations"]').click({ force: true });
+    cy.get("[data-test-rotations-item]").first().click();
+    cy.get("[data-test-rotation-name-input]").should("be.visible").then(($input) => {
+      expect($input[0].getBoundingClientRect().width, "rotation name input width").to.be.at.least(240);
+    });
+    cy.get(".rotation__action").should("have.length.at.least", 3);
+    cy.get(".rotation__action").each(($card) => {
+      const r = $card[0].getBoundingClientRect();
+      expect(r.right, "action card inside the screen").to.be.at.most(412);
+      // a card listing its own buff overrides (the fixture's first action has 16) is as tall as its list
+      if (!$card.find(".rotation__action__unified-chips").length) expect(r.height, "action card height at 412 px / 130 %").to.be.at.most(300);
+    });
+    expectNoHorizontalScroll("/ rotation detail (v3)");
     cy.visit("/updates", seed);
     cy.get(".page-updates--v3").should("be.visible");
     expectNoHorizontalScroll("/updates (v3)");
@@ -231,6 +249,59 @@ describe("phone layout", () => {
         expect(caption, "caption under the big number").to.equal('"avg damage"');
       });
       expectNoHorizontalScroll(`/ (v3) at ${width}`);
+    }
+  });
+
+  // The v3 Teams editor (Ryan's TeamRotationTeamEditor / SummaryHeader / CalculatorRotationAction, fixed in phone.css
+  // § 9 and § 22, night audit 2026-10-31): the team name keeps a line beside View Damages / View Summary, the member
+  // cards' stats are captioned and stay in their columns, the build button never draws over Configure / Import and the
+  // action cards stay compact — at 360 and 412 px with 130 % text.
+  it("keeps the v3 Teams editor's header, member cards and action list inside a phone at 130 % text", () => {
+    const character = JSON.parse(configOptimizer.data.character);
+    const actions = character.characters.Cartethyia.rotations[0].actions.map((a: Record<string, unknown>, i: number) => ({ ...a, id: `pl-${i}`, slot: 0, order: i + 1 }));
+    const team = { id: "pl-team", name: "Phone team with a long name · Cartethyia · Ciaccona + Chisa", characterIds: ["Cartethyia", "Ciaccona", "Chisa"], buildIds: [null, null, null], actions, duration: 25, enemyConfig: {} };
+    const seed = {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+        win.sessionStorage.removeItem("teamRotationsActiveTeamId"); // the Teams page reopens the last team: start from the list
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    };
+    for (const [width, height] of [[412, 915], [360, 800]] as const) {
+      cy.viewport(width, height);
+      cy.visit("/teams", seed);
+      cy.get(`[data-test-team-rotations-item="${team.name}"] .card-body h3`).click();
+      cy.get('[data-test-team-rotation-summary-stuck="false"] h2').should("be.visible").then(($h2) => {
+        expect($h2[0].getBoundingClientRect().width, `team name width at ${width}`).to.be.at.least(200);
+      });
+      expectNoHorizontalScroll(`/teams editor at ${width}`);
+      cy.get('[data-test-team-rotation-slot="0"] [data-test-team-rotation-slot-stat]').should("have.length", 6).each(($stat) => {
+        const value = $stat.find("span")[0];
+        const caption = value.ownerDocument.defaultView!.getComputedStyle(value, "::before").content;
+        expect(caption, `${$stat.attr("data-test-team-rotation-slot-stat")} caption`).to.not.be.oneOf(["none", "normal", ""]);
+        expect($stat[0].getBoundingClientRect().right, "stat inside its column").to.be.at.most($stat.parent()[0].getBoundingClientRect().right + 1);
+      });
+      cy.get('[data-test="team-rotation-slot-build-select-0"]').then(($build) => {
+        const join = $build.closest("[data-test-team-rotation-slot]").find(".join")[0]!;
+        expect($build[0].getBoundingClientRect().bottom, "build button above the Configure / Import join").to.be.at.most(join.getBoundingClientRect().top + 1);
+      });
+      cy.get(".rotation__action").should("have.length", actions.length).each(($card) => {
+        expect($card[0].getBoundingClientRect().right, "action card inside the screen").to.be.at.most(width);
+      });
+      // (the stuck header's two-line strip is not measured here: its IntersectionObserver never fires under Cypress —
+      // Ryan's own "sticks the summary header" test is red the same way — so the phone shots stand in for it)
+      cy.get(".rotation__action").each(($card) => {
+        if (!$card.find(".rotation__action__unified-chips").length) expect($card[0].getBoundingClientRect().height, `action card height at ${width}`).to.be.at.most(320);
+      });
     }
   });
 
@@ -357,6 +428,7 @@ describe("phone layout", () => {
     cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
     for (const [width, height, fontScale] of [
       [360, 800, 1],
+      [360, 800, 1.3],
       [412, 915, 1.3],
     ]) {
       cy.viewport(width, height);
@@ -371,7 +443,13 @@ describe("phone layout", () => {
       });
       cy.get('[data-test-toa-tab="plan"]').click();
       cy.get("[data-test-toa-stage]").should("have.length", 12);
-      expectNoHorizontalScroll(`/endgame plan ${width} px`);
+      expectNoHorizontalScroll(`/endgame plan ${width} px / ${fontScale * 100} %`);
+      // "Plan 3★" stays on one line inside its tab (it wrapped onto the summary line at 360 px / 130 %)
+      cy.get("[data-test-toa-tab]").each(($tab) => {
+        const tab = $tab[0];
+        expect(tab.scrollHeight, `${tab.textContent?.trim()} tab: one line at ${width} px`).to.be.at.most(tab.clientHeight + 1);
+        expect(tab.scrollWidth, `${tab.textContent?.trim()} tab: inside its pill at ${width} px`).to.be.at.most(tab.clientWidth + 1);
+      });
       cy.get('[data-test-toa-tab="calibrate"]').click();
       cy.get("[data-test-toa-calibrate-team]").should("have.length.at.least", 1);
       expectNoHorizontalScroll(`/endgame calibrate ${width} px`);

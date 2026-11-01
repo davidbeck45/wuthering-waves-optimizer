@@ -20,7 +20,7 @@ import {
   type ToaIndex,
   type ToaSeason,
 } from "./toaData";
-import { fieldableKeys, floorFactor, pickCandidates, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaRunner } from "./toaRun";
+import { fieldableKeys, floorFactor, pickCandidates, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaCheck, type ToaRunner } from "./toaRun";
 import { nearMisses, planAlternatives, planVigor, vigorPool, type PlanInput, type PlanStage } from "./vigorPlan";
 
 const DAY = 86_400_000;
@@ -421,5 +421,45 @@ describe("candidates", () => {
     const plan = planVigor(planInputOf(season, check, { owned: ["A", "B", "C", "D", "E", "F", "G", "H", "I"] }));
     expect(plan.assignments).toHaveLength(12);
     expect(plan.crests).toBeGreaterThan(0);
+  });
+
+  it("times the saved teams first when asked, and ends on the same check", async () => {
+    const season = await S41();
+    const dps: Record<string, number> = { t1: 300_000, t2: 30_000, t3: 200_000 };
+    const comp: Record<string, string[]> = { t1: ["A", "B", "C"], t2: ["A", "B", "Mortefi"], t3: ["B", "A", "C"] };
+    const solved: string[][] = [];
+    const timedKeys: string[] = [];
+    const runner: ToaRunner = {
+      commit: "test",
+      teams: async () => Object.entries(comp).map(([key, names]) => ({ key, members: names.map((n) => ({ name: n, appKey: n, mainDps: n === names[2], free: n === "Mortefi" })) })),
+      solveMine: async (keys) => {
+        solved.push([...keys]);
+        return keys.map((k) => solve(k, comp[k]!, dps[k]!));
+      },
+      curves: async (k, _p, specs) => {
+        timedKeys.push(k);
+        return specs.map(() => ({ teamKey: k, rowKey: k, commit: "test", total: dps[k]!, ...curve(dps[k]!) }));
+      },
+    };
+    const savedTeams = [{ name: "saved", characterIds: ["C", "A", "B"] }];
+    const plain = await runToaCheck(runner, season, { account, limit: 5, savedTeams, now: () => 1 });
+    solved.length = 0;
+    timedKeys.length = 0;
+    const partials: ToaCheck[] = [];
+    const check = await runToaCheck(runner, season, { account, limit: 5, savedTeams, now: () => 1, onPartial: (c) => partials.push(c) });
+    // the saved composition's two variants first (t1, t3), then the rest — each team solved once, each timed once
+    expect(solved).toEqual([["t1", "t3"], ["t2"]]);
+    expect(timedKeys).toEqual(["t1", "t2"]);
+    expect(partials).toHaveLength(1);
+    expect(partials[0]!.partial).toBe(true);
+    expect(partials[0]!.key).not.toBe(check.key);
+    expect(partials[0]!.candidates.map((c) => c.teamKey)).toEqual(["t1"]);
+    expect(partials[0]!.results.every((r) => r.teamId === partials[0]!.candidates[0]!.id)).toBe(true);
+    // the final check is the one a plain run makes
+    expect(check).toEqual(plain);
+    // nothing saved, or only saved teams to solve: no first pass
+    const none: ToaCheck[] = [];
+    await runToaCheck(runner, season, { account, limit: 5, savedTeams: [], onPartial: (c) => none.push(c) });
+    expect(none).toHaveLength(0);
   });
 });

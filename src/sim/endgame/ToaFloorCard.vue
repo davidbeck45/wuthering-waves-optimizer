@@ -47,6 +47,7 @@
         >
       </div>
       <div class="flex flex-col gap-1" data-test-toa-res>
+        <div class="text-[0.7rem] font-semibold uppercase tracking-wider opacity-60" data-test-toa-res-caption>Enemy RES <span class="normal-case font-normal tracking-normal">· lower takes more damage</span></div>
         <div v-for="(seg, si) in resLines" :key="si" class="flex flex-wrap items-center gap-1">
           <span v-if="resLines.length > 1" class="text-[0.7rem] opacity-60 w-full sm:w-auto sm:mr-1">{{ si === 0 ? "" : "then " }}{{ seg.label }}</span>
           <span
@@ -57,7 +58,7 @@
             :title="`${r.el} RES ${r.v}% (${seg.label}: its own plus the floor's)`"
           >
             <span v-if="elementIcon(r.el)" class="toa-res__icon"><img :src="elementIcon(r.el)!" alt="" /></span>
-            <span class="sr-only">{{ r.el }}</span>
+            <span class="sr-only">{{ r.el }} RES</span>
             <span class="tabular-nums">{{ r.v }}%</span>
           </span>
         </div>
@@ -89,7 +90,7 @@
       <!-- crest goals -->
       <div class="grid grid-cols-3 gap-1 text-center" data-test-toa-goals>
         <div v-for="(g, i) in sortedGoals" :key="i" class="rounded-box bg-base-200/70 px-1 py-1">
-          <div class="text-warning leading-none text-sm" aria-hidden="true">{{ "★".repeat(i + 1) }}</div>
+          <div class="toa-star text-warning leading-none text-sm" aria-hidden="true">{{ "★".repeat(i + 1) }}</div>
           <div class="text-xs tabular-nums mt-0.5"><template v-if="g"><b>≥{{ g }} s</b><span class="opacity-60"> left</span></template><b v-else>Clear</b></div>
           <div class="text-[0.65rem] opacity-60 tabular-nums">by {{ clockText(300 - g) }}</div>
         </div>
@@ -154,6 +155,7 @@
 // not, ≈ approximated; the game's wording in the tooltip), crest goals, and the account's best teams on it.
 import { computed, reactive, ref } from "vue";
 import { characterElementsSetImageMap, getCharacterRosterDisplayName } from "../../characters/characters";
+import { teamLabel } from "../display/names";
 import { clockText } from "./crests";
 import { ELEMENTS } from "./effects";
 import { enemyInfo, floorChips, hpSegments, multiEnemy, type ToaFloor } from "./toaData";
@@ -211,7 +213,7 @@ const explainRequest = () =>
 const elementIcon = (el: string): string | null => characterElementsSetImageMap[el] ?? null;
 const compact = (n: number): string =>
   n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e7 ? 1 : 2)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(Math.round(n));
-const shortNames = (t: CandidateTeam): string => t.appKeys.map((k) => getCharacterRosterDisplayName(k)).join(" · ");
+const shortNames = (t: CandidateTeam): string => teamLabel(t.appKeys, t.mainDps);
 const gearText = (t: CandidateTeam): string =>
   t.members.map((m) => `${getCharacterRosterDisplayName(m.appKey)} S${m.sequence} · ${m.weapon} R${m.refinement}`).join("\n");
 const youOf = (teamId: string): number | null => {
@@ -288,6 +290,13 @@ const paceText = (teamId: string): string => {
 }
 .toa-crests--c0 {
   color: oklch(var(--er));
+}
+/* light themes: DaisyUI's warning yellow is near-invisible on white — a darker amber for the crest stars. Plain
+   descendant selector, not `:global(html…) .x`: Vue's scoped compiler turns that into `html[…]` alone and coloured
+   every inherited text on the site amber. */
+html[data-theme-style="light"] .toa-crests:not(.toa-crests--c0),
+html[data-theme-style="light"] .toa-star {
+  color: #d97706;
 }
 .toa-chip {
   display: inline-flex;

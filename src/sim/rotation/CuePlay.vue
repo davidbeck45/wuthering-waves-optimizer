@@ -44,7 +44,7 @@
               <input v-model="prefs.beep" type="checkbox" class="toggle toggle-sm toggle-primary" data-test-rotation-beep />
             </label>
             <div>
-              <div class="mb-1 opacity-70">Walk on by itself</div>
+              <div class="mb-1 opacity-70">Move to the next swap by itself, at this share of wuwa_calc's speed</div>
               <div class="join w-full">
                 <button v-for="p in PACES" :key="p.value" type="button" class="btn btn-xs join-item flex-1" :class="prefs.pace === p.value ? 'btn-primary' : ''" :data-test-rotation-pace="p.value" @click="prefs.pace = p.value">{{ p.label }}</button>
               </div>

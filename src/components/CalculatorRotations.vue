@@ -78,6 +78,7 @@
       :character-name="character"
       :breakpoints="breakpoints"
       @import="handleImportPreset" />
+    <RotationsEmptyState v-if="isLiveResultBarEnabled && rotations.length === 0" :character="character" :preset-count="presets.length" @presets="isPresetRotationsOpen = true" @import="isImportOpen = true" @create="handleCreateRotation" />
     <div
       v-if="isLiveResultBarEnabled && rotations.length > 0"
       class="rotations__summary mb-4 rounded-lg bg-base-200 p-4"
@@ -234,6 +235,7 @@ import {
 } from "../calculator/buildCharacterContext";
 import type { RotationExportData, CharacterRotationPreset } from "../characters/rotationExportImport";
 import { loadSequenceBreakpoints, loadWuwaCalcRotationPresets, type ResonatorBreakpoints } from "../sim/presets";
+import RotationsEmptyState from "../sim/presets/RotationsEmptyState.vue"; // Wuthering Tools+
 import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
