@@ -10,7 +10,8 @@
       <span class="font-semibold">Share a card that carries this build</span>
       <span class="text-base-content/70 max-sm:block"> — anyone (or your phone) can drop it on Wuthering Tools+ to load it exactly.</span>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+      <RouterLink :to="{ path: '/build-history', query: { char: character } }" class="btn btn-sm btn-ghost" title="Earlier versions of this build: compare and restore" data-test-share-strip-history>Build history</RouterLink>
       <RouterLink to="/share" class="btn btn-sm btn-ghost" data-test-share-strip-import>Import a card</RouterLink>
       <ShareButton :source="{ kind: 'build', charId: character }" label="Share…" variant="primary" />
     </div>

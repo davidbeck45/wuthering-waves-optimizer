@@ -30,6 +30,8 @@ import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch 
 import { useRoute } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { useInventoryStore } from "../../stores/inventory";
+import { installImportGuard } from "../buildHistory/importGuard";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
@@ -48,6 +50,8 @@ const assistant = useAssistant();
 const route = useRoute();
 const characterStore = useCharacterStore();
 const teamStore = useTeamRotationsStore();
+// build history: a version of every build a Settings import is about to replace (src/sim/buildHistory/importGuard.ts)
+installImportGuard({ character: characterStore as never, inventory: useInventoryStore() as never });
 const modKey = modKeyLabel();
 
 // the panel stays mounted once opened (its scroll position and open tool rows survive a close)

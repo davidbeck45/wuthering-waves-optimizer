@@ -88,8 +88,9 @@ result bar's headline, at 412 × 915 (at 360 px the nav fits a real phone by 0.2
 `phone.css` § 14 came with Ryan #681/#682 (2026-10-31 sync; his rotation charts, behind the Labs "frame timing" flag):
 RotationShareBars' % labels hide when their segment is narrower than the label (a cut-off "14%" read as "1"), and
 the team lanes chart's turns-on-field table becomes two-line cards (it was 463 px wide in a 329 px scroller).
-`phone.css` § 15 (2026-10-31, WaveScan "add only new echoes"): toasts wrap inside the screen instead of growing off its
-left edge (DaisyUI's `.toast` is `nowrap`); see that section below.
+`phone.css` § 15 (2026-10-31, WaveScan "add only new echoes" and build history both hit it): DaisyUI's toast is
+`nowrap` and pinned right, so a sentence-long toast ran off the left edge of a phone at 130 %; below 768 px it now
+spans the screen less a margin and wraps; see that section below.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -2072,6 +2073,71 @@ Things learned:
   samples the same pixels (one score moved by 0.01).
 - Only 17 of 37 sets have labelled shots; the other 20 rest on their icons. A set whose in-game icon fits worse is
   flagged (the 0.70 bar), not guessed.
+
+## Build history — versions per character, compare and restore, `/build-history` (track "build-history", 2026-10-31)
+
+Builds change through the optimizer, Build my team, a Settings import (which replaces the whole account) and by hand, and
+nothing showed what a build was yesterday or could undo it. `/build-history` keeps **versions of each character's build in
+this browser**: the build as it is now with its damage and a Save button, the versions newest first, a comparison of any
+two in plain words, and Restore behind a confirm that lists every change. Lazy route in `main.ts`; v3 and classic alike;
+the tab title through `useDocumentTitle`; an entry in `shell/plusPages.ts` (Plus menu and palette: "history", "undo",
+"restore" …).
+
+**Where it lives — the /account character drawer, not a panel beside the calculator.** The drawer is the plus
+per-character home and already a phone bottom sheet, and Build my team / imports are account-level; a diff with five echo
+slots and a stat table needs a full-width page on a phone, which a calculator side panel cannot give without editing
+Ryan's layout. So the drawer gets a "Build history" section (count, newest version, one button to the page), and the page
+does the work. The calculator gets a "Build history" link in the plus share strip over its build card (one `RouterLink`, plus
+file), so the page is one tap from where builds are edited too.
+
+| Piece | Role |
+|---|---|
+| `history.ts` | store-free core. **A version is the share format**: `buildPayload(…, { detail: "full" })` from `share/buildCodec.ts`, one member with every build field and the five echoes **inlined** — no second format, and a version still says exactly what the build was after its echoes were re-imported under new ids or deleted. Read back through `parseSharePayload` (validation, sanitising, version gate) like a received card. `localStorage["wtplus:buildHistory:v1:<id>"]`, newest first; **20 per character** (oldest drops); **1.5 M characters for all histories together** (the oldest version of the longest history goes first; a character's last version only when nothing else is left); **deduped**: a version whose fingerprint (`versionFingerprint`: the member without build name, level and talents) equals the newest one is not stored again; a refused write (quota, private mode) keeps the history in page memory and says so. `recordVersion`, `snapshotCharacters` (never throws: a snapshot must not stop the write it guards), `readHistory`, `deleteVersion`, labels `manual` / `before-build-team` / `before-build-team-undo` / `before-restore` / `before-import` |
+| `diff.ts` | `gearDiff` (pure): weapon + refinement + level, sequence, the **five slots** side by side (same / changed / moved — "moved here from slot 3" when the same echo by `echoFingerprint` sat elsewhere — added / taken off; for a changed slot the echo, set, main stat and every substat as "Crit Rate: 7.5% → 8.1%", "New substat", "Substat gone"), the other build fields in words ("buff toggles", "the Team Buffs panel", "saved rotations" …; set bonus and main echo follow from the echoes), level / talents as character notes; `lines` (every change) and `summary` (one line per slot, for the confirm). Through the engine: `characterScreenStats` (`buildCharacterCalculationContext(…, { alwaysEnabledOnly: true })` — the character screen, upstream's build-card semantics) and `statRows` (HP, ATK, DEF, Crit, ER always; other bonuses when non-zero; of the six element bonuses only the character's own and any that changed); `bestRotationOf` (`share/headline.ts` `buildHeadline` — the /my-rankings pick over their own, curated and wuwa_calc rotations — on the live build, else on the newest version that scores) and `damageOf` (`scoreRotation` at `RANKING_ENEMY`, the version's record with its echoes inline, teammates from today's account) |
+| `restore.ts` | `planRestore` (pure): each slot's echo → an inventory echo with exactly those stats (the one worn there now first, then one nobody else wears), else **added back to the inventory** (`echoProblem` guards it, as the share import does), with who else wears it; the summary of changes now → version; notes (target build, echoes added back or shared, level / talents stay, "saved first"). `applyRestore`: **first `recordVersion(…, "before-restore")`**, then the stores' own API — `saveEcho` for added echoes, `ensureCharacterBuilds`, one `$patch` of the record built with upstream's `applyBuildFields` (the split `equipBuild` makes: level, talents, substat weights, `builds`, `activeBuildId` kept), the active build's stored entry refreshed like `equipBuild`'s commit, then `applyEchoLoadout` for the pointers and the `equipped` map. **Writes into the build worn now**; other builds untouched; per-weapon settings of other weapons, notes, portrait, build-card colour, checklist and build status kept (`KEEP_FIELDS`, never in a version) |
+| `importGuard.ts` | the Settings import / backup restore (upstream `applyImportedDatabase` → `characterStore.hardSetState`, then a page reload 1.5 s later). Pinia `$onAction` runs before the action: `pendingFrom` copies the characters whose record the import changes or drops, with only the echoes they wear, into `localStorage["wtplus:buildHistory:pendingImport"]` **synchronously**; `flushPendingImport` turns it into "Before a Settings import" versions as soon as the history chunk loads, else on the next start (the guard flushes on install). Light on purpose: installed from `shell/PlusShell.vue` (main bundle), the codec stays lazy |
+| `useBuildHistory.ts` | the page state: versions, `now` (the live build as a version, reactive), the best rotation once per character, damage per version scored one at a time and cached by fingerprint + rotation, the comparison (opens on the newest version → now; after a restore, the build from just before it → now), save / restore / delete |
+| `BuildHistoryView.vue`, `BuildHistoryDiff.vue`, `view.ts`, `buildHistory.css` | the page: one-line intro (shorter on a phone), character picker (characters with a build or versions, by name, "· n versions"; `?char=`, else the calculator's, else the first with versions), the now card (portrait, build worn, weapon · S · echoes, **damage now** "average per rotation on <rotation>" with DPS when the rotation has a duration, Save this version + a status line), the versions (time "Today 14:02" / "Yesterday" / "Oct 29", why it was saved as a chip, build name and gear, damage on the same rotation and "−8.5 % vs now", Compare with now / Restore / delete), the comparison (From / To pickers; damage before → after with the change, the rotation and enemy named; weapon and sequence; five slot cards; the stat table — two-line rows on a phone; other settings; Restore). One column on a phone; from 1024 px the comparison sits beside the now card and the list |
+| hooks | `main.ts` (one route line), `shell/plusPages.ts`, `shell/PlusShell.vue` (installs the import guard), `buildTeam/useBuildTeam.ts` (`save` snapshots the members being saved, `undo` the members it touches), `account/AccountCharacterDrawer.vue` (the Build history section), `share/ShareBuildStrip.vue` (the Build history link; the buttons wrap) |
+
+Write paths in `src/sim/` that change builds, and what each does here:
+- **Build my team's save** — snapshot "Before Build my team" of every member being saved (also without "Also make active": the
+  dedupe makes it free when nothing changed later). **Its undo** — "Before undoing Build my team".
+- **Restore** — "Before a restore" first.
+- **Settings import / backup restore** (upstream's, through the guard) — "Before a Settings import" of each changed character.
+- **Share import** (`share/ShareView.vue`) — not snapshotted: it only ever adds a build, never touches the active build or the
+  live fields ("Imports only add", above).
+- **Rankings rotation import** (`rankings/importFromRankings.ts`, `characterRotations`) — not snapshotted: it appends a
+  rotation to the live build and changes no gear.
+- Hand edits in the calculator and the optimizer's Equip are Ryan's code paths: they are what **Save this version** is for.
+
+Rules:
+- **Every number is the app's engine**, at the roster rankings' enemy (level 100, 20 % RES); both sides of a comparison are
+  scored on **one rotation** (the character's best today), so the change is the build's, not the rotation's.
+- A restore never changes the character's level or talents, never another build, and never takes an echo off anyone
+  (a shared echo is named in the confirm). An echo the inventory lost comes back as a new inventory echo, named first.
+- A history under a character id this app does not know (and the account does not hold) is not offered in the picker: a
+  restore would write a record for them, which the share import refuses too.
+- Ryan's named builds per character (his builds modal) are a different thing — alternatives side by side; this is one
+  build over time. His builds feature is not touched.
+
+Gates: `buildHistory.test.ts` (the version equals the share card's member and reads back through the share reader; a
+damaged entry and a newer format are dropped; **a version reads the same character-screen stats and the same rotation damage
+as the live build**, and `bestRotationOf` is `buildHeadline`'s pick; dedupe incl. a rename; 25 saves keep the newest 20; the
+size budget; snapshots skip a character with no build; the diff: refinement and slot 3 in words, a reorder reads moved, every
+substat change; both versions through the engine on one rotation, equal to `scoreRotation` through the inventory; restore on
+real Pinia stores: plan in words, every echo found, written back with the `equipped` map, notes / talents / other builds kept,
+the engine reads what the version read, a lost echo added back, other weapons' settings kept), `view.test.ts` (times, summary,
+character list and pick, the import guard: only changed characters, stash before the write, versions after, a stash left by
+the reload flushed on start, a damaged stash dropped); `cypress/e2e/buildHistory.cy.ts` (v3, 412 px / 130 %: save, dedupe,
+change the build, the comparison's weapon / slot / stats / damage, 360 px, restore through the confirm → refinement and echoes
+back, no echo added, the swapped echo off her, "before-restore" first, delete; a Settings import keeps "before-import"; the
+account drawer's link), `buildTeam.cy.ts` (the save leaves "before-build-team"), `phoneLayout.cy.ts` (`/build-history` in the
+route loop at 360 px).
+
+Left out: a per-version note / name, history across devices (it is this browser's, like the rest of the account), a
+snapshot before hand edits in Ryan's calculator (his code paths; Save covers them), and compression of the stored versions
+(0.3–8 KB each on David's export; the 1.5 M budget holds several hundred).
 
 ## Vercel build — rolldown thread pools pinned in `vercel.json` (2026-10-27)
 

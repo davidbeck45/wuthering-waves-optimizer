@@ -85,6 +85,14 @@
         </ul>
       </section>
 
+      <section class="dr__section" data-test-account-drawer-history>
+        <h3 class="dr__h3">Build history <span class="dr__count">{{ history.length }}</span></h3>
+        <p class="dr__note">{{ history.length ? `Newest version: ${whenText(history[0].at)} · ${labelText(history[0].label)}` : `No versions of ${shortName}'s build saved yet.` }}</p>
+        <RouterLink :to="{ path: '/build-history', query: { char: card.id } }" class="btn btn-outline btn-sm dr__history" data-test-account-open-history @click="close">
+          {{ history.length ? "Versions, compare and restore" : "Save a version" }}
+        </RouterLink>
+      </section>
+
       <footer class="dr__actions">
         <button v-if="card.owned || card.echoes" type="button" class="btn btn-primary btn-sm" data-test-account-open-calculator @click="emit('calculator', card.id)">Open in calculator</button>
         <button v-else type="button" class="btn btn-primary btn-sm" data-test-account-open-calculator @click="emit('calculator', card.id)">Set up in calculator</button>
@@ -118,6 +126,8 @@ import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
 import { rankingsMineHash } from "./accountState";
 import { INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
+import { readHistory } from "../buildHistory/history";
+import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
 
@@ -126,6 +136,8 @@ const emit = defineEmits<{ close: []; calculator: [id: string] }>();
 const dialog = ref<HTMLDialogElement | null>(null);
 
 const shortName = computed(() => characterShortName(props.card?.id));
+// build history (src/sim/buildHistory/): read each time the drawer opens on a character
+const history = computed(() => (props.card ? readHistory(props.card.id) : []));
 const teamTitle = (name: string): string => parsePresetName(name, { owned: props.owned }).title || name;
 
 watch(
@@ -371,6 +383,9 @@ function onBackdrop(event: MouseEvent): void {
   font-size: 0.8rem;
 }
 /* the way on stays in reach: pinned to the bottom of the sheet (the dialog is the scroller) when the content runs long */
+.dr__history {
+  margin-top: 0.4rem;
+}
 .dr__actions {
   position: sticky;
   bottom: 0;

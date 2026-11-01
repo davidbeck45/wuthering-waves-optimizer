@@ -18,6 +18,7 @@ import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
 import { priorityOrder } from "./rileyPlan";
 import { workerBackend } from "./workerBackend";
 import { applyBuildTeam, readUndo, undoBuildTeam, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoOutcome, type UndoRecord } from "./apply";
+import { snapshotCharacters } from "../buildHistory/history";
 import { defaultSaveSlots, shareConflicts } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
 
@@ -270,6 +271,8 @@ export function useBuildTeam() {
 
   function save(makeActive: boolean): ApplyOutcome | null {
     if (!team.value || !result.value || !toSave.value.length) return null;
+    // build history: each member's build as it is now, before the save (deduped against their newest version)
+    snapshotCharacters(toSave.value.map((m) => m.characterId), "before-build-team", { characters: characterStore.characters, echoes: inventoryStore.echoes as any[] });
     const out = applyBuildTeam(stores(), {
       team: { id: team.value.id, name: team.value.name, characterIds: team.value.characterIds },
       members: toSave.value.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })),
@@ -283,6 +286,7 @@ export function useBuildTeam() {
   function undo(): UndoOutcome | null {
     const rec = undoRecord.value ?? readUndo();
     if (!rec) return null;
+    snapshotCharacters(rec.created.map((c) => c.characterId), "before-build-team-undo", { characters: characterStore.characters, echoes: inventoryStore.echoes as any[] });
     const out = undoBuildTeam(stores(), rec);
     undoRecord.value = null;
     applied.value = null;

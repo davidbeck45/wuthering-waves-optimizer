@@ -122,6 +122,9 @@ describe("build my team", () => {
       // a new build, not the active one: the live echoes are the ones she wore
       expect(cart.activeBuildId).not.to.eq(team.buildIds[slot]);
       cy.get("@liveEchoes").then((live) => expect(JSON.stringify(cart.echoes ?? {})).to.eq(live));
+      // build history: her build as it was, kept just before the save (src/sim/buildHistory/)
+      const history = JSON.parse(win.localStorage.getItem("wtplus:buildHistory:v1:Cartethyia") ?? '{"versions":[]}');
+      expect(history.versions.map((v: { label: string }) => v.label)).to.deep.eq(["before-build-team"]);
     });
 
     // the Teams editor's slot reads the pinned build
