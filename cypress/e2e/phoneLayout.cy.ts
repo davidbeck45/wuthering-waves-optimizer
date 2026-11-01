@@ -23,9 +23,12 @@ function expectNavFits(route: string): void {
   });
 }
 
-// Wuthering Tools+ Ask button (src/sim/shell/PlusShell.vue): it must not sit on any of these elements' buttons
+// Wuthering Tools+ Ask button (src/sim/shell/PlusShell.vue): it must not sit on any of these elements' buttons once
+// it has settled. Retried (`should`, not `then`): when a click's scroll-into-view tucks Ryan's bottom bar, Ask and a
+// plus bar slide down together over 0.2 s (phone.css § 16) and Ask passes over the bar on its way off the screen. With
+// Electron drawing frames (CI under Xvfb) a single read could land mid-slide.
 function expectAskClearOf(selector: string, what: string): void {
-  cy.get("[data-test-ai-open]").then(($ask) => {
+  cy.get("[data-test-ai-open]").should(($ask) => {
     const a = $ask[0].getBoundingClientRect();
     Cypress.$(selector).each((_, el) => {
       const r = el.getBoundingClientRect();
@@ -284,6 +287,10 @@ describe("phone layout", () => {
       cy.viewport(width, height);
       cy.visit("/teams", seed);
       cy.get(`[data-test-team-rotations-item="${team.name}"] .card-body h3`).click();
+      // the editor opens at the list's scroll position (the click scrolled the card into view); with Electron drawing
+      // frames (CI) the header's IntersectionObserver then shows its compact stuck strip, which has no h2: measure the
+      // full header from the top of the page
+      cy.scrollTo(0, 0);
       cy.get('[data-test-team-rotation-summary-stuck="false"] h2').should("be.visible").then(($h2) => {
         expect($h2[0].getBoundingClientRect().width, `team name width at ${width}`).to.be.at.least(200);
       });

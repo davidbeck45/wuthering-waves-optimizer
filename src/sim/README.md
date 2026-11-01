@@ -2505,6 +2505,12 @@ fails on his master too, and on plus's CI from the first push with #668 until th
 workarounds written for the frameless harness (timers instead of rAF, the Echo Lab panel's 1 s visibility poll) are
 harmless on CI and stay. (`--ozone-platform=x11`, through Xwayland, also draws frames.)
 
+Two phoneLayout checks written the same night for the frameless harness went red once frames were on (final gate,
+2026-10-31): the Teams editor test now scrolls to the top before it measures the full summary header (the editor opens
+at the list's scroll position, so the header's IntersectionObserver shows the compact stuck strip), and
+`expectAskClearOf` retries until Ask has settled (Ask and a plus bar slide down together when the bottom bar tucks,
+and Ask passes over the bar on its way off the screen). Both pass with and without frames.
+
 **3. The /my-rankings first row (not solved).** Twice in the post-batch runs a spec waited 120 s for
 `[data-test-my-rankings-row="Cartethyia"]` and never saw it (energyCheck's 412 px test, phoneLayout's card reflow).
 On the green runs that row lands 3–8 s after the visit. Locally (2 pinned cores, cold and warm dev server, after
