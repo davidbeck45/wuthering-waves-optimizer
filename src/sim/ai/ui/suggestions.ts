@@ -34,7 +34,21 @@ export function suggestionsFor(path: string, ctx: SuggestionContext = {}): strin
     case "/inventory":
       return ["Which echoes can I feed?", "What are my best Crit DMG echoes?", "Which equipped echo should I replace first?"];
     case "/convene":
-      return ["Who should I pull for?", "Which missing character would complete a team I almost have?", "Is a weapon or a sequence the better pull for my main DPS?"];
+      return ["Who should I pull for?", "What's the best value pull on the current banners?", "Which missing character would complete a team I almost have?", "Is a weapon or a sequence the better pull for my main DPS?"];
+    case "/energy":
+      return [name ? `How much Energy Regen does ${name} need in my teams?` : "Is anyone short on Energy Regen?", "Which of my teams is hardest on Energy Regen?", "How many ER rolls is my main team missing?"];
+    case "/endgame":
+      return ["Can my teams clear Hazard 4 this season?", "How should I split my teams across the Tower?", "Which floor is my weakest, and why?"];
+    case "/rotation":
+      return ["What's the rotation for my strongest team?", "Walk me through my main team's loop", "When should each Liberation go out in my main team?"];
+    case "/build-team":
+      return ["What should my strongest team wear?", "Do I have the echoes for my main team's plan?", "Which member of my main team is short on Energy Regen?"];
+    case "/weapons":
+      return [name ? `Is ${name}'s signature weapon worth it?` : "Which signature weapon adds the most for me?", "Which standard 5★ weapon helps my roster most?", "Is a refinement or a new weapon the better pull?"];
+    case "/echo-lab":
+      return ["Which echoes should I feed?", name ? `Which of ${name}'s echoes should I re-roll first?` : "Which echo should I re-roll first?", "Which echoes are upgrades I haven't equipped?"];
+    case "/today":
+      return ["When's the reset, and what ends soon?", "When are my Waveplates full?", "What's on the banners right now?"];
     case "/account":
       return ["Give me a quick review of my account", "What should I invest in next?", "Which teams can I field right now?"];
     default:
@@ -49,6 +63,6 @@ export function pageContextFor(path: string, ctx: { activeCharacterKey?: string 
     route: path.split("?")[0] || "/",
     title: pageTitleOf(b),
     activeCharacter: ctx.activeCharacterKey ?? null,
-    openTeam: b === "/teams" ? (ctx.openTeam ?? null) : null,
+    openTeam: b === "/teams" || b === "/build-team" ? (ctx.openTeam ?? null) : null,
   };
 }

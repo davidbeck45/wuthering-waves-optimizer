@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import fixture from "./__fixtures__/aiAccount.json";
 import { parseExport } from "../cli/exportShape";
-import { runTool } from "./tools/index";
+import { readOnlyStorage, runTool } from "./tools/index";
 import { createToolWorkerRunner } from "./toolWorker";
 import type { ToolWorkerRequest } from "./tools/tools.worker";
 
@@ -22,7 +22,7 @@ function fakeWorker(behaviour: "ok" | "crash" = "ok") {
       const req = posted[posted.length - 1];
       setTimeout(async () => {
         if (behaviour === "crash") return w.onerror?.({ message: "out of memory", preventDefault() {} } as ErrorEvent);
-        const result = await runTool(req.name, req.input, { exp: req.exp, autoBuffs: req.autoBuffs, now: new Date(req.now) });
+        const result = await runTool(req.name, req.input, { exp: req.exp, autoBuffs: req.autoBuffs, now: new Date(req.now), storage: req.stored ? readOnlyStorage(req.stored) : null });
         w.onmessage?.({ data: { id: req.id, result } } as MessageEvent);
       }, 0);
     },
@@ -49,6 +49,22 @@ describe("tool worker runner", () => {
     expect(fake.posted[1]).toMatchObject({ autoBuffs: false, now: "2026-10-12T12:00:00.000Z" });
     runner.dispose();
     expect(fake.isTerminated()).toBe(true);
+  });
+
+  it("hands a tool the localStorage keys it reads (a worker has none), and only those", async () => {
+    const fake = fakeWorker();
+    const runner = createToolWorkerRunner(() => fake.worker);
+    const prefs = JSON.stringify({ v: 1, tab: "advisor", server: "europe", budgetAstrite: null, manualPity: {} });
+    const storage = readOnlyStorage({ "wtplus:convene:prefs": prefs, "wtplus:ai:key": "sk-ant-never-sent", "wtplus:today:v1": null as unknown as string });
+    const r = await runner.runTool("today", {}, { ...ctx, storage });
+    expect(r.ok).toBe(true);
+    expect(JSON.parse(r.content).serverClock).toBe("europe (UTC+1)");
+    expect(Object.keys(fake.posted[0].stored ?? {}).sort()).toEqual(["wtplus:convene:banners", "wtplus:convene:prefs", "wtplus:today:news:v1", "wtplus:today:v1"]);
+    expect(JSON.stringify(fake.posted[0])).not.toContain("sk-ant");
+    // a tool that reads nothing gets no snapshot
+    await runner.runTool("get_account_summary", {}, { ...ctx, storage });
+    expect(fake.posted[1].stored).toBeUndefined();
+    runner.dispose();
   });
 
   it("a crashed worker rejects its pending calls and is replaced on the next call", async () => {

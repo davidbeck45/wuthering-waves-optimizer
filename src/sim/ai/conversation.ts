@@ -77,10 +77,12 @@ export interface AskOptions {
   confirm?: (request: ConfirmRequest) => Promise<boolean>;
   callbacks?: AgentCallbacks;
   now?: () => Date;
+  /** what the host adds to every tool call: the CLI hands in Riley's headless engine (the browser's runner adds its own) */
+  host?: Pick<ToolContext, "storage" | "riley">;
 }
 
 function toolContext(options: AskOptions): () => ToolContext {
-  return () => ({ exp: typeof options.exp === "function" ? options.exp() : options.exp, now: options.now?.() ?? new Date(), autoBuffs: options.autoBuffs });
+  return () => ({ exp: typeof options.exp === "function" ? options.exp() : options.exp, now: options.now?.() ?? new Date(), autoBuffs: options.autoBuffs, ...options.host });
 }
 
 function applyResult(conversation: Conversation, result: AgentTurnResult, committedContext: { pageContext: string | null; accountKey: string } | null): Conversation {

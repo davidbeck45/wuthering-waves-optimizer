@@ -511,6 +511,7 @@ export function registerPlusCommands(program: Command): void {
     guarded(async (question: string, options: CommonOptions & { model?: string; effort?: string; maxRounds?: string; budget?: string; autoBuffs: boolean }) => {
       const exp = load(options);
       const { runAsk } = await import("../ai/cliAsk");
+      const { headlessRiley } = await import("./aiRiley");
       const pretty = wantsPretty(options);
       const { result, model, effort, tools } = await quiet(() =>
         runAsk(question, exp, {
@@ -519,6 +520,7 @@ export function registerPlusCommands(program: Command): void {
           maxRounds: options.maxRounds != null ? Number(options.maxRounds) : undefined,
           budgetUsd: options.budget != null ? Number(options.budget) : undefined,
           autoBuffs: options.autoBuffs,
+          riley: headlessRiley,
           stream: pretty,
           out: (text) => process.stdout.write(text),
           err: (text) => process.stderr.write(text),
@@ -526,6 +528,35 @@ export function registerPlusCommands(program: Command): void {
       );
       if (!pretty) printJson({ export: exp.path, model, effort, status: result.status, text: result.text, tools, usage: result.usage, refusal: result.refusal ?? null, error: result.error ?? null });
       if (result.status === "error" || result.status === "refusal") process.exitCode = 1;
+    }),
+  );
+
+  withCommon(
+    program
+      .command("tool <name> [input]")
+      .description(
+        "Run one of the in-app assistant's tools on the export, without Claude (free, no API call): <name> is the tool " +
+          "(energy_check, team_rotation, toa_check, echo_lab, …), [input] its JSON input (default {}). Prints the tool's " +
+          "result as Claude would read it (Wuthering Tools+)",
+      )
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (name: string, input: string | undefined, options: CommonOptions & { autoBuffs: boolean }) => {
+      const exp = load(options);
+      const { runTool, AI_TOOLS } = await import("../ai/tools/index");
+      const { headlessRiley } = await import("./aiRiley");
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(input ?? "{}");
+      } catch {
+        throw new Error(`[input] must be JSON, e.g. '{"team": "1"}'`);
+      }
+      if (!AI_TOOLS.some((t) => t.name === name)) throw new Error(`No tool "${name}". Tools: ${AI_TOOLS.map((t) => t.name).join(", ")}`);
+      const r = await quiet(() => runTool(name, parsed, { exp, now: new Date(), autoBuffs: options.autoBuffs, riley: headlessRiley, storage: null }));
+      const result = JSON.parse(r.content) as unknown;
+      if (!wantsPretty(options)) printJson({ tool: name, ok: r.ok, ms: r.ms, chars: r.content.length, result });
+      else console.log(`${name} · ${r.ok ? "ok" : "error"} · ${r.ms} ms · ${r.content.length} chars\n${JSON.stringify(result, null, 2)}`);
+      if (!r.ok) process.exitCode = 1;
     }),
   );
 

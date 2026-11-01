@@ -72,6 +72,11 @@ function syncModal(): void {
 }
 
 function openTeamName(): string | null {
+  // /build-team?team=<id>: the saved team the plan is for
+  if (route.path === "/build-team" && typeof route.query.team === "string") {
+    const team = (teamStore.teams as Array<{ id: string; name?: string }>).find((t) => t.id === route.query.team);
+    return team ? team.name || "(unnamed team)" : null;
+  }
   if (route.path !== "/teams") return null;
   try {
     const id = sessionStorage.getItem(TEAMS_ACTIVE_KEY);

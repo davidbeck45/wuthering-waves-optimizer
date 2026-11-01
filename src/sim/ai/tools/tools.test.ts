@@ -3,10 +3,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import fixture from "../__fixtures__/aiAccount.json";
 import { parseExport, type ExportFile } from "../../cli/exportShape";
-import { optionalParamCount, strictSchemaProblems } from "../schema";
-import { AI_TOOLS, clearToolMemo, findTool, previewOf, runTool, toolDefinitions } from "./index";
+import { optionalParamCount, strictSchemaProblems, unionParamCount } from "../schema";
+import { AI_TOOLS, clearToolMemo, findTool, previewOf, runTool, toolDefinitions, toolNeeds } from "./index";
 import { rankingFor } from "./memo";
-import { compactJson, MAX_RESULT_CHARS, resolveAnyCharacter, resolveOwnCharacter, weaponName } from "./shared";
+import { compactJson, hashText, MAX_RESULT_CHARS, resolveAnyCharacter, resolveOwnCharacter, weaponName } from "./shared";
 import { resolveStatKey } from "./inventory";
 import { plainText } from "./kit";
 import { prettyKey } from "./team";
@@ -22,7 +22,7 @@ async function call(name: string, input: unknown): Promise<any> {
 }
 
 describe("tool registry", () => {
-  it("has the twelve read-only tools in a fixed order with unique names", () => {
+  it("has the twenty read-only tools in a fixed order with unique names", () => {
     expect(AI_TOOLS.map((t) => t.name)).toEqual([
       "get_account_summary",
       "calc_character",
@@ -36,6 +36,14 @@ describe("tool registry", () => {
       "get_kit",
       "search_inventory",
       "rankings_link",
+      "energy_check",
+      "team_rotation",
+      "toa_check",
+      "build_team_plan",
+      "echo_lab",
+      "weapon_value",
+      "pull_advice",
+      "today",
     ]);
     expect(new Set(AI_TOOLS.map((t) => t.name)).size).toBe(AI_TOOLS.length);
     for (const t of AI_TOOLS) {
@@ -46,9 +54,28 @@ describe("tool registry", () => {
 
   it("only uses schema features strict tool use accepts, within the request limits", () => {
     for (const t of AI_TOOLS) expect(strictSchemaProblems(t.input_schema), t.name).toEqual([]);
-    // 24 optional parameters / 20 strict tools per request
+    // 24 optional parameters / 16 union-typed parameters / 20 strict tools per request (structured-outputs limits)
     expect(AI_TOOLS.reduce((n, t) => n + optionalParamCount(t.input_schema), 0)).toBeLessThanOrEqual(24);
+    expect(AI_TOOLS.reduce((n, t) => n + unionParamCount(t.input_schema), 0)).toBeLessThanOrEqual(16);
     expect(AI_TOOLS.length).toBeLessThanOrEqual(20);
+  });
+
+  it("the twelve stage-1 tools keep their definitions (their cached prefix bytes) and the page tools say where they run", () => {
+    // the batch-2 page tools were appended: everything before them serialises as it did on 2026-10-26
+    const defs = toolDefinitions({ eager: true });
+    expect(defs.slice(0, 12).map((d) => d.name)).toEqual(AI_TOOLS.slice(0, 12).map((t) => t.name));
+    // hashText of their JSON at plus 8fc83311 (before the page tools): an edit here moves every cached prefix
+    expect(hashText(JSON.stringify(defs.slice(0, 12)))).toBe("1o4di9");
+    expect(AI_TOOLS.slice(0, 12).every((t) => !t.riley && !t.reads)).toBe(true);
+    expect(AI_TOOLS.filter((t) => t.riley).map((t) => t.name)).toEqual(["energy_check", "team_rotation", "toa_check", "build_team_plan"]);
+    expect(findTool("pull_advice")?.reads).toEqual(["wtplus:convene:history", "wtplus:convene:banners", "wtplus:convene:prefs"]);
+    expect(findTool("toa_check")?.reads).toContain("wtplus:endgame:check");
+    // the routing helper never sends a Riley tool to the worker
+    expect(toolNeeds("energy_check")).toEqual({ thread: "main", reads: [] });
+    expect(toolNeeds("today").thread).toBe("worker");
+    expect(toolNeeds("drop_database")).toEqual({ thread: "worker", reads: [] });
+    // the routing flags are not part of what the API sees
+    expect(JSON.stringify(defs)).not.toMatch(/"riley"|"reads"/);
   });
 
   it("serialises byte-identically every time (tools sit first in the cache prefix)", () => {

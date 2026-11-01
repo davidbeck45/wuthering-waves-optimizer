@@ -8,6 +8,31 @@ import { echoSetLabelMap, subStatLabelMap } from "../../../echoes/stats";
 import { resolveCharacterKey } from "../../cli/engine";
 import type { ExportFile } from "../../cli/exportShape";
 import type { ObjectSchema } from "../schema";
+import type { RileyProvider } from "./riley";
+
+/* eslint-disable no-unused-vars -- the parameters of method and function types */
+/** What a tool may read of the browser's storage: the page caches and preferences it names in `reads`. */
+export interface ToolStorage {
+  getItem(key: string): string | null;
+  /** always a no-op: tools never write (it is here so the page modules' storage parameter takes this object) */
+  setItem(key: string, value: string): void;
+}
+
+/** A read-only view of a storage, or of a plain snapshot of some keys (what the worker receives). */
+export function readOnlyStorage(source: { getItem(key: string): string | null } | Readonly<Record<string, string | null>>): ToolStorage {
+  const get =
+    typeof (source as { getItem?: unknown }).getItem === "function"
+      ? (key: string): string | null => {
+          try {
+            return (source as { getItem(key: string): string | null }).getItem(key);
+          } catch {
+            return null;
+          }
+        }
+      : (key: string): string | null => (source as Record<string, string | null>)[key] ?? null;
+  return { getItem: get, setItem: () => undefined };
+}
+/* eslint-enable no-unused-vars */
 
 export interface ToolContext {
   /** the account: the live stores (src/sim/live/liveExport.ts) or a parsed export file (CLI) */
@@ -15,6 +40,10 @@ export interface ToolContext {
   now: Date;
   /** teams: builds by name + team buffs from the real members (src/sim/teamContext); default true */
   autoBuffs?: boolean;
+  /** the page caches and preferences tools read (`AiTool.reads`): localStorage in the browser, absent on the CLI */
+  storage?: ToolStorage | null;
+  /** Riley's wuwa_calc engine at this account (`AiTool.riley`): the solver worker in the browser, headless on the CLI */
+  riley?: RileyProvider | null;
 }
 
 export interface AiTool<I = Record<string, unknown>> {
@@ -24,6 +53,10 @@ export interface AiTool<I = Record<string, unknown>> {
   input_schema: ObjectSchema;
   /** a short source label the UI shows beside numbers from this tool */
   provenance: string;
+  /** the localStorage keys it reads (page caches, preferences): the browser snapshots them into the worker */
+  reads?: readonly string[];
+  /** needs `ctx.riley`: in the browser it runs on the main thread, beside the solver worker it talks to */
+  riley?: boolean;
   /** returns compact JSON text (≈2K tokens at most); throws with a helpful message on bad input */
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   run(input: I, ctx: ToolContext): Promise<string>;
@@ -146,6 +179,9 @@ export function compactJson(value: unknown, max = MAX_RESULT_CHARS): string {
 export function topN<T>(items: T[], n: number): { items: T[]; omitted: number } {
   return { items: items.slice(0, n), omitted: Math.max(0, items.length - n) };
 }
+
+/** A required parameter that may be null (strict tool use counts it against the 16 union-typed, not the 24 optional). */
+export const nullableString = (description: string): { type: readonly ["string", "null"]; description: string } => ({ type: ["string", "null"] as const, description });
 
 /** Clamp an optional integer input into [min, max] (strict schemas can't carry numeric bounds). */
 export const clampInt = (v: number | undefined, min: number, max: number, fallback: number): number =>

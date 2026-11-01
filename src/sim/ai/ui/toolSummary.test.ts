@@ -77,3 +77,35 @@ describe("formatting", () => {
     expect(rows.map((r) => [r.status, r.ms])).toEqual([["ok", 812], ["error", null], ["error", null]]);
   });
 });
+
+describe("the batch-2 page tools in the timeline", () => {
+  const row = (name: string, result: unknown, input: unknown = {}) => summarizeTool({ name, input, result: JSON.stringify(result), status: "ok" });
+
+  it("labels every number it shows", () => {
+    expect(row("energy_check", { members: [{ character: "Aemeath", status: "short", shortByPoints: 4.4 }, { character: "Lynae", status: "enough" }] })).toMatchObject({ label: "Energy check", headline: "Aemeath short 4.4 pts" });
+    expect(row("energy_check", { measured: false }).headline).toBe("not measured");
+    expect(row("energy_check", { measured: 3, shortCharacters: [] }, { team: null }).headline).toBe("3 teams · none short");
+    expect(row("team_rotation", { teamDps: 367567, blocks: [{ seconds: 27.4 }, { seconds: 25 }] }).headline).toBe("368K DPS · 25 s loop");
+    expect(row("team_rotation", { rotation: null }).headline).toBe("no wuwa_calc rotation");
+    expect(row("toa_check", { season: 41, floor: "Hazard 4", best: [{ killTime: "0:28", crests: 3 }] }).headline).toBe("Hazard 4: best kill 0:28 · 3 crests");
+    expect(row("toa_check", { season: 41, plan: { crests: "34 of 36" } }).headline).toBe("plan: 34 of 36 crests");
+    expect(row("echo_lab", { counts: { keep: 128, spare: 59, feed: 71 } }, { show: "feed" })).toMatchObject({ label: "Echo Lab", chips: ["feed"], headline: "128 keep · 59 spare · 71 feed" });
+    expect(row("pull_advice", { items: [{ rank: 1, steps: [{ step: "Lucilla S1", damageGainPct: 10.46 }] }] }).headline).toBe("#1 Lucilla S1 · +10.46 % damage");
+    expect(row("pull_advice", { onABannerNow: false }).headline).toBe("not on a banner now");
+    expect(row("weapon_value", { signature: { steps: [{ weapon: "Spectrum Blaster R2", ownGainPct: 2.1 }] } }, { character: "Lynae" }).headline).toBe("Spectrum Blaster R2 · +2.1 % damage");
+    expect(row("weapon_value", { characters: [{ next: "Azure Oath R4", ownGainPct: 7.07, teamGainPct: 6.38 }] }, { character: null }).headline).toBe("#1 Azure Oath R4 · +6.38 % team damage");
+    expect(row("weapon_value", { characters: [{ next: "Blazing Justice R2", ownGainPct: 5.78, teamGainPct: null }] }, { character: null }).headline).toBe("#1 Blazing Justice R2 · +5.78 % own damage");
+    expect(row("today", { nextDailyReset: "04:00 tomorrow (in 3h 10m)" }).headline).toBe("daily reset 04:00 tomorrow (in 3h 10m)");
+  });
+
+  it("offers the page each tool's result names", () => {
+    const links = deepLinksOf([
+      { name: "energy_check", input: {}, result: JSON.stringify({ path: "/energy", label: "Energy check" }), status: "ok" },
+      { name: "toa_check", input: {}, result: JSON.stringify({ path: "/endgame", label: "ToA clear check" }), status: "ok" },
+      { name: "build_team_plan", input: {}, result: JSON.stringify({ path: "/build-team?team=t1", label: "Build my team" }), status: "ok" },
+      { name: "team_rotation", input: {}, result: JSON.stringify({ path: "/rotation#team=t269-0.0.0.s1.r0", label: "Rotation cue card" }), status: "ok" },
+      { name: "pull_advice", input: {}, result: JSON.stringify({ path: "/convene?tab=advisor", label: "Pull advisor" }), status: "error" },
+    ]);
+    expect(links.map((l) => (l.kind === "route" ? l.path : l.key))).toEqual(["/energy", "/endgame", "/build-team?team=t1", "/rotation#team=t269-0.0.0.s1.r0"]);
+  });
+});

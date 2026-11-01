@@ -141,6 +141,90 @@
       "expect": [],
       "acceptable": ["get_account_summary", "rank_roster"],
       "grounding": "Counts from the snapshot or get_account_summary; no damage numbers unless a tool ran."
+    },
+    {
+      "id": "er-aemeath-team",
+      "question": "What ER does Aemeath need in this team?",
+      "expect": ["energy_check"],
+      "acceptable": ["get_account_summary", "substat_weights"],
+      "grounding": "energy_check on the Aemeath team (the open team or the saved one with her): her ER need and have in %, short / enough, points and ER rolls short when short, and that the need is set by wuwa_calc's loop for that team at the account (or the kit's floor). Never a rule of thumb."
+    },
+    {
+      "id": "er-all-teams",
+      "question": "Is anyone short on Energy Regen?",
+      "expect": ["energy_check"],
+      "acceptable": [],
+      "grounding": "energy_check with team null: the characters short and by how much, each character's ER floor across the saved teams; teams that are not wuwa_calc compositions are 'not measured', not guessed."
+    },
+    {
+      "id": "feed-echoes-lab",
+      "question": "Which echoes should I feed?",
+      "expect": ["echo_lab"],
+      "acceptable": ["search_inventory"],
+      "grounding": "echo_lab show feed: the feed groups as the game filters them (Sonata · Cost · Main Stat) with counts, and why (no gain anywhere / no one can slot it); keep / spare counts for context. Never calls an echo fodder from crit value alone."
+    },
+    {
+      "id": "reroll-aemeath",
+      "question": "Which of Aemeath's echoes should I re-roll first?",
+      "expect": ["echo_lab"],
+      "acceptable": ["substat_weights"],
+      "grounding": "echo_lab show reroll for Aemeath: the echo to re-roll first, which lines to lock, the chance a try improves it and the expected gain; Transducer costs marked 'verify in game'."
+    },
+    {
+      "id": "toa-floor-4",
+      "question": "Can my teams clear ToA floor 4 this season?",
+      "expect": ["toa_check"],
+      "acceptable": ["rank_roster"],
+      "grounding": "toa_check floor Hazard 4: the best teams' kill times and crests against the floor's HP, level and effects, the player's best saved team; says it is a sim with perfect execution (real clears are slower) and points to /endgame's Calibrate tab."
+    },
+    {
+      "id": "toa-plan",
+      "question": "How should I split my teams across the Tower this season?",
+      "expect": ["toa_check"],
+      "acceptable": [],
+      "grounding": "toa_check with floor null: the Vigor plan's stages with team, kill time and crests, its crest total; Vigor rules 'check in game'."
+    },
+    {
+      "id": "pull-for-lucilla",
+      "question": "Should I pull for Lucilla?",
+      "expect": ["pull_advice"],
+      "acceptable": ["what_if", "list_team_presets", "rankings_link"],
+      "grounding": "pull_advice for Lucilla: on a banner now or not; if the player doesn't own her the advisor can't score her (says so and may point to Team rankings); otherwise damage gain, expected Astrite from their pity and % per 1,000 Astrite. No opinion beyond the numbers."
+    },
+    {
+      "id": "pull-best-value",
+      "question": "What's the best thing to pull for right now?",
+      "expect": ["pull_advice"],
+      "acceptable": [],
+      "grounding": "pull_advice with item null: the rank-1 item by % damage per 1,000 Astrite with its expected Astrite and pity source; notes when pity is unknown (no history imported)."
+    },
+    {
+      "id": "rotation-cue",
+      "question": "What's the rotation for my Aemeath team?",
+      "expect": ["team_rotation"],
+      "acceptable": ["calc_team"],
+      "grounding": "team_rotation on the Aemeath team: the opener and the loop as swap lines (buttons in order, seconds on field, when R / Outro are ready) from wuwa_calc's run at the account; says timing is frame-tight; links /rotation."
+    },
+    {
+      "id": "build-plan",
+      "question": "What should my Aemeath team wear?",
+      "expect": ["build_team_plan"],
+      "acceptable": ["energy_check", "search_inventory"],
+      "grounding": "build_team_plan on the team: per member the sets, main echo, layout and main stats and ER need from wuwa_calc's pick; how many inventory echoes fit; says it is a plan and the /build-team page builds it (no echo twice, preview and confirm). Never claims to have built or saved anything."
+    },
+    {
+      "id": "signature-value",
+      "question": "How much would Lynae's signature R5 add?",
+      "expect": ["weapon_value"],
+      "acceptable": ["what_if"],
+      "grounding": "weapon_value for Lynae: each step to R5 with own and team gain %; says the numbers are % of rotation damage on her best rotation and the team it was measured on."
+    },
+    {
+      "id": "today-reset",
+      "question": "When's the reset and what's ending soon?",
+      "expect": ["today"],
+      "acceptable": [],
+      "grounding": "today: the next daily / weekly reset with countdowns on the server clock, events ending within 3 days from Kuro's notices (or that /today hasn't loaded them yet), Waveplates if logged."
     }
   ]
 }

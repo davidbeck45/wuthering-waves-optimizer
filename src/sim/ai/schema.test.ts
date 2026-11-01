@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { optionalParamCount, strictSchemaProblems, validateInput, type ObjectSchema } from "./schema";
+import { optionalParamCount, unionParamCount, strictSchemaProblems, validateInput, type ObjectSchema } from "./schema";
 
 const schema: ObjectSchema = {
   type: "object",
@@ -64,8 +64,12 @@ describe("strictSchemaProblems", () => {
     expect(optionalParamCount(schema)).toBe(6);
     const bad = {
       type: "object",
-      properties: { n: { type: "integer", description: "", minimum: 1 }, u: { type: ["string", "null"], description: "u" } },
-      required: ["missing"],
+      properties: {
+        n: { type: "integer", description: "", minimum: 1 },
+        u: { type: ["string", "null"], description: "u" },
+        w: { type: ["string", "number"], description: "w" },
+      },
+      required: ["missing", "w"],
       additionalProperties: true,
     } as unknown as ObjectSchema;
     expect(strictSchemaProblems(bad)).toEqual([
@@ -73,7 +77,28 @@ describe("strictSchemaProblems", () => {
       'required "missing" is not a property',
       "n needs a description",
       "n.minimum is not supported under strict",
-      "u uses a union type",
+      "u is nullable, so it must be required",
+      "w uses a union type other than [string, null]",
     ]);
+  });
+});
+
+describe("nullable parameters", () => {
+  const nullable: ObjectSchema = {
+    type: "object",
+    properties: { team: { type: ["string", "null"], description: "a team, or null for every team" }, show: { type: "string", enum: ["a", "b"], description: "which" } },
+    required: ["team", "show"],
+    additionalProperties: false,
+  };
+
+  it("take a string or an explicit null (dropped, like an absent optional), and count as union-typed, not optional", () => {
+    expect(strictSchemaProblems(nullable)).toEqual([]);
+    expect(validateInput(nullable, { team: "Aemeath", show: "A" })).toEqual({ ok: true, value: { team: "Aemeath", show: "a" } });
+    expect(validateInput(nullable, { team: null, show: "b" })).toEqual({ ok: true, value: { show: "b" } });
+    // a cut-off input that lost the key is still caught: null must be sent
+    expect(validateInput(nullable, { show: "b" })).toEqual({ ok: false, errors: ["team is required"] });
+    expect(validateInput(nullable, { team: 3, show: "b" })).toEqual({ ok: false, errors: ["team must be a string or null"] });
+    expect(optionalParamCount(nullable)).toBe(0);
+    expect(unionParamCount(nullable)).toBe(1);
   });
 });

@@ -36,6 +36,14 @@ export const TOOL_LABELS: Record<string, string> = {
   get_kit: "Kit",
   search_inventory: "Echo search",
   rankings_link: "Team rankings link",
+  energy_check: "Energy check",
+  team_rotation: "Rotation",
+  toa_check: "ToA clear check",
+  build_team_plan: "Build plan",
+  echo_lab: "Echo Lab",
+  weapon_value: "Weapon value",
+  pull_advice: "Pull advice",
+  today: "Today",
 };
 
 /** 9312345 → "9.31M", 372004 → "372K", 950 → "950". */
@@ -127,6 +135,27 @@ function inputChips(name: string, input: Json, r: Json | null): string[] {
     case "rankings_link":
       if (Array.isArray(input.characters)) input.characters.forEach(add);
       break;
+    case "energy_check":
+    case "team_rotation":
+    case "build_team_plan":
+      if (r?.team) add(r.team);
+      else add(input.team ?? "every saved team");
+      break;
+    case "toa_check":
+      add(r?.floor ?? input.floor ?? "every floor");
+      break;
+    case "echo_lab":
+      add(input.show);
+      add(input.character);
+      break;
+    case "weapon_value":
+      add(input.character ?? "every character");
+      break;
+    case "pull_advice":
+      add(input.item ?? "running banners");
+      break;
+    case "today":
+      break;
     default:
       add(r?.character ?? input.character);
   }
@@ -180,6 +209,54 @@ function headlineOf(name: string, r: Json): string | null {
       return r.matching != null ? `${r.matching} echo${r.matching === 1 ? "" : "es"}` : null;
     case "rankings_link":
       return "link ready";
+    case "energy_check": {
+      if (r.measured === false) return "not measured";
+      const members = Array.isArray(r.members) ? r.members : null;
+      if (members) {
+        const short = members.filter((m: Json) => m.status === "short").map((m: Json) => `${m.character} short ${m.shortByPoints} pts`);
+        return short.length ? short.join(" · ") : "ER enough for all";
+      }
+      const shortChars = Array.isArray(r.shortCharacters) ? r.shortCharacters : [];
+      return `${r.measured ?? 0} teams · ${shortChars.length ? `${shortChars.length} short` : "none short"}`;
+    }
+    case "team_rotation": {
+      if (r.rotation === null) return "no wuwa_calc rotation";
+      const loop = Array.isArray(r.blocks) && r.blocks.length > 1 ? r.blocks[r.blocks.length - 1]?.seconds : null;
+      const dps = compactNumber(r.teamDps);
+      return dps ? `${dps} DPS${loop != null ? ` · ${loop} s loop` : ""}` : null;
+    }
+    case "toa_check": {
+      if (r.season == null) return "no season";
+      const best = Array.isArray(r.best) ? r.best[0] : null;
+      if (best) return `${r.floor}: best kill ${best.killTime} · ${best.crests} crest${best.crests === 1 ? "" : "s"}`;
+      return r.plan?.crests ? `plan: ${r.plan.crests} crests` : `season ${r.season}`;
+    }
+    case "build_team_plan":
+      return Array.isArray(r.members) ? `${r.members.length} member plan${r.members.length === 1 ? "" : "s"}` : null;
+    case "echo_lab": {
+      const c = r.counts;
+      if (str(r.rerollFirst)) return `re-roll ${r.rerollFirst}`;
+      return c ? `${c.keep} keep · ${c.spare} spare · ${c.feed} feed` : null;
+    }
+    case "weapon_value": {
+      const step = r.signature?.steps?.[0];
+      if (step) return `${step.weapon} · ${signedPct(step.ownGainPct) ?? "?"} damage`;
+      const top = Array.isArray(r.characters) ? r.characters[0] : null;
+      if (top?.next) {
+        const team = top.teamGainPct != null;
+        return `#1 ${top.next} · ${signedPct(team ? top.teamGainPct : top.ownGainPct) ?? "?"} ${team ? "team" : "own"} damage`;
+      }
+      return Array.isArray(r.characters) ? `${r.characters.length} characters` : str(r.signature?.status);
+    }
+    case "pull_advice": {
+      if (r.onABannerNow === false) return "not on a banner now";
+      const top = Array.isArray(r.items) ? r.items.find((i: Json) => i.rank === 1) : null;
+      const step = top?.steps?.[0];
+      if (step) return `#1 ${step.step} · ${signedPct(step.damageGainPct) ?? "?"} damage`;
+      return Array.isArray(r.items) ? `${r.items.length} featured item${r.items.length === 1 ? "" : "s"}, none scored` : null;
+    }
+    case "today":
+      return str(r.nextDailyReset) ? `daily reset ${r.nextDailyReset}` : null;
     default:
       return null;
   }

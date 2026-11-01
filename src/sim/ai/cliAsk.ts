@@ -9,6 +9,7 @@ import { askInConversation, newConversation, type Conversation } from "./convers
 import { DEFAULT_EFFORT, DEFAULT_BUDGET_USD } from "./aiSettings";
 import { AI_EFFORTS, AI_MODEL_IDS, DEFAULT_AI_MODEL, isAiEffort, isAiModel, type AiEffort, type AiModel } from "./models";
 import { cacheHitRate, formatUsd } from "./pricing";
+import type { RileyProvider } from "./tools/riley";
 
 export interface AskCliOptions {
   model?: string;
@@ -20,6 +21,8 @@ export interface AskCliOptions {
   stream?: boolean;
   client?: ClientLike;
   sdk?: AnthropicSdk | null;
+  /** Riley's engine for the tools that need it (cli/index.ts passes the headless seam, cli/aiRiley.ts) */
+  riley?: RileyProvider | null;
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   out?: (text: string) => void;
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
@@ -77,6 +80,7 @@ export async function runAsk(question: string, exp: ExportFile, options: AskCliO
     exp,
     autoBuffs: options.autoBuffs,
     maxToolRounds: maxRounds,
+    host: { riley: options.riley ?? null },
     confirm: async () => false, // a CLI run never goes past its budget or tool rounds unasked
     callbacks: {
       onText: (delta) => streaming && out(delta),

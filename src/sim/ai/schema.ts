@@ -12,7 +12,10 @@ export type SchemaProp =
   | { type: "integer"; description: string; enum?: readonly number[] }
   | { type: "number"; description: string }
   | { type: "boolean"; description: string }
-  | { type: "array"; description: string; items: { type: "string"; enum?: readonly string[] } };
+  | { type: "array"; description: string; items: { type: "string"; enum?: readonly string[] } }
+  /** a required string that may be null ("none" / "all"): strict tool use counts it as a union-typed parameter
+   *  (16 per request), not an optional one (24 per request) */
+  | { type: readonly ["string", "null"]; description: string };
 
 export interface ObjectSchema {
   type: "object";
@@ -33,6 +36,10 @@ function matchEnum(value: string, options: readonly string[]): string | null {
 }
 
 function checkProp(name: string, prop: SchemaProp, value: unknown, errors: string[]): unknown {
+  if (Array.isArray(prop.type)) {
+    if (typeof value !== "string") return void errors.push(`${name} must be a string or null`);
+    return value;
+  }
   switch (prop.type) {
     case "string": {
       if (typeof value !== "string") return void errors.push(`${name} must be a string`);
@@ -84,7 +91,8 @@ export function validateInput<T = Record<string, unknown>>(schema: ObjectSchema,
     const value = input[name];
     const required = schema.required.includes(name);
     if (value === undefined || value === null) {
-      if (required) errors.push(`${name} is required`);
+      // a nullable parameter is required in the schema, but null is its "none": dropped like an absent optional one
+      if (required && !(value === null && isNullable(prop))) errors.push(`${name} is required`);
       continue;
     }
     const before = errors.length;
@@ -106,10 +114,18 @@ export function strictSchemaProblems(schema: ObjectSchema): string[] {
     for (const banned of ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minLength", "maxLength", "pattern", "maxItems"]) {
       if (banned in prop) problems.push(`${name}.${banned} is not supported under strict`);
     }
-    if (Array.isArray((prop as { type: unknown }).type)) problems.push(`${name} uses a union type`);
+    const type = (prop as { type: unknown }).type;
+    if (Array.isArray(type) && !(type.length === 2 && type[0] === "string" && type[1] === "null")) problems.push(`${name} uses a union type other than [string, null]`);
+    if (isNullable(prop) && !schema.required.includes(name)) problems.push(`${name} is nullable, so it must be required`);
   }
   return problems;
 }
+
+/** A `[string, null]` parameter (required; null = none). */
+export const isNullable = (prop: SchemaProp): boolean => Array.isArray(prop.type);
+
+/** Parameters with a type array (strict tool use allows 16 across all strict tools of a request). */
+export const unionParamCount = (schema: ObjectSchema): number => Object.values(schema.properties).filter(isNullable).length;
 
 /** Parameters not listed in `required` (strict tool use allows 24 across all strict tools of a request). */
 export const optionalParamCount = (schema: ObjectSchema): number => Object.keys(schema.properties).filter((k) => !schema.required.includes(k)).length;

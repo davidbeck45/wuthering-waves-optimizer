@@ -1,9 +1,10 @@
 // Wuthering Tools+ AI — a ToolRunner that executes registry tools in a Web Worker (tools/tools.worker.ts), for
 // the drawer: pass `createToolWorkerRunner().runTool` as `runTool` to askInConversation / runAgentTurn. The
-// account is posted with every call (a structured clone; the tools never see the live Pinia proxies). A crashed
+// account is posted with every call (a structured clone; the tools never see the live Pinia proxies), and so are the
+// localStorage keys the tool reads (`toolNeeds(name).reads`, read here through `ctx.storage`). A crashed
 // worker rejects its pending calls (the loop answers them with is_error) and is respawned on the next call.
 import type { ToolRunner } from "./agentLoop";
-import type { ToolRunResult } from "./tools/index";
+import { toolNeeds, type ToolRunResult } from "./tools/index";
 import type { ToolWorkerRequest } from "./tools/tools.worker";
 
 export interface ToolWorkerRunner {
@@ -48,7 +49,9 @@ export function createToolWorkerRunner(spawn: () => Worker = () => new Worker(ne
       new Promise<ToolRunResult>((resolve, reject) => {
         const id = ++seq;
         pending.set(id, { resolve, reject });
-        const request: ToolWorkerRequest = { id, name, input, exp: ctx.exp, autoBuffs: ctx.autoBuffs, now: ctx.now.toISOString() };
+        const reads = toolNeeds(name).reads;
+        const stored = reads.length && ctx.storage ? Object.fromEntries(reads.map((k) => [k, ctx.storage!.getItem(k)])) : undefined;
+        const request: ToolWorkerRequest = { id, name, input, exp: ctx.exp, autoBuffs: ctx.autoBuffs, now: ctx.now.toISOString(), ...(stored ? { stored } : {}) };
         try {
           ensure().postMessage(request);
         } catch (error) {

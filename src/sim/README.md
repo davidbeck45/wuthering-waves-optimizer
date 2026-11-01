@@ -1279,7 +1279,7 @@ here is imported by the app yet, so the main bundle is unchanged; the drawer imp
 | `ai/client.ts` | `loadAnthropicSdk()` (dynamic `import("@anthropic-ai/sdk")`, once), `createAnthropicClient({ apiKey, browser })` (`dangerouslyAllowBrowser` in the browser, credential resolution under Node), `fallbackFields(model)` (`betas: ["server-side-fallback-2026-07-01"]` + `fallbacks: "default"` for Opus / Sonnet, nothing for Haiku), `describeError(err, sdk)` — the SDK's typed classes most specific first (abort → timeout → connection → 401 → 403 → 404 → 429 → 5xx / overloaded → 402 billing → 413 → 400 / 422) to one friendly sentence + `retryable` + request id, `refusalMessage()` |
 | `ai/pricing.ts` | USD per request from `usage` (input, output, cache read, cache write at 1.25 × input; Haiku's >100K-prompt rates; a refusal fallback's `fallback_message` iterations at that model's price), running `UsageTotals`, `cacheHitRate`, `formatUsd` (four decimals under a cent) |
 | `ai/schema.ts` | the flat schema type the tools use and `validateInput()` — run on every tool input before the tool (with `eager_input_streaming` the API no longer validates and the SDK's tolerant parser returns `{"team": 1}` for `{"team": 1x}` and `{}` for a cut-off `{"te`). String enums match case-insensitively (Claude may change the case). `strictSchemaProblems()` / `optionalParamCount()` keep the schemas inside what strict tool use accepts |
-| `ai/tools/*.ts` + `index.ts` | twelve read-only tools in a FIXED order (`AI_TOOLS`; tools render first in the cache prefix): `get_account_summary`, `calc_character`, `calc_team`, `rank_roster`, `substat_weights`, `what_if`, `list_rotations`, `list_team_presets`, `sequence_breakpoints`, `get_kit`, `search_inventory`, `rankings_link`. Each = `{ name, description (what the numbers mean and where they stop), input_schema (strict), provenance, run(input, ctx) → compact JSON }`, `ctx = { exp, now, autoBuffs }`. `toolDefinitions({ eager })` adds `strict: true` (+ `eager_input_streaming`); `runTool()` validates, runs, catches — unknown tool / invalid input / a throw all come back as an error result with a one-line `preview` for the timeline |
+| `ai/tools/*.ts` + `index.ts` | twelve read-only tools (twenty since 2026-10-31: see "In-app AI: tools for the batch-2 pages") in a FIXED order (`AI_TOOLS`; tools render first in the cache prefix): `get_account_summary`, `calc_character`, `calc_team`, `rank_roster`, `substat_weights`, `what_if`, `list_rotations`, `list_team_presets`, `sequence_breakpoints`, `get_kit`, `search_inventory`, `rankings_link`. Each = `{ name, description (what the numbers mean and where they stop), input_schema (strict), provenance, run(input, ctx) → compact JSON }`, `ctx = { exp, now, autoBuffs }`. `toolDefinitions({ eager })` adds `strict: true` (+ `eager_input_streaming`); `runTool()` validates, runs, catches — unknown tool / invalid input / a throw all come back as an error result with a one-line `preview` for the timeline |
 | `ai/tools/shared.ts` | display names (characters, weapons, echoes, sets, stats — Claude and the player read "Everbright Polestar"), rounding, loose name resolution (`resolveOwnCharacter` over the account, `resolveAnyCharacter` over the whole roster for kit / breakpoint questions), `compactJson()` — ≈2K tokens (8000 chars) at most: the longest list is halved until it fits and `_truncated` says which |
 | `ai/tools/memo.ts` | `rankingFor(exp)` (the /my-rankings computation with the investment estimates) and `bestRotationFor(id, exp)`, memoised per account fingerprint (a hash of characters + echoes + equipped + teams) so an edit between questions never reads a stale number |
 | `ai/tools/tools.worker.ts` + `ai/toolWorker.ts` | `createToolWorkerRunner().runTool` — the same tools in a Web Worker (the account posted per call; a crashed worker rejects its pending calls, the loop answers them with `is_error`, the next call respawns it). Pass it as `runTool` from the drawer: rank_roster takes ~1.5 s on David's export and the page keeps animating (108 frames during a full worker run in Chromium) |
@@ -1287,7 +1287,7 @@ here is imported by the app yet, so the main bundle is unchanged; the drawer imp
 | `ai/agentLoop.ts` | `runAgentTurn()` — the streaming manual loop (below). Callbacks: `onText`, `onThinkingStart`, `onToolCall` (a tool_use started streaming), `onToolStart`, `onToolEnd(name, ok, preview, id, result)`, `onUsage`, `onRetry`, `onDone`, `onError`; `confirm({ kind: "budget" \| "tool_limit" })` asks the player. Returns `{ status, messages, text, usage, budgetLimitUsd, rounds, refusal?, error? }` — `messages` is exactly what to append |
 | `ai/conversation.ts` | the conversation (`wtplus:ai:chat` in sessionStorage; "new chat" = `clearConversation`): messages, the snapshot frozen at start, the model it started on, usage, the soft limit. `askInConversation(conv, question, { client, effort, exp, page, … })` builds the turn's system message (page context only when it changed; a note when the account no longer matches what Claude was told), runs the loop, appends what it committed. `continueConversation` resumes after a budget / tool-limit stop; `truncateBefore(conv, i)` is "edit a question"; `transcriptOf(messages)` gives the drawer one entry per question and per answer (tools with their results attached; system messages and thinking blocks hidden) |
 | `ai/cliAsk.ts` + `cli/index.ts` `ask` | `npm run cli -- ask "<question>" [--export f] [--model …] [--effort …] [--max-rounds n] [--budget usd] [--no-auto-buffs]` — the same conversation, loop and tools on an export file in Node; streams the answer to stdout, the tool timeline and the cost line to stderr (`--json` prints a result object). **Calls the paid API** — credentials from `ANTHROPIC_API_KEY` or an `ant auth login` profile |
-| `ai/eval/questions.json` | the question bank (20 David-style questions — best team, S2 Mornye on the Aemeath team, Xuanling's next substat, R5 Polestar vs S1 Aemeath, echoes to feed, …) with the tools that should answer each and what the answer must rest on |
+| `ai/eval/questions.json` | the question bank (20 David-style questions, 32 since 2026-10-31 — best team, S2 Mornye on the Aemeath team, Xuanling's next substat, R5 Polestar vs S1 Aemeath, echoes to feed, …) with the tools that should answer each and what the answer must rest on |
 | tests | `tools/tools.test.ts` (every tool on `__fixtures__/aiAccount.json` — Aemeath / Mornye / Lynae, their equipped echoes, five spares and their team, trimmed from a real export; strictness, the 24-optional-parameter / 20-strict-tool limits, byte-stable definitions), `schema`, `pricing`, `aiSettings`, `client` (typed errors from real SDK classes), `agentLoop` (`__fixtures__/fakeClaude.ts`: tool round, request shape, parallel tools, a throwing runner, pause_turn, max_tokens ×3 cases, refusal ×2, abort ×3, unparseable JSON, the round cap yes/no, the budget yes/no/start), `conversation` (store, turn context, a simulated prompt cache that only hits byte-identical prefixes), `sdkIntegration` (the loop on the **real** SDK client with `fetch` replaced by scripted SSE: headers, body, thinking signature and parsed tool input sent back unchanged, a 401), `prompt`, `cliAsk`, `toolWorker`, `live/liveExport`, `eval/questions` (tool names valid; no `node:` import anywhere under `ai/` or `live/`) |
 
 **The loop's rules.** Streaming (`client.beta.messages.stream` + `finalMessage()`); `thinking` omitted (Opus 5.5
@@ -1502,6 +1502,78 @@ Things learned:
   `:has(.dropdown:focus-within)` lift on the nav container fixes it without touching Nav.vue.
 - Very saturated DaisyUI primaries at low alpha (`border-primary/25`) look yellow in a downscaled screenshot. Check at
   `--dpr 2 --clip` before calling it a bug.
+
+## In-app AI: tools for the batch-2 pages — `src/sim/ai/tools/` (track "assistant", 2026-10-31)
+
+The assistant could not see the pages batch 2 added. Eight read-only tools now answer from them: "what ER does Aemeath
+need in this team", "which echoes should I feed", "can my teams clear ToA floor 4 this season", "should I pull for X",
+"what's the rotation for this team". Every result carries `path` + `label`, so the answer offers that page as a button
+(`deepLinksOf` already turned any `path` into one). No real Anthropic request is made by any test or spec.
+
+| Tool | Page / module | Runs | What it returns |
+|---|---|---|---|
+| `energy_check` | `/energy`, `energy/energyCheck.ts` | main thread (Riley) | a team (saved or three names): each member's ER have vs need (need rounded up, as printed), short by points and median rolls, set by the loop or the kit's floor, DPS share, damage at 100 % Crit Rate; `team: null` = every saved team + each character's ER floor. A team his list lacks is "not measured", never a formula |
+| `team_rotation` | `/rotation`, `rotation/extract.ts` + `cueModel.ts` + `exportText.ts` | main thread (Riley) | the cue card as text: opener and loop blocks (folded ×N), one line per swap (`Mornye: Intro › R › BA×3 › … · 5.2 s (Outro ready)`), team DPS, gear; the path is `rotationPath` of that exact row |
+| `toa_check` | `/endgame`, `endgame/toaRun.ts` | main thread (Riley) | one timed floor (`"Hazard 4"`, `"4"`, `"Resonant 4"`) or `null` = every timed floor (top 3) + the Vigor plan; kill time, crests, the best saved team, effect fidelity; "sim, perfect execution". Reuses `wtplus:endgame:check` when its `checkKey` matches (same key the page builds), else runs the check (~10 s on David's account) |
+| `build_team_plan` | `/build-team`, `buildTeam/plans.ts` + `constraints.ts` | main thread (Riley) | the plan per member (sets with pieces, main echo, layout, main stat per slot, ER need), how many inventory echoes fit it alone and which cost slots can't be filled, Riley's DPS today / High Invest. A dry run: it never runs the optimizer or writes a build (`/build-team?team=<id>` does, with its confirm) |
+| `echo_lab` | `/echo-lab`, `echoLab/pass.ts` | tool worker | `show: feed` (groups as the game filters: Sonata · Cost · Main Stat), `keep` / `spare` (best owner, slot, gain, the echo it replaces), `reroll` (lock / re-roll per line, the plan, re-roll first via `pickRerollFirst`); `character` narrows. The pass is memoised per account fingerprint (`memo.ts echoLabFor`) |
+| `weapon_value` | `/weapons`, `weaponValue/weaponValue.ts` | tool worker | one character: signature steps to R5 (own, stats-only floor, team gain), standard 5★, best 4★, the next refinement; `null` = every character's signature next copy, best first |
+| `pull_advice` | `/convene` advisor, `convene/advisor*.ts` | tool worker, reads `wtplus:convene:{history,banners,prefs}` | every featured 5★ running now: damage per copy to S6 / R5, expected Astrite from pity (history, else the typed pity, else 0 — said so), pulls for half / nine in ten players, % per 1,000 Astrite, the budget's chance; an item not on a banner says so |
+| `today` | `/today`, `today/*.ts` | tool worker, reads `wtplus:today:{news:v1,v1}` + convene's prefs and banners | next daily / weekly reset (device clock + countdown), the logged Waveplates projected, events ending / running / starting from the notices cache (or "open /today once"), double drops, endgame cycles, banners running |
+
+Plumbing:
+- **`ctx.riley`** (`tools/riley.ts`): one small surface over the Riley run seam (`teams`, `teamKeysFor`, `solveMine`,
+  `tracedRun`, `curves`, `account`). The browser fills it from `rileyClient()` (`ai/rileyBrowser.ts`: the app's one
+  solver worker, its memo shared with the pages), the CLI from `rileyHeadless()` (`cli/aiRiley.ts`, Node only). A tool
+  with `riley: true` runs on the **main thread** in the browser (`assistantRuntime.ts` routes by `toolNeeds(name)`): only
+  the main thread can reach the solver worker, and the engine work happens there anyway. No new worker entry point.
+- **`ctx.storage`**: a read-only view (`readOnlyStorage`: writes are dropped) of the localStorage keys a tool lists in
+  `reads`. The worker has no localStorage, so `toolWorker.ts` snapshots exactly those keys into the request (the AI key
+  is never among them; a test checks it).
+- **Team arguments** (`teamTarget`): a saved team by loose name / id / index, else three names split on `, + · / & and`;
+  three names that match a saved team use that team (its name, builds and pins).
+- **Nullable parameters**: strict tool use allows 20 strict tools, 24 optional parameters and 16 union-typed ones per
+  request (the structured-outputs limits, checked 2026-10-31). Stage 1 used 21 optional, so the new "or everything"
+  arguments are `type: ["string", "null"]` and **required** (`nullableString`): 5 of the 16, still 21 optional, 20 tools.
+  `validateInput` treats an explicit `null` as absent and still rejects a missing key (a cut-off stream).
+- **Cache prefix**: the eight tools are appended; `tools.test.ts` pins a hash of the first twelve definitions (`1o4di9`,
+  the same bytes as before), so a stage-1 tool's cached prefix survives.
+- `npm run cli -- tool <name> '<json>' [--export f]` runs one tool on an export without Claude (free), printing what Claude
+  would read; `ask` now hands the tools the headless Riley engine too.
+
+Rules:
+- **The registry is full: 20 strict tools.** A new tool must replace or merge one (or go non-strict, which the request
+  cap doesn't count, at the price of grammar-checked input).
+- Riley figures are labelled DPS in every result and compared only with DPS; the app engine's gains are % of rotation
+  damage. Each result says which (`notes`).
+- Tools never write: storage writes are dropped, `build_team_plan` doesn't build, `toa_check` doesn't store its check.
+- No datamine-site names in results (the ToA note cites the page's Calibrate tab, not a site).
+- **Nothing the tool worker imports may hold a `new Worker(new URL(...))` site** (echoLabClient, rileyClient, the
+  build-team worker backend, …): Vite would build that worker again, nested inside the tool worker's own build — the
+  kind of nested build Vercel's one-core VM deadlocked on. Copy the small helper instead (`memo.ts` copies the account
+  as `labAccountOf` does). `eval/questions.test.ts` walks the tool worker's import graph and fails on one (verify
+  pass 2026-10-31: the first cut imported `labAccountOf` from echoLabClient and nested an Echo Lab worker build).
+
+Gates (2026-10-31): `vue-tsc --noEmit` clean; vitest `src/sim/ai` 19 files / 144 tests (new: `tools/pageTools.test.ts`
+on the fixture with synthetic page caches, `tools/rileyTools.test.ts` on the real engine headless (node env) plus fakes
+for the refusals, the nullable schema, the worker's storage snapshot, the timeline rows); Cypress
+`assistantPages.cy.ts` 2/2 (an ER question on /energy through the real solver worker; /today's caches through the tool
+worker on a 412 px phone at 130 %), `assistant.cy.ts` 6/6, `phoneLayout.cy.ts` 12/12; the Vercel-style build (no
+`import.meta.glob`, entry 1,511 kB as before, no `api.anthropic.com` in it). The tool worker grew 4.74 → 5.03 MB raw:
+it is an IIFE, which inlines every module the registry imports, the Riley tools' too, though they never run there.
+
+Measured on David's 9-16 export (`cli -- tool`, Node): energy_check one team 0.9 s, every team 1.0 s; team_rotation
+0.6 s; build_team_plan 0.6 s; toa_check 10 s fresh (223 teams solved, 30 timed); echo_lab feed 2.0 s, reroll 3.6 s;
+weapon_value 2.6 s (all) / 1.1 s (one); pull_advice 0.1 s; today 10 ms. Largest result 7.1 K characters (echo_lab feed).
+In the browser on his seeded stores every tool answered "ok" from the panel at 412 px / 130 %, dark and light.
+
+Things learned:
+- Workers have no localStorage: a tool that reads page caches has to be handed them. Snapshotting only the listed keys
+  keeps the key and the history of other features out of the worker.
+- His `const enum`s, `import.meta.glob` (ToA season files) and the seed JSONs all bundle fine into the IIFE tool worker,
+  so a tool that only needs the app engine and page data can stay off the main thread.
+- The Cypress Cartethyia fixture wears 100 % ER: the energy check reads her 8.6 points short of t500's 108.6 % loop
+  need, as the energy track's own README says.
 
 ## ToA clear check — `src/sim/endgame/` + `/endgame` (batch 2, 2026-10-26)
 

@@ -10,9 +10,18 @@ import { getKitTool, sequenceBreakpointsTool } from "./kit";
 import { rankRosterTool } from "./rank";
 import { substatWeightsTool } from "./substats";
 import { calcTeamTool, listTeamPresetsTool } from "./team";
+import { energyCheckTool } from "./energy";
+import { toaCheckTool } from "./endgame";
+import { buildTeamPlanTool, teamRotationTool } from "./teamRun";
+import { echoLabTool } from "./echoLab";
+import { weaponValueTool } from "./weapons";
+import { pullAdviceTool } from "./convene";
+import { todayTool } from "./today";
 import type { AnyAiTool, ToolContext } from "./shared";
 
-export type { AiTool, AnyAiTool, ToolContext } from "./shared";
+export type { AiTool, AnyAiTool, ToolContext, ToolStorage } from "./shared";
+export { readOnlyStorage } from "./shared";
+export type { RileyProvider, RileyToolEngine } from "./riley";
 export { clearToolMemo } from "./memo";
 
 export const AI_TOOLS: readonly AnyAiTool[] = [
@@ -28,9 +37,25 @@ export const AI_TOOLS: readonly AnyAiTool[] = [
   getKitTool,
   searchInventoryTool,
   rankingsLink,
+  // the batch-2 pages (2026-10-31): appended, so the twelve above keep their cached prefix bytes
+  energyCheckTool,
+  teamRotationTool,
+  toaCheckTool,
+  buildTeamPlanTool,
+  echoLabTool,
+  weaponValueTool,
+  pullAdviceTool,
+  todayTool,
 ];
 
 export const findTool = (name: string): AnyAiTool | undefined => AI_TOOLS.find((t) => t.name === name);
+
+/** Where the browser runs a tool: `main` (it needs Riley's engine, whose solver worker the main thread owns) or the
+ *  tool worker; and the localStorage keys to hand it (`reads`). Unknown tools go to the worker, which reports them. */
+export function toolNeeds(name: string): { thread: "main" | "worker"; reads: readonly string[] } {
+  const tool = findTool(name);
+  return { thread: tool?.riley ? "main" : "worker", reads: tool?.reads ?? [] };
+}
 
 /** The `tools` array for a request: strict schemas; `eager` streams tool input as it is generated (streaming requests only). */
 export function toolDefinitions(options: { eager?: boolean } = {}): BetaTool[] {

@@ -3,11 +3,15 @@
 // plus every team and takes seconds; several tools (rank_roster, what_if, substat_weights) reuse it.
 import { RANKING_ENEMY, rankRoster, rotationCandidates, scoreRotation, type RosterRanking, type RotationCandidate } from "../../myRankings/rankRoster";
 import type { ExportFile } from "../../cli/exportShape";
+import { createLabSession, type LabAccount, type LabSession } from "../../echoLab/core";
+import { runJob } from "../../echoLab/pass";
+import type { BestOwnerResult } from "../../echoLab/bestOwner";
 import { accountFingerprint } from "./shared";
 
 const MAX_ENTRIES = 4;
 const rankMemo = new Map<string, Promise<RosterRanking>>();
 const bestMemo = new Map<string, Promise<BestRotation>>();
+const labMemo = new Map<string, Promise<{ session: LabSession; verdicts: BestOwnerResult }>>();
 
 function remember<T>(memo: Map<string, Promise<T>>, key: string, make: () => Promise<T>): Promise<T> {
   const hit = memo.get(key);
@@ -55,8 +59,22 @@ export function bestRotationFor(id: string, exp: ExportFile): Promise<BestRotati
   });
 }
 
+/** Echo Lab's verdicts (best owner + Tune or Feed, no benchmarks) on this account state, and the session that ran them
+ *  (it caches prepared characters, so a re-roll question on the same account reuses them). */
+export function echoLabFor(exp: ExportFile): Promise<{ session: LabSession; verdicts: BestOwnerResult }> {
+  return remember(labMemo, accountFingerprint(exp), async () => {
+    // a plain copy, as echoLabClient's labAccountOf makes (not imported: that module spawns the Echo Lab worker,
+    // and importing it here would nest a second Echo Lab worker build inside the tool worker's build)
+    const account = JSON.parse(JSON.stringify({ characters: exp.characters ?? {}, echoes: exp.inventory.echoes ?? [], equipped: exp.inventory.equipped ?? {}, teams: exp.teams ?? [] })) as LabAccount;
+    const session = createLabSession(account);
+    const verdicts = (await runJob(session, { kind: "bestOwner" })) as BestOwnerResult;
+    return { session, verdicts };
+  });
+}
+
 /** Test hook / "new chat": forget every memoised result. */
 export function clearToolMemo(): void {
   rankMemo.clear();
   bestMemo.clear();
+  labMemo.clear();
 }
