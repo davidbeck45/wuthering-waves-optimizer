@@ -164,6 +164,14 @@ describe("Echo Lab", () => {
         const box = $t[0].getBoundingClientRect();
         for (const cell of $t[0].querySelectorAll("td")) expect(cell.getBoundingClientRect().right, "spread cell inside the table").to.be.at.most(box.right + 0.5);
       });
+      // the Tuner plan tab (echoLabTuner.cy.ts covers it at 412 only): a typed budget and the weekly income open
+      cy.get('[data-test-echo-lab-tab="plan"]').click();
+      cy.get("[data-test-echo-lab-plan-step]", RUN).should("have.length.at.least", 1);
+      cy.get("[data-test-echo-lab-plan-tuners]").type("15").blur();
+      cy.get("[data-test-echo-lab-plan-weekly-toggle]").click();
+      cy.get("[data-test-echo-lab-plan-weekly-tuners]").type("20").blur();
+      cy.get("[data-test-echo-lab-plan-fresh-row]", RUN).should("exist");
+      expectNoHorizontalScroll("tuner plan");
     });
   }
 
