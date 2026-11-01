@@ -715,13 +715,8 @@
     overflow-wrap: anywhere;
     text-align: right;
   }
-  /* 2026-10-31 (night audit "fight"): collapsed on scroll, the bar hid the label and left the
-     damage number with nothing to say what it was (section 19 hides its "avg damage" caption
-     there too): the label stays, one small line, which fits beside the 2 rem avatar without
-     making the bar taller. Its width, and the name's room beside it, are section 19's. */
-  .command-bar.command-bar--compact [data-test-live-result-bar-hero] > [data-test-live-result-bar-target-trigger].command-bar__compact-hide {
-    display: flex;
-  }
+  /* Collapsed on scroll, Ryan's bar hides this label (his commandSheet.cy.ts asserts it); the
+     number keeps section 19's "avg damage" caption instead, so it still says what it is. */
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -938,7 +933,8 @@ dialog.modal[data-test-whats-new-v3-modal]:not([open]) {
        the right-hand block, so the character's name read "A…" at 412 px and vanished at 360, and the
        pink number had no unit. The target button gets narrower (it still truncates and still opens the
        target / damage-type popover), the number a touch smaller, and a caption under it says which
-       damage it is (the hero carries `data-damage-type`, a one-attribute hook in Ryan's file). Below
+       damage it is (the hero carries `data-damage-type`, a one-attribute hook in Ryan's file); the
+       caption stays when the bar collapses on scroll and hides the target button. Below
        400 px the portrait, the gaps and the number shrink a little more so the name still reads (the
        portrait stays: it opens the character browser). */
 @media (max-width: 767px) {
@@ -964,9 +960,6 @@ dialog.modal[data-test-whats-new-v3-modal]:not([open]) {
   }
   .command-bar [data-test-live-result-bar-hero][data-damage-type="Crit"]::after {
     content: "crit damage";
-  }
-  .command-bar--compact [data-test-live-result-bar-hero]::after {
-    display: none;
   }
 }
 @media (max-width: 399px) {
