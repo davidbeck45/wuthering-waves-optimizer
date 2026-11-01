@@ -2531,3 +2531,18 @@ Things learned:
 - `Cypress.automation("remote:debugger:protocol", { command, params })` reaches the page's DevTools protocol from a
   spec or a support file (Electron and Chrome). `Performance.getMetrics` and `Profiler.start/stop` through it are how the
   frame-rate drop was found.
+
+## Critic fixes — the last pass of the 2026-10-31 night (report `wto-wt/night/reports/critic-fix.md`)
+
+The completeness critic ran Ryan's calculator-core shard on the final tree. That shard is not in the plus gate, and it
+found one red. It also found a few phone and label gaps. Each fix below is small and checked at 412 and 360 px with
+130 % text.
+
+| Piece | Role |
+|---|---|
+| `phone.css` § 13 + § 19 | the collapsed live result bar hides Ryan's headline button again (his `calculator/commandSheet.cy.ts` asserts it: a § 13 rule from the fight merge re-showed it, and calculator-core would have gone red on CI). The number keeps § 19's "avg damage" caption instead, so it still says what it is. The bar stays one row, 53 px |
+| `myRankings/MyRankingsTeams.vue` (phone block) | a team row's number and its "team avg DMG / rotation" unit (body text) sit on one line, with the member-share bar under them. Beside the unit, the bar had 0 px. `wiring.cy.ts`'s phone loop asserts the bar is wider than 100 px at 412 and 360 |
+| `shell/CommandPalette.vue` | below `sm`, titles and subtitles get two lines (`max-sm:line-clamp-2`) before an ellipsis. "Build from my echoes for this team" read "…for thi…" at 412 |
+| `endgame/ToaView.vue` | the progress label wraps below `sm` ("Solving the teams you can field at your account" beside "43 / 220"), so the count keeps its label |
+| `rankings/RankingsCards.vue` | the grey seconds read "26.2 s loop". The figure may wrap, but the number never breaks, so at 360 px the label drops under it and the card stays on the screen. `accountRankingsPhone.cy.ts` checks both |
+| `ai/tools/teamRun.ts` `memberPlanSummary` | `build_team_plan` leaves out `fittingEchoes` for a member whose plan names no sets, layout or main stats (it counted the whole inventory as a fit). Tested in `rileyTools.test.ts` |
