@@ -49,8 +49,9 @@
                 <svg v-else viewBox="0 0 24 24" class="size-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path :d="item.icon ?? ''" /></svg>
               </span>
               <span class="min-w-0 flex-1">
-                <span class="block truncate text-sm font-medium">{{ item.title }}</span>
-                <span v-if="item.subtitle" class="block truncate text-xs text-base-content/55">{{ item.subtitle }}</span>
+                <!-- phones: two lines before an ellipsis (one line cut "Build from my echoes for thi…" at 412 px) -->
+                <span class="block break-words text-sm font-medium max-sm:line-clamp-2 sm:truncate">{{ item.title }}</span>
+                <span v-if="item.subtitle" class="block break-words text-xs text-base-content/55 max-sm:line-clamp-2 sm:truncate">{{ item.subtitle }}</span>
               </span>
               <span v-if="item.badge" class="shrink-0 rounded-md border border-base-300 px-1.5 font-mono text-[11px] leading-5 text-base-content/60">{{ item.badge }}</span>
               <svg v-if="item.key === active?.key" viewBox="0 0 24 24" class="hidden size-4 shrink-0 text-base-content/40 sm:block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 01-4 4H4" /></svg>
