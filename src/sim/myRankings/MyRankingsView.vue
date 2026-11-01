@@ -336,8 +336,8 @@ a.mr-pages__item:hover {
 }
 @media (max-width: 767px) {
   .my-rankings {
-    /* the last row clears the Ask button */
-    padding: 0.9rem 0.75rem calc(4.5rem + env(safe-area-inset-bottom));
+    /* the page end clears the Ask button through phone.css § 16 (every page's .content) */
+    padding: 0.9rem 0.75rem 2rem;
   }
   .mr-head {
     gap: 0.5rem 0.6rem;

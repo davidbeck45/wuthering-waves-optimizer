@@ -975,8 +975,5 @@ html[data-theme-style="light"] .bt-savebar__warn {
     min-height: 40px;
     padding-right: 0.25rem;
   }
-  /* the page's last card clears the fixed bar and the Ask button above it */
-  .bt {
-    padding-bottom: calc(9rem + env(safe-area-inset-bottom));
-  }
+  /* the page's last card clears the fixed bar and the Ask button above it through phone.css § 16 (--plus-bar-h) */
 }
