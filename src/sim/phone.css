@@ -652,3 +652,17 @@
     content: "DPS";
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   15. Toasts wrap inside the screen (2026-10-31, the WaveScan "add only new echoes" track).
+   DaisyUI's `.toast` is `white-space: nowrap` with `min-width: fit-content`, and Ryan's ToastContainer pins it
+   top-right (`toast-top toast-end`), so a long message grew off the left edge of a phone: "Added 44 echoes to your
+   inventory; 230 were already there." lost its first words, and his own Wavescan import's "Imported …, … already in
+   your inventory, equipped … characters." does the same. Below 768 px the toast spans the screen and wraps. */
+@media (max-width: 767px) {
+  .toast.toast-top.toast-end {
+    min-width: 0;
+    max-width: 100vw;
+    white-space: normal;
+  }
+}

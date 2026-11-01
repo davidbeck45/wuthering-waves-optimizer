@@ -42,6 +42,9 @@
       </p>
     </div>
 
+    <!-- Wuthering Tools+: add only the scanned echoes the inventory doesn't have yet (Phantom skins count as their base) -->
+    <WavescanNewEchoes v-if="mapped" :mapped="mapped" />
+
     <div
       v-if="mapped"
       class="bg-base-200 rounded-xl p-4 flex flex-col gap-3"
@@ -219,8 +222,10 @@
  * this panel only reads the file, asks how to apply it, and applies it.
  * See docs/wavescan-import.md and ADR 0038.
  */
-import { computed, ref } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import SettingsWavescanLoadout from "./SettingsWavescanLoadout.vue";
+// Wuthering Tools+: the "add only new echoes" review (src/sim/wavescan), loaded once a file is read
+const WavescanNewEchoes = defineAsyncComponent(() => import("../sim/wavescan/WavescanNewEchoes.vue"));
 import { useInventoryStore } from "../stores/inventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";

@@ -88,6 +88,8 @@ result bar's headline, at 412 × 915 (at 360 px the nav fits a real phone by 0.2
 `phone.css` § 14 came with Ryan #681/#682 (2026-10-31 sync; his rotation charts, behind the Labs "frame timing" flag):
 RotationShareBars' % labels hide when their segment is narrower than the label (a cut-off "14%" read as "1"), and
 the team lanes chart's turns-on-field table becomes two-line cards (it was 463 px wide in a 329 px scroller).
+`phone.css` § 15 (2026-10-31, WaveScan "add only new echoes"): toasts wrap inside the screen instead of growing off its
+left edge (DaisyUI's `.toast` is `nowrap`); see that section below.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -1940,3 +1942,54 @@ main build waits on 7 pending transforms that never return.
   `ROLLDOWN_WORKER_THREADS=4 ROLLDOWN_MAX_BLOCKING_THREADS=32 npm run build`, so the build no longer depends on the
   machine's core count. Verified on Vercel with a no-cache preview build of 480c3db4.
 - **When Vite or rolldown is bumped:** re-check with the 1/1 command above, and drop the override once it builds.
+
+## WaveScan: add only new echoes — `src/sim/wavescan/` (2026-10-31, track "wavescan")
+
+David scans his whole echo bag on PC with Wavescan (Ryan's desktop scanner, format v1, `docs/wavescan-import.md`) and
+wants the echoes he doesn't have yet, nothing else. Ryan's import can't do that cleanly for an older inventory: its
+identity key (`getEchoIdentityKey`) compares exact echo names, and since Ryan #594 the app lists Phantom skins
+("Phantom: Sigillum") as their own echoes while older inventories store them under the base echo. David's 2026-10-30
+scan (274 echoes, 141 worn) against the 09-16 inventory (258): Ryan's Add would put in **91**, of which only 44 are new.
+This panel puts in the 44.
+
+Where: Settings › Wavescan (v3: the "Your Data" group; classic: the Wavescan tab; `/settings?section=wavescan`, which
+the Scanners page links). After a file is uploaded or pasted, an **"Add only new echoes"** card sits between Ryan's
+"Wavescan data" card and his "Echoes" card. His Add / Replace and the equipped-loadout review are unchanged below it.
+
+| Piece | Role |
+|---|---|
+| `wavescan/newEchoes.ts` | pure. `skinBaseOf(key)`: a Phantom skin → the echo it plays as (`Phantom<X>` → `<X>` with the same class, else the one same-class echo whose name minus a "Word:" prefix is the skin's name: "Phantom: Kronaclaw" → "Reminiscence: Kronaclaw"; all 42 skins in the registry map). `planNewEchoes(scanned, inventory)` → `toAdd` / `owned` (each with the inventory echo it matched, `kind` and `skinDiffers`) / `notInScan`. Three passes, strictest first, each over what the earlier ones left on both sides: **exact** = the app's duplicate rule with the echo read as its base, both ways; **order** = the same five substat pairs in another order; **rarity** = the same rolls with another rarity. The two loose passes only pair fully rolled echoes (five substats): fewer equal rolls can be another copy, and a 4★ never has five substats, so an unleveled 5★ is not a 4★ typo. Copies are counted per pass (a multiset in file / inventory order, like `planWavescanEchoImport`). Display helpers: `groupByBaseEcho` (cost, then name), `substatsOf` (labelled values, `%` on percent stats), `statName` (four long bonus names shortened: "Liberation DMG"), `matchNote`, `secondCopiesUpstreamWouldAdd` |
+| `wavescan/WavescanNewEchoes.vue` | the card: what it is, three count tiles (New · will be added / Already in your inventory · skipped / Only in your inventory · kept, never deleted), the note that who wears what doesn't change and how many new echoes the scan saw worn, how many second copies Ryan's import below would add, "Add N echoes to my inventory", then three lists (new open; the other two render only when opened) |
+| `wavescan/WavescanEchoGroups.vue` | one list: echoes under their base echo with cost and count; each card has the set, a "Phantom skin" badge, "Main stat …" and the substats with labels, a note for a loose match, "Worn by X in game. Added unequipped." (new) or "Equipped on X here. Stays equipped." (only in the inventory) |
+| hook: `components/SettingsWavescan.vue` (Ryan's: 2 comment lines, 2 code lines, a blank, `defineAsyncComponent` added to his vue import) | `defineAsyncComponent` of the card and `<WavescanNewEchoes v-if="mapped" :mapped="mapped" />`: it reads his `mapWavescanEchoes` result (his validation and skipped list), so the chunk loads only after a file is read |
+| `phone.css` § 15 | toasts wrap inside the screen below 768 px (DaisyUI's `.toast` is `nowrap` + `min-width: fit-content`, and the top-right toast grew off the left edge with this card's message and with Ryan's own Wavescan import message) |
+
+Rules:
+- **Asks first.** "Add N echoes to my inventory" opens the app's confirm (`useConfirm`: what is added, skipped and kept);
+  the add has no undo. Cancel writes nothing.
+- **Adds only.** New echoes go in through `inventoryStore.saveEcho`, the call Ryan's import makes, unequipped. Nothing is
+  removed, no existing echo is changed (an id the scan row carries that the inventory already has is re-rolled, since
+  `saveEcho` overwrites by id), `equipped` / builds / presets are never touched, including for echoes the scan saw worn.
+- The plan is a `computed` over the inventory store, so after the add the card reads 0 new and a second pass over the
+  same file adds nothing.
+- Close matches (order, rarity) count as owned and say why on their card. Two copies of one echo, set and main stat
+  with the same five values are the same echo in practice; adding a second copy would let the optimizer equip one
+  echo on two characters.
+
+Measured (local only, not committed: David's 2026-10-30 scan against the seeds of the 09-16 export, 258 echoes):
+**44 new, 230 owned, 28 only in the inventory** — of the 230, 215 exact (34 of them across a Phantom skin), 14 with
+the substats in another order, 1 stored as 4★ with 5★ rolls (Phantom: Cuddle Wuddle); all 15 loose matches are fully
+rolled, so the five-substat rule (verify round 1) leaves these counts as they are. The strict rule alone (exact
+pass only) gives 59 / 215 / 43. 25 of the 44 new were worn in game; 6 are skins. Ryan's Add on the same file: 91 (the
+44 + 47 second copies).
+
+Gates: `newEchoes.test.ts` (synthetic fixture `__fixtures__/newEchoes.json`: skins both ways, three copies against
+two, one changed substat = new + the old one only in the inventory, a reordered and a 4★-typo close match, exact beats
+loose for one owned echo, loosely typed rows, every registry skin maps to a same-class echo, labels and notes,
+grouping, no loose match below five substats), `WavescanNewEchoes.test.ts` (counts with labels, the confirm and its
+cancel, the add: only the 3, unequipped, existing rows and
+`equipped` unchanged, then 0 new; an id collision never overwrites; mounted inside Ryan's `SettingsWavescan`); Ryan's
+`tests/components/SettingsWavescan.test.ts` and `tests/wavescan/` unchanged and green; Cypress
+`cypress/e2e/wavescanNewEchoes.cy.ts` (v3 at 412 × 915 and 130 % text: upload, counts, skins under their base, notes,
+no sideways scroll with every list open, add → cancel writes nothing → confirm → localStorage has exactly the 3 more and the same `equipped`, reload and
+re-upload → 0 new; classic tab at 1440).

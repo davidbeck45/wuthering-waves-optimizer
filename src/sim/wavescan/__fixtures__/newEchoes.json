@@ -1,0 +1,461 @@
+{
+  "_about": "Synthetic Wavescan scan + inventory for the 'add only new echoes' import (src/sim/wavescan). Expected: 3 new (the third Tambourinist copy, the re-tuned Fog Lionarch, the Phantom Gulpuff), 6 already owned (Sigillum and Dreamless across the skin both ways, two Tambourinist copies, the Glacio Drake with its substats in another order, the Sacerdos stored as 4-star), 2 only in the inventory (the old Fog Lionarch, the Hoochief).",
+  "scan": {
+    "format": "WutheringToolsScan",
+    "version": 1,
+    "meta": {
+      "scannerVersion": "0.1.0",
+      "scannedAt": "2026-10-30T20:00:00.000Z",
+      "platform": "windows",
+      "language": "en",
+      "mode": "watch"
+    },
+    "echoes": [
+      {
+        "scanId": "scan-echo-1",
+        "echo": "PhantomSigillum",
+        "echoSet": "TrailblazingStar",
+        "cost": 4,
+        "rank": 5,
+        "level": 25,
+        "stat": "CritRate",
+        "substats": [
+          {
+            "type": "CritDMG",
+            "value": 17.4
+          },
+          {
+            "type": "ATK",
+            "value": 9.4
+          },
+          {
+            "type": "ATK_FLAT",
+            "value": 40
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 8.4
+          },
+          {
+            "type": "HeavyAttackDMGBonus",
+            "value": 7.9
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-2",
+        "echo": "Dreamless",
+        "echoSet": "HavocEclipse",
+        "cost": 4,
+        "rank": 5,
+        "level": 25,
+        "stat": "CritDMG",
+        "substats": [
+          {
+            "type": "CritRate",
+            "value": 8.1
+          },
+          {
+            "type": "CritDMG",
+            "value": 13.8
+          },
+          {
+            "type": "ATK",
+            "value": 8.6
+          },
+          {
+            "type": "BasicAttackDMGBonus",
+            "value": 9.4
+          },
+          {
+            "type": "HP_FLAT",
+            "value": 430
+          }
+        ],
+        "equippedBy": "Jiyan"
+      },
+      {
+        "scanId": "scan-echo-3",
+        "echo": "Tambourinist",
+        "echoSet": "HavocEclipse",
+        "cost": 3,
+        "rank": 5,
+        "level": 25,
+        "stat": "Havoc",
+        "substats": [
+          {
+            "type": "CritRate",
+            "value": 6.9
+          },
+          {
+            "type": "ATK",
+            "value": 7.9
+          },
+          {
+            "type": "CritDMG",
+            "value": 13.8
+          },
+          {
+            "type": "ResonanceSkillDMGBonus",
+            "value": 8.6
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 9.2
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-4",
+        "echo": "Tambourinist",
+        "echoSet": "HavocEclipse",
+        "cost": 3,
+        "rank": 5,
+        "level": 25,
+        "stat": "Havoc",
+        "substats": [
+          {
+            "type": "CritRate",
+            "value": 6.9
+          },
+          {
+            "type": "ATK",
+            "value": 7.9
+          },
+          {
+            "type": "CritDMG",
+            "value": 13.8
+          },
+          {
+            "type": "ResonanceSkillDMGBonus",
+            "value": 8.6
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 9.2
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-5",
+        "echo": "Tambourinist",
+        "echoSet": "HavocEclipse",
+        "cost": 3,
+        "rank": 5,
+        "level": 25,
+        "stat": "Havoc",
+        "substats": [
+          {
+            "type": "CritRate",
+            "value": 6.9
+          },
+          {
+            "type": "ATK",
+            "value": 7.9
+          },
+          {
+            "type": "CritDMG",
+            "value": 13.8
+          },
+          {
+            "type": "ResonanceSkillDMGBonus",
+            "value": 8.6
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 9.2
+          }
+        ],
+        "equippedBy": "Calcharo"
+      },
+      {
+        "scanId": "scan-echo-6",
+        "echo": "FogLionarch",
+        "echoSet": "SongofFeatheredTrace",
+        "cost": 3,
+        "rank": 5,
+        "level": 25,
+        "stat": "ATK",
+        "substats": [
+          {
+            "type": "ATK",
+            "value": 7.1
+          },
+          {
+            "type": "CritRate",
+            "value": 8.7
+          },
+          {
+            "type": "HeavyAttackDMGBonus",
+            "value": 9.4
+          },
+          {
+            "type": "DEF_FLAT",
+            "value": 40
+          },
+          {
+            "type": "CritDMG",
+            "value": 16.2
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-7",
+        "echo": "GlacioDrake",
+        "echoSet": "WindwardPilgrimage",
+        "cost": 1,
+        "rank": 5,
+        "level": 25,
+        "stat": "HP",
+        "substats": [
+          {
+            "type": "HP",
+            "value": 9.4
+          },
+          {
+            "type": "ResonanceLiberationDMGBonus",
+            "value": 8.6
+          },
+          {
+            "type": "BasicAttackDMGBonus",
+            "value": 7.1
+          },
+          {
+            "type": "CritDMG",
+            "value": 15
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 8.4
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-8",
+        "echo": "Sacerdos",
+        "echoSet": "GustsofWelkin",
+        "cost": 1,
+        "rank": 5,
+        "level": 25,
+        "stat": "ATK",
+        "substats": [
+          {
+            "type": "CritDMG",
+            "value": 16.2
+          },
+          {
+            "type": "HP_FLAT",
+            "value": 470
+          },
+          {
+            "type": "CritRate",
+            "value": 8.1
+          },
+          {
+            "type": "EnergyRegen",
+            "value": 10
+          },
+          {
+            "type": "HP",
+            "value": 7.1
+          }
+        ],
+        "equippedBy": null
+      },
+      {
+        "scanId": "scan-echo-9",
+        "echo": "PhantomGulpuff",
+        "echoSet": "CelestialLight",
+        "cost": 1,
+        "rank": 5,
+        "level": 25,
+        "stat": "DEF",
+        "substats": [
+          {
+            "type": "CritRate",
+            "value": 6.9
+          },
+          {
+            "type": "CritDMG",
+            "value": 13.8
+          },
+          {
+            "type": "ATK_FLAT",
+            "value": 50
+          },
+          {
+            "type": "DEF",
+            "value": 11.8
+          }
+        ],
+        "equippedBy": "Jiyan"
+      }
+    ]
+  },
+  "inventory": {
+    "echoes": [
+      {
+        "echoId": "inv-sigillum",
+        "echo": "Sigillum",
+        "echoSet": "TrailblazingStar",
+        "type": 4,
+        "rank": "5",
+        "stat": "CritRate",
+        "echoSubStatsType1": "CritDMG",
+        "echoSubStatsValue1": 17.4,
+        "echoSubStatsType2": "ATK",
+        "echoSubStatsValue2": 9.4,
+        "echoSubStatsType3": "ATK_FLAT",
+        "echoSubStatsValue3": 40,
+        "echoSubStatsType4": "EnergyRegen",
+        "echoSubStatsValue4": 8.4,
+        "echoSubStatsType5": "HeavyAttackDMGBonus",
+        "echoSubStatsValue5": 7.9
+      },
+      {
+        "echoId": "inv-dreamless-skin",
+        "echo": "PhantomDreamless",
+        "echoSet": "HavocEclipse",
+        "type": 4,
+        "rank": "5",
+        "stat": "CritDMG",
+        "echoSubStatsType1": "CritRate",
+        "echoSubStatsValue1": 8.1,
+        "echoSubStatsType2": "CritDMG",
+        "echoSubStatsValue2": 13.8,
+        "echoSubStatsType3": "ATK",
+        "echoSubStatsValue3": 8.6,
+        "echoSubStatsType4": "BasicAttackDMGBonus",
+        "echoSubStatsValue4": 9.4,
+        "echoSubStatsType5": "HP_FLAT",
+        "echoSubStatsValue5": 430
+      },
+      {
+        "echoId": "inv-tamb-1",
+        "echo": "Tambourinist",
+        "echoSet": "HavocEclipse",
+        "type": 3,
+        "rank": "5",
+        "stat": "Havoc",
+        "echoSubStatsType1": "CritRate",
+        "echoSubStatsValue1": 6.9,
+        "echoSubStatsType2": "ATK",
+        "echoSubStatsValue2": 7.9,
+        "echoSubStatsType3": "CritDMG",
+        "echoSubStatsValue3": 13.8,
+        "echoSubStatsType4": "ResonanceSkillDMGBonus",
+        "echoSubStatsValue4": 8.6,
+        "echoSubStatsType5": "EnergyRegen",
+        "echoSubStatsValue5": 9.2
+      },
+      {
+        "echoId": "inv-tamb-2",
+        "echo": "Tambourinist",
+        "echoSet": "HavocEclipse",
+        "type": 3,
+        "rank": "5",
+        "stat": "Havoc",
+        "echoSubStatsType1": "CritRate",
+        "echoSubStatsValue1": 6.9,
+        "echoSubStatsType2": "ATK",
+        "echoSubStatsValue2": 7.9,
+        "echoSubStatsType3": "CritDMG",
+        "echoSubStatsValue3": 13.8,
+        "echoSubStatsType4": "ResonanceSkillDMGBonus",
+        "echoSubStatsValue4": 8.6,
+        "echoSubStatsType5": "EnergyRegen",
+        "echoSubStatsValue5": 9.2
+      },
+      {
+        "echoId": "inv-fog",
+        "echo": "FogLionarch",
+        "echoSet": "SongofFeatheredTrace",
+        "type": 3,
+        "rank": "5",
+        "stat": "ATK",
+        "echoSubStatsType1": "ATK",
+        "echoSubStatsValue1": 7.1,
+        "echoSubStatsType2": "CritRate",
+        "echoSubStatsValue2": 8.1,
+        "echoSubStatsType3": "HeavyAttackDMGBonus",
+        "echoSubStatsValue3": 9.4,
+        "echoSubStatsType4": "DEF_FLAT",
+        "echoSubStatsValue4": 40,
+        "echoSubStatsType5": "CritDMG",
+        "echoSubStatsValue5": 16.2
+      },
+      {
+        "echoId": "inv-hoochief",
+        "echo": "Hoochief",
+        "echoSet": "SierraGale",
+        "type": 3,
+        "rank": "5",
+        "stat": "EnergyRegen",
+        "echoSubStatsType1": "CritRate",
+        "echoSubStatsValue1": 7.5,
+        "echoSubStatsType2": "CritDMG",
+        "echoSubStatsValue2": 12.6,
+        "echoSubStatsType3": "ATK",
+        "echoSubStatsValue3": 7.1,
+        "echoSubStatsType4": "DEF",
+        "echoSubStatsValue4": 10.9,
+        "echoSubStatsType5": "HP_FLAT",
+        "echoSubStatsValue5": 360
+      },
+      {
+        "echoId": "inv-drake",
+        "echo": "GlacioDrake",
+        "echoSet": "WindwardPilgrimage",
+        "type": 1,
+        "rank": "5",
+        "stat": "HP",
+        "echoSubStatsType1": "CritDMG",
+        "echoSubStatsValue1": 15,
+        "echoSubStatsType2": "EnergyRegen",
+        "echoSubStatsValue2": 8.4,
+        "echoSubStatsType3": "BasicAttackDMGBonus",
+        "echoSubStatsValue3": 7.1,
+        "echoSubStatsType4": "ResonanceLiberationDMGBonus",
+        "echoSubStatsValue4": 8.6,
+        "echoSubStatsType5": "HP",
+        "echoSubStatsValue5": 9.4
+      },
+      {
+        "echoId": "inv-sacerdos-4star",
+        "echo": "Sacerdos",
+        "echoSet": "GustsofWelkin",
+        "type": 1,
+        "rank": "4",
+        "stat": "ATK",
+        "echoSubStatsType1": "CritDMG",
+        "echoSubStatsValue1": 16.2,
+        "echoSubStatsType2": "HP_FLAT",
+        "echoSubStatsValue2": 470,
+        "echoSubStatsType3": "CritRate",
+        "echoSubStatsValue3": 8.1,
+        "echoSubStatsType4": "EnergyRegen",
+        "echoSubStatsValue4": 10,
+        "echoSubStatsType5": "HP",
+        "echoSubStatsValue5": 7.1
+      }
+    ],
+    "equipped": {
+      "inv-dreamless-skin": {
+        "Calcharo": 0
+      },
+      "inv-hoochief": {
+        "Jiyan": 2
+      },
+      "inv-tamb-1": {
+        "Calcharo": 1
+      }
+    },
+    "echoPresets": [],
+    "equippedPresets": {}
+  }
+}
