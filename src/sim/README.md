@@ -149,7 +149,7 @@ parser as "Phone screenshots (batch)"; emits the same `echoes-parsed` event as `
 |---|---|
 | `phoneEchoScan.ts` | pure logic, **geometry first** (2026-09-12): `PHONE_LAYOUTS` (crop boxes + the stat table's geometry measured on a Galaxy S26 Ultra, 3120×1440; same-aspect sizes are scaled), `clusterRows` (the block pass's word boxes → rows: label words left, value column right), `labelKey` (whitespace/punctuation-insensitive stat aliases), `valueCandidates` / `legalValues` / `pickLegal` (a value is accepted only as a legal roll for its label — `subStatsTable`, `statsTable`, the fixed secondary row; "108%" is repaired to 10.8), `scanEcho` (walks the table from the known first-row position: observed rows are re-read from the raw pixels of their own row through a `BoxReader`, a row the block pass dropped is synthesized at its expected position — rows are 60 px apart, +46 after a wrapped label — and read the same way; stops at "Echo Skill"; everything doubtful lands in `flags`), `bestEcho` (drops the "Phantom:" skin prefix, scores every word-prefix of the name strip and the panel's first row, the COST breaks ties) / `bestSet`, `toParsedEcho` (the importer's shape with verbose labels). Twin of `wuwa-tools/echo-import/extract.py`, which reads the 198-shot "Wuwa Echos" album 198/198 |
 | `ocr.ts` | tesseract.js worker wrapper: crop → scale → threshold / invert / plain grey / untouched colour → recognise; `recognizeWords` returns word boxes (the block pass), per-call whitelists (digits only for value re-reads) |
-| `imageMatch.ts` | promise wrapper over the app's `echoParser.worker` (portrait + set-glyph pixel matching), used only as fallback when the name or the set isn't readable |
+| `imageMatch.ts` | promise wrapper over the app's `echoParser.worker` (portrait pixel matching), used only as fallback when the name isn't readable; since 2026-10-31 the worker starts on that first need instead of before every scan, and the set comes from `setGlyph.ts` (see "Set from the icon next to +25" below) |
 | `PhoneEchoBatchParser.vue` | the UI: multi-file input, sequential scan with progress, editable results table (echo / set / main / substats), flags per row, "Add N echoes to inventory" |
 | `phoneEchoScan.test.ts` + `__fixtures__/s26UltraScanSamples.json` | replay of the word boxes and row re-reads recorded from 75 real screenshots (`wuwa-tools/echo-import/dump_scan_fixture.py`; the Python walk they come from is verified 198/198 by hand-checked records), incl. every shot whose rows had to be synthesized |
 | `api/photos-album.ts`, `api/photos-image.ts`, `api/_lib/googlePhotos.ts` (+ `src/server/googlePhotos.test.ts`) | **album import (2026-09-12)**: Vercel functions (served by a Vite middleware in dev, see `vite.config.ts`) that fetch a shared Google Photos album's page and its photos same-origin — the browser cannot read either directly (HTML from another origin; no CORS header on Google's image host). Only `photos.app.goo.gl` / `photos.google.com` links and lh3 `/pw/` ids are accepted. The panel remembers per album (localStorage `wuthering-tools-plus.echoScan.albums`) which photos were added, so a later run fetches and scans only the tail; "Mark all as imported" seeds that for an album whose echoes are already in |
@@ -159,9 +159,10 @@ parser as "Phone screenshots (batch)"; emits the same `echoes-parsed` event as `
 | `cypress/e2e/echoScanBatch.cy.ts` + `cypress/fixtures/echoScan/*.jpg` | real OCR end-to-end on three screenshots — two of one echo plus a Sabercat Prowler whose "8.6%" row block-only OCR used to lose (tesseract language data comes from its CDN, reference portraits from the assets CDN) |
 
 Reading order per screenshot: name (PSM 7) → panel (PSM 6, two passes: binarised ×1.5 and greyscale ×2, rows only
-the second pass saw are added and flagged) → Sonata chip (PSM 7, inverted) → if the name or set is still unknown,
-the worker matches the portrait (cost-filtered) and the glyph next to +25 (among the echo's allowed sets).
-Tip for users: turn a Sonata filter on in-game before shooting — the chip then prints the set name.
+the second pass saw are added and flagged) → Sonata chip (PSM 7, inverted) → if the name is still unknown, the worker
+matches the portrait (cost-filtered) → for an echo with more than one set, the set icon next to +25 (`setGlyph.ts`,
+among the echo's allowed sets). A Sonata filter is optional since 2026-10-31: with one on, the chip names the set and the
+icon cross-checks it.
 
 
 ## Import any rotation from the Rankings page (C4) — `src/sim/rankings/`
@@ -1407,8 +1408,8 @@ Things learned:
 
 ## In-app AI, stage 3: "Read with Claude" in the echo importer — `src/sim/echoScan/` (Track "ai", 2026-10-26)
 
-The phone-screenshot importer's OCR (phase D) reads one layout: a 3120 × 1440 S26 Ultra shot, best with the Sonata filter
-on. Stage 3 adds **Read with Claude** to the same panel (Inventory › Import echoes › Phone screenshots): Claude reads
+The phone-screenshot importer's OCR (phase D) reads one layout: a 3120 × 1440 S26 Ultra shot (a Sonata filter on was best
+until 2026-10-31; the set icon next to +25 now does without). Stage 3 adds **Read with Claude** to the same panel (Inventory › Import echoes › Phone screenshots): Claude reads
 any screenshot with an echo's stat list (PC frames, other phones, no Sonata filter, a resonator's echo page with
 several echoes), the app checks every line with the OCR path's rules, and the rows land in the same review table, so
 upstream's duplicate review and save take them unchanged. The OCR flow is untouched unless the player presses the
@@ -2026,6 +2027,44 @@ and layout of his whole loadout list maps — 0 unmapped; plans for the Wave 0 s
 editor's slot reads "Built for …" → undo, cancel, phone 412 px / 130 %), `phoneLayout.cy.ts` (`/build-team` in the
 route loop, plan and result at 360 px), `themes.cy.ts`; the CLI snapshot diff against the base commit is empty on both
 exports.
+
+## Set from the icon next to +25: echo screenshots without the Sonata filter — `src/sim/echoScan/setGlyph.ts` (track "glyph", 2026-10-31)
+
+The phone importer (phase D) and `wuwa-tools/echo-import/extract.py` used to read an echo's set from the Sonata-filter chip
+bottom-left, so every screenshot had to be taken with a set filter on. The detail panel prints no set name, only a small
+icon right of "+25": a coloured ring around a white symbol, drawn from the same art as the app's own set icons
+(`echoSetImageMap`, 76 × 76 webp on the assets CDN). Those icons are the templates — nothing is cropped from screenshots,
+so all 37 sets (and new ones Ryan adds) are covered.
+
+| Piece | What it does |
+|---|---|
+| `setGlyph.ts` | pure pixel maths over `Pixels` (RGB or RGBA arrays). `locateBadge`: in the layout's `glyphSearch` window (150 × 90 at x 2280, y 240 — right of the level text, room for "+0" to "+25"), the circle (radius 16–20 px × scale) whose brightness (max of R, G, B) just inside its rim beats just outside it the most. `refineBadge`: the rim's steepest drop along left / right / up / down, searched only r − 2.5 … r + 3 around the found radius, gives a sub-pixel centre and radius (18.0 px on the S26 Ultra). `sampleCircle`: 24 × 24 bilinear samples over the circle's square (RGBA premultiplied = drawn on black). `iconFeature`: an icon's circle is its alpha ≥ 128 box. `glyphScore`: zero-mean normalised cross-correlation per colour channel inside 0.97 R, averaged. `matchGlyph`: ranks the candidates; **confident** = score ≥ 0.70, ≥ 0.08 ahead of the runner-up, and the ring's chromaticity (0.86–0.97 R) within 0.10 of the icon's |
+| `setGlyphCanvas.ts` | the canvas half: `setTemplates(sets)` fetches each icon once per session (a failed one retries next time), `matchSetIcon(bitmap, window, scale, candidates)` reads the window 1:1 and matches. Main thread, a few ms; no worker entry |
+| `phoneEchoScan.ts` | `glyphSearch` region in `PHONE_LAYOUTS` (scaled like the rest); `RecordHints.glyph` replaces `setFromGlyph`; `ScanRecord.setSource` = chip / icon / only set. Order: the chip (if it names a set the echo can roll) → the echo's only set → the icon. A sure icon that disagrees with the chip adds "The Sonata filter says X, but the set icon next to +25 looks like Y. Check the set."; an unsure icon fills the set with its best guess and adds "Set read from the icon next to +25, but not sure: X (next best: Y). Check the set." An icon match the echo can't roll is ignored |
+| `PhoneEchoBatchParser.vue` | reads the icon for every echo with more than one set (so the chip gets cross-checked too), before the bitmap is closed; the portrait worker starts only when a name is unreadable (it loads ~230 portraits, which every scan used to wait for). The intro's "turn a Sonata filter on first" became a tip under it: "No Sonata filter needed … With a filter on (optional), the set's name also shows bottom-left and is checked against the icon." The Claude strip no longer lists "no Sonata filter" as a reason to use Claude. Set selects carry `data-set-source`. Below 768 px the review list drops its 50vh box (it held about one card and cut the notes off mid-line); the modal scrolls instead |
+| `imageMatch.ts` | `matchSet` removed: the worker's set match squeezed the 52 × 48 crop and the whole icon to 32 × 32 without lining the circles up |
+| tests | `setGlyph.test.ts` (node env, `sharp` decodes): six real 150 × 90 search windows (`__fixtures__/setGlyph/*.png`: Pact of Neonlight Leap, Halo of Starry Radiance, Moonlit Clouds, Flamewing's Shadow, Havoc Eclipse on a light backdrop, Song of Feathered Trace) and the 13 app icons they need (`icons/*.webp`, the CDN's bytes). Held to the Python twin case by case (`twin.json` from `wuwa-tools/echo-import/dump_glyph_fixture.py`: same set, same confidence, scores within 0.003); ring found at R 17–19; no icon in a flat window; a 0.75-scale screenshot; Pact vs Halo; a missing true set is flagged (ring colour / low score). `phoneEchoScan.test.ts`: all 75 recorded shots replayed with the chip blanked and an icon hint (same records, no new flags), a sure / unsure icon, chip vs icon, an icon the echo can't roll, an echo's only set. Cypress `echoScanNoFilter.cy.ts`: the committed Sabercat Prowler screenshot with its chip painted over in the browser, real OCR + the CDN icons → Sound of True Name with `data-set-source="icon"`, no set note, saved. `echoScanBatch.cy.ts` now also checks the three chip shots come out `chip` with no disagreement note |
+
+Accuracy (`python3 set_glyph.py bench`, 203 labelled S26 Ultra shots of 17 sets, no OCR): **203/203 among the echo's own
+sets and 203/203 among all 37, 0 confident wrong**; every right answer scores 0.86–0.96. Per set (shots): Song of Feathered
+Trace 40, Trailblazing Star 28, Rejuvenating Glow 24, Sound of True Name 18, Moonlit Clouds 17, Havoc Eclipse 13, Flaming
+Clawprint 9, Flamewing's Shadow 8, Chromatic Foam 7, and 5 or 4 each of Gusts of Welkin, Halo of Starry Radiance, Pact of
+Neonlight Leap, Dream of the Lost, Tidebreaking Courage, Midnight Veil, Eternal Radiance, Law of Harmony — all right. Closest
+pairs (margin over the runner-up among all 37): Pact of Neonlight Leap vs Halo of Starry Radiance 0.10 (same shield, yellow
+vs green ring), Moonlit Clouds vs Midnight Veil 0.13, Halo vs Pact 0.13. Stress with the true set removed: from the echo's
+own sets 173/173 flagged; from all 37, 181/203 flagged — the 22 confident ones are Moonlit Clouds ↔ Midnight Veil (only
+possible when the echo's name is unreadable *and* the registry lacks the set). End to end, `extract.py --no-chip`: 203/203
+records exact (173 sets from the icon, 30 one-set echoes); with the chip, the 198-shot regression stays 198/198 with no row
+flagged, so the icon never disagreed with a chip.
+
+Things learned:
+- A wide rim search (⅔ r … 4⁄3 r) found the white symbol's edge on Flamewing's Shadow and Law of Harmony and halved their
+  score (0.44 / 0.53, still right); around the found radius they score 0.92 / 0.93. It looked like "the game draws it
+  differently" — it was the radius.
+- Python's `round()` rounds halves to even, JavaScript's `Math.round` up; the twins share round-half-up so the locator
+  samples the same pixels (one score moved by 0.01).
+- Only 17 of 37 sets have labelled shots; the other 20 rest on their icons. A set whose in-game icon fits worse is
+  flagged (the 0.70 bar), not guessed.
 
 ## Vercel build — rolldown thread pools pinned in `vercel.json` (2026-10-27)
 

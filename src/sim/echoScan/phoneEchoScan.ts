@@ -16,6 +16,7 @@
 // extract.py, which reads the 198-shot "Wuwa Echos" album 198/198.
 import { mainEchoesData, getCostByClass } from "../../echoes/index";
 import { statsTable, subStatsTable, echoSetLabelMap, verboseStatLabelMap } from "../../echoes/stats";
+import type { GlyphMatch } from "./setGlyph";
 
 export interface Region {
   x: number;
@@ -72,6 +73,8 @@ export interface PhoneLayout {
     chip: Region;
     /** the small set glyph right of "+25" */
     setGlyph: Region;
+    /** where setGlyph.ts looks for that icon: right of the level text, wide enough for "+0" to "+25" */
+    glyphSearch: Region;
     /** the echo's portrait in the panel */
     echoImage: Region;
     /** "COST 3" */
@@ -94,6 +97,7 @@ export const PHONE_LAYOUTS: PhoneLayout[] = [
       panel: { x: 2215, y: 150, width: 905, height: 1000 },
       chip: { x: 340, y: 1185, width: 540, height: 60 },
       setGlyph: { x: 2333, y: 260, width: 52, height: 48 },
+      glyphSearch: { x: 2280, y: 240, width: 150, height: 90 },
       echoImage: { x: 2434, y: 203, width: 530, height: 375 },
       cost: { x: 2235, y: 325, width: 190, height: 60 },
       level: { x: 2215, y: 240, width: 130, height: 80 },
@@ -137,6 +141,7 @@ export function resolveLayout(width: number, height: number): ResolvedLayout | n
         panel: scaleRegion(layout.regions.panel),
         chip: scaleRegion(layout.regions.chip),
         setGlyph: scaleRegion(layout.regions.setGlyph),
+        glyphSearch: scaleRegion(layout.regions.glyphSearch),
         echoImage: scaleRegion(layout.regions.echoImage),
         cost: scaleRegion(layout.regions.cost),
         level: scaleRegion(layout.regions.level),
@@ -524,6 +529,8 @@ export interface ScanRecord {
   echoName: string | null;
   echoScore: number;
   set: string | null;
+  /** where the set came from: the Sonata-filter chip, the icon next to +25, or the echo's only set */
+  setSource?: "chip" | "icon" | "only set" | null;
   cost: number | null;
   level: number | null;
   rank: number;
@@ -535,8 +542,8 @@ export interface ScanRecord {
 }
 
 export interface RecordHints {
-  /** set matched from the glyph next to "+25" (used when the chip is not readable) */
-  setFromGlyph?: string | null;
+  /** the set icon next to "+25" (setGlyph.ts): the set when there is no filter chip, a cross-check when there is */
+  glyph?: GlyphMatch | null;
   /** echo matched from the portrait (used when the name is not readable) */
   echoFromImage?: string | null;
 }
@@ -594,14 +601,34 @@ export async function scanEcho(file: string, input: ScanInput, read: BoxReader, 
     cost = registryCost;
   }
 
-  // set: chip text, else glyph, else the echo's only set
+  // set: the Sonata-filter chip (only there when a filter is on), else the echo's only set, else the icon next
+  // to +25. With both, an icon that confidently disagrees with the chip is flagged; an unsure icon is flagged.
   let set: string | null = null;
+  let setSource: ScanRecord["setSource"] = null;
+  const setName = (key: string): string => echoSetLabelMap[key] ?? key;
   const chip = bestSet(input.chip);
-  if (chip && (!echo || echo.sets.includes(chip.set))) set = chip.set;
-  else if (chip && echo) flags.push(`chip set ${chip.set} is not allowed for ${echo.name}; allowed ${echo.sets.join(", ")}`);
-  if (!set && hints.setFromGlyph && (!echo || echo.sets.includes(hints.setFromGlyph))) set = hints.setFromGlyph;
-  if (!set && echo && echo.sets.length === 1) set = echo.sets[0];
-  if (!set) flags.push(`set unknown (chip ${q(input.chip)}, allowed ${echo ? echo.sets.join(", ") : "?"})`);
+  let chipSet = chip?.set ?? null;
+  if (chipSet && echo && !echo.sets.includes(chipSet)) {
+    flags.push(`chip set ${chipSet} is not allowed for ${echo.name}; allowed ${echo.sets.join(", ")}`);
+    chipSet = null;
+  }
+  const glyph = hints.glyph && (!echo || echo.sets.includes(hints.glyph.set)) ? hints.glyph : null;
+  if (chipSet) {
+    set = chipSet;
+    setSource = "chip";
+    if (glyph?.confident && glyph.set !== chipSet) flags.push(`The Sonata filter says ${setName(chipSet)}, but the set icon next to +25 looks like ${setName(glyph.set)}. Check the set.`);
+  } else if (echo && echo.sets.length === 1) {
+    set = echo.sets[0];
+    setSource = "only set";
+  } else if (glyph) {
+    set = glyph.set;
+    setSource = "icon";
+    if (!glyph.confident) {
+      const next = glyph.runnerUp ? ` (next best: ${setName(glyph.runnerUp)})` : "";
+      flags.push(`Set read from the icon next to +25, but not sure: ${setName(glyph.set)}${next}. Check the set.`);
+    }
+  }
+  if (!set) flags.push(`set unknown (no Sonata filter and no readable set icon; allowed ${echo ? echo.sets.map(setName).join(", ") : "?"})`);
 
   // the stat table
   const cands = rows.filter((r) => r.cy >= table.firstRowCy - table.tolerance && r.label && !(r.valueWords.length === 0 && CONTINUATIONS.has(norm(r.label))));
@@ -702,6 +729,7 @@ export async function scanEcho(file: string, input: ScanInput, read: BoxReader, 
     echoName: echo?.name ?? null,
     echoScore: matched?.score ?? 0,
     set,
+    setSource,
     cost,
     level,
     rank: 5,

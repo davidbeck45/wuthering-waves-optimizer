@@ -4,9 +4,12 @@
     <p class="text-sm opacity-80 mb-3">
       On your phone, open the in-game Echo inventory, select an echo so its detail panel shows on the
       right, and take one screenshot per echo — then drop them all here (on the phone itself, pick them
-      straight from the gallery). Landscape 3120×1440 (Galaxy S26 Ultra) or the same shape. Turn a
-      Sonata filter on first so the set name shows bottom-left; otherwise the set is read from the
-      small glyph next to +25. Other screenshots (PC, other phones): use Read with Claude below.
+      straight from the gallery). Landscape 3120×1440 (Galaxy S26 Ultra) or the same shape. Other
+      screenshots (PC, other phones): use Read with Claude below.
+    </p>
+    <p class="text-xs opacity-70 mb-3" data-test-phone-echo-batch-set-tip>
+      No Sonata filter needed: the set is read from its small icon next to +25. With a filter on
+      (optional), the set's name also shows bottom-left and is checked against the icon.
     </p>
     <div class="rounded-box border border-base-300 p-3 mb-3" data-test-phone-echo-album>
       <div class="text-sm font-semibold mb-1">From a Google Photos album</div>
@@ -101,8 +104,7 @@
         </div>
       </div>
       <p class="mt-1.5 text-xs leading-relaxed opacity-75 sm:pl-11">
-        For screenshots the scanner can't read — PC, other phones, no Sonata filter — or to double-check
-        flagged rows. Every value is checked against the game's roll tables; anything off is flagged, never
+        For screenshots the scanner can't read — PC, other phones — or to double-check flagged rows. Every value is checked against the game's roll tables; anything off is flagged, never
         changed. Screenshots go straight from this browser to Anthropic, with your own key.
       </p>
 
@@ -173,7 +175,7 @@
       <p v-if="claude.runError" class="mt-2 text-xs text-error sm:pl-11" data-test-claude-read-error>{{ claude.runError }}</p>
     </div>
 
-    <div v-if="items.length" class="overflow-x-auto max-h-[50vh]">
+    <div v-if="items.length" class="batch-scroll overflow-x-auto max-h-[50vh]">
       <table class="table table-xs table--cards" data-test-phone-echo-batch-table>
         <thead>
           <tr>
@@ -221,7 +223,12 @@
                     <option :value="null">—</option>
                     <option v-for="echo in echoOptions" :key="echo.key" :value="echo.key">{{ echo.name }}</option>
                   </select>
-                  <select v-model="item.record.set" class="select select-bordered select-xs w-44 max-w-full lg:w-52" aria-label="Set" data-test-phone-echo-batch-set>
+                  <select
+                    v-model="item.record.set"
+                    class="select select-bordered select-xs w-44 max-w-full lg:w-52"
+                    aria-label="Set"
+                    data-test-phone-echo-batch-set
+                    :data-set-source="item.record.setSource ?? undefined">
                     <option :value="null">—</option>
                     <option v-for="set in setOptions(item)" :key="set" :value="set">{{ setLabel(set) }}</option>
                   </select>
@@ -298,6 +305,7 @@ import { newScanItem, type AlbumPhoto, type ScanItem } from "./batchItems";
 import { VISION_OUTPUT_TOKENS, VISION_PROMPT_TOKENS } from "./claudeVisionCost";
 import { EchoImageMatcher } from "./imageMatch";
 import { EchoOcr, PSM } from "./ocr";
+import { matchSetIcon } from "./setGlyphCanvas";
 import {
   KEY_TO_LABEL,
   MAIN_STAT_KEYS,
@@ -557,7 +565,7 @@ function makeThumb(source: ImageBitmap, region: Region): string | null {
   }
 }
 
-async function scanOne(item: ScanItem, ocr: EchoOcr, matcher: EchoImageMatcher | null): Promise<void> {
+async function scanOne(item: ScanItem, ocr: EchoOcr, portraitMatcher: () => Promise<EchoImageMatcher | null>): Promise<void> {
   item.status = "scanning";
   item.error = null;
   try {
@@ -599,20 +607,32 @@ async function scanOne(item: ScanItem, ocr: EchoOcr, matcher: EchoImageMatcher |
     };
     currentStep.value = `${item.name}: reading the stat rows…`;
     let record = await scanEcho(item.name, input, read, table);
-    if (matcher && (!record.echo || !record.set)) {
-      currentStep.value = `${item.name}: matching images…`;
-      const hints: RecordHints = {};
-      try {
-        await matcher.setSource(await createImageBitmap(item.file));
-        if (!record.echo) hints.echoFromImage = await matcher.matchEcho(regions.echoImage, record.cost);
-        const echo = record.echo ?? hints.echoFromImage ?? null;
-        const sets = echo ? (echoEntry(echo)?.sets ?? []) : [];
-        if (!record.set && sets.length > 1) hints.setFromGlyph = await matcher.matchSet(regions.setGlyph, sets);
-      } catch {
-        /* image matching is best-effort */
+    const hints: RecordHints = {};
+    if (!record.echo) {
+      // the name is unreadable: match the portrait (the echoParser worker, started on first need)
+      const matcher = await portraitMatcher();
+      if (matcher) {
+        currentStep.value = `${item.name}: matching the portrait…`;
+        try {
+          await matcher.setSource(await createImageBitmap(item.file));
+          hints.echoFromImage = await matcher.matchEcho(regions.echoImage, record.cost);
+        } catch {
+          /* image matching is best-effort */
+        }
       }
-      record = await scanEcho(item.name, input, read, table, hints);
     }
+    // the set icon next to +25 (setGlyph.ts): the set when no Sonata filter is on, a cross-check when one is
+    const echo = record.echo ?? hints.echoFromImage ?? null;
+    const sets = echo ? (echoEntry(echo)?.sets ?? []) : allSets;
+    if (sets.length > 1) {
+      currentStep.value = `${item.name}: reading the set icon…`;
+      try {
+        hints.glyph = await matchSetIcon(bitmap, regions.glyphSearch, layout.scale, sets);
+      } catch {
+        /* best-effort: without it the set is left for the review table */
+      }
+    }
+    if (hints.echoFromImage || hints.glyph) record = await scanEcho(item.name, input, read, table, hints);
     item.thumb = makeThumb(bitmap, regions.echoImage);
     bitmap.close();
     item.record = record;
@@ -631,17 +651,26 @@ async function scanAll(): Promise<void> {
   progress.value = { done: 0, total: queued.length };
   const ocr = new EchoOcr();
   const matcher = new EchoImageMatcher();
-  let matcherReady = false;
+  // the portrait matcher loads every echo's reference image, so it starts only when a name can't be read
+  let matcherReady: Promise<EchoImageMatcher | null> | null = null;
+  const portraitMatcher = (): Promise<EchoImageMatcher | null> => {
+    matcherReady ??= (async () => {
+      const step = currentStep.value;
+      currentStep.value = "Loading the echo reference images…";
+      try {
+        await matcher.init();
+        return matcher;
+      } catch {
+        return null; /* image matching is best-effort: scanning continues without portrait hints */
+      } finally {
+        currentStep.value = step;
+      }
+    })();
+    return matcherReady;
+  };
   try {
     currentStep.value = "Loading the OCR engine…";
     await ocr.init();
-    currentStep.value = "Loading the echo reference images…";
-    try {
-      await matcher.init();
-      matcherReady = true;
-    } catch {
-      /* image matching is best-effort: scanning continues without portrait / glyph hints */
-    }
     for (const item of queued) {
       if (!item.file && item.photo) {
         currentStep.value = `${item.name}: fetching the photo…`;
@@ -654,7 +683,7 @@ async function scanAll(): Promise<void> {
           continue;
         }
       }
-      await scanOne(item, ocr, matcherReady ? matcher : null);
+      await scanOne(item, ocr, portraitMatcher);
       if (item.photo) item.file = null; // the bytes are not needed after the scan; the thumb is a small data url
       progress.value = { ...progress.value, done: progress.value.done + 1 };
     }
@@ -719,6 +748,10 @@ function addToInventory(): void {
 }
 /* the card order below 768 px - the generic reflow lives in ../phone-tables.css */
 @media (max-width: 767px) {
+  /* a 50vh box inside the modal holds about one card on a phone and cuts its notes off mid-line: the modal scrolls instead */
+  .batch-scroll {
+    max-height: none;
+  }
   .table--cards .cell--check {
     order: 0;
   }

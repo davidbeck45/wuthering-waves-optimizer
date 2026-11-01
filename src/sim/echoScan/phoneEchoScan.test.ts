@@ -10,6 +10,7 @@ import {
   bestEcho,
   bestSet,
   clusterRows,
+  echoEntry,
   isTerminator,
   labelKey,
   legalValues,
@@ -24,6 +25,7 @@ import {
   type ScanInput,
   type Word,
 } from "./phoneEchoScan";
+import type { GlyphMatch } from "./setGlyph";
 
 const TABLE = PHONE_LAYOUTS[0].table;
 interface Sample {
@@ -166,5 +168,75 @@ describe("phone echo scan: 75 recorded S26 Ultra screenshots", () => {
     expect(record.flags.join(" | ")).toMatch(/main stat not read/);
     expect(record.cost).toBe(4);
     expect(record.subs.length).toBe(5);
+  });
+});
+
+describe("phone echo scan: the set without a Sonata filter (the icon next to +25)", () => {
+  const labelToSet = new Map(Object.entries(echoSetLabelMap).map(([key, label]) => [label, key]));
+  const glyph = (set: string, confident = true, runnerUp: string | null = "RiteofGildedRevelation"): GlyphMatch => ({
+    set,
+    score: confident ? 0.9 : 0.6,
+    runnerUp,
+    runnerUpScore: runnerUp ? 0.5 : null,
+    margin: 0.4,
+    ring: 0.02,
+    confident,
+    ranked: [[set, 0.9]],
+  });
+  // the first recorded shot: Thousand-Puppet Pavilion, Song of Feathered Trace (its sets: Song of Feathered Trace, Flower of Tinged Yearning)
+  const sample = SAMPLES[0];
+  const noChip = (s: Sample): ScanInput => ({ ...inputOf(s), chip: "" });
+
+  it("replays all 75 recorded shots with the chip blanked: the icon gives the set, nothing else changes", async () => {
+    let fromIcon = 0;
+    for (const s of SAMPLES) {
+      const expectedSet = s.expected.set ? (labelToSet.get(s.expected.set) ?? null) : null;
+      const record = await scanEcho(s.file, noChip(s), readerFor(s), TABLE, { glyph: expectedSet ? glyph(expectedSet) : null });
+      expect(record.set, s.file).toBe(expectedSet);
+      expect(record.subs, s.file).toEqual(s.expected.subs);
+      if (record.setSource === "icon") fromIcon += 1;
+      if (!s.expected.flags.length) expect(record.flags, `${s.file}: ${record.flags.join("; ")}`).toEqual([]);
+    }
+    expect(fromIcon).toBeGreaterThan(50);
+  });
+
+  it("takes a sure icon without a note, and an unsure one with a note to check it", async () => {
+    const sure = await scanEcho(sample.file, noChip(sample), readerFor(sample), TABLE, { glyph: glyph("SongofFeatheredTrace") });
+    expect(sure).toMatchObject({ set: "SongofFeatheredTrace", setSource: "icon" });
+    expect(sure.flags).toEqual([]);
+    const unsure = await scanEcho(sample.file, noChip(sample), readerFor(sample), TABLE, { glyph: glyph("FlowerofTingedYearning", false, "SongofFeatheredTrace") });
+    expect(unsure).toMatchObject({ set: "FlowerofTingedYearning", setSource: "icon" });
+    expect(unsure.flags).toEqual(["Set read from the icon next to +25, but not sure: Flower of Tinged Yearning (next best: Song of Feathered Trace). Check the set."]);
+  });
+
+  it("keeps the chip's set and flags a sure icon that disagrees with it", async () => {
+    const agree = await scanEcho(sample.file, inputOf(sample), readerFor(sample), TABLE, { glyph: glyph("SongofFeatheredTrace") });
+    expect(agree).toMatchObject({ set: "SongofFeatheredTrace", setSource: "chip", flags: [] });
+    const disagree = await scanEcho(sample.file, inputOf(sample), readerFor(sample), TABLE, { glyph: glyph("FlowerofTingedYearning") });
+    expect(disagree).toMatchObject({ set: "SongofFeatheredTrace", setSource: "chip" });
+    expect(disagree.flags).toEqual(["The Sonata filter says Song of Feathered Trace, but the set icon next to +25 looks like Flower of Tinged Yearning. Check the set."]);
+    // an unsure icon never argues with the chip
+    const unsure = await scanEcho(sample.file, inputOf(sample), readerFor(sample), TABLE, { glyph: glyph("FlowerofTingedYearning", false) });
+    expect(unsure.flags).toEqual([]);
+  });
+
+  it("ignores an icon match the echo can't roll, and says the set is unknown", async () => {
+    const record = await scanEcho(sample.file, noChip(sample), readerFor(sample), TABLE, { glyph: glyph("HavocEclipse") });
+    expect(record.set).toBeNull();
+    expect(record.setSource).toBeNull();
+    expect(record.flags.join(" | ")).toMatch(/set unknown \(no Sonata filter and no readable set icon; allowed Song of Feathered Trace, Flower of Tinged Yearning\)/);
+    const none = await scanEcho(sample.file, noChip(sample), readerFor(sample), TABLE);
+    expect(none.set).toBeNull();
+  });
+
+  it("uses an echo's only set without the icon", async () => {
+    const single = SAMPLES.find((s) => {
+      const key = bestEcho(s.expected.echo)?.echo.key;
+      return key && (echoEntry(key)?.sets.length ?? 0) === 1;
+    });
+    expect(single).toBeDefined();
+    const record = await scanEcho(single!.file, noChip(single!), readerFor(single!), TABLE);
+    expect(record.setSource).toBe("only set");
+    expect(record.set).toBe(labelToSet.get(single!.expected.set ?? ""));
   });
 });

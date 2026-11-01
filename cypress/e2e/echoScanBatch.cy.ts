@@ -25,6 +25,10 @@ describe("phone screenshot batch echo import", () => {
       expect(echoes.sort()).to.deep.equal(["SabercatProwler", "ThousandPuppetPavilion", "ThousandPuppetPavilion"]);
       const sets = $rows.toArray().map((row) => (row.querySelector("[data-test-phone-echo-batch-set]") as HTMLSelectElement).value);
       expect(sets.sort()).to.deep.equal(["SongofFeatheredTrace", "SongofFeatheredTrace", "SoundofTrueName"]);
+      // the filter chip names the set; the icon next to +25 agrees, so no row has a note about it
+      const sources = $rows.toArray().map((row) => row.querySelector("[data-test-phone-echo-batch-set]")?.getAttribute("data-set-source"));
+      expect(sources).to.deep.equal(["chip", "chip", "chip"]);
+      expect($rows.closest("table").text()).not.to.contain("Sonata filter says");
     });
 
     cy.get("[data-test-phone-echo-batch-add]").click({ force: true });

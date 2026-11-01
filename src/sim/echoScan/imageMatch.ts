@@ -1,11 +1,11 @@
 // Wuthering Tools+: thin promise wrapper over the app's echoParser worker
-// (pixel matching of echo portraits and set glyphs) for the batch scanner.
+// (pixel matching of echo portraits) for the batch scanner. The set icon is read by setGlyph.ts instead
+// (the worker's matchSet squeezes the whole crop and the whole icon to 32 × 32 without lining the circles up).
 import EchoParserWorker from "../../workers/echoParser.worker?worker";
 import { mainEchoesData, getCostByClass } from "../../echoes/index";
-import { getEchoSetIconByType } from "../../echoes/stats";
 import type { Region } from "./phoneEchoScan";
 
-type WorkerReply = { type: string; echoMatch?: { echoKey: string }; setMatch?: { setKey: string }; error?: string };
+type WorkerReply = { type: string; echoMatch?: { echoKey: string }; error?: string };
 
 export class EchoImageMatcher {
   private worker: Worker | null = null;
@@ -38,13 +38,6 @@ export class EchoImageMatcher {
   /** The screenshot the next matches crop from; the bitmap is transferred to the worker. */
   async setSource(bitmap: ImageBitmap): Promise<void> {
     await this.request("ready", { type: "setSourceImage", data: { sourceImageBitmap: bitmap } }, [bitmap]);
-  }
-
-  async matchSet(region: Region, possibleSets: string[]): Promise<string | null> {
-    if (!possibleSets.length) return null;
-    const setImageUrls = Object.fromEntries(possibleSets.map((set) => [set, getEchoSetIconByType(set)]));
-    const reply = await this.request("setMatch", { type: "matchSet", data: { setCoords: region, possibleSets, setImageUrls } }).catch(() => null);
-    return reply?.setMatch?.setKey ?? null;
   }
 
   async matchEcho(region: Region, cost: number | null): Promise<string | null> {

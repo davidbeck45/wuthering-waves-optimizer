@@ -1,0 +1,379 @@
+{
+ "_meta": {
+  "source": "wuwa-tools/echo-import/dump_glyph_fixture.py",
+  "constants": {
+   "radii": [
+    16,
+    20
+   ],
+   "grid": 24,
+   "disk": 0.97,
+   "ring": [
+    0.86,
+    0.97
+   ],
+   "minScore": 0.7,
+   "minMargin": 0.08,
+   "maxRing": 0.1
+  }
+ },
+ "badges": {
+  "PactofNeonlightLeap": {
+   "contrast": 191.9,
+   "cx": 74.83,
+   "cy": 43.5,
+   "R": 18.04
+  },
+  "HaloofStarryRadiance": {
+   "contrast": 156.7,
+   "cx": 74.83,
+   "cy": 43.5,
+   "R": 18.06
+  },
+  "MoonlitClouds": {
+   "contrast": 221.3,
+   "cx": 74.8,
+   "cy": 43.5,
+   "R": 18.02
+  },
+  "FlamewingsShadow": {
+   "contrast": 190.4,
+   "cx": 74.88,
+   "cy": 43.5,
+   "R": 18.14
+  },
+  "HavocEclipse": {
+   "contrast": 151.5,
+   "cx": 74.78,
+   "cy": 43.48,
+   "R": 18.05
+  },
+  "SongofFeatheredTrace": {
+   "contrast": 205.6,
+   "cx": 74.83,
+   "cy": 43.52,
+   "R": 18.05
+  }
+ },
+ "cases": [
+  {
+   "crop": "PactofNeonlightLeap",
+   "candidates": [
+    "PactofNeonlightLeap",
+    "RiteofGildedRevelation"
+   ],
+   "set": "PactofNeonlightLeap",
+   "score": 0.888,
+   "runnerUp": "RiteofGildedRevelation",
+   "runnerUpScore": 0.594,
+   "margin": 0.294,
+   "ring": 0.019,
+   "confident": true
+  },
+  {
+   "crop": "PactofNeonlightLeap",
+   "candidates": [
+    "PactofNeonlightLeap",
+    "HaloofStarryRadiance",
+    "RiteofGildedRevelation"
+   ],
+   "set": "PactofNeonlightLeap",
+   "score": 0.888,
+   "runnerUp": "HaloofStarryRadiance",
+   "runnerUpScore": 0.782,
+   "margin": 0.105,
+   "ring": 0.019,
+   "confident": true
+  },
+  {
+   "crop": "PactofNeonlightLeap",
+   "candidates": [
+    "HaloofStarryRadiance"
+   ],
+   "set": "HaloofStarryRadiance",
+   "score": 0.782,
+   "runnerUp": null,
+   "runnerUpScore": null,
+   "margin": 1.0,
+   "ring": 0.142,
+   "confident": false
+  },
+  {
+   "crop": "HaloofStarryRadiance",
+   "candidates": [
+    "HaloofStarryRadiance",
+    "ChromaticFoam"
+   ],
+   "set": "HaloofStarryRadiance",
+   "score": 0.898,
+   "runnerUp": "ChromaticFoam",
+   "runnerUpScore": 0.499,
+   "margin": 0.399,
+   "ring": 0.038,
+   "confident": true
+  },
+  {
+   "crop": "HaloofStarryRadiance",
+   "candidates": [
+    "HaloofStarryRadiance",
+    "PactofNeonlightLeap"
+   ],
+   "set": "HaloofStarryRadiance",
+   "score": 0.898,
+   "runnerUp": "PactofNeonlightLeap",
+   "runnerUpScore": 0.772,
+   "margin": 0.126,
+   "ring": 0.038,
+   "confident": true
+  },
+  {
+   "crop": "MoonlitClouds",
+   "candidates": [
+    "MoonlitClouds",
+    "RejuvenatingGlow"
+   ],
+   "set": "MoonlitClouds",
+   "score": 0.935,
+   "runnerUp": "RejuvenatingGlow",
+   "runnerUpScore": 0.469,
+   "margin": 0.466,
+   "ring": 0.001,
+   "confident": true
+  },
+  {
+   "crop": "MoonlitClouds",
+   "candidates": [
+    "MoonlitClouds",
+    "MidnightVeil"
+   ],
+   "set": "MoonlitClouds",
+   "score": 0.935,
+   "runnerUp": "MidnightVeil",
+   "runnerUpScore": 0.796,
+   "margin": 0.139,
+   "ring": 0.001,
+   "confident": true
+  },
+  {
+   "crop": "FlamewingsShadow",
+   "candidates": [
+    "FlamewingsShadow",
+    "ThreadofSeveredFate"
+   ],
+   "set": "FlamewingsShadow",
+   "score": 0.93,
+   "runnerUp": "ThreadofSeveredFate",
+   "runnerUpScore": 0.193,
+   "margin": 0.737,
+   "ring": 0.039,
+   "confident": true
+  },
+  {
+   "crop": "FlamewingsShadow",
+   "candidates": [
+    "FlamewingsShadow",
+    "RiteofGildedRevelation"
+   ],
+   "set": "FlamewingsShadow",
+   "score": 0.93,
+   "runnerUp": "RiteofGildedRevelation",
+   "runnerUpScore": 0.335,
+   "margin": 0.595,
+   "ring": 0.039,
+   "confident": true
+  },
+  {
+   "crop": "HavocEclipse",
+   "candidates": [
+    "HavocEclipse",
+    "ChromaticFoam"
+   ],
+   "set": "HavocEclipse",
+   "score": 0.904,
+   "runnerUp": "ChromaticFoam",
+   "runnerUpScore": 0.637,
+   "margin": 0.267,
+   "ring": 0.011,
+   "confident": true
+  },
+  {
+   "crop": "SongofFeatheredTrace",
+   "candidates": [
+    "SongofFeatheredTrace",
+    "FlowerofTingedYearning"
+   ],
+   "set": "SongofFeatheredTrace",
+   "score": 0.921,
+   "runnerUp": "FlowerofTingedYearning",
+   "runnerUpScore": 0.343,
+   "margin": 0.578,
+   "ring": 0.001,
+   "confident": true
+  },
+  {
+   "crop": "SongofFeatheredTrace",
+   "candidates": [
+    "SongofFeatheredTrace",
+    "EmpyreanAnthem",
+    "MoonlitClouds"
+   ],
+   "set": "SongofFeatheredTrace",
+   "score": 0.921,
+   "runnerUp": "EmpyreanAnthem",
+   "runnerUpScore": 0.674,
+   "margin": 0.248,
+   "ring": 0.001,
+   "confident": true
+  },
+  {
+   "crop": "PactofNeonlightLeap",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "PactofNeonlightLeap",
+   "score": 0.888,
+   "runnerUp": "HaloofStarryRadiance",
+   "runnerUpScore": 0.782,
+   "margin": 0.105,
+   "ring": 0.019,
+   "confident": true
+  },
+  {
+   "crop": "HaloofStarryRadiance",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "HaloofStarryRadiance",
+   "score": 0.898,
+   "runnerUp": "PactofNeonlightLeap",
+   "runnerUpScore": 0.772,
+   "margin": 0.126,
+   "ring": 0.038,
+   "confident": true
+  },
+  {
+   "crop": "MoonlitClouds",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "MoonlitClouds",
+   "score": 0.935,
+   "runnerUp": "MidnightVeil",
+   "runnerUpScore": 0.796,
+   "margin": 0.139,
+   "ring": 0.001,
+   "confident": true
+  },
+  {
+   "crop": "FlamewingsShadow",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "FlamewingsShadow",
+   "score": 0.93,
+   "runnerUp": "RiteofGildedRevelation",
+   "runnerUpScore": 0.335,
+   "margin": 0.595,
+   "ring": 0.039,
+   "confident": true
+  },
+  {
+   "crop": "HavocEclipse",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "HavocEclipse",
+   "score": 0.904,
+   "runnerUp": "ChromaticFoam",
+   "runnerUpScore": 0.637,
+   "margin": 0.267,
+   "ring": 0.011,
+   "confident": true
+  },
+  {
+   "crop": "SongofFeatheredTrace",
+   "candidates": [
+    "ChromaticFoam",
+    "EmpyreanAnthem",
+    "FlamewingsShadow",
+    "FlowerofTingedYearning",
+    "HaloofStarryRadiance",
+    "HavocEclipse",
+    "MidnightVeil",
+    "MoonlitClouds",
+    "PactofNeonlightLeap",
+    "RejuvenatingGlow",
+    "RiteofGildedRevelation",
+    "SongofFeatheredTrace",
+    "ThreadofSeveredFate"
+   ],
+   "set": "SongofFeatheredTrace",
+   "score": 0.921,
+   "runnerUp": "EmpyreanAnthem",
+   "runnerUpScore": 0.674,
+   "margin": 0.248,
+   "ring": 0.001,
+   "confident": true
+  }
+ ]
+}
