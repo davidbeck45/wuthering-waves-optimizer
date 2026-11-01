@@ -24,7 +24,7 @@ describe("my roster rankings", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
     cy.visit("/my-rankings");
-    cy.get('[data-test-my-rankings-row="Cartethyia"]', { timeout: 120000 }).should("exist");
+    cy.myRankingsRow("Cartethyia");
     cy.get('[data-test-my-rankings-row="Cartethyia"] [data-test-my-rankings-damage]')
       .invoke("text")
       .then((text) => {

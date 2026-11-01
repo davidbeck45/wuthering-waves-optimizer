@@ -107,7 +107,7 @@ describe("phone layout", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
     cy.visit("/my-rankings");
-    cy.get('[data-test-my-rankings-row="Cartethyia"]', { timeout: 120000 }).should("exist");
+    cy.myRankingsRow("Cartethyia");
     cy.get("[data-test-my-rankings-characters] thead").should("not.be.visible");
     cy.get('[data-test-my-rankings-row="Cartethyia"]').should("have.css", "display", "flex");
     cy.get('[data-test-my-rankings-row="Cartethyia"] [data-label="Weapon"]').should("be.visible");

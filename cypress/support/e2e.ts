@@ -1,5 +1,7 @@
 // Add common Cypress configurations or custom commands here.
 import "./commands";
+import "./plusElectronRendering"; // Wuthering Tools+: Electron keeps its frame rate after a screenshot
+import "./plusCommands"; // Wuthering Tools+: plus-side commands (cy.myRankingsRow)
 import { updateEntries } from "../../src/content/updates";
 
 Cypress.on("uncaught:exception", (err) => {

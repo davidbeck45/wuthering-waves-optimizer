@@ -44,3 +44,15 @@ jobs:
           npx vite dev &
           npx wait-on http://localhost:5173
           npm run cypress:run:${{ matrix.shard }}
+
+      # Wuthering Tools+: keep the failure screenshots (the runner and the page at the moment a test failed), so a red
+      # shard can be read after the runner is gone — the only trace a flake leaves (src/sim/README.md, "E2E gates")
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-${{ matrix.shard }}
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 14
+          overwrite: true # "Re-run failed jobs" uploads the same name again; v4 refuses that without it

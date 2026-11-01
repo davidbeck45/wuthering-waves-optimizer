@@ -29,7 +29,8 @@ Things learned the hard way:
   phone `/settings` and `/my-rankings` grew past the viewport. `style.css` now names `#wt-app` too; nothing
   under it should size itself to the viewport.
 - Visual checks: `node ~/Projects/wuwa-tools/scripts/shot.mjs http://localhost:5173/rankings --theme light --out x.png`
-  (headless-Chromium DevTools screenshot; Cypress's `cy.screenshot()` hangs in this sandbox).
+  (headless-Chromium DevTools screenshot; Cypress's `cy.screenshot()` hangs in this sandbox unless Electron runs with
+  `ELECTRON_EXTRA_LAUNCH_ARGS=--ozone-platform=headless` — see "E2E gates" at the end).
 - Cypress smoke spec: `cypress/e2e/rankings.cy.ts` (CI shard `plus` = every root-level `cypress/e2e/*.cy.ts`).
   CI must check out submodules (`.github/workflows/e2e.yml`): without `vendor/wuwa_calc` the lazy `/rankings`
   chunk fails to resolve `@skittle/*`, the page (and its Nav) never mounts, and the spec times out.
@@ -2465,3 +2466,59 @@ Left for later: one stat-label table across the plus pages ("CD" chips vs "Crit 
 Feed in Echo Lab ›" link beside Ryan's "Finish these first" (needs a hook in his file); streaming benchmark rows as
 they finish (a result channel the worker protocol does not have yet).
 
+## E2E gates you can trust — Cypress's Electron, on CI and on this machine (track "ci", 2026-10-31)
+
+The GitHub E2E run on plus had gone red on most pushes since the 2026-10-27 batch, and the local runs every track
+does had a list of "inherited reds" nobody trusted. Both came mostly from the test harness, not from the app.
+
+| Piece | Role |
+|---|---|
+| `cypress/support/plusElectronRendering.ts` (one import line in Ryan's `cypress/support/e2e.ts`) | after every screenshot, restarts an idle screencast (8 px JPEG, never acknowledged) so the hidden Electron window keeps drawing 60 frames a second. Electron only, never while a video records |
+| `cypress/support/plusCommands.ts` | `cy.myRankingsRow(id)`: on `/my-rankings`, wait for the row, or for a run that ended without it (status "live", the empty state, the error alert), then assert the row with the page's status and error in the message. Used by `myRankings.cy.ts`, `energyCheck.cy.ts`, `phoneLayout.cy.ts` instead of a bare 120 s `cy.get` |
+| `.github/workflows/e2e.yml` (Ryan's file, one plus step) | a failed shard uploads `cypress/screenshots` as `cypress-screenshots-<shard>` (14 days). Before this, a CI flake left nothing to look at |
+
+**1. One frame a second after a screenshot (CI and local).** Cypress takes each Electron screenshot (`cy.screenshot` and
+the failure screenshot of a CI run) between `Page.startScreencast` and `Page.stopScreencast`. Once the screencast stops,
+the window draws about one frame a second for the rest of that spec: measured 60 fps before a `cy.screenshot`, 1 after
+it, on any page (`/info` too), in the same test and every later test of the spec. The next spec starts at 60 again.
+`requestAnimationFrame`, smooth scrolls and transitions crawl, and each forced layout waits about a second (Cypress's
+own `elementFromPoint` took 1.3 s in a profile). Ryan's `workspaceReadiness.cy.ts` screenshots in its first test, so
+"clicking the buffs warning opens the section" got about four frames inside its 4 s assertion: the smooth
+`scrollIntoView` never moved (section top 804 on CI and here). It passed only when those frames came early enough,
+which is why it looked like a regression from the batch: plus's scroll container, nav offsets and the calculator page
+were not the cause (the same failure reproduced at b143c030, and a copy of the spec without the first screenshot
+passed every time). With the idle screencast the spec passed 6 runs of 6 under `taskset -c 0,1`.
+
+**2. No frames at all in local runs, unless Electron is told how to draw.** On this machine (Wayland), Cypress's
+hidden Electron window gets no frame callbacks: `requestAnimationFrame` never fires and `cy.screenshot` hangs. That is
+where the plus comments "rAF never fires in headless Electron" come from. It is true only here: CI runs under Xvfb and
+draws frames. Add `ELECTRON_EXTRA_LAUNCH_ARGS=--ozone-platform=headless` to every local Cypress run:
+
+    ELECTRON_EXTRA_LAUNCH_ARGS=--ozone-platform=headless env -u ELECTRON_RUN_AS_NODE ./node_modules/.bin/cypress run \
+      --config baseUrl=http://127.0.0.1:<PORT>,screenshotOnRunFailure=false,video=false --spec <spec>
+
+With it, the "inherited reds" pass: `settingsWorkspaceFlagged` 5/6 → 6/6, `toastOverModal` 0 passing → 3/3,
+`teamRotations/teamRotations` 17/19 → 19/19, `calculator/builds` 10/10, `workspaceReadiness` 0/3 → 3/3 (with point 1).
+`navUtilityMenuFlagged` goes 0/3 → 2/3; its last red ("shows no badge, dot, or count anywhere in the menu") is Ryan's
+own: his #668 added a "New" badge on Scanners (`SCANNERS_NEW_UNTIL = "2026-12-01"`) that his spec forbids, so it
+fails on his master too, and on plus's CI from the first push with #668 until that date. The spec stays his. The plus
+workarounds written for the frameless harness (timers instead of rAF, the Echo Lab panel's 1 s visibility poll) are
+harmless on CI and stay. (`--ozone-platform=x11`, through Xwayland, also draws frames.)
+
+**3. The /my-rankings first row (not solved).** Twice in the post-batch runs a spec waited 120 s for
+`[data-test-my-rankings-row="Cartethyia"]` and never saw it (energyCheck's 412 px test, phoneLayout's card reflow).
+On the green runs that row lands 3–8 s after the visit. Locally (2 pinned cores, cold and warm dev server, after
+`/energy` and after the Settings import) it landed in 2–8 s in 23 tries of 23. So it is a rare hang, not a slow row,
+and making the row cheaper would not have helped. CI kept nothing to look at, so the specs now name the state
+(`cy.myRankingsRow`) and the shard keeps its screenshots: the next one will say whether the run was still scoring,
+finished without her, or showed an error.
+
+Things learned:
+- `pkill -f "vite --port 5205 "` run from the Bash tool also matches the tool's own shell (its command line holds the
+  pattern) and kills it (exit 144). Use `pkill -f "[v]ite --port 5205 "`.
+- Cypress's runner and the page under test share one renderer thread (same origin through its proxy), so a busy page
+  slows Cypress's own retries, and timers on both sides fire in order.
+- The repo is public, so GitHub's runner has 4 vCPUs, not 2. `taskset -c 0,1` is a stricter test than CI.
+- `Cypress.automation("remote:debugger:protocol", { command, params })` reaches the page's DevTools protocol from a
+  spec or a support file (Electron and Chrome). `Performance.getMetrics` and `Profiler.start/stop` through it are how the
+  frame-rate drop was found.

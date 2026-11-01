@@ -63,7 +63,7 @@ const ENGINE = { timeout: 90000 };
 /** Open a character's substat weights on /my-rankings: a link in the row today, a tab of the expanded row in the
  *  batch-1 redesign — expand first where the row has an expander. */
 function openSubstats(id: string): void {
-  cy.get(`[data-test-my-rankings-row="${id}"]`, { timeout: 120000 }).should("exist");
+  cy.myRankingsRow(id);
   cy.get("body").then(($body) => {
     const expand = $body.find(`[data-test-my-rankings-expand="${id}"]`);
     if (expand.length) cy.wrap(expand).click();
@@ -119,7 +119,7 @@ describe("energy check", () => {
   it("puts the ER floor on /my-rankings and opens the breakdown sheet", () => {
     cy.viewport(1440, 900);
     cy.visit("/my-rankings", seed());
-    cy.get('[data-test-my-rankings-row="Cartethyia"]', { timeout: 120000 }).should("exist");
+    cy.myRankingsRow("Cartethyia");
     cy.get('[data-test-energy-floor-of="Cartethyia"]', ENGINE).should("be.visible");
     cy.get('[data-test-energy-floor-of="Cartethyia"] button[data-test-energy-chip]').click();
     cy.get("[data-test-energy-sheet]").should("be.visible");
@@ -179,7 +179,7 @@ describe("energy check", () => {
       expectNoHorizontalScroll(`/energy at ${width} (breakdown open)`);
 
       cy.visit("/my-rankings", seed({ fontScale: 1.3 }));
-      cy.get('[data-test-my-rankings-row="Cartethyia"]', { timeout: 120000 }).should("exist");
+      cy.myRankingsRow("Cartethyia");
       cy.get('[data-test-energy-floor-of="Cartethyia"]', ENGINE).should("be.visible");
       expectNoHorizontalScroll(`/my-rankings at ${width}`);
       cy.get('[data-test-energy-floor-of="Cartethyia"] button[data-test-energy-chip]').click();
