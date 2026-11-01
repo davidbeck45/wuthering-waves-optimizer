@@ -97,6 +97,8 @@ the tuning planner, the What's new pictures, the v3 calculator header, Wavescan 
 "Shell refinements" below).
 `phone.css` § 22–23 came from the 2026-10-31 fight-pages audit (compact rotation action cards, tap targets on /endgame,
 /rotation and /energy; "Fight pages, refined" below), with its edits to § 2, § 8, § 9 and § 13.
+`phone.css` § 24 came from the 2026-10-31 account and rankings audit: the plus pages' own H1 hides under the v3 phone
+header, which already names the page ("Account and rankings refinements" below).
 `phone.css` § 25–27 came with the 2026-10-31 echoes pass (section "Echoes pages on a phone" below): the v3 inventory
 tile and its sticky pager, the calculator's Set Bonuses header and rating guide, and the importer sheet's sticky ✕.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
@@ -1684,7 +1686,8 @@ player's own HP line; extrapolated past the fight at the last loop's DPS), and e
 "share of damage dealt while held", grouped Team / Self · member / Enemy. Whole fight, opener or loop, drag to zoom,
 a hover read-out (who is on field, the press, each member's gauges, damage so far). On a phone time flows down:
 three columns, buffs as a list by uptime, the curve as a sparkline. The app's own team timeline spreads actions
-evenly (`teamRotation.ts`: "exact per-action timing isn't tracked"); this one is his frame clock.
+evenly unless Ryan's Labs "frame timing" flag is on (since his #681/#682, `teamRotation.ts` then times each action from
+frame data, as the user typed the actions); this one replays Riley's solved run on his frame clock.
 
 | Piece | Role |
 |---|---|
@@ -2305,7 +2308,7 @@ first: all of them still reproduced after the Ryan #681–#684 sync.
 | `shell/paletteItems.ts` `SECTION_PAGES` | palette rows for Convene's My pulls / Banners / Pull advisor and the Settings sections (Backup & restore, Wavescan, Preferences, Labs): found by search ("pull advisor", "pity", "wavescan", "backup"), not listed in an empty palette (`queryOnly`, the flag the palette commands use). "Echo tuning odds" is now "Tuning planner", the page's own name |
 | `pages/SettingsView.vue` (upstream, ~5 lines) | `?section=` reads every `SETTINGS_SECTIONS` key, also while the page is open (was `wavescan` only) |
 | `shell/WelcomeCard.vue` + `welcome.ts` | "New here? Bring your account in" on the calculator for a browser with no character set up and no echoes: Get started (/account, whose empty state lists the ways in) or Restore a backup; × or either link hides it for good (`wtplus:welcome:dismissed`). Off under Cypress unless a spec sets `wtplus:welcome:e2e` (it would sit on every empty-browser spec's click targets — the precedent is `teamContext/autoTeamBuffs.ts`) |
-| Convene | Banners: the Server select can shrink (it pushed a 360 px page to 398 px), the history search gets its own row on a phone, rerun and history sub-lines wrap instead of cutting the date. My pulls: the link field keeps its height on a phone (`flex-1` in a `flex-col` made it 22 px), plain words ("older pulls not in history", "typical player: 54.1", "from 3 complete 5★ counts", a "soft pity 66" tick), the import message's × on the same line, and the tab, heading and title all say "My pulls". Pull advisor: "+10.5% **of Lucilla's own damage**", "That is +21.5K damage per rotation for Lucilla (now 205K on Lucilla · Suisui + Hiyuki)", and when a character's own damage is under a quarter of the strongest one scored beside it, a line saying what they add as a support isn't counted (`advisor.ts` `supportNote`, `shortRotation`, `gainDamageText`); the summary uses the short rotation name |
+| Convene | Banners: the Server select can shrink (it pushed a 360 px page to 398 px), the history search gets its own row on a phone, rerun and history sub-lines wrap instead of cutting the date. My pulls: the link field keeps its height on a phone (`flex-1` in a `flex-col` made it 22 px), plain words ("older pulls not in history", "typical player: 54.1", "from 3 complete 5★ counts", a "soft pity 66" tick), the import message's × on the same line, and the tab, heading and title all say "My pulls". Pull advisor: "+10.5% **of Lucilla's own damage**", "That is +21.4K damage per rotation for Lucilla (now 205K on Lucilla · Suisui + Hiyuki)", and when a character's own damage is under a quarter of the strongest one scored beside it, a line saying what they add as a support isn't counted (`advisor.ts` `supportNote`, `shortRotation`, `gainDamageText`); the summary uses the short rotation name |
 | Today | event rows' notice / calendar buttons are 2.5 rem on a phone (31 px, 6 px apart before); the endgame links 2.25 rem tall. Past a stated version end with no newer version known, the Matrix row reads "3.8 is out · check in game" instead of a stuck "≈ 0m to reset" (`useToday` `matrix.overdue`) |
 | /account | "Strongest character: Aemeath 8.10M per rotation, on Basic Rotation (Tune Break) · enemy Lv 100", with a tooltip on why the calculator's number differs (its own enemy and saved rotation) |
 | `public/manifest.webmanifest` + `public/icons/icon-maskable*.png` | an `id`, a description that matches the product, shortcuts (Today, My account, Convene › My pulls; Android long-press), and a real maskable icon: `icon-maskable.svg` puts the glyph inside the 0.4 × 512 safe circle on a full-bleed base (the old entry reused the rounded "any" icon, so circle masks cut the plus) |
