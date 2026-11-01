@@ -64,7 +64,7 @@
       <div class="card-body p-3 gap-1.5">
         <div class="flex items-center gap-2 text-sm">
           <span class="loading loading-spinner loading-xs text-primary"></span>
-          <span class="truncate flex-1">{{ progress?.label ?? "Working" }}</span>
+          <span class="min-w-0 flex-1 max-sm:break-words sm:truncate">{{ progress?.label ?? "Working" }}</span>
           <span class="tabular-nums opacity-70 shrink-0">{{ progress?.done ?? 0 }} / {{ progress?.total ?? 0 }}</span>
           <button type="button" class="btn btn-ghost btn-xs" data-test-toa-cancel @click="cancel">Cancel</button>
         </div>
