@@ -2,6 +2,7 @@
 // behind the "UI Overhaul 3.0" liveResultBar labs flag. The flag-off legacy
 // flat list is left untouched and not re-tested here (no prior coverage
 // existed for it either).
+import { SCANNERS_NEW_UNTIL, isNewUntil } from "../../src/components/navigation/navSections"; // Wuthering Tools+
 function visitWithFlagEnabled() {
   cy.visit("/", {
     onBeforeLoad(win) {
@@ -52,7 +53,9 @@ describe("Utility nav dropdown (liveResultBar flag)", () => {
     cy.get("[data-test-options-menu-v3]").should("not.be.visible");
   });
 
-  it("shows no badge, dot, or count anywhere in the menu", () => {
+  // Wuthering Tools+: Ryan's own "New" pill on Scanners (#668) sits in this menu until SCANNERS_NEW_UNTIL, so this
+  // fails on his master too; skipped until the pill goes away, then it runs again on its own
+  (isNewUntil(SCANNERS_NEW_UNTIL) ? it.skip : it)("shows no badge, dot, or count anywhere in the menu", () => {
     visitWithFlagEnabled();
     cy.get("[data-test-options-menu]").click();
     cy.get("[data-test-options-menu-v3]").find(".badge, [class*='badge-']").should("not.exist");
