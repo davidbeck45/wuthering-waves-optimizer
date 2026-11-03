@@ -107,6 +107,39 @@ describe("WavescanNewEchoes", () => {
     expect(store.echoes.find((echo: { echoId: string }) => echo.echoId === "inv-hoochief").echo).toBe("Hoochief");
   });
 
+  it("folds the full import away while it would add second copies, and opens it again on request", async () => {
+    const store = seedInventory();
+    const mapped = mapWavescanEchoes(fixture.scan.echoes, store.echoes.map((echo: { echoId: string }) => echo.echoId));
+    const { container } = render(WavescanNewEchoes, { props: { mapped } });
+    const card = container.querySelector("[data-test-wavescan-new-only]")!;
+    // the fixture: 4 echoes counted here as owned that Ryan's exact-name import would add again
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(true);
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toContain("would add 4 echoes you already own as second copies");
+    const toggle = container.querySelector<HTMLButtonElement>("[data-test-wavescan-new-only-other-toggle]")!;
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(toggle.textContent).toContain("Other import options: equip the scanned loadouts, replace my inventory");
+    await fireEvent.click(toggle);
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(false);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.textContent).toContain("Hide the other import options");
+  });
+
+  it("keeps the full import open when it would add only what this card adds, and folds it once this card has added", async () => {
+    // an inventory without the echoes the loose passes matched: nothing counted twice
+    const store = useInventoryStore();
+    store.hardSetState({ echoes: [], equipped: {} });
+    const mapped = mapWavescanEchoes(fixture.scan.echoes, []);
+    const { container, findByText } = render(WavescanNewEchoes, { props: { mapped } });
+    const card = container.querySelector("[data-test-wavescan-new-only]")!;
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(false);
+    expect(container.querySelector("[data-test-wavescan-new-only-other]")).toBeNull();
+    await fireEvent.click(container.querySelector("[data-test-wavescan-new-only-add]")!);
+    await answerConfirm(true);
+    await findByText(/^Added \d+ echoes\.$/);
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(true);
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toContain("your new echoes are in, so it would add nothing more");
+  });
+
   it("is offered inside Ryan's Wavescan panel once a file is read", async () => {
     seedInventory();
     const { container, findByText } = render(SettingsWavescan);
@@ -115,5 +148,7 @@ describe("WavescanNewEchoes", () => {
     await fireEvent.change(input, { target: { files: [file] } });
     await findByText(/Add 3 echoes to my inventory/);
     expect(container.querySelector("[data-test-wavescan-echoes]")).not.toBeNull();
+    // the fold (a sibling selector in WavescanNewEchoes.vue) needs Ryan's Echoes card right after this card
+    expect(container.querySelector("[data-test-wavescan-new-only]")!.nextElementSibling?.matches("[data-test-wavescan-echoes]")).toBe(true);
   });
 });

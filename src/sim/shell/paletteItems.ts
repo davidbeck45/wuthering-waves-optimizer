@@ -88,6 +88,15 @@ export const SECTION_PAGES: Array<{ path: string; title: string; description: st
   { path: "/build-team?mode=account", title: "Build my whole account", description: "Gear several teams at once from one echo inventory, no echo worn twice across them", keywords: ["account plan", "whole account", "all teams", "roster optimizer", "optimize account", "echoes", "build"], icon: ICON.teams },
   { path: "/settings?section=preferences", title: "Preferences", description: "Theme, layout and display settings", keywords: ["settings", "theme", "options"], icon: ICON.settings },
   { path: "/settings?section=labs", title: "Labs", description: "Experimental features you can switch on", keywords: ["experimental", "beta", "frame timing", "flags"], icon: ICON.settings },
+  // the calculator's sections (`/?screen=`, calculatorScreen.ts; 2026-11-02 core audit L8: "optimizer" opened Character)
+  { path: "/?screen=optimizer", title: "Optimizer", description: "Calculator: the best echoes from your inventory for the active character's rotation", keywords: ["optimize", "best echoes", "loadout", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=rotations", title: "Rotations", description: "Calculator: the active character's saved rotations, their damage and DPS", keywords: ["combo", "dps", "actions", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=build-card", title: "Build Card", description: "Calculator: a picture of the active character's build to share", keywords: ["share", "card", "image", "screenshot", "showcase"], icon: ICON.calculator },
+  { path: "/?screen=echoes", title: "Equipped echoes", description: "Calculator: the five echoes on the active character, sets and Build Score", keywords: ["echoes", "sets", "main echo", "build score", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=weapon", title: "Weapon", description: "Calculator: the active character's weapon, level and refinement", keywords: ["refinement", "passive", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=party", title: "Team Buffs", description: "Calculator: buffs the active character gets from teammates", keywords: ["team buffs", "support", "buffs", "party", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=enemy", title: "Enemy", description: "Calculator: enemy level, type, resistance and status effects", keywords: ["level", "resistance", "res", "boss", "calculator"], icon: ICON.calculator },
+  { path: "/?screen=custom-buffs", title: "Custom Buffs", description: "Calculator: buffs you add by hand to the active character", keywords: ["custom", "manual", "buffs", "calculator"], icon: ICON.calculator },
 ];
 
 /** The page title for a route path (core or plus), for the assistant's page context. */

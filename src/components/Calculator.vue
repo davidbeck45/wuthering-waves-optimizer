@@ -568,6 +568,7 @@ import {
 } from "../calculator/optimizer";
 // Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials) — src/sim/README.md
 import { planOptimizerGeneration } from "../sim/optimizer/optimizerPool";
+import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1357,6 +1358,7 @@ export default defineComponent({
         });
       }
     };
+    useCalculatorScreenLink(changeScreen); // Wuthering Tools+: a link opens one section (src/sim/shell/calculatorScreen.ts)
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;

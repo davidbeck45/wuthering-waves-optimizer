@@ -1,5 +1,8 @@
 <template>
-  <section class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 min-w-0" data-test-wavescan-new-only>
+  <section
+    class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 min-w-0"
+    :data-wt-fold-upstream="foldUpstream ? '' : undefined"
+    data-test-wavescan-new-only>
     <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">Add only new echoes</div>
     <p class="text-sm opacity-80 max-w-2xl">
       Compares this scan with your inventory and adds only the echoes you don't have yet. A Phantom skin counts as
@@ -76,6 +79,22 @@
         </div>
       </details>
     </template>
+
+    <!-- the full import (the next card, SettingsWavescan.vue) folds away once it would only duplicate: the style below -->
+    <div v-if="foldable" class="flex flex-col gap-1 border-t border-base-300 pt-3" data-test-wavescan-new-only-other>
+      <p class="text-xs text-base-content/80 max-w-2xl" data-test-wavescan-new-only-other-why>{{ foldReason }}</p>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost h-auto min-h-10 py-1.5 -ml-2 self-start flex-nowrap justify-start gap-2 text-left text-sm font-semibold normal-case"
+        :aria-expanded="upstreamShown ? 'true' : 'false'"
+        data-test-wavescan-new-only-other-toggle
+        @click="upstreamShown = !upstreamShown">
+        <svg viewBox="0 0 20 20" class="size-4 shrink-0 transition-transform" :class="{ 'rotate-90': upstreamShown }" fill="currentColor" aria-hidden="true">
+          <path d="M7.2 4.2a1 1 0 0 1 1.4 0l5.1 5.1a1 1 0 0 1 0 1.4l-5.1 5.1a1 1 0 1 1-1.4-1.4L11.6 10 7.2 5.6a1 1 0 0 1 0-1.4Z" />
+        </svg>
+        <span class="min-w-0">{{ upstreamShown ? "Hide the other import options" : "Other import options: equip the scanned loadouts, replace my inventory" }}</span>
+      </button>
+    </div>
   </section>
 </template>
 
@@ -160,6 +179,18 @@ const lists = computed(() => {
 const isAdding = ref(false);
 const addedCount = ref<number | null>(null);
 
+// Ryan's full import (his Echoes card right below: Add / Replace and the scanned loadouts) folds away once it would only
+// duplicate: after this card's add, or when it would add second copies of echoes counted here as owned. One tap opens it
+// again; it is still the way to equip the loadouts Wavescan saw or to replace the inventory. 2026-11-02 core audit L4.
+const upstreamShown = ref(false);
+const foldable = computed(() => addedCount.value !== null || secondCopies.value > 0);
+const foldUpstream = computed(() => foldable.value && !upstreamShown.value);
+const foldReason = computed(() =>
+  secondCopies.value > 0
+    ? `The full import is folded away: it matches echo names exactly, so it would add ${pluralEchoes(secondCopies.value)} you already own as second copies.`
+    : "The full import is folded away: your new echoes are in, so it would add nothing more.",
+);
+
 async function addNew() {
   if (!plan.value.toAdd.length || isAdding.value) return;
   // the add has no undo, so it asks once more (the button sits right above the lists a phone scrolls through)
@@ -198,3 +229,10 @@ async function addNew() {
   }
 }
 </script>
+
+<style>
+/* Folds Ryan's Echoes card, the element right after this card in SettingsWavescan.vue (see foldUpstream) */
+[data-test-wavescan-new-only][data-wt-fold-upstream] + [data-test-wavescan-echoes] {
+  display: none;
+}
+</style>

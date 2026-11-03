@@ -63,6 +63,7 @@
         </svg>
         <span>This replaces all of your existing data — this can't be undone.</span>
       </div>
+      <BackupKeptNote /><!-- Wuthering Tools+: what an overwrite keeps (src/sim/buildHistory/BackupKeptNote.vue) -->
 
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-2">
@@ -112,6 +113,7 @@
  * see docs/adr/0022-settings-page-redesign.md.
  */
 import { ref } from "vue";
+import BackupKeptNote from "../sim/buildHistory/BackupKeptNote.vue"; // Wuthering Tools+
 import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { downloadBlob } from "../utils/downloadFile";

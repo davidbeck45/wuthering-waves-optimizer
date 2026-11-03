@@ -1402,3 +1402,107 @@ html[data-theme-style="light"] .stats-breakdown-v3 .text-accent {
     align-items: center;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   30. Calculator sections below lg (2026-11-02 core audit H1 / M2): Ryan's section layouts are
+       column-less grids (`grid gap-4 lg:grid-cols-3` on the Optimizer, `lg:grid-cols-[1fr_18rem]` on
+       the Weapon, the Enemy and Custom Buffs grids). Below lg such a grid has one implicit `auto`
+       column, and an `auto` column is at least as wide as its widest item's min-content. One long
+       `truncate` (nowrap) line therefore widened the whole section: the Optimize-for card printing a
+       wuwa_calc rotation's name and its "Steady-state loop from the Team Rankings page…" description
+       made the optimizer's setup column 1,947 px wide in a 412 px screen, and the weapon's level and
+       refinement steppers at 130 % text made the Weapon column 15 px too wide. `.calculations__screens`
+       is `overflow-x: hidden`, so nothing scrolled sideways (the scrollWidth gates never saw it): most
+       echo sets, the main-echo cards, the target card and the ends of sentences were simply cut off.
+       Letting the grid's items shrink below their min-content keeps every column inside the screen, and
+       `truncate` then truncates as Ryan meant it to. The optimizer's minimum-stat row (stat select,
+       value box, ✕ in one non-wrapping row) wraps: the select takes the first line, the value and ✕
+       the second. The Enemy section's type buttons (Common · Elite · Overlord · Calamity, `flex-1` in
+       a `join`) keep DaisyUI's 0.5 rem side padding and a min-content width each, so at 360 px
+       "Calamity" ran 5 px past the screen: they take a quarter each and less padding.
+       M1, the flicker at a section's end: Ryan's live result bar compacts on a scroll down
+       (useScrollCollapse), which makes the page 26 px shorter; at the end of a section the browser
+       clamps and scroll-anchors the position by more than his 8 px threshold, that reads as a scroll
+       up, the bar expands, anchoring scrolls back down, and so on, about 5 times a second for as
+       long as the page sits there (the bottom bar and Ask slid in and out with it). § 16's room for
+       Ask at every page end is what lets the short sections reach that loop. Without scroll
+       anchoring the clamp is one move: the bar expands once and stays. It is not only the end:
+       with anchoring on, one scroll to y 800 of the optimizer left the bar flipping too, and a
+       spacer that keeps the page's height did not stop it (anchoring drives it). Only where the
+       window is the calculator's scroller (below lg); the desktop layout scrolls inside its own
+       panel. Ryan's commandSheet.cy.ts "shrinks while scrolling down" now scrolls to the top first:
+       it passed while the bar flickered (his avatar click leaves the page at y 140).
+       Gates: phoneLayout.cy.ts "keeps every calculator section inside the screen" and "holds the
+       calculator's bars still at the end of a section". */
+@media (max-width: 1023px) {
+  html:has([data-test-live-result-bar]) {
+    overflow-anchor: none;
+  }
+  .calculations__screens .grid > * {
+    min-width: 0;
+  }
+  .calculations__screens [data-test-enemy-workspace-type] > .btn {
+    min-width: 0;
+    padding-inline: 0.25rem;
+  }
+  .calculations__screens .flex:has(> input[aria-label="Minimum required value"]) {
+    flex-wrap: wrap;
+  }
+  .calculations__screens .flex:has(> input[aria-label="Minimum required value"]) > :first-child {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+  .calculations__screens .flex > input[aria-label="Minimum required value"] {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+  /* (verify pass) Custom Buffs' Attack / HP / Defense rows hold two boxes (Flat and %): once the row may
+     shrink, the boxes covered the label ("Defense" under "FLAT" at 412 px, all three labels gone at
+     360). There the boxes wrap under the label when it doesn't fit beside them. And the optimizer's
+     Stat · Attack · Rotation tabs ran 15 px out of their card at 360 px: less side padding. */
+  .calculations__screens .custom-buffs-workspace .grid > .flex:has(input ~ input) {
+    flex-wrap: wrap;
+  }
+  .calculations__screens .custom-buffs-workspace .grid > .flex:has(input ~ input) > .flex-1 {
+    flex: 1 1 auto;
+  }
+  .calculations__screens .custom-buffs-workspace .grid > .flex:has(input ~ input) > .shrink-0 {
+    margin-inline-start: auto;
+  }
+  .calculations__screens [data-test-optimizer-workspace-target-tabs] > .tab {
+    --tab-padding: 0.5rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   31. Ryan's core pages, the rest of the 2026-11-02 core audit (README "Core pages, refined").
+       a) L1: on a v3 phone the Ask button (z-55) sat on the last rows of Ryan's two menus (z-50):
+          the bottom bar's More ("GitHub") and the header's section switcher ("Build Card"), and a tap
+          on their right half opened Ask. Both are DaisyUI focus dropdowns, open exactly while focus
+          is inside them, so Ask steps aside for that long, as it does for the plus menu and sheets.
+       b) L2: the inventory's Import echoes sheet opened on Ryan's Discord-bot importer (1920×1080
+          build cards) and the phone-screenshot batch, the way in on a phone, started ~520 px down.
+          Below 768 px the batch comes first, with a rule under it instead of above it.
+       c) L5: light themes, the Teams editor's member cards: the HP / DEF / ATK / Crit / Energy
+          Regen icons are white game art on a white card. Inverted like § 21's Forte icons. Every
+          viewport. */
+@media (max-width: 767px) {
+  html:has(.nav-bottom-bar .dropdown:focus-within, .nav-phone-header .dropdown:focus-within) .wt-ask-button {
+    display: none;
+  }
+  .modal[id^="modal-echoes-importer"] .modal-box > div:has(> [data-test-phone-echo-batch]) {
+    display: flex;
+    flex-direction: column;
+  }
+  .modal[id^="modal-echoes-importer"] .modal-box [data-test-phone-echo-batch][data-test-phone-echo-batch] {
+    order: -1;
+    margin: 0 0 1.5rem;
+    padding: 0 0 1.25rem;
+    border-top: 0;
+    border-bottom: 1px solid oklch(var(--b3));
+  }
+}
+html[data-theme-style="light"] [data-test-team-rotation-slot-stat] > img {
+  filter: invert(100%);
+}

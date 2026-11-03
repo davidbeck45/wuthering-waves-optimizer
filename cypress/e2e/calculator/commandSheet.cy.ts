@@ -83,6 +83,7 @@ describe("Command Bar on phones", () => {
   it("shrinks while scrolling down, keeping the mode, number and arrow", () => {
     cy.selectWorkspaceCharacter("Aemeath");
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.scrollTo(0, 0); // Wuthering Tools+: the avatar click scrolled to y 140, so the bar was compact; it passed while the bar flickered (src/sim/phone.css § 30)
     cy.get("[data-test-live-result-bar]").should("not.have.class", "command-bar--compact");
 
     cy.scrollTo(0, 800);

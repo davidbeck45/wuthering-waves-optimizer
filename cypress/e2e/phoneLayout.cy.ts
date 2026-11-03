@@ -39,6 +39,68 @@ function expectAskClearOf(selector: string, what: string): void {
   });
 }
 
+// Content cut off at the right edge of the calculator's sections. `.calculations__screens` is `overflow-x: hidden`, so a
+// section that grew too wide never scrolls sideways and the scrollWidth checks can't see it (2026-11-02 core audit H1 /
+// M2): this looks for the innermost visible elements whose right edge passes the page, hidden by an ancestor or not,
+// except inside a scroller that scrolls on purpose.
+function expectNothingCutOff(what: string): void {
+  cy.document().then((doc) => {
+    const win = doc.defaultView!;
+    const width = doc.documentElement.clientWidth;
+    const shown = (el: Element): boolean => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && (el as HTMLElement).checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+    };
+    const past = (el: Element): boolean => el.getBoundingClientRect().right > width + 1;
+    const cut: string[] = [];
+    for (const el of doc.querySelectorAll(".calculations__screens *")) {
+      if (!past(el) || !shown(el) || [...el.children].some((child) => past(child) && shown(child))) continue;
+      let scroller = false;
+      for (let a = el.parentElement; a && a !== doc.body && !scroller; a = a.parentElement) {
+        scroller = /(auto|scroll)/.test(win.getComputedStyle(a).overflowX) && a.scrollWidth > a.clientWidth + 1;
+      }
+      if (!scroller) cut.push(`<${el.tagName.toLowerCase()}> "${(el.textContent ?? "").trim().slice(0, 40)}" ends at ${Math.round(el.getBoundingClientRect().right)}`);
+    }
+    expect(cut, `${what}: cut off at the right edge of a ${width} px page`).to.deep.equal([]);
+  });
+}
+
+// Inside the screen is not enough once a grid item may shrink (phone.css § 30): a label's text must also end inside its
+// own box (Custom Buffs' "Defense" ran under its Flat box at 412 px, and all three labels were covered at 360).
+function expectTextInsideItsBox(selector: string, what: string): void {
+  cy.document().then((doc) => {
+    const over: string[] = [];
+    for (const el of doc.querySelectorAll(selector)) {
+      const range = doc.createRange();
+      range.selectNodeContents(el);
+      const rects = [...range.getClientRects()];
+      if (!rects.length) continue;
+      const end = Math.max(...rects.map((r) => r.right));
+      const edge = el.getBoundingClientRect().right;
+      if (end > edge + 1) over.push(`"${(el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 30)}" ends at ${Math.round(end)}, its box at ${Math.round(edge)}`);
+    }
+    expect(over, `${what}: runs past its box`).to.deep.equal([]);
+  });
+}
+
+// v3 with the Cartethyia fixture and the phone's text size; `character` overrides the stored characters
+function v3Phone(fontScale: number, character: string = configOptimizer.data.character as string) {
+  return {
+    onBeforeLoad(win: Window) {
+      win.localStorage.setItem("character", character);
+      win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+      const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+      settings.config = { ...settings.config, useClassicUi: false };
+      win.localStorage.setItem("settings", JSON.stringify(settings));
+    },
+    onLoad(win: Window) {
+      const style = win.document.createElement("style");
+      style.textContent = `html { font-size: ${fontScale * 100}%; }`;
+      win.document.head.appendChild(style);
+    },
+  };
+}
+
 // /today reads Kuro's news feed: answer it from the unit-test fixtures (the 3.7 patch notes) so the page has events to lay out
 function interceptKuroNews(): void {
   const news = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/json/G152/en";
@@ -675,5 +737,119 @@ describe("phone layout", () => {
       for (const x of samples) expect(x.scrollWidth, `page width with ${x.skeletons} placeholder rows`).to.be.at.most(x.clientWidth);
     });
     expectNoHorizontalScroll("/my-rankings teams, scored");
+  });
+
+  // 2026-11-02 core audit H1 / M2 (phone.css § 30). A wuwa_calc rotation's long name and description, printed with
+  // `truncate` in the optimizer's target card, made Ryan's column-less setup grid 1,988 px wide: most echo sets, the
+  // main-echo cards and the target were cut off. The Weapon, Enemy and Custom Buffs sections lost their right edge the
+  // same way at 130 % text. Every section, at David's S26 width and at 360 px (a 375 px window less Electron's 15 px
+  // scrollbar), with the optimizer's Rotation tab listing the long one.
+  it("keeps every calculator section inside the screen at 130 % text, with a wuwa_calc-length rotation", () => {
+    const character = JSON.parse(configOptimizer.data.character as string);
+    const rotation = character.characters.Cartethyia.rotations[0];
+    rotation.name = "Cartethyia S6R5 Defier's Thorn R5 · Ciaccona + Shorekeeper · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)";
+    rotation.description =
+      "Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): Cartethyia S6R5 Defier's Thorn R5 with Ciaccona S1R1 and Shorekeeper S6R1, 25 s, the frame-accurate engine, team buffs from the members";
+    const sections: Array<[string, string]> = [
+      ["character", ".screen--character"],
+      ["weapon", ".screen--weapon"],
+      ["echoes", ".screen--echoes"],
+      ["team", ".screen-party"],
+      ["enemy", ".screen--enemy"],
+      ["optimizer", ".screen--optimizer"],
+      ["rotations", ".screen--rotations"],
+      ["customBuffs", ".screen--custom-buffs"],
+      ["stats", ".screen--results"],
+      ["buildCard", ".screen--build-card"],
+    ];
+    for (const [width, height] of [
+      [412, 915],
+      [375, 812],
+    ] as const) {
+      cy.viewport(width, height);
+      cy.visit("/", v3Phone(1.3, JSON.stringify(character)));
+      cy.get("[data-test-live-result-bar]").should("be.visible");
+      for (const [section, screen] of sections) {
+        cy.get(`[data-test-calculator-mobile-nav="${section}"]`).click({ force: true });
+        cy.get(screen).should("be.visible");
+        if (section === "optimizer") {
+          // force: changeScreen scrolls the page to the top, and a loaded CI box can still be scrolling ("animating")
+          cy.get("[data-test-optimizer-workspace-target-tabs] .tab").contains("Rotation").click({ force: true });
+          cy.get(`[data-test-optimizer-workspace-target-rotation="${rotation.id}"]`).should("contain.text", "(wuwa_calc)");
+          // the Stat · Attack · Rotation tabs stay inside their card (they ran 15 px out at 360)
+          cy.get("[data-test-optimizer-workspace-target-tabs]").should(($tabs) => {
+            expect($tabs[0].getBoundingClientRect().right, `optimizer tabs at ${width}: right edge`).to.be.at.most($tabs[0].parentElement!.getBoundingClientRect().right + 1);
+          });
+        }
+        if (section === "customBuffs") expectTextInsideItsBox(".custom-buffs-workspace .grid > .flex > .flex-1", `custom buffs labels at ${width}`);
+        expectNothingCutOff(`${section} at ${width}`);
+      }
+    }
+  });
+
+  // 2026-11-02 core audit M1 (phone.css § 30): at the end of a calculator section Ryan's result bar compacted, the page
+  // got shorter, scroll anchoring moved the page by more than his 8 px threshold, the bar expanded again, and so on
+  // about five times a second, with the bottom bar and Ask sliding in and out. Scrolled to the end, the bottom bar must
+  // settle within one change and stay put for the next 2 s.
+  it("holds the calculator's bars still at the end of a section at 412 px / 130 % text", () => {
+    cy.viewport(412, 915);
+    cy.visit("/", v3Phone(1.3));
+    cy.get('[data-test-calculator-mobile-nav="enemy"]').click({ force: true });
+    cy.get(".screen--enemy").should("be.visible");
+    cy.get("[data-test-nav-bottom-bar]").should("be.visible");
+    cy.window().then((win) => {
+      expect(win.document.documentElement.scrollHeight - win.innerHeight, "the section scrolls past the bar's 80 px top zone").to.be.greaterThan(120);
+      win.scrollTo(0, win.document.documentElement.scrollHeight);
+    });
+    cy.window()
+      .then(
+        { timeout: 10_000 }, // 25 samples 100 ms apart; timers run slow while the page loops
+        (win) =>
+          new Cypress.Promise<number[]>((resolve) => {
+            const tucked: number[] = [];
+            const timer = win.setInterval(() => {
+              tucked.push(win.document.querySelector(".nav-bottom-bar--tucked") ? 1 : 0);
+              if (tucked.length === 25) {
+                win.clearInterval(timer);
+                resolve(tucked);
+              }
+            }, 100);
+          }),
+      )
+      .then((tucked) => {
+        const changes = tucked.filter((value, i) => i > 0 && value !== tucked[i - 1]).length;
+        expect(changes, `bottom bar tucked (1) or shown (0) every 100 ms: ${tucked.join("")}`).to.be.at.most(1);
+      });
+  });
+
+  // 2026-11-02 core audit L1 / L2 (phone.css § 31): the Ask button (z-55) sat on the last rows of Ryan's v3 phone menus
+  // (z-50), so taps on their right half opened Ask; it steps aside while one is open (both are DaisyUI focus dropdowns).
+  // The inventory's Import echoes sheet opens on the phone screenshot import, the way in on a phone, not ~520 px down
+  // under the Discord-bot importer.
+  it("keeps Ask off Ryan's phone menus and opens the echo importer on the phone screenshots at 412 px / 130 % text", () => {
+    cy.viewport(412, 915);
+    cy.visit("/inventory", v3Phone(1.3));
+    cy.get("[data-test-ai-open]").should("be.visible");
+    cy.get("[data-test-nav-bottom-more]").focus();
+    cy.get("[data-test-options-menu-v3]").should("be.visible");
+    cy.get("[data-test-ai-open]").should("not.be.visible");
+    cy.get("[data-test-nav-bottom-more]").blur();
+    cy.get("[data-test-ai-open]").should("be.visible");
+    cy.get("[data-test-nav-section-switcher]").focus();
+    cy.get("[data-test-ai-open]").should("not.be.visible");
+    cy.get("[data-test-nav-section-switcher]").blur();
+    cy.get("[data-test-ai-open]").should("be.visible");
+
+    cy.contains("button", "Import echoes").click({ force: true });
+    cy.get("[data-test-phone-echo-batch-picker]").should("be.visible").then(($picker) => {
+      expect($picker[0].getBoundingClientRect().bottom, "Pick screenshots on the first screen").to.be.at.most(915);
+      const batch = $picker[0].closest("[data-test-phone-echo-batch]")!;
+      const discordBot = batch.parentElement!.firstElementChild!;
+      expect(discordBot, "Ryan's importer is in the same column").to.not.equal(batch);
+      expect(batch.getBoundingClientRect().top, "the phone import comes first").to.be.lessThan(discordBot.getBoundingClientRect().top);
+    });
+    cy.get("[data-test-phone-echo-batch-how]").should("not.have.attr", "open");
+    cy.get("[data-test-phone-echo-batch-how] summary").should("contain.text", "How to take them").click();
+    cy.get("[data-test-phone-echo-batch-set-tip]").should("be.visible").and("contain.text", "No Sonata filter needed");
   });
 });

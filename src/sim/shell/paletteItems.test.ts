@@ -81,6 +81,20 @@ describe("rankPalette", () => {
     expect(pageTitleOf("/convene?tab=advisor")).toBe("Convene odds");
   });
 
+  it("opens a calculator section by its name: 'optimizer' lands on the Optimizer, not the calculator's Character", () => {
+    const first = (q: string) => rankPalette(q, items).find((i) => i.group === "page")?.run;
+    expect(first("optimizer")).toEqual({ kind: "route", path: "/?screen=optimizer" });
+    expect(first("rotations")).toEqual({ kind: "route", path: "/?screen=rotations" });
+    expect(first("build card")).toEqual({ kind: "route", path: "/?screen=build-card" });
+    expect(first("enemy")).toEqual({ kind: "route", path: "/?screen=enemy" });
+    expect(first("team buffs")).toEqual({ kind: "route", path: "/?screen=party" });
+    // the pages they could shadow still come first for their own names
+    expect(first("weapon value")).toEqual({ kind: "route", path: "/weapons" });
+    expect(first("calculator")).toEqual({ kind: "route", path: "/" });
+    expect(first("import echoes")).toEqual({ kind: "route", path: "/settings?section=wavescan" });
+    expect(pageTitleOf("/?screen=optimizer")).toBe("Calculator");
+  });
+
   it("finds /my-rankings by its words and keywords", () => {
     expect(rankPalette("roster rank", items)[0].run).toEqual({ kind: "route", path: "/my-rankings" });
     expect(rankPalette("my rankings", items).find((i) => i.group === "page")?.run).toEqual({ kind: "route", path: "/my-rankings" });

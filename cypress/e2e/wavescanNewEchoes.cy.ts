@@ -57,6 +57,14 @@ describe("Wavescan: add only new echoes", () => {
     count("owned").should("contain.text", "6").and("contain.text", "Already in your inventory");
     count("missing").should("contain.text", "2").and("contain.text", "kept, never deleted");
     cy.get("[data-test-wavescan-new-only-note]").should("contain.text", "Who wears what doesn't change");
+    // Ryan's full import would add the 4 close matches again: it is folded away behind "Other import options"
+    // (2026-11-02 core audit L4), one tap from the loadouts and Replace
+    cy.get("[data-test-wavescan-echoes]").should("not.be.visible");
+    cy.get("[data-test-wavescan-new-only-other-why]").should("contain.text", "would add 4 echoes you already own as second copies");
+    cy.get("[data-test-wavescan-new-only-other-toggle]").should("have.attr", "aria-expanded", "false").click();
+    cy.get("[data-test-wavescan-echoes]").should("be.visible").and("contain.text", "ready to import");
+    cy.get("[data-test-wavescan-new-only-other-toggle]").should("have.attr", "aria-expanded", "true").and("contain.text", "Hide").click();
+    cy.get("[data-test-wavescan-echoes]").should("not.be.visible");
 
     // the new list: the scanned Phantom Gulpuff sits under Gulpuff with a badge, and says it's added unequipped
     cy.get(group("new", "Gulpuff")).within(() => {
@@ -118,7 +126,9 @@ describe("Wavescan: add only new echoes", () => {
     cy.visit("/settings?section=wavescan", seed({ classic: true }));
     uploadScan();
     count("new").should("contain.text", "3");
-    // Ryan's own import stays right below it
+    // Ryan's own import stays right below it, folded while it would add second copies
+    cy.get("[data-test-wavescan-echoes]").should("not.be.visible");
+    cy.get("[data-test-wavescan-new-only-other-toggle]").click();
     cy.get("[data-test-wavescan-echoes]").should("be.visible");
     // a desktop lays a group's echo cards side by side (one 1,220 px card per line before)
     cy.get(`${list("owned")} summary`).click();

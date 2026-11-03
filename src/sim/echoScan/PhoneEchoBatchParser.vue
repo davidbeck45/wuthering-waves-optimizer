@@ -1,16 +1,23 @@
 <template>
   <section class="mt-6 border-t border-base-300 pt-4" data-test-phone-echo-batch>
     <h2 class="text-xl font-bold">Phone screenshots (batch)</h2>
-    <p class="text-sm opacity-80 mb-3">
-      On your phone, open the in-game Echo inventory, select an echo so its detail panel shows on the
-      right, and take one screenshot per echo — then drop them all here (on the phone itself, pick them
-      straight from the gallery). Landscape 3120×1440 (Galaxy S26 Ultra) or the same shape. Other
-      screenshots (PC, other phones): use Read with Claude below.
+    <!-- two lines, then the details on request: on a phone this is the first thing in the sheet (phone.css § 31 b) -->
+    <p class="text-sm opacity-80 mb-1">
+      One screenshot per echo from the in-game Echo inventory, with its detail panel open. Pick them all at once.
     </p>
-    <p class="text-xs opacity-70 mb-3" data-test-phone-echo-batch-set-tip>
-      No Sonata filter needed: the set is read from its small icon next to +25. With a filter on
-      (optional), the set's name also shows bottom-left and is checked against the icon.
-    </p>
+    <details class="text-xs mb-3" data-test-phone-echo-batch-how>
+      <summary class="cursor-pointer py-2.5 font-semibold opacity-80">How to take them</summary>
+      <p class="opacity-80 mt-1">
+        In the game, open the Echo inventory and select an echo so its detail panel shows on the right, then take a
+        screenshot; repeat for each echo. On the phone itself, pick them straight from the gallery. Landscape
+        3120×1440 (Galaxy S26 Ultra) or the same shape. Other screenshots (PC, other phones): use Read with Claude
+        below.
+      </p>
+      <p class="opacity-70 mt-1" data-test-phone-echo-batch-set-tip>
+        No Sonata filter needed: the set is read from its small icon next to +25. With a filter on
+        (optional), the set's name also shows bottom-left and is checked against the icon.
+      </p>
+    </details>
     <!-- the main way in: a big "Pick screenshots" button right under the intro (a bare native "Choose files" used to sit
     after the album box and read as part of it); the album is the alternative below -->
     <div class="flex flex-wrap items-center gap-2 mb-3" data-test-phone-echo-batch-picker>

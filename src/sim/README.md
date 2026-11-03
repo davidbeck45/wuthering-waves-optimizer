@@ -107,6 +107,12 @@ covered on a phone; the open drawer now sits at z-51 and the Ask button steps as
 sheet's chips get a one-line legend for the two-tone bar (no hover on a phone) and wrap their captions; the sheet's
 three tabs take half DaisyUI's padding so "Rotations" fits 360 px; and in light themes the detail's accent text
 (1.6–1.8 : 1 on white) is mixed toward black.
+`phone.css` § 29 came with Cost to max (track "materials"): the drawer's From saved levels / From level 1 switch
+and its "Where it goes" rows are 40 px tap targets at 130 % text.
+`phone.css` § 30–31 came from the 2026-11-02 core audit ("Core pages, refined" at the end): the calculator's sections
+shrink to the screen below lg (a long wuwa_calc rotation name made the optimizer 1,988 px wide, clipped, not scrolling),
+no tuck / untuck loop at a section's end, Ask steps aside for Ryan's phone menus, the importer opens on the phone
+screenshots, and the Teams editor's stat icons show on light themes.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -2832,3 +2838,53 @@ Left as they were:
 - The Tuner plan's 3–4 s cold load (L13): the plan job prepares every character just as the pass does, and the worker
   runs one job at a time. Queuing the plan before the pass measured the same (3.2–4.1 s against 3.6–3.9 s, three runs
   each on a loaded box), so the order stays; the page shows its progress line meanwhile.
+
+## Core pages, refined — Ryan's calculator, optimizer, inventory, Teams, Settings and the nav (2026-11-02 core audit, track "fix-core")
+
+The read-only core audit (`wto-wt/b3/reports/audit-core.md`, run on plus 786c87df before the #686 sync) found 1 high,
+5 medium and 11 low items on Ryan's pages where the plus hooks live. This pass owns H1, M1, M2 and L1–L11 (M3–M5, the
+numbers and names, went to the fix-numbers track). Each was re-checked on plus-b3 (after #686) first: all still
+reproduced. Fixed: every high and medium item and L1–L9. L10 and L11 are Ryan's charts and tables (below).
+
+| Piece | What it does |
+|---|---|
+| `phone.css` § 30 (H1, M2) | below lg every item of a grid inside `.calculations__screens` may shrink below its min-content. Ryan's section layouts are column-less grids (`grid gap-4 lg:grid-cols-3` and the like), so below lg the one implicit `auto` column was as wide as its widest nowrap line: a wuwa_calc rotation's name and "Steady-state loop…" description, printed with `truncate` in the optimizer's target card, made the setup column **1,988 px** in a 412 px screen. Most of the 37 set icons, the main-echo cards and the target were cut off, and nothing scrolled (`overflow-x: hidden`), so the scrollWidth gates never saw it. At 130 % text the Weapon section ran 15 px wide (level and refinement steppers), and at 360 px the Enemy level and Custom Buffs inputs were cut. Also: the optimizer's minimum-stat row wraps (select, then value and ✕), and the Enemy type buttons take a quarter each with less padding ("Calamity" ran 5 px past 360). Clip probe after the fix: 0 cut elements in all 10 phone sections at 412 and 360 px, 130 % text, with David's data. The verify pass found two things the shrinking rule left: Custom Buffs' Attack / HP / Defense rows (a Flat and a % box each) covered their label ("Defense" under "FLAT" at 412 px, all three labels hidden at 360), so those rows let the boxes wrap under the label when it doesn't fit beside them; and the optimizer's Stat · Attack · Rotation tabs ran 15 px out of their card at 360, so they take half DaisyUI's side padding. `phoneLayout.cy.ts` checks both (label text inside its box, tabs inside their card) |
+| `phone.css` § 30 (M1) | `html:has([data-test-live-result-bar]) { overflow-anchor: none }` below lg. At the end of a section Ryan's result bar compacted on the scroll down (`useScrollCollapse`), the page got 26 px shorter, the browser clamped and scroll-anchored the position by more than his 8 px threshold, that read as a scroll up, the bar expanded, and so on: 13–21 tuck changes in 3 s with no input (the bottom bar and Ask slid in and out). § 16's room for Ask at every page end is what let short sections reach the loop. Without anchoring the clamp happens once: 0 changes. It is wider than the audit saw: with anchoring on, one scroll to any point of the optimizer (y 400, 800, 1500) left the bar flipping 13–17 times in 3 s with no input; with the rule it stays compact. A spacer that keeps the page's height while the bar is compact did not help (7–15 changes): anchoring drives it, not only the clamp. Desktop scrolls inside its own panel (the page scrolls 80 px), so no loop there. The cost: when the bar compacts mid-page, the content under it moves up by the bar's lost height (7–26 px) instead of being held in place. **One line in Ryan's `calculator/commandSheet.cy.ts`** ("shrinks while scrolling down"): Cypress's click on the avatar scrolls the page to y 140, so the bar is rightly compact when the test starts; it only passed because the flicker showed it expanded now and then. The test now starts with `cy.scrollTo(0, 0)` |
+| `phone.css` § 31 a (L1) | on a v3 phone Ask steps aside while Ryan's More menu or section switcher is open (DaisyUI focus dropdowns: `:focus-within`). Ask (z-55) sat on their last rows ("GitHub", "Build Card"), and taps on the right half opened Ask |
+| `phone.css` § 31 b + `echoScan/PhoneEchoBatchParser.vue` (L2) | in the inventory's Import echoes sheet the phone-screenshot batch comes first below 768 px (`order: -1`, the rule under it instead of above). Its intro is two lines ("One screenshot per echo … Pick them all at once."); the rest and the Sonata tip sit under "How to take them". "Pick screenshots" is at y 270 instead of ~520 px down |
+| `buildHistory/BackupKeptNote.vue` + `components/SettingsBackupRestore.vue` (Ryan's, one template line + one import line) (L3) | under "This replaces all of your existing data — this can't be undone.": "Kept: each character build the overwrite changes is saved first in Build history ("Before a Settings import"), with its five echoes, to restore from there. Not kept: your other echoes and your teams. Download a .json backup above first." It states what `importGuard.ts` does; Build history is a link |
+| `wavescan/WavescanNewEchoes.vue` (L4) | Ryan's Echoes card (his Add / Replace, the scanned loadouts, "N echoes ready to import") folds away once it would only duplicate: after this card's add, or while it would add second copies of echoes counted here as owned. A line says why ("…it would add 4 echoes you already own as second copies." / "…your new echoes are in, so it would add nothing more.") and "Other import options: equip the scanned loadouts, replace my inventory" opens it again (`aria-expanded`). No edit to his file: the plus card sets `data-wt-fold-upstream` and a sibling selector hides the next card. An empty inventory (all new, no second copies) keeps his card open |
+| `phone.css` § 31 c (L5) | light themes: the Teams editor member cards' white HP / DEF / ATK / Crit / Energy Regen icons are inverted, as § 21 does for the Forte card. Every viewport |
+| `teamContext/AutoTeamBuffsToggle.vue` (L6) | the team buffs switch has a caption a phone shows (its explanation was only in `title`): "Uses your teammates' real builds. Off: each character's Team Buffs panel." (and the reverse when off), `aria-describedby` on the switch, `text-xs` so it follows the phone's text size |
+| `cli/format.ts` `dmg` + `cli/index.ts` (L7) | the CLI's damage and DPS columns (`calc` attacks and rotations, `team`) are rounded up with the app's `displayDamage`: `team` now prints 9,458,278 / 378,332 DPS and `calc Aemeath` Stage 1 3,495 / 12,615, the same as /teams and Stats & Damages. JSON output is unchanged (raw numbers); `rank` and `weights` keep `int` (their pages don't use `displayDamage`) |
+| `shell/calculatorScreen.ts` + `components/Calculator.vue` (Ryan's, one hook line + one import line) + `shell/paletteItems.ts` (L8) | `/?screen=<section>` opens that calculator section (Ryan's keys: character, weapon, echoes, party, enemy, optimizer, rotations, custom-buffs, build-card; a few aliases), then drops the query so the address stays `/`. It also works while the calculator is open (the query changes, the page stays), and Ryan's old `/optimizer` (a redirect to `/`) lands on the optimizer (`route.redirectedFrom`). The palette has queryOnly rows for Optimizer, Rotations, Build Card, Equipped echoes, Weapon, Team Buffs, Enemy and Custom Buffs: "optimizer" now opens the optimizer, not Character. Not "results" (Stats & Damages is a phone-only section in v3) nor classic's resonance chains |
+| `nav/railMenu.ts` + `nav/PlusNavMenu.vue` (L9) | the desktop rail's Tools+ menu opens beside its rail item (top = the item's top, moved up only as far as it must to fit the window), not at y 12 over the section tabs. At 1440 × 900 the item is at y 376 and the 632 px menu opens at y 256. Placed on the summary's click with the last height, measured again once open, and on resize |
+
+Left alone, with the reason:
+- **L10 (upstream):** the Teams Summary charts colour a character by its position in each chart, so Aemeath is pink in
+  the pie and yellow in the timeline. The fix is keying colours by character id in three of Ryan's chart components;
+  plus does not draw them.
+- **L11 (upstream):** the optimizer's results print "8699674 +0.0%" without separators or a unit. Thousands
+  separators need his template; a CSS caption can't add them. A plus caption alone would leave the raw number.
+- **L3, the confirm:** Ryan's "Overwrite from text / file" still overwrite on one tap. A confirm belongs in his
+  component; the plus note says what is kept and points to the download.
+- fix-new-screens' L12 (Wavescan: Ryan's "N echoes ready to import" after the plus add) is the same screen as L4. The
+  fold covers it: after the add his card is folded with "it would add nothing more". If that track also changes the
+  "Added N echoes." line, both changes can stay.
+
+Gates: `phoneLayout.cy.ts` "keeps every calculator section inside the screen at 130 % text, with a wuwa_calc-length
+rotation" (all 10 phone sections at 412 and 375 px windows, the optimizer's Rotation tab listing a 100-character
+name, an innermost-element probe that sees past `overflow: hidden`), "holds the calculator's bars still at the end of a
+section" (≤ 1 tuck change in 2.5 s), "keeps Ask off Ryan's phone menus and opens the echo importer on the phone
+screenshots"; `corePages.cy.ts` (the rail menu beside its button, the palette's "optimizer" and "build card" rows,
+`/optimizer`, the backup note and its link, the team buffs caption and its `aria-describedby`, light-theme stat icons);
+`wavescanNewEchoes.cy.ts` (folded, why, open, close; classic opens it through the toggle). Unit tests:
+`shell/calculatorScreen.test.ts`, `paletteItems.test.ts` (section rows, and the pages they could shadow still win their
+own names), `nav/railMenu.test.ts`, `cli/format.test.ts`, `WavescanNewEchoes.test.ts` (fold, toggle, the add folds it,
+and Ryan's card is the next element), `AutoTeamBuffsToggle.test.ts`, `BackupKeptNote.test.ts`.
+
+Things learned:
+- A column-less CSS grid is not "one column that fits": its implicit `auto` track is at least its widest item's
+  min-content. One `truncate` line inside it widens everything around it.
+- Content clipped by `overflow-x: hidden` passes every scrollWidth gate. A clip probe has to look at element rects.
+- Scroll anchoring plus a header that changes the page's height on scroll is a feedback loop at the end of a short page.

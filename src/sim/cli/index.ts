@@ -21,7 +21,7 @@ import { readExport, resolveExportPath, writeSyncedExport, type ExportFile } fro
 import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from "../account/accountState";
 import { buildRollsOf } from "../rankings/myBuilds";
 import { SUBSTAT_ABBR } from "../substats/substatWeights";
-import { int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
+import { dmg, int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
 
 interface CommonOptions extends OutputOptions {
   export?: string;
@@ -82,7 +82,7 @@ function printCharacter(calc: CharacterCalc, options: { attacks: boolean; rotati
       calc.rotations.length
         ? table([
             ["  Rotation", "Actions", "Normal", "Average", "Crit", "Avg DPS"],
-            ...calc.rotations.map((r) => [`  ${r.name}`, String(r.actions), int(r.normal), int(r.avg), int(r.crit), r.dps == null ? "-" : int(r.dps)]),
+            ...calc.rotations.map((r) => [`  ${r.name}`, String(r.actions), dmg(r.normal), dmg(r.avg), dmg(r.crit), dmg(r.dps)]),
           ])
         : "  (none)",
     );
@@ -90,7 +90,7 @@ function printCharacter(calc: CharacterCalc, options: { attacks: boolean; rotati
   if (options.attacks) {
     console.log("\nAttacks");
     console.log(
-      table([["  Group", "Attack", "Normal", "Average", "Crit"], ...calc.attacks.map((a) => [`  ${a.group}`, a.label, int(a.normal), int(a.avg), int(a.crit)])]),
+      table([["  Group", "Attack", "Normal", "Average", "Crit"], ...calc.attacks.map((a) => [`  ${a.group}`, a.label, dmg(a.normal), dmg(a.avg), dmg(a.crit)])]),
     );
   }
 }
@@ -118,10 +118,10 @@ function printTeams(teams: TeamCalc[]): void {
         `  ${t.name}`,
         t.characterIds.filter(Boolean).join(" + "),
         String(t.actions),
-        int(t.normal),
-        int(t.avg),
-        int(t.crit),
-        t.dps == null ? "-" : int(t.dps),
+        dmg(t.normal),
+        dmg(t.avg),
+        dmg(t.crit),
+        dmg(t.dps),
       ]),
     ]),
   );

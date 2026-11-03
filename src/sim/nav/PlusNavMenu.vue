@@ -23,6 +23,7 @@
       v-else
       class="plus-nav__tab"
       :class="{ 'plus-nav__tab--on': isPlusPage }"
+      @click="placeRailMenu"
       title="Tools+ pages: My account, rankings, Today and more"
       aria-haspopup="menu"
       data-test-nav-rankings>
@@ -74,6 +75,7 @@ import { useRoute } from "vue-router";
 import { PLUS_PAGES } from "../shell/plusPages";
 import { useAssistant } from "../ai/useAssistant";
 import { modKeyLabel } from "../shell/shellDom";
+import { railMenuTop } from "./railMenu";
 
 // "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
 const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
@@ -106,16 +108,34 @@ function onKey(event: KeyboardEvent): void {
     root.value.querySelector("summary")?.focus();
   }
 }
+// the rail's menu opens beside its item (railMenu.ts): placed on the summary's click, before the menu shows, with the
+// height it had last time; measured again once it is open
+let railMenuHeight = 640;
+function placeRailMenu(): void {
+  if (props.variant !== "rail" || !root.value) return;
+  const item = root.value.querySelector("summary");
+  const menu = root.value.querySelector<HTMLElement>(".plus-nav__menu");
+  if (!item || !menu) return;
+  if (menu.offsetHeight) railMenuHeight = menu.offsetHeight;
+  menu.style.top = `${railMenuTop(item.getBoundingClientRect().top, railMenuHeight, window.innerHeight)}px`;
+}
 function onToggle(): void {
-  if (root.value?.open) (root.value.querySelector(".plus-nav__item--on, .plus-nav__item") as HTMLElement | null)?.focus({ preventScroll: true });
+  if (!root.value?.open) return;
+  placeRailMenu();
+  (root.value.querySelector(".plus-nav__item--on, .plus-nav__item") as HTMLElement | null)?.focus({ preventScroll: true });
+}
+function onResize(): void {
+  if (root.value?.open) placeRailMenu();
 }
 onMounted(() => {
   document.addEventListener("pointerdown", onPointer);
   document.addEventListener("keydown", onKey);
+  if (props.variant === "rail") window.addEventListener("resize", onResize);
 });
 onBeforeUnmount(() => {
   document.removeEventListener("pointerdown", onPointer);
   document.removeEventListener("keydown", onKey);
+  window.removeEventListener("resize", onResize);
 });
 </script>
 
@@ -321,7 +341,7 @@ onBeforeUnmount(() => {
 /* desktop rail: the menu opens beside the rail, top-aligned with the screen */
 .plus-nav--rail .plus-nav__menu {
   position: fixed;
-  top: 0.75rem;
+  top: 0.75rem; /* until placeRailMenu sets it beside the item */
   left: calc(var(--nav-rail-w) + 0.5rem);
   max-height: calc(100dvh - 1.5rem);
 }
