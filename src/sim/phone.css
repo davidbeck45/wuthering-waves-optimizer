@@ -1316,3 +1316,60 @@ body:has(.nav-phone-header) :is(.acc-h1, .mr-h1, .wv-h1, .bt-h1) {
     box-shadow: 0 1px 4px oklch(0 0 0 / 0.25);
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   28. The v3 build vs buffs split on a phone (Ryan #686, ADR 0051; 2026-11-02 sync).
+       a) A row of the Full breakdown sheet opens the stat detail ("Your build + Buffs = Live", then
+          "From your build", "From buffs" and the formula) in HomeView's drawer. Below 769 px the sheet
+          (.live-result-detail) is fixed at z-50 and comes after the drawer (.drawer.drawer-end, z-50)
+          in the page, so it covered the drawer; with #686's bar under every row the sheet grew to
+          80 vh and left only the detail's header showing. While the drawer is open it now sits one
+          step above the sheet (still under the command sheet's z-60 and the Ask button's z-55), and
+          closing it shows the sheet again. 768 px matches the sheet's own breakpoint. Attack
+          breakdowns opened from the sheet's Attacks tab use the same drawer and get the same fix. Keyed
+          by HomeView's toggle (#my-drawer-4): the Teams editor's drawer lifts its own .drawer-side to
+          z-60 while open, and a z-index on its wrapper would cap that at 51, under the Ask button.
+       b) The command sheet's stat chips draw the same two-tone bar, but a phone has no hover for the
+          chip's "Build … · Buffs …" tooltip and the sheet has no legend, so one line under the chips
+          says what the two colours are (only while the bars are drawn).
+       c) On a phone that drawer fills the screen and the stat detail is short, so the Ask button
+          (z-55, bottom right) sat on the end of the formula at 360 px with nothing to scroll it out
+          from under. It steps aside while the drawer is open, as it already does for modal sheets
+          (PlusShell watches `open` / `aria-modal`; the drawer is a checkbox, so CSS does it here).
+       d) Light themes, every viewport: the detail sets the Buffs caption, the "+557" buffs figure, the
+          "From buffs" heading and the buff % in the formula in the accent colour, which on the light
+          theme's white measured 1.6–1.8 : 1 (an 11 px caption needs 4.5). Inside the detail only, the
+          accent is mixed toward black so it keeps its hue whatever the light theme's accent is.
+       e) The same chips' captions are `truncate`: at 360 px / 130 % the fourth read "ENERGY RE…" (since
+          #667). They wrap onto a second line instead.
+       f) The Full breakdown sheet's three tabs (Overview · Attacks · Rotations) kept DaisyUI's 1 rem side
+          padding, so at 360 px / 130 % "Rotations" ran 29 px off the screen. Half the padding fits all
+          three. */
+@media (max-width: 768px) {
+  .drawer.drawer-end:has(> #my-drawer-4:checked) {
+    z-index: 51;
+  }
+}
+@media (max-width: 767px) {
+  html:has(.drawer.drawer-end > #my-drawer-4:checked) .wt-ask-button {
+    display: none;
+  }
+  .command-sheet__panel [data-test-command-sheet-stats]:has([data-test-command-sheet-stat-split])::after {
+    content: "The bar under each stat: grey is your build, coloured is buffs that are on now. Tap a stat for the numbers.";
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: oklch(var(--bc) / 0.7);
+  }
+  .command-sheet__panel [data-test-command-sheet-stats] > button > span.truncate:first-child {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .live-result-detail .tabs[data-test-live-result-detail-tabs] > .tab {
+    --tab-padding: 0.5rem;
+  }
+}
+html[data-theme-style="light"] .stats-breakdown-v3 .text-accent {
+  color: color-mix(in oklch, oklch(var(--a)) 62%, black);
+}

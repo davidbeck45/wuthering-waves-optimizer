@@ -101,6 +101,12 @@ the tuning planner, the What's new pictures, the v3 calculator header, Wavescan 
 header, which already names the page ("Account and rankings refinements" below).
 `phone.css` § 25–27 came with the 2026-10-31 echoes pass (section "Echoes pages on a phone" below): the v3 inventory
 tile and its sticky pager, the calculator's Set Bonuses header and rating guide, and the importer sheet's sticky ✕.
+`phone.css` § 28 came with Ryan #686 (2026-11-02 sync; the v3 build vs buffs split, ADR 0051): a stat row in the
+Full breakdown sheet opens the split detail in HomeView's drawer, which the sheet (fixed, z-50, later in the page)
+covered on a phone; the open drawer now sits at z-51 and the Ask button steps aside while it is open. The command
+sheet's chips get a one-line legend for the two-tone bar (no hover on a phone) and wrap their captions; the sheet's
+three tabs take half DaisyUI's padding so "Rotations" fits 360 px; and in light themes the detail's accent text
+(1.6–1.8 : 1 on white) is mixed toward black.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
