@@ -22,8 +22,15 @@
       <span aria-hidden="true">→</span>
     </RouterLink>
 
-    <nav class="wt-404__main" aria-label="Main pages">
-      <RouterLink v-for="link in MAIN_LINKS" :key="link.path" :to="link.path" class="wt-404__main-link" :data-test-not-found-link="link.path">
+    <!-- the search row comes before the page links: lower down, a phone's floating Ask button sat on the end of it -->
+    <button type="button" class="wt-404__search" data-test-not-found-search @click="assistant.setPaletteOpen(true)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+      <span class="min-w-0 flex-1 truncate text-left">Search pages, characters and teams…</span>
+      <kbd class="wt-404__kbd">{{ modKey }} K</kbd>
+    </button>
+
+    <nav class="wt-404__main" aria-label="Main pages" :style="{ '--wt-404-main-n': mainLinks.length }">
+      <RouterLink v-for="link in mainLinks" :key="link.path" :to="link.path" class="wt-404__main-link" :data-test-not-found-link="link.path">
         <span class="wt-404__main-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="link.icon" /></svg>
         </span>
@@ -34,17 +41,11 @@
       </RouterLink>
     </nav>
 
-    <button type="button" class="wt-404__search" data-test-not-found-search @click="assistant.setPaletteOpen(true)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-      <span class="min-w-0 flex-1 truncate text-left">Search pages, characters and teams…</span>
-      <kbd class="wt-404__kbd">{{ modKey }} K</kbd>
-    </button>
-
     <section class="wt-404__more" aria-labelledby="wt-404-more">
       <h2 id="wt-404-more" class="wt-404__h2">Tools+ pages</h2>
-      <p class="wt-404__hint">Everything Wuthering Tools+ adds to the calculator. The same list opens from the bar-chart icon at the top of every page.</p>
+      <p class="wt-404__hint">The rest of what Wuthering Tools+ adds to the calculator. The full list opens from the bar-chart icon at the top of every page.</p>
       <ul class="wt-404__grid">
-        <li v-for="page in PLUS_PAGES" :key="page.path">
+        <li v-for="page in morePages" :key="page.path">
           <RouterLink :to="page.path" class="wt-404__page" :data-test-not-found-page="page.path">
             <span class="wt-404__page-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="page.icon" /></svg>
@@ -85,6 +86,13 @@ const MAIN_LINKS = [pick("/"), pick("/account"), pick("/today")];
 
 const requested = computed(() => route.fullPath);
 const suggestion = computed(() => closestPage(route.path, [...CORE_PAGES, ...PLUS_PAGES]));
+// each page linked once: the guess, then the main pages without it, then the Tools+ pages not linked above
+// (/acount listed My account three times and Today twice)
+const mainLinks = computed(() => MAIN_LINKS.filter((link) => link.path !== suggestion.value?.path));
+const morePages = computed(() => {
+  const above = new Set([suggestion.value?.path, ...MAIN_LINKS.map((link) => link.path)]);
+  return PLUS_PAGES.filter((page) => !above.has(page.path));
+});
 </script>
 
 <style scoped>
@@ -151,7 +159,7 @@ const suggestion = computed(() => closestPage(route.path, [...CORE_PAGES, ...PLU
 }
 .wt-404__main {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--wt-404-main-n, 3), minmax(0, 1fr));
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
@@ -200,7 +208,7 @@ const suggestion = computed(() => closestPage(route.path, [...CORE_PAGES, ...PLU
   gap: 0.6rem;
   width: 100%;
   min-height: 3rem;
-  margin-top: 0.75rem;
+  margin-top: 1.25rem;
   padding: 0.6rem 0.9rem;
   border-radius: 0.85rem;
   background: oklch(var(--b2));

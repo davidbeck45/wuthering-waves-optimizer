@@ -68,6 +68,9 @@ export function contextTargetOf(ctx: PaletteContext | undefined, s: Pick<Palette
     case "/weapons":
     case "/my-rankings":
       return { character: setUp(q("focus")), team: null };
+    case "/build-history":
+      // the page writes its pick to ?char= (BuildHistoryView); before that it opens on the calculator's character
+      return { character: setUp(q("char") ?? ctx.activeCharacter), team: null };
     case "/teams":
       return { character: null, team: savedTeam(ctx.openTeamId) };
     case "/energy":

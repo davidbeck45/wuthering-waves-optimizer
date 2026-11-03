@@ -22,6 +22,9 @@ describe("page text", () => {
     expect(whenText(new Date(2026, 9, 30, 21, 15).getTime(), NOW, "en-GB")).toBe("Yesterday 21:15");
     expect(whenText(new Date(2026, 9, 28, 8, 0).getTime(), NOW, "en-GB")).toBe("28 Oct, 08:00");
     expect(whenText(new Date(2025, 11, 31, 8, 0).getTime(), NOW, "en-GB")).toBe("31 Dec 2025, 08:00");
+    // a 12-hour clock keeps "PM" with its time (a no-break space, whatever space the runtime's ICU puts there)
+    expect(whenText(new Date(2026, 9, 31, 18, 1).getTime(), NOW, "en-US")).toBe("Today 06:01\u00a0PM");
+    expect(whenText(new Date(2026, 9, 29, 18, 1).getTime(), NOW, "en-US")).toBe("Oct 29, 06:01\u00a0PM");
   });
 
   it("summarises a version's gear and tells the player's saves from the automatic ones", () => {

@@ -162,6 +162,16 @@ export function importableOnly(params: URLSearchParams, roster: RosterEntry[], m
   return missing.every((n) => exclude.includes(n));
 }
 
+/** Whether "Only teams I can import" can change the list. At My account with "Teams I can field" on, his
+ *  `teamWanted()` already drops every team with a resonator the account lacks, and the app can't hold one it has no
+ *  character for, so their teams never show there and the option does nothing (it still wrote x=Lily into the link)
+ *  — unless one of them is free (a 4★ or a Rover form: everyone owns them, at S6). */
+export function importableMatters(missing: string[], roster: RosterEntry[], at: { mine: boolean; ownedOnly: boolean }): boolean {
+  if (!missing.length) return false;
+  if (!at.mine || !at.ownedOnly) return true;
+  return missing.some((name) => roster.find((r) => r.name === name)?.free);
+}
+
 /** Turns "Only teams I can import" on (every missing resonator into `x=`, his own Without filter, so a saved view
  *  and a shared link carry it) or off (those names out of `x=`; any other Without name stays). */
 export function withImportableOnly(params: URLSearchParams, roster: RosterEntry[], missing: string[], on: boolean): URLSearchParams {

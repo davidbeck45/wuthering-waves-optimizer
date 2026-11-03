@@ -25,6 +25,14 @@ describe("page not found", () => {
     cy.get("[data-test-not-found-path]").should("have.text", "/acount?from=old-link");
     cy.get("html").should("have.attr", "data-theme", "dark");
     cy.get("[data-test-nav-rankings]").should("be.visible");
+    // each page linked once: My account is the guess, so neither the main links nor the Tools+ list repeat it, and
+    // Today (a main link) isn't in the Tools+ list
+    cy.get("[data-test-not-found] a").then(($a) => {
+      const hrefs = [...$a].map((a) => a.getAttribute("href"));
+      expect(hrefs.filter((h) => h === "/account"), "/account links").to.have.length(1);
+      expect(hrefs.filter((h) => h === "/today"), "/today links").to.have.length(1);
+      expect(new Set(hrefs).size, "no page linked twice").to.eq(hrefs.length);
+    });
     cy.get("[data-test-not-found-suggest]").should("contain.text", "My account").click();
     cy.location("pathname").should("eq", "/account");
   });
@@ -33,7 +41,8 @@ describe("page not found", () => {
     cy.visit("/this-page-does-not-exist", seed("gruvbox"));
     cy.get("[data-test-not-found-suggest]").should("not.exist");
     cy.get("html").should("have.attr", "data-theme", "gruvbox");
-    cy.get("[data-test-not-found-page]").should("have.length.at.least", 12);
+    cy.get("[data-test-not-found-page]").should("have.length.at.least", 10);
+    cy.get('[data-test-not-found-page="/today"]').should("not.exist"); // a main link already
     cy.get('[data-test-not-found-page="/echo-plan"]').should("contain.text", "Echo plan");
     // (Esc closes the palette through the native dialog's cancel, which a synthetic key doesn't fire: run a row instead)
     cy.get("[data-test-not-found-search]").click();
@@ -69,6 +78,13 @@ describe("page not found", () => {
       });
       cy.get('[data-test-not-found-link="/account"]').then(($a) => {
         expect($a[0].getBoundingClientRect().right, "main link inside the viewport").to.be.at.most(width);
+      });
+      // the search row sits above the page links, clear of the floating Ask button
+      cy.get("[data-test-not-found-search]").then(($s) => {
+        const row = $s[0].getBoundingClientRect();
+        const ask = $s[0].ownerDocument.querySelector(".wt-ask-button")?.getBoundingClientRect();
+        expect(row.bottom, "search row on the first screen").to.be.at.most(height);
+        if (ask && ask.width) expect(row.bottom <= ask.top || row.top >= ask.bottom, "search row clear of Ask").to.eq(true);
       });
     }
   });

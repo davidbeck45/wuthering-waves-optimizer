@@ -74,6 +74,10 @@ describe("wiring: explain, share and the palette across the plus pages", () => {
     // Explain: no key yet → the setup; once a key is saved the question and the row's numbers wait in the composer
     cy.get('[data-test-explain="my-rankings:Cartethyia"]').should("contain.text", "Explain").click();
     cy.get("[data-test-ai-onboarding]", LAZY).should("be.visible");
+    // above the key setup, the parked question says what waits and that nothing is sent yet
+    cy.get("[data-test-ai-parked]").should("be.visible").and("contain.text", "Your question is ready").and("contain.text", "Nothing is sent until you tap Send");
+    cy.get("[data-test-ai-parked-question]").invoke("text").should("match", /^Explain Cartethyia's ranking/);
+    cy.get("[data-test-ai-parked-attachment]").should("contain.text", "Cartethyia on My roster rankings");
     cy.get("[data-test-ai-key-input]").type("sk-ant-api03-cypress-000000000000000000AbCd");
     cy.get("[data-test-ai-key-save]").click();
     cy.get("[data-test-ai-draft-attachment]").should("contain.text", "Cartethyia on My roster rankings");
@@ -105,6 +109,12 @@ describe("wiring: explain, share and the palette across the plus pages", () => {
     cy.visit("/my-rankings", seed());
     cy.get(`[data-test-explain="my-rankings-team:${TEAM_NAME}"]`, ENGINE).click({ force: true });
     cy.get("[data-test-ai-onboarding]", LAZY).should("be.visible");
+    // the parked card's × forgets the question; Explain parks it again
+    cy.get("[data-test-ai-parked-forget]").click();
+    cy.get("[data-test-ai-parked]").should("not.exist");
+    cy.get("[data-test-ai-close]").click({ force: true });
+    cy.get(`[data-test-explain="my-rankings-team:${TEAM_NAME}"]`).click({ force: true });
+    cy.get("[data-test-ai-parked-attachment]").should("contain.text", "Team · Cartethyia + Ciaccona + Chisa on My roster rankings");
     cy.get("[data-test-ai-key-input]").type("sk-ant-api03-cypress-000000000000000000AbCd");
     cy.get("[data-test-ai-key-save]").click();
     cy.get("[data-test-ai-draft-attachment]").should("contain.text", "Team · Cartethyia + Ciaccona + Chisa on My roster rankings");

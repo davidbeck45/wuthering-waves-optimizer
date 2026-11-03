@@ -54,6 +54,10 @@
           Added {{ pluralEchoes(addedCount) }}.
         </span>
       </div>
+      <!-- the Echoes section under this card still reads "37 echoes ready to import": say it has nothing left to add -->
+      <p v-if="addedCount !== null && !plan.toAdd.length && !secondCopies" class="text-sm max-w-2xl" data-test-wavescan-new-only-after>
+        Every echo in this scan is in your inventory now, so the Echoes import below has nothing new to add.
+      </p>
 
       <details
         v-for="list in lists"

@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { chipGroups, hashText, importableOnly, namesNotInApp, pickerOptions, withImportableOnly, readResonatorFilters, RILEY_TIERS, rosterOf, withResonatorFilter, type OwnedInfo } from "./filterChips";
+import { chipGroups, hashText, importableMatters, importableOnly, namesNotInApp, pickerOptions, withImportableOnly, readResonatorFilters, RILEY_TIERS, rosterOf, withResonatorFilter, type OwnedInfo } from "./filterChips";
 
 const member = (name: string, mainDps: boolean, tier = 0) => ({ name, color: "#888888", mainDps, loadout: { resonator: { tier } } });
 // a miniature of his TEAMS: Suoming leads her own team and supports Hsin; Electro Rover is a free form
@@ -98,5 +98,15 @@ describe("rankings filter chips", () => {
     expect(off.get("x")).toBe("Mornye");
     // nothing to hide: the chip never reads as on
     expect(importableOnly(on, withLily, [])).toBe(false);
+  });
+
+  it("knows when hiding the resonators the app lacks changes nothing: My account with Teams I can field on", () => {
+    const withLily = rosterOf({ ...TEAMS, t3: [member("Lily", false), member("Lynae", false), member("Hsin", true)] });
+    expect(importableMatters(["Lily"], withLily, { mine: true, ownedOnly: true })).toBe(false);
+    expect(importableMatters(["Lily"], withLily, { mine: true, ownedOnly: false })).toBe(true); // own=0 lists them
+    expect(importableMatters(["Lily"], withLily, { mine: false, ownedOnly: true })).toBe(true); // a Riley tier
+    expect(importableMatters([], withLily, { mine: false, ownedOnly: false })).toBe(false);
+    // a free resonator (everyone owns it at S6) still shows at My account, so hiding it matters there too
+    expect(importableMatters(["Electro Rover"], roster, { mine: true, ownedOnly: true })).toBe(true);
   });
 });

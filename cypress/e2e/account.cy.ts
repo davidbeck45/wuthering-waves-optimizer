@@ -109,6 +109,9 @@ describe("my account", () => {
     // (Electron reports an animating top-layer dialog at opacity 0, like the importer's: assert it is open instead)
     cy.get("[data-test-account-drawer]").should("have.attr", "open");
     cy.get("[data-test-account-drawer] .dr__name").should("contain.text", "Cartethyia");
+    // the roster rank counts the whole scored roster (it read "#1 of 0 scored" while the ranking ran)
+    cy.get("[data-test-account-drawer-rank]").invoke("text").should("match", /^#\d$/);
+    cy.get("[data-test-account-drawer-rank-sub]").should("have.text", "of 3 scored");
     cy.get("[data-test-account-drawer-invest] .dr-inv").should("have.length.at.least", 2).first().should("contain.text", "team");
     cy.get("[data-test-account-open-substats]").click({ force: true });
     cy.location("pathname").should("eq", "/my-rankings");

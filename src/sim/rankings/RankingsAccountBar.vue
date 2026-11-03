@@ -85,8 +85,8 @@
             </button>
           </div>
           <button v-if="chipCount > 1" type="button" class="btn btn-ghost btn-xs shrink-0 px-1.5 opacity-70" title="remove every Main DPS / With / Without filter" data-test-rankings-chips-clear @click="clearChips">Clear</button>
-          <label v-if="!compact && missingNames.length" class="flex shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap text-xs" :title="importableTitle">
-            <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" :checked="importable" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
+          <label v-if="!compact && missingNames.length" class="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs" :class="importableLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'" :title="importableTitle">
+            <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" :checked="importable" :disabled="importableLocked" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
             <span>Only teams I can import</span>
           </label>
         </div>
@@ -175,9 +175,12 @@
           </select>
           <span v-if="subsMode === 'm'" class="opacity-60" data-test-rankings-subs-hint>{{ builtCount }} character{{ builtCount === 1 ? "" : "s" }} with echoes in the app; the rest run ChemX32</span>
         </label>
-        <label v-if="missingNames.length" class="wt-opt mt-2 cursor-pointer" :title="importableTitle">
-          <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" :checked="importable" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
-          <span class="flex-1">Only teams I can import <span class="block text-xs opacity-60">hides teams with {{ missingNames.join(", ") }}, not in this app yet</span></span>
+        <label v-if="missingNames.length" class="wt-opt mt-2" :class="importableLocked ? 'cursor-not-allowed' : 'cursor-pointer'" :title="importableTitle">
+          <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" :checked="importable" :disabled="importableLocked" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
+          <span class="flex-1">
+            Only teams I can import
+            <span class="block text-xs opacity-70" data-test-rankings-importable-note>{{ importableNote }}</span>
+          </span>
         </label>
         <div class="mt-2 grid gap-1">
           <button type="button" class="wt-opt" :disabled="syncing" :title="syncTitle" data-test-rankings-sync @click="sync">
@@ -323,6 +326,7 @@ import {
   chipGroups,
   compactName,
   hashText,
+  importableMatters,
   importableOnly,
   namesNotInApp,
   pickerOptions,
@@ -478,7 +482,21 @@ const removeName = (name: string): void => setName(name, null);
 // his own Without list, so the table drops their teams; a saved view and a shared link carry it as x=
 const missingNames = computed(() => namesNotInApp(roster.value, (name) => !notInApp([appKeyOf(name)]).length));
 const importable = computed(() => importableOnly(params.value, roster.value, missingNames.value));
-const importableTitle = computed(() => `hide teams with a resonator this app does not have yet (${missingNames.value.join(", ")}): what is left can be imported into Teams`);
+/** off at My account with "Teams I can field" on: teams with a resonator the app lacks never show there anyway */
+const importableUseful = computed(() => importableMatters(missingNames.value, roster.value, { mine: isMine.value, ownedOnly: ownedOnly.value }));
+/** greyed out only while it is off: turned on under a Riley tier, x= stays in the link when the player switches to My
+ *  account, and the same box has to be able to take it off there */
+const importableLocked = computed(() => !importableUseful.value && !importable.value);
+const importableNote = computed(() =>
+  importableUseful.value
+    ? `hides teams with ${missingNames.value.join(", ")}, not in this app yet`
+    : `no effect here: with "Teams I can field" on, teams with ${missingNames.value.join(", ")} never show at your account`,
+);
+const importableTitle = computed(() =>
+  importableUseful.value
+    ? `hide teams with a resonator this app does not have yet (${missingNames.value.join(", ")}): what is left can be imported into Teams`
+    : importableNote.value,
+);
 function setImportable(on: boolean): void {
   void go(withImportableOnly(params.value, roster.value, missingNames.value, on));
 }

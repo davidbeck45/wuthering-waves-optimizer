@@ -61,6 +61,8 @@ const SETTING_NAME: Record<string, string> = {
 const DERIVED = new Set(["echoSetBonus", "mainEcho"]);
 
 const statText = (key: string, value: number): string => (key.endsWith("_FLAT") ? displayInt(value) : `${displayPercentage(value)}`);
+/** a stat's number as `statText` shows it ("1,262" → 1262, "24.0%" → 24) */
+const shownValue = (text: string): number => Number(text.replace(/[,%]/g, ""));
 const same = (a: unknown, b: unknown): boolean => stableStringify(a ?? null) === stableStringify(b ?? null);
 
 export const echoName = (key: string | null | undefined): string => (key ? ((mainEchoesData as Record<string, any>)[key]?.name ?? key) : "");
@@ -247,7 +249,7 @@ export interface StatRow {
   to: number;
   fromText: string;
   toText: string;
-  /** "+4.9" / "−120" in the stat's own unit; "" when equal */
+  /** "+4.9 pts" (percentage points) / "−120" (a flat stat); "" when equal */
   deltaText: string;
   changed: boolean;
 }
@@ -295,10 +297,12 @@ export function statRows(a: Record<string, number>, b: Record<string, number>, e
     const flat = key.endsWith("_FLAT");
     const fromText = statText(key, from);
     const toText = statText(key, to);
-    const d = to - from;
     // equal as the game shows them (floored flat stats, one-decimal percentages) is equal
     const changed = fromText !== toText;
-    const deltaText = !changed ? "" : `${d >= 0 ? "+" : "−"}${flat ? displayInt(Math.abs(d)) : Math.abs(d).toFixed(1)}`;
+    // the change between the two numbers as shown ("1,262 → 1,240" is −22; from the raw values it read −21)
+    const d = shownValue(toText) - shownValue(fromText);
+    // a percentage stat moves by percentage points: "24.0% → 21.0%" is "−3.0 pts", not a bare "−3.0"
+    const deltaText = !changed ? "" : `${d >= 0 ? "+" : "−"}${flat ? displayInt(Math.abs(d)) : `${Math.abs(d).toFixed(1)}\u00a0pts`}`;
     rows.push({ key, label: STAT_NAME[key] ?? key, from, to, fromText, toText, deltaText, changed });
   }
   return rows;

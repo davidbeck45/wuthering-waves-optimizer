@@ -86,6 +86,7 @@
 
       <!-- body -->
       <div ref="scrollRef" class="ai-panel__body min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-4" data-test-ai-body @scroll.passive="onScroll">
+        <AssistantParkedQuestion v-if="!keyPresent" />
         <AssistantOnboarding v-if="!keyPresent" @saved="onKeySaved" @settings="assistant.openSettings()" />
 
         <template v-else>
@@ -266,6 +267,7 @@ import { suggestionsFor } from "./suggestions";
 import { toolViewsOf, type DeepLink } from "./toolSummary";
 import AssistantAnswer from "./AssistantAnswer.vue";
 import AssistantOnboarding from "./AssistantOnboarding.vue";
+import AssistantParkedQuestion from "./AssistantParkedQuestion.vue";
 
 const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";
 const GEAR =

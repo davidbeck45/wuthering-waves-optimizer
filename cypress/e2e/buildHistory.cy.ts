@@ -85,6 +85,11 @@ describe("build history", () => {
     cy.get('[data-test-build-history-slot][data-slot-status="same"]').should("have.length", 4);
     cy.get("[data-test-build-history-stat]", { timeout: 30000 }).should("have.length.at.least", 6);
     cy.get('[data-test-build-history-stat][data-stat="ATK_FLAT"]').should("have.class", "bh-stats__changed");
+    // a changed percentage stat says its change is in percentage points; a flat stat stays a plain number
+    cy.get("[data-test-build-history-stat].bh-stats__changed .bh-stats__delta").each(($d) => {
+      const key = $d.closest("[data-stat]").attr("data-stat")!;
+      expect($d.text(), key).to.match(key.endsWith("_FLAT") ? /^[+−][\d,]+$/ : /^[+−]\d+\.\d\u00a0pts$/);
+    });
     cy.get("[data-test-build-history-diff-damage-change]", { timeout: 60000 }).invoke("text").should("match", /^[+−]\d+\.\d %$/);
     cy.get("[data-test-build-history-version-change]", { timeout: 60000 }).invoke("text").should("match", /vs now/);
     expectNoHorizontalScroll("/build-history, comparison");

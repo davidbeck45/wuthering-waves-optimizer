@@ -2805,3 +2805,30 @@ text in dark and light); `echoLab.cy.ts`, `echoLabTuner.cy.ts` and `phoneLayout.
 
 Left for later: an in-place sheet with the Echo Lab detail (keeps Ryan's page and filters; the tap navigates today);
 persisting the exact ratings next to the quick ones; a roll chip on the calculator's own echo slots.
+
+## The 10-31 screens, refined — track "fix-new-screens" (batch 3, 2026-11-02; report `wto-wt/b3/reports/fix-new-screens-build.md`)
+
+The batch-3 audit of what the 2026-10-31 batch added (`b3/reports/audit-new-screens.md`) found no high items. Each
+item below was re-checked on plus-b3 (after Ryan's #686 sync) first; all of them still reproduced. Contrast, focus and
+tap targets went to fix-a11y-themes; numbers that disagree across pages (the sync's DPS, the team's two names) went to
+fix-numbers.
+
+| Piece | What changed |
+|---|---|
+| `ai/ui/AssistantParkedQuestion.vue` (+ one line in `AssistantPanel.vue`) | an Explain tapped before a key is stored parked its question and numbers in the composer, which only shows once a key is in, so the tap seemed to do nothing but open the key setup. Above the setup a "Your question is ready" card (`role="status"`) now shows the question, the attached numbers' title, "Add your key below and it waits in the message box, with these numbers attached. Nothing is sent until you tap Send.", and a × that forgets both. Unit test beside it; `wiring.cy.ts` checks the card and the × |
+| `myRankings/MyRankingsTeams.vue` | the team placeholder rows' grey bars are `min(11rem, 100%)` (and `min(5.5rem, 100%)`) with `min-w-0` on their cells: an 11 rem bar is 229 px at 130 % text and pushed a 412 px page to 418 px for the first seconds of scoring. `phoneLayout.cy.ts` samples the page width from before the app mounts until the placeholders are gone |
+| `account/AccountCharacterDrawer.vue` + `AccountView.vue` | the drawer's roster rank reads "…" with "ranking · 7 scored so far" while the roster scores (it counted `ranking`, which is null until the end: "#1 of 0 scored"); `shownRanking` gives the count. `account.cy.ts` checks "of 3 scored" after |
+| `phone.css` § 15 | a toast is one row on a phone, its text then its ×, read from the left (DaisyUI stacks and centres an alert's children below 640 px): about 70 px for one or two lines instead of 210, so "Key saved. Ask away." clears the Ask sheet's header and the WaveScan add no longer covers its count tiles. Extended in place rather than a new section |
+| `echoLab/EchoLabPlan.vue` | "Echoes to tune now" says what its gain is: "+25.2k damage per rotation for Phrolova", or "+34.9k damage per rotation, summed over 2 characters" (it read "+34.9k damage in all"). On a phone that tile takes the row and the two "left after" tiles sit under it; each step's number has its Now / Week chip under it so the echo's name and set get the card's width ("Sun-sinking…" at 360). `echoLabTuner.cy.ts` |
+| `buildHistory/diff.ts`, `view.ts` | a percentage stat's change is in points ("−12.0 pts" for 24.0 % → 12.0 %; flat stats stay plain numbers), and the change is the difference of the two numbers as shown ("1,262 → 1,240" is −22; from the raw values it read −21); `whenText` joins the clock with no-break spaces, so "PM" never wraps alone on the Restore button (V8 swaps ICU's U+202F back to a plain space). Unit tests in `view.test.ts` / `buildHistory.test.ts`, `buildHistory.cy.ts` |
+| `shell/NotFoundView.vue` | each page is linked once: the guess, then the main pages without it, then the Tools+ pages not linked above (/acount listed My account three times and Today twice). The search row moved up under the guess, so a phone's Ask button no longer sits on it. `notFound.cy.ts` |
+| `shell/paletteCommands.ts` `contextTargetOf` | `/build-history` is about `?char=` (the page writes its pick there), else the calculator's character: "On this page" offers Share their build, Weapon value and Substats & what-if. `paletteItems.test.ts` |
+| `rankings/filterChips.ts` `importableMatters`, `RankingsAccountBar.vue`, `RankingsCards.vue` | "Only teams I can import" is disabled at My account while "Teams I can field" is on and the option is off (turned on under a Riley tier, `x=` stays in the link, so the box there can still take it off), with the reason ("no effect here: … teams with Lily never show at your account"): Riley's `teamWanted()` already drops teams with a resonator the account lacks, so it only wrote `x=Lily` into the link (104 → 104). A free resonator (4★ / Rover form) would still show there, so the helper keeps the option then. A phone's list head adds "hiding teams with Lily" while any Without name is set (the chip sits past the right edge of the chip row). `accountRankingsPhone.cy.ts` |
+| `wavescan/WavescanNewEchoes.vue`, `WavescanEchoGroups.vue` | after the plus add, when nothing in the scan is missing and the full import would add no second copies, the card says "Every echo in this scan is in your inventory now, so the Echoes import below has nothing new to add" (Ryan's card under it still reads "37 echoes ready to import"; no edit to his file). On a desktop a group's echo cards sit two (lg) or three (xl) to a row. `wavescanNewEchoes.cy.ts` |
+
+Left as they were:
+- Sync my teams rewriting an "unchanged" team that Undo didn't restore (audit L2): fixed on the loose-ends track
+  (c3fce5b3, `syncUndo.ts` / `syncTeamsHeadless.ts`), so not touched here.
+- The Tuner plan's 3–4 s cold load (L13): the plan job prepares every character just as the pass does, and the worker
+  runs one job at a time. Queuing the plan before the pass measured the same (3.2–4.1 s against 3.6–3.9 s, three runs
+  each on a loaded box), so the order stays; the page shows its progress line meanwhile.

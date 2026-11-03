@@ -89,7 +89,8 @@
       :card="drawerCard"
       :items="drawerItems"
       :rank="drawerRank"
-      :roster-size="ranking?.characters.length ?? 0"
+      :roster-size="shownRanking?.characters.length ?? 0"
+      :scoring="rankingStatus.state === 'running'"
       :owned="ownedKeys"
       @close="drawerId = null"
       @calculator="toCalculator" />

@@ -29,8 +29,9 @@
         </div>
         <div class="dr-stat">
           <span class="dr-stat__label">Roster rank</span>
-          <span class="dr-stat__value">{{ card.damageRank ? `#${card.damageRank}` : "—" }}</span>
-          <span class="dr-stat__sub">of {{ rosterSize }} scored</span>
+          <!-- while the roster is still scoring a rank among the rows done so far would move: say how far it got instead -->
+          <span class="dr-stat__value" data-test-account-drawer-rank>{{ scoring ? "…" : card.damageRank ? `#${card.damageRank}` : "—" }}</span>
+          <span class="dr-stat__sub" data-test-account-drawer-rank-sub>{{ rankSub }}</span>
         </div>
         <div class="dr-stat">
           <span class="dr-stat__label">Build Score</span>
@@ -138,7 +139,16 @@ import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
-const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[] }>();
+const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean }>();
+const rankSub = computed(() =>
+  props.scoring
+    ? props.rosterSize
+      ? `ranking · ${props.rosterSize} scored so far`
+      : "ranking…"
+    : props.rosterSize
+      ? `of ${props.rosterSize} scored`
+      : "not scored yet",
+);
 const emit = defineEmits<{ close: []; calculator: [id: string] }>();
 const dialog = ref<HTMLDialogElement | null>(null);
 

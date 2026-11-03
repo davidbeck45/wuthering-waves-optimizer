@@ -58,13 +58,38 @@ describe("account and rankings pages on a phone (v3, 130 % text)", () => {
       expect($host[0]!.getBoundingClientRect().height, "list height").to.be.at.least(S26.height * 0.6);
     });
     expectNoHorizontalScroll("/rankings");
-    // the opt-in "Only teams I can import" writes the resonators the app lacks into his Without list, and lifts them again
+    // "Only teams I can import" at My account with "Teams I can field" on: teams with Lily never show there, so the
+    // option is greyed out and says so (it used to write x=Lily into the link and change nothing, 104 → 104)
     cy.get("[data-test-rankings-menu]").click();
-    cy.get("[data-test-rankings-importable]").should("not.be.checked").check();
+    cy.get("[data-test-rankings-importable]").should("be.disabled").and("not.be.checked");
+    cy.get("[data-test-rankings-importable-note]").should("contain.text", "no effect here").and("contain.text", "Lily");
+    cy.get("[data-test-rankings-menu]").click();
+    // on Riley's tiers the opt-in writes the resonators the app lacks into his Without list, the list head says what
+    // it hides (the "Without" chip sits past the right edge of a phone), and the same box lifts them again
+    cy.get("[data-test-rankings-riley]").click();
+    cy.location("hash", { timeout: 60000 }).should("not.include", "tc=mine");
+    cy.get("[data-test-rankings-card]", { timeout: 90000 }).should("have.length.greaterThan", 0);
+    cy.get("[data-test-rankings-menu]").click();
+    cy.get("[data-test-rankings-importable]").should("be.enabled").and("not.be.checked").check();
     cy.location("hash", { timeout: 60000 }).should("match", /x=[^&]*Lily/);
+    cy.get("[data-test-rankings-cards-hiding]").should("have.text", "hiding teams with Lily");
     // the menu stays open: the same box takes it off again
     cy.get("[data-test-rankings-importable]").should("be.checked").uncheck();
     cy.location("hash", { timeout: 60000 }).should("not.match", /x=[^&]*Lily/);
+    cy.get("[data-test-rankings-cards-hiding]").should("not.exist");
+    // switched on under a tier, x=Lily stays in the link back at My account: the box there is still on and still
+    // takes it off (greyed out only while it is off)
+    cy.get("[data-test-rankings-importable]").check();
+    cy.location("hash", { timeout: 60000 }).should("match", /x=[^&]*Lily/);
+    cy.get("[data-test-rankings-menu]").click();
+    cy.get("[data-test-rankings-mine]").click();
+    cy.location("hash", { timeout: 60000 }).should("include", "tc=mine").and("match", /x=[^&]*Lily/);
+    cy.get("[data-test-rankings-card]", { timeout: 90000 }).should("have.length.greaterThan", 0);
+    cy.get("[data-test-rankings-menu]").click();
+    cy.get("[data-test-rankings-importable]").should("be.enabled").and("be.checked").uncheck();
+    cy.location("hash", { timeout: 60000 }).should("not.match", /x=[^&]*Lily/);
+    cy.get("[data-test-rankings-importable]").should("be.disabled").and("not.be.checked");
+    cy.get("[data-test-rankings-menu]").click();
     // at 360 px the "26.2 s loop" drops under the figure instead of pushing the card past the screen
     cy.viewport(360, 800);
     cy.get("[data-test-rankings-card]").first().should(($c) => {

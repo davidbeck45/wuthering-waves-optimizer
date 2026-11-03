@@ -623,4 +623,57 @@ describe("phone layout", () => {
     cy.get("[data-test-live-result-detail]").should("be.visible");
     cy.get("[data-test-ai-open]").should("be.visible");
   });
+
+  // 2026-11-02 audit M2: while /my-rankings scored, its team placeholder rows (an 11 rem grey bar beside three avatars,
+  // 229 px at 130 % text) pushed a 412 px page to 418 px for the first seconds. The page samples its own width from
+  // before the app mounts until the placeholders are gone, so the check can't miss the short scoring window.
+  it("keeps /my-rankings inside a 412 px phone at 130 % text while its teams are still scoring", () => {
+    cy.viewport(412, 915);
+    type Sample = { skeletons: number; scrollWidth: number; clientWidth: number };
+    // two armed teammates and one saved team (as wiring.cy.ts seeds), so the page has team rows to score
+    const character = JSON.parse(configOptimizer.data.character as string);
+    character.characters.Ciaccona = { weapon: "WoodlandAria" };
+    character.characters.Chisa = { weapon: "Kumokiri" };
+    const rotation = character.characters.Cartethyia.rotations[0];
+    const actions = rotation.actions.map((a: { order: number; key: string; type: string; id: string }) => ({ slot: 0, order: a.order, key: a.key, type: a.type, count: 1, buffs: [], isDisabled: false, id: `pl-${a.id}` }));
+    const team = { id: "pl-t1", name: "Cartethyia team", characterIds: ["Cartethyia", "Ciaccona", "Chisa"], buildIds: [null, null, null], actions, duration: 20 };
+    cy.visit("/my-rankings?tab=teams", {
+      onBeforeLoad(win: Window) {
+        win.sessionStorage.clear();
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+        win.document.documentElement.style.fontSize = "130%"; // from the first paint, not only from the load event
+        const samples: Sample[] = [];
+        (win as unknown as { __widths: Sample[] }).__widths = samples;
+        const timer = win.setInterval(() => {
+          const doc = win.document.documentElement;
+          if (!doc) return;
+          const skeletons = win.document.querySelectorAll("[data-test-my-rankings-team-skeleton]").length;
+          samples.push({ skeletons, scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth });
+          if (samples.length > 4000 || (!skeletons && samples.some((x) => x.skeletons))) {
+            win.clearInterval(timer);
+            (win as unknown as { __widthsDone: boolean }).__widthsDone = true;
+          }
+        }, 15);
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    // the sampler stops once it has seen the placeholders come and go
+    cy.window({ timeout: 120000 }).its("__widthsDone", { timeout: 120000 }).should("eq", true);
+    cy.get("[data-test-my-rankings-team]").should("have.length.at.least", 1);
+    cy.window().then((win) => {
+      const samples = (win as unknown as { __widths: Sample[] }).__widths.filter((x) => x.skeletons > 0);
+      expect(samples.length, "samples taken while the teams were scoring").to.be.greaterThan(0);
+      for (const x of samples) expect(x.scrollWidth, `page width with ${x.skeletons} placeholder rows`).to.be.at.most(x.clientWidth);
+    });
+    expectNoHorizontalScroll("/my-rankings teams, scored");
+  });
 });

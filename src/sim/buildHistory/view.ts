@@ -9,11 +9,12 @@ import type { RestorePlan } from "./restore";
 
 const sameDay = (a: Date, b: Date): boolean => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
-/** "Today 14:02", "Yesterday 21:15", "Oct 29, 21:15" (the year when it is not this one). Local time. */
+/** "Today 14:02", "Yesterday 21:15", "Oct 29, 21:15" (the year when it is not this one). Local time. The clock time
+ *  never breaks inside ("06:01 PM" keeps a no-break space: a Restore button wrapped "PM" onto a line of its own). */
 export function whenText(at: number, nowMs = Date.now(), locale?: string): string {
   const d = new Date(at);
   const today = new Date(nowMs);
-  const time = d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  const time = d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }).replace(/\s/g, "\u00a0");
   if (sameDay(d, today)) return `Today ${time}`;
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);

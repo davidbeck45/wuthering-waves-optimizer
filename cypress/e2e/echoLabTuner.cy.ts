@@ -57,6 +57,8 @@ describe("Echo Lab Tuner plan and roll quality", () => {
     cy.get("[data-test-echo-lab-plan-step]").first().should("have.attr", "data-when", "now");
     cy.get('[data-test-echo-lab-plan-step][data-when="now"]').should("have.length.at.least", 1);
     cy.get('[data-test-echo-lab-plan-kpi="tuners"] [data-test-echo-lab-plan-kpi-value]').invoke("text").should("match", /^(5|15)$/);
+    // the gain says what it is: per rotation, and whose (or how many characters it sums)
+    cy.get('[data-test-echo-lab-plan-kpi="now"]').invoke("text").should("match", /\+[\d.]+[kKM]? damage per rotation (for \w+|, summed over \d characters)/);
     cy.get("[data-test-echo-lab-plan-fresh-line]").should("contain.text", "full tune");
 
     // a weekly income gives the rest a week
@@ -114,6 +116,16 @@ describe("Echo Lab Tuner plan and roll quality", () => {
     cy.get("[data-test-echo-lab-plan-weekly-tuners]").type("20").blur();
     cy.get("[data-test-echo-lab-plan-fresh-row]", RUN).should("exist");
     expectNoHorizontalScroll("tuner plan");
+    // a step's echo (name, set, main stat) gets the card's width: the "Now" chip sits under the step number, not
+    // beside the set (at 360 px it cut "Sun-sinking Eclipse" to "Sun-sinking…")
+    cy.get("[data-test-echo-lab-plan-step]").first().then(($step) => {
+      const card = $step[0].getBoundingClientRect();
+      const echo = $step[0].querySelector(".plan-card__echo")!.getBoundingClientRect();
+      const order = $step[0].querySelector(".plan-card__order")!.getBoundingClientRect();
+      const when = $step[0].querySelector("[data-test-echo-lab-plan-when]")!.getBoundingClientRect();
+      expect(echo.width, "echo block width").to.be.greaterThan(card.width * 0.6);
+      expect(when.top, "chip under the step number").to.be.at.least(order.bottom - 1);
+    });
     // the fifth tab takes the whole last row of the two-column tab grid
     cy.get('[data-test-echo-lab-tab="benchmark"]').then(($b) => {
       const tabs = $b[0].parentElement!.getBoundingClientRect();

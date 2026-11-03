@@ -171,6 +171,9 @@ describe("commands (paletteCommands.ts)", () => {
     expect(contextTargetOf(ctx("/", { activeCharacter: "Yangyang" }), s).character).toBeNull(); // not set up
     expect(contextTargetOf(ctx("/weapons", { query: { focus: "Mornye" } }), s).character).toBe("Mornye");
     expect(contextTargetOf(ctx("/my-rankings", { query: { focus: "Aemeath", tab: "substats" } }), s).character).toBe("Aemeath");
+    expect(contextTargetOf(ctx("/build-history", { query: { char: "Mornye" }, activeCharacter: "Aemeath" }), s).character).toBe("Mornye");
+    expect(contextTargetOf(ctx("/build-history", { activeCharacter: "Aemeath" }), s).character).toBe("Aemeath"); // no ?char= yet
+    expect(contextTargetOf(ctx("/build-history", { query: { char: "Yangyang" } }), s).character).toBeNull(); // not set up
     expect(contextTargetOf(ctx("/teams", { openTeamId: "t1" }), s).team).toEqual({ id: "t1", name: "Aemeath hypercarry", members: ["Aemeath", "Mornye", "Lynae"] });
     expect(contextTargetOf(ctx("/teams"), s).team).toBeNull();
     expect(contextTargetOf(ctx("/energy", { query: { team: "t1" } }), s).team?.id).toBe("t1");
@@ -196,6 +199,9 @@ describe("commands (paletteCommands.ts)", () => {
     const weapons = withCtx(ctx("/weapons", { query: { focus: "Aemeath" } })).filter((i) => i.group === "context").map((i) => i.title);
     expect(weapons).not.toContain("Weapon value: Aemeath");
     expect(weapons).toContain("Substats & what-if: Aemeath");
+    // /build-history is about the character it shows (?char=): share their build, their weapon, their substats
+    const history = withCtx(ctx("/build-history", { query: { char: "Aemeath" } })).filter((i) => i.group === "context").map((i) => i.title);
+    expect(history).toEqual(expect.arrayContaining(["Share Aemeath's build", "Weapon value: Aemeath", "Substats & what-if: Aemeath"]));
 
     const teamsPage = withCtx(ctx("/teams", { openTeamId: "t1" })).filter((i) => i.group === "context");
     expect(teamsPage.map((i) => i.title)).toEqual(["Rotation cue card for this team", "Build from my echoes for this team", "Energy check for this team", "Share this team"]);

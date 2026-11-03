@@ -200,7 +200,7 @@ describe("the diff", () => {
     const rows = statRows(await characterScreenStats("Cartethyia", a), await characterScreenStats("Cartethyia", b));
     expect(rows.map((r) => r.label).slice(0, 6)).toEqual(["HP", "ATK", "DEF", "Crit Rate", "Crit DMG", "Energy Regen"]);
     expect(rows.some((r) => r.changed)).toBe(true);
-    for (const r of rows) if (r.changed) expect(r.deltaText).toMatch(/^[+−]/);
+    for (const r of rows) if (r.changed) expect(r.deltaText).toMatch(r.key.endsWith("_FLAT") ? /^[+−][\d,]+$/ : /^[+−]\d+\.\d\u00a0pts$/);
     const rot = (await bestRotationOf("Cartethyia", characters, echoes))!;
     const da = (await damageOf("Cartethyia", a, rot, characters, echoes))!;
     const db = (await damageOf("Cartethyia", b, rot, characters, echoes))!;
@@ -211,6 +211,17 @@ describe("the diff", () => {
     expect(changeText(100, 105.4)).toBe("+5.4 %");
     expect(changeText(100, 100.01)).toBe("same");
     expect(changeText(100, 98)).toBe("−2.0 %");
+  });
+
+  it("states each change as the difference of the two numbers it sits beside", () => {
+    const zero = { HP_FLAT: 10000, ATK_FLAT: 1000, CritRate: 5, CritDMG: 150, EnergyRegen: 100 };
+    const rows = statRows({ ...zero, DEF_FLAT: 1262.7, CritRate: 24.04 }, { ...zero, DEF_FLAT: 1240.9, CritRate: 24.06 });
+    const row = (key: string) => rows.find((r) => r.key === key)!;
+    // floored as the game shows them, 1,262 → 1,240 is 22 (the raw values differ by 21.8)
+    expect([row("DEF_FLAT").fromText, row("DEF_FLAT").toText, row("DEF_FLAT").deltaText]).toEqual(["1,262", "1,240", "−22"]);
+    // 24.0% → 24.1% is a tenth of a point, not "+0.0 pts"
+    expect([row("CritRate").fromText, row("CritRate").toText, row("CritRate").deltaText]).toEqual(["24.0%", "24.1%", "+0.1 pts"]);
+    expect(row("HP_FLAT").changed).toBe(false);
   });
 });
 

@@ -68,8 +68,14 @@
 
     <template v-if="result">
       <!-- what the budget buys -->
-      <div class="grid grid-cols-3 gap-2" data-test-echo-lab-plan-summary>
-        <div v-for="k in kpis" :key="k.id" class="min-w-0 rounded-box border border-base-300 bg-base-100 px-3 py-2.5 max-sm:px-2.5 max-sm:py-2" :data-test-echo-lab-plan-kpi="k.id">
+      <!-- a phone: "Echoes to tune now" across the top (its gain says what it sums), the two "left after" tiles under it -->
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-3" data-test-echo-lab-plan-summary>
+        <div
+          v-for="k in kpis"
+          :key="k.id"
+          class="min-w-0 rounded-box border border-base-300 bg-base-100 px-3 py-2.5 max-sm:px-2.5 max-sm:py-2"
+          :class="{ 'max-sm:col-span-2': k.id === 'now' }"
+          :data-test-echo-lab-plan-kpi="k.id">
           <div class="text-[0.65rem] font-semibold uppercase leading-tight tracking-wide opacity-60">{{ k.label }}</div>
           <div class="mt-0.5 font-mono text-xl font-bold tabular-nums" data-test-echo-lab-plan-kpi-value>{{ k.value }}</div>
           <div v-if="k.sub" class="text-xs leading-tight opacity-60">{{ k.sub }}</div>
@@ -86,12 +92,12 @@
           :class="step.when.kind === 'now' ? 'border-primary/50' : 'border-base-300'"
           :data-test-echo-lab-plan-step="step.candidate.echoId"
           :data-when="step.when.kind">
-          <div class="flex min-w-0 items-start gap-3">
-            <span class="grid size-7 shrink-0 place-items-center rounded-full bg-base-200 font-mono text-sm font-bold tabular-nums" :aria-label="`Step ${step.order}`">{{ step.order }}</span>
-            <div class="min-w-0 flex-1">
+          <div class="plan-card__head flex min-w-0 items-start gap-3">
+            <span class="plan-card__order grid size-7 shrink-0 place-items-center rounded-full bg-base-200 font-mono text-sm font-bold tabular-nums" :aria-label="`Step ${step.order}`">{{ step.order }}</span>
+            <div class="plan-card__echo min-w-0 flex-1">
               <EchoLabEcho :echo="step.candidate.echo" :set="step.candidate.set" :cost="step.candidate.echoCost" :main="step.candidate.main" :rank="step.candidate.rank" :lines="step.candidate.lines" />
             </div>
-            <span v-if="whenText(step.when)" class="el-chip shrink-0" :class="step.when.kind === 'now' ? 'el-chip--keep' : 'el-chip--spare'" data-test-echo-lab-plan-when>{{ whenText(step.when) }}</span>
+            <span v-if="whenText(step.when)" class="plan-card__when el-chip shrink-0" :class="step.when.kind === 'now' ? 'el-chip--keep' : 'el-chip--spare'" data-test-echo-lab-plan-when>{{ whenText(step.when) }}</span>
           </div>
           <div class="mt-2 flex min-w-0 items-center gap-2 text-sm">
             <img :src="portrait(step.candidate.characterId)" :alt="characterName(step.candidate.characterId)" class="el-portrait size-7" loading="lazy" />
@@ -240,6 +246,18 @@ function clear(): void {
 
 const plan = computed(() => planTuners(props.result?.candidates ?? [], budget.value, props.result?.fresh ?? []));
 
+/** What tuning the "now" echoes adds, in words: each character's gain is per rotation of their own best rotation, so a
+ *  sum over several characters says so (it read "+34.9k damage in all", with no unit, for Phrolova's +25.2k and
+ *  Cartethyia's +9.8k). */
+function nowGainText(p: typeof plan.value): string {
+  const now = p.steps.filter((s) => s.when.kind === "now");
+  const total = p.now.expectedDamage;
+  const who = [...new Set(now.map((s) => s.candidate.characterId))];
+  return who.length === 1
+    ? `+${compact(total)} damage per rotation for ${characterName(who[0]!)}`
+    : `+${compact(total)} damage per rotation, summed over ${who.length} characters`;
+}
+
 const kpis = computed(() => {
   const b = budget.value;
   const p = plan.value;
@@ -249,7 +267,7 @@ const kpis = computed(() => {
       id: "now",
       label: "Echoes to tune now",
       value: b.tuners === null ? dash : String(p.now.count),
-      sub: b.tuners === null ? "type your Tuners" : p.now.count ? `+${compact(p.now.expectedDamage)} damage in all` : `of ${p.steps.length} worth it`,
+      sub: b.tuners === null ? "type your Tuners" : p.now.count ? nowGainText(p) : `of ${p.steps.length} worth it`,
     },
     {
       id: "tuners",
@@ -361,6 +379,29 @@ function shortText(step: PlanStep): string {
   .plan-stats dd > :nth-child(2) {
     grid-column: 1 / -1;
     text-align: right;
+  }
+  /* the step's head: its number with the "Now" / "Week 2" chip under it, so the echo's name and set get the rest of
+     the card (beside the number and the chip a 360 px card cut the set to "Sun-sinking…") */
+  .plan-card__head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0.35rem;
+    justify-items: center;
+  }
+  .plan-card__order {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .plan-card__when {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .plan-card__echo {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: stretch;
+    align-self: center;
   }
 }
 </style>

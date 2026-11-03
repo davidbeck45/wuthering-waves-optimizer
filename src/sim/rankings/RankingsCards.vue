@@ -26,7 +26,10 @@
         </div>
         <p v-if="view.cards.length" class="mt-0.5 text-xs leading-snug opacity-70" data-test-rankings-cards-unit>
           {{ view.mode === "dps" ? "Team damage per second" : "Team avg DMG per rotation" }} · wuwa_calc at
-          {{ view.mine ? "your account" : "this tier" }} · <span data-test-rankings-cards-spread>{{ spreadLabel }}</span>
+          {{ view.mine ? "your account" : "this tier" }} · <span data-test-rankings-cards-spread>{{ spreadLabel }}</span
+          ><template v-if="hiding.length">
+            · <span data-test-rankings-cards-hiding>hiding teams with {{ hiding.join(", ") }}</span></template
+          >
         </p>
       </div>
       <!-- while his rows are still being solved an empty list is "not yet" (his overlay says so), not "no match" -->
@@ -109,7 +112,8 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import type { AccountState } from "../account/accountState";
-import { cardsHost, claimCards, openRankingsTeam, rankingsCards, setRankingsTeamMode } from "./controller";
+import { cardsHost, claimCards, openRankingsTeam, rankingsCards, rankingsRoster, setRankingsTeamMode } from "./controller";
+import { readResonatorFilters } from "./filterChips";
 import { buildStatus, ownByRileyName, ownStatus, type CardMember, type OwnLike, type OwnStatus } from "./phoneCards";
 import type { TeamMode } from "./compareColumn";
 import RankingsPortrait from "./RankingsPortrait.vue";
@@ -125,6 +129,9 @@ const spreadLabel = computed(() => {
   const sb = new URLSearchParams((route.hash ?? "").replace(/^#/, "")).get("sb");
   return sb === "m" ? "your echoes' substats" : sb === "h" ? "High Invest substats" : "ChemX32 substats";
 });
+/** the bar's Without names (hash `x=`, also "Only teams I can import"): on a phone their chips sit past the right edge
+ *  of the chip row, so the list says what it leaves out */
+const hiding = computed(() => readResonatorFilters(new URLSearchParams((route.hash ?? "").replace(/^#/, "")), rankingsRoster.value).exclude);
 const PAGE = 50;
 const MODES: ReadonlyArray<{ id: TeamMode; label: string; title: string }> = [
   { id: "dpr", label: "DPR", title: "Team Avg DPR: the damage of one rotation, averaged over four" },

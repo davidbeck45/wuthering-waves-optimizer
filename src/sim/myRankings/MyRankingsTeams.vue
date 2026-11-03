@@ -121,10 +121,12 @@
           <td class="tcell--team">
             <div class="mr-team">
               <div class="mr-trio"><span v-for="k in 3" :key="k" class="skeleton block rounded-full" style="width: 34px; height: 34px"></span></div>
-              <div class="grid gap-1.5"><span class="skeleton block h-3 rounded" style="width: 11rem"></span><span class="skeleton block h-2 rounded" style="width: 5rem"></span></div>
+              <!-- min(…, 100%) and min-w-0: at 130 % text an 11 rem bar is 229 px, which beside three avatars pushed a
+                   412 px phone page to 418 px while the teams were still scoring -->
+              <div class="grid min-w-0 flex-1 gap-1.5"><span class="skeleton block h-3 rounded" style="width: min(11rem, 100%)"></span><span class="skeleton block h-2 rounded" style="width: min(5rem, 100%)"></span></div>
             </div>
           </td>
-          <td class="tcell--dmg"><div class="mr-tdmg"><span class="skeleton block h-3 rounded ml-auto" style="width: 5.5rem"></span><span class="skeleton block h-2 rounded"></span></div></td>
+          <td class="tcell--dmg"><div class="mr-tdmg min-w-0"><span class="skeleton block h-3 rounded ml-auto" style="width: min(5.5rem, 100%)"></span><span class="skeleton block h-2 rounded"></span></div></td>
           <td class="tcell--link"></td>
         </tr>
       </tbody>

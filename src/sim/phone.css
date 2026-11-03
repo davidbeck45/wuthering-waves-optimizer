@@ -836,6 +836,15 @@
     min-width: 0;
     white-space: normal;
     overflow-wrap: anywhere;
+    /* one row, the text then its ×, read from the left (2026-11-02 audit L5): DaisyUI stacks an alert's children and
+       centres them below 640 px, so the × took a row of its own and a two-line toast stood 210 px tall over what it
+       reported on (the WaveScan count tiles, the Ask sheet's header and ✕). About 70 px now */
+    grid-auto-flow: column;
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-items: start;
+    text-align: start;
+    gap: 0.5rem;
+    padding: 0.625rem 0.5rem 0.625rem 0.875rem;
   }
 }
 

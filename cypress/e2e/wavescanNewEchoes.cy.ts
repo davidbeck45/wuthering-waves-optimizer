@@ -92,6 +92,12 @@ describe("Wavescan: add only new echoes", () => {
     cy.get("[data-test-wavescan-new-only-done]").should("contain.text", "Added 3 echoes.");
     count("new").should("contain.text", "0");
     cy.get("[data-test-wavescan-new-only-add]").should("be.disabled").and("contain.text", "Nothing new to add");
+    // the Echoes section below still says "… ready to import": the card says whether it has anything left to add
+    cy.get("[data-test-wavescan-new-only]").then(($card) => {
+      const upstreamWouldAdd = $card.find("[data-test-wavescan-new-only-upstream]").length > 0;
+      if (upstreamWouldAdd) cy.get("[data-test-wavescan-new-only-after]").should("not.exist");
+      else cy.get("[data-test-wavescan-new-only-after]").should("contain.text", "nothing new to add");
+    });
     cy.window().then((win) => {
       const inventory = readInventory(win);
       expect(inventory.echoes, "3 echoes added").to.have.length(fixture.inventory.echoes.length + 3);
@@ -114,5 +120,13 @@ describe("Wavescan: add only new echoes", () => {
     count("new").should("contain.text", "3");
     // Ryan's own import stays right below it
     cy.get("[data-test-wavescan-echoes]").should("be.visible");
+    // a desktop lays a group's echo cards side by side (one 1,220 px card per line before)
+    cy.get(`${list("owned")} summary`).click();
+    cy.get(group("owned", "Tambourinist")).find("[data-test-wavescan-new-only-echo]").should(($cards) => {
+      expect($cards).to.have.length(2);
+      const [a, b] = [...$cards].map((c) => c.getBoundingClientRect());
+      expect(Math.abs(a!.top - b!.top), "two cards on one row").to.be.lessThan(2);
+      expect(a!.width, "a card is not the full width").to.be.lessThan(800);
+    });
   });
 });

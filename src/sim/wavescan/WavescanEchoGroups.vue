@@ -12,7 +12,8 @@
           {{ group.cost }}-cost · {{ group.items.length }} {{ group.items.length === 1 ? "echo" : "echoes" }}
         </span>
       </div>
-      <ul class="flex flex-col gap-1 min-w-0">
+      <!-- a desktop: two or three cards a row (one 1,220 px card per line showed about 8 echoes a screen at 1440) -->
+      <ul class="grid grid-cols-1 gap-1 min-w-0 lg:grid-cols-2 xl:grid-cols-3">
         <li
           v-for="row in group.items"
           :key="row.key"
