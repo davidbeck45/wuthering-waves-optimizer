@@ -583,4 +583,44 @@ describe("phone layout", () => {
       expectNoHorizontalScroll(`/weapons selector ${width} px`);
     }
   });
+
+  // Ryan #686's build vs buffs detail (phone.css § 28): a stat row in the v3 Full breakdown sheet opens it in HomeView's
+  // drawer, which the sheet (fixed, z-50, later in the page) covered on a phone; the open drawer sits above the sheet,
+  // the Ask button steps aside while it is open, and closing it brings the sheet back. The command sheet's chips say
+  // what their two-tone bar means.
+  it("opens the build vs buffs detail above the Full breakdown sheet at 412 px / 130 % text", () => {
+    cy.viewport(412, 915);
+    cy.visit("/", {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", configOptimizer.data.character as string);
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.get(".command-bar__sheet-open").should("be.visible").click();
+    cy.get("[data-test-command-sheet-stat-split]").should("have.length.at.least", 1);
+    cy.get("[data-test-command-sheet-stats]").should(($grid) => {
+      const legend = getComputedStyle($grid[0], "::after").content;
+      expect(legend, "the chips' bar legend").to.contain("grey is your build");
+    });
+    cy.get("[data-test-command-sheet-breakdown]").click();
+    cy.get('[data-test-live-result-detail] [data-test-live-result-stat-row-key="totalAtk"]').should("be.visible").click();
+    cy.get("[data-test-stat-split-formula]").should("be.visible");
+    cy.get("[data-test-stat-split-formula]").should(($formula) => {
+      const r = $formula[0].getBoundingClientRect();
+      const top = $formula[0].ownerDocument.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      expect(top?.closest("[data-test-stat-split]"), "the formula is on top, not under the Full breakdown sheet").to.not.equal(null);
+    });
+    cy.get("[data-test-ai-open]").should("not.be.visible");
+    cy.get(".calculator-breakdown > button").first().click();
+    cy.get("[data-test-live-result-detail]").should("be.visible");
+    cy.get("[data-test-ai-open]").should("be.visible");
+  });
 });
