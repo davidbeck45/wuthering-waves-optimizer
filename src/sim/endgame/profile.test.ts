@@ -9,7 +9,9 @@ import { createRileyClient, type WorkerLike } from "../engine/rileyClient";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
 import { fightCurve, type RileyEngine, type RileyPick, type RunError } from "../engine/rileyRun";
 import { createRileyHandler } from "../engine/rileyWorker";
-import { ELEMENTS, withFloorProfile, type Element, type FloorProfileSpec } from "./effects";
+import { ELEMENTS, floorCurves, touchesCrit, withFloorProfile, type Element, type FloorProfileSpec } from "./effects";
+import { damageAt } from "./killTime";
+import { chanceBy, killOdds } from "../critLuck/killOdds";
 import { loadSeason, toaIndex } from "./toaData";
 import { runToaCheck, seasonProfiles } from "./toaRun";
 
@@ -119,6 +121,84 @@ describe("the fork's enemy profile", () => {
   });
 });
 
+describe("each hit's crit on a floor (the clear odds)", () => {
+  const opts = () => ({ account: SYNTHETIC_ACCOUNT, blocked: h.blocked });
+  const curve = (i: number, spec: FloorProfileSpec | null, spread: Parameters<typeof fightCurve>[4]) =>
+    withFloorProfile(E, spec, () => fightCurve(E, PINNED[i]!.teamKey, PINNED[i]!.picks, opts(), spread));
+  const critDmgBuff: FloorProfileSpec["effects"] = [{ kind: "buff", label: "crit", on: "intro", stats: [{ stat: "critDmg", value: 36 }], seconds: 20, target: "team" }];
+
+  it("a traced curve is the untraced one plus every hit's crit, its damage summing to the curve", () => {
+    for (let i = 0; i < PINNED.length; i++) {
+      const plain = run(i, null);
+      const traced = curve(i, null, "trace");
+      expect(traced.points).toEqual(plain.points);
+      const hits = traced.critHits!;
+      expect(hits.length).toBeGreaterThan(100);
+      expect(hits.reduce((s, x) => s + x[2], 0)).toBe(plain.points[plain.points.length - 1]![1]);
+      for (const [, , avg, cr, cd] of hits) {
+        expect(avg).toBeGreaterThan(0);
+        expect(cr).toBeGreaterThanOrEqual(0);
+        expect(cd).toBeGreaterThanOrEqual(100);
+      }
+    }
+  }, 60_000);
+
+  it("borrowed crits equal a profile's own wherever the floor leaves crit alone (RES, level, DMG Bonus, ATK)", () => {
+    // (a DMG-taken ramp is borrowed too, but not compared here: a split press's hit log reads the ramp at another frame
+    // than the hit itself, so a ramped trace's own crit figures are the blurred ones — t404 has 6 such hits of 600)
+    const leaves: FloorProfileSpec[] = [
+      at({ Electro: 0, Havoc: 50 }, 90),
+      at({}, 100, [{ kind: "dmgBonus", label: "b", value: 30 }]),
+      at({}, 100, [{ kind: "buff", label: "atk", on: "intro", stats: [{ stat: "atk", value: 20 }, { stat: "totalDmg", value: 10 }], seconds: 15, target: "team" }]),
+    ];
+    for (let i = 0; i < PINNED.length; i++) {
+      const ref = curve(i, null, "trace");
+      for (const spec of leaves) {
+        expect(touchesCrit(spec)).toBe(false);
+        const own = curve(i, spec, "trace");
+        const borrowed = curve(i, spec, ref);
+        expect(borrowed.points).toEqual(own.points);
+        expect(borrowed.critHits!.map((x) => x.slice(0, 3))).toEqual(own.critHits!.map((x) => x.slice(0, 3)));
+        // the same crit, to the floors' blur on a split press's logged figures (a few hundredths of a point)
+        borrowed.critHits!.forEach((x, k) => {
+          expect(Math.abs(x[3] - own.critHits![k]![3])).toBeLessThan(0.2);
+          expect(Math.abs(x[4] - own.critHits![k]![4])).toBeLessThan(0.5);
+        });
+      }
+    }
+  }, 60_000);
+
+  it("a floor buff on Crit DMG changes the crits, so such a profile is traced on its own", () => {
+    const spec = at({}, 100, critDmgBuff);
+    expect(touchesCrit(spec)).toBe(true);
+    const ref = curve(0, null, "trace");
+    const own = curve(0, spec, "trace");
+    const sum = (c: typeof own) => c.critHits!.reduce((s, x) => s + x[4], 0);
+    expect(sum(own)).toBeGreaterThan(sum(ref));
+    // floorCurves traces it and borrows for the rest: the same as tracing each
+    const specs = [at({ Electro: 10 }, 90), spec, at({}, 100, [{ kind: "dmgBonus", label: "b", value: 30 }])];
+    const batch = floorCurves(E, PINNED[0]!.teamKey, PINNED[0]!.picks, specs, opts(), true);
+    const traced = specs.map((sp) => curve(0, sp, "trace"));
+    expect(batch[0]).toEqual(traced[0]);
+    expect(batch[1]).toEqual(traced[1]);
+    expect(batch[2]!.points).toEqual(traced[2]!.points);
+    expect(batch[2]!.critHits).toEqual(curve(0, specs[2]!, batch[0]!).critHits);
+  }, 60_000);
+
+  it("odds on the real engine agree with a seeded Monte Carlo of the same hits", () => {
+    // the fixture team's spread is a few big hits (Lynae at 87 % Crit Rate: most runs crit them), so a floor whose HP the
+    // average deals by t is down by t in well over half the runs — the bell curve alone would say ~60 %
+    const c = curve(0, null, "trace");
+    for (const t of [20, 30, 60]) {
+      const hp = damageAt(c, t);
+      const odds = killOdds([{ hp, curve: c }])!;
+      expect(odds.method).toBe("mixture");
+      const mc = killOdds([{ hp, curve: c }], undefined, { method: "monteCarlo", samples: 4000, seed: 2 })!;
+      for (const x of [t - 1, t, t + 1]) expect(Math.abs(chanceBy(mc, x)! - chanceBy(odds, x)!), `${t} s, read at ${x} s`).toBeLessThan(0.04);
+    }
+  }, 60_000);
+});
+
 describe("the floors through the worker protocol", () => {
   function inProcessWorker(engine: RileyEngine): WorkerLike {
     const w: WorkerLike = {
@@ -159,6 +239,9 @@ describe("the floors through the worker protocol", () => {
     for (const r of check.results) {
       expect(r.error).toBeUndefined();
       expect(r.seconds === null || (r.seconds > 0 && r.seconds <= 300)).toBe(true);
+      // crit luck rides along: the median kill sits on the average one
+      expect(r.odds?.q).toHaveLength(49);
+      if (r.seconds !== null && r.seconds < 290) expect(chanceBy(r.odds, r.seconds + 3)!).toBeGreaterThan(0.5);
     }
     client.dispose();
   }, LOAD);

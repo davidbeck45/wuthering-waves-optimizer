@@ -37,6 +37,8 @@ export interface RosterCard {
   /** the best rotation's average damage per rotation (null until ranked, or when nothing could be scored) */
   damage: number | null;
   dps: number | null;
+  /** crit luck on that best rotation: 8 runs in 10 land between p10 and p90 (null before it was kept, or no crit in doubt) */
+  range: { p10: number; p90: number } | null;
   rotation: string | null;
   /** 1 = the highest best-rotation damage on the account */
   damageRank: number | null;
@@ -113,6 +115,7 @@ export function rosterCards({ state, characters, inventoryEchoes, ranking, plan,
       score: buildScoreOf(c.key, data, inventoryEchoes),
       damage: rank?.best?.avgDamage ?? null,
       dps: rank?.best?.dps ?? null,
+      range: rank?.best?.range ? { p10: rank.best.range.p10, p90: rank.best.range.p90 } : null,
       rotation: rank?.best?.name ?? null,
       damageRank: damageRank.get(c.key) ?? null,
       upgrade: headlineUpgrade(byCharacter.get(c.key) ?? []),

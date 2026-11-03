@@ -11,7 +11,7 @@
 //              Response, on an Echo Skill — for the one who triggered it or the whole team         (team Gear grants)
 //   ramp       "N s after the battle starts the enemy takes x % more DMG, +y % every z s, up to w %" (enemy Gear)
 //   unmodelled shown, never simulated
-import type { RileyEngine } from "../engine/rileyRun";
+import { fightCurve, type CurveSpread, type FightCurve, type RileyEngine, type RileyPick, type RunOptions } from "../engine/rileyRun";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -195,4 +195,34 @@ export function withFloorProfile<T>(E: RileyEngine, spec: FloorProfileSpec | nul
   } finally {
     F.profile.setEnemyProfile(null);
   }
+}
+
+/** Can this floor change a hit's crit? Only a floor buff on Crit Rate or Crit DMG does (RES, level, DMG Bonus, DMG taken
+ *  and ATK move a hit's size, never its odds) — such a profile is traced for its own crits (`floorCurve`). */
+export const touchesCrit = (spec: FloorProfileSpec | null): boolean =>
+  !!spec?.effects.some((e) => e.kind === "buff" && e.stats.some((l) => l.stat === "critRate" || l.stat === "critDmg"));
+
+/** One profile's curve. With `spread`, each hit's crit rides along (src/sim/critLuck/killOdds.ts): a profile that can
+ *  change crit is traced on its own; the others borrow the crits of `ref` — the first such curve traced for these
+ *  picks — and set `ref` when there is none yet. Without `spread`, the untraced curve as before. */
+export function floorCurve(
+  E: RileyEngine,
+  teamKey: string,
+  picks: RileyPick[],
+  spec: FloorProfileSpec | null,
+  opts: RunOptions,
+  spread: { ref: FightCurve | null } | null,
+): FightCurve {
+  if (!spread) return withFloorProfile(E, spec, () => fightCurve(E, teamKey, picks, opts));
+  const own = touchesCrit(spec) || !spread.ref;
+  const how: CurveSpread = own ? "trace" : spread.ref;
+  const curve = withFloorProfile(E, spec, () => fightCurve(E, teamKey, picks, opts, how));
+  if (own && !touchesCrit(spec)) spread.ref = curve;
+  return curve;
+}
+
+/** Every profile's curve, in order (the headless runner; the worker walks `floorCurve` one profile per unit). */
+export function floorCurves(E: RileyEngine, teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts: RunOptions, spread = false): FightCurve[] {
+  const state = spread ? { ref: null as FightCurve | null } : null;
+  return profiles.map((spec) => floorCurve(E, teamKey, picks, spec, opts, state));
 }

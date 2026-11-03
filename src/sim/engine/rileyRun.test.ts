@@ -9,6 +9,7 @@ import { createRileyClient, type WorkerLike } from "./rileyClient";
 import { engineCommitFromGit, rileyHeadless, type HeadlessRiley } from "./rileyNode";
 import { heldOf, memoKey, registerAccount, toRunLite, traceLive, type MineSolve, type RileyEngine, type RunError, type RunLite } from "./rileyRun";
 import { createRileyHandler, RILEY_CANCEL, RILEY_MESSAGE, RILEY_PROGRESS, type RileyResponse } from "./rileyWorker";
+import { critHit, damageRange } from "../critLuck/spread";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LOAD = 60_000;
@@ -130,6 +131,38 @@ describe("tracedRun → RunLite", () => {
     expect(heldOf(run, withBuffs, "global")[0]).toEqual({ name: expect.any(String), source: expect.any(String), left: expect.any(Number) });
     expect(run.rows.some((r) => r.endsLoop)).toBe(true);
     expect(new Set(run.rows.map((r) => r.section))).toEqual(new Set([0, 1, 2, 3]));
+  });
+
+  it("gives every hit its crit, the way each row reads it (crit luck)", () => {
+    const crit = run.hitCrit!;
+    expect(crit).toHaveLength(run.hits.length);
+    // a hit that can crit has Crit DMG over ×1; Iuno sits past 100 % Crit Rate, so hers are certain
+    for (const c of crit) if (c) expect(c[1]).toBeGreaterThanOrEqual(100);
+    const iuno = run.hits.map((x, i) => [x, crit[i]] as const).filter(([x]) => x[2] === 2);
+    expect(iuno.length).toBeGreaterThan(20);
+    expect(iuno.filter(([, c]) => c && c[0] >= 100).length / iuno.length).toBeGreaterThan(0.8);
+    // per member, the damage-weighted crit of the hits = that of the rows (both off the same snapshots)
+    for (let m = 0; m < 3; m++) {
+      let w = 0, cr = 0, rw = 0, rcr = 0;
+      run.hits.forEach((x, i) => {
+        if (x[2] !== m || !crit[i]) return;
+        w += x[3];
+        cr += x[3] * Math.min(100, crit[i]![0]);
+      });
+      for (const r of run.rows) {
+        if (r.member !== m || r.critRate == null || (r.slot ?? r.member) !== m) continue;
+        rw += r.avg;
+        rcr += r.avg * Math.min(100, r.critRate);
+      }
+      expect(Math.abs(cr / w - rcr / rw)).toBeLessThan(1.5);
+    }
+    // the fight's crit-luck range keeps the run's own average: Σ hits = DPS × seconds
+    const range = damageRange(run.hits.map((x, i) => critHit(x[3], crit[i]?.[0], crit[i]?.[1])));
+    const sum = run.hits.reduce((s, x) => s + x[3], 0);
+    expect(Math.abs(range.mean - sum) / sum).toBeLessThan(1e-12);
+    expect(range.p10).toBeLessThan(range.mean);
+    expect(range.p90).toBeGreaterThan(range.mean);
+    expect(range.sd / range.mean).toBeLessThan(0.1);
   });
 
   it("refuses an unreleased team and stale picks with a reason", () => {

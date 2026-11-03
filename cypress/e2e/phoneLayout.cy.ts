@@ -551,6 +551,10 @@ describe("phone layout", () => {
       cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-timebar]').first().then(($bar) => {
         expect($bar[0].getBoundingClientRect().right, "time bar inside the viewport").to.be.at.most(width);
       });
+      // crit luck under each team row (src/sim/critLuck/): its chances wrap inside the card
+      cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-odds]').first().then(($line) => {
+        expect($line[0].getBoundingClientRect().right, "crit-luck line inside the viewport").to.be.at.most(width);
+      });
       cy.get('[data-test-toa-tab="plan"]').click();
       cy.get("[data-test-toa-stage]").should("have.length", 12);
       expectNoHorizontalScroll(`/endgame plan ${width} px / ${fontScale * 100} %`);

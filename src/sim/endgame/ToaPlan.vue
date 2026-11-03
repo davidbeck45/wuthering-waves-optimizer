@@ -24,6 +24,11 @@
             <span class="label-text text-sm">plan at my pace</span>
           </label>
         </div>
+        <p v-if="luck" class="text-xs leading-snug opacity-80" data-test-toa-plan-luck>
+          <b>Crit luck:</b> the plan counts each team's average kill.
+          <template v-if="luck.all !== null">In real runs every planned crest lands together in <b class="tabular-nums">{{ chanceText(luck.all) }}</b> of tries, and a</template
+          ><template v-else>In real runs a</template> try earns about <b class="tabular-nums">{{ luck.expected.toFixed(1) }}</b> of {{ plan.maxCrests }} crests on average{{ paced ? ", at your pace" : "" }}.
+        </p>
         <p v-if="plan.exhausted" class="text-xs text-warning">The search hit its budget: this is the best plan it found, maybe not the best there is.</p>
       </div>
     </div>
@@ -49,11 +54,22 @@
                   <div class="text-[0.8rem] sm:text-sm line-clamp-2 break-words" :title="teamLabel(stageOf(f.id)!.members, mainOf(f.id))">{{ teamLabel(stageOf(f.id)!.members, mainOf(f.id)) }}</div>
                   <div class="text-[0.7rem] opacity-60 truncate max-sm:hidden">{{ stageNote(f.id) }}</div>
                 </div>
-                <div class="sm:hidden flex-1 min-w-0 text-right text-[0.7rem] opacity-70 truncate">{{ stageNote(f.id) }}</div>
+                <div class="sm:hidden flex-1 min-w-0 text-right text-[0.7rem] opacity-70 truncate" data-test-toa-stage-note>{{ stageNote(f.id) }}</div>
               </template>
               <div v-else class="min-w-0 flex-1 text-sm opacity-60">{{ f.hp ? "no team left with the Vigor" : "nobody left with the Vigor" }}</div>
-              <div class="text-sm shrink-0 tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
-                {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-30">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span>
+              <div class="shrink-0 flex flex-col items-end leading-tight">
+                <div class="text-sm tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
+                  {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-30">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span>
+                </div>
+                <!-- phones: "of runs" on its own line, so the column stays as narrow as the stars and the kill time beside it shows -->
+                <div
+                  v-if="stageChance(f.id) !== null"
+                  class="text-[0.65rem] tabular-nums opacity-80 text-right sm:whitespace-nowrap"
+                  :title="`The chance a run earns these ${stageOf(f.id)?.crests} crests (crit luck${paced ? ', at your pace' : ''})`"
+                  :data-test-toa-stage-chance="f.id"
+                >
+                  <span class="sr-only">chance of {{ stageOf(f.id)?.crests }} crests: </span><span class="whitespace-nowrap">{{ chanceText(stageChance(f.id)) }}</span><span aria-hidden="true" class="max-sm:block"> of runs</span>
+                </div>
               </div>
             </li>
           </ol>
@@ -118,6 +134,9 @@ import { floorLabel, type ToaSeason } from "./toaData";
 import type { CandidateTeam } from "./toaRun";
 import { vigorPool, type Plan, type PlanAlternative, type PlanOption } from "./vigorPlan";
 import ToaPortraits from "./ToaPortraits.vue";
+import type { FloorResult } from "./toaRun";
+import { planLuck, plannedChance } from "../critLuck/floorOdds";
+import { chanceText } from "../critLuck/format";
 
 const props = defineProps<{
   season: ToaSeason;
@@ -125,6 +144,10 @@ const props = defineProps<{
   alternatives: PlanAlternative[];
   misses: Array<{ stageId: string; option: PlanOption; crest: number; faster: number }>;
   candidates: CandidateTeam[];
+  /** every team's result on every timed floor (their crit-luck odds) */
+  results?: FloorResult[];
+  /** the pace the plan scaled each team by, when it did */
+  paceOf?: (teamId: string) => number | null;
   usePace: boolean;
   hasClears: boolean;
   vigor: number;
@@ -164,6 +187,28 @@ const stageNote = (id: string): string => {
   if (s.timed) return `${clockText(s.option?.seconds ?? null)}${paced.value ? " at your pace" : " sim"}`;
   return `any spare team${s.shortHanded ? " · short-handed" : ""}`;
 };
+const goalsOf = computed(() => new Map(props.season.towers.flatMap((t) => t.floors.map((f) => [f.id, f.goals] as const))));
+const resultOf = (stageId: string, teamId: string): FloorResult | undefined => props.results?.find((r) => r.floorId === stageId && r.teamId === teamId);
+const paceOfTeam = (teamId: string): number => (paced.value ? props.paceOf?.(teamId) ?? 1 : 1);
+/** the chance the seated team earns the crests planned for its stage (crit luck), null where there is none to give */
+const stageChance = (stageId: string): number | null => {
+  const s = stageOf(stageId);
+  if (!s?.timed || !s.option) return null;
+  return plannedChance(goalsOf.value.get(stageId) ?? [], s.crests, resultOf(stageId, s.option.id)?.odds, paceOfTeam(s.option.id));
+};
+const luck = computed(() =>
+  props.results
+    ? planLuck(
+        props.plan.assignments.map((a) => ({
+          goals: goalsOf.value.get(a.stageId) ?? [],
+          crests: a.crests,
+          odds: a.option ? resultOf(a.stageId, a.option.id)?.odds : null,
+          pace: a.option ? paceOfTeam(a.option.id) : 1,
+          timed: a.timed,
+        })),
+      )
+    : null,
+);
 const replacement = (a: PlanAlternative): string => {
   const now = a.plan.assignments.find((x) => x.stageId === a.stageId);
   return now?.option ? `${optionLabel(now.option)} takes it` : "it stays empty";

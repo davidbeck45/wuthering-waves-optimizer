@@ -31,9 +31,13 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
-      <div class="flex items-baseline gap-2">
-        <span class="text-2xl font-bold tabular-nums" data-test-rotation-dps>{{ int(run.total) }}</span>
-        <span class="text-sm opacity-70">DPS</span>
+      <div class="flex flex-col min-w-0 max-sm:basis-full">
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold tabular-nums" data-test-rotation-dps>{{ int(run.total) }}</span>
+          <span class="text-sm opacity-70">DPS</span>
+        </div>
+        <!-- crit luck: the DPS is an average; each hit of a real run crits or doesn't -->
+        <div v-if="rangeLine" class="text-xs leading-snug rv-luck" :title="rangeTitle" data-test-rotation-range><b>Crit luck:</b> {{ rangeLine }}</div>
       </div>
       <div class="text-sm opacity-70">
         {{ origin }} · wuwa_calc <span class="font-mono">{{ run.engine.commit }}</span>
@@ -70,6 +74,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { RunLite, RunMember, SubsMode } from "../engine/rileyRun";
+import { runRange } from "../critLuck/runRange";
+import { rangeSentence } from "../critLuck/format";
 import MemberAvatar from "./MemberAvatar.vue";
 import type { Variant } from "./useRotationRun";
 
@@ -87,7 +93,21 @@ const hueOf = (name: string): string => props.hues.get(name) ?? "";
 const avatarSize = typeof window !== "undefined" && window.matchMedia?.("(max-width: 639px)").matches ? 26 : 40;
 const int = (n: number): string => Math.round(n).toLocaleString("en-US");
 const origin = computed(() => (props.exactRow ? "the Team rankings row you opened" : "solved at your account"));
+/** one run's DPS, crit by crit: "8 runs in 10 land between 82,412 and 91,230 DPS" (null for a run without crit data) */
+const range = computed(() => runRange(props.run));
+const rangeLine = computed(() => (range.value ? rangeSentence(range.value, int, "DPS") : null));
+const rangeTitle = computed(() =>
+  range.value
+    ? `Each of the run's ${range.value.hits} hits crits or not at its own Crit Rate (${range.value.rolls} of them could go either way). Average ${int(range.value.mean)} DPS, typical swing ±${int(range.value.sd)}. Enemy actions, dodges and your timing are not in it.`
+    : undefined,
+);
 /** what the run wore for a member the account lacks (read off the run: a /rankings row keeps its own S / R) */
 const notYoursTitle = (m: RunMember): string =>
   `Not on your account: ${props.exactRow ? "the row you opened runs" : "wuwa_calc runs"} them at S${m.sequence} with ${m.weapon} R${m.refinement}`;
 </script>
+
+<style scoped>
+.rv-luck {
+  color: oklch(var(--bc) / 0.78);
+}
+</style>

@@ -24,7 +24,7 @@ export const browserRiley: RileyProvider = async (exp) => {
     teamKeysFor: (ids) => client.teamKeysFor(ids),
     solveMine: (keys, opts) => client.solveMine(keys, { account, subs: opts?.subs }),
     tracedRun: (teamKey, picks, opts) => client.tracedRun(teamKey, picks, { account, subs: opts?.subs }),
-    curves: (teamKey, picks, profiles) => client.curves(teamKey, picks, profiles, { account }),
+    curves: (teamKey, picks, profiles, opts) => client.curves(teamKey, picks, profiles, { account, spread: opts?.spread }),
   };
   return engine;
 };

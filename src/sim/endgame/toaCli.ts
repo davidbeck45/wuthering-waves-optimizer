@@ -4,13 +4,13 @@
 import type { ExportFile } from "../cli/exportFile";
 import { table } from "../cli/format";
 import { rileyHeadless } from "../engine/rileyNode";
-import { fightCurve } from "../engine/rileyRun";
 import { appKeyOf } from "../rankings/castMapper";
-import { withFloorProfile } from "./effects";
+import { floorCurves } from "./effects";
 import { clockText } from "./crests";
 import { loadSeason, seasonStatus, timedFloors, toaIndex, floorLabel, type ToaSeason } from "./toaData";
 import { planInputOf, rankFloor, runToaCheck, type ToaCheck, type ToaRunner } from "./toaRun";
 import { planVigor, type Plan } from "./vigorPlan";
+import { floorOdds } from "../critLuck/floorOdds";
 
 export interface ToaCliResult {
   season: number;
@@ -31,8 +31,7 @@ export async function toaCheck(exp: ExportFile, opts: { limit?: number; now?: nu
     commit: E.commit,
     teams: async () => riley.teams,
     solveMine: async (keys, o = {}) => riley.solveMine(keys, { onProgress: o.onProgress }),
-    curves: async (teamKey, picks, profiles) =>
-      profiles.map((spec) => withFloorProfile(E, spec, () => fightCurve(E, teamKey, picks, { account: riley.account, blocked: riley.blocked }))),
+    curves: async (teamKey, picks, profiles, o = {}) => floorCurves(E, teamKey, picks, profiles, { account: riley.account, blocked: riley.blocked }, !!o.spread),
   };
   const t0 = performance.now();
   const check = await runToaCheck(runner, season, {
@@ -54,8 +53,17 @@ export function printToa(season: ToaSeason, r: ToaCliResult): void {
     console.log(`${floorLabel(f.id)} · ${f.enemies.map((e) => (e.count > 1 ? `${e.name} ×${e.count}` : e.name)).join(", ")} · ${(f.hp ?? 0).toLocaleString("en-US")} HP · Lv${f.level} · goals ${f.goals.map((g) => `${g}s`).join(" / ")} left`);
     console.log(
       table([
-        ["  Team", "DPS", "Kill", "Crests"],
-        ...rows.map(({ result, team }) => [`  ${team.names.join(" · ")}${team.saved ? " (saved)" : ""}`, Math.round(team.dps).toLocaleString("en-US"), `${clockText(result.seconds)}${result.extrapolated ? " *" : ""}`, "★".repeat(result.crests) || "-"]),
+        ["  Team", "DPS", "Kill", "Crests", "Clear / ★ / ★★ / ★★★ (crit luck)"],
+        ...rows.map(({ result, team }) => {
+          const odds = floorOdds(f.goals, result.odds);
+          return [
+            `  ${team.names.join(" · ")}${team.saved ? " (saved)" : ""}`,
+            Math.round(team.dps).toLocaleString("en-US"),
+            `${clockText(result.seconds)}${result.extrapolated ? " *" : ""}`,
+            "★".repeat(result.crests) || "-",
+            odds ? [odds.clearText, ...odds.crests.map((c) => c.text)].join(" / ") : "-",
+          ];
+        }),
       ]),
     );
     console.log("");

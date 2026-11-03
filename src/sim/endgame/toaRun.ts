@@ -9,6 +9,7 @@ import type { FightCurve, MineSolve, RileyAccount, RileyPick, RileyTeamInfo, Run
 import { rampAt, type FloorProfileSpec } from "./effects";
 import { crestsFor, teamSignature } from "./crests";
 import { killTime, type TimeFactor } from "./killTime";
+import { killOdds, type KillOdds } from "../critLuck/killOdds";
 import { hpSegments, segmentProfiles, timedFloors, type ToaFloor, type ToaSeason } from "./toaData";
 import { profileSignature } from "./effects";
 import { vigorPool, type PlanInput, type PlanOption, type PlanStage } from "./vigorPlan";
@@ -18,7 +19,8 @@ export interface ToaRunner {
   readonly commit: string;
   teams(signal?: AbortSignal): Promise<RileyTeamInfo[]>;
   solveMine(teamKeys: string[], opts?: { account?: RileyAccount | null; signal?: AbortSignal; onProgress?: (done: number, total: number) => void }): Promise<MineSolve[]>;
-  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: { account?: RileyAccount | null; signal?: AbortSignal }): Promise<FightCurve[]>;
+  /** `spread`: each hit's crit rides along on the curves (the clear odds, src/sim/critLuck/killOdds.ts) */
+  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: { account?: RileyAccount | null; signal?: AbortSignal; spread?: boolean }): Promise<FightCurve[]>;
 }
 
 /** One team the check times: the best loadout variant of a composition the account can field. */
@@ -53,6 +55,9 @@ export interface FloorResult {
   dps: number | null;
   /** where Riley's run ends (the first segment's fight), s — the time bar's extrapolated part starts there */
   fightSeconds?: number;
+  /** crit luck: the kill time's distribution (src/sim/critLuck/killOdds.ts) — read with `chanceBy` for "clears in N % of
+   *  runs" and each crest's chance; absent on a check from before it was kept, or where the curve carried no crits */
+  odds?: KillOdds;
   /** an engine failure: shown as "—" with this */
   error?: string;
 }
@@ -78,9 +83,13 @@ export interface Progress {
   label: string;
 }
 
-/** The key a stored check is valid for: engine commit, account, its builds, season data, candidate breadth. */
+/** What a check holds beyond kill times — bump it when a stored check must run again to show something new
+ *  ("odds1": each result's crit-luck kill-time distribution). */
+export const CHECK_CONTENT = "odds1";
+
+/** The key a stored check is valid for: engine commit, account, its builds, season data, candidate breadth, content. */
 export const checkKey = (commit: string, account: RileyAccount | null, season: ToaSeason, saved: string[], limit: number): string =>
-  [commit, account?.key ?? "-", account?.buildsKey ?? "-", `s${season.season}`, season.generatedAt, [...saved].sort().join(","), limit].join("|");
+  [commit, account?.key ?? "-", account?.buildsKey ?? "-", `s${season.season}`, season.generatedAt, [...saved].sort().join(","), limit, CHECK_CONTENT].join("|");
 
 /** His team keys whose every member the account owns (a 4-star / Rover form always counts, as his `mine` reads it). */
 export function fieldableKeys(teams: RileyTeamInfo[], account: RileyAccount | null): string[] {
@@ -163,7 +172,10 @@ export function floorResults(season: ToaSeason, team: CandidateTeam, curves: Fig
   return timedFloors(season).map((f) => {
     const segs = hpSegments(f);
     const at = byFloor.get(f.id) ?? [];
-    const kill = killTime(segs.map((s, i) => ({ hp: s.hp, curve: curves[at[i]!]! })), floorFactor(f));
+    const fight = segs.map((s, i) => ({ hp: s.hp, curve: curves[at[i]!]! }));
+    const factor = floorFactor(f);
+    const kill = killTime(fight, factor);
+    const odds = killOdds(fight, factor, { seed: `${team.rowKey}|${f.id}` });
     return {
       floorId: f.id,
       teamId: team.id,
@@ -173,6 +185,7 @@ export function floorResults(season: ToaSeason, team: CandidateTeam, curves: Fig
       splits: kill.splits.map((s) => (s === null ? null : Math.round(s * 10) / 10)),
       dps: kill.seconds ? Math.round((f.hp ?? 0) / kill.seconds) : null,
       fightSeconds: curves[at[0]!]?.seconds,
+      ...(odds ? { odds: { q: odds.q.map((x) => (x === null ? null : Math.round(x * 20) / 20)), method: odds.method } } : {}),
     };
   });
 }
@@ -226,7 +239,7 @@ export async function runToaCheck(
       opts.onProgress?.({ phase: "floors", done: i, total: candidates.length, label: label(team) });
       let mine: FloorResult[];
       try {
-        const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal });
+        const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal, spread: true });
         mine = floorResults(season, team, curves, byFloor);
       } catch (e) {
         if (signal?.aborted) throw e;

@@ -231,6 +231,10 @@ export interface RunLite {
   /** every hit that counted, in landing order: [frame, slot index, member index, damage] — a cumulative damage
    *  curve and a kill time read these; Σ damage × fps / frames = `total` */
   hits: Array<[at: number, slot: number, member: number, avg: number]>;
+  /** each hit's crit as the damage formula read it, index-aligned with `hits`: [Crit Rate %, Crit DMG %], null where
+   *  the hit cannot crit — what a run's crit-luck range is made of (src/sim/critLuck/). Optional: hand-made runs in
+   *  tests leave it out */
+  hitCrit?: Array<[critRate: number, critDmg: number] | null>;
   /** per member name */
   needs: Record<string, EnergyNeedLite>;
 }
@@ -383,6 +387,83 @@ function critOf(St: any, snap: any): [number, number] | null {
   return [snap.stats[St.Stat.CritRate] ?? 0, snap.stats[St.Stat.CritDmg] ?? 0];
 }
 
+/** A split press's hit as its log keeps it (`hitLog`: the hit's own non-crit, crit and average, floored): Crit Rate /
+ *  Crit DMG (%) read off those three where the hit is big enough for the floors not to blur them (a buff can come or
+ *  go between one press's hits), else the row's own `crit`. */
+function loggedCrit(e: { avg: number; crit: number; noCrit: number }, crit: [number, number] | null): [number, number] | null {
+  const n = Number(e.noCrit) || 0, c = Number(e.crit) || 0, a = Number(e.avg) || 0;
+  if (n < 1000) return crit;
+  if (!(c > n)) return null;
+  const rate = Math.min(100, Math.max(0, ((a - n) / (c - n)) * 100));
+  const dmg = (c / n) * 100;
+  // inside the floors' blur (a point on each figure) it is the row's crit — exact, and the same whatever the hit's size
+  if (crit && Math.abs(rate - Math.min(100, crit[0])) <= 200 / (c - n) + 0.01 && Math.abs(dmg - crit[1]) <= (100 * (1 + c / n)) / n + 0.01) return crit;
+  return [rate, dmg];
+}
+
+/** Each hit `run.state.hits` counted (the same end-of-fight cut as `toRunLite`), with its crit as the damage formula
+ *  read it: [Crit Rate %, Crit DMG %], null where it cannot crit. A traced run only — an untraced one keeps no
+ *  snapshot, and teamrun.ts drops each hit's `res` once the fight is over — so the hits are matched back to the
+ *  snapshots that dealt them: a plain cast by member, frame and damage, a split press's landed hits (its `hitLog`)
+ *  by member and damage. A hit no snapshot claims takes its member's damage-weighted crit (none on the fixture or on
+ *  David's teams: every hit matched, the matched damage equal to the hits' to the point). */
+export function hitCritsOf(E: RileyEngine, run: any): Array<[number, number] | null> {
+  const { teamrun: R, stats: St } = E;
+  if (!run?.rotationLines || !run.state) throw new Error("hitCritsOf: the run is not traced (runTeam(…, true))");
+  type Crit = [number, number] | null;
+  const framed = new Map<string, Crit[]>();
+  const loose = new Map<string, Crit[]>();
+  const weighted = new Map<string, [w: number, cr: number, cd: number]>();
+  const push = (m: Map<string, Crit[]>, k: string, v: Crit): void => {
+    const a = m.get(k);
+    if (a) a.push(v);
+    else m.set(k, [v]);
+  };
+  const weigh = (who: string, crit: Crit, avg: number): void => {
+    if (!crit || !(avg > 0)) return;
+    const w = weighted.get(who) ?? [0, 0, 0];
+    weighted.set(who, [w[0] + avg, w[1] + crit[0] * avg, w[2] + crit[1] * avg]);
+  };
+  for (const line of (run.rotationLines as any[][]).flat()) {
+    if (line.aggregate) continue;
+    for (const part of R.hitsOf(line) as any[]) {
+      const crit = critOf(St, part);
+      const who = `${part.slot ?? part.member}|${part.member}`;
+      if (part.hitLog?.length) {
+        for (const e of part.hitLog as Array<{ avg: number; crit: number; noCrit: number }>) {
+          const c = loggedCrit(e, crit);
+          push(loose, `${who}|${e.avg}`, c);
+          weigh(who, c, Number(e.avg));
+        }
+      } else if (part.avg) {
+        push(framed, `${who}|${part.starts}|${part.avg}`, crit);
+        weigh(who, crit, Number(part.avg));
+      }
+    }
+  }
+  const frames = Math.round(Number(run.seconds) * FPS);
+  const out: Crit[] = [];
+  for (const h of run.state.hits as any[]) {
+    if (h.at > frames) continue;
+    const who = `${h.slot ?? h.member}|${h.member}`;
+    const a = framed.get(`${who}|${h.at}|${h.avg}`);
+    if (a?.length) {
+      out.push(a.shift()!);
+      continue;
+    }
+    const b = loose.get(`${who}|${h.avg}`);
+    if (b?.length) {
+      out.push(b.shift()!);
+      continue;
+    }
+    const w = weighted.get(who);
+    out.push(w && w[0] > 0 ? [w[1] / w[0], w[2] / w[0]] : null);
+  }
+  return out;
+}
+
+const critCell = (c: [number, number] | null): [number, number] | null => (c ? [r2(c[0]), r2(c[1])] : null);
+
 /** The live traced `TeamRun` as a RunLite. The only function that reads his run, line and snapshot fields. */
 export function toRunLite(E: RileyEngine, run: any, meta: { picks: RileyPick[]; account: RileyAccount | null; subs: SubsMode }): RunLite {
   const { teamrun: R, stats: St, model: M } = E;
@@ -496,6 +577,7 @@ export function toRunLite(E: RileyEngine, run: any, meta: { picks: RileyPick[]; 
     buffs,
     rows,
     hits,
+    hitCrit: hitCritsOf(E, run).map(critCell),
     needs,
   };
 }
@@ -514,6 +596,9 @@ export interface FightCurve {
   sectionTotals: number[];
   /** [frame (60 per second), damage dealt up to and including that frame], frames ascending */
   points: Array<[frame: number, cumulative: number]>;
+  /** every hit counted, in landing order, with its crit — only when the curve was asked for its spread (`fightCurve`'s
+   *  `spread`): [frame, member index, damage (its average), Crit Rate %, Crit DMG %], 0 / 100 where it cannot crit */
+  critHits?: Array<[frame: number, member: number, avg: number, critRate: number, critDmg: number]>;
 }
 
 /** A finished run (traced or not) as its damage curve. Reads the same fields `toRunLite` does — the hits
@@ -661,14 +746,43 @@ export function traceLive(E: RileyEngine, teamKey: string, picks: RileyPick[] | 
 /** An untraced `runTeam` on fixed picks as its damage curve — under whatever enemy profile the caller set around
  *  it (src/sim/endgame/effects.ts `withFloorProfile`). Picks are required: a solve never runs profiled (the
  *  solver's caches don't key on the profile), so the best row comes from an unprofiled `solveMine` first. */
-export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], opts: RunOptions = {}): FightCurve {
+export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], opts: RunOptions = {}, spread: CurveSpread = null): FightCurve {
   registerAccount(E, opts.account ?? null);
   const members = teamOf(E, teamKey);
   if (!members) throw runError("unknownTeam", `wuwa_calc ${E.commit} has no team ${teamKey}`);
   const hidden = hiddenOf(members.map((m) => appKeyOf(m.name)), opts.blocked);
   if (hidden.length) throw runError("notInApp", `${hidden.join(" and ")} ${hidden.length > 1 ? "are" : "is"} not released in this app yet`, { notInApp: hidden });
   const combos = combosOf(E, teamKey, members, picks.map(normPick));
-  return toFightCurve(E, E.teamrun.runTeam(teamKey, members, combos, false));
+  if (!spread) return toFightCurve(E, E.teamrun.runTeam(teamKey, members, combos, false));
+  if (spread !== "trace") {
+    // borrow the crits of a traced run of the same picks: the same hits, frame for frame and member for member
+    const run = E.teamrun.runTeam(teamKey, members, combos, false);
+    const kept = keptHits(run);
+    const ref = spread.critHits ?? [];
+    const names: string[] = run.members.map((m: any) => String(m.name));
+    if (kept.length === ref.length && kept.every((h, i) => Number(h.at) === ref[i]![0] && names.indexOf(h.member) === ref[i]![1])) {
+      return { ...toFightCurve(E, run), critHits: kept.map((h, i) => [ref[i]![0], ref[i]![1], Math.round(Number(h.avg) || 0), ref[i]![3], ref[i]![4]]) };
+    }
+    // the hits moved (they never have on David's account): trace this one too
+  }
+  const run = E.teamrun.runTeam(teamKey, members, combos, true);
+  const names: string[] = run.members.map((m: any) => String(m.name));
+  const crits = hitCritsOf(E, run);
+  return {
+    ...toFightCurve(E, run),
+    critHits: keptHits(run).map((h, i) => [Number(h.at), names.indexOf(h.member), Math.round(Number(h.avg) || 0), crits[i] ? r2(crits[i]![0]) : 0, crits[i] ? r2(crits[i]![1]) : 100]),
+  };
+}
+
+/** How `fightCurve` gets each hit's crit: not at all (null, the fast untraced curve), from a traced run of its own
+ *  ("trace", ~5× the cost), or borrowed from a curve that has them — a traced run of the same picks under an enemy
+ *  that leaves crit alone (RES, level, DMG Bonus and DMG-taken change a hit's size, never its Crit Rate / Crit DMG). */
+export type CurveSpread = null | "trace" | Pick<FightCurve, "critHits">;
+
+/** The hits a run counted, past the same end-of-fight cut `toRunLite` and `toFightCurve` make. */
+function keptHits(run: any): any[] {
+  const frames = Math.round(Number(run.seconds) * FPS);
+  return (run.state.hits as any[]).filter((h) => !(h.at > frames));
 }
 
 /** `runTeam(…, true)` on these picks (null: the best `mine` row) as a RunLite. Throws a `RunError` for a team

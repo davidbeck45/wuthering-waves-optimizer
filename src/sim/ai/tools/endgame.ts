@@ -7,6 +7,7 @@ import { clockText, teamSignature } from "../../endgame/crests";
 import { countdown, floorChips, floorLabel, guessRegion, loadSeason, offsetOf, seasonStatus, SERVER_REGIONS, timedFloors, toaIndex, type ServerRegionId, type ToaFloor, type ToaSeason } from "../../endgame/toaData";
 import { checkKey, planInputOf, rankFloor, runToaCheck, type ToaCheck, type ToaRunner } from "../../endgame/toaRun";
 import { planVigor } from "../../endgame/vigorPlan";
+import { floorOdds } from "../../critLuck/floorOdds";
 import { characterName, compactJson, defineTool, int, nullableString, type ToolContext, type ToolStorage } from "./shared";
 import { rileyOf } from "./riley";
 
@@ -44,6 +45,11 @@ export function floorIdOf(text: string, season: ToaSeason): string | null {
 }
 
 function floorView(check: ToaCheck, f: ToaFloor, top: number): Record<string, unknown> {
+  // crit luck (src/sim/critLuck/): the share of runs that clear / earn each crest, each hit critting on its own
+  const luckOf = (odds: Parameters<typeof floorOdds>[1]): Record<string, unknown> => {
+    const o = floorOdds(f.goals, odds);
+    return o ? { chanceToClear: o.clearText, chancePerCrest: Object.fromEntries(o.crests.map((c) => [`${c.crest} crest${c.crest > 1 ? "s" : ""}`, c.text])) } : {};
+  };
   const ranked = rankFloor(check, f.id);
   const shown = ranked.slice(0, top);
   // the best saved team, only when it isn't already among those shown (then its row carries `saved`)
@@ -55,6 +61,7 @@ function floorView(check: ToaCheck, f: ToaFloor, top: number): Record<string, un
     killTime: r.result.seconds == null ? "doesn't clear in 5:00" : clockText(r.result.seconds),
     ...(r.result.extrapolated ? { extrapolated: true } : {}),
     crests: r.result.crests,
+    ...luckOf(r.result.odds),
     teamDps: int(r.team.dps),
     ...(r.result.error ? { error: r.result.error } : {}),
   });
@@ -93,7 +100,7 @@ export async function seasonCheck(ctx: ToolContext, floor: string | null) {
     commit: riley.commit,
     teams: () => riley.teams(),
     solveMine: (keys) => riley.solveMine(keys),
-    curves: (teamKey, picks, profiles) => riley.curves(teamKey, picks, profiles),
+    curves: (teamKey, picks, profiles, o) => riley.curves(teamKey, picks, profiles, { spread: o?.spread }),
   };
   const check = await runToaCheck(runner, season, { account, savedTeams, limit: CANDIDATES });
   return { season, status, region, check, reused: false, account, wanted };
@@ -137,6 +144,7 @@ export const toaCheckTool = defineTool<{ floor?: string }>({
     const notes = [
       "Sim, perfect execution: real clears take longer; the /endgame Calibrate tab scales the times by your own logged clears.",
       "Crests: 3 when the kill leaves at least the first goal's seconds on the clock, and so on.",
+      "chanceToClear / chancePerCrest (crit luck): the share of real runs that make it when each hit crits or not on its own; the kill time and crests are the average run's.",
     ];
     if (wanted) {
       const f = timedFloors(season).find((x) => x.id === wanted)!;

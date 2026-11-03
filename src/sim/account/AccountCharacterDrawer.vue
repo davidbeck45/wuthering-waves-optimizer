@@ -42,6 +42,10 @@
           <span class="dr-stat__sub">{{ card.echoes }} / 5 echoes</span>
         </div>
       </div>
+      <!-- crit luck: the Best DMG above is an average; one run of that rotation crits more or less -->
+      <p v-if="rangeLine" class="dr__luck" data-test-account-drawer-range>
+        <b>Crit luck:</b> {{ rangeLine }} <span class="dr__luck-what">(Best DMG, this app's calculator: every hit crits or not on its own)</span>
+      </p>
 
       <section v-if="rank?.best" class="dr__section">
         <h3 class="dr__h3">Best rotation</h3>
@@ -164,6 +168,7 @@ import MaterialsCostToMax from "../materials/MaterialsCostToMax.vue";
 import { characterShortName, elementColor, rarityColor, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
+import { rangeSentence } from "../critLuck/format";
 import { rankingsMineHash } from "./accountState";
 import { erGainNote, INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
 import { OWN_KIND_LABELS, type DrawerOwn } from "./ownUpgrades";
@@ -190,6 +195,11 @@ const shortName = computed(() => characterShortName(props.card?.id));
 // build history (src/sim/buildHistory/): read each time the drawer opens on a character
 const history = computed(() => (props.card ? readHistory(props.card.id) : []));
 const teamTitle = (name: string): string => parsePresetName(name, { owned: props.owned }).title || name;
+/** "8 runs in 10 land between 1.10M and 1.35M" for the Best DMG figure */
+const rangeLine = computed(() => {
+  const c = props.card;
+  return c?.range && c.damage !== null ? rangeSentence({ mean: c.damage, p10: c.range.p10, p90: c.range.p90 }, compact) : null;
+});
 
 watch(
   () => props.card?.id ?? null,
@@ -364,6 +374,16 @@ function onBackdrop(event: MouseEvent): void {
 .dr__note {
   font-size: 0.72rem;
   color: oklch(var(--bc) / 0.55);
+}
+.dr__luck {
+  margin: -0.15rem 0 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: oklch(var(--bc) / 0.8);
+}
+/* at 0.68 it read 3.95:1 on the dark drawer, under AA's 4.5:1: the line's own 0.8 */
+.dr__luck-what {
+  color: oklch(var(--bc) / 0.8);
 }
 .dr__invest,
 .dr__teams {

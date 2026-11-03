@@ -18,7 +18,7 @@ const FPS = 60;
 const STEP = 1 / FPS;
 
 /** The last loop's own DPS with the floor's time factor taken out — what the extrapolation scales back up. */
-function steadyRate(curve: CurveLike, factor: TimeFactor): number {
+export function steadyRate(curve: CurveLike, factor: TimeFactor): number {
   const n = curve.sectionSeconds.length;
   const secs = curve.sectionSeconds[n - 1] ?? 0;
   const dmg = curve.sectionTotals[n - 1] ?? 0;

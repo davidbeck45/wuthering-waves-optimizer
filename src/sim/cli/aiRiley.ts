@@ -3,8 +3,7 @@
 // imports rileyNode (node:child_process), so nothing the browser bundles may import it.
 import type { ExportFile } from "./exportShape";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
-import { fightCurve } from "../engine/rileyRun";
-import { withFloorProfile } from "../endgame/effects";
+import { floorCurves } from "../endgame/effects";
 import { accountFingerprint } from "../ai/tools/shared";
 import type { RileyProvider, RileyToolEngine } from "../ai/tools/riley";
 
@@ -29,8 +28,7 @@ export const headlessRiley: RileyProvider = async (exp: ExportFile) => {
     teamKeysFor: async (ids) => riley.teamKeysFor(ids),
     solveMine: async (keys, opts) => riley.solveMine(keys, { subs: opts?.subs }),
     tracedRun: async (teamKey, picks, opts) => riley.tracedRun(teamKey, picks, { subs: opts?.subs }),
-    curves: async (teamKey, picks, profiles) =>
-      profiles.map((spec) => withFloorProfile(E, spec, () => fightCurve(E, teamKey, picks, { account: riley.account, blocked: riley.blocked }))),
+    curves: async (teamKey, picks, profiles, opts) => floorCurves(E, teamKey, picks, profiles, { account: riley.account, blocked: riley.blocked }, !!opts?.spread),
   };
   return engine;
 };

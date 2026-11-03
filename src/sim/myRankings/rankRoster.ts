@@ -12,6 +12,8 @@ import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets } from "../presets
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { characterDisplayName, isRosterCharacter, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
+import { hitsOfAttacks } from "../critLuck/appHits";
+import { damageRange, type RangeMethod } from "../critLuck/spread";
 
 export type RotationSource = "yours" | "curated" | "wuwa_calc";
 
@@ -23,6 +25,9 @@ export interface RotationScore {
   critDamage: number;
   /** average damage per second when the rotation carries a duration */
   dps: number | null;
+  /** crit luck (src/sim/critLuck/): where one run of this rotation lands — 8 runs in 10 between p10 and p90. Kept for a
+   *  character's best rotation only (what /account's drawer headlines) */
+  range?: { p10: number; p50: number; p90: number; sd: number; method: RangeMethod };
 }
 
 export interface InvestmentDelta {
@@ -152,6 +157,14 @@ export async function rotationCandidates(id: string, characterData: Record<strin
     out.push({ name: p.name, source: "wuwa_calc", rotation: { id: `wuwa-${out.length}`, name: p.name, description: p.description, duration: null, actions: withIds(actions) } });
   }
   return out;
+}
+
+/** One rotation's crit luck on this build: every attack's hits rolled apart (critLuck/appHits.ts). The mean is the
+ *  calculator's own average for the rotation. */
+export async function rotationRange(rotation: CharacterRotationInput, id: string, characters: Record<string, any>, enemy: TeamEnemyConfig, echoes: any[]): Promise<NonNullable<RotationScore["range"]>> {
+  const result = await calcCharacterRotationDamage(rotation, null, id, characters, enemy, echoes);
+  const r = damageRange(hitsOfAttacks(result.attacks), { seed: `${id}|${rotation.name}` });
+  return { p10: r.p10, p50: r.p50, p90: r.p90, sd: r.sd, method: r.method };
 }
 
 export async function scoreRotation(rotation: CharacterRotationInput, id: string, characters: Record<string, any>, enemy: TeamEnemyConfig, echoes: any[]): Promise<Omit<RotationScore, "name" | "source">> {
@@ -384,6 +397,11 @@ export async function rankRoster(
         }
       }
       rank.rotations.sort((a, b) => b.avgDamage - a.avgDamage);
+      if (rank.best && bestCandidate) {
+        try {
+          rank.best.range = await rotationRange(bestCandidate.rotation, id, characters, enemy, inventoryEchoes);
+        } catch { /* the range is extra: the average stands without it */ }
+      }
       if (options.investment && rank.best && bestCandidate) {
         const base = rank.best.avgDamage;
         const nextData = await withNextSequence(id, data, rank.sequence);

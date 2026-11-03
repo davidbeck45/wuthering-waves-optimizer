@@ -9,6 +9,7 @@ import type { UpgradeView } from "../../myRankings/rows";
 import type { TeamView } from "../../energy/useEnergyNeeds";
 import type { CharacterWeaponValue, ValueOption } from "../../weaponValue/weaponValue";
 import type { CandidateTeam, FloorResult } from "../../endgame/toaRun";
+import { floorOdds } from "../../critLuck/floorOdds";
 import type { ToaFloor } from "../../endgame/toaData";
 
 export interface ExplainRequest {
@@ -180,6 +181,11 @@ export function explainToaFloor(input: {
   const { floor, towerName } = input;
   const top = input.rows.slice(0, input.top ?? 5);
   const goals = [...floor.goals].sort((a, b) => a - b);
+  // crit luck: each hit crits or not, so real runs land either side of the average kill (src/sim/critLuck/)
+  const luck = (result: FloorResult): Record<string, unknown> => {
+    const o = result.error ? null : floorOdds(floor.goals, result.odds);
+    return o ? { "runs that clear (crit luck)": o.clearText, "runs that earn each crest (crit luck)": Object.fromEntries(o.crests.map((c) => [`${c.crest} crest${c.crest > 1 ? "s" : ""}`, c.text])) } : {};
+  };
   return {
     title: `${towerName} floor ${floor.floor} · Tower of Adversity`,
     question: `Explain the clear check for ${towerName} floor ${floor.floor}: how many crests my best teams get, what decides the kill time, and what would get me more crests?`,
@@ -206,6 +212,7 @@ export function explainToaFloor(input: {
           crests: r.result.error ? null : r.result.crests,
           extrapolated: r.result.extrapolated || undefined,
           "player's own pace (× the sim)": pace ? Math.round(pace * 100) / 100 : undefined,
+          ...luck(r.result),
           "engine error": r.result.error,
         };
       }),

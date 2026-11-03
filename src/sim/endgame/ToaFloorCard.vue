@@ -135,6 +135,22 @@
                 <span v-if="r.result.extrapolated" class="opacity-60" title="Past the end of Riley's run (opener + 3 loops, ~100 s): extrapolated at the last loop's DPS" data-test-toa-extrapolated>extrapolated</span>
                 <span v-if="youOf(r.team.id) !== null" class="opacity-80">you: <b class="tabular-nums">{{ clockText(youOf(r.team.id)) }}</b> <span class="opacity-60">({{ paceText(r.team.id) }})</span></span>
               </div>
+              <!-- crit luck: each hit crits or not, so a run lands a little either side of the sim's average kill -->
+              <template v-if="luck.get(r.team.id)">
+                <div v-for="line in luck.get(r.team.id)" :key="line.key" class="toa-odds" :data-test-toa-odds="line.key === 'sim' ? r.team.id : undefined" :data-test-toa-odds-pace="line.key === 'pace' ? r.team.id : undefined">
+                  <span class="toa-odds__lead">{{ line.lead }}</span>
+                  <span v-if="line.odds.sure">every crest in more than 99 runs in 100</span>
+                  <span v-else-if="line.odds.hopeless">no clear, even on a lucky run (under 1 in 100)</span>
+                  <template v-else>
+                    <span v-if="floor.goals.length && Math.min(...floor.goals) > 0" class="toa-odds__part" data-test-toa-odds-clear>clears in <b class="tabular-nums">{{ line.odds.clearText }}</b> of runs</span>
+                    <span v-for="c in line.odds.crests" :key="c.crest" class="toa-odds__part" :data-test-toa-odds-crest="c.crest">
+                      <span class="toa-odds__stars" aria-hidden="true">{{ "★".repeat(c.crest) }}</span><span class="sr-only">{{ c.crest }} {{ c.crest === 1 ? "crest" : "crests" }}{{ c.goal === 0 ? " (clear)" : "" }}:</span>
+                      <b class="tabular-nums">{{ c.text }}</b>
+                    </span>
+                  </template>
+                  <span v-if="line.odds.range && !line.odds.hopeless" class="toa-odds__range" data-test-toa-odds-range>8 runs in 10 finish {{ rangeText(line.odds.range) }}</span>
+                </div>
+              </template>
             </div>
           </li>
         </ol>
@@ -164,6 +180,7 @@ import ToaPortraits from "./ToaPortraits.vue";
 import ToaTimeBar from "./ToaTimeBar.vue";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
 import { explainToaFloor } from "../ai/explain/explainPayloads";
+import { floorOdds, type FloorOdds } from "../critLuck/floorOdds";
 
 const props = withDefaults(
   defineProps<{
@@ -224,6 +241,23 @@ const youOf = (teamId: string): number | null => {
 const paceText = (teamId: string): string => {
   const p = props.paceOf(teamId);
   return p ? `×${p.toFixed(2)} the sim` : "";
+};
+/** a team row's crit luck: at the sim's speed (beside its verdict), and at the player's own pace where they logged one */
+type LuckLine = { key: "sim" | "pace"; lead: string; odds: FloorOdds };
+const luckOf = (r: { result: FloorResult; team: CandidateTeam }): LuckLine[] => {
+  const lines: LuckLine[] = [];
+  const sim = r.result.error ? null : floorOdds(props.floor.goals, r.result.odds);
+  if (sim) lines.push({ key: "sim", lead: "Crit luck:", odds: sim });
+  const pace = props.paceOf(r.team.id);
+  const mine = pace && !r.result.error ? floorOdds(props.floor.goals, r.result.odds, pace) : null;
+  if (mine) lines.push({ key: "pace", lead: "At your pace:", odds: mine });
+  return lines;
+};
+const luck = computed(() => new Map(shown.value.map((r) => [r.team.id, luckOf(r)])));
+/** "in 0:15–0:16", "at about 0:15" */
+const rangeText = ([lo, hi]: [number, number]): string => {
+  const a = clockText(lo), b = clockText(hi);
+  return a === b ? `at about ${a}` : `in ${a}–${b}`;
 };
 </script>
 
@@ -297,6 +331,35 @@ const paceText = (teamId: string): string => {
 html[data-theme-style="light"] .toa-crests:not(.toa-crests--c0),
 html[data-theme-style="light"] .toa-star {
   color: #d97706;
+}
+.toa-odds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.4rem;
+  row-gap: 0;
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: oklch(var(--bc) / 0.8);
+}
+.toa-odds__lead {
+  font-weight: 600;
+}
+.toa-odds__part {
+  white-space: nowrap;
+}
+.toa-odds__stars {
+  color: oklch(var(--wa));
+  margin-right: 0.15rem;
+  letter-spacing: -0.05em;
+}
+html[data-theme-style="light"] .toa-odds__stars {
+  color: #b45309;
+}
+/* the line's own colour (0.8): at 0.7 the lead and the range read 4.2:1 on the dark card, under AA's 4.5:1 */
+.toa-odds__range {
+  flex-basis: 100%;
 }
 .toa-chip {
   display: inline-flex;

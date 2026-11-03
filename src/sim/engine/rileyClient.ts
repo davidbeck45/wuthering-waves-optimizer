@@ -48,7 +48,7 @@ export interface RileyClient {
   tracedRun(teamKey: string, picks?: RileyPick[] | null, opts?: ClientRunOptions): Promise<RunLite>;
   /** the ToA clear check: an untraced run of fixed picks against each enemy profile (null = the engine's own
    *  level-100 / 20 % enemy) as its damage curve, index-aligned; memoised per profile */
-  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: ClientRunOptions & { onProgress?: (done: number, total: number) => void }): Promise<FightCurve[]>;
+  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: ClientRunOptions & { onProgress?: (done: number, total: number) => void; spread?: boolean }): Promise<FightCurve[]>;
   /** forget every memoised solve and run (the worker stays) */
   clear(): void;
   dispose(): void;
@@ -204,7 +204,7 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
       const account = opts.account ?? null;
       const subs = opts.subs ?? DEFAULT_SUBS;
       const keyOf = (spec: FloorProfileSpec | null): string =>
-        `curve|${memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks })}|${spec ? profileSignature(spec) : "-"}`;
+        `curve${opts.spread ? "+spread" : ""}|${memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks })}|${spec ? profileSignature(spec) : "-"}`;
       const found = new Map<number, Promise<FightCurve>>();
       const missing: number[] = [];
       profiles.forEach((spec, i) => {
@@ -214,7 +214,7 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
       });
       const known = profiles.length - missing.length;
       if (missing.length) {
-        const batch = request<FightCurve[]>({ op: "curves", teamKey, picks, profiles: missing.map((i) => profiles[i]!), opts: { account, subs, blocked } }, opts.signal, (done) =>
+        const batch = request<FightCurve[]>({ op: "curves", teamKey, picks, profiles: missing.map((i) => profiles[i]!), opts: { account, subs, blocked }, ...(opts.spread ? { spread: true } : {}) }, opts.signal, (done) =>
           opts.onProgress?.(known + done, profiles.length),
         );
         missing.forEach((i, j) => found.set(i, remember(keyOf(profiles[i]!), batch.then((r) => r[j]!))));

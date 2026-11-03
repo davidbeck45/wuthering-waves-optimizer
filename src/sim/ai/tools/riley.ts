@@ -22,8 +22,9 @@ export interface RileyToolEngine {
   solveMine(teamKeys: string[], opts?: { subs?: SubsMode }): Promise<MineSolve[]>;
   /** the traced run on these picks (null: the best `mine` row) */
   tracedRun(teamKey: string, picks: RileyPick[] | null, opts?: { subs?: SubsMode }): Promise<RunLite>;
-  /** an untraced run of fixed picks against each enemy profile, as its damage curve (the ToA check) */
-  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>): Promise<FightCurve[]>;
+  /** an untraced run of fixed picks against each enemy profile, as its damage curve (the ToA check); `spread`: with each
+   *  hit's crit (the clear odds) */
+  curves(teamKey: string, picks: RileyPick[], profiles: Array<FloorProfileSpec | null>, opts?: { spread?: boolean }): Promise<FightCurve[]>;
 }
 
 export type RileyProvider = (exp: ExportFile) => Promise<RileyToolEngine>;

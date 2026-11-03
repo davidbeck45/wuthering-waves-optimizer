@@ -90,6 +90,10 @@
 
       <!-- floors -->
       <div v-show="tab === 'floors'" data-test-toa-floors>
+        <p v-if="check && check.results.some((r) => r.odds)" class="text-xs opacity-75 leading-snug mb-3 max-w-3xl" data-test-toa-odds-intro>
+          <b>Crit luck:</b> each hit crits or not, so a real run kills a little either side of the average time shown.
+          “N %” is how many runs in 100 clear the floor or earn that crest (crits only, not enemy actions or your timing).
+        </p>
         <h2 class="toa-h2">Hazard Tower</h2>
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2 mb-5">
           <ToaFloorCard
@@ -145,6 +149,8 @@
           :alternatives="alternatives"
           :misses="misses"
           :candidates="check.candidates"
+          :results="check.results"
+          :pace-of="prefs.usePace && hasClears ? paceFor : undefined"
           :has-clears="hasClears"
           :vigor="VIGOR_PER_RESONATOR"
         />
@@ -179,6 +185,10 @@
         <span>
           Sim, perfect execution: one target, no dodging, boss phases or invulnerable windows; waves summed as one HP pool. Kill times past
           Riley's ~100 s run are extrapolated at the last loop's DPS. Vigor rules: check in game.
+        </span>
+        <span>
+          Crit luck: each hit of wuwa_calc's run crits on its own at that moment's Crit Rate; the chances come from how the damage dealt by
+          each second spreads around the average. Nothing else varies in them.
         </span>
         <span v-if="check" class="opacity-70">Checked {{ new Date(check.computedAt).toLocaleString() }}.</span>
       </footer>
@@ -231,6 +241,7 @@ const {
   clears,
   hasClears,
   ownPace,
+  paceFor,
   logClear,
   forgetClear,
 } = useToa();
