@@ -127,7 +127,7 @@ section "Account and rankings refinements" at the end).
 | `data/teams.json` | GENERATED — `TeamRotationPreset[]`: per solver state, for every main DPS the app knows, the best 3 distinct compositions, the three rotations interleaved in execution order, main DPS in slot 0, enemy = level 100 / 20% RES (Riley's target) |
 | `data/manifest.json` | GENERATED — provenance (`wuwaCalcCommit`, `appCommit`, state, timestamp) and counts |
 | `data/breakpoints.json` | GENERATED — the **sequence-breakpoints table** (`wuwa-tools/rotation-port/export_breakpoints.mjs`, kept with its prose twin in `wuwa-tools/knowledge/`): per resonator, each of Riley's loadouts with the sequence levels at which its declared loop switches (`Loadout.rotationAt` over the kit's `rotation: { 0: …, 3: … }` map) and what the switch adds/drops, plus the Sequence pieces with his own note on each. `loadSequenceBreakpoints(key)` (keyed by Riley's name, so both Rover forms match) feeds the Rotation presets modal's "Sequence breakpoints" block (`CalculatorRotationsPresetsModal.vue`, `describeBreakpoints()`). Each switch carries a `kind`: `loop` (different casts), `order` (same casts reordered) or `chain` (only an opener / first-visit / start-of-combat chain differs — Aemeath S1, Xuanling S1, Hiyuki S2, Phrolova S2); two identical Rotation objects (Jiyan's S6) are no breakpoint. 12 of 47 resonators have one, 8 of them a real loop change (2026-09-15). The import/sync hint `nextLoopChange` fires only for a real loop change |
-| `wuwaCalcPresets.test.ts` | gate: every generated action resolves on its character through `resolveRotationActionToAttackData`, names unique and disjoint from the curated presets, every team a complete 3-slot team |
+| `wuwaCalcPresets.test.ts` | gate: every generated action resolves on its character through `resolveRotationActionToAttackData`, names unique and disjoint from the curated presets, every team a complete 3-slot team, no preset (name, teammates or description) names a resonator the app has no character for (`manifest.notInApp`) |
 
 Generator: `~/Projects/wuwa-tools/rotation-port/emit_app_presets.py --states s6r5,s6r5mdps,s6r1mdps` (after
 `export_rotations.mjs <state>` → `dump_app_tables.ts` → `map_rotations.py --state <state>` per state, see that README).
@@ -141,9 +141,28 @@ most damage casts (`enemyConfigOf` here, `enemy_config_of` in the Python mapper;
 Solver states shipped: **S6R5** (everyone S6, R5 signatures), **S6R5 DPS · S0R1 team** and **S6R1 DPS · S0R1 team**
 (only the main DPS S6, everyone else S0 with R1 weapons — the realistic case when supports aren't S6/R5); names
 carry the state tag, and each character preset's name states that character's own sequence and weapon. Never hand-edit `data/`. Casts the app has no action for are listed in each
-preset's description as "Not ported" (as of 2026-09-11: the echoes Oblivion / Core of Collapse / Hecate, Cantarella's
-"Beneath the Sea", one forte heavy). Kit multipliers Riley folds into his motion values (Hiyuki, Cantarella, Brant,
+preset's description as "Not ported"; none since 2026-09-12 (wuwa-tools 6c1910d mapped the last ones: the cast Riley
+types "Forte Echo - Oblivion" is Lucilla's own forte, `OblivionDMG`; "Echo - Core of Collapse" is
+`ReminiscenceThrenodianLeviathan`'s `CoreofCollapseDMG`; "Echo - Hecate" / "Nightmare: Hecate" are the app's
+`Hecate` / `NightmareHecate`; Cantarella's "Beneath the Sea" is an override; re-checked 2026-11-02: `unmatched` 0 in
+all three states). Kit multipliers Riley folds into his motion values (Hiyuki, Cantarella, Brant,
 Galbrena, …) are mapped by ratio — the app applies them through the kit's buffs, so keep those enabled.
+**Only loops the app can play (2026-11-02).** Riley's engine has kits the app has no character for (Lily since his
+7bcbb24). He runs one loop (the same casts) in several teams, and the mapper names it after the best; 31 of the mapped
+loops were named after a team with Lily, and 8 of them shipped ("Galbrena … · Lily + Qiuyuan", "Hsin … · Lily +
+Suoming", …), so the Rotation presets modal offered teams nobody can field here and the rankings had to skip them by
+name. The generator now decides from the app's own character list (`out/app_attacks.json`, dumped from Ryan's
+`characters.ts`; no list of names): a loop whose named team has a missing member is **renamed after the best of its own
+teams the app can field** (name, team sentence, rotation time and `duration` are that team's, Riley's numbers; the
+actions are the loop's own), and a loop no such team plays is **left out**. Of the 8: Galbrena's S6R5 loop and Sigrika's two
+are renamed (Galbrena "Lily + Qiuyuan" → "Lupa + Qiuyuan"; Sigrika "Lily + Qiuyuan" → "Shorekeeper + Qiuyuan" and
+"Lily + Lucilla" → "Mornye + Lucilla", a loop with the same actions and a stronger team: the renamed loop is ranked by
+its new team before the dedupe); Hiyuki's, Hsin's, Mortefi's, Rebecca's and Zhezhi's are gone: 153 → 148 character presets;
+the 149 team presets never had a missing member. `manifest.json` records `notInApp`, `renamedForApp` and
+`skippedNotInApp`. Rankings: a renamed loop is scored again, so Galbrena's best can be her wuwa_calc loop again (the
+same actions it had before 10-31's name filter moved her to the curated one), `RANKING_CACHE_VERSION` 3; `namesTeammateOutsideApp`
+stays as the guard for data made by an older generator. When Ryan registers Lily, her loops come back on the next
+regeneration with no code change.
 E2E: `cypress/e2e/wuwaCalcPresets.cy.ts`. Credit: author field `Riley31415 (wuwa_calc)` on every preset.
 
 

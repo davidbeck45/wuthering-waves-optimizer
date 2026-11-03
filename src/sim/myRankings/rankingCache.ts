@@ -9,7 +9,7 @@
 import type { RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
-export const RANKING_CACHE_VERSION = 2; // 2: wuwa_calc loops beside a teammate the app lacks (Lily) are no longer scored
+export const RANKING_CACHE_VERSION = 3; // 2: wuwa_calc loops beside a teammate the app lacks (Lily) are no longer scored; 3: the regenerated stock loops (named after a team the app can field, 2026-11-02)
 export const RANKING_CACHE_KEY = "wtplus:myRankings:last";
 
 export interface RankingInputs {

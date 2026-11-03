@@ -27,6 +27,20 @@ describe("wuwa_calc stock presets", () => {
     cy.get('[data-test-rotation-item-by-name*="(wuwa_calc)"]').should("exist");
   });
 
+  // 2026-11-02: Riley's loops beside Lily (no character in this app) are renamed after a team of their own the app can
+  // field, or left out — Galbrena's best S6R5 loop reads "Lupa + Qiuyuan" with that team's numbers
+  it("offers only loops the app can field: Galbrena's Lily loop reads Lupa + Qiuyuan, no preset names Lily", () => {
+    cy.richSelect("[data-test-character-select]", "Galbrena", { search: "Galbrena" });
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+    cy.get('[data-test="rotations-overflow-menu"]').click();
+    cy.get('[data-test-rotations-action="presets"]').click();
+    cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
+    cy.contains("[data-test-rotations-presets] .card", "Lupa + Qiuyuan · S6R5 (wuwa_calc)").should("contain.text", "Team: Lupa + Qiuyuan (main DPS): 247,678 DPS for Galbrena");
+    cy.get("[data-test-rotations-presets] .card").should("have.length.greaterThan", 1);
+    cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
+  });
+
   it("lists the S6R5 full-team rotations under Teams > List Presets and imports one with its actions", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get('[data-test="team-rotations-overflow-menu"]').click();

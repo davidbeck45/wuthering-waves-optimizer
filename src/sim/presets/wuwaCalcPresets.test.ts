@@ -14,6 +14,8 @@ import {
 import { allCharactersList, getCharByName } from "../../characters/characters";
 import { resolveRotationActionToAttackData } from "../../calculator/resolveRotationAction";
 import { teamRotationPresets } from "../../teamRotations/presets";
+import { isRosterCharacter } from "../display/names";
+import { parsePresetName } from "./presetName";
 // Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
 vi.setConfig({ testTimeout: 60_000 });
 
@@ -55,6 +57,25 @@ describe("wuwa_calc stock presets (generated data)", () => {
     }
     expect(presetCount).toBe(manifest.rotationPresets);
     expect(actionCount).toBeGreaterThan(1000);
+  });
+
+  // 2026-11-02: Riley's loops beside Lily (a kit the app has no character for) are renamed after a team of their own
+  // the app can field, or left out (wuwa-tools rotation-port/map_rotations.py as_fieldable) — none may name her
+  it("no generated preset names a resonator the app has no character for", async () => {
+    expect(manifest.notInApp, "the generator records who it left out").toEqual(expect.any(Array));
+    for (const name of manifest.notInApp) expect(isRosterCharacter(name), name).toBe(false);
+    const word = (name: string) => new RegExp(`\\b${name}\\b`);
+    const texts: Array<[string, string]> = [];
+    for (const key of manifest.characters) {
+      for (const preset of await loadWuwaCalcRotationPresets(key)) {
+        for (const teammate of parsePresetName(preset.name).teammateKeys) expect(isRosterCharacter(teammate), `${preset.name}: ${teammate}`).toBe(true);
+        texts.push([preset.name, `${preset.name} ${preset.description}`]);
+      }
+    }
+    for (const preset of await loadWuwaCalcTeamPresets()) texts.push([preset.name, `${preset.name} ${preset.description}`]);
+    for (const [label, text] of texts) {
+      for (const name of manifest.notInApp) expect(word(name).test(text), `${label} names ${name}`).toBe(false);
+    }
   });
 
   it("every generated team preset is a complete 3-slot team whose actions resolve on their slot", async () => {
