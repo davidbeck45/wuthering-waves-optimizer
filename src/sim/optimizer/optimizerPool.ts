@@ -228,7 +228,7 @@ export function* optimizerLoadoutStream(
 }
 
 /** A user-typed or computed number that the engine sums as `Number(value) || 0` is negative. */
-function hasNegativeNumber(record: unknown, depth = 0): boolean {
+export function hasNegativeNumber(record: unknown, depth = 0): boolean {
   if (record == null) return false;
   if (typeof record === "number" || typeof record === "string") {
     const n = Number(record);
@@ -259,6 +259,8 @@ export interface OptimizerGenerationInput {
   target: string;
   /** Per set-bonus label stats, as the optimizer panel emits them. */
   echoSetPassiveBuffs?: Record<string, unknown>;
+  /** Per main-echo key, its buff stats (read for the sign check). */
+  mainEchoStats?: Record<string, unknown>;
   /** The optimizer context (only `customBuffs` and `enemyResist` are read). */
   context?: { customBuffs?: unknown; enemyResist?: unknown } | null;
   /** The pre-built rotation data for a `Rotation:` target (per-action buffs are read). */
@@ -270,18 +272,30 @@ export interface OptimizerGenerationPlan {
   uniquePool: boolean;
   skipDominatedPartials: number;
   droppedDuplicates: number;
+  /** The scorer may skip loadouts by an upper bound on their subtree (`createLoadoutPruner`). */
+  pruneByBound: boolean;
+}
+
+/** What a scorer needs to bound subtrees: the generator's pool and rules (serialisable; null = no bound skip). */
+export interface LoadoutPruneSetup {
+  pool: any[];
+  mainEchoKeys: string[];
+  loadoutFormat: OptimizerLoadoutFormat;
+}
+
+export function pruneSetupOf(plan: OptimizerGenerationPlan, mainEchoKeys: unknown, loadoutFormat: unknown): LoadoutPruneSetup | null {
+  if (!plan.pruneByBound || !Array.isArray(mainEchoKeys)) return null;
+  return { pool: plan.echoes, mainEchoKeys: [...mainEchoKeys], loadoutFormat: normalizeLoadoutFormat(loadoutFormat) };
 }
 
 /**
  * The preconditions under which the stat pipeline and every score are monotone non-decreasing in added echoes (see
- * README): every echo-side number is ≥ 0 (substat values, set-passive stats), the user-typed numbers that could flip a
- * factor's sign are ≥ 0 (custom buffs, per-action rotation buffs and hit counts), and the enemy's resistance leaves the resistance
- * multiplier ≥ 0. Game data (talents, buff and set-bonus modifiers) is pinned non-negative by
- * `optimizerPool.test.ts`.
+ * README): every echo-side number is ≥ 0 (substat values, set-passive stats), the
+ * user-typed numbers that could flip a factor's sign are ≥ 0 (custom buffs, per-action rotation buffs and hit counts),
+ * and the enemy's resistance leaves the resistance multiplier ≥ 0. Game data (talents, buff and set-bonus modifiers)
+ * is pinned non-negative by `optimizerPool.test.ts`. Format- and pool-independent: both exact skips build on it.
  */
-export function canSkipDominatedPartials(input: OptimizerGenerationInput, uniquePool: boolean): boolean {
-  if (!uniquePool) return false;
-  if (normalizeLoadoutFormat(input.loadoutFormat) !== "Any") return false;
+export function isMonotoneInEchoes(input: OptimizerGenerationInput): boolean {
   if (!Array.isArray(input.mainEchoKeys) || input.mainEchoKeys.length === 0) return false;
   if (!Number.isInteger(input.topN) || input.topN < 1) return false;
   const targetType = String(input.target ?? "").split(":")[0];
@@ -306,6 +320,28 @@ export function canSkipDominatedPartials(input: OptimizerGenerationInput, unique
   return true;
 }
 
+/** The dominated-partials skip: a deduped pool, the "Any" format and the monotone pipeline. */
+export function canSkipDominatedPartials(input: OptimizerGenerationInput, uniquePool: boolean): boolean {
+  if (!uniquePool) return false;
+  if (normalizeLoadoutFormat(input.loadoutFormat) !== "Any") return false;
+  return isMonotoneInEchoes(input);
+}
+
+/**
+ * The bound skip (`loadoutBound.ts`): a deduped pool (each loadout reaches the scorer in generation order, so its
+ * prefixes name the subtrees it belongs to), the monotone pipeline, and a `Stat:` or `Rotation:` target without
+ * per-action overrides (the bound scores a virtual loadout through the plain path).
+ */
+export function canPruneByBound(input: OptimizerGenerationInput, uniquePool: boolean): boolean {
+  if (!uniquePool) return false;
+  const targetType = String(input.target ?? "").split(":")[0];
+  if (targetType !== "Stat" && targetType !== "Rotation") return false;
+  if ((input.rotationData?.overrideActions ?? []).length > 0) return false;
+  // the main echo is fixed inside a subtree, but its buff is one more term of the sums the bound inflates
+  if (hasNegativeNumber(input.mainEchoStats)) return false;
+  return isMonotoneInEchoes(input);
+}
+
 /** One call per optimizer run, on the main thread: the pool to send and the two fast-path switches. */
 export function planOptimizerGeneration(input: OptimizerGenerationInput): OptimizerGenerationPlan {
   const pool = prepareOptimizerEchoPool(input.echoes, input.mainEchoKeys);
@@ -315,5 +351,6 @@ export function planOptimizerGeneration(input: OptimizerGenerationInput): Optimi
     uniquePool: pool.unique,
     skipDominatedPartials: skip ? input.topN : 0,
     droppedDuplicates: pool.dropped,
+    pruneByBound: canPruneByBound({ ...input, echoes: pool.echoes }, pool.unique),
   };
 }

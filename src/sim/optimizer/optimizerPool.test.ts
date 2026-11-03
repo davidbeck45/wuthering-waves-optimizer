@@ -239,6 +239,7 @@ describe("canSkipDominatedPartials / planOptimizerGeneration", () => {
       uniquePool: false,
       skipDominatedPartials: 0,
       droppedDuplicates: 0,
+      pruneByBound: false,
     });
   });
 });

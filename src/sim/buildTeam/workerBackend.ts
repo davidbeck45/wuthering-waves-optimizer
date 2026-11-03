@@ -7,7 +7,7 @@
 // `score()` reuses a processor worker as a batch scorer for the swap pass: initialised once per job with a top-N far
 // above any batch, so every loadout it scores comes back.
 import { getOptimizerLoadoutHash, splitOptimizerWorkerCount } from "../../calculator/optimizer";
-import { planOptimizerGeneration } from "../optimizer/optimizerPool";
+import { planOptimizerGeneration, pruneSetupOf, type LoadoutPruneSetup } from "../optimizer/optimizerPool";
 import type { MemberJob, OptimizeOutcome, OptimizeRequest, OptimizerBackend, ScoredLoadout } from "./headlessOptimizer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -59,8 +59,10 @@ const plain = <T>(value: T): T => JSON.parse(JSON.stringify(value, (_k, v) => (t
 
 const abortError = (): Error => Object.assign(new Error("The optimizer run was cancelled"), { name: "AbortError" });
 
-function initData(job: MemberJob, minStats: OptimizeRequest["minStats"], topN: number): Record<string, unknown> {
+function initData(job: MemberJob, minStats: OptimizeRequest["minStats"], topN: number, pruning: LoadoutPruneSetup | null = null): Record<string, unknown> {
   return {
+    // the bound skip (loadoutBound.ts): the generator's pool and rules; the processor scores what it cannot rule out
+    pruning,
     context: plain(job.context),
     minStats: minStats.map((s) => ({ ...s })),
     echoSetPassiveBuffs: plain(job.echoSetPassiveBuffs),
@@ -177,7 +179,7 @@ export function workerBackend(options: WorkerBackendOptions = {}): OptimizerBack
         }
       };
 
-      const init = initData(job, request.minStats, request.topN);
+      const init = initData(job, request.minStats, request.topN, pruneSetupOf(plan, request.mainEchoKeys, request.loadoutFormat));
       for (const w of processors) {
         busy.set(w, false);
         w.onerror = (e) => fail(new Error(`An optimizer worker failed${e?.message ? `: ${e.message}` : ""}`));

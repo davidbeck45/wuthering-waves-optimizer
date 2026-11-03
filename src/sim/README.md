@@ -390,6 +390,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings and handoffs from the run — written to a new export (`<source>_synced.json` by default; a plain export is never overwritten), with the per-team report; `--rotations` also saves each member's loop to that character's rotations (replacing one of the same name) |
 | `team <one> --json` | also lists `actionRows`: every action's own normal / average / crit damage in execution order (what the audit compared against Riley's per-cast averages) |
 | `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
+| `optimizer-bench [--reps n] [--only text]` | the echo optimizer before and after its exact speedups (§ Performance, pass 2): 45 cases on the export (four kinds of character, three formats, set / main-stat filters, ER floors, `Stat:` targets, an empty pool, a pool without its main echo, a 250-echo pool), wall time median of n runs each way, the time split, loadouts scored, and whether the two top fives are the same to the last bit |
 | `diff <before> <after> [--tolerance pct]` | every number that moved between two snapshots; exit code 2 when something did |
 
 | File | Role |
@@ -1109,7 +1110,7 @@ Verify-and-harden pass (2026-10-26):
 - The wip commit carried `vendor/wuwa_calc` at e1181a9 and skittle.css's header from it, a rebase artifact one commit
   behind `plus` (653fee7). The worktree is back on 653fee7; this track touches neither.
 
-## Performance: exact optimizer speedups, asset caching, bundle diet — `src/sim/optimizer/`, `src/sim/perf/` (2026-10-12, re-checked 2026-10-26)
+## Performance: exact optimizer speedups, asset caching, bundle diet — `src/sim/optimizer/`, `src/sim/perf/` (2026-10-12, re-checked 2026-10-26; pass 2 2026-11-02)
 
 Three changes and none of them moves a number: the CLI snapshot gate shows 0 changes on both exports, and an
 equivalence harness (below) ran plus's optimizer pipeline and the new one side by side on 39 configs.
@@ -1209,6 +1210,79 @@ Things learned:
   the published formulas package).
 - The first harness lived in /tmp and was wiped between sessions; `prep.mjs` + `equiv.mts` rebuild the comparison from
   `git show plus:` in a few minutes, so keep the recipe above rather than a copy of the old code.
+
+**Pass 2: fewer loadouts scored, each one cheaper (track "optimizer-speed", 2026-11-02).** Same rule as pass 1: no
+number moves. The optimizer's cost is scoring (generation is about 1 % of a run), and scoring is
+upstream's damage pipeline — `calculateAttackDamage` → `calcDamage` (with its breakdown strings) per rotation action.
+Pass 2 scores each distinct action once and skips loadouts that provably cannot make the top five; both run in the
+inline backend (CLI, tests) and in the processor workers (the calculator's optimizer, `/build-team` in the browser).
+
+| Piece | Role |
+|---|---|
+| `optimizer/rotationScore.ts` | `scoreOptimizerRotationDeduped`: upstream's `scoreOptimizerRotation`, same arguments and result, with each distinct plain action scored once (`attackKeyOf` = every field but `id` as plain data; numbers by `Object.is`; functions, class instances and cycles never shared) and the results laid back out in the rotation's order, so `aggregateRotationDamage` adds the same numbers in the same order. Rotations with per-action overrides go to upstream's function untouched. `{ attacks: false }` skips building the per-action list (the inline backend reads only the total) |
+| `optimizer/loadoutBound.ts` | `createLoadoutPruner(setup, scoring)` → `skip(loadout, bar)`: per prefix of the incoming loadout (main echo first, then increasing pool order — the generator's walk) an upper bound on every score below it, computed once and lazily (`minSubtree` 2); a loadout is skipped when a bound is at or under the bar (the 5th score, once five are kept) or an ER floor is out of the subtree's reach. `virtualLoadoutStats` = `computeLoadoutFinalStats` for a loadout given by its echo stats and any number of set labels |
+| `optimizer/optimizerPool.ts` | the old preconditions split into `isMonotoneInEchoes` (unchanged for the dominated-partials skip); `canPruneByBound` (+ a `Stat:` / `Rotation:` target, no per-action overrides, no negative main-echo buff stat); the plan gains `pruneByBound`; `pruneSetupOf(plan, mainEchoKeys, format)` = what a scorer needs (the pool, the main echo keys, the format) |
+| hooks (upstream files) | `processor.worker.ts`: the deduped scorer imported under upstream's name, one pruner per `init` (from `data.pruning`), one `skip` line before `processLoadout` with the bar = the local heap's minimum once full. `Calculator.vue`: `pruning: pruneSetupOf(...)` in the processors' init (2 lines + the import). `optimizer.ts` is still untouched |
+| plus hooks | `workerBackend.ts` sends the same `pruning`; `headlessOptimizer.ts`'s inline loop uses all three and checks the ER floor before scoring the rotation (the processor already did); `processed` still counts every loadout (scored or ruled out), so `/build-team`'s "combos" and the calculator's "Evaluated N loadouts" read as before |
+| `optimizer/referenceOptimizer.ts` | the inline loop as it stood on plus-b3 d530c488 (upstream's normalise and scorer on every loadout), kept as the oracle, with a clock around generation and scoring |
+| `optimizer/optimizerBench.ts`, `benchCli.ts` | the cases (worn sets × formats, the curated preset's plan with its main stats, ER floors, `Stat:` targets, edge pools) and the side-by-side runner; `npm run cli -- optimizer-bench` |
+| tests | `rotationScore.test.ts` (key semantics; the deduped scorer `toStrictEqual` upstream's, attack for attack, on six rotations × 60 loadouts: crit DPS, a 4-star, Rover, a healer); `loadoutBound.test.ts` (`virtualLoadoutStats` bit for bit against `computeLoadoutFinalStats` — the drift pin for the one call it copies; admissibility exhaustively on five small runs, one with fourteen sets: every prefix's bound ≥ every score below it, its floor check never rules out a loadout that meets the floor; every guard); `optimizerEquivalence.test.ts` (22 fixture cases, reference vs now, bit for bit; 120 s budgets for CI); `processorPruneEquivalence.test.ts` (upstream's processor worker module itself, driven by its own messages: the same candidates batch for batch with the bound on as off, on min-stat rows the inline loop never sees — crit rate, HP — Normal / Crit damage, `Stat:` targets, two generator shards and a worker fed every other batch; added by the verifier); `testFixture.ts` (the Echo Lab fixture + synthetic Danjin, Havoc Rover, Verina and seeded echoes — no personal data); `cypress/e2e/optimizerExact.cy.ts` (the calculator's optimizer in the browser: rows 1–5, Normal / Average / Crit, on upstream's Zani, Phrolova, Lupa and Lynae golden configs, against numbers recorded on plus-b3 before the change) |
+
+**Why the bound is an upper bound** (the full argument heads `loadoutBound.ts`). A loadout L below prefix P is P plus at
+most k = 5 − |P| echoes from R — the pool after P's last echo, minus P's species and ids, within the cost budget and
+the format's remaining costs. Echo stats add per echo, so each stat of L is ≤ P's + V, V = the most of that stat any
+allowed cost pattern can hold, taking R's best values per cost (each slot may take its best value from a different
+echo: a relaxation). L's set labels come from P's sets plus ≤ k sets of R; the bound enumerates every such multiset and
+injects the union of the labels (their set-passive stats and AdditionalBase passives, all ≥ 0); past 2,000 multisets (a pool of 13+ sets) it takes every label each set reaches on its own instead — a superset, so still a bound. Pass 1's monotonicity
+(every final stat and score non-decreasing in echo-side inputs, the same preconditions, game data pinned by
+`optimizerPool.test.ts`) makes the score of that virtual loadout ≥ every score below P. Floating point: the virtual
+vector is summed in another order, so it is inflated by 2^-40 relative (a reordered sum of ≤ 9 non-negative doubles
+is off by ≤ 8 ulps ≈ 1e-15) and the score by 1e-9 relative. A non-finite bound skips nothing.
+
+**Why the top five cannot change.** The inline backend keeps a loadout only when its score is strictly above the 5th
+kept score; the processor's heap rejects `<=` its minimum. A skipped loadout scores ≤ the bar at the moment it
+arrives, so it would have been rejected; the heap, and every later decision, is the same. In the inline backend that
+holds for ties too (pass 2 keeps the arrival order, so even the order inside a group of equal scores is the one
+before); each processor worker returns exactly the candidates it returned before, and the main thread's merge order
+of tied candidates still depends on worker timing, as it always did.
+
+**Dropped or not done.**
+- Typed-array stat accumulation / no allocations in the inner loop: the loop's own work (normalise, combine, heap) is
+  under 3 % of a run; the allocations that matter are inside upstream's `calculateFinalStatsFromBuffs` and
+  `calculateAttackDamage` (object-shaped all the way down). Replacing them means forking the stat pipeline — not
+  exact by construction and a sync hazard — for an estimated < 5 %.
+- Skipping `calcDamage`'s breakdown strings (`buildDetailedCalculationString`, ~14 % of scoring in a profile): an edit
+  to Ryan's formulas package (`packages/formulas`) and the results panel shows the strings. Upstream PR candidate, not
+  filed (solo phase).
+- Set-bonus feasibility pruning: the optimizer has no set-count rule to prune by (sets are a pool filter; build-team
+  checks piece counts after). The one feasibility rule that exists — a 43311 / 44111 slot the remaining candidates
+  cannot fill — is in the bound (it rules the subtree out).
+- A better work split: the calculator sends batches of 5000 loadouts (2000 on < 8 cores), so a 13,240-loadout run
+  keeps 3 processors busy whatever the worker setting. Smaller batches for small runs would help the browser, but the
+  batch size changes which tied loadout lands first in upstream's merge; left as it is.
+- The bound for `Attack:` targets and rotations with per-action overrides: the virtual loadout goes through the plain
+  path only. Both still get pass 1; overrides also skip the action dedup (their per-action stats rebuild is the cost).
+
+Measured (`npm run cli -- optimizer-bench` on David's 2026-09-16 export, Node, one thread, median of 3 each way,
+2026-11-02; the box shared with ~15 other agents, so single cases wobble ±30 %; full tables in
+`wto-wt/b3/reports/optimizer-speed-{before,build}.md`):
+
+| | before | now |
+|---|---|---|
+| 45 cases (23 crit DPS, 4 a 4-star, 10 healer, 4 Rover, 4 edge; 24 Any, 14 43311, 7 44111): same top five | — | **45 / 45**, bit for bit |
+| sum of medians, wall / CPU | 54.5 s / 73.2 s | 19.5 s / 27.0 s (**2.80×** / 2.71×; a second run on a busier box: 101.1 s → 35.7 s, 2.83×) |
+| loadouts scored | 131,115 | 30,385 (−77 %) + 22,869 bound evaluations |
+| Cartethyia Any (6,756) / 44111 (4,200), her wuwa_calc rotation | 6.2 s / 3.2 s | 1.5 s / 0.6 s |
+| Aemeath Any (13,240) / with ER ≥ 125 % | 6.9 s / 6.5 s | 4.2 s / 1.7 s |
+| Shorekeeper Any, ER ≥ 220 % / ER ≥ 400 % (out of reach) | 662 ms / 669 ms | 107 ms / 7 ms |
+| Verina / Aero Rover Any (5,208 each) | 789 ms / 761 ms | 139 ms / 117 ms |
+
+What each piece gives (8 of the longer cases, best of 2): the action dedup + the floor-first check 1.78× (4.5× on
+ER-floor runs, 1.1–2.1× without a floor), the bound another 1.90× on top (1.1× on ER-floor runs, where the floor
+check already did most of it; up to 5× on healers and Rover), 3.38× together. In the **browser** (dev server, David's
+data, Aemeath's saved optimizer config widened to two sets, 192,680 loadouts): 32 s / 36 s → 12 s / 10 s with the
+same five rows; his saved 13,240-loadout run stays at ~7 s — batches of 5,000 keep only three workers busy and
+worker start-up dominates. `cypress/e2e/optimizerExact.cy.ts`: rows 1–5 identical on four golden configs.
 
 ## Riley run seam (Wave 0) — `src/sim/engine/` (2026-10-26)
 

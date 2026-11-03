@@ -304,6 +304,29 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("optimizer-bench")
+      .description("The echo optimizer before and after its exact speedups, on the export's characters: wall time (median of --reps runs each way), loadouts scored, and a check that both return the same top 5 to the last digit — read-only (Wuthering Tools+)")
+      .option("--reps <n>", "runs per side (median)", "3")
+      .option("--only <text>", "only cases whose name contains this"),
+  ).action(
+    guarded(async (options: CommonOptions & { reps?: string; only?: string }) => {
+      const exp = load(options);
+      const { runOptimizerBench, printOptimizerBench } = await import("../optimizer/benchCli");
+      const pretty = wantsPretty(options);
+      const report = await quiet(() =>
+        runOptimizerBench(exp, {
+          reps: Number(options.reps ?? 3),
+          only: options.only,
+          onCase: (run, done, total) => process.stderr.write(`${done}/${total} ${run.name}: ${run.same ? "same" : `DIFFERENT (${run.diff})`}\n`),
+        }),
+      );
+      if (!pretty) return printJson(report);
+      console.log(printOptimizerBench(report));
+    }),
+  );
+
+  withCommon(
+    program
       .command("build-team <team>")
       .description("Build it for me, headless: re-gear a team from the export's echo inventory with no echo used twice, from wuwa_calc's pick at your account (sets, main echo, main stats, ER floor) — prints, never writes. <team> is a saved team or three names (Wuthering Tools+)")
       .option("--any-set", "ignore the plan's sets")

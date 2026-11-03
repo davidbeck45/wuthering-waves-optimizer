@@ -38,7 +38,6 @@ import {
   computeLoadoutFinalStats,
   buildOptimizerCalculationContext,
   computeOverrideBuffVariants,
-  scoreOptimizerRotation,
   type OverrideBuffVariant,
 } from "../calculator/optimizer";
 import type { OptimizerRotationData } from "../calculator/rotationData";
@@ -48,6 +47,10 @@ import { processAttacks } from "../calculator/attacks";
 import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
 // Wuthering Tools+: upstream's normalizeOptimizerLoadout with each echo's signature memoised (same order)
 import { normalizeOptimizerLoadoutCached as normalizeOptimizerLoadout } from "../sim/optimizer/optimizerPool";
+// Wuthering Tools+: upstream's scoreOptimizerRotation with each distinct action scored once (same result), and the
+// exact bound skip — loadouts whose subtree cannot enter this worker's top N are not scored (src/sim/README.md)
+import { scoreOptimizerRotationDeduped as scoreOptimizerRotation } from "../sim/optimizer/rotationScore";
+import { createLoadoutPruner, type LoadoutPruner } from "../sim/optimizer/loadoutBound";
 
 /**
  * Static config stored after init (sent once per optimization run)
@@ -85,6 +88,8 @@ interface ProcessorMessage {
     damageType?: string;
     rotationData?: any;
     topN?: number;
+    /** Wuthering Tools+: the generator's pool and rules for the bound skip (null = off) */
+    pruning?: any;
   };
 }
 
@@ -100,6 +105,7 @@ interface ProcessorResponse {
 }
 
 let processorConfig: ProcessorConfig | null = null;
+let pruner: LoadoutPruner | null = null;
 /** Local min-heap of top-N results (index 0 = worst / minimum targetValue) */
 let localHeap: any[] = [];
 
@@ -411,12 +417,14 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
       } else {
         processorConfig = null;
       }
+      pruner = processorConfig ? createLoadoutPruner(data?.pruning, processorConfig) : null;
       self.postMessage({ type: "ready" } as ProcessorResponse);
       return;
     }
 
     if (type === "stop") {
       processorConfig = null;
+      pruner = null;
       localHeap = [];
       return;
     }
@@ -473,6 +481,8 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
 
         for (let i = 0; i < batch.length; i++) {
           const loadout = batch[i];
+          // Wuthering Tools+: skip only what tryInsertLocalHeap would reject (bar = the heap's minimum once full)
+          if (pruner?.skip(loadout, localHeap.length >= topN ? localHeap[0].targetValue : null)) continue;
           try {
             const result = processLoadout(
               loadout,

@@ -567,7 +567,7 @@ import {
   type OptimizerEmptyReason,
 } from "../calculator/optimizer";
 // Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials) — src/sim/README.md
-import { planOptimizerGeneration } from "../sim/optimizer/optimizerPool";
+import { planOptimizerGeneration, pruneSetupOf } from "../sim/optimizer/optimizerPool";
 import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
@@ -1965,6 +1965,8 @@ export default defineComponent({
             damageType,
             rotationData: serializableRotationData,
             topN,
+            // Wuthering Tools+: the exact bound skip (src/sim/optimizer/loadoutBound.ts)
+            pruning: pruneSetupOf(generationPlan, mainEchoKeys, loadoutFormat),
           },
         });
         worker.onmessage = (e) => {

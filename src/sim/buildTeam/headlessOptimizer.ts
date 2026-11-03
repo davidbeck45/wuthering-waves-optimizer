@@ -24,8 +24,6 @@ import {
   computeLoadoutFinalStats,
   computeOverrideBuffVariants,
   normalizeLoadoutFormat,
-  normalizeOptimizerLoadout,
-  scoreOptimizerRotation,
   type OptimizerContext,
   type OptimizerLoadoutFormat,
 } from "../../calculator/optimizer";
@@ -39,7 +37,9 @@ import { resolveSetBonusStats } from "../../echoes/echoSetPassives";
 import { mainEchoesData } from "../../echoes/index";
 import { getMainEchoBuffStacks, getMainEchoBuffs, isMainEchoBuffEnabled, mergeMainEchoBuffStats, type MainEchoState } from "../../echoes/mainEchoBuffs";
 import { getSetBonusEffectsFromListOfSetKeys, getSetLabelByKey, setBonusEffectsTwo } from "../../echoes/sets";
-import { optimizerLoadoutStream, planOptimizerGeneration } from "../optimizer/optimizerPool";
+import { normalizeOptimizerLoadoutCached, optimizerLoadoutStream, planOptimizerGeneration, pruneSetupOf } from "../optimizer/optimizerPool";
+import { createLoadoutPruner } from "../optimizer/loadoutBound";
+import { scoreOptimizerRotationDeduped } from "../optimizer/rotationScore";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -108,8 +108,13 @@ export interface OptimizeProgress {
 
 export interface OptimizeOutcome {
   results: ScoredLoadout[];
+  /** loadouts dealt with: scored, or ruled out by the bound (the inline backend), as before the bound existed */
   processed: number;
   generated: number;
+  /** inline backend: loadouts actually scored, those the bound ruled out, and the bounds computed */
+  scored?: number;
+  pruned?: number;
+  bounds?: number;
 }
 
 export interface OptimizerBackend {
@@ -335,24 +340,40 @@ function precomputeOf(job: MemberJob, cache: Map<string, JobPrecompute>): JobPre
   return pre;
 }
 
+/** One loadout's score with its stats — the processor worker's `processLoadout` for a `Rotation:` / `Stat:` target,
+ *  through the same exported functions (`computeLoadoutFinalStats`, and upstream's `scoreOptimizerRotation` with each
+ *  distinct action scored once, `rotationScore.ts`). `floor`: when the energy-regen rows fail, null before the score. */
+function scoreWithFloor(job: MemberJob, loadout: any[], pre: JobPrecompute, minStats: OptimizeRequest["minStats"] | null): ScoredLoadout | null {
+  // upstream's slot sort with each echo's signature memoised (same order, optimizerPool.test.ts)
+  const normalized = normalizeOptimizerLoadoutCached(loadout);
+  const stats = computeLoadoutFinalStats(normalized, pre.context, pre.selfBuffsData, pre.resonanceChainsBuffsData, job.echoSetPassiveBuffs, job.mainEchoStats);
+  const energyRegen = Number(stats.finalStats?.energyRegen ?? 0);
+  if (minStats?.length) {
+    // the rows read the optimizer's energyRegen only (what build-team sends); any other row fails, as it always did
+    const er = { energyRegen } as Record<string, number>;
+    if (!minStats.every((m) => meetsMinStatThreshold(er[m.stat], m.minValue, m.stat))) return null;
+  }
+  const [targetType, targetObject] = job.target.split(":");
+  if (targetType === "Stat") return { loadout: normalized, targetValue: Number(stats.finalStats?.[targetObject!] ?? 0) || 0, energyRegen };
+  const { damageAggregation } = scoreOptimizerRotationDeduped(job.rotationData, normalized, stats, pre.context, pre.overrideBuffVariants, { attacks: false });
+  return { loadout: normalized, targetValue: Number(damageAggregation.avgDamage ?? 0) || 0, energyRegen };
+}
+
 /** One loadout's rotation score — the processor worker's `processLoadout` for a `Rotation:` target, through the same
  *  exported functions (`computeLoadoutFinalStats`, `scoreOptimizerRotation`). */
 export function scoreLoadoutInline(job: MemberJob, loadout: any[], cache: Map<string, JobPrecompute> = new Map()): ScoredLoadout {
-  const pre = precomputeOf(job, cache);
-  const normalized = normalizeOptimizerLoadout(loadout);
-  const stats = computeLoadoutFinalStats(normalized, pre.context, pre.selfBuffsData, pre.resonanceChainsBuffsData, job.echoSetPassiveBuffs, job.mainEchoStats);
-  const energyRegen = Number(stats.finalStats?.energyRegen ?? 0);
-  const [targetType, targetObject] = job.target.split(":");
-  if (targetType === "Stat") return { loadout: normalized, targetValue: Number(stats.finalStats?.[targetObject!] ?? 0) || 0, energyRegen };
-  const { damageAggregation } = scoreOptimizerRotation(job.rotationData, normalized, stats, pre.context, pre.overrideBuffVariants);
-  return { loadout: normalized, targetValue: Number(damageAggregation.avgDamage ?? 0) || 0, energyRegen };
+  return scoreWithFloor(job, loadout, precomputeOf(job, cache), null)!;
 }
 
 const abortError = (): Error => Object.assign(new Error("The optimizer run was cancelled"), { name: "AbortError" });
 
 /** Upstream's optimizer in one thread: perf's deduped stream (`planOptimizerGeneration` + `optimizerLoadoutStream`,
- *  the cost format honoured — upstream's inline `optimize()` ignores it) and the processor's scoring. */
-export function inlineBackend(): OptimizerBackend {
+ *  the cost format honoured — upstream's inline `optimize()` ignores it) and the processor's scoring, with the exact
+ *  speedups of track "optimizer-speed" (README "Performance: exact optimizer speedups"): the energy-regen floor checked
+ *  before the rotation is scored, each distinct rotation action scored once, and the bound skip (`loadoutBound.ts`) —
+ *  loadouts whose subtree cannot beat the current 5th score are not scored. The results are the ones
+ *  `referenceOptimize` (the loop as it was) returns, loadout for loadout and bit for bit (`optimizerEquivalence.test.ts`). */
+export function inlineBackend(options: { bound?: boolean; minSubtree?: number } = {}): OptimizerBackend {
   const cache = new Map<string, JobPrecompute>();
   return {
     async optimize(job, request, opts = {}) {
@@ -363,30 +384,52 @@ export function inlineBackend(): OptimizerBackend {
         topN: request.topN,
         target: job.target,
         echoSetPassiveBuffs: job.echoSetPassiveBuffs,
+        mainEchoStats: job.mainEchoStats,
         context: job.context,
         rotationData: job.rotationData,
       });
+      const pre = precomputeOf(job, cache);
+      const pruner =
+        options.bound === false
+          ? null
+          : createLoadoutPruner(
+              pruneSetupOf(plan, request.mainEchoKeys, request.loadoutFormat),
+              {
+                context: pre.context,
+                selfBuffsData: pre.selfBuffsData,
+                resonanceChainsBuffsData: pre.resonanceChainsBuffsData,
+                echoSetPassiveBuffs: job.echoSetPassiveBuffs,
+                mainEchoStats: job.mainEchoStats,
+                target: job.target,
+                damageType: "Average",
+                rotationData: job.rotationData,
+                minStats: request.minStats,
+              },
+              { minSubtree: options.minSubtree },
+            );
       const heap: ScoredLoadout[] = [];
       let generated = 0;
       let processed = 0;
+      let scored = 0;
       const format = normalizeLoadoutFormat(request.loadoutFormat);
       for (const loadout of optimizerLoadoutStream(plan.echoes, request.mainEchoKeys, format, 0, 1, { uniquePool: plan.uniquePool, skipDominatedPartials: plan.skipDominatedPartials })) {
         if (opts.signal?.aborted) throw abortError();
         generated += 1;
         processed += 1;
-        const scored = scoreLoadoutInline(job, loadout, cache);
+        // the score a loadout must beat to enter the top N (heap sorted best first; kept only when strictly above)
+        const bar = heap.length >= request.topN && heap.length > 0 ? heap[heap.length - 1]!.targetValue : null;
+        const skip = pruner !== null && pruner.skip(loadout, bar);
+        const result = skip ? null : scoreWithFloor(job, loadout, pre, request.minStats);
+        if (!skip) scored += 1;
         if (processed % 2000 === 0) opts.onProgress?.({ processed, generated });
-        if (request.minStats.length) {
-          const er = { energyRegen: scored.energyRegen } as Record<string, number>;
-          if (!request.minStats.every((m) => meetsMinStatThreshold(er[m.stat], m.minValue, m.stat))) continue;
-        }
-        if (heap.length < request.topN) heap.push(scored);
-        else if (scored.targetValue > heap[heap.length - 1]!.targetValue) heap[heap.length - 1] = scored;
+        if (!result) continue;
+        if (heap.length < request.topN) heap.push(result);
+        else if (result.targetValue > heap[heap.length - 1]!.targetValue) heap[heap.length - 1] = result;
         else continue;
         heap.sort((a, b) => b.targetValue - a.targetValue);
       }
       opts.onProgress?.({ processed, generated });
-      return { results: heap, processed, generated };
+      return { results: heap, processed, generated, scored, pruned: pruner?.stats.skipped ?? 0, bounds: pruner?.stats.bounds ?? 0 };
     },
     async score(job, loadouts, opts = {}) {
       return loadouts.map((l) => {
