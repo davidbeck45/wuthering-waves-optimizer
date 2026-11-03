@@ -57,7 +57,7 @@ describe("phone layout", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
     interceptKuroNews();
-    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/energy", "/today", "/build-team", "/build-history"]) {
+    for (const route of ["/", "/inventory", "/convene", "/teams", "/settings", "/info", "/updates", "/my-rankings", "/account", "/energy", "/today", "/build-team", "/build-team?mode=account", "/build-history"]) {
       cy.visit(route);
       cy.get(".navbar").should("be.visible");
       expectNavFits(route);

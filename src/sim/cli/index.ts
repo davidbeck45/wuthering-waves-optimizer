@@ -340,6 +340,40 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("build-account")
+      .description("Whole account, headless: gear several teams from the export's echo inventory with no echo worn twice across them — greedy in priority order, then a local search over the echoes two members compete for — prints, never writes (Wuthering Tools+)")
+      .option("--teams <list>", 'comma-separated, first = highest priority: a row number of --list, a team name, or "A+B+C" (default: your saved teams, then presets, strongest first, no two sharing a member, at most 4)')
+      .option("--weights <list>", 'how much each team matters, in --teams order, e.g. "1,0.8,0.6" (default 1, 0.8, 0.6, 0.4, then 0.2)')
+      .option("--budget <seconds>", "time budget for the local search (default 60)")
+      .option("--list", "only list the teams the account can field, with the default choice")
+      .option("--any-set", "ignore the plans' sets")
+      .option("--any-main-stat", "ignore the plans' main stats per cost")
+      .option("--keep-main-echo", "keep each member's current main echo")
+      .option("--no-auto-buffs", "team buffs from each character's own Team Buffs panel (upstream's behaviour)"),
+  ).action(
+    guarded(async (options: CommonOptions & { teams?: string; weights?: string; budget?: string; list?: boolean; anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; autoBuffs?: boolean }) => {
+      const exp = load(options);
+      const { runBuildAccount, printBuildAccount, jsonOf } = await import("../buildTeam/account/buildAccountCli");
+      const out = await quiet(() =>
+        runBuildAccount(exp, {
+          teams: options.teams,
+          weights: options.weights,
+          budget: options.budget != null ? Number(options.budget) : undefined,
+          list: !!options.list,
+          useSets: !options.anySet,
+          useMainStats: !options.anyMainStat,
+          keepMainEcho: !!options.keepMainEcho,
+          autoBuffs: options.autoBuffs !== false,
+          log: (line) => process.stderr.write(`${line}\n`),
+        }),
+      );
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...(jsonOf(out) as object) });
+      console.log(printBuildAccount(out));
+    }),
+  );
+
+  withCommon(
+    program
       .command("calc <character>")
       .description("Stats, every attack's damage and each saved rotation for one character, from the app's own engine")
       .option("--no-attacks", "skip the per-attack table")

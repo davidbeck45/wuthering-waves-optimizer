@@ -97,10 +97,10 @@ export function teamValueOf(picks: ReadonlyArray<Candidate | null>, weights: rea
   return picks.reduce((n, p, i) => n + (p ? p.value * (weights[i] ?? 1) : 0), 0);
 }
 
-const floorsOf = (picks: ReadonlyArray<Candidate | null>): number => picks.filter((p) => p?.meetsFloor).length;
+export const floorsOf = (picks: ReadonlyArray<Candidate | null>): number => picks.filter((p) => p?.meetsFloor).length;
 
 /** Is allocation `a` better than `b`: more members on a loadout, then more ER floors met, then a higher team value. */
-function better(a: ReadonlyArray<Candidate | null>, b: ReadonlyArray<Candidate | null>, weights: readonly number[]): boolean {
+export function better(a: ReadonlyArray<Candidate | null>, b: ReadonlyArray<Candidate | null>, weights: readonly number[]): boolean {
   const filledA = a.filter(Boolean).length;
   const filledB = b.filter(Boolean).length;
   if (filledA !== filledB) return filledA > filledB;
@@ -112,7 +112,7 @@ function better(a: ReadonlyArray<Candidate | null>, b: ReadonlyArray<Candidate |
   return va > vb * (1 + EPS) + EPS;
 }
 
-async function greedy(api: AllocationApi, order: number[], n: number, check: () => void, onStep?: AllocationInput["onStep"]): Promise<Array<Candidate | null>> {
+export async function greedy(api: AllocationApi, order: number[], n: number, check: () => void, onStep?: AllocationInput["onStep"]): Promise<Array<Candidate | null>> {
   const taken = new Set<string>();
   const picks: Array<Candidate | null> = Array.from({ length: n }, () => null);
   for (const member of order) {
@@ -127,7 +127,7 @@ async function greedy(api: AllocationApi, order: number[], n: number, check: () 
 
 /** A loadout's scoring key: slot 0, then the rest sorted (the optimizer scores a loadout the same in any slot order
  *  past the main echo). */
-const keyOf = (member: number, ids: readonly string[]): string => `${member}:${ids[0]}|${[...ids.slice(1)].sort().join(",")}`;
+export const keyOf = (member: number, ids: readonly string[]): string => `${member}:${ids[0]}|${[...ids.slice(1)].sort().join(",")}`;
 
 export async function allocateTeam(api: AllocationApi, input: AllocationInput): Promise<AllocationResult> {
   const n = input.members;
@@ -152,19 +152,48 @@ export async function allocateTeam(api: AllocationApi, input: AllocationInput): 
   picks ??= Array.from({ length: n }, () => null);
 
   // 2. swap pass
+  const pass = await swapPass(api, picks, weights, { maxRounds: input.maxSwapRounds, check, onStep: input.onStep });
+  picks = pass.picks;
+  const swaps = pass.swaps;
+
+  return { order: bestOrder, picks, teamValue: teamValueOf(picks, weights), floorsMet: floorsOf(picks), swaps, ordersTried: orders.length };
+}
+
+export interface SwapPassOptions {
+  /** rounds (each applies the best move of every pair); default 3 */
+  maxRounds?: number;
+  /** throws to stop (a cancel) */
+  check?: () => void;
+  onStep?: AllocationInput["onStep"];
+  /** pairs worth trying (default: every pair) — the account solver passes the pairs whose pools overlap */
+  pairs?: ReadonlyArray<readonly [number, number]>;
+  /** stop between pairs when this says so (a time budget); the picks so far are kept */
+  shouldStop?: () => boolean;
+  /** may the allocation move from `cur` to `next` (default `better`: more filled, more floors, then value) */
+  accept?: (next: ReadonlyArray<Candidate | null>, cur: ReadonlyArray<Candidate | null>) => boolean;
+}
+
+/** The swap pass on an allocation: a member takes one echo from another, who backfills with the echo given up or one
+ *  of `free`'s likeliest echoes, scored exactly; the best move of each pair is kept when the allocation is better
+ *  (more members on a loadout, more ER floors, then a higher value) and no floor that held is lost. */
+export async function swapPass(api: AllocationApi, start: ReadonlyArray<Candidate | null>, weights: readonly number[], opts: SwapPassOptions = {}): Promise<{ picks: Array<Candidate | null>; swaps: SwapMove[] }> {
+  let picks = start.slice();
+  const n = picks.length;
+  const pairList = opts.pairs ?? Array.from({ length: n }, (_, a) => Array.from({ length: n - a - 1 }, (_, k) => [a, a + k + 1] as const)).flat();
   const scored = new Map<string, Candidate | null>();
   for (let m = 0; m < n; m++) if (picks[m]) scored.set(keyOf(m, picks[m]!.ids), picks[m]!);
   const swaps: SwapMove[] = [];
-  const rounds = input.maxSwapRounds ?? 3;
+  const rounds = opts.maxRounds ?? 3;
   for (let round = 0; round < rounds; round++) {
     let moved = false;
-    for (let a = 0; a < n; a++) {
-      for (let b = a + 1; b < n; b++) {
-        check();
+    for (const [a, b] of pairList) {
+      if (opts.shouldStop?.()) return { picks, swaps };
+      {
+        opts.check?.();
         const A = picks[a];
         const B = picks[b];
         if (!A || !B) continue;
-        input.onStep?.({ phase: "swap", round, pair: [a, b] });
+        opts.onStep?.({ phase: "swap", round, pair: [a, b] });
         const used = new Set(picks.flatMap((p) => p?.ids ?? []));
         // every move: taker takes the giver's echo; the giver backfills with what the taker gave up or a free echo
         type Move = { taker: number; giver: number; ts: number; gs: number; takerIds: string[]; giverIds: string[]; echo: string; backfill: string };
@@ -202,7 +231,7 @@ export async function allocateTeam(api: AllocationApi, input: AllocationInput): 
           const res = await api.score(member, list);
           list.forEach((ids, i) => scored.set(keyOf(member, ids), res[i] ?? null));
         }
-        check();
+        opts.check?.();
         // the best move by the allocation order (filled, floors, value); a floor met before must hold after
         let best: { picks: Array<Candidate | null>; move: Move } | null = null;
         for (const mv of moves) {
@@ -218,7 +247,7 @@ export async function allocateTeam(api: AllocationApi, input: AllocationInput): 
           const next = picks.slice();
           next[mv.taker] = { ...T2, ids: mv.takerIds, meta: T1.meta };
           next[mv.giver] = { ...G2, ids: mv.giverIds, meta: G1.meta };
-          if (better(next, best ? best.picks : picks, weights)) best = { picks: next, move: mv };
+          if (opts.accept ? opts.accept(next, picks) && (!best || better(next, best.picks, weights)) : better(next, best ? best.picks : picks, weights)) best = { picks: next, move: mv };
         }
         if (best) {
           const before = teamValueOf(picks, weights);
@@ -233,7 +262,7 @@ export async function allocateTeam(api: AllocationApi, input: AllocationInput): 
     if (!moved) break;
   }
 
-  return { order: bestOrder, picks, teamValue: teamValueOf(picks, weights), floorsMet: floorsOf(picks), swaps, ordersTried: orders.length };
+  return { picks, swaps };
 }
 
 /** No echo id twice across the picks (the invariant the tests and the page check). */

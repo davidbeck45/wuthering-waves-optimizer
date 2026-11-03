@@ -6,23 +6,40 @@
         <h1 class="bt-h1">Build my team</h1>
         <span class="bt-tag">from your echoes</span>
       </div>
-      <ol v-if="team" class="bt-steps" aria-label="Steps">
+      <nav class="bt-mode" aria-label="What to build" data-test-build-team-mode>
+        <RouterLink to="/build-team" class="bt-mode__btn" :class="{ 'bt-mode__btn--on': mode === 'team' }" :aria-current="mode === 'team' ? 'page' : undefined" data-test-build-team-mode-team>One team</RouterLink>
+        <RouterLink :to="{ path: '/build-team', query: { mode: 'account' } }" class="bt-mode__btn" :class="{ 'bt-mode__btn--on': mode === 'account' }" :aria-current="mode === 'account' ? 'page' : undefined" data-test-build-team-mode-account>Whole account</RouterLink>
+      </nav>
+      <ol v-if="team && mode === 'team'" class="bt-steps" aria-label="Steps">
         <li v-for="(s, i) in STEPS" :key="s" :class="{ 'bt-steps__on': stepIndex === i, 'bt-steps__done': stepIndex > i }" :aria-current="stepIndex === i ? 'step' : undefined">
           <span class="bt-steps__n">{{ i + 1 }}</span><span class="bt-steps__t"><span class="bt-steps__long">{{ s }}</span><span class="bt-steps__short">{{ STEPS_SHORT[i] }}</span></span>
         </li>
       </ol>
-      <p class="bt-head__sub bt-head__sub--long">
-        Re-gear a whole team from the echoes you own: wuwa_calc's pick at your account for each member (sets, main echo,
-        main stats, the Energy Regen their loop needs), this app's optimizer on your inventory, never one echo twice.
-      </p>
-      <p class="bt-head__sub bt-head__sub--short">wuwa_calc's pick per member, your own echoes, never one echo twice.</p>
+      <template v-if="mode === 'account'">
+        <p class="bt-head__sub bt-head__sub--long">
+          Gear several teams at once from one echo inventory, so no echo is worn by two characters: each member gets the
+          optimizer's best build from what higher teams left, then an improvement pass hands a contested echo to whoever
+          gains more weighted team damage.
+        </p>
+        <p class="bt-head__sub bt-head__sub--short">Several teams from one inventory, no echo worn twice across them.</p>
+      </template>
+      <template v-else>
+        <p class="bt-head__sub bt-head__sub--long">
+          Re-gear a whole team from the echoes you own: wuwa_calc's pick at your account for each member (sets, main echo,
+          main stats, the Energy Regen their loop needs), this app's optimizer on your inventory, never one echo twice.
+        </p>
+        <p class="bt-head__sub bt-head__sub--short">wuwa_calc's pick per member, your own echoes, never one echo twice.</p>
+      </template>
     </header>
 
-    <div v-if="error && phase !== 'error'" role="alert" class="alert alert-warning mb-3 text-sm" data-test-build-team-error>{{ error }}</div>
+    <BuildAccountPanel v-if="mode === 'account'" />
 
-    <BuildTeamPicker v-if="phase === 'pick'" :teams="teamStore.teams" :characters="characterStore.characters" />
 
-    <template v-else-if="team">
+    <div v-if="mode === 'team' && error && phase !== 'error'" role="alert" class="alert alert-warning mb-3 text-sm" data-test-build-team-error>{{ error }}</div>
+
+    <BuildTeamPicker v-if="mode === 'team' && phase === 'pick'" :teams="teamStore.teams" :characters="characterStore.characters" />
+
+    <template v-else-if="mode === 'team' && team">
       <!-- the team -->
       <section class="bt-team" data-test-build-team-team>
         <div class="bt-team__trio">
@@ -202,7 +219,7 @@
 // a composition (?members=A,B,C, optionally &key=<wuwa_calc team key>), or a picker. Three steps: the plan (wuwa_calc's
 // pick per member, priority, ER floors, options), the run (upstream's optimizer workers, progress, cancel), the result
 // (the calculator's numbers for every produced build) and a confirmed save as new team builds, with undo.
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
@@ -225,6 +242,9 @@ import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
 import { usePlusBar } from "../shell/plusBar";
 import "./buildTeam.css";
 
+// "Whole account" (?mode=account): its own panel, loaded when asked for
+const BuildAccountPanel = defineAsyncComponent(() => import("./account/BuildAccountPanel.vue"));
+
 useDocumentTitle(
   "Build my team — Wuthering Waves Calculator & Optimizer",
   "Re-gear a Wuthering Waves team from your own echo inventory: wuwa_calc's pick per member, the app's optimizer, no echo used twice, saved as team builds with undo.",
@@ -233,6 +253,7 @@ useDocumentTitle(
 const STEPS = ["Plan", "Build", "Review & save"];
 const STEPS_SHORT = ["Plan", "Build", "Review"];
 const route = useRoute();
+const mode = computed<"team" | "account">(() => (route.query.mode === "account" ? "account" : "team"));
 // the phone's pinned run / save bars lift the Ask button above their buttons (src/sim/shell/plusBar.ts)
 const actionsBar = ref<HTMLElement | null>(null);
 const saveBar = ref<HTMLElement | null>(null);
@@ -292,6 +313,10 @@ const highGap = computed(() => {
 });
 
 async function loadFromRoute(): Promise<void> {
+  if (mode.value === "account") {
+    bt.cancel();
+    return;
+  }
   const q = route.query;
   const teamId = typeof q.team === "string" ? q.team : null;
   const members = typeof q.members === "string" ? q.members.split(",").map((s) => s.trim()).filter(Boolean) : [];

@@ -2673,3 +2673,68 @@ level 1, the source line without the API's name; Ciaccona with nothing saved; 41
 load average of ~60 (16 agents on the box): every one of its 16 tests passed in at least one run, the reds moved from
 run to run and two runs ended in Electron renderer crashes — verify round 1 then ran it once through, 16 / 16 (load ~50). wuwa-tools:
 `node --test materials/materials_sync.test.mjs`.
+
+## Whole account — gear several teams from one inventory, no echo worn twice, `/build-team?mode=account` (batch 3, track "roster-optimizer", 2026-11-02)
+
+Build my team gears **one** team. With 20+ characters, teams compete for the same echoes, and gearing them one by one
+gives the first team the best echoes whether or not that is best for the account. "Whole account" is a second mode of
+`/build-team` (a **One team / Whole account** switch under the title; `?mode=account`), not a new page: the plusPages
+entry for `/build-team` gained the words ("whole account", "account plan", "all teams" …) and the palette has a
+search-only section entry "Build my whole account" (`shell/paletteItems.ts` `SECTION_PAGES`). The panel is its own lazy
+chunk (`defineAsyncComponent`).
+
+| Piece | Role |
+|---|---|
+| `account/accountTeams.ts` | the teams the account can field, **the way /account lists them**: rankRoster's `teamCandidatesOf` (your saved teams with a rotation, then the curated and wuwa_calc team presets of characters you own), every member armed, the same three at the same damage folded (your own first), strongest first; the damage is /account's cached ranking when this tab has it for this exact data, else `scoreTeamCandidate` (one frame per team). `defaultSelection`: **every saved team of yours that can be fielded** (a character in two of them gets one build), then the strongest presets that share no member with what is ticked, **at most 4**, strongest first. `defaultWeight`: 1, 0.8, 0.6, 0.4, then 0.2 |
+| `account/solve.ts` | pure, the optimizer through Build my team's `AllocationApi`: (a) **greedy** in priority order (teams by the player's order, members inside a team by Riley's share, `priorityOrder`) — each member gets the optimizer's exact best from the echoes nobody before took; (b) **local search over conflicts** (an ordered pair where one member's pick holds an echo the other's loosest pool allows): **pair re-optimisation** (the wanting member first from everything but the others' echoes, then the holder from what is left) and **allocate.ts `swapPass`** (one echo changes hands, the giver backfills — now exported, with an `accept` hook and a pair list) — each move kept only when no member loses their build, **no ER floor that held is lost**, and the weighted value rises by more than `minGain`; until a round changes nothing, the 60 s budget, 4 rounds, or "Stop improving". Pairs tried once per allocation state |
+| `account/buildAccount.ts` | the store-free orchestrator. Per team (priority order): `resolveTeamCharacters` (pins, builds named for the team, auto team buffs) and today's team total; per member **Build my team's own `prepareMember`** (plan → constraints → optimizer job → today's damage) — **each character once, scored on their part of their highest-priority team's rotation**, and worn in every later team (`alsoIn`, `sharedFrom`). Weight per member = team weight ÷ the team's damage today, so a team's members add up to weight × (team damage ÷ today's). Echoes worn by characters outside the chosen teams are out (`takeFromOthers` is forced off — the plan's promise is no echo twice on the account); a member who gets no new build keeps what they wear in every chosen team, out of everyone else's search. Then `solveAccount` (`minGain` = 0.05 % of the account's weighted damage today), then **the calculator decides**: each team's total with every new build pinned (`teamTotalWithDrafts`) for the improved split and, when it differs, for the greedy's; `score` = Σ weight × team damage ÷ today's; the higher one is the plan (`search.kept`). Then `finishMember` per member (draft + the calculator's numbers, as Build my team) and the echoes that change hands (`moves`: worn today by someone else's active build or chosen-team build) |
+| `buildTeam.ts` (refactor) | `buildMyTeam`'s body split into `prepareMember`, `memberSearchApi` (the relax levels, today's build competing, the memo, the scorer, swap legality and backfill), `finishMember`, `teamTotalWithDrafts` / `teamTotalsWith`, `filterPoolIds` — each member carries its team's `resolved` records and enemy. `build-team` output on all three saved teams of the 9-16 export is byte-identical to plus-b3 (JSON minus `ms`) |
+| `account/accountApply.ts` | after the confirm: `saveAccountPlan` = **build history first** (`snapshotCharacters(…, "before-account-plan")`, the new label "Before Account plan") then `applyAccountPlan`: a **new** build per character named **"Account plan"** (" (2)", " (3)" … never an existing one), pinned through upstream's `setTeamCharacterBuild` in **every chosen saved team** the character plays in (presets have no saved team to pin), "Also make active" = upstream's `equipBuild`. `accountApplyRequest`: every member with a new build, except one who keeps exactly today's echoes and plays in no other chosen team. Undo (`wtplus:buildAccount:undo:v1`, the last apply): created ids, every previous pin, activated records and the `equipped` maps; verbatim while the touched records and pins still fingerprint as right after the apply, else only what is still ours and unused (Build my team's rules); `undoAccountPlanSaved` snapshots "Before undoing Account plan" first |
+| `account/useBuildAccount.ts`, `BuildAccountPanel.vue`, `accountView.ts`, `buildAccount.css` | the panel: **Teams** (ticked teams in priority order with up / down / remove, "How much this team matters" 1 · the most … 0.2 · the least — the defaults follow the order until you change one; a line per character in two ticked teams; "More teams your account can field" to tick, at most 8; the sets / main stats / main echo switches shared with One team's options) → **Plan** (wuwa_calc's plan per team through `rileyClient`, then `buildAccount` in **upstream's optimizer workers through Build my team's `workerBackend`** — no new worker entry; the stage in words, per member the phase and combinations checked, elapsed seconds; "Stop improving, show the plan" during the improvement pass; Cancel) → **Review & save** (weighted team damage vs today, the first pass alone, Energy Regen needs met before → after, why the plan is below today when it is, what the improvement pass did and why it stopped, the heuristic said in words; a card per team — today → plan with the change, "matters 0.8" — and per member their damage on their part of the rotation, ER vs need, notes, "also worn in team 2" or "wears the build planned in team 1", their five echoes behind a disclosure; the echoes that change hands; the save bar with Also make active / Change teams / Save n builds, a confirm that lists every build and pin, Undo account plan) |
+| `account/buildAccountCli.ts` + `cli/index.ts` | `npm run cli -- build-account [--teams "1,Sigrika,A+B+C"] [--weights 1,0.8] [--budget 60] [--list] [--any-set] [--any-main-stat] [--keep-main-echo] [--no-auto-buffs] [--pretty]` — read-only; `--list` prints the fieldable teams with the default choice |
+
+Rules:
+- **A heuristic, said so on the page:** each member's build is the optimizer's exact best from what is left; how the echoes
+  are split between members is a best effort (greedy + local search), not a proven optimum.
+- **Every number shown is the calculator's** (team totals with the drafts pinned, each member's damage on their rotation in
+  their team's context, character-screen ER), at the rankings' enemy (level 100, 20 % RES) so it sits beside /account. The
+  optimizer's per-member score only ranks: it scores a member on their own part of the rotation with teammates' current gear
+  giving the buffs, while the team total also sees what a support's echoes do for the others — which is why the calculator
+  has the last word between the greedy and the improved split.
+- **ER first, like Build my team:** a loadout that meets the member's Energy Regen need beats one that does not, so the plan
+  can score below today when today's builds miss their need; the review counts the needs met and says so in words.
+- **Nothing is written without the confirm**; new builds only; the active build changes only with "Also make active";
+  echoes are never taken off anyone. Undo on the page, and every character's build before the plan in Build history.
+- Without "Also make active" the plan is a set of saved builds (and pins in your saved teams) to switch to; with it every
+  planned character wears their plan and no echo is worn twice among them.
+
+Measured (9-16 export, 39 characters, the default 4 teams: Aemeath + Mornye + Lynae, Sigrika + Mornye + Lucilla — Mornye in
+both —, Cartethyia + Shorekeeper + Ciaccona, Xuanling + Suisui + Chisa; 43 fieldable teams listed in 3.8 s by the CLI):
+- CLI `build-account` (inline backend, one thread): **28.9 s** + 0.9 s for wuwa_calc's plans. 11 new builds, 4 echoes change
+  hands (Moonlit Clouds 1-costs between Lucilla and Chisa), 4 competing pairs, the improvement pass found no better split.
+- The page (dev build, the optimizer's workers, while 7 other tracks ran Cypress — load average 70–90): **27–62 s** end to end,
+  plans included (27.1, 37.5, 48.8, 62.2 s over four runs). Under the 2-minute aim.
+- Result: Energy Regen needs met 7 → 9 of 10; weighted team damage −0.7 % on the page (−0.8 % in the CLI's rounding):
+  Aemeath −1.5 % and Cartethyia −4.2 % to reach the 115.1 % / 116.7 % their loops need (today 110.8 % / 106.8 %); Xuanling
+  +3.2 %, Lucilla +12.9 %, Suisui +9.6 %; 8 builds to save.
+- An earlier run kept one swap the optimizer scored as a tiny gain while the team totals went slightly down: hence
+  `minGain` and the calculator check.
+
+Gates: `account/solve.test.ts` (exact fake optimizer: **the greedy gives a contested 4-cost to the earlier member and the
+local search hands it to the later one — exactly +0.6 × 99 − 1 over the greedy**; a low weight keeps it where it is; 12
+seeded random inventories never lose value nor reuse an echo; a move that costs a met ER floor is refused; disjoint pools
+mean no local-search solve; the budget, "stop improving" and cancel), `account/buildAccount.test.ts` (real engine, the
+public Cartethyia fixture + three armed teammates, two shipped team rotations that share Cartethyia and Ciaccona: one build
+each in the first team and worn in the second, no echo twice, nothing an outside character wears, sets / main echo / layout,
+team totals equal `teamTotalOf` with the builds worn, moves; default teams and weights; the write path on real Pinia stores:
+history first, "Account plan" builds, pins, active untouched, exact undo, names never reused, make-active with the
+`equipped` map and no echo twice, partial undo after an edit), `account/accountView.test.ts` (the page's words);
+`cypress/e2e/buildAccount.cy.ts` (v3: the mode switch, the saved teams ticked with weights 1 / 0.8, reorder, remove and
+re-add; plan → review → no echo twice → save through the confirm → "Account plan" builds pinned in both saved teams,
+"before-account-plan" in history, active echoes untouched → undo after a reload; cancel; 412 px / 130 % and 360 px),
+`phoneLayout.cy.ts` (`/build-team?mode=account` in the route loop).
+
+Left out: per-member ER floor edits in this mode (the plan's needs are used; build one team on its own to change one); a
+per-member Save tick (the plan is a whole — saving part of it could put an echo in two builds); trying every priority
+order (12 members have too many; the local search does that job); a team-objective score for supports (Build my team's
+follow-up, unchanged here); weights other than the five steps on the page (the CLI takes any).

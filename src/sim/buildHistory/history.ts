@@ -20,13 +20,15 @@ export const MAX_PER_CHARACTER = 20;
  *  the app's own data). A version is 0.3–8 KB on David's export. */
 export const MAX_TOTAL_CHARS = 1_500_000;
 
-export type HistoryLabel = "manual" | "before-build-team" | "before-build-team-undo" | "before-restore" | "before-import";
+export type HistoryLabel = "manual" | "before-build-team" | "before-build-team-undo" | "before-account-plan" | "before-account-plan-undo" | "before-restore" | "before-import";
 
 /** What each label reads as in the list. */
 export const LABEL_TEXT: Record<HistoryLabel, string> = {
   manual: "Saved by you",
   "before-build-team": "Before Build my team",
   "before-build-team-undo": "Before undoing Build my team",
+  "before-account-plan": "Before Account plan",
+  "before-account-plan-undo": "Before undoing Account plan",
   "before-restore": "Before a restore",
   "before-import": "Before a Settings import",
 };

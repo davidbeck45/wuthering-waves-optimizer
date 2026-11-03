@@ -85,6 +85,7 @@ export const SECTION_PAGES: Array<{ path: string; title: string; description: st
   { path: "/convene?tab=advisor", title: "Pull advisor", description: "Which featured 5★ adds the most damage to your builds per 1,000 Astrite", keywords: ["who to pull", "worth it", "astrite", "advice", "convene", "banner"], icon: ICON.convene },
   { path: "/settings?section=backup-restore", title: "Backup & restore", description: "Save your characters, inventory and teams to a file, or load a backup", keywords: ["backup", "export", "import", "restore", "json", "transfer", "save"], icon: ICON.settings },
   { path: "/settings?section=wavescan", title: "Import echoes from Wavescan", description: "Load your whole echo inventory from the Wavescan desktop scanner", keywords: ["wavescan", "scanner", "import echoes", "inventory", "echoes"], icon: ICON.settings },
+  { path: "/build-team?mode=account", title: "Build my whole account", description: "Gear several teams at once from one echo inventory, no echo worn twice across them", keywords: ["account plan", "whole account", "all teams", "roster optimizer", "optimize account", "echoes", "build"], icon: ICON.teams },
   { path: "/settings?section=preferences", title: "Preferences", description: "Theme, layout and display settings", keywords: ["settings", "theme", "options"], icon: ICON.settings },
   { path: "/settings?section=labs", title: "Labs", description: "Experimental features you can switch on", keywords: ["experimental", "beta", "frame timing", "flags"], icon: ICON.settings },
 ];
