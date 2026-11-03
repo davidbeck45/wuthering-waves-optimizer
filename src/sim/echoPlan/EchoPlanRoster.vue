@@ -110,6 +110,7 @@ import { computed, nextTick, ref } from "vue";
 import { sonataByKey } from "./catalog";
 import { characterName, characterPortraitUrl, releasedCharacters } from "./names";
 import type { RosterEntry } from "./wants";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 const props = defineProps<{
   roster: RosterEntry[];
@@ -156,7 +157,7 @@ async function focusPicker(): Promise<void> {
   open.value = true;
   await nextTick();
   picker.value?.focus();
-  picker.value?.scrollIntoView({ block: "center", behavior: "smooth" });
+  picker.value?.scrollIntoView({ block: "center", behavior: scrollBehavior() });
 }
 
 defineExpose({ focusPicker });

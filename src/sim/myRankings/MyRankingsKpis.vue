@@ -38,7 +38,7 @@
     </div>
     <div class="mr-kpi mr-kpi--status" :data-status="status.state" :data-saved-result="status.savedAt ?? undefined" data-test-my-rankings-status>
       <div class="mr-kpi__label">Data</div>
-      <div class="mr-kpi__value mr-kpi__value--status">
+      <div class="mr-kpi__value mr-kpi__value--status" role="status">
         <span class="mr-dot" :class="`mr-dot--${status.state}`" aria-hidden="true"></span>
         {{ statusLabel }}
       </div>

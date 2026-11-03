@@ -81,6 +81,7 @@ import { useBannerFeed, useConveneHistory, useConvenePrefs, useLiveBanners, useN
 import { fmtDuration } from "./format";
 import type { ConvenePrefillRequest } from "./types";
 import { poolPrefillRequest } from "./prefill";
+import { scrollBehavior } from "../../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 // the three plus tabs load on first open — the Simulator tab stays as light as upstream's page
 const ConvenePullsTab = defineAsyncComponent(() => import("./ConvenePullsTab.vue"));
@@ -189,7 +190,7 @@ async function applyPrefill(req: ConvenePrefillRequest): Promise<void> {
   const details = document.querySelector<HTMLDetailsElement>(".page-convene details");
   if (details) {
     details.open = true;
-    details.scrollIntoView?.({ behavior: "smooth", block: "center" });
+    details.scrollIntoView?.({ behavior: scrollBehavior(), block: "center" });
   }
 }
 </script>

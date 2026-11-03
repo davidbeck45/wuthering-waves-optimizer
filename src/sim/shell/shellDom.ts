@@ -1,5 +1,9 @@
 // Wuthering Tools+ shell — small DOM helpers for PlusShell and the palette. Browser-only, no Vue.
 
+import { scrollBehavior } from "../a11y/shellA11y";
+
+export { scrollBehavior };
+
 /** A modal is up: an open modal <dialog> (every chooser, ConfirmDialog, the palette, AI settings) or an aria-modal
  *  bottom sheet (the v3 phone command sheet, CalculatorCommandSheet.vue). The Ask button steps aside for both,
  *  and Esc then belongs to the modal, not the panel. */
@@ -13,7 +17,10 @@ export function anyModalOpen(doc: Document): boolean {
     }
     if (modal) return true;
   }
-  return Array.from(doc.querySelectorAll('[aria-modal="true"]')).some((el) => (el as HTMLElement).getClientRects().length > 0);
+  // the assistant's own phone sheet is aria-modal too (a11y audit M5); it is the panel, not something over it
+  return Array.from(doc.querySelectorAll('[aria-modal="true"]')).some(
+    (el) => !el.closest("[data-test-ai-panel]") && (el as HTMLElement).getClientRects().length > 0,
+  );
 }
 
 /** The event comes from somewhere the player types (an input, a textarea, a select, an editor). */
@@ -49,11 +56,11 @@ export function scrollToWhenPresent(selector: string, options: { timeoutMs?: num
     const tick = (): void => {
       const el = doc.querySelector(selector);
       if (el) {
-        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        el.scrollIntoView({ block: "center", behavior: scrollBehavior() });
         el.setAttribute("data-wt-focused", "");
         const html = el as HTMLElement;
         const before = html.style.outline;
-        html.style.outline = "2px solid oklch(var(--p))";
+        html.style.outline = "2px solid var(--wt-focus, oklch(var(--p)))";
         html.style.outlineOffset = "2px";
         setTimeout(() => {
           html.style.outline = before;

@@ -340,6 +340,7 @@ function send(job: QueuedAsk): void {
   lastAsk = job;
   state.open = true;
   state.collapsed = false;
+  state.focusTick += 1; // an Explain button's question: the keyboard follows it into the panel (a11y audit M5)
   void run(job);
 }
 

@@ -6,7 +6,6 @@
     :style="{ '--cc-el': elementColor(card.element) }"
     :data-test-account-card="card.id"
     :data-status="card.status"
-    :aria-label="`${card.name}: open details`"
     @click="emit('open', card.id)">
     <span class="cc__top">
       <CharacterAvatar :id="card.id" :size="52" dot :ring="rarityColor(card.rarity)" class="cc__face" title="" />
@@ -78,6 +77,8 @@
         {{ card.teams.length }} team{{ card.teams.length === 1 ? "" : "s" }}
       </span>
     </span>
+    <!-- the card's own text is its name for a screen reader (damage, rank, sequence, grade); this says what a press does -->
+    <span class="sr-only">, open details</span>
   </button>
 </template>
 
@@ -412,7 +413,7 @@ const teamsTitle = computed(() => {
   color: oklch(var(--bc) / 0.5);
 }
 .cc__up--max {
-  color: #c99a3a;
+  color: var(--wt-gold, #c99a3a); /* a11y.css: a darker amber on light themes */
   font-weight: 700;
 }
 .cc__teams {

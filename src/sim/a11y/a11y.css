@@ -1,0 +1,256 @@
+/* Wuthering Tools+: contrast, focus and keyboard across the app (2026-11-02 a11y audit; src/sim/README.md,
+   "Contrast, focus and keyboard"). Imported from main.ts after style.css and phone.css, so a rule here wins a
+   specificity tie with a Tailwind utility of the same weight.
+
+   1. Theme tokens. Every value below is checked by a11y.test.ts against DaisyUI's own colours for each theme in
+      useTheme.ts (WCAG 2: 4.5 : 1 for text, 3 : 1 for borders and focus rings), on base-100, -200 and -300.
+      --wt-muted   the lowest alpha muted text (base-content) may have. Plus CSS and plus pages dim secondary
+                   text with oklch(var(--bc) / 0.35–0.6), text-base-content/40–70 and opacity-40–70; in the
+                   default dark theme base-content needs 0.74 to reach 4.5 : 1, so 61 % of plus text failed.
+      --wt-edge    the alpha a form field's border needs for 3 : 1 against the page.
+      --wt-text-X  status colours as text (X = p, s, a, in, su, wa, er): the theme's own colour, with its oklch
+                   lightness moved (--wt-l-X) where it reads under 4.5 : 1 (light: warning was 1.66, nord's
+                   success 1.77, pastel's primary 1.70). Hue and chroma stay, so warning is still amber.
+      Plus CSS gets these without naming them: the build rewrites `color: oklch(var(--bc) / a)` to
+      `max(a, var(--wt-muted))` and `color: oklch(var(--p))` to `var(--wt-text-p)` in src/sim files only
+      (src/sim/a11y/vitePlugin.ts). Ryan's files are untouched.
+      The tokens are declared on every [data-theme] element, not on :root alone: a custom property's var()s resolve
+      where it is declared, so a share card drawn in "Light" on a dark page (TeamCard / PostCard set their own
+      data-theme) would otherwise inherit the page's primary at the page's lightness (2.7 : 1 on the white card, 7.7 with its own). */
+:root,
+[data-theme] {
+  /* the default theme is dark: these match [data-theme="dark"] below */
+  --wt-muted: 0.8;
+  --wt-muted-tint: 0.92;
+  --wt-edge: 0.55;
+  /* a theme block below sets only the lightness it moves: the rest read the theme's own (`l`), not an ancestor's */
+  --wt-l-p: initial;
+  --wt-l-s: initial;
+  --wt-l-a: initial;
+  --wt-l-in: initial;
+  --wt-l-su: initial;
+  --wt-l-wa: initial;
+  --wt-l-er: initial;
+  --wt-text-p: oklch(from oklch(var(--p)) var(--wt-l-p, l) c h);
+  --wt-text-s: oklch(from oklch(var(--s)) var(--wt-l-s, l) c h);
+  --wt-text-a: oklch(from oklch(var(--a)) var(--wt-l-a, l) c h);
+  --wt-text-in: oklch(from oklch(var(--in)) var(--wt-l-in, l) c h);
+  --wt-text-su: oklch(from oklch(var(--su)) var(--wt-l-su, l) c h);
+  --wt-text-wa: oklch(from oklch(var(--wa)) var(--wt-l-wa, l) c h);
+  --wt-text-er: oklch(from oklch(var(--er)) var(--wt-l-er, l) c h);
+  --wt-focus: var(--wt-text-p);
+  /* the gold of a maxed "S6 R5" (hard-coded #c99a3a / #b7861c in plus CSS): fine on dark, 2 : 1 on light themes */
+  --wt-gold: #c99a3a;
+}
+[data-theme="dark"] {
+  --wt-muted: 0.8;
+  --wt-muted-tint: 0.92;
+  --wt-edge: 0.55;
+  --wt-l-p: 0.72;
+  --wt-l-s: 0.75;
+  --wt-l-su: 0.68;
+  --wt-l-er: 0.76;
+}
+[data-theme="light"] {
+  --wt-muted: 0.69;
+  --wt-muted-tint: 0.8;
+  --wt-edge: 0.53;
+  --wt-l-s: 0.43;
+  --wt-l-a: 0.45;
+  --wt-l-in: 0.47;
+  --wt-l-su: 0.47;
+  --wt-l-wa: 0.51;
+  --wt-l-er: 0.51;
+}
+[data-theme="black"] {
+  --wt-muted: 0.67;
+  --wt-muted-tint: 0.8;
+  --wt-edge: 0.5;
+  --wt-l-p: 0.65;
+}
+[data-theme="synthwave"] {
+  --wt-muted: 0.52;
+  --wt-muted-tint: 0.62;
+  --wt-edge: 0.37;
+}
+[data-theme="pastel"] {
+  --wt-muted: 0.65;
+  --wt-muted-tint: 0.76;
+  --wt-edge: 0.5;
+  --wt-l-p: 0.47;
+  --wt-l-s: 0.47;
+  --wt-l-a: 0.46;
+  --wt-l-in: 0.44;
+  --wt-l-su: 0.44;
+  --wt-l-wa: 0.47;
+  --wt-l-er: 0.47;
+}
+[data-theme="night"] {
+  --wt-muted: 0.63;
+  --wt-muted-tint: 0.75;
+  --wt-edge: 0.45;
+}
+[data-theme="nord"] {
+  --wt-muted: 0.75;
+  --wt-muted-tint: 0.86;
+  --wt-edge: 0.58;
+  --wt-l-p: 0.48;
+  --wt-l-s: 0.48;
+  --wt-l-a: 0.48;
+  --wt-l-in: 0.49;
+  --wt-l-su: 0.48;
+  --wt-l-wa: 0.49;
+  --wt-l-er: 0.49;
+}
+[data-theme="dracula"] {
+  --wt-muted: 0.56;
+  --wt-muted-tint: 0.68;
+  --wt-edge: 0.38;
+  --wt-l-s: 0.75;
+  --wt-l-er: 0.79;
+}
+[data-theme="gruvbox"] {
+  --wt-muted: 0.67;
+  --wt-muted-tint: 0.8;
+  --wt-edge: 0.47;
+  --wt-l-p: 0.79;
+  --wt-l-s: 0.75;
+  --wt-l-in: 0.75;
+  --wt-l-er: 0.82;
+}
+/* the light themes (useTheme.ts LIGHT_THEMES), also on a light share card inside a dark page */
+[data-theme="nord"], [data-theme="pastel"], [data-theme="light"], [data-theme-style="light"] {
+  --wt-gold: var(--wt-text-wa);
+}
+
+/* Muted text on a tinted surface (the /account hero's element gradient, character cards, chips and pills, a
+   segment's count) has a lighter background than the page, so those surfaces raise the floor for what is inside:
+   --wt-muted is inherited, and every rewritten declaration and utility reads it. */
+:is(.acc-hero, .cc, .wt-chip, .cc-pill, .mr-pill, .mr-up__tag, .en-chip, .en-row, .ep-chip, .el-chip, .el-line, .wv-kpi, .rv-chip, .acc-seg, .mr-seg) {
+  --wt-muted: var(--wt-muted-tint, 0.9);
+}
+
+/* 2. The plus scope: plus pages (PlusShell sets html[data-wt-plus] on every PLUS_PAGES route and the 404) and
+      the plus shell's own surfaces, which open on Ryan's pages too (the Ask panel, AI settings, the palette, the
+      Tools+ menu, the share sheet, the welcome card). Ryan's pages keep his look.
+      :where() keeps each rule at the weight of the utility it overrides (one class), so its variants still win:
+      hover:opacity-100, focus:opacity-100 and group-hover:opacity-100 carry a pseudo-class. */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-25 { opacity: max(0.25, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-30 { opacity: max(0.3, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-40 { opacity: max(0.4, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-45 { opacity: max(0.45, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-50 { opacity: max(0.5, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-55 { opacity: max(0.55, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-60 { opacity: max(0.6, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-65 { opacity: max(0.65, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-70 { opacity: max(0.7, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-75 { opacity: max(0.75, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/30 { color: oklch(var(--bc) / max(0.3, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/40 { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/45 { color: oklch(var(--bc) / max(0.45, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/50 { color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/55 { color: oklch(var(--bc) / max(0.55, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/60 { color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/65 { color: oklch(var(--bc) / max(0.65, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/70 { color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-base-content\/75 { color: oklch(var(--bc) / max(0.75, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .placeholder\:text-base-content\/40::placeholder { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
+/* status colours as text */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) :is(.text-primary, .link-primary) { color: var(--wt-text-p); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-secondary { color: var(--wt-text-s); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-accent { color: var(--wt-text-a); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-info { color: var(--wt-text-in); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-success { color: var(--wt-text-su); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-warning { color: var(--wt-text-wa); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-error { color: var(--wt-text-er); }
+/* an outlined primary badge (the "Tools+" badge beside the Echo Lab / Echo plan titles; text and border are the primary,
+   1.6 : 1 in pastel, 3.3 in nord) */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .badge-outline.badge-primary { color: var(--wt-text-p); }
+/* a plain DaisyUI .link takes style.css's `a { color: #646cff }` (3.9 : 1 on dark, 4.1 on white): the theme's primary */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .link:not([class*="link-"]) { color: var(--wt-text-p); }
+/* a line dimmed with opacity-50/60/70 that holds a link (the credit lines under /rotation, /endgame, /energy,
+   /rankings, Build my team's "Or open one from roster rankings…"): the opacity dimmed the link with it (2.1–2.9 : 1 in
+   every theme). Such a line is dimmed by its text colour instead, so the link inside keeps the full link colour. */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-50:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-60:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .opacity-70:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
+/* a link on a primary button or badge keeps that control's own text colour */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) :is(.btn-primary, .badge-primary:not(.badge-outline), .bg-primary) :is(.text-primary, .link-primary) { color: inherit; }
+/* L8, new-screens M5: fixed pixel sizes (text-[9px] / [10px] / [11px]: the palette's group labels, the Ask panel's
+   captions, the fight timeline's axis and labels) ignored the phone's text size. The same size in rem follows it. */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-\[9px\] { font-size: 0.5625rem; }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-\[10px\] { font-size: 0.625rem; }
+/* not the fight timeline's lane chips: they sit at their time in a narrow lane, and 130 % pushed "Wait 0.9s" past its edge */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) .text-\[11px\]:not(.rv-chip) { font-size: 0.6875rem; }
+/* L7: form fields' borders (DaisyUI's are base-content at 0.2, 1.5 : 1 in dark) and the focus ring of a field */
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) :is(.input-bordered, .select-bordered, .textarea-bordered) { border-color: oklch(var(--bc) / var(--wt-edge)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet) :is(.input, .select, .textarea):focus-visible { outline-color: var(--wt-focus); }
+
+/* 3. Everywhere (Ryan's pages too; nothing changes for a mouse or a touch, only for the keyboard and screen
+      readers). */
+
+/* M1: DaisyUI's .modal is display: grid, which beats the browser's dialog:not([open]) { display: none }, so a
+   closed <dialog class="modal"> stayed laid out at opacity 0: its "close" buttons were Tab stops on every page
+   (the image lightbox, ConfirmDialog, the share sheet) and screen readers listed every closed dialog. Hidden
+   while closed; showModal() sets [open] and DaisyUI's own .modal[open] makes it visible again (its visibility
+   transition still runs on close). phone.css § 18 already takes the What's new dialog out of layout. */
+dialog.modal:not([open]):not(.modal-open):not(:target) {
+  visibility: hidden;
+}
+
+/* D4: Ryan's rail menus (theme, More) and DaisyUI dropdown and menu items show focus only as a faint fill. */
+:is(.dropdown-content, .menu) :is(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--wt-focus);
+  outline-offset: -2px;
+}
+
+/* L4: "Skip to content" (PlusShell puts it first in <body>): out of sight until it has the keyboard's focus. */
+.wt-skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: oklch(var(--b1));
+  color: oklch(var(--bc));
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--wt-focus);
+  transform: translateY(-200%);
+}
+.wt-skip-link:focus {
+  transform: none;
+  outline: 2px solid var(--wt-focus);
+  outline-offset: 2px;
+}
+[data-wt-main]:focus {
+  outline: none;
+}
+
+/* L6: keyboard scrolling (Tab, find, an anchor) keeps the focused control clear of the fixed nav above and of the
+   Ask button and Ryan's phone bottom bar below. */
+html {
+  scroll-padding-top: var(--nav-h, 0px);
+  scroll-padding-bottom: calc(4.5rem + var(--nav-bottom-h, 0px) + var(--plus-bar-h, 0px));
+}
+
+/* L5: prefers-reduced-motion. The "Scoring" pulses, the refresh icons' spin and the skeleton shimmer ran forever
+   (each sits next to words that say the same: "Scoring…", a disabled Refresh, a "Loading" line). The JS smooth
+   scrolls ask shellDom.ts scrollBehavior() instead. */
+@media (prefers-reduced-motion: reduce) {
+  .acc-source__dot,
+  .mr-dot--scoring,
+  .wv-source__dot,
+  .td-feed__dot,
+  .acc-spin,
+  .wv-spin,
+  .td-spin,
+  .skeleton,
+  .td-skel,
+  .cc__skeleton,
+  .acc-hero__skeleton,
+  .inv__skeleton > span,
+  .tm__skeleton > span {
+    animation: none !important;
+  }
+}

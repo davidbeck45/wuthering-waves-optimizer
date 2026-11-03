@@ -330,7 +330,7 @@ const rangeText = ([lo, hi]: [number, number]): string => {
    every inherited text on the site amber. */
 html[data-theme-style="light"] .toa-crests:not(.toa-crests--c0),
 html[data-theme-style="light"] .toa-star {
-  color: #d97706;
+  color: var(--wt-text-wa, #d97706); /* a11y.css: #d97706 was 2.95 : 1 on light, 2.7 on nord */
 }
 .toa-odds {
   display: flex;

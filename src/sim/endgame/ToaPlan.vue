@@ -220,6 +220,6 @@ const paceHelp = "Scale each team's sim time by your own logged clear (teams wit
 /* light themes: DaisyUI's warning yellow is near-invisible on white — a darker amber for the crest stars (a plain
    descendant selector: `:global(html…) .x` compiles to `html[…]` alone and turned the whole site amber) */
 html[data-theme-style="light"] .toa-star {
-  color: #d97706;
+  color: var(--wt-text-wa, #d97706); /* a11y.css: #d97706 was 2.95 : 1 on light, 2.7 on nord */
 }
 </style>

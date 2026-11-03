@@ -1525,3 +1525,82 @@ html[data-theme-style="light"] [data-test-team-rotation-slot-stat] > img {
     overflow-wrap: anywhere;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   33. Tap targets on plus pages and in the plus shell (2026-11-02 a11y audit M7, L1, new-screens L4; track
+       fix-a11y-themes). At 412 px and 130 % text the most-used plus pages still had 22–37 px targets: /today's
+       checklist boxes (31), source ⓘ links (26), "check in game" chips (30), "All ›" / "Edit list" (26), the time
+       switch (34) and the region select (31); /account's hero and team links (22–23), Explain (31) and the
+       My roster / Team rankings strip (35); /my-rankings' ER mini-chips (26) and "Check ER" (33); /energy's chips (36);
+       every `btn-xs` (Echo plan "Show grid", /endgame Cancel, Echo Lab ✕, Tuner plan Clear: 31); /rotation's and
+       /weapons' tabs (31, 37); the small selects (31); <summary> disclosures (24–31); the Ask panel's model chip (24).
+       Each is at least 40 px tall now (`max(40px, 2rem)`: 40 at 100 % text, 41.6 at 130 % — a flat 2.5 rem
+       would be 52 px at 130 % and grew the dense /rankings account bar to three rows); inline links keep their
+       text size and grow a hit box around it (padding with an equal negative margin, so the line doesn't move). The play-along dots stay small
+       dots, 1.5 rem apart, each with a 2.5 rem tall hit box that doesn't overlap its neighbours' (13 of them at
+       2.5 rem wide would not fit a phone; 1.5 rem is 31 px at 130 %, past WCAG 2.5.8's 24).
+       `html[data-wt-plus]` (PlusShell, a plus route) keeps all of it off Ryan's pages. */
+@media (max-width: 767px) {
+  html[data-wt-plus] .btn.btn-xs,
+  [data-test-ai-panel] .btn.btn-xs,
+  .ai-settings .btn.btn-xs {
+    height: auto;
+    min-height: max(40px, 2rem);
+  }
+  html[data-wt-plus] .content .select.select-xs {
+    height: max(40px, 2rem);
+    min-height: max(40px, 2rem);
+  }
+  html[data-wt-plus] .content .tabs > .tab.tab,
+  html[data-wt-plus] .wv-tabs .wv-tabs__item,
+  html[data-wt-plus] .td-seg .td-seg__btn,
+  html[data-wt-plus] .acc-pages .acc-pages__item,
+  html[data-wt-plus] .mr-pages .mr-pages__item,
+  html[data-wt-plus] .acc-refresh.acc-refresh,
+  html[data-wt-plus] .wv-refresh.wv-refresh,
+  html[data-wt-plus] .en-chip.en-chip,
+  html[data-wt-plus] .en-chips__check.en-chips__check,
+  html[data-wt-plus] .bh-ver__delete.bh-ver__delete,
+  [data-test-ai-panel] [data-test-ai-model-chip][data-test-ai-model-chip] {
+    min-height: max(40px, 2rem);
+  }
+  html[data-wt-plus] .td-chip.td-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: max(40px, 2rem);
+  }
+  html[data-wt-plus] .td-ck .td-ck__box {
+    width: max(40px, 2rem);
+    height: max(40px, 2rem);
+  }
+  /* inline links: a 40 px hit box, the text where it was */
+  html[data-wt-plus] .content :is(.td-link, .tm__link, .acc-hero__link) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: max(40px, 2rem);
+    min-height: max(40px, 2rem);
+    margin-block: -0.5rem;
+  }
+  html[data-wt-plus] .content .td-ck .td-ck__src {
+    margin-inline: -0.4rem;
+  }
+  html[data-wt-plus] .content details > summary:not(.collapse-title):not(.btn) {
+    min-height: max(40px, 2rem);
+    padding-block: 0.45rem;
+  }
+  html[data-wt-plus] [data-test-rotation-dots] {
+    column-gap: 0;
+    row-gap: 1.75rem;
+    padding-block: 0.875rem;
+  }
+  html[data-wt-plus] [data-test-rotation-dots] > button {
+    position: relative;
+    margin-inline: 0.375rem;
+  }
+  html[data-wt-plus] [data-test-rotation-dots] > button::before {
+    content: "";
+    position: absolute;
+    inset: -0.875rem -0.375rem;
+  }
+}

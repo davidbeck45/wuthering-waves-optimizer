@@ -252,7 +252,7 @@ const rowTitle = computed(() => {
   white-space: nowrap;
 }
 .wv-target__sub--gold {
-  color: #c9962e;
+  color: var(--wt-gold, #c9962e); /* a11y.css: a darker amber on light themes (2.3 : 1 on nord) */
   font-weight: 650;
 }
 :root[data-theme-style="dark"] .wv-target__sub--gold {
@@ -332,7 +332,7 @@ const rowTitle = computed(() => {
   top: -0.85rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.58rem;
+  font-size: 0.6875rem; /* 11 px: 0.58rem (9 px) was too small to read (a11y audit L8) */
   font-weight: 700;
   color: oklch(var(--bc) / 0.55);
 }

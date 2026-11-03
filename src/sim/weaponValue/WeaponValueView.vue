@@ -258,6 +258,7 @@ import WeaponValueBar from "./WeaponValueBar.vue";
 import { useWeaponValueData } from "./useWeaponValueData";
 import { useSavedNote } from "../persist/useSavedNote";
 import { PREFS_KEY, at, axisOf, axisTicks, barModel, filterBars, filterCounts, kpisOf, pctFine, readPrefs, sortBars, unscored, type FilterKey, type Scope, type SortKey, type WeaponPrefs } from "./weaponValueView";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 // the selector tab carries the wuwa_calc client (a worker on first use): its own chunk, loaded when the tab opens
 const SelectorChooser = defineAsyncComponent(() => import("./SelectorChooser.vue"));
@@ -371,7 +372,7 @@ watch(
     openId.value = focus;
     setTimeout(() => {
       const el = document.querySelector(`[data-test-weapons-row="${CSS.escape(focus)}"]`);
-      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96, behavior: "smooth" });
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96, behavior: scrollBehavior() });
     }, 60);
   },
   { immediate: true },

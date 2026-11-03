@@ -10,7 +10,6 @@
       class="btn btn-ghost p-0 flex justify-center w-full min-w-0 relative"
       :class="{ 'btn-active': isPlusPage }"
       title="Tools+ pages: My account, rankings, Today and more"
-      aria-haspopup="menu"
       data-test-nav-rankings>
       <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
@@ -25,7 +24,6 @@
       :class="{ 'plus-nav__tab--on': isPlusPage }"
       @click="placeRailMenu"
       title="Tools+ pages: My account, rankings, Today and more"
-      aria-haspopup="menu"
       data-test-nav-rankings>
       <span class="plus-nav__pill">
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -34,20 +32,20 @@
       </span>
       <span class="truncate max-w-full">Tools+</span>
     </summary>
-    <ul class="plus-nav__menu" role="menu" data-test-nav-plus-menu>
-      <li class="plus-nav__eyebrow" role="presentation">Wuthering Tools+</li>
+    <!-- a list of links, not role="menu": it is navigation, and a menu role promised arrow keys it never had (a11y L3) -->
+    <ul class="plus-nav__menu" data-test-nav-plus-menu>
+      <li class="plus-nav__eyebrow" aria-hidden="true">Wuthering Tools+</li>
       <!-- the command palette (src/sim/shell/CommandPalette.vue): on a phone this is the only way to open it -->
-      <li class="plus-nav__search-row" role="none">
-        <button type="button" role="menuitem" class="plus-nav__search" data-test-nav-plus-search @click="openPalette">
+      <li class="plus-nav__search-row">
+        <button type="button" class="plus-nav__search" data-test-nav-plus-search @click="openPalette">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
           <span class="plus-nav__search-text">Search pages, characters, teams…</span>
           <kbd class="plus-nav__kbd">{{ modKey }} K</kbd>
         </button>
       </li>
-      <li v-for="page in PLUS_PAGES" :key="page.path" role="none">
+      <li v-for="page in PLUS_PAGES" :key="page.path">
         <RouterLink
           :to="page.path"
-          role="menuitem"
           class="plus-nav__item"
           :class="{ 'plus-nav__item--on': page.path === activePath }"
           :aria-current="page.path === activePath ? 'page' : undefined"
@@ -96,6 +94,9 @@ function close(): void {
 const assistant = useAssistant();
 const modKey = modKeyLabel();
 function openPalette(): void {
+  // the palette is a modal <dialog>, which hands focus back to whatever had it before showModal(): the summary, not
+  // this row, which the closed menu hides (a11y audit L2)
+  root.value?.querySelector<HTMLElement>("summary")?.focus({ preventScroll: true });
   close();
   assistant.setPaletteOpen(true);
 }

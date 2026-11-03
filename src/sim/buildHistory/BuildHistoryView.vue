@@ -152,6 +152,7 @@ import { NOW_ID, useBuildHistory } from "./useBuildHistory";
 import { characterOptions, gearSummary, labelText, labelTone, pickCharacter, restoreItems, whenText } from "./view";
 import BuildHistoryDiff from "./BuildHistoryDiff.vue";
 import "./buildHistory.css";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 useDocumentTitle(
   "Build history — Wuthering Waves Calculator & Optimizer",
@@ -219,7 +220,7 @@ function onSave(): void {
 async function openCompare(id: string): Promise<void> {
   h.compare(id, NOW_ID);
   await nextTick();
-  diffEl.value?.scrollIntoView({ behavior: "smooth", block: "start" });
+  diffEl.value?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
 }
 
 async function onRestore(v: HistoryVersion): Promise<void> {

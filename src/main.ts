@@ -2,6 +2,7 @@
 import { createApp, defineAsyncComponent } from "vue";
 import "./style.css";
 import "./sim/phone.css"; // Wuthering Tools+: phone-only overrides for upstream's components
+import "./sim/a11y/a11y.css"; // Wuthering Tools+: contrast tokens per theme, closed dialogs out of the Tab order, focus rings
 import App from "./App.vue";
 import { createWebHistory, createRouter } from "vue-router";
 import FloatingVue from "floating-vue";

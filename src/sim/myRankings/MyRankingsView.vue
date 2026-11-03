@@ -440,6 +440,6 @@ a.mr-pages__item:hover {
 }
 .my-rankings .mr-seg__n {
   font-size: 0.65rem;
-  opacity: 0.6;
+  opacity: 0.85; /* the segment's text is muted already: 0.6 on top of it read at 2.1 : 1 (a11y audit M2) */
 }
 </style>

@@ -115,6 +115,8 @@ no tuck / untuck loop at a section's end, Ask steps aside for Ryan's phone menus
 screenshots, and the Teams editor's stat icons show on light themes.
 `phone.css` § 32 came with "One team, one number" (track "fix-numbers", at the end): synced team names now start
 with who is in it, and from 768 px up the Teams cards and leaderboard tiles get § 8's two-line clamp so the tier shows.
+`phone.css` § 33 came with "Contrast, focus and keyboard" (track "fix-a11y-themes", at the end): 40 px tap targets
+(`max(40px, 2rem)`) below 768 px on plus pages and in the plus shell's own surfaces.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -3238,3 +3240,48 @@ passes through "scoring" (a MutationObserver installed before load records every
 roll chips rated on /inventory in a new tab leave Echo Lab's saved record as it was (same `savedAt`, no ratings in it)
 and the next /echo-lab still paints it; Settings › Clear empties the database and the next visit scores; without IndexedDB the page scores as before and
 Settings says nothing is kept.
+
+## Contrast, focus and keyboard — `src/sim/a11y/` (track "fix-a11y-themes", 2026-11-02)
+
+The 2026-11-02 audits (`wto-wt/b3/reports/audit-a11y-themes.md` and the a11y items of the core, desktop and
+new-screens audits) found one keyboard trap, closed dialogs in the Tab order on every page, muted text under WCAG AA in
+the default dark theme (61 % of visible plus text), status colours at 1.3–3 : 1 on light themes, an Ask panel and a
+play-along overlay that neither took focus nor gave it back, and 22–37 px phone targets on the most-used pages. This
+pass fixes them at the source: theme tokens, one build step, the shell, and phone.css.
+
+| Piece | What it does |
+|---|---|
+| `a11y/a11y.css` § 1 (imported from `main.ts` after `phone.css`) | per-theme tokens for every `THEME_OPTIONS` theme: `--wt-muted` (the lowest alpha muted base-content text may have: 0.8 dark, 0.69 light, 0.75 nord, 0.52 synthwave…), `--wt-muted-tint` (a higher floor inside tinted cards, chips and pills: the /account hero, character cards, `.wt-chip`, `.cc-pill`, `.en-chip`…), `--wt-edge` (form-field borders at 3 : 1), `--wt-text-p/s/a/in/su/wa/er` (a status colour used as text: the theme's own colour with its oklch lightness moved by `--wt-l-X` where it read under 4.5 : 1, so warning stays amber), `--wt-focus` and `--wt-gold` (the maxed "S6 R5" gold, darker on light themes). Declared on `:root, [data-theme]`, so a box in its own theme (the share sheet's Light / Dark card, TeamCard / PostCard) resolves its own colours rather than the page's |
+| `a11y/vitePlugin.ts` (`vite.config.ts`, one plugin) | rewrites plus CSS as it loads, in `src/sim` files only: `color: oklch(var(--bc) / a)` → `max(a, var(--wt-muted))`, the same for `--…ink…` / `--dim` / `--faint` custom properties, `opacity: a` (not in `@keyframes`, not under a `:disabled` rule) → `max(a, var(--wt-muted))`, `color: oklch(var(--su))` → `var(--wt-text-su, …)`, and a primary `outline` → `--wt-focus`. About 350 declarations without touching a line, and the next page written the plain way gets the same. Alphas and opacities from 0.25 up to 0.9 only; borders, fills and backgrounds keep their colours |
+| `a11y.css` § 2, the plus scope | on a plus page (`html[data-wt-plus]`, set by PlusShell for `PLUS_PAGES` and the 404) and in the shell's own surfaces (Ask panel, AI settings, palette, Tools+ menu, share sheet, welcome card): Tailwind's `opacity-25…75` and `text-base-content/30…75` get the same floor (`:where()` keeps their weight, so `hover:opacity-100` still wins); `text-primary` / `link-primary` / `text-success`… and the outlined primary badge (the "Tools+" badge beside a title) use `--wt-text-*`; a plain `.link` (style.css's `#646cff`, 3.9 : 1 on dark) takes the primary; a line dimmed with `opacity-50/60/70` that holds a link is dimmed by its colour instead, so the link keeps full strength (the credit lines); `text-[9/10/11px]` become the same size in rem so the phone's text size applies; form fields get `--wt-edge` borders. Ryan's pages keep his look |
+| `a11y.css` § 3, everywhere | closed `<dialog class="modal">` is `visibility: hidden` (DaisyUI's `display: grid` kept them laid out at opacity 0: the image lightbox's and ConfirmDialog's "close" buttons were Tab stops on every page, and screen readers listed every closed dialog); a focus ring on dropdown and menu items (the rail's theme and More menus showed focus only as a faint fill); the skip link's look; `scroll-padding` so a focused control scrolls clear of the nav and the Ask button; `prefers-reduced-motion` stops the "Scoring" pulses, the refresh spins and the skeleton shimmer |
+| `a11y/shellA11y.ts` + `PlusShell.vue` | `setPlusScope`, `markMain` (AppLayout's `.content` is `role="main"`, `#wt-main`; not on /rankings, where Riley's `<main>` is one; no standing `tabindex`, which would make a click on page text focus the box instead of `<body>` and stop Esc closing the Ask panel; the skip link adds one while it holds focus), `installSkipLink` ("Skip to content", first in `<body>`, to Riley's `<main>` or `.content`), `focusReturn` (the Ask panel gives focus back to what opened it, else the re-rendered Ask button; only when focus was left in the panel or on body), `scrollBehavior()` ("auto" under reduced motion; the eight JS smooth scrolls use it) |
+| `rankings/tabEscape.ts` + `controller.ts` | Riley's filter bar walks Tab round `[#optionSearch, …bubbles]` with `preventDefault`, so with no filter set Tab never left the search box (WCAG 2.1.2). A window capture-phase listener, while /rankings is mounted, hides the press from his listeners at the ring's two ends (`stopImmediatePropagation`, no `preventDefault`): the browser moves focus on. His ring still works between bubbles and through the search hits. Vendor untouched |
+| `ai/ui/AssistantPanel.vue`, `ai/useAssistant.ts` | the panel takes focus when it opens or an Explain button sends a question (the composer; the key field while there is no key); on a phone the sheet is `role="dialog" aria-modal="true"` and its heading takes focus (no keyboard popping up), unless focus is in the sheet already (Send keeps the composer and its keyboard). The composer is "Your question for Claude" (it shared "Ask Claude" with the button). `shellDom.anyModalOpen` ignores the panel's own sheet |
+| `rotation/CuePlay.vue` | play-along takes focus (its box: Space / Enter play the next swap), `#wt-app` is `inert` while it is up (Tab stays in the overlay), focus returns to "Play along" on close; Enter / Space on a focused button inside it now press that button |
+| `nav/PlusNavMenu.vue`, `shell/CommandPalette.vue` | the Tools+ menu is a list of links (its `role="menu"` promised arrow keys it never had); the menu's search row hands focus to the menu button before the palette opens, so closing the palette lands there, not on `<body>`; the palette has a "Cancel" button below `sm` (a phone has no Esc) and its listbox is named "Results" |
+| `phone.css` § 33 | 40 px targets below 768 px on plus pages: every `btn-xs`, the small selects, tabs, /today's checklist boxes, switch, chips and links, /account's and /my-rankings' page strips, refresh buttons, the ER chips, Build history's delete, the Ask panel's model chip, `<summary>` disclosures; inline links grow a hit box around the text (padding with an equal negative margin). The play-along dots keep their size, 1.5 rem apart with a 2.5 rem tall hit box (13 at 2.5 rem wide don't fit) |
+| small edits | the hard-coded golds and the ToA stars use the tokens; `/account` and `/my-rankings` segment counts drop a second dimming; `/account` cards are named by their own text plus "open details" (the `aria-label` hid damage, rank and grade); the Tools+ badges inside the Echo Lab / Echo plan h1s are `aria-hidden`; /rankings has a visually hidden "Team rankings" h1; /today's refresh svg is `aria-hidden`; `role="status"` on the scoring labels of /account, /my-rankings and Echo Lab; the /weapons R5 tick label is 11 px |
+
+Gates: `a11y/a11y.test.ts` measures every token against DaisyUI's own colours for all nine themes (muted text on
+base-100/200/300 and a 5 % tint, the tinted floor on a 10 % tint, borders at 3 : 1, every status colour and the focus
+ring on base-100/200/300 and on its own 15 % tint); `vitePlugin.test.ts`, `shellA11y.test.ts`, `rankings/tabEscape.test.ts`;
+`cypress/e2e/a11yThemes.cy.ts` (real Tab out of the /rankings search box, closed dialogs hidden, the skip link and one
+main landmark, muted labels and the Tools+ menu at ≥ 4.5 : 1 in dark, light, nord and pastel measured in the browser,
+Ask and play-along focus in and back, the palette's phone Cancel, /today's 40 px targets at 412 px / 130 %).
+
+Measured with the audit's own probe (`b3/audit/a11y-themes/a11y.mjs --contrast`) at 412 px / 130 %, David's export:
+/today in dark 177 text nodes, 5 under AA (all Ryan's bottom-bar labels at 4.48); /account dark 32 of 317 (was 183 of
+321); /echo-plan dark 33 of 758 (was 528); /my-rankings dark 16 of 457. Small targets: /today 27 → 0 (the probe still
+lists the 40 × 40 steppers at its own < 40 cut-off), /echo-plan 11 → 0, /energy 10 → 0.
+
+Left, with the reason:
+- The /account hero's lead card tints its top-left corner with the element colour at 26 %: chips and links there read
+  3.6–4.1 : 1 at the strongest point of the gradient (5+ elsewhere on the card). Lowering the tint is a design call.
+- Text dimmed twice (an `opacity-*` utility around text that is muted already, Echo Lab's "·" separators, Echo plan's
+  "Lock" / "Discard" legend chips) still reads 3.6–4.4 in dark; Ryan's v3 bottom-bar labels are 4.48 (his CSS).
+- Riley's own /rankings table styles (skittle CSS's `--dim`, `--faint` are floored; his hard-coded colours are not).
+- The palette's per-theme rows (audit L10): track "loose-ends" built them this batch.
+- Interim counts while /account scores ("Teams you can field" 7 → 15 → 30): the scoring label is a `role="status"` now,
+  but the KPI isn't marked "so far" (a wording change in a page another track is reworking).
+- 200 % zoom on /rankings (L12): the fixed account bar still leaves room for one card in a 450 px tall window.

@@ -8,6 +8,7 @@ import { buildScannerAssetsFile } from "./src/scanner/scannerAssets";
 import { SCANNER_ASSETS_FILE_NAME, signScannerData, type ScannerDataSigner } from "./src/scanner/scannerSignature";
 import { SIGNING_KEY_ENV, signerFromPrivateKey } from "./scripts/scannerDataKey";
 import { handleAlbumRequest, handleImageRequest } from "./api/_lib/googlePhotos";
+import { wtPlusContrast } from "./src/sim/a11y/vitePlugin"; // Wuthering Tools+: muted / status text that reads in every theme
 
 /**
  * Publishes /scanner-data.json (game data for the Wavescan desktop scanner, ADR 0035) and
@@ -66,7 +67,7 @@ const wtPlusApi: Plugin = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), scannerDataPlugin(), wtPlusApi],
+  plugins: [vue(), scannerDataPlugin(), wtPlusApi, wtPlusContrast(path.resolve(__dirname, "src/sim") + path.sep)],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

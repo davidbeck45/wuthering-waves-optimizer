@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -42,6 +42,8 @@ import { shareRequest } from "../share/shareRequest";
 import { dismissWelcome, isNewVisitor, welcomeAllowed, welcomeDismissed } from "./welcome";
 import { foldInventoryFiltersOnPhone, installInventoryPagerJump } from "./inventoryPager";
 import { useSettingsStore } from "../../stores/settings";
+import { PLUS_PAGES } from "./plusPages";
+import { focusReturn, installSkipLink, isPlusPath, markMain, setPlusScope } from "../a11y/shellA11y";
 
 const AssistantPanel = defineAsyncComponent(() => import("../ai/ui/AssistantPanel.vue"));
 const AiSettingsDialog = defineAsyncComponent(() => import("../ai/ui/AiSettingsDialog.vue"));
@@ -152,6 +154,32 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
+// plus pages get a11y.css's contrast floor (html[data-wt-plus]); every page's RouterView box is its main landmark
+const PLUS_PATHS = PLUS_PAGES.map((p) => p.path);
+watch(
+  () => [route.path, route.name] as const,
+  ([path, name]) => {
+    if (typeof document === "undefined") return;
+    setPlusScope(document, isPlusPath(path, PLUS_PATHS, name === "NotFoundView"));
+    void nextTick(() => markMain(document, path));
+  },
+  { immediate: true },
+);
+
+// the Ask panel gives focus back (a11y audit M5): to what had it when the panel opened, else the Ask button, which is
+// re-rendered once the panel closes. `sync`: read the opener before the panel's own focus watcher moves it.
+const askFocus = focusReturn();
+const inAskPanel = (el: Element): boolean => !!el.closest("[data-test-ai-panel]");
+watch(
+  () => assistant.state.open,
+  (open) => {
+    if (typeof document === "undefined") return;
+    if (open) askFocus.remember(document, inAskPanel);
+    else void nextTick(() => setTimeout(() => askFocus.restore(document, inAskPanel, () => document.querySelector<HTMLElement>("[data-test-ai-open]")), 40));
+  },
+  { flush: "sync" },
+);
+
 // the inventory's Filters panel starts folded on a phone until the player toggles it (inventoryPager.ts)
 watch(
   () => route.path,
@@ -163,9 +191,11 @@ watch(
 );
 
 let stopBodyObserver: (() => void) | null = null;
+let removeSkipLink: (() => void) | null = null;
 
 onMounted(() => {
   installInventoryPagerJump();
+  removeSkipLink = installSkipLink(document);
   window.addEventListener("keydown", onKeydown, true);
   observer = new MutationObserver(syncModal);
   // dialogs anywhere toggle `open`; bottom sheets are teleported straight into <body>
@@ -180,6 +210,7 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown, true);
   observer?.disconnect();
   stopBodyObserver?.();
+  removeSkipLink?.();
   if (pendingSync) clearTimeout(pendingSync);
 });
 </script>

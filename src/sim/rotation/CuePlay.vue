@@ -3,10 +3,11 @@
     <div
       v-if="open"
       ref="root"
-      :class="['rv-play fixed inset-0 z-[70] flex flex-col bg-base-100 text-base-content', `rv-play--${prefs.size}`]"
+      :class="['rv-play fixed inset-0 z-[70] flex flex-col bg-base-100 text-base-content outline-none', `rv-play--${prefs.size}`]"
       role="dialog"
       aria-modal="true"
       aria-label="Rotation play mode"
+      tabindex="-1"
       data-test-rotation-play
     >
       <div class="mx-auto flex h-full w-full max-w-5xl flex-col min-h-0">
@@ -75,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { RunMember } from "../engine/rileyRun";
 import CueStage from "./CueStage.vue";
 import type { CuePlan } from "./cueModel";
@@ -124,6 +125,8 @@ function onKey(e: KeyboardEvent): void {
   if (!props.open) return;
   const target = e.target as HTMLElement | null;
   if (target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA")) return;
+  // Enter / Space on a focused button or link is that control's (Leave, Pause, the dots): the stage takes them otherwise
+  if ((e.key === "Enter" || e.key === " ") && target?.closest?.("button, a[href], summary")) return;
   if (e.key === " " || e.key === "ArrowRight" || e.key === "PageDown" || e.key === "Enter") {
     e.preventDefault();
     props.player.advance();
@@ -144,11 +147,33 @@ const lockPage = (on: boolean): void => {
   locked = on;
   document.documentElement.classList.toggle("overflow-hidden", on);
 };
+// a11y audit M6: the overlay is aria-modal, so it takes the focus (its own box, where Space / Enter play the next swap),
+// the app behind it goes inert (no Tab stops under it), and focus goes back to "Play along" when it closes.
+let opener: HTMLElement | null = null;
+const appRoot = (): HTMLElement | null => (typeof document === "undefined" ? null : document.getElementById("wt-app"));
+const trapPage = (on: boolean): void => {
+  const app = appRoot();
+  if (!app) return;
+  if (on) app.setAttribute("inert", "");
+  else app.removeAttribute("inert");
+};
 watch(
   () => props.open,
-  (on) => {
+  (on, was) => {
     if (on) props.player.open();
     lockPage(on);
+    if (typeof document === "undefined") return;
+    if (on) {
+      const active = document.activeElement as HTMLElement | null;
+      opener = active && active !== document.body ? active : null;
+      trapPage(true);
+      void nextTick(() => root.value?.focus({ preventScroll: true }));
+    } else if (was) {
+      trapPage(false);
+      const back = opener?.isConnected ? opener : document.querySelector<HTMLElement>("[data-test-rotation-play-open]");
+      opener = null;
+      void nextTick(() => back?.focus({ preventScroll: true }));
+    }
   },
   { immediate: true },
 );
@@ -160,5 +185,6 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKey);
   document.removeEventListener("fullscreenchange", onFullscreen);
   lockPage(false);
+  if (props.open) trapPage(false);
 });
 </script>

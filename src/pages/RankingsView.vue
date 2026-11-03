@@ -1,6 +1,7 @@
 <template>
   <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
   <div class="rankings-page">
+    <h1 class="sr-only">Team rankings</h1><!-- Riley's page has no h1 of its own (a11y audit L9) -->
     <RankingsAccountBar :account="account" :built-count="myBuilds.length" />
     <div ref="host" class="skittle-host"></div>
     <!-- Wuthering Tools+: both teleport into Riley's page (a phone's card list, the detail's member strip) -->

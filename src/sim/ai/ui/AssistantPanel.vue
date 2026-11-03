@@ -24,7 +24,8 @@
       class="ai-panel fixed z-[60] flex flex-col bg-base-100 text-base-content shadow-2xl"
       :class="isPhone ? 'ai-panel--sheet inset-x-0 bottom-0 rounded-t-2xl border-t border-base-300' : 'ai-panel--side right-0 bottom-0 border-l border-base-300'"
       :style="isPhone ? undefined : { top: `${topPx}px` }"
-      role="complementary"
+      :role="isPhone ? 'dialog' : 'complementary'"
+      :aria-modal="isPhone ? 'true' : undefined"
       aria-label="Claude assistant"
       data-test-ai-panel
       @keydown="onPanelKeydown">
@@ -36,7 +37,7 @@
           <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="size-4" fill="currentColor"><path :d="SPARKLE" /></svg>
           </span>
-          <h2 class="shrink-0 text-[0.95rem] font-semibold max-sm:sr-only">Claude</h2>
+          <h2 ref="headingRef" tabindex="-1" class="shrink-0 text-[0.95rem] font-semibold outline-none max-sm:sr-only" data-test-ai-heading>Claude</h2>
           <button
             type="button"
             class="badge badge-ghost h-6 min-w-0 shrink gap-1 truncate border-base-300 px-2 text-xs font-medium hover:border-primary/50"
@@ -228,7 +229,7 @@
             rows="1"
             class="ai-input min-h-[2rem] flex-1 resize-none bg-transparent py-1 text-[16px] leading-6 outline-none placeholder:text-base-content/40 md:text-sm"
             :placeholder="placeholder"
-            aria-label="Ask Claude"
+            aria-label="Your question for Claude"
             enterkeyhint="send"
             data-test-ai-input
             @keydown="onInputKeydown"
@@ -299,6 +300,22 @@ const onPhoneChange = (): void => measure();
 
 const scrollRef = ref<HTMLElement | null>(null);
 const inputRef = ref<HTMLTextAreaElement | null>(null);
+const headingRef = ref<HTMLElement | null>(null);
+/** Where focus goes when the panel opens or is asked to take it (a11y audit M5): the composer on a desktop; the key
+ *  field while there is no key; on a phone the sheet's heading, so a screen reader is in the sheet but no keyboard
+ *  pops up over it (the composer only once there is a draft to finish). */
+function focusPanel(): void {
+  if (!state.open || state.collapsed) return;
+  if (isPhone.value && !state.draft) {
+    // already in the sheet (Send from the composer clears the draft): stay there, so the keyboard doesn't drop after each question
+    const active = typeof document === "undefined" ? null : document.activeElement;
+    if (active && active !== document.body && headingRef.value?.closest("[data-test-ai-panel]")?.contains(active)) return;
+    headingRef.value?.focus({ preventScroll: true });
+    return;
+  }
+  const target = inputRef.value ?? headingRef.value?.closest("[data-test-ai-panel]")?.querySelector<HTMLElement>("[data-test-ai-key-input]") ?? headingRef.value;
+  target?.focus({ preventScroll: true });
+}
 
 // ── data ──
 const keyPresent = computed(() => ai.key.value.present);
@@ -461,10 +478,7 @@ watch(
   () =>
     void nextTick(() => {
       autosize();
-      if (!state.open || state.collapsed) return;
-      // on a phone the keyboard would cover the sheet: focus only when the player starts typing
-      if (isPhone.value && !state.draft) return;
-      inputRef.value?.focus({ preventScroll: true });
+      focusPanel();
     }),
 );
 watch(
@@ -482,7 +496,7 @@ onMounted(() => {
   phoneQuery?.addEventListener?.("change", onPhoneChange);
   void nextTick(() => {
     scrollToBottom(true);
-    if (state.open && !isPhone.value) inputRef.value?.focus({ preventScroll: true });
+    if (state.open) focusPanel();
   });
 });
 onBeforeUnmount(() => {

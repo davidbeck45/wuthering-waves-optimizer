@@ -220,6 +220,7 @@ import { rankingsMineHash } from "../account/accountState";
 import { damageRanks, DEFAULT_DIR, sortCharacters, upgradeOf, type SortDir, type SortKey, type UpgradeView } from "./rows";
 import type { CharacterRank } from "./rankRoster";
 import { fmt, gainClass, pct } from "./format";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 type Tab = "whatif" | "substats" | "rotations";
 
@@ -288,7 +289,7 @@ watch(
     await nextTick();
     const row = document.querySelector(`[data-test-my-rankings-row="${CSS.escape(f.id)}"]`);
     // below the app's fixed 80 px navbar (AppLayout's #navbar-container), not under it
-    if (row) window.scrollTo({ top: Math.max(0, row.getBoundingClientRect().top + window.scrollY - 96), behavior: "smooth" });
+    if (row) window.scrollTo({ top: Math.max(0, row.getBoundingClientRect().top + window.scrollY - 96), behavior: scrollBehavior() });
   },
   { immediate: true },
 );
@@ -456,7 +457,7 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
   background: oklch(var(--bc) / 0.08);
 }
 .mr-pill--max {
-  color: #b7861c;
+  color: var(--wt-gold, #b7861c); /* a11y.css: a darker amber on light themes */
   background: rgb(232 180 76 / 0.16);
 }
 :root[data-theme-style="dark"] .mr-pill--max {

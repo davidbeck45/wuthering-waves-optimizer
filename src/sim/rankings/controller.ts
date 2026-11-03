@@ -21,6 +21,7 @@ import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
 import { appKeyOf } from "./rileyNames";
+import { leavesTabRing } from "./tabEscape";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -28,6 +29,7 @@ type TeamRow = { key: string; teamKey: string; members: Member[]; combo: any[] }
 type Solved = { picks: any; rows: any[]; scores: any; hidden: any[]; hiddenScores: any[] };
 interface Mods {
   display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; pickmenu: any; stats: any; substats: any;
+  filterbar: any;
 }
 
 const TEMPLATE = `
@@ -82,6 +84,19 @@ export function toggleRankingsSearch(open?: boolean): void {
   setSide(root, open ?? !root.classList.contains("wt-side-open"));
 }
 const onKeydown = (e: KeyboardEvent): void => { if (e.key === "Escape") openSide(false); };
+/** Riley's filter-bar ring (`page/table.ts` CHIP_RING, not exported): every bubble and both Clear buttons. */
+const RILEY_CHIP_RING = ".tcchips .rchip, .tcchips .clearall, .tcpins .rchip, .tcpins .clearpins";
+/** The way out of his Tab ring at its two ends (tabEscape.ts; a11y audit H1): window, capture phase, so it runs
+ *  before his document listeners and hides the press from them; the browser then moves focus in page order. */
+const onTabEscape = (e: KeyboardEvent): void => {
+  if (e.key !== "Tab" || !root) return;
+  const search = root.querySelector<HTMLElement>("#optionSearch");
+  if (!search) return;
+  const ring: HTMLElement[] = [search, ...root.querySelectorAll<HTMLElement>(RILEY_CHIP_RING)];
+  let hasHits = false;
+  try { hasHits = !!mods?.filterbar?.searchHits?.().length; } catch { /* his module not booted yet */ }
+  if (leavesTabRing(e, e.target as HTMLElement | null, ring, hasHits)) e.stopImmediatePropagation();
+};
 
 function buildDom(): HTMLElement {
   const el = document.createElement("div");
@@ -101,12 +116,13 @@ function buildDom(): HTMLElement {
 
 async function loadModules(): Promise<Mods> {
   // Riley moved the solver and team run into solve/, display.ts into page/, teams.ts into resonators/ (Oct 2026)
-  const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats] = await Promise.all([
+  const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar] = await Promise.all([
     import("@skittle/page/display"), import("@skittle/solve/solver"), import("@skittle/solve/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
     import("@skittle/page/pickmenu"), import("@skittle/engine/stats"), import("@skittle/shared/substats"),
+    import("@skittle/page/filterbar"), // table.ts imports it already; read here for searchHits() (onTabEscape)
   ]);
-  return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats };
+  return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar };
 }
 
 /* ---------------------------------------------------------------------------------- overlay */
@@ -1024,6 +1040,7 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
   if (!root) root = buildDom();
   host.appendChild(root);
   document.addEventListener("keydown", onKeydown);
+  window.addEventListener("keydown", onTabEscape, true);
   document.addEventListener("click", onBaselineClick, true);
   phoneMedia ??= matchMedia(PHONE_QUERY);
   phoneMedia.addEventListener("change", onPhoneChange);
@@ -1042,6 +1059,7 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
 
 export function unmountRankings(): void {
   document.removeEventListener("keydown", onKeydown);
+  window.removeEventListener("keydown", onTabEscape, true);
   document.removeEventListener("click", onBaselineClick, true);
   phoneMedia?.removeEventListener("change", onPhoneChange);
   openSide(false);

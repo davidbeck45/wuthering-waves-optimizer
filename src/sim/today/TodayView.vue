@@ -42,7 +42,7 @@
           aria-label="Check Kuro's news now"
           data-test-today-refresh
           @click="today.refresh(true)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="{ 'td-spin': today.newsLoading.value }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" :class="{ 'td-spin': today.newsLoading.value }">
             <path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7" />
           </svg>
         </button>

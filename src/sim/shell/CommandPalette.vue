@@ -24,9 +24,11 @@
             data-test-palette-input
             @keydown="onKeydown" />
           <kbd class="hidden shrink-0 rounded border border-base-300 px-1.5 font-mono text-[11px] leading-5 text-base-content/50 sm:inline">Esc</kbd>
+          <!-- a phone has no Esc key and the palette fills its screen (a11y audit L2) -->
+          <button type="button" class="btn btn-ghost btn-sm -mr-2 h-10 min-h-10 shrink-0 font-medium normal-case sm:hidden" data-test-palette-cancel @click="close">Cancel</button>
         </div>
 
-        <ul id="wt-palette-list" ref="listRef" role="listbox" class="wt-palette__list min-h-0 flex-1 overflow-y-auto overscroll-contain p-2" data-test-palette-list>
+        <ul id="wt-palette-list" ref="listRef" role="listbox" aria-label="Results" class="wt-palette__list min-h-0 flex-1 overflow-y-auto overscroll-contain p-2" data-test-palette-list>
           <template v-for="(group, gi) in grouped" :key="group.group">
             <li v-if="group.group !== 'ask'" role="presentation" class="px-2.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-base-content/45" :class="gi === 0 ? 'pt-1' : 'pt-3'">{{ GROUP_LABELS[group.group] }}</li>
             <li

@@ -258,6 +258,8 @@ describe("Claude assistant", { scrollBehavior: "center" }, () => {
     cy.get("[data-test-ai-open]").should("be.visible").click();
     ask("Which of my characters is set up?");
     cy.get("[data-test-ai-answer-text]", { timeout: 20000 }).should("contain.text", "saved rotation");
+    // Send keeps the composer focused on a phone (the keyboard stays up for a follow-up); only an open from outside goes to the heading
+    cy.focused().should("have.attr", "data-test-ai-input");
     cy.get("[data-test-ai-panel]").then(($panel) => {
       const rect = $panel[0].getBoundingClientRect();
       expect(rect.left, "sheet left").to.be.at.least(0);

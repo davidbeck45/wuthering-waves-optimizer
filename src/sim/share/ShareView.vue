@@ -230,6 +230,7 @@ import { readShareLink, fragmentOf } from "./link";
 import { applyImport, planImport, type EchoMatch, type ImportPlan } from "./mergePreview";
 import { mainEchoesData } from "../../echoes/index";
 import { readCardFile, type CardRead } from "./readCard";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 useDocumentTitle(
   "Share & import builds — Wuthering Waves Calculator & Optimizer",
@@ -318,7 +319,7 @@ async function show(result: CardRead | { ok: true; payload: SharePayload; readOn
   previewNote.value = null;
   verified.value = null;
   const p = result.payload;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: scrollBehavior() });
   // only characters this app ships are rendered (released content only)
   const shown = { ...p, members: p.members.filter((m) => isKnownCharacter(m.charId)) };
   if (!shown.members.length) {

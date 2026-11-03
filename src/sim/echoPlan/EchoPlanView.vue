@@ -14,7 +14,7 @@
         </div>
         <div class="min-w-0">
           <h1 class="flex items-center gap-2 text-xl font-bold leading-tight">
-            Echo plan <span class="badge badge-primary badge-outline badge-sm font-semibold">Tools+</span>
+            Echo plan <span class="badge badge-primary badge-outline badge-sm font-semibold" aria-hidden="true">Tools+</span>
           </h1>
           <p class="text-xs opacity-60 max-sm:hidden">
             The in-game Echo Management plan for your roster: which COST 4 / 3 / 1 main stats to lock and which to discard, per Sonata.
@@ -330,6 +330,7 @@ import type { ServerId } from "./storage";
 import { useEchoPlan } from "./useEchoPlan";
 import { usePlusBar } from "../shell/plusBar";
 import "./echoPlan.css";
+import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
 useDocumentTitle(
   "Echo plan — Wuthering Waves Calculator & Optimizer",
@@ -436,7 +437,7 @@ const phoneBar = computed(() => hasRoster.value && ready.value && progress.value
 
 function setFilter(f: Filter): void {
   filter.value = f;
-  gridTop.value?.scrollIntoView({ block: "start", behavior: "smooth" });
+  gridTop.value?.scrollIntoView({ block: "start", behavior: scrollBehavior() });
 }
 function resetFilters(): void {
   filter.value = "all";

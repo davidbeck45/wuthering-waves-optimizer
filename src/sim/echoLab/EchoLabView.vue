@@ -12,7 +12,7 @@
         </div>
         <div class="min-w-0">
           <h1 class="flex items-center gap-2 text-xl font-bold leading-tight">
-            Echo Lab <span class="badge badge-primary badge-outline badge-sm font-semibold">Tools+</span>
+            Echo Lab <span class="badge badge-primary badge-outline badge-sm font-semibold" aria-hidden="true">Tools+</span>
           </h1>
           <p class="text-xs opacity-60 max-sm:hidden">Keep, tune, re-roll or feed: every number is this app's damage engine on each character's best rotation.</p>
           <p class="text-xs opacity-60 sm:hidden">Engine-scored echo decisions</p>
@@ -91,7 +91,7 @@
       <div v-if="passStatus.running" class="mt-3 rounded-box border border-primary/40 bg-base-100 px-4 py-3" data-test-echo-lab-progress>
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span class="loading loading-spinner loading-sm text-primary"></span>
-          <span class="text-sm font-medium">{{ phaseLabel(passStatus.progress?.phase) }}</span>
+          <span class="text-sm font-medium" role="status">{{ phaseLabel(passStatus.progress?.phase) }}</span>
           <span v-if="passStatus.progress?.label" class="truncate text-xs opacity-60">{{ progressLabel }}</span>
           <span class="ml-auto font-mono text-xs tabular-nums opacity-60">{{ passStatus.progress ? `${passStatus.progress.done} / ${passStatus.progress.total}` : "" }}</span>
           <button type="button" class="btn btn-ghost btn-xs" data-test-echo-lab-cancel @click="lab.cancel()">Cancel</button>
