@@ -1,0 +1,211 @@
+/* Wuthering Tools+ — Echo Lab in Ryan's inventory: the row under his Filters panel (.iq-bar) and the chip on each echo
+   (.iq-chip). DaisyUI tokens only, so every theme recolours them; light themes darken the coloured text for contrast
+   (the same mix as echoLab.css). Where the chip sits: the v3 tile's action column (under Edit / Duplicate / Delete,
+   a three-line stack on a desktop), the compact and classic cards' footers (a full-width strip). On a phone the v3
+   tile's action column is already a wrapping row under the substats (phone.css § 25), so the chip's default full
+   width puts it on a line of its own there: no phone.css section of its own. Muted text stays at 75 %+ of the text
+   colour so it keeps AA contrast on light themes. */
+
+.iq-bar {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--rounded-box, 1rem);
+  background: oklch(var(--b2));
+  padding: 0.6rem 0.75rem;
+}
+.iq-bar__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+.iq-bar__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.iq-bar__link {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: oklch(var(--p));
+  white-space: nowrap;
+}
+.iq-bar__link:hover {
+  text-decoration: underline;
+}
+.iq-bar__intro {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+.iq-bar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.iq-bar__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.iq-bar__sort > span {
+  opacity: 0.75;
+}
+.iq-bar__feed {
+  border-color: oklch(var(--wa) / 0.45);
+}
+.iq-bar__feed--on {
+  background: oklch(var(--wa) / 0.18);
+  border-color: oklch(var(--wa));
+}
+.iq-bar__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+.iq-bar__status[data-state="error"] {
+  color: oklch(var(--er));
+  opacity: 1;
+}
+
+/* the chip: a strip by default (card footers, a phone) */
+.iq-chip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.4rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.25rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid oklch(var(--bc) / 0.12);
+  border-left-width: 3px;
+  border-radius: 0.5rem;
+  background: oklch(var(--b2) / 0.7);
+  color: inherit;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+.iq-chip:hover:not(:disabled) {
+  border-color: oklch(var(--p) / 0.55);
+}
+.iq-chip:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+.iq-chip:disabled {
+  cursor: default;
+}
+/* the last verdict, while Echo Lab judges again after an edit */
+.iq-chip--stale > * {
+  opacity: 0.55;
+}
+.iq-chip--keep {
+  border-left-color: oklch(var(--su));
+}
+.iq-chip--spare {
+  border-left-color: oklch(var(--in));
+}
+.iq-chip--feed {
+  border-left-color: oklch(var(--wa));
+}
+.iq-chip__label {
+  font-size: 0.65rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+.iq-chip__roll {
+  font-weight: 650;
+  white-space: nowrap;
+}
+.iq-chip__reason {
+  flex: 1 1 5rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+.iq-chip__muted {
+  opacity: 0.75;
+}
+.iq-chip__go {
+  flex: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-left: auto;
+  opacity: 0.5;
+}
+
+.iq-roll--great {
+  color: oklch(var(--p));
+}
+.iq-roll--good {
+  color: oklch(var(--su));
+}
+.iq-roll--below {
+  color: oklch(var(--wa));
+}
+.iq-roll--poor {
+  color: oklch(var(--er));
+}
+html[data-theme-style="light"] .iq-roll--great {
+  color: color-mix(in oklch, oklch(var(--p)) 75%, black);
+}
+html[data-theme-style="light"] .iq-roll--good {
+  color: color-mix(in oklch, oklch(var(--su)) 62%, black);
+}
+html[data-theme-style="light"] .iq-roll--below {
+  color: color-mix(in oklch, oklch(var(--wa)) 50%, black);
+}
+html[data-theme-style="light"] .iq-roll--poor {
+  color: color-mix(in oklch, oklch(var(--er)) 70%, black);
+}
+
+/* the compact and classic cards (CalculatorEchoCard): the footer wraps so the chip gets a line of its own, first */
+.echoes__item__foot:has(> .iq-chip) {
+  flex-wrap: wrap;
+}
+.echoes__item__foot > .iq-chip {
+  order: -1;
+  flex-basis: 100%;
+}
+/* the compact grid's cards are narrow: verdict, roll and the arrow only (the reason is in the hover text) */
+html[data-density="compact"] .echoes__item__foot > .iq-chip .iq-chip__label,
+html[data-density="compact"] .echoes__item__foot > .iq-chip .iq-chip__reason {
+  display: none;
+}
+
+/* the v3 tile on a desktop: the chip sits in the action column under Edit / Duplicate / Delete — a stack of verdict,
+   roll and reason, as wide as the column's buttons */
+@media (min-width: 768px) {
+  .echo__tile .card-body .flex-col.shrink-0 > .iq-chip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    max-width: 8.5rem;
+    min-height: 0;
+    padding: 0.35rem 0.45rem;
+  }
+  .echo__tile .card-body .flex-col.shrink-0 > .iq-chip .iq-chip__label,
+  .echo__tile .card-body .flex-col.shrink-0 > .iq-chip .iq-chip__go {
+    display: none;
+  }
+  .echo__tile .card-body .flex-col.shrink-0 > .iq-chip .iq-chip__roll,
+  .echo__tile .card-body .flex-col.shrink-0 > .iq-chip .iq-chip__reason {
+    flex: none;
+    white-space: normal;
+  }
+}

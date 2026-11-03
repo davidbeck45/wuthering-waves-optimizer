@@ -8,6 +8,7 @@ import { echoPotential, type EchoPotentialResult, type PotentialOptions, type Po
 import { engineView, type EngineViewOptions, type EngineViewResult } from "./engineView";
 import { rerollAdvice, type RerollAdviceResult, type RerollOptions } from "./rerollAdvice";
 import { rollQuality, type RollQualityOptions, type RollQualityResult, type RollQualityTarget } from "./rollQuality";
+import { rollRatings, type RollRatingItem, type RollRatingOptions, type RollRatingsResult } from "./rollRatings";
 import { tunerCandidates, type TunerCandidatesResult, type TunerPlanOptions } from "./tunerPlan";
 
 export interface BenchmarkBatchResult {
@@ -40,7 +41,8 @@ export type EchoLabJob =
   | { kind: "reroll"; characterId: string; slot: number; options?: RerollOptions }
   | { kind: "engineView"; characterId: string; options?: EngineViewOptions }
   | { kind: "tunerPlan"; options?: TunerPlanOptions }
-  | { kind: "rollQuality"; echoId: string; target?: RollQualityTarget | null; options?: RollQualityOptions };
+  | { kind: "rollQuality"; echoId: string; target?: RollQualityTarget | null; options?: RollQualityOptions }
+  | { kind: "rollRatings"; items: RollRatingItem[]; options?: RollRatingOptions };
 
 export interface EchoLabResultMap {
   pass: EchoLabPassResult;
@@ -51,6 +53,7 @@ export interface EchoLabResultMap {
   engineView: EngineViewResult;
   tunerPlan: TunerCandidatesResult;
   rollQuality: RollQualityResult;
+  rollRatings: RollRatingsResult;
 }
 
 export type EchoLabResult<J extends EchoLabJob> = EchoLabResultMap[J["kind"]];
@@ -112,6 +115,8 @@ export async function runJob(session: LabSession, job: EchoLabJob, control: RunC
       return tunerCandidates(session, job.options, control);
     case "rollQuality":
       return rollQuality(session, job.echoId, job.target ?? null, job.options, control);
+    case "rollRatings":
+      return rollRatings(session, job.items, job.options, control);
     default:
       throw new Error(`Unknown Echo Lab job ${(job as { kind?: string }).kind}`);
   }

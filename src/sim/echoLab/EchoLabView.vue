@@ -178,21 +178,34 @@ const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 
 const noBuilds = computed(() => !!pass.value && !passStatus.running && pass.value.bestOwner.characters.length === 0);
 
 // the tab and the re-roll character live in the URL, so the calculator can link straight to them
-const queryTab = (): TabId => (TAB_IDS.includes(route.query.tab as TabId) ? (route.query.tab as TabId) : "verdicts");
+// (and `?echo=<id>`, the inventory's Echo Lab chips: that one echo's verdict row, opened)
+const queryEcho = (): string => (typeof route.query.echo === "string" ? route.query.echo : "");
+const queryTab = (): TabId => (queryEcho() ? "verdicts" : TAB_IDS.includes(route.query.tab as TabId) ? (route.query.tab as TabId) : "verdicts");
 const tab = ref<TabId>(queryTab());
 const rerollCharacter = ref<string | null>(typeof route.query.character === "string" ? route.query.character : null);
-watch([tab, rerollCharacter], ([t, c]) => {
+const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS, echo: queryEcho() });
+watch([tab, rerollCharacter, () => filters.value.echo], ([t, c, e]) => {
   const query: Record<string, string> = {};
   if (t !== "verdicts") query.tab = t;
   if (t === "reroll" && c) query.character = c;
-  if (route.query.tab !== query.tab || route.query.character !== query.character) void router.replace({ query });
+  if (t === "verdicts" && e) query.echo = e;
+  if (route.query.tab !== query.tab || route.query.character !== query.character || route.query.echo !== query.echo) void router.replace({ query });
 });
+// another chip tapped while the page is up (the palette, a second link): show that echo
+watch(
+  () => route.query.echo,
+  () => {
+    const e = queryEcho();
+    if (!e || e === filters.value.echo) return;
+    filters.value = { ...DEFAULT_FILTERS, echo: e };
+    tab.value = "verdicts";
+  },
+);
 watch(tab, (t) => {
   if (t === "benchmark") void lab.runBenchmarks();
   if (t === "plan") void lab.runTunerPlan();
 });
 
-const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS });
 /** a Keep / Spare / Feed KPI is on while the verdict list shows that verdict */
 const kpiOn = (verdict: EchoVerdictKind | null): boolean => !!verdict && tab.value === "verdicts" && filters.value.verdict === verdict;
 async function showVerdict(verdict: EchoVerdictKind): Promise<void> {

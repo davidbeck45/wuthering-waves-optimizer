@@ -293,6 +293,7 @@
         </div>
       </div>
     </AppFilterPanel>
+    <InventoryQualityBar />
     <AppBulkActionBar
       :visible="hasSelection"
       :count="selectedEchoIds.length">
@@ -563,6 +564,7 @@
                 @odds="openOdds(echoRow.echoId)"
                 @duplicate="duplicateEcho(echoRow.echoId)"
                 @delete="removeEcho(echoRow.echoId)">
+                <InventoryQualityChip :echo-id="echoRow.echoId" />
                 <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse mt-1">
                   <div class="avatar" v-for="char in getCharsEquipped(echoRow)" :key="char">
                     <div class="w-8 bg-accent-content">
@@ -586,6 +588,7 @@
                      as two distinct clusters instead of one crowded button row —
                      see docs/adr/0014 decision #14. -->
                 <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
+                  <InventoryQualityChip :echo-id="echoRow.echoId" />
                   <div class="flex items-center gap-1" data-test-echo-action-cluster>
                     <button
                       type="button"
@@ -658,6 +661,7 @@
 
                 <!-- Flag-off footer — unchanged from before decision #14. -->
                 <div v-else class="echoes__item__foot flex gap-2 justify-between items-center">
+                  <InventoryQualityChip :echo-id="echoRow.echoId" />
                   <div class="echoes__items__foot__equipped">
                     <div class="avatar-group -space-x-6 rtl:space-x-reverse">
                       <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
@@ -782,6 +786,10 @@ import {
 } from "../composables/useUnfinishedEchoRanking";
 import { formatTuningChance, type UnfinishedEchoTag } from "../echoes/tuningOdds";
 import TuningGoalEditor from "./TuningGoalEditor.vue";
+// Wuthering Tools+: Echo Lab verdicts and roll ratings in the inventory (src/sim/inventoryQuality/)
+import InventoryQualityBar from "../sim/inventoryQuality/InventoryQualityBar.vue";
+import InventoryQualityChip from "../sim/inventoryQuality/InventoryQualityChip.vue";
+import { inventoryViewKey, plusInventoryView } from "../sim/inventoryQuality/useInventoryQuality";
 
 const { confirm } = useConfirm();
 const { showToast } = useToast();
@@ -955,6 +963,7 @@ watch(
     cvMax,
     rvMin,
     rvMax,
+    inventoryViewKey,
   ],
   () => {
     page.value = 1;
@@ -1038,7 +1047,7 @@ const echoesList = computed(() => {
       return true;
     });
   }
-  return allEchoes;
+  return plusInventoryView(allEchoes);
 });
 
 // "Fresh echo" divider: sits before the first ranked echo that doesn't beat

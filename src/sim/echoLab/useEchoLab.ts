@@ -15,6 +15,7 @@ import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult
 import type { RerollAdviceResult } from "./rerollAdvice";
 import { rerollOptionsFor } from "./rerollPick";
 import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
+import type { RollRating, RollRatingItem } from "./rollRatings";
 import type { TunerCandidatesResult } from "./tunerPlan";
 import { erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
@@ -49,6 +50,9 @@ const tunerPlan = shallowRef<TunerCandidatesResult | null>(null);
 const tunerStatus = reactive<JobStatus>(idle());
 /** "How good is this roll" by `${fingerprint}|${echoId}|${characterId}|${slot}` */
 const qualities = reactive(new Map<string, RollQualityResult | { error: string }>());
+/** the inventory's quick roll ratings (rollRatings.ts) by `${echoId}|${characterId}|${slot}`, for `resultFingerprint`;
+ *  `null` = tried, could not be rated */
+const ratings = reactive(new Map<string, RollRating | null>());
 let tunerAbort: AbortController | null = null;
 const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
@@ -71,6 +75,8 @@ interface StoredCache {
   benchmarks: BenchmarkBatchResult | null;
   /** added with the Tuner plan (an older cache of the same version simply has none) */
   tunerPlan?: TunerCandidatesResult | null;
+  /** added with the inventory's roll chips (2026-11-02; same rule: older caches have none) */
+  ratings?: RollRating[];
 }
 
 function readCache(): StoredCache | null {
@@ -86,12 +92,15 @@ function readCache(): StoredCache | null {
 function writeCache(): void {
   if (!resultFingerprint.value) return;
   try {
-    const value: StoredCache = { v: CACHE_VERSION, fingerprint: resultFingerprint.value, pass: pass.value, benchmarks: benchmarks.value, tunerPlan: tunerPlan.value };
+    const rated = [...ratings.values()].filter((r): r is RollRating => r !== null);
+    const value: StoredCache = { v: CACHE_VERSION, fingerprint: resultFingerprint.value, pass: pass.value, benchmarks: benchmarks.value, tunerPlan: tunerPlan.value, ratings: rated };
     sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(value));
   } catch {
     // quota or no storage: the module cache still holds it for this page load
   }
 }
+
+const ratingKey = (t: { echoId: string; characterId: string; slot: number }): string => `${t.echoId}|${t.characterId}|${t.slot}`;
 
 const errorText = (err: unknown): string => (err instanceof Error ? err.message : String(err));
 const isCancel = (err: unknown): boolean => err instanceof Error && err.name === CANCELLED;
@@ -105,6 +114,7 @@ function adopt(fingerprint: string): void {
   tunerPlan.value = null;
   rerolls.clear();
   qualities.clear();
+  ratings.clear();
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
@@ -162,6 +172,7 @@ export function useEchoLab() {
         pass.value = stored.pass;
         benchmarks.value = stored.benchmarks;
         tunerPlan.value = stored.tunerPlan ?? null;
+        for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
         passStatus.cached = true;
       }
     }
@@ -254,6 +265,36 @@ export function useEchoLab() {
 
   const qualityOf = (echoId: string, target: RollQualityTarget | null): RollQualityResult | { error: string } | null => qualities.get(qualityKey(echoId, target)) ?? null;
 
+  /** Quick roll ratings for a batch of echoes (the inventory's chips, rollRatings.ts): one worker job, merged into the
+   *  module map. `given` lets a caller send one snapshot for several batches; `persist: false` skips the
+   *  sessionStorage write (a caller's middle batches: the last one saves them all). Resolves false when cancelled, when
+   *  the worker failed or when the account changed meanwhile. */
+  async function runRollRatings(items: RollRatingItem[], signal: AbortSignal, given?: { account: LabAccount; fingerprint: string }, persist = true): Promise<boolean> {
+    const { account, fingerprint } = given ?? snapshot();
+    // a caller's older snapshot never adopts: an edit since then has already moved the page on to the new state
+    if (given) {
+      if (resultFingerprint.value !== fingerprint) return false;
+    } else adopt(fingerprint);
+    const todo = items.filter((item) => !ratings.has(ratingKey(item)));
+    if (!todo.length) return true;
+    try {
+      const result = await getEchoLabClient().run({ kind: "rollRatings", items: todo }, account, { signal });
+      if (resultFingerprint.value !== fingerprint) return false;
+      for (const r of result.ratings) ratings.set(ratingKey(r), r);
+      for (const e of result.errors) {
+        const item = todo.find((t) => t.echoId === e.echoId);
+        if (item) ratings.set(ratingKey(item), null);
+      }
+      if (persist) writeCache();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** the quick rating of an echo rated on this target: undefined = not asked yet, null = could not be rated */
+  const ratingOf = (echoId: string, target: RollQualityTarget): RollRating | null | undefined => ratings.get(ratingKey({ echoId, ...target }));
+
   function cancel(): void {
     passAbort?.abort();
     benchAbort?.abort();
@@ -276,6 +317,8 @@ export function useEchoLab() {
     runTunerPlan,
     runRollQuality,
     qualityOf,
+    runRollRatings,
+    ratingOf,
     cancel,
     snapshot,
   };

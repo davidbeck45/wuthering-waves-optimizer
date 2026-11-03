@@ -122,15 +122,18 @@ export interface VerdictFilters {
   owner: string;
   worn: "all" | "worn" | "free";
   search: string;
+  /** one echo by id (the inventory's chips link to `/echo-lab?echo=<id>`); "" = every echo */
+  echo: string;
 }
 
-export const DEFAULT_FILTERS: VerdictFilters = { verdict: "all", cost: "all", set: "all", main: "all", owner: "all", worn: "all", search: "" };
+export const DEFAULT_FILTERS: VerdictFilters = { verdict: "all", cost: "all", set: "all", main: "all", owner: "all", worn: "all", search: "", echo: "" };
 
 export const isWorn = (row: Pick<EchoVerdict, "wornBy">): boolean => row.wornBy.length > 0;
 
 export function applyFilters(rows: readonly EchoVerdict[], f: VerdictFilters): EchoVerdict[] {
   const q = f.search.trim().toLowerCase();
   return rows.filter((r) => {
+    if (f.echo && r.echoId !== f.echo) return false;
     if (f.verdict !== "all" && r.verdict !== f.verdict) return false;
     if (f.cost !== "all" && r.cost !== f.cost) return false;
     if (f.set !== "all" && (r.set ?? "") !== f.set) return false;
@@ -258,6 +261,23 @@ export const phaseLabel = (phase: string | null | undefined): string => (phase ?
 export const slotLabel = (slot: number): string => (slot === 0 ? "Main echo" : `Slot ${slot + 1}`);
 
 // ── how good is this roll ──
+
+/** Where "How good is this roll" rates an echo: the built character wearing it (the slot that really points at it),
+ *  else its best owner's slot, else Tune or Feed's target; null when no build can slot it. One rule for Echo Lab's row
+ *  detail and the inventory's chips, so both rate an echo on the same build. */
+export function qualityTarget(
+  row: Pick<EchoVerdict, "echoId" | "wornBy" | "best" | "potential">,
+  characters: ReadonlyMap<string, Pick<LabCharacterSummary, "slots">> | ReadonlyArray<Pick<LabCharacterSummary, "id" | "slots">>,
+): { characterId: string; slot: number } | null {
+  const built: ReadonlyMap<string, Pick<LabCharacterSummary, "slots">> = Array.isArray(characters)
+    ? new Map((characters as ReadonlyArray<Pick<LabCharacterSummary, "id" | "slots">>).map((c) => [c.id, c]))
+    : (characters as ReadonlyMap<string, Pick<LabCharacterSummary, "slots">>);
+  const wearer = row.wornBy.find((w) => !w.stale && built.get(w.characterId)?.slots[w.slot]?.echoId === row.echoId);
+  if (wearer) return { characterId: wearer.characterId, slot: wearer.slot };
+  if (row.best) return { characterId: row.best.characterId, slot: row.best.slot };
+  if (row.potential) return { characterId: row.potential.characterId, slot: row.potential.slot };
+  return null;
+}
 
 /** the percentile in words: "Better than 82%", the top and bottom 1 % named as such (a simulation can't say 100 %) */
 export function ratingOf(percentile: number): { headline: string; band: string; chip: string } {

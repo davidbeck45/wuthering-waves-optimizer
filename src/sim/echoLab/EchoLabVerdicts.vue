@@ -2,7 +2,7 @@
   <section class="space-y-3" data-test-echo-lab-verdicts>
     <!-- feed list: the bulk cleanup, grouped the way the game's echo filter works -->
     <div
-      v-if="groups.length && (filters.verdict === 'all' || filters.verdict === 'feed')"
+      v-if="groups.length && !filters.echo && (filters.verdict === 'all' || filters.verdict === 'feed')"
       class="rounded-box border border-base-300 bg-base-100"
       data-test-echo-lab-feed-list>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
@@ -117,6 +117,13 @@
       <span class="el-line el-line--weak">weak</span>
       <span class="el-line el-line--dead">does nothing</span>
     </p>
+
+    <!-- one echo, opened from the inventory's Echo Lab chip (`/echo-lab?echo=<id>`) -->
+    <div v-if="filters.echo" class="el-one-echo flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-box border border-primary/40 bg-base-100 px-3 py-2 text-sm" data-test-echo-lab-one-echo>
+      <span class="el-one-echo__text">{{ oneEchoText }}</span>
+      <RouterLink to="/inventory" class="btn btn-ghost btn-sm" data-test-echo-lab-back-inventory>‹ Inventory</RouterLink>
+      <button type="button" class="btn btn-sm" data-test-echo-lab-show-all @click="set('echo', '')">Show every echo</button>
+    </div>
 
     <!-- the table (cards below 1024 px) -->
     <div class="el-table overflow-hidden rounded-box border border-base-300 bg-base-100 max-lg:border-0 max-lg:bg-transparent" role="table" aria-label="Inventory verdicts">
@@ -238,7 +245,7 @@
 // it, and keep / spare / feed (bestOwner.ts), in a dense sortable table that becomes cards below 1024 px.
 // Hover text is native `title`, never floating-vue's v-tooltip: that directive mounts one Popper component per
 // element in a single global list, and ~9 per row made 60 rows cost ~250 ms and "Show all" (258) over a second.
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useToast } from "../../composables/useToast";
 import type { BestOwnerResult, EchoVerdict, LabCharacterSummary } from "./bestOwner";
 import EchoLabEcho from "./EchoLabEcho.vue";
@@ -294,6 +301,28 @@ const activeCount = computed(() => activeFilterCount(filters.value));
 const extraActive = computed(() => activeFilterCount({ ...filters.value, verdict: "all", search: "" }));
 
 watch(filters, () => (limit.value = PAGE), { deep: true });
+
+// `?echo=<id>` (the inventory's chip): open that echo's row, its detail ends with "How good is this roll", and bring
+// the notice and the row up under the nav bar
+const oneEchoText = computed(() => {
+  const row = rows.value.find((r) => r.echoId === filters.value.echo);
+  return row ? `${echoName(row.echo)} from your inventory: its verdict, who it is for and how good its roll is.` : "That echo is not in your inventory any more.";
+});
+async function openEcho(id: string): Promise<void> {
+  if (!id || !rows.value.some((r) => r.echoId === id)) return;
+  open.value = id;
+  await nextTick();
+  // a tap from the inventory is a new page: the router's scrollBehavior (main.ts) puts it at the top in a microtask
+  // after this one, so scroll once that has run, or the notice and the echo stay below the fold on a phone
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  // the notice ("… from your inventory", Show every echo) at the top, the row and its detail under it
+  const top = document.querySelector<HTMLElement>("[data-test-echo-lab-one-echo]") ?? document.querySelector<HTMLElement>(`[data-test-echo-lab-row="${CSS.escape(id)}"]`);
+  if (!top) return;
+  const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+  window.scrollTo({ top: Math.max(0, window.scrollY + top.getBoundingClientRect().top - navH - 12), behavior: "auto" });
+}
+watch(() => filters.value.echo, (id) => void openEcho(id));
+onMounted(() => void openEcho(filters.value.echo));
 
 function set<K extends keyof VerdictFilters>(key: K, value: VerdictFilters[K]): void {
   filters.value = { ...filters.value, [key]: value };

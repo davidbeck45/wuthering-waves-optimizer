@@ -57,7 +57,7 @@ import { computed, onBeforeUnmount, watch } from "vue";
 import { SUBSTAT_LABELS, type SubstatKey } from "../substats/substatWeights";
 import type { EchoVerdict, LabCharacterSummary } from "./bestOwner";
 import EchoLabPopover from "./EchoLabPopover.vue";
-import { characterName, pct, ratingOf, signedPct, slotLabel } from "./echoLabView";
+import { characterName, pct, qualityTarget, ratingOf, signedPct, slotLabel } from "./echoLabView";
 import { ROLL_QUALITY_ASSUMPTIONS, type RollQualityTarget } from "./rollQuality";
 import { useEchoLab } from "./useEchoLab";
 
@@ -66,14 +66,7 @@ const assumptions = ROLL_QUALITY_ASSUMPTIONS;
 const lab = useEchoLab();
 
 /** where to rate it: the built character wearing it (that slot), else its best owner's slot, else Tune or Feed's */
-const target = computed((): RollQualityTarget | null => {
-  const built = new Map(props.characters.map((c) => [c.id, c]));
-  const wearer = props.row.wornBy.find((w) => !w.stale && built.get(w.characterId)?.slots[w.slot]?.echoId === props.row.echoId);
-  if (wearer) return { characterId: wearer.characterId, slot: wearer.slot };
-  if (props.row.best) return { characterId: props.row.best.characterId, slot: props.row.best.slot };
-  if (props.row.potential) return { characterId: props.row.potential.characterId, slot: props.row.potential.slot };
-  return null;
-});
+const target = computed((): RollQualityTarget | null => qualityTarget(props.row, props.characters));
 const lines = computed(() => props.row.lines);
 const result = computed(() => (target.value ? lab.qualityOf(props.row.echoId, target.value) : null));
 

@@ -2738,3 +2738,70 @@ Left out: per-member ER floor edits in this mode (the plan's needs are used; bui
 per-member Save tick (the plan is a whole — saving part of it could put an echo in two builds); trying every priority
 order (12 members have too many; the local search does that job); a team-objective score for supports (Build my team's
 follow-up, unchanged here); weights other than the five steps on the page (the CLI takes any).
+
+## Echo Lab in the inventory — verdict and roll chips, a plus sort, Feed candidates (track "inventory-quality", 2026-11-02) — `src/sim/inventoryQuality/`
+
+Echo Lab rated every echo, but only on `/echo-lab`; Ryan's inventory (250+ echoes on David's phone) showed none of it.
+Now, on **Inventory › Echoes** (v3 and classic), a **Tools+ Echo Lab verdicts** bar sits under Ryan's Filters panel: a
+one-line "what this is", an (i) that says what Keep / Spare / Feed and "Top 4% roll" mean, **Open Echo Lab ›**, a
+**Sort** select (Inventory order · Best rolls first · Feed first), a **Feed candidates N** toggle and a status line
+("Echo Lab is judging 258 echoes on your 23 builds… 40%", then "128 keep · 59 spare · 71 feed. Rating rolls: 116 of
+247…", then "… Tap an echo's chip for why."). Every echo gets a chip: `ECHO LAB [Keep] Top 1% roll · Worn ›`. A tap
+opens `/echo-lab?echo=<id>`: that one echo's verdict row, open, with who it is for and **How good is this roll**.
+
+| Piece | Role |
+|---|---|
+| `inventoryQuality.ts` | pure view model: `chipFor` (loading / ready / stale / none; verdict, reason, roll in words, hover text, aria label), `rollText` ("Top 12% roll", "Bottom 30% roll at +20", never "Top 0%"), `rollTone` (Echo Lab's rating bands), `applyInventoryView` (the sort and the filter over Ryan's filtered list; ties keep his order, unrated last), `feedCount`, `barStatus` |
+| `useInventoryQuality.ts` | the shared layer, built once in a detached effect scope (made from the first chip's setup, its computeds would stop when that chip unmounts on the next page): verdicts from the Echo Lab pass (`useEchoLab`, the same worker, module state and sessionStorage cache as `/echo-lab`, so both pages say the same thing), the target each echo is rated on, ratings (the exact one when Echo Lab's detail ran it this visit, else the quick one), the run (the 20 echoes on screen first, then 48 a batch), edits re-judged 1.5 s after they settle. The sort is remembered (`localStorage["wtplus:inventory:sort"]`), the filter is per visit like Ryan's own. `plusInventoryView(list)` is the one hook in his list computed: Inventory order with the filter off returns his list untouched without touching Echo Lab |
+| `InventoryQualityBar.vue`, `InventoryQualityChip.vue`, `inventoryQuality.css` | the bar and the chip (a real button: name, focus ring, disabled while loading, native `title` hover text — no floating-vue Popper per chip). The chip is a full-width strip by default (card footers, a phone, where phone.css § 25 already lays the tile's actions out as a row under the substats) and a three-line stack in the v3 tile's action column from 768 px; compact density drops the label and the reason. Muted text stays at ≥ 75 % of the text colour: worst measured contrast 4.72 : 1 (dark), 6.1 : 1 (light) |
+| `echoLab/rollRatings.ts` | the quick "how good is this roll" for a batch of echoes (job kind `rollRatings` on `echoLab.worker`, no new worker entry). The exact one (`rollQuality.ts`) scores ~1,000 outcomes per echo, about 1 s each: 4 minutes for 250 echoes. This one blanks the echo's lines in the slot it is rated in, prices each live substat with one engine scoring of an average roll, scores Crit Rate's top roll (and its lowest when even the average overshoots) to find its headroom under the 100 % cap, and one Crit Rate + Crit DMG scoring for their cross term, then values every outcome with those prices (exact up to 4,000 outcomes, else 4,000 seeded samples). Memoised per session; the worker host does not keep batches in its result cache (they would push the pass and the re-roll advice out of it) |
+| `echoLab/useEchoLab.ts` | `runRollRatings(items, signal, snapshot?)` / `ratingOf(echoId, target)`: one module map per account fingerprint, cleared with the rest on a new fingerprint, and kept in the sessionStorage cache next to the pass (`ratings`, same cache version: an older cache simply has none). A caller's older snapshot never adopts its fingerprint (an edit meanwhile has already moved the page on). These two functions are the cache's only door, so the result-cache track's persistence can be plugged in there |
+| `echoLab/echoLabView.ts` | `qualityTarget(row, characters)`: where an echo is rated (the built character wearing it, else its best owner's slot, else Tune or Feed's target) — one rule for the chips and Echo Lab's detail, so the chip's exact figure is the detail's. `VerdictFilters.echo` (one echo by id) |
+| `echoLab/EchoLabView.vue`, `EchoLabVerdicts.vue` | `?echo=<id>` opens the Verdicts tab filtered to that echo with its row open, a notice ("Reminiscence: Kronaclaw from your inventory: its verdict, who it is for and how good its roll is."), **‹ Inventory** and **Show every echo**; the notice is scrolled under the nav bar; the feed list hides while one echo shows; the URL keeps `echo` while the filter is on |
+| Ryan's `InventoryEchoesBrowser.vue` | 11 lines: three imports, `<InventoryQualityBar />` after his Filters panel, `<InventoryQualityChip>` in each of his three card variants (the v3 tile's slot, the compact card's footer, the classic footer), `inventoryViewKey` in his page-reset watch (a new order starts at page 1), and `return plusInventoryView(allEchoes)` at the end of `echoesList` |
+
+Decisions (made without David, 2026-11-02):
+- **Quick on the chip, exact one tap away.** The chip's roll is the quick estimate, said so in its hover text and the
+  (i); once Echo Lab's detail has run the exact one for that echo (this visit), the chip shows that instead. On
+  David's export the quick rating sat within 1.75 points of the exact one for 9 in 10 of 124 echoes checked (mean
+  0.74, worst 5.9; the exact one's own 1,000 samples wobble by about 1.3). Before the Crit Rate cap was modelled the
+  worst was 9 points (a 10.5 % Crit Rate echo on a build 7 points under the cap); the cross term took the mean from
+  1.18 to 1.05 on 40 of them.
+- **Rated where Echo Lab rates it**, so the chip and the detail never disagree on the build. Echoes worn only by a
+  character the pass leaves out (no weapon, fewer than five echoes) and echoes no build can slot get a verdict but no
+  roll, and the hover text says why. 247 of David's 258 echoes get a roll.
+- **"Top 12% roll"** = only 12 in 100 of the echoes of its kind it could have been (set, cost and main stat; as many
+  lines rolled at random, Kuro's tier odds) do more damage on its owner's best rotation. A partial echo reads "at +15"
+  and is compared with +15 echoes. A great roll can still be Feed ("Top 3% roll · No gain anywhere": a better copy is
+  worn), which is the honest answer.
+- **Feed first** puts the surest fodder on top: feed, then spare, then keep, the worst roll first inside each.
+- **A roll sort reorders once.** The sorts read a snapshot of the percentiles taken when the player picks a sort, when
+  a pass lands and when every roll is in, not each batch: re-sorting per batch re-rendered Ryan's tiles five or six
+  times while the chips filled (one 301 ms task on a phone). Meanwhile the status line says "The order updates when
+  every roll is in." A reload of the same account reads the ratings from the cache and sorts at once. The echoes on
+  screen are always rated next, so turning to page 9 fills page 9's chips within a batch.
+- **Stale while revalidate.** Locking or marking an echo as trash changes the account, so Echo Lab judges it again
+  (~2 s, then the ratings). The chips keep the last verdict (dimmed, "Updating: …" in the hover text), and Feed
+  candidates and the sort keep working, so bulk-marking the feed list as trash does not empty the list under the
+  player's thumb. A rating held over applies only while the echo's lines and target are unchanged.
+- **The tap navigates to Echo Lab** (the brief), so Ryan's page number and filters reset on the way back: they are
+  local refs in his file. The plus sort and the Feed filter survive (module state). An in-place sheet would keep the
+  page; left for later.
+- **v3 and classic.** The classic footer took the same chip for one line, so both have it.
+
+Measured (David's seeds, 258 echoes, 23 five-echo builds). In Node the pass took 1.9 s and the quick ratings for all
+247 rateable echoes 2.2–5.1 s (2,437 engine scorings, ~10 an echo). In headless Chromium at 412 px / 130 % text the
+first verdicts showed 2.8–3.1 s after navigation and every chip had its roll after 6.4–9.9 s (dev server, box load
+~50); with the box at load 75–98 (16 agents) the production build took 19–23 s. Long tasks, production builds A/B
+under the same load: the page's boot render is Ryan's (his inventory alone: 571–1,088 ms; with the chips: 636–877 ms);
+after it, the chips add no task over 130 ms with Inventory order (the account snapshot runs in its own task after the
+first paint; ratings are saved once per run). With a roll sort on, the one reorder when every roll is in re-renders
+the page's 20 tiles, the same work as Ryan's page turn (157–373 ms vs 174–228 ms for a page turn, same load).
+
+Gates: `inventoryQuality.test.ts` (16) and `echoLab/rollRatings.test.ts` (7) on the public fixture;
+`cypress/e2e/inventoryQuality.cy.ts` (4: chips, the sort reorders and is remembered, Feed candidates narrows to the
+badge's count, a tap opens Echo Lab and the chip then carries the exact figure, 260 echoes at 412 and 360 px with 130 %
+text in dark and light); `echoLab.cy.ts`, `echoLabTuner.cy.ts` and `phoneLayout.cy.ts` unchanged and green.
+
+Left for later: an in-place sheet with the Echo Lab detail (keeps Ryan's page and filters; the tap navigates today);
+persisting the exact ratings next to the quick ones; a roll chip on the calculator's own echo slots.

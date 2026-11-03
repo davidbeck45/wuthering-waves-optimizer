@@ -469,3 +469,10 @@ html[data-theme-style="light"] .el-score-text--good {
     padding-block: 0.6rem;
   }
 }
+
+/* `/echo-lab?echo=<id>` (the inventory's chip): the notice over the one echo — the sentence takes the line, the two
+   buttons wrap under it on a phone */
+.el-one-echo__text {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
