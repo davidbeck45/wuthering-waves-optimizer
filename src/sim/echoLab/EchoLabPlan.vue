@@ -166,6 +166,9 @@
           A new copy of the echo in that slot (same set, cost and main stat), levelled to +25 with all five lines tuned, against the one there now; most damage per rotation first. One try costs {{ freshCost }}.
         </p>
         <p v-if="freshLine" class="text-sm" data-test-echo-lab-plan-fresh-line>{{ freshLine }}</p>
+        <p class="text-sm">
+          <button type="button" class="link link-primary text-left" data-test-echo-lab-plan-farm-link @click="emit('farm')">Every slot, other main stats and team gains: Farm next ›</button>
+        </p>
         <ul class="grid grid-cols-1 gap-2 lg:grid-cols-2">
           <li v-for="f in result.fresh" :key="`${f.characterId}|${f.slot}`" class="rounded-box border border-base-300 bg-base-100 px-4 py-3 max-sm:px-3" :data-test-echo-lab-plan-fresh-row="`${f.characterId}|${f.slot}`">
             <div class="flex min-w-0 items-center gap-2 text-sm">
@@ -210,7 +213,7 @@ import { TUNER_PLAN_ASSUMPTIONS, tuneToMaxResources, type TunerCandidatesResult 
 
 const props = defineProps<{ result: TunerCandidatesResult | null; status: JobStatus }>();
 // eslint-disable-next-line no-unused-vars -- the parameters of an emit signature
-const emit = defineEmits<{ (e: "run", force: boolean): void }>();
+const emit = defineEmits<{ (e: "run", force: boolean): void; (e: "farm"): void }>();
 const assumptions = TUNER_PLAN_ASSUMPTIONS;
 
 const loadBudget = (): TunerBudget => {

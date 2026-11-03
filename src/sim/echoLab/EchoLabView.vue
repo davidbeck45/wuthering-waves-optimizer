@@ -105,9 +105,9 @@
         Cancelled. <button type="button" class="link link-primary" @click="lab.refresh({ force: true })">Run the Echo Lab</button>
       </div>
 
-      <!-- tabs -->
+      <!-- tabs: two a row on a phone, three a row below xl (six in one row ran past a 768 px tablet at 130 % text), one row from xl -->
       <div v-if="pass" class="mt-4">
-        <div role="tablist" class="echo-lab__tabs mb-3 grid grid-cols-2 gap-1 rounded-box bg-base-200 p-1 sm:flex sm:w-fit" aria-label="Echo Lab views">
+        <div role="tablist" class="echo-lab__tabs mb-3 grid grid-cols-2 gap-1 rounded-box bg-base-200 p-1 sm:grid-cols-3 xl:flex xl:w-fit" aria-label="Echo Lab views">
           <button
             v-for="t in tabs"
             :key="t.id"
@@ -125,7 +125,14 @@
 
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
-        <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" />
+        <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" @farm="tab = 'farm'" />
+        <EchoLabFarm
+          v-else-if="tab === 'farm'"
+          :result="farm"
+          :status="farmStatus"
+          :team-of="lab.farmTeamOf"
+          @run="(force) => lab.runFarm({ force })"
+          @team="(characterId, slot) => lab.runFarmTeam(characterId, slot)" />
         <EchoLabReroll v-else-if="tab === 'reroll'" v-model:character="rerollCharacter" :result="pass.bestOwner" :benchmarks="benchmarks" :preferred="activeCharacter" />
         <EchoLabBenchmark v-else-if="tab === 'benchmark'" :result="benchmarks" :status="benchStatus" @run="(force) => lab.runBenchmarks({ force })" />
 
@@ -139,8 +146,9 @@
 
 <script setup lang="ts">
 // Wuthering Tools+ Echo Lab — the /echo-lab page: the engine-backed echo decisions (src/sim/echoLab/, run in a Web
-// Worker) in four views — inventory verdicts, Tune or Feed, the re-roll advisor and the build benchmark. Header
-// KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and the classic UI.
+// Worker) in six views — inventory verdicts, Tune or Feed, the Tuner plan, Farm next, the re-roll advisor and the
+// build benchmark. Header KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and
+// the classic UI.
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
@@ -148,6 +156,7 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useCharacterStore } from "../../stores/character";
 import type { EchoVerdictKind } from "./bestOwner";
 import EchoLabBenchmark from "./EchoLabBenchmark.vue";
+import EchoLabFarm from "./EchoLabFarm.vue";
 import EchoLabPlan from "./EchoLabPlan.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import EchoLabReroll from "./EchoLabReroll.vue";
@@ -155,22 +164,23 @@ import EchoLabTune from "./EchoLabTune.vue";
 import EchoLabVerdicts from "./EchoLabVerdicts.vue";
 import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilters } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
+import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import "./echoLab.css";
 
-type TabId = "verdicts" | "tune" | "plan" | "reroll" | "benchmark";
-const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "reroll", "benchmark"];
+type TabId = "verdicts" | "tune" | "plan" | "farm" | "reroll" | "benchmark";
+const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "farm", "reroll", "benchmark"];
 const PASS_PHASES = ["characters", "weights", "echoes"] as const;
 
 // each page sets its own tab title (Ryan's #672)
 useDocumentTitle(
   "Echo Lab — Wuthering Waves Calculator & Optimizer",
-  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, a Tuner plan for what you have, Transducer advice and a build benchmark.",
+  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, a Tuner plan for what you have, which echo to farm next for each slot, Transducer advice and a build benchmark.",
 );
 
 const route = useRoute();
 const router = useRouter();
 const lab = useEchoLab();
-const { pass, passStatus, benchmarks, benchStatus, tunerPlan, tunerStatus } = lab;
+const { pass, passStatus, benchmarks, benchStatus, tunerPlan, tunerStatus, farm, farmStatus } = lab;
 const activeCharacter = computed(() => (useCharacterStore() as unknown as { activeCharacter: string | null }).activeCharacter ?? null);
 
 const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 0);
@@ -201,9 +211,22 @@ watch(
     tab.value = "verdicts";
   },
 );
+// a link to another tab while the page is open (the palette's "Which echo should I farm next?") moves the tab too
+watch(
+  () => route.query.tab,
+  () => {
+    const t = queryTab();
+    if (t !== tab.value) tab.value = t;
+  },
+);
 watch(tab, (t) => {
   if (t === "benchmark") void lab.runBenchmarks();
   if (t === "plan") void lab.runTunerPlan();
+  if (t === "farm") void lab.runFarm();
+});
+// Farm next's team figures follow the team-buff switch (the palette can flip it while the tab is open)
+watch(autoTeamBuffs, () => {
+  if (tab.value === "farm") void lab.runFarm();
 });
 
 /** a Keep / Spare / Feed KPI is on while the verdict list shows that verdict */
@@ -244,6 +267,7 @@ const tabs = computed(() => {
     { id: "verdicts" as const, label: "Inventory verdicts", short: "Verdicts", count: r ? r.echoes.length : null },
     { id: "tune" as const, label: "Tune or Feed", short: "Tune or Feed", count: r ? r.echoes.filter((e) => e.lines < 5).length : null },
     { id: "plan" as const, label: "Tuner plan", short: "Tuner plan", count: null },
+    { id: "farm" as const, label: "Farm next", short: "Farm next", count: farm.value ? farm.value.rows.length : null },
     { id: "reroll" as const, label: "Re-roll advisor", short: "Re-roll", count: null },
     { id: "benchmark" as const, label: "Build benchmark", short: "Benchmark", count: null },
   ];
@@ -273,6 +297,7 @@ onMounted(() => {
   void lab.refresh().then(() => {
     if (tab.value === "benchmark") void lab.runBenchmarks();
     if (tab.value === "plan") void lab.runTunerPlan();
+    if (tab.value === "farm") void lab.runFarm();
   });
 });
 </script>

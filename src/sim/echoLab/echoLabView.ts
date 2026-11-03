@@ -254,6 +254,9 @@ export const PHASE_LABELS: Record<string, string> = {
   fresh: "Trying a new echo in the weakest slots",
   rating: "Rating the roll against every outcome",
   hope: "Trying each line it can still roll",
+  farm: "Trying a fresh echo in every slot",
+  teams: "Scoring the teams you can field",
+  team: "Re-scoring the strongest teams",
 };
 export const phaseLabel = (phase: string | null | undefined): string => (phase ? PHASE_LABELS[phase] ?? phase : "Starting");
 

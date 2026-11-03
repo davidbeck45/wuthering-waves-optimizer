@@ -867,6 +867,60 @@ only gained `expectedUpside` and a session memo). Gates: `vue-tsc`, vitest `src/
 `tunerPlan.test.ts` (16), `echoLabTuner.cy.ts` (3) + `echoLab.cy.ts` (6) + `phoneLayout.cy.ts` (12), `vite build`
 with `ROLLDOWN_WORKER_THREADS=4` (no new worker chunk, no `import.meta.glob` in `dist/`).
 
+## Farm next — which slot to farm for the most damage, `/echo-lab?tab=farm` (track "farm-next", 2026-11-02)
+
+The Tuner plan's "Then farm" list priced a fresh copy of the echo already in a slot, for the five most promising slots.
+**Farm next** (fourth of the Echo Lab's six tabs) does it for every slot of every five-echo build, picks *what* to
+farm there (Sonata, cost, main stat), and adds the team figure. Two job kinds on the same `echoLab.worker` (no new
+worker entry: `pass.ts` gained `farmNext` and `farmTeam`).
+
+| Piece | Role |
+|---|---|
+| `farmNext.ts` | `farmNext(session, options)`. Per slot of every five-echo build: **candidates**, then each scored as a +25 echo with no substats (one engine run: "the main stat and set alone"), then the best one rolled out (the runner-up too when its main-stat-alone score is within 0.5 %). Per row: the target, the echo there now, own expected gain per try (keeping the better echo), damage per rotation, chance a new one beats yours, p10/p50/p90 of the change, tries per win, one try's cost (`tuneToMaxResources(0)`: 50 Tuners, +0 → +25), every other main stat with its main-stat-alone gain (or why the swap rules close it), and the team figure. `farmTeam(session, characterId, slot)` works out one pending team figure, reusing the session's slot plan |
+| candidates (`setGroupsFor`, `speciesOf`, `mainStatsOf`) | the slot's cost (the cost layout stays); slot 0 only another copy of the main echo (its Sonatas from Ryan's `mainEchoesData[...].sets`); a species no other slot wears; every Sonata with such an echo at that cost whose bonus selection keeps every bonus the build has, **grouped by the selection it gives** (a slot that feeds no bonus has one "any Sonata" group; a 4 + 1 layout's odd slot also gets "completes the 5-piece"); every main stat of `statsTable[cost]`. `slotChecks` then applies the Echo Lab's swap rules (ER tolerance, Healing Bonus), so a support's Energy Regen main is never traded away |
+| the line model (`lineTable`, `rollout`) | each of the 13 substats at every tier scored exactly on the candidate echo (its clone made once with `swapInto`, only the inventory record changes per line), then `draw` (5) distinct lines, types uniform, tiers by Kuro's odds, added up: `ctx / base × (1 + Σ line values) − 1` against the build as it is. One line is enumerated exactly (96 outcomes); five are summed over 20,000 seeded samples (the re-roll advisor's 0-lock model). Shortcuts that move no number (checked against every tier of every stat scored straight through the engine on all 115 of David's slots, verify 2026-11-02): substats with a per-point price of exactly 0 on the build (the pass's `perPointOf`, memoised) are only *likely* dead, so `confirmDead` scores their top tiers five lines at a time on the candidate echo and skips them only when that moves nothing (a price of 0 on the build alone was not enough: Shorekeeper's Energy Regen counts again once the echo that carried her past a threshold is gone, +0.06 points on one slot); a stat whose top tier scores the empty echo's score adds nothing at any tier (damage never falls as a stat grows); a stat whose lowest and highest tiers lie on one line through "no line" is read off the line (damage is linear in one stat, bent only by caps; on David's export only Crit Rate (17 times) and Energy Regen (11) bent, across 125 roll-outs). Every candidate's main stat is scored (main stats priced 0 no longer share one scoring, for the same reason). **Adding the lines runs low**: it leaves out how lines multiply (Crit Rate × Crit DMG, ATK × DMG Bonus). Whole five-line echoes scored by the engine (1,000 seeded tries each, paired with the additive figure on the same tries) came out 5–25 % higher on the top slots (Brant slot 3 +0.69 % against +0.56 %, Phrolova slot 4 +0.35 % against +0.29 %, Denia's main echo +1.61 % against +1.52 %), while multiplying the line values instead of adding them came within 0.003–0.08 points; the tab says so. The re-roll advisor and the Tuner plan share the additive model, so a switch to the product belongs to all three |
+| team figures | the /account rules (`createTeamScorer` from `account/investPlan.ts`): the character's strongest team you can field (every team candidate scored once per session, the rankings' own scorer), skipped with the reason when that team runs another saved build; otherwise the same line model with **every line a team re-score** (`scoreTeamCandidate`, team buffs from the real members per the page's switch) and the same seeded tries, so own and team read one set of outcomes. Team expected gain = E[max(0, team change)]. Up front only for the 8 most promising slots (own expected gain × the character's share of that team's damage: on David's export this picked 6 of the true top 8; all 105 team figures took 2,495 team runs, about 25 × the whole list), the rest **"Work it out"** per row (`farmTeam`, ~20 team runs) |
+| `farmView.ts` | pure, no engine imports: `FARM_ASSUMPTIONS`, `sortFarmRows` (team gain first, then the rows without a team figure by own gain; or own gain), `filterFarmRows`, `farmCharacters`, `withTeamResult` (a figure asked for later), the words for a target ("Cost 3 · Spectro DMG", "Any Sonata: this slot is not part of a set bonus", "Molten Rift: completes the 5-piece"), blocked reasons, tries |
+| `EchoLabFarm.vue` | the tab: a one-line intro, the "drop odds are not modelled" note, progress with a bar, the one-try cost once ("One try, a new 5★ echo levelled from +0 to +25, costs 50 Tuners, …"), a Character select and a Team gain / Own gain switch, then ranked cards (12 a page): rank, portrait, slot · cost, "Farm first" on #1; a **Farm** box (main stat, Sonata, the echoes to farm, what is in the slot now); **Team gain per try** (or "Work it out", or why there is none), **Own gain per try**, **Chance a new one beats yours (own gain)** (own rotation, so a row ranked by team gain can still read 0 % here; "100%" only when the main stat alone already beats yours), **Cost of one that beats yours** (Tuners and EXP times the tries); "Details and other main stats" (the rotation, the p10–p90 spread in words, the main stat alone, every other main stat for the slot). Phones: one stat a line, caption left, number right |
+| `useEchoLab.ts` | `runFarm` / `runFarmTeam` / `farmTeamOf`, module state, cancelled with the rest; the list and the team figures asked for ride in the sessionStorage cache next to the pass (an older cache without them reads as none) |
+| tab strip | six tabs: two a row on a phone, three a row from `sm` to `xl`, one row from `xl` (a single row of six ran past a 768 px tablet at 130 % text, verify 2026-11-02) |
+| shell | `paletteCommands.ts`: **"Which echo should I farm next?"** → `/echo-lab?tab=farm` (the page now follows a `?tab=` change while open); `plusPages.ts` Echo Lab keywords "farm", "farm next", "main stat"; the Tuner plan's "Then farm" list links to the tab |
+
+**Main-stat drop odds are not modelled.** The brief allowed them only from a verifiable released source per cost,
+cross-checked in two places. Searched 2026-11-02: no Kuro source gives main-stat odds per cost (the KR product info
+behind `TIER_WEIGHTS` covers substat tiers only), and the guides found give only which main stats each cost can roll,
+not how often. So every figure is "if you get this main stat", the tab says so above the list, and the other main
+stats sit in each row's details with their own figures.
+
+Decisions (made without David, 2026-11-02):
+- **Against the echo as it is, not additive on both sides.** The Tuner plan's fresh list compares the new lines' sum
+  with the current lines' sum on one blanked echo; that only works for the same main stat. Farm next compares the
+  fresh echo (main stat exact, lines summed) with the build as it is, so another main stat or Sonata compares fairly.
+  For the same echo the two differ by the additive error alone.
+- **Keep it if it beats yours.** Own and team gains are E[max(0, change)]: a try that loses is fed back. The refund
+  of feeding it (75 % EXP, 30 % Tuners) is not counted, as in the Tuner plan.
+- **Team gain first, as /account.** A support's own gain says little (Qiuyuan +1.74 % own, +0.03 % team on David's
+  export); team figures are exact or absent, and rows without one rank after, by own gain.
+- **The best main stat by expected gain, among the best two by main stat alone.** Rolling out every main stat would
+  triple the work; a second one is rolled out only when it is within 0.5 % before substats.
+- **No Energy Regen floor here.** The swap rules keep a support's ER main stat; the re-roll advisor's ER-need scoring
+  is not applied to the fresh echo's lines (the team engine ignores ER anyway).
+
+Measured on David's export (258 echoes, 23 five-echo builds, 115 slots, the box shared with 15 other agents, so slow):
+the list 2,783 engine runs (299 of them the per-point prices the pass already holds on the page; 3,165 since the verify
+made the dead-stat shortcut exact, +15 % on the page) plus 96 team
+rankings and 175 team runs for the eight team figures, 14.8 s in Node; ~25 s in headless Chromium after the pass. A
+team figure on request ~20 team runs (116, 1.8 s in Node, on a fresh worker after a reload: it ranks the teams first). The top of the list: Brant slot 3, an Energy Regen Tidebreaking Courage echo
+instead of his Fusion one, +0.86 % team per try (26 % of tries beat his); Rover's main echo, a Crit Rate Bell-Borne
+Geochelone instead of Crit DMG, +7.47 % own (no fieldable team). Gates: `farmNext.test.ts` (10: echo data; the slot
+rules on Zani and Galbrena; an ER main never traded; a 4 + 1 layout's odd slot completing the 5-piece; **a one-line
+fresh echo equal to the exact enumeration of its 96 outcomes through the engine**, main stat alone and chance too; the
+line shortcuts; the roll-out; the ranking and `sortFarmRows`; a team figure that is one exact team re-score with no
+substats, a pending one on request equal to the up-front one; the worker job and its cache), `cypress/e2e/echoLabFarm.cy.ts` (3).
+The `echoLab.worker` chunk grew from 3.53 MB to 4.67 MB (the team side: `resolveTeam`, the team rotation engine and the
+team presets now ride in it); an IIFE worker can't split it off, so `worker.format: "es"` (first Echo Lab section) would
+be the way to load it only when a team figure is asked for.
+
 ## Convene history, pity and the banner calendar (track "convene", stage 1: data layer) — `src/sim/convene/`
 
 Import the player's Convene (gacha) history straight from Kuro, keep it past the game's six-month window, read pity /

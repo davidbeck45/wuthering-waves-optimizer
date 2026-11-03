@@ -126,10 +126,10 @@ describe("Echo Lab Tuner plan and roll quality", () => {
       expect(echo.width, "echo block width").to.be.greaterThan(card.width * 0.6);
       expect(when.top, "chip under the step number").to.be.at.least(order.bottom - 1);
     });
-    // the fifth tab takes the whole last row of the two-column tab grid
+    // six tabs in a two-column grid since Farm next (2026-11-02): three full rows, the last tab half the strip
     cy.get('[data-test-echo-lab-tab="benchmark"]').then(($b) => {
       const tabs = $b[0].parentElement!.getBoundingClientRect();
-      expect($b[0].getBoundingClientRect().width).to.be.greaterThan(tabs.width * 0.8);
+      expect($b[0].getBoundingClientRect().width).to.be.within(tabs.width * 0.4, tabs.width * 0.55);
     });
     cy.get('[data-test-echo-lab-tab="verdicts"]').click();
     cy.get('[data-test-echo-lab-row="labtune0003"]', RUN).click();

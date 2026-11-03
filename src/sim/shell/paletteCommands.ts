@@ -41,6 +41,7 @@ const ICON = {
   toa: "M6 21V8l6-5 6 5v13M10 21v-5h4v5M9 11h6",
   selector: "M20 12V8H4v4m16 0v8H4v-8m16 0H4m8-4v12M12 8c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z",
   buffs: "M12 3v18M3 12h18M7 7l10 10M17 7L7 17",
+  farm: "M12 21c-4-3-7-6.5-7-10.5A7 7 0 0112 3a7 7 0 017 7.5c0 4-3 7.5-7 10.5zM12 13a2.5 2.5 0 100-5 2.5 2.5 0 000 5z",
   sparkle: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z",
   palette: "M12 21a9 9 0 110-18c4.97 0 9 3.6 9 8a4 4 0 01-4 4h-1.8a1.7 1.7 0 00-1.2 2.9A1.8 1.8 0 0112 21zM7.5 11.5h.01M9.5 7.5h.01M14.5 7.5h.01M17 11h.01",
 };
@@ -154,6 +155,7 @@ export function commandItems(s: PaletteSources, displayName: NameOf): PaletteIte
   for (const t of s.teams) if (t.memberKeys?.length === 3) commands.push(...teamCommands({ id: t.id, name: t.name, members: t.memberKeys }, displayName, "command").filter(fresh));
   commands.push(
     { key: "command:toa", group: "command", order: 2, title: "ToA clear check for my teams", subtitle: "This Tower of Adversity season's floors against the teams you can field: kill time and crests", keywords: ["toa", "tower of adversity", "clear check", "crests", "hazard zone", "endgame", "abyss"], icon: ICON.toa, run: { kind: "route", path: "/endgame" } },
+    { key: "command:farm", group: "command", order: 2, title: "Which echo should I farm next?", subtitle: "Every slot of your builds: the set, cost and main stat to farm, what a new +25 echo adds and its odds", keywords: ["farm", "farm next", "what to farm", "grind", "tacet field", "main stat", "echo", "sonata", "upgrade"], icon: ICON.farm, run: { kind: "route", path: "/echo-lab?tab=farm" } },
     { key: "command:selector", group: "command", order: 2, title: "Which selector pick is best for me?", subtitle: "Rank a standard 5★ or Moonlit Path selector's options on your account", keywords: ["selector", "standard", "moonlit path", "pick", "choose", "box", "resonator", "weapon"], icon: ICON.selector, run: { kind: "route", path: "/weapons?tab=selector" } },
   );
   if (s.autoTeamBuffs !== undefined) {

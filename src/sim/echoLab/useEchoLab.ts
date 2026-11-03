@@ -17,6 +17,9 @@ import { rerollOptionsFor } from "./rerollPick";
 import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
 import type { RollRating, RollRatingItem } from "./rollRatings";
 import type { TunerCandidatesResult } from "./tunerPlan";
+import type { FarmNextResult, FarmTeamResult } from "./farmNext";
+// Wuthering Tools+ team buffs from the team's real members (the app's switch, off under Cypress)
+import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 
@@ -54,6 +57,12 @@ const qualities = reactive(new Map<string, RollQualityResult | { error: string }
  *  `null` = tried, could not be rated */
 const ratings = reactive(new Map<string, RollRating | null>());
 let tunerAbort: AbortController | null = null;
+/** "Farm next": every slot's farm target (the first pass gives the most promising slots a team figure) */
+const farm = shallowRef<FarmNextResult | null>(null);
+const farmStatus = reactive<JobStatus>(idle());
+/** team figures worked out on request, by `${fingerprint}|${characterId}|${slot}` */
+const farmTeams = reactive(new Map<string, FarmTeamResult | { error: string } | "running">());
+let farmAbort: AbortController | null = null;
 const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
@@ -77,6 +86,9 @@ interface StoredCache {
   tunerPlan?: TunerCandidatesResult | null;
   /** added with the inventory's roll chips (2026-11-02; same rule: older caches have none) */
   ratings?: RollRating[];
+  /** added with "Farm next" (likewise), with the team figures worked out on request */
+  farm?: FarmNextResult | null;
+  farmTeams?: FarmTeamResult[];
 }
 
 function readCache(): StoredCache | null {
@@ -93,7 +105,17 @@ function writeCache(): void {
   if (!resultFingerprint.value) return;
   try {
     const rated = [...ratings.values()].filter((r): r is RollRating => r !== null);
-    const value: StoredCache = { v: CACHE_VERSION, fingerprint: resultFingerprint.value, pass: pass.value, benchmarks: benchmarks.value, tunerPlan: tunerPlan.value, ratings: rated };
+    const asked = [...farmTeams.values()].filter((t): t is FarmTeamResult => typeof t === "object" && "key" in t);
+    const value: StoredCache = {
+      v: CACHE_VERSION,
+      fingerprint: resultFingerprint.value,
+      pass: pass.value,
+      benchmarks: benchmarks.value,
+      tunerPlan: tunerPlan.value,
+      ratings: rated,
+      farm: farm.value,
+      farmTeams: asked,
+    };
     sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(value));
   } catch {
     // quota or no storage: the module cache still holds it for this page load
@@ -112,12 +134,15 @@ function adopt(fingerprint: string): void {
   pass.value = null;
   benchmarks.value = null;
   tunerPlan.value = null;
+  farm.value = null;
+  farmTeams.clear();
   rerolls.clear();
   qualities.clear();
   ratings.clear();
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
+  Object.assign(farmStatus, idle());
 }
 
 export function useEchoLab() {
@@ -173,6 +198,8 @@ export function useEchoLab() {
         benchmarks.value = stored.benchmarks;
         tunerPlan.value = stored.tunerPlan ?? null;
         for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
+        farm.value = stored.farm ?? null;
+        for (const t of stored.farmTeams ?? []) farmTeams.set(`${fingerprint}|${t.key}`, t);
         passStatus.cached = true;
       }
     }
@@ -295,10 +322,58 @@ export function useEchoLab() {
   /** the quick rating of an echo rated on this target: undefined = not asked yet, null = could not be rated */
   const ratingOf = (echoId: string, target: RollQualityTarget): RollRating | null | undefined => ratings.get(ratingKey({ echoId, ...target }));
 
+  /** "Farm next": what to farm for every slot of every five-echo build, and what a fresh echo there is expected to add. */
+  async function runFarm(options: { force?: boolean } = {}): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    // a list worked out under the other team-buff switch has team figures /account would not show: work it out again
+    const stale = Boolean(farm.value) && farm.value?.autoTeamBuffs !== autoTeamBuffs.value;
+    if ((farm.value && !options.force && !stale) || farmStatus.running || !builtCount.value) return;
+    farmAbort?.abort();
+    const controller = new AbortController();
+    farmAbort = controller;
+    if (options.force || stale) farmTeams.clear();
+    const result = await run({ kind: "farmNext", options: { autoTeamBuffs: autoTeamBuffs.value } }, farmStatus, controller.signal, account);
+    if (farmAbort === controller) farmAbort = null;
+    if (result && resultFingerprint.value === fingerprint) {
+      farm.value = result;
+      writeCache();
+    }
+  }
+
+  const farmTeamKey = (characterId: string, slot: number): string => `${resultFingerprint.value}|${characterId}|${slot}`;
+
+  /** One slot's team figure, worked out on request (the same options as the list, so the worker reuses its slot plan). */
+  async function runFarmTeam(characterId: string, slot: number): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    // the list is from the other team-buff switch: work the list out again rather than mix the two
+    if (farm.value && farm.value.autoTeamBuffs !== autoTeamBuffs.value) return runFarm();
+    const key = farmTeamKey(characterId, slot);
+    const asked = farmTeams.get(key);
+    // one already worked out (or on its way) stands; one that failed may be tried again
+    if (asked && !(typeof asked === "object" && "error" in asked)) return;
+    farmTeams.set(key, "running");
+    try {
+      const result = await getEchoLabClient().run({ kind: "farmTeam", characterId, slot, options: { autoTeamBuffs: autoTeamBuffs.value } }, account);
+      if (resultFingerprint.value === fingerprint) {
+        farmTeams.set(key, result);
+        writeCache();
+      }
+    } catch (err) {
+      if (resultFingerprint.value !== fingerprint) return;
+      if (isCancel(err)) farmTeams.delete(key);
+      else farmTeams.set(key, { error: errorText(err) });
+    }
+  }
+
+  const farmTeamOf = (characterId: string, slot: number): FarmTeamResult | { error: string } | "running" | null => farmTeams.get(farmTeamKey(characterId, slot)) ?? null;
+
   function cancel(): void {
     passAbort?.abort();
     benchAbort?.abort();
     tunerAbort?.abort();
+    farmAbort?.abort();
   }
 
   return {
@@ -319,6 +394,11 @@ export function useEchoLab() {
     qualityOf,
     runRollRatings,
     ratingOf,
+    farm,
+    farmStatus,
+    runFarm,
+    runFarmTeam,
+    farmTeamOf,
     cancel,
     snapshot,
   };
