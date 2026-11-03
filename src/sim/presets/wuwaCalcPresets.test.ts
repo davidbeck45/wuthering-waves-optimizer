@@ -57,7 +57,7 @@ describe("wuwa_calc stock presets (generated data)", () => {
     }
     expect(presetCount).toBe(manifest.rotationPresets);
     expect(actionCount).toBeGreaterThan(1000);
-  });
+  }, 60_000); // loads all 148 presets and resolves every action: 1.4 s on two pinned cores here, near vitest's 5 s default on CI's 2-core runner
 
   // 2026-11-02: Riley's loops beside Lily (a kit the app has no character for) are renamed after a team of their own
   // the app can field, or left out (wuwa-tools rotation-port/map_rotations.py as_fieldable) — none may name her

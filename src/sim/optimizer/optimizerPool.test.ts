@@ -325,5 +325,5 @@ describe("monotonicity preconditions in game data", () => {
         }
       }
     }
-  });
+  }, 60_000); // about 4,000 seeded multisets × every set added: 1 s on two pinned cores here, so CI's 2-core runner gets room
 });
