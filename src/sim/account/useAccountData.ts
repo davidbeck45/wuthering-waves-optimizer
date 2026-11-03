@@ -182,6 +182,8 @@ export function useAccountData() {
     characters,
     favorites: favoriteCharacters,
     inventoryEchoes: computed(() => (inventoryStore.echoes ?? []) as any[]),
+    /** the saved teams (Team Rotations), for "With what you own" */
+    teams,
     account,
     setUpCount,
     ownedKeys,

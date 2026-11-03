@@ -66,7 +66,21 @@
           :owned="ownedKeys"
           :invest-by="prefs.investBy"
           @update:invest-by="prefs.investBy = $event"
-          @open="openCharacter" />
+          @open="openCharacter">
+          <template #own>
+            <AccountOwnUpgrades
+              :rows="own.rows.value"
+              :status="own.status.value"
+              :check="own.check.value"
+              :ranking-ready="!!ranking"
+              :invest-by="prefs.investBy"
+              :energy-busy="own.energyBusy.value"
+              :tuner-running="own.tunerRunning.value"
+              @check="own.checkEchoes"
+              @cancel="own.cancel"
+              @open="openCharacter" />
+          </template>
+        </AccountInvest>
         <AccountRoster
           v-model:filter="prefs.filter"
           v-model:sort="prefs.sort"
@@ -92,6 +106,7 @@
       :roster-size="shownRanking?.characters.length ?? 0"
       :scoring="rankingStatus.state === 'running'"
       :owned="ownedKeys"
+      :own="drawerOwn"
       @close="drawerId = null"
       @calculator="toCalculator" />
   </div>
@@ -117,6 +132,9 @@ import AccountInvest from "./AccountInvest.vue";
 import AccountRoster from "./AccountRoster.vue";
 import AccountTeams from "./AccountTeams.vue";
 import AccountCharacterDrawer from "./AccountCharacterDrawer.vue";
+import AccountOwnUpgrades from "./AccountOwnUpgrades.vue";
+import { useOwnUpgrades } from "./useOwnUpgrades";
+import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
 
@@ -128,6 +146,8 @@ useDocumentTitle(
 const router = useRouter();
 const data = useAccountData();
 const { account, setUpCount, ownedKeys, ranking, shownRanking, rankingStatus, shownItems, planStatus, refresh } = data;
+// "With what you own": better echoes in the inventory (on demand), the Tuner plan, Energy Regen shortfalls
+const own = useOwnUpgrades(data);
 
 // ---- preferences (per browser)
 const prefs = reactive<AccountPrefs>(readStoredPrefs());
@@ -180,6 +200,7 @@ const drawerId = ref<string | null>(null);
 const drawerCard = computed(() => cards.value.find((c) => c.id === drawerId.value) ?? null);
 const drawerItems = computed(() => sortInvestItems((shownItems.value ?? []).filter((i) => i.characterId === drawerId.value), prefs.investBy));
 const drawerRank = computed(() => shownRanking.value?.characters.find((c) => c.id === drawerId.value) ?? null);
+const drawerOwn = computed(() => (drawerId.value ? drawerOwnOf(drawerId.value, own.rows.value, own.check.value, own.status.value.state, prefs.investBy) : null));
 function openCharacter(id: string): void {
   drawerId.value = id;
 }

@@ -148,6 +148,25 @@
   margin-bottom: 0.6rem;
 }
 
+/* `?only=`: one member re-geared, the others keep their echoes (/account's echo check) */
+.bt-only {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.75rem;
+  font-size: 0.82rem;
+  background: oklch(var(--in) / 0.1);
+  box-shadow: inset 0 0 0 1px oklch(var(--in) / 0.25);
+}
+.bt-only > span {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
 /* the team bar */
 .bt-team {
   display: flex;

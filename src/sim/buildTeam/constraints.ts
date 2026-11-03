@@ -12,21 +12,9 @@ import { LAYOUT_COSTS, type MemberPlan, type RileyLayout } from "./rileyPlan";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-/** The switches the page offers (defaults in `DEFAULT_OPTIONS`). */
-export interface BuildOptions {
-  /** only echoes of the plan's sets (Riley's pick or the preset's) */
-  useSets: boolean;
-  /** only main stats the plan's layout puts at each cost */
-  useMainStats: boolean;
-  /** keep each member's current main echo instead of the plan's */
-  keepMainEcho: boolean;
-  /** take echoes other characters (outside the team) wear in their active build */
-  takeFromOthers: boolean;
-  /** try every priority order and keep the best team value (only when the pools are small) */
-  tryAllOrders: boolean;
-}
-
-export const DEFAULT_OPTIONS: BuildOptions = { useSets: true, useMainStats: true, keepMainEcho: false, takeFromOthers: false, tryAllOrders: true };
+// the switches live in options.ts (no engine imports); re-exported for the modules that import them from here
+export { DEFAULT_OPTIONS, OPTIONS_KEY, parseBuildOptions, type BuildOptions } from "./options";
+import type { BuildOptions } from "./options";
 
 export interface MemberConstraints {
   characterId: string;

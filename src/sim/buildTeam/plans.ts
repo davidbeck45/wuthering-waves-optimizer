@@ -44,7 +44,12 @@ export async function presetPlanFor(characterId: string, mainDps: boolean): Prom
 export async function plansForTeam(
   characterIds: Array<string | null>,
   riley: RileySource | null,
-  options: { pinnedKey?: string | null; currentEchoes?: (characterId: string) => ReadonlyArray<PresetEcho | null | undefined> } = {},
+  options: {
+    pinnedKey?: string | null;
+    currentEchoes?: (characterId: string) => ReadonlyArray<PresetEcho | null | undefined>;
+    /** also solve his High Invest spread (`dpsHigh`, the page's "gap to High Invest"); default true */
+    high?: boolean;
+  } = {},
 ): Promise<TeamPlans> {
   const ids = characterIds.filter((id): id is string => !!id);
   let best: MineSolve | null = null;
@@ -68,11 +73,13 @@ export async function plansForTeam(
               : `wuwa_calc could not solve this team at your account (${skipped?.message ?? skipped?.reason ?? "no build"}): using Ryan's echo presets.`;
         } else {
           run = await riley.tracedRun(best.teamKey, best.best!.picks);
-          try {
-            const [high] = await riley.solveMine([best.teamKey], "high");
-            dpsHigh = high?.best?.total ?? null;
-          } catch {
-            dpsHigh = null;
+          if (options.high !== false) {
+            try {
+              const [high] = await riley.solveMine([best.teamKey], "high");
+              dpsHigh = high?.best?.total ?? null;
+            } catch {
+              dpsHigh = null;
+            }
           }
         }
       }

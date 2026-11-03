@@ -34,8 +34,13 @@
 
     <BuildAccountPanel v-if="mode === 'account'" />
 
-
     <div v-if="mode === 'team' && error && phase !== 'error'" role="alert" class="alert alert-warning mb-3 text-sm" data-test-build-team-error>{{ error }}</div>
+    <div v-if="mode === 'team' && only && team && phase !== 'pick'" role="status" class="bt-only" data-test-build-team-only>
+      <span v-if="memberSlots.length > 1">Re-gearing only <b>{{ shortName(only) }}</b>: teammates keep the echoes they wear. This is the run behind My account's "With what you own" figure.</span>
+      <!-- a character in no team you can field: a team of one, nobody else to keep or build -->
+      <span v-else>Re-gearing <b>{{ shortName(only) }}</b> on their own (in no team you can field). This is the run behind My account's "With what you own" figure.</span>
+      <button v-if="memberSlots.length > 1" type="button" class="btn btn-ghost btn-xs" :disabled="phase === 'running'" data-test-build-team-whole @click="wholeTeam">Build the whole team</button>
+    </div>
 
     <BuildTeamPicker v-if="mode === 'team' && phase === 'pick'" :teams="teamStore.teams" :characters="characterStore.characters" />
 
@@ -79,7 +84,7 @@
 
       <!-- step 1: the plan -->
       <template v-if="phase === 'plan' && plans">
-        <BuildTeamSwitch v-if="memberSlots.length > 1" v-model="shown" :slots="prioritySlots" :ids="team.characterIds" />
+        <BuildTeamSwitch v-if="prioritySlots.length > 1" v-model="shown" :slots="prioritySlots" :ids="team.characterIds" />
         <section class="bt-grid">
           <BuildTeamPlanCard
             v-for="slot in prioritySlots"
@@ -87,8 +92,8 @@
             :class="{ 'bt-phone-hide': shown !== slot }"
             :plan="plans.plans[slot]!"
             :character-id="team.characterIds[slot]!"
-            :priority="order.indexOf(slot) + 1"
-            :count="order.length"
+            :priority="only ? 1 : order.indexOf(slot) + 1"
+            :count="only ? 1 : order.length"
             :er-floor="erFloors[slot] ?? null"
             :current-er="currentEr[slot] ?? null"
             :current-main-echo="currentMainEcho(slot)"
@@ -114,7 +119,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-linejoin="round" /></svg>
             Build from my echoes
           </button>
-          <span class="bt-actions__hint text-xs opacity-65">Priority order: {{ order.map((s) => shortName(team!.characterIds[s]!)).join(" → ") }}. Nothing is saved until you review it.</span>
+          <span class="bt-actions__hint text-xs opacity-65">{{ only ? `Only ${shortName(only)}; teammates keep their echoes.` : `Priority order: ${order.map((s) => shortName(team!.characterIds[s]!)).join(" → ")}.` }} Nothing is saved until you review it.</span>
         </div>
       </template>
 
@@ -165,7 +170,7 @@
           <p class="bt-summary__line">{{ runSummary(result) }}</p>
         </section>
 
-        <BuildTeamSwitch v-if="memberSlots.length > 1" v-model="shown" :slots="prioritySlots" :ids="team.characterIds" :deltas="switchDeltas" />
+        <BuildTeamSwitch v-if="prioritySlots.length > 1" v-model="shown" :slots="prioritySlots" :ids="team.characterIds" :deltas="switchDeltas" />
 
         <section class="bt-grid">
           <BuildTeamResultCard
@@ -220,7 +225,7 @@
 // pick per member, priority, ER floors, options), the run (upstream's optimizer workers, progress, cancel), the result
 // (the calculator's numbers for every produced build) and a confirmed save as new team builds, with undo.
 import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useConfirm } from "../../composables/useConfirm";
@@ -254,6 +259,7 @@ const STEPS = ["Plan", "Build", "Review & save"];
 const STEPS_SHORT = ["Plan", "Build", "Review"];
 const route = useRoute();
 const mode = computed<"team" | "account">(() => (route.query.mode === "account" ? "account" : "team"));
+const router = useRouter();
 // the phone's pinned run / save bars lift the Ask button above their buttons (src/sim/shell/plusBar.ts)
 const actionsBar = ref<HTMLElement | null>(null);
 const saveBar = ref<HTMLElement | null>(null);
@@ -266,7 +272,7 @@ const { confirm } = useConfirm();
 const { showToast } = useToast();
 const bt = useBuildTeam();
 const { phase, error, team, plans, order, erFloors, options, progress, result, rileyAfter, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
-const { move, run, cancel } = bt;
+const { move, run, cancel, only } = bt;
 
 const makeActive = ref(false);
 const shown = ref(0);
@@ -277,8 +283,16 @@ const memberSlots = computed(() => (team.value?.characterIds ?? []).map((id, i) 
 const memberIds = computed(() => memberSlots.value.map((i) => team.value!.characterIds[i]!) );
 const prioritySlots = computed(() => {
   const o = result.value?.order.length ? [...result.value.order, ...order.value.filter((s) => !result.value!.order.includes(s))] : order.value;
-  return [...o, ...memberSlots.value.filter((s) => !o.includes(s))];
+  const all = [...o, ...memberSlots.value.filter((s) => !o.includes(s))];
+  // `?only=`: the page plans, runs and saves that member alone
+  return only.value ? all.filter((s) => team.value?.characterIds[s] === only.value) : all;
 });
+/** "Build the whole team": drop `?only=` (the route watch reloads the page on every member) */
+function wholeTeam(): void {
+  const query = { ...route.query };
+  delete query.only;
+  void router.replace({ query });
+}
 const ownedKeys = computed(() => Object.keys(characterStore.characters ?? {}));
 const runnable = computed(() => !!plans.value && memberSlots.value.some((s) => !!characterStore.characters?.[team.value!.characterIds[s]!]?.weapon));
 const shortName = (id: string): string => characterShortName(id) || characterDisplayName(id);
@@ -321,8 +335,10 @@ async function loadFromRoute(): Promise<void> {
   const teamId = typeof q.team === "string" ? q.team : null;
   const members = typeof q.members === "string" ? q.members.split(",").map((s) => s.trim()).filter(Boolean) : [];
   const key = typeof q.key === "string" ? q.key : null;
-  await bt.load({ teamId, members, key });
-  shown.value = order.value[0] ?? 0;
+  // /account's "Check my echoes" row: re-gear that member alone, teammates keeping their echoes
+  const onlyId = typeof q.only === "string" ? q.only : null;
+  await bt.load({ teamId, members, key, only: onlyId });
+  shown.value = only.value ? Math.max(0, team.value?.characterIds.indexOf(only.value) ?? 0) : order.value[0] ?? 0;
   void loadCurrentEr();
 }
 

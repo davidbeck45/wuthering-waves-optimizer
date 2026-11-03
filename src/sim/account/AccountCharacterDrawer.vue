@@ -73,6 +73,39 @@
         <p v-if="items[0]?.team" class="dr__note">Team: {{ teamTitle(items[0].team.teamName) }}</p>
       </section>
 
+      <!-- Wuthering Tools+ "With what you own" for this character (ownUpgrades.ts drawerOwnOf): free today -->
+      <section v-if="own" class="dr__section" data-test-account-drawer-own>
+        <h3 class="dr__h3">With what you own <span v-if="own.views.length" class="dr__count">{{ own.views.length }}</span></h3>
+        <ul v-if="own.views.length" class="dr__invest">
+          <li v-for="v in own.views" :key="v.row.id" class="dr-inv dr-own" :data-test-account-drawer-own-row="v.row.id">
+            <span class="dr-inv__what">
+              <b>{{ OWN_KIND_LABELS[v.row.kind] }}</b>
+              <span class="dr-own__title">{{ v.row.title }}</span>
+            </span>
+            <span class="dr-inv__gains">
+              <template v-if="v.row.own != null">
+                <span :class="v.row.own >= 0 ? 'acc-gain-up' : 'acc-gain-down'">{{ pct(v.row.own) }}</span>
+                <span class="dr-inv__scope">{{ v.row.ownLabel || "own" }}</span>
+              </template>
+              <template v-if="v.row.team">
+                <span :class="v.row.team.gain >= 0 ? 'acc-gain-up' : 'acc-gain-down'">{{ pct(v.row.team.gain) }}</span>
+                <span class="dr-inv__scope">team</span>
+              </template>
+              <template v-if="v.row.own == null && !v.row.team && v.row.figure">
+                <span class="dr-own__figure">{{ v.row.figure.text }}</span>
+                <span class="dr-inv__scope">{{ v.row.figure.caption }}</span>
+              </template>
+            </span>
+            <span class="dr-inv__note dr-own__todo">{{ v.row.todo }}</span>
+            <span v-if="v.row.ownDetail && v.row.own != null" class="dr-inv__note">{{ v.row.ownLabel === "expected own" ? "Expected own" : "Own" }}: {{ v.row.ownDetail }}</span>
+            <span v-if="v.row.note" class="dr-inv__note">{{ v.row.note }}</span>
+            <span v-if="!v.row.team && v.row.teamNote" class="dr-inv__note">no team figure: {{ v.row.teamNote }}</span>
+            <RouterLink :to="v.row.link.to" class="btn btn-outline btn-xs dr-own__go" :data-test-account-drawer-own-go="v.row.id" @click="close">{{ v.row.link.label }}</RouterLink>
+          </li>
+        </ul>
+        <p v-if="own.echoLine" class="dr__note" data-test-account-drawer-own-echo>{{ own.echoLine }}</p>
+      </section>
+
       <!-- what it takes to raise them: level, Forte, inherents / stat bonuses, weapon (src/sim/materials/) -->
       <MaterialsCostToMax :key="card.id" class="dr__section" :character-key="card.id" :name="shortName" />
 
@@ -133,13 +166,14 @@ import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
 import { rankingsMineHash } from "./accountState";
 import { erGainNote, INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
+import { OWN_KIND_LABELS, type DrawerOwn } from "./ownUpgrades";
 import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
-const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean }>();
+const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null }>();
 const rankSub = computed(() =>
   props.scoring
     ? props.rosterSize
@@ -378,6 +412,34 @@ function onBackdrop(event: MouseEvent): void {
   grid-column: 1 / -1;
   font-size: 0.65rem;
   color: oklch(var(--bc) / 0.5);
+}
+/* "With what you own" rows: the to-do under the headline, the way on at the row's end */
+.dr-own__title {
+  font-weight: 600;
+}
+.dr-own__figure {
+  color: oklch(var(--wa));
+}
+html[data-theme-style="light"] .dr-own__figure {
+  color: color-mix(in oklch, oklch(var(--wa)) 55%, black);
+}
+.dr-own__todo {
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: oklch(var(--bc) / 0.85);
+}
+/* the drawer's small grey (45–55 %) reads under 4.5:1 on dark: these rows' lines at 80 % (AA in light and dark) */
+.dr-own .dr-inv__note,
+.dr-own .dr-inv__scope,
+.dr-own .dr-inv__what b {
+  color: oklch(var(--bc) / 0.8);
+}
+.dr-own__go {
+  grid-column: 1 / -1;
+  justify-self: end;
+  min-height: 2.25rem;
+  height: auto;
+  margin-top: 0.2rem;
 }
 .dr-team {
   display: flex;

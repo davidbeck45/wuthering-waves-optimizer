@@ -11,11 +11,10 @@ import { applyBuildFields } from "../../characters/buildFields";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rileyClient } from "../engine/rileyClient";
 import { rileyAccountOf } from "../engine/rileyAccount";
-import { characterDisplayName } from "../display/names";
-import { buildMyTeam, currentEchoesOf, wornByMap, type BuildTeamResult, type TeamSpec } from "./buildTeam";
-import { DEFAULT_OPTIONS, type BuildOptions } from "./constraints";
+import { buildMyTeam, currentEchoesOf, teamSpecOf, wornByMap, type BuildTeamResult, type TeamRequest, type TeamSpec } from "./buildTeam";
+import { OPTIONS_KEY, readBuildOptions, type BuildOptions } from "./options";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
-import { priorityOrder } from "./rileyPlan";
+import { priorityOrder, type MemberPlan } from "./rileyPlan";
 import { workerBackend } from "./workerBackend";
 import { applyBuildTeam, readUndo, undoBuildTeam, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoOutcome, type UndoRecord } from "./apply";
 import { snapshotCharacters } from "../buildHistory/history";
@@ -33,33 +32,10 @@ export interface MemberProgress {
   generated: number;
 }
 
-/** What the page was opened on: a saved team, or three characters (a preset row, a /rankings detail). */
-export interface TeamRequest {
-  teamId?: string | null;
-  members?: string[];
-  /** a wuwa_calc team key the player came from */
-  key?: string | null;
-}
-
-export const OPTIONS_KEY = "wtplus:buildTeam:options:v1";
+export type { TeamRequest } from "./buildTeam";
+export { OPTIONS_KEY } from "./options";
 
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
-
-function readOptions(): BuildOptions {
-  try {
-    const raw = localStorage.getItem(OPTIONS_KEY);
-    if (raw) {
-      // only the known switches, only booleans: a hand-edited or older value never reaches the run
-      const saved = JSON.parse(raw) as Record<string, unknown>;
-      const out = { ...DEFAULT_OPTIONS };
-      for (const k of Object.keys(DEFAULT_OPTIONS) as Array<keyof BuildOptions>) if (typeof saved?.[k] === "boolean") out[k] = saved[k] as boolean;
-      return out;
-    }
-  } catch {
-    // unreadable: defaults
-  }
-  return { ...DEFAULT_OPTIONS };
-}
 
 export function useBuildTeam() {
   const characterStore = useCharacterStore();
@@ -73,7 +49,7 @@ export function useBuildTeam() {
   const plans = shallowRef<TeamPlans | null>(null);
   const order = ref<number[]>([]);
   const erFloors = ref<Array<number | null>>([]);
-  const options = reactive<BuildOptions>(readOptions());
+  const options = reactive<BuildOptions>(readBuildOptions());
   const progress = ref<MemberProgress[]>([]);
   const result = shallowRef<BuildTeamResult | null>(null);
   const rileyAfter = ref<number | null>(null);
@@ -82,6 +58,9 @@ export function useBuildTeam() {
   const applied = shallowRef<ApplyOutcome | null>(null);
   const undoRecord = shallowRef<UndoRecord | null>(readUndo());
   const startedAt = ref(0);
+  /** re-gear only this member (`?only=`, /account's "Check my echoes" row): the others get no plan, so they keep the
+   *  echoes they wear and those stay out of the search — the exact run the row's figure came from */
+  const only = ref<string | null>(null);
   let controller: AbortController | null = null;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
@@ -103,19 +82,7 @@ export function useBuildTeam() {
     }
   }
 
-  function specOf(request: TeamRequest): TeamSpec | null {
-    if (request.teamId) {
-      const t = (teamStore.teams as any[]).find((x) => x.id === request.teamId);
-      if (!t) return null;
-      return { id: t.id, name: t.name, characterIds: [...(t.characterIds ?? [])], buildIds: [...(t.buildIds ?? [null, null, null])], actions: plain(t.actions ?? []), duration: t.duration ?? null, enemyConfig: plain(t.enemyConfig ?? null), handoffs: plain(t.handoffs ?? null) };
-    }
-    const ids = (request.members ?? []).filter(Boolean).slice(0, 3);
-    if (!ids.length) return null;
-    // a composition that is also a saved team: use the saved one (its rotation and pins)
-    const saved = (teamStore.teams as any[]).find((t) => (t.actions ?? []).length && (t.characterIds ?? []).length === ids.length && ids.every((id) => t.characterIds.includes(id)));
-    if (saved) return specOf({ teamId: saved.id });
-    return { id: null, name: ids.map((id) => characterDisplayName(id)).join(" + "), characterIds: [...ids, null, null].slice(0, 3) };
-  }
+  const specOf = (request: TeamRequest): TeamSpec | null => teamSpecOf(request, plain(teamStore.teams as any[]));
 
   const account = () => rileyAccountOf(plain(characterStore.characters), { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams));
 
@@ -129,7 +96,7 @@ export function useBuildTeam() {
     };
   }
 
-  async function load(request: TeamRequest): Promise<void> {
+  async function load(request: TeamRequest & { only?: string | null }): Promise<void> {
     controller?.abort();
     result.value = null;
     applied.value = null;
@@ -152,6 +119,7 @@ export function useBuildTeam() {
       return;
     }
     team.value = spec;
+    only.value = request.only && spec.characterIds.includes(request.only) ? request.only : null;
     phase.value = "loading";
     const ctrl = new AbortController();
     controller = ctrl;
@@ -198,14 +166,18 @@ export function useBuildTeam() {
     startedAt.value = Date.now();
     progress.value = team.value.characterIds.map(() => ({ phase: "waiting", processed: 0, generated: 0 }));
     const backend = workerBackend({ workerCount: resolveOptimizerWorkerCount((settingsStore.config as { optimizerWorkerCount?: unknown })?.optimizerWorkerCount) });
+    // one member only: the others get no plan (they keep their echoes, which stay out of the search)
+    const onlySlot = only.value ? team.value.characterIds.indexOf(only.value) : -1;
+    const runPlans: MemberPlan[] = onlySlot >= 0 ? [] : plans.value.plans;
+    if (onlySlot >= 0) runPlans[onlySlot] = plans.value.plans[onlySlot]!;
     try {
       const out = await buildMyTeam(
         {
           characters: plain(characterStore.characters),
           inventory: { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) },
           team: team.value,
-          plans: plans.value.plans,
-          order: order.value,
+          plans: runPlans,
+          order: onlySlot >= 0 ? [onlySlot] : order.value,
           options: { ...options },
           erFloors: erFloors.value.map((v) => (v == null || !Number.isFinite(Number(v)) ? null : Number(v))),
           autoTeamBuffs: autoTeamBuffs.value,
@@ -300,6 +272,7 @@ export function useBuildTeam() {
     phase,
     error,
     team,
+    only,
     plans,
     order,
     erFloors,

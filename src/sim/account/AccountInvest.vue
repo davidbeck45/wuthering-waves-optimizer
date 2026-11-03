@@ -31,6 +31,8 @@
     <p class="inv__sub">
       Engine gains for one more step of each — on the character's best rotation and on their strongest team you can field.
     </p>
+    <!-- Wuthering Tools+ "With what you own": the free upgrades first (AccountOwnUpgrades.vue) -->
+    <slot name="own" />
 
     <div v-if="items && items.length" class="inv__kinds" role="group" aria-label="Kind">
       <button

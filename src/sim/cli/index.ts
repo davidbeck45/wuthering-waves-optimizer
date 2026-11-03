@@ -306,9 +306,10 @@ export function registerPlusCommands(program: Command): void {
       .option("--one-order", "only the priority order (no permutations)")
       .option("--er <floors>", 'ER floors in %, e.g. "Mornye=260,Lynae=none"')
       .option("--order <names>", "priority, first served first, e.g. Aemeath,Lynae,Mornye")
+      .option("--only <name>", "re-gear this member alone, teammates keep their echoes (/account's \"Check my echoes\" run)")
       .option("--no-auto-buffs", "team buffs from each character's own Team Buffs panel (upstream's behaviour)"),
   ).action(
-    guarded(async (team: string, options: CommonOptions & { anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; takeFromOthers?: boolean; oneOrder?: boolean; er?: string; order?: string; autoBuffs?: boolean }) => {
+    guarded(async (team: string, options: CommonOptions & { anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; takeFromOthers?: boolean; oneOrder?: boolean; er?: string; order?: string; only?: string; autoBuffs?: boolean }) => {
       const exp = load(options);
       const { runBuildTeam, printBuildTeam } = await import("../buildTeam/buildTeamCli");
       const out = await quiet(() =>
@@ -320,6 +321,7 @@ export function registerPlusCommands(program: Command): void {
           tryAllOrders: !options.oneOrder,
           er: options.er,
           order: options.order,
+          only: options.only,
           autoBuffs: options.autoBuffs !== false,
         }),
       );

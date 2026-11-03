@@ -574,7 +574,7 @@ in `main.ts`; v3 and classic alike; the tab title through `useDocumentTitle`.
 | `account/investCache.ts` | the plan by ranking fingerprint: module memory + `sessionStorage["wtplus:account:invest"]`; a cancelled plan is never kept |
 | `AccountHero.vue` | the strongest fieldable team as the page's one hero figure (portraits ringed in their share colour, damage per rotation and DPS, a share bar with direct labels, the team on `/rankings` at the account via `rankingsMineHash`), six KPI tiles (set up, S6, R5, echoes, teams you can field, average Build Score) |
 | `AccountRoster.vue` · `AccountCharacterCard.vue` | the grid (auto-fill 15 rem cards; two a row on a phone, one below 380 px) with element / build / owned filters (counts per choice) and a sort; a card = portrait (rarity ring, element dot), element · weapon type, S/R pills + weapon art, Build Score grade, best rotation damage with a bar against the roster's strongest, the headline investment (team gain when the character can field a team) and the teams they are in |
-| `AccountInvest.vue` | the list, by **team** gain (default — a support's own damage says little) or own; kind chips; the rows without a team figure fold under a divider in team mode; a row opens the drawer; "How these are scored" disclosure |
+| `AccountInvest.vue` | the list, by **team** gain (default — a support's own damage says little) or own; kind chips; the rows without a team figure fold under a divider in team mode; a row opens the drawer; "How these are scored" disclosure; a `#own` slot under its intro holds **"With what you own"** (section below) |
 | `AccountTeams.vue` | teams you can field: three portraits, damage / DPS, a bar split by member share, "+n identical", the team at my account |
 | `AccountCharacterDrawer.vue` | a native modal `<dialog>` (focus kept inside, Escape / backdrop close; right sheet on desktop, bottom sheet on a phone): numbers, best rotation, the character's investments with own and team gains (or why there is no team figure), teams, and **Open in calculator** (`setActiveCharacter` + `/`), **Substats & what-if** (`/my-rankings?focus=<id>&tab=substats` — `MyRankingsView` reads the query, `MyRankingsCharacters` opens that row's tab once scored and scrolls to it), **Rankings at my account** |
 | `myRankings/rankRoster.ts` | refactor only: `teamCandidatesOf` / `scoreTeamCandidate` exported (rankRoster runs through them), `withNextSequence` / `withRefineFive` exported. `rank --investment` output byte-identical, snapshot diff empty |
@@ -620,6 +620,57 @@ Verify pass (2026-10-26, fresh eyes before the merge):
 - Measured: a forced Recompute on David's export (24 characters, 96 team rotations, 72 investments) takes 5.4 s in the dev build
   with no long task (> 50 ms) on the main thread. The CLI `snapshot` diff against plus is empty, and `rank --investment` differs
   only in the Rover label ("Rover Aero (Male)" for the kit's "RoverAeroFemale").
+
+### "With what you own" — free upgrades on `/account` (batch 3b, track "own-upgrades", 2026-11-02)
+
+"What to invest in next" lists things that cost pulls or Tuners. This group, at the top of that panel and in the
+character drawer, lists what the player can improve **today with what they already have**: better echoes already in
+the inventory, the Tuners entered in Echo Lab, the Energy Regen the account's teams are short of. Every row has a
+plain-words "what to do", its figures (team gain first, as the paid list: exact or absent with the reason) and a button
+to the page that does it. Nothing on `/account` writes anything.
+
+| Piece | Role |
+|---|---|
+| `account/echoCheck.ts` | **"Check my echoes"**: per set-up character with a best rotation, Build my team's engine (`buildMyTeam`) re-gears **that character alone** from the real inventory on their strongest team you can field (`createTeamScorer().teamFor`, the paid list's team; a saved team by id, a wuwa_calc preset by its three, the character alone when they field none) — wuwa_calc's plan for the team (`plansForTeam`, memoised per composition, no High Invest solve), the plan's ER need as the floor (`showNeed`, the page's rounding), the player's saved Build my team switches. Teammates get no plan, so they keep their echoes and those stay out of the search; echoes worn outside the team stay out by default. A row is kept when the new build is `worthSaving` and gains own or team damage (≥ 0.05 %) or meets an ER need today's build misses; same echoes / kept current → "already wears the best"; no build → skipped with Build my team's sentence. The team figure re-scores the strongest team with the draft worn (`scorer.impact`, the paid list's rule), and is absent with the reason when Build my team re-gears another saved build than the active one. The row names the buffs Build my team switched on only when the new build wears them (`buffsWorn`: its main echo's, not the other main-echo candidates' it tried; set passives with their pieces on, not a 5pc passive at 2 pieces). Cancellable between characters, a frame between characters |
+| `account/echoCheckCache.ts` | the check for this tab: module memory + `sessionStorage["wtplus:account:echoCheck"]`, keyed by the roster ranking's fingerprint, an **inventory fingerprint** (every echo and the `equipped` map — who wears what, which the ranking's hash does not read) and the run's settings (Build my team's switches, the wuwa_calc commit, auto team buffs). A cancelled check is never kept |
+| `account/ownUpgrades.ts` | the pure view model. `echoRows` (headline says the trade: "Better echoes from your inventory", "More own damage from echoes you own, less team damage", "Meet the Energy Regen need with echoes you own"; "For <team>: swap 3 of X's 5 echoes for ones nobody wears (<sets>)"; own figure in words — "61K → 131K avg damage per rotation on their best rotation, with this team's buffs" (Build my team's figure, which scores a member with the team's buffs on them, so it can sit above /my-rankings' number for the same rotation: Zhezhi 61,481 there vs 41,820); notes for the ER floor met, buffs switched on, a loosened plan; button `/build-team?team=…\|members=…&only=<id>`), `tunerRows` (no Tuners entered → one row "Enter your Tuners in Echo Lab › Tuner plan", no number; entered but not worked out → "What your N Tuners buy"; else the Tuner plan's first ≤ 3 steps the budget covers now (`planTuners` over the Echo Lab worker's candidates), an **expected own** gain and no team figure — an expectation over rolls still to come is not one build the team can be scored on; nothing fits → what the budget is short of; nothing worth a Tuner → says so), `energyRows` (every member `short` in a saved or checked team whose members are all set up: "Needs 4.4 % more Energy Regen in <team>", /energy's own hint "about 1 Energy Regen roll (9.2 % each) closes it", no team figure — team damage doesn't count ER; points at the echoes row when its re-gear reaches the need; button `/energy?team=<id>`), `sortOwnRows` (team or own, the rows without that figure under a divider, then by own gain, then the largest ER shortfall), `drawerOwnOf` (the character's rows, and the check's word on them: not run yet / checking / already the best / why it could not build) |
+| `account/useOwnUpgrades.ts` | the page state: the check through **Build my team's existing workers** (`workerBackend`: upstream's generator / processor workers; the wuwa_calc solver worker through `rileyClient`) — no new worker entry; `echoCheck` and the backend are **imported on the first click**, Echo Lab's state only when Tuners are entered, so `/account` itself loads no optimizer or Echo Lab code. Progress per character with rows appearing as they finish, Cancel, restore from the cache on load; the Tuner budget from Echo Lab's own `localStorage`, its plan through the Echo Lab worker (`useEchoLab().runTunerPlan`, started with the check when Tuners are entered; `hydrate()` reads that tab's cached plan without running anything); the shortfalls from the shared energy check (`useEnergyNeeds`) |
+| `AccountOwnUpgrades.vue` · `AccountCharacterDrawer.vue` | the group (heading with a count, "Check my echoes" / Cancel / "Check again", a progress bar "Checking Zhezhi's echoes · 7 / 24 characters", the summary "Checked 24 of 24 · 11 can wear better echoes · 13 already wear the best", four rows then "Show all"); a row = portrait, name, kind tag and figure on one line, the words under them using the figure's width; the row opens the character drawer, its button goes to the page. The drawer's "With what you own" lists the character's rows with own and team figures, the own figure's basis and the button (it closes the drawer) |
+| `buildTeam/` hooks | `?only=<id>` on `/build-team` (`useBuildTeam.load({ only })`, `BuildTeamView.vue`): plans, runs and saves that member alone — the run the row's figure came from — under a banner "Re-gearing only X: teammates keep the echoes they wear" with **Build the whole team** (drops `only`). `teamSpecOf` (`buildTeam.ts`) is the page's request → team rule made pure so the check runs the exact spec; the switches moved to `buildTeam/options.ts` (no engine imports; `constraints.ts` re-exports them); `plansForTeam({ high: false })` skips the High Invest solve the check never shows. CLI: `build-team <team> --only <name>` |
+| `echoLab/useEchoLab.ts` | `hydrate()`: this tab's cached Echo Lab results for the account as it is, without a run (the Tuner plan rows read it) |
+
+Rules:
+- **Free means already owned**: echoes in the inventory (never one a teammate in that team wears), Tuners the player typed
+  in Echo Lab, ER from echoes they have. No row invents a number: no Tuners entered → no Tuner figure.
+- **The row's figure is the page's figure.** The button opens `/build-team` on the same team with `only=` the character;
+  that page runs the same plan, floor, switches and inventory, and prints the same own Δ (Cypress checks it). Saving
+  stays on that page, behind its preview and confirm.
+- Team figures follow the paid list: exact (the rankings' scorer on the strongest fieldable team with the new build worn)
+  or absent with the reason (not in a team you can field / another build in that team / Tuner expectation / ER).
+
+Things learned:
+- On David's 9-16 export the check takes ~18 s for 24 characters on a quiet machine (33–38 s with two other headless
+  pages running), the longest main-thread gap 51 ms; 11 characters can wear better echoes, 13 already wear the best, none
+  is skipped. The biggest: Zhezhi +112.3 % own (61,481 → 130,554 avg damage per rotation on her best rotation, Moonlit
+  Clouds 5pc from five unworn echoes, ER 112.8 → 203.6 % against a 130.8 % need) and **+8.8 % team** on Carlotta ·
+  Shorekeeper + Zhezhi (3,114,795 → 3,389,528).
+- **Cross-check (engine CLI):** `npm run cli -- build-team "Carlotta,Shorekeeper,Zhezhi" --only Zhezhi --pretty` prints
+  the same 61,481 → 130,554 (+112.3 %), ER 112.8 % → 203.6 %, need 130.8 %, five free echoes; `rank` prints that team's
+  base 3,114,795, the row's team "before" to the unit.
+- Re-gearing can cost the team while it helps the character (Suisui +8.6 % own, −12.1 % team on Aemeath · Suisui +
+  Denia; Verina +38.6 % own, −0.2 % team): the headline says the trade instead of "better", and team mode ranks it below every row the team gains from.
+  Meeting an ER need can cost the engine's damage (Aemeath −1.5 %, Cartethyia −0.9 %: the engine's rotation assumes the
+  energy is there); those rows read "Meet the Energy Regen need with echoes you own".
+
+Gates: `account/echoCheck.test.ts` (the Cartethyia fixture with two echoes unworn and armed teammates: a better build
+found on her strongest team, **equal to Build my team's own run with only her planned** and never a teammate's echo, the
+team figure equal to the scorer's, requests and routes, order, cancel; the cache keys on ranking, inventory — who wears
+what too — and settings, serves memory and sessionStorage, never a cancelled check), `account/ownUpgrades.test.ts`
+(echo / Tuner / Energy Regen rows on synthetic data, the "enter your Tuners" row without a number, headlines that say the
+trade, synced team titles, the order and its divider in both modes); `cypress/e2e/accountOwnUpgrades.cy.ts` (v3: the
+Tuners prompt, the check → her row with team and own figures and the `only=` link, the drawer, a reload from the tab's
+cache; `/build-team?…&only=Cartethyia` plans her alone and its Δ equals the row's own figure, Build the whole team; cancel
+keeps nothing; a Tuner budget → the plan's steps; 412 and 360 px at 130 % with the drawer); `phoneLayout.cy.ts`.
 
 ## `/rankings` re-skin and the account bar's chips (2026-10-12)
 

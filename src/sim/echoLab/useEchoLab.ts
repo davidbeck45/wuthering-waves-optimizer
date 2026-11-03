@@ -186,23 +186,35 @@ export function useEchoLab() {
     }
   }
 
+  /** This tab's cached results for the account as it is now, once per page load (no engine run). */
+  function hydrateFrom(fingerprint: string): void {
+    if (hydrated) return;
+    hydrated = true;
+    const stored = readCache();
+    if (stored && stored.fingerprint === fingerprint && !pass.value) {
+      resultFingerprint.value = fingerprint;
+      pass.value = stored.pass;
+      benchmarks.value = stored.benchmarks;
+      tunerPlan.value = stored.tunerPlan ?? null;
+      for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
+      farm.value = stored.farm ?? null;
+      for (const t of stored.farmTeams ?? []) farmTeams.set(`${fingerprint}|${t.key}`, t);
+      passStatus.cached = true;
+    }
+  }
+
+  /** Results for the account as it is now, without running anything: this tab's cache, and results of another
+   *  account state dropped (/account reads the Tuner plan this way). */
+  function hydrate(): void {
+    const { fingerprint } = snapshot();
+    hydrateFrom(fingerprint);
+    adopt(fingerprint);
+  }
+
   /** Brings the page up to date: cached results for this account, or a fresh pass. */
   async function refresh(options: { force?: boolean } = {}): Promise<void> {
     const { account, fingerprint } = snapshot();
-    if (!hydrated) {
-      hydrated = true;
-      const stored = readCache();
-      if (stored && stored.fingerprint === fingerprint && !pass.value) {
-        resultFingerprint.value = fingerprint;
-        pass.value = stored.pass;
-        benchmarks.value = stored.benchmarks;
-        tunerPlan.value = stored.tunerPlan ?? null;
-        for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
-        farm.value = stored.farm ?? null;
-        for (const t of stored.farmTeams ?? []) farmTeams.set(`${fingerprint}|${t.key}`, t);
-        passStatus.cached = true;
-      }
-    }
+    hydrateFrom(fingerprint);
     adopt(fingerprint);
     if (!account.echoes.length || !builtCount.value) return;
     if (pass.value && !options.force) return;
@@ -261,6 +273,7 @@ export function useEchoLab() {
   /** The Tuner plan's candidates: every unfinished echo worth a Tuner, and where a fresh echo pays most. */
   async function runTunerPlan(options: { force?: boolean } = {}): Promise<void> {
     const { account, fingerprint } = snapshot();
+    hydrateFrom(fingerprint);
     adopt(fingerprint);
     if ((tunerPlan.value && !options.force) || tunerStatus.running || !builtCount.value) return;
     tunerAbort?.abort();
@@ -384,6 +397,7 @@ export function useEchoLab() {
     echoCount,
     builtCount,
     refresh,
+    hydrate,
     runBenchmarks,
     runReroll,
     rerollOf,

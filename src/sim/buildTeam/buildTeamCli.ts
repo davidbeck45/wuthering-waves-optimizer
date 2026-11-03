@@ -19,6 +19,8 @@ export interface BuildTeamCliOptions extends Partial<BuildOptions> {
   er?: string;
   /** priority: comma-separated names, first served first */
   order?: string;
+  /** re-gear only this member: the others get no plan and keep their echoes (/account's echo check, /build-team `?only=`) */
+  only?: string;
   autoBuffs?: boolean;
 }
 
@@ -42,6 +44,8 @@ export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeam
     tracedRun: async (key, picks) => riley.tracedRun(key, picks),
   };
   const plans = await plansForTeam(team.characterIds, source, { currentEchoes: (id) => currentEchoesOf(id, exp.characters, exp.inventory.echoes) });
+  const onlySlot = opts.only ? team.characterIds.findIndex((id) => id && (norm(id) === norm(opts.only!) || norm(characterDisplayName(id)) === norm(opts.only!))) : -1;
+  if (opts.only && onlySlot < 0) throw new Error(`--only ${opts.only}: not a member of ${team.name}`);
   const options: BuildOptions = { ...DEFAULT_OPTIONS, ...Object.fromEntries(Object.entries(opts).filter(([k, v]) => k in DEFAULT_OPTIONS && v !== undefined)) } as BuildOptions;
   // the page's floors: each member's need rounded up to one decimal, as the game prints ER (useBuildTeam); the same
   // rule here, so `build-team` and /build-team build against, and print, the same "need 115.2 %"
@@ -59,8 +63,11 @@ export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeam
     const wanted = opts.order.split(",").map((s) => s.trim());
     order = wanted.map((name) => team.characterIds.findIndex((id) => id && (norm(id) === norm(name) || norm(characterDisplayName(id)) === norm(name)))).filter((i) => i >= 0);
   }
+  // --only: one member planned, the rest skipped (they keep what they wear, and it stays out of the search)
+  const runPlans = onlySlot >= 0 ? plans.plans.map((p, i) => (i === onlySlot ? p : undefined)) : plans.plans;
+  if (onlySlot >= 0) order = [onlySlot];
   const result = await buildMyTeam(
-    { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, team, plans: plans.plans, order, options, erFloors, autoTeamBuffs: opts.autoBuffs ?? true },
+    { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, team, plans: runPlans as typeof plans.plans, order, options, erFloors, autoTeamBuffs: opts.autoBuffs ?? true },
     inlineBackend(),
   );
   return { team, plans, result };

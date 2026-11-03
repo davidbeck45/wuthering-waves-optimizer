@@ -1,0 +1,160 @@
+// Wuthering Tools+: /account's "Check my echoes" (echoCheck.ts) and its cache (echoCheckCache.ts) on public data:
+// upstream's Cartethyia golden fixture (her build + 17 echoes) with two of her five echoes taken off (they sit unworn
+// in the inventory), and two armed teammates (Ciaccona, Chisa) so a team preset of the three is fieldable. Chisa wears
+// one spare echo: the check must never hand it to Cartethyia.
+import { beforeAll, describe, expect, it } from "vitest";
+import account from "../myRankings/__fixtures__/cartethyiaAccount.json";
+import { rankRoster, type RosterRanking } from "../myRankings/rankRoster";
+import { applyBuildFields } from "../../characters/buildFields";
+import { buildEchoLoadoutFromIds } from "../../echoes/echoLoadout";
+import { buildMyTeam, teamSpecOf } from "../buildTeam/buildTeam";
+import { DEFAULT_OPTIONS } from "../buildTeam/constraints";
+import { inlineBackend } from "../buildTeam/headlessOptimizer";
+import { plansForTeam } from "../buildTeam/plans";
+import type { MemberPlan } from "../buildTeam/rileyPlan";
+import { createTeamScorer } from "./investPlan";
+import { buffsWorn, checkOwnEchoes, echoCheckRequest, sortEchoUpgrades, type EchoCheck, type EchoUpgrade } from "./echoCheck";
+import { buildTeamRoute } from "./ownUpgrades";
+import { clearEchoCheckMemory, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+const echoes: any[] = JSON.parse(JSON.stringify(account.echoes));
+const cartSlots = Object.values((account.characters as any).Cartethyia.echoes as Record<string, { echoId: string }>).map((s) => s.echoId);
+// she keeps slots 0–2; slots 3 and 4 go back to the inventory
+const kept = cartSlots.slice(0, 3);
+const wornIds = new Set(cartSlots);
+const spare = echoes.map((e) => String(e.echoId)).filter((id) => !wornIds.has(id));
+const chisaEcho = spare[0]!;
+
+const characters: Record<string, any> = {
+  Cartethyia: { ...JSON.parse(JSON.stringify((account.characters as any).Cartethyia)), echoes: buildEchoLoadoutFromIds(kept, { fillSlots: 5 }) },
+  Ciaccona: { weapon: "WoodlandAria" },
+  Chisa: { weapon: "Kumokiri", weapons: { Kumokiri: { refinement: "5" } }, echoes: buildEchoLoadoutFromIds([chisaEcho], { fillSlots: 5 }) },
+};
+const equipped: Record<string, Record<string, number>> = {
+  ...Object.fromEntries(kept.map((id, i) => [id, { Cartethyia: i }])),
+  [chisaEcho]: { Chisa: 0 },
+};
+
+let ranking: RosterRanking;
+let check: EchoCheck;
+let cart: EchoUpgrade | undefined;
+
+beforeAll(async () => {
+  ranking = await rankRoster(characters, echoes, [], { investment: false, yieldToUi: false });
+  check = await checkOwnEchoes({ characters, inventory: { echoes, equipped }, teams: [], ranking, only: ["Cartethyia"] }, { backend: inlineBackend(), riley: null }, { yieldToUi: false });
+  cart = check.items.find((i) => i.characterId === "Cartethyia");
+}, 240000);
+
+describe("check my echoes", () => {
+  it("finds the better build the inventory holds, on the strongest team she can field", () => {
+    expect(check.errors).toEqual([]);
+    expect(check.total).toBe(1);
+    expect(check.done).toBe(1);
+    expect(check.cancelled).toBe(false);
+    expect(cart, JSON.stringify(check.skipped)).toBeTruthy();
+    expect(cart!.gain).toBeGreaterThan(0.01);
+    expect(cart!.after).toBeGreaterThan(cart!.before);
+    expect(cart!.changed).toBeGreaterThanOrEqual(2);
+    expect(cart!.unworn).toBeGreaterThanOrEqual(1);
+    expect(cart!.sets).toMatch(/\dpc/);
+    // the strongest fieldable team is a preset of the three: /build-team opens on them, only she is re-geared
+    expect(cart!.request.members).toEqual(expect.arrayContaining(["Cartethyia", "Ciaccona", "Chisa"]));
+    expect(buildTeamRoute(cart!.request, "Cartethyia")).toEqual({ path: "/build-team", query: { members: cart!.request.members!.join(","), only: "Cartethyia" } });
+  });
+
+  it("equals Build my team's own run on the same team with only her planned, and never takes a teammate's echo", async () => {
+    const spec = teamSpecOf(cart!.request, [])!;
+    const slot = spec.characterIds.indexOf("Cartethyia");
+    const plans = await plansForTeam(spec.characterIds, null, { high: false });
+    const masked: MemberPlan[] = [];
+    masked[slot] = plans.plans[slot]!;
+    const run = await buildMyTeam({ characters, inventory: { echoes, equipped }, team: spec, plans: masked, order: [slot], options: DEFAULT_OPTIONS, erFloors: spec.characterIds.map(() => null) }, inlineBackend());
+    const m = run.members[slot]!;
+    expect(m.after!.value).toBeCloseTo(cart!.after, 6);
+    expect(m.before!.value).toBeCloseTo(cart!.before, 6);
+    const ids = m.after!.picks.map((p) => String(p.echo.echoId));
+    expect(ids).not.toContain(chisaEcho);
+    // the teammates got no plan: they keep what they wear
+    for (const other of run.members.filter((x) => x.slot !== slot)) expect(other.draft).toBeNull();
+  }, 240000);
+
+  it("scores the team figure exactly as the rankings would, with the new build worn", async () => {
+    expect(cart!.team, cart!.teamNote ?? "").toBeTruthy();
+    const scorer = await createTeamScorer(characters, echoes, [], ranking.teams);
+    const ctx = await scorer.teamFor("Cartethyia");
+    expect(ctx!.rank.id).toBe(cart!.team!.teamId);
+    expect(cart!.team!.base).toBeCloseTo(ctx!.base, 6);
+    // re-run the same draft through the scorer: the same figure
+    const spec = teamSpecOf(cart!.request, [])!;
+    const slot = spec.characterIds.indexOf("Cartethyia");
+    const plans = await plansForTeam(spec.characterIds, null, { high: false });
+    const masked: MemberPlan[] = [];
+    masked[slot] = plans.plans[slot]!;
+    const run = await buildMyTeam({ characters, inventory: { echoes, equipped }, team: spec, plans: masked, order: [slot], options: DEFAULT_OPTIONS, erFloors: spec.characterIds.map(() => null) }, inlineBackend());
+    const hypo = { ...characters, Cartethyia: applyBuildFields(characters.Cartethyia, run.members[slot]!.draft!) };
+    const { team } = await scorer.impact(ctx, null, hypo, echoes);
+    expect(team!.avgDamage).toBeCloseTo(cart!.team!.avgDamage, 4);
+    expect(cart!.team!.gain).toBeGreaterThan(0);
+  }, 240000);
+
+  it("asks /build-team for the saved team by id, a preset by its three, and the character alone without a team", () => {
+    expect(echoCheckRequest({ rank: { id: "t1", source: "yours", characterIds: ["A", "B", "C"] } as any }, "A")).toEqual({ teamId: "t1" });
+    expect(echoCheckRequest({ rank: { id: "wuwa_calc:x", source: "wuwa_calc", characterIds: ["A", "B", "C"] } as any }, "B")).toEqual({ members: ["A", "B", "C"] });
+    expect(echoCheckRequest(null, "A")).toEqual({ members: ["A"] });
+    expect(buildTeamRoute({ teamId: "t1" }, "A")).toEqual({ path: "/build-team", query: { team: "t1", only: "A" } });
+  });
+
+  it("orders by own gain, then team gain, then id", () => {
+    const item = (id: string, gain: number, team: number | null): EchoUpgrade => ({ id, gain, team: team == null ? null : ({ gain: team } as any) }) as EchoUpgrade;
+    expect(sortEchoUpgrades([item("a", 0.01, null), item("b", 0.02, 0.01), item("c", 0.02, 0.03)]).map((i) => i.id)).toEqual(["c", "b", "a"]);
+  });
+
+  it("names only the switched-on buffs the new build wears: its main echo's, and set passives with their pieces on", () => {
+    const keys = ["HavocEclipse5SetHavoc", "HavocEclipse2SetHavoc", "DreamoftheLostCritRateEchoSkill", "FallacyofNoReturn:FallacyofNoReturn", "PhantomFallacyofNoReturn:PhantomFallacyofNoReturn", "SomethingUnknown"];
+    // Dream of the Lost 3pc + Havoc Eclipse 2pc, Fallacy of No Return in the main slot
+    expect(buffsWorn(keys, { DreamoftheLost: 3, HavocEclipse: 2 }, "FallacyofNoReturn")).toEqual(["HavocEclipse2SetHavoc", "DreamoftheLostCritRateEchoSkill", "FallacyofNoReturn:FallacyofNoReturn", "SomethingUnknown"]);
+    expect(buffsWorn(keys, { HavocEclipse: 5 }, null)).toEqual(["HavocEclipse5SetHavoc", "HavocEclipse2SetHavoc", "SomethingUnknown"]);
+  });
+
+  it("stops between characters when cancelled, and says so", async () => {
+    const ctrl = new AbortController();
+    ctrl.abort();
+    const out = await checkOwnEchoes({ characters, inventory: { echoes, equipped }, teams: [], ranking }, { backend: inlineBackend(), riley: null }, { signal: ctrl.signal, yieldToUi: false });
+    expect(out.cancelled).toBe(true);
+    expect(out.done).toBe(0);
+    expect(out.items).toEqual([]);
+  });
+});
+
+describe("the echo check cache", () => {
+  const store = (): Pick<Storage, "getItem" | "setItem" | "removeItem"> & { map: Map<string, string> } => {
+    const map = new Map<string, string>();
+    return { map, getItem: (k) => map.get(k) ?? null, setItem: (k, v) => void map.set(k, v), removeItem: (k) => void map.delete(k) };
+  };
+
+  it("keys on the ranking, the inventory (who wears what too) and the run's settings", () => {
+    const inv = inventoryFingerprint(echoes, equipped);
+    expect(inventoryFingerprint(JSON.parse(JSON.stringify(echoes)), { ...equipped })).toBe(inv);
+    // moving one echo to another wearer moves the key, though the ranking's own hash would not see it
+    expect(inventoryFingerprint(echoes, { ...equipped, [chisaEcho]: { Ciaccona: 0 } })).not.toBe(inv);
+    const key = echoCheckKey("v2:abc", inv, { options: DEFAULT_OPTIONS, engine: "e95d4e6" });
+    expect(echoCheckKey("v2:abd", inv, { options: DEFAULT_OPTIONS, engine: "e95d4e6" })).not.toBe(key);
+    expect(echoCheckKey("v2:abc", inv, { options: { ...DEFAULT_OPTIONS, useSets: false }, engine: "e95d4e6" })).not.toBe(key);
+    expect(echoCheckKey("v2:abc", inv, { options: DEFAULT_OPTIONS, engine: "e95d4e7" })).not.toBe(key);
+  });
+
+  it("serves a finished check for the same key from memory and sessionStorage, never a cancelled one", () => {
+    const s = store();
+    const key = echoCheckKey("v2:abc", "inv", null);
+    clearEchoCheckMemory();
+    expect(readCachedEchoCheck(key, s)).toBeNull();
+    expect(writeCachedEchoCheck(key, { ...check, cancelled: true }, s)).toBe(false);
+    expect(readCachedEchoCheck(key, s)).toBeNull();
+    expect(writeCachedEchoCheck(key, check, s)).toBe(true);
+    clearEchoCheckMemory();
+    expect(readCachedEchoCheck(key, s)!.items.map((i) => i.id)).toEqual(check.items.map((i) => i.id));
+    expect(readCachedEchoCheck(echoCheckKey("v2:abc", "other", null), s)).toBeNull();
+  });
+});

@@ -7,7 +7,7 @@
         <div class="bt-card__name">{{ name }}</div>
         <div class="bt-card__role">{{ role }}</div>
       </div>
-      <div class="bt-move" role="group" :aria-label="`Priority of ${name}`">
+      <div v-if="count > 1" class="bt-move" role="group" :aria-label="`Priority of ${name}`">
         <button type="button" class="btn btn-ghost btn-xs btn-square" :disabled="priority === 1" :aria-label="`Move ${name} up`" data-test-build-team-move-up @click="$emit('move', -1)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="size-4" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>

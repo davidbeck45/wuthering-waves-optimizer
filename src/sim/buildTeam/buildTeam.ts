@@ -21,6 +21,7 @@ import { allocateTeam, type AllocationApi, type Candidate, type SwapMove } from 
 import { constraintsOf, costOf, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, setCounts, shortfallOf, type BuildOptions, type MemberConstraints, type RelaxLevel, type Shortfall } from "./constraints";
 import { erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizerBackend, type OptimizeProgress } from "./headlessOptimizer";
 import type { MemberPlan } from "./rileyPlan";
+import { characterDisplayName } from "../display/names";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -34,6 +35,33 @@ export interface TeamSpec {
   duration?: number | string | null;
   enemyConfig?: Record<string, any> | null;
   handoffs?: Record<string, string[]> | null;
+}
+
+/** What /build-team is opened on: a saved team (`?team=`), or up to three characters (`?members=`: a preset row, a
+ *  /rankings detail, /account's echo check). */
+export interface TeamRequest {
+  teamId?: string | null;
+  members?: string[];
+  /** a wuwa_calc team key the player came from */
+  key?: string | null;
+}
+
+/** The team a request stands for, as the page runs it: a saved team with its rotation and pins; a composition that
+ *  is also a saved team with a rotation becomes that team; else the members alone (no rotation: each is scored on
+ *  their best one). Null when the saved team is gone or no member is named. Pure: /account's echo check runs the
+ *  exact spec the page will. */
+export function teamSpecOf(request: TeamRequest, teams: readonly any[]): TeamSpec | null {
+  if (request.teamId) {
+    const t = (teams ?? []).find((x) => x?.id === request.teamId);
+    if (!t) return null;
+    const copy = <T>(v: T): T => JSON.parse(JSON.stringify(v ?? null));
+    return { id: t.id, name: t.name, characterIds: [...(t.characterIds ?? [])], buildIds: [...(t.buildIds ?? [null, null, null])], actions: copy(t.actions ?? []), duration: t.duration ?? null, enemyConfig: copy(t.enemyConfig ?? null), handoffs: copy(t.handoffs ?? null) };
+  }
+  const ids = (request.members ?? []).filter(Boolean).slice(0, 3);
+  if (!ids.length) return null;
+  const saved = (teams ?? []).find((t) => (t?.actions ?? []).length && (t.characterIds ?? []).length === ids.length && ids.every((id) => t.characterIds.includes(id)));
+  if (saved) return teamSpecOf({ teamId: saved.id }, teams);
+  return { id: null, name: ids.map((id) => characterDisplayName(id)).join(" + "), characterIds: [...ids, null, null].slice(0, 3) };
 }
 
 export interface BuildTeamInput {
