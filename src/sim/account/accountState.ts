@@ -165,7 +165,7 @@ export function accountKeyOf(entries: Record<string, RileyAccountEntry>): string
 export const rileyCompactName = (rileyName: string): string => rileyName.replace(/ /g, "");
 
 /** `/rankings` at the account's own state, filtered to teams containing these characters. */
-export function rankingsMineHash(characterKeys: string[] = []): string {
+export function rankingsMineHash(characterKeys: string[] = [], options: { subs?: "h" | "m" } = {}): string {
   const names = characterKeys.map((k) => rileyCompactName(rileyNameOf(k))).filter(Boolean);
-  return `#tc=mine${names.length ? `&r=${names.map(encodeURIComponent).join(",")}` : ""}`;
+  return `#tc=mine${names.length ? `&r=${names.map(encodeURIComponent).join(",")}` : ""}${options.subs ? `&sb=${options.subs}` : ""}`;
 }

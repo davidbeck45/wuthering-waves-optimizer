@@ -15,6 +15,17 @@ import { erPercent } from "./energyNeed";
  *  so it is counted on both sides already. energy.test.ts recomputes this table from the engine. */
 export const KIT_CONSTANT_ER: Readonly<Record<string, number>> = { Mornye: 10 };
 
+/** The words beside an ER "have" that counts `KIT_CONSTANT_ER` (/energy, /build-team): null for every other kit. The
+ *  game's character screen and /build-history leave it out, so the same build reads 10 points lower there. */
+export function kitErNote(characterId: string | null | undefined): { short: string; long: string } | null {
+  const extra = characterId ? KIT_CONSTANT_ER[characterId] : undefined;
+  if (!extra) return null;
+  return {
+    short: `incl. +${extra} % inherent`,
+    long: `Counts the +${extra} % Energy Regen of this character's always-on inherent skill, as wuwa_calc and the Energy check do. The character screen and Build history leave it out, so they read ${extra} points lower.`,
+  };
+}
+
 /** The build card's enemy (stats don't depend on it). */
 const MENU_ENEMY: TeamEnemyConfig = { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" };
 

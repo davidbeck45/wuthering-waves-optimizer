@@ -242,6 +242,13 @@ export function registerPlusCommands(program: Command): void {
         console.log("\nTeams");
         console.log(table([["  Team", "Members", "Actions", "Fieldable"], ...state.teams.map((t) => [`  ${t.name}`, t.characterIds.filter(Boolean).join(" + "), String(t.actions), t.fieldable ? "yes" : "-"])]));
       }
+      // member loops from a /rankings import with no rotation time (sync-teams fills the ones a synced team can time)
+      const { planRotationDurations } = await import("../rankings/rotationDurations");
+      const loops = planRotationDurations(exp.characters, exp.teams);
+      if (loops.fills.length || loops.gaps.length) {
+        console.log("\nMember loops with no rotation time (the calculator shows no DPS for them, or frame data's own length)");
+        console.log(table([["  Character", "Rotation", "sync-teams fills"], ...[...loops.fills, ...loops.gaps].map((l) => [`  ${l.characterId}`, l.name, "to" in l ? `${l.to}s` : "-"])]));
+      }
     }),
   );
 
@@ -501,16 +508,20 @@ export function registerPlusCommands(program: Command): void {
       const exp = readExport(path);
       const { syncTeamsHeadless } = await import("../rankings/syncTeamsHeadless");
       const result = await quiet(() => syncTeamsHeadless(exp, { subs: options.subs as "standard" | "high" | "mine", rotations: options.rotations }));
+      // member loops saved before loops carried a rotation time get the synced team's (rotationDurations.ts)
+      const { applyRotationDurations, planRotationDurations } = await import("../rankings/rotationDurations");
+      const loopTimes = planRotationDurations(result.characters, result.teams);
+      applyRotationDurations(result.characters, loopTimes.fills);
       let out: string | null = null;
       if (!options.dryRun) {
         // the default lands next to the source as `<name>_synced.json`; syncing that file again (it is then the newest
         // download) writes over it through a temp file — the source of a sync is only ever protected when it is not
         // itself a synced copy
         out = options.out ?? path.replace(/(_synced)?\.json$/i, "") + "_synced.json";
-        writeSyncedExport(path, out, result.teams, options.rotations ? result.characters : null, { allowSelf: /_synced\.json$/i.test(path) });
+        writeSyncedExport(path, out, result.teams, options.rotations || loopTimes.fills.length ? result.characters : null, { allowSelf: /_synced\.json$/i.test(path) });
       }
       const r = result.report;
-      if (!wantsPretty(options)) return printJson({ export: path, out, account: result.account, subs: result.subs, seconds: result.seconds, report: r });
+      if (!wantsPretty(options)) return printJson({ export: path, out, account: result.account, subs: result.subs, seconds: result.seconds, report: r, loopTimes });
       console.log(`${path}\naccount ${result.account} · ${r.updated} updated · ${r.unchanged} unchanged · ${r.skipped} left alone${r.failed ? ` · ${r.failed} failed` : ""} · ${result.seconds.toFixed(1)} s (${result.subs} substats)\n`);
       console.log(
         table([
@@ -527,6 +538,8 @@ export function registerPlusCommands(program: Command): void {
           }),
         ]),
       );
+      for (const f of loopTimes.fills) console.log(`  rotation time ${f.to}s → ${f.characterId}'s "${f.name}" (from ${f.teamName})`);
+      if (loopTimes.gaps.length) console.log(`  ${loopTimes.gaps.length} member loop(s) without a rotation time and no synced team of the same three at the same tier: ${loopTimes.gaps.map((g) => `${g.characterId} "${g.name}"`).join("; ")}`);
       if (out) console.log(`\nwrote ${out} — Settings › Import replaces the whole app database with it; the source export is untouched.`);
     }),
   );

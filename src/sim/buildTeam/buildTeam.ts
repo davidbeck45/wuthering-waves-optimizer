@@ -7,7 +7,7 @@
 // calculator on the produced build (`calcCharacterRotationDamage`, `calcTeamRotationDamage` through the team's
 // build and team-buff resolution, `resolveTeamCharacters`), never an estimate; the optimizer only ranks. Nothing here
 // writes anything — apply.ts does, after the player confirms.
-import { buildCharacterCalculationContext, resolveCharacterEchoes, resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/buildCharacterContext";
+import { resolveCharacterEchoes, resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { resolveCharactersForBuild } from "../../calculator/buildOverride";
 import { calcCharacterRotationDamage, type CharacterRotationInput } from "../../calculator/characterRotation";
 import { calcTeamRotationDamage } from "../../calculator/teamRotation";
@@ -17,6 +17,7 @@ import { getSetBonusEffects, getSetsFromEchoes } from "../../echoes/sets";
 import { echoSetLabelMap } from "../../echoes/stats";
 import { RANKING_ENEMY, rotationCandidates, scoreRotation } from "../myRankings/rankRoster";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
+import { menuEnergyRegen } from "../energy/energyHave";
 import { allocateTeam, type AllocationApi, type Candidate, type SwapMove } from "./allocate";
 import { constraintsOf, costOf, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, setCounts, shortfallOf, type BuildOptions, type MemberConstraints, type RelaxLevel, type Shortfall } from "./constraints";
 import { erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizerBackend, type OptimizeProgress } from "./headlessOptimizer";
@@ -225,15 +226,9 @@ export function draftBuildFields(slotRecord: Record<string, any>, loadout: any[]
   return fields;
 }
 
-const MENU_ENEMY: TeamEnemyConfig = { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" };
-
-/** A record's character-screen ER (%): the build card's view (`alwaysEnabledOnly`), as the energy check reads it. */
-export async function menuErPercent(characterId: string, characters: Record<string, any>, echoes: any[]): Promise<number | null> {
-  if (!characters[characterId]?.weapon) return null;
-  const built = await buildCharacterCalculationContext(characterId, characters, MENU_ENEMY, echoes, { alwaysEnabledOnly: true });
-  const er = Number(built.finalStats?.energyRegen);
-  return Number.isFinite(er) ? Math.round(er * 1e6) / 1e4 : null;
-}
+/** A record's Energy Regen (%) as the Energy check reads it (`menuEnergyRegen`: the build card's view plus a kit's
+ *  constant ER such as Mornye's +10 % inherent), so "you have" and the floor (wuwa_calc's need) share one basis. */
+export const menuErPercent = (characterId: string, characters: Record<string, any>, echoes: any[]): Promise<number | null> => menuEnergyRegen(characterId, characters, echoes);
 
 const idsOf = (loadout: any[]): string[] => loadout.map((e) => String(e.echoId));
 

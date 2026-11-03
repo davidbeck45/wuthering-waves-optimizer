@@ -39,7 +39,7 @@ describe("rotation view", () => {
     cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
     cy.get("[data-test-rotation-title]").should("contain.text", "Shorekeeper").and("contain.text", "Iuno");
     // main DPS first, as every plus page names a team (display/names.ts teamLabel)
-    cy.title().should("contain", "Iuno · Shorekeeper · Lynae rotation");
+    cy.title().should("contain", "Iuno · Shorekeeper + Lynae rotation"); // teamLabel: the main DPS, then the others joined by +
     cy.get('[data-test-rotation-block="opener"]').should("be.visible");
     cy.get('[data-test-rotation-block="loop1"]').should("contain.text", "Loop").and("contain.text", "×3");
     cy.get('[data-test-rotation-block="loop1"] [data-test-rotation-visit]').should("have.length", 3);

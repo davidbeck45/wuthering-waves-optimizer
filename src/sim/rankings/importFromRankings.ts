@@ -12,6 +12,8 @@
 import { allCharactersList, getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
 import { randomString } from "../../utils/strings";
+import { wuwaCalcTeamName } from "../presets/presetName";
+import { spreadLabel } from "../display/numberBasis";
 import {
   OVERRIDES,
   appKeyOf,
@@ -44,8 +46,9 @@ export interface RankingsMods {
   stats: any;
 }
 
-/** The engine modules a prepared import needs — no page model, so the CLI hands in the fork's engine directly. */
-export type EngineMods = Pick<RankingsMods, "teamrun" | "solver" | "stats">;
+/** The engine modules a prepared import needs — no page model, so the CLI hands in the fork's engine directly. `subs` /
+ *  `model.filters.subs` is the substat spread the run used: the description the import writes names it. */
+export type EngineMods = Pick<RankingsMods, "teamrun" | "solver" | "stats"> & { subs?: string | null; model?: any };
 
 export interface ImportOptions {
   /** also append each member's loop to that character's saved rotations (characters set up in this app only) */
@@ -177,8 +180,10 @@ const multOf = (a: { buffs?: unknown }): string => JSON.stringify((Array.isArray
 
 const investmentTag = (combo: any): string => `S${combo.sequence}R${combo.weapon?.refinement ?? 1}`;
 
-/** A team name this importer (or the stock team presets) wrote, as opposed to one the player typed. */
-export const isGeneratedTeamName = (name: string | null | undefined): boolean => /^wuwa_calc /.test(name ?? "") || /\(wuwa_calc t\d+\)/.test(name ?? "");
+/** A team name this importer (or the stock team presets) wrote, as opposed to one the player typed: "… (wuwa_calc)"
+ *  (`wuwaCalcTeamName`), the older "wuwa_calc …", or a stock team's "… (wuwa_calc t307)". */
+export const isGeneratedTeamName = (name: string | null | undefined): boolean =>
+  /^wuwa_calc /.test(name ?? "") || /\(wuwa_calc t\d+\)/.test(name ?? "") || /\(wuwa_calc\)\s*$/.test(name ?? "");
 
 /** Two team actions that merge into one row: same slot, attack, main echo and (for a status tick) stack count. */
 export const sameAction = (
@@ -325,11 +330,13 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const otherTags = [...new Set(tags.filter((_, i) => i !== mainIndex))];
   const tag = otherTags.every((t) => t === dpsTag) ? dpsTag : `${dpsTag} DPS · ${otherTags.join("/")} team`;
   const ordered = slotOrder.map((i) => names[i]);
-  const teamName = `wuwa_calc ${ordered[0]} ${tag} · ${ordered.slice(1).join(" + ")}`;
+  const teamName = wuwaCalcTeamName(ordered[0]!, ordered.slice(1), tag);
   const spec = slotOrder
     .map((i) => `${names[i]} ${tags[i]} ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, ${combos[i].mainstat?.name ?? ""}`)
     .join("; ");
-  let description = `Imported from the Team Rankings page (Riley31415/wuwa_calc): ${Math.round(traced.total).toLocaleString()} team DPS against a level 100 target with 20% RES. Slots: ${spec}. One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.`;
+  // the spread the run used, named: a team DPS on ChemX32 reads 16 % under the same team on the player's echoes
+  const spread = spreadLabel(mods.subs ?? mods.model?.filters?.subs);
+  let description = `Imported from the Team Rankings page (Riley31415/wuwa_calc): ${Math.round(traced.total).toLocaleString()} team DPS on ${spread} against a level 100 target with 20% RES. Slots: ${spec}. One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here.`;
   if (Object.keys(enemySeen).length) description += ` Enemy settings from the run: ${stacksLabel(enemySeen)}.`;
   if (statuses.size) description += ` Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): ${[...statuses].join(", ")}.`;
   if (notPorted.size) description += ` Not ported (no matching action in this app): ${[...notPorted].join(", ")}.`;
@@ -368,7 +375,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
       name,
       key: k,
       rotationName: `${name} ${tags[i]} ${combos[i].weapon?.name ?? ""} · ${others.join(" + ")} · ${tag} (wuwa_calc)`,
-      description: `Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): ${tags[i]}, ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, main stats ${combos[i].mainstat?.name ?? ""}; team ${ordered.join(" + ")}, ${Math.round(traced.total).toLocaleString()} team DPS.${report.unmatched.length ? ` Not ported: ${report.unmatched.map((u) => u.replace(/ \(.*\)$/, "")).join(", ")}.` : ""}`,
+      description: `Steady-state loop from the Team Rankings page (Riley31415/wuwa_calc): ${tags[i]}, ${combos[i].weapon?.name ?? ""}, ${mods.solver.echoLabel(members[i].loadout, combos[i].echo)}, main stats ${combos[i].mainstat?.name ?? ""}; team ${ordered.join(" + ")}, ${Math.round(traced.total).toLocaleString()} team DPS on ${spread}.${report.unmatched.length ? ` Not ported: ${report.unmatched.map((u) => u.replace(/ \(.*\)$/, "")).join(", ")}.` : ""}`,
       duration,
       actions,
     });

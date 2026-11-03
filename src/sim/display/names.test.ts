@@ -39,9 +39,10 @@ describe("display names", () => {
   });
 
   it("labels a team the same way on every plus page: main DPS first, short names", () => {
-    expect(teamLabel(["Mornye", "Lynae", "Aemeath"], "Aemeath")).toBe("Aemeath · Mornye · Lynae");
+    expect(teamLabel(["Mornye", "Lynae", "Aemeath"], "Aemeath")).toBe("Aemeath · Mornye + Lynae");
     expect(teamLabel(["Mornye", "Lynae", "Aemeath"])).toBe("Mornye · Lynae · Aemeath");
     expect(teamLabel(["Mornye", null, "Aemeath"], "Lynae")).toBe("Mornye · Aemeath");
-    expect(teamLabel(["RoverAeroFemale", "Sanhua", "Cartethyia"], "Cartethyia")).toBe("Cartethyia · Rover Aero · Sanhua");
+    expect(teamLabel(["Aemeath"], "Aemeath")).toBe("Aemeath");
+    expect(teamLabel(["RoverAeroFemale", "Sanhua", "Cartethyia"], "Cartethyia")).toBe("Cartethyia · Rover Aero + Sanhua");
   });
 });

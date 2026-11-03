@@ -4,7 +4,8 @@
 // teams with everything a run carries, e.g.
 //   "Sigrika S6R2 Solsworn Ciphers R2 · Mornye + Lucilla · S6R2 DPS · S1R1/S0R1 team (wuwa_calc)"   (an import)
 //   "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)"                           (a stock preset)
-//   "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae"                                    (an imported team)
+//   "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)"                                 (an imported team)
+//   "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae"                                    (one before 2026-11-02)
 //   "Chisa + Denia + Aemeath · S6R5 (wuwa_calc t307)"                                                 (an old stock team)
 // That is one unreadable line wherever it lands. `parsePresetName` splits it into a short title ("Sigrika ·
 // Mornye + Lucilla"), chips (own state, DPS / team tier, mode, extras) and the teammates' character keys for mini
@@ -128,6 +129,9 @@ export function parsePresetName(name: string | null | undefined, options: Preset
   let tier: string | null = null;
   const extras: string[] = [];
   let teamFromComposition = false;
+  /** the first segment was a bare name, no state: a team ("Aemeath · Mornye + Lynae · S6R5 (wuwa_calc)"), as every
+   *  rotation name carries its own state after the name */
+  let bareHead = false;
 
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
@@ -163,6 +167,7 @@ export function parsePresetName(name: string | null | undefined, options: Preset
       }
       if (NAME_RE.test(seg)) {
         main = seg;
+        bareHead = true;
         continue;
       }
     }
@@ -171,7 +176,7 @@ export function parsePresetName(name: string | null | undefined, options: Preset
 
   if (!main && !teamFromComposition) return { ...plain(full), generated, chips: account ? [accountChip(accountNote)] : [] };
 
-  const kind: PresetNameParts["kind"] = teamImport || teamFromComposition ? "team" : "rotation";
+  const kind: PresetNameParts["kind"] = teamImport || teamFromComposition || (bareHead && teammates.length > 0 && Boolean(dps || tier || teamTier)) ? "team" : "rotation";
   const chips: PresetChip[] = [];
   const mainName: string = main ?? "the team";
   if (kind === "team") {
@@ -224,4 +229,16 @@ export function describeState(label: string): string {
   const m = /^S(\d)(?:R(\d))?$/.exec(label);
   if (!m) return label;
   return m[2] ? `S${m[1]} with an R${m[2]} weapon` : `S${m[1]}`;
+}
+
+/**
+ * The name this app writes for a team imported from wuwa_calc (the /rankings import, Sync my teams): the team's
+ * one label first — the main DPS, then the others ("Aemeath · Mornye + Lynae", what every plus page shows) — then the
+ * investment tag ("S6R5" when everyone runs one tier, "S6R5 DPS · S1R1/S6R1 team" when not), the engine last:
+ * "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)". Ryan's Teams page shows stored names as they
+ * are, so a cut-off name still starts with who is in the team (the old "wuwa_calc Aemeath S6R5 D…" did not).
+ * `parsePresetName` reads it back as `kind: "team"`; Sync my teams renames a team still on the old form.
+ */
+export function wuwaCalcTeamName(main: string, teammates: readonly string[], tag: string): string {
+  return `${[main, teammates.join(" + ")].filter(Boolean).join(" · ")}${tag ? ` · ${tag}` : ""} (wuwa_calc)`;
 }

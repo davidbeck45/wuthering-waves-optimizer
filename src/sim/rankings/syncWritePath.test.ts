@@ -281,10 +281,11 @@ describe("prepareTeamImport on a traced run", () => {
 
   it("names the team by investment and records each member's next loop change", async () => {
     const prepared = await prepareTeamImport(mods, traced(final));
-    expect(prepared.teamName).toBe("wuwa_calc Cartethyia S6R1 DPS · S0R1 team · Chisa + Shorekeeper");
+    expect(prepared.teamName).toBe("Cartethyia · Chisa + Shorekeeper · S6R1 DPS · S0R1 team (wuwa_calc)"); // wuwaCalcTeamName, 2026-11-02
     expect(prepared.total).toBe(1_234_567);
     // Riley's team total is DPS since his 7bcbb24 (it was "adjusted DPR", DPS × 26)
-    expect(prepared.description).toContain("1,234,567 team DPS");
+    expect(prepared.description).toContain("1,234,567 team DPS on ChemX32 substats"); // the spread, named (no subs: his default)
+    expect((await prepareTeamImport({ ...mods, subs: "mine" }, traced(final))).description).toContain("team DPS on your echoes");
     const chisa = prepared.members.find((m) => m.key === "Chisa")!;
     expect(chisa).toMatchObject({ slot: 1, sequence: 0, refinement: 1, weapon: "Kumokiri", loopChangesAt: [2], nextLoopChange: 2 });
     expect(prepared.members.find((m) => m.key === "Cartethyia")).toMatchObject({ slot: 0, sequence: 6, loopChangesAt: [], nextLoopChange: null });

@@ -42,7 +42,7 @@
           {{ erLine.text }}<template v-if="erLine.short"> An Energy Regen line the build needs is never re-rolled.</template>
         </p>
         <p class="w-full text-xs leading-snug opacity-70" data-test-echo-lab-reroll-legend>
-          <b>Worth</b> = the damage the build loses without that line. <b>Fresh</b> = what a new random line in its place adds on average. Lock the lines worth more than a fresh roll.
+          <b>Worth</b> = the damage the build loses without that line. <b>Fresh</b> = what a new random line in its place adds on average. The chips follow the plan under each echo: <b>Re-roll</b> marks the lines it replaces, <b>Lock</b> the ones it keeps. A plan can re-roll a line worth a little more than a fresh roll when locking it too would cost another Transducer.
         </p>
       </header>
 
@@ -79,7 +79,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="line in linesFor(slot)" :key="line.key" class="border-t border-base-200" :data-test-echo-lab-reroll-line="line.advice ?? 'pending'" :data-test-echo-lab-reroll-er-floor="line.erFloor ? '' : undefined">
+                <tr v-for="line in linesFor(slot)" :key="line.key" class="border-t border-base-200" :data-test-echo-lab-reroll-line="line.chip ?? 'pending'" :data-test-echo-lab-reroll-er-floor="line.erFloor ? '' : undefined">
                   <td class="py-1 pr-1">
                     <span class="flex min-w-0 items-center gap-1.5">
                       <img v-if="substatIcon(line.key)" :src="substatIcon(line.key) ?? undefined" alt="" class="el-icon" loading="lazy" />
@@ -92,11 +92,15 @@
                   </td>
                   <td class="py-1 pl-2 text-right font-mono text-xs tabular-nums opacity-70 max-sm:hidden">{{ line.fresh === null ? "…" : signedPct(line.fresh, 2) }}</td>
                   <td class="py-1 pl-1 text-right sm:pl-2">
-                    <span v-if="line.advice === 'reroll'" class="el-chip el-chip--reroll max-sm:px-1.5" :title="`Re-roll priority ${line.rank}`" :aria-label="`Re-roll, priority ${line.rank}`">
-                      <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" /></svg><span class="max-sm:hidden">Re-roll</span><span class="opacity-60">#{{ line.rank }}</span>
+                    <!-- the chips follow the plan headlined under the table (planChips): its re-rolled lines, numbered, and its locks -->
+                    <span v-if="line.chip === 'reroll'" class="el-chip el-chip--reroll max-sm:px-1.5" :title="`Re-roll this line (${ordinal(line.order ?? 1)} of the plan's ${planOf(slot.slot)?.rerolledFields.length ?? 1})`" :aria-label="`Re-roll, line ${line.order} of the plan`">
+                      <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" /></svg><span class="max-sm:hidden">Re-roll</span><span class="opacity-60">#{{ line.order }}</span>
                     </span>
-                    <span v-else-if="line.advice === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Lock: the build needs this Energy Regen' : 'Lock'" :title="line.erFloor ? 'Lock: without this line the build falls under its Energy Regen need' : undefined">
+                    <span v-else-if="line.chip === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Lock: the build needs this Energy Regen' : 'Lock'" :title="line.erFloor ? 'Lock: without this line the build falls under its Energy Regen need' : 'Lock this line when you re-roll'">
                       <svg viewBox="0 0 24 24" class="size-3" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-sm:hidden">Lock</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
+                    </span>
+                    <span v-else-if="line.chip === 'keep'" class="el-chip el-chip--lock max-sm:px-1.5" aria-label="Keep: no re-roll pays on this echo" title="Keep: no re-roll pays on this echo">
+                      <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg><span class="max-sm:hidden">Keep</span>
                     </span>
                     <span v-else class="loading loading-dots loading-xs opacity-50"></span>
                   </td>
@@ -110,6 +114,7 @@
             <div v-if="resultOf(slot.slot)" class="mt-auto pt-3">
               <div v-if="planOf(slot.slot)" class="rounded-lg bg-base-200 px-3 py-2 text-sm" data-test-echo-lab-reroll-plan>
                 <div class="font-semibold">{{ planTitle(planOf(slot.slot)!) }}</div>
+                <div class="text-xs" data-test-echo-lab-reroll-plan-lines>{{ planLinesText(planOf(slot.slot)!, resultOf(slot.slot)!.lines) }}</div>
                 <div class="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs tabular-nums opacity-80">
                   <span>{{ pct(planOf(slot.slot)!.pImprove, 0) }} to improve</span>
                   <span class="el-up">{{ signedPct(planOf(slot.slot)!.expectedGain, 2) }} expected</span>
@@ -164,11 +169,11 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabCharacterSummary, LabSlotSummary } from "./bestOwner";
 import type { BenchmarkBatchResult } from "./pass";
 import { REROLL_ASSUMPTIONS, type LockPlan, type RerollAdviceResult } from "./rerollAdvice";
-import { pickRerollFirst } from "./rerollPick";
+import { pickRerollFirst, planChips, type PlanChip } from "./rerollPick";
 import EchoLabEcho from "./EchoLabEcho.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { shortBy, showNeed } from "../energy/energyNeed";
-import { characterName, compact, erFloorLine, lineText, pct, portrait, scoreBand, signedPct, slotLabel, substatIcon, worthwhilePlan } from "./echoLabView";
+import { characterName, compact, erFloorLine, lineText, pct, planLinesText, portrait, scoreBand, signedPct, slotLabel, substatIcon, worthwhilePlan } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
 
 const props = defineProps<{ result: BestOwnerResult; benchmarks: BenchmarkBatchResult | null; preferred?: string | null }>();
@@ -229,18 +234,22 @@ interface LineRow {
   value: number;
   worth: number | null;
   fresh: number | null;
-  advice: "lock" | "reroll" | null;
-  rank: number;
+  /** the chip, from the plan the card headlines (planChips); null while the advice runs */
+  chip: PlanChip | null;
+  /** a re-rolled line's place in the plan (1 = most worth replacing) */
+  order: number | null;
   /** an Energy Regen line the build needs to stay at its ER need */
   erFloor: boolean;
 }
 function linesFor(slot: LabSlotSummary): LineRow[] {
   const r = resultOf(slot.slot);
-  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, advice: null, rank: 0, erFloor: false }));
+  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, chip: null, order: null, erFloor: false }));
+  const chips = planChips(r.lines, planOf(slot.slot));
   return [...r.lines]
     .sort((a, b) => a.field - b.field)
-    .map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, advice: l.advice, rank: l.rank, erFloor: !!l.erFloor }));
+    .map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, chip: chips.get(l.field)?.chip ?? "lock", order: chips.get(l.field)?.order ?? null, erFloor: !!l.erFloor }));
 }
+const ordinal = (n: number): string => (n === 1 ? "first" : n === 2 ? "second" : n === 3 ? "third" : n === 4 ? "fourth" : "fifth");
 
 /** the character's ER against the need the advice respects (every echo's advice carries the same pair) */
 const erLine = computed(() => {

@@ -35,7 +35,7 @@ describe("Team Rankings (wuwa_calc)", () => {
       const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams?: Array<{ name: string; characterIds: string[]; actions: unknown[] }> };
       expect(store.teams ?? []).to.have.length(1);
       const team = store.teams![0];
-      expect(team.name).to.match(/^wuwa_calc /);
+      expect(team.name).to.match(/^Cartethyia · .+ \(wuwa_calc\)$/); // wuwaCalcTeamName: the team's one label first, the engine last
       expect(team.characterIds.filter(Boolean)).to.have.length(3);
       expect(team.actions.length).to.be.greaterThan(10);
     });
@@ -283,21 +283,34 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     });
     cy.get("[data-test-rankings-sync-close]").click();
     cy.get("[data-test-rankings-sync-report]").should("not.exist");
-    // a team that drifted from its loop is rewritten, and Undo puts it back as it was
+    // a team that drifted from its loop is rewritten, and Undo puts it back as it was; Cartethyia's member loop, saved
+    // as if before loops carried a rotation time, gets the synced team's seconds and loses them again on Undo
+    // (rankings/rotationDurations.ts)
+    type Loop = { description?: string; duration?: number | null };
+    const loopOf = (win: Window): Loop | undefined =>
+      (JSON.parse(win.localStorage.getItem("character") ?? "{}") as { characters?: Record<string, { rotations?: Loop[] }> }).characters?.Cartethyia?.rotations?.find((r) => String(r.description ?? "").startsWith("Steady-state loop from the Team Rankings page"));
     cy.window().then((win) => {
       const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
       store.teams[0]!.actions = store.teams[0]!.actions.slice(0, 3);
       win.localStorage.setItem("teamRotations", JSON.stringify(store));
+      const chars = JSON.parse(win.localStorage.getItem("character") ?? "{}") as { characters: Record<string, { rotations?: Loop[] }> };
+      const loop = chars.characters.Cartethyia?.rotations?.find((r) => String(r.description ?? "").startsWith("Steady-state loop from the Team Rankings page"));
+      expect(loop, "the import saved Cartethyia's member loop").to.not.eq(undefined);
+      expect(Number(loop!.duration), "a fresh import carries the loop's time").to.be.greaterThan(0);
+      loop!.duration = null;
+      win.localStorage.setItem("character", JSON.stringify(chars));
     });
     cy.reload();
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get("[data-test-rankings-sync]").click();
     cy.get(".confirm-dialog .modal-action .btn-primary").click();
     cy.get("[data-test-rankings-sync-summary]", { timeout: 180000 }).should("contain.text", "1 updated");
+    cy.get("[data-test-rankings-sync-loop-times]").should("contain.text", "Rotation time added to 1 saved member loop");
     cy.window().should((win) => {
-      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[]; duration?: number }> };
       expect(store.teams[0]!.actions.length).to.be.greaterThan(5);
       expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo kept").to.not.eq(null);
+      expect(loopOf(win)?.duration, "the member loop has the team's rotation time").to.eq(store.teams[0]!.duration);
     });
     // Undo asks first too (/build-team's pattern): Cancel keeps the synced team and the undo
     cy.get("[data-test-rankings-sync-undo]").click();
@@ -316,6 +329,7 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
       expect(store.teams).to.have.length(1);
       expect(store.teams[0]!.actions).to.have.length(3);
       expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo used up").to.eq(null);
+      expect(loopOf(win)?.duration ?? null, "Undo took the filled rotation time back out").to.eq(null);
     });
   });
 });
@@ -509,7 +523,7 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
       cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team DPS");
       cy.get(cards).first().should(($n) => expect(figureOf($n[0]!)).to.be.lessThan(dpr));
       cy.get("[data-test-rankings-cards-mode='dpr']").click();
-      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team Avg DPR");
+      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Avg damage / rotation"); // plus words for his "Team Avg DPR" 
     });
     // the Search & compare sheet still opens over the cards, from the bar's Search button
     cy.get("[data-test-rankings-search]").click();

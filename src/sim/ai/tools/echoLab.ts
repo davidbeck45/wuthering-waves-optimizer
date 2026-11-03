@@ -5,9 +5,18 @@ import type { EchoVerdict } from "../../echoLab/bestOwner";
 import { feedGroups, reasonText } from "../../echoLab/echoLabView";
 import { runJob } from "../../echoLab/pass";
 import type { RerollAdviceResult } from "../../echoLab/rerollAdvice";
-import { pickRerollFirst } from "../../echoLab/rerollPick";
+import { MIN_PLAN_GAIN, pickRerollFirst, planChips } from "../../echoLab/rerollPick";
 import { echoLabFor } from "./memo";
 import { characterName, compactJson, defineTool, echoName, nullableString, pct, resolveOwnCharacter, round, setName, statLabel, topN } from "./shared";
+
+/** Each line with the plan's own lock / re-roll / keep, as the Re-roll tab's chips read it (planChips). */
+function lineChips(a: RerollAdviceResult): string[] {
+  const chips = planChips(a.lines, a.recommended && a.recommended.expectedGain >= MIN_PLAN_GAIN ? a.recommended : null);
+  return a.lines.map((l) => {
+    const c = chips.get(l.field);
+    return `${statLabel(l.key)} ${round(l.value, 1)}: ${c?.chip ?? "lock"}${c?.order ? ` (#${c.order})` : ""}`;
+  });
+}
 
 const SHOWS = ["feed", "keep", "spare", "reroll"] as const;
 type Show = (typeof SHOWS)[number];
@@ -77,7 +86,7 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
         echoes: advices.map((a) => ({
           slot: a.slot + 1,
           echo: echoName(a.echo),
-          lines: a.lines.map((l) => `${statLabel(l.key)} ${round(l.value, 1)}: ${l.advice}${l.advice === "reroll" ? ` (#${l.rank})` : ""}`),
+          lines: lineChips(a),
           plan: a.recommended
             ? {
                 lock: a.recommended.locks,

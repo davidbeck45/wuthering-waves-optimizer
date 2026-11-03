@@ -33,3 +33,29 @@ export function pickRerollFirst<T extends { slot: number; recommended: LockPlan 
  *  answers any of them from another's run. `{}` without a need (the job's cache key is then the old one). */
 export const rerollOptionsFor = (needs: Readonly<Record<string, number>> | null | undefined, id: string): { erNeed?: number } =>
   needs?.[id] != null && Number.isFinite(needs[id]) ? { erNeed: needs[id] } : {};
+
+export type PlanChip = "lock" | "reroll" | "keep";
+
+/**
+ * The chip on each line of an echo card, read off the plan the card headlines (the one that pays best per Transducer):
+ * its re-rolled lines "Re-roll #1, #2…" (numbered by the line's rank: #1 is the line most worth replacing), the lines
+ * it locks "Lock"; with no plan worth Transducers (`plan` null) every line reads "Keep". The per-line verdict (worth
+ * against a fresh roll) once drove the chips, so "Lock 3, re-roll 2" sat over four Lock chips (2026-11-02 audit D8).
+ */
+export function planChips(lines: ReadonlyArray<{ field: number; rank: number }>, plan: Pick<LockPlan, "rerolledFields"> | null): Map<number, { chip: PlanChip; order: number | null }> {
+  const out = new Map<number, { chip: PlanChip; order: number | null }>();
+  const rerolled = new Set(plan?.rerolledFields ?? []);
+  const order = [...lines].filter((l) => rerolled.has(l.field)).sort((a, b) => a.rank - b.rank || a.field - b.field);
+  for (const l of lines) {
+    if (!plan) out.set(l.field, { chip: "keep", order: null });
+    else if (rerolled.has(l.field)) out.set(l.field, { chip: "reroll", order: order.indexOf(l) + 1 });
+    else out.set(l.field, { chip: "lock", order: null });
+  }
+  return out;
+}
+
+/** The plan's re-rolled lines, most worth replacing first (the order `planChips` numbers them). */
+export function rerolledLines<L extends { field: number; rank: number }>(lines: readonly L[], plan: Pick<LockPlan, "rerolledFields"> | null): L[] {
+  const rerolled = new Set(plan?.rerolledFields ?? []);
+  return lines.filter((l) => rerolled.has(l.field)).sort((a, b) => a.rank - b.rank || a.field - b.field);
+}

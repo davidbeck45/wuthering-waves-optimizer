@@ -16,6 +16,7 @@ import type { RileyAccountEntry } from "../account/accountState";
 import { useToast } from "../../composables/useToast";
 import { importTeamFromRankings, notInApp, type ImportResult } from "./importFromRankings";
 import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
+import { spreadOf } from "../display/numberBasis";
 import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
@@ -477,6 +478,7 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
     withMine(() => importTeamFromRankings(engine, best.ref as string, { replaceTeamId: team.id }));
   try {
     const report = await runSync({ teams, rileyTeams: M.TEAMS, solveBest, importInto });
+    report.subs = spreadOf(M.filters.subs); // the report names the spread its figures ran on
     M.saveSolves();
     return report;
   } finally {
@@ -567,7 +569,17 @@ function comparePass(): void {
       ? "Each team as a share of the pinned row. Click that row's figure again to measure against the top row; click here to switch the colour scale off or on."
       : "Each team as a share of the top row. Click a row's figure to measure everything against that team instead; click here to switch the colour scale off or on.";
   }
+  // his "Team Avg DPR" heading in words (2026-11-02 audit D9); the "25.0s" beside each figure reads "25.0s loop"
+  // (skittle.css `.looptime::after`). DPS mode keeps his "Team DPS".
+  const dpr = grid.querySelector<HTMLElement>(".trow.thead .c.dprhead");
+  if (dpr && mods.table.teamMode !== "dps") {
+    if (dpr.textContent !== DPR_HEAD) dpr.textContent = DPR_HEAD;
+    if (dpr.title !== DPR_HEAD_TITLE) dpr.title = DPR_HEAD_TITLE;
+  }
 }
+const DPR_HEAD = "Avg damage / rotation";
+const DPR_HEAD_TITLE =
+  "Team avg DPR: the damage of one rotation, averaged over wuwa_calc's four. The small figure beside it is how long one rotation takes. Click to rank by damage per second (DPS) instead.";
 
 /** The detail page's rotation log keeps its Member and Action columns in view while it scrolls
  *  sideways: whichever of the two lead the log (his columns can be dragged into any order — a

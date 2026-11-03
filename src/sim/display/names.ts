@@ -28,12 +28,16 @@ export function characterShortName(key: string | null | undefined): string {
   return full.replace(/\s*\((?:Female|Male)\)$/, "").replace(/^Yangyang: /, "");
 }
 
-/** One team's label on every plus page (night audit "fight", F19): the main DPS first, then the others in slot order,
- *  short names ("Xuanling", "Rover Aero"), " · " between — "Aemeath · Mornye · Lynae". */
+/** One team's label on every plus page (night audit "fight", F19; one form with the generated names 2026-11-02): the
+ *  main DPS, " · ", then the others in slot order joined by " + ", short names ("Xuanling", "Rover Aero") —
+ *  "Aemeath · Mornye + Lynae", as `parsePresetName` titles a wuwa_calc name and `wuwaCalcTeamName` starts one.
+ *  Without a known main DPS nobody is singled out: "Mornye · Lynae · Aemeath". */
 export function teamLabel(keys: ReadonlyArray<string | null | undefined>, mainDps?: string | null): string {
   const ids = keys.filter((k): k is string => Boolean(k));
   const main = mainDps && ids.includes(mainDps) ? mainDps : null;
-  return (main ? [main, ...ids.filter((k) => k !== main)] : ids).map(characterShortName).join(" · ");
+  if (!main) return ids.map(characterShortName).join(" · ");
+  const rest = ids.filter((k) => k !== main).map(characterShortName);
+  return rest.length ? `${characterShortName(main)} · ${rest.join(" + ")}` : characterShortName(main);
 }
 
 export interface CharacterMeta {

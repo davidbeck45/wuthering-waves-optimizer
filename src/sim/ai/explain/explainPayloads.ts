@@ -4,6 +4,7 @@
 // app's damage per rotation with Riley's DPS. Pure: type imports from the features, plus the display names.
 import { characterDisplayName, weaponDisplayName } from "../../display/names";
 import { parsePresetName } from "../../presets/presetName";
+import { teamTitle } from "../../display/teamName";
 import type { CharacterRank, RotationScore, TeamRank } from "../../myRankings/rankRoster";
 import type { UpgradeView } from "../../myRankings/rows";
 import type { TeamView } from "../../energy/useEnergyNeeds";
@@ -129,11 +130,11 @@ export function explainEnergyTeam(view: TeamView): ExplainRequest | null {
   const e = view.energy;
   return {
     title: `Energy Regen needs · ${view.characterIds.map(name).join(" + ")}`,
-    question: `Explain the Energy Regen needs of my team "${view.name}": who is short or tight, why that member needs that much, and the cheapest way to close the gap?`,
+    question: `Explain the Energy Regen needs of my team "${teamTitle(view.name, view.characterIds)}": who is short or tight, why that member needs that much, and the cheapest way to close the gap?`,
     data: {
       page: "/energy (Energy check)",
-      measured: `${RILEY_ENGINE_NOTE} The need is the constant Energy Regen at which every Liberation of this team's wuwa_calc loop is paid on time; "kit floor" means the character's own minimum, not a loop result. The have is the character screen's Energy Regen of the build the team runs in this app.`,
-      team: view.name,
+      measured: `${RILEY_ENGINE_NOTE} The need is the constant Energy Regen at which every Liberation of this team's wuwa_calc loop is paid on time; "kit floor" means the character's own minimum, not a loop result. The have is the character screen's Energy Regen of the build the team runs in this app, plus an always-on inherent the app keeps as a switch (Mornye +10 %), as wuwa_calc counts it, so Mornye's have reads 10 points above her in-game character screen.`,
+      team: rotationName(view.name),
       "wuwa_calc team": e.teamKey,
       "team DPS in wuwa_calc": round(e.total),
       "fight length (s)": one(e.seconds),

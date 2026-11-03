@@ -3,7 +3,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { describeState, parsePresetName } from "./presetName";
+import { describeState, parsePresetName, wuwaCalcTeamName } from "./presetName";
 import { characterPickerRoster } from "../../characters/characters";
 
 const DATA = join(__dirname, "data");
@@ -138,6 +138,28 @@ describe("parsePresetName", () => {
       expect(typeof parsePresetName(odd as string).title).toBe("string");
     }
     expect(parsePresetName("(wuwa_calc)").generated).toBe(true);
+  });
+
+  it("writes an imported team's name with its one label first and reads it back as the old form read (2026-11-02)", () => {
+    const name = wuwaCalcTeamName("Aemeath", ["Mornye", "Lynae"], "S6R5 DPS · S1R1/S6R1 team");
+    expect(name).toBe("Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)");
+    const now = parsePresetName(name);
+    const before = parsePresetName("wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae");
+    for (const p of [now, before]) {
+      expect(p.generated).toBe(true);
+      expect(p.kind).toBe("team");
+      expect(p.title).toBe("Aemeath · Mornye + Lynae");
+      expect(p.mainKey).toBe("Aemeath");
+      expect(p.teammateKeys).toEqual(["Mornye", "Lynae"]);
+      expect(p.chips.map((c) => c.label)).toEqual(["main DPS S6R5", "supports S1R1 / S6R1"]);
+    }
+    // one tier for all: "S6R5" alone, a tier chip
+    const flat = parsePresetName(wuwaCalcTeamName("Aemeath", ["Mornye", "Lynae"], "S6R5"));
+    expect(flat).toMatchObject({ kind: "team", title: "Aemeath · Mornye + Lynae" });
+    expect(flat.chips.map((c) => [c.kind, c.label])).toEqual([["tier", "S6R5"]]);
+    expect(parsePresetName("wuwa_calc Aemeath S6R5 · Mornye + Lynae").chips.map((c) => [c.kind, c.label])).toEqual([["tier", "S6R5"]]);
+    // a member loop of the same team stays a rotation (its head carries its own state)
+    expect(parsePresetName("Mornye S1R1 Starfield Calibrator R1 · Aemeath + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)").kind).toBe("rotation");
   });
 
   it("describes a state for tooltips", () => {

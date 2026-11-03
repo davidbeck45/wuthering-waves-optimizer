@@ -72,6 +72,8 @@ export interface SyncTeamReport {
 export interface SyncReport {
   at: string;
   cost: string;
+  /** the substat spread the sync ran (the bar's Substats box: "standard" = ChemX32), named beside its figures */
+  subs?: string;
   teams: SyncTeamReport[];
   updated: number;
   unchanged: number;

@@ -6,7 +6,7 @@
       <div class="share-team__title-block">
         <div class="share-team__kicker">Team</div>
         <div class="share-team__title" :title="teamName">{{ teamName }}</div>
-        <div class="share-team__muted">{{ view.members.map((m) => m.name).join(" · ") }}</div>
+        <div class="share-team__muted">{{ teamTierLine(view.teamName) ?? view.members.map((m) => m.name).join(" · ") }}</div>
       </div>
       <div v-if="showNumbers && headline" class="share-team__headline" data-test-share-card-headline>
         <div class="share-team__headline-value">{{ compactNumber(headline.value) }}</div>
@@ -102,6 +102,7 @@ import { computed, reactive } from "vue";
 import type { ShareHeadline } from "./buildCodec";
 import { ELEMENT_COLOR, type CardView, type MemberView } from "./cardView";
 import { compactNumber, headlineLabel } from "./headline";
+import { teamTierLine } from "../display/teamName";
 
 const props = defineProps<{
   view: CardView;

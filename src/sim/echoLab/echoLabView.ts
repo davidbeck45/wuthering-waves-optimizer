@@ -10,7 +10,7 @@ import { IN_GAME_SET_NAME } from "../echoPlan/catalog";
 import { checkOf, showHave, showNeed } from "../energy/energyNeed";
 import type { EchoVerdict, EchoVerdictKind, LabCharacterSummary, VerdictReason } from "./bestOwner";
 import type { LockPlan } from "./rerollAdvice";
-import { MIN_PLAN_GAIN } from "./rerollPick";
+import { MIN_PLAN_GAIN, rerolledLines } from "./rerollPick";
 
 // ── names and pictures ──
 
@@ -232,6 +232,14 @@ export function planSentence(plan: LockPlan): string {
   const lock = plan.locks ? `Lock ${plan.locks}` : "Lock nothing";
   const roll = `re-roll ${plan.rerolledFields.length}`;
   return `${lock}, ${roll}: ${pct(plan.pImprove, 0)} chance to improve, ${signedPct(plan.expectedGain, 2)} expected keeping the better lines`;
+}
+
+/** The lines a plan replaces, in words, under its headline: "Re-roll HA 8.6% and ATK 10.9%; lock the other 3." */
+export function planLinesText(plan: Pick<LockPlan, "locks" | "rerolledFields">, lines: ReadonlyArray<{ field: number; rank: number; key: string; value: number }>): string {
+  const names = rerolledLines(lines, plan).map((l) => lineText(l.key, l.value));
+  if (!names.length) return "";
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return `Re-roll ${list}${plan.locks ? `; lock the other ${plan.locks}` : ""}.`;
 }
 
 // ── characters ──

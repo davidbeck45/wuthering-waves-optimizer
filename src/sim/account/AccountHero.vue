@@ -36,11 +36,12 @@
             variant="outline"
             size="xs"
             label="Explain this team" />
-          <!-- the same three in Riley's engine read lower (his ChemX32 substats, not these echoes): the link names it -->
+          <!-- the same three in Riley's engine, on the player's own echoes (My builds) like /energy and /rotation, so the
+               row it lands on is the team as you built it; the bar's note there says why it still differs from this hero -->
           <RouterLink
-            :to="{ path: '/rankings', hash: rankingsMineHash(best.characterIds) }"
+            :to="{ path: '/rankings', hash: rankingsMineHash(best.characterIds, { subs: 'm' }) }"
             class="acc-hero__link"
-            title="Riley31415's wuwa_calc engine at your sequences and weapons, on his ChemX32 substats unless you pick My builds"
+            title="Riley31415's wuwa_calc engine at your sequences and weapons, on your own echoes (My builds). A different simulation from this app's engine, so its figure differs."
             data-test-account-hero-rankings>
             This team in wuwa_calc
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -100,7 +101,7 @@
           <span v-else class="kpi__dash">…</span>
         </div>
         <div class="kpi__meter kpi__meter--none"></div>
-        <div class="kpi__sub"><span class="max-md:hidden">{{ kpis.teamsFieldable }} of your {{ kpis.teams }} saved · the rest stock</span><span class="md:hidden">you can field</span></div>
+        <div class="kpi__sub"><span class="max-md:hidden">{{ kpis.teamsFieldable }} of your {{ kpis.teams }} saved · the rest stock</span><span class="md:hidden">saved + stock</span></div>
       </div>
       <div class="kpi" data-test-account-kpi="score">
         <div class="kpi__label"><span class="max-md:hidden">Avg Build Score</span><span class="md:hidden">Build Score</span></div>

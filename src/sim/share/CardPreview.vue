@@ -33,6 +33,7 @@ import TeamCard from "./TeamCard.vue";
 import type { ShareHeadline } from "./buildCodec";
 import type { CardView } from "./cardView";
 import { POST_CARD, TEAM_CARD } from "./capture";
+import { teamTitle } from "../display/teamName";
 
 const props = defineProps<{
   view: CardView;
@@ -58,7 +59,8 @@ const scale = computed(() => {
   const byHeight = props.maxHeight ? props.maxHeight / size.value.height : Infinity;
   return Math.min(1, byWidth, byHeight);
 });
-const teamName = computed(() => props.teamName ?? props.view.teamName ?? "Team");
+// the card shows the team's one name (teamTitle: "Aemeath · Mornye + Lynae"); the stored name rides in the PNG's data
+const teamName = computed(() => teamTitle(props.teamName ?? props.view.teamName ?? "", props.slots ?? []) || "Team");
 const slots = computed(() => props.slots ?? props.view.members.map((m) => m.charId));
 const duration = computed(() => props.duration ?? null);
 

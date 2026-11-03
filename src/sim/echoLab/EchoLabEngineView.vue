@@ -64,7 +64,7 @@
         <div v-if="first" class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <EchoLabEcho :echo="first.echo" :subtitle="false" :lines="null" />
           <span class="text-xs opacity-60">{{ slotLabel(first.slot) }}<template v-if="first.worth !== null"> · substats add {{ signedPct(first.worth, 1) }}</template></span>
-          <span v-if="first.line" class="el-chip el-chip--reroll" data-test-echo-lab-engine-reroll-line>Re-roll {{ lineText(first.line.key, first.line.value) }}</span>
+          <span v-for="l in first.lines" :key="l.field" class="el-chip el-chip--reroll" data-test-echo-lab-engine-reroll-line>Re-roll {{ lineText(l.key, l.value) }}</span>
           <span v-if="first.plan" class="w-full text-xs tabular-nums opacity-80">
             {{ first.plan.locks ? `Lock ${first.plan.locks}, re-roll ${first.plan.rerolledFields.length}` : `Re-roll all ${first.plan.rerolledFields.length}` }}:
             {{ pct(first.plan.pImprove, 0) }} to improve, <span class="el-up">{{ signedPct(first.plan.expectedGain, 2) }}</span> expected,
@@ -97,7 +97,7 @@ import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { erFloorLine, lineText, pct, scoreBand, signedPct, slotLabel, substatIcon } from "./echoLabView";
 import type { EngineViewResult } from "./engineView";
 import type { LineAdvice, LockPlan, RerollAdviceResult } from "./rerollAdvice";
-import { pickRerollFirst, rerollOptionsFor } from "./rerollPick";
+import { pickRerollFirst, rerolledLines, rerollOptionsFor } from "./rerollPick";
 import "./echoLab.css";
 
 const props = defineProps<{ character: string }>();
@@ -130,17 +130,17 @@ const topSubstats = computed(() => (view.value?.substats ?? []).filter((s) => s.
 const labLink = computed(() => ({ path: "/echo-lab", query: { tab: "reroll", character: props.character } }));
 
 /** the echo to re-roll first, once every full echo has its advice (never a half-done pick) */
-const first = computed<{ slot: number; echo: string | null; worth: number | null; line: LineAdvice | null; plan: LockPlan | null } | null>(() => {
+const first = computed<{ slot: number; echo: string | null; worth: number | null; lines: LineAdvice[]; plan: LockPlan | null } | null>(() => {
   const r = result.value;
   if (!r || reroll.running) return null;
   const pick = pickRerollFirst(r.advices);
   if (!pick) return null;
-  const top = pick.lines.find((l) => l.rank === 1) ?? null;
   return {
     slot: pick.slot,
     echo: pick.echo,
     worth: r.view.echoes.find((e) => e.slot === pick.slot)?.worth ?? null,
-    line: top && top.advice === "reroll" ? top : null,
+    // every line the plan re-rolls (the Re-roll tab's chips), not only the one most worth replacing
+    lines: rerolledLines(pick.lines, pick.recommended),
     plan: pick.recommended,
   };
 });

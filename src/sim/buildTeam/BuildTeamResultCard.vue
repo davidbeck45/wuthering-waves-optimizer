@@ -34,7 +34,7 @@
         <svg v-if="band === 'met'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="size-4" aria-hidden="true"><path d="M5 12l5 5 9-10" stroke-linecap="round" stroke-linejoin="round" /></svg>
         <svg v-else-if="band === 'short'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="size-4" aria-hidden="true"><path d="M12 8v5M12 17h.01" stroke-linecap="round" /></svg>
         <span>
-          Energy Regen <b class="tabular-nums">{{ pctText(outcome.after.menuEr) }}</b>
+          Energy Regen <b class="tabular-nums">{{ pctText(outcome.after.menuEr) }}</b><span v-if="kitNote" :title="kitNote.long" data-test-build-team-er-kit> ({{ kitNote.short }})</span>
           <template v-if="outcome.erFloor != null"> · need <span class="whitespace-nowrap">{{ pctText(outcome.erFloor) }}</span></template>
           <template v-else> · no floor</template>
         </span>
@@ -87,6 +87,7 @@ import BuildTeamEchoTile from "./BuildTeamEchoTile.vue";
 import { shortfallText, type MemberOutcome } from "./buildTeam";
 import type { MemberPlan } from "./rileyPlan";
 import { parsePresetName } from "../presets/presetName";
+import { kitErNote } from "../energy/energyHave";
 import { buffDefaultNames, compactNum, deltaText, deltaTone, erBand, fmtInt, pctText, resultNotes, roleLine } from "./buildTeamView";
 
 const props = defineProps<{ outcome: MemberOutcome; plan: MemberPlan | undefined; priority: number; save: boolean }>();
@@ -97,6 +98,7 @@ const ordinal = computed(() => ["first", "second", "third"][props.priority - 1] 
 const delta = computed(() => deltaText(props.outcome.before?.value, props.outcome.after?.value));
 const tone = computed(() => deltaTone(props.outcome.before?.value, props.outcome.after?.value));
 const band = computed(() => erBand(props.outcome));
+const kitNote = computed(() => kitErNote(props.outcome.characterId));
 const notes = computed(() => resultNotes(props.outcome, props.plan));
 const buffNames = computed(() => buffDefaultNames(props.outcome.buffDefaults));
 /** How much of the change is buffs switched on rather than echoes. */

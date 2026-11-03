@@ -19,6 +19,7 @@ import {
   type TeamEnemyConfig,
 } from "../../calculator/buildCharacterContext";
 import type { CharacterRotationInput } from "../../calculator/characterRotation";
+import { KIT_CONSTANT_ER } from "../energy/energyHave";
 import {
   computeLoadoutFinalStats,
   computeOverrideBuffVariants,
@@ -274,7 +275,9 @@ export async function prepareMemberJob(input: PrepareJobInput): Promise<MemberJo
   const rotation = { ...objective.rotation, id: objective.rotation.id || `bt-${characterId}` };
   const rotationData = buildOptimizerRotationData({ ...rotation, actions: rotation.actions as any[] }, built.chosenChar, built.characterLevel);
   const fullEr = Number(built.finalStats?.energyRegen);
-  const menuEr = Number(menu.finalStats?.energyRegen);
+  // the Energy check's "have" (energyHave.ts): the build card's ER plus a kit's constant ER that the app keeps as a
+  // toggle (Mornye's +10 % inherent), so the floor — wuwa_calc's need — is held on the basis /energy shows
+  const menuEr = Number(menu.finalStats?.energyRegen) + (KIT_CONSTANT_ER[characterId] ?? 0) / 100;
   return {
     characterId,
     id: `bt${++jobCounter}-${characterId}`,
@@ -291,13 +294,13 @@ export async function prepareMemberJob(input: PrepareJobInput): Promise<MemberJo
   };
 }
 
-/** The min-stat row for a character-screen ER floor (%), on the optimizer's `energyRegen` (upstream's display units). */
+/** The min-stat row for an ER floor (%, the Energy check's basis), on the optimizer's `energyRegen` (upstream's display units). */
 export function erMinStat(job: Pick<MemberJob, "erOffset">, floor: number | null): Array<{ stat: string; minValue: number }> {
   if (floor == null || !(floor > 0)) return [];
   return [{ stat: "energyRegen", minValue: Math.round((floor + job.erOffset * 100) * 1e6) / 1e6 }];
 }
 
-/** The optimizer's `energyRegen` (decimal) as the character screen reads it (%), by the job's offset. */
+/** The optimizer's `energyRegen` (decimal) as the Energy check reads it (%, `menuEnergyRegen`), by the job's offset. */
 export const menuErOf = (job: Pick<MemberJob, "erOffset">, energyRegen: number): number => Math.round((energyRegen - job.erOffset) * 1e6) / 1e4;
 
 /* --------------------------------------------------------------------------------------- inline backend */

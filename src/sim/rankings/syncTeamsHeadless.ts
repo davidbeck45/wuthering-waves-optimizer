@@ -69,7 +69,7 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
 
   const teams: any[] = JSON.parse(JSON.stringify(exp.teams));
   const characters: Record<string, any> = JSON.parse(JSON.stringify(exp.characters));
-  const engine = { teamrun: R, solver: S, stats: St };
+  const engine = { teamrun: R, solver: S, stats: St, subs };
 
   const solveBest = async (keys: string[]): Promise<Map<string, SolvedBest | null>> => {
     const out = new Map<string, SolvedBest | null>();

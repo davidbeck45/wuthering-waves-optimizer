@@ -33,6 +33,7 @@
               <span>{{ template === "team" ? "1080 × 1350" : "1200 × 630" }} px · exported at 2×</span>
               <span v-if="scoring" class="inline-flex items-center gap-1" data-test-share-scoring><span class="loading loading-spinner loading-xs"></span>scoring with the engine…</span>
               <span v-else-if="showNumbers && !headline && view" data-test-share-no-headline>No engine number: {{ source?.kind === "team" ? "the team has no rotation with all three members set up" : "no rotation scores for this build" }}.</span>
+              <span v-if="engineNote && !scoring" class="basis-full" data-test-share-engine-note>{{ SHARE_ENGINE_NOTE }}</span>
             </div>
           </div>
 
@@ -97,6 +98,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -110,6 +112,8 @@ import { buildHeadline, teamHeadline } from "./headline";
 import { shareLink, type ShareLink } from "./link";
 import { canCopyImage, canShareFile, captureCard, cardFilename, copyImage, copyText, downloadBlob, embedPayload, shareFile } from "./capture";
 import { readPrefs, writePrefs } from "./prefs";
+import { teamTitle } from "../display/teamName";
+import { isWuwaCalcPage, SHARE_ENGINE_NOTE } from "../display/numberBasis";
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -148,11 +152,17 @@ const ownerUid = computed({
 const owner = computed(() => (showUid.value && (ownerName.value || ownerUid.value) ? { name: ownerName.value || undefined, uid: ownerUid.value || undefined } : null));
 
 const template = computed<"post" | "team">(() => (source.value?.kind === "team" ? "team" : "post"));
+// opened over a wuwa_calc page (/rotation's "Share this team"): the card's number is this app's engine, so say so
+const route = useRoute();
+const engineNote = computed(() => template.value === "team" && showNumbers.value && Boolean(headline.value) && isWuwaCalcPage(route?.path));
 // an export taken while the engine number is still on its way would leave it off the card (and out of the link)
 const ready = computed(() => !!view.value && !(scoring.value && showNumbers.value));
 const title = computed(() => {
   if (!source.value) return "Share";
-  if (source.value.kind === "team") return `Share team · ${teamStore.getTeamById(source.value.teamId)?.name ?? "Team"}`;
+  if (source.value.kind === "team") {
+    const t = teamStore.getTeamById(source.value.teamId);
+    return `Share team · ${teamTitle(t?.name, t?.characterIds ?? []) || "Team"}`;
+  }
   return `Share ${characterName(source.value.charId)}'s build`;
 });
 const clipboardImage = canCopyImage();
@@ -304,7 +314,7 @@ async function nativeShare() {
     const file = new File([blob], cardFilename(p), { type: "image/png" });
     // a short caption: most apps paste the text beside the picture, and the picture already carries the build
     // (the link is one tap away under Copy link)
-    const what = p.kind === "team" ? `Team “${p.team?.name ?? "Team"}”` : `${characterName(p.members[0]?.charId ?? "")}'s build`;
+    const what = p.kind === "team" ? `Team “${teamTitle(p.team?.name, p.team?.characterIds ?? []) || "Team"}”` : `${characterName(p.members[0]?.charId ?? "")}'s build`;
     const outcome = await shareFile(file, `${what} — drop the picture on ${window.location.origin}/share to load it.`);
     if (outcome === "needs-tap") showToast("The card is ready — tap Share… once more to send it.", "info", 6000);
   } catch (err) {

@@ -101,7 +101,7 @@ describe("Echo Lab", () => {
     cy.get('[data-test-echo-lab-reroll-character="Galbrena"]').click();
     cy.location("search").should("contain", "character=Galbrena");
     cy.get("[data-test-echo-lab-reroll-echo]").should("have.length", 5);
-    cy.get('[data-test-echo-lab-reroll-line="lock"]', RUN).should("exist");
+    cy.get('[data-test-echo-lab-reroll-line="lock"], [data-test-echo-lab-reroll-line="keep"]', RUN).should("exist"); // the plan's chips (planChips)
     cy.get("[data-test-echo-lab-reroll-loading]", RUN).should("not.exist");
     cy.get('[data-test-echo-lab-reroll-line="pending"]').should("not.exist");
     cy.get("[data-test-echo-lab-reroll-first]").should("have.length.at.most", 1);
@@ -136,7 +136,7 @@ describe("Echo Lab", () => {
       cy.get("[data-test-echo-lab-tune-legend]").should("be.visible");
       expectNoHorizontalScroll("tune");
       cy.get('[data-test-echo-lab-tab="reroll"]').click();
-      cy.get('[data-test-echo-lab-reroll-line="lock"]', RUN).should("exist");
+      cy.get('[data-test-echo-lab-reroll-line="lock"], [data-test-echo-lab-reroll-line="keep"]', RUN).should("exist"); // the plan's chips (planChips)
       cy.get("[data-test-echo-lab-reroll-loading]", RUN).should("not.exist");
       cy.get("[data-test-echo-lab-reroll-legend]").should("be.visible").and("contain.text", "Worth");
       expectNoHorizontalScroll("re-roll");

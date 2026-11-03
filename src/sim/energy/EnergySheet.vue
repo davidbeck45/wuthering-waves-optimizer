@@ -4,7 +4,7 @@
       <header class="en-sheet__head">
         <div class="min-w-0">
           <h2 :id="titleId" class="en-sheet__title">{{ title }}</h2>
-          <p class="en-sheet__sub">{{ view.name }}</p>
+          <p class="en-sheet__sub" :title="view.name">{{ teamTitle(view.name, view.characterIds) }}</p>
         </div>
         <form method="dialog">
           <button class="btn btn-sm btn-circle btn-ghost" aria-label="Close" data-test-energy-sheet-close autofocus @click="done">✕</button>
@@ -27,6 +27,7 @@
 import { computed, onMounted, ref } from "vue";
 import EnergyBreakdown from "./EnergyBreakdown.vue";
 import { nameOf } from "./energyFormat";
+import { teamTitle } from "../display/teamName";
 import type { TeamView } from "./useEnergyNeeds";
 
 const props = defineProps<{ view: TeamView; characterId: string }>();

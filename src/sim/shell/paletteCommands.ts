@@ -6,6 +6,7 @@
 // entry chunk (PlusShell reads its page titles), and these strings and the /rotation hash code would add ~9 kB there.
 import { parseRotationHash, rotationPath } from "../rotation/hash";
 import { paletteItems, type PaletteItem, type PaletteSources } from "./paletteItems";
+import { isGeneratedName, teamTierLine, teamTitle } from "../display/teamName";
 
 /** Where the player is (CommandPalette reads the route, the calculator's character and the Teams editor's team). */
 export interface PaletteContext {
@@ -110,12 +111,14 @@ function characterCommands(key: string, name: string, group: Group): Built[] {
 
 function teamCommands(t: TeamTarget, displayName: NameOf, group: Group): Built[] {
   if (t.members.length !== 3) return [];
-  const label = t.members.map(displayName).join(" + ");
+  // a wuwa_calc name reads as the team's one name ("Aemeath · Mornye + Lynae", teamTitle); else the members
+  const generated = isGeneratedName(t.name);
+  const label = generated ? teamTitle(t.name) : t.members.map(displayName).join(" + ");
   // on the team's own page: "… for this team", the members first in the line below (a phone cuts the end off);
-  // in the full list: the members in the title, what it does below, then the team's own name
+  // in the full list: the members in the title, what it does below, then a name the player typed
   const here = group === "context";
   const title = (verb: string): string => (here ? `${verb} for this team` : `${verb}: ${label}`);
-  const sub = (what: string): string => (here ? `${label} · ${what}` : `${what}${t.name ? ` · ${t.name}` : ""}`);
+  const sub = (what: string): string => (here ? `${label} · ${what}` : `${what}${t.name && !generated ? ` · ${t.name}` : ""}`);
   const k = `${group}:team:${t.id ?? t.members.join("+")}`;
   const words = [t.name, label, ...t.members, ...t.members.map(displayName)].filter(Boolean);
   const rotation = rotationPath({ kind: "chars", chars: t.members });
@@ -207,5 +210,17 @@ export function themeItems(s: Pick<PaletteSources, "themes" | "theme">): Palette
  *  the per-character / per-team commands and one row per theme. Display names come from the character rows. */
 export function paletteWithCommands(s: PaletteSources): PaletteItem[] {
   const displayName = (key: string): string => s.characters.find((c) => c.key === key)?.name ?? key;
-  return [...paletteItems(s), ...commandItems(s, displayName), ...themeItems(s)];
+  return [...paletteItems(s).map((item) => savedTeamRow(item, s)), ...commandItems(s, displayName), ...themeItems(s)];
+}
+
+/** A Saved teams row titled with the team's one name (`teamTitle`: "Aemeath · Mornye + Lynae") and, for a wuwa_calc
+ *  name, its investment tier below; a typed name stays over its members. Here, not in paletteItems.ts: that module is
+ *  in the entry chunk, and the name parser would add ~20 kB to first paint. */
+function savedTeamRow(item: PaletteItem, s: PaletteSources): PaletteItem {
+  if (item.group !== "team" || item.run?.kind !== "team") return item;
+  const id = item.run.id;
+  const t = s.teams.find((x) => x.id === id);
+  if (!t) return item;
+  const tier = teamTierLine(t.name, true);
+  return { ...item, title: teamTitle(t.name) || item.title, subtitle: tier ?? item.subtitle };
 }

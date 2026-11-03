@@ -113,6 +113,8 @@ and its "Where it goes" rows are 40 px tap targets at 130 % text.
 shrink to the screen below lg (a long wuwa_calc rotation name made the optimizer 1,988 px wide, clipped, not scrolling),
 no tuck / untuck loop at a section's end, Ask steps aside for Ryan's phone menus, the importer opens on the phone
 screenshots, and the Teams editor's stat icons show on light themes.
+`phone.css` § 32 came with "One team, one number" (track "fix-numbers", at the end): synced team names now start
+with who is in it, and from 768 px up the Teams cards and leaderboard tiles get § 8's two-line clamp so the tier shows.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -3079,3 +3081,73 @@ calculator's average; the roster ranking's best range), `rileyRun.test.ts` (`hit
 own; mixture vs Monte Carlo on the real engine; the whole check carries odds); `cypress/e2e/critLuck.cy.ts` (every timed
 floor's line, the stored distribution and its key, at your pace, the plan's chances, /rotation's range, all inside 412 px
 at 130 %) and `phoneLayout.cy.ts` (the line inside 360 and 412 px).
+
+## One team, one number — the rules every figure follows (track "fix-numbers", 2026-11-02)
+
+The 2026-11-02 audits found one team printed four ways across pages (Aemeath · Mornye + Lynae: 9.46M per rotation and
+378K DPS on /account, 367,567 DPS on /energy, 8,188,277 DPR on /rankings, 315,591 DPS in the Sync report) and three
+names for it. The rule set is now code, `display/numberBasis.ts`, and one test runs the same fixture team through each
+page's view model (`display/numberBasis.test.ts`):
+
+1. **Two engines, never mixed in one figure.** This app's engine (calculator, /account, /my-rankings, Teams, share cards,
+   Build my team's scores) plays a saved action list on your builds. wuwa_calc (/energy, /rotation, /endgame, /rankings,
+   Sync my teams) plays its own frame-timed loop. They differ by design: every figure says whose it is.
+2. **Units.** This app: average damage per rotation; DPS only where the rotation has a duration (average ÷ duration).
+   wuwa_calc: DPS; /rankings' DPR is one rotation's damage averaged over his four (the heading now reads "Avg damage /
+   rotation", each figure's seconds "25.0s loop").
+3. **Average, never non-crit,** unless labelled. The Teams editor's share bar summed non-crit damage beside a "DPS
+   (avg)" header and disagreed with the Summary pie (77/21/2 % vs 84/14/1 %); it now splits average damage — a one-word
+   edit in Ryan's `TeamRotationDamageBar.vue` (`normalDamage` → `avgDamage`), kept because plus already put the header
+   beside it on the average basis, and no plus-side hook can reach the bar's sum.
+4. **Substats.** This app runs the echoes each character wears. wuwa_calc runs a spread that is named beside every
+   figure: your echoes (/energy, /rotation, /endgame, Build my team; ChemX32 for a character with none) or the /rankings
+   bar's Substats choice (ChemX32 by default) — the Sync report, its confirm and the description each import writes now
+   name it ("315,591 team DPS on ChemX32 substats"), and the report says why /energy differs. On the My account tier the
+   bar has a line saying what the rows run on (`rankingsMineNote`; on a phone, whose bar stays two rows and whose card
+   list already names the spread, the short form sits in ⋯ under the Substats pick), and /account's "This team in
+   wuwa_calc" opens the row on My builds (`sb=m`), the spread the hero's sibling pages use.
+5. **Enemy.** Level 100 at 20 % resistance for /my-rankings, /account, share cards and wuwa_calc; the Teams page and the
+   calculator use each team's or character's own enemy settings.
+6. **Energy Regen "have"** is the Energy check's everywhere a need is compared with it: the build card's ER plus a kit's
+   always-on ER the app keeps as a switch (`KIT_CONSTANT_ER`, Mornye +10 %). Build my team read the bare build card, so
+   Mornye showed 277 % there and 287 % on /energy and in `cli er`, and her floor was held 10 points stricter.
+   `buildTeam.ts` `menuErPercent` now is `menuEnergyRegen`, `prepareMemberJob` folds the constant into `erOffset` /
+   `currentMenuEr` (so `menuErOf` and `erMinStat` move with it), and both cards add "(incl. +10 % inherent)" with a
+   tooltip (`kitErNote`). Build history and the share cards keep the character screen's 277 %.
+7. **One name per team:** `teamLabel(keys, main)` and `teamTitle(storedName)` (`display/teamName.ts`) both give
+   "Aemeath · Mornye + Lynae"; `teamTierLine` is the second line ("main DPS S6R5 · supports S1R1 / S6R1"). The share
+   sheet, the team card (and its PNG), the palette's Saved-teams rows and team commands, the Explain question and the
+   Energy page titles use them; the stored name stays in the data, tooltips and search keywords. The import and Sync
+   my teams now *write* `wuwaCalcTeamName`: "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)", the
+   label first and the engine last, so Ryan's Teams page (which prints stored names) no longer shows "wuwa_calc Aemea…"
+   in every slot. `parsePresetName` reads the old and the new form alike (`kind: "team"` for a bare-name head);
+   `isGeneratedTeamName` knows both, so Sync my teams renames an old-form team on its next run, behind its confirm and
+   Undo. `phone.css` § 32 gives the Teams cards and leaderboard tiles § 8's two-line clamp from 768 px up.
+
+Other fixes in the same pass:
+- **Re-roll advisor (D8):** the line chips follow the plan the card headlines (`rerollPick.ts` `planChips`): the plan's
+  re-rolled lines read "Re-roll #1, #2" (by rank), its locks "Lock", and with no plan worth Transducers every line reads
+  "Keep". The plan names its lines ("Re-roll Heavy 8.6% and ATK% 10.9%; lock the other 3", `planLinesText`). Before,
+  the chips marked lines worth less than a fresh roll, so "Lock 3, re-roll 2" sat over four Lock chips. The calculator's
+  engine panel names every line the plan re-rolls; the assistant's `echo_lab` tool reads the same chips.
+- **Member loops without a rotation time (core M5):** a member loop imported before 2026-10-26 has no `duration`, so with
+  the frame-data lab on the calculator divided Aemeath's 8.70M by her own 12 s (723K "DPS", twice the team's).
+  `rankings/rotationDurations.ts` `planRotationDurations` gives such a loop (description "Steady-state loop from the Team
+  Rankings page", no duration) the seconds of the synced wuwa_calc team with the same three characters *and* the same
+  tier in both names; a loop with no such team, or two teams that disagree, is left alone and listed. Sync my teams
+  runs it after the sync (the report lists the times; Undo takes back each one still at the filled value, stored under
+  `wtplus:rankings:sync:durations:v1` beside the team undo), `cli sync-teams` writes it into the synced export, and
+  `cli state --pretty` lists every loop with no rotation time. On David's 09-16 export: 9 loops filled (25 s / 26.62 s),
+  Lupa's left alone (no saved Aemeath · Lupa + Lynae team).
+- **Share sheet over a wuwa_calc page (L14):** opened from /rotation, /energy, /endgame or /rankings, the sheet says the
+  card's number is this app's engine on the team's saved rotation, not the page's wuwa_calc figure.
+
+Gates: `display/numberBasis.test.ts` (ER on one basis for /energy, Build my team's "you have", its floor and its
+result; one damage per rotation and one DPS from /my-rankings, the Teams page and the share card; the share bar equal
+to the Summary pie on Average; one team name from keys, old and new stored names, the palette and Explain; the spread
+labels), `rankings/rotationDurations.test.ts`, `echoLab/rerollPick.test.ts`, the new-form cases in
+`presets/presetName.test.ts`, and `cypress/e2e/oneTeamOneNumber.cy.ts`.
+
+Left for later (in the track report): the optimizer's top-5 list repeating a 90-character rotation name (Ryan's
+optimizer UI), the "Teams you can field" vs "Saved teams you can field" label pair (/account vs /my-rankings), and a
+"Your build (no buffs)" caption on share cards.

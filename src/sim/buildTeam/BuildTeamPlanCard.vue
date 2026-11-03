@@ -79,7 +79,7 @@
             <span class="bt-er__pct">%</span>
           </label>
           <span class="bt-er__hint">
-            {{ erHint }}<template v-if="currentEr != null"> · you have <b :class="{ 'bt-short': erFloor != null && currentEr + 1e-6 < erFloor }">{{ pctText(currentEr) }}</b></template>
+            {{ erHint }}<template v-if="currentEr != null"> · you have <b class="whitespace-nowrap" :class="{ 'bt-short': erFloor != null && currentEr + 1e-6 < erFloor }">{{ pctText(currentEr) }}</b><span v-if="kitNote" :title="kitNote.long" data-test-build-team-er-kit> ({{ kitNote.short }})</span></template>
           </span>
         </dd>
       </div>
@@ -98,6 +98,7 @@
 import { computed } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import { characterDisplayName } from "../display/names";
+import { kitErNote } from "../energy/energyHave";
 import type { BuildOptions } from "./constraints";
 import type { MemberPlan } from "./rileyPlan";
 import { echoImage, echoName, fmtInt, layoutGroups, pctText, PLAN_SOURCE_LABEL, roleLine, setIcon, setName } from "./buildTeamView";
@@ -116,6 +117,8 @@ const props = defineProps<{
 const emit = defineEmits<{ move: [delta: number]; "update:erFloor": [value: number | null] }>();
 
 const name = computed(() => characterDisplayName(props.characterId));
+/** "you have" is on the Energy check's basis: a kit's always-on ER (Mornye's inherent) is in it, and says so */
+const kitNote = computed(() => kitErNote(props.characterId));
 const role = computed(() => roleLine(props.plan));
 const sourceLabel = computed(() => PLAN_SOURCE_LABEL[props.plan.source]);
 const groups = computed(() => layoutGroups(props.plan));

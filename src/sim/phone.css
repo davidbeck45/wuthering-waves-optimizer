@@ -1506,3 +1506,22 @@ html[data-theme-style="light"] .stats-breakdown-v3 .text-accent {
 html[data-theme-style="light"] [data-test-team-rotation-slot-stat] > img {
   filter: invert(100%);
 }
+
+/* ---------------------------------------------------------------------------------------------
+   32. One team, one number (track fix-numbers, 2026-11-02; core audit M4). A synced team's name now
+       starts with who is in it ("Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)",
+       presets/presetName.ts `wuwaCalcTeamName`), so a cut name still says which team it is. Its
+       investment tier is the second half, and on a desktop the Teams cards and the leaderboard tiles
+       cut it to one line ("Aemeath · Mornye + Ly…"): § 8's clamp, which phones already have (three
+       lines on the tiles there), from 768 px up too — two lines, so the tier shows. */
+@media (min-width: 768px) {
+  [data-test-team-rotations-leaderboard] > .font-semibold.truncate,
+  [data-test-team-rotations-item] .card-body h3 > .truncate {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

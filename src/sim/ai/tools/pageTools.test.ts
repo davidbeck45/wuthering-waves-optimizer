@@ -63,7 +63,7 @@ describe("echo_lab", () => {
     expect(r.echoes.length + r.notSoon.length).toBe(5);
     for (const e of r.echoes) {
       expect(e.lines).toHaveLength(5);
-      for (const l of e.lines) expect(l).toMatch(/: (lock|reroll \(#\d\))$/);
+      for (const l of e.lines) expect(l).toMatch(/: (lock|keep|reroll \(#\d\))$/); // the plan's own chips (planChips)
     }
     expect(r.rerollFirst).toMatch(/^slot \d|^none/);
     const bad = await runTool("echo_lab", { show: "reroll", character: null }, ctxWith());

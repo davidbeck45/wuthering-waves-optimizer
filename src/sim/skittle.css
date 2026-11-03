@@ -994,6 +994,8 @@
 .skittle-root .trow.thead .c.dprhead:hover, .pop .trow.thead .c.dprhead:hover, .ctxmenu .trow.thead .c.dprhead:hover { color: var(--ink); }
 /* the loop time beside a team's DPR, read second */
 .skittle-root .c.teamdpr .looptime, .pop .c.teamdpr .looptime, .ctxmenu .c.teamdpr .looptime { color: var(--dim); font-size: 0.75em; line-height: 0; margin-left: 1px; }
+/* Wuthering Tools+ (one team, one number, 2026-11-02): "25.0s" beside a team's DPR is its loop, as the phone cards say */
+.skittle-root .c.teamdpr .looptime::after, .pop .c.teamdpr .looptime::after, .ctxmenu .c.teamdpr .looptime::after { content: " loop"; }
 
 /* The `% of Baseline` column: one continuous hue ramp, written per row as `--hue` by
    `rankVisible()` — red at the strongest team, green at the baseline, purple at the weakest.

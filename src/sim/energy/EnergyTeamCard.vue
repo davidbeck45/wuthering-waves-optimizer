@@ -5,10 +5,10 @@
         <img v-for="id in view.characterIds" :key="id" class="en-trio__face" :src="characterPortraitUrl(id)" alt="" loading="lazy" />
       </div>
       <div class="en-card__titles">
-        <h3 class="en-card__title" :title="view.name">{{ view.name }}</h3>
+        <h3 class="en-card__title" :title="view.name">{{ teamTitle(view.name, view.characterIds) }}</h3>
         <p class="en-card__meta">
           <template v-if="view.energy">
-            <span class="tabular-nums">{{ intText(view.energy.total) }}</span> DPS in wuwa_calc · team {{ view.energy.teamKey }}
+            <span class="tabular-nums">{{ intText(view.energy.total) }}</span> DPS in wuwa_calc on your echoes · team {{ view.energy.teamKey }}
             <template v-if="view.energy.variants > 1"> · best of {{ view.energy.variants }} loadouts</template>
           </template>
           <template v-else>{{ view.characterIds.map(nameOf).join(" · ") }}</template>
@@ -88,6 +88,7 @@ import EnergyChip from "./EnergyChip.vue";
 import EnergyMeter from "./EnergyMeter.vue";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
 import { explainEnergyTeam } from "../ai/explain/explainPayloads";
+import { teamTitle } from "../display/teamName";
 import { gearText, intText, measureNote, nameOf, needLabel } from "./energyFormat";
 import type { TeamView } from "./useEnergyNeeds";
 import "./energy.css";

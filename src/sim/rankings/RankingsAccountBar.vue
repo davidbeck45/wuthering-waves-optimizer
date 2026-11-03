@@ -116,6 +116,10 @@
       </div>
     </div>
 
+    <!-- one team, one number: on My account, say what the rows are run on and why /account reads differently. A phone
+         keeps the bar to two rows (its card list heads itself with the spread): the line sits in ⋯ by the Substats pick -->
+    <p v-if="isMine && !compact" class="wt-basis mt-1.5 text-xs leading-snug opacity-75" data-test-rankings-basis>{{ rankingsMineNote(subsMode) }}</p>
+
     <!-- popovers: one open at a time, anchored under their trigger (a full-width sheet under the bar on a phone) -->
     <div v-if="open" ref="popEl" class="wt-pop" :class="compact ? 'wt-pop--sheet' : ''" :style="panelStyle" role="dialog" :data-test-rankings-pop="open">
       <template v-if="pickGroup">
@@ -174,6 +178,7 @@
             <option value="m">My builds</option>
           </select>
           <span v-if="subsMode === 'm'" class="opacity-60" data-test-rankings-subs-hint>{{ builtCount }} character{{ builtCount === 1 ? "" : "s" }} with echoes in the app; the rest run ChemX32</span>
+          <span v-if="isMine" class="leading-snug opacity-75" data-test-rankings-basis>{{ rankingsMineNote(subsMode, true) }}</span>
         </label>
         <label v-if="missingNames.length" class="wt-opt mt-2" :class="importableLocked ? 'cursor-not-allowed' : 'cursor-pointer'" :title="importableTitle">
           <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" :checked="importable" :disabled="importableLocked" data-test-rankings-importable @change="setImportable(($event.target as HTMLInputElement).checked)" />
@@ -240,7 +245,7 @@
           <p class="text-sm font-semibold">How to read this table</p>
         </div>
         <ul class="wt-howto mt-2 grid gap-1.5 text-xs leading-relaxed" data-test-rankings-howto>
-          <li><b>Team Avg DPR</b> is the damage of one rotation, averaged over four. It does not account for how long a rotation takes (the small grey figure beside it); click the heading (on a phone, the DPR · DPS switch over the cards) to rank by DPS instead.</li>
+          <li><b>Avg damage / rotation</b> (Riley's Team Avg DPR) is the damage of one rotation, averaged over four. It does not account for how long a rotation takes (the small grey "loop" figure beside it); click the heading (on a phone, the DPR · DPS switch over the cards) to rank by DPS instead.</li>
           <li><b>% of top</b> is each team's figure (DPR or DPS, whichever the team column reads) as a share of the best row listed, shaded from neutral to the accent colour. Click a row's figure to measure every team against that one.</li>
           <li><b>My account</b> runs every member at the sequence, weapon and refinement you set up in the calculator; <b>Riley's tiers</b> run everyone at one investment level.</li>
           <li><b>Main DPS · With · Without</b> filter the teams. A name in the table opens its own menu: show or hide its teams, compare its sequences, weapons and echoes.</li>
@@ -258,7 +263,7 @@
       <span class="font-semibold">Sync my teams</span>
       <span class="text-xs opacity-70" data-test-rankings-sync-summary>
         <template v-if="undone">Undone: {{ undone.restored }} team{{ undone.restored === 1 ? "" : "s" }} put back<template v-if="undone.kept.length"> · {{ undone.kept.map((k) => `${k.name} ${k.why}`).join(" · ") }}</template></template>
-        <template v-else>at your account · {{ report.updated }} updated · {{ report.unchanged }} unchanged · {{ report.skipped }} left alone<template v-if="report.failed"> · {{ report.failed }} failed</template></template>
+        <template v-else>at your account, {{ spreadLabel(report.subs) }} · {{ report.updated }} updated · {{ report.unchanged }} unchanged · {{ report.skipped }} left alone<template v-if="report.failed"> · {{ report.failed }} failed</template></template>
       </span>
       <span v-if="syncError" class="text-xs text-error">{{ syncError }}</span>
       <div class="ml-auto flex items-center gap-1">
@@ -267,12 +272,19 @@
         <button type="button" class="btn btn-ghost btn-xs" data-test-rankings-sync-close @click="closeReport">Close</button>
       </div>
     </div>
+    <p v-show="showDetails && !undone && spreadOf(report.subs) !== 'mine'" class="px-3 pb-1 text-xs opacity-80" data-test-rankings-sync-why>
+      Why do these differ from Energy check and Rotation? Those run your own echoes; this sync ran {{ spreadSentence(report.subs) }}. Pick My builds under Substats to sync on your echoes.
+    </p>
+    <p v-if="durations && (durations.fills.length || durations.gaps.length) && !undone" class="px-3 pb-1 text-xs opacity-80" data-test-rankings-sync-loop-times>
+      <template v-if="durations.fills.length">Rotation time added to {{ plural(durations.fills.length, "saved member loop") }} that had none ({{ loopTimesText(durations) }}), so the calculator's DPS divides by the team's loop. </template>
+      <template v-if="durations.gaps.length">{{ plural(durations.gaps.length, "member loop") }} still {{ durations.gaps.length === 1 ? "has" : "have" }} no rotation time: no synced team with the same three at the same tier.</template>
+    </p>
     <ul v-show="showDetails && !undone" class="grid gap-2 px-3 pb-2" data-test-rankings-sync-list>
       <li v-for="t in report.teams" :key="t.id" class="flex flex-wrap items-start gap-x-2 gap-y-0.5" :data-test-rankings-sync-team="t.name" :data-test-rankings-sync-status="t.status">
         <span class="badge badge-xs mt-0.5" :class="badgeClass(t.status)">{{ t.status }}</span>
         <PresetNameLabel class="min-w-0 flex-1" :name="t.newName ?? t.name" :max-chips="2" />
         <span v-if="t.total" class="w-full pl-2 text-xs tabular-nums opacity-70" data-test-rankings-sync-figures>
-          wuwa_calc at your account: <template v-if="t.dpr">{{ Math.round(t.dpr).toLocaleString() }} DPR · </template>{{ Math.round(t.total).toLocaleString() }} DPS
+          wuwa_calc at your account, {{ spreadLabel(report.subs) }}: <template v-if="t.dpr">{{ Math.round(t.dpr).toLocaleString() }} DPR · </template>{{ Math.round(t.total).toLocaleString() }} DPS
         </span>
         <span v-if="t.reason" class="w-full pl-2 text-xs opacity-70">{{ t.reason }}</span>
         <span v-if="t.deltas.length" class="w-full pl-2 text-xs opacity-80">
@@ -312,16 +324,20 @@ import { useRoute, useRouter } from "vue-router";
 import type { AccountState } from "../account/accountState";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { useCharacterStore } from "../../stores/character";
 import { useToast } from "../../composables/useToast";
 import { useConfirm } from "../../composables/useConfirm";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
+import { characterShortName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
+import { rankingsMineNote, spreadLabel, spreadOf, spreadSentence } from "../display/numberBasis";
 import { rankingsRoster, syncMyTeams, toggleRankingsSearch } from "./controller";
 import { notInApp } from "./importFromRankings";
 import { appKeyOf } from "./rileyNames";
 import { humanKey, isWuwaCalcTeam, type SyncReport, type SyncStatus, type TeamLike } from "./syncTeams";
 import { rememberTier } from "./tierMemory";
 import { applySyncUndo, makeSyncUndo, readSyncUndo, saveSyncUndo, type SyncUndoOutcome, type SyncUndoRecord } from "./syncUndo";
+import { planRotationDurations, readDurationUndo, revertRotationDurations, rotationsWithDurations, saveDurationUndo, type DurationPlan } from "./rotationDurations";
 import {
   chipGroups,
   compactName,
@@ -625,8 +641,8 @@ async function sync(): Promise<void> {
   }
   const yours = list.length - ours.length;
   const ok = await confirm(
-    `Re-import ${plural(ours.length, "wuwa_calc team")} at your account's sequences, weapons and refinements, and update ${ours.length === 1 ? "it" : "them"} in place?` +
-      ` Their actions, rotation time and enemy settings are rewritten.${yours ? ` ${plural(yours, "team")} you named ${yours === 1 ? "is" : "are"} left alone.` : ""} You can undo it afterwards.`,
+    `Re-import ${plural(ours.length, "wuwa_calc team")} at your account's sequences, weapons and refinements, on ${spreadLabel(subsMode.value)}, and update ${ours.length === 1 ? "it" : "them"} in place?` +
+      ` Their actions, rotation time and enemy settings are rewritten, and member loops you saved from them without a rotation time get the team's.${yours ? ` ${plural(yours, "team")} you named ${yours === 1 ? "is" : "are"} left alone.` : ""} You can undo it afterwards.`,
     {
       title: "Sync my teams",
       items: ours.slice(0, 8).map((t) => parsePresetName(t.name).title || t.name).concat(ours.length > 8 ? [`+${ours.length - 8} more`] : []),
@@ -644,6 +660,7 @@ async function sync(): Promise<void> {
     const after: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
     undoRecord.value = makeSyncUndo(snapshot, after, report.value);
     saveSyncUndo(undoRecord.value);
+    durations.value = fillLoopTimes(after);
     // the report under the bar is the outcome; a success toast only covered its Close button
   } catch (err) {
     syncError.value = err instanceof Error ? err.message : String(err);
@@ -678,12 +695,38 @@ async function undoSync(): Promise<void> {
   });
   undoRecord.value = null;
   saveSyncUndo(null);
+  unfillLoopTimes();
   undone.value = { restored: out.restored.length, kept: out.kept };
   report.value ??= { at: rec.at, cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
 }
 function closeReport(): void {
   report.value = null;
   undone.value = null;
+  durations.value = null;
+}
+
+// member loops saved from a wuwa_calc team before loops carried a rotation time (rotationDurations.ts): the sync gives
+// them the synced team's seconds, and its Undo takes them back out
+const characterStore = useCharacterStore();
+const durations = ref<DurationPlan | null>(null);
+function fillLoopTimes(after: TeamLike[]): DurationPlan {
+  const chars = characterStore.characters as Record<string, any>;
+  const plan = planRotationDurations(chars, after);
+  for (const id of new Set(plan.fills.map((f) => f.characterId))) {
+    characterStore.setCharacterRotations(id, rotationsWithDurations(chars[id]?.rotations ?? [], plan.fills.filter((f) => f.characterId === id)));
+  }
+  saveDurationUndo(plan.fills);
+  return plan;
+}
+const loopTimesText = (plan: DurationPlan): string =>
+  plan.fills.slice(0, 4).map((f) => `${characterShortName(f.characterId)} ${f.to} s`).join(", ") + (plan.fills.length > 4 ? `, +${plan.fills.length - 4} more` : "");
+function unfillLoopTimes(): void {
+  const fills = readDurationUndo();
+  const chars = characterStore.characters as Record<string, any>;
+  for (const id of new Set(fills.map((f) => f.characterId))) {
+    if (chars[id]) characterStore.setCharacterRotations(id, revertRotationDurations(chars[id].rotations ?? [], fills.filter((f) => f.characterId === id)));
+  }
+  saveDurationUndo(null);
 }
 
 const saving = ref(false);

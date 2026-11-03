@@ -44,7 +44,7 @@ const segments = computed(() => {
     .map(([characterId, data]) => ({
       characterId,
       label: getCharacterRosterDisplayName(characterId),
-      value: data.damageAggregation.normalDamage ?? 0,
+      value: data.damageAggregation.avgDamage ?? 0, // Wuthering Tools+: avg, the basis of the header's "DPS (avg)" and the Summary pie's default
     }))
     .filter((entry) => entry.value > 0);
   const total = entries.reduce((sum, entry) => sum + entry.value, 0);

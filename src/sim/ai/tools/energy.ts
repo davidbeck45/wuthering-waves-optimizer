@@ -83,7 +83,7 @@ export const energyCheckTool = defineTool<{ team?: string }>({
         teamDps: int(measure.energy.total),
         members: checks.map((c) => memberRow(c, measure.energy.teamKey)),
         notes: [
-          "ER need: the loop's need at your account; ER have: the character screen's ER of the build this team runs.",
+          "ER need: the loop's need at your account; ER have: the character screen's ER of the build this team runs, plus an always-on inherent the app keeps as a switch (Mornye +10 %), as wuwa_calc counts it — so Mornye's have reads 10 points above her in-game character screen.",
           "teamDps is wuwa_calc's damage per second: compare it only with another DPS, never with a rotation's total damage.",
         ],
         path: "/energy",

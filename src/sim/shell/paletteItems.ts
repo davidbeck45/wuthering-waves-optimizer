@@ -163,7 +163,9 @@ export function paletteItems(s: PaletteSources): PaletteItem[] {
     });
   }
   for (const t of s.teams) {
-    items.push({ key: `team:${t.id}`, group: "team", title: t.name || "(unnamed team)", subtitle: t.members.join(" · ") || "No members yet", keywords: t.members, icon: ICON.team, run: { kind: "team", id: t.id } });
+    // the stored name here; the lazy palette (paletteCommands.ts `paletteWithCommands`) reads a wuwa_calc name as the
+    // team's one name (display/teamName.ts), which would pull the name parser into this entry-chunk module
+    items.push({ key: `team:${t.id}`, group: "team", title: t.name || "(unnamed team)", subtitle: t.members.join(" · ") || "No members yet", keywords: [...t.members, t.name].filter(Boolean), icon: ICON.team, run: { kind: "team", id: t.id } });
   }
   // the commands (what you can do with a character or a team) are added by paletteCommands.ts `paletteWithCommands`,
   // which only the lazy palette imports: this module is in the entry chunk (PlusShell reads `pageTitleOf`)
