@@ -1373,3 +1373,23 @@ body:has(.nav-phone-header) :is(.acc-h1, .mr-h1, .wv-h1, .bt-h1) {
 html[data-theme-style="light"] .stats-breakdown-v3 .text-accent {
   color: color-mix(in oklch, oklch(var(--a)) 62%, black);
 }
+
+/* ---------------------------------------------------------------------------------------------
+   29. Cost to max in the /account character drawer (src/sim/materials/MaterialsCostToMax.vue,
+       2026-11-02): the From saved levels / From level 1 switch and each "Where it goes" row are
+       40 px tap targets at 130 % text, like the drawer's other controls; the switch takes the full
+       width so its two labels never squeeze. */
+@media (max-width: 767px) {
+  section[data-test-cost-to-max] .mat-seg {
+    display: flex;
+    width: 100%;
+  }
+  section[data-test-cost-to-max] .mat-seg__btn {
+    flex: 1 1 0;
+    min-height: 40px;
+  }
+  section[data-test-cost-to-max] .mat-part__sum {
+    min-height: 40px;
+    align-items: center;
+  }
+}

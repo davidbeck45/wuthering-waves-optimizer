@@ -72,6 +72,9 @@
         <p v-if="items[0]?.team" class="dr__note">Team: {{ teamTitle(items[0].team.teamName) }}</p>
       </section>
 
+      <!-- what it takes to raise them: level, Forte, inherents / stat bonuses, weapon (src/sim/materials/) -->
+      <MaterialsCostToMax :key="card.id" class="dr__section" :character-key="card.id" :name="shortName" />
+
       <section v-if="card.teams.length" class="dr__section">
         <h3 class="dr__h3">Teams {{ shortName }} can field <span class="dr__count">{{ card.teams.length }}</span></h3>
         <ul class="dr__teams">
@@ -117,11 +120,13 @@
 // Wuthering Tools+ — the /account character drawer: a native modal dialog (focus kept inside, Escape and a backdrop
 // click close it) that slides in from the right on desktop and up from the bottom on a phone. The card's numbers,
 // the best rotation, the character's investments with own and team gains, the teams they can field, and the way on:
-// the calculator, their Substats / What if tabs on /my-rankings, Riley's table at the account's own state.
+// the calculator, their Substats / What if tabs on /my-rankings, Riley's table at the account's own state; and what it
+// costs to raise them (Cost to max, src/sim/materials/).
 import { computed, nextTick, ref, watch } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WeaponIcon from "../display/WeaponIcon.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
+import MaterialsCostToMax from "../materials/MaterialsCostToMax.vue";
 import { characterShortName, elementColor, rarityColor, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";

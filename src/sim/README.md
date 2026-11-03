@@ -2619,3 +2619,57 @@ plus component with a one-line mount, not a change to Ryan's tiles; the Tuner pl
 mark, lists all nine for "theme", a light theme survives a reload), `fightPages.cy.ts` (the Teams list's line on a
 412 px phone at 130 % text, on screen and above the tiles), `rankings.cy.ts` (a fresh import synced again offers no
 Undo), `echoLabTuner.cy.ts`, `phoneLayout.cy.ts`.
+
+## Cost to max — what it takes to raise a character, in the `/account` drawer (track "materials", 2026-11-02) — `src/sim/materials/`
+
+The drawer's **Cost to max** section: the Shell Credits, EXP and materials that take a character to level 90 with all
+five Forte skills at 10, the two inherent skills and eight stat bonuses, and their weapon to its last level. Two ways to
+count, a switch at the top: **From saved levels** (what the calculator has saved) or **From level 1** (a new pull). It opens
+on the saved levels when anything below the top is saved, else from level 1 — the calculator saves no level for most
+characters, and "nothing left" for everyone would say nothing. No Waveplate or day estimate: the source has no drop rates.
+
+| Piece | Role |
+|---|---|
+| `data/materials.json` | **GENERATED** by `wuwa-tools/materials/materials_sync.mjs` (`--game-version 3.7`, read 2026-11-02; 110 KB, 12 KB gzipped): per character the ascension ranks 1–6 (as `[cap it is paid at, cost]`), one Forte skill's levels 2–10 (the generator checks the five are equal), the two inherent skills, the two stat-bonus tiers (× 4 strands); per weapon its rarity curve, last level and ascension steps (credits folded in); item names and rarity; the level EXP curves and 0.35 / 0.4 Shell Credits per resonator / weapon EXP. Only characters and weapons the app lists are written (the release guard) |
+| `materialsData.ts` | `loadMaterials()`: the table as its own chunk, loaded when a drawer first opens (a failed load is retried next time) |
+| `costToMax.ts` | pure: `savedProgressOf(storeRecord)` reads `characterLevel` ("50+" = level 50 ascended), `talents`, `weapons[weapon].weaponLevel`, nothing guessed; `costToMax(table, key, saved, { from })` applies the calculator's own defaults (level 90, skills 10, the weapon's last level), flags each part that used one (`assumed`), and sums each part — `level`, `forte`, `extras` (inherent + stat bonuses), `weapon` — into credits, EXP (and the top EXP items it takes, rounded up) and materials. The `extras` part is `counted` only from level 1: the calculator does not save inherent skills or stat bonuses |
+| `MaterialsCostToMax.vue` | the section: the switch (two `aria-pressed` buttons), a one-line intro, the "not saved" note when nothing is, **All together** (credits, Premium Resonance Potions / Premium Energy Cores, every material as a chip with a rarity edge), then **Where it goes** — one `<details>` per part (title "Level 50+ → 90", "not saved" / "not in the total" tags, credits; inside: the assumption in words, ascensions to go with their credits, the EXP and what feeding it costs, the materials) — and the source line ("the game's own upgrade tables, version 3.7 (read 2026-11-02)") |
+| `account/AccountCharacterDrawer.vue` | the section sits under "What to invest in next" (keyed by the character, so the switch resets per character) |
+| `phone.css` § 29 | below 768 px the switch takes the full width and it and each part's row are 40 px tall at 130 % text |
+
+Source and checks (spike `~/Projects/wto-wt/b3/materials-spike/`, scratch; the generator's README has the detail):
+- Costs: the game's own upgrade tables, read offline through the encore API (the API Ryan's asset CLI uses). Never named
+  in the UI. Level curves: Dimbreath/WutheringData ConfigDB at `e9234ffe` (3.1.19) — all three resonator groups are one
+  curve to 90 (2,438,000 EXP), weapon curves by rarity; they match the Fandom wiki's levelling tables row by row.
+- **Checked step by step against Kuro's own community wiki** (wiki.kurobbs.com's entry API): Hsin and Suoming (3.7),
+  Changli, Mortefi, Buling, Blooming Jadehaven, Blazing Brilliance, Commando of Conviction — 86 comparisons, all equal.
+- The Fandom wiki agrees on ascension, Forte, stat bonuses and weapons, **not on the inherent skills**: its
+  `Module:Skill Upgrade` hard-codes tier 1 then tier 2 materials for every character; the game and Kuro's wiki use tier 2
+  then tier 3 (Changli: Basic Ring + Reactive Drip, then Improved Ring + Polarized Drip). Do not "fix" the table from Fandom.
+- Resonator levelling's 0.35 Shell Credits per EXP is in no table we read: it is the Fandom page's rule, and its 1 → 90
+  total (853,300) is what two guides print (one adds the 170,000 of the ascensions: 1,023,300). Weapon levelling's 0.4 is
+  the game's `WeaponExpItem` cost.
+
+Rules: numbers only from the table; a kit newer than the table says so ("no entry for … yet") instead of guessing; no
+drop rates, so no Waveplates or days. Item names are the game's English names.
+
+Things learned:
+- encore leaves the second Rover of each element with no skills or stat nodes; it shares the first one's
+  `SkillTreeGroupId`, and both genders cost the same — the generator borrows them and checks the ascension costs match.
+- The calculator's level picker writes "20", "20+", … "90": "40" still owes the ascension at 40, "40+" does not.
+- 1★ / 2★ weapons stop at 70 (the game's quality table, the calculator's own picker, the Fandom wiki: four ascensions,
+  26,000 credits for Training Broadblade), yet their breach table still prices a fifth step at 70 with no rank after it.
+  The generator drops rows at the cap and `costToMax` never counts a step at the top (verify round 1, 2026-11-02).
+- Rover ascends with 1 Mysterious Code per rank (5 in all): the game's table and Kuro's wiki agree; the Fandom wiki's
+  Rover page prints 46 (its template assumes a boss material). Another Fandom figure not to "fix" the table from.
+- Cypress's webpack hands a JSON import over as the namespace, Vite as `default`; the spec reads `default ?? module`.
+
+Gates: `materials/costToMax.test.ts` (the table covers every app character and weapon, no Lily; from level 1 for Hsin +
+Blooming Jadehaven, Changli, Mortefi, a 4★ and a 1★ weapon — the totals the spike checked; Training Broadblade's four ascensions and nothing left at 70; saved levels 50+ / Forte
+6·10·10·8 / weapon 80; nothing saved = maxed with every guess flagged; "40" vs "40+"; junk levels), `cypress/e2e/
+accountCostToMax.cy.ts` (saved view with the figures from the same function, the switch, a part opened, 4,460,260 from
+level 1, the source line without the API's name; Ciaccona with nothing saved; 412 px at 130 %: nothing past the edge,
+40 px controls); `account.cy.ts` unchanged and green. `phoneLayout.cy.ts` was run four times on 2026-11-02 under a
+load average of ~60 (16 agents on the box): every one of its 16 tests passed in at least one run, the reds moved from
+run to run and two runs ended in Electron renderer crashes — verify round 1 then ran it once through, 16 / 16 (load ~50). wuwa-tools:
+`node --test materials/materials_sync.test.mjs`.
