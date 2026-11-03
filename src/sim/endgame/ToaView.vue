@@ -291,4 +291,21 @@ const progressValue = computed(() => {
 .toa-low[open] summary::after {
   transform: rotate(90deg);
 }
+/* wide screens (from 1536 px): two floors a row in 72 rem left half of a 1920 px screen empty (2026-11-02 desktop
+   audit, D14). The page widens and the floors go four a row: the whole Hazard Tower side by side.
+   Beside the docked assistant (shell/askDock.ts) the page is 420 px narrower: four floors at 1536 px were about 250 px
+   each and the team names broke mid-word ("Galbre / na"), so there they go four a row only from 1920 px (~340 px each). */
+@media (min-width: 1536px) {
+  .toa.toa {
+    max-width: 112rem;
+  }
+  html:not(.wt-ai-docked) [data-test-toa-floors] > .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1920px) {
+  html.wt-ai-docked [data-test-toa-floors] > .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 </style>

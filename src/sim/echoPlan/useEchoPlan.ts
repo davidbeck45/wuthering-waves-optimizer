@@ -12,7 +12,7 @@ import type { ChipId } from "./catalog";
 import { currentSetKeys, planProgress, snapshotOf } from "./diff";
 import { buildPlan, planText, type Verdict } from "./plan";
 import { loadSources, type LoadedSources } from "./sources";
-import { cleanCode, loadState, saveState, type EchoPlanState, type ServerId } from "./storage";
+import { cleanCode, loadState, restoreTicks, saveState, ticksOf, type EchoPlanState, type ServerId, type TickSnapshot } from "./storage";
 import { collectWants } from "./wants";
 
 type Characters = Record<string, Record<string, unknown>>;
@@ -106,6 +106,10 @@ export function useEchoPlan() {
   const hasRoster = computed(() => wants.value.roster.some((r) => !r.excluded));
 
   // ------------------------------------------------------------------ actions
+  /** the ticks as they were before the last "Mark all done", while that is still the last change (memory only) */
+  const beforeMarkAll = shallowRef<TickSnapshot | null>(null);
+  const canUndoMarkAll = computed(() => beforeMarkAll.value !== null);
+
   function tick(set: string): void {
     const card = plan.value.cards.find((c) => c.set === set);
     if (!card) return;
@@ -122,17 +126,31 @@ export function useEchoPlan() {
   }
 
   function toggleDone(set: string): void {
+    beforeMarkAll.value = null;
     if (progress.value.cards[set]?.status === "done") untick(set);
     else tick(set);
   }
 
-  /** Ticks every card that needs a tap in game (after the player has set the whole plan). */
-  function markAllDone(): void {
-    for (const set of progress.value.toUpdate) tick(set);
+  /** Ticks every card that needs a tap in game (after the player has set the whole plan); undoable until the next change. */
+  function markAllDone(): number {
+    const sets = [...progress.value.toUpdate];
+    beforeMarkAll.value = ticksOf(state);
+    for (const set of sets) tick(set);
     acknowledgeNew();
+    return sets.length;
+  }
+
+  /** Puts the ticks and grid snapshots back as they were before the last "Mark all done". */
+  function undoMarkAll(): boolean {
+    const snap = beforeMarkAll.value;
+    if (!snap) return false;
+    restoreTicks(state, snap);
+    beforeMarkAll.value = null;
+    return true;
   }
 
   function clearTicks(): void {
+    beforeMarkAll.value = null;
     state.done = {};
     state.grid = {};
     state.savedAt = null;
@@ -194,6 +212,8 @@ export function useEchoPlan() {
     retrySources,
     toggleDone,
     markAllDone,
+    canUndoMarkAll,
+    undoMarkAll,
     clearTicks,
     acknowledgeNew,
     setOverride,

@@ -277,7 +277,14 @@ html[data-theme-style="light"] .el-score-text--good {
   border: 1px solid oklch(var(--b1));
 }
 
-/* ── the inventory verdict table: a CSS grid, one markup for desktop rows and phone cards ── */
+/* ── the inventory verdict table: a CSS grid, one markup for desktop rows and phone cards ──
+   Which one shows is a container query on the tab (.el-verdicts), not the window: the columns need about 71 rem, which
+   a 1024–1279 px window with Ryan's side rail doesn't have (the page scrolled 225 px sideways at 1024, the Verdict
+   column off the screen; 2026-11-02 desktop audit, D1), nor does a wide window beside the docked assistant. rem, so
+   a bigger text size moves the switch with it. */
+.el-verdicts {
+  container: el-verdicts / inline-size;
+}
 .el-table {
   --el-cols: minmax(14rem, 1.7fr) 2rem 2rem minmax(5.5rem, 0.6fr) minmax(19rem, 2.4fr) minmax(10.5rem, 1.1fr) 4.5rem 7.75rem;
 }
@@ -320,14 +327,37 @@ html[data-theme-style="light"] .el-score-text--good {
 .el-reason-card {
   display: none;
 }
-@media (min-width: 1024px) {
+@container el-verdicts (width >= 71.25rem) {
   .el-table .el-echo-sub,
-  .el-table .el-echo-cost {
+  .el-table .el-echo-cost,
+  .el-card-only {
     display: none;
+  }
+  .el-cell-verdict {
+    align-items: flex-start;
+  }
+  .el-owner-name,
+  .el-owner-gain {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
-@media (max-width: 1023px) {
+@container el-verdicts (width < 71.25rem) {
+  .el-verdicts .el-table {
+    border-width: 0;
+    background: transparent;
+  }
+  .el-table-only {
+    display: none;
+  }
+  .el-owner-name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
   .el-thead {
     display: none;
   }
@@ -355,6 +385,7 @@ html[data-theme-style="light"] .el-score-text--good {
     grid-area: verdict;
     align-self: start;
     justify-self: end;
+    align-items: flex-end;
   }
   .el-cell-subs {
     grid-area: subs;
@@ -395,7 +426,7 @@ html[data-theme-style="light"] .el-score-text--good {
     border-radius: 0 0 var(--rounded-box, 1rem) var(--rounded-box, 1rem);
   }
 }
-@media (min-width: 640px) and (max-width: 1023px) {
+@container el-verdicts (36rem <= width < 71.25rem) {
   .el-rows {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;

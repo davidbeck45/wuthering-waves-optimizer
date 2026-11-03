@@ -326,8 +326,12 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
 .mr-col-chev {
   width: 3rem;
 }
-/* narrower desktops: the rotation column keeps ~15 rem; below 1024 px the weapon is its art alone (name in the tooltip) */
-@media (max-width: 1279px) {
+/* Narrower pages: the rotation column keeps ~15 rem. The table follows the page's own width (a container query on
+   .my-rankings, MyRankingsView.vue), not the window's: the page also narrows beside the docked assistant (2026-11-02
+   desktop audit, D13; at 1440 px the docked page is about as wide as a 1024 px window). Below 73 rem (the page's own
+   76 rem cap less its padding) the columns tighten; below 57 rem the weapon is its art alone (name in the tooltip).
+   Phones (below 768 px) are cards (../phone-tables.css), so the tablet widths stop there. */
+@container mr (width < 73rem) {
   .mr-col-who {
     width: 12rem;
   }
@@ -341,25 +345,40 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
     width: 7.5rem;
   }
 }
-@media (min-width: 768px) and (max-width: 1023px) {
-  .mr-col-rank,
-  .mr-col-chev {
-    width: 2.5rem;
-  }
-  .mr-col-who {
-    width: 11rem;
-  }
-  .mr-col-weapon {
-    width: 3.4rem;
-  }
-  .mr-col-dmg {
-    width: 8.5rem;
-  }
-  .mr-col-up {
-    width: 7rem;
-  }
-  .mr-weapon__name {
-    display: none;
+@media (min-width: 768px) {
+  @container mr (width < 57rem) {
+    .mr-col-rank,
+    .mr-col-chev {
+      width: 2.5rem;
+    }
+    .mr-col-who {
+      width: 11rem;
+    }
+    .mr-col-weapon {
+      width: 4rem;
+    }
+    /* "WEAPON BEST ROTATION" and "AVG DMG / ROTATION ▼BEST UPGRADE" ran into each other on a tablet (2026-11-02
+       desktop audit, D6): the weapon header gets the room its word needs, the two figure headers wrap onto a second
+       line in their own column. */
+    .mr-chars thead th {
+      white-space: normal;
+      vertical-align: bottom;
+    }
+    .mr-chars thead th:nth-child(3) {
+      padding-inline: 0.35rem;
+    }
+    .mr-sort--right {
+      text-align: right;
+    }
+    .mr-col-dmg {
+      width: 8.5rem;
+    }
+    .mr-col-up {
+      width: 7rem;
+    }
+    .mr-weapon__name {
+      display: none;
+    }
   }
 }
 .mr-chars thead th {
@@ -441,7 +460,8 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
 }
 .mr-who__pills {
   display: flex;
-  gap: 0.25rem;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.25rem;
   margin-top: 0.2rem;
 }
 .mr-pill {

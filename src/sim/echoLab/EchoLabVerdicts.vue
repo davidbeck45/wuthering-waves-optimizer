@@ -1,5 +1,5 @@
 <template>
-  <section class="space-y-3" data-test-echo-lab-verdicts>
+  <section class="el-verdicts space-y-3" data-test-echo-lab-verdicts>
     <!-- feed list: the bulk cleanup, grouped the way the game's echo filter works -->
     <div
       v-if="groups.length && !filters.echo && (filters.verdict === 'all' || filters.verdict === 'feed')"
@@ -125,8 +125,9 @@
       <button type="button" class="btn btn-sm" data-test-echo-lab-show-all @click="set('echo', '')">Show every echo</button>
     </div>
 
-    <!-- the table (cards below 1024 px) -->
-    <div class="el-table overflow-hidden rounded-box border border-base-300 bg-base-100 max-lg:border-0 max-lg:bg-transparent" role="table" aria-label="Inventory verdicts">
+    <!-- the table, or cards when the page is narrower than the table (a container query in echoLab.css: below 1280 px with
+    the side rail, or beside the docked assistant) -->
+    <div class="el-table overflow-hidden rounded-box border border-base-300 bg-base-100" role="table" aria-label="Inventory verdicts">
       <div class="el-thead" role="row">
         <button v-for="h in headers" :key="h.label" type="button" role="columnheader" class="flex items-center gap-1 text-left" :class="h.class" :disabled="!h.sort" @click="h.sort && sortBy(h.sort)">
           {{ h.label }}
@@ -167,9 +168,9 @@
               <div v-if="row.best" :title="ownerTip(row)" class="flex min-w-0 items-center gap-2">
                 <img :src="portrait(row.best.characterId)" :alt="characterName(row.best.characterId)" class="el-portrait size-7" loading="lazy" />
                 <div class="min-w-0 leading-tight">
-                  <div class="text-sm max-lg:line-clamp-2 lg:truncate"><span class="opacity-60 lg:hidden">Best for </span>{{ characterName(row.best.characterId) }}</div>
-                  <div class="text-xs tabular-nums lg:truncate" :class="row.best.gain > 0 ? 'el-up font-semibold' : 'opacity-60'">
-                    <span class="whitespace-nowrap">{{ signedPct(row.best.gain, 2) }}<span class="lg:hidden"> damage</span></span><span v-if="row.upgradeFor.length > 1" class="whitespace-nowrap font-normal opacity-70"> · +{{ row.upgradeFor.length - 1 }} more</span>
+                  <div class="el-owner-name text-sm"><span class="el-card-only opacity-60">Best for </span>{{ characterName(row.best.characterId) }}</div>
+                  <div class="el-owner-gain text-xs tabular-nums" :class="row.best.gain > 0 ? 'el-up font-semibold' : 'opacity-60'">
+                    <span class="whitespace-nowrap">{{ signedPct(row.best.gain, 2) }}<span class="el-card-only"> damage</span></span><span v-if="row.upgradeFor.length > 1" class="whitespace-nowrap font-normal opacity-70"> · +{{ row.upgradeFor.length - 1 }} more</span>
                   </div>
                 </div>
               </div>
@@ -177,7 +178,7 @@
             </div>
             <div class="el-cell-worn flex min-w-0 items-center gap-2.5" role="cell">
               <span v-if="row.reason !== 'upgrade'" class="el-reason-card min-w-0 text-xs opacity-60">{{ reasonText(row) }}</span>
-              <span v-if="row.wornBy.length && row.reason !== 'worn'" class="shrink-0 text-xs opacity-60 lg:hidden">worn by</span>
+              <span v-if="row.wornBy.length && row.reason !== 'worn'" class="el-card-only shrink-0 text-xs opacity-60">worn by</span>
               <span class="flex shrink-0 items-center -space-x-1.5">
                 <img
                   v-for="w in row.wornBy.slice(0, 3)"
@@ -188,10 +189,10 @@
                   class="el-portrait size-6 ring-2 ring-base-100"
                   :class="{ 'opacity-40 grayscale': w.stale }"
                   loading="lazy" />
-                <span v-if="!row.wornBy.length" class="text-xs opacity-40 max-lg:hidden">—</span>
+                <span v-if="!row.wornBy.length" class="el-table-only text-xs opacity-40">—</span>
               </span>
             </div>
-            <div class="el-cell-verdict flex flex-col items-end gap-0.5 lg:items-start" role="cell">
+            <div class="el-cell-verdict flex flex-col gap-0.5" role="cell">
               <span class="el-chip" :class="`el-chip--${row.verdict}`" :data-test-echo-lab-verdict="row.verdict">{{ VERDICT_LABEL[row.verdict] }}</span>
               <span class="el-reason text-[0.7rem] leading-tight opacity-60">{{ reasonText(row) }}</span>
             </div>

@@ -865,6 +865,15 @@
 #wt-app .contain > .content:has(.rankings-page) {
   padding-bottom: var(--nav-bottom-h) !important;
 }
+/* The calculator from 769 px is a fixed-height column too, with its own scroller (.calculations__screens): Ask's
+   clearance made the page 80 px taller than the window, so at the end of the inner scroll the wheel moved the window,
+   the Build Score row slid under the header and an empty band showed at the bottom (2026-11-02 desktop audit, D2).
+   Below 769 px the page itself scrolls there and keeps the clearance. */
+@media (min-width: 769px) {
+  #wt-app .contain > .content:has(.calculations__screens) {
+    padding-bottom: var(--nav-bottom-h) !important;
+  }
+}
 .wt-plus-bar {
   transition: transform 0.2s ease;
 }
@@ -945,30 +954,32 @@ dialog.modal[data-test-whats-new-v3-modal]:not([open]) {
        damage it is (the hero carries `data-damage-type`, a one-attribute hook in Ryan's file); the
        caption stays when the bar collapses on scroll and hides the target button. Below
        400 px the portrait, the gaps and the number shrink a little more so the name still reads (the
-       portrait stays: it opens the character browser). */
+       portrait stays: it opens the character browser).
+       The caption is on every width (2026-11-02 desktop audit, D11: on a desktop the pink number had only the
+       rotation's name over it); only the narrower target button and the smaller number are phone rules. */
+.command-bar [data-test-live-result-bar-hero][data-damage-type]::after {
+  font-size: 10px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+.command-bar [data-test-live-result-bar-hero][data-damage-type="Average"]::after {
+  content: "avg damage";
+}
+.command-bar [data-test-live-result-bar-hero][data-damage-type="Normal"]::after {
+  content: "non-crit damage";
+}
+.command-bar [data-test-live-result-bar-hero][data-damage-type="Crit"]::after {
+  content: "crit damage";
+}
 @media (max-width: 767px) {
   .command-bar [data-test-live-result-bar-target-trigger] {
     max-width: 6rem;
   }
   .command-bar .command-bar__hero-value {
     font-size: 1.05rem;
-  }
-  .command-bar [data-test-live-result-bar-hero][data-damage-type]::after {
-    font-size: 10px;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    opacity: 0.6;
-    white-space: nowrap;
-  }
-  .command-bar [data-test-live-result-bar-hero][data-damage-type="Average"]::after {
-    content: "avg damage";
-  }
-  .command-bar [data-test-live-result-bar-hero][data-damage-type="Normal"]::after {
-    content: "non-crit damage";
-  }
-  .command-bar [data-test-live-result-bar-hero][data-damage-type="Crit"]::after {
-    content: "crit damage";
   }
 }
 @media (max-width: 399px) {
@@ -1178,14 +1189,42 @@ html[data-theme-style="light"] [data-test-workspace-forte-details] > img {
    already reads "My account" / "My roster rankings" / "Weapon value" / "Build my team" (navSections.ts pageLabel
    falls back to the PLUS_PAGES title), and each page's own H1 repeated it, about 50 px on every plus page. The H1
    stays for screen readers and for classic and desktop, where no header names the page. The chips beside it (Live,
-   Recompute) keep their line. */
-body:has(.nav-phone-header) :is(.acc-h1, .mr-h1, .wv-h1, .bt-h1) {
+   Recompute) keep their line.
+   2026-11-02 (desktop audit, D19; the header shows below 1024 px, so an iPad saw it too): the same for Today, Build
+   history, Energy check, Share & import, the Rotation cue cards team list, Echo Lab and Echo plan (the icon and the
+   one-line intro stay), and /endgame's "Endgame · Tower of Adversity" line over its H1 (the H1 itself, "Hazard Zone
+   clear check", says something the header doesn't). Selected by each page's own hooks, no markup change. */
+body:has(.nav-phone-header)
+  :is(
+    .acc-h1,
+    .mr-h1,
+    .wv-h1,
+    .bt-h1,
+    .td-h1,
+    .bh-h1,
+    [data-test-energy-page] > header h1,
+    [data-test-share-page] > header > h1,
+    [data-test-rotation-picker] h1,
+    [data-test-echo-lab] > header h1,
+    [data-test-echo-plan] > header h1,
+    [data-test-toa] > header > div:first-child > div:first-child:not(:only-child)
+  ) {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+/* /today on a phone: its one-line intro is already hidden there, so with the H1 gone its clock icon sat alone on a row
+   of its own; the icon goes too (the H1 stays for screen readers) */
+@media (max-width: 767px) {
+  body:has(.nav-phone-header) .td-head__title {
+    display: contents;
+  }
+  body:has(.nav-phone-header) .td-head__icon {
+    display: none;
+  }
 }
 /* /my-rankings: with its H1 hidden, the "How this ranking is scored" ⓘ sat alone on a row of its own (about 40 px):
    it joins the Options row, on the left, as a 40 px tap target */
@@ -1603,4 +1642,27 @@ html[data-theme-style="light"] [data-test-team-rotation-slot-stat] > img {
     position: absolute;
     inset: -0.875rem -0.375rem;
   }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   34. Desktop and tablet (2026-11-02 desktop audit, track fix-desktop; src/sim/README.md "Desktop and tablet").
+       a) No plus page can widen Ryan's shell: .contain is a one-track grid (`1fr`, whose minimum is the content's
+          min-content), so a page wider than the window (Echo Lab's table at 1024 px) grew .content and every bar with
+          it. With a 0 minimum the page lays out at the window's width (D1).
+       b) The open assistant panel docks beside the page from 1440 px (PlusShell.vue toggles `wt-ai-docked` on
+          <html>, askDock.ts): the page narrows by the panel's 420 px instead of hiding its right side under it (D13).
+          The rail, the phone header and the panel itself are fixed, so only the page column moves. */
+#wt-app .contain > .content {
+  min-width: 0;
+}
+html.wt-ai-docked #wt-app .contain {
+  margin-right: min(420px, 100vw);
+}
+/*     c) Found on the way (2026-11-02): the rotation play mode centres the swap on its stage (CueStage.vue). At 360 px
+          with 130 % text a long swap is taller than the stage, and centred content overflows both ways, so its "Now"
+          row rose over the play controls (Leave, Pause) and covered them, and its end ran over the "Next" line. `safe
+          center` keeps it centred when it fits and starts it at the top when it doesn't; the stage scrolls the rest. */
+[data-test-rotation-stage-tap].justify-center {
+  justify-content: safe center;
+  overflow-y: auto;
 }

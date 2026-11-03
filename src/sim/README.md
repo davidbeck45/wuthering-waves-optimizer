@@ -117,6 +117,9 @@ screenshots, and the Teams editor's stat icons show on light themes.
 with who is in it, and from 768 px up the Teams cards and leaderboard tiles get § 8's two-line clamp so the tier shows.
 `phone.css` § 33 came with "Contrast, focus and keyboard" (track "fix-a11y-themes", at the end): 40 px tap targets
 (`max(40px, 2rem)`) below 768 px on plus pages and in the plus shell's own surfaces.
+`phone.css` § 34 came with the 2026-11-02 desktop audit (track "fix-desktop", section "Desktop and tablet" at the end),
+with its edits to § 16 (the calculator's own scroller from 769 px), § 19 (the caption on every width) and § 24 (more
+H1s under the phone header): a page can no longer widen Ryan's shell, and the docked assistant narrows the page column.
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
@@ -3285,3 +3288,55 @@ Left, with the reason:
 - Interim counts while /account scores ("Teams you can field" 7 → 15 → 30): the scoring label is a `role="status"` now,
   but the KPI isn't marked "so far" (a wording change in a page another track is reworking).
 - 200 % zoom on /rankings (L12): the fixed account bar still leaves room for one card in a 450 px tall window.
+
+## Desktop and tablet — 1024 to 1920 px and the 768 px tablet (2026-11-02 desktop audit, track "fix-desktop")
+
+The batch-3 desktop audit (`wto-wt/b3/reports/audit-desktop.md`, items D1–D20) walked every plus page at 1440, 1920,
+1024 and 768 px. Fourteen items came to this track. All fourteen were re-checked on plus-b3 (after Ryan #686) and still
+reproduced, except where noted below. Two root causes ran through them. First, plus layouts switch on the **window's**
+width, but Ryan's v3 shell takes 64 px for its rail from 1024 px and shows his phone header and bottom bar below 1024
+(not 768: the audit's "the shell switches at 768" was only AppLayout's `display: block`). Second, a plus page wider
+than the window grew Ryan's one-track `.contain` grid instead of shrinking.
+
+| Piece | What it does |
+|---|---|
+| `echoLab/echoLab.css` + `EchoLabVerdicts.vue` (D1) | the verdict table or its cards is a **container query** on the tab (`.el-verdicts`, `container: el-verdicts / inline-size`), not a media query: table from 71.25 rem of page (the columns' minimum), two columns of cards from 36 rem, one below. At 1024–1279 px with the rail the page scrolled 225 px sideways and the Verdict column was off the screen; now it is two columns of cards there and the table from 1280. The markup's table-or-card `lg:` classes became `el-card-only` / `el-table-only` / `el-owner-name` / `el-owner-gain`, styled in the same queries. rem, so a bigger text size moves the switch too |
+| `phone.css` § 34a (D1) | `#wt-app .contain > .content { min-width: 0 }`: a too-wide page no longer widens Ryan's shell (the bars and banners stay the window's width) |
+| `phone.css` § 16 (D2) | from 769 px the calculator is a fixed-height column with its own scroller (`.calculations__screens`); Ask's 5 rem clearance under it made the page 80 px taller than the window, so at the end of the inner scroll the wheel moved the window. On that page `.content` keeps only Ryan's bottom-bar padding from 769 px; phones (the page scrolls there) keep the clearance |
+| `phone.css` § 19 (D11) | the "avg damage" / "non-crit damage" / "crit damage" caption under the calculator's big number shows on every width (it was phone-only, so a desktop's 8,699,674 had no unit) |
+| `weaponValue/WeaponValueBar.vue` + `WeaponValueView.vue` (D5) | at 768–899 px the bar gets a row of its own under the name, signature and figure (the name and signature columns took their 15 / 13 rem first and left the bar 60 px, so the R2–R5 ticks ran together); the chart head moves its axis to a row of its own the same way |
+| `myRankings/MyRankingsCharacters.vue`, `MyRankingsTeams.vue`, `MyRankingsView.vue` (D6) | the column widths follow the page (`container: mr / inline-size` on `.my-rankings`): tighter below 73 rem, the weapon as its art alone below 57 rem from 768 px up (phones stay cards, `phone-tables.css`). At a tablet width the weapon header gets the room its word needs and the two figure headers wrap in their own columns ("WEAPON BEST ROTATION" and "AVG DMG / ROTATION ▼BEST UPGRADE" ran together); the S / R pills and the ER chip wrap in the name cell (the "ER short 4.4%" chip ran over the weapon); a team's name and ER chips go under its portraits when the cell is too narrow for both (they ran over the damage and its bar) |
+| `phone.css` § 24 (D19) | the page H1 hides under the phone header (which already names the page, below 1024 px) on Today, Build history, Energy check, Share & import, the Rotation team list, Echo Lab and Echo plan too, as on the four pages before; /endgame keeps its H1 ("Hazard Zone clear check", not the header's "Tower of Adversity") and drops the "Endgame · Tower of Adversity" line over it. On a phone /today's lone clock icon goes with its H1 (its intro is already phone-hidden). Selected by each page's own hooks, no markup change |
+| `account/AccountHero.vue` (D17) | the KPI tiles' captions take two lines before an ellipsis ("23 fully built · weapon + 5 e…" at 1024) |
+| `myRankings/MyRankingsToolbar.vue` (D16) | while a ranking runs, a checked switch keeps its colour, faded (DaisyUI drew it grey and empty, so "Upgrade estimates" and "Team buffs from members" read as off); the tooltip says it unlocks when the ranking finishes |
+| `buildHistory/BuildHistoryView.vue` + `buildHistory.css`, `echoPlan/echoPlan.css`, `endgame/ToaView.vue` (D14) | wide screens: before any version, Build history's right-hand column says what it will hold ("What changed", from 1024 px; phones already read it in the Versions card). From 1536 px Echo plan widens to 112 rem with three columns of cards (4,125 px tall at 1920 before) and /endgame to 112 rem with the floors four a row (the whole Hazard Tower side by side) |
+| `rotation/cueModel.ts` + `CueCard.vue` (D15) | the cue card's blocks add up to the fight. A folded block (`Loop ×3`) shows `totalDamage`, every pass's damage ("28.87M dmg in all 3", with the last pass in the tooltip); before, it showed one pass, so opener + 3 × loop came to 38.46M against the timeline's 38.15M. The footnote gives the cut-off swap-in's seconds and damage ("…then Mornye again for the fight's last 1.4 s (4k dmg)"), so 27.4 + 3 × 25.0 + 1.4 = 1:43.8. The Opener's tooltip says why wuwa_calc's own opener reads 28.8 s on the timeline (its section ends inside the first loop's swap-in). The Discord export is unchanged (`block.damage` per pass) |
+| `echoPlan/useEchoPlan.ts` + `storage.ts` `ticksOf` / `restoreTicks` + `EchoPlanView.vue` (D20) | "Mark all N done" takes a copy of the ticks, grid snapshots and stamps first; the button that follows is "Undo mark all", which puts them back exactly (memory only, until the next tick or untick), and a toast says so. "Clear ticks" asks first (Ryan's confirm dialog): it also forgets the snapshots "changed since you set the plan" compares against |
+| `shell/NotFoundView.vue` (D18) | the 404 says the list opens from "the Tools+ menu on every page: Tools+ in the side bar, or the bar-chart icon at the top" (it named only the bar-chart icon, which a desktop's rail doesn't have) |
+| `nav/PlusRailAsk.vue` + `nav/PlusNavMenu.vue` + `shell/askDock.ts` + `PlusShell.vue` (D12) | on the v3 desktop (Ryan's rail, from 1024 px) **Ask is a rail item under Tools+** (sparkle pill, primary colour, "Ask", Ctrl J in the tooltip, `aria-expanded`, toggles the panel). PlusNavMenu renders it beside its `<details>` in the rail variant, so Ryan's NavRail is untouched. While it is mounted (`askInRail`, a mount count) the floating button isn't drawn: it sat over right-column figures on every desktop page (/account's rail, Echo Lab's Verdict column, /weapons' "Next copy"). Phones, tablets under the phone header, the classic UI and windows under 720 px tall keep the floating button (the rail is ~640 px and the item adds ~62: at a 1366 × 768 laptop's ~657 px the rail's theme and … menu ran off the screen; `RAIL_ASK_MIN_HEIGHT`). Both carry `data-test-ai-open`; the rail one also `data-test-ai-open-rail` |
+| `shell/askDock.ts` `shouldDock` + `PlusShell.vue` + `phone.css` § 34b (D13) | from **1440 px** the open, expanded panel docks: PlusShell sets `wt-ai-docked` on `<html>` and the page column narrows by the panel's 420 px, so the card whose Explain opened it stays in view. Below 1440 the panel lies over the page as before. Why not 1280: there the docked page was 800 px while the pages' window-width rules still chose their desktop layouts (/account's hero number was cut, the /my-rankings rotation column was 40 px). At 1440 the docked page is ~950 px, a 1024 px window's worth with the rail, which every page is laid out for; the two width-driven tables (Echo Lab, /my-rankings) follow it through their container queries. Surveyed docked at 1280 and 1440 on all 13 plus pages, the calculator, Teams and Inventory: no sideways scroll |
+
+Found on the way, `phone.css` § 34c: the rotation play mode centres the swap on its stage (`CueStage.vue`), so at 360 px
+with 130 % text a long swap overflowed both ways: its "Now" row rose over Leave / Pause (phoneLayout.cy.ts's click on
+Leave failed twice in the batch run) and its end ran over the Next line. `justify-content: safe center` plus
+`overflow-y: auto`: centred when it fits, from the top and scrolling when it doesn't. Desktop unchanged.
+
+Gates: `cypress/e2e/desktopLayout.cy.ts` (v3, public fixtures): Echo Lab cards at 1024 and the table at 1280 with no
+sideways scroll; the calculator at 1440 no taller than the window with its caption; Ask in the rail, docked at 1440
+(the page column ends at the panel), not docked at 1280, floating again at 1000; a plus H1 hidden under the phone
+header at 768 and shown at 1440; /my-rankings at 768 with every header inside its own column; Echo plan's Undo mark all
+(back to exactly the hand tick and its snapshot) and Clear ticks behind a confirm; the weapon value bar wider than 400
+px at 768. `rotation.cy.ts` checks "in all 3" and the footnote's seconds; `assistant.cy.ts`'s palette test now checks
+the floating button (the rail item is a nav item and stays). Unit tests: `shell/askDock.test.ts`, the cue plan's
+"adds up to the fight" in `rotation/rotation.test.ts`, the tick undo in `echoPlan/echoPlan.test.ts`.
+
+Left alone, with the reason:
+- `/rankings` at 1920 (D14): the empty right half is Riley's own page layout (his table and his comparison aside,
+  embedded); changing it means editing his layout.
+- Palette theme commands (D18): track loose-ends owns palette theme rows. The /endgame naming (D18): the H1 already
+  carries "Endgame · Tower of Adversity" as its eyebrow on a desktop, which is what the audit suggested.
+- The classic UI on a desktop keeps the floating Ask (no rail to dock it in); classic is opt-in since Ryan #602.
+- Things learned: Chrome 155 does not trap `position: fixed` descendants inside a `container-type: inline-size`
+  element (tested: the fixed box stays at the viewport's origin), so the Echo Lab's phone popover sheet and the
+  /my-rankings options sheet are safe inside the containers. And a container query needs its container to be an
+  ancestor: `.el-table`'s own border is styled from `.el-verdicts`.

@@ -88,6 +88,16 @@
         </ol>
       </section>
 
+      <!-- before any version: what the right-hand column will hold (a desktop's second column stood empty;
+           2026-11-02 desktop audit, D14). Phones already read the same in the Versions card, so it shows from 1024 px. -->
+      <section v-if="selected && !versions.length" class="bh-card bh-diff bh-diff--empty" data-test-build-history-diff-empty>
+        <h2 class="bh-h2">What changed</h2>
+        <p class="bh-muted">
+          Once a version is kept, pick two here (or one and the build as it is now) to see what changed between them: the
+          character-screen stats, each echo and the damage on one rotation for both. Restore puts a version back.
+        </p>
+      </section>
+
       <!-- the comparison -->
       <section v-if="selected && versions.length" ref="diffEl" class="bh-card bh-diff" data-test-build-history-diff>
         <h2 class="bh-h2">What changed</h2>

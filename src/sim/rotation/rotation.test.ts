@@ -247,6 +247,19 @@ describe("the cue plan", () => {
     expect(loop.varies).toBe(false);
   });
 
+  it("adds the blocks up to the fight: every folded pass's damage, then the cut-off swap-in", () => {
+    const loop = plan.blocks[1]!;
+    const perSection = (sec: number) => model.visits.filter((v) => !v.wrap && v.section === sec).reduce((n, v) => n + v.damage, 0);
+    expect(loop.totalDamage).toBeCloseTo(perSection(1) + perSection(2) + perSection(3), 6);
+    expect(loop.damage).toBeCloseTo(perSection(3), 6);
+    expect(plan.blocks[0]!.totalDamage).toBe(plan.blocks[0]!.damage);
+    const all = model.visits.reduce((n, v) => n + v.damage, 0);
+    expect(plan.blocks.reduce((n, b) => n + b.totalDamage, 0) + (plan.wrap?.damage ?? 0)).toBeCloseTo(all, 6);
+    // the seconds too: opener + loops + the wrap's tail = the fight
+    const played = plan.blocks.reduce((n, b) => n + b.sections.reduce((m, sec) => m + (plan.passSeconds[sec] ?? 0), 0), 0);
+    expect(played + (plan.wrap?.seconds ?? 0)).toBeCloseTo(plan.fightSeconds, 1);
+  });
+
   it("plays the fight as he ran it, then wraps to the first loop", () => {
     expect(plan.steps).toHaveLength(3 + 3 * 3);
     expect(plan.loopStart).toBe(3);

@@ -126,6 +126,33 @@ export function parseState(raw: string | null | undefined): EchoPlanState {
   return state;
 }
 
+/** The "done in game" part of the state (ticks, their grid snapshots, the stamps and the sets seen), copied so a bulk
+ *  change can be undone: "Mark all done" takes one of these first (2026-11-02 desktop audit, D20). */
+export interface TickSnapshot {
+  done: Record<string, boolean>;
+  grid: Record<string, CardSnapshot>;
+  savedAt: number | null;
+  appVersion: string | null;
+  sets: string[];
+}
+
+export const ticksOf = (state: Pick<EchoPlanState, keyof TickSnapshot>): TickSnapshot => ({
+  done: { ...state.done },
+  grid: { ...state.grid },
+  savedAt: state.savedAt,
+  appVersion: state.appVersion,
+  sets: [...state.sets],
+});
+
+/** Puts a snapshot from `ticksOf` back, exactly: the ticks and grid snapshots made before it come back, the ones after go. */
+export function restoreTicks(state: Pick<EchoPlanState, keyof TickSnapshot>, snap: TickSnapshot): void {
+  state.done = { ...snap.done };
+  state.grid = { ...snap.grid };
+  state.savedAt = snap.savedAt;
+  state.appVersion = snap.appVersion;
+  state.sets = [...snap.sets];
+}
+
 export function loadState(storage: Pick<Storage, "getItem"> | null = safeStorage()): EchoPlanState {
   try {
     return parseState(storage?.getItem(STORAGE_KEY));

@@ -7,7 +7,7 @@
         <span class="text-2xl font-bold tabular-nums">{{ plan.loopTarget.toFixed(1) }}<span class="text-base font-semibold opacity-70"> s</span></span>
       </div>
       <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-        <span v-if="opener"><span class="opacity-60">Opener</span> <b class="tabular-nums">{{ opener.seconds.toFixed(1) }} s</b></span>
+        <span v-if="opener" :title="openerTitle" data-test-rotation-opener-seconds><span class="opacity-60">Opener</span> <b class="tabular-nums">{{ opener.seconds.toFixed(1) }} s</b></span>
         <span><span class="opacity-60">Fight</span> <b class="tabular-nums">{{ durationText(plan.fightSeconds) }}</b> <span class="opacity-60">({{ loopCount }} loops)</span></span>
         <span :title="`Opener + whole loops in two minutes at the engine's pace`"><span class="opacity-60">In 2:00</span> <b class="tabular-nums">opener + {{ budgetLoops }} loops</b></span>
       </div>
@@ -36,7 +36,13 @@
         <h3 class="font-bold">{{ block.title }}<span v-if="block.repeat > 1" class="opacity-60"> ×{{ block.repeat }}</span></h3>
         <span class="text-sm opacity-70 tabular-nums">{{ block.seconds.toFixed(1) }} s{{ block.repeat > 1 ? " each" : "" }}</span>
         <span v-if="block.varies" class="text-xs opacity-60" title="The folded loops press the same buttons; a cancel or a wait differs between them. This is the last of them.">· cancels and waits vary a little between these loops</span>
-        <span class="ml-auto text-xs opacity-60 tabular-nums" :title="'Damage dealt while this block runs, every member'">{{ compact(block.damage) }} dmg</span>
+        <!-- a folded block shows its passes' total, so the blocks add up to the fight's damage (2026-11-02 desktop audit, D15) -->
+        <span
+          class="ml-auto text-xs opacity-60 tabular-nums"
+          :title="block.repeat > 1 ? `Damage dealt while these ${block.repeat} loops run, every member (the last of them: ${compact(block.damage)})` : 'Damage dealt while this block runs, every member'"
+          data-test-rotation-block-damage>
+          {{ compact(block.totalDamage) }} dmg<template v-if="block.repeat > 1"> in all {{ block.repeat }}</template>
+        </span>
       </header>
       <ol class="divide-y divide-base-300/70">
         <li
@@ -60,7 +66,9 @@
     </section>
 
     <div class="flex flex-col gap-1 text-xs opacity-70">
-      <p v-if="plan.wrap">…then {{ members[plan.wrap.member]!.name }} again: the loop starts over.</p>
+      <p v-if="plan.wrap" data-test-rotation-wrap>
+        …then {{ members[plan.wrap.member]!.name }} again for the fight's last {{ plan.wrap.seconds.toFixed(1) }} s<template v-if="plan.wrap.damage >= 1"> ({{ compact(plan.wrap.damage) }} dmg)</template>: the loop starts over.
+      </p>
       <p>
         <span class="rv-cp rv-cp--energy mr-1">R ready</span>
         <span class="rv-cp rv-cp--concerto mr-1">Outro ready</span>
@@ -110,6 +118,14 @@ const props = defineProps<{ model: RotationModel; plan: CuePlan; hues: Map<strin
 
 const members = computed<RunMember[]>(() => props.model.run.members);
 const opener = computed(() => props.plan.blocks.find((b) => b.key === "opener") ?? null);
+// the opener as played ends where the first loop's swap-in starts; Riley's section ends inside that swap, which is where
+// the fight timeline starts Loop 1 (2026-11-02 desktop audit, D15: "Opener 27.4 s" there, Loop 1 at 0:28.8)
+const openerTitle = computed(() => {
+  const own = props.plan.sectionSeconds[0];
+  const shown = opener.value?.seconds ?? 0;
+  if (own === undefined || Math.abs(own - shown) < 0.05) return "The opener's swaps, up to the first loop";
+  return `The opener's swaps, up to the swap into the first loop. wuwa_calc's own opener runs ${durationText(own)}: it ends inside that swap, which is where the fight timeline starts Loop 1.`;
+});
 const loopCount = computed(() => props.plan.sectionSeconds.length - 1);
 const budgetLoops = computed(() => loopsIn(120, opener.value?.seconds ?? 0, props.plan.loopTarget));
 const hueOf = (i: number): string => props.hues.get(members.value[i]?.name ?? "") ?? "";

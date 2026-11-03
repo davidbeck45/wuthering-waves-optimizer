@@ -62,6 +62,9 @@
       </li>
     </ul>
   </details>
+  <!-- v3 desktop rail: Ask under Tools+, so the floating button no longer covers the page (src/sim/shell/askDock.ts);
+       on a short screen the rail has no room for one more item and the floating button stays -->
+  <PlusRailAsk v-if="variant === 'rail' && railHasRoom" />
 </template>
 
 <script setup lang="ts">
@@ -74,11 +77,15 @@ import { PLUS_PAGES } from "../shell/plusPages";
 import { useAssistant } from "../ai/useAssistant";
 import { modKeyLabel } from "../shell/shellDom";
 import { railMenuTop } from "./railMenu";
+import PlusRailAsk from "./PlusRailAsk.vue";
+import { useMediaQuery } from "../../composables/useMediaQuery";
+import { RAIL_ASK_MIN_HEIGHT } from "../shell/askDock";
 
 // "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
 const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
 const route = useRoute();
 const root = ref<HTMLDetailsElement | null>(null);
+const railHasRoom = useMediaQuery(`(min-height: ${RAIL_ASK_MIN_HEIGHT}px)`);
 
 /** the plus page this is: the Nav's curPage ("my-rankings" → "/my-rankings"), else the route */
 const activePath = computed(() => {

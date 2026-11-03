@@ -165,3 +165,15 @@ html[data-theme-style="light"] .ep-badge--thrown {
     height: auto;
   }
 }
+
+/* wide screens (from 1536 px): the page held two columns in 80 rem, so at 1920 px it ran 4,000 px tall with half the
+   screen empty (2026-11-02 desktop audit, D14). Three columns of cards in a wider page; the loading skeleton follows. */
+@media (min-width: 1536px) {
+  .echo-plan.echo-plan {
+    max-width: 112rem;
+  }
+  .echo-plan [data-test-echo-plan-grid],
+  .echo-plan [data-test-echo-plan-skeleton] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

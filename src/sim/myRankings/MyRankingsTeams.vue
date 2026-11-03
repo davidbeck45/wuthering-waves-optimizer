@@ -222,9 +222,23 @@ function sharesOf(t: TeamRow): MemberShare[] {
   white-space: nowrap;
   text-align: right;
 }
-@media (max-width: 1023px) {
+/* by the page's width (the `mr` container on .my-rankings), so the docked assistant narrows it like a tablet would */
+@container mr (width < 61rem) {
   .mr-tcol-dmg {
     width: 14rem;
+  }
+}
+/* a tablet (under the phone header) or a page beside the docked assistant: the team cell is about 300 px, and beside the
+   three portraits the members' ER chips ("ER 110.8 % · need 115.2 % · 4.4 short") ran over the damage figure and its
+   bar (2026-11-02 desktop audit, D6). When the name column would be under 12 rem it goes under the portraits and takes
+   the cell's width. Phones are cards (below 768 px). */
+@media (min-width: 768px) {
+  .mr-team {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  .mr-team > .min-w-0 {
+    flex: 1 1 12rem;
   }
 }
 .mr-teams thead th {

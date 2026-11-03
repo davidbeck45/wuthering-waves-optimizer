@@ -907,6 +907,31 @@ onMounted(() => {
   color: oklch(var(--bc) / 0.55);
 }
 
+/* 768–899 px: the bars sit on a row of their own (WeaponValueBar.vue), so the axis labels do too */
+@media (min-width: 768px) and (max-width: 899px) {
+  .wv-chart__head {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 6.5rem 1rem;
+    grid-template-areas:
+      "who target value chev"
+      "axis axis axis axis";
+    row-gap: 0.3rem;
+  }
+  .wv-chart__head > :nth-child(1) {
+    grid-area: who;
+  }
+  .wv-chart__head > :nth-child(2) {
+    grid-area: target;
+  }
+  .wv-chart__head > .wv-axis {
+    grid-area: axis;
+  }
+  .wv-chart__head > :nth-child(4) {
+    grid-area: value;
+  }
+  .wv-chart__head > :nth-child(5) {
+    grid-area: chev;
+  }
+}
 @media (max-width: 1100px) {
   .wv-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -346,3 +346,33 @@ describe("saved state", () => {
     expect(looksLikePlanCode("short")).toBe(false);
   });
 });
+
+describe("undoing a bulk tick (Mark all done)", () => {
+  it("puts back exactly the ticks, snapshots and stamps from before, and copies rather than shares them", async () => {
+    const { ticksOf, restoreTicks } = await import("./storage");
+    const s = defaultState();
+    s.done = { "Moonlit Clouds": true };
+    s.grid = { "Moonlit Clouds": { set: "Moonlit Clouds", chips: { "4:crit_rate": "keep" } } as never };
+    s.savedAt = 1000;
+    s.appVersion = "2026-10-31";
+    s.sets = ["Moonlit Clouds"];
+    const before = ticksOf(s);
+    // a bulk tick adds a card and moves the stamps
+    s.done["Frosty Resolve"] = true;
+    s.grid["Frosty Resolve"] = { set: "Frosty Resolve", chips: {} } as never;
+    s.savedAt = 2000;
+    s.appVersion = "2026-11-02";
+    s.sets.push("Frosty Resolve");
+    expect(before.done).toEqual({ "Moonlit Clouds": true });
+    expect(before.sets).toEqual(["Moonlit Clouds"]);
+    restoreTicks(s, before);
+    expect(s.done).toEqual({ "Moonlit Clouds": true });
+    expect(Object.keys(s.grid)).toEqual(["Moonlit Clouds"]);
+    expect(s.savedAt).toBe(1000);
+    expect(s.appVersion).toBe("2026-10-31");
+    expect(s.sets).toEqual(["Moonlit Clouds"]);
+    // the restored maps are the state's own: ticking again doesn't write into the snapshot
+    s.done["Frosty Resolve"] = true;
+    expect(before.done).toEqual({ "Moonlit Clouds": true });
+  });
+});

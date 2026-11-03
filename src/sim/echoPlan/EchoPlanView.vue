@@ -224,10 +224,14 @@
           <span class="flex items-center gap-1"><span class="ep-chip ep-chip--discard pointer-events-none !min-h-0 py-0">Discard</span> nobody wants it</span>
           <span class="flex items-center gap-1"><span class="relative inline-block size-2 rounded-full bg-primary"></span> set by you</span>
           <span class="max-sm:hidden">Tap a chip for who wants it.</span>
-          <button v-if="progress.toUpdate.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-mark-all @click="markAllDone">
+          <button v-if="progress.toUpdate.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-mark-all @click="onMarkAll">
             Mark all {{ progress.toUpdate.length }} done
           </button>
-          <button v-else-if="progress.done.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-clear-ticks @click="clearTicks">
+          <!-- one bulk tap is one tap back: the ticks and snapshots from before it return (memory only, until the next change) -->
+          <button v-else-if="canUndoMarkAll" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-undo-mark-all @click="onUndoMarkAll">
+            Undo mark all
+          </button>
+          <button v-else-if="progress.done.length" type="button" class="ep-tap btn btn-ghost btn-xs ml-auto max-sm:ml-0" data-test-echo-plan-clear-ticks @click="onClearTicks">
             Clear ticks
           </button>
         </div>
@@ -319,6 +323,7 @@ import { computed, ref } from "vue";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useToast } from "../../composables/useToast";
+import { useConfirm } from "../../composables/useConfirm";
 import type { ChipId } from "./catalog";
 import EchoPlanChipSheet from "./EchoPlanChipSheet.vue";
 import EchoPlanCodes from "./EchoPlanCodes.vue";
@@ -354,6 +359,8 @@ const {
   retrySources,
   toggleDone,
   markAllDone,
+  canUndoMarkAll,
+  undoMarkAll,
   clearTicks,
   acknowledgeNew,
   setOverride,
@@ -362,6 +369,25 @@ const {
   toggleExcluded,
 } = model;
 const { showToast } = useToast();
+const { confirm } = useConfirm();
+
+// "Mark all done" ticks every card and takes its grid snapshot in one tap; "Clear ticks" also forgets the snapshots the
+// "changed since you set the plan" check compares against (2026-11-02 desktop audit, D20)
+function onMarkAll(): void {
+  const n = markAllDone();
+  showToast(`Marked ${n} Sonata${n === 1 ? "" : "s"} done. "Undo mark all" puts back the ticks you had before.`, "success", 6000);
+}
+function onUndoMarkAll(): void {
+  if (undoMarkAll()) showToast("Ticks put back as they were before Mark all.", "info", 4000);
+}
+async function onClearTicks(): Promise<void> {
+  const n = progress.value.done.length;
+  const ok = await confirm(
+    `Untick all ${n} Sonata${n === 1 ? "" : "s"}? The plan also forgets what each card looked like when you ticked it, so it can no longer tell you which ones changed since you set the plan.`,
+    { title: "Clear ticks", confirmLabel: "Clear ticks", variant: "warning" },
+  );
+  if (ok) clearTicks();
+}
 
 const RULES = [
   {

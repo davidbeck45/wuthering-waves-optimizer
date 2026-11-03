@@ -46,6 +46,9 @@ describe("rotation view", () => {
     cy.get('[data-test-rotation-block="loop1"] [data-test-rotation-visit="Lynae"] [data-test-rotation-chip]').should("contain.text", "Echo").and("contain.text", "R");
     cy.get("[data-test-rotation-checkpoint]").should("contain.text", "R ready").and("contain.text", "Outro ready");
     cy.get("[data-test-rotation-loop-target]").invoke("text").should("match", /\d+\.\d s/);
+    // the blocks add up to the fight: a folded loop shows all its passes' damage, the footnote the cut-off swap-in's seconds
+    cy.get('[data-test-rotation-block="loop1"] [data-test-rotation-block-damage]').should("contain.text", "in all 3");
+    cy.get("[data-test-rotation-wrap]").invoke("text").should("match", /last \d+\.\d s/);
     cy.get("[data-test-rotation-member]").should("have.length", 3);
     // the substat spread switch re-runs the team
     cy.get('[data-test-rotation-subs-option="standard"]').click();

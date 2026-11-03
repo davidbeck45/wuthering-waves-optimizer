@@ -21,6 +21,8 @@ export interface CueBlock {
   /** one pass, seconds (Σ visits) and damage */
   seconds: number;
   damage: number;
+  /** every pass the block stands for (= `damage` when it repeats once): what adds up to the fight's total */
+  totalDamage: number;
   /** the folded passes press the same buttons but differ in a cancel or a wait */
   varies: boolean;
 }
@@ -81,6 +83,7 @@ export function cuePlan(model: RotationModel): CuePlan {
       visits,
       seconds: passSeconds[shown] ?? 0,
       damage: visits.reduce((n, v) => n + v.damage, 0),
+      totalDamage: sections.reduce((n, sec) => n + (bySection.get(sec) ?? []).reduce((m, v) => m + v.damage, 0), 0),
       varies,
     };
   };

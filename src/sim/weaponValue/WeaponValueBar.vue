@@ -391,6 +391,34 @@ const rowTitle = computed(() => {
   display: none;
 }
 
+/* tablet portrait (768–899 px): the name and signature columns took their 15 / 13 rem first and left the bar about
+   60 px, so the R2–R5 ticks and the "R5" labels collided (2026-11-02 desktop audit, D5). The bar gets a row of its own
+   under them, the width of the row; the chart head moves its axis the same way (WeaponValueView.vue). */
+@media (min-width: 768px) and (max-width: 899px) {
+  .wv-row__btn {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 6.5rem 1rem;
+    grid-template-areas:
+      "who target value chev"
+      "track track track track";
+    row-gap: 0.3rem;
+  }
+  .wv-who {
+    grid-area: who;
+  }
+  .wv-target {
+    grid-area: target;
+  }
+  .wv-track {
+    grid-area: track;
+  }
+  .wv-value {
+    grid-area: value;
+  }
+  .wv-chev {
+    grid-area: chev;
+  }
+}
+
 /* phone: a card — who + figure on the first line, the bar full width, the steps as chips */
 @media (max-width: 767px) {
   .wv-row__btn {

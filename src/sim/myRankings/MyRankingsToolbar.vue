@@ -2,13 +2,13 @@
   <div class="mr-toolbar">
     <!-- desktop: the controls inline -->
     <div class="mr-toolbar__inline">
-      <label class="mr-switch" title="estimate the next sequence node and the weapon at R5 for every character, on their best rotation (slower)">
+      <label class="mr-switch" :title="running ? WHILE_RUNNING : INVESTMENT_TIP">
         <input :checked="investment" type="checkbox" class="toggle toggle-xs toggle-primary" :disabled="running" data-test-my-rankings-investment @change="setInvestment($event)" />
         <span>Upgrade estimates</span>
       </label>
       <label
         class="mr-switch"
-        title="On: each team member's buffs come from the team's real members and their builds. Off: each character's Team Buffs panel as saved on the Calculator page.">
+        :title="running ? WHILE_RUNNING : TEAM_BUFFS_TIP">
         <input v-model="autoTeamBuffs" type="checkbox" class="toggle toggle-xs toggle-primary" :disabled="running" data-test-auto-team-buffs />
         <span>Team buffs from members</span>
       </label>
@@ -85,6 +85,12 @@ import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rankingsMineHash } from "../account/accountState";
 import { DEFAULT_DIR, type SortDir, type SortKey } from "./rows";
 
+const INVESTMENT_TIP = "estimate the next sequence node and the weapon at R5 for every character, on their best rotation (slower)";
+const TEAM_BUFFS_TIP =
+  "On: each team member's buffs come from the team's real members and their builds. Off: each character's Team Buffs panel as saved on the Calculator page.";
+// the switches keep their on / off colour while a ranking runs (faded, not grey: grey read as "off"); the tooltip says why
+const WHILE_RUNNING = "Locked while the ranking runs: you can change it when the ranking finishes";
+
 defineProps<{ investment: boolean; sort: { key: SortKey; dir: SortDir }; running: boolean; canCompute: boolean; hasRanking: boolean }>();
 const emit = defineEmits<{
   compute: [];
@@ -136,6 +142,16 @@ onBeforeUnmount(() => document.removeEventListener("keydown", onKey));
 }
 .mr-toolbar__options {
   display: none;
+}
+/* DaisyUI draws a disabled toggle grey and empty, so while a ranking ran both switches read as off though they were on
+   (2026-11-02 desktop audit, D16): a checked one keeps its colour, faded */
+.mr-switch .toggle-primary:checked:disabled,
+.mr-sheet__row .toggle-primary:checked:disabled {
+  border-color: oklch(var(--p) / 0.1);
+  background-color: oklch(var(--p));
+  color: oklch(var(--pc));
+  --togglehandleborder: 0 0;
+  opacity: 0.55;
 }
 @media (max-width: 767px) {
   .mr-toolbar__inline {

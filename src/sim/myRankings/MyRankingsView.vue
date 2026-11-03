@@ -274,6 +274,8 @@ watch([investment, autoTeamBuffs], () => void refresh());
   max-width: 76rem;
   margin: 0 auto;
   padding: 1.25rem 1.5rem 2.5rem;
+  /* the tables size their columns by this page's width (MyRankingsCharacters.vue), which the docked assistant narrows */
+  container: mr / inline-size;
 }
 .mr-head {
   position: relative;

@@ -32,6 +32,11 @@
     grid-row: 3 / span 2;
   }
 }
+@media (max-width: 1023px) {
+  .bh-diff--empty {
+    display: none;
+  }
+}
 .bh-h1 {
   font-size: 1.5rem;
   font-weight: 750;

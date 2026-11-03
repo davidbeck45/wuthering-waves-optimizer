@@ -37,6 +37,7 @@ import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
 import { anyModalOpen, modKeyLabel } from "./shellDom";
+import { askInRail, DOCKED_CLASS, DOCK_MIN_WIDTH, shouldDock } from "./askDock";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
 import { shareRequest } from "../share/shareRequest";
 import { dismissWelcome, isNewVisitor, welcomeAllowed, welcomeDismissed } from "./welcome";
@@ -86,9 +87,10 @@ watch(
   { immediate: true },
 );
 
-// the Ask button steps aside while any modal dialog or bottom sheet is open
+// the Ask button steps aside while any modal dialog or bottom sheet is open, and on the v3 desktop rail, which has its
+// own Ask item (askDock.ts)
 const modalOpen = ref(false);
-const showAskButton = computed(() => !assistant.state.open && !modalOpen.value);
+const showAskButton = computed(() => !assistant.state.open && !modalOpen.value && !askInRail.value);
 let observer: MutationObserver | null = null;
 // a timer, not requestAnimationFrame: rAF never fires in a background tab or headless Electron (Cypress)
 let pendingSync: ReturnType<typeof setTimeout> | null = null;
@@ -193,7 +195,22 @@ watch(
 let stopBodyObserver: (() => void) | null = null;
 let removeSkipLink: (() => void) | null = null;
 
+// the open panel docks beside the page on a wide screen instead of covering its right side (askDock.ts)
+const wideQuery = typeof window !== "undefined" && window.matchMedia ? window.matchMedia(`(min-width: ${DOCK_MIN_WIDTH}px)`) : null;
+const wide = ref(wideQuery?.matches ?? false);
+const onWideChange = (): void => {
+  wide.value = wideQuery?.matches ?? false;
+};
+watch(
+  () => shouldDock(assistant.state, wide.value ? DOCK_MIN_WIDTH : 0),
+  (docked) => {
+    if (typeof document !== "undefined") document.documentElement.classList.toggle(DOCKED_CLASS, docked);
+  },
+  { immediate: true },
+);
+
 onMounted(() => {
+  wideQuery?.addEventListener?.("change", onWideChange);
   installInventoryPagerJump();
   removeSkipLink = installSkipLink(document);
   window.addEventListener("keydown", onKeydown, true);
@@ -207,6 +224,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  wideQuery?.removeEventListener?.("change", onWideChange);
+  document.documentElement.classList.remove(DOCKED_CLASS);
   window.removeEventListener("keydown", onKeydown, true);
   observer?.disconnect();
   stopBodyObserver?.();

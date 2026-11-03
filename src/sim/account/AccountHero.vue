@@ -409,9 +409,13 @@ const leadStyle = computed(() => {
 .kpi__sub {
   font-size: 0.7rem;
   color: oklch(var(--bc) / 0.55);
+  /* up to two lines: at 1024 px the tiles are narrow and one line read "23 fully built · weapon + 5 e…"
+     (2026-11-02 desktop audit, D17) */
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 @media (max-width: 1023px) {
   .acc-hero {

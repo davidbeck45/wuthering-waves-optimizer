@@ -236,7 +236,8 @@ describe("Claude assistant", { scrollBehavior: "center" }, () => {
     cy.get("[data-test-ai-open]").should("be.visible");
     cy.get("body").type("{ctrl}k");
     cy.get("[data-test-palette]").should("be.visible");
-    cy.get("[data-test-ai-open]").should("not.exist");
+    // (on this v3 desktop Ask is a rail item, which stays; a floating Ask button steps aside for the palette)
+    cy.get(".wt-ask-button").should("not.exist");
     cy.get("[data-test-palette-input]").should("be.focused").type("roster rank");
     cy.get("[data-test-palette-item='page:/my-rankings']").should("exist");
     cy.get("[data-test-palette-input]").type("{enter}");

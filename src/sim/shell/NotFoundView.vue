@@ -43,7 +43,7 @@
 
     <section class="wt-404__more" aria-labelledby="wt-404-more">
       <h2 id="wt-404-more" class="wt-404__h2">Tools+ pages</h2>
-      <p class="wt-404__hint">The rest of what Wuthering Tools+ adds to the calculator. The full list opens from the bar-chart icon at the top of every page.</p>
+      <p class="wt-404__hint">The rest of what Wuthering Tools+ adds to the calculator. The full list opens from the Tools+ menu on every page: Tools+ in the side bar, or the bar-chart icon at the top.</p>
       <ul class="wt-404__grid">
         <li v-for="page in morePages" :key="page.path">
           <RouterLink :to="page.path" class="wt-404__page" :data-test-not-found-page="page.path">
