@@ -10,7 +10,7 @@
 // keyed by the same fingerprint + the app build), so a new tab reads it back with `readSavedRanking` instead of
 // scoring for seconds.
 import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
-import type { RosterRanking } from "./rankRoster";
+import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
 export const RANKING_CACHE_VERSION = 4; // 2: wuwa_calc loops beside a teammate the app lacks (Lily) are no longer scored; 3: the regenerated stock loops (named after a team the app can field, 2026-11-02); 4: each best rotation keeps its crit-luck range
@@ -123,9 +123,92 @@ export async function readSavedRanking(fingerprint: string, storage: StorageLike
   return { ranking: hit.value, savedAt: hit.savedAt };
 }
 
-/** For tests: forget the in-memory entry. */
+/** For tests: forget the in-memory entry and any run in flight. */
 export function clearRankingMemory(): void {
   memory = null;
+  runs.clear();
+}
+
+// ---- one run per fingerprint in this tab (speed track, 2026-11-02)
+// /account, /my-rankings and /weapons each started their own `rankRoster` when the cache missed. A run cannot be
+// stopped, so leaving one of them for another mid-run (the palette, the plus pages menu) ran the same ranking twice on
+// the main thread at once, and the second page's first rows waited behind both. Now the first page to ask starts the
+// run and the next one joins it: it is handed the rows scored so far at once and the rest as they land, and the run
+// writes the cache itself when it ends, whoever is still listening. Same inputs (the fingerprint), same numbers.
+
+export interface RankingProgress {
+  done: number;
+  total: number;
+  label: string;
+}
+export interface RankingListener {
+  /** each step of the run; `finished` is a character or team that just landed (replayed in order on joining) */
+  // eslint-disable-next-line no-unused-vars -- the parameters of a function type
+  onProgress?: (progress: RankingProgress, finished?: RankProgressItem) => void;
+}
+// eslint-disable-next-line no-unused-vars -- the parameters of a function type
+type ProgressFn = (done: number, total: number, label: string, finished?: RankProgressItem) => void;
+interface Run {
+  promise: Promise<RosterRanking>;
+  progress: RankingProgress;
+  finished: RankProgressItem[];
+  listeners: Set<RankingListener>;
+}
+const runs = new Map<string, Run>();
+
+export interface SharedRanking {
+  promise: Promise<RosterRanking>;
+  /** this page was handed a run another page had started */
+  joined: boolean;
+  /** stop listening (the run goes on and still fills the cache) */
+  leave: () => void;
+}
+
+/** The ranking for `fingerprint`: joins the run in flight for it, else starts one with `start` (handed the progress
+ *  callback to pass to `rankRoster`). The finished ranking is written to the cache under `fingerprint`. */
+export function sharedRanking(
+  fingerprint: string,
+  // eslint-disable-next-line no-unused-vars -- the parameters of a function type
+  start: (onProgress: ProgressFn) => Promise<RosterRanking>,
+  listener: RankingListener = {},
+  storage: StorageLike | null = sessionStore(),
+): SharedRanking {
+  const joining = runs.get(fingerprint);
+  if (joining) {
+    // the rows scored so far, in the order they landed, then where the run stands
+    for (const item of joining.finished) listener.onProgress?.(joining.progress, item);
+    listener.onProgress?.(joining.progress);
+    joining.listeners.add(listener);
+    return { promise: joining.promise, joined: true, leave: () => void joining.listeners.delete(listener) };
+  }
+  const fresh: Run = { promise: Promise.resolve(null as unknown as RosterRanking), progress: { done: 0, total: 0, label: "starting" }, finished: [], listeners: new Set([listener]) };
+  runs.set(fingerprint, fresh);
+  // started in this call, not a microtask later: `rankRoster` begins fetching the stock presets at once, and the page's
+  // first render overlaps that fetch instead of going before it (a deferred start cost /my-rankings ~0.4 s of first row)
+  let started: Promise<RosterRanking>;
+  try {
+    started = start((done, total, label, finished) => {
+      fresh.progress = { done, total, label };
+      if (finished) fresh.finished.push(finished);
+      for (const l of [...fresh.listeners]) l.onProgress?.(fresh.progress, finished);
+    });
+  } catch (err) {
+    started = Promise.reject(err);
+  }
+  fresh.promise = started
+    .then((ranking) => {
+      writeCachedRanking(fingerprint, ranking, storage);
+      return ranking;
+    })
+    .finally(() => {
+      if (runs.get(fingerprint) === fresh) runs.delete(fingerprint);
+    });
+  return { promise: fresh.promise, joined: false, leave: () => void fresh.listeners.delete(listener) };
+}
+
+/** Whether a run for `fingerprint` is in flight (tests, and a page deciding what to say). */
+export function rankingInFlight(fingerprint: string): boolean {
+  return runs.has(fingerprint);
 }
 
 // Settings › Clear saved results: this tab's copies go too

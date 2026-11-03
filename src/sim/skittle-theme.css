@@ -280,3 +280,36 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
   .skittle-root .wt-import .btn-xs { min-height: 40px; height: 40px; }
   .skittle-root .wt-import__build { min-width: 40px; justify-content: center; }
 }
+
+/* (2026-11-02, speed) Rows so far: My account solves its roster in the page's workers, and his table used to wait under
+   the full-screen veil until the last team was in. Now the rows solved so far are drawn as they come (controller.ts
+   `paintSoFar`), and the overlay docks into a small box at the foot of the table — no veil, no blur, no gif — that says
+   how far the solve is and what the list is. It never takes the pointer (his rule for the overlay). Over the phone cards
+   it is hidden: the cards' own heading carries the same line (RankingsCards.vue). */
+.skittle-root .wt-sofar-note { display: none; }
+.skittle-root.wt-sofar #loading {
+  position: absolute;
+  inset: auto auto 16px 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  place-content: initial;
+  justify-items: stretch;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  backdrop-filter: none;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.35);
+}
+.skittle-root.wt-sofar .loading-status { flex-wrap: wrap; font-size: 13px; color: var(--ink); }
+.skittle-root.wt-sofar .progress-count { font-size: 13px; }
+.skittle-root.wt-sofar .progress-track { width: 100%; min-width: 240px; height: 6px; border-radius: 3px; box-shadow: none; }
+.skittle-root.wt-sofar .loading-gif { display: none; }
+.skittle-root.wt-sofar .wt-sofar-note { display: block; margin: 0; font-size: 12px; color: var(--ink-2); }
+.skittle-root.wt-sofar.wt-cards #loading { display: none; }
+/* a team opened from the rows so far: the box is about the list, and on his detail page it sat over the Equipment and
+   Damage Contribution grids until the solve ended (verify1) */
+.skittle-root.wt-sofar.wt-detail #loading { display: none; }

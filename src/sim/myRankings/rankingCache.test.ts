@@ -2,8 +2,8 @@
 // fingerprint (JSON lengths + echo count) kept the old ranking after an echo substat edit.
 import { beforeEach, describe, expect, it } from "vitest";
 import account from "./__fixtures__/cartethyiaAccount.json";
-import { clearRankingMemory, cyrb53, RANKING_CACHE_KEY, rankingFingerprint, readCachedRanking, stableStringify, writeCachedRanking } from "./rankingCache";
-import type { RosterRanking } from "./rankRoster";
+import { clearRankingMemory, cyrb53, RANKING_CACHE_KEY, rankingFingerprint, rankingInFlight, readCachedRanking, sharedRanking, stableStringify, writeCachedRanking } from "./rankingCache";
+import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 const inputs = (over: Partial<Parameters<typeof rankingFingerprint>[0]> = {}) => ({
@@ -104,5 +104,105 @@ describe("ranking cache", () => {
     junk.data.set(RANKING_CACHE_KEY, JSON.stringify({ fingerprint: "fp", ranking: { characters: "nope" } }));
     expect(readCachedRanking("fp", junk)).toBeNull();
     expect(readCachedRanking("fp", null)).toBeNull();
+  });
+});
+
+// speed track (2026-11-02): /account, /my-rankings and /weapons share one run per fingerprint, so leaving one of them
+// for another mid-run no longer scores the roster twice on the main thread
+describe("shared ranking run", () => {
+  beforeEach(() => clearRankingMemory());
+
+  type Progress = Parameters<Parameters<typeof sharedRanking>[1]>[0];
+  /** a ranking run the test steps by hand: `step(item)` lands one row, `finish()` resolves it */
+  function manualRun() {
+    let report: Progress | null = null;
+    let resolve!: (r: RosterRanking) => void;
+    let reject!: (e: unknown) => void;
+    let starts = 0;
+    const start = (onProgress: Progress): Promise<RosterRanking> => {
+      starts += 1;
+      report = onProgress;
+      return new Promise<RosterRanking>((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+    };
+    const item = (id: string): RankProgressItem => ({ kind: "character", rank: { id } as never });
+    return {
+      start,
+      starts: () => starts,
+      step: (done: number, id: string) => report!(done, 3, id, item(id)),
+      finish: (r: RosterRanking) => resolve(r),
+      fail: (e: unknown) => reject(e),
+    };
+  }
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+
+  it("starts the ranking once: a second page joins it, gets the rows so far at once and the rest as they land", async () => {
+    const storage = fakeStorage();
+    const run = manualRun();
+    const first: string[] = [];
+    const a = sharedRanking("fp", run.start, { onProgress: (_p, f) => f && first.push((f.rank as { id: string }).id) }, storage);
+    await flush();
+    run.step(1, "Aemeath");
+    run.step(2, "Cartethyia");
+    const second: string[] = [];
+    const seen: number[] = [];
+    const b = sharedRanking("fp", () => { throw new Error("must not start a second run"); }, {
+      onProgress: (p, f) => { seen.push(p.done); if (f) second.push((f.rank as { id: string }).id); },
+    }, storage);
+    expect(a.joined).toBe(false);
+    expect(b.joined).toBe(true);
+    expect(second).toEqual(["Aemeath", "Cartethyia"]); // replayed in landing order
+    run.step(3, "Galbrena");
+    expect(second).toEqual(["Aemeath", "Cartethyia", "Galbrena"]);
+    expect(first).toEqual(["Aemeath", "Cartethyia", "Galbrena"]);
+    expect(seen.at(-1)).toBe(3);
+    run.finish(ranking("done"));
+    const [ra, rb] = await Promise.all([a.promise, b.promise]);
+    expect(ra).toBe(rb);
+    expect(run.starts()).toBe(1);
+    // the run filled the cache itself, under its fingerprint
+    clearRankingMemory();
+    expect(readCachedRanking("fp", storage)?.characters[0].id).toBe("done");
+    expect(rankingInFlight("fp")).toBe(false);
+  });
+
+  it("keeps filling the cache after every page has left, and a later ask starts afresh", async () => {
+    const storage = fakeStorage();
+    const run = manualRun();
+    const heard: string[] = [];
+    const a = sharedRanking("fp", run.start, { onProgress: (_p, f) => f && heard.push("x") }, storage);
+    await flush();
+    a.leave();
+    run.step(1, "Aemeath");
+    expect(heard).toEqual([]); // nobody listening
+    run.finish(ranking("late"));
+    await a.promise;
+    expect(readCachedRanking("fp", storage)?.characters[0].id).toBe("late");
+    const again = manualRun();
+    const c = sharedRanking("fp", again.start, {}, storage);
+    expect(c.joined).toBe(false);
+    await flush();
+    expect(again.starts()).toBe(1);
+  });
+
+  it("never shares across fingerprints, and a failed run is not kept", async () => {
+    const storage = fakeStorage();
+    const one = manualRun();
+    const two = manualRun();
+    const a = sharedRanking("fp-a", one.start, {}, storage);
+    const b = sharedRanking("fp-b", two.start, {}, storage);
+    expect(b.joined).toBe(false);
+    await flush();
+    expect(one.starts()).toBe(1);
+    expect(two.starts()).toBe(1);
+    one.fail(new Error("boom"));
+    await expect(a.promise).rejects.toThrow("boom");
+    expect(rankingInFlight("fp-a")).toBe(false);
+    expect(rankingInFlight("fp-b")).toBe(true);
+    two.finish(ranking("B"));
+    await b.promise;
+    expect(readCachedRanking("fp-a", storage)).toBeNull();
   });
 });

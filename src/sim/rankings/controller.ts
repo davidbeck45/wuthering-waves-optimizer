@@ -21,6 +21,7 @@ import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
 import { appKeyOf } from "./rileyNames";
+import { soFarScheduler, type SoFarScheduler } from "./soFar";
 import { leavesTabRing } from "./tabEscape";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -49,6 +50,7 @@ const TEMPLATE = `
       <span class="progress-count"></span>
     </p>
     <div class="progress-track"><div class="progress-fill"></div></div>
+    <p class="wt-sofar-note">The list shows the teams solved so far.</p>
     <img class="loading-gif" src="/sim/loading.gif" alt="" width="110" height="79">
     <pre class="loading-error" hidden></pre>
   </div>`;
@@ -157,6 +159,8 @@ function barReset(): void { overlayFill.style.width = "0%"; overlayCount.textCon
 function barProgress(done: number, total: number): void {
   const { fmt } = mods!.display;
   overlayFill.style.width = `${total ? (done / total) * 100 : 100}%`;
+  // the docked "so far" box counts teams (showSoFar), the list's own unit; the fill still follows the rows
+  if (soFar?.drawn) return;
   overlayCount.textContent = `${fmt(done)} / ${fmt(total)}`;
 }
 let lastPaint = performance.now();
@@ -168,7 +172,8 @@ async function breathe(): Promise<void> {
 
 /* ------------------------------------------------------------------------------ the passes */
 
-async function runMissing(rows: TeamRow[]): Promise<void> {
+/** Run every row the filters opened that hasn't been run. Stops where a newer pass has started; what it ran is kept. */
+async function runMissing(rows: TeamRow[], stale: () => boolean = () => false): Promise<void> {
   const { results } = mods!.model;
   const { runTeam } = mods!.teamrun;
   const missing = rows.filter((row) => !results.has(row.key));
@@ -177,6 +182,7 @@ async function runMissing(rows: TeamRow[]): Promise<void> {
   const cached = rows.length - missing.length;
   barProgress(cached, rows.length);
   for (let i = 0; i < missing.length; i++) {
+    if (stale()) return;
     const row = missing[i]!;
     results.set(row.key, runTeam(row.teamKey, row.members, row.combo));
     barProgress(cached + i + 1, rows.length);
@@ -223,6 +229,14 @@ export function updateAccountState(next: AccountRegistration | null): void {
   if (mods && booted && tableRequested) void refresh();
 }
 
+/* ------------------------------------------------------------------- the solver worker pool */
+// Riley's job queue (his `src/page/index.ts`, Oct 2026), ported: one team per message, every job carrying the filters
+// of the pass that asked for it (never whatever they are by the time it comes back), a newer pass dropping the older
+// one's teams still in line (`cancelQueued`), and a pass that wants a team already out waiting on that answer
+// (`inFlight`). The earlier port re-pointed each worker's `onmessage` per pass: two passes at once (a tier picked in
+// the account bar mid-solve, which the overlay never blocked) stole each other's answers, and a reply was filed under
+// the filters of the moment — a `mine` solve could land as a Riley-tier solve and be saved to localStorage.
+
 const WORKER_LIMIT = 8;
 let pool: Worker[] | null = null;
 let poolTried = false;
@@ -236,6 +250,7 @@ function workerPool(): Worker[] | null {
     for (const w of pool) {
       w.postMessage({ type: "mySubstats", builds: myBuilds, clear: [] });
       w.postMessage({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
+      listen(w);
     }
   } catch (err) {
     console.warn("Workers unavailable, optimizing on the main thread instead:", err);
@@ -244,60 +259,133 @@ function workerPool(): Worker[] | null {
   return pool;
 }
 
-function solveOnWorkers(
-  workers: Worker[], teams: [string, Member[]][],
-  onDone: (members: Member[]) => void, onShare?: (members: Member[], share: number) => void,
-  filters: any = mods!.model.filters,
-): Promise<void> {
-  const { picksCache, storeSolved, solveFits } = mods!.model;
-  const { picksKey, bestKey, isProgress, solveTeam } = mods!.solver;
-  return new Promise((resolve) => {
-    let next = 0, live = 0, id = 0;
-    const pump = (w: Worker): void => {
-      if (next >= teams.length) {
-        if (--live === 0) resolve();
-        return;
-      }
-      const [key, members] = teams[next++]!;
-      const known = picksCache.get(picksKey(key, members, filters)) ?? null;
-      const finish = (solved: Solved): void => {
-        storeSolved(key, solved);
-        onDone(members);
-        pump(w);
-      };
-      w.onmessage = ({ data }: MessageEvent<any>) => {
-        if (isProgress(data)) { onShare?.(members, data.share); return; }
-        const solved: Solved = { picks: data.picks, rows: data.rows, scores: data.scores, hidden: data.hidden ?? [], hiddenScores: data.hiddenScores ?? [] };
-        if (solveFits(bestKey(key, members, filters), solved)) { finish(solved); return; }
-        console.warn(`worker's solve for ${key} does not fit this build; solving it here`);
-        finish(solveTeam(key, members, filters, known));
-      };
-      w.onerror = (e) => {
-        console.warn(`worker failed on ${key}, solving it here:`, e.message);
-        e.preventDefault();
-        finish(solveTeam(key, members, filters, known));
-      };
-      w.postMessage({ id: id++, teamKey: key, filters, picks: known });
-    };
-    for (const w of workers.slice(0, teams.length)) { live++; pump(w); }
-    if (live === 0) resolve();
-  });
+/** A team to solve: the filters it was asked under, the `bestKey()` it was asked for (the account key is part of a
+ *  `mine` key: an answer that comes back after the account changed is not filed under the new one), and who waits. */
+interface Job {
+  id: number; key: string; members: Member[]; f: any; bk: string; known: any;
+  /** a sync's own teams: a table pass starting behind it never drops them */
+  keep: boolean;
+  onShare: (share: number) => void; done: () => void;
+}
+const queue: Job[] = [];
+const busy = new Map<Worker, Job>();
+const inFlight = new Map<string, Promise<void>>();
+let jobId = 0;
+
+/** A worker's answers, routed by request id to the team it is on. One that throws or answers with a solve that does
+ *  not fit this build is solved here instead, so the table is always complete. */
+function listen(w: Worker): void {
+  w.onmessage = ({ data }: MessageEvent<any>) => {
+    const job = busy.get(w);
+    if (!job || !mods || data?.id !== job.id) return;
+    const S = mods.solver;
+    if (S.isProgress(data)) { job.onShare(data.share); return; }
+    const solved: Solved = { picks: data.picks, rows: data.rows, scores: data.scores, hidden: data.hidden ?? [], hiddenScores: data.hiddenScores ?? [] };
+    if (mods.model.solveFits(job.bk, solved)) { settle(w, job, solved); return; }
+    console.warn(`worker's solve for ${job.key} does not fit this build; solving it here`);
+    settle(w, job, S.solveTeam(job.key, job.members, job.f, job.known));
+  };
+  w.onerror = (e) => {
+    const job = busy.get(w);
+    e.preventDefault();
+    if (!job || !mods) return;
+    console.warn(`worker failed on ${job.key}, solving it here:`, e.message);
+    settle(w, job, mods.solver.solveTeam(job.key, job.members, job.f, job.known));
+  };
 }
 
-async function ensureBestPicks(inPlay: [string, Member[]][], filters: any = mods!.model.filters): Promise<boolean> {
-  const { bestPicks, picksCache, storeSolved, loadShipped, estimatedRowCount } = mods!.model;
-  const { hasBuild, bestKey, picksKey, solveTeam } = mods!.solver;
-  await loadShipped(filters);
-  const teams = inPlay.filter(([key, members]) => !bestPicks.has(bestKey(key, members, filters)));
+function file(job: Job, solved: Solved): void {
+  // filed only under the key it was asked for: the account (or a "My build" spread) moved while it was out otherwise
+  if (mods!.solver.bestKey(job.key, job.members, job.f) === job.bk) mods!.model.storeSolved(job.key, solved, job.f);
+}
+function settle(w: Worker, job: Job, solved: Solved): void {
+  file(job, solved);
+  busy.delete(w);
+  // the worker gets its next team before anything hears of this one: a rows-so-far paint may run on this landing
+  handOut(w);
+  job.done();
+}
+function handOut(w: Worker): void {
+  const job = queue.shift();
+  if (!job) return;
+  busy.set(w, job);
+  w.postMessage({ id: job.id, teamKey: job.key, filters: job.f, picks: job.known });
+}
+
+/** With no pool, the line is solved here, one team at a time, yielding so the bar still moves. */
+let draining = false;
+async function drainHere(): Promise<void> {
+  if (draining) return;
+  draining = true;
+  for (let job = queue.shift(); job; job = queue.shift()) {
+    file(job, mods!.solver.solveTeam(job.key, job.members, job.f, job.known, job.onShare));
+    job.done();
+    await breathe();
+  }
+  draining = false;
+}
+
+/** A new pass has started: the old one's teams still in line are dropped, unsolved (a sync's are kept). */
+function cancelQueued(): void {
+  const dropped = queue.filter((job) => !job.keep);
+  queue.splice(0, queue.length, ...queue.filter((job) => job.keep));
+  for (const job of dropped) job.done();
+}
+
+/** Solve `teams` under `f` — on the pool when there is one — waiting on any already out. `onTeam` hears each team
+ *  that lands (the table's rows-so-far paint). */
+function solveAll(teams: [string, Member[]][], f: any, share: (members: Member[], part: number) => void, keep = false, onTeam?: () => void): Promise<void> {
+  const { picksCache } = mods!.model;
+  const { bestKey, picksKey } = mods!.solver;
+  const waits = teams.map(([key, members]) => {
+    const bk = bestKey(key, members, f);
+    const out = inFlight.get(bk);
+    if (out) return out.then(() => { share(members, 1); onTeam?.(); });
+    const solved = new Promise<void>((resolve) => queue.push({
+      id: jobId++, key, members, f, bk, keep, known: picksCache.get(picksKey(key, members, f)) ?? null,
+      onShare: (part) => share(members, part),
+      done: () => {
+        inFlight.delete(bk);
+        share(members, 1);
+        onTeam?.();
+        resolve();
+      },
+    }));
+    inFlight.set(bk, solved);
+    return solved;
+  });
+  const workers = workerPool();
+  if (workers) {
+    for (const w of workers) if (!busy.has(w)) handOut(w);
+  } else void drainHere();
+  return Promise.all(waits).then(() => undefined);
+}
+
+/** Solve every team in play whose answer isn't in hand under `f`; the bar counts the rows this phase opens. Stops
+ *  where a newer pass has started. `onTeam(done, total)` counts teams as they land. @returns whether anything was solved. */
+async function ensureBestPicks(
+  inPlay: [string, Member[]][], f: any, stale: () => boolean = () => false,
+  options: { keep?: boolean; onTeam?: (done: number, total: number) => void } = {},
+): Promise<boolean> {
+  const { bestPicks, loadShipped, estimatedRowCount } = mods!.model;
+  const { hasBuild, bestKey } = mods!.solver;
+  await loadShipped(f);
+  if (stale()) return false;
+  const teams = inPlay.filter(([key, members]) => !bestPicks.has(bestKey(key, members, f)));
   if (!teams.length) return false;
-  const rowsOf = (members: Member[]): number => (members.every((m) => hasBuild(m, filters)) ? estimatedRowCount(members, filters) : 0);
-  const solvable = teams.filter(([, members]) => members.every((m) => hasBuild(m, filters)))
+  // the heaviest teams (most rows to open) go first, so the pool's tail is not one worker on a 5x team
+  const rowsOf = (members: Member[]): number => (members.every((m) => hasBuild(m, f)) ? estimatedRowCount(members, f) : 0);
+  const solvable = teams.filter(([, members]) => members.every((m) => hasBuild(m, f)))
     .map((t) => [t, rowsOf(t[1])] as const).sort((a, b) => b[1] - a[1]).map(([t]) => t);
   if (!solvable.length) return false;
   const total = solvable.reduce((n, [, members]) => n + rowsOf(members), 0);
   await overlayNow("Running Calculations...");
+  if (stale()) return false;
   let done = 0;
-  const progress = (): void => barProgress(done, total);
+  // the bar is the newest pass's alone: an older one's teams finishing behind it move nothing
+  const progress = (): void => {
+    if (!stale()) barProgress(done, total);
+  };
   progress();
   const counted = new Map<Member[], number>();
   const share = (members: Member[], part: number): void => {
@@ -308,16 +396,10 @@ async function ensureBestPicks(inPlay: [string, Member[]][], filters: any = mods
     done += at - was;
     progress();
   };
-  const workers = workerPool();
-  if (workers) await solveOnWorkers(workers, solvable, (members) => share(members, 1), share, filters);
-  else {
-    for (const [key, members] of solvable) {
-      const known = picksCache.get(picksKey(key, members, filters)) ?? null;
-      storeSolved(key, solveTeam(key, members, filters, known, (part: number) => share(members, part)));
-      share(members, 1);
-      await breathe();
-    }
-  }
+  let teamsDone = 0;
+  const onTeam = options.onTeam ? (): void => { teamsDone++; if (!stale()) options.onTeam!(teamsDone, solvable.length); } : undefined;
+  await solveAll(solvable, f, share, options.keep ?? false, onTeam);
+  if (stale()) return false;
   await paint();
   return true;
 }
@@ -476,7 +558,7 @@ export async function syncMyTeams(teams: TeamLike[]): Promise<SyncReport> {
   // the best row per composition at `mine`, as the table's top row for it would read
   const solveBest = (keys: string[]): Promise<Map<string, SolvedBest | null>> =>
     withMine(async () => {
-      await ensureBestPicks(keys.map((k) => [k, M.TEAMS[k] as Member[]]));
+      await ensureBestPicks(keys.map((k) => [k, M.TEAMS[k] as Member[]]), structuredClone(M.filters), undefined, { keep: true });
       const out = new Map<string, SolvedBest | null>();
       for (const key of keys) {
         const members = M.TEAMS[key] as Member[];
@@ -719,8 +801,9 @@ function cardsPass(): void {
   if (m && m.rows === rows && m.mode === mode && m.runs === runs && m.pinned === pinnedTeam && m.pins === pins && m.mine === mine
     && m.phone === phone && m.loading === loading) return;
   cardsMemo = { rows, mode, runs, pinned: pinnedTeam, pins, mine, phone, loading };
-  if (rows !== listRows) {
-    listRows = rows;
+  const list = passOf.get(rows) ?? rows;
+  if (list !== listRows) {
+    listRows = list;
     listId++;
   }
   const ordered = tableOrder(rows, (k) => M.results.get(k) as RunRowLike | undefined, mode, (k) => !!pinSet?.has(k));
@@ -742,12 +825,27 @@ export function setRankingsTeamMode(mode: TeamMode): void {
 
 let passObserver: MutationObserver | null = null;
 const OBSERVE: MutationObserverInit = { childList: true, subtree: true };
+/** His "N teams" heading reads "N teams so far" while the rows on screen are a pass's rows so far (his heading is a grid:
+ *  the words go into his own count's text, not an element of their own). */
+const SO_FAR = " so far";
+function soFarPass(): void {
+  const head = app.querySelector<HTMLElement>("#teamCount");
+  const text = head?.firstChild;
+  if (!head || !(text instanceof Text)) return;
+  const want = !!soFar?.drawn;
+  const has = text.data.endsWith(SO_FAR);
+  if (want && !has) text.data += SO_FAR;
+  else if (!want && has) text.data = text.data.slice(0, -SO_FAR.length);
+  head.toggleAttribute("data-test-rankings-sofar", want);
+}
+
 function runPasses(): void {
   passObserver?.disconnect();
   try {
     comparePass();
     stickyLogPass();
     cardsPass();
+    soFarPass();
   } catch (err) {
     console.warn("Wuthering Tools+ rankings pass failed:", err);
   } finally {
@@ -812,39 +910,65 @@ async function refresh(): Promise<void> {
   }
 }
 
+/** Which refresh / pick pass is the live one: an older pass checks it after every wait and stops (Riley's index.ts). */
+let generation = 0;
+
 async function refreshRows(): Promise<void> {
   const M = mods!.model;
   const { bestKey } = mods!.solver;
   tableRequested = true;
   tableStale = false;
+  // a filter change made while one pass is still solving takes over: the old pass's teams still in line are dropped,
+  // and it stops at its next step — anything it already solved or ran is kept
+  const gen = ++generation;
+  const stale = (): boolean => gen !== generation;
+  cancelQueued();
+  const f = structuredClone(M.filters);
+  // rows another pass drew so far belong to other filters: the overlay covers them again until this pass has its own
+  if (soFar && soFar.gen !== gen) endSoFar();
   await syncRouter();
+  if (stale()) return;
   barReset();
+  const partial = soFarPainter(gen, stale, f.cost === "mine");
   try {
     const inPlay = (Object.entries(M.TEAMS) as [string, Member[]][]).filter(([key, members]) => M.teamWanted(key, members)); // Riley's teamWanted takes the key since Sept 2026
-    if (inPlay.some(([key, members]) => !M.bestPicks.has(bestKey(key, members, M.filters)))) workerPool();
+    // workers come up while the empty table draws, but only if there is something to solve
+    if (inPlay.some(([key, members]) => !M.bestPicks.has(bestKey(key, members, f)))) workerPool();
     if (!M.visibleRows.length) route();
 
-    await ensureBestPicks(inPlay);
+    await ensureBestPicks(inPlay, f, stale, { onTeam: partial.onTeam });
+    partial.stop();
+    if (stale()) return;
     M.saveSolves();
     const rows: TeamRow[] = M.teamRows();
+    passOf.set(rows, gen);
     const cached = rows.filter((row) => M.results.has(row.key));
+    passOf.set(cached, gen);
     const missing = cached.length !== rows.length;
     if (!missing && cached.length) {
       await overlayNow("Rendering Table...", rows.length);
+      if (stale()) return;
       barProgress(rows.length, rows.length);
+      settleSoFar();
       M.setVisibleRows(cached);
       route();
     } else if (!missing) {
+      settleSoFar();
       M.setVisibleRows([]);
       route();
     }
-    await runMissing(rows);
+    await runMissing(rows, stale);
+    if (stale()) return;
     if (missing) {
       await overlayNow("Rendering Table…", rows.length);
+      if (stale()) return;
+      settleSoFar();
       M.setVisibleRows(rows);
       route();
     }
   } catch (err) {
+    partial.stop();
+    if (stale()) return;
     if (M.discardRestoredSolves()) {
       console.warn("restored solves failed to load; solving the roster here instead", err);
       M.setVisibleRows([]);
@@ -853,7 +977,93 @@ async function refreshRows(): Promise<void> {
     }
     showBootError(err);
   }
+  endSoFar();
   overlayHide();
+}
+
+/* ------------------------------------------------- Wuthering Tools+ rows so far (first useful paint) */
+// His table waited for every team in play to be solved before it drew a row. At My account nothing is shipped — the
+// page solves the roster in its workers (104 teams on David's export, 3-4 s on a desktop, far more on a phone) — so
+// the page sat under "Running Calculations…" the whole time. Now the rows solved so far are drawn while the rest are
+// solved: once each worker has answered (or shortly after the first answer), then about once a second (soFar.ts). The overlay
+// docks into a small box ("Solving teams at your account · 37 of 104", "the list shows the teams solved so far"), the
+// phone cards' heading and his "N teams" read "so far", and the figures are his own (`teamRows()` lists only solved
+// teams, their runs filed off the solve's scores). A paint is skipped while a detail page is up or the player is in his
+// search box; the last pass draws the whole table exactly as before.
+
+export interface SolvingView {
+  /** teams solved in this pass, and how many it solves */
+  done: number;
+  total: number;
+  /** solving at My account (else one of Riley's tiers, a compare) */
+  mine: boolean;
+}
+/** While the rows on screen are a pass's rows so far: how far it is (RankingsCards.vue's heading). */
+export const rankingsSolving = shallowRef<SolvingView | null>(null);
+let soFar: { gen: number; done: number; total: number; mine: boolean; drawn: boolean } | null = null;
+/** the pass each `setVisibleRows()` list came from: a list that grows within one pass keeps the cards' place */
+const passOf = new WeakMap<object, number>();
+
+function soFarPainter(gen: number, stale: () => boolean, mine: boolean): SoFarScheduler {
+  return soFarScheduler({
+    stale,
+    wave: () => pool?.length ?? 1,
+    paint: (done, total) => paintSoFar(gen, done, total, mine),
+    update: (done, total) => {
+      if (soFar?.gen !== gen || !soFar.drawn) return;
+      soFar.done = done;
+      soFar.total = total;
+      showSoFar();
+    },
+  });
+}
+
+/** Draw the rows solved so far; false when it is not the moment (a detail page, the search box in use, nothing yet). */
+function paintSoFar(gen: number, done: number, total: number, mine: boolean): boolean {
+  // the player left the page mid-solve (unmountRankings detached it): no paint the main thread pays for off-screen; the
+  // next landing after a return draws, and the pass's last draw is made either way
+  if (!mods || !root || !root.isConnected || renderedKey || tableStale || mods.model.routeTeam()) return false;
+  // the player is in his search (with something typed) or another of his aside's controls: the last draw catches up.
+  // An empty search box only holds his opening caret (`openingFocus`), which is put back after the draw.
+  const active = document.activeElement;
+  const search = root.querySelector<HTMLInputElement>(".tcside #optionSearch");
+  const caret = !!search && active === search && !search.value;
+  if (active && active !== document.body && !caret && root.querySelector(".tcside")?.contains(active)) return false;
+  const M = mods.model;
+  const rows: TeamRow[] = M.teamRows();
+  // a row with no run filed off its solve would need a run here: the pass's own run phase does that
+  if (!rows.length || rows.some((row) => !M.results.has(row.key))) return false;
+  soFar = { gen, done, total, mine, drawn: true };
+  passOf.set(rows, gen);
+  M.setVisibleRows(rows);
+  root.classList.add("wt-sofar");
+  showSoFar();
+  // a phone reads the cards, and his grid under them is hidden: the cards alone catch up (his whole table render and
+  // its measuring were most of a paint's cost); the pass's last draw renders his table as before
+  if (cardsClaims > 0 && phoneMedia?.matches && root.classList.contains("wt-cards")) runPasses();
+  else route();
+  if (caret) root.querySelector<HTMLInputElement>(".tcside #optionSearch")?.focus({ preventScroll: true });
+  return true;
+}
+
+/** The docked overlay's line and the cards' heading, from `soFar`. */
+function showSoFar(): void {
+  if (!soFar) return;
+  overlayStatus.textContent = soFar.mine ? "Solving teams at your account" : "Solving teams";
+  overlayCount.textContent = `${soFar.done} of ${soFar.total}`;
+  rankingsSolving.value = { done: soFar.done, total: soFar.total, mine: soFar.mine };
+}
+
+/** The pass is about to draw its whole table: the rows on screen stop being "so far" (the docked box stays up until
+ *  the overlay goes, so it never jumps back to the full-screen veil over rows already shown). */
+function settleSoFar(): void {
+  if (soFar) soFar.drawn = false;
+  if (rankingsSolving.value) rankingsSolving.value = null;
+}
+function endSoFar(): void {
+  soFar = null;
+  root?.classList.remove("wt-sofar");
+  if (rankingsSolving.value) rankingsSolving.value = null;
 }
 
 /** A `#team=` load served off its key alone: one traced run, no table build. A team code (Riley's
@@ -887,17 +1097,18 @@ async function bootDetail(): Promise<boolean> {
 
 /** A detail pick (Riley's pickmenu.ts): solve the one team under each try's filters in turn, open the
  *  first row one names, and let the table catch up when next shown. `undo` puts the filters back if none. */
-let switchGen = 0;
 async function switchTo(teamKey: string, attempts: { setUp: () => boolean; choose: (rows: TeamRow[]) => TeamRow | null }[], undo: () => void): Promise<void> {
   const M = mods!.model;
   tableStale = true;
-  const gen = ++switchGen;
-  const stale = (): boolean => gen !== switchGen;
+  const gen = ++generation;
+  const stale = (): boolean => gen !== generation;
+  cancelQueued();
+  if (soFar) endSoFar();
   barReset();
   try {
     for (const attempt of attempts) {
       if (!attempt.setUp()) continue;
-      await ensureBestPicks([[teamKey, M.TEAMS[teamKey] as Member[]]], structuredClone(M.filters));
+      await ensureBestPicks([[teamKey, M.TEAMS[teamKey] as Member[]]], structuredClone(M.filters), stale);
       if (stale()) return;
       M.saveSolves();
       const row = attempt.choose(M.solvedRows(teamKey));
@@ -925,9 +1136,7 @@ async function solveQuiet(teamKey: string, f: any): Promise<void> {
   const members = M.TEAMS[teamKey] as Member[];
   await M.loadShipped(f);
   if (M.bestPicks.has(S.bestKey(teamKey, members, f)) || !members.every((m) => S.hasBuild(m, f))) return;
-  const workers = workerPool();
-  if (workers) await solveOnWorkers(workers, [[teamKey, members]], () => {}, undefined, f);
-  else M.storeSolved(teamKey, S.solveTeam(teamKey, members, f, M.picksCache.get(S.picksKey(teamKey, members, f)) ?? null));
+  await solveAll([[teamKey, members]], f, () => {});
   M.saveSolves();
 }
 
@@ -984,6 +1193,15 @@ async function boot(): Promise<void> {
   mods!.pickmenu.onSolve(solveQuiet);
   M.applyHash();
   await M.loadSolves();
+  // wired before the first pass, not after it as in his index.ts: the rows solved so far are on screen while that
+  // pass solves (paintSoFar), so "view rotation" must open a team and the detail's Back link must go back — unwired,
+  // the link's "#" emptied the hash and Back landed on his S0R1 tier mid-solve
+  mods!.panels.wireSourcePanels(app);
+  root!.addEventListener("click", (e) => {
+    const el = (e.target as Element).closest<HTMLElement>(".gotodetail");
+    if (el?.dataset.team) void goToDetail(el.dataset.team);
+  });
+  backLink.addEventListener("click", (e) => { e.preventDefault(); goBack(); });
   const detail = await bootDetail().catch((err: unknown) => {
     if (!M.discardRestoredSolves()) throw err;
     console.warn("restored solves failed to load; solving the roster here instead", err);
@@ -994,12 +1212,6 @@ async function boot(): Promise<void> {
   await syncRouter();
   const idle = (globalThis as any).requestIdleCallback ?? ((fn: () => void) => setTimeout(fn, 500));
   idle(() => { workerPool(); });
-  mods!.panels.wireSourcePanels(app);
-  root!.addEventListener("click", (e) => {
-    const el = (e.target as Element).closest<HTMLElement>(".gotodetail");
-    if (el?.dataset.team) void goToDetail(el.dataset.team);
-  });
-  backLink.addEventListener("click", (e) => { e.preventDefault(); goBack(); });
 }
 
 function showBootError(err: unknown): void {
@@ -1032,6 +1244,21 @@ function patchFetch(): void {
   }) as typeof fetch;
 }
 
+/** Wuthering Tools+: a visit that opens on My account with no solve saved for this account (Riley's localStorage
+ *  `wuwa.solves.v1`, keyed `…|mine.<account key>|…`) solves its whole roster in the workers. They come up now, while his
+ *  page modules load, instead of after them: each worker parses the whole engine graph, which took ~0.75 s before its
+ *  first answer on a desktop dev server. A team link (`team=`) or one of his tiers (shipped solves) waits for idle. */
+function solvesAhead(): boolean {
+  if (poolTried || !account?.key) return false;
+  const p = new URLSearchParams(location.hash.replace(/^#/, ""));
+  if (p.get("tc") !== "mine" || p.has("team")) return false;
+  try {
+    return !(localStorage.getItem("wuwa.solves.v1") ?? "").includes(`|mine.${account.key}|`);
+  } catch {
+    return true;
+  }
+}
+
 export async function mountRankings(host: HTMLElement, r: Router, builds: BuildRolls[] = [], acct: AccountRegistration | null = null): Promise<void> {
   router = r;
   myBuilds = builds;
@@ -1045,6 +1272,7 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
   phoneMedia ??= matchMedia(PHONE_QUERY);
   phoneMedia.addEventListener("change", onPhoneChange);
   observeRenders();
+  if (solvesAhead()) workerPool();
   try {
     if (!mods) mods = await loadModules();
     if (!rankingsRoster.value.length) rankingsRoster.value = rosterOf(mods.model.TEAMS);

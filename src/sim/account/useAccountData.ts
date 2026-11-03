@@ -11,7 +11,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "./accountState";
 import { investPlan, type InvestItem, type InvestPlan, type InvestProgress } from "./investPlan";
@@ -79,7 +79,7 @@ export function useAccountData() {
   let generation = 0;
   let planSignal: { cancelled: boolean } | null = null;
   let rankingFp = "";
-  let unmounted = false;
+  let leaveRanking: (() => void) | null = null;
 
   async function runPlan(rankingFp: string, gen: number, data: { characters: any; echoes: any[]; teams: any[] }, base: RosterRanking, force: boolean): Promise<void> {
     // Wuthering Tools+ saved results: the plan this browser saved for this exact ranking paints at once, before the
@@ -159,34 +159,37 @@ export function useAccountData() {
       plan.value = null;
       liveRanking.value = { characters: [], teams: [] };
       rankingStatus.value = { ...idle(), state: "running", label: "starting" };
-      try {
-        base = await rankRoster(data.characters, data.echoes, data.teams, {
-          investment: true,
-          autoTeamBuffs: autoTeamBuffs.value,
-          onProgress: (done, total, label, finished) => {
+      // one run per fingerprint in this tab: /my-rankings or /weapons may have started it (rankingCache.ts)
+      const shared = sharedRanking(
+        fp,
+        (onProgress) => rankRoster(data.characters, data.echoes, data.teams, { investment: true, autoTeamBuffs: autoTeamBuffs.value, onProgress }),
+        {
+          onProgress: ({ done, total, label }, finished) => {
             if (gen !== generation) return;
             rankingStatus.value = { ...rankingStatus.value, done, total, label };
             const run = liveRanking.value;
             if (!run || !finished) return;
             liveRanking.value = finished.kind === "character" ? { ...run, characters: [...run.characters, finished.rank] } : { ...run, teams: [...run.teams, finished.rank] };
           },
-        });
+        },
+      );
+      leaveRanking?.();
+      leaveRanking = shared.leave;
+      try {
+        base = await shared.promise;
       } catch (err) {
         if (gen === generation) {
           rankingStatus.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
           liveRanking.value = null;
         }
         return;
+      } finally {
+        shared.leave();
       }
-      if (gen !== generation) {
-        // rankRoster cannot be stopped: a run that outlived the page still scored exactly `fp`'s data, so keep it
-        // for the next visit or /my-rankings (a superseded run on a live page is dropped: the newer one owns the cache)
-        if (unmounted) writeCachedRanking(fp, base);
-        return;
-      }
+      // the run writes the cache itself (a run that outlived the page still scored exactly `fp`'s data)
+      if (gen !== generation) return;
       ranking.value = base;
       liveRanking.value = null;
-      writeCachedRanking(fp, base);
       rankingStatus.value = { ...idle(), state: "done", computedAt: base.computedAt, done: rankingStatus.value.total, total: rankingStatus.value.total };
     }
     // a forced refresh re-plans too (the plan cache is keyed by the same fingerprint)
@@ -195,7 +198,7 @@ export function useAccountData() {
 
   watch(autoTeamBuffs, () => void refresh());
   onBeforeUnmount(() => {
-    unmounted = true;
+    leaveRanking?.();
     generation += 1; // late callbacks of a run in flight are ignored
     if (planSignal) planSignal.cancelled = true;
   });

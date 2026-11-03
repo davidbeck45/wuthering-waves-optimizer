@@ -9,7 +9,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type RosterRanking } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { WEAPON_VALUE_VERSION, weaponValue, type CharacterWeaponValue, type WeaponValueResult } from "./weaponValue";
 import { WEAPON_VALUE_CACHE_KEY, createValueCache } from "./valueCache";
@@ -71,7 +71,7 @@ export function useWeaponValueData() {
 
   let generation = 0;
   let signal: { cancelled: boolean } | null = null;
-  let unmounted = false;
+  let leaveRanking: (() => void) | null = null;
 
   /** Score (or restore) everything for the data as it is now. `force` skips both caches. */
   async function refresh(force = false): Promise<void> {
@@ -97,27 +97,31 @@ export function useWeaponValueData() {
       result.value = null;
       liveRows.value = [];
       status.value = { ...idle(), state: "ranking", label: "ranking your roster" };
-      try {
-        base = await rankRoster(data.characters, data.echoes, data.teams, {
-          investment: true,
-          autoTeamBuffs: autoTeamBuffs.value,
-          onProgress: (done, total, label) => {
+      // one run per fingerprint in this tab: /account or /my-rankings may have started it (rankingCache.ts)
+      const shared = sharedRanking(
+        key,
+        (onProgress) => rankRoster(data.characters, data.echoes, data.teams, { investment: true, autoTeamBuffs: autoTeamBuffs.value, onProgress }),
+        {
+          onProgress: ({ done, total, label }) => {
             if (gen === generation) status.value = { ...status.value, done, total, label };
           },
-        });
+        },
+      );
+      leaveRanking?.();
+      leaveRanking = shared.leave;
+      try {
+        base = await shared.promise;
       } catch (err) {
         if (gen === generation) {
           status.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
           liveRows.value = null;
         }
         return;
+      } finally {
+        shared.leave();
       }
-      // a ranking that outlived the page still scored exactly `key`'s data: keep it for the next page that asks
-      if (gen !== generation) {
-        if (unmounted) writeCachedRanking(key, base);
-        return;
-      }
-      writeCachedRanking(key, base);
+      // the run writes the cache itself (a ranking that outlived the page still scored exactly `key`'s data)
+      if (gen !== generation) return;
     }
     ranking.value = base;
 
@@ -163,7 +167,7 @@ export function useWeaponValueData() {
 
   watch(autoTeamBuffs, () => void refresh());
   onBeforeUnmount(() => {
-    unmounted = true;
+    leaveRanking?.();
     generation += 1;
     if (signal) signal.cancelled = true;
   });

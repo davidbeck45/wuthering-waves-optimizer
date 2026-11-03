@@ -79,7 +79,7 @@
 // Wuthering Tools+ phase E — /my-rankings, the app's own engine ranking the roster you have set up
 // (rankRoster.ts does the scoring). This file only orchestrates: the cache (rankingCache.ts), the
 // progressive run, the options; the tables and panels are the MyRankings*.vue children.
-import { computed, onMounted, ref, shallowRef, toRaw, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, toRaw, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import Nav from "../../components/navigation/Nav.vue";
@@ -88,7 +88,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "./rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "./rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "./rankingCache";
 import type { SortDir, SortKey } from "./rows";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "../account/accountState";
@@ -199,6 +199,12 @@ const status = computed<RankingStatus>(() => ({
 
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(toRaw(value) ?? null)) as T;
 let rerun = false;
+let unmounted = false;
+let leaveRanking: (() => void) | null = null;
+onBeforeUnmount(() => {
+  unmounted = true;
+  leaveRanking?.(); // the run goes on and fills the cache for the next page that asks
+});
 
 async function compute(): Promise<void> {
   if (isRunning.value) {
@@ -211,11 +217,18 @@ async function compute(): Promise<void> {
   const withInvestment = investment.value;
   live.value = { characters: [], teams: [], investment: withInvestment };
   progress.value = { done: 0, total: 0, label: "starting" };
-  try {
-    const result = await rankRoster(clone(characters.value ?? {}), clone(inventoryStore.echoes ?? []), clone(teams.value ?? []), {
-      investment: withInvestment,
-      autoTeamBuffs: autoTeamBuffs.value,
-      onProgress: (done, total, label, finished) => {
+  // one run per fingerprint in this tab: /account or /weapons may have started it, and it writes the cache itself
+  // (rankingCache.ts); joining hands over the rows scored so far at once
+  const shared = sharedRanking(
+    key,
+    (onProgress) =>
+      rankRoster(clone(characters.value ?? {}), clone(inventoryStore.echoes ?? []), clone(teams.value ?? []), {
+        investment: withInvestment,
+        autoTeamBuffs: autoTeamBuffs.value,
+        onProgress,
+      }),
+    {
+      onProgress: ({ done, total, label }, finished) => {
         progress.value = { done, total, label };
         const run = live.value;
         if (!run || !finished) return;
@@ -223,18 +236,23 @@ async function compute(): Promise<void> {
         if (finished.kind === "character") live.value = { ...run, characters: [...run.characters, finished.rank] };
         else live.value = { ...run, teams: [...run.teams, finished.rank] };
       },
-    });
+    },
+  );
+  leaveRanking = shared.leave;
+  try {
+    const result = await shared.promise;
+    if (unmounted) return;
     ranking.value = result;
     rankedInvestment.value = withInvestment;
     restored.value = false;
-    savedAt.value = null;
-    writeCachedRanking(key, result);
+    savedAt.value = null; // the run wrote (and saved) the cache itself
   } catch (err) {
     error.value = `Ranking failed: ${err instanceof Error ? err.message : String(err)}`;
   } finally {
+    shared.leave();
     live.value = null;
     isRunning.value = false;
-    if (rerun) {
+    if (rerun && !unmounted) {
       rerun = false;
       void refresh();
     }

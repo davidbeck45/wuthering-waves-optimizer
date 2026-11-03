@@ -1,7 +1,7 @@
 <template>
   <section class="acc-hero" data-test-account-hero>
     <div class="acc-hero__lead" :style="leadStyle" data-test-account-hero-team>
-      <div class="acc-hero__eyebrow">Best team you can field</div>
+      <div class="acc-hero__eyebrow" data-test-account-hero-eyebrow>Best team you can field<template v-if="status.state === 'running'"> · so far</template></div>
       <template v-if="best">
         <div class="acc-hero__team">
           <span class="acc-hero__faces">
@@ -97,7 +97,8 @@
       <div class="kpi" data-test-account-kpi="teams">
         <div class="kpi__label"><span class="max-md:hidden">Teams you can field</span><span class="md:hidden">Teams</span></div>
         <div class="kpi__value">
-          <template v-if="kpis.fieldable !== null">{{ kpis.fieldable }}</template>
+          <!-- teams are scored after the characters: "…" until the first one lands, then "N so far" until the end -->
+          <template v-if="kpis.fieldable !== null && !(status.state === 'running' && !kpis.fieldable)">{{ kpis.fieldable }}<span v-if="status.state === 'running'" class="kpi__of" data-test-account-kpi-sofar> so far</span></template>
           <span v-else class="kpi__dash">…</span>
         </div>
         <div class="kpi__meter kpi__meter--none"></div>

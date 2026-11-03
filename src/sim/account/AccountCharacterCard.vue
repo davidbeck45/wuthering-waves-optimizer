@@ -74,7 +74,7 @@
         <span class="cc__mates" aria-hidden="true">
           <CharacterAvatar v-for="k in mates" :id="k" :key="k" :size="18" title="" />
         </span>
-        {{ card.teams.length }} team{{ card.teams.length === 1 ? "" : "s" }}
+        {{ card.teams.length }} team{{ card.teams.length === 1 ? "" : "s" }}<template v-if="scoring"> so far</template>
       </span>
     </span>
     <!-- the card's own text is its name for a screen reader (damage, rank, sequence, grade); this says what a press does -->

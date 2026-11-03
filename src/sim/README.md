@@ -1284,6 +1284,85 @@ data, Aemeath's saved optimizer config widened to two sets, 192,680 loadouts): 3
 same five rows; his saved 13,240-loadout run stays at ~7 s — batches of 5,000 keep only three workers busy and
 worker start-up dominates. `cypress/e2e/optimizerExact.cy.ts`: rows 1–5 identical on four golden configs.
 
+### First useful paint — the speed pass (track "speed", 2026-11-02)
+
+Since 2026-10-31 a hashless `/rankings` opens on **My account** (`tierMemory.ts`). Riley ships solves for his tiers
+(`public/dist/solves/`), never for an account, so the page solves the roster in its own workers — 104 teams on David's
+export — and his table drew nothing until the last team was in. The pass measured every plus page plus the
+calculator home, inventory and teams, then fixed what the table pointed at. No number moves: `npm run cli -- snapshot`
+before and after on the 9-16 export, `diff` → 0 changes, and the finished My account table compared row by row on
+both builds (104 rows, same order, same `data-total`).
+
+| Piece | Role |
+|---|---|
+| `rankings/controller.ts` — the worker queue | a port of Riley's current `index.ts` job queue (`queue` / `busy` / `inFlight` / `cancelQueued`, one generation per pass, `stale()` checked after every wait). Every job carries the filters it was asked under and the `bestKey()` it was asked for; an answer is filed only under that key. The older port re-pointed each worker's `onmessage` per pass and filed replies under the filters of the moment, so a tier picked in the account bar mid-solve (the overlay never blocked the bar, nor his own boxes) could steal another pass's answers and file a `mine` solve as a Riley-tier solve, which `saveSolves()` then kept in localStorage. A sync's teams (`keep`) survive a table pass that starts behind them. A worker gets its next team before a landed one is announced (a rows-so-far paint may run on that landing) |
+| `rankings/controller.ts` — rows so far (`paintSoFar`) | while a pass solves, the rows solved so far are drawn (`teamRows()` lists only solved teams, their runs filed off the solve's scores, so the figures are his own). The overlay docks into a box at the foot of the table — "Solving teams at your account · 37 of 104", "The list shows the teams solved so far.", the bar — with no veil, blur or gif, and never takes the pointer; his "N teams" heading reads "N teams so far" (`soFarPass`, written into his count's own text: his heading is a grid). A paint is skipped while a detail page is up or the player has typed in his search (an empty box only holds his opening caret, which is put back). On a phone only the cards catch up (his grid is hidden under them, and his render and row measuring were most of a paint); the pass's last draw renders his table as before. The cards keep their place (Show more, scroll) while one pass's list grows (`passOf`) |
+| `rankings/soFar.ts` (+ test) | pure: when the list catches up — at once when one team per worker is in (they start together), else 300 ms after the first lands; then about once a second, but never sooner than 5 × what the last paint cost (a paint is a main-thread task, and a worker that finishes during one waits for its next team); never on the last team, never after the pass is stopped or superseded |
+| `rankings/RankingsCards.vue`, `RankingsSolving.vue` | the phone list heads itself "37 teams so far" and "Solving teams at your account · 40 of 104 done · the list shows those so far" with a bar. The line is its own component and the list reads a computed flag: a landing re-renders the line, not 50 cards |
+| `rankings/controller.ts` `solvesAhead()` | a My account visit with no solve saved for this account (Riley's `wuwa.solves.v1` holds no `\|mine.<account key>\|`) brings the worker pool up while his page modules load, not after them (each worker parses the whole engine graph: ~0.75 s before its first answer on a desktop dev server). A team link or one of his tiers still waits for idle |
+| `myRankings/rankingCache.ts` `sharedRanking` (+ test) | one `rankRoster` run per fingerprint in the tab. /account, /my-rankings and /weapons each started their own when the cache missed, and a run cannot be stopped, so leaving one of them for another mid-run scored the roster twice on the main thread at once. Now the second page joins the run: it is handed the rows scored so far at once (in landing order), then the rest, and the run writes the cache itself when it ends, whoever is still listening |
+| `weaponValue/WeaponValueView.vue` | until a row is scored the Signatures and Characters scored tiles read "…" with "counted as each character is scored" / "ranking your roster first" (they read "0 held · 0 at R5 · 0 not held" and "0 / 24" for seconds), the filter chips drop their counts, and "Signatures · so far" while rows are still landing |
+| `account/AccountHero.vue`, `AccountTeams.vue`, `AccountCharacterCard.vue` | while the roster scores: "Best team you can field · so far", the Teams tile and the Teams you can field count read "…" until the first team lands, then "14 so far"; a roster card's "4 teams so far" |
+
+Rules: the rows-so-far paint never computes a figure of its own and never draws a team that is not solved; the last
+draw of a pass is his ordinary one. Persistence across visits (the result-cache track) and the optimizer's search
+(optimizer-speed) were out of scope here. Merged onto the saved results: a page still reads this tab's copy, then the
+browser's saved one (`readSavedRanking`), and only on a miss starts or joins the shared run, which writes the tab's copy
+and saves it in the browser when it ends (the pages no longer write it themselves).
+
+Measured with a scratch harness outside the repo (`wto-wt/b3/speed/`: `perf.mjs` drives Chromium over CDP — a fresh
+profile per page, the seeds in localStorage, cold = empty HTTP cache, warm = a second full navigation in the same tab,
+spa = vue-router away and back; "first useful" = the first animation frame after the page's own content is in the DOM
+and visible, a selector per page in `pages.json`; `abdev.mjs` serves the base commit and this branch side by side on one
+port by Host header — two Vite dev servers in middleware mode and the two production builds with vercel.json's cache
+headers — so every page is measured before and after, interleaved, under the same load). The box was shared with 15
+other agents (load average 45-100 on 32 cores), so the absolute times are inflated; compare each row's two columns.
+
+Before → after on the production build (side A = plus-b3 213a4594, side B = this branch, interleaved; medians):
+
+| | before | after |
+|---|---|---|
+| `/rankings` at My account, desktop 1440, cold: first rows (3 runs each) | 10.6 s | **3.6 s** |
+| same: the whole table (3 runs each) | 10.6 s | 11.4 s (same, within the noise) |
+| same on a phone (412 px, 4x CPU, 130 % text), cold: first cards | 14.4 s | **4.7 s** |
+| same on a phone: the whole table | 14.4 s | 10.4 s |
+| `/account`, then `/my-rankings` while it still scores, desktop: first character row (3 runs) | 1.1 s | **0.5 s** |
+| same: `/my-rankings` reads Live | 19.4 s | 16.0 s |
+| same on a phone: first character row / Live (2 runs) | 5.0 s / 156 s | 3.7 s / 167 s (Live: no measurable change) |
+| moving to `/my-rankings` 3 s into `/account`'s scoring, desktop: rows on screen 0.3 s later | 1 (it starts again at 1 / 120) | 13 (the run's 13 / 120 so far) |
+
+Every other page moved by noise only (single samples of unchanged code moved ±5-130 %); the per-page tables (cold,
+warm and in-app, phone and desktop, production and dev) are in `wto-wt/b3/reports/speed-build.md` and
+`speed-before.md`.
+
+Things learned:
+- Riley's `filters` is one object mutated in place by `applyHash()`: anything that must outlive an `await` has to
+  snapshot it (`structuredClone`), and a `mine` key also carries the account key read at call time (`costTag`).
+- A paint that is cheap on a desktop is a 0.5-2 s task on a 4x-throttled phone, and the solver workers wait on the main
+  thread for their next team: the first version painted every second and the whole My account solve took 2.6 × as long
+  on the phone profile. Space paints by their measured cost, hand out work before painting, and keep a counter that
+  changes on every landing out of a big component's render.
+- His `drawWindow()` / `fitSide()` force a layout right after writing the grid (row-pitch measuring): 0.8 s and 0.5 s on
+  a warm phone visit. Not ours to change, and hiding his grid from layout under the cards would bring back the
+  row-pitch-0 bug recorded in the phone-cards section.
+- Rows on screen during a pass are rows a player clicks. His `index.ts` wires "view rotation" and the detail's Back link
+  only after the first pass (nothing was on screen before it ended), so mid-solve the first did nothing and Back
+  followed its `#` onto his S0R1 tier; `boot()` now wires both before that pass (verify1, `rankingsSoFar.cy.ts`). The
+  docked box is hidden on a detail page opened from the rows so far: it is about the list, and it sat over his grids.
+- Start shared work in the call that asks for it, not a microtask later: a `rankRoster` started after the page's first
+  render no longer overlapped its stock-preset fetch with that render, and /my-rankings' first row came ~0.4 s later
+  (3 runs of 3). Started at once, the gap is ~0.1 s, at the edge of the noise.
+- CDP's page-level Network domain does not see worker scripts (the solver's script is fetched once and the other seven
+  workers read it from cache — no duplicate download): count them from the worker targets or the server.
+- `/tmp` is a quota shared by every agent on the box: point scratch Chromium profiles and vitest at `TMPDIR` on the home
+  volume (vitest failed eight files for want of temp space).
+
+Gates: `rankings/soFar.test.ts` (7), `myRankings/rankingCache.test.ts` (shared run: one start, the replay, the cache
+written after every page left, no sharing across fingerprints, a failed run not kept); `cypress/e2e/rankingsSoFar.cy.ts`
+(Cartethyia's ten teams at My account: rows so far, "N teams so far", the docked box and its count, then the whole table;
+Riley's tier picked mid-solve shows S0R1 rows, never her account S2); `rankings.cy.ts`, `accountRankingsPhone.cy.ts`,
+`phoneLayout.cy.ts`.
+
 ## Riley run seam (Wave 0) — `src/sim/engine/` (2026-10-26)
 
 One shared seam over Riley's engine for the batch-2 pages (energy check, rotation view, ToA clear check): his

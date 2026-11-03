@@ -82,15 +82,23 @@
             </span>
             <span v-else class="wv-kpi__value wv-kpi__value--muted">{{ running ? "…" : "—" }}</span>
           </div>
-          <div class="wv-kpi">
-            <span class="wv-kpi__label">Signatures</span>
-            <span class="wv-kpi__value">{{ kpis.refining + kpis.maxed }}<span class="wv-kpi__of"> held</span></span>
-            <span class="wv-kpi__sub">{{ kpis.maxed }} at R5 · {{ kpis.missing }} not held</span>
+          <!-- while scoring: "…" until a row is in (it read "0 held · 0 at R5 · 0 not held" for seconds), then "so far" -->
+          <div class="wv-kpi" data-test-weapons-kpi-signatures>
+            <span class="wv-kpi__label">Signatures<template v-if="running && rows.length"> · so far</template></span>
+            <template v-if="running && !rows.length">
+              <span class="wv-kpi__value wv-kpi__value--muted">…</span>
+              <span class="wv-kpi__sub">counted as each character is scored</span>
+            </template>
+            <template v-else>
+              <span class="wv-kpi__value">{{ kpis.refining + kpis.maxed }}<span class="wv-kpi__of"> held</span></span>
+              <span class="wv-kpi__sub">{{ kpis.maxed }} at R5 · {{ kpis.missing }} not held</span>
+            </template>
           </div>
           <div class="wv-kpi">
             <span class="wv-kpi__label">Characters scored</span>
-            <span class="wv-kpi__value" data-test-weapons-kpi-scored>{{ rows.length }}<span v-if="rows.length < setUpCount" class="wv-kpi__of"> / {{ setUpCount }}</span></span>
-            <span class="wv-kpi__sub">{{ notSetUp.length ? `${notSetUp.length} more ${notSetUp.length === 1 ? "has" : "have"} no weapon yet` : "every character with a weapon" }}</span>
+            <span v-if="running && !rows.length" class="wv-kpi__value wv-kpi__value--muted" data-test-weapons-kpi-scored>…<span class="wv-kpi__of"> / {{ setUpCount }}</span></span>
+            <span v-else class="wv-kpi__value" data-test-weapons-kpi-scored>{{ rows.length }}<span v-if="rows.length < setUpCount" class="wv-kpi__of"> / {{ setUpCount }}</span></span>
+            <span class="wv-kpi__sub">{{ status.state === "ranking" ? "ranking your roster first" : notSetUp.length ? `${notSetUp.length} more ${notSetUp.length === 1 ? "has" : "have"} no weapon yet` : "every character with a weapon" }}</span>
           </div>
         </div>
 
@@ -103,7 +111,7 @@
             </div>
             <div class="wv-filters" role="group" aria-label="Show">
               <button v-for="f in FILTERS" :key="f.key" type="button" class="wv-chipbtn" :class="{ 'wv-chipbtn--on': prefs.filter === f.key }" :aria-pressed="prefs.filter === f.key" :data-test-weapons-filter="f.key" @click="prefs.filter = f.key">
-                {{ f.label }}<span class="wv-chipbtn__n">{{ counts[f.key] }}</span>
+                {{ f.label }}<span v-if="!running || rows.length" class="wv-chipbtn__n">{{ counts[f.key] }}</span>
               </button>
             </div>
             <label class="wv-select">

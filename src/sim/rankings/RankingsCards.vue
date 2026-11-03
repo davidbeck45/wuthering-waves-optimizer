@@ -6,7 +6,7 @@
       <div v-if="view.phone" class="wt-cards-head" data-test-rankings-cards-head>
         <div class="flex min-w-0 items-center gap-2">
           <p class="min-w-0 flex-1 truncate text-xs">
-            <span class="text-sm font-semibold tabular-nums" data-test-rankings-cards-count>{{ count(view.cards.length) }} team{{ view.cards.length === 1 ? "" : "s" }}</span>
+            <span class="text-sm font-semibold tabular-nums" data-test-rankings-cards-count>{{ count(view.cards.length) }} team{{ view.cards.length === 1 ? "" : "s" }}<template v-if="solving"> so far</template></span>
             <span v-if="view.cards.length" class="opacity-70"> · {{ view.pinned ? "% of pinned" : "% of top" }}</span>
           </p>
           <div class="join shrink-0" role="group" aria-label="Rank by">
@@ -24,6 +24,7 @@
             </button>
           </div>
         </div>
+        <RankingsSolving />
         <p v-if="view.cards.length" class="mt-0.5 text-xs leading-snug opacity-70" data-test-rankings-cards-unit>
           {{ view.mode === "dps" ? "Team damage per second" : "Team avg DMG per rotation" }} · wuwa_calc at
           {{ view.mine ? "your account" : "this tier" }} · <span data-test-rankings-cards-spread>{{ spreadLabel }}</span
@@ -112,8 +113,9 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import type { AccountState } from "../account/accountState";
-import { cardsHost, claimCards, openRankingsTeam, rankingsCards, rankingsRoster, setRankingsTeamMode } from "./controller";
+import { cardsHost, claimCards, openRankingsTeam, rankingsCards, rankingsRoster, rankingsSolving, setRankingsTeamMode } from "./controller";
 import { readResonatorFilters } from "./filterChips";
+import RankingsSolving from "./RankingsSolving.vue";
 import { buildStatus, ownByRileyName, ownStatus, type CardMember, type OwnLike, type OwnStatus } from "./phoneCards";
 import type { TeamMode } from "./compareColumn";
 import RankingsPortrait from "./RankingsPortrait.vue";
@@ -122,6 +124,9 @@ const props = defineProps<{ account: AccountState }>();
 
 const host = cardsHost();
 const view = rankingsCards;
+/** a pass is still solving: the cards are its rows so far. A computed flag, so the list re-renders when it turns on or
+ *  off, not on every team that lands (RankingsSolving.vue shows the count) */
+const solving = computed(() => !!rankingsSolving.value);
 const route = useRoute();
 /** the substat spread every row wears (the bar's Substats, hash `sb=`): named on the list, since My account still
  *  defaults to Riley's ChemX32 rather than the player's own echoes */
@@ -231,6 +236,7 @@ onBeforeUnmount(() => {
   padding: 0.55rem 0.15rem 0;
   color: oklch(var(--bc));
 }
+
 @media (max-width: 767px) {
   /* 40 px tap targets at 130 % text (the audit measured 31 px) */
   .wt-cards-head .btn-xs {

@@ -3,7 +3,8 @@
     <div class="acc-section-head tm__head">
       <h2 class="acc-h2">
         Teams you can field
-        <span class="acc-count">{{ teams.length }}</span>
+        <!-- the ranking is still scoring: the count only grows until it ends -->
+        <span class="acc-count" data-test-account-teams-count>{{ scoring && !teams.length ? "…" : teams.length }}<template v-if="scoring && teams.length"> so far</template></span>
       </h2>
       <RouterLink to="/teams" class="tm__link" data-test-account-teams-editor>Team Rotations</RouterLink>
     </div>
