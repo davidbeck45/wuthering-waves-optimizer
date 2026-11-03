@@ -1666,3 +1666,14 @@ html.wt-ai-docked #wt-app .contain {
   justify-content: safe center;
   overflow-y: auto;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   35. Build my team's "Pick a team" list on a phone (2026-11-03 final gate; BuildTeamPicker.vue). Each row puts three
+       portraits and a chevron beside the name, so one ellipsised line kept "Xuanling · Suisui + …" at 412 px and
+       "Aemeath · M…" at 360. The name takes two lines instead, as the chosen team's card above it (buildTeam.css) and
+       the /my-rankings team rows already do. Three classes: PresetNameLabel's scoped nowrap (two) loads after phone.css. */
+@media (max-width: 767px) {
+  .bt-picker__list .bt-picker__row .wt-preset__text {
+    white-space: normal;
+  }
+}

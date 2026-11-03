@@ -120,6 +120,8 @@ with who is in it, and from 768 px up the Teams cards and leaderboard tiles get 
 `phone.css` § 34 came with the 2026-11-02 desktop audit (track "fix-desktop", section "Desktop and tablet" at the end),
 with its edits to § 16 (the calculator's own scroller from 769 px), § 19 (the caption on every width) and § 24 (more
 H1s under the phone header): a page can no longer widen Ryan's shell, and the docked assistant narrows the page column.
+`phone.css` § 35 came from the batch's final gate (2026-11-03): Build my team's "Pick a team" rows let the team's
+name take two lines on a phone ("Xuanling · Suisui + Chisa" instead of "Xuanling · Sui…" at 360 px).
 Visual checks: `shot.mjs … --width 384 --height 854 --mobile` (touch + DPR 3), `--files "<selector>=a.jpg,b.jpg"`
 for the importer, `--eval-file` with an overflow probe (the session scratchpad has one: innermost visible elements
 whose right edge passes `clientWidth`).
