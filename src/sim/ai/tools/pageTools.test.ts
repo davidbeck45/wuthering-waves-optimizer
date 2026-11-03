@@ -70,7 +70,7 @@ describe("echo_lab", () => {
     expect(JSON.parse(bad.content).error).toMatch(/needs a character/);
     const unknown = await runTool("echo_lab", { show: "burn", character: null }, ctxWith());
     expect(JSON.parse(unknown.content).error).toMatch(/show must be one of feed, keep, spare, reroll/);
-  });
+  }, 60_000); // the re-roll pass scores every equipped echo: 4-5 s on CI's 2-core runner, over vitest's 5 s default
 });
 
 describe("weapon_value", () => {
