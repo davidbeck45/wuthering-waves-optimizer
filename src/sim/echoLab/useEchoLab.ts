@@ -103,6 +103,9 @@ const savedLab = savedSlot<StoredCache>("echoLab", CACHE_VERSION, isStoredCache)
 /** when the pass shown was saved (ms), if it came from this browser's saved results rather than this visit or tab */
 const passSavedAt = ref<number | null>(null);
 let restoring: { fingerprint: string; done: Promise<void> } | null = null;
+/** what the saved copy holds as far as this tab knows (fingerprint, pass, benchmarks, Tuner plan): what it last wrote,
+ *  or what it just read back */
+let lastSaved: readonly unknown[] = [];
 
 /** Fill in what this browser saved for this account state (pass, benchmarks, Tuner plan), never over a result this
  *  tab already has. Once per fingerprint per page load; every job awaits it before deciding to run. */
@@ -118,6 +121,9 @@ function restoreSaved(fingerprint: string): Promise<void> {
     }
     if (!benchmarks.value && stored.benchmarks) benchmarks.value = stored.benchmarks;
     if (!tunerPlan.value && stored.tunerPlan) tunerPlan.value = stored.tunerPlan;
+    // the tab now shows exactly what was saved: a roll-chip or Farm next write next must not re-save it as "just now"
+    const parts = [fingerprint, pass.value, benchmarks.value, tunerPlan.value];
+    if (parts[1] === (stored.pass ?? null) && parts[2] === (stored.benchmarks ?? null) && parts[3] === (stored.tunerPlan ?? null)) lastSaved = parts;
   });
   restoring = { fingerprint, done };
   return done;
@@ -132,9 +138,6 @@ function readCache(): StoredCache | null {
     return null;
   }
 }
-
-/** what the saved copy last got (fingerprint, pass, benchmarks, Tuner plan) */
-let lastSaved: readonly unknown[] = [];
 
 /** The browser-wide copy keeps what `restoreSaved` paints: the pass, the benchmarks and the Tuner plan. It is not
  *  written when none of them is here (a roll-chip or Farm next write from another page must never blank a saved

@@ -163,6 +163,40 @@ function editSaved(cache: string, edit: Edit): Cypress.Chainable<number> {
   );
 }
 
+/** When each saved record of `cache` was saved (ms), from the database's meta store, once the list has held still for
+ *  `quietMs` (a write still on its way lands within a few ms; this is how a test sees that none came). */
+function savedTimes(cache: string, quietMs = 0): Cypress.Chainable<number[]> {
+  return cy.window({ log: false }).then(
+    { timeout: quietMs + 15000 },
+    (win) =>
+      new Cypress.Promise<number[]>((resolve, reject) => {
+        let last = "";
+        let since = Date.now();
+        const once = () => {
+          const r = win.indexedDB.open(DB);
+          r.onerror = () => reject(r.error);
+          r.onsuccess = () => {
+            const db = r.result;
+            const req = db.transaction("meta", "readonly").objectStore("meta").getAll();
+            req.onsuccess = () => {
+              db.close();
+              const times = (req.result as Array<{ cache: string; savedAt: number }>).filter((m) => m.cache === cache).map((m) => m.savedAt);
+              const now = JSON.stringify(times);
+              if (now !== last) [last, since] = [now, Date.now()];
+              if (Date.now() - since >= quietMs) resolve(times);
+              else setTimeout(once, 100);
+            };
+            req.onerror = () => {
+              db.close();
+              reject(req.error);
+            };
+          };
+        };
+        once();
+      }),
+  );
+}
+
 const newTab = () => {
   cy.window().then((win) => win.sessionStorage.clear());
   cy.reload();
@@ -249,6 +283,36 @@ describe("saved results", () => {
     cy.get("[data-test-echo-lab-meta]", { timeout: 10000 }).should("have.attr", "data-saved-result");
     cy.get("[data-test-echo-lab-meta]").should("contain.text", "saved just now");
     cy.get("@rows").then((rows) => cy.get("[data-test-echo-lab-benchmark-row]").should("have.length", rows as unknown as number));
+    cy.window().its("__appeared").should("eq", false);
+  });
+
+  it("/inventory's roll chips, rated in a new tab, leave Echo Lab's saved pass as it was saved", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab", seedLab);
+    cy.get("[data-test-echo-lab-meta]", { timeout: 60000 }).should("exist").and("not.have.attr", "data-saved-result");
+    waitSaved("echoLab", (values) => values.some((v) => v.pass)).should("eq", true);
+    savedTimes("echoLab").then((times) => {
+      expect(times, "one saved Echo Lab record").to.have.length(1);
+      cy.wrap(times[0]).as("savedAt");
+    });
+
+    // a new tab on the inventory: its chips read the saved pass, rate every echo, and keep the ratings in the tab copy
+    cy.window().then((win) => win.sessionStorage.clear());
+    cy.visit("/inventory", seedLab);
+    cy.get('[data-test-inventory-quality-status][data-state="done"]', { timeout: 90000 }).should("exist");
+    cy.window().should((win) => {
+      const tab = JSON.parse(win.sessionStorage.getItem("wtplus:echoLab:cache") ?? "{}") as { ratings?: unknown[] };
+      expect(tab.ratings?.length ?? 0, "roll ratings in the tab copy").to.be.greaterThan(0);
+    });
+    // a write would land within a few ms of the tab copy's: once the saved list holds still, it is the record from before
+    cy.get("@savedAt").then((before) => savedTimes("echoLab", 1500).should("deep.equal", [before as unknown as number]));
+    waitSaved("echoLab", (values) => values.every((v) => v.pass && !("ratings" in v))).should("eq", true);
+
+    // and Echo Lab in the next tab still paints it without running the pass
+    watchAppears("[data-test-echo-lab-progress]");
+    cy.window().then((win) => win.sessionStorage.clear());
+    cy.visit("/echo-lab", seedLab);
+    cy.get("[data-test-echo-lab-meta]", { timeout: 10000 }).should("have.attr", "data-saved-result");
     cy.window().its("__appeared").should("eq", false);
   });
 
