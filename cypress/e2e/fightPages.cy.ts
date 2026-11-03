@@ -95,11 +95,28 @@ describe("fight pages", () => {
       },
     });
     cy.get("html").should("have.attr", "data-theme-style", "light");
-    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-goals] .toa-star').first().should("have.css", "color", "rgb(217, 119, 6)");
+    // the stars take the theme's warning colour made dark enough to read as text (a11y.css `--wt-text-wa`; it was a
+    // flat #d97706, 2.95 : 1 on white), not DaisyUI's own warning yellow, and nothing else on the page turns amber
+    const colourOf = (doc: Document, css: string): string => {
+      const probe = doc.createElement("span");
+      probe.style.color = css;
+      doc.body.appendChild(probe);
+      const colour = doc.defaultView!.getComputedStyle(probe).color;
+      probe.remove();
+      return colour;
+    };
+    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-goals] .toa-star').first().should(($star) => {
+      const doc = $star[0].ownerDocument;
+      const star = doc.defaultView!.getComputedStyle($star[0]).color;
+      expect(star, "the star's colour").to.eq(colourOf(doc, "var(--wt-text-wa)"));
+      expect(star, "not DaisyUI's warning yellow").not.to.eq(colourOf(doc, "oklch(var(--wa))"));
+    });
     cy.get('[data-test-toa-floor="hazard-1"]').then(($card) => {
-      const win = $card[0].ownerDocument.defaultView!;
-      expect(win.getComputedStyle($card[0].ownerDocument.documentElement).color, "the page's own text colour").not.to.eq("rgb(217, 119, 6)");
-      expect(win.getComputedStyle($card[0]).color, "a floor card's text").not.to.eq("rgb(217, 119, 6)");
+      const doc = $card[0].ownerDocument;
+      const win = doc.defaultView!;
+      const amber = colourOf(doc, "var(--wt-text-wa)");
+      expect(win.getComputedStyle(doc.documentElement).color, "the page's own text colour").not.to.eq(amber);
+      expect(win.getComputedStyle($card[0]).color, "a floor card's text").not.to.eq(amber);
     });
   });
 

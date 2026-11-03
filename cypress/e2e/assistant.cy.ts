@@ -248,7 +248,9 @@ describe("Claude assistant", { scrollBehavior: "center" }, () => {
     cy.get("[data-test-palette-input]").type("why is my team lower than riley's?");
     cy.get("[data-test-palette-item=ask]").should("have.attr", "aria-selected", "true");
     cy.get("[data-test-palette-input]").type("{enter}");
-    cy.get("[data-test-ai-onboarding]").should("be.visible");
+    // the waiting question sits above the onboarding now, which runs past the fold of a 720 px window
+    cy.get("[data-test-ai-parked]").should("be.visible").and("contain.text", "why is my team lower than riley's?");
+    cy.get("[data-test-ai-onboarding]").scrollIntoView().should("be.visible");
   });
 
   it("fits a 412 px phone at 130 % text as a bottom sheet", () => {
