@@ -266,7 +266,7 @@ import "./buildAccount.css";
 const STEPS = ["Teams", "Plan", "Review & save"];
 // a phone shows the short words (One team does the same): "Review & save" was cut to "Review & …"
 const STEPS_SHORT = ["Teams", "Plan", "Review"];
-const PHASE_TEXT: Record<AccountMemberProgress["phase"], string> = { waiting: "Waiting", prepare: "Setting up", search: "Searching your echoes", improve: "Improving", verify: "Checking the build", done: "Done" };
+const PHASE_TEXT: Record<AccountMemberProgress["phase"], string> = { waiting: "Waiting", prepare: "Setting up", search: "Searching your echoes", searched: "Searched", improve: "Improving", verify: "Checking the build", done: "Done" };
 
 const characterStore = useCharacterStore();
 const { confirm } = useConfirm();

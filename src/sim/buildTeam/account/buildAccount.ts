@@ -12,7 +12,7 @@ import { resolveCharactersForBuild } from "../../../calculator/buildOverride";
 import type { TeamEnemyConfig } from "../../../calculator/buildCharacterContext";
 import { RANKING_ENEMY } from "../../myRankings/rankRoster";
 import { resolveTeamCharacters } from "../../teamContext/resolveTeam";
-import type { Candidate } from "../allocate";
+import type { AllocationApi, Candidate } from "../allocate";
 import { draftBuildFields, filterPoolIds, finishMember, memberSearchApi, prepareMember, teamTotalOf, teamTotalWithDrafts, wornByMap, type ActiveMember, type BuildTeamHooks, type MemberOutcome, type SearchContext, type TeamSpec } from "../buildTeam";
 import type { BuildOptions } from "../constraints";
 import type { OptimizerBackend } from "../headlessOptimizer";
@@ -46,7 +46,8 @@ export interface BuildAccountInput {
   budgetMs?: number;
 }
 
-export type AccountPhase = "prepare" | "search" | "improve" | "verify";
+/** "searched": the member's first-pass search is over (the run list stops saying "Searching" for them) */
+export type AccountPhase = "prepare" | "search" | "searched" | "improve" | "verify";
 
 export interface BuildAccountHooks {
   signal?: AbortSignal;
@@ -112,6 +113,9 @@ export interface BuildAccountResult {
     rounds: number;
     conflicts: number;
     ms: number;
+    /** members left without a build while another plan build held an echo they wear today: they keep today's echoes,
+     *  so those were locked and the account solved again without them (characters, in the order found) */
+    locked: string[];
   };
   enemy: TeamEnemyConfig;
   ms: number;
@@ -200,32 +204,52 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   // 2. the account solver over the members who build
   const search: SearchContext = { echoes, echoById, options: opts, wornOutside, keptInTeam, backend, hooks: teamHooks };
   const { api, combos } = memberSearchApi(active, search);
-  const pools = active.map((a) => filterPoolIds(echoes, a.levels[a.levels.length - 1]!.c, wornOutside));
+  // members dropped from the solve (see step 3b): no build, and their echoes are locked like a non-builder's
+  const dropped = new Set<number>();
+  const solveApi: AllocationApi = { ...api, solve: (m, taken) => (dropped.has(m) ? Promise.resolve(null) : api.solve(m, taken)) };
   // today's weighted value of the members who build (Σ weight × the calculator's damage today): ≈ Σ team weights
   const baseline = active.reduce((n, a, i) => n + weights[i]! * a.before, 0);
-  hooks.onStage?.({ stage: "greedy" });
-  const solved = await solveAccount(api, {
-    members: active.length,
-    order: active.map((_, i) => i),
-    weights,
-    pools,
-    budgetMs: input.budgetMs,
-    // a move has to be worth 0.05 % of the account's weighted damage: no echoes moved for noise
-    minGain: MIN_GAIN * baseline,
-    isCancelled: () => !!hooks.signal?.aborted,
-    shouldStop: hooks.shouldStop,
-    onStep: (s) => {
-      if (s.phase === "improve") {
-        hooks.onStage?.({ stage: "improve", accepted: s.accepted, round: s.round });
-        for (const m of s.members) hooks.onProgress?.({ characterId: active[m]!.job.characterId, phase: "improve", processed: combos.get(m) ?? 0, generated: 0 });
-      }
-    },
-  });
+  const budget = input.budgetMs ?? 60_000;
+  const searched = (ms: Iterable<number>): void => {
+    for (const m of ms) hooks.onProgress?.({ characterId: active[m]!.job.characterId, phase: "searched", processed: combos.get(m) ?? 0, generated: 0 });
+  };
+  const runSolve = async (budgetMs: number): Promise<AccountSolveResult> => {
+    // the pools are read again each time: a dropped member's echoes are out of everyone's
+    const pools = active.map((a, i) => (dropped.has(i) ? new Set<string>() : filterPoolIds(echoes, a.levels[a.levels.length - 1]!.c, wornOutside)));
+    hooks.onStage?.({ stage: "greedy" });
+    let lastGreedy: number | null = null;
+    let lastPair: readonly number[] = [];
+    const out = await solveAccount(solveApi, {
+      members: active.length,
+      order: active.map((_, i) => i).filter((i) => !dropped.has(i)),
+      weights,
+      pools,
+      budgetMs,
+      // a move has to be worth 0.05 % of the account's weighted damage: no echoes moved for noise
+      minGain: MIN_GAIN * baseline,
+      isCancelled: () => !!hooks.signal?.aborted,
+      shouldStop: hooks.shouldStop,
+      onStep: (s) => {
+        if (s.phase === "greedy") {
+          if (lastGreedy != null) searched([lastGreedy]);
+          lastGreedy = s.member;
+        } else if (s.phase === "improve") {
+          if (lastGreedy != null) searched([lastGreedy]);
+          lastGreedy = null;
+          searched(lastPair.filter((m) => !s.members.includes(m)));
+          lastPair = s.members;
+          hooks.onStage?.({ stage: "improve", accepted: s.accepted, round: s.round });
+          for (const m of s.members) hooks.onProgress?.({ characterId: active[m]!.job.characterId, phase: "improve", processed: combos.get(m) ?? 0, generated: 0 });
+        }
+      },
+    });
+    searched(active.map((_, i) => i).filter((i) => !dropped.has(i)));
+    return out;
+  };
 
   // 3. the calculator decides: each team's total with every new build pinned, for the local search's allocation and,
   //    when it changed something, for the greedy's; the account keeps whichever scores more (the optimizer scores each
   //    member on their own part of the rotation, the team total also sees what a support's echoes do for the others)
-  hooks.onStage?.({ stage: "verify" });
   const memberOfActive = (m: number): AccountMember => members[activeMember[m]!]!;
   const draftOf = (m: number, pick: Candidate | null): Record<string, any> | null => {
     if (!pick) return null;
@@ -249,11 +273,37 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   };
   const rel = (after: number, before: number): number => (before > 0 ? after / before : 1);
   const scoreOf = (totals: ReadonlyArray<{ avg: number }>): number => teams.reduce((n, t, i) => n + t.weight * rel(totals[i]!.avg, t.before), 0);
-  const changed = solved.picks.some((p, m) => (p?.ids.join() ?? "") !== (solved.greedy.picks[m]?.ids.join() ?? ""));
-  const searchTotals = await totalsFor(solved.picks);
-  const greedyTotals = changed ? await totalsFor(solved.greedy.picks) : searchTotals;
-  const keptGreedy = changed && scoreOf(greedyTotals) > scoreOf(searchTotals);
-  const picks = keptGreedy ? solved.greedy.picks : solved.picks;
+  const solveStart = Date.now();
+  const locked: string[] = [];
+  let solved: AccountSolveResult;
+  let changed: boolean;
+  let searchTotals: Array<{ avg: number; dps: number | null }>;
+  let greedyTotals: Array<{ avg: number; dps: number | null }>;
+  let keptGreedy: boolean;
+  let picks: Array<Candidate | null>;
+  for (;;) {
+    solved = await runSolve(Math.max(0, budget - (Date.now() - solveStart)));
+    hooks.onStage?.({ stage: "verify" });
+    changed = solved.picks.some((p, m) => (p?.ids.join() ?? "") !== (solved.greedy.picks[m]?.ids.join() ?? ""));
+    searchTotals = await totalsFor(solved.picks);
+    greedyTotals = changed ? await totalsFor(solved.greedy.picks) : searchTotals;
+    keptGreedy = changed && scoreOf(greedyTotals) > scoreOf(searchTotals);
+    picks = keptGreedy ? solved.greedy.picks : solved.picks;
+    // 3b. a member the plan leaves without a build keeps today's echoes — echoes nobody locked, since they were set up
+    //     to build. When another plan build holds one, "no echo worn twice" would not hold: lock that member's echoes
+    //     (as for a member who never starts) and solve again without them. Each pass drops one member at least.
+    const held = new Set(picks.flatMap((p) => p?.ids ?? []));
+    const clash = active.map((_, i) => i).filter((i) => !dropped.has(i) && !picks[i] && [...(wornInTeams.get(active[i]!.job.characterId) ?? [])].some((id) => held.has(id)));
+    if (!clash.length) break;
+    for (const i of clash) {
+      dropped.add(i);
+      locked.push(active[i]!.job.characterId);
+      for (const id of wornInTeams.get(active[i]!.job.characterId) ?? []) {
+        keptInTeam.add(id);
+        wornOutside.add(id);
+      }
+    }
+  }
   const finalTotals = keptGreedy ? greedyTotals : searchTotals;
   teams.forEach((t, i) => {
     t.after = finalTotals[i]!.avg;
@@ -270,6 +320,8 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   for (let m = 0; m < active.length; m++) {
     check();
     await finishMember(m, active, picks, memberOfActive(m), finish);
+    // the first pass left them nothing after the members before them took the echoes they need
+    if (dropped.has(m)) memberOfActive(m).message = "No new build is left for them once the members before them take the echoes they need, so they keep the echoes they wear today and no other build in the plan takes those.";
   }
 
   // 5. echoes that change hands, and the account's score
@@ -298,7 +350,8 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
       stoppedBy: solved.stoppedBy,
       rounds: solved.rounds,
       conflicts: solved.conflicts,
-      ms: solved.ms,
+      ms: Date.now() - solveStart,
+      locked,
     },
     enemy,
     ms: Date.now() - t0,

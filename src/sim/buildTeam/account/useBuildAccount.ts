@@ -244,6 +244,8 @@ export function useBuildAccount() {
       result.value = out;
       phase.value = "result";
     } catch (e) {
+      // a run cancelled and replaced by a newer one (Cancel, then Plan again) leaves the page to that run
+      if (controller !== ctrl) return;
       if ((e as { name?: string })?.name === "AbortError") {
         phase.value = "choose";
         return;
@@ -251,7 +253,8 @@ export function useBuildAccount() {
       error.value = e instanceof Error ? e.message : String(e);
       phase.value = "error";
     } finally {
-      stopTicker();
+      // the newer run owns the seconds ticker; this run's workers are its own
+      if (controller === ctrl) stopTicker();
       backend.dispose?.();
     }
   }

@@ -132,6 +132,45 @@ describe("buildAccount on the engine", () => {
   });
 });
 
+describe("a member the plan leaves without a build", () => {
+  // Ciaccona picks first, and her plan's Crit Rate 4-cost and HP% 1-costs are exactly the five echoes Cartethyia wears
+  // (the other Crit Rate Fleurdelys is left out of this inventory): the first pass hands all five to Ciaccona and leaves
+  // Cartethyia without a build. She keeps today's echoes, so they are locked and the account is solved again: no plan
+  // build may hold one of them, and Ciaccona builds from the Gusts of Welkin echoes nobody keeps. (No improvement
+  // pass, budget 0: it might hand the echoes back by itself; the lock is the guarantee when it does not.)
+  const cartIds = new Set(Object.values(base.Cartethyia.echoes).map((s: any) => String(s.echoId)));
+  const inventory = echoes.filter((e) => cartIds.has(String(e.echoId)) || e.echoSet === "GustsofWelkin");
+  const plans = plansFor(teamA).map((p) => (p.characterId === "Ciaccona" ? { ...p, mainStats: parseMainStats("41111 CR hp hp hp hp") } : p));
+  let r: BuildAccountResult;
+  beforeAll(async () => {
+    r = await buildAccount(
+      {
+        characters,
+        inventory: { echoes: inventory, equipped: Object.fromEntries(Object.values(base.Cartethyia.echoes).map((s: any, i) => [s.echoId, { Cartethyia: i }])) },
+        teams: [{ spec: teamA, weight: 1, plans, memberOrder: [1, 0, 2] }],
+        options: DEFAULT_OPTIONS,
+        budgetMs: 0,
+      },
+      inlineBackend(),
+    );
+  }, 120_000);
+
+  it("keeps her echoes out of every other build and says so", () => {
+    const cart = r.members.find((m) => m.characterId === "Cartethyia")!;
+    const ciac = r.members.find((m) => m.characterId === "Ciaccona")!;
+    expect(cart.status).toBe("noLoadout");
+    expect(cart.after).toBeNull();
+    expect(r.search.locked).toEqual(["Cartethyia"]);
+    expect(cart.message).toMatch(/they keep the echoes they wear today and no other build in the plan takes those/);
+    // Ciaccona still gets a build, from the echoes nobody keeps
+    expect(ciac.status).toBe("ok");
+    const held = ciac.after!.picks.map((p) => String(p.echo.echoId));
+    expect(held.filter((id) => cartIds.has(id))).toEqual([]);
+    expect(r.moves).toEqual([]);
+    expect(accountReuse(r)).toEqual([]);
+  });
+});
+
 describe("default teams and weights", () => {
   const row = (id: string, source: AccountTeamChoice["source"], ids: string[], avg: number): AccountTeamChoice => ({ id, name: id, source, characterIds: ids, avgDamage: avg, dps: null, duplicates: 0, spec: { id: null, name: id, characterIds: ids } });
   it("your saved teams first (even sharing a member), then presets that share nobody, at most four, strongest first", () => {

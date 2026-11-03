@@ -32,7 +32,7 @@ const member = (over: Partial<AccountMember>): AccountMember =>
     ...over,
   }) as AccountMember;
 
-const search = (over: Partial<BuildAccountResult["search"]> = {}): BuildAccountResult["search"] => ({ baseline: 1, kept: "search", greedy: 1, value: 1, moves: [], stoppedBy: "converged", rounds: 1, conflicts: 0, ms: 10, ...over });
+const search = (over: Partial<BuildAccountResult["search"]> = {}): BuildAccountResult["search"] => ({ baseline: 1, kept: "search", greedy: 1, value: 1, moves: [], stoppedBy: "converged", rounds: 1, conflicts: 0, ms: 10, locked: [], ...over });
 
 describe("account view", () => {
   it("says changes as signed percentages with a tone", () => {

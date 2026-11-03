@@ -384,13 +384,16 @@ export function registerPlusCommands(program: Command): void {
       .option("--no-auto-buffs", "team buffs from each character's own Team Buffs panel (upstream's behaviour)"),
   ).action(
     guarded(async (options: CommonOptions & { teams?: string; weights?: string; budget?: string; list?: boolean; anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; autoBuffs?: boolean }) => {
+      // "--budget abc" read as NaN, and a NaN budget never ends the local search
+      const budget = options.budget != null ? Number(options.budget) : undefined;
+      if (budget !== undefined && !(Number.isFinite(budget) && budget >= 0)) throw new Error("--budget must be a number of seconds, 0 or more");
       const exp = load(options);
       const { runBuildAccount, printBuildAccount, jsonOf } = await import("../buildTeam/account/buildAccountCli");
       const out = await quiet(() =>
         runBuildAccount(exp, {
           teams: options.teams,
           weights: options.weights,
-          budget: options.budget != null ? Number(options.budget) : undefined,
+          budget,
           list: !!options.list,
           useSets: !options.anySet,
           useMainStats: !options.anyMainStat,
