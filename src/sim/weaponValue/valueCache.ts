@@ -6,6 +6,10 @@
 //
 // The spec asked for `accountKeyOf` as the key; that fingerprints sequences, weapons and ranks only, so an echo edit
 // would have served stale numbers. The ranking fingerprint covers everything the engine reads.
+//
+// Since 2026-11-02 a cache created with a `saved` name also keeps each value in this browser's saved results
+// (persist/savedResults.ts, IndexedDB, under the same key + the app build); `readSaved` reads it back in a new tab.
+import { onSavedResultsCleared, savedSlot, type Saved } from "../persist/savedResults";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
@@ -22,14 +26,47 @@ export interface ValueCache<T> {
   read(key: string, storage?: StorageLike | null): T | null;
   /** false when sessionStorage refused it (module memory still holds it) */
   write(key: string, value: T, storage?: StorageLike | null): boolean;
+  /** the value this browser saved for `key` and this app build (null on a miss, or for a cache without a `saved`
+   *  name); a hit becomes this tab's value too */
+  readSaved(key: string, storage?: StorageLike | null): Promise<Saved<T> | null>;
   clearMemory(): void;
+  /** stop answering Settings › Clear: a cache made per component (the selector's) calls it on unmount, so the
+   *  hook does not keep the component's last value alive after it is gone */
+  dispose(): void;
 }
 
-/** One cache slot under `storageKey` (the last value written wins), versioned by `version`. */
-export function createValueCache<T>(storageKey: string, version: number, isValid: (value: unknown) => boolean = () => true): ValueCache<T> {
+/** One cache slot under `storageKey` (the last value written wins), versioned by `version`; with `saved`, every value
+ *  is also kept in this browser's saved results under that cache name. */
+export function createValueCache<T>(storageKey: string, version: number, isValid: (value: unknown) => boolean = () => true, saved?: string): ValueCache<T> {
   /* eslint-enable no-unused-vars */
   let memory: { key: string; value: T } | null = null;
   const full = (key: string): string => `v${version}:${key}`;
+  const slot = saved ? savedSlot<T>(saved, version, isValid) : null;
+  // Settings › Clear saved results: this tab's copies go too
+  const off = onSavedResultsCleared(() => {
+    memory = null;
+    try {
+      sessionStore()?.removeItem(storageKey);
+    } catch {
+      /* nothing to do */
+    }
+  });
+  const keep = (key: string, value: T, storage: StorageLike | null): boolean => {
+    const k = full(key);
+    memory = { key: k, value };
+    if (!storage) return false;
+    try {
+      storage.setItem(storageKey, JSON.stringify({ key: k, value }));
+      return true;
+    } catch {
+      try {
+        storage.removeItem(storageKey);
+      } catch {
+        /* nothing to do */
+      }
+      return false;
+    }
+  };
   return {
     read(key, storage = sessionStore()) {
       const k = full(key);
@@ -45,23 +82,19 @@ export function createValueCache<T>(storageKey: string, version: number, isValid
       }
     },
     write(key, value, storage = sessionStore()) {
-      const k = full(key);
-      memory = { key: k, value };
-      if (!storage) return false;
-      try {
-        storage.setItem(storageKey, JSON.stringify({ key: k, value }));
-        return true;
-      } catch {
-        try {
-          storage.removeItem(storageKey);
-        } catch {
-          /* nothing to do */
-        }
-        return false;
-      }
+      if (slot) void slot.write(key, value);
+      return keep(key, value, storage);
+    },
+    async readSaved(key, storage = sessionStore()) {
+      const hit = slot ? await slot.read(key) : null;
+      if (hit) keep(key, hit.value, storage);
+      return hit;
     },
     clearMemory() {
       memory = null;
+    },
+    dispose() {
+      off();
     },
   };
 }

@@ -1,6 +1,7 @@
 // Wuthering Tools+ — the /account page's data: the Account State from the stores, the roster ranking (the
 // /my-rankings cache when it holds this exact data, else a progressive rankRoster run), then the investment plan
-// on top of it (its own cache, keyed by the same fingerprint). Both runs stay on the main thread, in slices: the
+// on top of it (its own cache, keyed by the same fingerprint). Either cache missing in this tab, the result this browser
+// saved for the same fingerprint and app build (persist/savedResults.ts) is painted instead of a run. Both runs stay on the main thread, in slices: the
 // ranking yields between characters and teams, the plan every ~12 ms of engine work, so the page never freezes.
 import { erNeedsKey, erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
@@ -10,11 +11,11 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, writeCachedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "../myRankings/rankingCache";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "./accountState";
 import { investPlan, type InvestItem, type InvestPlan, type InvestProgress } from "./investPlan";
-import { readCachedPlan, writeCachedPlan } from "./investCache";
+import { readCachedPlan, readSavedPlan, writeCachedPlan } from "./investCache";
 
 export type RunState = "idle" | "running" | "done" | "error";
 
@@ -23,13 +24,15 @@ export interface RunStatus {
   done: number;
   total: number;
   label: string;
-  /** served from this tab's cache instead of scored on this visit */
+  /** served from this tab's cache or the saved results instead of scored on this visit */
   restored: boolean;
+  /** when the saved result shown was saved (ms), set when it came from this browser's saved results, not this tab */
+  savedAt: number | null;
   computedAt: string | null;
   error: string | null;
 }
 
-const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, computedAt: null, error: null });
+const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, savedAt: null, computedAt: null, error: null });
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(toRaw(value) ?? null)) as T;
 
 export function useAccountData() {
@@ -78,11 +81,24 @@ export function useAccountData() {
   let rankingFp = "";
   let unmounted = false;
 
-  async function runPlan(fp: string, gen: number, data: { characters: any; echoes: any[]; teams: any[] }, base: RosterRanking, force: boolean): Promise<void> {
+  async function runPlan(rankingFp: string, gen: number, data: { characters: any; echoes: any[]; teams: any[] }, base: RosterRanking, force: boolean): Promise<void> {
+    // Wuthering Tools+ saved results: the plan this browser saved for this exact ranking paints at once, before the
+    // energy check answers; the ER needs it was planned against are confirmed below (same data and build give the
+    // same needs, so it almost always holds — when not, it is planned again as before)
+    const saved = force ? null : await readSavedPlan(rankingFp);
+    if (gen !== generation) return;
+    if (saved) {
+      plan.value = saved.plan;
+      planStatus.value = { ...idle(), state: "done", restored: true, savedAt: saved.savedAt, computedAt: saved.plan.computedAt };
+    }
     // Wuthering Tools+ energy check: ER counts as a floor in the gains, so the cache keys on the needs too
     const erNeeds = await erNeedsOf(useEnergyNeeds()).catch(() => ({}));
     if (gen !== generation) return;
-    fp = `${fp}|er:${erNeedsKey(erNeeds)}`;
+    const fp = `${rankingFp}|er:${erNeedsKey(erNeeds)}`;
+    if (saved?.key === fp) {
+      writeCachedPlan(fp, saved.plan); // this tab's copy (already saved)
+      return;
+    }
     const cached = force ? null : readCachedPlan(fp);
     if (cached) {
       plan.value = cached;
@@ -107,7 +123,7 @@ export function useAccountData() {
       });
       if (gen !== generation || result.cancelled) return;
       plan.value = result;
-      writeCachedPlan(fp, result);
+      writeCachedPlan(fp, result, undefined, rankingFp);
       planStatus.value = { ...idle(), state: "done", computedAt: result.computedAt, done: result.characters, total: result.characters, error: result.errors.length ? `${result.errors.length} scoring errors` : null };
     } catch (err) {
       if (gen === generation) planStatus.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
@@ -129,9 +145,15 @@ export function useAccountData() {
     rankingFp = fp;
     const data = { characters: clone(characters.value ?? {}), echoes: clone(inventoryStore.echoes ?? []), teams: clone(teams.value ?? []) };
     let base = force ? null : readCachedRanking(fp);
+    let savedAt: number | null = null;
+    if (!base && !force) {
+      const saved = await readSavedRanking(fp);
+      if (gen !== generation) return;
+      if (saved) ({ ranking: base, savedAt } = saved);
+    }
     if (base) {
       ranking.value = base;
-      rankingStatus.value = { ...idle(), state: "done", restored: true, computedAt: base.computedAt };
+      rankingStatus.value = { ...idle(), state: "done", restored: true, savedAt, computedAt: base.computedAt };
     } else {
       ranking.value = null;
       plan.value = null;

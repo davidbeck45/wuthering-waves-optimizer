@@ -25,8 +25,13 @@
           <p>Swaps keep every active set bonus and any Healing Bonus, and lose at most one Energy Regen roll (12.4), because a damage engine values none of team buffs, healing and Energy Regen.</p>
           <p class="opacity-70">Keep: an upgrade for someone, worn, or worth tuning. Spare: within 2 % of its best owner's echo, a gamble to tune, or good substats with no slot today. Feed: no gain for anyone.</p>
         </EchoLabPopover>
-        <span v-if="pass && !passStatus.running" class="text-xs opacity-60 max-sm:flex-1" data-test-echo-lab-meta>
-          {{ pass.bestOwner.scorings.toLocaleString("en-US") }} engine runs · {{ passStatus.cached ? "cached" : `${(pass.ms / 1000).toFixed(1)} s` }}
+        <span
+          v-if="pass && !passStatus.running"
+          class="text-xs opacity-60 max-sm:flex-1"
+          :data-saved-result="passSavedAt ?? undefined"
+          :title="savedNote.title || undefined"
+          data-test-echo-lab-meta>
+          {{ pass.bestOwner.scorings.toLocaleString("en-US") }} engine runs · {{ savedNote.text ?? (passStatus.cached ? "cached" : `${(pass.ms / 1000).toFixed(1)} s`) }}
         </span>
         <button
           v-if="canRun"
@@ -165,6 +170,7 @@ import EchoLabVerdicts from "./EchoLabVerdicts.vue";
 import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilters } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import { useSavedNote } from "../persist/useSavedNote";
 import "./echoLab.css";
 
 type TabId = "verdicts" | "tune" | "plan" | "farm" | "reroll" | "benchmark";
@@ -180,7 +186,9 @@ useDocumentTitle(
 const route = useRoute();
 const router = useRouter();
 const lab = useEchoLab();
-const { pass, passStatus, benchmarks, benchStatus, tunerPlan, tunerStatus, farm, farmStatus } = lab;
+const { pass, passStatus, passSavedAt, benchmarks, benchStatus, tunerPlan, tunerStatus, farm, farmStatus } = lab;
+// Wuthering Tools+ saved results: a pass read back from this browser says when it was saved
+const savedNote = useSavedNote(() => passSavedAt.value);
 const activeCharacter = computed(() => (useCharacterStore() as unknown as { activeCharacter: string | null }).activeCharacter ?? null);
 
 const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 0);

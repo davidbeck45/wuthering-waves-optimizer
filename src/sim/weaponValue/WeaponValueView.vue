@@ -182,8 +182,8 @@
             <li>Numbers are this app's engine, never wuwa_calc's DPS. Dual-mode kits are scored in the mode their build is saved in.</li>
           </ul>
         </details>
-        <p v-if="result" class="wv-foot">
-          Scored {{ new Date(result.computedAt).toLocaleString() }}{{ status.restored ? " (kept for this tab)" : "" }} · {{ result.rows.length }} characters
+        <p v-if="result" class="wv-foot" :data-saved-result="status.savedAt ?? undefined">
+          Scored {{ new Date(result.computedAt).toLocaleString() }}<span v-if="savedNote.text" :title="savedNote.title"> ({{ savedNote.text }})</span>{{ !savedNote.text && status.restored ? " (kept for this tab)" : "" }} · {{ result.rows.length }} characters
           <span v-if="unscoredCount || result.errors.length" class="wv-foot__warn" :title="result.errors.join('\n')" data-test-weapons-errors>· {{ unscoredCount ? `${unscoredCount} could not be scored` : `${result.errors.length} team${result.errors.length === 1 ? "" : "s"} could not be scored` }}</span>
           · enemy level 100, 20 % RES ·
           tier lists elsewhere are generic; these are your builds. Guides:
@@ -256,6 +256,7 @@ import { characterShortName } from "../display/names";
 import MyRankingsEmpty from "../myRankings/MyRankingsEmpty.vue";
 import WeaponValueBar from "./WeaponValueBar.vue";
 import { useWeaponValueData } from "./useWeaponValueData";
+import { useSavedNote } from "../persist/useSavedNote";
 import { PREFS_KEY, at, axisOf, axisTicks, barModel, filterBars, filterCounts, kpisOf, pctFine, readPrefs, sortBars, unscored, type FilterKey, type Scope, type SortKey, type WeaponPrefs } from "./weaponValueView";
 
 // the selector tab carries the wuwa_calc client (a worker on first use): its own chunk, loaded when the tab opens
@@ -292,6 +293,8 @@ const route = useRoute();
 const router = useRouter();
 const data = useWeaponValueData();
 const { characters, setUpCount, ownedKeys, ranking, result, rows, pending, status, fingerprint, refresh } = data;
+// Wuthering Tools+ saved results: weapon values read back from this browser say when they were saved
+const savedNote = useSavedNote(() => status.value.savedAt);
 
 // ---- preferences (per browser)
 const prefs = reactive<WeaponPrefs>(readStored());

@@ -36,7 +36,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </RouterLink>
     </div>
-    <div class="mr-kpi mr-kpi--status" :data-status="status.state" data-test-my-rankings-status>
+    <div class="mr-kpi mr-kpi--status" :data-status="status.state" :data-saved-result="status.savedAt ?? undefined" data-test-my-rankings-status>
       <div class="mr-kpi__label">Data</div>
       <div class="mr-kpi__value mr-kpi__value--status">
         <span class="mr-dot" :class="`mr-dot--${status.state}`" aria-hidden="true"></span>
@@ -45,16 +45,17 @@
       <div class="mr-kpi__meter mr-kpi__meter--status">
         <span :style="{ width: status.state === 'scoring' ? ratio(status.done, status.total) : '100%' }"></span>
       </div>
-      <div class="mr-kpi__sub" data-test-my-rankings-progress :title="status.state === 'scoring' ? status.label : undefined">{{ statusSub }}</div>
+      <div class="mr-kpi__sub" data-test-my-rankings-progress :title="status.state === 'scoring' ? status.label : savedNote.text ? savedNote.title : undefined">{{ statusSub }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 // Wuthering Tools+ — the /my-rankings KPI header: the Account State (src/sim/account) as tiles, plus the
-// state of the numbers below (live, scoring, restored from this tab's cache).
+// state of the numbers below (live, scoring, restored from this tab's cache or from this browser's saved results).
 import { computed, onBeforeUnmount, ref } from "vue";
 import { rankingsMineHash, type AccountState } from "../account/accountState";
+import { useSavedNote } from "../persist/useSavedNote";
 import { ago } from "./format";
 
 export interface RankingStatus {
@@ -65,6 +66,8 @@ export interface RankingStatus {
   computedAt: string | null;
   /** restored from this tab's sessionStorage, not scored on this visit */
   restored: boolean;
+  /** when the ranking shown was saved (ms), if it came from this browser's saved results rather than this tab */
+  savedAt?: number | null;
 }
 
 const props = defineProps<{ account: AccountState; status: RankingStatus }>();
@@ -78,8 +81,10 @@ const timer = setInterval(() => (now.value = Date.now()), 30000);
 onBeforeUnmount(() => clearInterval(timer));
 
 const statusLabel = computed(() => (props.status.state === "scoring" ? "Scoring" : props.status.state === "live" ? "Live" : "Not scored"));
+const savedNote = useSavedNote(() => props.status.savedAt);
 const statusSub = computed(() => {
   const s = props.status;
+  if (s.state === "live" && savedNote.value.text) return `${savedNote.value.text} · data unchanged`;
   if (s.state === "scoring") return `${s.done} / ${s.total || "…"}${s.label && s.label !== "done" ? ` · ${s.label}` : ""}`;
   if (s.state === "live" && s.computedAt) return `your builds as saved · scored ${ago(s.computedAt, now.value)}${s.restored ? " (this tab)" : ""}`;
   return "press Rank my roster";

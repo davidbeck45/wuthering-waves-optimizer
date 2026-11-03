@@ -21,6 +21,34 @@ Cypress.Commands.add("myRankingsRow", (id: string) => {
   return cy.get(row);
 });
 
+// Saved results (src/sim/persist): the heavy pages keep their last result in IndexedDB, which Cypress's test isolation
+// does not clear (it clears cookies, localStorage and sessionStorage). Without this, a spec would open on a result an
+// earlier test scored and never show "Scoring". The spec runs on the app's origin, so it can delete the app's database;
+// the app lets go of its connection on `versionchange`, and a delete still blocked after 5 s is left to the next test.
+export const SAVED_RESULTS_DB = "wtplus-results";
+export function deleteSavedResults(): Cypress.Chainable<string> {
+  return cy.wrap(
+    new Promise<string>((resolve) => {
+      const timer = setTimeout(() => resolve("timeout"), 5000);
+      const done = (how: string) => () => {
+        clearTimeout(timer);
+        resolve(how);
+      };
+      try {
+        const r = window.indexedDB.deleteDatabase(SAVED_RESULTS_DB);
+        r.onsuccess = done("deleted");
+        r.onerror = done("error");
+      } catch {
+        done("unavailable")();
+      }
+    }),
+    { log: false, timeout: 10000 },
+  );
+}
+beforeEach(() => {
+  deleteSavedResults();
+});
+
 // Cypress's own extension point. The base no-unused-vars rule does not read TS type declarations (the namespace and
 // the parameter name trip it, as in Ryan's cypress/e2e/e2e.d.ts); this repo's ESLint has no @typescript-eslint rules.
 /* eslint-disable no-unused-vars */

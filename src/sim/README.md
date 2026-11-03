@@ -3151,3 +3151,89 @@ labels), `rankings/rotationDurations.test.ts`, `echoLab/rerollPick.test.ts`, the
 Left for later (in the track report): the optimizer's top-5 list repeating a 90-character rotation name (Ryan's
 optimizer UI), the "Teams you can field" vs "Saved teams you can field" label pair (/account vs /my-rankings), and a
 "Your build (no buffs)" caption on share cards.
+
+## Saved results — the heavy pages open at once in a new tab, `src/sim/persist/` (track "result-cache", 2026-11-02)
+
+The roster ranking (behind /my-rankings, /account and /weapons), the /account investment plan, the Echo Lab's pass,
+benchmarks and Tuner plan, and /weapons' value run lived in module memory and sessionStorage only, so every new tab
+scored them again for seconds (the 2026-11-02 desktop audit, D7: 4–10 s cold). Each of those caches already had a
+fingerprint of everything its result reads. They now also keep each finished result in this browser's IndexedDB, and a
+new tab, a reload after the tab was closed, or tomorrow's visit paints it at once with a quiet "saved 2 h ago".
+
+| Piece | Role |
+|---|---|
+| `persist/resultStore.ts` | the store seam. `ResultStore` = `get` (both halves of one record) / `allMeta` / `put` (one transaction) / `putMeta` (the LRU touch: only a record that is still there, so a touch landing after an eviction or a Clear never leaves a meta-only record) / `remove` / `clear`. `idbResultStore(indexedDB)`: the plain indexedDB API behind a tiny promise wrapper, database `wtplus-results` v1 with two object stores, `meta` (key, cache, schema, build, savedAt, usedAt, bytes: what the LRU and Settings read) and `data` (the result as JSON text), so the LRU's "used just now" touch rewrites a few bytes, not megabytes. One connection, dropped on `close` and on `versionchange` (Clear in another tab, a Cypress delete), reopened on the next call. `memoryResultStore()`: a Map with the same contract, for the tests |
+| `persist/savedResults.ts` | the layer. `read(cache, schema, fingerprint, isValid)` → `{ value, savedAt }` or null; `write(cache, schema, fingerprint, value)`; `usage()`; `clear()`; `savedSlot(cache, schema, isValid)` binds one page cache. Key `${cache}\|${fingerprint}`: one record per cache and data state, so the two option states of /my-rankings and an undone edit each keep theirs. `appBuildId()` = package version + `WUWA_CALC_COMMIT` + the deployed commit (`VITE_VERCEL_GIT_COMMIT_SHA`, the one Vite inlines for `share/buildCodec.ts appStamp`; "dev" elsewhere) |
+| `persist/useSavedNote.ts` | "saved 2 h ago" + the tooltip ("Saved in this browser on …. Shown without scoring again because nothing it reads has changed since; Recompute scores it fresh."), ticking once a minute |
+| `persist/SavedResultsCard.vue` + one import and one line in Ryan's `pages/SettingsView.vue` | **Settings › Saved results** (under Preferences in v3, under the tabs in classic): a one-line "what this is", the count and size per page, **Clear saved results**. "This browser isn't keeping results" in a private window. Characters, echoes and teams are never touched |
+| `myRankings/rankingCache.ts` | `savedRankings` (cache `ranking`, schema `RANKING_CACHE_VERSION`); `writeCachedRanking` also saves (in the background) unless `persist` is false; `readSavedRanking(fp)` reads it back and makes it this tab's cached ranking too. Used by `MyRankingsView.vue`, `account/useAccountData.ts`, `weaponValue/useWeaponValueData.ts`: memory → sessionStorage → **saved** → score |
+| `account/investCache.ts` + `useAccountData.ts` `runPlan` | `savedPlans` (cache `investPlan`) files the plan under the **ranking fingerprint alone**, with its full key (ranking fingerprint + the ER needs key, as the tab cache uses) inside. The ER needs wait on the energy check (`energy.ready`, up to 20 s, a few seconds on a second visit), so /account paints the saved plan as soon as the ranking is there and compares the full key once the needs arrive: equal (the same data and build give the same needs) → kept; different (a measurement failed this time, say) → planned again exactly as before. `writeCachedPlan(key, plan, storage, savedUnder)` saves only when given the ranking fingerprint. A cancelled plan is never saved, and one that reads as cancelled is rejected |
+| `echoLab/useEchoLab.ts` | `savedLab` (cache `echoLab`): the pass, benchmarks and Tuner plan of the tab's `StoredCache` record, rewritten after each job that changes one of them (`writeSaved`). The tab copy also carries the inventory's roll chips and Farm next since those tracks; the saved copy leaves them out, and a write that has none of the three (roll chips rated on /inventory, a Farm next list) never replaces a saved pass. `restoreSaved(fingerprint)` runs once per fingerprint per page load and fills in only what this tab lacks; the pass, the benchmark and the Tuner plan jobs all await it before deciding to run, so landing on `?tab=benchmark` in a new tab starts no job |
+| `weaponValue/valueCache.ts` | `createValueCache(…, saved?)`: with a cache name, `write` also saves and `readSaved(key)` reads back. `/weapons`' value run (`weaponValue`) and the selector's resonator pools (`weaponSelector`) |
+| `cypress/support/plusCommands.ts` | a global `beforeEach` deletes `wtplus-results`: Cypress's test isolation clears cookies, localStorage and sessionStorage but not IndexedDB, and a spec would otherwise open on a result an earlier test scored |
+
+**When a saved result is shown.** Only when the cache's fingerprint (the same one the tab cache used: a hash over every
+character, echo and team the result reads, plus its options), the cache's own schema version and the app build all
+match. Anything else is a miss, and the record is dropped when it is read: another build or schema, a torn record (meta
+without data or the reverse), unparseable JSON, or a value the cache's validator rejects. Writes sweep every other
+build's records. Past `SAVED_RESULTS_CAP` (20 MB of JSON, counted in characters) the least recently used go, never the
+one just written; a result bigger than the whole cap is not saved. Over the browser's own quota the layer frees half of
+what it keeps and tries once more.
+
+**The build id includes the deployed commit**, not only the package version and the wuwa_calc commit the brief named:
+the package version is Ryan's `0.0.1` and never moves, and a Ryan sync can change the calculator's damage math with
+neither moving. So every deploy is a miss, and the first visit after it scores again (once). In `vite dev` and local
+builds the commit reads "dev": after a code change that moves a number, bump that cache's version (as before) or press
+Clear in Settings.
+
+**Falls back silently.** No `indexedDB` (some private windows), a getter that throws, an open that fails, a quota error
+or a read slower than `READ_TIMEOUT_MS` (2.5 s): reads miss, writes report false, nothing throws, and the page scores
+exactly as before. The tab cache (memory + sessionStorage) is unchanged and still answers first.
+
+**Clear saved results** empties the database and this tab's copies: it removes the five sessionStorage keys itself
+(`TAB_COPY_KEYS`: Settings usually never loaded the cache modules; a unit test checks the list against each module's
+key) and calls every loaded cache's `onSavedResultsCleared` hook (module memory, Echo Lab's in-flight jobs).
+
+**Measured** (production build under `vite preview`, 1440 px, David's export seeded, a fresh Chromium profile per page:
+visit once until the page is done, close the tab, open a new one and time it; ms after navigation start until the
+page's "done" marker; the box was shared with other runs at load ≈ 55–65, so absolute numbers are slow, the ratio is
+the point; script `wto-wt/b3/shots/result-cache/measure.mjs`):
+
+| Page, second visit in a new tab | before | after | what "done" is |
+|---|---|---|---|
+| `/my-rankings` | 17.7 s (4.0 s on a quieter box) | **1.3 s** | status "Live" with rows |
+| `/account` | 23.0 s (11.1 s) | **1.4 s** | the investment list filled, no progress bar |
+| `/echo-lab` | 4.1 s (3.6 s) | **1.0 s** | the pass's KPIs and engine-runs line |
+| `/weapons` | 20.7 s | **0.8 s** | the "Scored …" foot line |
+| `/endgame` | 1.0 s (0.85 s) | 0.5 s | unchanged code: its check was already in localStorage |
+
+Saved sizes on that account: ranking 134 KB, plan 42 KB, Echo Lab 286 KB (pass + benchmarks), weapon value 89 KB:
+about 0.55 MB per data state, so the 20 MB cap holds some thirty states.
+
+Left as they were:
+- **`/endgame`** keeps its check in localStorage (`wtplus:endgame:check`, keyed by engine commit, account, builds and
+  season data) since batch 2, so its second visit was already fast.
+- **`/energy`** keeps its measurements in localStorage (`wtplus:energy:v1`, per composition, keyed by engine commit
+  and account) in a long-lived singleton; Clear does not reach it.
+- Re-roll advice and "How good is this roll" stay per page load (quick, asked one echo at a time).
+
+Known gap (verify1, a follow-up): Echo Lab's benchmarks are scored against the energy check's ER needs
+(`echoLabErNeeds`), which the Echo Lab fingerprint does not carry; the tab cache had the same gap. If the energy check
+timed out (20 s) or failed on the visit that scored them, the saved benchmarks keep floors that are too low until the
+data, the build or Benchmark's re-run changes them. /account already confirms its ER key; Echo Lab should store
+`erNeedsKey` beside the benchmarks and re-run them when the key it reads now differs.
+
+Gates: `persist/savedResults.test.ts` (Map store: round trip, keys, `savedSlot`; another build, a new wuwa_calc commit
+and a bumped schema are misses and are dropped; other builds swept on write; the build id's parts; corrupt records
+dropped: unparseable JSON, data without meta and meta without data, a shape the cache rejects, `null`, a record naming
+another cache; the LRU (a read counts as use, as many evicted as it takes, never the newest, too big refused), the
+browser quota (frees half, retries once), usage per cache for this build only; no store, a throwing getter, a store
+that rejects everything, a store that never answers (timeout), a value with a cycle; Clear's hooks and its key list; a
+read's late touch after the record went). `persist/savedResultsLru.test.ts`: the LRU against a plain reference model
+on eight seeded random sequences of writes, overwrites, too-big results and reads. `weaponValue.test.ts`: a value cache
+forgets its tab copy on Clear until it is disposed (the selector makes one per mount and disposes it on unmount).
+`cypress/e2e/savedResults.cy.ts`: /my-rankings, /account and /echo-lab (pass + benchmarks) each scored once, then a new
+tab (sessionStorage cleared + reload) paints the saved result with the marker `data-saved-result` and the page never
+passes through "scoring" (a MutationObserver installed before load records every status), Recompute drops the note;
+Settings › Clear empties the database and the next visit scores; without IndexedDB the page scores as before and
+Settings says nothing is kept.

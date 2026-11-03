@@ -6,6 +6,10 @@
 // the two options that change its output. The last result is kept in module memory (coming back to the page)
 // and in sessionStorage keyed by that fingerprint (a reload of the tab is instant); anything that moved a
 // number moves the hash, and a stale entry is simply never read. Pure apart from the storage it is handed.
+// Since 2026-11-02 every ranking written here is also saved in this browser (persist/savedResults.ts, IndexedDB,
+// keyed by the same fingerprint + the app build), so a new tab reads it back with `readSavedRanking` instead of
+// scoring for seconds.
+import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
 import type { RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
@@ -69,6 +73,10 @@ const sessionStore = (): StorageLike | null => {
 
 let memory: { fingerprint: string; ranking: RosterRanking } | null = null;
 
+const isRanking = (v: unknown): boolean => Array.isArray((v as RosterRanking)?.characters) && Array.isArray((v as RosterRanking)?.teams);
+/** the browser-wide copy (IndexedDB): survives the tab */
+export const savedRankings = savedSlot<RosterRanking>("ranking", RANKING_CACHE_VERSION, isRanking);
+
 /** The last ranking for exactly these inputs: module memory first, then sessionStorage; null when none matches. */
 export function readCachedRanking(fingerprint: string, storage: StorageLike | null = sessionStore()): RosterRanking | null {
   if (memory?.fingerprint === fingerprint) return memory.ranking;
@@ -85,9 +93,12 @@ export function readCachedRanking(fingerprint: string, storage: StorageLike | nu
   }
 }
 
-/** Keep `ranking` as the result for `fingerprint`; false when sessionStorage refused it (memory still holds it). */
-export function writeCachedRanking(fingerprint: string, ranking: RosterRanking, storage: StorageLike | null = sessionStore()): boolean {
+/** Keep `ranking` as the result for `fingerprint`; false when sessionStorage refused it (memory still holds it).
+ *  It is saved in this browser too (in the background) unless `persist` is false — a ranking that just came out
+ *  of the saved results. */
+export function writeCachedRanking(fingerprint: string, ranking: RosterRanking, storage: StorageLike | null = sessionStore(), persist = true): boolean {
   memory = { fingerprint, ranking };
+  if (persist) void savedRankings.write(fingerprint, ranking);
   if (!storage) return false;
   try {
     storage.setItem(RANKING_CACHE_KEY, JSON.stringify({ fingerprint, savedAt: new Date().toISOString(), ranking }));
@@ -103,7 +114,26 @@ export function writeCachedRanking(fingerprint: string, ranking: RosterRanking, 
   }
 }
 
+/** The ranking this browser saved for exactly these inputs and this app build (IndexedDB), with when it was saved;
+ *  null on a miss or when the browser keeps nothing. A hit becomes this tab's cached ranking too. */
+export async function readSavedRanking(fingerprint: string, storage: StorageLike | null = sessionStore()): Promise<{ ranking: RosterRanking; savedAt: number } | null> {
+  const hit = await savedRankings.read(fingerprint);
+  if (!hit) return null;
+  writeCachedRanking(fingerprint, hit.value, storage, false);
+  return { ranking: hit.value, savedAt: hit.savedAt };
+}
+
 /** For tests: forget the in-memory entry. */
 export function clearRankingMemory(): void {
   memory = null;
 }
+
+// Settings › Clear saved results: this tab's copies go too
+onSavedResultsCleared(() => {
+  memory = null;
+  try {
+    sessionStore()?.removeItem(RANKING_CACHE_KEY);
+  } catch {
+    /* nothing to do */
+  }
+});

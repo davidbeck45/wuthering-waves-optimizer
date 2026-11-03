@@ -99,7 +99,7 @@
             {{ resonatorRows ? "Rank again" : `Rank ${included.length} option${included.length === 1 ? "" : "s"}` }}
           </button>
           <span class="sc-run__text">
-            {{ !ranking ? "Waiting for your roster ranking…" : resonatorRows ? `Ranked ${ago(resonatorComputedAt ?? "")}${restored ? " (kept for this tab)" : ""}` : "wuwa_calc solves every team each option can join at your account — about a second per option, more for a first run." }}
+            {{ !ranking ? "Waiting for your roster ranking…" : resonatorRows ? `Ranked ${ago(resonatorComputedAt ?? "")}${savedAt ? " (saved in this browser)" : restored ? " (kept for this tab)" : ""}` : "wuwa_calc solves every team each option can join at your account — about a second per option, more for a first run." }}
           </span>
         </template>
         <span v-if="runError" class="sc-run__error" role="alert">{{ runError }}</span>
@@ -355,13 +355,15 @@ const heldOf = (id: string): string => {
 // ---- resonator pools: wuwa_calc on demand, cached for the tab
 type ResonatorResult = { rows: ResonatorPickRow[]; computedAt: string };
 const memory = new Map<string, ResonatorResult>();
-const cache = createValueCache<ResonatorResult>(SELECTOR_CACHE_KEY, 1, (v) => Array.isArray((v as ResonatorResult)?.rows));
+const cache = createValueCache<ResonatorResult>(SELECTOR_CACHE_KEY, 1, (v) => Array.isArray((v as ResonatorResult)?.rows), "weaponSelector");
 const runKey = computed(() => {
   const a = rileyAccount.value;
   return [props.fingerprint, a.key, a.buildsKey, autoTeamBuffs.value ? "a" : "-", [...included.value].sort().join(",")].join("|");
 });
 const resonatorResult = ref<ResonatorResult | null>(null);
 const restored = ref(false);
+/** when the rows shown were saved (ms), if they came from this browser's saved results */
+const savedAt = ref<number | null>(null);
 const runState = ref<"idle" | "running">("idle");
 const runError = ref<string | null>(null);
 const progress = ref({ done: 0, total: 0, label: "" });
@@ -385,7 +387,17 @@ watch(
     const hit = memory.get(key) ?? cache.read(key);
     resonatorResult.value = hit ?? null;
     restored.value = !!hit && !memory.has(key);
+    savedAt.value = null;
     if (hit) memory.set(key, hit);
+    // Wuthering Tools+ saved results: a new tab reads back what this browser saved for exactly this selection
+    else
+      void cache.readSaved(key).then((saved) => {
+        if (!saved || runKey.value !== key || resonatorResult.value || runState.value === "running") return;
+        memory.set(key, saved.value);
+        resonatorResult.value = saved.value;
+        restored.value = true;
+        savedAt.value = saved.savedAt;
+      });
   },
   { immediate: true },
 );
@@ -427,6 +439,7 @@ async function run(force: boolean): Promise<void> {
     if (runKey.value === key) {
       resonatorResult.value = result;
       restored.value = false;
+      savedAt.value = null;
     }
   } catch (err) {
     if (!signal.aborted) runError.value = `wuwa_calc could not rank these: ${err instanceof Error ? err.message : String(err)}`;
@@ -439,7 +452,10 @@ function cancel(): void {
   controller?.abort();
   runState.value = "idle";
 }
-onBeforeUnmount(() => controller?.abort());
+onBeforeUnmount(() => {
+  controller?.abort();
+  cache.dispose(); // this mount's cache leaves the Clear saved results hooks
+});
 
 // ---- rows
 const cls = (v: number | null | undefined): string => (v == null ? "sc-muted" : v > 0.0005 ? "sc-up" : v < -0.0005 ? "sc-down" : "");

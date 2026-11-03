@@ -1,7 +1,9 @@
 // Wuthering Tools+ Echo Lab page — the page's state: the account snapshot handed to the worker, the jobs it runs
 // (the whole-account pass, every character's benchmark, a character's re-roll advice), their progress, cancel, and
 // the results — kept at module level so switching tabs or pages never recomputes, and in sessionStorage per
-// account fingerprint so a reload of the same account is instant. All numbers come from the worker
+// account fingerprint so a reload of the same account is instant — and, since 2026-11-02, saved in this browser
+// (persist/savedResults.ts, IndexedDB) under the same fingerprint + the app build, so a new tab or another day paints
+// the last pass, benchmarks and Tuner plan at once instead of running them again. All numbers come from the worker
 // (echoLabClient.ts); this file only moves them. Vue, not engine: keep the engine pure.
 import { computed, reactive, ref, shallowRef } from "vue";
 import { useCharacterStore } from "../../stores/character";
@@ -22,6 +24,7 @@ import type { FarmNextResult, FarmTeamResult } from "./farmNext";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
+import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
 
 /** sessionStorage: the last pass and benchmarks of one account fingerprint (derived data, safe to drop) */
 export const ECHO_LAB_CACHE_KEY = "wtplus:echoLab:cache";
@@ -91,6 +94,35 @@ interface StoredCache {
   farmTeams?: FarmTeamResult[];
 }
 
+const isStoredCache = (v: unknown): boolean => {
+  const s = v as StoredCache | null;
+  return !!s && s.v === CACHE_VERSION && typeof s.fingerprint === "string" && (s.pass === null || (Array.isArray(s.pass?.bestOwner?.echoes) && Array.isArray(s.pass?.bestOwner?.characters)));
+};
+/** the browser-wide copy (IndexedDB): survives the tab */
+const savedLab = savedSlot<StoredCache>("echoLab", CACHE_VERSION, isStoredCache);
+/** when the pass shown was saved (ms), if it came from this browser's saved results rather than this visit or tab */
+const passSavedAt = ref<number | null>(null);
+let restoring: { fingerprint: string; done: Promise<void> } | null = null;
+
+/** Fill in what this browser saved for this account state (pass, benchmarks, Tuner plan), never over a result this
+ *  tab already has. Once per fingerprint per page load; every job awaits it before deciding to run. */
+function restoreSaved(fingerprint: string): Promise<void> {
+  if (restoring?.fingerprint === fingerprint) return restoring.done;
+  const done = savedLab.read(fingerprint).then((hit) => {
+    if (!hit || hit.value.fingerprint !== fingerprint || resultFingerprint.value !== fingerprint) return;
+    const stored = hit.value;
+    if (!pass.value && stored.pass) {
+      pass.value = stored.pass;
+      passStatus.cached = true;
+      passSavedAt.value = hit.savedAt;
+    }
+    if (!benchmarks.value && stored.benchmarks) benchmarks.value = stored.benchmarks;
+    if (!tunerPlan.value && stored.tunerPlan) tunerPlan.value = stored.tunerPlan;
+  });
+  restoring = { fingerprint, done };
+  return done;
+}
+
 function readCache(): StoredCache | null {
   try {
     const text = typeof sessionStorage !== "undefined" ? sessionStorage.getItem(ECHO_LAB_CACHE_KEY) : null;
@@ -99,6 +131,20 @@ function readCache(): StoredCache | null {
   } catch {
     return null;
   }
+}
+
+/** what the saved copy last got (fingerprint, pass, benchmarks, Tuner plan) */
+let lastSaved: readonly unknown[] = [];
+
+/** The browser-wide copy keeps what `restoreSaved` paints: the pass, the benchmarks and the Tuner plan. It is not
+ *  written when none of them is here (a roll-chip or Farm next write from another page must never blank a saved
+ *  pass), nor when they are the ones it already got (a roll-chip batch or a Farm next team figure alone). */
+function writeSaved(value: StoredCache): void {
+  if (!value.pass && !value.benchmarks && !value.tunerPlan) return;
+  const parts = [value.fingerprint, value.pass, value.benchmarks, value.tunerPlan ?? null];
+  if (parts.every((p, i) => p === lastSaved[i])) return;
+  lastSaved = parts;
+  void savedLab.write(value.fingerprint, { v: value.v, fingerprint: value.fingerprint, pass: value.pass, benchmarks: value.benchmarks, tunerPlan: value.tunerPlan ?? null });
 }
 
 function writeCache(): void {
@@ -116,6 +162,7 @@ function writeCache(): void {
       farm: farm.value,
       farmTeams: asked,
     };
+    writeSaved(value);
     sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(value));
   } catch {
     // quota or no storage: the module cache still holds it for this page load
@@ -139,11 +186,27 @@ function adopt(fingerprint: string): void {
   rerolls.clear();
   qualities.clear();
   ratings.clear();
+  passSavedAt.value = null;
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
   Object.assign(farmStatus, idle());
 }
+
+// Settings › Clear saved results: this tab's copies go too, so the next visit runs again
+onSavedResultsCleared(() => {
+  for (const c of [passAbort, benchAbort, tunerAbort, farmAbort]) c?.abort();
+  resultFingerprint.value = null;
+  adopt("");
+  resultFingerprint.value = null;
+  restoring = null;
+  lastSaved = [];
+  try {
+    sessionStorage.removeItem(ECHO_LAB_CACHE_KEY);
+  } catch {
+    /* nothing to do */
+  }
+});
 
 export function useEchoLab() {
   const characterStore = useCharacterStore() as unknown as { characters: Record<string, any> };
@@ -219,6 +282,10 @@ export function useEchoLab() {
     if (!account.echoes.length || !builtCount.value) return;
     if (pass.value && !options.force) return;
     if (passStatus.running) return;
+    if (!options.force) {
+      await restoreSaved(fingerprint);
+      if (resultFingerprint.value !== fingerprint || pass.value || passStatus.running) return;
+    }
     passAbort?.abort();
     const controller = new AbortController();
     passAbort = controller;
@@ -226,6 +293,7 @@ export function useEchoLab() {
     if (passAbort === controller) passAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       pass.value = result;
+      passSavedAt.value = null;
       writeCache();
     }
   }
@@ -234,6 +302,10 @@ export function useEchoLab() {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
     if ((benchmarks.value && !options.force) || benchStatus.running || !builtCount.value) return;
+    if (!options.force) {
+      await restoreSaved(fingerprint);
+      if (resultFingerprint.value !== fingerprint || benchmarks.value || benchStatus.running) return;
+    }
     benchAbort?.abort();
     const controller = new AbortController();
     benchAbort = controller;
@@ -276,6 +348,10 @@ export function useEchoLab() {
     hydrateFrom(fingerprint);
     adopt(fingerprint);
     if ((tunerPlan.value && !options.force) || tunerStatus.running || !builtCount.value) return;
+    if (!options.force) {
+      await restoreSaved(fingerprint);
+      if (resultFingerprint.value !== fingerprint || tunerPlan.value || tunerStatus.running) return;
+    }
     tunerAbort?.abort();
     const controller = new AbortController();
     tunerAbort = controller;
@@ -392,6 +468,7 @@ export function useEchoLab() {
   return {
     pass,
     passStatus,
+    passSavedAt,
     benchmarks,
     benchStatus,
     echoCount,

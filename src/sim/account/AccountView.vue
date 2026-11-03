@@ -7,8 +7,9 @@
         <span
           class="acc-source"
           :data-state="sourceState"
+          :data-saved-result="savedAt ?? undefined"
           data-test-account-source
-          title="Read from this browser's saved data — characters, inventory and teams. Nothing leaves the device.">
+          :title="sourceTitle">
           <span class="acc-source__dot" aria-hidden="true"></span>
           {{ sourceLabel }}
         </span>
@@ -93,7 +94,7 @@
       </div>
 
       <p v-if="ranking" class="acc-foot">
-        Scored {{ new Date(ranking.computedAt).toLocaleString() }}{{ rankingStatus.restored ? " (kept for this tab)" : "" }} · average damage
+        Scored {{ new Date(ranking.computedAt).toLocaleString() }}{{ rankingStatus.savedAt ? " (saved in this browser)" : rankingStatus.restored ? " (kept for this tab)" : "" }} · average damage
         per rotation on each character's best rotation, enemy level 100, 20 % RES · {{ ranking.characters.length }} characters,
         {{ ranking.teams.length }} team rotations.
       </p>
@@ -137,6 +138,7 @@ import { useOwnUpgrades } from "./useOwnUpgrades";
 import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
+import { useSavedNote } from "../persist/useSavedNote";
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",
@@ -193,7 +195,16 @@ const runError = computed(() =>
       : null,
 );
 const sourceState = computed(() => (busy.value ? "scoring" : ranking.value ? "live" : "idle"));
-const sourceLabel = computed(() => (busy.value ? "Scoring · this browser" : ranking.value ? "Live · this browser" : "This browser"));
+// Wuthering Tools+ saved results: a ranking or plan read back from this browser says when it was saved
+const savedAt = computed(() => (busy.value ? null : (rankingStatus.value.savedAt ?? planStatus.value.savedAt)));
+const savedNote = useSavedNote(() => savedAt.value);
+const sourceTitle = computed(() => {
+  const device = "Read from this browser's saved data — characters, inventory and teams. Nothing leaves the device.";
+  return savedNote.value.text ? `${savedNote.value.title} ${device}` : device;
+});
+const sourceLabel = computed(() =>
+  busy.value ? "Scoring · this browser" : ranking.value ? (savedNote.value.text ? `Live · ${savedNote.value.text}` : "Live · this browser") : "This browser",
+);
 
 // ---- the character drawer
 const drawerId = ref<string | null>(null);

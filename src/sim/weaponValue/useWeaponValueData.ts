@@ -1,14 +1,15 @@
 // Wuthering Tools+ — /weapons' data: the roster ranking (the cache entry /my-rankings and /account share when it
 // holds this exact data, else a progressive rankRoster run), then the weapon-value run on top of it (its own cache,
 // keyed by the same fingerprint). Both stay on the main thread in slices, as on /account; a generation counter drops
-// late callbacks, and the weapon run is cancelled on unmount or a new run.
+// late callbacks, and the weapon run is cancelled on unmount or a new run. Either cache missing in this tab, the result
+// this browser saved for the same fingerprint and app build (persist/savedResults.ts) is shown instead of a run.
 import { computed, onBeforeUnmount, ref, shallowRef, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type RosterRanking } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, writeCachedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "../myRankings/rankingCache";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { WEAPON_VALUE_VERSION, weaponValue, type CharacterWeaponValue, type WeaponValueResult } from "./weaponValue";
 import { WEAPON_VALUE_CACHE_KEY, createValueCache } from "./valueCache";
@@ -20,16 +21,23 @@ export interface RunStatus {
   done: number;
   total: number;
   label: string;
-  /** served from this tab's cache */
+  /** served from this tab's cache or this browser's saved results */
   restored: boolean;
+  /** when the weapon values shown were saved (ms), if they came from this browser's saved results */
+  savedAt: number | null;
   computedAt: string | null;
   error: string | null;
 }
 
-const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, computedAt: null, error: null });
+const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, savedAt: null, computedAt: null, error: null });
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(toRaw(value) ?? null)) as T;
 
-export const valueCache = createValueCache<WeaponValueResult>(WEAPON_VALUE_CACHE_KEY, WEAPON_VALUE_VERSION, (v) => Array.isArray((v as WeaponValueResult)?.rows));
+export const valueCache = createValueCache<WeaponValueResult>(
+  WEAPON_VALUE_CACHE_KEY,
+  WEAPON_VALUE_VERSION,
+  (v) => Array.isArray((v as WeaponValueResult)?.rows) && !(v as WeaponValueResult).cancelled,
+  "weaponValue",
+);
 
 export function useWeaponValueData() {
   const characterStore = useCharacterStore();
@@ -81,6 +89,10 @@ export function useWeaponValueData() {
 
     // 1. the roster ranking (best rotations, fieldable teams)
     let base = force ? null : readCachedRanking(key);
+    if (!base && !force) {
+      base = (await readSavedRanking(key))?.ranking ?? null;
+      if (gen !== generation) return;
+    }
     if (!base) {
       result.value = null;
       liveRows.value = [];
@@ -110,11 +122,17 @@ export function useWeaponValueData() {
     ranking.value = base;
 
     // 2. weapon value on top of it
-    const cached = force ? null : valueCache.read(key);
+    let cached = force ? null : valueCache.read(key);
+    let savedAt: number | null = null;
+    if (!cached && !force) {
+      const saved = await valueCache.readSaved(key);
+      if (gen !== generation) return;
+      if (saved) ({ value: cached, savedAt } = saved);
+    }
     if (cached) {
       result.value = cached;
       liveRows.value = null;
-      status.value = { ...idle(), state: "done", restored: true, computedAt: cached.computedAt, done: cached.rows.length, total: cached.rows.length };
+      status.value = { ...idle(), state: "done", restored: true, savedAt, computedAt: cached.computedAt, done: cached.rows.length, total: cached.rows.length };
       return;
     }
     signal = { cancelled: false };

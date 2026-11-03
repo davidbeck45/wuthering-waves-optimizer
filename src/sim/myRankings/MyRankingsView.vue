@@ -88,7 +88,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "./rankRoster";
-import { rankingFingerprint, readCachedRanking, writeCachedRanking } from "./rankingCache";
+import { rankingFingerprint, readCachedRanking, readSavedRanking, writeCachedRanking } from "./rankingCache";
 import type { SortDir, SortKey } from "./rows";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "../account/accountState";
@@ -170,6 +170,8 @@ const fingerprint = (): string =>
 const ranking = shallowRef<RosterRanking | null>(null);
 const rankedInvestment = ref(investment.value);
 const restored = ref(false);
+/** set when the ranking shown came from this browser's saved results (a new tab, another day), not this tab */
+const savedAt = ref<number | null>(null);
 const live = shallowRef<{ characters: CharacterRank[]; teams: TeamRank[]; investment: boolean } | null>(null);
 const isRunning = ref(false);
 const progress = ref({ done: 0, total: 0, label: "" });
@@ -192,6 +194,7 @@ const status = computed<RankingStatus>(() => ({
   label: progress.value.label,
   computedAt: ranking.value?.computedAt ?? null,
   restored: restored.value,
+  savedAt: isRunning.value ? null : savedAt.value,
 }));
 
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(toRaw(value) ?? null)) as T;
@@ -224,6 +227,7 @@ async function compute(): Promise<void> {
     ranking.value = result;
     rankedInvestment.value = withInvestment;
     restored.value = false;
+    savedAt.value = null;
     writeCachedRanking(key, result);
   } catch (err) {
     error.value = `Ranking failed: ${err instanceof Error ? err.message : String(err)}`;
@@ -237,21 +241,31 @@ async function compute(): Promise<void> {
   }
 }
 
-/** Show the cached ranking for the data as it is now, else score it. */
-function refresh(): void {
+function show(cached: RosterRanking, saved: number | null): void {
+  ranking.value = cached;
+  rankedInvestment.value = investment.value;
+  restored.value = true;
+  savedAt.value = saved;
+}
+
+let refreshes = 0;
+/** Show the cached ranking for the data as it is now (this tab's, else the one this browser saved), else score it. */
+async function refresh(): Promise<void> {
   if (!characterCount.value) return;
-  const cached = readCachedRanking(fingerprint());
-  if (cached) {
-    ranking.value = cached;
-    rankedInvestment.value = investment.value;
-    restored.value = true;
-    return;
+  const gen = ++refreshes;
+  const key = fingerprint();
+  const cached = readCachedRanking(key);
+  if (cached) return show(cached, null);
+  if (!isRunning.value) {
+    const saved = await readSavedRanking(key);
+    if (gen !== refreshes) return; // an option moved meanwhile: the newer refresh owns the page
+    if (saved && fingerprint() === key) return show(saved.ranking, saved.savedAt);
   }
   void compute();
 }
 
-onMounted(refresh);
-watch([investment, autoTeamBuffs], refresh);
+onMounted(() => void refresh());
+watch([investment, autoTeamBuffs], () => void refresh());
 </script>
 
 <style scoped>

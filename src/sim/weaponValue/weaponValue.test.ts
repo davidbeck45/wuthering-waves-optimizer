@@ -15,6 +15,7 @@ import { keptPanelMembers, panelsFollowWeapon, weaponTeamBuffKeys } from "./team
 import { POOLS, releasedItems, standardWeaponKeys } from "./pools";
 import { rankWeaponPool } from "./selector";
 import { createValueCache } from "./valueCache";
+import { savedResults } from "../persist/savedResults";
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x));
 const echoes = clone(account.echoes) as any[];
@@ -286,5 +287,17 @@ describe("weapon selector pools", () => {
     store.set("wtplus:test", "{junk");
     cache.clearMemory();
     expect(cache.read("fp-1", storage)).toBeNull();
+  });
+
+  it("forgets its tab copy on Settings › Clear saved results, until it is disposed (the selector makes one per mount)", async () => {
+    const live = createValueCache<{ n: number }>("wtplus:test:live", 1);
+    const disposed = createValueCache<{ n: number }>("wtplus:test:disposed", 1);
+    live.write("fp", { n: 1 }, null);
+    disposed.write("fp", { n: 2 }, null);
+    disposed.dispose();
+    await savedResults.clear();
+    expect(live.read("fp", null)).toBeNull();
+    expect(disposed.read("fp", null)).toEqual({ n: 2 });
+    live.dispose();
   });
 });
