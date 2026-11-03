@@ -14,6 +14,7 @@ import {
   toCharacterRotation,
   toImportedActions,
   type ImportResult,
+  type PreparedTeam,
 } from "./importFromRankings";
 import { buildRollsOf } from "./myBuilds";
 import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
@@ -86,49 +87,56 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
     return out;
   };
 
-  const importInto = async (team: TeamLike, best: SolvedBest): Promise<ImportResult> => {
-    const prepared = await prepareTeamImport(engine, best.ref);
-    const target = teams.find((t) => t.id === team.id);
-    if (!target) throw new Error("The team to update no longer exists.");
-    const written = reslotActions(prepared, target.characterIds as Array<string | null>);
-    if (!written) throw new Error(`${target.name} does not hold the same three characters as the rankings row.`);
-    target.actions = written.map((a) => ({ ...a, id: randomString(12) }));
-    target.enemyConfig = { ...(target.enemyConfig ?? {}), ...prepared.enemyConfig };
-    if (prepared.duration != null) target.duration = prepared.duration;
-    if (isGeneratedTeamName(target.name)) target.name = prepared.teamName;
-    target.description = prepared.description;
-    target.handoffs = prepared.handoffs;
-    const saved: string[] = [];
-    const skipped: string[] = [];
-    if (options.rotations) {
-      for (const r of prepared.rotations) {
-        const c = characters[r.key];
-        if (!c || !r.actions.length) { skipped.push(r.name); continue; }
-        // a re-run must not append the same loop again: replace a rotation already saved under this name
-        const existing = (c.rotations ?? []).findIndex((x: any) => x?.name === r.rotationName);
-        if (existing >= 0) c.rotations[existing] = { ...toCharacterRotation(r, existing), id: c.rotations[existing].id };
-        else c.rotations = [...(c.rotations ?? []), toCharacterRotation(r, (c.rotations ?? []).length)];
-        saved.push(r.name);
-      }
-    }
-    return {
-      teamId: target.id,
-      teamName: prepared.teamName,
-      actions: prepared.actions.length,
-      actionList: toImportedActions(written),
-      replaced: true,
-      members: prepared.members.slice().sort((a, b) => a.slot - b.slot).map((m) => m.name),
-      memberDetails: prepared.members,
-      enemyConfig: prepared.enemyConfig,
-      enemySeen: prepared.enemySeen,
-      characterRotationsSaved: saved,
-      characterRotationsSkipped: skipped,
-      notPorted: prepared.notPorted,
-      statuses: prepared.statuses,
-      duration: prepared.duration,
-    };
-  };
+  const importInto = async (team: TeamLike, best: SolvedBest): Promise<ImportResult> =>
+    writePreparedTeam(teams, characters, team.id, await prepareTeamImport(engine, best.ref), { rotations: options.rotations });
 
   const report = await runSync({ teams: exp.teams as TeamLike[], rileyTeams, solveBest, importInto });
   return { report, teams, characters, account, subs, seconds: (Date.now() - t0) / 1000 };
+}
+
+/** One prepared import written into the CLI's copy of the export, in place — what `importTeamFromRankings` does to the
+ *  stores on the page: the team's actions re-pointed at the slots it holds the three in (fresh ids), the run's enemy
+ *  settings merged over its own, the loop's rotation time, a generated name renamed (a typed one stays), the
+ *  description and handoffs; with `rotations`, each member's loop saved on that character, replacing a rotation of the
+ *  same name (a second sync never appends it twice). Nothing else in `teams` or `characters` is touched. */
+export function writePreparedTeam(teams: any[], characters: Record<string, any>, teamId: string, prepared: PreparedTeam, options: { rotations?: boolean } = {}): ImportResult {
+  const target = teams.find((t) => t.id === teamId);
+  if (!target) throw new Error("The team to update no longer exists.");
+  const written = reslotActions(prepared, target.characterIds as Array<string | null>);
+  if (!written) throw new Error(`${target.name} does not hold the same three characters as the rankings row.`);
+  target.actions = written.map((a) => ({ ...a, id: randomString(12) }));
+  target.enemyConfig = { ...(target.enemyConfig ?? {}), ...prepared.enemyConfig };
+  if (prepared.duration != null) target.duration = prepared.duration;
+  if (isGeneratedTeamName(target.name)) target.name = prepared.teamName;
+  target.description = prepared.description;
+  target.handoffs = prepared.handoffs;
+  const saved: string[] = [];
+  const skipped: string[] = [];
+  if (options.rotations) {
+    for (const r of prepared.rotations) {
+      const c = characters[r.key];
+      if (!c || !r.actions.length) { skipped.push(r.name); continue; }
+      // a re-run must not append the same loop again: replace a rotation already saved under this name
+      const existing = (c.rotations ?? []).findIndex((x: any) => x?.name === r.rotationName);
+      if (existing >= 0) c.rotations[existing] = { ...toCharacterRotation(r, existing), id: c.rotations[existing].id };
+      else c.rotations = [...(c.rotations ?? []), toCharacterRotation(r, (c.rotations ?? []).length)];
+      saved.push(r.name);
+    }
+  }
+  return {
+    teamId: target.id,
+    teamName: prepared.teamName,
+    actions: prepared.actions.length,
+    actionList: toImportedActions(written),
+    replaced: true,
+    members: prepared.members.slice().sort((a, b) => a.slot - b.slot).map((m) => m.name),
+    memberDetails: prepared.members,
+    enemyConfig: prepared.enemyConfig,
+    enemySeen: prepared.enemySeen,
+    characterRotationsSaved: saved,
+    characterRotationsSkipped: skipped,
+    notPorted: prepared.notPorted,
+    statuses: prepared.statuses,
+    duration: prepared.duration,
+  };
 }

@@ -23,6 +23,15 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   return el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
 }
 
+/** Ryan's theme menus (ThemeOptions.vue: the nav's theme dropdown, the phone's More › Appearance) keep their own copy of
+ *  the theme for the check mark, set when they mount and on their own clicks. After the palette changes the theme, press
+ *  each menu's button for it (`data-set-theme`, his own handler) so the check mark moves too. Returns how many. */
+export function syncThemeMenus(name: string, doc: Document = document): number {
+  const buttons = Array.from(doc.querySelectorAll<HTMLElement>(`[data-set-theme="${CSS.escape(name)}"]`));
+  for (const button of buttons) button.click();
+  return buttons.length;
+}
+
 /** "⌘" on Apple platforms, "Ctrl" elsewhere. */
 export function modKeyLabel(): string {
   if (typeof navigator === "undefined") return "Ctrl";

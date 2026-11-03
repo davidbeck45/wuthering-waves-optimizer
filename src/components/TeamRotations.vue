@@ -219,6 +219,7 @@
               </div>
             </div>
           </div>
+          <TeamListEngineNote /><!-- Wuthering Tools+: which engine these numbers are -->
           <!-- Wuthering Tools+: the five cards' values print with thousands separators -->
           <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 text-sm">
             <button
@@ -590,6 +591,7 @@ import { useSettingsStore } from "../stores/settings";
 import { isFrameTimingEnabled } from "../utils/labs";
 import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
 import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
+import TeamListEngineNote from "../sim/teamLinks/TeamListEngineNote.vue"; // Wuthering Tools+
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";

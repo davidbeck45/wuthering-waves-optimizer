@@ -1,10 +1,21 @@
 // Wuthering Tools+: the write half of "Sync my teams" — what decides the actions, enemy settings, name and rotation time
 // that land in a saved team. `runSync` with the engine stubbed (solveBest / importInto), and `prepareTeamImport` on a
 // traced run rebuilt from the fixture's recorded loops (the castMapper replay test checks the same loops cast by cast).
-import { describe, expect, it, vi } from "vitest";
+// Then both write paths end to end on small synthetic accounts (2026-11-02): the page's (`importTeamFromRankings` into
+// the team store, the report, Undo back to the exact teams) and the CLI's (`writePreparedTeam` + `writeSyncedExport`:
+// only the synced team and its members' loops change in the new export).
+import { afterAll, describe, expect, it, vi } from "vitest";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { createPinia, setActivePinia } from "pinia";
 import loops from "./__fixtures__/wuwaCalcLoops.json";
-import { ENEMY, prepareTeamImport, reslotActions, type EngineMods, type ImportResult } from "./importFromRankings";
+import { ENEMY, importTeamFromRankings, prepareTeamImport, reslotActions, type EngineMods, type ImportResult } from "./importFromRankings";
 import { runSync, type SolvedBest, type SyncDeps, type TeamLike } from "./syncTeams";
+import { applySyncUndo, makeSyncUndo } from "./syncUndo";
+import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { writePreparedTeam } from "./syncTeamsHeadless";
+import { readExport, writeSyncedExport } from "../cli/exportFile";
 import { enemyConfigOf, type Cast } from "./castMapper";
 
 vi.setConfig({ testTimeout: 30_000 });
@@ -302,5 +313,225 @@ describe("prepareTeamImport on a traced run", () => {
     const map = [1, 2, 0]; // prepared slot → existing slot
     reslotted.forEach((a, i) => expect(a).toEqual({ ...prepared.actions[i], slot: map[prepared.actions[i].slot] }));
     expect(reslotActions(prepared, ["Shorekeeper", "Cartethyia", "Ciaccona"])).toBeNull();
+  });
+});
+
+/* --------------------------------------------- the browser path end to end: the team store, the report, Undo */
+
+describe("Sync my teams in the browser: the saved teams, the report and Undo", () => {
+  const final = { carte: loopOf("Cartethyia"), chisa: loopOf("Chisa"), sk: loopOf("Shorekeeper") };
+  const older = { carte: loopOf("Cartethyia", 1), chisa: loopOf("Chisa", 1), sk: loopOf("Shorekeeper", 1) };
+  /** the rankings page's model as importTeamFromRankings reads it: the rows it has run, by row key */
+  const runs = new Map<string, any>();
+  const page = { ...mods, model: { results: runs, rowFromKey: () => null } };
+  const rileyTeamsHere = {
+    t1: [{ name: "Cartethyia" }, { name: "Chisa" }, { name: "Shorekeeper" }],
+    t9: [{ name: "Cartethyia" }, { name: "Chisa" }, { name: "Hidden Resonator" }],
+  };
+  const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
+  /** a team as plain JSON without its actions' ids (a re-import gives every action a fresh one) */
+  const content = (t: any) => ({ ...t, actions: (t.actions ?? []).map(({ id: _id, ...a }: any) => a) });
+
+  /** David's kinds of saved team, built the way the app builds them, then synced the way the account bar syncs */
+  async function setUp() {
+    setActivePinia(createPinia());
+    const store = useTeamRotationsStore();
+    runs.clear();
+    runs.set("final", traced(final));
+    // an older run of the same three: other loops, another rotation time
+    runs.set("older", { ...traced(older), sectionSeconds: [26.4, 26.0] });
+    const hidden = traced(final);
+    hidden.members[2] = { name: "Hidden Resonator", mainDps: false, loadout: loadout([]) };
+    runs.set("hidden", hidden);
+
+    // (a) imported long ago from an older loop, kept in its own slot order, with the name the import gave it then
+    const old = await prepareTeamImport(mods, runs.get("older"));
+    const changed = store.importTeam({
+      name: "wuwa_calc Cartethyia S5R1 DPS · S0R1 team · Chisa + Shorekeeper",
+      characterIds: ["Shorekeeper", "Cartethyia", "Chisa"],
+      actions: reslotActions(old, ["Shorekeeper", "Cartethyia", "Chisa"]),
+      duration: old.duration,
+      enemyConfig: { ...old.enemyConfig },
+      description: old.description,
+      handoffs: old.handoffs,
+    });
+    // (b) imported from the very row the sync finds again: nothing moves
+    const same = await importTeamFromRankings(page as any, "final");
+    // (c) the player's own team of the same three: never touched
+    const mine = store.importTeam({ name: "My Cartethyia team", characterIds: ["Cartethyia", "Chisa", "Shorekeeper"], actions: [{ slot: 0, key: "BasicAttack1", type: "basic", count: 3 }] });
+    // (d) a wuwa_calc team with a character the app has not released
+    const lacks = store.importTeam({ name: "wuwa_calc Cartethyia S6R1 DPS · S0R1 team · Chisa + Hidden Resonator", characterIds: ["Cartethyia", "Chisa", "Hidden Resonator"], actions: [{ slot: 0, key: "BasicAttack1", type: "basic", count: 1 }] });
+    // (e) the same row's import, its enemy set to Lv 90 / 10 % RES by hand: the loop is the same, the enemy is not
+    const levelled = await importTeamFromRankings(page as any, "final");
+    store.setTeamEnemyConfig(levelled.teamId, { enemyLevel: 90, enemyResist: 0.1 });
+    const ids = { changed: changed.id, same: same.teamId, mine: mine.id, lacks: lacks.id, levelled: levelled.teamId };
+
+    // the account bar's sync(): a snapshot, runSync over it, the teams as the sync left them
+    const snapshot: TeamLike[] = clone(store.teams);
+    const solveBest = async (keys: string[]) =>
+      new Map<string, SolvedBest | null>(keys.map((k) => [k, k === "t1" ? { total: 1_234_567, ref: "final" } : k === "t9" ? { total: 1, ref: "hidden" } : null]));
+    const report = await runSync({
+      teams: snapshot,
+      rileyTeams: rileyTeamsHere,
+      solveBest,
+      importInto: (team, best) => importTeamFromRankings(page as any, best.ref as string, { replaceTeamId: team.id }),
+    });
+    const after: TeamLike[] = clone(store.teams);
+    const byId = (list: TeamLike[]) => Object.fromEntries(list.map((t) => [t.id, t]));
+    return { store, ids, snapshot, report, after, before: byId(snapshot), now: byId(after), final: await prepareTeamImport(mods, runs.get("final")) };
+  }
+
+  it("rewrites a team whose loop moved, in its own slot order, and says what moved", async () => {
+    const { ids, report, before, now, final: prepared } = await setUp();
+    const row = report.teams.find((t) => t.id === ids.changed)!;
+    expect(row).toMatchObject({ status: "updated", rileyKey: "t1", total: 1_234_567, newName: prepared.teamName, durationDelta: { from: 26, to: 25.08 } });
+    expect(row.deltas.length).toBeGreaterThan(0);
+    const team = now[ids.changed] as any;
+    expect(team.characterIds).toEqual(["Shorekeeper", "Cartethyia", "Chisa"]); // the saved slot order stays
+    expect(team.actions.map(({ id: _id, ...a }: any) => a)).toEqual(reslotActions(prepared, ["Shorekeeper", "Cartethyia", "Chisa"]));
+    expect(new Set(team.actions.map((a: any) => a.id)).size).toBe(team.actions.length);
+    expect(team).toMatchObject({ name: prepared.teamName, duration: 25.08, description: prepared.description, handoffs: prepared.handoffs });
+    expect(team.enemyConfig).toEqual({ ...before[ids.changed]!.enemyConfig, ...prepared.enemyConfig });
+    // what the report counts is what moved in the store
+    expect(content(team).actions).not.toEqual(content(before[ids.changed]).actions);
+  });
+
+  it("reports a team re-imported from the same row as unchanged, and leaves the player's own team byte for byte", async () => {
+    const { ids, report, before, now } = await setUp();
+    expect(report.teams.find((t) => t.id === ids.same)).toMatchObject({ status: "unchanged", deltas: [], enemyDeltas: [], durationDelta: null, newName: null });
+    expect(content(now[ids.same])).toEqual(content(before[ids.same])); // only the actions' ids are new
+    expect(report.teams.find((t) => t.id === ids.mine)).toMatchObject({ status: "skipped" });
+    expect(JSON.stringify(now[ids.mine])).toBe(JSON.stringify(before[ids.mine]));
+    expect(report).toMatchObject({ updated: 1, unchanged: 2, skipped: 1, failed: 1 });
+  });
+
+  it("fails a team with a character the app lacks, says why, and writes nothing to it", async () => {
+    const { ids, report, before, now } = await setUp();
+    expect(report.teams.find((t) => t.id === ids.lacks)).toMatchObject({
+      status: "failed",
+      reason: "Hidden Resonator is not released in this app yet, so this team can't be imported.",
+      rileyKey: "t9",
+    });
+    expect(JSON.stringify(now[ids.lacks])).toBe(JSON.stringify(before[ids.lacks]));
+  });
+
+  it("Undo puts back exactly the teams as they were before the sync, an enemy set by hand included", async () => {
+    const { ids, snapshot, report, after, before, now } = await setUp();
+    // the sync set the hand-set enemy back to wuwa_calc's Lv 100 / 20 % RES, though the loop (and so the report) did not move
+    expect(report.teams.find((t) => t.id === ids.levelled)!.status).toBe("unchanged");
+    expect(now[ids.levelled]!.enemyConfig).toMatchObject({ enemyLevel: 100, enemyResist: 0.2 });
+    expect(before[ids.levelled]!.enemyConfig).toMatchObject({ enemyLevel: 90, enemyResist: 0.1 });
+
+    const undo = makeSyncUndo(snapshot, after, report)!;
+    expect(undo.before.map((t) => t.id).sort()).toEqual([ids.changed, ids.levelled].sort());
+    const out = applySyncUndo(after, undo);
+    expect(out.kept).toEqual([]);
+    // the teams Undo restores come back to the last byte, their old action ids included
+    for (const id of [ids.changed, ids.levelled]) expect(out.teams.find((t) => t.id === id)).toEqual(before[id]);
+    // and the whole list reads as before: same teams, same order, same content (a team whose actions only got fresh ids
+    // is the same team; Undo leaves it)
+    expect(out.teams.map((t) => t.id)).toEqual(snapshot.map((t) => t.id));
+    expect(out.teams.map(content)).toEqual(snapshot.map(content));
+  });
+});
+
+/* ------------------------------------------- the CLI path: one team written into the export, the file written */
+
+describe("Sync my teams on the CLI: what lands in the new export", () => {
+  const final = { carte: loopOf("Cartethyia"), chisa: loopOf("Chisa"), sk: loopOf("Shorekeeper") };
+  const dir = mkdtempSync(join(tmpdir(), "wtplus-sync-"));
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  /** a v9 export as Settings › Backup writes it (each store a JSON string), with a key no writer knows at both levels */
+  function sourceFile(name: string): string {
+    const character = {
+      characters: {
+        Cartethyia: { weapon: "Defier's Thorn", rotations: [{ id: "own-1", name: "My own loop", order: 0, actions: [] }] },
+        Chisa: { weapon: "Kumokiri" },
+        Zani: { weapon: "Blazing Justice", rotations: [{ id: "z-1", name: "Zani loop", order: 0, actions: [] }] },
+      },
+      activeCharacter: "Zani",
+      favoriteCharacters: ["Cartethyia", "Zani"],
+    };
+    const inventory = { echoes: [{ id: "e1", echo: "Reminiscence: Fleurdelys" }], equipped: { e1: { Cartethyia: 0 } }, echoPresets: [], equippedPresets: {} };
+    const teamRotations = {
+      teams: [
+        // a typo'd action key (migration 010 renames it) on a team the sync never touches
+        { id: "own", name: "My Zani team", characterIds: ["Zani", "Chisa", "Cartethyia"], actions: [{ id: "a1", slot: 0, key: "Undaunted ayfarerDMG", type: "skill", count: 1 }], duration: 20 },
+        { id: "synced", name: "wuwa_calc Cartethyia S5R1 DPS · S0R1 team · Chisa + Shorekeeper", characterIds: ["Chisa", "Shorekeeper", "Cartethyia"], actions: [{ id: "a2", slot: 2, key: "BasicAttack1", type: "basic", count: 2 }], enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Overlord" }, duration: 26 },
+      ],
+      favoriteTeamIds: ["own"],
+      favoritePresetNames: ["wuwa_calc Aemeath"],
+    };
+    const path = join(dir, name);
+    writeFileSync(path, JSON.stringify({ meta: { version: "9", source: "WutheringTools" }, data: { character: JSON.stringify(character), inventory: JSON.stringify(inventory), teamRotations: JSON.stringify(teamRotations), laterStore: '{"kept":true}' }, exportedBy: "a newer app" }));
+    return path;
+  }
+
+  it("rewrites only the synced team (and, asked to, its members' loops); every other key reads back as it was", async () => {
+    const prepared = await prepareTeamImport(mods, traced(final));
+    const source = sourceFile("character_data_2026-11-2.json");
+    const sourceText = readFileSync(source, "utf8");
+    const exp = readExport(source);
+    const teams = JSON.parse(JSON.stringify(exp.teams));
+    const characters = JSON.parse(JSON.stringify(exp.characters));
+    const result = writePreparedTeam(teams, characters, "synced", prepared, { rotations: true });
+    const out = join(dir, "character_data_2026-11-2_synced.json");
+    writeSyncedExport(source, out, teams, characters);
+
+    expect(readFileSync(source, "utf8")).toBe(sourceText); // the source never moves
+    const raw = JSON.parse(readFileSync(out, "utf8"));
+    const src = JSON.parse(sourceText);
+    // keys outside the two stores it was handed: the very same values, strings byte for byte
+    expect(Object.keys(raw)).toEqual(Object.keys(src));
+    expect(Object.keys(raw.data)).toEqual(Object.keys(src.data));
+    expect(raw.meta).toEqual(src.meta);
+    expect(raw.exportedBy).toBe(src.exportedBy);
+    expect(raw.data.inventory).toBe(src.data.inventory);
+    expect(raw.data.laterStore).toBe(src.data.laterStore);
+    // inside the two stores: only `teams` and `characters` were handed over; their other fields stay
+    const rot = JSON.parse(raw.data.teamRotations);
+    const srcRot = JSON.parse(src.data.teamRotations);
+    expect(Object.keys(rot)).toEqual(Object.keys(srcRot));
+    expect(rot.favoriteTeamIds).toEqual(srcRot.favoriteTeamIds);
+    expect(rot.favoritePresetNames).toEqual(srcRot.favoritePresetNames);
+    const chr = JSON.parse(raw.data.character);
+    const srcChr = JSON.parse(src.data.character);
+    expect(chr.activeCharacter).toBe("Zani");
+    expect(chr.favoriteCharacters).toEqual(srcChr.favoriteCharacters);
+
+    // the account the app imports from the new file: the source's, but for the one synced team and the loops saved
+    const back = readExport(out);
+    expect(back.inventory).toEqual(exp.inventory);
+    expect(back.teams[0]).toEqual(exp.teams[0]); // the player's team, as the app reads it (its typo'd key renamed either way)
+    expect(back.characters.Zani).toEqual(exp.characters.Zani);
+    expect(back.characters.Chisa).toEqual({ ...exp.characters.Chisa, rotations: [expect.objectContaining({ name: prepared.rotations.find((r) => r.key === "Chisa")!.rotationName })] });
+    const synced = back.teams[1];
+    expect(synced.characterIds).toEqual(["Chisa", "Shorekeeper", "Cartethyia"]);
+    expect(synced.actions.map(({ id: _id, ...a }: any) => a)).toEqual(reslotActions(prepared, ["Chisa", "Shorekeeper", "Cartethyia"]));
+    // the run's enemy settings over the team's own: wuwa_calc's Lv 100 / 20 %, the team's own enemy type kept where the run has none
+    expect(synced.enemyConfig).toEqual({ ...exp.teams[1].enemyConfig, ...prepared.enemyConfig });
+    expect(synced).toMatchObject({ name: prepared.teamName, duration: 25.08, description: prepared.description, handoffs: prepared.handoffs });
+    // a member the export has no character for gets no rotation, and says so
+    expect(result.characterRotationsSkipped).toEqual(["Shorekeeper"]);
+    expect(back.characters.Cartethyia.rotations.map((r: any) => r.name)).toEqual(["My own loop", prepared.rotations.find((r) => r.key === "Cartethyia")!.rotationName]);
+  });
+
+  it("a second sync of the synced file replaces its loops rather than adding them again", async () => {
+    const prepared = await prepareTeamImport(mods, traced(final));
+    const first = sourceFile("character_data_2026-11-3.json");
+    const out = join(dir, "character_data_2026-11-3_synced.json");
+    const exp1 = readExport(first);
+    writePreparedTeam(exp1.teams, exp1.characters, "synced", prepared, { rotations: true });
+    writeSyncedExport(first, out, exp1.teams, exp1.characters);
+    const once = readExport(out);
+    writePreparedTeam(once.teams, once.characters, "synced", prepared, { rotations: true });
+    writeSyncedExport(out, out, once.teams, once.characters, { allowSelf: true });
+    const twice = readExport(out);
+    expect(twice.characters.Cartethyia.rotations).toHaveLength(2);
+    expect(twice.characters.Cartethyia.rotations[1].id).toBe(once.characters.Cartethyia.rotations[1].id); // the same rotation, rewritten
+    expect(twice.teams.map((t: any) => t.id)).toEqual(["own", "synced"]);
+    expect(() => writePreparedTeam(twice.teams, twice.characters, "gone", prepared)).toThrow("The team to update no longer exists.");
+    expect(() => writePreparedTeam([{ id: "x", name: "wuwa_calc X", characterIds: ["Zani", "Chisa", "Cartethyia"], actions: [] }], {}, "x", prepared)).toThrow(/does not hold the same three characters/);
   });
 });

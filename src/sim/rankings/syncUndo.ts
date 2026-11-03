@@ -2,6 +2,8 @@
 // teams a sync rewrote are kept as they were in localStorage["wtplus:rankings:sync:undo:v1"], with a fingerprint of
 // each as the sync left it. Undo puts a team back verbatim while it still reads as the sync left it; a team edited or
 // deleted since is left alone and named. Pure apart from the storage helpers; the bar writes the store.
+// "Rewrote" is any change to the stored record, not the report's "updated": a team whose loop did not move can still
+// have had its enemy level, name, description or handoffs rewritten (2026-11-02). Fresh action ids alone don't count.
 import type { SyncReport, TeamLike } from "./syncTeams";
 
 export const SYNC_UNDO_KEY = "wtplus:rankings:sync:undo:v1";
@@ -26,10 +28,18 @@ const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 /** a team record as plain JSON (store proxies and key order as the store holds them) */
 export const teamFingerprint = (team: unknown): string => JSON.stringify(team ?? null);
 
-/** What Undo needs after a sync: the `updated` teams' records from before, fingerprints from after. Null when the
- *  sync changed nothing (nothing to undo). */
+/** A team record as plain JSON without its actions' ids: a re-import gives every action a fresh id, which alone is not
+ *  a change Undo should offer to put back. */
+const contentFingerprint = (team: TeamLike): string =>
+  teamFingerprint({ ...team, actions: (team.actions ?? []).map((a) => Object.fromEntries(Object.entries(a ?? {}).filter(([k]) => k !== "id"))) });
+
+/** What Undo needs after a sync: the records from before of every team the sync rewrote (any stored field moved, the
+ *  report's "unchanged" included: a loop that did not move can still come back with wuwa_calc's enemy level or a new
+ *  name), fingerprints from after. Null when the sync changed nothing (nothing to undo). */
 export function makeSyncUndo(before: TeamLike[], after: TeamLike[], report: SyncReport): SyncUndoRecord | null {
-  const ids = new Set(report.teams.filter((t) => t.status === "updated").map((t) => t.id));
+  const synced = new Set(report.teams.filter((t) => t.status !== "skipped").map((t) => t.id));
+  const now = new Map(after.map((t) => [t.id, t]));
+  const ids = new Set(before.filter((t) => synced.has(t.id) && now.has(t.id) && contentFingerprint(t) !== contentFingerprint(now.get(t.id)!)).map((t) => t.id));
   if (!ids.size) return null;
   const fps: Record<string, string> = {};
   for (const t of after) if (ids.has(t.id)) fps[t.id] = teamFingerprint(t);

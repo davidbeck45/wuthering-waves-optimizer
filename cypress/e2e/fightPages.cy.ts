@@ -114,4 +114,27 @@ describe("fight pages", () => {
     cy.get('[data-test-rotation-problem="code"]', ENGINE).should("contain.text", "Not a team link").and("contain.text", "Team rankings");
     cy.get('[data-test-rotation-problem="code"]').contains("Open on Team rankings").should("not.exist");
   });
+
+  // 2026-11-02 (night critic item 17): the Teams list's tiles and cards are this app's calculator, the fight pages
+  // wuwa_calc's; the list says so above its tiles. Phone first: 412 px at 130 % text, the line on screen and readable.
+  it("says on the Teams list which engine its damage and DPS are, and fits a 412 px phone at 130 % text", () => {
+    cy.viewport(412, 915);
+    cy.visit("/teams", seed({ fontScale: 1.3 }));
+    cy.get("[data-test-team-rotations-summary]", { timeout: 20000 }).should("be.visible");
+    cy.get("[data-test-team-list-engine]")
+      .should("be.visible")
+      .and("contain.text", "this app's calculator")
+      .and("contain.text", "wuwa_calc")
+      .and("contain.text", "Energy check")
+      .then(($note) => {
+        const root = $note[0].ownerDocument.documentElement;
+        const rect = $note[0].getBoundingClientRect();
+        expect(rect.left, "left edge").to.be.at.least(0);
+        expect(rect.right, "right edge").to.be.at.most(root.clientWidth);
+        expect(root.scrollWidth, "no sideways scroll").to.be.at.most(root.clientWidth);
+        // above the tiles it describes
+        const tiles = $note[0].nextElementSibling!.getBoundingClientRect();
+        expect(rect.bottom, "above the summary tiles").to.be.at.most(tiles.top);
+      });
+  });
 });

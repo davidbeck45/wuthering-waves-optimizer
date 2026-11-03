@@ -1,7 +1,8 @@
 // Wuthering Tools+: the command palette's items, fuzzy ranking and the "Ask Claude" row.
 import { describe, expect, it } from "vitest";
 import { CORE_PAGES, SECTION_PAGES, characterRowsOf, fuzzyScore, looksLikeQuestion, pageTitleOf, paletteItems, rankPalette, storedSequence, type PaletteItem, type PaletteSources } from "./paletteItems";
-import { contextTargetOf, paletteWithCommands, type PaletteContext } from "./paletteCommands";
+import { contextTargetOf, paletteWithCommands, themeTitle, type PaletteContext } from "./paletteCommands";
+import { THEME_OPTIONS, getThemeStyle } from "../../composables/useTheme";
 import { PLUS_PAGES } from "./plusPages";
 
 const sources = (over: Partial<PaletteSources> = {}): PaletteSources => ({
@@ -207,5 +208,38 @@ describe("commands (paletteCommands.ts)", () => {
     // a composition with no saved team: rotation and build only (energy and share need a saved team)
     const preset = withCtx(ctx("/build-team", { query: { members: "Aemeath,Mornye,Yangyang" } })).filter((i) => i.group === "context");
     expect(preset.map((i) => i.run)).toEqual([{ kind: "route", path: "/rotation#chars=Aemeath,Mornye,Yangyang" }]);
+  });
+});
+
+describe("palette theme rows", () => {
+  // the list the app's own theme menu shows (useTheme.ts), with the look each one has: never a copy of it
+  const themes = THEME_OPTIONS.map((name) => ({ name, style: getThemeStyle(name) }));
+  const withThemes = (theme: string | null) => paletteWithCommands(sources({ themes, theme }));
+
+  it("one row per theme in useTheme's own order, the one in use marked, each switching to its own name", () => {
+    const rows = withThemes("dark").filter((i) => i.group === "theme");
+    expect(rows.map((i) => i.run)).toEqual(THEME_OPTIONS.map((theme) => ({ kind: "theme", theme })));
+    expect(rows.map((i) => i.title)).toContain("Gruvbox theme");
+    expect(rows.filter((i) => i.badge).map((i) => [i.title, i.badge])).toEqual([["Dark theme", "Now"]]);
+    expect(rows.find((i) => i.title === "Dark theme")!.subtitle).toBe("In use now · dark background, light text");
+    expect(rows.find((i) => i.title === "Nord theme")!.subtitle).toBe("Switch the app's colours · light background, dark text");
+    expect(themeTitle("synthwave")).toBe("Synthwave");
+    // the mark follows the theme in use; a theme no row has marks none
+    expect(withThemes("gruvbox").filter((i) => i.badge === "Now").map((i) => i.key)).toEqual(["theme:gruvbox"]);
+    expect(withThemes(null).some((i) => i.group === "theme" && i.badge)).toBe(false);
+    // no list handed in, no rows (the light / dark toggle stays)
+    expect(paletteWithCommands(sources()).some((i) => i.group === "theme")).toBe(false);
+  });
+
+  it("'gruvbox' finds its row first; 'theme' lists every theme (past the six a group shows); the empty list shows none", () => {
+    const items = withThemes("dark");
+    expect(rankPalette("gruvbox", items)[0]).toMatchObject({ key: "theme:gruvbox", run: { kind: "theme", theme: "gruvbox" } });
+    const theme = rankPalette("theme", items, { ask: false });
+    expect(theme.map((i) => i.key)).toContain("action:theme");
+    expect(theme.filter((i) => i.group === "theme").map((i) => i.run)).toEqual(THEME_OPTIONS.map((t) => ({ kind: "theme", theme: t })));
+    expect(rankPalette("", items).some((i) => i.group === "theme")).toBe(false);
+    // "light" finds the light themes as well as the toggle
+    const light = rankPalette("light", items, { ask: false }).filter((i) => i.group === "theme").map((i) => i.key);
+    expect(light).toEqual(expect.arrayContaining(["theme:light", "theme:pastel", "theme:nord"]));
   });
 });

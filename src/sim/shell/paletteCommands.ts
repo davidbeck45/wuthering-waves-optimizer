@@ -42,6 +42,7 @@ const ICON = {
   selector: "M20 12V8H4v4m16 0v8H4v-8m16 0H4m8-4v12M12 8c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z",
   buffs: "M12 3v18M3 12h18M7 7l10 10M17 7L7 17",
   sparkle: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z",
+  palette: "M12 21a9 9 0 110-18c4.97 0 9 3.6 9 8a4 4 0 01-4 4h-1.8a1.7 1.7 0 00-1.2 2.9A1.8 1.8 0 0112 21zM7.5 11.5h.01M9.5 7.5h.01M14.5 7.5h.01M17 11h.01",
 };
 
 const sameMembers = (a: readonly string[], b: readonly string[]): boolean => a.length === b.length && [...a].sort().join("+") === [...b].sort().join("+");
@@ -173,9 +174,33 @@ export function commandItems(s: PaletteSources, displayName: NameOf): PaletteIte
   return [...context, ...commands.map((c) => ({ ...c, queryOnly: true }))].map(strip);
 }
 
-/** The palette's items with the commands: pages, actions, characters, teams (paletteItems.ts), then "On this page" and
- *  the per-character / per-team commands. Display names come from the character rows. */
+/** "Gruvbox" from "gruvbox": a theme's name as a title (the list itself holds DaisyUI's lowercase ids). */
+export const themeTitle = (name: string): string => (name ? name[0]!.toUpperCase() + name.slice(1) : name);
+
+/** One "Themes" row per theme, in the list's own order (useTheme's `THEME_OPTIONS`, handed in), the one in use marked
+ *  "Now". Found by typing ("gruvbox", "nord", "theme", "light"); the empty palette keeps its one light / dark toggle. */
+export function themeItems(s: Pick<PaletteSources, "themes" | "theme">): PaletteItem[] {
+  return (s.themes ?? []).map((t, i) => {
+    const current = t.name === s.theme;
+    const look = t.style === "light" ? "light background, dark text" : "dark background, light text";
+    return {
+      key: `theme:${t.name}`,
+      group: "theme",
+      order: i,
+      title: `${themeTitle(t.name)} theme`,
+      subtitle: current ? `In use now · ${look}` : `Switch the app's colours · ${look}`,
+      keywords: [t.name, "theme", "colours", "colors", "appearance", t.style],
+      icon: ICON.palette,
+      badge: current ? "Now" : undefined,
+      queryOnly: true,
+      run: { kind: "theme", theme: t.name },
+    };
+  });
+}
+
+/** The palette's items with the commands: pages, actions, characters, teams (paletteItems.ts), then "On this page",
+ *  the per-character / per-team commands and one row per theme. Display names come from the character rows. */
 export function paletteWithCommands(s: PaletteSources): PaletteItem[] {
   const displayName = (key: string): string => s.characters.find((c) => c.key === key)?.name ?? key;
-  return [...paletteItems(s), ...commandItems(s, displayName)];
+  return [...paletteItems(s), ...commandItems(s, displayName), ...themeItems(s)];
 }

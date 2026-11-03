@@ -22,6 +22,16 @@ describe("Sync my teams: undo", () => {
     expect(makeSyncUndo(before, before, report([row("a", "unchanged")]))).toBeNull();
   });
 
+  it("keeps an 'unchanged' team whose record still moved (enemy, name), but not one with only fresh action ids", () => {
+    const b4 = [team("a", "wuwa_calc A", 1, { actions: [{ id: "x1", slot: 0, key: "Hit", stacks: 1 }] }), team("b", "wuwa_calc B", 1, { enemyConfig: { level: 90 } }), team("c", "My team", 0)];
+    const aft = [team("a", "wuwa_calc A", 1, { actions: [{ id: "y9", slot: 0, key: "Hit", stacks: 1 }] }), team("b", "wuwa_calc B", 1, { enemyConfig: { level: 100 } }), team("c", "My team", 0, { name: "Renamed in another tab" })];
+    const undo = makeSyncUndo(b4, aft, report([row("a", "unchanged"), row("b", "unchanged"), row("c", "skipped")]))!;
+    expect(undo.before.map((t) => t.id)).toEqual(["b"]);
+    expect(undo.before[0]!.enemyConfig).toEqual({ level: 90 });
+    // only fresh ids anywhere: nothing to undo
+    expect(makeSyncUndo([b4[0]!], [aft[0]!], report([row("a", "unchanged")]))).toBeNull();
+  });
+
   it("puts a rewritten team back verbatim and leaves the others", () => {
     const undo = makeSyncUndo(before, after, rep)!;
     const out = applySyncUndo(after, undo);

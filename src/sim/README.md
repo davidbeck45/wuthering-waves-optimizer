@@ -194,7 +194,7 @@ checkbox to also save each member's steady-state loop to that character's rotati
 |---|---|
 | `castMapper.ts` | TypeScript port of `wuwa-tools/rotation-port/map_rotations.py`: `appRowsOf(getCharByName(...))` / `echoRowsOf(mainEchoesData)` build the app's attack rows with level-10 motion values; `toActions()` maps executed casts through the cascade override → exact MV → aggregate → per-hit → kit ratio → tick → name-only, with `knownRatios()` pooling a kit's folded multipliers; a negative-status tick becomes a `negativeStatus` action at the tick's stack count; Tune Breaks, 0-MV utility casts and cancelled echo forms are skipped and reported. `enemyStacksOf(heldEnemy)` reads the debuff stacks a traced hit ran under and `enemyConfigOf(casts)` the team enemy settings a loop held (both mirrored in Python; the replay fixture checks both) |
 | `importFromRankings.ts` | `prepareTeamImport(engine, tracedRun)` — the store-free half: turns a traced run (`runTeam(..., true)`, `hitsOf(line)` casts named through `CAST_NAME` / `NODE_NAME`) into plain data: the last section (the steady-state loop) mapped per member and interleaved in execution order with the main DPS in slot 0, the enemy settings the run held (`enemyConfigOf` over Riley's level 100 / 20 % RES target), each member's own loop, and per member `loopChangesAt` / `nextLoopChange` (`Loadout.rotationAt`). `importTeamFromRankings(mods, rowKey, { characterRotations, replaceTeamId })` is the browser path: resolves the run from the page model, prepares it, writes the stores (the Pinia stores load lazily inside it — a static import would drag lodash into the CLI). `reslotActions` / `toImportedActions` / `toCharacterRotation` are shared with the headless path |
-| `syncTeamsHeadless.ts` | **Node-only** (`npm run cli -- sync-teams`): loads the fork's engine from `vendor/wuwa_calc/src` through a `file:` URL (tsx resolves Riley's `.js` imports to `.ts`; vue-tsc never sees his tree), registers the export's Account State, solves every saved wuwa_calc team's composition at `mine`, runs the best row traced and feeds `prepareTeamImport`; returns the new teams (and characters) for `writeSyncedExport` |
+| `syncTeamsHeadless.ts` | **Node-only** (`npm run cli -- sync-teams`): loads the fork's engine from `vendor/wuwa_calc/src` through a `file:` URL (tsx resolves Riley's `.js` imports to `.ts`; vue-tsc never sees his tree), registers the export's Account State, solves every saved wuwa_calc team's composition at `mine`, runs the best row traced and feeds `prepareTeamImport`; `writePreparedTeam` (exported since 2026-11-02, so tests reach it without the engine) writes one prepared import into the copy; returns the new teams (and characters) for `writeSyncedExport` |
 | `controller.ts` | `mountImportControls(key)` after every `renderDetail`; `runImport()` → toast with the outcome (`data-test-rankings-import-done` carries the new team id for tests) |
 | `castMapper.test.ts` + `__fixtures__/wuwaCalcLoops.json` | the port must reproduce the Python mapper on 33 of Riley's loops (930 casts, 12 resonators incl. ratio-, tick-, per-hit- and override-heavy kits) |
 
@@ -826,6 +826,13 @@ Decisions (made without David, 2026-10-31):
 - **Fresh echoes are a separate list**, not plan steps: they need a drop first. "What is left covers N full tunes" uses the leftover after the plan.
 - **No income guessed.** The weekly view only appears when the player types a weekly income.
 - **4★ echoes left out** (other Tuners, other EXP table), said so on the page.
+- **One list by damage per Tuner, not "echoes on set-up characters first"** (decided 2026-11-02, David delegated it; night
+  critic item 18). The 10-31 brief asked for "echoes on set-up characters first, then promising unequipped ones"; the
+  build orders one list by expected damage per rotation per Tuner. Kept, because that order *is* the brief's own goal
+  ("most expected damage per Tuner"): a worn echo whose rolls add little would otherwise take Tuners from a spare one
+  that adds more. A spare echo already counts only what it adds over the echo in its slot (`expectedUpside`), so it is
+  never put first for a gain its owner would not see. The page's intro line says the order in plain words ("ordered by
+  the damage each Tuner adds … whether the echo is on a character now or spare in your bag"); nothing else changed.
 
 Measured on David's export (258 echoes, 23 five-echo builds; only 2 unfinished echoes, which is why the fresh-echo
 list exists): the `tunerPlan` job 0.87 s in Node (536 engine runs, on the pass's warm session), 1.07 s in headless
@@ -2552,3 +2559,44 @@ found one red. It also found a few phone and label gaps. Each fix below is small
 | `endgame/ToaView.vue` | the progress label wraps below `sm` ("Solving the teams you can field at your account" beside "43 / 220"), so the count keeps its label |
 | `rankings/RankingsCards.vue` | the grey seconds read "26.2 s loop". The figure may wrap, but the number never breaks, so at 360 px the label drops under it and the card stays on the screen. `accountRankingsPhone.cy.ts` checks both |
 | `ai/tools/teamRun.ts` `memberPlanSummary` | `build_team_plan` leaves out `fittingEchoes` for a member whose plan names no sets, layout or main stats (it counted the whole inventory as a fit). Tested in `rileyTools.test.ts` |
+
+## Loose ends from the 2026-10-31 critic (batch 3b, track "loose-ends", 2026-11-02)
+
+Five small items the night critic (`wto-wt/night/reports/critic.md` items 11, 17, 18) and the roadmap's Phase 2b left
+open. Report: `wto-wt/b3/reports/loose-ends-build.md`.
+
+| Piece | Role |
+|---|---|
+| `shell/paletteCommands.ts` `themeItems` + `paletteItems.ts` (group `theme`, run `{ kind: "theme" }`) | the Ctrl+K palette has one **Themes** row per theme, read from useTheme's own `THEME_OPTIONS` (handed in by `CommandPalette.vue` with each one's light / dark look from `getThemeStyle`, so a theme Ryan adds gets a row with no edit here). "Gruvbox theme", subtitle "Switch the app's colours · dark background, light text"; the one in use is marked **Now** and says "In use now". Rows show only when typed for ("gruvbox", "nord", "theme", "light"; the empty palette keeps its one light / dark toggle), and the group lists all nine past the six rows a group shows (`GROUP_CAP`) |
+| `shell/shellDom.ts` `syncThemeMenus` | Ryan's theme menus (`ThemeOptions.vue`: the nav dropdown, the phone's More › Appearance) keep their own copy of the theme for the check mark, set on mount and on their own clicks. After a palette switch the palette presses each menu's `[data-set-theme]` button for that theme (his own handler), so the check mark moves too. No edit to his file |
+| `teamLinks/TeamListEngineNote.vue` (two lines in Ryan's `TeamRotations.vue`: the import and one tag under "All Teams Summary") | the Teams list says what its numbers are: "Damage and DPS here are **this app's calculator** over each action list. Energy check, Rotation cue cards and Tower of Adversity show **Riley's wuwa_calc** DPS, which differs." Worded like the Teams editor's line (`TeamPlusLinks.vue`). On David's Aemeath team the list reads 378,332 DPS (the CLI's `team` prints 378,331: rounding) while /energy, /rotation and /endgame read 367,567 (`trace`: 367,566.91); both are right for their engine. Phone: five lines at 412 px / 130 %, inside the summary box, above the tiles. The wider cross-page number story is track "fix-numbers"' |
+| `echoLab/EchoLabPlan.vue` (intro line) + "Echo Lab pass 2" above | the Tuner plan keeps its damage-per-Tuner order (decision recorded there); the intro now says the order in plain words |
+| `rankings/syncUndo.ts` `makeSyncUndo` | **fix:** Undo kept only the report's "updated" teams, but a sync also rewrites a team whose loop did not move: its enemy (a level-90 enemy set by hand comes back as wuwa_calc's Lv 100 / 20 % RES), a generated name, the description and handoffs. Undo now keeps every synced team whose stored record changed in any field, fresh action ids aside (a re-import gives every action a new id, which alone is no change). A fresh import synced again still offers no Undo (`rankings.cy.ts`) |
+| `rankings/syncWritePath.test.ts` (browser and CLI halves) | the write path end to end on small synthetic accounts. **Browser:** the real team store, `importTeamFromRankings` as the account bar runs it, with five saved teams: one whose loop changed (rewritten in its own slot order, fresh unique ids, the run's enemy over its own, the report's deltas), one re-imported from the same row ("unchanged", only ids new), the player's own team (byte for byte), a team with a character the app lacks ("failed", "… is not released in this app yet", nothing written), and one whose enemy was set by hand; Undo puts back exactly the teams from before, old action ids included. **CLI:** `writePreparedTeam` + `writeSyncedExport` on a v9 file with a key no writer knows: only the synced team and its members' loops change; `meta`, `inventory`, the unknown store and top-level key are byte for byte, the favourites and `activeCharacter` inside the two rewritten stores stay, a member the export lacks is skipped and named, and a second sync of the synced file replaces its loops instead of adding them again. `syncUndo.test.ts`: an "unchanged" team whose record moved is kept, one with only fresh ids is not |
+| Glacio Chafe table (checked, not changed) | the app's stack table still ends at 13 and Riley's goes to 16; file and line below. Engine data and Ryan's tables are not this track's to change |
+
+**Glacio Chafe, where the 13 lives (2026-11-02, plus-b3 d530c488):**
+- `packages/formulas/src/index.ts:1769-1786` `getGlacioChafeMotionValueByStacks`: rungs 1..13 (13 = 40,753), and any
+  higher count falls back to the 13 rung (`?? motionValueByStacksMap["13"]`). Ryan's own 3.7 change took Electro Flare
+  to 16 (`getElectroFlareMotionValueByStacks`, :1827-1846), not Chafe.
+- `src/components/CalculatorEnemy.vue:313`: the enemy panel's Glacio Chafe slider has `max="13"`.
+- `src/sim/rankings/castMapper.ts:147` `tickCap` (13 for Chafe) and `:173` `ENEMY_CAP.glacioChafeStacks: 13`, the same
+  in `wuwa-tools/rotation-port/map_rotations.py` `tick_cap` / `ENEMY_CAP` (lines 42/44 on wuwa-tools main, 100/102 on
+  b3/2026-11-02): both mappers clamp to the app's table, as they must.
+- Riley: `vendor/wuwa_calc/src/shared/status.ts:122-127` `GLACIO_CHAFE_ACTIONS` has 16 rungs (14 = 47,546,
+  15 = 54,338, 16 = 61,130: the 11→13 step of 6,792 continued, the same shape Ryan's Flare extension took).
+- Effect today: of the 149 stock team presets, only "wuwa_calc Xuanling S6R5 · Suisui + Chisa" (both variants) runs
+  to 16, pressed at 13 with the enemy set to Chafe 13. On David's export the same composition (his "Xuanling S6R3 ·
+  Suisui + Chisa") has six Chafe ticks, all at 16 in Riley's run and pressed at 13: `npm run cli -- team 2` gives
+  6,444 avg damage a tick, 38,663 of the team's 7,660,011 (0.5 %). The tick formula is linear in the motion value, so
+  at the 16 rung (61,130 / 40,753 = 1.5×) they would add about 19,300 (+0.25 %); what else reads the enemy's Chafe
+  setting is not counted in that. When Ryan's table gains 14-16, raise `tickCap`, `ENEMY_CAP` and the Python twin
+  together and re-emit those presets.
+
+Decisions: the theme rows appear only when typed for, so the empty palette stays as it was; the Teams list label is a
+plus component with a one-line mount, not a change to Ryan's tiles; the Tuner plan order stays by damage per Tuner
+(David delegated it). Gates: `paletteItems.test.ts` (theme rows, the mark, ranking), `syncUndo.test.ts`,
+`syncWritePath.test.ts`; Cypress `themes.cy.ts` (palette finds Gruvbox, switches, marks it Now, moves Ryan's check
+mark, lists all nine for "theme", a light theme survives a reload), `fightPages.cy.ts` (the Teams list's line on a
+412 px phone at 130 % text, on screen and above the tiles), `rankings.cy.ts` (a fresh import synced again offers no
+Undo), `echoLabTuner.cy.ts`, `phoneLayout.cy.ts`.

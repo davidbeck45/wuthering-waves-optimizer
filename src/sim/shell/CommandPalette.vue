@@ -80,7 +80,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { allCharactersList, characterPortraitUrl, getCharactersAvailable } from "../../characters/characters";
-import { useTheme, getThemeStyle } from "../../composables/useTheme";
+import { useTheme, getThemeStyle, THEME_OPTIONS } from "../../composables/useTheme";
 import { useClassicUi } from "../../composables/useClassicUi";
 import { useSuggestNavigation } from "../../composables/useSuggestNavigation";
 import { useToast } from "../../composables/useToast";
@@ -92,7 +92,7 @@ import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { requestShare } from "../share/shareRequest";
 import { paletteWithCommands, type PaletteContext } from "./paletteCommands";
 import type { CharacterStoreLike } from "./navigation";
-import { modKeyLabel } from "./shellDom";
+import { modKeyLabel, syncThemeMenus } from "./shellDom";
 
 const emit = defineEmits<{ close: [] }>();
 
@@ -131,8 +131,20 @@ const allItems = computed<PaletteItem[]>(() => {
     mod: modKey,
     context: pageContext(),
     autoTeamBuffs: autoTeamBuffs.value,
+    themes: THEME_OPTIONS.map((name) => ({ name, style: getThemeStyle(name) })),
+    theme: currentTheme(),
   });
 });
+
+/** the saved theme, else the one on the page (a first visit before Ryan's menu stored one) */
+function currentTheme(): string | null {
+  return theme.value ?? document.documentElement.getAttribute("data-theme");
+}
+
+function switchTheme(name: string): void {
+  setTheme(name);
+  syncThemeMenus(name);
+}
 
 /** Where the palette was opened: the route, the calculator's character, the Teams editor's open team. */
 function pageContext(): PaletteContext {
@@ -206,10 +218,13 @@ async function run(item: PaletteItem): Promise<void> {
     case "share":
       requestShare(r.source);
       break;
+    case "theme":
+      switchTheme(r.theme);
+      break;
     case "action":
       switch (r.action) {
         case "toggle-theme":
-          setTheme(getThemeStyle(theme.value ?? "dark") === "light" ? "dark" : "light");
+          switchTheme(getThemeStyle(theme.value ?? "dark") === "light" ? "dark" : "light");
           break;
         case "toggle-ui":
           setClassicUi(!isClassicUi.value, "utility-menu");

@@ -4,7 +4,7 @@ import { normalize } from "../../utils/actionTextMatch";
 import { PLUS_PAGES } from "./plusPages";
 import type { PaletteContext } from "./paletteCommands";
 
-export type PaletteGroup = "ask" | "context" | "page" | "action" | "command" | "character" | "team";
+export type PaletteGroup = "ask" | "context" | "page" | "action" | "theme" | "command" | "character" | "team";
 
 export type PaletteRun =
   | { kind: "route"; path: string }
@@ -12,7 +12,8 @@ export type PaletteRun =
   | { kind: "team"; id: string }
   | { kind: "action"; action: PaletteAction }
   | { kind: "ask"; question: string }
-  | { kind: "share"; source: { kind: "build"; charId: string } | { kind: "team"; teamId: string } };
+  | { kind: "share"; source: { kind: "build"; charId: string } | { kind: "team"; teamId: string } }
+  | { kind: "theme"; theme: string };
 
 export type PaletteAction = "toggle-theme" | "toggle-ui" | "ai-settings" | "ai-open" | "ai-new-chat" | "toggle-team-buffs";
 
@@ -41,6 +42,7 @@ export const GROUP_LABELS: Record<PaletteGroup, string> = {
   context: "On this page",
   page: "Pages",
   action: "Actions",
+  theme: "Themes",
   command: "Commands",
   character: "Characters",
   team: "Saved teams",
@@ -111,6 +113,11 @@ export interface PaletteSources {
   context?: PaletteContext;
   /** the team-aware buffs switch (no command without it) */
   autoTeamBuffs?: boolean;
+  /** the app's themes in useTheme's own order (`THEME_OPTIONS`) with each one's light / dark look: one "Themes" row
+   *  each (paletteCommands.ts `themeItems`; none without it) */
+  themes?: ReadonlyArray<{ name: string; style: "light" | "dark" }>;
+  /** the theme in use now, marked on its row */
+  theme?: string | null;
 }
 
 export function paletteItems(s: PaletteSources): PaletteItem[] {
@@ -183,7 +190,9 @@ export function fuzzyScore(query: string, text: string): number {
   return compactQ.length >= 2 ? Math.max(0.05, 0.45 * (compactQ.length / span)) : 0;
 }
 
-const GROUP_WEIGHT: Record<PaletteGroup, number> = { context: 0.07, page: 0.06, action: 0.05, command: 0.04, character: 0.03, team: 0.02, ask: 0 };
+const GROUP_WEIGHT: Record<PaletteGroup, number> = { context: 0.07, page: 0.06, action: 0.05, theme: 0.045, command: 0.04, character: 0.03, team: 0.02, ask: 0 };
+/** groups shown in full past `perGroup`: the theme list is short, and "theme" should list every one */
+const GROUP_CAP: Partial<Record<PaletteGroup, number>> = { theme: 16 };
 const QUESTION = /\?\s*$|^(what|why|how|who|which|should|is|are|can|does|do|when|where|explain|compare)\b/i;
 
 export const looksLikeQuestion = (text: string): boolean => QUESTION.test(text.trim());
@@ -229,7 +238,7 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
       order.push(item.group);
     }
     const list = byGroup.get(item.group)!;
-    if (list.length < perGroup) list.push(item);
+    if (list.length < Math.max(perGroup, GROUP_CAP[item.group] ?? 0)) list.push(item);
   }
   const out: PaletteItem[] = order.flatMap((g) => byGroup.get(g)!);
   if (options.ask !== false) {
