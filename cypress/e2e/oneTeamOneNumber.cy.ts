@@ -62,6 +62,20 @@ describe("one team, one number", () => {
     cy.get('[data-test-build-team-plan="Lynae"] .bt-er__hint').should("contain.text", "you have").find("[data-test-build-team-er-kit]").should("not.exist");
   });
 
+  it("Build my team's saved line names the team one way, not by its stored name", () => {
+    cy.viewport(1440, 900);
+    cy.visit(`/build-team?team=${TEAM_ID}`, seed());
+    cy.get('[data-test-build-team][data-phase="plan"]', ENGINE).should("exist");
+    cy.get("[data-test-build-team-run]").click();
+    cy.get('[data-test-build-team][data-phase="result"]', ENGINE).should("exist");
+    cy.get('[data-test-build-team-result][data-status="ok"]', ENGINE).first().invoke("attr", "data-test-build-team-result").then((id) => {
+      cy.get(`[data-test-build-team-save-slot="${id}"]`).check({ force: true });
+    });
+    cy.get("[data-test-build-team-save]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-build-team-saved]").should("contain.text", `pinned in “${ONE_NAME}”`).and("not.contain.text", RAW_NAME);
+  });
+
   it("the Teams editor's share bar splits the same average damage its header totals", () => {
     cy.viewport(1440, 900);
     cy.visit("/teams", seed());
@@ -133,6 +147,8 @@ describe("one team, one number", () => {
     cy.get("[data-test-rankings-basis]", LAZY).should("contain.text", "echoes each character wears").and("contain.text", "this app's engine");
     // Riley's heading in words, each figure's seconds called a loop
     cy.get(".skittle-root .tgrid .c.dprhead", ENGINE).should("have.text", "Avg damage / rotation");
+    // his loop time is the last of the four rotations and his DPS divides by all four: the heading says so
+    cy.get(".skittle-root .tgrid .c.dprhead").should("have.attr", "title").and("match", /the last of the four took; DPS divides by the time all four took/);
     cy.get(".skittle-root .tgrid .c.teamdpr .looptime", ENGINE).first().then(($s) => {
       expect(getComputedStyle($s[0]!, "::after").content).to.equal('" loop"');
     });

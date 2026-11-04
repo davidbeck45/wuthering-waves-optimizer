@@ -108,6 +108,9 @@ describe("explain payloads", () => {
     } as unknown as TeamView;
     const r = explainEnergyTeam(view)!;
     expect(r.data.measured).toContain(RILEY_ENGINE_NOTE);
+    // what the game's own screen shows for Mornye is not on record: the note says so and never equates a figure with it
+    expect(r.data.measured).toContain("Do not say which figure the game's own screen shows");
+    expect(r.data.measured).not.toMatch(/character screen/i);
     expect(r.data).toMatchObject({ "wuwa_calc team": "t42", "team DPS in wuwa_calc": 380_124, "fight length (s)": 98 });
     expect(r.data.members).toEqual([
       expect.objectContaining({ character: "Aemeath", role: "main DPS", "Energy Regen the build has (%)": 110.8, "Energy Regen the loop needs (%)": 115.2, status: "short of the need", "points short": 4.4, "median Energy Regen rolls that close it": 1, "need set by": "this team's loop", "score multiplier while short": 0.956 }),

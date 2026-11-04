@@ -3294,7 +3294,8 @@ page's view model (`display/numberBasis.test.ts`):
    `currentMenuEr` (so `menuErOf` and `erMinStat` move with it), and both cards add "(incl. +10 % inherent)" with a
    tooltip (`kitErNote`). Build history and the share cards keep the build card's 277 %. Nothing says which figure the
    game's own screen shows: no in-game capture is on record, and Riley's `menuStats()`, which he documents as what the
-   game's character screen shows, counts the inherent. One look at Mornye in game settles it.
+   game's character screen shows, counts the inherent. One look at Mornye in game settles it. So no user-facing line
+   (/energy, Build history's Stats heading, `cli er`, the assistant's notes) calls either figure the character screen's.
 7. **One name per team:** `teamLabel(keys, main)` and `teamTitle(storedName)` (`display/teamName.ts`) both give
    "Aemeath · Mornye + Lynae"; `teamTierLine` is the second line ("main DPS S6R5 · supports S1R1 / S6R1"). The share
    sheet, the team card (and its PNG), the palette's Saved-teams rows and team commands, the Explain question, the

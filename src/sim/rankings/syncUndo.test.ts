@@ -63,4 +63,17 @@ describe("Sync my teams: undo", () => {
     mem.set(SYNC_UNDO_KEY, "{not json");
     expect(readSyncUndo(storage)).toBeNull();
   });
+
+  it("a sync that rewrote no team but filled loop times keeps its Undo through a reload, and that Undo touches no team", () => {
+    const mem = new Map<string, string>();
+    const storage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
+    const record: SyncUndoRecord = { v: 1, at: "2026-11-04T12:00:00.000Z", before: [], after: {} }; // RankingsAccountBar's record for that sync
+    expect(saveSyncUndo(record, storage)).toBe(true);
+    const read = readSyncUndo(storage);
+    expect(read).toEqual(record); // the toolbar's Undo after a reload reads this
+    const out = applySyncUndo(before, read!);
+    expect(out.restored).toEqual([]);
+    expect(out.kept).toEqual([]);
+    expect(out.teams).toEqual(before);
+  });
 });

@@ -139,5 +139,5 @@ export function printEnergy(r: EnergyReport): void {
   const s = r.summary;
   console.log(`\n${s.shortCharacters.length} character${s.shortCharacters.length === 1 ? "" : "s"} short on ER${s.shortCharacters.length ? ` (${s.shortCharacters.map(nameOf).join(", ")})` : ""} · ${s.overcapCharacters.length} overcapping crit${s.overcapCharacters.length ? ` (${s.overcapCharacters.map(nameOf).join(", ")})` : ""}`);
   console.log("ER need = the constant ER at which every Liberation of this team's wuwa_calc loop is paid on time (or the kit's own floor, if higher).");
-  console.log("ER have = the character screen's ER of the build the team runs (equipment + permanent bonuses; fight buffs are inside the need). * = not on this account (runs S0 R1).");
+  console.log("ER have = the ER of the build the team runs (equipment + permanent bonuses, plus an always-on inherent the app keeps as a switch: Mornye +10 %; fight buffs are inside the need). * = not on this account (runs S0 R1).");
 }

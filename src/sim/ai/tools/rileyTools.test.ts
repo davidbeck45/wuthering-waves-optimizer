@@ -42,6 +42,9 @@ describe("tools on Riley's engine", () => {
   it("energy_check: each member's ER need beside the build's, and every saved team's floors", async () => {
     const r = await call("energy_check", { team: "1" });
     expect(r).toMatchObject({ measured: true, saved: true, path: "/energy", label: "Energy check" });
+    // the assistant must not tell David what the game's own screen shows for Mornye: nothing on record says
+    expect(r.notes.join(" ")).toContain("Do not say which figure the game's own screen shows");
+    expect(r.notes.join(" ")).not.toMatch(/character screen/i);
     expect(r.wuwaCalcTeam).toMatch(/^t\d+$/);
     expect(r.teamDps).toBeGreaterThan(100_000);
     expect(r.members.map((m: any) => m.character).sort()).toEqual(["Aemeath", "Lynae", "Mornye"]);

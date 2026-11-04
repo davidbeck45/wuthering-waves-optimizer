@@ -133,7 +133,7 @@ export function explainEnergyTeam(view: TeamView): ExplainRequest | null {
     question: `Explain the Energy Regen needs of my team "${teamTitle(view.name, view.characterIds)}": who is short or tight, why that member needs that much, and the cheapest way to close the gap?`,
     data: {
       page: "/energy (Energy check)",
-      measured: `${RILEY_ENGINE_NOTE} The need is the constant Energy Regen at which every Liberation of this team's wuwa_calc loop is paid on time; "kit floor" means the character's own minimum, not a loop result. The have is the character screen's Energy Regen of the build the team runs in this app, plus an always-on inherent the app keeps as a switch (Mornye +10 %), as wuwa_calc counts it, so Mornye's have reads 10 points above this app's build card and Build history. Do not say which figure the game's own screen shows: that is not on record.`,
+      measured: `${RILEY_ENGINE_NOTE} The need is the constant Energy Regen at which every Liberation of this team's wuwa_calc loop is paid on time; "kit floor" means the character's own minimum, not a loop result. The have is the Energy Regen of the build the team runs in this app, plus an always-on inherent the app keeps as a switch (Mornye +10 %), as wuwa_calc counts it, so Mornye's have reads 10 points above this app's build card and Build history. Do not say which figure the game's own screen shows: that is not on record.`,
       team: rotationName(view.name),
       "wuwa_calc team": e.teamKey,
       "team DPS in wuwa_calc": round(e.total),

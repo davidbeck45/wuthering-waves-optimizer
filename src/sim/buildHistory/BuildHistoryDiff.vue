@@ -53,7 +53,7 @@
 
     <!-- character-screen stats -->
     <div class="bh-d__block" data-test-build-history-diff-stats>
-      <h3 class="bh-h3">Stats <span class="bh-count">character screen: gear and always-on bonuses</span></h3>
+      <h3 class="bh-h3">Stats <span class="bh-count">build card: gear and permanent bonuses</span></h3>
       <p v-if="!comparison.stats" class="bh-muted">{{ busy ? "Working out the stats…" : "The stats could not be worked out." }}</p>
       <table v-else class="bh-stats">
         <thead>
