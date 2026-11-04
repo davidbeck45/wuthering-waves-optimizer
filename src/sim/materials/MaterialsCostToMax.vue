@@ -27,7 +27,7 @@
       Shell Credits, EXP and materials to take {{ name }} to level 90 with all five Forte skills at 10<template v-if="from === 'scratch'">, both inherent skills and all 8 stat bonuses</template><template v-if="weaponName">, and {{ weaponName }} to level {{ weaponMax }}</template>.
     </p>
 
-    <p v-if="!data" class="mat__note" data-test-cost-loading>{{ failed ? "The cost table did not load. Reopen the drawer to try again." : "Loading the cost table…" }}</p>
+    <p v-if="!data" class="mat__note" data-test-cost-loading>{{ failed ? "The cost table did not load. Reload the page to try again." : "Loading the cost table…" }}</p>
     <p v-else-if="!cost" class="mat__note" data-test-cost-missing>
       The cost table (version {{ data.gameVersion }}) has no entry for {{ name }} yet.
     </p>
@@ -52,7 +52,7 @@
         <summary class="mat-part__sum">
           <span class="mat-part__title">
             {{ p.title }}
-            <span v-if="p.assumed" class="mat-tag">not saved</span>
+            <span v-if="p.assumed" class="mat-tag">{{ assumedTag(p) }}</span>
             <span v-if="!p.counted" class="mat-tag">not in the total</span>
           </span>
           <span class="mat-part__credits">{{ p.credits ? `${count(p.credits)} Shell Credits` : "nothing left" }}</span>
@@ -122,6 +122,8 @@ const weapon = computed(() => (saved.value.weapon && data.value?.weapons[saved.v
 const weaponName = computed(() => (weapon.value ? weaponDisplayName(weapon.value) : ""));
 const weaponMax = computed(() => (weapon.value && data.value ? data.value.weapons[weapon.value].max : 90));
 
+/** four of five Forte skills saved is not "not saved" */
+const assumedTag = (p: CostPart): string => (p.kind === "forte" && Object.keys(saved.value.talents).length ? "partly saved" : "not saved");
 const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? "" : "s"}`;
 const ascensionNote = (p: CostPart): string =>
   `${plural(p.ascensions, "ascension")} to go: ${count(p.credits - p.expCredits)} Shell Credits and the materials below.`;

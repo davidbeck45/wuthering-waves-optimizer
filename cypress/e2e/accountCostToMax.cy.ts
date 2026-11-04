@@ -60,7 +60,7 @@ describe("cost to max in the account drawer", () => {
     cy.get("[data-test-cost-to-max] .mat__intro").should("contain.text", "Defier's Thorn to level 90").and("not.contain.text", "stat bonuses");
     cy.get("[data-test-cost-total-credits]").should("have.text", `${count(fromSaved.total.credits)} Shell Credits`);
     cy.get('[data-test-cost-part="level"] summary').should("contain.text", "Level 50+ → 90").and("not.contain.text", "not saved");
-    cy.get('[data-test-cost-part="forte"] summary').should("contain.text", "Forte 6 / 10 / 10 / 8 / 10 → 10");
+    cy.get('[data-test-cost-part="forte"] summary').should("contain.text", "Forte 6 / 10 / 10 / 8 / 10 → 10").and("not.contain.text", "not saved");
     cy.get('[data-test-cost-part="weapon"] summary').should("contain.text", "Weapon 80 → 90");
     cy.get('[data-test-cost-part="extras"] summary').should("contain.text", "not in the total");
     // a part opens to its EXP, ascensions and materials
@@ -106,6 +106,32 @@ describe("cost to max in the account drawer", () => {
     cy.get('[data-test-cost-from="saved"]').click();
     cy.get("[data-test-cost-total]").should("contain.text", "Nothing left to pay");
     cy.get("[data-test-cost-assumed]").should("not.exist");
+  });
+
+  it("tags Forte as partly saved when only some skills are, and names those as the other Forte levels", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/account", seed({ ciaccona: { talents: { intro: "10" } } }).visit);
+    openDrawer("Ciaccona");
+    cy.get('[data-test-cost-from="saved"]').click();
+    cy.get('[data-test-cost-part="forte"] summary').should("contain.text", "partly saved");
+    cy.get("[data-test-cost-assumed]").should("contain.text", "has not saved Ciaccona's level, other Forte levels or weapon level");
+  });
+
+  it("says so when the equipped weapon is one the table lacks, and counts no weapon cost", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/account", seed({ ciaccona: { weapon: "NotInTheTable" } }).visit);
+    openDrawer("Ciaccona");
+    cy.get("[data-test-cost-weapon-missing]").should("contain.text", "no entry for").and("contain.text", "no weapon cost is counted");
+    cy.get('[data-test-cost-part="weapon"]').should("not.exist");
+  });
+
+  it("says to reload the page when the table cannot load", () => {
+    cy.viewport(1440, 900);
+    cy.intercept({ pathname: /\/materials(\.json|-[\w-]+\.js)$/ }, { statusCode: 503, body: "down" });
+    cy.visit("/account", seed().visit);
+    cy.get('[data-test-account-card="Cartethyia"]', { timeout: 120000 }).click();
+    cy.get("[data-test-cost-loading]", { timeout: 20000 }).should("contain.text", "did not load").and("contain.text", "Reload the page");
+    cy.get("[data-test-cost-total]").should("not.exist");
   });
 
   it("fits a 412 px phone at 130 % text: nothing past the edge, 40 px switch and rows", () => {

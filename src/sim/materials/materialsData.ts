@@ -6,7 +6,8 @@ let pending: Promise<MaterialsData> | null = null;
 
 export function loadMaterials(): Promise<MaterialsData> {
   pending ??= import("./data/materials.json").then((m) => (m.default ?? m) as unknown as MaterialsData);
-  // a failed load is not kept: the next drawer opening tries again
+  // A failed load is not kept, in case the browser does fetch again. Chromium does not: it keeps a failed import until the
+  // page reloads (headless Chrome 155, 2026-11-04: one 503, then every import failed at once), so the section says to reload.
   pending.catch(() => (pending = null));
   return pending;
 }

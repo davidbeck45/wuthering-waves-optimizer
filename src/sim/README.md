@@ -2909,7 +2909,7 @@ characters, and "nothing left" for everyone would say nothing. No Waveplate or d
 | Piece | Role |
 |---|---|
 | `data/materials.json` | **GENERATED** by `wuwa-tools/materials/materials_sync.mjs` (`--game-version 3.7`, read 2026-11-02; 110 KB, 12 KB gzipped): per character the ascension ranks 1–6 (as `[cap it is paid at, cost]`), one Forte skill's levels 2–10 (the generator checks the five are equal), the two inherent skills, the two stat-bonus tiers (× 4 strands); per weapon its rarity curve, last level and ascension steps (credits folded in); item names and rarity; the level EXP curves and 0.35 / 0.4 Shell Credits per resonator / weapon EXP. Only characters and weapons the app lists are written (the release guard) |
-| `materialsData.ts` | `loadMaterials()`: the table as its own chunk, loaded when a drawer first opens (a failed load is retried next time) |
+| `materialsData.ts` | `loadMaterials()`: the table as its own chunk, loaded when a drawer first opens (a failed load says to reload the page, see below) |
 | `costToMax.ts` | pure: `savedProgressOf(storeRecord)` reads `characterLevel` ("50+" = level 50 ascended), `talents`, `weapons[weapon].weaponLevel`, nothing guessed; `costToMax(table, key, saved, { from })` applies the calculator's own defaults (level 90, skills 10, the weapon's last level), flags each part that used one (`assumed`), and sums each part — `level`, `forte`, `extras` (inherent + stat bonuses), `weapon` — into credits, EXP (and the top EXP items it takes, rounded up) and materials. The `extras` part is `counted` only from level 1: the calculator does not save inherent skills or stat bonuses |
 | `MaterialsCostToMax.vue` | the section: the switch (two `aria-pressed` buttons), a one-line intro, a note naming what is not saved when nothing sits below the top (`unsavedWords`: only the values the store lacks, none when all of them are saved at the top), **All together** (credits, Premium Resonance Potions / Premium Energy Cores, every material as a chip with a rarity edge), then **Where it goes** — one `<details>` per part (title "Level 50+ → 90", "not saved" / "not in the total" tags, credits; inside: the assumption in words, ascensions to go with their credits, the EXP and what feeding it costs, the materials) — and the source line ("the game's own upgrade tables, version 3.7 (read 2026-11-02)") |
 | `account/AccountCharacterDrawer.vue` | the section sits under "What to invest in next" (keyed by the character, so the switch resets per character) |
@@ -2948,6 +2948,10 @@ Things learned:
   Waveworn Shard 6 / 6 / 10 / 12). Kuro's wiki matches the game's table step by step on both (Mech Core 6 / 6 / 10 / 12, Waveworn
   Shard 6 / 8 / 6 / 20), and on Pulsation Bracer, the same two families, where Fandom agrees too. A third Fandom figure not to
   "fix" the table from.
+- Chromium keeps a failed dynamic import until the page reloads: on headless Chrome 155, one 503 on a module and every later
+  `import()` of it failed at once with no new request (other engines not tested). So "reopen to try again" could not work there;
+  the section says to reload. (`perf/chunkReload.ts` reloads once for a stale chunk; it stands aside when offline, after a reload
+  in the last minute, or with storage blocked, and those are when this text shows.)
 - "Nothing below the top" is not "nothing saved": Cartethyia, Galbrena and Sigrika have all five Forte skills saved at 10
   on David's export, and the note used to say those were not saved while the Forte row, rightly, carried no such tag.
 - Cypress's webpack hands a JSON import over as the namespace, Vite as `default`; the spec reads `default ?? module`.
@@ -2956,8 +2960,9 @@ Gates: `materials/costToMax.test.ts` (the table covers every app character and w
 Blooming Jadehaven, Changli, Mortefi, a 4★ and a 1★ weapon — the totals the spike checked; Training Broadblade's four ascensions and nothing left at 70; saved levels 50+ / Forte
 6·10·10·8 / weapon 80; nothing saved = maxed with every guess flagged; "40" vs "40+"; junk levels), `cypress/e2e/
 accountCostToMax.cy.ts` (saved view with the figures from the same function, the switch, a part opened, 4,460,260 from
-level 1, the source line without the API's name; Ciaccona with nothing saved; 412 px at 130 %: nothing past the edge,
-40 px controls); `account.cy.ts` unchanged and green. `phoneLayout.cy.ts` was run four times on 2026-11-02 under a
+level 1, the source line without the API's name; Ciaccona with nothing saved; the note naming only what is unsaved, gone when
+all of it is saved at the top; Forte partly saved; a weapon the table lacks; the table failing to load; 412 px at 130 %:
+nothing past the edge, 40 px controls); `account.cy.ts` unchanged and green. `phoneLayout.cy.ts` was run four times on 2026-11-02 under a
 load average of ~60 (16 agents on the box): every one of its 16 tests passed in at least one run, the reds moved from
 run to run and two runs ended in Electron renderer crashes — verify round 1 then ran it once through, 16 / 16 (load ~50). wuwa-tools:
 `node --test materials/materials_sync.test.mjs`.
