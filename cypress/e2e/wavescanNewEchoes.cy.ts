@@ -8,6 +8,7 @@ import * as fixtureModule from "../../src/sim/wavescan/__fixtures__/newEchoes.js
 const fixture = ((fixtureModule as unknown as { default?: typeof fixtureModule }).default ?? fixtureModule) as typeof fixtureModule;
 
 type Inventory = { echoes: Array<{ echoId: string; echo: string }>; equipped: Record<string, Record<string, number>> };
+type ToastBox = { height: number; textRight: number; closeLeft: number };
 
 function seed(options: { classic?: boolean; fontScale?: number; inventory?: unknown } = {}) {
   return {
@@ -96,8 +97,29 @@ describe("Wavescan: add only new echoes", () => {
     count("new").should("contain.text", "3");
     cy.window().then((win) => expect(readInventory(win).echoes, "cancel adds nothing").to.have.length(fixture.inventory.echoes.length));
     cy.get("[data-test-wavescan-new-only-add]").click();
+    // a toast lives 4 s and measures 0 until its popover opens, so the page samples it: a slow runner can't miss it
+    cy.window().then((win) => {
+      const timer = win.setInterval(() => {
+        const alert = win.document.querySelector(".toast .alert");
+        const height = alert?.getBoundingClientRect().height;
+        if (!alert || !height) return;
+        win.clearInterval(timer);
+        const toast: ToastBox = {
+          height,
+          textRight: alert.querySelector("span")!.getBoundingClientRect().right,
+          closeLeft: alert.querySelector("button")!.getBoundingClientRect().left,
+        };
+        (win as unknown as { __toast: ToastBox }).__toast = toast;
+      }, 30);
+    });
     cy.get(".confirm-dialog[open] .modal-action").contains("button", "Add 3 echoes").click();
     cy.get("[data-test-wavescan-new-only-done]").should("contain.text", "Added 3 echoes.");
+    // the toast is one row, its text then its ×: DaisyUI's stacked layout stood 210 px tall over the counts it reports on
+    cy.window().its("__toast", { timeout: 20000 }).should((toast: unknown) => {
+      const { height, textRight, closeLeft } = toast as ToastBox;
+      expect(height, "toast height").to.be.lessThan(130);
+      expect(closeLeft, "the × sits beside the text").to.be.at.least(textRight - 1);
+    });
     count("new").should("contain.text", "0");
     cy.get("[data-test-wavescan-new-only-add]").should("be.disabled").and("contain.text", "Nothing new to add");
     // the Echoes section below still says "… ready to import": the card says whether it has anything left to add
