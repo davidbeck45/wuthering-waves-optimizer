@@ -459,7 +459,7 @@ describe("Sync my teams on the CLI: what lands in the new export", () => {
       teams: [
         // a typo'd action key (migration 010 renames it) on a team the sync never touches
         { id: "own", name: "My Zani team", characterIds: ["Zani", "Chisa", "Cartethyia"], actions: [{ id: "a1", slot: 0, key: "Undaunted ayfarerDMG", type: "skill", count: 1 }], duration: 20 },
-        { id: "synced", name: "wuwa_calc Cartethyia S5R1 DPS · S0R1 team · Chisa + Shorekeeper", characterIds: ["Chisa", "Shorekeeper", "Cartethyia"], actions: [{ id: "a2", slot: 2, key: "BasicAttack1", type: "basic", count: 2 }], enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Overlord" }, duration: 26 },
+        { id: "synced", name: "wuwa_calc Cartethyia S5R1 DPS · S0R1 team · Chisa + Shorekeeper", characterIds: ["Chisa", "Shorekeeper", "Cartethyia"], actions: [{ id: "a2", slot: 2, key: "BasicAttack1", type: "basic", count: 2 }], enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Overlord", laterEnemyField: "kept" }, duration: 26 },
       ],
       favoriteTeamIds: ["own"],
       favoritePresetNames: ["wuwa_calc Aemeath"],
@@ -510,8 +510,10 @@ describe("Sync my teams on the CLI: what lands in the new export", () => {
     const synced = back.teams[1];
     expect(synced.characterIds).toEqual(["Chisa", "Shorekeeper", "Cartethyia"]);
     expect(synced.actions.map(({ id: _id, ...a }: any) => a)).toEqual(reslotActions(prepared, ["Chisa", "Shorekeeper", "Cartethyia"]));
-    // the run's enemy settings over the team's own: wuwa_calc's Lv 100 / 20 %, the team's own enemy type kept where the run has none
+    expect(new Set(synced.actions.map((a: any) => a.id)).size).toBe(synced.actions.length); // fresh ids, one each
+    // the run's enemy settings over the team's own: wuwa_calc's Lv 100 / 20 %, and a field the run doesn't set stays
     expect(synced.enemyConfig).toEqual({ ...exp.teams[1].enemyConfig, ...prepared.enemyConfig });
+    expect(synced.enemyConfig).toMatchObject({ enemyLevel: 100, enemyResist: 0.2, laterEnemyField: "kept" });
     expect(synced).toMatchObject({ name: prepared.teamName, duration: 25.08, description: prepared.description, handoffs: prepared.handoffs });
     // a member the export has no character for gets no rotation, and says so
     expect(result.characterRotationsSkipped).toEqual(["Shorekeeper"]);
@@ -532,6 +534,10 @@ describe("Sync my teams on the CLI: what lands in the new export", () => {
     expect(twice.characters.Cartethyia.rotations).toHaveLength(2);
     expect(twice.characters.Cartethyia.rotations[1].id).toBe(once.characters.Cartethyia.rotations[1].id); // the same rotation, rewritten
     expect(twice.teams.map((t: any) => t.id)).toEqual(["own", "synced"]);
+    // a name the player typed stays: runSync only sends generated names here, and the writer holds to it by itself too
+    const typed = [{ id: "typed", name: "My Cartethyia team", characterIds: ["Chisa", "Shorekeeper", "Cartethyia"], actions: [] }];
+    writePreparedTeam(typed, {}, "typed", prepared);
+    expect(typed[0]!.name).toBe("My Cartethyia team");
     expect(() => writePreparedTeam(twice.teams, twice.characters, "gone", prepared)).toThrow("The team to update no longer exists.");
     expect(() => writePreparedTeam([{ id: "x", name: "wuwa_calc X", characterIds: ["Zani", "Chisa", "Cartethyia"], actions: [] }], {}, "x", prepared)).toThrow(/does not hold the same three characters/);
   });
