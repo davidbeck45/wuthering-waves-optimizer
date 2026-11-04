@@ -21,7 +21,9 @@ export interface BenchReport {
 
 export async function runOptimizerBench(exp: ExportFile, opts: BenchCliOptions = {}): Promise<BenchReport> {
   const source: BenchSource = { characters: benchCharacters(exp.characters), echoes: exp.inventory.echoes ?? [] };
-  const reps = Math.max(1, Math.floor(opts.reps ?? 3));
+  const reps = opts.reps ?? 3;
+  // "--reps abc" reads as NaN: no run would happen, and the first read of its result fails with a null error
+  if (!Number.isInteger(reps) || reps < 1) throw new Error("--reps must be a whole number, 1 or more");
   let cases: BenchCase[] = [];
   for (const spec of STANDARD_SPECS) if (source.characters[spec.characterId]) cases.push(...(await casesFor(spec, source)));
   cases.push(...edgeCases(cases));
@@ -71,7 +73,7 @@ export function printOptimizerBench(report: BenchReport): string {
     "",
     table(rows),
     "",
-    `${t.cases} cases, ${t.same} the same · total ${ms(t.beforeMs)} before, ${ms(t.afterMs)} after: ${t.speedup.toFixed(2)}× faster overall`,
+    t.cases ? `${t.cases} cases, ${t.same} the same · total ${ms(t.beforeMs)} before, ${ms(t.afterMs)} after: ${t.speedup.toFixed(2)}× faster overall` : "No cases ran: nothing matches --only, or the export has none of the bench's characters.",
   ];
   for (const s of report.skipped) lines.push(`skipped: ${s}`);
   return lines.join("\n");
