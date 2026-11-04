@@ -3300,7 +3300,8 @@ page's view model (`display/numberBasis.test.ts`):
    "Aemeath · Mornye + Lynae"; `teamTierLine` is the second line ("main DPS S6R5 · supports S1R1 / S6R1"). The share
    sheet, the team card (and its PNG), the palette's Saved-teams rows and team commands, the Explain question, the
    Energy page titles, the /share and /rotation pickers and Build my team's saved line use them; the stored name stays
-   in the data, tooltips and search keywords. The import and Sync
+   in the data, tooltips and search keywords. A phone clamps those lines, so the tier is what must survive: the palette's
+   team commands put it before what the command does, and /rotation's tile wraps it to two lines. The import and Sync
    my teams now *write* `wuwaCalcTeamName`: "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)", the
    label first and the engine last, so Ryan's Teams page (which prints stored names) no longer shows "wuwa_calc Aemea…"
    in every slot. `parsePresetName` reads the old and the new form alike (`kind: "team"` for a bare-name head);

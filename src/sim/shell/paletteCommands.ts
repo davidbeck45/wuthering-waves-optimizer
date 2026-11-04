@@ -115,12 +115,12 @@ function teamCommands(t: TeamTarget, displayName: NameOf, group: Group): Built[]
   const generated = isGeneratedName(t.name);
   const label = generated ? teamTitle(t.name) : t.members.map(displayName).join(" + ");
   // on the team's own page: "… for this team", the members first in the line below (a phone cuts the end off);
-  // in the full list: the members in the title, what it does below, then a name the player typed or a wuwa_calc name's
-  // tier (two tiers of the same three read the same title)
+  // in the full list: the members in the title, then below it a name the player typed or a wuwa_calc name's tier before
+  // what it does (two tiers of the same three read the same title, and that same phone cut the tier off a long line)
   const here = group === "context";
   const title = (verb: string): string => (here ? `${verb} for this team` : `${verb}: ${label}`);
   const tail = generated ? teamTierLine(t.name) : t.name;
-  const sub = (what: string): string => (here ? `${label} · ${what}` : `${what}${tail ? ` · ${tail}` : ""}`);
+  const sub = (what: string): string => (here ? `${label} · ${what}` : tail ? `${tail} · ${what}` : what);
   const k = `${group}:team:${t.id ?? t.members.join("+")}`;
   const words = [t.name, label, ...t.members, ...t.members.map(displayName)].filter(Boolean);
   const rotation = rotationPath({ kind: "chars", chars: t.members });

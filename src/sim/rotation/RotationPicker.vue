@@ -139,7 +139,8 @@ const TeamTile = defineComponent({
           ),
           h("div", { class: "min-w-0 flex-1" }, [
             h("div", { class: "font-semibold text-sm leading-snug line-clamp-2 break-words", title: p.entry.title }, p.entry.title),
-            p.entry.subtitle ? h("div", { class: "text-xs opacity-60 truncate", title: p.entry.subtitle }, p.entry.subtitle) : null,
+            // two lines on a phone, as the palette's: the tier is what tells two tiers of the same three apart, and a phone has no hover
+            p.entry.subtitle ? h("div", { class: "text-xs opacity-60 break-words max-sm:line-clamp-2 sm:truncate", title: p.entry.subtitle, "data-test-rotation-picker-sub": "" }, p.entry.subtitle) : null,
           ]),
         ]),
         h("div", { class: "flex items-center gap-1.5" }, [

@@ -130,6 +130,11 @@ describe("one team, one number", () => {
 
     cy.visit("/rotation", seed({ fontScale: 1.3 }));
     cy.get("[data-test-rotation-picker-team]", ENGINE).first().should("contain.text", ONE_NAME).and("contain.text", "main DPS S6R5").and("not.contain.text", "wuwa_calc Aemeath");
+    // the tier tells two tiers of the same three apart, and a phone has no hover to read a line cut short
+    cy.get("[data-test-rotation-picker-team] [data-test-rotation-picker-sub]").first().then(($s) => {
+      expect($s[0]!.scrollWidth, "the tier line fits across").to.be.at.most($s[0]!.clientWidth);
+      expect($s[0]!.scrollHeight, "the tier line fits in its lines").to.be.at.most($s[0]!.clientHeight + 1);
+    });
     expectNoHorizontalScroll("/rotation");
   });
 

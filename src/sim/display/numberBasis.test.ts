@@ -133,7 +133,7 @@ describe("one team, one number", () => {
     const share = commandItems(sources, (k) => k).find((i) => i.key.includes(":team:") && i.key.endsWith(":share"))!;
     expect(share.title).toBe(`Share team: ${one}`);
     expect(share.subtitle).not.toMatch(/wuwa_calc Aemeath/);
-    expect(share.subtitle).toContain("main DPS S6R5"); // two tiers of the same three read the same title
+    expect(share.subtitle).toMatch(/^main DPS S6R5 · supports S1R1 \/ S6R1 · /); // two tiers of the same three read the same title, and a phone clamps the line's end
 
     // Explain on /energy quotes the same title
     const view = { key: "k", id: team.id, name: OLD_NAME, source: "saved", characterIds: team.characterIds, state: null, energy: { teamKey: "t269", total: 1, seconds: 1, variants: 1, members: [] }, checks: [] } as unknown as TeamView;
