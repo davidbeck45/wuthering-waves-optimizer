@@ -22,4 +22,12 @@ describe("AutoTeamBuffsToggle", () => {
     expect(autoTeamBuffs.value).toBe(false);
     expect(caption.textContent).toContain("Each character's Team Buffs panel. On: your teammates' real builds.");
   });
+
+  it("keeps the caption out of the switch's label: tapping the words to read them changes nothing, and a screen reader says them once", async () => {
+    autoTeamBuffs.value = true;
+    const { container, getByRole } = render(AutoTeamBuffsToggle);
+    await fireEvent.click(container.querySelector("[data-test-auto-team-buffs-caption]")!);
+    expect(autoTeamBuffs.value).toBe(true);
+    expect(getByRole("checkbox", { name: "Team buffs from the team's members" })).toBeTruthy();
+  });
 });
