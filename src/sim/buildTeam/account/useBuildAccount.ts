@@ -78,11 +78,15 @@ export function useBuildAccount() {
   const result = shallowRef<BuildAccountResult | null>(null);
   const applied = shallowRef<AccountApplyOutcome | null>(null);
   const undoRecord = shallowRef<AccountUndoRecord | null>(readAccountUndo());
+  /** "Also make active" on the review step: it decides who the save writes, so the confirm reads it from here */
+  const makeActive = ref(false);
   const startedAt = ref(0);
   const now = ref(Date.now());
   let ticker: ReturnType<typeof setInterval> | null = null;
   let controller: AbortController | null = null;
   let stopFlag = false;
+  /** a save or an undo moved the saved teams' pins and their damage: the rows and their specs are out of date */
+  let rowsStale = false;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => accountUndoIsLive(stores(), undoRecord.value));
@@ -110,7 +114,8 @@ export function useBuildAccount() {
     selected.value.forEach((id, i) => (weights[id] = defaultWeight(i)));
   }
 
-  async function load(): Promise<void> {
+  /** `keepChoice`: read the rows again after a save or an undo, the player's teams, order and weights staying. */
+  async function load(keepChoice = false): Promise<void> {
     controller?.abort();
     const ctrl = new AbortController();
     controller = ctrl;
@@ -126,10 +131,14 @@ export function useBuildAccount() {
       const rows = await accountTeamChoices(chars, echoes, teams, { ranking, autoTeamBuffs: autoTeamBuffs.value, signal: ctrl.signal, onProgress: (done, total) => (scored.value = { done, total }) });
       if (ctrl.signal.aborted) return;
       choices.value = rows;
-      selected.value = defaultSelection(rows);
-      weightsTouched.value = false;
-      for (const k of Object.keys(weights)) delete weights[k];
-      resetWeights();
+      rowsStale = false;
+      const kept = keepChoice ? selected.value.filter((id) => rows.some((r) => r.id === id)) : [];
+      selected.value = kept.length ? kept : defaultSelection(rows);
+      if (!kept.length) {
+        weightsTouched.value = false;
+        for (const k of Object.keys(weights)) delete weights[k];
+      }
+      if (!weightsTouched.value) resetWeights();
       phase.value = "choose";
     } catch (e) {
       if (ctrl.signal.aborted) return;
@@ -271,13 +280,14 @@ export function useBuildAccount() {
   }
 
   /** What a save would write: every member with a new build (accountApply.ts `accountApplyRequest`). */
-  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, false).members : []));
+  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value).members : []));
 
-  function save(makeActive: boolean): AccountApplyOutcome | null {
+  function save(): AccountApplyOutcome | null {
     if (!result.value || !toSave.value.length) return null;
-    const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive), { echoes: inventoryStore.echoes as any[] });
+    const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value), { echoes: inventoryStore.echoes as any[] });
     applied.value = out;
     undoRecord.value = out.undo;
+    rowsStale = true;
     return out;
   }
 
@@ -287,11 +297,14 @@ export function useBuildAccount() {
     const out = undoAccountPlanSaved(stores(), rec, { echoes: inventoryStore.echoes as any[] });
     undoRecord.value = null;
     applied.value = null;
+    rowsStale = true;
+    if (phase.value === "choose") void load(true);
     return out;
   }
 
   function backToTeams(): void {
-    phase.value = "choose";
+    if (rowsStale) void load(true);
+    else phase.value = "choose";
   }
 
   return {
@@ -311,6 +324,7 @@ export function useBuildAccount() {
     applied,
     undoRecord,
     undoLive,
+    makeActive,
     toSave,
     elapsed,
     load,

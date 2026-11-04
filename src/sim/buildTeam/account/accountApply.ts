@@ -2,7 +2,7 @@
 //
 // Each character gets a NEW build named "Account plan" (" (2)", " (3)" … when the name is taken — never an existing
 // build overwritten), pinned through upstream's `setTeamCharacterBuild` in every chosen saved team they play in (so
-// Teams reads the numbers the review showed). The active build stays as it was unless the player asks ("Also make
+// Teams wears the builds the review showed). The active build stays as it was unless the player asks ("Also make
 // active": upstream's `equipBuild`, which re-syncs the `equipped` map). Echoes are never taken off anyone.
 //
 // The page snapshots every affected character into build history first ("Before Account plan", src/sim/buildHistory/)
@@ -185,12 +185,14 @@ export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord
 }
 
 /** Who the plan saves: every member with a new build, except one who keeps exactly today's echoes and plays in no
- *  other chosen team (nothing would change for them). Each pinned in every chosen saved team they play in. */
+ *  other chosen team (nothing would change for them). With `makeActive` that exception needs them to wear those echoes
+ *  already: a team can pin a build they do not wear (an earlier save does), and left on their active build they would
+ *  still wear echoes the plan gives to someone else. Each pinned in every chosen saved team they play in. */
 export function accountApplyRequest(result: Pick<BuildAccountResult, "members" | "teams">, makeActive: boolean): AccountApplyRequest {
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
-    if (m.sameEchoes && !m.alsoIn.length) return;
+    if (m.sameEchoes && !m.alsoIn.length && (!makeActive || m.fromBuild.source === "active")) return;
     const pins = result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
     members.push({ characterId: m.characterId, draft: m.draft, pins });
   });

@@ -159,7 +159,7 @@
         <p v-if="whyLower(result)" class="bt-summary__line" data-test-build-account-why>{{ whyLower(result) }}</p>
         <p class="bt-summary__line" data-test-build-account-search>{{ searchLine(result) }}</p>
         <p class="bt-summary__line">
-          {{ result.members.filter((m) => m.status === "ok").length }} builds, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
+          {{ result.members.filter((m) => m.status === "ok").length }} builds, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
         </p>
       </section>
 
@@ -225,7 +225,7 @@
       </div>
     </template>
 
-    <div v-if="(phase === 'result' && result) || undoLive" ref="saveBar" class="bt-savebar wt-plus-bar" data-test-build-account-savebar>
+    <div v-if="(phase === 'result' && result) || undoBar" ref="saveBar" class="bt-savebar" :class="phase === 'result' ? 'wt-plus-bar' : 'ba-savebar--flow'" data-test-build-account-savebar>
       <button v-if="undoLive" type="button" class="btn btn-ghost btn-sm" data-test-build-account-undo @click="onUndo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3" stroke-linecap="round" stroke-linejoin="round" /></svg>
         Undo account plan
@@ -272,15 +272,17 @@ const characterStore = useCharacterStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 const ba = useBuildAccount();
-const { phase, error, choices, scored, selected, chosen, weights, options, shared, stage, stageInfo, progress, result, applied, undoLive, toSave, elapsed } = ba;
+const { phase, error, choices, scored, selected, chosen, weights, options, shared, stage, stageInfo, progress, result, applied, undoLive, makeActive, toSave, elapsed } = ba;
 const { toggle, move, setWeight, run, stopImproving, cancel, backToTeams } = ba;
 
 const runBar = ref<HTMLElement | null>(null);
 const saveBar = ref<HTMLElement | null>(null);
 usePlusBar(runBar);
 usePlusBar(saveBar);
-const makeActive = ref(false);
 
+// away from the review the undo is a plain row in the page: on a phone the Plan bar owns the bottom edge and two fixed
+// bars cover each other. Not during a run or while the teams load: it would change what they are reading
+const undoBar = computed(() => undoLive.value && (phase.value === "choose" || phase.value === "error"));
 const stepIndex = computed(() => (phase.value === "planning" || phase.value === "running" ? 1 : phase.value === "result" ? 2 : 0));
 const others = computed(() => choices.value.filter((c) => !selected.value.includes(c.id)));
 const runIds = computed(() => [...new Set(chosen.value.flatMap((c) => c.characterIds))]);
@@ -309,12 +311,12 @@ async function onSave(): Promise<void> {
   const names = Object.fromEntries(toSave.value.map((m) => [m.characterId, accountBuildName((characterStore.characters?.[m.characterId]?.builds ?? []).map((b: { name?: string }) => String(b.name ?? "")))]));
   const ok = await confirm(
     makeActive.value
-      ? "Every character below switches to their Account plan build everywhere, so no echo is worn twice. The builds they wear now stay saved, and each one is kept in Build history first."
+      ? "Every character below switches to their Account plan build everywhere, and no two of these builds share an echo. The builds they wear now stay saved, and each one is kept in Build history first."
       : "New builds only: every active build stays as it is and no echo is taken off anyone; switch to the Account plan builds when you are ready. Each character's build is kept in Build history first.",
     { title: `Save ${toSave.value.length} Account plan build${toSave.value.length === 1 ? "" : "s"}?`, items: confirmItems(r, toSave.value, makeActive.value, names), confirmLabel: "Save", variant: makeActive.value ? "warning" : "primary" },
   );
   if (!ok) return;
-  const out = ba.save(makeActive.value);
+  const out = ba.save();
   if (out) showToast(`Saved ${out.created.length} Account plan build${out.created.length === 1 ? "" : "s"}. Undo is on this page.`, "success", 6000);
 }
 

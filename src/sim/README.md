@@ -2979,7 +2979,17 @@ Rules:
 - **Nothing is written without the confirm**; new builds only; the active build changes only with "Also make active";
   echoes are never taken off anyone. Undo on the page, and every character's build before the plan in Build history.
 - Without "Also make active" the plan is a set of saved builds (and pins in your saved teams) to switch to; with it every
-  planned character wears their plan and no echo is worn twice among them.
+  planned character wears their plan and no echo is worn twice among them. That includes a member whose team already pins
+  a build with these echoes (an earlier save leaves exactly that): they get a new build too, or they would stay on an active
+  build holding echoes the plan gave to someone else.
+- **One enemy, said on the page:** every team is scored at the rankings' enemy, so a saved team with its own enemy reads
+  differently on Teams (Xuanling + Suisui + Chisa: 5.56M here, 7.66M there, with its 9 Havoc Bane and 13 Glacio Chafe stacks).
+  The pins make Teams wear the plan's builds; they do not make the two numbers equal.
+- **The time budget is the local search's own** (60 s, counted after the first pass): on a slow phone the first pass alone
+  can pass 60 s, and the improvement pass still gets its time.
+- **After a save or an undo the Teams step reads the teams again** (the pins and damage moved), keeping the chosen teams,
+  order and weights, so planning again starts from the saved builds. An undo waiting on the Teams step is a row in the page,
+  not a second fixed bar: on a phone it covered Plan. There is no undo during a run.
 
 Measured (9-16 export, 39 characters, the default 4 teams: Aemeath + Mornye + Lynae, Sigrika + Mornye + Lucilla — Mornye in
 both —, Cartethyia + Shorekeeper + Ciaccona, Xuanling + Suisui + Chisa; 43 fieldable teams listed in 3.8 s by the CLI):

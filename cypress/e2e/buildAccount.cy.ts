@@ -159,6 +159,45 @@ describe("build my whole account", () => {
     });
   });
 
+  it("after a save on a phone, Plan is not under the undo and planning again starts from the saved builds", () => {
+    const todayAndPlan = (): Cypress.Chainable<string[][]> => cy.get("[data-test-build-account-result-team] .ba-team__nums > span:first-child").then(($n) => [...$n].map((n) => n.textContent!.split("→").map((s) => s.trim())));
+    cy.viewport(412, 915);
+    cy.visit("/build-team?mode=account", seed({ fontScale: 1.3 }));
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-run]").click();
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+    todayAndPlan().as("firstPlan");
+    cy.get("[data-test-build-account-save]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-build-account-saved]").should("exist");
+    cy.get("[data-test-build-account-back]").click();
+
+    // the Teams step with an undo waiting: one bar at the bottom edge, Plan on top of it, the undo in the page
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-undo]").should("exist");
+    cy.get("[data-test-build-account-savebar]").should("have.css", "position", "static");
+    cy.get("[data-test-build-account-run]").then(($b) => {
+      const r = $b[0]!.getBoundingClientRect();
+      const top = $b[0]!.ownerDocument.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      expect($b[0]!.contains(top), "Plan is the top element at its own centre").to.eq(true);
+    });
+    expectNoHorizontalScroll("teams with an undo", 412);
+    cy.get("[data-test-build-account-undo]").scrollIntoView().should("be.visible");
+
+    // no undo during a run: it would change what the run is reading
+    cy.get("[data-test-build-account-run]").click();
+    cy.get("[data-test-build-account-running]").should("exist");
+    cy.get("[data-test-build-account-undo]").should("not.exist");
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+
+    // today is what the save left: the first plan, not the builds before it
+    todayAndPlan().then((second) => {
+      cy.get<string[][]>("@firstPlan").then((first) => {
+        expect(second.map((t) => t[0]), "today, planned again").to.deep.eq(first.map((t) => t[1]));
+      });
+    });
+  });
+
   it("fits a phone at 412 px with 130 % text, choose and review, with a sticky save bar", () => {
     cy.viewport(412, 915);
     cy.visit("/build-team?mode=account", seed({ fontScale: 1.3 }));

@@ -251,6 +251,42 @@ describe("saving the account plan", () => {
     expect(snapshot()).toBe(pristine);
   });
 
+  it("also make active reaches a member whose pinned build already holds the plan, so nobody is left on an older build", () => {
+    const m = (characterId: string, over: Record<string, unknown>) => ({ characterId, status: "ok", draft: { echoes: {} }, sameEchoes: true, alsoIn: [], fromBuild: { id: "b", name: "b", source: "pinned" }, ...over }) as any;
+    const plan = (members: any[]) => ({ members, teams: [{ spec: { id: "saved-a" }, slots: members.map((_, i) => ({ slot: i, member: i })) }] }) as any;
+    const ids = (r: { members: Array<{ characterId: string }> }) => r.members.map((x) => x.characterId);
+    const pinnedKeeper = m("Ciaccona", {});
+    const wearsIt = m("Chisa", { fromBuild: { id: null, name: null, source: "active" } });
+    // saved builds only: nothing changes for either of them
+    expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), false))).toEqual([]);
+    // make active: the one who wears another build today has to switch; the one already wearing it does not
+    expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true))).toEqual(["Ciaccona"]);
+  });
+
+  it("save with the defaults, plan again, also make active: the plan can still be made active", async () => {
+    const plain = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
+    const planNow = () =>
+      buildAccount(
+        {
+          characters: plain(stores.character.characters),
+          inventory: { echoes, equipped: plain(stores.inventory.equipped) },
+          teams: [{ spec: { ...teamA, buildIds: plain(stores.team.teams[0].buildIds) }, weight: 1, plans: plansFor(teamA), memberOrder: [0, 1, 2] }],
+          options: DEFAULT_OPTIONS,
+        },
+        inlineBackend(),
+      );
+    const first = await planNow();
+    const saved = saveAccountPlan(stores, accountApplyRequest(first, false), { echoes });
+    expect(saved.created.map((c) => c.characterId)).toContain("Ciaccona");
+    // planning again changes nothing: there is nothing to save, until the player asks to wear it
+    const again = await planNow();
+    expect(accountApplyRequest(again, false).members).toEqual([]);
+    const out = saveAccountPlan(stores, accountApplyRequest(again, true), { echoes });
+    expect(out.activated).toContain("Ciaccona");
+    const ciaccona = stores.character.characters.Ciaccona;
+    expect(ciaccona.builds.find((b: any) => b.id === ciaccona.activeBuildId)?.name).toMatch(/^Account plan/);
+  }, 60_000);
+
   it("after a later edit, undo removes only what is still unused and never overwrites a record", () => {
     const out = saveAccountPlan(stores, accountApplyRequest(result, false), { echoes });
     stores.character.characters.Cartethyia.weapon = "SomethingElse";

@@ -286,4 +286,15 @@ html[data-theme-style="light"] .ba-member__note--fail {
   .ba-summary {
     grid-template-columns: minmax(0, 1fr);
   }
+  /* the undo away from the review: a row in the page, the fixed Plan bar owns the bottom edge (buildTeam.css pins
+     every .bt-savebar on a phone, and two fixed bars cover each other) */
+  .bt-savebar.ba-savebar--flow {
+    position: static;
+    z-index: auto;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.8rem;
+    box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.08);
+  }
 }
