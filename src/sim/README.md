@@ -3396,7 +3396,8 @@ before these guards: going offline mid-run saved a ranking of 1 character and 0 
 - Echo Lab's `savedCopyOf` drops a pass that skipped a roster character as `NOT_IN_APP` (the worker's kit failure;
   "needs five echoes" and the like are real and repeat on every run, so they are kept), and leaves benchmarks out when
   their ER needs were not whole (`erNeedsSettled`: the energy check timed out at 20 s or a team failed, so a floor can
-  be missing and the numbers read too high). The ER needs are not in Echo Lab's fingerprint, so two guards answer for
+  be missing and the numbers read too high; a team it answers "not measured", such as a custom team wuwa_calc has no
+  loop for, is an answer that repeats on every visit, and does not count). The ER needs are not in Echo Lab's fingerprint, so two guards answer for
   them: this one at the write, and `benchErKey` at the read (the "Closed gap" note below), which also catches a copy
   saved before this guard or from a tab reloaded after a short lookup. /account confirms its ER key on read the same way.
 - A deterministic engine error on one account therefore means that page never saves for it: it scores on every visit,

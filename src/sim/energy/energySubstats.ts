@@ -39,10 +39,12 @@ export async function erNeedsOf(energy: Pick<EnergyNeeds, "ready" | "floors">, o
   return out;
 }
 
-/** True when the needs `erNeedsOf` just read are whole: every saved team measured, nothing still running. False after
- *  its timeout or a failed team, when a floor can be missing and a result scored on the needs reads too high. */
+/** True when the needs `erNeedsOf` just read are whole: every saved team has its answer, nothing still running. "Not
+ *  measured" is an answer (a custom team wuwa_calc has no loop for, a team of two): it comes back the same on every visit
+ *  and no floor is missing. False after its timeout or a failed team, when a floor can be missing and a result scored on
+ *  the needs reads too high. */
 export const erNeedsSettled = (energy: Pick<EnergyNeeds, "busy" | "savedTeams">): boolean =>
-  !energy.busy.value && energy.savedTeams.value.every((t) => t.state?.status === "ok");
+  !energy.busy.value && energy.savedTeams.value.every((t) => t.state && t.state.status !== "loading" && t.state.status !== "error");
 
 /** A short stable key of an `erNeeds` record, for a cache that must change when a need does. */
 export const erNeedsKey = (needs: Record<string, number>): string =>

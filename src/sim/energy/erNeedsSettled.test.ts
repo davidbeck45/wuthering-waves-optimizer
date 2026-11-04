@@ -12,6 +12,11 @@ describe("erNeedsSettled", () => {
     expect(erNeedsSettled(energy(false, []))).toBe(true);
   });
 
+  it("holds for a team the engine answered 'not measured': the same answer comes back on every visit, so no floor is missing", () => {
+    expect(erNeedsSettled(energy(false, ["ok", "notMeasured"]))).toBe(true);
+    expect(erNeedsSettled(energy(false, ["notMeasured"]))).toBe(true);
+  });
+
   it("fails while the check is still running, or when a team failed or was never measured", () => {
     expect(erNeedsSettled(energy(true, ["ok"]))).toBe(false);
     expect(erNeedsSettled(energy(false, ["ok", "error"]))).toBe(false);

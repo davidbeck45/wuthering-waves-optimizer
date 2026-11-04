@@ -151,6 +151,14 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     expect(lastWrite()).toMatchObject({ benchmarks: null, benchErKey: null });
   });
 
+  it("a team the energy check cannot measure is an answer, not a failure: the benchmarks are saved", async () => {
+    h.teams = [{ state: { status: "ok" } }, { state: { status: "notMeasured" } }];
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks();
+    expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
+  });
+
   it("a good saved copy outlives a visit whose own lookup timed out: nothing short replaces it", async () => {
     h.stored = savedCopy("Cartethyia:130");
     h.floors.clear();

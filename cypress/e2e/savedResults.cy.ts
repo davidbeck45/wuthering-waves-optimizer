@@ -387,6 +387,21 @@ describe("saved results", () => {
     waitSaved("echoLab", (values) => values.some((v) => v.benchmarks), 2500).should("eq", false);
   });
 
+  it("/echo-lab: a saved team the energy check cannot measure does not keep the benchmarks from being saved", () => {
+    cy.viewport(1440, 900);
+    // two members: the check answers "not measured" on every visit, so no floor is missing
+    const team = { id: "t2", name: "Duo", characterIds: ["Cartethyia", "Galbrena", null], actions: [], buildIds: [null, null, null] };
+    cy.visit("/echo-lab?tab=benchmark", {
+      onBeforeLoad(win) {
+        seedLab.onBeforeLoad(win);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+      },
+    });
+    cy.get("[data-test-echo-lab-benchmark-row]", { timeout: 90000 }).should("exist");
+    cy.get("[data-test-echo-lab-benchmark-progress]", { timeout: 60000 }).should("not.exist");
+    waitSaved("echoLab", (values) => values.some((v) => v.benchmarks)).should("eq", true);
+  });
+
   it("Settings › Clear saved results empties them, and the next visit scores again", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
