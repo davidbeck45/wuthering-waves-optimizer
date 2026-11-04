@@ -68,6 +68,10 @@ describe("account view", () => {
     expect(memberNote(member({}))).toMatch(/now meets the 115\.1 % Energy Regen need \(today 110\.0 %\)/);
     expect(memberNote(member({ erMet: false, erFloor: 240 }))).toMatch(/out of reach/);
     expect(memberNote(member({ keptCurrent: true, sameEchoes: true, erFloor: null, erMet: null }))).toBe("keeps today's echoes");
+    // a swap changed a member who had kept today's build: their echoes are not today's, so no note may say they are
+    expect(memberNote(member({ keptCurrent: true, sameEchoes: false, erFloor: null, erMet: null, relaxed: null }))).toBeNull();
+    // the search found today's echoes on its own: still true to say so
+    expect(memberNote(member({ keptCurrent: false, sameEchoes: true, erFloor: null, erMet: null }))).toMatch(/keeps today's echoes/);
     expect(memberNote(member({ status: "noEchoes", message: "No Moonlit Clouds echoes." }))).toBe("No Moonlit Clouds echoes.");
     expect(memberNote(member({ erFloor: null, erMet: null, relaxed: "layout" }))).toMatch(/any cost layout/);
   });

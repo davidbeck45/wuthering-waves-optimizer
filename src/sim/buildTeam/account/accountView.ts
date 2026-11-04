@@ -68,7 +68,8 @@ export function whyLower(r: Pick<BuildAccountResult, "score" | "members">): stri
 export function memberNote(m: AccountMember): string | null {
   if (m.status !== "ok") return m.message ?? null;
   const notes: string[] = [];
-  if (m.keptCurrent) notes.push(m.sameEchoes ? "keeps today's echoes" : "today's build scored best");
+  // `keptCurrent` alone is not enough: a swap can change a build that started as today's
+  if (m.sameEchoes) notes.push("keeps today's echoes");
   if (m.erFloor != null && m.erMet && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor) notes.push(`now meets the ${m.erFloor.toFixed(1)} % Energy Regen need (today ${m.before.menuEr.toFixed(1)} %)`);
   else if (m.erMet === false) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);
   if (m.relaxed === "mainStats") notes.push("any main stat (the plan's ones ran out)");

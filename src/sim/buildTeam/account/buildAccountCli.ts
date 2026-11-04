@@ -132,7 +132,7 @@ export function printBuildAccount(out: BuildAccountCliOut): string {
       characterDisplayName(m.characterId) + (m.alsoIn.length ? ` (+ team ${m.alsoIn.map((i) => i + 1).join(", ")})` : ""),
       `team ${m.team + 1}`,
       m.before ? int(before) : "—",
-      m.after ? `${int(after)}${m.keptCurrent ? " (kept)" : m.relaxed && m.relaxed !== "plan" ? ` (any ${m.relaxed === "layout" ? "layout" : "main stat"})` : ""}` : m.message ?? m.status,
+      m.after ? `${int(after)}${m.sameEchoes ? " (kept)" : m.relaxed && m.relaxed !== "plan" ? ` (any ${m.relaxed === "layout" ? "layout" : "main stat"})` : ""}` : m.message ?? m.status,
       m.after && before > 0 ? pct((after / before - 1) * 100) : "",
       m.after?.menuEr != null ? `${m.after.menuEr.toFixed(1)}%${m.erMet === false ? " SHORT" : ""}` : "—",
       m.erFloor != null ? `${m.erFloor.toFixed(1)}%` : "—",
