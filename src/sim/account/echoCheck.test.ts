@@ -4,6 +4,7 @@
 // one spare echo: the check must never hand it to Cartethyia.
 import { beforeAll, describe, expect, it } from "vitest";
 import account from "../myRankings/__fixtures__/cartethyiaAccount.json";
+import teamPresets from "../presets/data/teams.json";
 import { rankRoster, type RosterRanking } from "../myRankings/rankRoster";
 import { applyBuildFields } from "../../characters/buildFields";
 import { buildEchoLoadoutFromIds } from "../../echoes/echoLoadout";
@@ -87,6 +88,30 @@ describe("check my echoes", () => {
     expect(cart!.echoIds).not.toContain(chisaEcho);
     for (const id of cart!.echoIds) expect(kept).not.toContain(id);
   });
+
+  it("counts no empty slots when the team pins another build: the gaps it can read are the active build's", async () => {
+    const preset = (teamPresets as any[]).find((p) => ["Cartethyia", "Ciaccona", "Chisa"].every((k) => p.data.characterIds.includes(k)));
+    const team = {
+      id: "pins",
+      name: "Pinned",
+      characterIds: preset.data.characterIds,
+      buildIds: preset.data.characterIds.map((k: string) => (k === "Cartethyia" ? "pinned" : null)),
+      actions: preset.data.actions.map((a: any, i: number) => ({ ...a, id: `a${i}` })),
+      duration: preset.data.duration,
+      enemyConfig: preset.data.enemyConfig ?? {},
+      handoffs: preset.data.handoffs ?? null,
+    };
+    const cartethyia = characters.Cartethyia;
+    const pinned = { ...characters, Cartethyia: { ...cartethyia, activeBuildId: "worn", builds: [{ id: "worn", name: "Worn" }, { id: "pinned", name: "For the team", echoes: cartethyia.echoes }] } };
+    const out = await checkOwnEchoes(
+      { characters: pinned, inventory: { echoes, equipped }, teams: [team], ranking: await rankRoster(pinned, echoes, [team], { investment: false, yieldToUi: false }), only: ["Cartethyia"] },
+      { backend: inlineBackend(), riley: null },
+      { yieldToUi: false },
+    );
+    const row = out.items.find((i) => i.characterId === "Cartethyia");
+    expect(row?.teamNote, JSON.stringify({ skipped: out.skipped, best: out.best, errors: out.errors })).toContain("not the active one");
+    expect(row!.empty).toBe(0);
+  }, 240000);
 
   it("scores the team figure exactly as the rankings would, with the new build worn", async () => {
     expect(cart!.team, cart!.teamNote ?? "").toBeTruthy();

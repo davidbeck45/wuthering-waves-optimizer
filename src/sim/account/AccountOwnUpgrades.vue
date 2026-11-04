@@ -5,18 +5,18 @@
         With what you own
         <span v-if="countable" class="acc-count" data-test-account-own-count>{{ countable }}</span>
       </h3>
+      <!-- one button for both, never v-if / v-else: swapping the element would drop a keyboard user's focus to the page, as it starts and again as it ends -->
       <button
-        v-if="status.state !== 'running'"
         type="button"
-        class="btn btn-primary btn-sm own__check"
-        :disabled="!rankingReady"
-        :title="rankingReady ? 'Re-gear each character from your inventory with Build my team\'s engine. Nothing is saved.' : 'Waiting for the roster ranking'"
-        data-test-account-own-check
-        @click="emit('check')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M21 21l-4.3-4.3M11 18a7 7 0 100-14 7 7 0 000 14z" stroke-linecap="round" /></svg>
-        {{ status.state === "done" && !status.cancelled ? "Check again" : "Check my echoes" }}
+        class="btn btn-sm own__check"
+        :class="{ 'btn-primary': !running }"
+        :disabled="!running && !rankingReady"
+        :title="running ? undefined : rankingReady ? 'Re-gear each character from your inventory with Build my team\'s engine. Nothing is saved.' : 'Waiting for the roster ranking'"
+        v-bind="running ? { 'data-test-account-own-cancel': '' } : { 'data-test-account-own-check': '' }"
+        @click="running ? emit('cancel') : emit('check')">
+        <svg v-if="!running" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M21 21l-4.3-4.3M11 18a7 7 0 100-14 7 7 0 000 14z" stroke-linecap="round" /></svg>
+        {{ running ? "Cancel" : status.state === "done" && !status.cancelled ? "Check again" : "Check my echoes" }}
       </button>
-      <button v-else type="button" class="btn btn-sm own__check" data-test-account-own-cancel @click="emit('cancel')">Cancel</button>
     </div>
     <p class="own__sub">
       Free today: better echoes already in your inventory, the Tuners you have, the Energy Regen your teams are short of.
@@ -113,6 +113,7 @@ const emit = defineEmits<{ check: []; cancel: []; open: [characterId: string] }>
 
 const expanded = ref(false);
 const limit = 4;
+const running = computed(() => props.status.state === "running");
 const views = computed(() => sortOwnRows(props.rows, props.investBy));
 const shownViews = computed(() => (expanded.value ? views.value : views.value.slice(0, limit)));
 /** rows that are an upgrade to make (not the "enter your Tuners" kind of row) */

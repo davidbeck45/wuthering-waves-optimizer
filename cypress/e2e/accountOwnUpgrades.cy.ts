@@ -206,14 +206,14 @@ describe("my account: with what you own", () => {
     );
   });
 
-  it("stops when cancelled, says so and keeps nothing", () => {
+  it("stops when cancelled, says so and keeps nothing, and keyboard focus stays on the button through both", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed());
-    cy.get("[data-test-account-own-check]", RUN).should("not.be.disabled").click();
-    cy.get("[data-test-account-own-cancel]").should("be.visible").click();
+    cy.get("[data-test-account-own-check]", RUN).should("not.be.disabled").focus().click();
+    cy.get("[data-test-account-own-cancel]").should("be.visible").and("have.focus").click();
     cy.get('[data-test-account-own][data-state="done"]', RUN).should("exist");
     cy.get("[data-test-account-own-summary]").should("contain.text", "stopped early, not kept");
-    cy.get("[data-test-account-own-check]").should("contain.text", "Check my echoes");
+    cy.get("[data-test-account-own-check]").should("contain.text", "Check my echoes").and("have.focus");
     cy.window().then((win) => expect(win.sessionStorage.getItem(CHECK_KEY)).to.eq(null));
   });
 
