@@ -103,8 +103,10 @@ describe("Wavescan: add only new echoes", () => {
     // the Echoes section below still says "… ready to import": the card says whether it has anything left to add
     cy.get("[data-test-wavescan-new-only]").then(($card) => {
       const upstreamWouldAdd = $card.find("[data-test-wavescan-new-only-upstream]").length > 0;
-      if (upstreamWouldAdd) cy.get("[data-test-wavescan-new-only-after]").should("not.exist");
-      else cy.get("[data-test-wavescan-new-only-after]").should("contain.text", "nothing new to add");
+      if (upstreamWouldAdd) cy.get("[data-test-wavescan-new-only-other-why]").should("contain.text", "second copies");
+      else cy.get("[data-test-wavescan-new-only-other-why]").should("contain.text", "nothing new to add");
+      // said once, not in a second line as well
+      cy.get("[data-test-wavescan-new-only]").invoke("text").then((text) => expect(text.match(/nothing new to add/g)?.length ?? 0).to.be.at.most(1));
     });
     cy.window().then((win) => {
       const inventory = readInventory(win);

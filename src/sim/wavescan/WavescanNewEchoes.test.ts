@@ -122,6 +122,7 @@ describe("WavescanNewEchoes", () => {
     expect(card.hasAttribute("data-wt-fold-upstream")).toBe(false);
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(toggle.textContent).toContain("Hide the other import options");
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import below matches echo names exactly, so it would add 4 echoes you already own as second copies.");
   });
 
   it("keeps the full import open when it would add only what this card adds, and folds it once this card has added", async () => {
@@ -137,7 +138,51 @@ describe("WavescanNewEchoes", () => {
     await answerConfirm(true);
     await findByText(/^Added \d+ echoes\.$/);
     expect(card.hasAttribute("data-wt-fold-upstream")).toBe(true);
-    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toContain("your new echoes are in, so it would add nothing more");
+  });
+
+  // after the add the card says once why the full import has nothing for you, and names it by where it is now
+  async function addAll(rows: unknown[]) {
+    useInventoryStore().hardSetState({ echoes: [], equipped: {} });
+    const mapped = mapWavescanEchoes(rows as typeof fixture.scan.echoes, []);
+    const { container, findByText } = render(WavescanNewEchoes, { props: { mapped } });
+    await fireEvent.click(container.querySelector("[data-test-wavescan-new-only-add]")!);
+    await answerConfirm(true);
+    await findByText(`Added ${mapped.echoes.length} echoes.`);
+    await waitFor(() => expect(count(container, "new")).toBe("0 New · will be added"));
+    return {
+      container,
+      mapped,
+      why: () => container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent,
+      toggle: container.querySelector<HTMLButtonElement>("[data-test-wavescan-new-only-other-toggle]")!,
+    };
+  }
+
+  it("says once after the add that the full import has nothing new, folded or open", async () => {
+    const { container, why, toggle } = await addAll(clone(fixture.scan.echoes));
+    expect(why()).toBe("Every echo in this scan is in your inventory now, so the full import is folded away: it has nothing new to add.");
+    expect(container.textContent?.match(/nothing new to add/gi)?.length).toBe(2); // this line and the disabled button
+    await fireEvent.click(toggle);
+    expect(why()).toBe("Every echo in this scan is in your inventory now: the full import below has nothing new to add.");
+  });
+
+  it("doesn't claim every echo in the scan when part of the file couldn't be read", async () => {
+    const rows = [...clone(fixture.scan.echoes), { ...clone(fixture.scan.echoes[0]), scanId: "unreadable", echo: "NoSuchEcho" }];
+    const { mapped, why, toggle } = await addAll(rows);
+    expect(mapped.skipped).toHaveLength(1);
+    expect(why()).toBe("Every echo that could be read is in your inventory now, so the full import is folded away: it has nothing new to add.");
+    await fireEvent.click(toggle);
+    expect(why()).toBe("Every echo that could be read is in your inventory now: the full import below has nothing new to add.");
+  });
+
+  it("says second copies, not 'nothing new', when the import below would still add them after the add", async () => {
+    const store = seedInventory();
+    const mapped = mapWavescanEchoes(fixture.scan.echoes, store.echoes.map((echo: { echoId: string }) => echo.echoId));
+    const { container, findByText } = render(WavescanNewEchoes, { props: { mapped } });
+    await fireEvent.click(container.querySelector("[data-test-wavescan-new-only-add]")!);
+    await answerConfirm(true);
+    await findByText("Added 3 echoes.");
+    await waitFor(() => expect(count(container, "new")).toBe("0 New · will be added"));
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import is folded away: it matches echo names exactly, so it would add 4 echoes you already own as second copies.");
   });
 
   it("is offered inside Ryan's Wavescan panel once a file is read", async () => {

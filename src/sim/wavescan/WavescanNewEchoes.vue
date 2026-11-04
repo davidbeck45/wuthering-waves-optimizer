@@ -57,10 +57,6 @@
           Added {{ pluralEchoes(addedCount) }}.
         </span>
       </div>
-      <!-- the Echoes section under this card still reads "37 echoes ready to import": say it has nothing left to add -->
-      <p v-if="addedCount !== null && !plan.toAdd.length && !secondCopies" class="text-sm max-w-2xl" data-test-wavescan-new-only-after>
-        Every echo in this scan is in your inventory now, so the Echoes import below has nothing new to add.
-      </p>
 
       <details
         v-for="list in lists"
@@ -185,11 +181,18 @@ const addedCount = ref<number | null>(null);
 const upstreamShown = ref(false);
 const foldable = computed(() => addedCount.value !== null || secondCopies.value > 0);
 const foldUpstream = computed(() => foldable.value && !upstreamShown.value);
-const foldReason = computed(() =>
-  secondCopies.value > 0
-    ? `The full import is folded away: it matches echo names exactly, so it would add ${pluralEchoes(secondCopies.value)} you already own as second copies.`
-    : "The full import is folded away: your new echoes are in, so it would add nothing more.",
-);
+// one sentence says why, in place of a second line saying the same thing: his card still reads "37 echoes ready to import"
+// after the add, and it names the import by where it is now, folded away or open below
+const foldReason = computed(() => {
+  const open = upstreamShown.value;
+  if (secondCopies.value > 0) {
+    const why = `matches echo names exactly, so it would add ${pluralEchoes(secondCopies.value)} you already own as second copies.`;
+    return open ? `The full import below ${why}` : `The full import is folded away: it ${why}`;
+  }
+  // "every echo" is only true of the ones read: the warning above counts the rest
+  const added = `${props.mapped.skipped.length ? "Every echo that could be read" : "Every echo in this scan"} is in your inventory now`;
+  return open ? `${added}: the full import below has nothing new to add.` : `${added}, so the full import is folded away: it has nothing new to add.`;
+});
 
 async function addNew() {
   if (!plan.value.toAdd.length || isAdding.value) return;
