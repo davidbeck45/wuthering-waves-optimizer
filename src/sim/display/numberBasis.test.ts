@@ -61,12 +61,13 @@ describe("one team, one number", () => {
     // the optimizer's own ER (fight toggles in) maps back onto the same basis, so the floor is held where /energy holds it
     const full = Number((await buildCharacterCalculationContext("Mornye", characters, RANKING_ENEMY, echoes)).finalStats.energyRegen);
     expect(menuErOf(job, full)).toBeCloseTo(energy, 3);
-    // the legitimate difference: the character screen (Build history, share cards) leaves her inherent out, and the
-    // basis label on the Energy and Build my team figures says so
+    // the legitimate difference: this app's build card (Build history, share cards) leaves her inherent out, and the
+    // basis label on the Energy and Build my team figures says so; it says nothing of the game's own screen (not on record)
     const screen = erPercent(Number((await buildCharacterCalculationContext("Mornye", characters, RANKING_ENEMY, echoes, { alwaysEnabledOnly: true })).finalStats.energyRegen));
     expect(energy - screen).toBeCloseTo(KIT_CONSTANT_ER.Mornye!, 6);
     expect(kitErNote("Mornye")!.short).toBe("incl. +10 % inherent");
-    expect(kitErNote("Mornye")!.long).toMatch(/Build history leave it out, so they read 10 points lower/);
+    expect(kitErNote("Mornye")!.long).toMatch(/build card and Build history leave it out, so they read 10 points lower/);
+    expect(kitErNote("Mornye")!.long).not.toMatch(/game|character screen/i);
     expect(kitErNote("Lynae")).toBeNull();
   }, 60_000);
 
@@ -132,6 +133,7 @@ describe("one team, one number", () => {
     const share = commandItems(sources, (k) => k).find((i) => i.key.includes(":team:") && i.key.endsWith(":share"))!;
     expect(share.title).toBe(`Share team: ${one}`);
     expect(share.subtitle).not.toMatch(/wuwa_calc Aemeath/);
+    expect(share.subtitle).toContain("main DPS S6R5"); // two tiers of the same three read the same title
 
     // Explain on /energy quotes the same title
     const view = { key: "k", id: team.id, name: OLD_NAME, source: "saved", characterIds: team.characterIds, state: null, energy: { teamKey: "t269", total: 1, seconds: 1, variants: 1, members: [] }, checks: [] } as unknown as TeamView;

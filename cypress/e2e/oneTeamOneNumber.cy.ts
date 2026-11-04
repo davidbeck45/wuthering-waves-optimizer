@@ -58,7 +58,7 @@ describe("one team, one number", () => {
     cy.visit(`/build-team?team=${TEAM_ID}`, seed());
     // the plan card: wuwa_calc's 260 % kit floor against the same 287.0 % /energy and `cli er` print (277.0 % before)
     cy.get('[data-test-build-team-plan="Mornye"] .bt-er__hint', ENGINE).should("contain.text", "you have 287.0").and("contain.text", "incl. +10 % inherent");
-    cy.get('[data-test-build-team-plan="Mornye"] [data-test-build-team-er-kit]').should("have.attr", "title").and("match", /character screen and Build history leave it out/);
+    cy.get('[data-test-build-team-plan="Mornye"] [data-test-build-team-er-kit]').should("have.attr", "title").and("match", /build card and Build history leave it out/);
     cy.get('[data-test-build-team-plan="Lynae"] .bt-er__hint').should("contain.text", "you have").find("[data-test-build-team-er-kit]").should("not.exist");
   });
 
@@ -97,6 +97,26 @@ describe("one team, one number", () => {
     cy.visit("/energy", seed({ fontScale: 1.3 }));
     cy.get(`[data-test-energy-team-id="${TEAM_ID}"] .en-card__title`, ENGINE).should("have.text", ONE_NAME).and("have.attr", "title", RAW_NAME);
     expectNoHorizontalScroll("/energy");
+  });
+
+  it("on a phone: /account and /energy say why the two engines differ, and the /share and /rotation pickers name the team one way", () => {
+    cy.viewport(412, 915);
+    cy.visit("/account", seed({ fontScale: 1.3 }));
+    // no hover on a phone: the reason is a tap away, under the links to the other engine's figure
+    cy.get("[data-test-account-hero-why] summary", ENGINE).should("be.visible").click();
+    cy.get("[data-test-account-hero-why] p").should("be.visible").and("contain.text", "two different simulations");
+    expectNoHorizontalScroll("/account");
+
+    cy.visit("/energy", seed({ fontScale: 1.3 }));
+    cy.get("[data-test-energy-help] summary", ENGINE).click();
+    cy.get("[data-test-energy-why]").should("be.visible").and("contain.text", "two different simulations");
+
+    cy.visit("/share", seed({ fontScale: 1.3 }));
+    cy.get("[data-test-share-pick-team] option", LAZY).first().should("contain.text", ONE_NAME).and("contain.text", "main DPS S6R5").and("not.contain.text", "wuwa_calc Aemeath");
+
+    cy.visit("/rotation", seed({ fontScale: 1.3 }));
+    cy.get("[data-test-rotation-picker-team]", ENGINE).first().should("contain.text", ONE_NAME).and("contain.text", "main DPS S6R5").and("not.contain.text", "wuwa_calc Aemeath");
+    expectNoHorizontalScroll("/rotation");
   });
 
   it("/rankings on My account says what its rows run on, on a phone and on a desktop", () => {

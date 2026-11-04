@@ -200,12 +200,13 @@
       <summary>How to read these numbers</summary>
       <ul>
         <li><b>Needs</b>: the constant Energy Regen at which every Liberation in this team's wuwa_calc loop is paid on time, or the kit's own floor where that is higher (Shorekeeper, Mornye). Each team asks its own number: the same character can need 110 % in one team and 135 % in another.</li>
-        <li><b>Has</b>: the character screen's Energy Regen of the build the team runs — weapon, echoes, sets and permanent bonuses. Buffs that only hold during the fight (an inherent "while in a Stellarealm", an ally's Outro) are already inside the need, so they are not added here. An always-on inherent this app keeps as a switch (Mornye's +10 %) is counted, as wuwa_calc counts it, so Has can read higher than the game's character screen.</li>
+        <li><b>Has</b>: the character screen's Energy Regen of the build the team runs — weapon, echoes, sets and permanent bonuses. Buffs that only hold during the fight (an inherent "while in a Stellarealm", an ally's Outro) are already inside the need, so they are not added here. An always-on inherent this app keeps as a switch (Mornye's +10 %) is counted, as wuwa_calc counts it, so Has can read higher than this app's build card and Build history.</li>
         <li><b>Short / tight / OK</b>: below the need; within {{ TIGHT_MARGIN }}% above it; comfortably above. Rolls = Energy Regen substat rolls of {{ pctText(erRoll()) }} (the median tier) that close the gap.</li>
         <li><b>Where the energy comes from</b>: the member's own hits and the share each ally's hits pass on, before ER, scaled by the ER that pays one Liberation exactly; flat gains (no ER applies); and what ER buffs added on their own hits.</li>
         <li><b>Crit Rate past 100 %</b>: the share of a member's damage that already lands at 100 % Crit Rate or more, so more Crit Rate does nothing there — often a kit's own guaranteed crit.</li>
         <li><b>In scores</b>: substat weights on My roster rankings treat Energy Regen as a floor — below the need an ER roll is worth the share of the deficit it closes (damage × (1 − deficit)), at or above it nothing.</li>
         <li>The need belongs to that loop: a rotation played differently asks a different number. The loop starts from each kit's own steady state, not from a full bar. A team that is not one of wuwa_calc's compositions is not measured — no formula stands in for the simulation.</li>
+        <li data-test-energy-why><b>Why My account reads a different DPS</b>: {{ WHY_ENGINES_DIFFER }}</li>
       </ul>
     </details>
     <p class="en-credit">
@@ -236,6 +237,7 @@ import EnergyTeamCard from "./EnergyTeamCard.vue";
 import { haveText, intText, needText, pctText } from "./energyFormat";
 import { characterShortName } from "../display/names";
 import { teamTitle } from "../display/teamName";
+import { WHY_ENGINES_DIFFER } from "../display/numberBasis";
 import { checkOf, erRoll, OVERCAP_FLAG, overcapWeight, showNeed, TIGHT_MARGIN } from "./energyNeed";
 import { useEnergyNeeds, type TeamView } from "./useEnergyNeeds";
 import "../phone-tables.css";

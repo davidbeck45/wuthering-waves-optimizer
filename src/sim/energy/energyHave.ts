@@ -15,14 +15,16 @@ import { erPercent } from "./energyNeed";
  *  so it is counted on both sides already. energy.test.ts recomputes this table from the engine. */
 export const KIT_CONSTANT_ER: Readonly<Record<string, number>> = { Mornye: 10 };
 
-/** The words beside an ER "have" that counts `KIT_CONSTANT_ER` (/energy, /build-team): null for every other kit. The
- *  game's character screen and /build-history leave it out, so the same build reads 10 points lower there. */
+/** The words beside an ER "have" that counts `KIT_CONSTANT_ER` (/energy, /build-team): null for every other kit. This
+ *  app's build card and /build-history leave it out, so the same build reads 10 points lower there. Say nothing about
+ *  the game's own screen: no in-game capture is on record, and Riley's `menuStats()` ("as the game's character screen
+ *  shows them", page/panels.ts) counts the inherent, so the game may well read like the Energy check. */
 export function kitErNote(characterId: string | null | undefined): { short: string; long: string } | null {
   const extra = characterId ? KIT_CONSTANT_ER[characterId] : undefined;
   if (!extra) return null;
   return {
     short: `incl. +${extra} % inherent`,
-    long: `Counts the +${extra} % Energy Regen of this character's always-on inherent skill, as wuwa_calc and the Energy check do. The character screen and Build history leave it out, so they read ${extra} points lower.`,
+    long: `Counts the +${extra} % Energy Regen of this character's always-on inherent skill, as wuwa_calc and the Energy check do. This app's build card and Build history leave it out, so they read ${extra} points lower.`,
   };
 }
 

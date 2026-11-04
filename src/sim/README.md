@@ -3292,11 +3292,14 @@ page's view model (`display/numberBasis.test.ts`):
    Mornye showed 277 % there and 287 % on /energy and in `cli er`, and her floor was held 10 points stricter.
    `buildTeam.ts` `menuErPercent` now is `menuEnergyRegen`, `prepareMemberJob` folds the constant into `erOffset` /
    `currentMenuEr` (so `menuErOf` and `erMinStat` move with it), and both cards add "(incl. +10 % inherent)" with a
-   tooltip (`kitErNote`). Build history and the share cards keep the character screen's 277 %.
+   tooltip (`kitErNote`). Build history and the share cards keep the build card's 277 %. Nothing says which figure the
+   game's own screen shows: no in-game capture is on record, and Riley's `menuStats()`, which he documents as what the
+   game's character screen shows, counts the inherent. One look at Mornye in game settles it.
 7. **One name per team:** `teamLabel(keys, main)` and `teamTitle(storedName)` (`display/teamName.ts`) both give
    "Aemeath · Mornye + Lynae"; `teamTierLine` is the second line ("main DPS S6R5 · supports S1R1 / S6R1"). The share
-   sheet, the team card (and its PNG), the palette's Saved-teams rows and team commands, the Explain question and the
-   Energy page titles use them; the stored name stays in the data, tooltips and search keywords. The import and Sync
+   sheet, the team card (and its PNG), the palette's Saved-teams rows and team commands, the Explain question, the
+   Energy page titles, the /share and /rotation pickers and Build my team's saved line use them; the stored name stays
+   in the data, tooltips and search keywords. The import and Sync
    my teams now *write* `wuwaCalcTeamName`: "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)", the
    label first and the engine last, so Ryan's Teams page (which prints stored names) no longer shows "wuwa_calc Aemea…"
    in every slot. `parsePresetName` reads the old and the new form alike (`kind: "team"` for a bare-name head);
@@ -3315,11 +3318,17 @@ Other fixes in the same pass:
   Rankings page", no duration) the seconds of the synced wuwa_calc team with the same three characters *and* the same
   tier in both names; a loop with no such team, or two teams that disagree, is left alone and listed. Sync my teams
   runs it after the sync (the report lists the times; Undo takes back each one still at the filled value, stored under
-  `wtplus:rankings:sync:durations:v1` beside the team undo), `cli sync-teams` writes it into the synced export, and
+  `wtplus:rankings:sync:durations:v1` beside the team undo; a sync that rewrote no team but filled a time keeps an Undo
+  with no team in it, as its confirm promises), `cli sync-teams` writes it into the synced export, and
   `cli state --pretty` lists every loop with no rotation time. On David's 09-16 export: 9 loops filled (25 s / 26.62 s),
-  Lupa's left alone (no saved Aemeath · Lupa + Lynae team).
+  Lupa's left alone (no saved Aemeath · Lupa + Lynae team). It reads the equipped build's rotations only: a loop saved
+  on a build that is not equipped is neither filled nor listed (none on that export).
 - **Share sheet over a wuwa_calc page (L14):** opened from /rotation, /energy, /endgame or /rankings, the sheet says the
   card's number is this app's engine on the team's saved rotation, not the page's wuwa_calc figure.
+- **Why the two engines differ, on a phone:** `WHY_ENGINES_DIFFER` is the disclosure under the /account hero's wuwa_calc
+  links ("Why does wuwa_calc read differently?": a hover title does not exist on a phone) and a line in /energy's "How to
+  read these numbers". /rankings' "25.0s loop" is the last of his four rotations, while his DPS divides by the time all
+  four took, so 9.54M ÷ 25 s reads above the 367,566 DPS beside it; the heading's tooltip says so.
 
 Gates: `display/numberBasis.test.ts` (ER on one basis for /energy, Build my team's "you have", its floor and its
 result; one damage per rotation and one DPS from /my-rankings, the Teams page and the share card; the share bar equal

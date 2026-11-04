@@ -677,7 +677,7 @@ function comparePass(): void {
 }
 const DPR_HEAD = "Avg damage / rotation";
 const DPR_HEAD_TITLE =
-  "Team avg DPR: the damage of one rotation, averaged over wuwa_calc's four. The small figure beside it is how long one rotation takes. Click to rank by damage per second (DPS) instead.";
+  "Team avg DPR: the damage of one rotation, averaged over wuwa_calc's four. The small figure beside it is how long the last of the four took; DPS divides by the time all four took, so it can differ from this figure ÷ that time. Click to rank by damage per second (DPS) instead.";
 
 /** The detail page's rotation log keeps its Member and Action columns in view while it scrolls
  *  sideways: whichever of the two lead the log (his columns can be dragged into any order — a

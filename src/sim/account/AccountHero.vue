@@ -50,6 +50,11 @@
             wuwa_calc's best teams at my account
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </RouterLink>
+          <!-- the link above reads another figure for this team: the reason, in words a phone can reach (no hover there) -->
+          <details class="acc-hero__why" data-test-account-hero-why>
+            <summary>Why does wuwa_calc read differently?</summary>
+            <p>{{ WHY_ENGINES_DIFFER }}</p>
+          </details>
           <!-- the calculator shows the same character with the player's own enemy and saved rotation, so the numbers
                differ: name the rotation and the enemy here -->
           <span v-if="kpis.strongest" class="acc-hero__strongest" :title="strongestTitle" data-test-account-hero-strongest>
@@ -127,6 +132,7 @@ import CharacterAvatar from "../display/CharacterAvatar.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import { characterMeta, characterShortName, elementColor } from "../display/names";
 import { rankingsMineHash } from "./accountState";
+import { WHY_ENGINES_DIFFER } from "../display/numberBasis";
 import { parsePresetName } from "../presets/presetName";
 import { memberShares } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
@@ -272,6 +278,25 @@ const leadStyle = computed(() => {
 }
 .acc-hero__link:hover {
   text-decoration: underline;
+}
+.acc-hero__why {
+  flex-basis: 100%;
+  color: oklch(var(--bc) / 0.75);
+}
+.acc-hero__why summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+/* a 40 px tap target on a phone, as the plus pages' other small controls */
+@media (max-width: 767px) {
+  .acc-hero__why summary {
+    min-height: 40px;
+    padding-block: 0.55rem;
+  }
+}
+.acc-hero__why p {
+  margin-top: 0.2rem;
+  line-height: 1.4;
 }
 .acc-hero__engine {
   display: block;

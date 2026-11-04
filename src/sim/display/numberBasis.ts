@@ -19,7 +19,7 @@
 //    Teams page and the calculator use each team's or character's own enemy settings.
 // 6. Energy Regen "have": the Energy check's basis everywhere a need is compared with it (/energy, Build my team, the
 //    Echo Lab): the build card's ER plus a kit's always-on ER that the app keeps as a switch (`KIT_CONSTANT_ER`,
-//    Mornye +10 %). Build history and the share cards show the character screen's figure, without it.
+//    Mornye +10 %). Build history and the share cards show the build card's figure, without it.
 // 7. One name per team: `teamTitle` / `teamLabel` ("Aemeath · Mornye + Lynae"), the investment tier as a second line.
 // Pure: no Vue, no stores.
 
