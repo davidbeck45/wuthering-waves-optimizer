@@ -3523,6 +3523,11 @@ pass fixes them at the source: theme tokens, one build step, the shell, and phon
 | `phone.css` § 33 | 40 px targets below 768 px on plus pages: every `btn-xs`, the small selects, tabs, /today's checklist boxes, switch, chips and links, /account's and /my-rankings' page strips, refresh buttons, the ER chips, Build history's delete, the Ask panel's model chip, `<summary>` disclosures; inline links grow a hit box around the text (padding with an equal negative margin). The play-along dots keep their size, 1.5 rem apart with a 2.5 rem tall hit box (13 at 2.5 rem wide don't fit) |
 | small edits | the hard-coded golds and the ToA stars use the tokens; `/account` and `/my-rankings` segment counts drop a second dimming; `/account` cards are named by their own text plus "open details" (the `aria-label` hid damage, rank and grade); the Tools+ badges inside the Echo Lab / Echo plan h1s are `aria-hidden`; /rankings has a visually hidden "Team rankings" h1; /today's refresh svg is `aria-hidden`; `role="status"` on the scoring labels of /account, /my-rankings and Echo Lab; the /weapons R5 tick label is 11 px |
 
+The floor is for text. Where the dim itself is the information it must not apply: ToA's unearned crest stars are
+`opacity-[.25]` / `opacity-[.3]`, because `opacity-25` floored to 0.8 in dark made 1 of 3 crests read as three stars.
+Only the named `opacity-25…75` utilities are floored, so an arbitrary value is the way out. PlusShell reads the matched
+route record's path, not `route.path`: the router also serves `/account/` and `/Account`.
+
 Gates: `a11y/a11y.test.ts` measures every token against DaisyUI's own colours for all nine themes (muted text on
 base-100/200/300 and a 5 % tint, the tinted floor on a 10 % tint, borders at 3 : 1, every status colour and the focus
 ring on base-100/200/300 and on its own 15 % tint); `vitePlugin.test.ts`, `shellA11y.test.ts`, `rankings/tabEscape.test.ts`;

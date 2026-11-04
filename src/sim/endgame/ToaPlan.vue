@@ -60,7 +60,7 @@
               <div class="shrink-0 flex flex-col items-end leading-tight">
                 <!-- phones: Figtree has no ★, so its width is whatever the device falls back to (0.6 em to a full 1 em); this size leaves the kill time room even at 1 em -->
                 <div class="text-sm max-sm:text-[0.7rem] tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
-                  {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-30">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span>
+                  {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-[.3]">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span><!-- not opacity-30: see ToaFloorCard's crests -->
                 </div>
                 <!-- phones: "of runs" on its own line, so the column stays as narrow as the stars and the kill time beside it shows -->
                 <div

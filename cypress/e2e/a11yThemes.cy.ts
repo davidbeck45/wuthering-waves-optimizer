@@ -108,6 +108,25 @@ describe("contrast, focus and keyboard", () => {
     // Ryan's pages keep his own look: no plus scope there
     cy.visit("/teams", seed());
     cy.get("html").should("not.have.attr", "data-wt-plus");
+    // the router also serves a trailing slash and any letter case: the page is the same page
+    cy.visit("/account/", seed());
+    cy.get("[data-test-account-source]", LAZY).should("exist");
+    cy.get("html").should("have.attr", "data-wt-plus");
+    cy.visit("/Account", seed());
+    cy.get("[data-test-account-source]", LAZY).should("exist");
+    cy.get("html").should("have.attr", "data-wt-plus");
+    cy.visit("/rankings/", seed());
+    cy.get(".skittle-root main", ENGINE).should("exist");
+    cy.document().then((doc) => expect(doc.querySelectorAll('[role="main"], main').length, "one main landmark on /rankings/").to.equal(1));
+  });
+
+  it("keeps ToA's unearned crest stars dim: the dim is the count, so the text floor stays off them", () => {
+    cy.viewport(412, 915);
+    cy.visit("/endgame", seed());
+    cy.get('[data-test-toa-star="unearned"]', ENGINE).first().should(($star) => {
+      const opacity = parseFloat($star[0]!.ownerDocument.defaultView!.getComputedStyle($star[0]!).opacity);
+      expect(opacity, "an unearned star next to an earned one at 1").to.be.below(0.4);
+    });
   });
 
   it("reads plus muted text and the Tools+ menu at AA in dark, light, nord and pastel", () => {
@@ -194,11 +213,13 @@ describe("contrast, focus and keyboard", () => {
     cy.get("[data-test-rotation-play]").should("be.visible");
     cy.focused().should("have.attr", "data-test-rotation-play");
     cy.get("#wt-app").should("have.attr", "inert");
+    cy.get(".wt-skip-link").should("have.attr", "inert"); // it sits in <body>, outside #wt-app
     cy.press(Cypress.Keyboard.Keys.TAB);
     cy.focused().then(($el) => expect($el[0].closest("[data-test-rotation-play]"), "Tab stays in the overlay").to.not.equal(null));
     cy.press(Cypress.Keyboard.Keys.ESC);
     cy.get("[data-test-rotation-play]").should("not.exist");
     cy.get("#wt-app").should("not.have.attr", "inert");
+    cy.get(".wt-skip-link").should("not.have.attr", "inert");
     cy.focused().should("have.attr", "data-test-rotation-play-open");
   });
 

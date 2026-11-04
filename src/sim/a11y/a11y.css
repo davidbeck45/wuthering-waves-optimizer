@@ -126,7 +126,7 @@
 /* Muted text on a tinted surface (the /account hero's element gradient, character cards, chips and pills, a
    segment's count) has a lighter background than the page, so those surfaces raise the floor for what is inside:
    --wt-muted is inherited, and every rewritten declaration and utility reads it. */
-:is(.acc-hero, .cc, .wt-chip, .cc-pill, .mr-pill, .mr-up__tag, .en-chip, .en-row, .ep-chip, .el-chip, .el-line, .wv-kpi, .rv-chip, .acc-seg, .mr-seg) {
+:is(.acc-hero, .cc, .wt-chip, .cc-pill, .mr-pill, .mr-up__tag, .en-chip, .en-row, .ep-chip, .el-chip, .el-line, .wv-kpi, .wv-who, .rv-chip, .acc-seg, .mr-seg) {
   --wt-muted: var(--wt-muted-tint, 0.9);
 }
 
@@ -135,7 +135,9 @@
       Tools+ menu, the share sheet, the welcome card) or sit inside one of Ryan's (WaveScan's "Add only new echoes"
       card on his Settings page, [data-test-wavescan-new-only]). Ryan's pages keep his look.
       :where() keeps each rule at the weight of the utility it overrides (one class), so its variants still win:
-      hover:opacity-100, focus:opacity-100 and group-hover:opacity-100 carry a pseudo-class. */
+      hover:opacity-100, focus:opacity-100 and group-hover:opacity-100 carry a pseudo-class.
+      The floor is for text. Where the dim itself is the information (ToA's unearned crest stars) write an arbitrary
+      value, opacity-[.25]: only the named utilities below are floored. */
 :where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-25 { opacity: max(0.25, var(--wt-muted)); }
 :where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-30 { opacity: max(0.3, var(--wt-muted)); }
 :where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-40 { opacity: max(0.4, var(--wt-muted)); }

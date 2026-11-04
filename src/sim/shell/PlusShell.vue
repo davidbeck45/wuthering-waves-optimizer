@@ -156,10 +156,12 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
-// plus pages get a11y.css's contrast floor (html[data-wt-plus]); every page's RouterView box is its main landmark
+// plus pages get a11y.css's contrast floor (html[data-wt-plus]); every page's RouterView box is its main landmark.
+// The matched record's path, not route.path: the router also serves /account/ and /Account, which lost the scope
+// (and /rankings/ got a second main landmark around Riley's).
 const PLUS_PATHS = PLUS_PAGES.map((p) => p.path);
 watch(
-  () => [route.path, route.name] as const,
+  () => [route.matched[0]?.path ?? route.path, route.name] as const,
   ([path, name]) => {
     if (typeof document === "undefined") return;
     setPlusScope(document, isPlusPath(path, PLUS_PATHS, name === "NotFoundView"));

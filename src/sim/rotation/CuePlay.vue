@@ -156,6 +156,8 @@ const trapPage = (on: boolean): void => {
   if (!app) return;
   if (on) app.setAttribute("inert", "");
   else app.removeAttribute("inert");
+  // the skip link sits in <body>, outside #wt-app: without this it is a Tab stop over the overlay that jumps nowhere
+  document.querySelector(".wt-skip-link")?.toggleAttribute("inert", on);
 };
 watch(
   () => props.open,
