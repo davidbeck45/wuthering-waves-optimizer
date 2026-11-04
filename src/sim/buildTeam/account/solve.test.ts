@@ -164,6 +164,25 @@ describe("solveAccount", () => {
     expect(hasReuse(r.picks)).toBe(false);
   });
 
+  it("the budget is the local search's own: a greedy that took longer than it still leaves the search its time", async () => {
+    const echoes = contested();
+    const api = fakeApi(echoes, [null, null, null, null]);
+    // a slow device: each of the four greedy solves takes 1 s of a 1 s budget, the local search's clock stands still
+    let clock = 0;
+    let greedySolves = 4;
+    const slow: AllocationApi = {
+      ...api,
+      solve: (m, taken) => {
+        if (greedySolves-- > 0) clock += 1000;
+        return api.solve(m, taken);
+      },
+    };
+    const r = await solveAccount(slow, { members: 4, order: [0, 1, 2, 3], weights: weightsFor(0.6), pools: poolsOf(echoes, 4), budgetMs: 1000, now: () => clock });
+    expect(r.stoppedBy).toBe("converged");
+    expect(r.picks[3]!.ids).toContain("fa");
+    expect(r.value).toBeGreaterThan(r.greedy.value);
+  });
+
   it("'stop improving' keeps the greedy; cancel throws an AbortError", async () => {
     const echoes = contested();
     const stopped = await solveAccount(fakeApi(echoes, [null, null, null, null]), { members: 4, order: [0, 1, 2, 3], weights: weightsFor(0.6), pools: poolsOf(echoes, 4), shouldStop: () => true });

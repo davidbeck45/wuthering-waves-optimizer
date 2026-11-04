@@ -106,9 +106,9 @@ export async function solveAccount(api: AllocationApi, input: AccountSolveInput)
   const greedyValue = teamValueOf(greedyPicks, weights);
   let picks = greedyPicks.slice();
 
-  // 2. local search over the pairs that compete, until nothing improves or the budget runs out
-  const budget = input.budgetMs ?? 60_000;
-  const deadline = t0 + budget;
+  // 2. local search over the pairs that compete, until nothing improves or the budget runs out. The budget is the
+  //    local search's own, counted from here: on a slow device the greedy alone can outlast it
+  const deadline = now() + (input.budgetMs ?? 60_000);
   const stop: { by: AccountSolveResult["stoppedBy"] } = { by: "converged" };
   const outOfTime = (): boolean => {
     if (input.shouldStop?.()) stop.by = "stopped";
