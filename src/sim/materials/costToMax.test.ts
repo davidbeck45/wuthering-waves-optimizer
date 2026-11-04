@@ -4,7 +4,7 @@
 // Shell Credits per EXP): spike ~/Projects/wto-wt/b3/materials-spike/scripts/kuro_check.py, curves_check.py.
 import { describe, expect, it } from "vitest";
 import table from "./data/materials.json";
-import { costToMax, hasSavedProgress, parseLevel, savedProgressOf, type CostToMax, type MaterialsData } from "./costToMax";
+import { costToMax, hasSavedProgress, parseLevel, savedProgressOf, unsavedWords, type CostToMax, type MaterialsData } from "./costToMax";
 import { characterPickerRoster } from "../../characters/characters";
 import { getWeaponsByType } from "../../weapons/weapons";
 
@@ -223,6 +223,23 @@ describe("from saved levels", () => {
     expect(parseLevel("20+")).toEqual({ level: 20, ascended: true });
     expect(parseLevel(1)).toEqual({ level: 1, ascended: false });
     expect(parseLevel("95")).toBeNull();
+  });
+
+  it("the note names only what the store really lacks", () => {
+    const words = (record: Record<string, unknown>, from: "saved" | "scratch" = "saved"): string => {
+      const saved = savedProgressOf(record);
+      return unsavedWords(costToMax(data, "Cartethyia", saved, { from })!, saved);
+    };
+    const talents = { basic: "10", skill: "10", forte: "10", liberation: "10", intro: "10" };
+    const weapon = "DefiersThorn";
+    expect(words({ weapon })).toBe("level, Forte levels or weapon level");
+    expect(words({})).toBe("level or Forte levels"); // no weapon, so no weapon level to miss
+    // all five Forte skills saved at 10: nothing sits below the top, yet they are saved
+    expect(words({ talents, weapon })).toBe("level or weapon level");
+    expect(words({ talents: { intro: "10" }, weapon })).toBe("level, other Forte levels or weapon level");
+    expect(words({ characterLevel: "90", talents, weapon })).toBe("weapon level");
+    expect(words({ characterLevel: "90", talents, weapon, weapons: { [weapon]: { weaponLevel: "90" } } })).toBe("");
+    expect(words({ weapon }, "scratch")).toBe(""); // from level 1 nothing is taken on trust
   });
 
   it("an unknown character has no entry", () => {

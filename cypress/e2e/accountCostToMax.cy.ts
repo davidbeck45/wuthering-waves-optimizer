@@ -10,13 +10,13 @@ import { costToMax, count, savedProgressOf, type MaterialsData } from "../../src
 // (webpack hands a JSON module over as the namespace; vite as `default`)
 const data = ((tableModule as { default?: unknown }).default ?? tableModule) as unknown as MaterialsData;
 
-function seed(options: { fontScale?: number } = {}) {
+function seed(options: { fontScale?: number; ciaccona?: Record<string, unknown> } = {}) {
   const character = JSON.parse(configOptimizer.data.character);
   const carte = character.characters.Cartethyia;
   carte.characterLevel = "50+";
   carte.talents = { basic: "6", skill: "10", forte: "10", liberation: "8", intro: "10" };
   carte.weapons = { ...(carte.weapons ?? {}), [carte.weapon]: { ...(carte.weapons?.[carte.weapon] ?? {}), weaponLevel: "80" } };
-  character.characters.Ciaccona = { weapon: "WoodlandAria" };
+  character.characters.Ciaccona = { weapon: "WoodlandAria", ...options.ciaccona };
   return {
     character,
     visit: {
@@ -90,6 +90,22 @@ describe("cost to max in the account drawer", () => {
     cy.get("[data-test-cost-total]").should("contain.text", "Nothing left to pay");
     cy.get('[data-test-cost-part="level"] summary').should("contain.text", "not saved");
     cy.get('[data-test-cost-part="weapon"] summary').should("contain.text", "not saved");
+  });
+
+  it("the saved view's note names only what is really unsaved, and is gone when everything is saved at the top", () => {
+    cy.viewport(1440, 900);
+    const talents = { basic: "10", skill: "10", forte: "10", liberation: "10", intro: "10" };
+    cy.visit("/account", seed({ ciaccona: { talents } }).visit);
+    openDrawer("Ciaccona");
+    cy.get('[data-test-cost-from="saved"]').click();
+    cy.get("[data-test-cost-assumed]").should("contain.text", "has not saved Ciaccona's level or weapon level").and("not.contain.text", "Forte");
+    cy.get('[data-test-cost-part="forte"] summary').should("not.contain.text", "not saved");
+
+    cy.visit("/account", seed({ ciaccona: { talents, characterLevel: "90", weapons: { WoodlandAria: { weaponLevel: "90" } } } }).visit);
+    openDrawer("Ciaccona");
+    cy.get('[data-test-cost-from="saved"]').click();
+    cy.get("[data-test-cost-total]").should("contain.text", "Nothing left to pay");
+    cy.get("[data-test-cost-assumed]").should("not.exist");
   });
 
   it("fits a 412 px phone at 130 % text: nothing past the edge, 40 px switch and rows", () => {

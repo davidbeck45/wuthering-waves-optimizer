@@ -117,6 +117,16 @@ export function hasSavedProgress(p: SavedProgress): boolean {
   return Boolean((lv && lv.level < 90) || Object.values(p.talents).some((v) => (v ?? 10) < 10) || (wl && wl.level < 90));
 }
 
+/** What the saved view takes on trust, for its note: only the values the store really lacks ("level or weapon level"),
+ *  "" when it lacks none. All five Forte skills saved at 10 are saved, even though nothing sits below the top; a
+ *  character with no weapon has no weapon level to miss. */
+export function unsavedWords(cost: CostToMax, saved: SavedProgress): string {
+  const words = cost.parts
+    .filter((p) => p.assumed)
+    .map((p) => (p.kind === "level" ? "level" : p.kind === "weapon" ? "weapon level" : Object.keys(saved.talents).length ? "other Forte levels" : "Forte levels"));
+  return words.length > 1 ? `${words.slice(0, -1).join(", ")} or ${words.at(-1)}` : (words[0] ?? "");
+}
+
 /* ------------------------------------------------------------------------------------------- the sums */
 
 class Bag {

@@ -32,8 +32,8 @@
       The cost table (version {{ data.gameVersion }}) has no entry for {{ name }} yet.
     </p>
     <template v-else>
-      <p v-if="from === 'saved' && !savedAnything" class="mat__note mat__note--warn" data-test-cost-assumed>
-        The calculator has not saved {{ name }}'s level, Forte levels or weapon level, so it counts them as maxed. Set them in the calculator, or count from level 1.
+      <p v-if="from === 'saved' && !savedAnything && unsaved" class="mat__note mat__note--warn" data-test-cost-assumed>
+        The calculator has not saved {{ name }}'s {{ unsaved }}, so it assumes the maximum. Set the real values in the calculator, or count from level 1.
       </p>
 
       <div class="mat-total" data-test-cost-total>
@@ -76,7 +76,7 @@
       </p>
       <p v-else-if="!weaponName" class="mat__note">No weapon equipped, so no weapon cost is counted.</p>
       <p class="mat__source">
-        From the game's own upgrade tables, version {{ data.gameVersion }} (read {{ data.fetched }}). EXP is rounded up to whole
+        From the game's own upgrade tables, version {{ data.gameVersion }} (read <span class="whitespace-nowrap">{{ data.fetched }}</span>). EXP is rounded up to whole
         top-tier items; smaller items cost the same Shell Credits per EXP.
       </p>
     </template>
@@ -91,7 +91,7 @@ import { computed, ref, useId, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { weaponDisplayName } from "../display/names";
-import { costToMax, count, hasSavedProgress, savedProgressOf, type CostPart, type MaterialsData } from "./costToMax";
+import { costToMax, count, hasSavedProgress, savedProgressOf, unsavedWords, type CostPart, type MaterialsData } from "./costToMax";
 import { loadMaterials } from "./materialsData";
 
 const props = defineProps<{ characterKey: string; name: string }>();
@@ -117,6 +117,7 @@ watch(
 );
 
 const cost = computed(() => (data.value ? costToMax(data.value, props.characterKey, saved.value, { from: from.value }) : null));
+const unsaved = computed(() => (cost.value ? unsavedWords(cost.value, saved.value) : ""));
 const weapon = computed(() => (saved.value.weapon && data.value?.weapons[saved.value.weapon] ? saved.value.weapon : null));
 const weaponName = computed(() => (weapon.value ? weaponDisplayName(weapon.value) : ""));
 const weaponMax = computed(() => (weapon.value && data.value ? data.value.weapons[weapon.value].max : 90));

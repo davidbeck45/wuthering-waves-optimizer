@@ -2911,7 +2911,7 @@ characters, and "nothing left" for everyone would say nothing. No Waveplate or d
 | `data/materials.json` | **GENERATED** by `wuwa-tools/materials/materials_sync.mjs` (`--game-version 3.7`, read 2026-11-02; 110 KB, 12 KB gzipped): per character the ascension ranks 1–6 (as `[cap it is paid at, cost]`), one Forte skill's levels 2–10 (the generator checks the five are equal), the two inherent skills, the two stat-bonus tiers (× 4 strands); per weapon its rarity curve, last level and ascension steps (credits folded in); item names and rarity; the level EXP curves and 0.35 / 0.4 Shell Credits per resonator / weapon EXP. Only characters and weapons the app lists are written (the release guard) |
 | `materialsData.ts` | `loadMaterials()`: the table as its own chunk, loaded when a drawer first opens (a failed load is retried next time) |
 | `costToMax.ts` | pure: `savedProgressOf(storeRecord)` reads `characterLevel` ("50+" = level 50 ascended), `talents`, `weapons[weapon].weaponLevel`, nothing guessed; `costToMax(table, key, saved, { from })` applies the calculator's own defaults (level 90, skills 10, the weapon's last level), flags each part that used one (`assumed`), and sums each part — `level`, `forte`, `extras` (inherent + stat bonuses), `weapon` — into credits, EXP (and the top EXP items it takes, rounded up) and materials. The `extras` part is `counted` only from level 1: the calculator does not save inherent skills or stat bonuses |
-| `MaterialsCostToMax.vue` | the section: the switch (two `aria-pressed` buttons), a one-line intro, the "not saved" note when nothing is, **All together** (credits, Premium Resonance Potions / Premium Energy Cores, every material as a chip with a rarity edge), then **Where it goes** — one `<details>` per part (title "Level 50+ → 90", "not saved" / "not in the total" tags, credits; inside: the assumption in words, ascensions to go with their credits, the EXP and what feeding it costs, the materials) — and the source line ("the game's own upgrade tables, version 3.7 (read 2026-11-02)") |
+| `MaterialsCostToMax.vue` | the section: the switch (two `aria-pressed` buttons), a one-line intro, a note naming what is not saved when nothing sits below the top (`unsavedWords`: only the values the store lacks, none when all of them are saved at the top), **All together** (credits, Premium Resonance Potions / Premium Energy Cores, every material as a chip with a rarity edge), then **Where it goes** — one `<details>` per part (title "Level 50+ → 90", "not saved" / "not in the total" tags, credits; inside: the assumption in words, ascensions to go with their credits, the EXP and what feeding it costs, the materials) — and the source line ("the game's own upgrade tables, version 3.7 (read 2026-11-02)") |
 | `account/AccountCharacterDrawer.vue` | the section sits under "What to invest in next" (keyed by the character, so the switch resets per character) |
 | `phone.css` § 29 | below 768 px the switch takes the full width and it and each part's row are 40 px tall at 130 % text |
 
@@ -2921,6 +2921,10 @@ Source and checks (spike `~/Projects/wto-wt/b3/materials-spike/`, scratch; the g
   curve to 90 (2,438,000 EXP), weapon curves by rarity; they match the Fandom wiki's levelling tables row by row.
 - **Checked step by step against Kuro's own community wiki** (wiki.kurobbs.com's entry API): Hsin and Suoming (3.7),
   Changli, Mortefi, Buling, Blooming Jadehaven, Blazing Brilliance, Commando of Conviction — 86 comparisons, all equal.
+- **Every entry against Fandom, live (verify round 1, 2026-11-04):** the table re-fetched byte-identical; all EXP curves row by
+  row; ascension, Forte and a stat strand for all 56 non-Rover characters, Forte and a strand for the four Rovers; ascension for
+  116 of 124 weapons, the other 8 being the two Fandom errors below and six with no total block there (they have their
+  rarity's exact cost shape).
 - The Fandom wiki agrees on ascension, Forte, stat bonuses and weapons, **not on the inherent skills**: its
   `Module:Skill Upgrade` hard-codes tier 1 then tier 2 materials for every character; the game and Kuro's wiki use tier 2
   then tier 3 (Changli: Basic Ring + Reactive Drip, then Improved Ring + Polarized Drip). Do not "fix" the table from Fandom.
@@ -2940,6 +2944,12 @@ Things learned:
   The generator drops rows at the cap and `costToMax` never counts a step at the top (verify round 1, 2026-11-02).
 - Rover ascends with 1 Mysterious Code per rank (5 in all): the game's table and Kuro's wiki agree; the Fandom wiki's
   Rover page prints 46 (its template assumes a boss material). Another Fandom figure not to "fix" the table from.
+- Fandom's pages for Daybreaker's Spine and Solsworn Ciphers swap the two material families' counts (Mech Core 6 / 8 / 6 / 20,
+  Waveworn Shard 6 / 6 / 10 / 12). Kuro's wiki matches the game's table step by step on both (Mech Core 6 / 6 / 10 / 12, Waveworn
+  Shard 6 / 8 / 6 / 20), and on Pulsation Bracer, the same two families, where Fandom agrees too. A third Fandom figure not to
+  "fix" the table from.
+- "Nothing below the top" is not "nothing saved": Cartethyia, Galbrena and Sigrika have all five Forte skills saved at 10
+  on David's export, and the note used to say those were not saved while the Forte row, rightly, carried no such tag.
 - Cypress's webpack hands a JSON import over as the namespace, Vite as `default`; the spec reads `default ?? module`.
 
 Gates: `materials/costToMax.test.ts` (the table covers every app character and weapon, no Lily; from level 1 for Hsin +
