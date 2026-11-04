@@ -112,7 +112,7 @@ export async function solveAccount(api: AllocationApi, input: AccountSolveInput)
   const stop: { by: AccountSolveResult["stoppedBy"] } = { by: "converged" };
   const outOfTime = (): boolean => {
     if (input.shouldStop?.()) stop.by = "stopped";
-    else if (now() > deadline) stop.by = "budget";
+    else if (now() >= deadline) stop.by = "budget";
     else return false;
     return true;
   };

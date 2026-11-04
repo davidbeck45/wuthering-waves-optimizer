@@ -183,6 +183,13 @@ describe("solveAccount", () => {
     expect(r.value).toBeGreaterThan(r.greedy.value);
   });
 
+  it("a budget of 0 means no improvement pass, even within the same millisecond", async () => {
+    const echoes = contested();
+    const r = await solveAccount(fakeApi(echoes, [null, null, null, null]), { members: 4, order: [0, 1, 2, 3], weights: weightsFor(0.6), pools: poolsOf(echoes, 4), budgetMs: 0, now: () => 1000 });
+    expect(r.stoppedBy).toBe("budget");
+    expect(r.picks).toEqual(r.greedy.picks);
+  });
+
   it("'stop improving' keeps the greedy; cancel throws an AbortError", async () => {
     const echoes = contested();
     const stopped = await solveAccount(fakeApi(echoes, [null, null, null, null]), { members: 4, order: [0, 1, 2, 3], weights: weightsFor(0.6), pools: poolsOf(echoes, 4), shouldStop: () => true });
