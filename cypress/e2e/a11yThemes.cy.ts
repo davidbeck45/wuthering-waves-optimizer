@@ -1,6 +1,10 @@
 // Wuthering Tools+: contrast, focus and keyboard (src/sim/a11y/, src/sim/README.md "Contrast, focus and keyboard";
 // the 2026-11-02 a11y audit). Real key presses (cy.press) where the browser's own focus order is what is tested.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
+import * as wavescanFixture from "../../src/sim/wavescan/__fixtures__/newEchoes.json";
+
+// Cypress's webpack build hands a JSON import over as the module namespace, without a default export
+const wavescan = ((wavescanFixture as unknown as { default?: typeof wavescanFixture }).default ?? wavescanFixture) as typeof wavescanFixture;
 
 const ENGINE = { timeout: 120000 };
 const LAZY = { timeout: 30000 };
@@ -229,5 +233,53 @@ describe("contrast, focus and keyboard", () => {
     cy.get("[data-test-rotation-tab]", ENGINE).should("have.length.at.least", 2).each(($t) => {
       expect($t[0].getBoundingClientRect().height, "rotation tab").to.be.at.least(39.5);
     });
+  });
+
+  // It sits on Ryan's Settings page, where html[data-wt-plus] is off, so a11y.css's scope lists name it. Every line of
+  // text, not a sample: the eyebrow, "Added N echoes." and the Phantom skin badge each failed on their own.
+  it("reads all of WaveScan's card at AA in every theme", () => {
+    const THEMES = [["dark", "dark"], ["light", "light"], ["black", "dark"], ["synthwave", "dark"], ["pastel", "light"], ["night", "dark"], ["nord", "light"], ["dracula", "dark"], ["gruvbox", "dark"]] as const;
+    const measureCard = () => {
+      for (const [theme, style] of THEMES) {
+        setTheme(theme, style);
+        cy.get("[data-test-wavescan-new-only]").then(($card) => {
+          const texts = [$card[0], ...Array.from($card[0].querySelectorAll<HTMLElement>("*"))].filter((el) => {
+            const hasText = Array.from(el.childNodes).some((n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim());
+            // a disabled control is exempt (WCAG 1.4.3), and "Nothing new to add" is said in the fold line too
+            return hasText && el.offsetParent !== null && !el.closest("[disabled]");
+          });
+          expect(texts.length, `${theme}: lines measured`).to.be.at.least(40);
+          for (const el of texts) expect(contrastOf(el), `${theme}: "${(el.textContent ?? "").trim().slice(0, 30)}"`).to.be.at.least(4.5);
+        });
+      }
+    };
+    cy.viewport(1440, 900);
+    cy.visit("/settings?section=wavescan", {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("inventory", JSON.stringify(wavescan.inventory));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
+    cy.get("html").should("not.have.attr", "data-wt-plus");
+    cy.get("[data-test-wavescan-file-input]").selectFile(
+      { contents: Cypress.Buffer.from(JSON.stringify(wavescan.scan)), fileName: "wavescan.json", mimeType: "application/json" },
+      { force: true },
+    );
+    cy.get("[data-test-wavescan-new-only]", { timeout: 20000 }).should("be.visible");
+    // .btn and .badge fade their colours for 200 ms: without this a theme change is measured halfway
+    cy.document().then((doc) => {
+      const still = doc.createElement("style");
+      still.textContent = "* { transition: none !important; }";
+      doc.head.appendChild(still);
+    });
+    for (const id of ["owned", "missing"]) cy.get(`[data-test-wavescan-new-only-list="${id}"] summary`).click();
+    measureCard();
+    setTheme("dark", "dark");
+    cy.get("[data-test-wavescan-new-only-add]").click();
+    cy.get(".confirm-dialog[open] .modal-action").contains("button", "Add 3 echoes").click();
+    cy.get("[data-test-wavescan-new-only-done]").should("contain.text", "Added 3 echoes.");
+    measureCard();
   });
 });
