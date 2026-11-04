@@ -168,7 +168,7 @@ describe("tools on the fixture account", () => {
     expect(again.characters).toEqual(r.characters);
     // a clamp, not a schema bound
     expect((await call("rank_roster", { top: 99 })).characters.length).toBe(3);
-  });
+  }, 60_000); // scores the whole roster plus each best rotation's crit-luck range: 2.1 s on a loaded box, CI's 2 cores run several times slower
 
   it("substat_weights ranks substats and the equipped echoes' worth", async () => {
     const r = await call("substat_weights", { character: "Aemeath" });
