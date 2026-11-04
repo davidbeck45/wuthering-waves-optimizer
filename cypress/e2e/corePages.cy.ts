@@ -67,7 +67,7 @@ describe("core pages, refined", () => {
       .should("be.visible")
       .and("contain.text", "Kept:")
       .and("contain.text", "Before a Settings import")
-      .and("contain.text", "Not kept: your other echoes and your teams");
+      .and("contain.text", "Not kept: their other saved builds, levels and talents, your other echoes and your teams");
     cy.get("[data-test-backup-kept-note-link]").should("have.attr", "href", "/build-history").click();
     cy.location("pathname").should("eq", "/build-history");
 
