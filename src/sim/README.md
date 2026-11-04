@@ -3050,13 +3050,16 @@ opens `/echo-lab?echo=<id>`: that one echo's verdict row, open, with who it is f
 | `echoLab/useEchoLab.ts` | `runRollRatings(items, signal, snapshot?)` / `ratingOf(echoId, target)`: one module map per account fingerprint, cleared with the rest on a new fingerprint, and kept in the sessionStorage cache next to the pass (`ratings`, same cache version: an older cache simply has none). A caller's older snapshot never adopts its fingerprint (an edit meanwhile has already moved the page on). These two functions are the cache's only door, so the result-cache track's persistence can be plugged in there |
 | `echoLab/echoLabView.ts` | `qualityTarget(row, characters)`: where an echo is rated (the built character wearing it, else its best owner's slot, else Tune or Feed's target) — one rule for the chips and Echo Lab's detail, so the chip's exact figure is the detail's. `VerdictFilters.echo` (one echo by id) |
 | `echoLab/EchoLabView.vue`, `EchoLabVerdicts.vue` | `?echo=<id>` opens the Verdicts tab filtered to that echo with its row open, a notice ("Reminiscence: Kronaclaw from your inventory: its verdict, who it is for and how good its roll is."), **‹ Inventory** and **Show every echo**; the notice is scrolled under the nav bar; the feed list hides while one echo shows; the URL keeps `echo` while the filter is on |
-| Ryan's `InventoryEchoesBrowser.vue` | 11 lines: three imports, `<InventoryQualityBar />` after his Filters panel, `<InventoryQualityChip>` in each of his three card variants (the v3 tile's slot, the compact card's footer, the classic footer), `inventoryViewKey` in his page-reset watch (a new order starts at page 1), and `return plusInventoryView(allEchoes)` at the end of `echoesList` |
+| Ryan's `InventoryEchoesBrowser.vue` | 11 lines: three imports, `<InventoryQualityBar />` after his Filters panel, `<InventoryQualityChip>` in each of his three card variants (the v3 tile's slot, the compact card's footer, the classic footer), `inventoryViewKey` in his page-reset watch (a new order starts at page 1), and `return plusInventoryView(allEchoes, unfinishedFilter.value || duplicatesFilter.value)` at the end of `echoesList` |
 
 Decisions (made without David, 2026-11-02):
 - **Quick on the chip, exact one tap away.** The chip's roll is the quick estimate, said so in its hover text and the
   (i); once Echo Lab's detail has run the exact one for that echo (this visit), the chip shows that instead. On
-  David's export the quick rating sat within 1.75 points of the exact one for 9 in 10 of 124 echoes checked (mean
-  0.74, worst 5.9; the exact one's own 1,000 samples wobble by about 1.3). Before the Crit Rate cap was modelled the
+  David's export the quick rating sat within 2.1 points of the exact one for 9 in 10 of all 247 rated echoes (mean
+  0.89, worst 5.9; 89 % within 2, which is what the (i)'s "usually agree within 2 points" rests on; the exact one's own
+  1,000 samples wobble by about 1.3). That export has almost no unfinished echoes, so 62 echoes were also cut down to
+  each of 1, 2, 3 and 4 lines: mean 0.09, 1.09, 0.83 and 0.97, 9 in 10 within 2.3, no bias, worst 8.9 on a two-line
+  echo (checked 2026-11-04). Before the Crit Rate cap was modelled the
   worst was 9 points (a 10.5 % Crit Rate echo on a build 7 points under the cap); the cross term took the mean from
   1.18 to 1.05 on 40 of them.
 - **Rated where Echo Lab rates it**, so the chip and the detail never disagree on the build. Echoes worn only by a
@@ -3067,13 +3070,19 @@ Decisions (made without David, 2026-11-02):
   and is compared with +15 echoes. A great roll can still be Feed ("Top 3% roll · No gain anywhere": a better copy is
   worn), which is the honest answer.
 - **Feed first** puts the surest fodder on top: feed, then spare, then keep, the worst roll first inside each.
+- **The plus sort stands aside for Ryan's ranked lists.** While "Finish these first" or Duplicates is on,
+  `plusInventoryView(list, keepOrder)` keeps his order; the sort comes back when he turns them off. Both orders mean
+  something: "Finish these first" is ranked by the chance of reaching the tuning goal, and its "Fresh echo" divider
+  sits before the first echo that does not beat a fresh one, so re-sorting left that divider claiming the echoes under
+  it were worse than a fresh one when many were better. The sort is remembered, so this happened with no plus control
+  in view. "Feed candidates" is a filter, not an order: it still narrows his list, in his order. The (i) says so.
 - **A roll sort reorders once.** The sorts read a snapshot of the percentiles taken when the player picks a sort, when
   a pass lands and when every roll is in, not each batch: re-sorting per batch re-rendered Ryan's tiles five or six
   times while the chips filled (one 301 ms task on a phone). Meanwhile the status line says "The order updates when
   every roll is in." A reload of the same account reads the ratings from the cache and sorts at once. The echoes on
   screen are always rated next, so turning to page 9 fills page 9's chips within a batch.
 - **Stale while revalidate.** Locking or marking an echo as trash changes the account, so Echo Lab judges it again
-  (~2 s, then the ratings). The chips keep the last verdict (dimmed, "Updating: …" in the hover text), and Feed
+  (~2 s, then the ratings). The chips keep the last verdict (a dashed edge, "Updating: …" in the hover text; not dimmed, they stay live buttons and dimming fell under AA), and Feed
   candidates and the sort keep working, so bulk-marking the feed list as trash does not empty the list under the
   player's thumb. A rating held over applies only while the echo's lines and target are unchanged.
 - **The tap navigates to Echo Lab** (the brief), so Ryan's page number and filters reset on the way back: they are

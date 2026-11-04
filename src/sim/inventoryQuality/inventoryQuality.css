@@ -105,9 +105,10 @@
 .iq-chip:disabled {
   cursor: default;
 }
-/* the last verdict, while Echo Lab judges again after an edit */
-.iq-chip--stale > * {
-  opacity: 0.55;
+/* the last verdict, while Echo Lab judges again after an edit: a dashed edge says so. Not a dimmed one: it stays a live
+   button for the 2-5 s this lasts, and at 55 % its text fell well under AA */
+.iq-chip--stale {
+  border-style: dashed;
 }
 .iq-chip--keep {
   border-left-color: oklch(var(--su));

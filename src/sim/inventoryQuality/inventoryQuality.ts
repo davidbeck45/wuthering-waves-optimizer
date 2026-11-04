@@ -110,9 +110,11 @@ export function chipFor(input: {
     sentences.push("No substat lines yet, so no roll to rate.");
   } else if (!rateable) {
     sentences.push("No built character can slot it, so there is no build to rate its roll on.");
+  } else if (rating === null) {
+    sentences.push("Echo Lab could not rate this roll on its build.");
   }
   sentences.push("Tap for the details in Echo Lab.");
-  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}${stale ? " (updating)" : ""}. Open in Echo Lab`;
+  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}, ${reason}${stale ? " (updating)" : ""}. Open in Echo Lab`;
   return { state: stale ? "stale" : "ready", verdict: row.verdict, verdictLabel, reason, roll, rollPending: rollPending && !stale, title: sentences.join(" "), aria };
 }
 

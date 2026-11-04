@@ -93,7 +93,7 @@ describe("The chip", () => {
     expect(chip.title).toContain("where it sits on Cartethyia");
     expect(chip.title).toContain("(a quick estimate)");
     expect(chip.title).toContain("Tap for the details in Echo Lab.");
-    expect(chip.aria).toBe(`Echo Lab: Keep, ${chip.roll!.text}. Open in Echo Lab`);
+    expect(chip.aria).toBe(`Echo Lab: Keep, ${chip.roll!.text}, ${chip.reason}. Open in Echo Lab`);
     // Echo Lab's exact figure, once its detail ran: no "quick estimate"
     expect(chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: chipRating("xtbwqikno2", true), rateable: true }).title).not.toContain("quick estimate");
   });
@@ -110,6 +110,13 @@ describe("The chip", () => {
     const noSlot = chipFor({ row: rows.get("labnoslot01")!, judged: true, rating: null, rateable: false });
     expect(noSlot).toMatchObject({ verdict: "feed", roll: null, rollPending: false });
     expect(noSlot.title).toContain("No built character can slot it");
+  });
+
+  it("says so when Echo Lab could not rate the roll, instead of saying nothing", () => {
+    const chip = chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: null, rateable: true });
+    expect(chip.roll).toBeNull();
+    expect(chip.rollPending).toBe(false);
+    expect(chip.title).toContain("could not rate this roll");
   });
 
   it("keeps the last verdict, marked as updating, while Echo Lab judges again", () => {

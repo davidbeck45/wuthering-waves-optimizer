@@ -7,7 +7,8 @@
         <p><b>Keep</b>: an upgrade for one of your built characters, worn, or worth tuning. <b>Spare</b>: within 2 % of what its best owner wears, a gamble to tune, or good substats with no slot today. <b>Feed</b>: no built character gains damage from it in any slot it can take.</p>
         <p><b>Top 4% roll</b>: only 4 in 100 echoes of its kind (same set, cost and main stat, as many substat lines rolled at random) do more damage on its owner's best rotation. <b>at +15</b>: still being tuned, so compared with +15 echoes.</p>
         <p class="opacity-80">A quick estimate, priced by the damage engine with this echo in the slot. Echo Lab's detail scores every outcome; once you have opened an echo there, its chip shows that exact figure. The two usually agree within 2 points.</p>
-        <p class="opacity-80"><b>Feed candidates</b>, then tick an echo, <b>Select all</b> and the trash button: every candidate is marked as trash in one go. Check the list first.</p>
+        <p class="opacity-80"><b>Feed candidates</b>, then tick an echo, <b>Select all</b> and <b>Mark trash</b>: every candidate is marked as trash in one go. Check the list first.</p>
+        <p class="opacity-80"><b>Finish these first</b> and <b>Duplicates</b> keep their own order while they are on, whatever the sort says.</p>
       </EchoLabPopover>
       <RouterLink to="/echo-lab" class="iq-bar__link" data-test-inventory-quality-open-lab>Open Echo Lab ›</RouterLink>
     </div>

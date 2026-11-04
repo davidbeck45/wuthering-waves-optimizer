@@ -5,9 +5,10 @@
 // blanked, and each substat's worth there is one engine scoring of one expected roll of it, plus Crit Rate's headroom
 // under its 100 % cap and the Crit Rate × Crit DMG cross term (up to three more scorings). Every outcome of n lines
 // (the same roll model: n of the thirteen types, Kuro's tier odds) is then valued with those prices, exact for few
-// outcomes, else 4,000 seeded samples. On David's export (247 rated echoes, 2026-11-02) it sat within 1.75 points of
-// the exact percentile on 9 of 10 of 124 checked (mean 0.74, worst 5.9; the exact one's own 1,000 samples wobble by
-// about 1.3), for ~10 engine scorings an echo. Pure/async, worker-safe.
+// outcomes, else 4,000 seeded samples. On David's export (all 247 rated echoes, checked 2026-11-04) it sat within 2.1
+// points of the exact percentile on 9 of 10 (mean 0.89, worst 5.9; the exact one's own 1,000 samples wobble by about
+// 1.3), and as close on echoes cut down to 1-4 lines, which that export hardly has (62 of each: mean 0.1-1.1, 9 of 10
+// within 2.3, worst 8.9 on a two-line echo), for ~10 engine scorings an echo. Pure/async, worker-safe.
 import { LEVELS_PER_TUNE } from "../../echoes/levelingCost";
 import { SUBSTAT_KEYS, expectedRoll, rollTiers, type SubstatKey } from "../substats/substatWeights";
 import {

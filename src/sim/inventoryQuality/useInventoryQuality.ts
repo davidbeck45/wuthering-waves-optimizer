@@ -308,13 +308,16 @@ export function chipShown(echoId: string): () => void {
 /**
  * The hook in Ryan's InventoryEchoesBrowser.vue (`echoesList`): his filtered list through the plus sort and the
  * "Feed candidates" filter. "Inventory order" with the filter off returns his list untouched, without touching
- * the Echo Lab at all.
+ * the Echo Lab at all. `keepOrder`: his list is ranked and the order means something ("Finish these first" puts its
+ * "Fresh echo" divider before the first echo that does not beat a fresh one, Duplicates sits copies side by side), so
+ * the plus sort stands aside while either is on. "Feed candidates" is a filter, not an order: it still narrows.
  */
-export function plusInventoryView<T extends { echoId: string }>(list: T[]): T[] {
-  if (view.sort === "default" && !view.feedOnly) return list;
+export function plusInventoryView<T extends { echoId: string }>(list: T[], keepOrder = false): T[] {
+  const sort = keepOrder ? "default" : view.sort;
+  if (sort === "default" && !view.feedOnly) return list;
   const q = useInventoryQuality();
   // no verdicts to go by (no build to judge against, a failed or cancelled pass): his list as it is. "Feed candidates"
   // left on would otherwise empty it, with the bar's controls hidden (no builds) or the toggle waiting on counts
   if (q.unavailable.value) return list;
-  return applyInventoryView(list, view, q.lookup);
+  return applyInventoryView(list, { sort, feedOnly: view.feedOnly }, q.lookup);
 }

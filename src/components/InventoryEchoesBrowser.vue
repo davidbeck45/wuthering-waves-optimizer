@@ -1047,7 +1047,7 @@ const echoesList = computed(() => {
       return true;
     });
   }
-  return plusInventoryView(allEchoes);
+  return plusInventoryView(allEchoes, unfinishedFilter.value || duplicatesFilter.value);
 });
 
 // "Fresh echo" divider: sits before the first ranked echo that doesn't beat

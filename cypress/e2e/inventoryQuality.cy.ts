@@ -22,13 +22,24 @@ function echoesUpTo(count: number): Array<{ echoId: string }> {
   return out;
 }
 
-function seed({ count = fixture.echoes.length, fontScale, theme }: { count?: number; fontScale?: number; theme?: string } = {}) {
+/** the fixture with eight unworn echoes still being tuned, so Ryan's "Finish these first" has a real ranking to keep */
+function echoesBeingTuned(): Array<{ echoId: string }> {
+  const worn = new Set(Object.keys(fixture.equipped));
+  let left = 8;
+  return fixture.echoes.map((echo) => {
+    if (worn.has(echo.echoId) || left <= 0) return echo;
+    left -= 1;
+    return { ...echo, echoSubStatsType4: null, echoSubStatsValue4: null, echoSubStatsType5: null, echoSubStatsValue5: null };
+  });
+}
+
+function seed({ count = fixture.echoes.length, echoes, fontScale, theme }: { count?: number; echoes?: Array<{ echoId: string }>; fontScale?: number; theme?: string } = {}) {
   return {
     onBeforeLoad(win: Window) {
       win.sessionStorage.clear();
       win.localStorage.removeItem(SORT_KEY);
       win.localStorage.setItem("character", JSON.stringify({ characters: fixture.characters, activeCharacter: "Cartethyia" }));
-      win.localStorage.setItem("inventory", JSON.stringify({ echoes: echoesUpTo(count), equipped: fixture.equipped, echoPresets: [], equippedPresets: {} }));
+      win.localStorage.setItem("inventory", JSON.stringify({ echoes: echoes ?? echoesUpTo(count), equipped: fixture.equipped, echoPresets: [], equippedPresets: {} }));
       const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
       settings.config = { ...settings.config, useClassicUi: false, ...(theme ? { theme } : {}) };
       win.localStorage.setItem("settings", JSON.stringify(settings));
@@ -56,6 +67,31 @@ function expectNoHorizontalScroll(label: string): void {
 }
 
 describe("Echo Lab in the inventory", () => {
+  it("leaves Ryan's own ranking alone: Finish these first keeps its order under a plus sort, and Feed candidates still narrows it", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/inventory", seed({ echoes: echoesBeingTuned() }));
+    waitForChips();
+    cy.get("[data-test-find-unfinished]").click();
+    tileIds().then((ranked) => {
+      expect(ranked.length, "echoes being tuned").to.be.greaterThan(3);
+      cy.get("[data-test-inventory-quality-sort]").select("best-rolls");
+      tileIds().should("deep.equal", ranked);
+      cy.get("[data-test-inventory-quality-sort]").select("feed-first");
+      tileIds().should("deep.equal", ranked);
+      // the filter is not an order: it still narrows his ranked list, keeping that order
+      cy.get("[data-test-inventory-quality-feed]").click();
+      tileIds().then((narrowed) => {
+        expect(narrowed.length, "a narrower list").to.be.lessThan(ranked.length);
+        expect(narrowed, "his order").to.deep.equal(ranked.filter((id) => narrowed.includes(id)));
+      });
+    });
+    // off again: the plus sort is back
+    cy.get("[data-test-inventory-quality-feed]").click();
+    cy.get("[data-test-find-unfinished]").click();
+    cy.get("[data-test-inventory-quality-sort]").should("have.value", "feed-first");
+    cy.get("[data-test-inventory-quality-chip]").first().should("have.attr", "data-verdict", "feed");
+  });
+
   it("puts a verdict and roll chip on every echo, sorts by roll or feed first, and narrows to the feed candidates", () => {
     cy.viewport(1440, 900);
     cy.visit("/inventory", seed());
