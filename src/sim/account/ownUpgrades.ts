@@ -15,7 +15,7 @@
 import type { TeamImpact } from "./investPlan";
 import type { EchoCheck, EchoUpgrade } from "./echoCheck";
 import type { TeamRequest } from "../buildTeam/buildTeam";
-import { characterShortName } from "../display/names";
+import { characterDisplayName, characterShortName } from "../display/names";
 import { isSetUp } from "../myRankings/rankRoster";
 import { compact as compactNum } from "../myRankings/format";
 import { parsePresetName } from "../presets/presetName";
@@ -105,8 +105,16 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
     const who = characterShortName(u.characterId);
     const others = u.changed - u.unworn;
     const alone = !u.request.teamId && (u.request.members ?? []).length <= 1;
-    const from = others > 0 ? `: ${u.unworn} nobody wears, ${others} worn by someone outside the team (they keep wearing ${others === 1 ? "it" : "them"})` : ` for ${u.changed === 1 ? "one" : "ones"} nobody wears`;
+    const on = 5 - u.empty;
+    const swaps = u.changed - u.empty;
+    // a build with empty slots: "swap 5 of Zhezhi's 5 echoes" would read as if she wore five
+    const action = u.empty > 0 ? `fill ${who}'s ${plural(u.empty, "empty slot")}${swaps > 0 ? ` and swap ${swaps === on ? `the ${on === 1 ? "one" : on}` : `${swaps} of the ${on}`} already on` : ""}` : `swap ${u.changed} of ${who}'s 5 echoes`;
+    const from = others > 0 ? `: ${u.unworn > 0 ? `${u.unworn} nobody wears, ${others}` : others === 1 ? "it's" : `all ${others}`} worn by someone outside the team (they keep wearing ${others === 1 ? "it" : "them"})` : u.empty > 0 ? " with echoes nobody wears" : ` for ${u.changed === 1 ? "one" : "ones"} nobody wears`;
     const notes: string[] = [];
+    // each row is worked out alone: two can want the same spare, and a saved build takes no echo off anyone, so saving
+    // one leaves the other still offering it. Said on both rows; never "save one, then check again"
+    const rivals = items.filter((o) => o.characterId !== u.characterId && o.echoIds.some((id) => u.echoIds.includes(id))).map((o) => characterShortName(o.characterId));
+    if (rivals.length) notes.push(`${rivals.length === 1 ? `${rivals[0]}'s row wants` : `${rivals.slice(0, -1).join(", ")} and ${rivals[rivals.length - 1]}'s rows want`} some of the same echoes: an echo goes on one character at a time, so choose who gets them.`);
     if (u.er?.buys) notes.push(`Meets the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs (today ${u.er.before == null ? "—" : pct1(showHave(u.er.before))}).`);
     else if (u.er && !u.er.met) notes.push(`Still short of the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs: the most your echoes allow.`);
     if (u.buffsOn.length) notes.push(`Counts ${u.buffsOn.join(", ")} switched on (nobody had set ${u.buffsOn.length === 1 ? "it" : "them"}).`);
@@ -117,7 +125,7 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
       characterId: u.characterId,
       title: echoTitle(u),
       // a character in no team you can field is re-geared on their own: no "For <team>:"
-      todo: `${alone ? "S" : `For ${teamTitle(u.team?.teamName ?? u.teamName)}: s`}wap ${u.changed} of ${who}'s 5 echoes${from}${u.sets ? ` (${u.sets})` : ""}.`,
+      todo: `${alone ? `${action[0]!.toUpperCase()}${action.slice(1)}` : `For ${teamTitle(u.team?.teamName ?? u.teamName)}: ${action}`}${from}${u.sets ? ` (${u.sets})` : ""}.`,
       own: u.gain,
       ownLabel: "own",
       // Build my team's figure: with this team's buffs on them, so it can differ from /my-rankings' solo number
@@ -318,7 +326,7 @@ export interface DrawerOwn {
 export function drawerOwnOf(
   characterId: string,
   rows: readonly OwnRow[],
-  check: Pick<EchoCheck, "best" | "skipped" | "items"> | null,
+  check: Pick<EchoCheck, "best" | "skipped" | "items" | "errors" | "cancelled"> | null,
   state: "idle" | "running" | "done" | "error",
   by: "own" | "team" = "team",
 ): DrawerOwn {
@@ -330,10 +338,15 @@ export function drawerOwnOf(
   let echoLine: string | null = null;
   if (!views.some((v) => v.row.kind === "echoes")) {
     const skipped = check?.skipped.find((s) => s.characterId === characterId);
+    // echoCheck pushes "<display name>: <message>"
+    const prefix = `${characterDisplayName(characterId)}: `;
+    const failed = check?.errors.find((e) => e.startsWith(prefix));
     if (state === "running") echoLine = `Checking your inventory for better echoes for ${who}…`;
     else if (!check) echoLine = `“Check my echoes” on the page re-gears ${who} from your inventory with Build my team's engine.`;
     else if (check.best.includes(characterId)) echoLine = `${who} already wears the best echoes your inventory gives for their plan.`;
     else if (skipped) echoLine = `Build my team could not re-gear ${who}: ${skipped.reason}`;
+    else if (failed) echoLine = `The engine could not check ${who}: ${failed.slice(prefix.length)}`;
+    else if (check.cancelled) echoLine = `The check was stopped before it reached ${who}.`;
     else echoLine = `${who} was not checked (no best rotation scored yet).`;
   }
   return { views, echoLine };

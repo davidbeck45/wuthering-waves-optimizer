@@ -53,6 +53,11 @@ export interface EchoUpgrade {
   changed: number;
   /** of those, echoes nobody wears today */
   unworn: number;
+  /** slots empty today, in a run on the active build (0 on another build: its slots aren't the ones this reads) */
+  empty: number;
+  /** the echoes that change (ids). Each row is worked out alone, so two rows can want the same spare: a saved build
+   *  takes no echo off anyone, so saving one leaves the other offering it (echoRows says so) */
+  echoIds: string[];
   /** the sets the new build wears ("Windward Pilgrimage 5pc") */
   sets: string;
   /** the Energy Regen floor the run kept (the team loop's need), with the character screen's ER before / after */
@@ -270,6 +275,8 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
               teamNote,
               changed: changed.length,
               unworn: changed.filter((p) => p.source === "free").length,
+              empty: onActive ? currentEchoesOf(id, characters, echoes).filter((e) => !e).length : 0,
+              echoIds: changed.map((p) => String(p.echo?.echoId)),
               sets: setsText(m.setsWorn, setLabel),
               er: m.erFloor == null ? null : { floor: m.erFloor, before: m.before.menuEr, after: m.after.menuEr, met: m.erMet === true, buys },
               buffsOn: buffDefaultNames(buffsWorn(m.buffDefaults, m.setsWorn, m.draft.mainEcho?.echo ?? null)),

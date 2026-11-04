@@ -2,8 +2,8 @@
 // echoCheck.ts) in the v3 UI. Public data only: upstream's Cartethyia golden fixture with two of her five echoes taken
 // off (they sit unworn in the inventory, so the inventory holds a better build), two armed teammates (Ciaccona, Chisa)
 // and a saved team of the three built from the shipped wuwa_calc team preset. "Check my echoes" runs on demand with
-// progress and Cancel, is kept for the tab, its row opens /build-team on that team with only her re-geared, and that
-// page's run prints the same own figure.
+// progress and Cancel, is kept for the tab, its row opens /build-team on that team with only her re-geared, that page's
+// run prints the same own figure, and its save writes her new build alone behind a confirm.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 import * as teamPresetsModule from "../../src/sim/presets/data/teams.json";
 
@@ -145,6 +145,65 @@ describe("my account: with what you own", () => {
         cy.location("search").should("not.contain", "only=");
         cy.get("[data-test-build-team-plan]", RUN).should("have.length", 3);
       });
+  });
+
+  it("saves her build and nobody else's, only after the confirm; the old rows go, and undo puts everything back", () => {
+    type Stored = { chars: Record<string, { activeBuildId?: string; echoes?: unknown; builds?: Array<{ id: string; name: string }> }>; inventory: unknown; buildIds: Array<string | null> };
+    const stored = (win: Window): Stored => ({
+      chars: JSON.parse(win.localStorage.getItem("character")!).characters,
+      inventory: JSON.parse(win.localStorage.getItem("inventory")!),
+      buildIds: JSON.parse(win.localStorage.getItem("teamRotations")!).teams.find((t: { id: string }) => t.id === TEAM_ID).buildIds,
+    });
+    const built = (s: Stored): number => (s.chars.Cartethyia!.builds ?? []).filter((b) => /^Built for /.test(b.name)).length;
+    cy.viewport(1440, 900);
+    cy.visit("/account", seed());
+    runCheck();
+    cy.get('[data-test-account-own-go="Cartethyia:echoes"]').click();
+    cy.get('[data-test-build-team][data-phase="plan"]', RUN).should("exist");
+    cy.window().then((win) => cy.wrap(JSON.stringify(stored(win))).as("before"));
+    cy.get("[data-test-build-team-run]").click();
+    cy.get("[data-test-build-team-save]", RUN).should("contain.text", "Save 1 team build").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Built for");
+    // the dialog is up: nothing written yet
+    cy.window().then((win) => cy.get("@before").then((raw) => expect(JSON.stringify(stored(win))).to.eq(raw)));
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-build-team-saved]").should("exist");
+    cy.window().then((win) =>
+      cy.get("@before").then((raw) => {
+        const before = JSON.parse(raw as unknown as string) as Stored;
+        const after = stored(win);
+        expect(built(after), "one new build").to.eq(built(before) + 1);
+        // a new build beside the old one: what she wears now, the teammates and the inventory stay as they were. The
+        // fixture's record has no builds, so the save also gives it one for what she wears (ensureCharacterBuilds):
+        // the active build may be that one, never the new one
+        const fresh = after.chars.Cartethyia!.builds!.find((x) => /^Built for /.test(x.name))!;
+        expect(after.chars.Cartethyia!.activeBuildId).not.to.eq(fresh.id);
+        expect(after.chars.Cartethyia!.echoes).to.deep.eq(before.chars.Cartethyia!.echoes);
+        expect(after.chars.Ciaccona).to.deep.eq(before.chars.Ciaccona);
+        expect(after.chars.Chisa).to.deep.eq(before.chars.Chisa);
+        expect(after.inventory).to.deep.eq(before.inventory);
+      }),
+    );
+    // back on /account the check no longer matches the data: its rows are gone, never served as today's
+    cy.visit("/account", { onBeforeLoad: () => undefined });
+    cy.get("[data-test-account-own-check]", RUN).should("not.be.disabled");
+    cy.get('[data-test-account-own][data-state="idle"]').should("exist");
+    cy.get(CART).should("not.exist");
+    // undo from the page: the build is gone, the pin is back
+    cy.visit(`/build-team?team=${TEAM_ID}`, { onBeforeLoad: () => undefined });
+    cy.get("[data-test-build-team-undo]", RUN).click();
+    cy.get(".confirm-dialog .modal-action .btn-warning").click();
+    cy.get("[data-test-build-team-undo]").should("not.exist");
+    cy.window().then((win) =>
+      cy.get("@before").then((raw) => {
+        const before = JSON.parse(raw as unknown as string) as Stored;
+        const after = stored(win);
+        expect(built(after), "the build is gone").to.eq(built(before));
+        expect(after.chars.Cartethyia).to.deep.eq(before.chars.Cartethyia);
+        expect(after.buildIds).to.deep.eq(before.buildIds);
+        expect(after.inventory).to.deep.eq(before.inventory);
+      }),
+    );
   });
 
   it("stops when cancelled, says so and keeps nothing", () => {

@@ -15,7 +15,7 @@ import type { MemberPlan } from "../buildTeam/rileyPlan";
 import { createTeamScorer } from "./investPlan";
 import { buffsWorn, checkOwnEchoes, echoCheckRequest, sortEchoUpgrades, type EchoCheck, type EchoUpgrade } from "./echoCheck";
 import { buildTeamRoute } from "./ownUpgrades";
-import { clearEchoCheckMemory, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
+import { clearEchoCheckMemory, ECHO_CHECK_CACHE_KEY, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -80,6 +80,14 @@ describe("check my echoes", () => {
     for (const other of run.members.filter((x) => x.slot !== slot)) expect(other.draft).toBeNull();
   }, 240000);
 
+  it("counts her two empty slots and names the echoes the new build takes, none of them a teammate's", () => {
+    expect(cart!.empty).toBe(2);
+    expect(cart!.echoIds).toHaveLength(cart!.changed);
+    expect(new Set(cart!.echoIds).size).toBe(cart!.changed);
+    expect(cart!.echoIds).not.toContain(chisaEcho);
+    for (const id of cart!.echoIds) expect(kept).not.toContain(id);
+  });
+
   it("scores the team figure exactly as the rankings would, with the new build worn", async () => {
     expect(cart!.team, cart!.teamNote ?? "").toBeTruthy();
     const scorer = await createTeamScorer(characters, echoes, [], ranking.teams);
@@ -143,6 +151,14 @@ describe("the echo check cache", () => {
     expect(echoCheckKey("v2:abd", inv, { options: DEFAULT_OPTIONS, engine: "e95d4e6" })).not.toBe(key);
     expect(echoCheckKey("v2:abc", inv, { options: { ...DEFAULT_OPTIONS, useSets: false }, engine: "e95d4e6" })).not.toBe(key);
     expect(echoCheckKey("v2:abc", inv, { options: DEFAULT_OPTIONS, engine: "e95d4e7" })).not.toBe(key);
+  });
+
+  it("ignores a stored entry for this key with a part missing (the drawer reads every list)", () => {
+    clearEchoCheckMemory();
+    const store = new Map<string, string>();
+    const storage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v), removeItem: (k: string) => void store.delete(k) };
+    store.set(ECHO_CHECK_CACHE_KEY, JSON.stringify({ key: "k", check: { items: [] } }));
+    expect(readCachedEchoCheck("k", storage)).toBeNull();
   });
 
   it("serves a finished check for the same key from memory and sessionStorage, never a cancelled one", () => {

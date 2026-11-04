@@ -8,7 +8,7 @@ import { cyrb53, stableStringify } from "../myRankings/rankingCache";
 import type { EchoCheck } from "./echoCheck";
 
 /** bump when EchoUpgrade's shape or the check's rules change */
-export const ECHO_CHECK_CACHE_VERSION = 2;
+export const ECHO_CHECK_CACHE_VERSION = 3;
 export const ECHO_CHECK_CACHE_KEY = "wtplus:account:echoCheck";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
@@ -39,9 +39,10 @@ export function readCachedEchoCheck(key: string, storage: StorageLike | null = s
   if (!storage) return null;
   try {
     const entry = JSON.parse(storage.getItem(ECHO_CHECK_CACHE_KEY) ?? "null") as { key?: string; check?: EchoCheck } | null;
-    if (entry?.key !== key || !entry.check || !Array.isArray(entry.check.items)) return null;
-    memory = { key, check: entry.check };
-    return entry.check;
+    const c = entry?.check;
+    if (entry?.key !== key || !c || ![c.items, c.best, c.skipped, c.errors].every(Array.isArray)) return null;
+    memory = { key, check: c };
+    return c;
   } catch {
     return null;
   }

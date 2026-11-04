@@ -8,7 +8,7 @@ import type { TeamView } from "../energy/useEnergyNeeds";
 import type { TunerCandidate, TunerCandidatesResult } from "../echoLab/tunerPlan";
 import { EMPTY_BUDGET } from "../echoLab/tunerBudget";
 import type { EchoUpgrade } from "./echoCheck";
-import { echoRows, energyRows, ownUpgradeRows, sortOwnRows, tunerRows, TUNER_STEPS, type OwnRow } from "./ownUpgrades";
+import { drawerOwnOf, echoRows, energyRows, ownUpgradeRows, sortOwnRows, tunerRows, TUNER_STEPS, type OwnRow } from "./ownUpgrades";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -29,6 +29,8 @@ function upgrade(over: Partial<EchoUpgrade> = {}): EchoUpgrade {
     teamNote: null,
     changed: 3,
     unworn: 3,
+    empty: 0,
+    echoIds: ["e1", "e2", "e3"],
     sets: "Frosty Resolve 5pc",
     er: null,
     buffsOn: [],
@@ -261,5 +263,106 @@ describe("echo row headlines", () => {
   it("name the team the figure is measured on (a synced wuwa_calc team by its title)", () => {
     const row = echoRows([upgrade({ teamName: "Carlotta + Shorekeeper + Zhezhi", team: { ...upgrade().team!, teamName: "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Shorekeeper + Zhezhi" } })])[0]!;
     expect(row.todo).toMatch(/^For Carlotta · Shorekeeper \+ Zhezhi: /);
+  });
+});
+
+describe("echo rows that want the same spare echo", () => {
+  const verina = upgrade({ id: "Verina:echoes", characterId: "Verina", echoIds: ["a", "b", "c"] });
+  const shorekeeper = upgrade({ id: "Shorekeeper:echoes", characterId: "Shorekeeper", echoIds: ["a", "b"] });
+  const zhezhi = upgrade({ id: "Zhezhi:echoes", characterId: "Zhezhi", echoIds: ["c"] });
+  const carlotta = upgrade({ echoIds: ["z"] });
+
+  it("says so on both rows: each figure is worked out alone, and an echo goes on one character at a time", () => {
+    const [v, s] = echoRows([verina, shorekeeper]);
+    expect(v!.note).toContain("Shorekeeper's row wants some of the same echoes");
+    expect(s!.note).toContain("Verina's row wants some of the same echoes");
+    expect(s!.note).toContain("one character at a time");
+  });
+
+  it("never promises that saving one frees the other: a saved build takes no echo off anyone", () => {
+    const [v] = echoRows([verina, shorekeeper]);
+    expect(v!.note).not.toMatch(/check again|after saving/i);
+  });
+
+  it("names every rival, and only rows that really overlap", () => {
+    const rows = echoRows([verina, shorekeeper, zhezhi, carlotta]);
+    expect(rows[0]!.note).toContain("Shorekeeper and Zhezhi's rows want");
+    expect(rows[1]!.note).not.toContain("Zhezhi");
+    expect(rows[3]!.note).toBeNull();
+  });
+});
+
+describe("echo rows for a build with empty slots", () => {
+  it("fills the empty slots and swaps the one she wears, instead of 'swap 5 of her 5'", () => {
+    const [row] = echoRows([upgrade({ characterId: "Zhezhi", changed: 5, unworn: 5, empty: 4 })]);
+    expect(row!.todo).toContain("fill Zhezhi's 4 empty slots and swap the one already on with echoes nobody wears");
+    expect(row!.todo).not.toContain("5 echoes");
+  });
+
+  it("only fills when what they wear stays", () => {
+    const [row] = echoRows([upgrade({ characterId: "Zhezhi", changed: 2, unworn: 2, empty: 2 })]);
+    expect(row!.todo).toContain("fill Zhezhi's 2 empty slots with echoes nobody wears");
+    expect(row!.todo).not.toContain("swap");
+  });
+
+  it("counts the echoes already on when only some of them change", () => {
+    const [row] = echoRows([upgrade({ characterId: "Zhezhi", changed: 3, unworn: 3, empty: 1 })]);
+    expect(row!.todo).toContain("fill Zhezhi's 1 empty slot and swap 2 of the 4 already on");
+  });
+
+  it("starts with a capital on a character re-geared alone", () => {
+    const [row] = echoRows([upgrade({ characterId: "Zhezhi", request: { members: ["Zhezhi"] }, team: null, changed: 1, unworn: 1, empty: 1 })]);
+    expect(row!.todo.startsWith("Fill Zhezhi's 1 empty slot with echoes nobody wears")).toBe(true);
+  });
+
+  it("keeps 'swap N of 5' on a full build", () => {
+    const [row] = echoRows([upgrade()]);
+    expect(row!.todo).toContain("swap 3 of Carlotta's 5 echoes for ones nobody wears");
+  });
+});
+
+describe("echo rows with Build my team's take-from-others switch on", () => {
+  it("counts both kinds when some are worn outside the team", () => {
+    const [row] = echoRows([upgrade({ changed: 3, unworn: 2 })]);
+    expect(row!.todo).toContain("2 nobody wears, 1 worn by someone outside the team (they keep wearing it)");
+  });
+
+  it("never says '0 nobody wears'", () => {
+    const [all] = echoRows([upgrade({ changed: 3, unworn: 0 })]);
+    expect(all!.todo).toContain("all 3 worn by someone outside the team (they keep wearing them)");
+    const [one] = echoRows([upgrade({ changed: 1, unworn: 0 })]);
+    expect(one!.todo).toContain("it's worn by someone outside the team (they keep wearing it)");
+    expect(all!.todo + one!.todo).not.toContain("0 nobody");
+  });
+});
+
+describe("the drawer's word on a character the check has no row for", () => {
+  const check = { items: [] as EchoUpgrade[], best: ["Zhezhi"], skipped: [{ characterId: "Verina", reason: "Not enough echoes." }], errors: [] as string[], cancelled: false };
+  const line = (id: string, over: Partial<typeof check> = {}, state: "idle" | "running" | "done" | "error" = "done") => drawerOwnOf(id, [], { ...check, ...over }, state).echoLine;
+
+  it("says who already wears the best, and why a build could not be made", () => {
+    expect(line("Zhezhi")).toContain("already wears the best");
+    expect(line("Verina")).toContain("could not re-gear Verina: Not enough echoes.");
+  });
+
+  it("says the check stopped before them, not that they have no rotation", () => {
+    const text = line("Carlotta", { cancelled: true });
+    expect(text).toContain("stopped before it reached Carlotta");
+    expect(text).not.toContain("best rotation");
+  });
+
+  it("gives the engine's error for a character it failed on, not 'no best rotation'", () => {
+    const text = line("Carlotta", { errors: ["Carlotta: the worker died"] });
+    expect(text).toContain("the worker died");
+    expect(text).not.toContain("best rotation");
+  });
+
+  it("keeps the not-checked line for a character the run really left out", () => {
+    expect(line("Carlotta")).toContain("no best rotation scored yet");
+  });
+
+  it("says nothing of the check on a character who has a row", () => {
+    const rows = echoRows([upgrade()]);
+    expect(drawerOwnOf("Carlotta", rows, check, "done").echoLine).toBeNull();
   });
 });
