@@ -205,6 +205,14 @@ export function fuzzyScore(query: string, text: string): number {
 const GROUP_WEIGHT: Record<PaletteGroup, number> = { context: 0.07, page: 0.06, action: 0.05, theme: 0.045, command: 0.04, character: 0.03, team: 0.02, ask: 0 };
 /** groups shown in full past `perGroup`: the theme list is short, and "theme" should list every one */
 const GROUP_CAP: Partial<Record<PaletteGroup, number>> = { theme: 16 };
+/** Theme rows are nine rows of everyday words ("theme", "dark", "colours"), so they answer only to the start of a word:
+ *  two letters of the title ("pa", "gru"), three of a keyword ("dar", "col", "the"). Scored like other rows, their
+ *  subtitles and loose letters put all nine under "da" on the way to Danjin, or "ran" (in "appearance") under Rank. */
+function themeRowAnswers(q: string, item: PaletteItem): boolean {
+  const letters = normalize(q).length;
+  const wordStart = (text: string): boolean => fuzzyScore(q, text) >= 0.7;
+  return (letters >= 2 && wordStart(item.title)) || (letters >= 3 && (item.keywords ?? []).some(wordStart));
+}
 const QUESTION = /\?\s*$|^(what|why|how|who|which|should|is|are|can|does|do|when|where|explain|compare)\b/i;
 
 export const looksLikeQuestion = (text: string): boolean => QUESTION.test(text.trim());
@@ -230,6 +238,7 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
   }
   const scored = items
     .map((item) => {
+      if (item.group === "theme" && !themeRowAnswers(q, item)) return { item, best: 0, score: 0 };
       const title = fuzzyScore(q, item.title);
       const sub = item.subtitle ? fuzzyScore(q, item.subtitle) * 0.6 : 0;
       const kw = Math.max(0, ...(item.keywords ?? []).map((k) => fuzzyScore(q, k) * 0.85));

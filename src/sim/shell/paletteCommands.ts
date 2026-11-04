@@ -188,7 +188,8 @@ export function commandItems(s: PaletteSources, displayName: NameOf): PaletteIte
 export const themeTitle = (name: string): string => (name ? name[0]!.toUpperCase() + name.slice(1) : name);
 
 /** One "Themes" row per theme, in the list's own order (useTheme's `THEME_OPTIONS`, handed in), the one in use marked
- *  "Now". Found by typing ("gruvbox", "nord", "theme", "light"); the empty palette keeps its one light / dark toggle. */
+ *  "Now". Found by typing the start of a word ("gruvbox", "nord", "themes", "light": rankPalette's `themeRowAnswers`);
+ *  the empty palette keeps its one light / dark toggle. */
 export function themeItems(s: Pick<PaletteSources, "themes" | "theme">): PaletteItem[] {
   return (s.themes ?? []).map((t, i) => {
     const current = t.name === s.theme;
@@ -199,7 +200,7 @@ export function themeItems(s: Pick<PaletteSources, "themes" | "theme">): Palette
       order: i,
       title: `${themeTitle(t.name)} theme`,
       subtitle: current ? `In use now · ${look}` : `Switch the app's colours · ${look}`,
-      keywords: [t.name, "theme", "colours", "colors", "appearance", t.style],
+      keywords: [t.name, "theme", "themes", "colours", "colors", "appearance", t.style],
       icon: ICON.palette,
       badge: current ? "Now" : undefined,
       queryOnly: true,

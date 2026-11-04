@@ -262,4 +262,20 @@ describe("palette theme rows", () => {
     const light = rankPalette("light", items, { ask: false }).filter((i) => i.group === "theme").map((i) => i.key);
     expect(light).toEqual(expect.arrayContaining(["theme:light", "theme:pastel", "theme:nord"]));
   });
+
+  it("answers to the start of a word, so a short search on the way to a name or page is not buried under nine rows", () => {
+    const items = withThemes("dark");
+    const rows = (q: string) => rankPalette(q, items, { ask: false }).filter((i) => i.group === "theme").map((i) => i.key);
+    // on the way to Danjin / Lingyang: its own name's row at most
+    expect(rows("da")).toEqual(["theme:dark"]);
+    expect(rows("li")).toEqual(["theme:light"]);
+    // one letter, a fragment inside a word ("appearance", "theme"), or a word of the subtitle: none
+    for (const q of ["d", "n", "co", "ba", "ran", "pe", "he", "te", "text", "background", "switch"]) expect(rows(q), q).toEqual([]);
+    // what the rows are for still finds them
+    expect(rows("light")).toEqual(["theme:light", "theme:pastel", "theme:nord"]);
+    expect(rows("dark")).toEqual(["theme:dark", "theme:black", "theme:synthwave", "theme:night", "theme:dracula", "theme:gruvbox"]);
+    for (const q of ["theme", "themes", "colours", "colors", "appearance"]) expect(rows(q), q).toHaveLength(THEME_OPTIONS.length);
+    expect(rows("dark theme")[0]).toBe("theme:dark");
+    expect(rows("gru")).toEqual(["theme:gruvbox"]);
+  });
 });
