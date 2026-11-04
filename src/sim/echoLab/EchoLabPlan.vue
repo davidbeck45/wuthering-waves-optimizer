@@ -11,7 +11,7 @@
       </EchoLabPopover>
     </div>
     <p class="max-w-3xl text-sm opacity-70" data-test-echo-lab-plan-intro>
-      Type how many Tuners and how much Echo EXP you have. The plan puts every echo worth finishing in one list, ordered by the damage each Tuner adds: the most damage per Tuner first, whether the echo is on a character now or spare in your bag, until your Tuners or EXP run out.
+      Type how many Tuners and how much Echo EXP you have. The plan lists every echo worth finishing in one order, on a character or spare in your bag: the most damage per Tuner first, until your Tuners or EXP run out.
     </p>
 
     <!-- the budget: what the player has, and (optional) what they earn a week -->

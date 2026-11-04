@@ -922,8 +922,8 @@ Decisions (made without David, 2026-10-31):
   build orders one list by expected damage per rotation per Tuner. Kept, because that order *is* the brief's own goal
   ("most expected damage per Tuner"): a worn echo whose rolls add little would otherwise take Tuners from a spare one
   that adds more. A spare echo already counts only what it adds over the echo in its slot (`expectedUpside`), so it is
-  never put first for a gain its owner would not see. The page's intro line says the order in plain words ("ordered by
-  the damage each Tuner adds … whether the echo is on a character now or spare in your bag … until your Tuners or EXP run out": a step needs both, so either one can stop the plan); nothing else changed.
+  never put first for a gain its owner would not see. The page's intro line says the order in plain words ("every echo worth finishing in one order, on a character or spare in your bag: the most
+  damage per Tuner first, until your Tuners or EXP run out": a step needs both, so either one can stop the plan); nothing else changed.
 
 Measured on David's export (258 echoes, 23 five-echo builds; only 2 unfinished echoes, which is why the fresh-echo
 list exists): the `tunerPlan` job 0.87 s in Node (536 engine runs, on the pass's warm session), 1.07 s in headless
