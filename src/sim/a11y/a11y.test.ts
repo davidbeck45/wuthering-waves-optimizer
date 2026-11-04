@@ -53,6 +53,21 @@ describe("contrast arithmetic", () => {
   });
 });
 
+describe("a dim that is the information", () => {
+  it("keeps ToA's unearned crest stars off the text floor: at 0.8 in dark, 1 of 3 crests read as three stars", () => {
+    const floored = new Set([...css.matchAll(/\.opacity-(\d+)\b/g)].map((m) => m[1]!));
+    expect(floored.has("25") && floored.has("30"), "the utilities a11y.css floors").toBe(true);
+    for (const file of ["../endgame/ToaFloorCard.vue", "../endgame/ToaPlan.vue"]) {
+      const template = readFileSync(resolve(here, file), "utf8").replace(/<!--[\s\S]*?-->/g, "");
+      const stars = template.split("\n").filter((line) => line.includes("★") && line.includes("opacity-"));
+      expect(stars.length, `${file}: the dimmed star line`).toBeGreaterThan(0);
+      for (const line of stars) {
+        for (const m of line.matchAll(/\bopacity-(\d+)\b/g)) expect(floored.has(m[1]!), `${file}: ${line.trim()}`).toBe(false);
+      }
+    }
+  });
+});
+
 describe("a11y.css theme tokens", () => {
   it("has a block for every theme the app offers", () => {
     for (const theme of THEME_OPTIONS) expect(tokensOf(theme)["--wt-muted"], theme).toBeTruthy();

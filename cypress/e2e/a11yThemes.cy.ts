@@ -123,8 +123,16 @@ describe("contrast, focus and keyboard", () => {
   it("keeps ToA's unearned crest stars dim: the dim is the count, so the text floor stays off them", () => {
     cy.viewport(412, 915);
     cy.visit("/endgame", seed());
-    cy.get('[data-test-toa-star="unearned"]', ENGINE).first().should(($star) => {
-      const opacity = parseFloat($star[0]!.ownerDocument.defaultView!.getComputedStyle($star[0]!).opacity);
+    cy.get("[data-test-toa-crests]", ENGINE).should("have.length.greaterThan", 0);
+    cy.document().then((doc) => {
+      // which stars go unearned depends on the solve (this fixture earns them all), so this measures the class on a
+      // real crest row; a11y.test.ts pins both templates to it
+      const star = doc.createElement("span");
+      star.className = "opacity-[.25]";
+      star.textContent = "★";
+      doc.querySelector("[data-test-toa-crests]")!.appendChild(star);
+      const opacity = parseFloat(doc.defaultView!.getComputedStyle(star).opacity);
+      star.remove();
       expect(opacity, "an unearned star next to an earned one at 1").to.be.below(0.4);
     });
   });

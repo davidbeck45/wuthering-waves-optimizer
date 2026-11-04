@@ -125,7 +125,7 @@
                 </div>
                 <div class="toa-crests" :class="`toa-crests--c${r.result.crests}`" :title="`${r.result.crests} of 3 crests`" :data-test-toa-crests="r.result.crests">
                   <!-- opacity-[.25], not opacity-25: a11y.css floors the utility for text, and here the dim is the count (★★★ at 1 of 3) -->
-                  <span v-for="n in 3" :key="n" :class="n <= r.result.crests ? '' : 'opacity-[.25]'" :data-test-toa-star="n <= r.result.crests ? 'earned' : 'unearned'">★</span>
+                  <span v-for="n in 3" :key="n" :class="n <= r.result.crests ? '' : 'opacity-[.25]'">★</span>
                 </div>
               </div>
             </div>
