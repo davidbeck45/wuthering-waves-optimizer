@@ -23,7 +23,8 @@ export interface FloorOdds {
   sure: boolean;
   /** not even the clear in 1 run in 100 */
   hopeless: boolean;
-  /** 8 runs in 10 finish between these (s of the clock used), null where the floor isn't down that often */
+  /** 8 runs in 10 finish between these (s of the clock used), null where the floor isn't down that often — at a slow
+   *  pace too, where the sim's 90th percentile lands past the clock */
   range: [number, number] | null;
 }
 
@@ -49,7 +50,7 @@ export function floorOdds(goals: readonly number[], odds: Pick<KillOdds, "q"> | 
     crests,
     sure: clear > SURE && crests.every((c) => c.chance > SURE),
     hopeless: clear < 0.005,
-    range: lo !== null && hi !== null ? [lo * k, hi * k] : null,
+    range: lo !== null && hi !== null && hi * k <= clock ? [lo * k, hi * k] : null,
   };
 }
 

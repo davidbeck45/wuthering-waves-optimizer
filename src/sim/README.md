@@ -3261,9 +3261,10 @@ before. Cost on David's 180 floor-team pairs: ~1.5 s in all, on the main thread 
 
 **At your pace.** The Calibrate tab's pace scales time (your clear ÷ the sim's), so P(kill × pace ≤ t) = P(kill ≤
 t / pace) off the same distribution: the floor card's "At your pace:" line and the plan with "plan at my pace" read it
-that way. On David's account every floor reads > 99 % for all three crests at the sim's speed (kills at 15–38 s against
-crest lines at 120 s and later); the chances bite at a real pace (a clear logged at ×5.6 put Hazard 1's three crests at
-88 %).
+that way. On David's account every floor reads > 99 % for all three crests at the sim's speed, all 180 floor-team pairs
+(the headline teams kill at 15–38 s, the slowest of the 30 candidates at 124 s, against crest lines at 120 s and later;
+Hazard 3 and 4, where the slow kills sit, keep ★★★ open to 2:30); the chances bite at a real pace (a clear logged at
+×5.6 put Hazard 1's three crests at 88 %).
 
 Rules:
 - **Mean = the engine's figure.** Every range keeps the existing average to float precision (tests on the RunLite
@@ -3274,6 +3275,16 @@ Rules:
   in the drawer).
 - **Not modelled:** anything but crits — enemy actions, dodges, invulnerable phases, a player's timing, a missed swap.
   Every hit is assumed to roll its crit on its own; the Vigor plan stays average-based and only reports its chances.
+  The pages say so in the line itself ("crits only, not enemy actions or your timing"), not only in a hover title a
+  phone never shows.
+- **A hit is the engine's own.** wuwa_calc's is a bullet (wuwalab's `hits`: any press with more than one bullet splits,
+  so each lands as its own `state.hits` row); the app's is one entry of the talent string. A kit that folds repeated
+  in-game hits into one bullet rolls them as one, so that hit's spread reads a little wide.
+- **P10 can sit above the average.** A total ruled by one high-chance hit is left-skewed: Mornye's best rotation on
+  David's export is one 92.5 % hit (effective hits 1.05), only 7.5 % of runs land under the average, so "8 runs in 10"
+  starts above it. Likewise the median of a lumpy total is not the mean. Both are right, not a rounding slip.
+- **Never a finish past the clock.** At a slow pace the sim's 90th percentile can land past 5:00: `floorOdds` then gives
+  no range rather than "8 runs in 10 finish in 5:01–5:11" beside "clears in 6 % of runs".
 
 Gates: `spread.test.ts` (one- and two-hit analytic cases, exact vs Monte Carlo, normal vs Monte Carlo, seeds, scaling,
 method choice), `killOdds.test.ts` (a zero margin ~50 % on many hits, monotone CDF, no crit = the average kill, normal vs

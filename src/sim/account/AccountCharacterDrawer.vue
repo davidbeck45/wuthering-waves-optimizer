@@ -44,7 +44,7 @@
       </div>
       <!-- crit luck: the Best DMG above is an average; one run of that rotation crits more or less -->
       <p v-if="rangeLine" class="dr__luck" data-test-account-drawer-range>
-        <b>Crit luck:</b> {{ rangeLine }} <span class="dr__luck-what">(Best DMG, this app's calculator: every hit crits or not on its own)</span>
+        <b>Crit luck:</b> {{ rangeLine }} <span class="dr__luck-what">(Best DMG, this app's calculator: crits only, not enemy actions or your timing)</span>
       </p>
 
       <section v-if="rank?.best" class="dr__section">

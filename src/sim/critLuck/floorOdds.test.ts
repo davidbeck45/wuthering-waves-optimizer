@@ -52,6 +52,17 @@ describe("a floor's crit luck", () => {
     expect(floorOdds(goals, undefined)).toBeNull();
   });
 
+  it("never names a finish past the clock: at a slow pace the 90th percentile outruns 5:00, so there is no range to give", () => {
+    // the kill sits at ~90 s of the sim: ×3.2 finishes inside the clock, ×3.3 clears ~79 % of runs, ×3.4 ~6 %
+    expect(floorOdds(goals, odds, 3.2)!.range![1]).toBeLessThanOrEqual(300);
+    for (const pace of [3.3, 3.4]) {
+      const o = floorOdds(goals, odds, pace)!;
+      expect(o.clear).toBeLessThan(0.9);
+      expect(o.hopeless).toBe(false);
+      expect(o.range).toBeNull();
+    }
+  });
+
   it("a plan's stages: the chance of its planned crest, all of them together, and the crests on average", () => {
     expect(plannedChance(goals, 3, odds, 120 / 90)!).toBeCloseTo(floorOdds(goals, odds, 120 / 90)!.crests[2]!.chance, 12);
     expect(plannedChance(goals, 0, odds)).toBeNull();

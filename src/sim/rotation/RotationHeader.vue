@@ -37,7 +37,7 @@
           <span class="text-sm opacity-70">DPS</span>
         </div>
         <!-- crit luck: the DPS is an average; each hit of a real run crits or doesn't -->
-        <div v-if="rangeLine" class="text-xs leading-snug rv-luck" :title="rangeTitle" data-test-rotation-range><b>Crit luck:</b> {{ rangeLine }}</div>
+        <div v-if="rangeLine" class="text-xs leading-snug rv-luck" :title="rangeTitle" data-test-rotation-dps-range><b>Crit luck:</b> {{ rangeLine }} (crits only, not enemy actions or your timing)</div>
       </div>
       <div class="text-sm opacity-70">
         {{ origin }} · wuwa_calc <span class="font-mono">{{ run.engine.commit }}</span>

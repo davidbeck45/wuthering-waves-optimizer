@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { chancePhrase, chanceText, rangeSentence } from "./format";
+import { KILL_LEVELS } from "./killOdds";
 import {
   critHit,
   damageRange,
@@ -201,10 +202,17 @@ describe("plain words", () => {
   it("a range and a chance", () => {
     expect(rangeSentence({ mean: 8.1e6, p10: 7.6e6, p90: 8.6e6 }, (n) => `${(n / 1e6).toFixed(1)}M`)).toBe("8 runs in 10 land between 7.6M and 8.6M");
     expect(rangeSentence({ mean: 100, p10: 100, p90: 100 }, String)).toBeNull();
+    // a spread big enough to show, but both ends read the same once formatted: "between 1.01M and 1.01M" says nothing
+    expect(rangeSentence({ mean: 1_007_500, p10: 1_005_100, p90: 1_011_000 }, (n) => `${(n / 1e6).toFixed(2)}M`)).toBeNull();
     expect(chanceText(0.004)).toBe("< 1 %");
     expect(chanceText(0.62)).toBe("62 %");
     expect(chanceText(0.9996)).toBe("> 99 %");
     expect(chanceText(null)).toBe("—");
+    // 0.995 is a kept level (`chanceBy` returns it exactly) and rounds to 100: never a false 100 %
+    expect(KILL_LEVELS).toContain(0.995);
+    expect(chanceText(0.995)).toBe("> 99 %");
+    expect(chancePhrase(0.995)).toBe("in more than 99 runs in 100");
+    expect(chanceText(0.9949)).toBe("99 %");
     expect(chancePhrase(0.5)).toBe("in 50 % of runs");
     expect(chancePhrase(1)).toBe("in more than 99 runs in 100");
   });

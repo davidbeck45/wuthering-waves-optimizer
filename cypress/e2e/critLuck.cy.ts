@@ -119,7 +119,7 @@ describe("Crit luck on the fight pages", () => {
     cy.viewport(412, 915);
     cy.visit("/rotation#team=t404", seed()); // Shorekeeper · Lynae · Iuno, a stock wuwa_calc team
     cy.get("[data-test-rotation-dps]", { timeout: 90000 }).should("be.visible");
-    cy.get("[data-test-rotation-range]")
+    cy.get("[data-test-rotation-dps-range]")
       .should("be.visible")
       .invoke("text")
       .should("match", /Crit luck: 8 runs in 10 land between [\d,]+ and [\d,]+ DPS/)
@@ -131,6 +131,6 @@ describe("Crit luck on the fight pages", () => {
           expect(hi).to.be.greaterThan(mean);
         });
       });
-    expectInside("[data-test-rotation-range]", "rotation DPS range at 412 px / 130 %");
+    expectInside("[data-test-rotation-dps-range]", "rotation DPS range at 412 px / 130 %");
   });
 });
