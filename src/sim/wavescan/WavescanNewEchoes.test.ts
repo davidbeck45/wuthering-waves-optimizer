@@ -185,6 +185,31 @@ describe("WavescanNewEchoes", () => {
     expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import is folded away: it matches echo names exactly, so it would add 4 echoes you already own as second copies.");
   });
 
+  // Ryan's paste clears and sets `mapped` in one tick, so this card stays mounted (a file read remounts it): what it
+  // remembers about the last scan must go with that scan, or it says "nothing new to add" over a scan with new echoes.
+  it("forgets the last add when a second scan is pasted, so the full import is not folded with a reason that is no longer true", async () => {
+    useInventoryStore().hardSetState({ echoes: [], equipped: {} } as never);
+    const { container, findByText } = render(SettingsWavescan);
+    const paste = async (echoes: unknown[]) => {
+      await fireEvent.update(container.querySelector("[data-test-wavescan-paste]")!, JSON.stringify({ ...fixture.scan, echoes }));
+      await fireEvent.click(container.querySelector("[data-test-wavescan-paste-button]")!);
+    };
+    const half = Math.floor(fixture.scan.echoes.length / 2);
+    await paste(fixture.scan.echoes.slice(0, half));
+    await findByText(/^Add \d+ echoes to my inventory$/);
+    await fireEvent.click(container.querySelector("[data-test-wavescan-new-only-add]")!);
+    await answerConfirm(true);
+    await findByText(/^Added \d+ echoes\.$/);
+    const card = () => container.querySelector("[data-test-wavescan-new-only]")!;
+    expect(card().hasAttribute("data-wt-fold-upstream")).toBe(true);
+
+    await paste(fixture.scan.echoes.slice(half));
+    await findByText(/^Add \d+ echoes to my inventory$/);
+    expect(container.querySelector("[data-test-wavescan-new-only-done]")).toBeNull();
+    expect(card().hasAttribute("data-wt-fold-upstream")).toBe(false);
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")).toBeNull();
+  }, 60_000);
+
   it("is offered inside Ryan's Wavescan panel once a file is read", async () => {
     seedInventory();
     const { container, findByText } = render(SettingsWavescan);

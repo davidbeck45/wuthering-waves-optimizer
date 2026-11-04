@@ -99,7 +99,7 @@
 // Ryan's SettingsWavescan.vue (one async-component line) once his panel has read and validated the file; it gets his
 // mapped rows and saves the new ones through the inventory store's `saveEcho`, the same call his import makes. It never
 // touches who wears what, and never deletes.
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useInventoryStore } from "../../stores/inventory";
 import { useToast } from "../../composables/useToast";
 import { useConfirm } from "../../composables/useConfirm";
@@ -193,6 +193,15 @@ const foldReason = computed(() => {
   const added = `${props.mapped.skipped.length ? "Every echo that could be read" : "Every echo in this scan"} is in your inventory now`;
   return open ? `${added}: the full import below has nothing new to add.` : `${added}, so the full import is folded away: it has nothing new to add.`;
 });
+// Ryan's "Read pasted data" swaps the scan in one tick, so this card stays mounted (a file read remounts it): the last
+// add belongs to the last scan, or "Added N" and "nothing new to add" stand over a scan with new echoes in it
+watch(
+  () => props.mapped,
+  () => {
+    addedCount.value = null;
+    upstreamShown.value = false;
+  },
+);
 
 async function addNew() {
   if (!plan.value.toAdd.length || isAdding.value) return;
