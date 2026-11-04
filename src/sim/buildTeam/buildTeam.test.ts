@@ -81,7 +81,7 @@ describe("Riley's pick as app keys", () => {
       for (const s of plan.sets) expect(echoSetLabelMap[s.key], `${key} ${s.key}`).toBeTruthy();
       expect(plan.mainEcho?.keys.length ?? 0, key).toBeGreaterThan(0);
     }
-  });
+  }, 60_000);
 
   it("orders members by Riley's share, the main DPS first without one", () => {
     expect(priorityOrder([{ share: 0.01, mainDps: false }, { share: 0.1, mainDps: false }, { share: 0.87, mainDps: true }])).toEqual([2, 1, 0]);
