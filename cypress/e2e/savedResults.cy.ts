@@ -357,6 +357,21 @@ describe("saved results", () => {
     savedCount("ranking", 1).should("be.gte", 1);
   });
 
+  it("/weapons: values on a ranking that lost a kit stay in this tab, and the next tab scores them", () => {
+    cy.intercept(KIT, { forceNetworkError: true });
+    cy.visit("/weapons", seedLab);
+    cy.get("[data-test-weapons-row]", { timeout: 120000 }).should("exist");
+    cy.get("[data-test-weapons-progress]", { timeout: 120000 }).should("not.exist");
+    cy.get('[data-test-weapons-row="Galbrena"]').should("not.exist");
+    savedCount("weaponValue", 1, 2500).should("eq", 0);
+
+    cy.intercept(KIT, (req) => req.continue()); // the signal is back
+    newTab();
+    cy.get('[data-test-weapons-row="Galbrena"]', { timeout: 120000 }).should("exist");
+    cy.get("[data-test-weapons-progress]", { timeout: 120000 }).should("not.exist");
+    savedCount("weaponValue", 1).should("be.gte", 1);
+  });
+
   it("/echo-lab: a pass that lost a kit stays in this tab; one on whole data is saved", () => {
     cy.viewport(1440, 900);
     cy.intercept(KIT, { forceNetworkError: true });

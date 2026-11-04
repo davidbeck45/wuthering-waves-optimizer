@@ -14,12 +14,21 @@ const h = vi.hoisted(() => ({
   ready: vi.fn(async () => undefined),
   /** the browser's saved copy */
   stored: null as Record<string, unknown> | null,
+  /** the inventory: another list is another account state */
+  echoes: [{ echoId: "e1" }],
   write: vi.fn(async (_fingerprint: string, _value: Record<string, unknown>) => true),
   run: vi.fn(),
 }));
 
 vi.mock("../../stores/character", () => ({ useCharacterStore: () => ({ characters: { Cartethyia: { weapon: { id: "w" } } } }) }));
-vi.mock("../../stores/inventory", () => ({ useInventoryStore: () => ({ echoes: [{ echoId: "e1" }], equipped: {} }) }));
+vi.mock("../../stores/inventory", () => ({
+  useInventoryStore: () => ({
+    get echoes() {
+      return h.echoes;
+    },
+    equipped: {},
+  }),
+}));
 vi.mock("../../stores/teamRotations", () => ({ useTeamRotationsStore: () => ({ teams: [] }) }));
 vi.mock("./echoLabClient", () => ({ getEchoLabClient: () => ({ run: h.run }), labAccountOf: (source: unknown) => source }));
 vi.mock("../energy/useEnergyNeeds", () => ({
@@ -52,6 +61,7 @@ beforeEach(() => {
   h.floors.set("Cartethyia", { need: 130 });
   h.busy = false;
   h.teams = [];
+  h.echoes = [{ echoId: "e1" }];
   h.stored = null;
   h.ready.mockClear();
   h.write.mockClear();
@@ -168,6 +178,23 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await lab.runBenchmarks();
     expect(lab.benchmarks.value).toEqual(FRESH); // this tab scored on what it read
     expect(h.write).not.toHaveBeenCalled();
+  });
+
+  it("short ER needs answer for their own account state: the next state's saved copy is left as it was", async () => {
+    h.floors.clear();
+    h.busy = true;
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks(); // short: this tab only
+    h.write.mockClear();
+
+    h.echoes = [{ echoId: "e2" }]; // an edit, and that state has a whole copy saved
+    h.stored = savedCopy("Cartethyia:130");
+    await lab.refresh();
+    expect(lab.benchmarks.value).toEqual(OLD);
+    const done = await lab.runRollRatings([{ echoId: "e2", characterId: "Cartethyia", slot: 0 }] as never, new AbortController().signal);
+    expect(done).toBe(true);
+    expect(h.write).not.toHaveBeenCalled(); // a roll-chip write must not blank those benchmarks
   });
 
   it("a pass that lost a roster character's kit is not saved; a skip that repeats on every run is", async () => {
