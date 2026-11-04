@@ -173,6 +173,9 @@ export async function scoreBuild(session: LabSession, lab: LabCharacter, charact
 
 export const relGain = (base: number, value: number): number => (base > 0 ? value / base - 1 : 0);
 
+/** Why a character whose kit will not load is skipped: an id the app lacks, or a roster kit lost to a network failure. */
+export const NOT_IN_APP = "not a character this app knows";
+
 /**
  * Prepares one character: their best rotation (every saved, curated and wuwa_calc rotation scored on the
  * build, the highest average wins — /my-rankings' pick) and their slots. Null when the character can't be
@@ -192,7 +195,7 @@ export async function prepareCharacter(session: LabSession, id: string, pace?: P
   try {
     name = ((await getCharByName(id)) as any)?.basic?.name ?? id;
   } catch {
-    return skip("not a character this app knows");
+    return skip(NOT_IN_APP);
   }
   let best: { rotation: CharacterRotationInput; name: string; source: RotationSource; avg: number } | null = null;
   for (const candidate of await rotationCandidates(id, data)) {

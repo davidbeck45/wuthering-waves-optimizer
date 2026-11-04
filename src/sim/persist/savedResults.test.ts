@@ -10,7 +10,7 @@ import { resolve } from "node:path";
 import { INVEST_CACHE_KEY } from "../account/investCache";
 import { RANKING_CACHE_KEY } from "../myRankings/rankingCache";
 import { SELECTOR_CACHE_KEY, WEAPON_VALUE_CACHE_KEY } from "../weaponValue/valueCache";
-import { TAB_COPY_KEYS, appBuildId, createSavedResults, onSavedResultsCleared, savedAgo, savedResults, savedSlot } from "./savedResults";
+import { TAB_COPY_KEYS, appBuildId, createSavedResults, onSavedResultsCleared, savedAgo, savedResults, savedSlot, watchLostChunks } from "./savedResults";
 
 const isRows = (v: unknown): boolean => Array.isArray((v as { rows?: unknown })?.rows);
 const flush = () => new Promise((r) => setTimeout(r, 0));
@@ -289,6 +289,29 @@ describe("saved results: falls back silently", () => {
   it("the app's own instance under Node keeps nothing", async () => {
     expect(await savedResults.available()).toBe(false);
     expect(await savedResults.read("ranking", 1, "fp", isRows)).toBeNull();
+  });
+});
+
+describe("saved results: a page load that lost a lazy chunk saves nothing", () => {
+  it("refuses the write and keeps what is already saved readable", async () => {
+    const store = memoryResultStore();
+    let lost = false;
+    const saved = createSavedResults({ store, build: "b1", chunkLost: () => lost });
+    expect(await saved.write("weaponValue", 1, "fp", { rows: ["whole"] })).toBe(true);
+    lost = true;
+    expect(await saved.write("weaponValue", 1, "fp", { rows: ["bare hands"] })).toBe(false);
+    expect(await saved.write("weaponValue", 1, "fp-new", { rows: ["bare hands"] })).toBe(false);
+    expect((await saved.read("weaponValue", 1, "fp", isRows))?.value).toEqual({ rows: ["whole"] });
+    expect(store.records.size).toBe(1);
+  });
+
+  it("listens for Vite's announcement, which is the only sign: the engine's loaders swallow the failure", () => {
+    const listeners = new Map<string, () => void>();
+    const lost = watchLostChunks({ addEventListener: (type: string, fn: () => void) => void listeners.set(type, fn) });
+    expect(lost()).toBe(false);
+    listeners.get("vite:preloadError")?.();
+    expect(lost()).toBe(true);
+    expect(watchLostChunks(null)()).toBe(false); // no window (Node, a worker)
   });
 });
 

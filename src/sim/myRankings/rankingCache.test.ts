@@ -1,9 +1,10 @@
 // Wuthering Tools+: the /my-rankings cache must never serve numbers for data that changed — the old
 // fingerprint (JSON lengths + echo count) kept the old ranking after an echo substat edit.
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import account from "./__fixtures__/cartethyiaAccount.json";
 import { clearRankingMemory, cyrb53, RANKING_CACHE_KEY, rankingFingerprint, rankingInFlight, readCachedRanking, sharedRanking, stableStringify, writeCachedRanking } from "./rankingCache";
 import type { RankProgressItem, RosterRanking } from "./rankRoster";
+import { savedResults } from "../persist/savedResults";
 
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 const inputs = (over: Partial<Parameters<typeof rankingFingerprint>[0]> = {}) => ({
@@ -204,5 +205,26 @@ describe("shared ranking run", () => {
     two.finish(ranking("B"));
     await b.promise;
     expect(readCachedRanking("fp-a", storage)).toBeNull();
+  });
+});
+
+describe("ranking cache and the saved results", () => {
+  const ranking = (over: Partial<RosterRanking> = {}): RosterRanking => ({ enemy: {} as RosterRanking["enemy"], characters: [], teams: [], teamsSkipped: 0, computedAt: "2026-11-04T00:00:00.000Z", ...over });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    clearRankingMemory();
+  });
+
+  it("saves a whole ranking, but keeps one that did not fully score to this tab: a new tab must score it again", () => {
+    const write = vi.spyOn(savedResults, "write").mockResolvedValue(true);
+    const storage = fakeStorage();
+    writeCachedRanking("fp-whole", ranking(), storage);
+    expect(write).toHaveBeenCalledTimes(1);
+    write.mockClear();
+    writeCachedRanking("fp-holes", ranking({ incomplete: true }), storage);
+    expect(write).not.toHaveBeenCalled();
+    expect(readCachedRanking("fp-holes", storage)?.incomplete).toBe(true); // the tab still shows what it scored
+    clearRankingMemory();
+    expect(readCachedRanking("fp-holes", storage)?.incomplete).toBe(true);
   });
 });

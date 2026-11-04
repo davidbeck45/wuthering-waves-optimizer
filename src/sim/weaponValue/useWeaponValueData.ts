@@ -156,7 +156,7 @@ export function useWeaponValueData() {
       });
       if (gen !== generation || out.cancelled) return;
       result.value = out;
-      valueCache.write(key, out);
+      valueCache.write(key, out, undefined, !base.incomplete && !out.errors.length); // what did not fully score stays in this tab
       status.value = { ...idle(), state: "done", computedAt: out.computedAt, done: out.rows.length, total: out.rows.length, error: out.errors.length ? `${out.errors.length} scoring errors` : null };
     } catch (err) {
       if (gen === generation) status.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };

@@ -39,6 +39,11 @@ export async function erNeedsOf(energy: Pick<EnergyNeeds, "ready" | "floors">, o
   return out;
 }
 
+/** True when the needs `erNeedsOf` just read are whole: every saved team measured, nothing still running. False after
+ *  its timeout or a failed team, when a floor can be missing and a result scored on the needs reads too high. */
+export const erNeedsSettled = (energy: Pick<EnergyNeeds, "busy" | "savedTeams">): boolean =>
+  !energy.busy.value && energy.savedTeams.value.every((t) => t.state?.status === "ok");
+
 /** A short stable key of an `erNeeds` record, for a cache that must change when a need does. */
 export const erNeedsKey = (needs: Record<string, number>): string =>
   Object.keys(needs)

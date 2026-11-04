@@ -2,10 +2,15 @@
 // check's needs as floors, which the account fingerprint doesn't carry, so a lookup that timed out would otherwise be
 // repeated from the saved copy in every new tab. Each `visit()` is a fresh page load: module state starts empty.
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { NOT_IN_APP } from "./core";
 
 const h = vi.hoisted(() => ({
   /** this visit's floors, as the energy check reports them */
   floors: new Map<string, { need: number }>(),
+  /** still measuring when the lookup returned: its 20 s ran out */
+  busy: false,
+  /** the saved teams as the energy check reports them */
+  teams: [] as Array<{ state: { status: string } | null }>,
   ready: vi.fn(async () => undefined),
   /** the browser's saved copy */
   stored: null as Record<string, unknown> | null,
@@ -17,7 +22,9 @@ vi.mock("../../stores/character", () => ({ useCharacterStore: () => ({ character
 vi.mock("../../stores/inventory", () => ({ useInventoryStore: () => ({ echoes: [{ echoId: "e1" }], equipped: {} }) }));
 vi.mock("../../stores/teamRotations", () => ({ useTeamRotationsStore: () => ({ teams: [] }) }));
 vi.mock("./echoLabClient", () => ({ getEchoLabClient: () => ({ run: h.run }), labAccountOf: (source: unknown) => source }));
-vi.mock("../energy/useEnergyNeeds", () => ({ useEnergyNeeds: () => ({ ready: h.ready, floors: { value: h.floors } }) }));
+vi.mock("../energy/useEnergyNeeds", () => ({
+  useEnergyNeeds: () => ({ ready: h.ready, floors: { value: h.floors }, busy: { value: h.busy }, savedTeams: { value: h.teams } }),
+}));
 vi.mock("../persist/savedResults", () => ({
   onSavedResultsCleared: () => () => undefined,
   savedSlot: () => ({
@@ -43,6 +50,8 @@ beforeEach(() => {
   sessionStorage.clear();
   h.floors.clear();
   h.floors.set("Cartethyia", { need: 130 });
+  h.busy = false;
+  h.teams = [];
   h.stored = null;
   h.ready.mockClear();
   h.write.mockClear();
@@ -103,13 +112,17 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
 
   it("a lookup that timed out does not leave its figures for the next tab, whose lookup answers", async () => {
     h.floors.clear(); // the 20 s ran out with nothing measured: no floors at all
+    h.busy = true;
     const first = await visit();
     await first.lab.refresh();
     await first.lab.runBenchmarks();
     expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({});
-    expect(lastWrite()).toMatchObject({ benchErKey: "" });
+    expect(first.lab.benchmarks.value).toEqual(FRESH); // this tab shows what it scored
+    expect(h.write.mock.calls.map(([, value]) => value.benchmarks)).toEqual([null]); // the pass alone went past the tab
+    expect(lastWrite()).toMatchObject({ pass: PASS, benchmarks: null, benchErKey: null });
 
     h.stored = lastWrite();
+    h.busy = false;
     h.floors.set("Cartethyia", { need: 130 });
     h.run.mockClear();
     const second = await visit();
@@ -117,6 +130,59 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await second.lab.runBenchmarks();
     expect(benchmarkJobs()).toHaveLength(1);
     expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({ Cartethyia: 130 });
+    expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
+  });
+
+  it("a copy a timed-out lookup did save (before that stopped, or after a reload) still answers to the next tab's key", async () => {
+    h.stored = savedCopy("");
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks();
+    expect(benchmarkJobs()).toHaveLength(1);
+    expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({ Cartethyia: 130 });
+  });
+
+  it("a team that failed leaves the benchmarks out of the saved copy, whatever floors the others gave", async () => {
+    h.teams = [{ state: { status: "ok" } }, { state: { status: "error" } }];
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks();
+    expect(lab.benchmarks.value).toEqual(FRESH);
+    expect(lastWrite()).toMatchObject({ benchmarks: null, benchErKey: null });
+  });
+
+  it("a good saved copy outlives a visit whose own lookup timed out: nothing short replaces it", async () => {
+    h.stored = savedCopy("Cartethyia:130");
+    h.floors.clear();
+    h.busy = true;
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks();
+    expect(lab.benchmarks.value).toEqual(FRESH); // this tab scored on what it read
+    expect(h.write).not.toHaveBeenCalled();
+  });
+
+  it("a pass that lost a roster character's kit is not saved; a skip that repeats on every run is", async () => {
+    const skipped = (id: string, reason: string) => ({ bestOwner: { ...PASS.bestOwner, skipped: [{ id, reason }] } });
+    const passOf = (result: unknown) => h.run.mockImplementation(async () => result);
+
+    passOf(skipped("Cartethyia", NOT_IN_APP));
+    const lost = await visit();
+    await lost.lab.refresh();
+    expect(lost.lab.pass.value).toMatchObject({ bestOwner: { skipped: [{ id: "Cartethyia" }] } }); // this tab shows it
+    expect(h.write).not.toHaveBeenCalled();
+
+    passOf(skipped("NotAnAppCharacter", NOT_IN_APP)); // an id the app lacks fails every time, so it says nothing
+    sessionStorage.clear();
+    const unknown = await visit();
+    await unknown.lab.refresh();
+    expect(h.write).toHaveBeenCalledTimes(1);
+
+    passOf(skipped("Cartethyia", "needs five echoes"));
+    sessionStorage.clear();
+    const real = await visit();
+    await real.lab.refresh();
+    expect(h.write).toHaveBeenCalledTimes(2);
   });
 
   it("an account nothing gates keeps its copy: the empty key is a key", async () => {

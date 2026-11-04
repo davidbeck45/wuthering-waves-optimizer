@@ -95,10 +95,10 @@ export function readCachedRanking(fingerprint: string, storage: StorageLike | nu
 
 /** Keep `ranking` as the result for `fingerprint`; false when sessionStorage refused it (memory still holds it).
  *  It is saved in this browser too (in the background) unless `persist` is false — a ranking that just came out
- *  of the saved results. */
+ *  of the saved results — or it is `incomplete`: this tab shows it, the next one scores again. */
 export function writeCachedRanking(fingerprint: string, ranking: RosterRanking, storage: StorageLike | null = sessionStore(), persist = true): boolean {
   memory = { fingerprint, ranking };
-  if (persist) void savedRankings.write(fingerprint, ranking);
+  if (persist && !ranking.incomplete) void savedRankings.write(fingerprint, ranking);
   if (!storage) return false;
   try {
     storage.setItem(RANKING_CACHE_KEY, JSON.stringify({ fingerprint, savedAt: new Date().toISOString(), ranking }));

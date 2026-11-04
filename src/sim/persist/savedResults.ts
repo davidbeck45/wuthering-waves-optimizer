@@ -10,7 +10,9 @@
 // A miss, a mismatched build or schema, a torn record, unparseable JSON or a value its cache rejects reads as
 // null (and the record is dropped). Records of other builds go on the next write; past SAVED_RESULTS_CAP (about
 // 20 MB of JSON) the least recently used go. No IndexedDB (private windows in some browsers), a refused open, a
-// quota error or a slow answer (READ_TIMEOUT_MS) all fall back to today's behaviour: the page computes.
+// quota error or a slow answer (READ_TIMEOUT_MS) all fall back to today's behaviour: the page computes. Only what fully
+// scored may be saved, because a saved result repeats until the data changes: a page load that lost a lazy chunk writes
+// nothing (`watchLostChunks`), and the page caches keep their own incomplete results out.
 import { version as APP_VERSION } from "../../../package.json";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 import { idbResultStore, type ResultStore, type SavedMeta } from "./resultStore";
@@ -37,6 +39,8 @@ export function appBuildId(): string {
 export type Validator = (value: unknown) => boolean;
 /** an eviction budget: bytes, or bytes as a function of what is kept now */
 type Budget = number | ((total: number) => number);
+/** the part of `window` that `watchLostChunks` listens on */
+type EventHost = { addEventListener(type: string, listener: () => void): void };
 /* eslint-enable no-unused-vars */
 
 export interface Saved<T> {
@@ -73,6 +77,8 @@ export interface SavedResultsOptions {
   readTimeoutMs?: number;
   /** where this tab's copies live (sessionStorage by default) */
   tabStorage?: KeyStorage | null;
+  /** true once this page load lost a lazy chunk (`watchLostChunks`): every write is refused from then on */
+  chunkLost?: () => boolean;
 }
 /* eslint-enable no-unused-vars */
 
@@ -92,6 +98,17 @@ function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
       },
     );
   });
+}
+
+/** Whether this page load lost a lazy chunk. The engine's loaders swallow that failure: a weapon that will not load
+ *  scores as no weapon at all, a kit as an unknown character, with no error, so a run finishes with numbers that look
+ *  fine. Vite's `vite:preloadError` on window is the one sign. perf/chunkReload.ts reloads on it, but stands aside
+ *  offline (a phone losing its signal mid-run), which is exactly when this matters. The tab shows what it scored as
+ *  before; it just is not kept. Workers have no such event: Echo Lab has its own check (useEchoLab `savedCopyOf`). */
+export function watchLostChunks(host: EventHost | null = typeof window === "undefined" ? null : window): () => boolean {
+  let lost = false;
+  host?.addEventListener("vite:preloadError", () => (lost = true));
+  return () => lost;
 }
 
 const clearHooks = new Set<() => void>();
@@ -128,6 +145,7 @@ export function createSavedResults(options: SavedResultsOptions): SavedResults {
   const cap = options.capBytes ?? SAVED_RESULTS_CAP;
   const now = options.now ?? Date.now;
   const timeout = options.readTimeoutMs ?? READ_TIMEOUT_MS;
+  const chunkLost = options.chunkLost ?? (() => false);
   const storeOf = (): ResultStore | null => {
     try {
       return typeof options.store === "function" ? options.store() : options.store;
@@ -203,7 +221,7 @@ export function createSavedResults(options: SavedResultsOptions): SavedResults {
     write(cache, schema, fingerprint, value) {
       return serial(async () => {
         const store = storeOf();
-        if (!store || !fingerprint || value == null) return false;
+        if (!store || !fingerprint || value == null || chunkLost()) return false;
         // a result is saved right after it is computed: let the page paint it before the JSON is built
         await new Promise((resolve) => setTimeout(resolve, 0));
         let text: string | undefined;
@@ -294,7 +312,7 @@ const defaultStore = (): ResultStore | null => {
 };
 
 /** The app's saved results (IndexedDB; nothing under Node, where every read misses and every write is a no-op). */
-export const savedResults: SavedResults = createSavedResults({ store: defaultStore });
+export const savedResults: SavedResults = createSavedResults({ store: defaultStore, chunkLost: watchLostChunks() });
 
 /* eslint-disable no-unused-vars -- the parameters of interface methods */
 /** One page cache's view of the saved results: its name and schema version bound, and what it accepts back. */

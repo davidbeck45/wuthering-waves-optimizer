@@ -24,8 +24,8 @@ const sessionStore = (): StorageLike | null => {
 /* eslint-disable no-unused-vars -- the parameters of method and function types */
 export interface ValueCache<T> {
   read(key: string, storage?: StorageLike | null): T | null;
-  /** false when sessionStorage refused it (module memory still holds it) */
-  write(key: string, value: T, storage?: StorageLike | null): boolean;
+  /** false when sessionStorage refused it (module memory still holds it); `persist` false keeps it to this tab */
+  write(key: string, value: T, storage?: StorageLike | null, persist?: boolean): boolean;
   /** the value this browser saved for `key` and this app build (null on a miss, or for a cache without a `saved`
    *  name); a hit becomes this tab's value too */
   readSaved(key: string, storage?: StorageLike | null): Promise<Saved<T> | null>;
@@ -81,8 +81,8 @@ export function createValueCache<T>(storageKey: string, version: number, isValid
         return null;
       }
     },
-    write(key, value, storage = sessionStore()) {
-      if (slot) void slot.write(key, value);
+    write(key, value, storage = sessionStore(), persist = true) {
+      if (slot && persist) void slot.write(key, value);
       return keep(key, value, storage);
     },
     async readSaved(key, storage = sessionStore()) {

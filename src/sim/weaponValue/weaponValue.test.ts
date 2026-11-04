@@ -1,7 +1,7 @@
 // Wuthering Tools+: /weapons on a real exported build — the Cartethyia fixture (S2, Defier's Thorn R1, a full build) —
 // with two armed teammates synthesised around her (Ciaccona on the 4★ Cadenza, Chisa on her Kumokiri), so a wuwa_calc
 // team preset is fieldable and a support holds something other than her team-buff signature (Woodland Aria).
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import account from "../myRankings/__fixtures__/cartethyiaAccount.json";
 import { RANKING_ENEMY, rankRoster, scoreRotation, scoreTeamCandidate, teamCandidatesOf, type RosterRanking } from "../myRankings/rankRoster";
 import { calcCharacterRotationDamage } from "../../calculator/characterRotation";
@@ -299,5 +299,18 @@ describe("weapon selector pools", () => {
     expect(live.read("fp", null)).toBeNull();
     expect(disposed.read("fp", null)).toEqual({ n: 2 });
     live.dispose();
+  });
+
+  it("keeps a value out of the saved results when told to: this tab still has it", () => {
+    const write = vi.spyOn(savedResults, "write").mockResolvedValue(true);
+    const cache = createValueCache<{ n: number }>("wtplus:test:whole", 1, () => true, "testCache");
+    cache.write("whole", { n: 1 }, null);
+    expect(write).toHaveBeenCalledTimes(1);
+    write.mockClear();
+    cache.write("holes", { n: 2 }, null, false);
+    expect(write).not.toHaveBeenCalled();
+    expect(cache.read("holes", null)).toEqual({ n: 2 });
+    cache.dispose();
+    write.mockRestore();
   });
 });

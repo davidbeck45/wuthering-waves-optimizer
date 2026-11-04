@@ -10,7 +10,8 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp } from "../myRankings/rankRoster";
-import { CANCELLED, type LabAccount, type LabProgress } from "./core";
+import { isRosterCharacter } from "../display/names";
+import { CANCELLED, NOT_IN_APP, type LabAccount, type LabProgress } from "./core";
 import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { accountFingerprint } from "./fingerprint";
 import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult } from "./pass";
@@ -22,7 +23,7 @@ import type { TunerCandidatesResult } from "./tunerPlan";
 import type { FarmNextResult, FarmTeamResult } from "./farmNext";
 // Wuthering Tools+ team buffs from the team's real members (the app's switch, off under Cypress)
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
-import { erNeedsKey, erNeedsOf } from "../energy/energySubstats";
+import { erNeedsKey, erNeedsOf, erNeedsSettled } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
 
@@ -71,12 +72,24 @@ let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
 let hydrated = false;
 /** the ER needs of the saved teams, resolved once per account state (the benchmark and re-roll jobs share them) */
-let needsMemo: { fingerprint: string; needs: Promise<Record<string, number>> } | null = null;
+let needsMemo: { fingerprint: string; needs: Promise<Record<string, number>>; whole: boolean } | null = null;
+/** the benchmarks shown were scored on ER needs that were not whole (`erNeedsSettled`): they stay in this tab */
+let benchmarksShort = false;
 
 /** Every character's ER need (%) in their saved teams — the floor the benchmark and the re-roll advice respect.
  *  Empty when the energy check fails; one lookup per account state. */
 export function echoLabErNeeds(fingerprint: string): Promise<Record<string, number>> {
-  if (needsMemo?.fingerprint !== fingerprint) needsMemo = { fingerprint, needs: erNeedsOf(useEnergyNeeds()).catch(() => ({})) };
+  if (needsMemo?.fingerprint !== fingerprint) {
+    const energy = useEnergyNeeds();
+    const memo = { fingerprint, whole: false, needs: Promise.resolve<Record<string, number>>({}) };
+    memo.needs = erNeedsOf(energy)
+      .then((needs) => {
+        memo.whole = erNeedsSettled(energy);
+        return needs;
+      })
+      .catch(() => ({}));
+    needsMemo = memo;
+  }
   return needsMemo.needs;
 }
 
@@ -163,6 +176,14 @@ async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
   return false;
 }
 
+/** What of this tab's record may be saved past the tab, which is what did fully score: a saved result repeats in every
+ *  new tab until the data changes, so a transient failure must not get in. A kit lost to a network failure reads as an
+ *  unknown character (the worker skips them with no error): null. Benchmarks on short ER needs are left out. */
+function savedCopyOf(value: StoredCache): StoredCache | null {
+  if (value.pass?.bestOwner.skipped.some((s) => s.reason === NOT_IN_APP && isRosterCharacter(s.id))) return null;
+  return benchmarksShort ? { ...value, benchmarks: null, benchErKey: null } : value;
+}
+
 function readCache(): StoredCache | null {
   try {
     const text = typeof sessionStorage !== "undefined" ? sessionStorage.getItem(ECHO_LAB_CACHE_KEY) : null;
@@ -175,13 +196,15 @@ function readCache(): StoredCache | null {
 
 /** The browser-wide copy keeps what `restoreSaved` paints: the pass, the benchmarks and the Tuner plan. It is not
  *  written when none of them is here (a roll-chip or Farm next write from another page must never blank a saved
- *  pass), nor when they are the ones it already got (a roll-chip batch or a Farm next team figure alone). */
+ *  pass), nor when they are the ones it already got (a roll-chip batch or a Farm next team figure alone). What did not
+ *  fully score stays in this tab (`savedCopyOf`). */
 function writeSaved(value: StoredCache): void {
-  if (!value.pass && !value.benchmarks && !value.tunerPlan) return;
-  const parts = [value.fingerprint, value.pass, value.benchmarks, value.tunerPlan ?? null];
+  const saved = savedCopyOf(value);
+  if (!saved || (!saved.pass && !saved.benchmarks && !saved.tunerPlan)) return;
+  const parts = [saved.fingerprint, saved.pass, saved.benchmarks, saved.tunerPlan ?? null];
   if (parts.every((p, i) => p === lastSaved[i])) return;
   lastSaved = parts;
-  void savedLab.write(value.fingerprint, { v: value.v, fingerprint: value.fingerprint, pass: value.pass, benchmarks: value.benchmarks, benchErKey: value.benchErKey ?? null, tunerPlan: value.tunerPlan ?? null });
+  void savedLab.write(saved.fingerprint, { v: saved.v, fingerprint: saved.fingerprint, pass: saved.pass, benchmarks: saved.benchmarks, benchErKey: saved.benchErKey ?? null, tunerPlan: saved.tunerPlan ?? null });
 }
 
 function writeCache(): void {
@@ -227,6 +250,7 @@ function adopt(fingerprint: string): void {
   qualities.clear();
   ratings.clear();
   passSavedAt.value = null;
+  benchmarksShort = false;
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
@@ -356,6 +380,7 @@ export function useEchoLab() {
     benchAbort = controller;
     // Wuthering Tools+ energy check: ER counts as a floor up to each character's need in their saved teams
     const erNeeds = await echoLabErNeeds(fingerprint);
+    const needsWhole = needsMemo?.whole ?? false;
     // only the characters the pass could score (a weapon and five echoes): the progress counts what gets a row
     const characterIds = pass.value && resultFingerprint.value === fingerprint ? pass.value.bestOwner.characters.map((c) => c.id) : undefined;
     const result = await run({ kind: "benchmark", characterIds, options: { erNeeds } }, benchStatus, controller.signal, account);
@@ -364,6 +389,7 @@ export function useEchoLab() {
       benchmarks.value = result;
       benchErKey = erNeedsKey(erNeeds);
       benchConfirmed = true;
+      benchmarksShort = !needsWhole;
       writeCache();
     }
   }

@@ -72,6 +72,12 @@ export function writeCachedPlan(rankingFingerprint: string, plan: InvestPlan, st
   }
 }
 
+/** Where a finished plan is saved past this tab (`writeCachedPlan`'s `savedUnder`): under the ranking fingerprint, or
+ *  nowhere when it or the ranking under it did not fully score, so the next tab plans again. */
+export function planSavedUnder(rankingFingerprint: string, base: { incomplete?: boolean }, plan: Pick<InvestPlan, "errors">): string | null {
+  return base.incomplete || plan.errors.length ? null : rankingFingerprint;
+}
+
 /** The plan this browser saved for this ranking fingerprint and app build: the plan, the full key it was computed
  *  for (compare it with the one built from today's ER needs before keeping it) and when it was saved; null on a miss. */
 export async function readSavedPlan(rankingFingerprint: string): Promise<{ key: string; plan: InvestPlan; savedAt: number } | null> {

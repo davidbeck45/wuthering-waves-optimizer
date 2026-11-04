@@ -15,7 +15,7 @@ import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking 
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "./accountState";
 import { investPlan, type InvestItem, type InvestPlan, type InvestProgress } from "./investPlan";
-import { readCachedPlan, readSavedPlan, writeCachedPlan } from "./investCache";
+import { planSavedUnder, readCachedPlan, readSavedPlan, writeCachedPlan } from "./investCache";
 
 export type RunState = "idle" | "running" | "done" | "error";
 
@@ -123,7 +123,7 @@ export function useAccountData() {
       });
       if (gen !== generation || result.cancelled) return;
       plan.value = result;
-      writeCachedPlan(fp, result, undefined, rankingFp);
+      writeCachedPlan(fp, result, undefined, planSavedUnder(rankingFp, base, result));
       planStatus.value = { ...idle(), state: "done", computedAt: result.computedAt, done: result.characters, total: result.characters, error: result.errors.length ? `${result.errors.length} scoring errors` : null };
     } catch (err) {
       if (gen === generation) planStatus.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };

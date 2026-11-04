@@ -3377,6 +3377,34 @@ Left as they were:
   and account) in a long-lived singleton; Clear does not reach it.
 - Re-roll advice and "How good is this roll" stay per page load (quick, asked one echo at a time).
 
+**Only what fully scored is saved.** A saved result repeats in every new tab until the data, the build or a Recompute
+changes it, so a transient failure must not get in. The tab cache keeps showing what it scored, as before; a new tab
+just scores again. The real case is a phone losing its signal mid-run: `perf/chunkReload.ts` stands aside when offline,
+Ryan's `getCharByName` swallows the failed import, and `rankRoster` reads it as "not a character this app knows", so a
+character drops out with no error. Ryan's `getWeaponByName` swallows it too, and `buildCharacterContext` then scores the
+build with no weapon at all: lower numbers, no error, nothing in the result to tell. Measured on a production build
+before these guards: going offline mid-run saved a ranking of 1 character and 0 teams, and every new tab repeated it as
+"Live · saved just now · data unchanged".
+- `watchLostChunks` in `savedResults.ts`: Vite's `vite:preloadError` on window is the one sign of a lost chunk, so a page
+  load that sees it writes nothing from then on. One check covers every main-thread cache, kits and weapons alike.
+  `vite dev` has no such event (no preload helper), so the checks below still matter there.
+- `rankRoster` sets `incomplete` when a character the roster offers (`isRosterCharacter`) lost its kit, a rotation list
+  failed, or a runnable team threw. An id the app really lacks fails on every run and does not count, nor does a saved
+  team with no actions. A whole ranking's JSON has no such key, so `npm run cli -- snapshot` is unchanged.
+- `writeCachedRanking` skips the save for an `incomplete` ranking; `planSavedUnder` does the same for a plan on such a
+  ranking or with errors of its own; `/weapons` passes `persist` false to `valueCache.write` on the same test.
+- Echo Lab's `savedCopyOf` drops a pass that skipped a roster character as `NOT_IN_APP` (the worker's kit failure;
+  "needs five echoes" and the like are real and repeat on every run, so they are kept), and leaves benchmarks out when
+  their ER needs were not whole (`erNeedsSettled`: the energy check timed out at 20 s or a team failed, so a floor can
+  be missing and the numbers read too high). The ER needs are not in Echo Lab's fingerprint, so two guards answer for
+  them: this one at the write, and `benchErKey` at the read (the "Closed gap" note below), which also catches a copy
+  saved before this guard or from a tab reloaded after a short lookup. /account confirms its ER key on read the same way.
+- A deterministic engine error on one account therefore means that page never saves for it: it scores on every visit,
+  as it did before this feature. On David's export nothing trips it (24 characters, 96 teams, 72 plan items, 24 weapon
+  rows, 0 errors; Echo Lab's one skip is "needs five echoes").
+- Left open: Echo Lab's worker has no `vite:preloadError`, so a weapon chunk alone failing there is not seen. It needs a
+  blip that spares the next kit, and the ranking usually fetched those chunks first.
+
 Closed gap (verify1, fixed 2026-11-04): Echo Lab's benchmarks are scored against the energy check's ER needs
 (`echoLabErNeeds`), which the Echo Lab fingerprint does not carry; the tab cache had the same gap. If the energy check
 timed out (20 s) or failed on the visit that scored them, the saved benchmarks kept floors that were too low until the
@@ -3389,15 +3417,19 @@ dropped: unparseable JSON, data without meta and meta without data, a shape the 
 another cache; the LRU (a read counts as use, as many evicted as it takes, never the newest, too big refused), the
 browser quota (frees half, retries once), usage per cache for this build only; no store, a throwing getter, a store
 that rejects everything, a store that never answers (timeout), a value with a cycle; Clear's hooks and its key list; a
-read's late touch after the record went). `persist/savedResultsLru.test.ts`: the LRU against a plain reference model
+read's late touch after the record went). `myRankings/rankRosterIncomplete.test.ts`, `rankingCache.test.ts`,
+`account/investPlan.test.ts`, `weaponValue.test.ts`, `energy/erNeedsSettled.test.ts`: what did not fully score stays out,
+and an id the app lacks or a team with no actions does not count as a failure. `persist/savedResultsLru.test.ts`: the LRU against a plain reference model
 on eight seeded random sequences of writes, overwrites, too-big results and reads. `weaponValue.test.ts`: a value cache
 forgets its tab copy on Clear until it is disposed (the selector makes one per mount and disposes it on unmount).
 `cypress/e2e/savedResults.cy.ts`: /my-rankings, /account and /echo-lab (pass + benchmarks) each scored once, then a new
 tab (sessionStorage cleared + reload) paints the saved result with the marker `data-saved-result` and the page never
 passes through "scoring" (a MutationObserver installed before load records every status), Recompute drops the note;
 roll chips rated on /inventory in a new tab leave Echo Lab's saved record as it was (same `savedAt`, no ratings in it)
-and the next /echo-lab still paints it; Settings › Clear empties the database and the next visit scores; without IndexedDB the page scores as before and
-Settings says nothing is kept.
+and the next /echo-lab still paints it; a kit lost to a network failure keeps the ranking and the Echo Lab pass out of
+the saved results and the next tab scores the whole roster; benchmarks scored while the energy check failed are left
+out of the saved copy; Settings › Clear empties the database and the next visit scores; without IndexedDB the page
+scores as before and Settings says nothing is kept.
 
 ## Contrast, focus and keyboard — `src/sim/a11y/` (track "fix-a11y-themes", 2026-11-02)
 

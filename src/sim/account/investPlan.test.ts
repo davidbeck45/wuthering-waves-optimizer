@@ -7,7 +7,7 @@ import { substatWeights, rotationScorer } from "../substats/substatWeights";
 import { RANKING_ENEMY } from "../myRankings/rankRoster";
 import { extractBuildFields } from "../../characters/buildFields";
 import { bestFieldableTeam, investPlan, ownedWeapons, sortInvestItems, type InvestItem, type InvestPlan, erGainNote, erGapOf } from "./investPlan";
-import { clearPlanMemory, readCachedPlan, writeCachedPlan } from "./investCache";
+import { clearPlanMemory, planSavedUnder, readCachedPlan, writeCachedPlan } from "./investCache";
 
 const characters: Record<string, any> = {
   ...JSON.parse(JSON.stringify(account.characters)),
@@ -138,5 +138,11 @@ describe("investment plan", () => {
     clearPlanMemory();
     store.set("wtplus:account:invest", "{junk");
     expect(readCachedPlan("fp-1", storage)).toBeNull();
+  });
+
+  it("is saved past the tab only when it and its ranking scored whole", () => {
+    expect(planSavedUnder("fp", {}, { errors: [] })).toBe("fp");
+    expect(planSavedUnder("fp", { incomplete: true }, { errors: [] })).toBeNull(); // the ranking has holes: so does the plan
+    expect(planSavedUnder("fp", {}, { errors: ["Chisa: Failed to fetch"] })).toBeNull();
   });
 });

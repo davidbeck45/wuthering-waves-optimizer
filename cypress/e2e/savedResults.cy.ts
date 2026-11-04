@@ -337,6 +337,56 @@ describe("saved results", () => {
     cy.window().its("__appeared").should("eq", false);
   });
 
+  // A saved result repeats in every new tab until the data changes, so a transient failure must not get in. The phone
+  // losing its signal mid-run is the real case: chunkReload stands aside offline, and the kit reads as an unknown
+  // character (dropped, no error). Galbrena is set up in the fixture; the others still score.
+  const KIT = "**/src/characters/Galbrena/index.ts*";
+
+  it("/my-rankings: a ranking that lost a kit stays in this tab, and the next tab scores the whole roster", () => {
+    cy.intercept(KIT, { forceNetworkError: true });
+    cy.visit("/my-rankings", seedLab);
+    cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live");
+    cy.get('[data-test-my-rankings-row="Cartethyia"]').should("exist");
+    cy.get('[data-test-my-rankings-row="Galbrena"]').should("not.exist");
+    savedCount("ranking", 1, 2500).should("eq", 0);
+
+    cy.intercept(KIT, (req) => req.continue()); // the signal is back
+    newTab();
+    cy.get('[data-test-my-rankings-row="Galbrena"]', { timeout: 120000 }).should("exist");
+    cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live").and("not.have.attr", "data-saved-result");
+    savedCount("ranking", 1).should("be.gte", 1);
+  });
+
+  it("/echo-lab: a pass that lost a kit stays in this tab; one on whole data is saved", () => {
+    cy.viewport(1440, 900);
+    cy.intercept(KIT, { forceNetworkError: true });
+    cy.visit("/echo-lab", seedLab);
+    cy.get("[data-test-echo-lab-meta]", { timeout: 60000 }).should("exist");
+    savedCount("echoLab", 1, 2500).should("eq", 0);
+
+    cy.intercept(KIT, (req) => req.continue());
+    newTab();
+    cy.get("[data-test-echo-lab-meta]", { timeout: 60000 }).should("exist").and("not.have.attr", "data-saved-result");
+    savedCount("echoLab", 1).should("be.gte", 1);
+  });
+
+  it("/echo-lab: benchmarks scored while the energy check failed are left out of the saved copy", () => {
+    cy.viewport(1440, 900);
+    // a saved team to measure, and a solver that will not load: the check fails, so the ER floors are missing
+    const team = { id: "t1", name: "Trio", characterIds: ["Cartethyia", "Galbrena", "Zani"], actions: [], buildIds: [null, null, null] };
+    cy.intercept("**/src/sim/rankings/solver.worker.ts*", { forceNetworkError: true });
+    cy.visit("/echo-lab?tab=benchmark", {
+      onBeforeLoad(win) {
+        seedLab.onBeforeLoad(win);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+      },
+    });
+    cy.get("[data-test-echo-lab-benchmark-row]", { timeout: 90000 }).should("exist");
+    cy.get("[data-test-echo-lab-benchmark-progress]", { timeout: 60000 }).should("not.exist");
+    waitSaved("echoLab", (values) => values.some((v) => v.pass)).should("eq", true);
+    waitSaved("echoLab", (values) => values.some((v) => v.benchmarks), 2500).should("eq", false);
+  });
+
   it("Settings › Clear saved results empties them, and the next visit scores again", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);

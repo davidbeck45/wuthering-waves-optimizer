@@ -71,6 +71,10 @@ export interface RosterRanking {
   teams: TeamRank[];
   teamsSkipped: number;
   computedAt: string;
+  /** set when something that should have scored did not: a kit that failed to load (the phone lost its signal mid-run:
+   *  it reads like an unknown character, dropped with no error), or a rotation or team the engine threw on. Fine to show
+   *  on this visit; not kept past the tab, where it would repeat as "data unchanged" (rankingCache.ts). */
+  incomplete?: boolean;
 }
 
 /** What `onProgress` hands over as each character / team finishes, so a page can draw rows as they are scored. */
@@ -356,6 +360,7 @@ export async function rankRoster(
   const progress = (label: string): void => options.onProgress?.(done, total, label);
 
   const characterRanks: CharacterRank[] = [];
+  let kitMissing = false;
   for (const id of ids) {
     const data = characters[id] ?? {};
     let name: string;
@@ -365,6 +370,7 @@ export async function rankRoster(
       name = characterDisplayName(id) || kit?.basic?.name || id;
     } catch {
       done += 1;
+      kitMissing ||= isRosterCharacter(id); // the roster offers them, so the kit failed to load; any other id fails every time
       continue; // not a character this app knows
     }
     progress(name);
@@ -445,5 +451,6 @@ export async function rankRoster(
   }
   teamRanks.sort((a, b) => b.avgDamage - a.avgDamage);
   progress("done");
-  return { enemy, characters: characterRanks, teams: teamRanks, teamsSkipped, computedAt: new Date().toISOString() };
+  const incomplete = kitMissing || teamsSkipped > skipped || characterRanks.some((c) => c.errors.length > 0);
+  return { enemy, characters: characterRanks, teams: teamRanks, teamsSkipped, computedAt: new Date().toISOString(), ...(incomplete ? { incomplete } : {}) };
 }
