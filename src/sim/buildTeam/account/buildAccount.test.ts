@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Whole account" on the real engine: two shipped team rotations that share Cartethyia and Ciaccona
 // (public data: upstream's Cartethyia golden fixture — her build and 17 echoes — plus armed teammates), then the write
 // path on real Pinia stores: build history first, new "Account plan" builds, pins in the saved team, make-active, undo.
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import account from "../../myRankings/__fixtures__/cartethyiaAccount.json";
 import teamPresets from "../../presets/data/teams.json";
@@ -168,6 +168,57 @@ describe("a member the plan leaves without a build", () => {
     expect(held.filter((id) => cartIds.has(id))).toEqual([]);
     expect(r.moves).toEqual([]);
     expect(accountReuse(r)).toEqual([]);
+  });
+
+  describe("on a slow device", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    /** The account with a clock the test moves. The first improvement pass stops at once, so the clash stands and the
+     *  account is solved again; Chisa on Gusts of Welkin keeps echoes contested once Cartethyia is out, or the second
+     *  solve would end without ever reading the clock. */
+    const solveTwice = (clock: { firstPass: number; firstImprovePass: number }): Promise<BuildAccountResult> => {
+      const real = Date.now.bind(Date);
+      let shift = 0;
+      vi.spyOn(Date, "now").mockImplementation(() => real() + shift);
+      let firstSolve = true;
+      let slowSearch = clock.firstPass;
+      const contested = plans.map((p) => (p.characterId === "Chisa" ? { ...p, sets: [{ key: "GustsofWelkin", pieces: 2 }], setsLabel: "Gusts of Welkin 2pc" } : p));
+      return buildAccount(
+        { characters, inventory: { echoes: inventory, equipped: Object.fromEntries(Object.values(base.Cartethyia.echoes).map((s: any, i) => [s.echoId, { Cartethyia: i }])) }, teams: [{ spec: teamA, weight: 1, plans: contested, memberOrder: [1, 0, 2] }], options: DEFAULT_OPTIONS, budgetMs: 60_000 },
+        inlineBackend(),
+        {
+          // the slow part is the first pass's search itself, inside the solve: the clock moves before the budget starts
+          onProgress: (p) => {
+            if (p.phase !== "search" || !firstSolve) return;
+            shift += slowSearch;
+            slowSearch = 0;
+          },
+          shouldStop: () => {
+            if (firstSolve) shift += clock.firstImprovePass;
+            return firstSolve;
+          },
+          onStage: (s) => {
+            if (s.stage === "verify") firstSolve = false;
+          },
+        },
+      );
+    };
+
+    // the budget is the improvement pass's own: solving again after a lock must not charge it for the first pass,
+    // or a phone whose first pass outlasts 60 s gets no improvement at all and the page says its time ran out
+    it("solving again after a lock still has the improvement pass's time", async () => {
+      const out = await solveTwice({ firstPass: 120_000, firstImprovePass: 0 });
+      expect(out.search.locked).toEqual(["Cartethyia"]);
+      expect(out.search.conflicts).toBeGreaterThan(0);
+      expect(out.search.stoppedBy).not.toBe("budget");
+    }, 120_000);
+
+    it("the solves share one budget: time the first improvement pass spent is gone for the second", async () => {
+      const out = await solveTwice({ firstPass: 0, firstImprovePass: 61_000 });
+      expect(out.search.locked).toEqual(["Cartethyia"]);
+      expect(out.search.conflicts).toBeGreaterThan(0);
+      expect(out.search.stoppedBy).toBe("budget");
+    }, 120_000);
   });
 });
 

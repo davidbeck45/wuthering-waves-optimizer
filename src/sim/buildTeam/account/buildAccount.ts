@@ -209,7 +209,9 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   const solveApi: AllocationApi = { ...api, solve: (m, taken) => (dropped.has(m) ? Promise.resolve(null) : api.solve(m, taken)) };
   // today's weighted value of the members who build (Σ weight × the calculator's damage today): ≈ Σ team weights
   const baseline = active.reduce((n, a, i) => n + weights[i]! * a.before, 0);
-  const budget = input.budgetMs ?? 60_000;
+  // the improvement pass's own time, shared by every solve: a solve spends only what its improvement pass used, so
+  // solving again after a lock is never charged for a first pass (on a slow phone that alone can pass the budget)
+  let budgetLeft = input.budgetMs ?? 60_000;
   const searched = (ms: Iterable<number>): void => {
     for (const m of ms) hooks.onProgress?.({ characterId: active[m]!.job.characterId, phase: "searched", processed: combos.get(m) ?? 0, generated: 0 });
   };
@@ -282,7 +284,8 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   let keptGreedy: boolean;
   let picks: Array<Candidate | null>;
   for (;;) {
-    solved = await runSolve(Math.max(0, budget - (Date.now() - solveStart)));
+    solved = await runSolve(budgetLeft);
+    budgetLeft = Math.max(0, budgetLeft - solved.improveMs);
     hooks.onStage?.({ stage: "verify" });
     changed = solved.picks.some((p, m) => (p?.ids.join() ?? "") !== (solved.greedy.picks[m]?.ids.join() ?? ""));
     searchTotals = await totalsFor(solved.picks);

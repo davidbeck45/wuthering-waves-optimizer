@@ -57,6 +57,8 @@ export interface AccountSolveResult {
   /** ordered pairs that competed for echoes at the start (what the local search looks at) */
   conflicts: number;
   ms: number;
+  /** of `ms`, the local search alone: what it spent of its budget */
+  improveMs: number;
 }
 
 const EPS = 1e-9;
@@ -108,7 +110,8 @@ export async function solveAccount(api: AllocationApi, input: AccountSolveInput)
 
   // 2. local search over the pairs that compete, until nothing improves or the budget runs out. The budget is the
   //    local search's own, counted from here: on a slow device the greedy alone can outlast it
-  const deadline = now() + (input.budgetMs ?? 60_000);
+  const improveStart = now();
+  const deadline = improveStart + (input.budgetMs ?? 60_000);
   const stop: { by: AccountSolveResult["stoppedBy"] } = { by: "converged" };
   const outOfTime = (): boolean => {
     if (input.shouldStop?.()) stop.by = "stopped";
@@ -186,6 +189,7 @@ export async function solveAccount(api: AllocationApi, input: AccountSolveInput)
     rounds,
     conflicts,
     ms: now() - t0,
+    improveMs: now() - improveStart,
   };
 }
 

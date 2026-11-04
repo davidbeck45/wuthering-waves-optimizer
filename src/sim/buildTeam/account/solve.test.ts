@@ -181,6 +181,9 @@ describe("solveAccount", () => {
     expect(r.stoppedBy).toBe("converged");
     expect(r.picks[3]!.ids).toContain("fa");
     expect(r.value).toBeGreaterThan(r.greedy.value);
+    // what it reports having spent is the local search's alone: the caller carries the rest to a second solve
+    expect(r.ms).toBe(4000);
+    expect(r.improveMs).toBe(0);
   });
 
   it("a budget of 0 means no improvement pass, even within the same millisecond", async () => {
