@@ -54,7 +54,9 @@ beforeEach(() => {
   });
 });
 
-describe("Echo Lab's saved benchmarks and the ER needs they were scored on", () => {
+// a budget for the whole file: the first test pays for importing useEchoLab's tree (0.9 s on two pinned cores, the range
+// where a test here has gone past vitest's 5 s default on CI's 2-core runner)
+describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { timeout: 60_000 }, () => {
   it("restoring the record never starts the energy check: /inventory reads the same record for its verdicts alone", async () => {
     h.stored = savedCopy("Cartethyia:100");
     const { lab } = await visit();
