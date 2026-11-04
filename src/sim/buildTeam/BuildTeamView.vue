@@ -187,7 +187,7 @@
         <div v-if="applied" role="status" class="alert alert-success mt-3 text-sm" data-test-build-team-saved>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5 shrink-0" aria-hidden="true"><path d="M5 12l5 5 9-10" stroke-linecap="round" stroke-linejoin="round" /></svg>
           <span>
-            Saved {{ applied.created.length }} build{{ applied.created.length === 1 ? "" : "s" }}<template v-if="team.id">, pinned in “{{ team.name }}”</template><template v-if="applied.activated.length"> and made active</template>.
+            Saved {{ applied.created.length }} build{{ applied.created.length === 1 ? "" : "s" }}<template v-if="team.id">, pinned in “{{ teamTitle(team.name, memberIds) }}”</template><template v-if="applied.activated.length"> and made active</template>.
             <template v-if="applied.undoInMemoryOnly"> Undo lasts until you leave this page (this browser would not store it).</template>
           </span>
           <RouterLink to="/teams" class="btn btn-sm">Open Teams</RouterLink>
@@ -236,6 +236,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import { characterDisplayName, characterShortName } from "../display/names";
+import { teamTitle } from "../display/teamName";
 import BuildTeamPicker from "./BuildTeamPicker.vue";
 import BuildTeamPlanCard from "./BuildTeamPlanCard.vue";
 import BuildTeamResultCard from "./BuildTeamResultCard.vue";

@@ -179,7 +179,7 @@
             <span class="text-xs font-semibold uppercase tracking-wide text-base-content/60">A team</span>
             <div v-if="teamOptions.length" class="flex flex-wrap gap-2">
               <select v-model="pickTeam" class="select select-bordered select-sm flex-1 min-w-[9rem] max-w-full" aria-label="Team" data-test-share-pick-team>
-                <option v-for="t in teamOptions" :key="t.id" :value="t.id">{{ t.name }}</option>
+                <option v-for="t in teamOptions" :key="t.id" :value="t.id">{{ teamOptionLabel(t) }}</option>
               </select>
               <button type="button" class="btn btn-sm" :disabled="!pickTeam" data-test-share-open-team @click="openTeam">Share team…</button>
             </div>
@@ -231,6 +231,13 @@ import { applyImport, planImport, type EchoMatch, type ImportPlan } from "./merg
 import { mainEchoesData } from "../../echoes/index";
 import { readCardFile, type CardRead } from "./readCard";
 import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
+import { teamTierLine, teamTitle } from "../display/teamName";
+
+/** The team's one name, a wuwa_calc name's tier beside it so two tiers of the same three stay apart in the list. */
+function teamOptionLabel(t: { name: string; characterIds: Array<string | null> }): string {
+  const tier = teamTierLine(t.name);
+  return `${teamTitle(t.name, t.characterIds)}${tier ? ` · ${tier}` : ""}`;
+}
 
 useDocumentTitle(
   "Share & import builds — Wuthering Waves Calculator & Optimizer",

@@ -99,8 +99,8 @@
                     <span v-else-if="line.chip === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Lock: the build needs this Energy Regen' : 'Lock'" :title="line.erFloor ? 'Lock: without this line the build falls under its Energy Regen need' : 'Lock this line when you re-roll'">
                       <svg viewBox="0 0 24 24" class="size-3" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-sm:hidden">Lock</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
                     </span>
-                    <span v-else-if="line.chip === 'keep'" class="el-chip el-chip--lock max-sm:px-1.5" aria-label="Keep: no re-roll pays on this echo" title="Keep: no re-roll pays on this echo">
-                      <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg><span class="max-sm:hidden">Keep</span>
+                    <span v-else-if="line.chip === 'keep'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Keep: the build needs this Energy Regen' : 'Keep: no re-roll pays on this echo'" :title="line.erFloor ? 'Keep: without this line the build falls under its Energy Regen need' : 'Keep: no re-roll pays on this echo'">
+                      <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg><span class="max-sm:hidden">Keep</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
                     </span>
                     <span v-else class="loading loading-dots loading-xs opacity-50"></span>
                   </td>

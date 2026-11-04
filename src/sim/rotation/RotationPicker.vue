@@ -58,6 +58,7 @@ import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { teamTierLine, teamTitle } from "../display/teamName";
 import type { RileyTeamInfo } from "../engine/rileyRun";
 import { loadWuwaCalcTeamPresets } from "../presets";
 import { isGeneratedTeamName } from "../rankings/importFromRankings";
@@ -92,7 +93,8 @@ const { teams: saved } = storeToRefs(teamStore) as unknown as { teams: { value: 
 const mine = computed<Entry[]>(() =>
   (saved.value ?? [])
     .filter((t) => runnable(t.characterIds ?? []))
-    .map((t) => ({ id: t.id, title: t.name, subtitle: titleOf(t.characterIds as string[]), chars: t.characterIds as string[], ...(isGeneratedTeamName(t.name) ? { badge: "synced" } : {}) })),
+    // the team's one name, with a wuwa_calc name's tier below it; a typed name keeps its members below it
+    .map((t) => ({ id: t.id, title: teamTitle(t.name, t.characterIds), subtitle: teamTierLine(t.name) ?? titleOf(t.characterIds as string[]), chars: t.characterIds as string[], ...(isGeneratedTeamName(t.name) ? { badge: "synced" } : {}) })),
 );
 
 const stock = shallowRef<Entry[]>([]);
