@@ -9,10 +9,10 @@ const fixture = ((fixtureModule as unknown as { default?: typeof fixtureModule }
 
 type Inventory = { echoes: Array<{ echoId: string; echo: string }>; equipped: Record<string, Record<string, number>> };
 
-function seed(options: { classic?: boolean; fontScale?: number } = {}) {
+function seed(options: { classic?: boolean; fontScale?: number; inventory?: unknown } = {}) {
   return {
     onBeforeLoad(win: Window) {
-      win.localStorage.setItem("inventory", JSON.stringify(fixture.inventory));
+      win.localStorage.setItem("inventory", JSON.stringify(options.inventory ?? fixture.inventory));
       const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
       settings.config = { ...settings.config, useClassicUi: Boolean(options.classic) };
       win.localStorage.setItem("settings", JSON.stringify(settings));
@@ -121,6 +121,33 @@ describe("Wavescan: add only new echoes", () => {
     uploadScan();
     count("new").should("contain.text", "0");
     count("owned").should("contain.text", "9");
+  });
+
+  // Ryan's "Read pasted data" swaps the scan without remounting the card (a file read remounts it). The rule that hides
+  // his card is a sibling selector, so only a real browser shows it coming back.
+  it("forgets the last add when a second scan is pasted on a phone, and Ryan's card comes back for the new echoes", () => {
+    const paste = (echoes: unknown[]) => {
+      cy.get("[data-test-wavescan-paste]").invoke("val", JSON.stringify({ ...fixture.scan, echoes })).trigger("input");
+      cy.get("[data-test-wavescan-paste-button]").click();
+    };
+    const half = Math.floor(fixture.scan.echoes.length / 2);
+    cy.viewport(412, 915);
+    cy.visit("/settings?section=wavescan", seed({ fontScale: 1.3, inventory: { echoes: [], equipped: {} } }));
+
+    paste(fixture.scan.echoes.slice(0, half));
+    cy.get("[data-test-wavescan-new-only-add]", { timeout: 20000 }).should("contain.text", `Add ${half} echoes`).click();
+    cy.get(".confirm-dialog[open] .modal-action").contains("button", `Add ${half} echoes`).click();
+    cy.get("[data-test-wavescan-new-only-done]").should("contain.text", `Added ${half} echoes.`);
+    cy.get("[data-test-wavescan-echoes]").should("not.be.visible");
+    cy.get("[data-test-wavescan-new-only-other-why]").should("contain.text", "nothing new to add");
+
+    // 5 scanned, 4 new: the third identical Tambourinist matches one the first add put in (copies are counted)
+    paste(fixture.scan.echoes.slice(half));
+    cy.get("[data-test-wavescan-new-only-add]").should("contain.text", "Add 4 echoes");
+    cy.get("[data-test-wavescan-new-only-done]").should("not.exist");
+    cy.get("[data-test-wavescan-new-only-other-why]").should("not.exist");
+    cy.get("[data-test-wavescan-echoes]").should("be.visible");
+    expectNoHorizontalScroll("second paste", 412);
   });
 
   it("is offered in the classic Settings › Wavescan tab too", () => {

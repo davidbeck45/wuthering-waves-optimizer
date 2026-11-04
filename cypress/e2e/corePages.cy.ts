@@ -86,6 +86,9 @@ describe("core pages, refined", () => {
       cy.wrap($toggle).click({ force: true });
       cy.get("[data-test-auto-team-buffs-caption]").should("contain.text", on ? "Each character's Team Buffs panel" : "Uses your teammates' real builds");
       cy.wrap($toggle).click({ force: true }); // back as it was (the switch is saved)
+      // the words are not part of the switch: a tap to read them moves no team's numbers
+      cy.get("[data-test-auto-team-buffs-caption]").click();
+      cy.get("[data-test-auto-team-buffs]").should(on ? "be.checked" : "not.be.checked");
     });
     // light theme: the member cards' white stat icons are inverted, as the Forte card's are
     cy.get('[data-test-team-rotation-slot="0"] [data-test-team-rotation-slot-stat] > img').should("have.length", 6).each(($img) => {

@@ -210,6 +210,29 @@ describe("WavescanNewEchoes", () => {
     expect(container.querySelector("[data-test-wavescan-new-only-other-why]")).toBeNull();
   }, 60_000);
 
+  it("folds the full import again when a second scan is pasted, so a fold opened for the last scan does not stay open over the next", async () => {
+    seedInventory(); // the fixture's owned echoes: this scan would add second copies, so the import is folded with no add at all
+    const { container, findByText } = render(SettingsWavescan);
+    const paste = async () => {
+      await fireEvent.update(container.querySelector("[data-test-wavescan-paste]")!, JSON.stringify(fixture.scan));
+      await fireEvent.click(container.querySelector("[data-test-wavescan-paste-button]")!);
+    };
+    await paste();
+    await findByText(/^Add \d+ echoes to my inventory$/);
+    const card = container.querySelector("[data-test-wavescan-new-only]")!;
+    const toggle = () => container.querySelector("[data-test-wavescan-new-only-other-toggle]")!;
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(true);
+    await fireEvent.click(toggle());
+    expect(toggle().getAttribute("aria-expanded")).toBe("true");
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(false);
+
+    await paste();
+    await waitFor(() => expect(toggle().getAttribute("aria-expanded")).toBe("false"));
+    // the same card, not a remount: only the watch can have closed it
+    expect(container.querySelector("[data-test-wavescan-new-only]")).toBe(card);
+    expect(card.hasAttribute("data-wt-fold-upstream")).toBe(true);
+  }, 60_000);
+
   it("is offered inside Ryan's Wavescan panel once a file is read", async () => {
     seedInventory();
     const { container, findByText } = render(SettingsWavescan);
