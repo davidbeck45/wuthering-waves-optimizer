@@ -11,7 +11,7 @@ import { scoreLoadoutInline } from "../buildTeam/headlessOptimizer";
 import { createLoadoutPruner, virtualLoadoutStats, type PrunerScoring } from "./loadoutBound";
 import { optimizerLoadoutStream, planOptimizerGeneration, pruneSetupOf, normalizeOptimizerLoadoutCached } from "./optimizerPool";
 import { prepareCase, type BenchCase, type PreparedCase } from "./optimizerBench";
-import { syntheticPool, testSource } from "./testFixture";
+import { speciesByCost, syntheticPool, testSource } from "./testFixture";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -30,6 +30,20 @@ function scoringOf(p: PreparedCase): PrunerScoring & { context: OptimizerContext
     rotationData: p.job.rotationData,
     minStats: p.request.minStats,
   };
+}
+
+/** A pool where only set bonuses move the score: no substats, a main echo of one set, two Lingering Tunes (its 2-piece
+ *  is ATK) and one echo of twelve other sets, so thirteen candidate sets send the first prefix down the many-sets path. */
+function setBonusOnlyPool(main: string): any[] {
+  const others = Object.keys(echoSetLabelMap).filter((set) => set !== "LingeringTunes").sort();
+  const species = speciesByCost()[1]!;
+  const bare = (echo: string, type: number, echoSet: string, echoId: string): any => ({ echo, type, rank: 5, stat: "DEF", echoId, echoSet });
+  return [
+    bare(main, 4, others[0]!, "bare-main"),
+    bare(species[0]!, 1, "LingeringTunes", "bare-tunes-1"),
+    bare(species[1]!, 1, "LingeringTunes", "bare-tunes-2"),
+    ...others.slice(1, 13).map((set, i) => bare(species[i + 2]!, 1, set, `bare-${i}`)),
+  ];
 }
 
 const caseOf = (name: string, characterId: string, pool: any[], main: string, format: OptimizerLoadoutFormat, extra: Partial<BenchCase> = {}): BenchCase => ({
@@ -76,6 +90,9 @@ describe("the bound is admissible", () => {
     { c: caseOf("Danjin · 43311 · Stat:totalAtk", "Danjin", syntheticPool(43, 26, "NightmareCrownless", ["HavocEclipse"]), "NightmareCrownless", "43311", { target: "Stat:totalAtk" }) },
     // fourteen sets: too many set multisets to walk at the first prefixes, so the bound takes every set's own labels
     { c: caseOf("Rover · Any · 14 sets", "RoverHavocFemale", syntheticPool(53, 18, "NightmareCrownless", Object.keys(echoSetLabelMap).sort().slice(0, 14)), "NightmareCrownless", "Any") },
+    // the same path with nothing but set bonuses to lift the score: a candidate's 2-piece the bound forgets shows at once
+    // (above, the per-stat maxima of real substats cover for it)
+    { c: caseOf("Rover · Any · 13 candidate sets, set bonuses alone", "RoverHavocFemale", setBonusOnlyPool("NightmareCrownless"), "NightmareCrownless", "Any", { target: "Stat:totalAtk" }) },
   ];
 
   for (const { c } of runs) {
