@@ -22,7 +22,7 @@ import type { TunerCandidatesResult } from "./tunerPlan";
 import type { FarmNextResult, FarmTeamResult } from "./farmNext";
 // Wuthering Tools+ team buffs from the team's real members (the app's switch, off under Cypress)
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
-import { erNeedsOf } from "../energy/energySubstats";
+import { erNeedsKey, erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
 
@@ -85,6 +85,10 @@ interface StoredCache {
   fingerprint: string;
   pass: EchoLabPassResult | null;
   benchmarks: BenchmarkBatchResult | null;
+  /** `erNeedsKey` of the ER needs the benchmarks were scored on (added 2026-11-03: a copy without it is scored again
+   *  once). A needs lookup that timed out or failed falls back to no floors, and those figures must not stand in a
+   *  later tab whose lookup answers */
+  benchErKey?: string | null;
   /** added with the Tuner plan (an older cache of the same version simply has none) */
   tunerPlan?: TunerCandidatesResult | null;
   /** added with the inventory's roll chips (2026-11-02; same rule: older caches have none) */
@@ -103,6 +107,10 @@ const savedLab = savedSlot<StoredCache>("echoLab", CACHE_VERSION, isStoredCache)
 /** when the pass shown was saved (ms), if it came from this browser's saved results rather than this visit or tab */
 const passSavedAt = ref<number | null>(null);
 let restoring: { fingerprint: string; done: Promise<void> } | null = null;
+/** the ER needs key the benchmarks shown were scored on, and whether it has been checked against this visit's needs
+ *  (true for a run in this tab; a restored copy is confirmed by `confirmBenchNeeds`) */
+let benchErKey: string | null = null;
+let benchConfirmed = false;
 /** what the saved copy holds as far as this tab knows (fingerprint, pass, benchmarks, Tuner plan): what it last wrote,
  *  or what it just read back */
 let lastSaved: readonly unknown[] = [];
@@ -119,7 +127,12 @@ function restoreSaved(fingerprint: string): Promise<void> {
       passStatus.cached = true;
       passSavedAt.value = hit.savedAt;
     }
-    if (!benchmarks.value && stored.benchmarks) benchmarks.value = stored.benchmarks;
+    if (!benchmarks.value && stored.benchmarks) {
+      // painted at once; the pages that show them confirm the ER needs (`confirmBenchNeeds`)
+      benchmarks.value = stored.benchmarks;
+      benchErKey = stored.benchErKey ?? null;
+      benchConfirmed = false;
+    }
     if (!tunerPlan.value && stored.tunerPlan) tunerPlan.value = stored.tunerPlan;
     // the tab now shows exactly what was saved: a roll-chip or Farm next write next must not re-save it as "just now"
     const parts = [fingerprint, pass.value, benchmarks.value, tunerPlan.value];
@@ -127,6 +140,27 @@ function restoreSaved(fingerprint: string): Promise<void> {
   });
   restoring = { fingerprint, done };
   return done;
+}
+
+/** Are the benchmarks here scored on this visit's ER needs? A restored copy whose needs differ is dropped (false), and
+ *  the Benchmark tab scores them again. Only the pages that show them ask: the lookup starts the energy check, and
+ *  /inventory restores this same record for its verdicts alone. */
+async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
+  if (benchConfirmed) return !!benchmarks.value;
+  const shown = benchmarks.value;
+  if (!shown) return false;
+  const key = erNeedsKey(await echoLabErNeeds(fingerprint));
+  if (resultFingerprint.value !== fingerprint || benchmarks.value !== shown) return benchConfirmed && !!benchmarks.value;
+  if (benchErKey === key) {
+    benchConfirmed = true;
+    return true;
+  }
+  benchmarks.value = null;
+  benchErKey = null;
+  // the saved copy stays as it was (every reader checks its key): dropping them is no reason for a roll-chip write to
+  // rewrite the record, which would make a two-day-old pass read "saved just now"
+  if (lastSaved[2] === shown) lastSaved = [lastSaved[0], lastSaved[1], null, lastSaved[3]];
+  return false;
 }
 
 function readCache(): StoredCache | null {
@@ -147,7 +181,7 @@ function writeSaved(value: StoredCache): void {
   const parts = [value.fingerprint, value.pass, value.benchmarks, value.tunerPlan ?? null];
   if (parts.every((p, i) => p === lastSaved[i])) return;
   lastSaved = parts;
-  void savedLab.write(value.fingerprint, { v: value.v, fingerprint: value.fingerprint, pass: value.pass, benchmarks: value.benchmarks, tunerPlan: value.tunerPlan ?? null });
+  void savedLab.write(value.fingerprint, { v: value.v, fingerprint: value.fingerprint, pass: value.pass, benchmarks: value.benchmarks, benchErKey: value.benchErKey ?? null, tunerPlan: value.tunerPlan ?? null });
 }
 
 function writeCache(): void {
@@ -160,6 +194,7 @@ function writeCache(): void {
       fingerprint: resultFingerprint.value,
       pass: pass.value,
       benchmarks: benchmarks.value,
+      benchErKey: benchmarks.value ? benchErKey : null,
       tunerPlan: tunerPlan.value,
       ratings: rated,
       farm: farm.value,
@@ -183,6 +218,8 @@ function adopt(fingerprint: string): void {
   resultFingerprint.value = fingerprint;
   pass.value = null;
   benchmarks.value = null;
+  benchErKey = null;
+  benchConfirmed = false;
   tunerPlan.value = null;
   farm.value = null;
   farmTeams.clear();
@@ -261,6 +298,8 @@ export function useEchoLab() {
       resultFingerprint.value = fingerprint;
       pass.value = stored.pass;
       benchmarks.value = stored.benchmarks;
+      benchErKey = stored.benchErKey ?? null;
+      benchConfirmed = false;
       tunerPlan.value = stored.tunerPlan ?? null;
       for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
       farm.value = stored.farm ?? null;
@@ -304,9 +343,12 @@ export function useEchoLab() {
   async function runBenchmarks(options: { force?: boolean } = {}): Promise<void> {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
-    if ((benchmarks.value && !options.force) || benchStatus.running || !builtCount.value) return;
+    if ((benchmarks.value && benchConfirmed && !options.force) || benchStatus.running || !builtCount.value) return;
     if (!options.force) {
       await restoreSaved(fingerprint);
+      if (resultFingerprint.value !== fingerprint || benchStatus.running) return;
+      // a saved copy stands only when it was scored on the ER needs the energy check reads now
+      if (benchmarks.value && (await confirmBenchNeeds(fingerprint))) return;
       if (resultFingerprint.value !== fingerprint || benchmarks.value || benchStatus.running) return;
     }
     benchAbort?.abort();
@@ -320,8 +362,19 @@ export function useEchoLab() {
     if (benchAbort === controller) benchAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       benchmarks.value = result;
+      benchErKey = erNeedsKey(erNeeds);
+      benchConfirmed = true;
       writeCache();
     }
+  }
+
+  /** The re-roll tab shows the benchmark scores beside its characters, so a restored copy answers to this visit's ER
+   *  needs there too. Scores nothing itself: a copy that is dropped leaves the tab without its scores. */
+  async function checkBenchmarks(): Promise<void> {
+    const { fingerprint } = snapshot();
+    adopt(fingerprint);
+    await restoreSaved(fingerprint);
+    if (resultFingerprint.value === fingerprint) await confirmBenchNeeds(fingerprint);
   }
 
   const rerollKey = (characterId: string, slot: number): string => `${resultFingerprint.value}|${characterId}|${slot}`;
@@ -479,6 +532,7 @@ export function useEchoLab() {
     refresh,
     hydrate,
     runBenchmarks,
+    checkBenchmarks,
     runReroll,
     rerollOf,
     tunerPlan,

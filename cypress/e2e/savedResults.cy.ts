@@ -278,12 +278,33 @@ describe("saved results", () => {
     // the pass is saved first, then again with the benchmarks beside it
     waitSaved("echoLab", (values) => values.some((v) => v.pass && v.benchmarks)).should("eq", true);
 
+    // the saved copy's ER needs are confirmed on arrival: they match, so nothing runs
     watchAppears("[data-test-echo-lab-progress], [data-test-echo-lab-benchmark-progress]");
     newTab();
     cy.get("[data-test-echo-lab-meta]", { timeout: 10000 }).should("have.attr", "data-saved-result");
     cy.get("[data-test-echo-lab-meta]").should("contain.text", "saved just now");
     cy.get("@rows").then((rows) => cy.get("[data-test-echo-lab-benchmark-row]").should("have.length", rows as unknown as number));
     cy.window().its("__appeared").should("eq", false);
+  });
+
+  it("/echo-lab: saved benchmarks scored on other ER needs are scored again", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab?tab=benchmark", seedLab);
+    cy.get("[data-test-echo-lab-benchmark-row]", { timeout: 60000 }).should("exist");
+    cy.get("[data-test-echo-lab-benchmark-progress]", { timeout: 60000 }).should("not.exist");
+    // the benchmarks are saved with the key of the ER needs they were scored on
+    waitSaved("echoLab", (values) => values.some((v) => v.benchmarks && typeof v.benchErKey === "string")).should("eq", true);
+    // as if the energy check had read other needs then (or timed out and fallen back to none)
+    editSaved("echoLab", (v) => (v.benchErKey = "Cartethyia:999")).should("eq", 1);
+
+    watchAppears("[data-test-echo-lab-benchmark-progress]");
+    newTab();
+    cy.get("[data-test-echo-lab-meta]", { timeout: 10000 }).should("have.attr", "data-saved-result");
+    // the saved pass stands; the benchmarks are scored again once the needs arrive and do not match
+    cy.window().its("__appeared", { timeout: 60000 }).should("eq", true);
+    cy.get("[data-test-echo-lab-benchmark-progress]", { timeout: 60000 }).should("not.exist");
+    cy.get("[data-test-echo-lab-benchmark-row]").should("exist");
+    waitSaved("echoLab", (values) => values.every((v) => v.benchmarks && v.benchErKey !== "Cartethyia:999")).should("eq", true);
   });
 
   it("/inventory's roll chips, rated in a new tab, leave Echo Lab's saved pass as it was saved", () => {

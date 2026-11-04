@@ -211,6 +211,7 @@ watch(
 );
 
 const scoreOf = (id: string): number | null => props.benchmarks?.results.find((r) => r.characterId === id)?.score ?? null;
+void lab.checkBenchmarks();
 
 const adviceOf = (slot: number): RerollAdviceResult | { error: string } | null => (current.value ? lab.rerollOf(current.value.id, slot) : null);
 const resultOf = (slot: number): RerollAdviceResult | null => {
