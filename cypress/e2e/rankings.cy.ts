@@ -283,22 +283,39 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     });
     cy.get("[data-test-rankings-sync-close]").click();
     cy.get("[data-test-rankings-sync-report]").should("not.exist");
-    // a team that drifted from its loop is rewritten, and Undo puts it back as it was; Cartethyia's member loop, saved
-    // as if before loops carried a rotation time, gets the synced team's seconds and loses them again on Undo
-    // (rankings/rotationDurations.ts)
     type Loop = { description?: string; duration?: number | null };
     const loopOf = (win: Window): Loop | undefined =>
       (JSON.parse(win.localStorage.getItem("character") ?? "{}") as { characters?: Record<string, { rotations?: Loop[] }> }).characters?.Cartethyia?.rotations?.find((r) => String(r.description ?? "").startsWith("Steady-state loop from the Team Rankings page"));
+    // a sync that rewrites no team but fills a member loop's rotation time keeps the Undo its confirm promised
     cy.window().then((win) => {
-      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
-      store.teams[0]!.actions = store.teams[0]!.actions.slice(0, 3);
-      win.localStorage.setItem("teamRotations", JSON.stringify(store));
       const chars = JSON.parse(win.localStorage.getItem("character") ?? "{}") as { characters: Record<string, { rotations?: Loop[] }> };
       const loop = chars.characters.Cartethyia?.rotations?.find((r) => String(r.description ?? "").startsWith("Steady-state loop from the Team Rankings page"));
       expect(loop, "the import saved Cartethyia's member loop").to.not.eq(undefined);
       expect(Number(loop!.duration), "a fresh import carries the loop's time").to.be.greaterThan(0);
       loop!.duration = null;
       win.localStorage.setItem("character", JSON.stringify(chars));
+    });
+    cy.reload();
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get("[data-test-rankings-sync]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-rankings-sync-summary]", { timeout: 180000 }).should("contain.text", "1 unchanged");
+    cy.get("[data-test-rankings-sync-loop-times]").should("contain.text", "Rotation time added to 1 saved member loop");
+    cy.window().should((win) => expect(Number(loopOf(win)?.duration), "the sync filled the loop").to.be.greaterThan(0));
+    cy.get("[data-test-rankings-sync-undo]").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Take the 1 rotation time").and("contain.text", "rewrote no team");
+    cy.get(".confirm-dialog .modal-action .btn-primary").should("contain.text", "Take out").click();
+    cy.get("[data-test-rankings-sync-summary]").should("contain.text", "Undone: 1 rotation time taken out").and("not.contain.text", "team");
+    cy.window().should((win) => expect(loopOf(win)?.duration ?? null, "Undo took the filled rotation time back out").to.eq(null));
+    cy.get("[data-test-rankings-sync-close]").click();
+    cy.get("[data-test-rankings-sync-report]").should("not.exist");
+    // a team that drifted from its loop is rewritten, and Undo puts it back as it was; Cartethyia's member loop, saved
+    // as if before loops carried a rotation time, gets the synced team's seconds and loses them again on Undo
+    // (rankings/rotationDurations.ts)
+    cy.window().then((win) => {
+      const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
+      store.teams[0]!.actions = store.teams[0]!.actions.slice(0, 3);
+      win.localStorage.setItem("teamRotations", JSON.stringify(store));
     });
     cy.reload();
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
@@ -323,7 +340,7 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
     });
     cy.get("[data-test-rankings-sync-undo]").click();
     cy.get(".confirm-dialog .modal-action .btn-primary").should("contain.text", "Put it back").click();
-    cy.get("[data-test-rankings-sync-summary]").should("contain.text", "Undone: 1 team put back");
+    cy.get("[data-test-rankings-sync-summary]").should("contain.text", "Undone: 1 team put back · 1 rotation time taken out");
     cy.window().should((win) => {
       const store = JSON.parse(win.localStorage.getItem("teamRotations") ?? "{}") as { teams: Array<{ actions: unknown[] }> };
       expect(store.teams).to.have.length(1);

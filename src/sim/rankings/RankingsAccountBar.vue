@@ -262,7 +262,7 @@
     <div class="wt-sync-report__head flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
       <span class="font-semibold">Sync my teams</span>
       <span class="text-xs opacity-70" data-test-rankings-sync-summary>
-        <template v-if="undone">Undone: {{ undone.restored }} team{{ undone.restored === 1 ? "" : "s" }} put back<template v-if="undone.kept.length"> · {{ undone.kept.map((k) => `${k.name} ${k.why}`).join(" · ") }}</template></template>
+        <template v-if="undone">Undone: <template v-if="undone.restored || !undone.loops">{{ undone.restored }} team{{ undone.restored === 1 ? "" : "s" }} put back</template><template v-if="undone.loops">{{ undone.restored ? " · " : "" }}{{ plural(undone.loops, "rotation time") }} taken out</template><template v-if="undone.kept.length"> · {{ undone.kept.map((k) => `${k.name} ${k.why}`).join(" · ") }}</template></template>
         <template v-else>at your account, {{ spreadLabel(report.subs) }} · {{ report.updated }} updated · {{ report.unchanged }} unchanged · {{ report.skipped }} left alone<template v-if="report.failed"> · {{ report.failed }} failed</template></template>
       </span>
       <span v-if="syncError" class="text-xs text-error">{{ syncError }}</span>
@@ -624,9 +624,9 @@ const report = ref<SyncReport | null>(null);
 const syncError = ref<string | null>(null);
 const showDetails = ref(false);
 const undoRecord = ref<SyncUndoRecord | null>(readSyncUndo());
-const undone = ref<{ restored: number; kept: SyncUndoOutcome["kept"] } | null>(null);
+const undone = ref<{ restored: number; kept: SyncUndoOutcome["kept"]; loops: number } | null>(null);
 const syncTitle = "re-import every saved wuwa_calc team (imports and presets) at your account's sequences, weapons and refinements, updating each in place; your own teams are left alone";
-const undoTitle = "put the teams the last sync rewrote back as they were (a team you edited since stays as it is)";
+const undoTitle = "put the teams the last sync rewrote back as they were and take out the rotation times it added (a team you edited since stays as it is)";
 const badgeClass = (s: SyncStatus): string => (s === "updated" ? "badge-primary" : s === "unchanged" ? "badge-ghost" : s === "failed" ? "badge-error" : "badge-outline");
 const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`;
 async function sync(): Promise<void> {
@@ -660,7 +660,13 @@ async function sync(): Promise<void> {
     const after: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
     undoRecord.value = makeSyncUndo(snapshot, after, report.value);
     saveSyncUndo(undoRecord.value);
-    durations.value = fillLoopTimes(after);
+    const filled = fillLoopTimes(after);
+    durations.value = filled;
+    // the confirm promises an Undo: a sync that rewrote no team but filled loop times gets one too, with no team in it
+    if (!undoRecord.value && filled.fills.length) {
+      undoRecord.value = { v: 1, at: new Date().toISOString(), before: [], after: {} };
+      saveSyncUndo(undoRecord.value);
+    }
     // the report under the bar is the outcome; a success toast only covered its Close button
   } catch (err) {
     syncError.value = err instanceof Error ? err.message : String(err);
@@ -676,12 +682,16 @@ async function undoSync(): Promise<void> {
   open.value = null;
   // asks first, as /build-team's Undo does: the record outlives a reload, so the tap can come long after the sync
   const n = rec.before.length;
+  const loops = readDurationUndo().length;
+  const loopTimes = plural(loops, "rotation time");
   const ok = await confirm(
-    `Put ${plural(n, "team")} back as ${n === 1 ? "it was" : "they were"} before the last sync? A team you edited since the sync stays as it is.`,
+    n
+      ? `Put ${plural(n, "team")} back as ${n === 1 ? "it was" : "they were"} before the last sync? A team you edited since the sync stays as it is.${loops ? ` The ${loopTimes} it added to your member loops ${loops === 1 ? "comes" : "come"} back out too.` : ""}`
+      : `Take the ${loopTimes} the last sync added back out of your member loops? It rewrote no team, and a time you changed since stays as it is.`,
     {
       title: "Undo the last sync",
       items: rec.before.slice(0, 8).map((t) => parsePresetName(t.name).title || t.name).concat(n > 8 ? [`+${n - 8} more`] : []),
-      confirmLabel: n === 1 ? "Put it back" : `Put ${n} back`,
+      confirmLabel: !n ? "Take out" : n === 1 ? "Put it back" : `Put ${n} back`,
     },
   );
   if (!ok || undoRecord.value !== rec) return;
@@ -695,8 +705,7 @@ async function undoSync(): Promise<void> {
   });
   undoRecord.value = null;
   saveSyncUndo(null);
-  unfillLoopTimes();
-  undone.value = { restored: out.restored.length, kept: out.kept };
+  undone.value = { restored: out.restored.length, kept: out.kept, loops: unfillLoopTimes() };
   report.value ??= { at: rec.at, cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
 }
 function closeReport(): void {
@@ -720,13 +729,20 @@ function fillLoopTimes(after: TeamLike[]): DurationPlan {
 }
 const loopTimesText = (plan: DurationPlan): string =>
   plan.fills.slice(0, 4).map((f) => `${characterShortName(f.characterId)} ${f.to} s`).join(", ") + (plan.fills.length > 4 ? `, +${plan.fills.length - 4} more` : "");
-function unfillLoopTimes(): void {
+/** Takes the last sync's filled times back out; how many it took (a time the player changed since stays). */
+function unfillLoopTimes(): number {
   const fills = readDurationUndo();
   const chars = characterStore.characters as Record<string, any>;
+  let taken = 0;
   for (const id of new Set(fills.map((f) => f.characterId))) {
-    if (chars[id]) characterStore.setCharacterRotations(id, revertRotationDurations(chars[id].rotations ?? [], fills.filter((f) => f.characterId === id)));
+    if (!chars[id]) continue;
+    const rotations: any[] = chars[id].rotations ?? [];
+    const next = revertRotationDurations(rotations, fills.filter((f) => f.characterId === id));
+    taken += next.filter((r, i) => r !== rotations[i]).length;
+    characterStore.setCharacterRotations(id, next);
   }
   saveDurationUndo(null);
+  return taken;
 }
 
 const saving = ref(false);
