@@ -263,6 +263,12 @@ describe("saving the account plan", () => {
     expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true))).toEqual(["Ciaccona"]);
   });
 
+  it("saves a member who keeps their echoes when the run's buffs move their number: the review counted that build", () => {
+    const m = (characterId: string, after: number) => ({ characterId, status: "ok", draft: { echoes: {} }, sameEchoes: true, alsoIn: [], fromBuild: { id: null, name: null, source: "active" }, before: { value: 100 }, after: { value: after } }) as any;
+    const plan = { members: [m("Buffed", 103), m("Unchanged", 100)], teams: [{ spec: { id: "saved-a" }, slots: [{ slot: 0, member: 0 }, { slot: 1, member: 1 }] }] } as any;
+    expect(accountApplyRequest(plan, false).members.map((x) => x.characterId)).toEqual(["Buffed"]);
+  });
+
   it("save with the defaults, plan again, also make active: the plan can still be made active", async () => {
     const plain = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
     const planNow = () =>

@@ -2982,6 +2982,9 @@ Rules:
   planned character wears their plan and no echo is worn twice among them. That includes a member whose team already pins
   a build with these echoes (an earlier save leaves exactly that): they get a new build too, or they would stay on an active
   build holding echoes the plan gave to someone else.
+- **The review counts what the save writes:** a member who keeps their echoes is left out of the save only when their number
+  does not move either. The same echoes can score more with the run's set or main-echo buffs switched on (Build my team's
+  `worthSaving`), and the team totals count that build: leaving Xuanling out promised 5.56M -> 5.61M and delivered 5.45M.
 - **One enemy, said on the page:** every team is scored at the rankings' enemy, so a saved team with its own enemy reads
   differently on Teams (Xuanling + Suisui + Chisa: 5.56M here, 7.66M there, with its 9 Havoc Bane and 13 Glacio Chafe stacks).
   The pins make Teams wear the plan's builds; they do not make the two numbers equal.
@@ -2999,7 +3002,7 @@ both —, Cartethyia + Shorekeeper + Ciaccona, Xuanling + Suisui + Chisa; 43 fie
   plans included (27.1, 37.5, 48.8, 62.2 s over four runs). Under the 2-minute aim.
 - Result: Energy Regen needs met 7 → 9 of 10; weighted team damage −0.7 % on the page (−0.8 % in the CLI's rounding):
   Aemeath −1.5 % and Cartethyia −4.2 % to reach the 115.1 % / 116.7 % their loops need (today 110.8 % / 106.8 %); Xuanling
-  +3.2 %, Lucilla +12.9 %, Suisui +9.6 %; 8 builds to save.
+  +3.2 % (the same echoes: his Song of Feathered Trace 5pc buff, switched on), Lucilla +12.9 %, Suisui +9.6 %; 9 builds to save.
 - An earlier run kept one swap the optimizer scored as a tiny gain while the team totals went slightly down: hence
   `minGain` and the calculator check.
 

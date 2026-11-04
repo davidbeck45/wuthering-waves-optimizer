@@ -14,6 +14,7 @@ import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
 import { snapshotCharacters } from "../../buildHistory/history";
 import { randomString } from "../../../utils/strings";
 import type { BuildTeamStores } from "../apply";
+import { worthSaving } from "../buildTeamView";
 import type { BuildAccountResult } from "./buildAccount";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -184,15 +185,17 @@ export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord
   return { kind: "partial", removed, kept, pinsRestored };
 }
 
-/** Who the plan saves: every member with a new build, except one who keeps exactly today's echoes and plays in no
- *  other chosen team (nothing would change for them). With `makeActive` that exception needs them to wear those echoes
- *  already: a team can pin a build they do not wear (an earlier save does), and left on their active build they would
- *  still wear echoes the plan gives to someone else. Each pinned in every chosen saved team they play in. */
+/** Who the plan saves: every member with a new build, except one who keeps exactly today's echoes, scores the same with
+ *  them and plays in no other chosen team (nothing would change for them). The same echoes can score more with the run's
+ *  set or main-echo buffs switched on (`worthSaving`, Build my team's rule): the review's team totals count that build,
+ *  so it is saved. With `makeActive` the exception also needs them to wear those echoes already: a team can pin a build
+ *  they do not wear (an earlier save does), and left on their active build they would still wear echoes the plan gives
+ *  to someone else. Each pinned in every chosen saved team they play in. */
 export function accountApplyRequest(result: Pick<BuildAccountResult, "members" | "teams">, makeActive: boolean): AccountApplyRequest {
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
-    if (m.sameEchoes && !m.alsoIn.length && (!makeActive || m.fromBuild.source === "active")) return;
+    if (m.sameEchoes && !m.alsoIn.length && !worthSaving(m) && (!makeActive || m.fromBuild.source === "active")) return;
     const pins = result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
     members.push({ characterId: m.characterId, draft: m.draft, pins });
   });

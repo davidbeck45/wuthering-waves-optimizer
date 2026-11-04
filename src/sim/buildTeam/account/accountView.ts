@@ -1,6 +1,6 @@
 // Wuthering Tools+ — "Whole account": what the page says, kept out of the component so it is testable. Pure.
 import { characterDisplayName } from "../../display/names";
-import { echoName, statShort, setName } from "../buildTeamView";
+import { buffDefaultNames, echoName, statShort, setName, worthSaving } from "../buildTeamView";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
 
@@ -69,7 +69,8 @@ export function memberNote(m: AccountMember): string | null {
   if (m.status !== "ok") return m.message ?? null;
   const notes: string[] = [];
   // `keptCurrent` alone is not enough: a swap can change a build that started as today's
-  if (m.sameEchoes) notes.push("keeps today's echoes");
+  if (m.sameEchoes && worthSaving(m) && m.buffDefaults.length) notes.push(`same echoes as today: the change is ${buffDefaultNames(m.buffDefaults).join(", ")}, switched on`);
+  else if (m.sameEchoes) notes.push("keeps today's echoes");
   if (m.erFloor != null && m.erMet && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor) notes.push(`now meets the ${m.erFloor.toFixed(1)} % Energy Regen need (today ${m.before.menuEr.toFixed(1)} %)`);
   else if (m.erMet === false) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);
   if (m.relaxed === "mainStats") notes.push("any main stat (the plan's ones ran out)");

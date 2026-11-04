@@ -70,6 +70,9 @@ describe("account view", () => {
     expect(memberNote(member({ keptCurrent: true, sameEchoes: true, erFloor: null, erMet: null }))).toBe("keeps today's echoes");
     // a swap changed a member who had kept today's build: their echoes are not today's, so no note may say they are
     expect(memberNote(member({ keptCurrent: true, sameEchoes: false, erFloor: null, erMet: null, relaxed: null }))).toBeNull();
+    // the same echoes scoring more is the run's buffs switched on, not a better build: said by name (Build my team's rule)
+    const buffed = { keptCurrent: true, sameEchoes: true, erFloor: null, erMet: null, before: { value: 100, menuEr: 110, withRunBuffs: 103 }, after: { value: 103, optimizerValue: 103, menuEr: 110, picks: [] }, buffDefaults: ["SongofFeatheredTrace5SetChongming"] };
+    expect(memberNote(member(buffed))).toMatch(/same echoes as today: the change is Song of Feathered Trace 5pc \(Chongming\), switched on/i);
     // the search found today's echoes on its own: still true to say so
     expect(memberNote(member({ keptCurrent: false, sameEchoes: true, erFloor: null, erMet: null }))).toMatch(/keeps today's echoes/);
     expect(memberNote(member({ status: "noEchoes", message: "No Moonlit Clouds echoes." }))).toBe("No Moonlit Clouds echoes.");
