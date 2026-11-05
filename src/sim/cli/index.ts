@@ -565,7 +565,7 @@ export function registerPlusCommands(program: Command): void {
         ]),
       );
       for (const f of loopTimes.fills) console.log(`  rotation time ${f.to}s → ${f.characterId}'s "${f.name}" (from ${f.teamName})`);
-      if (loopTimes.gaps.length) console.log(`  ${loopTimes.gaps.length} member loop(s) without a rotation time and no synced team of the same three at the same tier: ${loopTimes.gaps.map((g) => `${g.characterId} "${g.name}"`).join("; ")}`);
+      if (loopTimes.gaps.length) console.log(`  ${loopTimes.gaps.length} member loop(s) still without a rotation time, no one synced team of the same three at the same tier to take it from: ${loopTimes.gaps.map((g) => `${g.characterId} "${g.name}"`).join("; ")}`);
       if (out) console.log(`\nwrote ${out} — Settings › Import replaces the whole app database with it; the source export is untouched.`);
     }),
   );
