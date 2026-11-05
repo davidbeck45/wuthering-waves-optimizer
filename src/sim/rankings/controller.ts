@@ -931,6 +931,11 @@ async function refreshRows(): Promise<void> {
   if (stale()) return;
   barReset();
   const partial = soFarPainter(gen, stale, f.cost === "mine");
+  // the pass's last draw. A team opened from the rows so far stays as it is: drawing the same page again jumped its
+  // scroll to the top (700 px to 0 on a phone) for nothing, and Back draws the table from the visible rows
+  const drawRows = (): void => {
+    if (!(soFar?.gen === gen && renderedKey && renderedKey === M.routeTeam())) route();
+  };
   try {
     const inPlay = (Object.entries(M.TEAMS) as [string, Member[]][]).filter(([key, members]) => M.teamWanted(key, members)); // Riley's teamWanted takes the key since Sept 2026
     // workers come up while the empty table draws, but only if there is something to solve
@@ -952,11 +957,11 @@ async function refreshRows(): Promise<void> {
       barProgress(rows.length, rows.length);
       settleSoFar();
       M.setVisibleRows(cached);
-      route();
+      drawRows();
     } else if (!missing) {
       settleSoFar();
       M.setVisibleRows([]);
-      route();
+      drawRows();
     }
     await runMissing(rows, stale);
     if (stale()) return;
@@ -965,7 +970,7 @@ async function refreshRows(): Promise<void> {
       if (stale()) return;
       settleSoFar();
       M.setVisibleRows(rows);
-      route();
+      drawRows();
     }
   } catch (err) {
     partial.stop();

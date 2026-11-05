@@ -1387,6 +1387,8 @@ Things learned:
   only after the first pass (nothing was on screen before it ended), so mid-solve the first did nothing and Back
   followed its `#` onto his S0R1 tier; `boot()` now wires both before that pass (verify1, `rankingsSoFar.cy.ts`). The
   docked box is hidden on a detail page opened from the rows so far: it is about the list, and it sat over his grids.
+  The pass's last draw leaves such a page alone (`drawRows`): drawing it again jumped its scroll to the top, 700 px to 0
+  on a phone, and Back draws the table from the visible rows.
 - The view's account and build watchers stop with the page, so a change made on another page reaches the controller only
   when the page mounts again. `mountRankings` compares what it is handed with what it last solved at and marks the table
   stale: without that, a pass left running had every answer refused by `file()` and landed on "0 teams", and a finished

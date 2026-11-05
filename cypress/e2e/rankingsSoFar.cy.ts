@@ -57,6 +57,42 @@ describe("wuwa_calc rankings: rows so far at My account (Wuthering Tools+)", () 
     cy.get(".skittle-root #teamCount").should("contain.text", "10 teams");
   });
 
+  it("a team opened from the rows so far keeps its place when the solve ends, and Back shows the whole table", () => {
+    cy.viewport(412, 915);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia", {
+      onBeforeLoad(win) {
+        // the solve holds on while the page is scrolled: on a fast machine ten teams would be done before the first scroll
+        const Real = win.Worker;
+        const Slow = function (this: Worker, ...args: ConstructorParameters<typeof Worker>) {
+          const worker = new Real(...args);
+          const post = worker.postMessage.bind(worker) as (...a: unknown[]) => void;
+          worker.postMessage = (...a: unknown[]) => void setTimeout(() => post(...a), 700);
+          return worker;
+        } as unknown as typeof Worker;
+        win.Worker = Slow;
+      },
+    });
+    cy.get(".skittle-root.wt-sofar [data-test-rankings-card]", { timeout: 90000 }).first().click();
+    cy.get(".skittle-root.wt-detail", { timeout: 30000 }).should("exist");
+    const scroller = (win: Cypress.AUTWindow): Element => [win.document.querySelector(".skittle-root main"), win.document.scrollingElement].find((el) => el && el.scrollHeight > el.clientHeight + 200)!;
+    cy.window().then((win) => {
+      scroller(win).scrollTop = 300;
+      expect(scroller(win).scrollTop, "scrolled down the team").to.be.greaterThan(100);
+      cy.get(".skittle-root").should("have.class", "wt-sofar"); // still solving when it scrolled
+      cy.wrap(scroller(win).scrollTop).as("top");
+    });
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root").should("not.have.class", "wt-sofar");
+    cy.get("@top").then((top) => {
+      cy.window().then((win) => expect(scroller(win).scrollTop, "the page stayed where it was").to.eq(top));
+    });
+    cy.get(".skittle-root #backLink").click();
+    cy.get(".skittle-root").should("not.have.class", "wt-detail");
+    cy.get(".skittle-root #teamCount").should("contain.text", "10 teams").and("not.contain.text", "so far");
+  });
+
   it("an account changed on another page mid-solve comes back solved at the new account, not as an empty list", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
