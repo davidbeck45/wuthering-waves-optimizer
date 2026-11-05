@@ -22,6 +22,7 @@ import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type Com
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
 import { appKeyOf } from "./rileyNames";
 import { soFarScheduler, type SoFarScheduler } from "./soFar";
+import { dropUnkept, keepInLine } from "./solveQueue";
 import { leavesTabRing } from "./tabEscape";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -328,9 +329,7 @@ async function drainHere(): Promise<void> {
 
 /** A new pass has started: the old one's teams still in line are dropped, unsolved (a sync's are kept). */
 function cancelQueued(): void {
-  const dropped = queue.filter((job) => !job.keep);
-  queue.splice(0, queue.length, ...queue.filter((job) => job.keep));
-  for (const job of dropped) job.done();
+  for (const job of dropUnkept(queue)) job.done();
 }
 
 /** Solve `teams` under `f` — on the pool when there is one — waiting on any already out. `onTeam` hears each team
@@ -341,7 +340,10 @@ function solveAll(teams: [string, Member[]][], f: any, share: (members: Member[]
   const waits = teams.map(([key, members]) => {
     const bk = bestKey(key, members, f);
     const out = inFlight.get(bk);
-    if (out) return out.then(() => { share(members, 1); onTeam?.(); });
+    if (out) {
+      if (keep) keepInLine(queue, bk);
+      return out.then(() => { share(members, 1); onTeam?.(); });
+    }
     const solved = new Promise<void>((resolve) => queue.push({
       id: jobId++, key, members, f, bk, keep, known: picksCache.get(picksKey(key, members, f)) ?? null,
       onShare: (part) => share(members, part),
