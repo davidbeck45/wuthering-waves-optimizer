@@ -1291,6 +1291,33 @@ data, Aemeath's saved optimizer config widened to two sets, 192,680 loadouts): 3
 same five rows; his saved 13,240-loadout run stays at ~7 s — batches of 5,000 keep only three workers busy and
 worker start-up dominates. `cypress/e2e/optimizerExact.cy.ts`: rows 1–5 identical on four golden configs.
 
+**A press too early, twice, or left running (`optimizerPress.ts`, 2026-11-05).** A run reads what the page holds the
+moment it starts, and the optimizer panel is up before the character is (a slow chunk, a character just picked). With no
+module `buildOptimizerRotationData` drops every action it cannot resolve; with the module but no weapon yet the rows are
+about half what they should be (Zani's top row 3436, then 780811, instead of 1761746), and both end on a normal "Processed
+100 of 100 loadouts". The speedups did not cause this: the same held-module A/B on the old and new workers fails alike
+(`wto-wt/b3/reports/harvest-optimizer-speed.md`). What holds now:
+
+| Case | What happens |
+|---|---|
+| Pressed before the character or its weapon is in | the press is held and runs once both are, on what the page holds by then. Only the module says which kind of weapon it is, so the weapon always comes last. A second press replaces the held one |
+| A weapon that can never come (none chosen, or one this build lacks) | holds nothing back: the run matches the page, which reads the character with no weapon too |
+| Pressed during a run | the run in flight stops first. Two ran side by side before, and the last to finish won |
+| Another character picked during a run or a hold | both stop: that run's rows, and that press's settings, were for the old one |
+| Two characters picked while the first still loads | the older load is ignored. It used to set the active character back and pull the page to it |
+
+Things learned: `isLoading` is not "ready": it ends 10 ms after the module is read, while the weapon panels are only then
+told the weapon's kind, and `update-weapon` reports stats first and the passives one render later (their rows mount and
+report), hence the post-flush `settle`. v3's weapon panel reports nothing until the new weapon is in, so a weapon with no
+passive rows to report their going stays in hand meanwhile: `optimizerWeaponIn` resets when `characterBuildKey` moves, not
+on the report alone.
+`optimizerExact.cy.ts` holds each module back and reads the five rows, and waits on those same signals (`.character__self-buffs`,
+`[data-test-weapon-passive]`) in its golden runs; the guide button it used to wait on shows long before either.
+
+Hooks in Ryan's `Calculator.vue` (kept to single lines, marked `Wuthering Tools+`): his `handleOptimize` is now `runOptimizer`
+behind the gate, which stops the last run first; the `character` watcher stops a run and ignores a load it has been picked
+past; `handleWeaponUpdated` records the report; `distributeWork` publishes nothing for a stopped run.
+
 ### First useful paint — the speed pass (track "speed", 2026-11-02)
 
 Since 2026-10-31 a hashless `/rankings` opens on **My account** (`tierMemory.ts`). Riley ships solves for his tiers

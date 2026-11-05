@@ -568,6 +568,8 @@ import {
 } from "../calculator/optimizer";
 // Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials) — src/sim/README.md
 import { planOptimizerGeneration, pruneSetupOf } from "../sim/optimizer/optimizerPool";
+import { optimizerPress } from "../sim/optimizer/optimizerPress"; // Wuthering Tools+: a run never starts on a half-loaded character
+import { getWeaponByName } from "../weapons/weapons";
 import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
@@ -862,6 +864,7 @@ export default defineComponent({
     const optimizerSearchComplete = ref(false);
     const liveBestResult = ref<any>(null);
     let currentOptimizerCleanup: (() => void) | null = null;
+    const optimizerWeaponIn = ref(false); // Wuthering Tools+: see optimizerPress below
     let optimizerTimerStartMs = 0;
     let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -908,6 +911,7 @@ export default defineComponent({
 
     watch(character, async (charName) => {
       isLoading.value = true;
+      stopOptimizerRun(); // Wuthering Tools+: the old character's run must not land on this one
       // Restore this character's own remembered target/damage type if one
       // was saved before; otherwise null so the calcAllDamages pass below
       // resolves this character's declared default instead of keeping the
@@ -923,6 +927,7 @@ export default defineComponent({
       await nextTick();
       isRestoringLiveResultBarPreference = false;
       const chosen = await getCharByName(charName);
+      if (charName !== character.value) return; // Wuthering Tools+: picked past while loading; the later load ends isLoading
       chosenChar.value = chosen;
       // set the character in the store
       characterStore.setActiveCharacter(charName);
@@ -1236,6 +1241,7 @@ export default defineComponent({
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {
+      optimizerWeaponIn.value = givenWeaponData.attack > 0; // Wuthering Tools+: see optimizerPress below
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
@@ -1482,7 +1488,7 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleOptimize = (
+    const runOptimizer = (
       setFilters = [],
       mainEchoes = [],
       minStats = [],
@@ -1493,6 +1499,7 @@ export default defineComponent({
       ignoreOtherResonantorEchoes = false,
       loadoutFormat = "Any",
     ) => {
+      currentOptimizerCleanup?.(); // Wuthering Tools+: one run at a time, or the last to finish wins
       const echoes = inventoryStore.echoes;
       const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
@@ -1656,6 +1663,25 @@ export default defineComponent({
         loadoutFormat,
         emptyReasonContext,
       );
+    };
+
+    // Wuthering Tools+: a press before the character and its weapon are in waits for them (src/sim/optimizer/optimizerPress.ts).
+    // Post flush: the weapon's passives report as they mount, in the render after its stats.
+    const optimizerPressGate = optimizerPress({
+      characterIn: () => !isLoading.value,
+      weaponIn: () => optimizerWeaponIn.value,
+      weaponCanLoad: async () => {
+        const held = characters.value?.[character.value]?.weapon;
+        return !!held && !!(await getWeaponByName(weaponType.value, held));
+      },
+      run: runOptimizer,
+    });
+    const handleOptimize = optimizerPressGate.press;
+    watch([isLoading, optimizerWeaponIn], () => optimizerPressGate.settle(), { flush: "post" });
+    watch(characterBuildKey, () => { optimizerWeaponIn.value = false; }); // its panel reports again
+    const stopOptimizerRun = () => {
+      optimizerPressGate.drop();
+      currentOptimizerCleanup?.();
     };
 
     // Helper function to serialize echoes array (only include needed properties)
@@ -2099,6 +2125,7 @@ export default defineComponent({
 
       // Distribute work to available workers
       const distributeWork = () => {
+        if (cleanedUp) return; // Wuthering Tools+: a stopped run publishes nothing
         // Don't distribute work if workers aren't ready yet
         if (readyWorkers < processorWorkers.length) {
           return;
@@ -2291,7 +2318,7 @@ export default defineComponent({
     // cleanup closure that run's handleOptimize call captured, then resets
     // every optimizer ref to its idle state.
     const cancelOptimizer = () => {
-      currentOptimizerCleanup?.();
+      stopOptimizerRun();
       currentOptimizerCleanup = null;
       stopOptimizerTimer();
       isOptimizerRunning.value = false;
