@@ -68,7 +68,7 @@ const bonusPieces = (bonus: string): string => {
   return m ? `completes the ${m[1]}-piece` : `adds ${bonus}`;
 };
 
-/** A few of the echoes to farm for the target, by name ("Diurnus Knight, Lumiscale Construct and 2 more"). */
+/** A few of the echoes to farm for the target, by name ("Diurnus Knight, Lumiscale Construct or 2 more"). */
 export function speciesText(names: readonly string[], max = 3): string {
   if (!names.length) return "";
   if (names.length <= max) return names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
