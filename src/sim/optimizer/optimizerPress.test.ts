@@ -3,7 +3,7 @@ import { optimizerPress } from "./optimizerPress";
 
 function setup(start: Partial<{ character: boolean; weapon: boolean; canLoad: boolean }> = {}) {
   const state = { character: true, weapon: true, canLoad: true, ...start };
-  const run = vi.fn<(target: string) => void>();
+  const run = vi.fn();
   const gate = optimizerPress<[string]>({
     characterIn: () => state.character,
     weaponIn: () => state.weapon,
@@ -98,8 +98,9 @@ describe("optimizerPress", () => {
   });
 
   it("an answer about a weapon does not start a press dropped, replaced or overtaken while it was out", async () => {
+    // eslint-disable-next-line no-unused-vars -- the parameters of a function type
     let answer!: (canLoad: boolean) => void;
-    const run = vi.fn<(target: string) => void>();
+    const run = vi.fn();
     const state = { character: true };
     const gate = optimizerPress<[string]>({
       characterIn: () => state.character,

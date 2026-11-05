@@ -232,11 +232,12 @@ describe("Claude assistant", { scrollBehavior: "center" }, () => {
 
   it("opens the command palette with Ctrl+K and jumps to /my-rankings", () => {
     stubAnthropic();
+    // a window under 720 px tall keeps the floating Ask (taller, it is a rail item, which stays), so stepping aside is tested
+    cy.viewport(1280, 700);
     cy.visit("/", seedV3());
-    cy.get("[data-test-ai-open]").should("be.visible");
+    cy.get(".wt-ask-button").should("be.visible");
     cy.get("body").type("{ctrl}k");
     cy.get("[data-test-palette]").should("be.visible");
-    // (on this v3 desktop Ask is a rail item, which stays; a floating Ask button steps aside for the palette)
     cy.get(".wt-ask-button").should("not.exist");
     cy.get("[data-test-palette-input]").should("be.focused").type("roster rank");
     cy.get("[data-test-palette-item='page:/my-rankings']").should("exist");
