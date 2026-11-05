@@ -97,7 +97,7 @@ describe("Crit luck on the fight pages", () => {
     expectInside("[data-test-toa-stage-chance]", "stage chance at 412 px / 130 %");
     // the chance stacks under the stars ("of runs" on its own line), so the planned kill time beside them is never cut
     // (on one line it squeezed the note to "2:2…" at 360 px)
-    for (const [width, height] of [[412, 915], [360, 800]] as const) {
+    const killTimeShows = (width: number, height: number) => {
       cy.viewport(width, height);
       cy.get("[data-test-toa-stage-chance]").each(($c) => {
         const note = $c[0].closest("[data-test-toa-stage]")!.querySelector<HTMLElement>("[data-test-toa-stage-note]")!;
@@ -110,7 +110,17 @@ describe("Crit luck on the fight pages", () => {
         range.setEnd(note.firstChild!, time!.index + time![0].length);
         expect(range.getBoundingClientRect().right, `"${note.textContent}": its kill time shows at ${width} px / 130 %`).to.be.at.most(note.getBoundingClientRect().right - 12);
       });
-    }
+    };
+    killTimeShows(412, 915);
+    killTimeShows(360, 800);
+    // Figtree has no ★, so its width is the device's fallback font: a system font update turned 0.6 em stars into full
+    // 1 em ones and took the kill time out at 360 px. Hold the row to that widest star whatever this machine has installed.
+    cy.document().then((doc) => {
+      const widest = doc.createElement("style");
+      widest.textContent = "[data-test-toa-stage-crests] { width: 3em; }";
+      doc.head.appendChild(widest);
+    });
+    killTimeShows(360, 800);
     cy.viewport(412, 915);
     expectInside("[data-test-toa-plan-luck]", "plan crit-luck line at 412 px / 130 %");
   });

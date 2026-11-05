@@ -58,7 +58,8 @@
               </template>
               <div v-else class="min-w-0 flex-1 text-sm opacity-60">{{ f.hp ? "no team left with the Vigor" : "nobody left with the Vigor" }}</div>
               <div class="shrink-0 flex flex-col items-end leading-tight">
-                <div class="text-sm tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
+                <!-- phones: Figtree has no ★, so its width is whatever the device falls back to (0.6 em to a full 1 em); this size leaves the kill time room even at 1 em -->
+                <div class="text-sm max-sm:text-[0.7rem] tabular-nums" :class="(stageOf(f.id)?.crests ?? 0) ? 'toa-star text-warning' : 'text-error'" :data-test-toa-stage-crests="stageOf(f.id)?.crests ?? 0">
                   {{ "★".repeat(stageOf(f.id)?.crests ?? 0) }}<span class="opacity-30">{{ "★".repeat(3 - (stageOf(f.id)?.crests ?? 0)) }}</span>
                 </div>
                 <!-- phones: "of runs" on its own line, so the column stays as narrow as the stars and the kill time beside it shows -->
