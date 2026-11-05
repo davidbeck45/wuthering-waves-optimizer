@@ -18,6 +18,9 @@
       </div>
     </header>
 
+    <WorkStatus :busy="energy.busy.value" busy-text="Checking your teams' Energy Regen" done-text="Energy Regen check finished" />
+    <WorkStatus :busy="scan.status === 'running'" busy-text="Measuring every composition your account can field" :done-text="scanDoneText" />
+
     <!-- summary -->
     <section v-if="teams.length" class="en-kpis" aria-label="Summary" data-test-energy-summary>
       <div class="en-kpi">
@@ -238,6 +241,7 @@ import { haveText, intText, needText, pctText } from "./energyFormat";
 import { characterShortName } from "../display/names";
 import { teamTitle } from "../display/teamName";
 import { WHY_ENGINES_DIFFER } from "../display/numberBasis";
+import WorkStatus from "../display/WorkStatus.vue";
 import { checkOf, erRoll, OVERCAP_FLAG, overcapWeight, showNeed, TIGHT_MARGIN } from "./energyNeed";
 import { useEnergyNeeds, type TeamView } from "./useEnergyNeeds";
 import "../phone-tables.css";
@@ -326,6 +330,7 @@ const tightCharacters = computed(() => {
   return [...tight].sort();
 });
 const scan = energy.scan;
+const scanDoneText = computed(() => (scan.status === "cancelled" ? "Stopped measuring compositions" : scan.status === "error" ? "Measuring compositions failed" : "Finished measuring compositions"));
 const sheet = ref<{ view: TeamView; id: string } | null>(null);
 
 const FLOOR_RANK: Record<string, number> = { short: 0, tight: 1, ok: 2, noGate: 3, unknown: 4 };

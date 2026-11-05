@@ -60,6 +60,7 @@
       <button type="button" class="btn btn-sm" @click="compute()">Try again</button>
     </div>
 
+    <WorkStatus :busy="running" busy-text="Working out your Tower of Adversity plan" :done-text="error ? '' : 'Tower of Adversity plan finished'" />
     <div v-if="running" class="card bg-base-100 border border-base-300 shadow-sm mb-4" data-test-toa-progress>
       <div class="card-body p-3 gap-1.5">
         <div class="flex items-center gap-2 text-sm">
@@ -202,6 +203,7 @@
 import { computed, ref } from "vue";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
+import WorkStatus from "../display/WorkStatus.vue";
 import { countdown, SERVER_REGIONS, timedFloors, VIGOR_PER_RESONATOR, type ToaFloor } from "./toaData";
 import { useToa } from "./useToa";
 import ToaFloorCard from "./ToaFloorCard.vue";

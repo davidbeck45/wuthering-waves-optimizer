@@ -36,6 +36,7 @@
         </div>
       </div>
 
+      <WorkStatus :busy="busy" busy-text="Working out this rotation" :done-text="problem ? problemTitle : 'Rotation ready'" />
       <!-- loading -->
       <div v-if="busy" class="flex flex-col gap-3" data-test-rotation-loading>
         <div class="flex items-center gap-2 text-sm opacity-80">
@@ -109,6 +110,7 @@ import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { teamLabel } from "../display/names";
+import WorkStatus from "../display/WorkStatus.vue";
 import { rileyClient } from "../engine/rileyClient";
 import type { RileyTeamInfo, SubsMode } from "../engine/rileyRun";
 import { useRileyAccount } from "../engine/useRileyAccount";

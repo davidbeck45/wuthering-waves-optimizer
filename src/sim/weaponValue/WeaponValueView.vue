@@ -136,6 +136,7 @@
           </div>
         </div>
 
+        <WorkStatus :busy="running" busy-text="Scoring your weapons" :done-text="status.state === 'error' ? '' : 'Finished scoring your weapons'" />
         <div v-if="running" class="wv-progress" data-test-weapons-progress>
           <span class="wv-progress__track"><span :style="{ width: `${progressPct}%` }"></span></span>
           <span class="wv-progress__text">{{ progressText }}</span>
@@ -261,6 +262,7 @@ import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import { characterShortName } from "../display/names";
+import WorkStatus from "../display/WorkStatus.vue";
 import MyRankingsEmpty from "../myRankings/MyRankingsEmpty.vue";
 import WeaponValueBar from "./WeaponValueBar.vue";
 import { useWeaponValueData } from "./useWeaponValueData";
