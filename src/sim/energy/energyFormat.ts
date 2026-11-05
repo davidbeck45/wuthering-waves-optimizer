@@ -27,6 +27,14 @@ export function statusDetail(c: { status: EnergyStatus; short: number; rolls: nu
   return STATUS_LABEL[c.status].toLowerCase();
 }
 
+/** Who the team's wuwa_calc figure did not run on their own echoes, for the line that says "on your echoes": a member
+ *  with none runs ChemX32 (his standard spread). "" when every member ran their own. */
+export function stockSpreadNote(members: ReadonlyArray<{ appKey: string; spread: string }> | undefined): string {
+  const stock = (members ?? []).filter((m) => m.spread !== "My build").map((m) => nameOf(m.appKey));
+  if (!stock.length) return "";
+  return ` (${stock.join(" and ")} ${stock.length === 1 ? "has" : "have"} none: ChemX32 stands in)`;
+}
+
 /** Why a team shows no numbers, for a chip's tooltip and the card's empty state. */
 export function measureNote(state: MeasureState | null): string {
   if (!state) return "Not checked yet";

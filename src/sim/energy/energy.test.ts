@@ -16,7 +16,7 @@ import { medianRoll, rotationScorer, substatWeights, type BuildScorer } from "..
 import { ENERGY_CACHE_KEY, energyCacheKey, keepable, loadEnergyCache, saveEnergyCache, type CachedMeasure } from "./energyCache";
 import { characterFloors, energySummary, measureComposition, memberChecks, memberIdOf, scanCandidates, type EnergyEngine, type TeamMeasure } from "./energyCheck";
 import { engineOfHeadless } from "./energyCli";
-import { needLabel } from "./energyFormat";
+import { needLabel, stockSpreadNote } from "./energyFormat";
 import { erSignature, KIT_CONSTANT_ER, memoMenuEr, menuEnergyRegen } from "./energyHave";
 import {
   bandOf,
@@ -416,4 +416,18 @@ describe.skipIf(!existsSync(ORACLE))("oracle soft report (local only)", () => {
     console.info(`ER needs vs community figures (${oracle.date}):\n${lines.join("\n")}`);
     expect(lines.length).toBe(oracle.characters.length);
   }, 120_000);
+});
+
+describe("stockSpreadNote", () => {
+  const mine = { appKey: "Cartethyia", spread: "My build" };
+
+  it("says nothing when every member ran their own echoes", () => {
+    expect(stockSpreadNote([mine, { ...mine, appKey: "Chisa" }])).toBe("");
+    expect(stockSpreadNote(undefined)).toBe("");
+  });
+
+  it("names who ran ChemX32 instead, so \"on your echoes\" stays true", () => {
+    expect(stockSpreadNote([mine, { appKey: "Chisa", spread: "ChemX32 - ATK Basic" }])).toBe(" (Chisa has none: ChemX32 stands in)");
+    expect(stockSpreadNote([{ appKey: "Ciaccona", spread: "ChemX32 - ER" }, { appKey: "Chisa", spread: "ChemX32 - ATK Basic" }])).toBe(" (Ciaccona and Chisa have none: ChemX32 stands in)");
+  });
 });

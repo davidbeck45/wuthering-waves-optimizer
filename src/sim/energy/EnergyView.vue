@@ -185,7 +185,7 @@
               </div>
               <div class="min-w-0">
                 <div class="en-list__name" :title="t.name">{{ teamTitle(t.name, t.characterIds) }}</div>
-                <div class="en-list__meta"><span class="tabular-nums">{{ intText(t.energy?.total) }}</span> DPS in wuwa_calc on your echoes · team {{ t.energy?.teamKey }}</div>
+                <div class="en-list__meta"><span class="tabular-nums">{{ intText(t.energy?.total) }}</span> DPS in wuwa_calc on your echoes{{ stockSpreadNote(t.energy?.members) }} · team {{ t.energy?.teamKey }}</div>
               </div>
             </div>
             <div class="en-list__chips">
@@ -237,7 +237,7 @@ import EnergyChip from "./EnergyChip.vue";
 import EnergySheet from "./EnergySheet.vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
 import EnergyTeamCard from "./EnergyTeamCard.vue";
-import { haveText, intText, needText, pctText } from "./energyFormat";
+import { haveText, intText, needText, pctText, stockSpreadNote } from "./energyFormat";
 import { characterShortName } from "../display/names";
 import { teamTitle } from "../display/teamName";
 import { WHY_ENGINES_DIFFER } from "../display/numberBasis";

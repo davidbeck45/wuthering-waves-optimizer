@@ -88,7 +88,8 @@ describe("energy check", () => {
       .invoke("text")
       .should("match", /has \d+\.\d%\s*needs \d+\.\d%/);
     cy.get(`[data-test-energy-team="${MEASURED}"] [data-test-energy-member="Chisa"] [data-test-energy-status="unknown"]`).should("exist");
-    cy.get(`[data-test-energy-team="${MEASURED}"]`).should("contain.text", "DPS in wuwa_calc on your echoes · team t");
+    // only Cartethyia has echoes here: the line that says "on your echoes" names who ran ChemX32 instead
+    cy.get(`[data-test-energy-team="${MEASURED}"]`).should("contain.text", "DPS in wuwa_calc on your echoes (").and("contain.text", "have none: ChemX32 stands in) · team t");
 
     // the breakdown opens inline: the spend's sources add up, each named in the legend
     cy.get(`[data-test-energy-team="${MEASURED}"] [data-test-energy-member="Chisa"]`).click();
