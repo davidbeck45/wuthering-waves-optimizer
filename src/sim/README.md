@@ -392,6 +392,12 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings and handoffs from the run — written to a new export (`<source>_synced.json` by default; a plain export is never overwritten), with the per-team report; `--rotations` also saves each member's loop to that character's rotations (replacing one of the same name) |
 | `team <one> --json` | also lists `actionRows`: every action's own normal / average / crit damage in execution order (what the audit compared against Riley's per-cast averages) |
 | `snapshot [-o file]` | every character's stats + saved rotations and every team, as JSON (stamps the app commit) |
+| `trace <team> [--subs mine\|standard\|high] [--full]` | Riley's traced team run at the account (the Riley run seam): members, DPS, seconds, energy needs. `<team>` is a wuwa_calc key (t404), a saved team or three names; `--full` prints the whole RunLite as JSON |
+| `toa [--limit n]` | the `/endgame` clear check: this season's timed Tower of Adversity floors with the best teams' kill times and crests, then a Vigor-legal plan for all 12 stages |
+| `er [--team t] [--all]` | the `/energy` check: each member's ER need in the saved teams beside what their build has, the ER floor per character, crit overcap; `--all` adds every other composition the account can field |
+| `build-team <team> [--only name] [--er floors] [--order names] …` | "Build my team" headless: re-gears a team from the export's inventory, no echo used twice, and prints the plan; nothing is written. `--only` re-gears one member while the teammates keep their echoes (/account's "Check my echoes" run). `--any-set`, `--any-main-stat`, `--keep-main-echo`, `--take-from-others`, `--one-order` as on the page |
+| `build-account [--teams list] [--weights list] [--budget s] [--list]` | "Whole account" headless: several teams from one inventory, no echo worn twice across them, greedy in priority order and then the improvement pass; nothing is written. `--list` only lists the teams the account can field; `--budget` refuses anything but a number of seconds, 0 or more |
+| `tool <name> [input]` | one of the assistant's tools on the export, without Claude (free, no API call): `energy_check`, `team_rotation`, `toa_check`, `echo_lab`, … with its JSON input, printed as Claude would read it |
 | `optimizer-bench [--reps n] [--only text]` | the echo optimizer before and after its exact speedups (§ Performance, pass 2): 45 cases on the export (four kinds of character, three formats, set / main-stat filters, ER floors, `Stat:` targets, an empty pool, a pool without its main echo, a 250-echo pool), wall time median of n runs each way, the time split, loadouts scored, and whether the two top fives are the same to the last bit |
 | `diff <before> <after> [--tolerance pct]` | every number that moved between two snapshots; exit code 2 when something did |
 
@@ -3182,7 +3188,7 @@ fix-numbers.
 
 Left as they were:
 - Sync my teams rewriting an "unchanged" team that Undo didn't restore (audit L2): fixed on the loose-ends track
-  (c3fce5b3, `syncUndo.ts` / `syncTeamsHeadless.ts`), so not touched here.
+  (ed940304 on plus-b3, `syncUndo.ts` / `syncTeamsHeadless.ts`), so not touched here.
 - The Tuner plan's 3–4 s cold load (L13): the plan job prepares every character just as the pass does, and the worker
   runs one job at a time. Queuing the plan before the pass measured the same (3.2–4.1 s against 3.6–3.9 s, three runs
   each on a loaded box), so the order stays; the page shows its progress line meanwhile.
