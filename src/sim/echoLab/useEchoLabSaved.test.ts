@@ -169,15 +169,40 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
   });
 
-  it("a good saved copy outlives a visit whose own lookup timed out: nothing short replaces it", async () => {
+  it("a good saved copy outlives a visit whose own lookup timed out: nothing short replaces it, on screen or saved", async () => {
     h.stored = savedCopy("Cartethyia:130");
     h.floors.clear();
     h.busy = true;
     const { lab } = await visit();
     await lab.refresh();
     await lab.runBenchmarks();
-    expect(lab.benchmarks.value).toEqual(FRESH); // this tab scored on what it read
+    expect(lab.benchmarks.value).toEqual(OLD); // scoring on a lookup that never finished would show floors too low
+    expect(benchmarkJobs()).toHaveLength(0);
     expect(h.write).not.toHaveBeenCalled();
+  });
+
+  it("a short lookup has no say over a copy with no real key: that one still scores", async () => {
+    h.stored = savedCopy("");
+    h.floors.clear();
+    h.busy = true;
+    const { lab } = await visit();
+    await lab.refresh();
+    await lab.runBenchmarks();
+    expect(benchmarkJobs()).toHaveLength(0); // "" is what a lookup with no floors reads: the keys agree
+    expect(lab.benchmarks.value).toEqual(OLD);
+  });
+
+  it("a second press while the needs are looked up leaves one run, not a cancelled status beside it", async () => {
+    let release = (): void => undefined;
+    h.ready.mockImplementationOnce(() => new Promise<undefined>((resolve) => (release = () => resolve(undefined))));
+    const { lab } = await visit();
+    await lab.refresh();
+    const presses = [lab.runBenchmarks({ force: true }), lab.runBenchmarks({ force: true })];
+    release();
+    await Promise.all(presses);
+    expect(benchmarkJobs()).toHaveLength(1);
+    expect(lab.benchmarks.value).toEqual(FRESH);
+    expect(lab.benchStatus.cancelled ?? false).toBe(false);
   });
 
   it("short ER needs answer for their own account state: the next state's saved copy is left as it was", async () => {

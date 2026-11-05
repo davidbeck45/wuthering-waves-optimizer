@@ -168,6 +168,9 @@ async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
     benchConfirmed = true;
     return true;
   }
+  // this visit's own lookup did not finish, so it has no say over a copy scored on a real key: dropping the copy for it
+  // would show figures on floors too low. Not confirmed, so the next lookup still gets to ask
+  if (benchErKey && !needsMemo?.whole) return true;
   benchmarks.value = null;
   benchErKey = null;
   // the saved copy stays as it was (every reader checks its key): dropping them is no reason for a roll-chip write to
@@ -380,6 +383,8 @@ export function useEchoLab() {
     benchAbort = controller;
     // Wuthering Tools+ energy check: ER counts as a floor up to each character's need in their saved teams
     const erNeeds = await echoLabErNeeds(fingerprint);
+    // a second press took over during that wait: running this one would only mark the shared status cancelled
+    if (controller.signal.aborted) return;
     const needsWhole = needsMemo?.whole ?? false;
     // only the characters the pass could score (a weapon and five echoes): the progress counts what gets a row
     const characterIds = pass.value && resultFingerprint.value === fingerprint ? pass.value.bestOwner.characters.map((c) => c.id) : undefined;
