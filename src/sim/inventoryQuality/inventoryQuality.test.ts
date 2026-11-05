@@ -112,6 +112,16 @@ describe("The chip", () => {
     expect(noSlot.title).toContain("No built character can slot it");
   });
 
+  it("puts a roll still being rated in the chip's name, as it shows it, and not on a chip that shows no such words", () => {
+    const pending = chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: undefined, rateable: true });
+    expect(pending.rollPending).toBe(true);
+    expect(pending.aria).toBe(`Echo Lab: Keep, rating roll…, ${pending.reason}. Open in Echo Lab`);
+    // a re-judged chip with no rating held over shows no "rating roll…", so its name must not say it either
+    const stale = chipFor({ row: rows.get("xtbwqikno2")!, judged: false, stale: true, rating: undefined, rateable: true });
+    expect(stale.rollPending).toBe(false);
+    expect(stale.aria).not.toContain("rating roll");
+  });
+
   it("says so when Echo Lab could not rate the roll, instead of saying nothing", () => {
     const chip = chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: null, rateable: true });
     expect(chip.roll).toBeNull();

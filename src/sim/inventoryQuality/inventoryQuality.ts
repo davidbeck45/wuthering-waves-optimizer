@@ -97,7 +97,7 @@ export function chipFor(input: {
   const verdictLabel = VERDICT_LABEL[row.verdict];
   const reason = reasonText(row);
   const roll = rating ? { text: rollText(rating.percentile, rating.lines), tone: rollTone(rating.percentile), exact: rating.exact } : null;
-  const rollPending = rateable && rating === undefined;
+  const rollPending = rateable && rating === undefined && !stale;
   const sentences = [`Echo Lab: ${verdictLabel} (${reason.toLowerCase()}).`];
   if (stale) sentences.unshift("Updating: Echo Lab is judging your echoes again after a change.");
   if (rating) {
@@ -114,8 +114,8 @@ export function chipFor(input: {
     sentences.push("Echo Lab could not rate this roll on its build.");
   }
   sentences.push("Tap for the details in Echo Lab.");
-  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}, ${reason}${stale ? " (updating)" : ""}. Open in Echo Lab`;
-  return { state: stale ? "stale" : "ready", verdict: row.verdict, verdictLabel, reason, roll, rollPending: rollPending && !stale, title: sentences.join(" "), aria };
+  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}${rollPending ? ", rating roll…" : ""}, ${reason}${stale ? " (updating)" : ""}. Open in Echo Lab`;
+  return { state: stale ? "stale" : "ready", verdict: row.verdict, verdictLabel, reason, roll, rollPending, title: sentences.join(" "), aria };
 }
 
 // ── sort and filter (the hook in Ryan's InventoryEchoesBrowser.vue `echoesList`) ──
