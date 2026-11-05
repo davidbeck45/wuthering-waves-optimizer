@@ -125,6 +125,19 @@ describe("Crit luck on the fight pages", () => {
     expectInside("[data-test-toa-plan-luck]", "plan crit-luck line at 412 px / 130 %");
   });
 
+  it("gives the /account drawer's Best DMG its range, in words that say what it leaves out", () => {
+    cy.viewport(412, 915);
+    cy.visit("/account", seed());
+    cy.get('[data-test-account-card="Cartethyia"]', { timeout: 120000 }).click();
+    cy.get("[data-test-account-drawer]").should("have.attr", "open");
+    cy.get("[data-test-account-drawer-range]", { timeout: 60000 })
+      .should("be.visible")
+      .invoke("text")
+      .should("match", /Crit luck: 8 runs in 10 land between \S+ and \S+/)
+      .and("contain", "this app's calculator: crits only, not enemy actions or your timing");
+    expectInside("[data-test-account-drawer-range]", "the drawer's range at 412 px / 130 %");
+  });
+
   it("puts a DPS range under the rotation view's headline", () => {
     cy.viewport(412, 915);
     cy.visit("/rotation#team=t404", seed()); // Shorekeeper · Lynae · Iuno, a stock wuwa_calc team
