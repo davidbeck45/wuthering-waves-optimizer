@@ -34,13 +34,9 @@
           New echoes go into your inventory unequipped<template v-if="wornNewCount">, including the
           {{ wornNewCount }} the scan saw on a character</template>. Nothing is removed from your inventory.
         </p>
-        <p v-if="secondCopies" class="opacity-80" data-test-wavescan-new-only-upstream>
-          The full import below matches echo names exactly, so it would add {{ pluralEchoes(secondCopies) }} counted
-          here as owned a second time: Phantom skins stored the other way round, and close matches.
-        </p>
         <p v-if="mapped.skipped.length" class="text-warning">
           {{ pluralEchoes(mapped.skipped.length) }} in the file couldn't be read and aren't counted here (they're listed
-          under Echoes below).
+          {{ foldUpstream ? "under Other import options" : "under Echoes below" }}).
         </p>
       </div>
 
@@ -186,7 +182,7 @@ const foldUpstream = computed(() => foldable.value && !upstreamShown.value);
 const foldReason = computed(() => {
   const open = upstreamShown.value;
   if (secondCopies.value > 0) {
-    const why = `matches echo names exactly, so it would add ${pluralEchoes(secondCopies.value)} you already own as second copies.`;
+    const why = `matches echo names exactly, so it would add ${pluralEchoes(secondCopies.value)} you already own as second copies: Phantom skins stored the other way round, and close matches.`;
     return open ? `The full import below ${why}` : `The full import is folded away: it ${why}`;
   }
   // "every echo" is only true of the ones read: the warning above counts the rest

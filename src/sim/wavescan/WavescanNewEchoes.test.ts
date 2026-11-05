@@ -46,7 +46,7 @@ describe("WavescanNewEchoes", () => {
     expect(gulpuff.textContent).toContain("Gulpuff");
     expect(gulpuff.querySelector("[data-test-wavescan-new-only-skin]")).not.toBeNull();
     expect(gulpuff.textContent).toContain("Worn by Jiyan in game. Added unequipped.");
-    expect(container.textContent).toContain("would add 4 echoes counted here as owned a second time");
+    expect(container.textContent).toContain("would add 4 echoes you already own as second copies");
   });
 
   it("adds only the new echoes, unequipped, and leaves the rest of the inventory alone", async () => {
@@ -122,7 +122,9 @@ describe("WavescanNewEchoes", () => {
     expect(card.hasAttribute("data-wt-fold-upstream")).toBe(false);
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(toggle.textContent).toContain("Hide the other import options");
-    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import below matches echo names exactly, so it would add 4 echoes you already own as second copies.");
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import below matches echo names exactly, so it would add 4 echoes you already own as second copies: Phantom skins stored the other way round, and close matches.");
+    // said once: the note above used to say the same thing, and "below" while the import was folded away
+    expect(container.querySelector("[data-test-wavescan-new-only-note]")?.textContent).not.toContain("second");
   });
 
   it("keeps the full import open when it would add only what this card adds, and folds it once this card has added", async () => {
@@ -167,11 +169,15 @@ describe("WavescanNewEchoes", () => {
 
   it("doesn't claim every echo in the scan when part of the file couldn't be read", async () => {
     const rows = [...clone(fixture.scan.echoes), { ...clone(fixture.scan.echoes[0]), scanId: "unreadable", echo: "NoSuchEcho" }];
-    const { mapped, why, toggle } = await addAll(rows);
+    const { container, mapped, why, toggle } = await addAll(rows);
+    const note = () => container.querySelector("[data-test-wavescan-new-only-note]")?.textContent ?? "";
     expect(mapped.skipped).toHaveLength(1);
     expect(why()).toBe("Every echo that could be read is in your inventory now, so the full import is folded away: it has nothing new to add.");
+    // and says where to find them: "under Echoes below" pointed at a card folded out of sight
+    expect(note()).toContain("under Other import options");
     await fireEvent.click(toggle);
     expect(why()).toBe("Every echo that could be read is in your inventory now: the full import below has nothing new to add.");
+    expect(note()).toContain("under Echoes below");
   });
 
   it("says second copies, not 'nothing new', when the import below would still add them after the add", async () => {
@@ -182,7 +188,7 @@ describe("WavescanNewEchoes", () => {
     await answerConfirm(true);
     await findByText("Added 3 echoes.");
     await waitFor(() => expect(count(container, "new")).toBe("0 New · will be added"));
-    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import is folded away: it matches echo names exactly, so it would add 4 echoes you already own as second copies.");
+    expect(container.querySelector("[data-test-wavescan-new-only-other-why]")?.textContent).toBe("The full import is folded away: it matches echo names exactly, so it would add 4 echoes you already own as second copies: Phantom skins stored the other way round, and close matches.");
   });
 
   // Ryan's paste clears and sets `mapped` in one tick, so this card stays mounted (a file read remounts it): what it
