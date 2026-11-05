@@ -42,7 +42,7 @@
               <span class="bt-prio" :aria-label="`Priority ${i + 1}`">{{ i + 1 }}</span>
               <span class="ba-row__trio"><CharacterAvatar v-for="id in c.characterIds" :id="id" :key="id" :size="32" /></span>
               <span class="ba-row__text">
-                <span class="ba-row__name">{{ teamLabel(c) }}</span>
+                <PresetNameLabel class="ba-row__name" :name="c.name" :owned="ownedKeys" :max-chips="2" />
                 <span class="ba-row__meta">{{ sourceWord(c.source) }} · <span class="tabular-nums">{{ compactNum(c.avgDamage) }}</span> team damage per rotation</span>
               </span>
               <span class="ba-row__controls">
@@ -53,13 +53,13 @@
                   </select>
                 </label>
                 <span class="ba-move">
-                  <button type="button" class="btn btn-ghost btn-xs btn-square" :disabled="i === 0" :aria-label="`Move ${c.name} up`" data-test-build-account-up @click="move(c.id, -1)">
+                  <button type="button" class="btn btn-ghost btn-xs btn-square" :disabled="i === 0" :aria-label="`Move ${spokenName(c)} up`" data-test-build-account-up @click="move(c.id, -1)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
                   </button>
-                  <button type="button" class="btn btn-ghost btn-xs btn-square" :disabled="i === chosen.length - 1" :aria-label="`Move ${c.name} down`" data-test-build-account-down @click="move(c.id, 1)">
+                  <button type="button" class="btn btn-ghost btn-xs btn-square" :disabled="i === chosen.length - 1" :aria-label="`Move ${spokenName(c)} down`" data-test-build-account-down @click="move(c.id, 1)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
                   </button>
-                  <button type="button" class="btn btn-ghost btn-xs btn-square" :aria-label="`Remove ${c.name}`" data-test-build-account-remove @click="toggle(c.id, false)">
+                  <button type="button" class="btn btn-ghost btn-xs btn-square" :aria-label="`Remove ${spokenName(c)}`" data-test-build-account-remove @click="toggle(c.id, false)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" /></svg>
                   </button>
                 </span>
@@ -82,7 +82,7 @@
                 <input type="checkbox" class="checkbox checkbox-sm checkbox-primary" :checked="false" :disabled="chosen.length >= MAX_TEAMS" :data-test-build-account-pick="c.id" @change="toggle(c.id, ($event.target as HTMLInputElement).checked)" />
                 <span class="ba-row__trio"><CharacterAvatar v-for="id in c.characterIds" :id="id" :key="id" :size="28" /></span>
                 <span class="ba-row__text">
-                  <span class="ba-row__name">{{ teamLabel(c) }}</span>
+                  <PresetNameLabel class="ba-row__name" :name="c.name" :owned="ownedKeys" :max-chips="2" />
                   <span class="ba-row__meta">{{ sourceWord(c.source) }} · <span class="tabular-nums">{{ compactNum(c.avgDamage) }}</span> team damage per rotation</span>
                 </span>
               </label>
@@ -169,7 +169,7 @@
           <span class="bt-prio">{{ t.index + 1 }}</span>
           <span class="ba-row__trio"><CharacterAvatar v-for="s in t.slots" :id="s.characterId" :key="s.slot" :size="30" /></span>
           <span class="ba-row__text">
-            <span class="ba-row__name">{{ teamLabelOf(t.spec.name) }}</span>
+            <PresetNameLabel class="ba-row__name" :name="t.spec.name" :owned="ownedKeys" :max-chips="2" />
             <span class="ba-row__meta">matters {{ t.weight }} · team damage per rotation</span>
           </span>
           <span class="ba-team__nums">
@@ -254,6 +254,8 @@ import { useToast } from "../../../composables/useToast";
 import { useCharacterStore } from "../../../stores/character";
 import CharacterAvatar from "../../display/CharacterAvatar.vue";
 import { characterDisplayName, characterShortName } from "../../display/names";
+import PresetNameLabel from "../../display/PresetNameLabel.vue";
+import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText } from "../buildTeamView";
@@ -294,9 +296,9 @@ const estimate = computed(() => {
 const shortName = (id: string): string => characterShortName(id) || characterDisplayName(id);
 const SOURCE_WORD: Record<string, string> = { yours: "Your saved team", curated: "Curated team", wuwa_calc: "wuwa_calc team" };
 const sourceWord = (s: string): string => SOURCE_WORD[s] ?? s;
-/** wuwa_calc team names start with "wuwa_calc "; the source chip already says so */
-const teamLabelOf = (name: string): string => name.replace(/^wuwa_calc\s+/, "");
-const teamLabel = (c: AccountTeamChoice): string => teamLabelOf(c.name);
+const ownedKeys = computed(() => Object.keys(characterStore.characters ?? {}));
+/** a button's name: the title the row shows and its tier, which is what tells two tiers of the same three apart */
+const spokenName = (c: AccountTeamChoice): string => [teamTitle(c.name, c.characterIds, null, { owned: ownedKeys.value }), teamTierLine(c.name)].filter(Boolean).join(", ");
 const weightChoices = (current: number | undefined) => (current == null || WEIGHT_CHOICES.some((w) => w.value === current) ? WEIGHT_CHOICES : [...WEIGHT_CHOICES, { value: current, label: String(current) }]);
 const memberOf = (s: { member: number }) => result.value!.members[s.member]!;
 const movedIn = (characterId: string): number => result.value?.moves.filter((m) => m.to === characterId).length ?? 0;

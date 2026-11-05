@@ -71,6 +71,10 @@
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
+/* PresetNameLabel cuts its title to one line; here the row has the room, and a cut name on a phone loses who is in it */
+.ba-row__text .ba-row__name .wt-preset__text {
+  white-space: normal;
+}
 .ba-row__meta {
   font-size: 0.74rem;
   color: oklch(var(--bc) / 0.7);

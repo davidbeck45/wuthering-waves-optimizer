@@ -16,14 +16,14 @@ const TEAMS = [
   { id: "bacy2", name: "Account test: Cartethyia + Shorekeeper + Ciaccona", preset: presetOf(["Cartethyia", "Shorekeeper", "Ciaccona"]) },
 ];
 
-function seed(options: { fontScale?: number } = {}) {
+function seed(options: { fontScale?: number; names?: Record<string, string> } = {}) {
   const character = JSON.parse(configOptimizer.data.character);
   character.characters.Ciaccona = { weapon: "WoodlandAria" };
   character.characters.Chisa = { weapon: "Kumokiri", weapons: { Kumokiri: { refinement: "5" } } };
   character.characters.Shorekeeper = { weapon: "StellarSymphony" };
   const teams = TEAMS.map((t) => ({
     id: t.id,
-    name: t.name,
+    name: options.names?.[t.id] ?? t.name,
     characterIds: t.preset.data.characterIds,
     buildIds: [null, null, null],
     actions: t.preset.data.actions.map((a, i) => ({ ...a, id: `a${i}` })),
@@ -64,6 +64,20 @@ function expectNoHorizontalScroll(what: string, width: number): void {
 }
 
 describe("build my whole account", () => {
+  it("calls a team what every other page calls it: its title and tier chips, on the rows and on the buttons' names", () => {
+    cy.viewport(412, 915);
+    cy.visit("/build-team?mode=account", seed({ names: { bacy1: "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Ciaccona + Chisa", bacy2: "Cartethyia · Shorekeeper + Ciaccona · S6R1 DPS · S1R1 team (wuwa_calc)" } }));
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get('[data-test-build-account-team="bacy1"] .wt-preset__text').should("have.text", "Cartethyia · Ciaccona + Chisa");
+    cy.get('[data-test-build-account-team="bacy1"] .wt-chip--dps').should("contain.text", "S6R5");
+    cy.get('[data-test-build-account-team="bacy1"] .wt-chip--team').should("contain.text", "S0R1");
+    cy.get('[data-test-build-account-team="bacy2"] .wt-preset__text').should("have.text", "Cartethyia · Shorekeeper + Ciaccona");
+    cy.get('[data-test-build-account-team="bacy2"] .wt-chip--dps').should("contain.text", "S6R1");
+    cy.get("[data-test-build-account-team]").should("not.contain.text", "wuwa_calc Cartethyia").and("not.contain.text", "(wuwa_calc)");
+    cy.get('[data-test-build-account-team="bacy1"] [data-test-build-account-remove]').should("have.attr", "aria-label", "Remove Cartethyia · Ciaccona + Chisa, main DPS S6R5 · supports S0R1");
+    expectNoHorizontalScroll("the named rows", 412);
+  });
+
   it("opens from the mode switch with the saved teams ticked; priority and weights in words", () => {
     cy.viewport(1440, 900);
     cy.visit("/build-team", seed());
