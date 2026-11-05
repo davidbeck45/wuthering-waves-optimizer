@@ -1369,6 +1369,10 @@ Every other page moved by noise only (single samples of unchanged code moved ±5
 warm and in-app, phone and desktop, production and dev) are in `wto-wt/b3/reports/speed-build.md` and
 `speed-before.md`.
 
+Read the "phone" rows with care: the 4x CPU throttle (CDP's) does not reach worker threads (the same work: main thread
+1128 → 4367 ms, worker 6077 → 6092 ms), so they slow the page but ran the solvers at desktop speed. They show what the
+main thread pays, not how long a phone's solve takes; a real phone's is longer.
+
 Things learned:
 - Riley's `filters` is one object mutated in place by `applyHash()`: anything that must outlive an `await` has to
   snapshot it (`structuredClone`), and a `mine` key also carries the account key read at call time (`costTag`).

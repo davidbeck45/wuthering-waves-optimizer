@@ -183,7 +183,8 @@ describe("the optimizer's five results are the ones it found before the speedups
 // A run reads what the page holds when it starts, and the panel is up before the character is (a slow chunk, a character
 // just picked): these rows came back wrong under a normal "Processed 100 of 100 loadouts", with nothing to say so
 // (src/sim/optimizer/optimizerPress.ts). The hold stands in for that slow chunk.
-describe("the optimizer pressed too early, twice, or left running", { defaultCommandTimeout: 20000 }, () => {
+// (the long timeout is also how long a held request may wait, and on CI's runner the walk to the panel is slow)
+describe("the optimizer pressed too early, twice, or left running", { defaultCommandTimeout: 60000 }, () => {
   it("a press before the character has loaded waits for it and finds the same rows", () => {
     const release = holdModule("/src/characters/Zani/index.ts");
     openOptimizer("Zani", zani);
