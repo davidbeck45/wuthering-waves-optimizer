@@ -58,7 +58,7 @@ describe("Echo Lab Tuner plan and roll quality", () => {
     cy.get('[data-test-echo-lab-plan-step][data-when="now"]').should("have.length.at.least", 1);
     cy.get('[data-test-echo-lab-plan-kpi="tuners"] [data-test-echo-lab-plan-kpi-value]').invoke("text").should("match", /^(5|15)$/);
     // the gain says what it is: per rotation, and whose (or how many characters it sums)
-    cy.get('[data-test-echo-lab-plan-kpi="now"]').invoke("text").should("match", /\+[\d.]+[kKM]? damage per rotation (for \w+|, summed over \d characters)/);
+    cy.get('[data-test-echo-lab-plan-kpi="now"]').invoke("text").should("match", /\+[\d.]+[kKM]? expected damage per rotation (for \w+|, summed over \d characters)/);
     cy.get("[data-test-echo-lab-plan-fresh-line]").should("contain.text", "full tune");
 
     // a weekly income gives the rest a week

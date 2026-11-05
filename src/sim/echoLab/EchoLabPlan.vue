@@ -257,8 +257,8 @@ function nowGainText(p: typeof plan.value): string {
   const total = p.now.expectedDamage;
   const who = [...new Set(now.map((s) => s.candidate.characterId))];
   return who.length === 1
-    ? `+${compact(total)} damage per rotation for ${characterName(who[0]!)}`
-    : `+${compact(total)} damage per rotation, summed over ${who.length} characters`;
+    ? `+${compact(total)} expected damage per rotation for ${characterName(who[0]!)}`
+    : `+${compact(total)} expected damage per rotation, summed over ${who.length} characters`;
 }
 
 const kpis = computed(() => {

@@ -78,7 +78,7 @@
         {{ sortBy === "team" ? "team gain first, then the slots without a team figure by their own gain" : "own gain on each character's best rotation" }}
       </p>
 
-      <ol class="grid grid-cols-1 gap-2 lg:grid-cols-2" data-test-echo-lab-farm-rows>
+      <ol class="grid grid-cols-1 items-start gap-2 lg:grid-cols-2" data-test-echo-lab-farm-rows>
         <template v-for="(row, i) in shown" :key="row.key">
           <li v-if="sortBy === 'team' && i === firstWithoutTeam && i > 0" class="col-span-full pt-2" data-test-echo-lab-farm-divider>
             <h3 class="text-sm font-semibold">Without a team figure yet</h3>
@@ -87,7 +87,7 @@
           <li class="farm-card rounded-box border bg-base-100 px-4 py-3 max-sm:px-3" :class="i === 0 ? 'border-primary/50' : 'border-base-300'" :data-test-echo-lab-farm-row="row.key">
             <!-- who, which slot -->
             <div class="flex min-w-0 items-center gap-3">
-              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-base-200 font-mono text-sm font-bold tabular-nums" :aria-label="`Rank ${i + 1}`">{{ i + 1 }}</span>
+              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-base-200 font-mono text-sm font-bold tabular-nums"><span class="sr-only">Rank </span>{{ i + 1 }}</span>
               <img :src="portrait(row.characterId)" :alt="characterName(row.characterId)" class="el-portrait size-9" loading="lazy" />
               <div class="min-w-0 flex-1 leading-tight">
                 <div class="truncate font-semibold">{{ characterName(row.characterId) }}</div>
