@@ -18,7 +18,7 @@ import { echoSetLabelMap } from "../../echoes/stats";
 import { constraintsOf, DEFAULT_OPTIONS, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, shortfallOf } from "./constraints";
 import { emptyPlan, echoKeysOf, erNeedOf, parseMainStats, planFromPreset, priorityOrder, setKeyOf, type MemberPlan } from "./rileyPlan";
 import { inlineBackend, menuErOf, prepareMemberJob, type Objective } from "./headlessOptimizer";
-import { buildMyTeam, draftBuildFields } from "./buildTeam";
+import { buildMyTeam, draftBuildFields, teamSpecOf } from "./buildTeam";
 import { applyBuildTeam, buildNameFor, readUndo, undoBuildTeam, undoIsLive, UNDO_KEY, type BuildTeamStores } from "./apply";
 import { serializeOptimizerEchoes } from "./workerBackend";
 import { buildEchoLoadoutFromIds } from "../../echoes/echoLoadout";
@@ -344,5 +344,12 @@ describe("apply and undo", () => {
     expect(build.mainEcho.echo).toBe("ReminiscenceFleurdelys");
     expect(build.setOverride).toBe(false);
     expect(meetsSetPieces(someIds().map((id) => echoes.find((e) => e.echoId === id)), { sets: [] })).toBe(true);
+  });
+});
+
+describe("the team a request stands for", () => {
+  it("names a composition with no saved team by short names: a team of one read \"Rover Aero (Male)\"", () => {
+    expect(teamSpecOf({ members: ["RoverAeroMale"] }, [])!.name).toBe("Rover Aero");
+    expect(teamSpecOf({ members: ["RoverAeroFemale", "Cartethyia"] }, [])!.name).toBe("Rover Aero + Cartethyia");
   });
 });

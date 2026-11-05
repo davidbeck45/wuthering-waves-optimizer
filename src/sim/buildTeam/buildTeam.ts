@@ -22,7 +22,7 @@ import { allocateTeam, type AllocationApi, type Candidate, type SwapMove } from 
 import { constraintsOf, costOf, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, setCounts, shortfallOf, type BuildOptions, type MemberConstraints, type RelaxLevel, type Shortfall } from "./constraints";
 import { erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizerBackend, type OptimizeProgress } from "./headlessOptimizer";
 import type { MemberPlan } from "./rileyPlan";
-import { characterDisplayName } from "../display/names";
+import { characterShortName } from "../display/names";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -62,7 +62,7 @@ export function teamSpecOf(request: TeamRequest, teams: readonly any[]): TeamSpe
   if (!ids.length) return null;
   const saved = (teams ?? []).find((t) => (t?.actions ?? []).length && (t.characterIds ?? []).length === ids.length && ids.every((id) => t.characterIds.includes(id)));
   if (saved) return teamSpecOf({ teamId: saved.id }, teams);
-  return { id: null, name: ids.map((id) => characterDisplayName(id)).join(" + "), characterIds: [...ids, null, null].slice(0, 3) };
+  return { id: null, name: ids.map((id) => characterShortName(id)).join(" + "), characterIds: [...ids, null, null].slice(0, 3) };
 }
 
 export interface BuildTeamInput {
