@@ -121,8 +121,7 @@
 
 /* state colours are tuned for dark surfaces; on light themes the text needs more weight */
 html[data-theme-style="light"] .ep-chip--keep,
-html[data-theme-style="light"] .ep-badge--done,
-html[data-theme-style="light"] .ep-text-keep {
+html[data-theme-style="light"] .ep-badge--done {
   color: color-mix(in oklch, oklch(var(--su)) 58%, black);
 }
 html[data-theme-style="light"] .ep-badge--changed,

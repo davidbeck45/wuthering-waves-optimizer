@@ -394,6 +394,8 @@ a.acc-pages__item:hover {
     font-size: 0.72rem;
   }
   .acc-refresh {
+    /* the spinner is smaller than the idle icon: 37 px tall while scoring, under the 40 px every phone control gets */
+    min-height: 40px;
     padding: 0.4rem 0.55rem;
   }
   .acc-head__sub {
@@ -479,9 +481,6 @@ a.acc-pages__item:hover {
 }
 .acc .acc-gain-down {
   color: oklch(var(--er));
-}
-:root[data-theme-style="light"] .acc .acc-gain-up {
-  color: color-mix(in oklab, oklch(var(--su)) 70%, black);
 }
 .acc-energy {
   margin-top: 0.75rem;

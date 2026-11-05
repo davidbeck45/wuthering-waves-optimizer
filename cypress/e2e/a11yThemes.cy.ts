@@ -69,6 +69,8 @@ function contrastOf(el: Element): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
+const THEMES = [["dark", "dark"], ["light", "light"], ["black", "dark"], ["synthwave", "dark"], ["pastel", "light"], ["night", "dark"], ["nord", "light"], ["dracula", "dark"], ["gruvbox", "dark"]] as const;
+
 function setTheme(theme: string, style: "light" | "dark"): void {
   cy.document().then((doc) => {
     doc.documentElement.setAttribute("data-theme", theme);
@@ -187,6 +189,39 @@ describe("contrast, focus and keyboard", () => {
     }
   });
 
+  // Muted text under a second dim, and a colour-mix the build step does not rewrite: each read 2.8–4.3 : 1 somewhere
+  it("reads the twice-dimmed counts and the light themes' gain colour at AA in every theme", () => {
+    const measure = (selectors: string[]) => {
+      cy.document().then((doc) => {
+        const still = doc.createElement("style");
+        still.textContent = "* { transition: none !important; }";
+        doc.head.appendChild(still);
+      });
+      for (const [theme, style] of THEMES) {
+        setTheme(theme, style);
+        cy.document().then((doc) => {
+          for (const sel of selectors) {
+            const shown = Array.from(doc.querySelectorAll<HTMLElement>(sel)).filter((el) => (el.textContent ?? "").trim() && el.getClientRects().length);
+            expect(shown.length, `${theme}: ${sel} on screen`).to.be.at.least(sel === ".ep-text-keep" ? 2 : 1);
+            for (const el of shown.slice(0, 40)) expect(contrastOf(el), `${theme}: ${sel} "${(el.textContent ?? "").trim().slice(0, 24)}"`).to.be.at.least(4.5);
+          }
+        });
+      }
+    };
+    cy.viewport(412, 915);
+    cy.visit("/account", seed({ fontScale: 1.3 }));
+    cy.get(".inv-chip__n", ENGINE).should("exist");
+    cy.get(".acc-gain-up", ENGINE).should("exist");
+    cy.get(".acc-refresh").should(($b) => expect($b[0].getBoundingClientRect().height, "the refresh button").to.be.at.least(39.5));
+    measure([".inv-chip__n", ".acc-gain-up"]);
+    cy.visit("/echo-plan", seed({ fontScale: 1.3 }));
+    cy.get("article .ep-text-keep", ENGINE).should("exist"); // a card's "2 to lock": the KPI above has the class too
+    measure([".ep-text-keep", ".ep-chip--keep", ".ep-chip--discard"]);
+    cy.visit("/weapons", seed({ fontScale: 1.3 }));
+    cy.get(".wv-pill", ENGINE).should("exist");
+    measure([".wv-pill", ".wv-who__weapon"]);
+  });
+
   it("gives focus to the Ask panel and back to what opened it", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed());
@@ -267,7 +302,6 @@ describe("contrast, focus and keyboard", () => {
   // It sits on Ryan's Settings page, where html[data-wt-plus] is off, so a11y.css's scope lists name it. Every line of
   // text, not a sample: the eyebrow, "Added N echoes." and the Phantom skin badge each failed on their own.
   it("reads all of WaveScan's card at AA in every theme", () => {
-    const THEMES = [["dark", "dark"], ["light", "light"], ["black", "dark"], ["synthwave", "dark"], ["pastel", "light"], ["night", "dark"], ["nord", "light"], ["dracula", "dark"], ["gruvbox", "dark"]] as const;
     const measureCard = () => {
       for (const [theme, style] of THEMES) {
         setTheme(theme, style);

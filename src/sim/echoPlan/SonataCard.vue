@@ -83,7 +83,7 @@
               +{{ card.characters.length - AVATARS }}
             </span>
           </div>
-          <span class="min-w-0 truncate text-xs opacity-70">
+          <span class="min-w-0 truncate text-xs text-base-content/70">
             <template v-if="card.state === 'planned'"><b class="ep-text-keep tabular-nums">{{ card.keepCount }}</b> to lock</template>
             <template v-else>Nobody uses it</template>
             <template v-if="card.overridden"> · {{ card.overridden }} set by you</template>

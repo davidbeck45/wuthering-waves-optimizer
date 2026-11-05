@@ -233,9 +233,9 @@ function rowTitle(item: InvestItem): string {
   background: oklch(var(--p));
   box-shadow: none;
 }
+/* no opacity: the chip's text is muted already, and a second dim read at 2.85 : 1 (the small size says it is secondary) */
 .inv-chip__n {
   font-size: 0.62rem;
-  opacity: 0.7;
 }
 .inv__progress {
   display: flex;

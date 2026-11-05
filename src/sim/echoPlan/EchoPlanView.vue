@@ -219,7 +219,7 @@
           </svg>
           <input v-model="query" type="search" class="min-w-0 grow" placeholder="Sonata or character" aria-label="Filter by Sonata or character" data-test-echo-plan-search />
         </label>
-        <div class="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-70">
+        <div class="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-xs text-base-content/70">
           <span class="flex items-center gap-1"><span class="ep-chip ep-chip--keep pointer-events-none !min-h-0 py-0">Lock</span> wanted by someone</span>
           <span class="flex items-center gap-1"><span class="ep-chip ep-chip--discard pointer-events-none !min-h-0 py-0">Discard</span> nobody wants it</span>
           <span class="flex items-center gap-1"><span class="relative inline-block size-2 rounded-full bg-primary"></span> set by you</span>

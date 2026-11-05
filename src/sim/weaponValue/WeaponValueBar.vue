@@ -179,9 +179,11 @@ const rowTitle = computed(() => {
 .wv-row--open > .wv-row__btn {
   background: oklch(var(--bc) / 0.05);
 }
-.wv-row--maxed .wv-who,
-.wv-row--none .wv-who,
-.wv-row--not-in-app .wv-who {
+/* the portrait only: dimming the whole block put an opacity on top of the name line's already muted text (the pill read
+   at 4.3 : 1 in light and night) */
+.wv-row--maxed .wv-who > :first-child,
+.wv-row--none .wv-who > :first-child,
+.wv-row--not-in-app .wv-who > :first-child {
   opacity: 0.8;
 }
 .wv-who {
