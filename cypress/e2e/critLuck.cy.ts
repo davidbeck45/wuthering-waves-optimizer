@@ -133,6 +133,8 @@ describe("Crit luck on the fight pages", () => {
       .should("be.visible")
       .invoke("text")
       .should("match", /Crit luck: 8 runs in 10 land between [\d,]+ and [\d,]+ DPS/)
+      // what the range leaves out sits in the line itself: a phone never shows the hover title
+      .and("contain", "crits only, not enemy actions or your timing")
       .then((text) => {
         const [lo, hi] = [...text.matchAll(/([\d,]+) (?:and|DPS)/g)].map((m) => Number(m[1]!.replace(/,/g, "")));
         cy.get("[data-test-rotation-dps]").invoke("text").then((dps) => {
