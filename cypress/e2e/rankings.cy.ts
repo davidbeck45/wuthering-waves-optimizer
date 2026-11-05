@@ -564,7 +564,7 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
       cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Team DPS");
       cy.get(cards).first().should(($n) => expect(figureOf($n[0]!)).to.be.lessThan(dpr));
       cy.get("[data-test-rankings-cards-mode='dpr']").click();
-      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Avg damage / rotation"); // plus words for his "Team Avg DPR" 
+      cy.get(".skittle-root .tgrid .c.dprhead").should("have.text", "Avg damage / rotation"); // plus words for his "Team Avg DPR"
     });
     // the Search & compare sheet still opens over the cards, from the bar's Search button
     cy.get("[data-test-rankings-search]").click();

@@ -72,8 +72,6 @@ export interface CostToMax {
   total: { credits: number; materials: MaterialLine[]; expItems: MaterialLine[] };
   /** nothing at all left to pay in the counted parts */
   done: boolean;
-  /** a part's saved value was missing */
-  anyAssumed: boolean;
 }
 
 export interface SavedProgress {
@@ -269,7 +267,6 @@ export function costToMax(data: MaterialsData, key: string, saved: SavedProgress
     parts,
     total: { credits, materials, expItems: [...expItems].map(([id, n]) => lineOf(data, id, n)) },
     done: credits === 0 && materials.length === 0 && expItems.size === 0,
-    anyAssumed: parts.some((p) => p.assumed),
   };
 }
 

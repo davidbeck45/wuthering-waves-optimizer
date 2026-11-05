@@ -277,7 +277,7 @@
     </p>
     <p v-if="durations && (durations.fills.length || durations.gaps.length) && !undone" class="px-3 pb-1 text-xs opacity-80" data-test-rankings-sync-loop-times>
       <template v-if="durations.fills.length">Rotation time added to {{ plural(durations.fills.length, "saved member loop") }} that had none ({{ loopTimesText(durations) }}), so the calculator's DPS divides by the team's loop. </template>
-      <template v-if="durations.gaps.length">{{ plural(durations.gaps.length, "member loop") }} still {{ durations.gaps.length === 1 ? "has" : "have" }} no rotation time: no synced team with the same three at the same tier.</template>
+      <template v-if="durations.gaps.length">{{ plural(durations.gaps.length, "member loop") }} still {{ durations.gaps.length === 1 ? "has" : "have" }} no rotation time: no one synced team with the same three at the same tier to take it from.</template>
     </p>
     <ul v-show="showDetails && !undone" class="grid gap-2 px-3 pb-2" data-test-rankings-sync-list>
       <li v-for="t in report.teams" :key="t.id" class="flex flex-wrap items-start gap-x-2 gap-y-0.5" :data-test-rankings-sync-team="t.name" :data-test-rankings-sync-status="t.status">

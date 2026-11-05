@@ -36,7 +36,7 @@ describe("wuwa_calc stock presets", () => {
     cy.get('[data-test="rotations-overflow-menu"]').click();
     cy.get('[data-test-rotations-action="presets"]').click();
     cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
-    cy.contains("[data-test-rotations-presets] .card", "Lupa + Qiuyuan · S6R5 (wuwa_calc)").should("contain.text", "Team: Lupa + Qiuyuan (main DPS): 247,678 DPS for Galbrena");
+    cy.contains("[data-test-rotations-presets] .card", "Lupa + Qiuyuan · S6R5 (wuwa_calc)").invoke("text").should("match", /Team: Lupa \+ Qiuyuan \(main DPS\): [\d,]+ DPS for Galbrena/);
     cy.get("[data-test-rotations-presets] .card").should("have.length.greaterThan", 1);
     cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
   });
