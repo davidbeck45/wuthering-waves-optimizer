@@ -151,6 +151,30 @@ describe("wuwa_calc rankings: My build substat row", () => {
     cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "My build");
   });
 
+  it("reads a build changed on another page when the player comes back", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#r=Cartethyia&cb=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.contains(".skittle-root .trow:not(.thead):not(.tghost)", "My build", { timeout: 180000 }).find(".gotodetail[data-team]").invoke("attr", "data-team").then((before) => {
+      cy.get("[data-test-nav-convene]").click();
+      cy.location("pathname", { timeout: 30000 }).should("eq", "/convene");
+      cy.window().then((win) => {
+        // every echo's first substat one point up: the spread's key moves, so its rows are new ones
+        const host = [...win.document.querySelectorAll("*")].find((el) => "__vue_app__" in el) as unknown as { __vue_app__: { config: { globalProperties: { $pinia: { _s: Map<string, { echoes: Array<{ echoSubStatsValue1: number }> }> } } } } };
+        for (const echo of host.__vue_app__.config.globalProperties.$pinia._s.get("inventory")!.echoes) echo.echoSubStatsValue1 += 1;
+      });
+      cy.go("back");
+      cy.location("pathname", { timeout: 30000 }).should("eq", "/rankings");
+      cy.get(".skittle-root .tgrid .gotodetail[data-team]", { timeout: 180000 }).should(($links) => {
+        const teams = [...$links].map((a) => a.getAttribute("data-team"));
+        expect(teams, "the old spread's row").not.to.include(before);
+        expect(teams.filter((t) => /\.u[0-9a-z]+/.test(t ?? "")), "a row on the new spread").not.to.have.length(0);
+      });
+    });
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+  });
+
   it("offers no My build row for a resonator the account has not built", () => {
     cy.visit("/rankings#r=Mornye&cb=Mornye");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");

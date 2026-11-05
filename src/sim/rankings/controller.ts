@@ -204,6 +204,7 @@ function applyMyBuilds(): void {
   registered = next;
   for (const w of pool ?? []) w.postMessage({ type: "mySubstats", builds: myBuilds, clear });
 }
+const buildsStamp = (builds: BuildRolls[]): string => builds.map((b) => `${b.name}:${b.key}`).join(",");
 /** The builds changed in the app (a character's echoes were edited): re-register and redraw. */
 export function updateMyBuilds(builds: BuildRolls[]): void {
   myBuilds = builds;
@@ -1182,7 +1183,9 @@ export function onLocationChange(): void {
     });
     return;
   }
-  if (tableRequested && M.routeTeam() === renderedKey) return; // the location moved without changing what is on screen
+  // the location moved without changing what is on screen (a stale table on screen still has to catch up; a detail page's
+  // does when Back shows it)
+  if (tableRequested && M.routeTeam() === renderedKey && (renderedKey || !tableStale)) return;
   route();
 }
 
@@ -1261,6 +1264,9 @@ function solvesAhead(): boolean {
 
 export async function mountRankings(host: HTMLElement, r: Router, builds: BuildRolls[] = [], acct: AccountRegistration | null = null): Promise<void> {
   router = r;
+  // the view's watchers (updateMyBuilds, updateAccountState) stop with the page, so a change made on another page lands
+  // here: the table on the root is the old account's, and a pass still out would have every answer refused by `file()`
+  const movedAway = (acct?.key ?? "") !== (account?.key ?? "") || buildsStamp(builds) !== buildsStamp(myBuilds);
   myBuilds = builds;
   account = acct;
   patchFetch();
@@ -1279,7 +1285,10 @@ export async function mountRankings(host: HTMLElement, r: Router, builds: BuildR
     applyMyBuilds();
     applyAccountState();
     if (!booted) { booted = boot(); await booted; }
-    else onLocationChange();
+    else {
+      if (movedAway) tableStale = true;
+      onLocationChange();
+    }
   } catch (err) {
     showBootError(err);
   }

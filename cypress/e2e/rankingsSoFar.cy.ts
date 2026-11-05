@@ -4,6 +4,13 @@ import { configOptimizer } from "./calculator/data/Cartethyia/data";
 // `paintSoFar`, timing in soFar.ts), instead of the table waiting for the last team under the full-screen overlay.
 // Cartethyia's ten teams with "Teams I can field" lifted: more teams than one round of solver workers on any machine
 // (one worker on CI's 2-core runner, eight here), so a partial paint always happens before the whole table.
+/** A chain turned off on another page: Cartethyia goes from S2 to S1, which moves the account key. */
+function dropHerSequence2(win: Cypress.AUTWindow): void {
+  const host = [...win.document.querySelectorAll("*")].find((el) => "__vue_app__" in el) as unknown as { __vue_app__: { config: { globalProperties: { $pinia: { _s: Map<string, { characters: Record<string, { resonanceChains: Record<string, { isEnabled: boolean }> }> }> } } } } };
+  const store = host.__vue_app__.config.globalProperties.$pinia._s.get("character")!;
+  store.characters.Cartethyia!.resonanceChains.SequenceNode2BladeBrokenbyTempest!.isEnabled = false;
+}
+
 describe("wuwa_calc rankings: rows so far at My account (Wuthering Tools+)", () => {
   it("draws the first rows while the rest still solve, says so, then draws the whole table", () => {
     cy.visit("/");
@@ -48,6 +55,61 @@ describe("wuwa_calc rankings: rows so far at My account (Wuthering Tools+)", () 
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)").should("have.length", 10);
     cy.get(".skittle-root #teamCount").should("contain.text", "10 teams");
+  });
+
+  it("an account changed on another page mid-solve comes back solved at the new account, not as an empty list", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
+    cy.get(".skittle-root.wt-sofar", { timeout: 90000 }).should("exist");
+    cy.get("[data-test-nav-convene]").click();
+    cy.location("pathname", { timeout: 30000 }).should("eq", "/convene");
+    cy.window().then(dropHerSequence2);
+    // back through history: the hash is the same, so nothing but the account says the rows are old. Every answer the old
+    // pass still had out is refused by `file()`, and this used to end on "0 teams" and the empty state
+    cy.go("back");
+    cy.location("pathname", { timeout: 30000 }).should("eq", "/rankings");
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)", { timeout: 180000 }).should("have.length", 10);
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid").should("contain.text", "Cartethyia S1R1").and("not.contain.text", "Cartethyia S2R1");
+  });
+
+  it("an account changed on another page after the table finished redraws it at the new account", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)", { timeout: 180000 }).should("have.length", 10);
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid").should("contain.text", "Cartethyia S2R1");
+    cy.get("[data-test-nav-convene]").click();
+    cy.location("pathname", { timeout: 30000 }).should("eq", "/convene");
+    cy.window().then(dropHerSequence2);
+    cy.go("back");
+    cy.location("pathname", { timeout: 30000 }).should("eq", "/rankings");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S1R1").and("not.contain.text", "Cartethyia S2R1");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+  });
+
+  it("a team left open when the account changed stays open, and Back shows the table at the new account", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .gotodetail[data-team]", { timeout: 180000 }).first().click();
+    cy.get(".skittle-root.wt-detail", { timeout: 30000 }).should("exist");
+    cy.location("hash").then((hash) => {
+      cy.get("[data-test-nav-convene]").click();
+      cy.location("pathname", { timeout: 30000 }).should("eq", "/convene");
+      cy.window().then(dropHerSequence2);
+      cy.go("back");
+      cy.location("pathname", { timeout: 30000 }).should("eq", "/rankings");
+      cy.location("hash").should("eq", hash);
+    });
+    cy.get(".skittle-root.wt-detail", { timeout: 30000 }).should("exist");
+    cy.get(".skittle-root #backLink").click();
+    cy.get(".skittle-root").should("not.have.class", "wt-detail");
+    cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "Cartethyia S1R1").and("not.contain.text", "Cartethyia S2R1");
+    cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
   });
 
   it("a tier picked while My account is still solving shows that tier, not the account's answers", () => {

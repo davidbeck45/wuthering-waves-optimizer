@@ -1356,6 +1356,11 @@ Things learned:
   only after the first pass (nothing was on screen before it ended), so mid-solve the first did nothing and Back
   followed its `#` onto his S0R1 tier; `boot()` now wires both before that pass (verify1, `rankingsSoFar.cy.ts`). The
   docked box is hidden on a detail page opened from the rows so far: it is about the list, and it sat over his grids.
+- The view's account and build watchers stop with the page, so a change made on another page reaches the controller only
+  when the page mounts again. `mountRankings` compares what it is handed with what it last solved at and marks the table
+  stale: without that, a pass left running had every answer refused by `file()` and landed on "0 teams", and a finished
+  table stayed the old account's. (plus 786c87df kept the old table too, and mid-solve it filed old answers under the new
+  key: a table of 9 with S1 and S2 rows mixed.) A detail page left open stays open; the table catches up on Back.
 - Start shared work in the call that asks for it, not a microtask later: a `rankRoster` started after the page's first
   render no longer overlapped its stock-preset fetch with that render, and /my-rankings' first row came ~0.4 s later
   (3 runs of 3). Started at once, the gap is ~0.1 s, at the edge of the noise.
