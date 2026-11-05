@@ -95,6 +95,21 @@ describe("rankPalette", () => {
     expect(pageTitleOf("/?screen=optimizer")).toBe("Calculator");
   });
 
+  it("a bare word opens the page it means, with the calculator's section still in the list", () => {
+    const pages = (q: string) => rankPalette(q, items).filter((i) => i.group === "page").map((i) => (i.run as { path: string }).path);
+    expect(pages("weapon")[0]).toBe("/weapons");
+    expect(pages("weapon")).toContain("/?screen=weapon");
+    expect(pages("team")[0]).toBe("/rankings");
+    expect(pages("team")).toContain("/?screen=party");
+    expect(pages("build")[0]).not.toBe("/?screen=build-card");
+    expect(pages("build")).toContain("/?screen=build-card");
+    // a keyword counts in full: "buffs" must not go to Rotation cue cards, whose uptime table merely mentions them
+    expect(pages("buffs")[0]).toBe("/?screen=custom-buffs");
+    // nothing else answers to these, so the section stays first
+    expect(pages("custom buffs")[0]).toBe("/?screen=custom-buffs");
+    expect(pages("equipped")[0]).toBe("/?screen=echoes");
+  });
+
   it("finds /my-rankings by its words and keywords", () => {
     expect(rankPalette("roster rank", items)[0].run).toEqual({ kind: "route", path: "/my-rankings" });
     expect(rankPalette("my rankings", items).find((i) => i.group === "page")?.run).toEqual({ kind: "route", path: "/my-rankings" });

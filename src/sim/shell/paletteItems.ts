@@ -34,6 +34,9 @@ export interface PaletteItem {
   queryOnly?: boolean;
   /** tie-break between equal scores, lower first (a character's own commands before its teams') */
   order?: number;
+  /** taken off the title's score alone: a calculator section's short exact title must not beat the page a bare word
+   *  means, and a keyword ("buffs") still counts in full */
+  handicap?: number;
   run: PaletteRun;
 }
 
@@ -130,6 +133,11 @@ export interface PaletteSources {
   theme?: string | null;
 }
 
+/** The calculator's `/?screen=` rows: "weapon" opened its Weapon section over /weapons, "team" Team Buffs over Team
+ *  rankings, "build" Build Card over Build history. The whole name still finds its section first ("optimizer", "team
+ *  buffs"). Convene's tabs and the Settings sections are not behind a bare word of another page, so they keep their score. */
+const SCREEN_HANDICAP = 0.12;
+
 export function paletteItems(s: PaletteSources): PaletteItem[] {
   const items: PaletteItem[] = [];
   for (const p of [...CORE_PAGES, ...PLUS_PAGES]) {
@@ -138,7 +146,7 @@ export function paletteItems(s: PaletteSources): PaletteItem[] {
   }
   for (const p of SECTION_PAGES) {
     if (!s.hasRoute(p.path)) continue;
-    items.push({ key: `page:${p.path}`, group: "page", title: p.title, subtitle: p.description, keywords: p.keywords, icon: p.icon, run: { kind: "route", path: p.path }, queryOnly: true });
+    items.push({ key: `page:${p.path}`, group: "page", title: p.title, subtitle: p.description, keywords: p.keywords, icon: p.icon, run: { kind: "route", path: p.path }, ...(p.path.startsWith("/?screen=") ? { handicap: SCREEN_HANDICAP } : {}), queryOnly: true });
   }
   items.push(
     { key: "action:rank", group: "action", title: "Rank my roster", subtitle: "Score every character and team you can field on your real builds", keywords: ["my rankings", "dps", "best team", "invest"], icon: ICON.rank, run: { kind: "route", path: "/my-rankings" } },
@@ -243,7 +251,8 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
       const sub = item.subtitle ? fuzzyScore(q, item.subtitle) * 0.6 : 0;
       const kw = Math.max(0, ...(item.keywords ?? []).map((k) => fuzzyScore(q, k) * 0.85));
       const best = Math.max(title, sub, kw);
-      return { item, best, score: best > 0.04 ? best + GROUP_WEIGHT[item.group] + (item.group === "character" && item.badge ? 0.02 : 0) : 0 };
+      const ranked = item.handicap ? Math.max(title - item.handicap, sub, kw) : best;
+      return { item, best, score: best > 0.04 ? ranked + GROUP_WEIGHT[item.group] + (item.group === "character" && item.badge ? 0.02 : 0) : 0 };
     })
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score || (a.item.order ?? 0) - (b.item.order ?? 0) || a.item.title.localeCompare(b.item.title));
