@@ -3285,6 +3285,9 @@ Rules:
   starts above it. Likewise the median of a lumpy total is not the mean. Both are right, not a rounding slip.
 - **Never a finish past the clock.** At a slow pace the sim's 90th percentile can land past 5:00: `floorOdds` then gives
   no range rather than "8 runs in 10 finish in 5:01–5:11" beside "clears in 6 % of runs".
+- **The plan's stars can't be measured once.** Figtree has no ★, so a star is as wide as the device's fallback font: 0.6 em
+  to a full 1 em. A plan row has to leave the kill time room at the full 1 em (0.7 rem stars on phones), and
+  `critLuck.cy.ts` holds the row to that width, so the check doesn't depend on the fonts of the machine running it.
 
 Gates: `spread.test.ts` (one- and two-hit analytic cases, exact vs Monte Carlo, normal vs Monte Carlo, seeds, scaling,
 method choice), `killOdds.test.ts` (a zero margin ~50 % on many hits, monotone CDF, no crit = the average kill, normal vs
@@ -3293,8 +3296,9 @@ pace), `floorOdds.test.ts`, `runRange.test.ts`, `appHits.test.ts` (the Cartethyi
 calculator's average; the roster ranking's best range), `rileyRun.test.ts` (`hitCrit` per member matches the rows),
 `profile.test.ts` (traced = untraced curve + crits; borrowed crits = a profile's own; a Crit DMG floor traced on its
 own; mixture vs Monte Carlo on the real engine; the whole check carries odds); `cypress/e2e/critLuck.cy.ts` (every timed
-floor's line, the stored distribution and its key, at your pace, the plan's chances, /rotation's range, all inside 412 px
-at 130 %) and `phoneLayout.cy.ts` (the line inside 360 and 412 px).
+floor's line, the stored distribution and its key, at your pace, the plan's chances and each kill time at the widest star,
+/rotation's range and what it leaves out, all inside 412 px at 130 %) and `phoneLayout.cy.ts` (the line inside 360 and 412
+px).
 
 ## One team, one number — the rules every figure follows (track "fix-numbers", 2026-11-02)
 
