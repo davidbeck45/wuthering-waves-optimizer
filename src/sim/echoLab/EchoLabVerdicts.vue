@@ -53,7 +53,7 @@
             :aria-pressed="filters.verdict === v.value"
             :data-test-echo-lab-filter-verdict="v.value"
             @click="set('verdict', v.value)">
-            {{ v.label }}<span class="text-xs tabular-nums opacity-60">{{ v.count }}</span>
+            {{ v.label }}<span class="text-xs tabular-nums">{{ v.count }}</span>
           </button>
         </div>
         <button type="button" class="btn btn-sm btn-ghost lg:hidden" :aria-expanded="moreOpen" data-test-echo-lab-filters-more @click="moreOpen = !moreOpen">
@@ -110,7 +110,7 @@
     </div>
 
     <!-- what the substat colours mean (they were unexplained on a phone) -->
-    <p class="flex flex-wrap items-center gap-x-1.5 gap-y-1 px-1 text-xs opacity-80" data-test-echo-lab-line-legend>
+    <p class="flex flex-wrap items-center gap-x-1.5 gap-y-1 px-1 text-xs text-base-content/80" data-test-echo-lab-line-legend>
       <span>Substat colour = what the line is worth on its best owner's build:</span>
       <span class="el-line el-line--great">great</span>
       <span class="el-line el-line--good">good</span>
@@ -170,7 +170,7 @@
                 <div class="min-w-0 leading-tight">
                   <div class="el-owner-name text-sm"><span class="el-card-only opacity-60">Best for </span>{{ characterName(row.best.characterId) }}</div>
                   <div class="el-owner-gain text-xs tabular-nums" :class="row.best.gain > 0 ? 'el-up font-semibold' : 'opacity-60'">
-                    <span class="whitespace-nowrap">{{ signedPct(row.best.gain, 2) }}<span class="el-card-only"> damage</span></span><span v-if="row.upgradeFor.length > 1" class="whitespace-nowrap font-normal opacity-70"> · +{{ row.upgradeFor.length - 1 }} more</span>
+                    <span class="whitespace-nowrap">{{ signedPct(row.best.gain, 2) }}<span class="el-card-only"> damage</span></span><span v-if="row.upgradeFor.length > 1" class="whitespace-nowrap font-normal"> · +{{ row.upgradeFor.length - 1 }} more</span>
                   </div>
                 </div>
               </div>

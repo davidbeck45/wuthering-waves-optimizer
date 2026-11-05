@@ -3588,8 +3588,12 @@ lists the 40 × 40 steppers at its own < 40 cut-off), /echo-plan 11 → 0, /ener
 Left, with the reason:
 - The /account hero's lead card tints its top-left corner with the element colour at 26 %: chips and links there read
   3.6–4.1 : 1 at the strongest point of the gradient (5+ elsewhere on the card). Lowering the tint is a design call.
-- Text dimmed twice (an `opacity-*` utility around text that is muted already, Echo Lab's "·" separators, Echo plan's
-  "Lock" / "Discard" legend chips) still reads 3.6–4.4 in dark; Ryan's v3 bottom-bar labels are 4.48 (his CSS).
+- Text dimmed twice: closed 2026-11-05 on /account's chip counts, Echo plan's "N to lock" and legend chips, /weapons'
+  name line (the row's dim is on the portrait now) and Echo Lab's filter counts, with the two colour-mixes behind nord's
+  gain figures. All nine themes read 4.5 or more; `a11yThemes.cy.ts` holds them. Left: Echo Lab's "·" separators (2.9,
+  decorative), its "weak" line (4.38 at worst: the dim is what it says), and Ryan's v3 bottom-bar labels at 4.48 (his CSS).
+  `color: color-mix(…, black)` is still not rewritten by the build step: about 40 declarations, each measured against its
+  own tint, so they were changed where they failed rather than all at once.
 - Riley's own /rankings table styles (skittle CSS's `--dim`, `--faint` are floored; his hard-coded colours are not).
 - The palette's per-theme rows (audit L10): track "loose-ends" built them this batch.
 - Interim counts while /account scores ("Teams you can field" 7 → 15 → 30): the scoring label is a `role="status"` now,

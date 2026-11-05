@@ -220,6 +220,9 @@ describe("contrast, focus and keyboard", () => {
     cy.visit("/weapons", seed({ fontScale: 1.3 }));
     cy.get(".wv-pill", ENGINE).should("exist");
     measure([".wv-pill", ".wv-who__weapon"]);
+    cy.visit("/echo-lab", seed({ fontScale: 1.3 }));
+    cy.get(".el-seg__btn .tabular-nums", ENGINE).should("exist");
+    measure([".el-seg__btn .tabular-nums"]);
   });
 
   it("gives focus to the Ask panel and back to what opened it", () => {
