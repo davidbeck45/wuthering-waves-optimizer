@@ -114,6 +114,26 @@ function ask(question: string) {
 
 // center scrolling: the panel's header is sticky, and top-scrolling would park the element under it
 describe("Claude assistant", { scrollBehavior: "center" }, () => {
+  it("keeps the toast off the Ask sheet's header on a small phone", () => {
+    stubAnthropic();
+    cy.viewport(360, 800);
+    cy.visit("/", seedV3());
+    cy.document().then((doc) => {
+      const style = doc.createElement("style");
+      style.textContent = "html { font-size: 130%; }";
+      doc.head.appendChild(style);
+    });
+    cy.get("[data-test-ai-open]").should("be.visible").click();
+    cy.get("[data-test-ai-key-input]").type(KEY);
+    cy.get("[data-test-ai-key-save]").click();
+    cy.get(".toast .alert").should(($alert) => {
+      const toast = $alert[0].getBoundingClientRect();
+      const header = $alert[0].ownerDocument.querySelector("[data-test-ai-panel] header")!.getBoundingClientRect();
+      expect(toast.height, "the toast is on screen").to.be.greaterThan(0);
+      expect(toast.bottom, "the toast ends above the sheet's header").to.be.at.most(header.top);
+    });
+  });
+
   it("walks a player without a key through onboarding, stores a stubbed key and tests it", () => {
     stubAnthropic();
     cy.visit("/", seedV3());

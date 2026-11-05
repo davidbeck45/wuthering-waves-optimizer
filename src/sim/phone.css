@@ -846,6 +846,11 @@
     gap: 0.5rem;
     padding: 0.625rem 0.5rem 0.625rem 0.875rem;
   }
+  /* an open Ask sheet (only then is its backdrop on the page): a toast under the page's header ran from 94 to 163 px at
+     360 × 800 and covered the top of the sheet's header row and its ✕; above the sheet there is room for it */
+  html:has(.ai-backdrop) .toast.toast-top.toast-end {
+    top: 0.5rem;
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------
