@@ -266,7 +266,8 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
             items.push({
               id: `${id}:echoes`,
               characterId: id,
-              request,
+              // a row with no team figure (its team runs another build) has none to print on the page it opens
+              request: team ? request : { ...request, rankedTeam: null },
               teamName: spec.name,
               objective: m.objective?.label ?? "best rotation",
               before: m.before.value,

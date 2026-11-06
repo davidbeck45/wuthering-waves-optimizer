@@ -447,7 +447,7 @@ async function toOptimizer(row: SetLabRow): Promise<void> {
   if (before.length !== sets.length || !sets.every((s) => before.includes(s))) {
     const missing = setsNotOwned(row.parts, result.value?.owned ?? {});
     const items = [
-      ...(missing.length ? [`You own no ${missing.map(setLabel).join(" or ")} echoes: the optimizer can only use the other set`] : []),
+      ...(missing.length ? [`You own no ${missing.map(setLabel).join(" or ")} echoes, so the optimizer will find none of ${missing.length > 1 ? "those sets" : "that set"}`] : []),
       ...(before.length ? [`This replaces the filter saved there: ${before.map(setLabel).join(", ")}`] : []),
     ];
     const ok = await confirm(`The optimizer will look only at echoes of ${setList(row)}. The calculator opens on ${characterName(id)}.`, {

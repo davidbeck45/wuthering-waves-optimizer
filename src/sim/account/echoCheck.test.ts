@@ -110,6 +110,8 @@ describe("check my echoes", () => {
     );
     const row = out.items.find((i) => i.characterId === "Cartethyia");
     expect(row?.teamNote, JSON.stringify({ skipped: out.skipped, best: out.best, errors: out.errors })).toContain("not the active one");
+    // no team figure on the row, so none on the page it opens
+    expect(buildTeamRoute(row!.request, "Cartethyia").query.rankedTeam).toBeUndefined();
     expect(row!.empty).toBe(0);
   }, 240000);
 
