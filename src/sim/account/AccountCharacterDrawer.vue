@@ -180,7 +180,7 @@ import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
-const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null }>();
+const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null; /** "cost": open at Cost to max (the palette's command) */ section?: string | null }>();
 const rankSub = computed(() =>
   props.scoring
     ? props.rosterSize
@@ -211,6 +211,7 @@ watch(
     if (!el) return;
     if (id && !el.open) el.showModal();
     else if (!id && el.open) el.close();
+    if (id && props.section === "cost") el.querySelector("[data-test-cost-to-max]")?.scrollIntoView({ block: "start" });
   },
 );
 

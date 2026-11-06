@@ -115,6 +115,31 @@ describe("rankPalette", () => {
     expect(rankPalette("my rankings", items).find((i) => i.group === "page")?.run).toEqual({ kind: "route", path: "/my-rankings" });
   });
 
+  it("puts a command whose title reads as what was typed first: ahead of a page with the words as a keyword, and of Ask Claude", () => {
+    const items = paletteWithCommands(sources());
+    expect(rankPalette("which set", items)[0]?.key).toBe("command:set-lab");
+    expect(rankPalette("which echo", items)[0]?.key).toBe("command:farm");
+    expect(rankPalette("which set", items).at(-1)?.group).toBe("ask");
+    // a real question still goes to Claude, whatever a keyword says
+    expect(rankPalette("which set should aemeath wear", items)[0]?.group).toBe("ask");
+    expect(rankPalette("why is my team so low", items)[0]?.group).toBe("ask");
+  });
+
+  it("finds Set lab by its name, on the tab rather than the page's first one", () => {
+    const items = paletteWithCommands(sources());
+    expect(rankPalette("set lab", items)[0]?.run).toEqual({ kind: "route", path: "/echo-lab?tab=sets" });
+  });
+
+  it("finds Cost to max per character, and opens it on that character", () => {
+    const items = paletteWithCommands(sources());
+    const ranked = rankPalette("cost to max", items);
+    expect(ranked[0]?.title).toMatch(/^Cost to max: /);
+    expect(ranked.find((i) => i.title === "Cost to max: Aemeath")).toMatchObject({ group: "command", run: { kind: "route", path: "/account?focus=Aemeath&section=cost" } });
+    expect(ranked.at(-1)?.group).toBe("ask");
+    expect(rankPalette("cost to max morn", items)[0]?.title).toBe("Cost to max: Mornye");
+    expect(rankPalette("materials", items).some((i) => i.title === "Cost to max: Aemeath")).toBe(true);
+  });
+
   it("puts 'Ask Claude' first for a question or a weak match, and leaves it out on request", () => {
     expect(rankPalette("why is my team lower than riley's?", items)[0]).toMatchObject({ group: "ask", title: "Ask Claude: why is my team lower than riley's?" });
     expect(rankPalette("zzzz qqq", items)[0].group).toBe("ask");

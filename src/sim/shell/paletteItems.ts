@@ -87,6 +87,7 @@ export const SECTION_PAGES: Array<{ path: string; title: string; description: st
   { path: "/convene?tab=pulls", title: "My pulls", description: "Import your Convene history: pity, guarantee, 50/50 record and luck", keywords: ["pity", "history", "import pulls", "tracker", "guarantee", "50/50", "convene"], icon: ICON.convene },
   { path: "/convene?tab=banners", title: "Convene banners", description: "Every released banner with countdowns and how long since each 5★ ran", keywords: ["banner", "rerun", "calendar", "schedule", "featured", "convene"], icon: ICON.convene },
   { path: "/convene?tab=advisor", title: "Pull advisor", description: "Which featured 5★ adds the most damage to your builds per 1,000 Astrite", keywords: ["who to pull", "worth it", "astrite", "advice", "convene", "banner"], icon: ICON.convene },
+  { path: "/echo-lab?tab=sets", title: "Set lab", description: "Echo Lab: every Sonata layout on the echoes a character wears, own and team damage", keywords: ["best set", "which set", "sonata", "set bonus", "echo set", "compare sets", "echo lab"], icon: ICON.calculator },
   { path: "/settings?section=backup-restore", title: "Backup & restore", description: "Save your characters, inventory and teams to a file, or load a backup", keywords: ["backup", "export", "import", "restore", "json", "transfer", "save"], icon: ICON.settings },
   { path: "/settings?section=wavescan", title: "Import echoes from Wavescan", description: "Load your whole echo inventory from the Wavescan desktop scanner", keywords: ["wavescan", "scanner", "import echoes", "inventory", "echoes"], icon: ICON.settings },
   { path: "/build-team?mode=account", title: "Build my whole account", description: "Gear several teams at once from one echo inventory, no echo worn twice across them", keywords: ["account plan", "whole account", "all teams", "roster optimizer", "optimize account", "echoes", "build"], icon: ICON.teams },
@@ -223,6 +224,12 @@ function themeRowAnswers(q: string, item: PaletteItem): boolean {
   return (letters >= 2 && wordStart(item.title)) || (letters >= 3 && (item.keywords ?? []).some(wordStart));
 }
 const QUESTION = /\?\s*$|^(what|why|how|who|which|should|is|are|can|does|do|when|where|explain|compare)\b/i;
+/** what was typed reads as a row's title from this score up: its start, a word's start, or every word's */
+const TITLE_READS = 0.78;
+/** Two or more words that read as a title are what the row is called, so they lift it past a row that only lists them
+ *  as a keyword ("which set": the Echo Lab page, a keyword at 0.91, came before "Which set is best for this character?"
+ *  at 0.86). One word stays with the keywords, which say what a bare word means. */
+const TITLE_BONUS = 0.1;
 
 export const looksLikeQuestion = (text: string): boolean => QUESTION.test(text.trim());
 
@@ -245,15 +252,16 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
     const teams = items.filter((i) => i.group === "team").slice(0, 5);
     return [...context, ...pages, ...actions, ...chars, ...teams];
   }
+  const phrase = /\s/.test(q);
   const scored = items
     .map((item) => {
-      if (item.group === "theme" && !themeRowAnswers(q, item)) return { item, best: 0, score: 0 };
+      if (item.group === "theme" && !themeRowAnswers(q, item)) return { item, best: 0, score: 0, title: 0 };
       const title = fuzzyScore(q, item.title);
       const sub = item.subtitle ? fuzzyScore(q, item.subtitle) * 0.6 : 0;
       const kw = Math.max(0, ...(item.keywords ?? []).map((k) => fuzzyScore(q, k) * 0.85));
       const best = Math.max(title, sub, kw);
-      const ranked = item.handicap ? Math.max(title - item.handicap, sub, kw) : best;
-      return { item, best, score: best > 0.04 ? ranked + GROUP_WEIGHT[item.group] + (item.group === "character" && item.badge ? 0.02 : 0) : 0 };
+      const ranked = item.handicap ? Math.max(title - item.handicap, sub, kw) : best + (phrase && title >= TITLE_READS ? TITLE_BONUS : 0);
+      return { item, best, title, score: best > 0.04 ? ranked + GROUP_WEIGHT[item.group] + (item.group === "character" && item.badge ? 0.02 : 0) : 0 };
     })
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score || (a.item.order ?? 0) - (b.item.order ?? 0) || a.item.title.localeCompare(b.item.title));
@@ -276,7 +284,7 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
     const ask: PaletteItem = { key: "ask", group: "ask", title: `Ask Claude: ${q}`, subtitle: "Answered from your account with the app's engine", icon: ICON.sparkle, run: { kind: "ask", question: q } };
     // a question goes first, unless a command's own title reads as what was typed ("why this number mornye" is the
     // command, and Enter must not send it to Claude); otherwise the ask row waits below the strong matches
-    const named = scored.length > 0 && fuzzyScore(q, scored[0].item.title) >= 0.78;
+    const named = scored.some((s) => s.title >= TITLE_READS);
     if ((looksLikeQuestion(q) && !named) || strong < 0.6) out.unshift(ask);
     else out.push(ask);
   }

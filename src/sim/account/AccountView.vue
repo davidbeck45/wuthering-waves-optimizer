@@ -111,7 +111,8 @@
       :scoring="rankingStatus.state === 'running'"
       :owned="ownedKeys"
       :own="drawerOwn"
-      @close="drawerId = null"
+      :section="drawerSection"
+      @close="closeDrawer"
       @calculator="toCalculator" />
   </div>
 </template>
@@ -123,7 +124,7 @@
 // gains on each character's best rotation and their strongest fieldable team) and the teams the roster can field.
 // Data and runs: useAccountData.ts; the view model: accountView.ts.
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { rankingsMineHash } from "./accountState";
@@ -150,6 +151,7 @@ useDocumentTitle(
   "Your Wuthering Waves roster at a glance: builds, sequences, the teams you can field and what to invest in next, scored on your own builds.",
 );
 
+const route = useRoute();
 const router = useRouter();
 const data = useAccountData();
 const { account, setUpCount, ownedKeys, ranking, shownRanking, rankingStatus, shownItems, planStatus, refresh } = data;
@@ -221,12 +223,31 @@ const drawerOwn = computed(() => (drawerId.value ? drawerOwnOf(drawerId.value, o
 function openCharacter(id: string): void {
   drawerId.value = id;
 }
+/** `?focus=<character>` (the palette's "Cost to max: <name>"): that drawer, once their card is in. `&section=cost` opens it
+ *  at that section. Closing takes both off the address, so the same link opens it again and a reload doesn't. */
+const drawerSection = computed(() => (typeof route.query.section === "string" ? route.query.section : null));
+function openFocused(): void {
+  const focus = route.query.focus;
+  if (typeof focus === "string" && drawerId.value !== focus && cards.value.some((c) => c.id === focus)) openCharacter(focus);
+}
+watch([() => route.query.focus, () => cards.value.length], openFocused);
+function closeDrawer(): void {
+  drawerId.value = null;
+  if (route.query.focus === undefined) return;
+  const query = { ...route.query };
+  delete query.focus;
+  delete query.section;
+  void router.replace({ query });
+}
 function toCalculator(id: string): void {
   data.setActiveCharacter(id);
   void router.push("/");
 }
 
-onMounted(() => void refresh());
+onMounted(() => {
+  void refresh();
+  openFocused(); // after the mount: the drawer opens on a change of its card, and a stored account has its cards already
+});
 onAccountAdopted(() => void refresh());
 </script>
 

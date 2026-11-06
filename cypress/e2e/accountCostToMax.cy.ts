@@ -46,6 +46,25 @@ const openDrawer = (key: string): void => {
 };
 
 describe("cost to max in the account drawer", () => {
+  it("opens on the palette's link at that character's Cost to max, and closing takes the link off the address", () => {
+    cy.viewport(412, 915);
+    const { visit } = seed();
+    cy.visit("/account?focus=Cartethyia&section=cost", visit);
+    cy.get("[data-test-account-drawer]", { timeout: 120000 }).should("have.attr", "open");
+    cy.get("[data-test-account-drawer] .dr__name").should("contain.text", "Cartethyia");
+    cy.get("[data-test-cost-total]", { timeout: 20000 }).should("exist");
+    cy.get("[data-test-cost-to-max]").should(($section) => {
+      const top = $section[0]!.getBoundingClientRect().top;
+      expect(top, "Cost to max on screen, not below the drawer's fold").to.be.within(0, 915 * 0.5);
+    });
+    cy.get("[data-test-account-drawer-close]").click({ force: true });
+    cy.get("[data-test-account-drawer]").should("not.have.attr", "open");
+    cy.location("search").should("eq", "");
+    // the roster keeps scoring under it: nothing brings the drawer back
+    cy.get("[data-test-account-card]", { timeout: 120000 }).should("have.length.at.least", 1);
+    cy.get("[data-test-account-drawer]").should("not.have.attr", "open");
+  });
+
   it("counts from the saved levels, says what was assumed, and from level 1 adds the inherent skills and stat bonuses", () => {
     cy.viewport(1440, 900);
     const { character, visit } = seed();
