@@ -18,7 +18,7 @@ import {
   type WeightsCalc,
 } from "./engine";
 import { readExport, resolveExportPath, writeSyncedExport, type ExportFile } from "./exportFile";
-import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from "../account/accountState";
+import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf, wornEchoCount } from "../account/accountState";
 import { buildRollsOf } from "../rankings/myBuilds";
 import { SUBSTAT_ABBR } from "../substats/substatWeights";
 import { dmg, int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
@@ -224,7 +224,7 @@ export function registerPlusCommands(program: Command): void {
         activeCharacter: exp.activeCharacter,
         characters: characters.length,
         echoes: exp.inventory.echoes.length,
-        equippedEchoes: Object.keys(exp.inventory.equipped).length,
+        equippedEchoes: wornEchoCount(exp.inventory.equipped),
         teams: exp.teams.length,
         rotations: characters.reduce((n, c) => n + c.rotations, 0),
         roster: characters,

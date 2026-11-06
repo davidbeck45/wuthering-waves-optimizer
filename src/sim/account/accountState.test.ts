@@ -75,7 +75,7 @@ describe("account state", () => {
         Mornye: { resonanceChains: { SequenceNode1X: { isEnabled: true } }, builds: [{ id: "d", name: "Default build", echoes: {} }] },
         RoverAeroMale: { weapon: "BloodpactsPledge" },
       },
-      { echoes: account.echoes, equipped: { e1: { Cartethyia: 0 }, e2: { Cartethyia: 1 } } },
+      { echoes: account.echoes, equipped: { e1: { Cartethyia: 0 }, e2: { Cartethyia: 1 }, e3: {} } }, // e3: taken off, its key stays behind
       [
         { id: "t1", name: "Cartethyia + Mornye + Aero Rover", characterIds: ["Cartethyia", "Mornye", "RoverAeroMale"], actions: [{}, {}] },
         { id: "t2", name: "Cartethyia + Aero Rover", characterIds: ["Cartethyia", "RoverAeroMale"], actions: [] },

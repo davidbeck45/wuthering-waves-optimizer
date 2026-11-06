@@ -127,7 +127,7 @@ export function accountStateOf(
   return {
     characters: out,
     teams: accountTeams,
-    echoes: { total: (inventory.echoes ?? []).length, equipped: Object.keys(inventory.equipped ?? {}).length },
+    echoes: { total: (inventory.echoes ?? []).length, equipped: wornEchoCount(inventory.equipped) },
     summary: {
       characters: list.length,
       owned: list.filter((c) => c.owned).length,
@@ -137,6 +137,11 @@ export function accountStateOf(
       rotations: list.reduce((n, c) => n + c.rotations, 0),
     },
   };
+}
+
+/** Echoes someone wears. Taking an echo off leaves its key behind with no wearer, so the map's size is not the count. */
+export function wornEchoCount(equipped: Record<string, unknown> | null | undefined): number {
+  return Object.values(equipped ?? {}).filter((who) => Object.keys(who ?? {}).length > 0).length;
 }
 
 /** The account as Riley's solver takes it, keyed by his resonator names. Only characters with a
