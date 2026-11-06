@@ -198,6 +198,31 @@ describe("Echo Lab: Set lab", () => {
     });
   });
 
+  it("never filters the optimizer to a set you own none of, and says when one set of a layout is missing", () => {
+    const sonataOf = (key: string): string[] => key.split("+").map((part) => part.split(":")[0]!);
+    const owned = new Set(fixture.echoes.map((e) => e.echoSet as string));
+    const has = (key: string): boolean[] => sonataOf(key).map((set) => owned.has(set));
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab?tab=sets&character=Cartethyia", seed({ active: "Cartethyia", teammates: false, optimizerSets: ["MoltenRift"] }));
+    rows();
+    cy.get("[data-test-echo-lab-sets-more]").click();
+    // nothing to build from: the row goes to Farm next and says why, so the saved filter is never swapped for an empty one
+    cy.get("[data-test-echo-lab-sets-row]").then(($rows) => {
+      const keys = [...$rows].map((row) => row.getAttribute("data-test-echo-lab-sets-row") as string).filter((key) => key !== "none");
+      const none = keys.find((key) => has(key).every((h) => !h));
+      expect(none, "a layout of sets this account owns none of").to.be.a("string");
+      cy.get(`[data-test-echo-lab-sets-row="${none}"]`).as("none");
+      cy.get("@none").find("[data-test-echo-lab-sets-optimizer]").should("not.exist");
+      cy.get("@none").find("[data-test-echo-lab-sets-farm]").should("contain.text", "Farm next");
+      cy.get("@none").find("[data-test-echo-lab-sets-unowned]").should("contain.text", "You own none");
+      // a layout with one set missing still filters, and the confirm says what the optimizer can't use
+      const half = keys.find((key) => has(key).some((h) => h) && has(key).some((h) => !h));
+      expect(half, "a layout with one set owned and one not").to.be.a("string");
+      cy.get(`[data-test-echo-lab-sets-optimizer="${half}"]`).click();
+      cy.get(".confirm-dialog .modal-box").should("contain.text", "You own no").and("contain.text", "This replaces the filter saved there");
+    });
+  });
+
   it("stops on Cancel, starts again, and leaves no old state over the next character", () => {
     cy.viewport(1440, 900);
     cy.visit("/echo-lab?tab=verdicts", seed({ teammates: false }));

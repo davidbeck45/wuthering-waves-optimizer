@@ -53,6 +53,11 @@ export function layoutShape(parts: readonly LayoutPart[]): Exclude<SetLabShape, 
 /** The Sonatas a layout names, for the optimizer's set filter. */
 export const layoutSets = (parts: readonly LayoutPart[]): string[] => parts.map((p) => p.set);
 
+/** The layout's sets the inventory holds no echo of (`owned`: echoes per set, per cost, as the run counted them). */
+export function setsNotOwned(parts: readonly LayoutPart[], owned: Readonly<Record<string, Readonly<Record<string, number>>>>): string[] {
+  return layoutSets(parts).filter((set) => !Object.values(owned[set] ?? {}).some((n) => n > 0));
+}
+
 interface FilterRow {
   /** every shape among the layouts in the row */
   shapes: readonly string[];

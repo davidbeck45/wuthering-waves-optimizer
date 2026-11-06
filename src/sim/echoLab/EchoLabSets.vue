@@ -199,9 +199,10 @@
             </p>
             <p v-if="teamNoteOf(row)" class="mt-2 text-xs opacity-70" data-test-echo-lab-sets-reach>{{ teamNoteOf(row) }}</p>
 
+            <p v-if="ownsNone(row)" class="mt-2 text-xs opacity-70" data-test-echo-lab-sets-unowned>You own none of {{ setList(row) }} yet, so the optimizer has nothing to build this from.</p>
             <div class="mt-2 flex flex-wrap items-center gap-2">
               <button
-                v-if="row.parts.length && !row.current && !row.yoursFull"
+                v-if="row.parts.length && !row.current && !row.yoursFull && !ownsNone(row)"
                 type="button"
                 class="btn btn-xs btn-outline"
                 :title="`Sets ${characterName(result.characterId)}'s optimizer Sonata filter to ${setList(row)} and opens the optimizer on them, after asking.`"
@@ -271,7 +272,7 @@ import type { LabCharacterSummary } from "./bestOwner";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, compact, echoName, phaseLabel, portrait, setIcon, setLabel, signedPct, slotLabel } from "./echoLabView";
 import type { SetLabRow } from "./setLab";
-import { SET_LAB_ASSUMPTIONS, SET_LAB_SHAPES, SET_LAB_SORTS, assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, mineRankOf, pointsText, rankSentence, sortSetRows, withSetTeam, type SetLabShape, type SetLabSort } from "./setLabView";
+import { SET_LAB_ASSUMPTIONS, SET_LAB_SHAPES, SET_LAB_SORTS, assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, mineRankOf, pointsText, rankSentence, setsNotOwned, sortSetRows, withSetTeam, type SetLabShape, type SetLabSort } from "./setLabView";
 import { useEchoLab } from "./useEchoLab";
 
 const props = defineProps<{ characters: LabCharacterSummary[]; preferred?: string | null }>();
@@ -401,6 +402,8 @@ function bonusName(bonus: string): string {
 }
 
 const setList = (row: SetLabRow): string => row.parts.map((p) => setLabel(p.set)).join(" and ");
+/** every set of the layout is one the inventory has no echo of: a filter to them finds nothing and would cost the saved one */
+const ownsNone = (row: SetLabRow): boolean => row.parts.length > 0 && !row.current && !row.yoursFull && setsNotOwned(row.parts, result.value?.owned ?? {}).length === row.parts.length;
 
 function ownedText(set: string): string {
   const byCost = result.value?.owned[set] ?? {};
@@ -442,9 +445,14 @@ async function toOptimizer(row: SetLabRow): Promise<void> {
   const before: string[] = store.characters[id]?.optimizer?.echoSets ?? [];
   const sets = layoutSets(row.parts);
   if (before.length !== sets.length || !sets.every((s) => before.includes(s))) {
+    const missing = setsNotOwned(row.parts, result.value?.owned ?? {});
+    const items = [
+      ...(missing.length ? [`You own no ${missing.map(setLabel).join(" or ")} echoes: the optimizer can only use the other set`] : []),
+      ...(before.length ? [`This replaces the filter saved there: ${before.map(setLabel).join(", ")}`] : []),
+    ];
     const ok = await confirm(`The optimizer will look only at echoes of ${setList(row)}. The calculator opens on ${characterName(id)}.`, {
       title: `Filter ${characterName(id)}'s optimizer?`,
-      items: before.length ? [`This replaces the filter saved there: ${before.map(setLabel).join(", ")}`] : undefined,
+      items: items.length ? items : undefined,
       confirmLabel: "Filter and open",
     });
     if (!ok) return;

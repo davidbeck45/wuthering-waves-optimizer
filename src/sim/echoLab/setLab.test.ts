@@ -13,7 +13,7 @@ import { scoreTeamCandidate } from "../myRankings/rankRoster";
 import { createLabSession, prepareCharacter, scoreBuild, setDeltaOf, withSetLabels, type LabAccount, type LabCharacter, type LabSession } from "./core";
 import { teamSideOf } from "./farmNext";
 import { SET_LAB_ASSUMPTIONS, allLayouts, bonusSizes, layoutBonuses, layoutKey, layoutOfSelection, parseLayoutKey, placeLayout, setLab, setLabTeam, validateLayout, type SetLabResult, type SetLabRow, type SlotShape } from "./setLab";
-import { assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, layoutShape, mineRankOf, plainText, pointsText, rankSentence, sortSetRows, withSetTeam, type MineRank } from "./setLabView";
+import { assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, layoutShape, mineRankOf, plainText, pointsText, rankSentence, setsNotOwned, sortSetRows, withSetTeam, type MineRank } from "./setLabView";
 import { createEchoLabHost, type EchoLabResponse } from "./workerHost";
 
 const account = fixture as unknown as LabAccount;
@@ -764,6 +764,11 @@ describe("Set lab: the view model", () => {
     expect(layoutName([{ set: "MoltenRift", pieces: 5 }])).toBe("Molten Rift 5-piece");
     expect(layoutName([{ set: "DreamoftheLost", pieces: 3 }, { set: "HavocEclipse", pieces: 2 }])).toBe("Dream of the Lost 3-piece + Sun-sinking Eclipse 2-piece");
     expect(layoutSets([{ set: "DreamoftheLost", pieces: 3 }, { set: "HavocEclipse", pieces: 2 }])).toEqual(["DreamoftheLost", "HavocEclipse"]);
+    // the sets a layout needs that the inventory holds none of: "none" in Details must not be a filter you can set
+    const parts = [{ set: "DreamoftheLost", pieces: 3 }, { set: "HavocEclipse", pieces: 2 }];
+    expect(setsNotOwned(parts, { HavocEclipse: { "1": 2 } })).toEqual(["DreamoftheLost"]);
+    expect(setsNotOwned(parts, { DreamoftheLost: { "3": 0 }, HavocEclipse: {} })).toEqual(["DreamoftheLost", "HavocEclipse"]);
+    expect(setsNotOwned(parts, { DreamoftheLost: { "3": 1 }, HavocEclipse: { "4": 1 } })).toEqual([]);
   });
 
   it("knows a layout's shape", () => {
