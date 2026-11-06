@@ -28,6 +28,24 @@ describe("echo plan", () => {
     cy.viewport(1440, 900);
   });
 
+  // 2026-11-04: Hiyuki's 4-cost ATK% comes from one stock loop only, her third playable one (S6R1 DPS, Shorekeeper + Lucilla)
+  it("locks Hiyuki's 4-cost ATK% in Wishes of Quiet Snowfall once she is on the plan, from wuwa_calc's loadout alone", () => {
+    const planned = seed(true);
+    cy.visit("/echo-plan", {
+      onBeforeLoad(win: Window) {
+        planned.onBeforeLoad(win);
+        win.localStorage.setItem(PLAN_KEY, JSON.stringify({ v: 1, planned: ["Hiyuki"] }));
+      },
+    });
+    cy.get("[data-test-echo-plan-grid]", { timeout: 60000 }).should("be.visible");
+    cy.get('[data-test-echo-plan-source="presets"]').uncheck();
+    cy.get(chip("WishesofQuietSnowfall", "4:ATK")).should("have.attr", "data-test-echo-plan-verdict", "keep");
+    cy.get(chip("WishesofQuietSnowfall", "4:DEF")).should("have.attr", "data-test-echo-plan-verdict", "discard");
+    // her stock loops are the only source left, so with them off nobody wants the set and the card folds to "No plan"
+    cy.get('[data-test-echo-plan-source="engine"]').uncheck();
+    cy.get(card("WishesofQuietSnowfall")).should("not.have.attr", "data-test-echo-plan-state", "planned");
+  });
+
   it("builds the grid from the account, follows the switches and keeps the ticks across a reload", () => {
     cy.visit("/echo-plan", seed(true));
     cy.title().should("contain", "Echo plan");

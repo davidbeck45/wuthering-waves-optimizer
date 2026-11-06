@@ -174,10 +174,27 @@ are renamed (Galbrena "Lily + Qiuyuan" → "Lupa + Qiuyuan"; Sigrika "Lily + Qiu
 "Lily + Lucilla" → "Mornye + Lucilla", a loop with the same actions and a stronger team: the renamed loop is ranked by
 its new team before the dedupe); Hiyuki's, Hsin's, Mortefi's, Rebecca's and Zhezhi's are gone: 153 → 148 character presets;
 the 149 team presets never had a missing member. `manifest.json` records `notInApp`, `renamedForApp` and
-`skippedNotInApp`. Rankings: a renamed loop is scored again, so Galbrena's best can be her wuwa_calc loop again (the
+`skippedNotInApp` (0 since the rule below). Rankings: a renamed loop is scored again, so Galbrena's best can be her wuwa_calc loop again (the
 same actions it had before 10-31's name filter moved her to the curated one), `RANKING_CACHE_VERSION` 3; `namesTeammateOutsideApp`
 stays as the guard for data made by an older generator. When Ryan registers Lily, her loops come back on the next
 regeneration with no code change.
+**Three playable loops per state (2026-11-04).** The rule above ran after the mapper's cut to the top 3, so a state whose
+top 3 held a loop only Lily plays ended with 2. Hiyuki's S6R1 state lost its only loop on a 4-cost ATK% build that way, and
+/echo-plan stopped locking "Wishes of Quiet Snowfall, 4-cost ATK%", because `wants.ts` reads every stock loop's loadout.
+`map_rotations.playable_loops` now ranks each resonator's loops by the best team the app can field and drops the rest
+**before** the cut, so every state keeps 3 (Changli and Zani have one loop each in Riley's table). 148 → 151:
+Hiyuki "Shorekeeper + Lucilla · S6R1 DPS · S0R1 team" (43311 ATK), Rebecca "Shorekeeper + Jinhsi · S6R5 DPS · S0R1 team",
+Zhezhi "Mornye + Jinhsi · S6R5 DPS · S0R1 team". Hsin's "Suisui + Suoming" loop reads S6R5 instead of S6R1: the same
+actions, now first met in the S6R5 state, so the cross-state dedupe keeps that copy. No other preset changed. The count
+stays near 151 and not 3 × 3 × 49 because the dedupe still drops a loop whose actions an earlier one has, and a dropped
+copy is not backfilled. On David's 2026-09-16 export `rank` moves one row: Zhezhi evaluates 7 rotations, not 6, with the same
+best; Hiyuki, Hsin and Rebecca have no weapon or no entry there, so they are not ranked. `RANKING_CACHE_VERSION` 5.
+**Stock team names (2026-11-04).** The 149 team presets read "wuwa_calc Aemeath S6R5 · Chisa + Denia", on Ryan's Teams
+page, which prints stored names. They now carry `wuwaCalcTeamName`'s form: "Aemeath · Chisa + Denia · S6R5 (wuwa_calc)", or
+"… · S6R5 DPS · S0R1 team (wuwa_calc)". Only `name` and `data.name` moved, not one action. `parsePresetName` gives both forms
+the same title and chips (checked on all 149), `isGeneratedTeamName` knows both, and a team saved under the old name stays as
+it is until Sync my teams renames it. Whole account's rows read either form through `PresetNameLabel`, as title and chips, so neither shows the engine's tag there. To find one in List Presets, search a character, not "wuwa_calc Xuanling". A star on an old name
+(`favoritePresetNames`, Ryan's store, keyed by name) is left behind: David's export has none.
 E2E: `cypress/e2e/wuwaCalcPresets.cy.ts`. Credit: author field `Riley31415 (wuwa_calc)` on every preset.
 
 
@@ -265,7 +282,7 @@ first cast another member *presses* after it, `handoffsOf`) on the team — the 
 TS and Python agree on all 1,247 loops of the three states (audit harness), 68 sim tests.
 
 **Sync my teams (Track I phase 2, 2026-09-14):** the bar's **Sync my teams** button re-imports every saved team
-whose name marks it as wuwa_calc's (`isGeneratedTeamName`: an import "wuwa_calc …" or a stock preset
+whose name marks it as wuwa_calc's (`isGeneratedTeamName`: an import or stock preset "… (wuwa_calc)", the older "wuwa_calc …", or an old stock team
 "… (wuwa_calc tNNN)") at the account's own state and updates it **in place** — `syncTeams.ts` (`runSync(deps)`:
 `rileyTeamKeysFor` finds every loadout variant of the composition, `deps.solveBest` solves them at `mine` and the
 best-scoring one wins, `deps.importInto` re-imports it; `diffActions` reports per slot/attack/main-echo/stack-count
@@ -541,7 +558,7 @@ edit. This pass rebuilt the page on shared pieces stage 2 (`/account`) reuses.
 
 | Piece | Role |
 |---|---|
-| `presets/presetName.ts` | `parsePresetName(name, { owned })` — one reader for every name the generators write (stock presets "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)", imports "Sigrika S6R2 Solsworn Ciphers R2 · Mornye + Lucilla · S6R2 DPS · S1R1/S0R1 team (wuwa_calc)", imported teams "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae", old stock teams "Chisa + Denia + Aemeath · S6R5 (wuwa_calc t307)", "… @ my account (…)") into `{ title, chips, main/mainKey, teammates/teammateKeys, teamLabel, weapon, full }`. Chips: `own` (the rotation's own S/R), `dps` / `team` (only when the tiers differ), `tier`, `mode` ("My account"), `extra` ("Moonlit Clouds 5pc"), `preset` (t307). A name the player typed comes back as its own title, `generated: false`. Riley names map through castMapper's `appKeyOf`; a Rover form resolves to the gender the account holds (`owned`) |
+| `presets/presetName.ts` | `parsePresetName(name, { owned })` — one reader for every name the generators write (stock presets "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)", imports "Sigrika S6R2 Solsworn Ciphers R2 · Mornye + Lucilla · S6R2 DPS · S1R1/S0R1 team (wuwa_calc)", imported and stock teams "Aemeath · Mornye + Lynae · S6R5 (wuwa_calc)", their older form "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae", old stock teams "Chisa + Denia + Aemeath · S6R5 (wuwa_calc t307)", "… @ my account (…)") into `{ title, chips, main/mainKey, teammates/teammateKeys, teamLabel, weapon, full }`. Chips: `own` (the rotation's own S/R), `dps` / `team` (only when the tiers differ), `tier`, `mode` ("My account"), `extra` ("Moonlit Clouds 5pc"), `preset` (t307). A name the player typed comes back as its own title, `generated: false`. Riley names map through castMapper's `appKeyOf`; a Rover form resolves to the gender the account holds (`owned`) |
 | `presets/presetName.test.ts` | every rotation and team name in `data/` (no crash, short title without state tags, members = the preset's own `characterIds`), the import / sync / old-stock / "@ my account" shapes, the player's own names |
 | `display/names.ts` | `characterDisplayName` (the roster label, Rover forms written alike — "Rover Electro (Female)", not the roster's "RoverElectroFemale"), `characterShortName`, `characterMeta` (element, rarity), `isRosterCharacter` (portraits only for keys the pickers offer — stock presets name Lily, a wuwa_calc kit the app has no folder for; until Ryan's #655 Suoming was the case, her folder loaded but her roster entry commented out), `weaponDisplayName` / `weaponMeta` / `weaponIconUrl` (the asset host upstream's pickers inline as `WEAPON_IMAGE_BASE`; there is no exported helper upstream), `ELEMENT_COLORS`, `rarityColor` |
 | `display/CharacterAvatar.vue`, `WeaponIcon.vue`, `PresetNameLabel.vue` | the atoms: round portrait with element dot / colour ring (initials for unknown keys), weapon art on a rarity tile, a generated name as title + chips (`hide-main` draws "with A + B" and the teammates' mini portraits; the full stored name is the tooltip) |
@@ -2961,7 +2978,7 @@ open. Report: `wto-wt/b3/reports/loose-ends-build.md`.
   b3/2026-11-02): both mappers clamp to the app's table, as they must.
 - Riley: `vendor/wuwa_calc/src/shared/status.ts:122-127` `GLACIO_CHAFE_ACTIONS` has 16 rungs (14 = 47,546,
   15 = 54,338, 16 = 61,130: the 11→13 step of 6,792 continued, the same shape Ryan's Flare extension took).
-- Effect today: of the 149 stock team presets, only "wuwa_calc Xuanling S6R5 · Suisui + Chisa" (both variants) runs
+- Effect today: of the 149 stock team presets, only "Xuanling · Suisui + Chisa · S6R5 (wuwa_calc)" (both variants) runs
   to 16, pressed at 13 with the enemy set to Chafe 13. On David's export the same composition (his "Xuanling S6R3 ·
   Suisui + Chisa") has six Chafe ticks, all at 16 in Riley's run and pressed at 13: `npm run cli -- team 2` gives
   6,444 avg damage a tick, 38,663 of the team's 7,660,011 (0.5 %). The tick formula is linear in the motion value, so

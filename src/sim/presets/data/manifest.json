@@ -10,9 +10,9 @@
   "s6r5mdps": "S6R5 DPS \u00b7 S0R1 team",
   "s6r1mdps": "S6R1 DPS \u00b7 S0R1 team"
  },
- "generatedAt": "2026-11-03T02:37:12+00:00",
+ "generatedAt": "2026-11-04T18:52:51+00:00",
  "wuwaCalcCommit": "7bcbb24",
- "appCommit": "213a4594",
+ "appCommit": "809a9251",
  "characters": [
   "Aemeath",
   "Augusta",
@@ -64,7 +64,7 @@
   "Zani",
   "Zhezhi"
  ],
- "rotationPresets": 148,
+ "rotationPresets": 151,
  "teamPresets": 149,
  "notInApp": [
   "Lily"
@@ -72,11 +72,10 @@
  "mapping": {
   "rotations": {
    "unmatched": 0,
-   "rotations:s6r5": 107,
-   "deduped": 259,
-   "renamedForApp": 15,
-   "skippedNotInApp": 16,
-   "rotations:s6r5mdps": 36,
+   "rotations:s6r5": 108,
+   "deduped": 272,
+   "renamedForApp": 13,
+   "rotations:s6r5mdps": 38,
    "rotations:s6r1mdps": 5
   },
   "teams": {

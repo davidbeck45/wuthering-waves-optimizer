@@ -41,19 +41,33 @@ describe("wuwa_calc stock presets", () => {
     cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
   });
 
+  // 2026-11-04: each state keeps three loops the app can play, whatever its best ran beside: Hiyuki's third S6R1 loop
+  // takes the place of the one with Lily and brings back the only stock build on a 4-cost ATK%
+  it("keeps three playable loops per state: Hiyuki's Shorekeeper + Lucilla loop, on 43311 ATK", () => {
+    cy.richSelect("[data-test-character-select]", "Hiyuki", { search: "Hiyuki" });
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+    cy.get('[data-test="rotations-overflow-menu"]').click();
+    cy.get('[data-test-rotations-action="presets"]').click();
+    cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
+    cy.contains("[data-test-rotations-presets] .card", "Shorekeeper + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)").should("contain.text", "main stats 43311 ATK");
+    cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
+  });
+
   it("lists the S6R5 full-team rotations under Teams > List Presets and imports one with its actions", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-presets]").click();
-    cy.get("[data-test-team-rotations-presets-search]").type("wuwa_calc Xuanling");
-    // the generated presets' chunk loads lazily when the modal opens
-    cy.get('[data-test-team-rotations-preset^="wuwa_calc Xuanling S6R5"]', { timeout: 30000 })
+    cy.get("[data-test-team-rotations-presets-search]").type("Xuanling");
+    // the generated presets' chunk loads lazily when the modal opens; a stock team reads as the app names one: who is
+    // in it, the tier, the engine last (2026-11-04), not "wuwa_calc Xuanling …" on a page that prints names as stored
+    cy.get('[data-test-team-rotations-preset^="Xuanling · "][data-test-team-rotations-preset$=" · S6R5 (wuwa_calc)"]', { timeout: 30000 })
       .first()
       .find("[data-test-team-rotations-preset-import]")
       .click();
     cy.get("[data-test-team-rotation-name]")
       .invoke("val")
-      .should("match", /^wuwa_calc Xuanling S6R5/);
+      .should("match", /^Xuanling · .+ · S6R5 \(wuwa_calc\)$/);
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Xuanling");
     cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 10);
 

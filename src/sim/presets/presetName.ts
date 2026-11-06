@@ -5,7 +5,8 @@
 //   "Sigrika S6R2 Solsworn Ciphers R2 · Mornye + Lucilla · S6R2 DPS · S1R1/S0R1 team (wuwa_calc)"   (an import)
 //   "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)"                           (a stock preset)
 //   "Aemeath · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)"                                 (an imported team)
-//   "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae"                                    (one before 2026-11-02)
+//   "Aemeath · Chisa + Denia · S6R5 (wuwa_calc)"                                                      (a stock team, since 2026-11-04)
+//   "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae"                                    (one before 2026-11-02; a stock team saved before 11-04)
 //   "Chisa + Denia + Aemeath · S6R5 (wuwa_calc t307)"                                                 (an old stock team)
 // That is one unreadable line wherever it lands. `parsePresetName` splits it into a short title ("Sigrika ·
 // Mornye + Lucilla"), chips (own state, DPS / team tier, mode, extras) and the teammates' character keys for mini

@@ -127,6 +127,17 @@ describe("wants", () => {
     expect(has(wants, "ThreadofSeveredFate", "3:Havoc") && has(wants, "HavocEclipse", "3:Havoc")).toBe(true);
   });
 
+  // 2026-11-04: the only stock loop on this build is Hiyuki's third playable one, and it went missing on 2026-11-02: the
+  // mapper cut each state to three before dropping the loops played beside Lily, so the plan said to discard those echoes.
+  // A regeneration that moves this has changed a player's lock list: read Riley's loadouts before editing the test.
+  it("keeps Hiyuki's 4-cost ATK% in Wishes of Quiet Snowfall through her stock loops", () => {
+    const { wants } = engineWantsOf("Hiyuki", engine.Hiyuki!);
+    expect(has(wants, "WishesofQuietSnowfall", "4:ATK")).toBe(true);
+    expect(has(wants, "WishesofQuietSnowfall", "4:CritDMG")).toBe(true);
+    const plan = buildPlan(collectWants({ characters: {}, echoes: [], curated: {}, engine, planned: ["Hiyuki"] }).wants, OPTIONS);
+    expect(verdict(card(plan.cards, "WishesofQuietSnowfall"), "4:ATK")).toBe("keep");
+  });
+
   it("falls back to the kit default for a character with no build and no recommendation", () => {
     const { wants } = defaultWantsOf("Aalto");
     expect(new Set(wants.map((w) => w.set))).toEqual(new Set(["SierraGale"]));

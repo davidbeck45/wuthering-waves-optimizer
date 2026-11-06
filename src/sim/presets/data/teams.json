@@ -1,10 +1,10 @@
 [
  {
-  "name": "wuwa_calc Aemeath S6R5 · Chisa + Denia",
+  "name": "Aemeath · Chisa + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 552,155 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 308,469; Chisa S6 Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, 44111 CD CD atk atk atk — 39,430; Denia S6 Forged Dwarf Star R5, Chromatic Foam 5pc, 44111 CR CD atk atk atk — 201,165). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Fusion Burst 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 25.65 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 · Chisa + Denia",
+   "name": "Aemeath · Chisa + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Chisa",
@@ -589,11 +589,11 @@
   }
  },
  {
-  "name": "wuwa_calc Aemeath S6R5 · Suisui + Denia",
+  "name": "Aemeath · Suisui + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 486,600 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK Fusion atk atk — 303,259; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 10,459; Denia S6 Forged Dwarf Star R5, Chromatic Foam 5pc, 44111 CR CD atk atk atk — 170,215). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 13, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 · Suisui + Denia",
+   "name": "Aemeath · Suisui + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Suisui",
@@ -1184,11 +1184,11 @@
   }
  },
  {
-  "name": "wuwa_calc Aemeath S6R5 · Denia + Lynae",
+  "name": "Aemeath · Denia + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 445,220 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 299,840; Denia S6 Forged Dwarf Star R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 110,928; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 30,702). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 · Denia + Lynae",
+   "name": "Aemeath · Denia + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Denia",
@@ -1746,11 +1746,11 @@
   }
  },
  {
-  "name": "wuwa_calc Augusta S6R5 · Mornye + Iuno",
+  "name": "Augusta · Mornye + Iuno · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 340,453 team DPS against a level 100 target with 20% RES (slots: Augusta S6 Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, 43311 CR ATK Electro atk atk — 267,504; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 13,283; Iuno S6 Moongazer's Sigil R5, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 56,077). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.73 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Augusta S6R5 · Mornye + Iuno",
+   "name": "Augusta · Mornye + Iuno · S6R5 (wuwa_calc)",
    "characterIds": [
     "Augusta",
     "Mornye",
@@ -2135,11 +2135,11 @@
   }
  },
  {
-  "name": "wuwa_calc Augusta S6R5 · Shorekeeper + Iuno",
+  "name": "Augusta · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 328,031 team DPS against a level 100 target with 20% RES (slots: Augusta S6 Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 265,536; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,919; Iuno S6 Moongazer's Sigil R5, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 53,125). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Augusta S6R5 · Shorekeeper + Iuno",
+   "name": "Augusta · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
    "characterIds": [
     "Augusta",
     "Shorekeeper",
@@ -2506,11 +2506,11 @@
   }
  },
  {
-  "name": "wuwa_calc Augusta S6R5 · Mornye + Rebecca",
+  "name": "Augusta · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 317,363 team DPS against a level 100 target with 20% RES (slots: Augusta S6 Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 239,946; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 14,315; Rebecca S6 Skull Thrasher R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CR CR atk atk atk — 57,820). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Augusta S6R5 · Mornye + Rebecca",
+   "name": "Augusta · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Augusta",
     "Mornye",
@@ -3054,11 +3054,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 · Denia + Lupa",
+  "name": "Brant · Denia + Lupa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 191,545 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 102,976; Denia S6 Forged Dwarf Star R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 67,313; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 18,845). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 32.47 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 · Denia + Lupa",
+   "name": "Brant · Denia + Lupa · S6R5 (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Denia",
@@ -3612,11 +3612,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 · Mornye + Lupa",
+  "name": "Brant · Mornye + Lupa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 180,422 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 135,421; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 14,285; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 27,415). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 32.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 · Mornye + Lupa",
+   "name": "Brant · Mornye + Lupa · S6R5 (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Mornye",
@@ -4069,11 +4069,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 · Mornye + Denia",
+  "name": "Brant · Mornye + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 169,956 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 87,790; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 11,935; Denia S6 Forged Dwarf Star R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 66,980). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 29.05 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 · Mornye + Denia",
+   "name": "Brant · Mornye + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Mornye",
@@ -4626,11 +4626,11 @@
   }
  },
  {
-  "name": "wuwa_calc Camellya S6R5 · Mornye + Lynae",
+  "name": "Camellya · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 179,518 team DPS against a level 100 target with 20% RES (slots: Camellya S6 Red Spring R5, Havoc Eclipse 5pc, 43311 CR ATK ATK atk atk — 122,169; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 13,553; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK ATK atk atk — 39,146). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 28.75 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Camellya S6R5 · Mornye + Lynae",
+   "name": "Camellya · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Camellya",
     "Mornye",
@@ -5024,11 +5024,11 @@
   }
  },
  {
-  "name": "wuwa_calc Camellya S6R5 · Shorekeeper + Roccia",
+  "name": "Camellya · Shorekeeper + Roccia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 146,986 team DPS against a level 100 target with 20% RES (slots: Camellya S6 Red Spring R5, Havoc Eclipse 5pc, 44111 CR CD atk atk atk — 124,832; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 5,910; Roccia S6 Tragicomedy R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Havoc Havoc atk atk — 14,485). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.17 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Camellya S6R5 · Shorekeeper + Roccia",
+   "name": "Camellya · Shorekeeper + Roccia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Camellya",
     "Shorekeeper",
@@ -5368,11 +5368,11 @@
   }
  },
  {
-  "name": "wuwa_calc Camellya S6R5 · Shorekeeper + Sanhua",
+  "name": "Camellya · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 129,534 team DPS against a level 100 target with 20% RES (slots: Camellya S6 Red Spring R5, Havoc Eclipse 5pc, 44111 CR CD atk atk atk — 119,970; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 644; Sanhua S6 Blazing Brilliance R5, Moonlit Clouds 5pc, 43311 CR Glacio Glacio atk atk — 7,185). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.10 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Camellya S6R5 · Shorekeeper + Sanhua",
+   "name": "Camellya · Shorekeeper + Sanhua · S6R5 (wuwa_calc)",
    "characterIds": [
     "Camellya",
     "Shorekeeper",
@@ -5754,11 +5754,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cantarella S6R5 · Mornye + Rebecca",
+  "name": "Cantarella · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 185,644 team DPS against a level 100 target with 20% RES (slots: Cantarella S6 Whispers of Sirens R5, Havoc Eclipse 5pc, 44111 CR CR atk atk atk — 97,417; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 13,085; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, 43311 CR ATK Electro atk atk — 70,209). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cantarella S6R5 · Mornye + Rebecca",
+   "name": "Cantarella · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cantarella",
     "Mornye",
@@ -6318,11 +6318,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cantarella S6R5 · Mornye + Lynae",
+  "name": "Cantarella · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 170,329 team DPS against a level 100 target with 20% RES (slots: Cantarella S6 Whispers of Sirens R5, Havoc Eclipse 5pc, 44111 CR CR atk atk atk — 106,496; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 16,566; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 41,634). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cantarella S6R5 · Mornye + Lynae",
+   "name": "Cantarella · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cantarella",
     "Mornye",
@@ -6732,11 +6732,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cantarella S6R5 · Mornye + Roccia",
+  "name": "Cantarella · Mornye + Roccia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 144,211 team DPS against a level 100 target with 20% RES (slots: Cantarella S6 Whispers of Sirens R5, Havoc Eclipse 5pc, 44111 CR CR atk atk atk — 108,222; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,480; Roccia S6 Tragicomedy R5, Midnight Veil 5pc, 43311 CR ER Havoc atk atk — 21,088). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cantarella S6R5 · Mornye + Roccia",
+   "name": "Cantarella · Mornye + Roccia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cantarella",
     "Mornye",
@@ -7128,11 +7128,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 · Hiyuki + Lucilla",
+  "name": "Carlotta · Hiyuki + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 258,194 team DPS against a level 100 target with 20% RES (slots: Carlotta S6 The Last Dance R5, Frosty Resolve 5pc, 43311 CR ATK Glacio atk atk — 72,721; Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 ATK Glacio Glacio atk atk — 154,454; Lucilla S6 Freeze Frame R5, Wishes of Quiet Snowfall 5pc, 43311 CD ATK ATK atk atk — 27,995). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 10 Stacks. Rotation time 30.52 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 · Hiyuki + Lucilla",
+   "name": "Carlotta · Hiyuki + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Hiyuki",
@@ -7867,11 +7867,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 · Suisui + Hiyuki",
+  "name": "Carlotta · Suisui + Hiyuki · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 253,832 team DPS against a level 100 target with 20% RES (slots: Carlotta S6 The Last Dance R5, Frosty Resolve 5pc, 43311 CR ATK Glacio atk atk — 82,087; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 9,325; Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 ATK Glacio Glacio atk atk — 159,853). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 28.82 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 · Suisui + Hiyuki",
+   "name": "Carlotta · Suisui + Hiyuki · S6R5 (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Suisui",
@@ -8582,11 +8582,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 · Mornye + Lynae",
+  "name": "Carlotta · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 226,581 team DPS against a level 100 target with 20% RES (slots: Carlotta S6 The Last Dance R5, Frosty Resolve 5pc, 43311 CR ATK ATK atk atk — 169,026; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 14,777; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 38,459). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.23 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 · Mornye + Lynae",
+   "name": "Carlotta · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Mornye",
@@ -8935,11 +8935,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 · Ciaccona + Chisa",
+  "name": "Cartethyia · Ciaccona + Chisa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 346,014 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CD hp hp hp — 273,545; Ciaccona S6 Woodland Aria R5, Gusts of Welkin 5pc, 43311 CD ATK ATK atk atk — 38,514; Chisa S6 Kumokiri R5, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Impermanence Heron, 43311 CD ATK ATK atk atk — 31,973). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 9, Havoc Bane 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks. Rotation time 27.78 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 · Ciaccona + Chisa",
+   "name": "Cartethyia · Ciaccona + Chisa · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Ciaccona",
@@ -9708,11 +9708,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 · Mornye + Ciaccona",
+  "name": "Cartethyia · Mornye + Ciaccona · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 307,125 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CR hp hp hp — 252,466; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 11,838; Ciaccona S6 Woodland Aria R5, Gusts of Welkin 5pc, 43311 CR ATK ATK atk atk — 40,165). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 · Mornye + Ciaccona",
+   "name": "Cartethyia · Mornye + Ciaccona · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Mornye",
@@ -10444,11 +10444,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 · Mornye + Chisa",
+  "name": "Cartethyia · Mornye + Chisa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 298,827 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CR hp hp hp — 219,916; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 11,332; Chisa S6 Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, 44111 CD CR atk atk atk — 63,870). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 9, Havoc Bane 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks. Rotation time 27.75 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 · Mornye + Chisa",
+   "name": "Cartethyia · Mornye + Chisa · S6R5 (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Mornye",
@@ -11032,11 +11032,11 @@
   }
  },
  {
-  "name": "wuwa_calc Changli S6R5 · Denia + Lupa",
+  "name": "Changli · Denia + Lupa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 205,883 team DPS against a level 100 target with 20% RES (slots: Changli S6 Blazing Brilliance R5, Molten Rift 5pc, 44111 CR CD atk atk atk — 78,121; Denia S6 Forged Dwarf Star R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 91,605; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 33,775). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 26.13 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Changli S6R5 · Denia + Lupa",
+   "name": "Changli · Denia + Lupa · S6R5 (wuwa_calc)",
    "characterIds": [
     "Changli",
     "Denia",
@@ -11495,11 +11495,11 @@
   }
  },
  {
-  "name": "wuwa_calc Changli S6R5 · Lupa + Brant",
+  "name": "Changli · Lupa + Brant · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 158,381 team DPS against a level 100 target with 20% RES (slots: Changli S6 Blazing Brilliance R5, Molten Rift 5pc, 44111 CR CD atk atk atk — 64,217; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 32,338; Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 59,633). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.55 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Changli S6R5 · Lupa + Brant",
+   "name": "Changli · Lupa + Brant · S6R5 (wuwa_calc)",
    "characterIds": [
     "Changli",
     "Lupa",
@@ -11855,11 +11855,11 @@
   }
  },
  {
-  "name": "wuwa_calc Electro Rover S6R5 · Mornye + Rebecca",
+  "name": "Electro Rover · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 139,590 team DPS against a level 100 target with 20% RES (slots: Electro Rover S6 Blazing Brilliance R5, Heart of Sworn Vigil 5pc, 43311 CR ATK ATK atk atk — 56,753; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,349; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, 43311 CR ATK Electro atk atk — 66,370). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Electro Flare 10, Electro Rage 5. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 26.17 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Electro Rover S6R5 · Mornye + Rebecca",
+   "name": "Electro Rover · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roverelectrofemale",
     "Mornye",
@@ -12481,11 +12481,11 @@
   }
  },
  {
-  "name": "wuwa_calc Electro Rover S6R5 · Mornye + Lynae",
+  "name": "Electro Rover · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 133,427 team DPS against a level 100 target with 20% RES (slots: Electro Rover S6 Blazing Brilliance R5, Heart of Sworn Vigil 5pc, 43311 CR ATK ATK atk atk — 73,395; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 15,654; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 39,395). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Electro Flare 10, Electro Rage 5. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 26.47 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Electro Rover S6R5 · Mornye + Lynae",
+   "name": "Electro Rover · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roverelectrofemale",
     "Mornye",
@@ -12930,11 +12930,11 @@
   }
  },
  {
-  "name": "wuwa_calc Electro Rover S6R5 · Shorekeeper + Lynae",
+  "name": "Electro Rover · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 119,814 team DPS against a level 100 target with 20% RES (slots: Electro Rover S6 Blazing Brilliance R5, Heart of Sworn Vigil 5pc, 43311 CR ATK ATK atk atk — 73,502; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 9,594; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD ER Spectro atk atk — 33,373). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Electro Flare 10, Electro Rage 5. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Electro Rover S6R5 · Shorekeeper + Lynae",
+   "name": "Electro Rover · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roverelectrofemale",
     "Shorekeeper",
@@ -13361,11 +13361,11 @@
   }
  },
  {
-  "name": "wuwa_calc Galbrena S6R5 · Lupa + Lucilla",
+  "name": "Galbrena · Lupa + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 297,875 team DPS against a level 100 target with 20% RES (slots: Galbrena S6 Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, 43311 CR Fusion Fusion atk atk — 239,442; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 26,285; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CD CD atk atk atk — 29,945). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 30.10 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Galbrena S6R5 · Lupa + Lucilla",
+   "name": "Galbrena · Lupa + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Galbrena",
     "Lupa",
@@ -13817,11 +13817,11 @@
   }
  },
  {
-  "name": "wuwa_calc Galbrena S6R5 · Qiuyuan + Lucilla",
+  "name": "Galbrena · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 294,702 team DPS against a level 100 target with 20% RES (slots: Galbrena S6 Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, 43311 CR Fusion Fusion atk atk — 205,125; Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CD ER Aero atk atk — 18,269; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CD ATK ATK atk atk — 68,847). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 26.92 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Galbrena S6R5 · Qiuyuan + Lucilla",
+   "name": "Galbrena · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Galbrena",
     "Qiuyuan",
@@ -14230,11 +14230,11 @@
   }
  },
  {
-  "name": "wuwa_calc Galbrena S6R5 · Shorekeeper + Lucilla",
+  "name": "Galbrena · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 293,153 team DPS against a level 100 target with 20% RES (slots: Galbrena S6 Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, 43311 CR Fusion Fusion atk atk — 235,133; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,705; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CD CD atk atk atk — 48,868). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 27.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Galbrena S6R5 · Shorekeeper + Lucilla",
+   "name": "Galbrena · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Galbrena",
     "Shorekeeper",
@@ -14657,11 +14657,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hiyuki S6R5 · Suisui + Lucilla",
+  "name": "Hiyuki · Suisui + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 421,214 team DPS against a level 100 target with 20% RES (slots: Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 CD Glacio Glacio atk atk — 337,495; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 14,094; Lucilla S6 Freeze Frame R5, Wishes of Quiet Snowfall 5pc, 43311 CD ATK ATK atk atk — 67,199). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hiyuki S6R5 · Suisui + Lucilla",
+   "name": "Hiyuki · Suisui + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hiyuki",
     "Suisui",
@@ -15435,11 +15435,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hiyuki S6R5 · Chisa + Lucilla",
+  "name": "Hiyuki · Chisa + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 409,765 team DPS against a level 100 target with 20% RES (slots: Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 CD ATK Glacio atk atk — 315,798; Chisa S6 Kumokiri R5, Rejuvenating Glow 5pc + Fallacy of No Return, 44111 CD CD atk atk atk — 35,178; Lucilla S6 Freeze Frame R5, Wishes of Quiet Snowfall 5pc, 43311 CD ATK ATK atk atk — 56,118). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 26.95 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hiyuki S6R5 · Chisa + Lucilla",
+   "name": "Hiyuki · Chisa + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hiyuki",
     "Chisa",
@@ -16157,11 +16157,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hiyuki S6R5 · Suisui + Lynae",
+  "name": "Hiyuki · Suisui + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 389,909 team DPS against a level 100 target with 20% RES (slots: Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 CD Glacio Glacio atk atk — 339,251; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 13,298; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 33,839). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hiyuki S6R5 · Suisui + Lynae",
+   "name": "Hiyuki · Suisui + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hiyuki",
     "Suisui",
@@ -16876,11 +16876,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hsin S6R5 · Shorekeeper + Suoming",
+  "name": "Hsin · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 536,765 team DPS against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 456,980; Shorekeeper S6 Stellar Symphony R5, Flower of Tinged Yearning 5pc, 43311 HP ER ER hp hp — 7,072; Suoming S6 Unspoken Rue R5, Moonlit Clouds 5pc, 43311 CD Electro Electro atk atk — 69,820). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hsin S6R5 · Shorekeeper + Suoming",
+   "name": "Hsin · Shorekeeper + Suoming · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hsin",
     "Shorekeeper",
@@ -17464,11 +17464,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hsin S6R5 · Mornye + Suoming",
+  "name": "Hsin · Mornye + Suoming · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 534,321 team DPS against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK ATK atk atk — 444,031; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,688; Suoming S6 Unspoken Rue R5, Moonlit Clouds 5pc, 43311 CR ATK ATK atk atk — 73,454). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.45 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hsin S6R5 · Mornye + Suoming",
+   "name": "Hsin · Mornye + Suoming · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hsin",
     "Mornye",
@@ -18052,11 +18052,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hsin S6R5 · Suisui + Suoming",
+  "name": "Hsin · Suisui + Suoming · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 443,434 team DPS against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 373,328; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 9,312; Suoming S6 Unspoken Rue R5, Moonlit Clouds 5pc, 44111 CR CD atk atk atk — 58,049). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 26.52 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hsin S6R5 · Suisui + Suoming",
+   "name": "Hsin · Suisui + Suoming · S6R5 (wuwa_calc)",
    "characterIds": [
     "Hsin",
     "Suisui",
@@ -18701,11 +18701,11 @@
   }
  },
  {
-  "name": "wuwa_calc Iuno S6R5 · Mornye + Lynae",
+  "name": "Iuno · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 265,725 team DPS against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD ATK Aero atk atk — 207,192; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 15,226; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 39,175). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.17 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Iuno S6R5 · Mornye + Lynae",
+   "name": "Iuno · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Iuno",
     "Mornye",
@@ -19072,11 +19072,11 @@
   }
  },
  {
-  "name": "wuwa_calc Iuno S6R5 · Shorekeeper + Lynae",
+  "name": "Iuno · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 261,194 team DPS against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 213,114; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 9,715; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 35,108). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.37 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Iuno S6R5 · Shorekeeper + Lynae",
+   "name": "Iuno · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Iuno",
     "Shorekeeper",
@@ -19425,11 +19425,11 @@
   }
  },
  {
-  "name": "wuwa_calc Iuno S6R5 · Mornye + Ciaccona",
+  "name": "Iuno · Mornye + Ciaccona · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 249,327 team DPS against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R5, Windward Pilgrimage 5pc, 43311 CD ATK Aero atk atk — 205,980; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,690; Ciaccona S6 Woodland Aria R5, Moonlit Clouds 5pc, 43311 CR ATK Aero atk atk — 27,581). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks. Rotation time 25.08 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Iuno S6R5 · Mornye + Ciaccona",
+   "name": "Iuno · Mornye + Ciaccona · S6R5 (wuwa_calc)",
    "characterIds": [
     "Iuno",
     "Mornye",
@@ -19892,11 +19892,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 · Mornye + Iuno",
+  "name": "Jingran · Mornye + Iuno · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 418,633 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 348,054; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Spacetrek Explorer, 43311 DEF ER ER def def — 11,748; Iuno S6 Moongazer's Sigil R5, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 54,324). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.87 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 · Mornye + Iuno",
+   "name": "Jingran · Mornye + Iuno · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Mornye",
@@ -20300,11 +20300,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 · Lupa + Iuno",
+  "name": "Jingran · Lupa + Iuno · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 400,546 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 343,723; Lupa S6 Wildfire Mark R5, Flaming Clawprint 5pc, 43311 CR ATK ATK atk atk — 24,279; Iuno S6 Moongazer's Sigil R5, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 30,439). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 28.83 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 · Lupa + Iuno",
+   "name": "Jingran · Lupa + Iuno · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Lupa",
@@ -20730,11 +20730,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 · Shorekeeper + Iuno",
+  "name": "Jingran · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 389,635 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 314,967; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,889; Iuno S6 Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 65,423). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.97 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 · Shorekeeper + Iuno",
+   "name": "Jingran · Shorekeeper + Iuno · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Shorekeeper",
@@ -21142,11 +21142,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 · Mornye + Hsin",
+  "name": "Jinhsi · Mornye + Hsin · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 291,092 team DPS against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 43311 CR ATK ATK atk atk — 89,030; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 10,969; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 187,701). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.87 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Mornye + Hsin",
+   "name": "Jinhsi · Mornye + Hsin · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jinhsi",
     "Mornye",
@@ -21768,11 +21768,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 · Shorekeeper + Hsin",
+  "name": "Jinhsi · Shorekeeper + Hsin · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 283,758 team DPS against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CD CD atk atk atk — 82,594; Shorekeeper S6 Stellar Symphony R5, Flower of Tinged Yearning 5pc, 43311 HP ER ER hp hp — 7,399; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 191,475). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.40 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Shorekeeper + Hsin",
+   "name": "Jinhsi · Shorekeeper + Hsin · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jinhsi",
     "Shorekeeper",
@@ -22385,11 +22385,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 · Suisui + Hsin",
+  "name": "Jinhsi · Suisui + Hsin · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 236,845 team DPS against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 70,527; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 8,804; Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 154,799). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 29.27 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 · Suisui + Hsin",
+   "name": "Jinhsi · Suisui + Hsin · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jinhsi",
     "Suisui",
@@ -23036,11 +23036,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 · Mornye + Phrolova",
+  "name": "Jiyan · Mornye + Phrolova · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 189,019 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Sierra Gale 5pc, 43311 CR ATK ATK atk atk — 67,893; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 10,505; Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 108,485). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 28.73 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 · Mornye + Phrolova",
+   "name": "Jiyan · Mornye + Phrolova · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Mornye",
@@ -23527,11 +23527,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 · Shorekeeper + Phrolova",
+  "name": "Jiyan · Shorekeeper + Phrolova · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 185,332 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Sierra Gale 5pc, 43311 CR Aero Aero atk atk — 69,031; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,491; Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 107,591). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.93 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 · Shorekeeper + Phrolova",
+   "name": "Jiyan · Shorekeeper + Phrolova · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Shorekeeper",
@@ -24000,11 +24000,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 · Mornye + Rebecca",
+  "name": "Jiyan · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 181,613 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Sierra Gale 5pc, 43311 CR ATK Aero atk atk — 97,011; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,880; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, 43311 CR ATK Electro atk atk — 67,972). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.05 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 · Mornye + Rebecca",
+   "name": "Jiyan · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Mornye",
@@ -24496,11 +24496,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 · Mornye + Rebecca",
+  "name": "Lucy · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 328,438 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Lingering Tunes 2pc, 43311 CR ATK Spectro atk atk — 246,957; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 14,078; Rebecca S6 Skull Thrasher R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Electro atk atk — 62,378). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 · Mornye + Rebecca",
+   "name": "Lucy · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Mornye",
@@ -24971,11 +24971,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 · Shorekeeper + Rebecca",
+  "name": "Lucy · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 315,018 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Pact of Neonlight Leap 2pc, 43311 CR Spectro Spectro atk atk — 228,093; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 8,797; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 75,927). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 · Shorekeeper + Rebecca",
+   "name": "Lucy · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Shorekeeper",
@@ -25428,11 +25428,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 · Mornye + Lynae",
+  "name": "Lucy · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 277,572 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, 43311 CR ATK ATK atk atk — 216,170; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 15,708; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK ATK atk atk — 40,287). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.63 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 · Mornye + Lynae",
+   "name": "Lucy · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Mornye",
@@ -25844,11 +25844,11 @@
   }
  },
  {
-  "name": "wuwa_calc Luuk Herssen S6R5 · Mornye + Denia",
+  "name": "Luuk Herssen · Mornye + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 427,984 team DPS against a level 100 target with 20% RES (slots: Luuk Herssen S6 Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, 43311 CR ATK Spectro atk atk — 339,261; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 18,944; Denia S6 Forged Dwarf Star R5, Reel of Spliced Memories 5pc, 43311 CR Fusion Fusion atk atk — 62,737). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 6. Rotation time 25.37 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Luuk Herssen S6R5 · Mornye + Denia",
+   "name": "Luuk Herssen · Mornye + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "LuukHerssen",
     "Mornye",
@@ -26276,11 +26276,11 @@
   }
  },
  {
-  "name": "wuwa_calc Luuk Herssen S6R5 · Mornye + Lynae",
+  "name": "Luuk Herssen · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 364,427 team DPS against a level 100 target with 20% RES (slots: Luuk Herssen S6 Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, 43311 CR ATK ATK atk atk — 291,088; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 19,720; Lynae S6 Spectrum Blaster R5, Reel of Spliced Memories 5pc, 43311 CR ATK Spectro atk atk — 47,672). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 6. Rotation time 25.98 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Luuk Herssen S6R5 · Mornye + Lynae",
+   "name": "Luuk Herssen · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "LuukHerssen",
     "Mornye",
@@ -26661,11 +26661,11 @@
   }
  },
  {
-  "name": "wuwa_calc Luuk Herssen S6R5 · Shorekeeper + Denia",
+  "name": "Luuk Herssen · Shorekeeper + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 320,336 team DPS against a level 100 target with 20% RES (slots: Luuk Herssen S6 Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, 43311 CD Spectro Spectro atk atk — 264,023; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 7,146; Denia S6 Forged Dwarf Star R5, Reel of Spliced Memories 5pc, 43311 CD Fusion Fusion atk atk — 45,247). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 5. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Luuk Herssen S6R5 · Shorekeeper + Denia",
+   "name": "Luuk Herssen · Shorekeeper + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "LuukHerssen",
     "Shorekeeper",
@@ -27075,11 +27075,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 · Chisa + Ciaccona",
+  "name": "Phoebe · Chisa + Ciaccona · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 153,628 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD ATK ATK atk atk — 83,597; Chisa S6 Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, 43311 CD ATK ATK atk atk — 39,518; Ciaccona S6 Woodland Aria R5, Moonlit Clouds 5pc, 43311 CD ATK ATK atk atk — 27,654). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 13, Aero Erosion 5, Havoc Bane 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Aero Erosion - 5 Stacks, 1x Spectro Frazzle - 12 Stacks, 1x Spectro Frazzle - 13 Stacks. Rotation time 25.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 · Chisa + Ciaccona",
+   "name": "Phoebe · Chisa + Ciaccona · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "Chisa",
@@ -27694,11 +27694,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 · Ciaccona + Rebecca",
+  "name": "Phoebe · Ciaccona + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 141,530 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 71,878; Ciaccona S6 Woodland Aria R5, Gusts of Welkin 5pc, 44111 CR CD atk atk atk — 24,716; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, 43311 CR Electro Electro atk atk — 42,496). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 10, Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 9 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 · Ciaccona + Rebecca",
+   "name": "Phoebe · Ciaccona + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "Ciaccona",
@@ -28464,11 +28464,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 · Chisa + Spectro Rover",
+  "name": "Phoebe · Chisa + Spectro Rover · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 138,037 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD ATK ATK atk atk — 86,476; Chisa S6 Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, 44111 CD CD atk atk atk — 36,970; Spectro Rover S6 Blazing Brilliance R5, Rejuvenating Glow 5pc, 43311 CR ATK Spectro atk atk — 11,151). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 13, Havoc Bane 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 11 Stacks, 1x Spectro Frazzle - 13 Stacks, 1x Spectro Frazzle - 9 Stacks. Rotation time 28.12 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 · Chisa + Spectro Rover",
+   "name": "Phoebe · Chisa + Spectro Rover · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "Chisa",
@@ -29053,11 +29053,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 · Qiuyuan + Lucilla",
+  "name": "Phrolova · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 357,821 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 248,318; Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, 43311 CD ATK Aero atk atk — 24,881; Lucilla S6 Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CD ATK ATK atk atk — 82,106). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 · Qiuyuan + Lucilla",
+   "name": "Phrolova · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Qiuyuan",
@@ -29534,11 +29534,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 · Suisui + Hiyuki",
+  "name": "Phrolova · Suisui + Hiyuki · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 308,145 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 107,490; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 10,952; Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 ATK Glacio Glacio atk atk — 187,458). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 27.30 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 · Suisui + Hiyuki",
+   "name": "Phrolova · Suisui + Hiyuki · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Suisui",
@@ -30425,11 +30425,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 · Mornye + Lucilla",
+  "name": "Phrolova · Mornye + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 306,573 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 225,036; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,064; Lucilla S6 Freeze Frame R5, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CD ATK ATK atk atk — 66,726). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.58 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 · Mornye + Lucilla",
+   "name": "Phrolova · Mornye + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Mornye",
@@ -30914,11 +30914,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R5 · Mornye + Denia",
+  "name": "Qingxiao · Mornye + Denia · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 424,349 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R5, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 344,096; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 16,502; Denia S6 Forged Dwarf Star R5, Reel of Spliced Memories 5pc, 43311 CR Fusion Fusion atk atk — 57,167). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 4. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R5 · Mornye + Denia",
+   "name": "Qingxiao · Mornye + Denia · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Mornye",
@@ -31303,11 +31303,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R5 · Mornye + Lynae",
+  "name": "Qingxiao · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 385,623 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R5, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 317,284; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 17,578; Lynae S6 Spectrum Blaster R5, Reel of Spliced Memories 5pc, 43311 CR ATK Spectro atk atk — 44,686). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 4. Rotation time 25.37 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R5 · Mornye + Lynae",
+   "name": "Qingxiao · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Mornye",
@@ -31672,11 +31672,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R5 · Shorekeeper + Lynae",
+  "name": "Qingxiao · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 330,614 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R5, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 279,218; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 9,825; Lynae S6 Spectrum Blaster R5, Reel of Spliced Memories 5pc, 43311 CD Spectro Spectro atk atk — 37,414). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 3. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R5 · Shorekeeper + Lynae",
+   "name": "Qingxiao · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Shorekeeper",
@@ -32023,11 +32023,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 · Shorekeeper + Phrolova",
+  "name": "Qiuyuan · Shorekeeper + Phrolova · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 290,407 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 81,468; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 7,462; Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 198,907). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.12 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 · Shorekeeper + Phrolova",
+   "name": "Qiuyuan · Shorekeeper + Phrolova · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Shorekeeper",
@@ -32575,11 +32575,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 · Verina + Phrolova",
+  "name": "Qiuyuan · Verina + Phrolova · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 232,985 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 64,204; Verina S6 Variation R5, Rejuvenating Glow 5pc, 43311 ATK ER ER atk atk — 786; Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 165,366). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.50 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 · Verina + Phrolova",
+   "name": "Qiuyuan · Verina + Phrolova · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Verina",
@@ -33208,11 +33208,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 · Mornye + Lucilla",
+  "name": "Qiuyuan · Mornye + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 220,578 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD ATK Aero atk atk — 116,914; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 13,442; Lucilla S6 Freeze Frame R5, Dream of the Lost 3pc + Moonlit Clouds 2pc + Impermanence Heron, 43311 CD ATK ATK atk atk — 87,035). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 · Mornye + Lucilla",
+   "name": "Qiuyuan · Mornye + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Mornye",
@@ -33598,11 +33598,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R5 · Mornye + Rebecca",
+  "name": "Roccia · Mornye + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 161,135 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R5, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 78,972; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,525; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Moonlit Clouds 2pc, 43311 CR Electro Electro atk atk — 66,363). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.07 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R5 · Mornye + Rebecca",
+   "name": "Roccia · Mornye + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Mornye",
@@ -34072,11 +34072,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R5 · Mornye + Lynae",
+  "name": "Roccia · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 146,816 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R5, Havoc Eclipse 5pc, 43311 CR ER ATK atk atk — 87,980; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 15,440; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ER ATK atk atk — 39,200). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.37 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R5 · Mornye + Lynae",
+   "name": "Roccia · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Mornye",
@@ -34360,11 +34360,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R5 · Shorekeeper + Rebecca",
+  "name": "Roccia · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 144,755 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R5, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 71,292; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 7,151; Rebecca S6 Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Moonlit Clouds 2pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 63,914). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.27 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R5 · Shorekeeper + Rebecca",
+   "name": "Roccia · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Shorekeeper",
@@ -34825,11 +34825,11 @@
   }
  },
  {
-  "name": "wuwa_calc Sigrika S6R5 · Mornye + Lucilla",
+  "name": "Sigrika · Mornye + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 418,850 team DPS against a level 100 target with 20% RES (slots: Sigrika S6 Solsworn Ciphers R5, Sound of True Name 5pc, 43311 CR ATK ER atk atk — 338,926; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 12,685; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CD ATK ATK atk atk — 62,882). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Sigrika S6R5 · Mornye + Lucilla",
+   "name": "Sigrika · Mornye + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Sigrika",
     "Mornye",
@@ -35206,11 +35206,11 @@
   }
  },
  {
-  "name": "wuwa_calc Sigrika S6R5 · Qiuyuan + Lucilla",
+  "name": "Sigrika · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 406,760 team DPS against a level 100 target with 20% RES (slots: Sigrika S6 Solsworn Ciphers R5, Sound of True Name 5pc, 43311 CR ATK ER atk atk — 307,546; Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CD ER Aero atk atk — 20,800; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CD ATK ATK atk atk — 75,674). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.48 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Sigrika S6R5 · Qiuyuan + Lucilla",
+   "name": "Sigrika · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Sigrika",
     "Qiuyuan",
@@ -35601,11 +35601,11 @@
   }
  },
  {
-  "name": "wuwa_calc Sigrika S6R5 · Shorekeeper + Lucilla",
+  "name": "Sigrika · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 399,023 team DPS against a level 100 target with 20% RES (slots: Sigrika S6 Solsworn Ciphers R5, Sound of True Name 5pc, 43311 CR Aero ER atk atk — 334,694; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,287; Lucilla S6 Freeze Frame R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CD CD atk atk atk — 54,856). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Sigrika S6R5 · Shorekeeper + Lucilla",
+   "name": "Sigrika · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
    "characterIds": [
     "Sigrika",
     "Shorekeeper",
@@ -35964,11 +35964,11 @@
   }
  },
  {
-  "name": "wuwa_calc Suoming S6R5 · Shorekeeper + Lynae",
+  "name": "Suoming · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 325,957 team DPS against a level 100 target with 20% RES (slots: Suoming S6 Unspoken Rue R5, Heart of Sworn Vigil 5pc, 43311 CD ATK ATK atk atk — 277,382; Shorekeeper S6 Stellar Symphony R5, Flower of Tinged Yearning 5pc, 43311 HP ER ER hp hp — 9,805; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 35,358). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.05 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Suoming S6R5 · Shorekeeper + Lynae",
+   "name": "Suoming · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Suoming",
     "Shorekeeper",
@@ -36299,11 +36299,11 @@
   }
  },
  {
-  "name": "wuwa_calc Suoming S6R5 · Mornye + Lynae",
+  "name": "Suoming · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 317,851 team DPS against a level 100 target with 20% RES (slots: Suoming S6 Unspoken Rue R5, Heart of Sworn Vigil 5pc, 43311 CR ATK ATK atk atk — 254,920; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 16,103; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 41,721). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.20 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Suoming S6R5 · Mornye + Lynae",
+   "name": "Suoming · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "Suoming",
     "Mornye",
@@ -36652,11 +36652,11 @@
   }
  },
  {
-  "name": "wuwa_calc Suoming S6R5 · Shorekeeper + Rebecca",
+  "name": "Suoming · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 300,580 team DPS against a level 100 target with 20% RES (slots: Suoming S6 Unspoken Rue R5, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 242,784; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 7,266; Rebecca S6 Skull Thrasher R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 48,104). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Suoming S6R5 · Shorekeeper + Rebecca",
+   "name": "Suoming · Shorekeeper + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Suoming",
     "Shorekeeper",
@@ -37090,11 +37090,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xiangli Yao S6R5 · Mornye + Lynae",
+  "name": "Xiangli Yao · Mornye + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 207,376 team DPS against a level 100 target with 20% RES (slots: Xiangli Yao S6 Moongazer's Sigil R5, Void Thunder 5pc, 43311 CR ATK ATK atk atk — 145,688; Mornye S6 Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 16,269; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 40,379). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.15 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xiangli Yao S6R5 · Mornye + Lynae",
+   "name": "Xiangli Yao · Mornye + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "XiangliYao",
     "Mornye",
@@ -37470,11 +37470,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xiangli Yao S6R5 · Shorekeeper + Lynae",
+  "name": "Xiangli Yao · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 189,689 team DPS against a level 100 target with 20% RES (slots: Xiangli Yao S6 Moongazer's Sigil R5, Void Thunder 5pc, 43311 CD ATK Electro atk atk — 139,964; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 10,900; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 35,319). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.35 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xiangli Yao S6R5 · Shorekeeper + Lynae",
+   "name": "Xiangli Yao · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "XiangliYao",
     "Shorekeeper",
@@ -37832,11 +37832,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xiangli Yao S6R5 · Suisui + Lynae",
+  "name": "Xiangli Yao · Suisui + Lynae · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 161,012 team DPS against a level 100 target with 20% RES (slots: Xiangli Yao S6 Moongazer's Sigil R5, Void Thunder 5pc, 44111 CR CD atk atk atk — 117,255; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 10,103; Lynae S6 Spectrum Blaster R5, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 30,355). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 27.22 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xiangli Yao S6R5 · Suisui + Lynae",
+   "name": "Xiangli Yao · Suisui + Lynae · S6R5 (wuwa_calc)",
    "characterIds": [
     "XiangliYao",
     "Suisui",
@@ -38246,11 +38246,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 · Suisui + Chisa",
+  "name": "Xuanling · Suisui + Chisa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 490,717 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD ATK Havoc atk atk — 425,627; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 13,108; Chisa S6 Kumokiri R5, Moonlit Clouds 5pc, 43311 CD Havoc Havoc atk atk — 49,314). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 9, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks. Rotation time 26.62 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 · Suisui + Chisa",
+   "name": "Xuanling · Suisui + Chisa · S6R5 (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Suisui",
@@ -38732,11 +38732,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 · Suisui + Rebecca",
+  "name": "Xuanling · Suisui + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 385,478 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD Havoc Havoc atk atk — 325,249; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 10,277; Rebecca S6 Skull Thrasher R5, Moonlit Clouds 5pc + Impermanence Heron, 44111 CR CR atk atk atk — 47,461). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 · Suisui + Rebecca",
+   "name": "Xuanling · Suisui + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Suisui",
@@ -39314,11 +39314,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 · Shorekeeper + Chisa",
+  "name": "Xuanling · Shorekeeper + Chisa · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 381,673 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD ATK Havoc atk atk — 316,468; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,641; Chisa S6 Kumokiri R5, Moonlit Clouds 5pc, 43311 CD Havoc Havoc atk atk — 55,707). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 9. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 · Shorekeeper + Chisa",
+   "name": "Xuanling · Shorekeeper + Chisa · S6R5 (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Shorekeeper",
@@ -39748,11 +39748,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 · Suisui + Phoebe",
+  "name": "Zani · Suisui + Phoebe · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 289,645 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD Spectro Spectro atk atk — 256,116; Suisui S6 Firstlight's Herald R5, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 7,425; Phoebe S6 Luminous Hymn R5, Moonlit Clouds 5pc, 43311 CR Spectro Spectro atk atk — 24,104). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 31.32 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 · Suisui + Phoebe",
+   "name": "Zani · Suisui + Phoebe · S6R5 (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Suisui",
@@ -40196,11 +40196,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 · Shorekeeper + Phoebe",
+  "name": "Zani · Shorekeeper + Phoebe · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 270,304 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD Spectro Spectro atk atk — 240,524; Shorekeeper S6 Stellar Symphony R5, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 6,542; Phoebe S6 Luminous Hymn R5, Moonlit Clouds 5pc, 43311 CD Spectro Spectro atk atk — 21,671). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 29.45 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 · Shorekeeper + Phoebe",
+   "name": "Zani · Shorekeeper + Phoebe · S6R5 (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Shorekeeper",
@@ -40592,11 +40592,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 · Phoebe + Rebecca",
+  "name": "Zani · Phoebe + Rebecca · S6R5 (wuwa_calc)",
   "description": "S6R5 full-team rotation (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: 251,302 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD Spectro Spectro atk atk — 199,796; Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 23,052; Rebecca S6 Skull Thrasher R5, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 26,183). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 31.60 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 · Phoebe + Rebecca",
+   "name": "Zani · Phoebe + Rebecca · S6R5 (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Phoebe",
@@ -41092,11 +41092,11 @@
   }
  },
  {
-  "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Chisa + Denia",
+  "name": "Aemeath · Chisa + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 265,772 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 225,576; Chisa S0 Kumokiri R1, Rejuvenating Glow 5pc + Fallacy of No Return, 43311 CD Havoc Havoc atk atk — 10,471; Denia S0 Forged Dwarf Star R1, Chromatic Foam 5pc, 43311 CD Fusion Fusion atk atk — 26,658). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Fusion Burst 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 25.85 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Chisa + Denia",
+   "name": "Aemeath · Chisa + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Chisa",
@@ -41639,11 +41639,11 @@
   }
  },
  {
-  "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Suisui + Denia",
+  "name": "Aemeath · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 262,738 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK Fusion atk atk — 228,137; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,648; Denia S0 Forged Dwarf Star R1, Chromatic Foam 5pc, 43311 CD Fusion Fusion atk atk — 28,286). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 13, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Suisui + Denia",
+   "name": "Aemeath · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Suisui",
@@ -42182,11 +42182,11 @@
   }
  },
  {
-  "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Mornye + Lynae",
+  "name": "Aemeath · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 261,465 team DPS against a level 100 target with 20% RES (slots: Aemeath S6 Everbright Polestar R5, Trailblazing Star 5pc, 43311 CD ATK ATK atk atk — 231,821; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 4,393; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 19,815). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Aemeath S6R5 DPS · S0R1 team · Mornye + Lynae",
+   "name": "Aemeath · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Aemeath",
     "Mornye",
@@ -42562,11 +42562,11 @@
   }
  },
  {
-  "name": "wuwa_calc Augusta S6R5 DPS · S0R1 team · Suisui + Iuno",
+  "name": "Augusta · Suisui + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 209,634 team DPS against a level 100 target with 20% RES (slots: Augusta S6 Thunderflare Dominion R5, Crown of Valor 3pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 189,237; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,333; Iuno S0 Moongazer's Sigil R1, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 14,795). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 26.80 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Augusta S6R5 DPS · S0R1 team · Suisui + Iuno",
+   "name": "Augusta · Suisui + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Augusta",
     "Suisui",
@@ -42994,11 +42994,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Denia + Lupa",
+  "name": "Brant · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 111,858 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 89,509; Denia S0 Forged Dwarf Star R1, Flaming Clawprint 5pc, 43311 CD ATK Fusion atk atk — 13,908; Lupa S0 Wildfire Mark R1, Moonlit Clouds 5pc, 43311 CR Fusion Fusion atk atk — 6,063). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 32.73 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Denia + Lupa",
+   "name": "Brant · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Denia",
@@ -43488,11 +43488,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Mornye + Lupa",
+  "name": "Brant · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 104,855 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 90,322; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,795; Lupa S0 Wildfire Mark R1, Flaming Clawprint 5pc, 43311 CR Fusion Fusion atk atk — 8,814). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 32.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Mornye + Lupa",
+   "name": "Brant · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Mornye",
@@ -43936,11 +43936,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Shorekeeper + Lupa",
+  "name": "Brant · Shorekeeper + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 98,708 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R5, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 89,551; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,224; Lupa S0 Wildfire Mark R1, Moonlit Clouds 5pc, 43311 CR Fusion Fusion atk atk — 5,984). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 31.60 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R5 DPS · S0R1 team · Shorekeeper + Lupa",
+   "name": "Brant · Shorekeeper + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Shorekeeper",
@@ -44353,11 +44353,11 @@
   }
  },
  {
-  "name": "wuwa_calc Camellya S6R5 DPS · S0R1 team · Verina + Sanhua",
+  "name": "Camellya · Verina + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 112,677 team DPS against a level 100 target with 20% RES (slots: Camellya S6 Red Spring R5, Havoc Eclipse 5pc, 44111 CR CD atk atk atk — 106,846; Verina S0 Variation R1, Rejuvenating Glow 5pc, 43311 ATK ER ER atk atk — 327; Sanhua S6 Blazing Brilliance R1, Moonlit Clouds 5pc, 43311 CR Glacio Glacio atk atk — 3,699). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 34.30 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Camellya S6R5 DPS · S0R1 team · Verina + Sanhua",
+   "name": "Camellya · Verina + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Camellya",
     "Verina",
@@ -44861,11 +44861,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cantarella S6R5 DPS · S0R1 team · Mornye + Rebecca",
+  "name": "Cantarella · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 93,228 team DPS against a level 100 target with 20% RES (slots: Cantarella S6 Whispers of Sirens R5, Havoc Eclipse 5pc, 44111 CR CR atk atk atk — 70,829; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,122; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 16,768). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cantarella S6R5 DPS · S0R1 team · Mornye + Rebecca",
+   "name": "Cantarella · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Cantarella",
     "Mornye",
@@ -45405,11 +45405,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cantarella S6R5 DPS · S0R1 team · Shorekeeper + Roccia",
+  "name": "Cantarella · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 91,252 team DPS against a level 100 target with 20% RES (slots: Cantarella S6 Whispers of Sirens R5, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 81,697; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,572; Roccia S0 Tragicomedy R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Havoc Havoc atk atk — 6,034). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cantarella S6R5 DPS · S0R1 team · Shorekeeper + Roccia",
+   "name": "Cantarella · Shorekeeper + Roccia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Cantarella",
     "Shorekeeper",
@@ -45783,11 +45783,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Hiyuki + Lucilla",
+  "name": "Carlotta · Hiyuki + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 168,890 team DPS against a level 100 target with 20% RES (slots: Carlotta S0 The Last Dance R1, Frosty Resolve 5pc, 43311 CR ATK Glacio atk atk — 23,233; Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 ATK Glacio Glacio atk atk — 134,048; Lucilla S0 Freeze Frame R1, Wishes of Quiet Snowfall 5pc, 43311 CD Glacio Glacio atk atk — 8,585). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 10 Stacks. Rotation time 30.52 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Hiyuki + Lucilla",
+   "name": "Carlotta · Hiyuki + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Hiyuki",
@@ -46513,11 +46513,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Suisui + Hiyuki",
+  "name": "Carlotta · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 168,810 team DPS against a level 100 target with 20% RES (slots: Carlotta S0 The Last Dance R1, Frosty Resolve 5pc, 43311 CR ATK Glacio atk atk — 26,846; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,414; Hiyuki S6 Frostburn R5, Wishes of Quiet Snowfall 5pc, 43311 CD Glacio Glacio atk atk — 135,982). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 28.82 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Suisui + Hiyuki",
+   "name": "Carlotta · Suisui + Hiyuki · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Suisui",
@@ -47219,11 +47219,11 @@
   }
  },
  {
-  "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Shorekeeper + Zhezhi",
+  "name": "Carlotta · Shorekeeper + Zhezhi · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 140,728 team DPS against a level 100 target with 20% RES (slots: Carlotta S6 The Last Dance R5, Frosty Resolve 5pc, 43311 CR ATK Glacio atk atk — 129,165; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,533; Zhezhi S0 Rime-Draped Sprouts R1, Moonlit Clouds 5pc, 43311 CR Glacio Glacio atk atk — 8,209). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Carlotta S6R5 DPS · S0R1 team · Shorekeeper + Zhezhi",
+   "name": "Carlotta · Shorekeeper + Zhezhi · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Carlotta",
     "Shorekeeper",
@@ -47651,11 +47651,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Ciaccona + Chisa",
+  "name": "Cartethyia · Ciaccona + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 219,587 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CD hp hp hp — 187,578; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK ATK atk atk — 20,853; Chisa S0 Kumokiri R1, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Impermanence Heron, 43311 CD ATK Havoc atk atk — 9,176). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 9, Havoc Bane 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 8 Stacks, 1x Aero Erosion - 9 Stacks. Rotation time 27.78 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Ciaccona + Chisa",
+   "name": "Cartethyia · Ciaccona + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Ciaccona",
@@ -48406,11 +48406,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Suisui + Ciaccona",
+  "name": "Cartethyia · Suisui + Ciaccona · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 203,761 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CD hp hp hp — 176,842; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,403; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 21,729). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 9, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 9 Stacks, 1x Glacio Chafe - 13 Stacks. Rotation time 25.48 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Suisui + Ciaccona",
+   "name": "Cartethyia · Suisui + Ciaccona · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Suisui",
@@ -49158,11 +49158,11 @@
   }
  },
  {
-  "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Shorekeeper + Ciaccona",
+  "name": "Cartethyia · Shorekeeper + Ciaccona · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 195,021 team DPS against a level 100 target with 20% RES (slots: Cartethyia S6 Defier's Thorn R5, Windward Pilgrimage 5pc, 44111 CR CD hp hp hp — 172,826; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,795; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 18,562). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 6. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 6 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Cartethyia S6R5 DPS · S0R1 team · Shorekeeper + Ciaccona",
+   "name": "Cartethyia · Shorekeeper + Ciaccona · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Cartethyia",
     "Shorekeeper",
@@ -49888,11 +49888,11 @@
   }
  },
  {
-  "name": "wuwa_calc Changli S6R5 DPS · S0R1 team · Denia + Lupa",
+  "name": "Changli · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 98,526 team DPS against a level 100 target with 20% RES (slots: Changli S6 Blazing Brilliance R5, Molten Rift 5pc, 44111 CR CD atk atk atk — 67,679; Denia S0 Forged Dwarf Star R1, Flaming Clawprint 5pc, 43311 CD ATK Fusion atk atk — 19,645; Lupa S0 Wildfire Mark R1, Moonlit Clouds 5pc, 43311 CR Fusion Fusion atk atk — 8,857). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Fusion Burst 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Fusion Burst - 10 Stacks. Rotation time 26.40 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Changli S6R5 DPS · S0R1 team · Denia + Lupa",
+   "name": "Changli · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Changli",
     "Denia",
@@ -50268,11 +50268,11 @@
   }
  },
  {
-  "name": "wuwa_calc Changli S6R5 DPS · S0R1 team · Lupa + Brant",
+  "name": "Changli · Lupa + Brant · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 86,858 team DPS against a level 100 target with 20% RES (slots: Changli S6 Blazing Brilliance R5, Molten Rift 5pc, 44111 CR CD atk atk atk — 55,021; Lupa S0 Wildfire Mark R1, Flaming Clawprint 5pc, 43311 CR ATK Fusion atk atk — 10,957; Brant S0 Unflickering Valor R1, Tidebreaking Courage 5pc, 43311 CR ER ER atk atk — 18,687). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 27.55 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Changli S6R5 DPS · S0R1 team · Lupa + Brant",
+   "name": "Changli · Lupa + Brant · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Changli",
     "Lupa",
@@ -50601,11 +50601,11 @@
   }
  },
  {
-  "name": "wuwa_calc Electro Rover S6R5 DPS · S0R1 team · Mornye + Rebecca",
+  "name": "Electro Rover · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 64,635 team DPS against a level 100 target with 20% RES (slots: Electro Rover S6 Blazing Brilliance R5, Heart of Sworn Vigil 5pc, 43311 CR ATK Electro atk atk — 36,953; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 1,992; Rebecca S0 Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 21,662). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Electro Flare 10, Electro Rage 5. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Electro Flare - 10 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 5 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 26.17 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Electro Rover S6R5 DPS · S0R1 team · Mornye + Rebecca",
+   "name": "Electro Rover · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Roverelectrofemale",
     "Mornye",
@@ -51227,11 +51227,11 @@
   }
  },
  {
-  "name": "wuwa_calc Galbrena S6R5 DPS · S0R1 team · Shorekeeper + Qiuyuan",
+  "name": "Galbrena · Shorekeeper + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 190,840 team DPS against a level 100 target with 20% RES (slots: Galbrena S6 Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, 43311 CR Fusion Fusion atk atk — 179,073; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 2,019; Qiuyuan S0 Emerald Sentence R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CD ER Aero atk atk — 7,136). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.57 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Galbrena S6R5 DPS · S0R1 team · Shorekeeper + Qiuyuan",
+   "name": "Galbrena · Shorekeeper + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Galbrena",
     "Shorekeeper",
@@ -51647,11 +51647,11 @@
   }
  },
  {
-  "name": "wuwa_calc Galbrena S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+  "name": "Galbrena · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 177,534 team DPS against a level 100 target with 20% RES (slots: Galbrena S6 Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, 43311 CR Fusion Fusion atk atk — 156,449; Qiuyuan S0 Emerald Sentence R1, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CR ER Aero atk atk — 6,389; Lucilla S0 Freeze Frame R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR ATK Glacio atk atk — 12,235). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 26.92 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Galbrena S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+   "name": "Galbrena · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Galbrena",
     "Qiuyuan",
@@ -52051,11 +52051,11 @@
   }
  },
  {
-  "name": "wuwa_calc Hsin S6R5 DPS · S0R1 team · Mornye + Suoming",
+  "name": "Hsin · Mornye + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 309,280 team DPS against a level 100 target with 20% RES (slots: Hsin S6 Blooming Jadehaven R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 281,908; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,270; Suoming S0 Unspoken Rue R1, Moonlit Clouds 5pc, 43311 CD ATK Electro atk atk — 21,128). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.45 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Hsin S6R5 DPS · S0R1 team · Mornye + Suoming",
+   "name": "Hsin · Mornye + Suoming · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Hsin",
     "Mornye",
@@ -52648,11 +52648,11 @@
   }
  },
  {
-  "name": "wuwa_calc Iuno S6R5 DPS · S0R1 team · Ciaccona + Lynae",
+  "name": "Iuno · Ciaccona + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 164,542 team DPS against a level 100 target with 20% RES (slots: Iuno S6 Moongazer's Sigil R5, Crown of Valor 3pc + Sierra Gale 2pc, 43311 CD ATK Aero atk atk — 138,505; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 11,814; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 11,064). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks. Rotation time 27.10 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Iuno S6R5 DPS · S0R1 team · Ciaccona + Lynae",
+   "name": "Iuno · Ciaccona + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Iuno",
     "Ciaccona",
@@ -53118,11 +53118,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Shorekeeper + Iuno",
+  "name": "Jingran · Shorekeeper + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 273,817 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 255,536; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,712; Iuno S0 Moongazer's Sigil R1, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 14,220). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.07 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Shorekeeper + Iuno",
+   "name": "Jingran · Shorekeeper + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Shorekeeper",
@@ -53519,11 +53519,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Mornye + Iuno",
+  "name": "Jingran · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 264,334 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 244,728; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Spacetrek Explorer, 43311 DEF ER ER def def — 2,013; Iuno S0 Moongazer's Sigil R1, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 14,211). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.87 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Mornye + Iuno",
+   "name": "Jingran · Mornye + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Mornye",
@@ -53927,11 +53927,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Suisui + Iuno",
+  "name": "Jingran · Suisui + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 259,340 team DPS against a level 100 target with 20% RES (slots: Jingran S6 Thousandfold Deliverance R5, Lamp of Nether Road 5pc, 44111 CD CD hp hp hp — 239,681; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,079; Iuno S0 Moongazer's Sigil R1, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 14,403). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 27.93 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jingran S6R5 DPS · S0R1 team · Suisui + Iuno",
+   "name": "Jingran · Suisui + Iuno · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jingran",
     "Suisui",
@@ -54398,11 +54398,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 DPS · S0R1 team · Verina + Hsin",
+  "name": "Jinhsi · Verina + Hsin · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 108,292 team DPS against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 68,849; Verina S0 Variation R1, Flower of Tinged Yearning 5pc, 43311 ATK ER ER atk atk — 525; Hsin S0 Blooming Jadehaven R1, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 36,582). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.78 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 DPS · S0R1 team · Verina + Hsin",
+   "name": "Jinhsi · Verina + Hsin · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jinhsi",
     "Verina",
@@ -55123,11 +55123,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jinhsi S6R5 DPS · S0R1 team · Mornye + Hsin",
+  "name": "Jinhsi · Mornye + Hsin · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 106,574 team DPS against a level 100 target with 20% RES (slots: Jinhsi S6 Ages of Harvest R5, Celestial Light 5pc, 44111 CR CD atk atk atk — 64,012; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 1,962; Hsin S0 Blooming Jadehaven R1, Heart of Sworn Vigil 5pc, 43311 CD Electro Electro atk atk — 37,249). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 28.20 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jinhsi S6R5 DPS · S0R1 team · Mornye + Hsin",
+   "name": "Jinhsi · Mornye + Hsin · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jinhsi",
     "Mornye",
@@ -55740,11 +55740,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Ciaccona + Rebecca",
+  "name": "Jiyan · Ciaccona + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 99,399 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Windward Pilgrimage 5pc, 43311 CR ATK Aero atk atk — 73,318; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD Aero Aero atk atk — 11,312; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 12,378). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks. Rotation time 25.18 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Ciaccona + Rebecca",
+   "name": "Jiyan · Ciaccona + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Ciaccona",
@@ -56285,11 +56285,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+  "name": "Jiyan · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 97,576 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Sierra Gale 5pc, 43311 CR Aero Aero atk atk — 77,719; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,574; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 15,849). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+   "name": "Jiyan · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Shorekeeper",
@@ -56752,11 +56752,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Mornye + Rebecca",
+  "name": "Jiyan · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 96,037 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R5, Sierra Gale 5pc, 43311 CR Aero Aero atk atk — 73,781; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,087; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 16,528). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.15 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R5 DPS · S0R1 team · Mornye + Rebecca",
+   "name": "Jiyan · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Mornye",
@@ -57228,11 +57228,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+  "name": "Lucy · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 205,901 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, 43311 CR Spectro Spectro atk atk — 184,068; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,960; Rebecca S0 Skull Thrasher R1, Pact of Neonlight Leap 5pc, 43311 CR Electro Electro atk atk — 17,672). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+   "name": "Lucy · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Shorekeeper",
@@ -57676,11 +57676,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Mornye + Rebecca",
+  "name": "Lucy · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 197,525 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Reel of Spliced Memories 2pc, 43311 CR Spectro Spectro atk atk — 168,980; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,525; Rebecca S0 Skull Thrasher R1, Pact of Neonlight Leap 5pc, 43311 CR Electro Electro atk atk — 21,304). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.33 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Mornye + Rebecca",
+   "name": "Lucy · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Mornye",
@@ -58142,11 +58142,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Shorekeeper + Lynae",
+  "name": "Lucy · Shorekeeper + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 177,770 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R5, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Moonlit Clouds 2pc, 43311 CR ATK ATK atk atk — 160,567; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 2,555; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 11,845). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R5 DPS · S0R1 team · Shorekeeper + Lynae",
+   "name": "Lucy · Shorekeeper + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Shorekeeper",
@@ -58540,11 +58540,11 @@
   }
  },
  {
-  "name": "wuwa_calc Luuk Herssen S6R5 DPS · S0R1 team · Mornye + Denia",
+  "name": "Luuk Herssen · Mornye + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 252,630 team DPS against a level 100 target with 20% RES (slots: Luuk Herssen S6 Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, 43311 CD ATK Spectro atk atk — 224,987; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 3,991; Denia S0 Forged Dwarf Star R1, Reel of Spliced Memories 5pc, 43311 CD Fusion Fusion atk atk — 17,255). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 6. Rotation time 25.57 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Luuk Herssen S6R5 DPS · S0R1 team · Mornye + Denia",
+   "name": "Luuk Herssen · Mornye + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "LuukHerssen",
     "Mornye",
@@ -58990,11 +58990,11 @@
   }
  },
  {
-  "name": "wuwa_calc Luuk Herssen S6R5 DPS · S0R1 team · Shorekeeper + Denia",
+  "name": "Luuk Herssen · Shorekeeper + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 197,816 team DPS against a level 100 target with 20% RES (slots: Luuk Herssen S6 Daybreaker's Spine R5, Rite of Gilded Revelation 5pc, 43311 CD ATK Spectro atk atk — 179,261; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,775; Denia S0 Forged Dwarf Star R1, Reel of Spliced Memories 5pc, 43311 CD Fusion Fusion atk atk — 13,349). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 5. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Luuk Herssen S6R5 DPS · S0R1 team · Shorekeeper + Denia",
+   "name": "Luuk Herssen · Shorekeeper + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "LuukHerssen",
     "Shorekeeper",
@@ -59422,11 +59422,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Spectro Rover + Lynae",
+  "name": "Phoebe · Spectro Rover + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 106,343 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD ATK Spectro atk atk — 78,819; Spectro Rover S6 Blazing Brilliance R1, Rejuvenating Glow 5pc, 43311 CR Spectro Spectro atk atk — 7,791; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 15,628). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 9 Stacks. Rotation time 26.73 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Spectro Rover + Lynae",
+   "name": "Phoebe · Spectro Rover + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "RoverSpectroFemale",
@@ -59982,11 +59982,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Spectro Rover + Rebecca",
+  "name": "Phoebe · Spectro Rover + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 99,257 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 77,132; Spectro Rover S6 Blazing Brilliance R1, Rejuvenating Glow 5pc, 43311 CR Spectro Spectro atk atk — 7,603; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 12,257). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 9 Stacks. Rotation time 26.87 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Spectro Rover + Rebecca",
+   "name": "Phoebe · Spectro Rover + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "RoverSpectroFemale",
@@ -60672,11 +60672,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Shorekeeper + Spectro Rover",
+  "name": "Phoebe · Shorekeeper + Spectro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 98,924 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R5, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 85,427; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,879; Spectro Rover S6 Blazing Brilliance R1, Moonlit Clouds 5pc, 43311 CR Spectro Spectro atk atk — 9,167). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 10. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 7 Stacks, 1x Spectro Frazzle - 8 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R5 DPS · S0R1 team · Shorekeeper + Spectro Rover",
+   "name": "Phoebe · Shorekeeper + Spectro Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "Shorekeeper",
@@ -61204,11 +61204,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Qiuyuan + Cantarella",
+  "name": "Phrolova · Qiuyuan + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 220,517 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 201,236; Qiuyuan S0 Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, 43311 CR ATK Aero atk atk — 7,972; Cantarella S0 Whispers of Sirens R1, Rejuvenating Glow 5pc, 43311 CR Havoc Havoc atk atk — 8,710). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Qiuyuan + Cantarella",
+   "name": "Phrolova · Qiuyuan + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Qiuyuan",
@@ -61747,11 +61747,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+  "name": "Phrolova · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 219,888 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 194,758; Qiuyuan S0 Emerald Sentence R1, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CR Aero Aero atk atk — 8,489; Lucilla S0 Freeze Frame R1, Moonlit Clouds 5pc + Bell-Borne Geochelone, 43311 CR ATK Glacio atk atk — 14,125). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+   "name": "Phrolova · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Qiuyuan",
@@ -62210,11 +62210,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Lucilla + Cantarella",
+  "name": "Phrolova · Lucilla + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 208,080 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 188,998; Lucilla S0 Freeze Frame R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, 43311 CD Glacio Glacio atk atk — 8,026; Cantarella S0 Whispers of Sirens R1, Rejuvenating Glow 5pc, 43311 CR Havoc Havoc atk atk — 8,527). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.27 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R5 DPS · S0R1 team · Lucilla + Cantarella",
+   "name": "Phrolova · Lucilla + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Lucilla",
@@ -62809,11 +62809,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R5 DPS · S0R1 team · Mornye + Denia",
+  "name": "Qingxiao · Mornye + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 263,449 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R5, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 237,968; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,936; Denia S0 Forged Dwarf Star R1, Reel of Spliced Memories 5pc, 43311 CD Fusion Fusion atk atk — 16,021). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 4. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R5 DPS · S0R1 team · Mornye + Denia",
+   "name": "Qingxiao · Mornye + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Mornye",
@@ -63216,11 +63216,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R5 DPS · S0R1 team · Shorekeeper + Lynae",
+  "name": "Qingxiao · Shorekeeper + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 225,720 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R5, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 207,018; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 2,130; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD Spectro Spectro atk atk — 12,902). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Tune Strain 3. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R5 DPS · S0R1 team · Shorekeeper + Lynae",
+   "name": "Qingxiao · Shorekeeper + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Shorekeeper",
@@ -63578,11 +63578,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Shorekeeper + Phrolova",
+  "name": "Qiuyuan · Shorekeeper + Phrolova · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 118,681 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 63,818; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,856; Phrolova S0 Lethean Elegy R1, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 50,463). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.47 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Shorekeeper + Phrolova",
+   "name": "Qiuyuan · Shorekeeper + Phrolova · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Shorekeeper",
@@ -64103,11 +64103,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Mornye + Lynae",
+  "name": "Qiuyuan · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 113,673 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD ATK Aero atk atk — 86,290; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 3,993; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CR ATK Spectro atk atk — 18,842). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Mornye + Lynae",
+   "name": "Qiuyuan · Mornye + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Mornye",
@@ -64492,11 +64492,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Suisui + Rebecca",
+  "name": "Qiuyuan · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 113,627 team DPS against a level 100 target with 20% RES (slots: Qiuyuan S6 Emerald Sentence R5, Law of Harmony 3pc + Sierra Gale 2pc, 43311 CD Aero Aero atk atk — 90,733; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,746; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 16,532). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qiuyuan S6R5 DPS · S0R1 team · Suisui + Rebecca",
+   "name": "Qiuyuan · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qiuyuan",
     "Suisui",
@@ -65009,11 +65009,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R5 DPS · S0R1 team · Mornye + Rebecca",
+  "name": "Roccia · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 80,122 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R5, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 58,282; Mornye S0 Starfield Calibrator R1, Halo of Starry Radiance 5pc + Reactor Husk, 43311 DEF ER ER def def — 2,069; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 16,258). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 26.17 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R5 DPS · S0R1 team · Mornye + Rebecca",
+   "name": "Roccia · Mornye + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Mornye",
@@ -65463,11 +65463,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+  "name": "Roccia · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 79,985 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R5, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 60,446; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,578; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 15,572). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.37 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+   "name": "Roccia · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Shorekeeper",
@@ -65908,11 +65908,11 @@
   }
  },
  {
-  "name": "wuwa_calc Sigrika S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+  "name": "Sigrika · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 254,353 team DPS against a level 100 target with 20% RES (slots: Sigrika S6 Solsworn Ciphers R5, Sound of True Name 5pc, 43311 CR ATK ER atk atk — 230,987; Qiuyuan S0 Emerald Sentence R1, Law of Harmony 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CR ER Aero atk atk — 7,232; Lucilla S0 Freeze Frame R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Glacio Glacio atk atk — 13,394). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.48 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Sigrika S6R5 DPS · S0R1 team · Qiuyuan + Lucilla",
+   "name": "Sigrika · Qiuyuan + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Sigrika",
     "Qiuyuan",
@@ -66294,11 +66294,11 @@
   }
  },
  {
-  "name": "wuwa_calc Sigrika S6R5 DPS · S0R1 team · Shorekeeper + Qiuyuan",
+  "name": "Sigrika · Shorekeeper + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 252,773 team DPS against a level 100 target with 20% RES (slots: Sigrika S6 Solsworn Ciphers R5, Sound of True Name 5pc, 43311 CR ATK ER atk atk — 239,876; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,738; Qiuyuan S0 Emerald Sentence R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CD Aero Aero atk atk — 8,077). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.87 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Sigrika S6R5 DPS · S0R1 team · Shorekeeper + Qiuyuan",
+   "name": "Sigrika · Shorekeeper + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Sigrika",
     "Shorekeeper",
@@ -66686,11 +66686,11 @@
   }
  },
  {
-  "name": "wuwa_calc Suoming S6R5 DPS · S0R1 team · Shorekeeper + Sanhua",
+  "name": "Suoming · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 222,575 team DPS against a level 100 target with 20% RES (slots: Suoming S6 Unspoken Rue R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 213,093; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,597; Sanhua S6 Blazing Brilliance R1, Moonlit Clouds 5pc, 43311 CR Glacio Glacio atk atk — 5,434). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Suoming S6R5 DPS · S0R1 team · Shorekeeper + Sanhua",
+   "name": "Suoming · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Suoming",
     "Shorekeeper",
@@ -67030,11 +67030,11 @@
   }
  },
  {
-  "name": "wuwa_calc Suoming S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+  "name": "Suoming · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 212,218 team DPS against a level 100 target with 20% RES (slots: Suoming S6 Unspoken Rue R5, Heart of Sworn Vigil 5pc, 43311 CD ATK Electro atk atk — 192,869; Shorekeeper S0 Stellar Symphony R1, Flower of Tinged Yearning 5pc, 43311 HP ER ER hp hp — 1,536; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 15,387). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Suoming S6R5 DPS · S0R1 team · Shorekeeper + Rebecca",
+   "name": "Suoming · Shorekeeper + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Suoming",
     "Shorekeeper",
@@ -67459,11 +67459,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Chisa",
+  "name": "Xuanling · Suisui + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 304,097 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD Havoc Havoc atk atk — 284,080; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,952; Chisa S0 Kumokiri R1, Moonlit Clouds 5pc, 43311 CD Havoc Havoc atk atk — 13,397). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 9, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 16 Stacks. Rotation time 26.62 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Chisa",
+   "name": "Xuanling · Suisui + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Suisui",
@@ -67954,11 +67954,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Rebecca",
+  "name": "Xuanling · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 260,190 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD Havoc Havoc atk atk — 237,076; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,480; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 17,144). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Rebecca",
+   "name": "Xuanling · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Suisui",
@@ -68527,11 +68527,11 @@
   }
  },
  {
-  "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Mortefi",
+  "name": "Xuanling · Suisui + Mortefi · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 249,292 team DPS against a level 100 target with 20% RES (slots: Xuanling S6 Azure Oath R5, Song of Feathered Trace 5pc, 43311 CD Havoc Havoc atk atk — 235,024; Suisui S0 Firstlight's Herald R1, Song of Feathered Trace 5pc, 43311 HP ER ER hp hp — 3,484; Mortefi S6 Static Mist R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Fusion Fusion atk atk — 8,273). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Havoc Bane 6, Glacio Chafe 13. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 13 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Xuanling S6R5 DPS · S0R1 team · Suisui + Mortefi",
+   "name": "Xuanling · Suisui + Mortefi · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "YangyangXuanling",
     "Suisui",
@@ -69114,11 +69114,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Shorekeeper + Phoebe",
+  "name": "Zani · Shorekeeper + Phoebe · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 142,112 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD Spectro Spectro atk atk — 131,605; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,497; Phoebe S0 Luminous Hymn R1, Moonlit Clouds 5pc, 43311 CD Spectro Spectro atk atk — 7,397). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 29.45 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Shorekeeper + Phoebe",
+   "name": "Zani · Shorekeeper + Phoebe · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Shorekeeper",
@@ -69501,11 +69501,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Phoebe + Rebecca",
+  "name": "Zani · Phoebe + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 135,012 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD Spectro Spectro atk atk — 114,091; Phoebe S0 Luminous Hymn R1, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 8,394; Rebecca S0 Skull Thrasher R1, Moonlit Clouds 5pc + Impermanence Heron, 43311 CR Electro Electro atk atk — 10,296). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 31.60 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Phoebe + Rebecca",
+   "name": "Zani · Phoebe + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Phoebe",
@@ -69983,11 +69983,11 @@
   }
  },
  {
-  "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Phoebe + Lynae",
+  "name": "Zani · Phoebe + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team full-team rotation (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 134,903 team DPS against a level 100 target with 20% RES (slots: Zani S6 Blazing Justice R5, Eternal Radiance 5pc + Capitaneus, 43311 CD ATK Spectro atk atk — 111,843; Phoebe S0 Luminous Hymn R1, Eternal Radiance 5pc, 43311 CD Spectro Spectro atk atk — 8,520; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 11,904). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 31.80 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Zani S6R5 DPS · S0R1 team · Phoebe + Lynae",
+   "name": "Zani · Phoebe + Lynae · S6R5 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Zani",
     "Phoebe",
@@ -70399,11 +70399,11 @@
   }
  },
  {
-  "name": "wuwa_calc Brant S6R1 DPS · S0R1 team · Shorekeeper + Lupa",
+  "name": "Brant · Shorekeeper + Lupa · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 88,994 team DPS against a level 100 target with 20% RES (slots: Brant S6 Unflickering Valor R1, Tidebreaking Courage 5pc, 43311 CD ER ER atk atk — 77,721; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,227; Lupa S0 Wildfire Mark R1, Flaming Clawprint 5pc, 43311 CR Fusion Fusion atk atk — 8,094). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 31.53 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Brant S6R1 DPS · S0R1 team · Shorekeeper + Lupa",
+   "name": "Brant · Shorekeeper + Lupa · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Brant",
     "Shorekeeper",
@@ -70838,11 +70838,11 @@
   }
  },
  {
-  "name": "wuwa_calc Jiyan S6R1 DPS · S0R1 team · Ciaccona + Iuno",
+  "name": "Jiyan · Ciaccona + Iuno · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 85,918 team DPS against a level 100 target with 20% RES (slots: Jiyan S6 Verdant Summit R1, Windward Pilgrimage 5pc, 43311 CR ATK Aero atk atk — 61,194; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 9,622; Iuno S0 Moongazer's Sigil R1, Moonlit Clouds 5pc, 43311 CD Aero Aero atk atk — 12,790). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks. Rotation time 26.38 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Jiyan S6R1 DPS · S0R1 team · Ciaccona + Iuno",
+   "name": "Jiyan · Ciaccona + Iuno · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Jiyan",
     "Ciaccona",
@@ -71252,11 +71252,11 @@
   }
  },
  {
-  "name": "wuwa_calc Lucy S6R1 DPS · S0R1 team · Verina + Rebecca",
+  "name": "Lucy · Verina + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 134,257 team DPS against a level 100 target with 20% RES (slots: Lucy S6 Spectral Trigger R1, Shadow of Shattered Dreams 1pc + Celestial Light 2pc + Moonlit Clouds 2pc, 43311 CR Spectro Spectro atk atk — 114,821; Verina S0 Variation R1, Rejuvenating Glow 5pc, 43311 ATK ER ER atk atk — 633; Rebecca S0 Skull Thrasher R1, Pact of Neonlight Leap 5pc, 43311 CR Electro Electro atk atk — 16,578). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Lucy S6R1 DPS · S0R1 team · Verina + Rebecca",
+   "name": "Lucy · Verina + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Lucy",
     "Verina",
@@ -71817,11 +71817,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phoebe S6R1 DPS · S0R1 team · Ciaccona + Lynae",
+  "name": "Phoebe · Ciaccona + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 89,558 team DPS against a level 100 target with 20% RES (slots: Phoebe S6 Luminous Hymn R1, Eternal Radiance 5pc, 43311 CD ATK Spectro atk atk — 60,736; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 12,187; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 13,096). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Spectro Frazzle 10, Aero Erosion 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks, 1x Spectro Frazzle - 10 Stacks, 1x Spectro Frazzle - 8 Stacks, 1x Spectro Frazzle - 9 Stacks. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phoebe S6R1 DPS · S0R1 team · Ciaccona + Lynae",
+   "name": "Phoebe · Ciaccona + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phoebe",
     "Ciaccona",
@@ -72410,11 +72410,11 @@
   }
  },
  {
-  "name": "wuwa_calc Phrolova S6R1 DPS · S0R1 team · Qiuyuan + Lucilla",
+  "name": "Phrolova · Qiuyuan + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 182,867 team DPS against a level 100 target with 20% RES (slots: Phrolova S6 Lethean Elegy R1, Dream of the Lost 3pc + Havoc Eclipse 2pc, 43311 CD Havoc Havoc atk atk — 153,844; Qiuyuan S0 Emerald Sentence R1, Law of Harmony 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, 43311 CR ATK Aero atk atk — 8,927; Lucilla S0 Freeze Frame R1, Dream of the Lost 3pc + Rejuvenating Glow 2pc + Fallacy of No Return, 43311 CD ATK Glacio atk atk — 17,580). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Glacio Chafe 1. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Glacio Chafe - 1 Stack. Rotation time 25.00 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Phrolova S6R1 DPS · S0R1 team · Qiuyuan + Lucilla",
+   "name": "Phrolova · Qiuyuan + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Phrolova",
     "Qiuyuan",
@@ -72873,11 +72873,11 @@
   }
  },
  {
-  "name": "wuwa_calc Qingxiao S6R1 DPS · S0R1 team · Ciaccona + Lynae",
+  "name": "Qingxiao · Ciaccona + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 184,255 team DPS against a level 100 target with 20% RES (slots: Qingxiao S6 Glint of Clouds R1, Heart of Evil's Purge 5pc, 43311 CD ATK ATK atk atk — 159,149; Ciaccona S0 Woodland Aria R1, Gusts of Welkin 5pc, 43311 CD ATK Aero atk atk — 11,462; Lynae S0 Spectrum Blaster R1, Pact of Neonlight Leap 5pc, 43311 CD ATK Spectro atk atk — 9,172). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Enemy settings from the run: Aero Erosion 3, Tune Strain 3. Negative-status ticks in the loop (pressed as negative-status actions at the tick's stack count): 1x Aero Erosion - 3 Stacks. Rotation time 25.20 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Qingxiao S6R1 DPS · S0R1 team · Ciaccona + Lynae",
+   "name": "Qingxiao · Ciaccona + Lynae · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Qingxiao",
     "Ciaccona",
@@ -73342,11 +73342,11 @@
   }
  },
  {
-  "name": "wuwa_calc Roccia S6R1 DPS · S0R1 team · Shorekeeper + Rebecca",
+  "name": "Roccia · Shorekeeper + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R1 DPS · S0R1 team full-team rotation (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: 70,256 team DPS against a level 100 target with 20% RES (slots: Roccia S6 Tragicomedy R1, Havoc Eclipse 5pc, 43311 CR ER Havoc atk atk — 45,725; Shorekeeper S0 Stellar Symphony R1, Rejuvenating Glow 5pc, 43311 HP ER ER hp hp — 1,584; Rebecca S0 Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Moonlit Clouds 2pc + Void Thunder 2pc, 43311 CR Electro Electro atk atk — 20,549). One steady-state loop, the three rotations interleaved as the engine ran them. Tune Breaks are not actions here. Rotation time 25.27 s (Riley's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "wuwa_calc Roccia S6R1 DPS · S0R1 team · Shorekeeper + Rebecca",
+   "name": "Roccia · Shorekeeper + Rebecca · S6R1 DPS · S0R1 team (wuwa_calc)",
    "characterIds": [
     "Roccia",
     "Shorekeeper",

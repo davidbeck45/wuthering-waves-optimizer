@@ -15,7 +15,8 @@ import { allCharactersList, getCharByName } from "../../characters/characters";
 import { resolveRotationActionToAttackData } from "../../calculator/resolveRotationAction";
 import { teamRotationPresets } from "../../teamRotations/presets";
 import { isRosterCharacter } from "../display/names";
-import { parsePresetName } from "./presetName";
+import { isGeneratedTeamName } from "../rankings/importFromRankings";
+import { parsePresetName, wuwaCalcTeamName } from "./presetName";
 // Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
 vi.setConfig({ testTimeout: 60_000 });
 
@@ -57,7 +58,7 @@ describe("wuwa_calc stock presets (generated data)", () => {
     }
     expect(presetCount).toBe(manifest.rotationPresets);
     expect(actionCount).toBeGreaterThan(1000);
-  }, 60_000); // loads all 148 presets and resolves every action: 1.4 s on two pinned cores here, near vitest's 5 s default on CI's 2-core runner
+  }, 60_000); // loads all 151 presets and resolves every action: 1.4 s on two pinned cores here, near vitest's 5 s default on CI's 2-core runner
 
   // 2026-11-02: Riley's loops beside Lily (a kit the app has no character for) are renamed after a team of their own
   // the app can field, or left out (wuwa-tools rotation-port/map_rotations.py as_fieldable) — none may name her
@@ -75,6 +76,19 @@ describe("wuwa_calc stock presets (generated data)", () => {
     for (const preset of await loadWuwaCalcTeamPresets()) texts.push([preset.name, `${preset.name} ${preset.description}`]);
     for (const [label, text] of texts) {
       for (const name of manifest.notInApp) expect(word(name).test(text), `${label} names ${name}`).toBe(false);
+    }
+  });
+
+  // Ryan's Teams page shows a name as stored, and a saved team keeps the name it was imported under: a stock team reads
+  // like the team the /rankings import writes, who is in it first and the engine last
+  it("every stock team is named the way the app names a wuwa_calc team", async () => {
+    const tags = Object.values(manifest.stateTags);
+    for (const preset of await loadWuwaCalcTeamPresets()) {
+      const parts = parsePresetName(preset.name);
+      const tag = tags.find((t) => preset.name.endsWith(` · ${t} (wuwa_calc)`));
+      expect(tag, preset.name).toBeDefined();
+      expect(preset.name).toBe(wuwaCalcTeamName(parts.main!, parts.teammates, tag!));
+      expect(isGeneratedTeamName(preset.name), preset.name).toBe(true);
     }
   });
 
