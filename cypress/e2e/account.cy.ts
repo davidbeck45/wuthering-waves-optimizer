@@ -138,6 +138,8 @@ describe("my account", () => {
       expect($grid.css("grid-template-columns").split(" ").length, "phone roster columns").to.equal(2);
     });
     expectNoHorizontalScroll("/account at 412 px");
+    // the card's gain says whose it is on a phone too: the word was hidden here and nothing on a phone hovers
+    cy.get("[data-test-account-card-upgrade]").first().find(".cc__up-scope").should("be.visible").invoke("text").should("match", /^(team|own)$/);
     cy.get('[data-test-account-card="Cartethyia"]').click();
     cy.get("[data-test-account-drawer]").should("have.attr", "open");
     cy.get("[data-test-account-drawer] .dr__inner").should(($inner) => {

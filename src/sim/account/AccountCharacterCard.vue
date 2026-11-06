@@ -457,7 +457,6 @@ const teamsTitle = computed(() => {
   .cc__rot,
   .cc__dmg-unit,
   .cc__grade-pct,
-  .cc__up-scope,
   .cc__weapon {
     display: none;
   }
@@ -505,8 +504,7 @@ const teamsTitle = computed(() => {
   .cc__grade-pct {
     display: block;
   }
-  .cc__dmg-unit,
-  .cc__up-scope {
+  .cc__dmg-unit {
     display: inline;
   }
   .cc__weapon {

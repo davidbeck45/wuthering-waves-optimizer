@@ -17,9 +17,9 @@ import type { EchoCheck, EchoUpgrade } from "./echoCheck";
 import type { TeamRequest } from "../buildTeam/buildTeam";
 import { characterDisplayName, characterShortName } from "../display/names";
 import { isSetUp } from "../myRankings/rankRoster";
-import { compact as compactNum } from "../myRankings/format";
+import { compact as compactNum, pct } from "../myRankings/format";
 import { parsePresetName } from "../presets/presetName";
-import { echoName, signedPct, slotLabel } from "../echoLab/echoLabView";
+import { echoName, slotLabel } from "../echoLab/echoLabView";
 import { planTuners, type TunerBudget } from "../echoLab/tunerBudget";
 import type { TunerCandidate, TunerCandidatesResult } from "../echoLab/tunerPlan";
 import { deficitFactor, erRoll, showHave, showNeed } from "../energy/energyNeed";
@@ -130,7 +130,7 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
     if (u.er?.buys) notes.push(`Meets the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs (today ${u.er.before == null ? "—" : pct1(showHave(u.er.before))}).`);
     else if (u.er && !u.er.met) notes.push(`Still short of the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs: ${u.er.mostFound ? "the most ER found in the echoes this check can use." : "the search counted a buff that isn't always on, so a build with more ER may exist."}`);
     const counted = erCounted(u);
-    if (counted) notes.push(`Own damage leaves the Energy Regen need out. Counting the ${Math.abs(counted.points).toFixed(1)} points it ${counted.points > 0 ? "closes" : "loses"}, as What to invest in next does, it reads ${signedPct(counted.own)}.`);
+    if (counted) notes.push(`Own damage leaves the Energy Regen need out. Counting the ${Math.abs(counted.points).toFixed(1)} points it ${counted.points > 0 ? "closes" : "loses"}, as What to invest in next does, it reads ${pct(counted.own)}.`);
     if (u.buffsOn.length) notes.push(`Counts ${u.buffsOn.join(", ")} switched on (nobody had set ${u.buffsOn.length === 1 ? "it" : "them"}).`);
     if (u.relaxed) notes.push(u.relaxed === "layout" ? "Your echoes can't fill the plan's layout: any layout of its sets." : "Your echoes can't fill the plan's main stats: any main stat of its sets.");
     return {

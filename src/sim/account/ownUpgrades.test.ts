@@ -127,7 +127,7 @@ describe("echo rows", () => {
     // short before and after, and further under than it was
     const [worse] = echoRows([upgrade({ gain: 0.02, er: { floor: 120, before: 118, after: 113, met: false, buys: false, mostFound: false } })]);
     expect(worse!.ownLabel).toBe("own damage");
-    expect(worse!.note).toContain("Counting the 5.0 points it loses, as What to invest in next does, it reads −3.2%.");
+    expect(worse!.note).toContain("Counting the 5.0 points it loses, as What to invest in next does, it reads -3.2%.");
     // the need met before and after, no need at all, or no ER read: the plain figure, nothing to square
     for (const er of [{ floor: 110, before: 125, after: 118, met: true, buys: false, mostFound: false }, null, { floor: 110, before: null, after: 118, met: true, buys: false, mostFound: false }]) {
       const [plain] = echoRows([upgrade({ er })]);
