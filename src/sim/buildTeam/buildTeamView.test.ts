@@ -154,7 +154,7 @@ describe("Undo's words", () => {
   it("says before the tap which builds stay", () => {
     const out = undoConfirm([f("Aemeath", "restore"), f("Chisa", "keep", "it is the active build now"), f("Lucilla", "gone")], builds, "put every pin back");
     expect(out.message).toBe("Remove 1 of the 2 Account plan builds and put their pins back? The ones marked below changed after the save, so they stay.");
-    expect(out.items).toEqual(["Aemeath: “Account plan”", "Chisa: “Account plan” stays (it is the active build now)"]);
+    expect(out.items).toEqual(["Chisa: “Account plan” stays (it is the active build now)", "Aemeath: “Account plan”"]);
   });
 
   it("says so when nothing can be removed, not that it will remove them", () => {

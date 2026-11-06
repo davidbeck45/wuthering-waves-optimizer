@@ -218,7 +218,8 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
 export function undoConfirm(fates: readonly UndoFate[], builds: (n: number) => string, pinsBack: string): { message: string; items: string[] } {
   const live = fates.filter((f) => f.fate !== "gone");
   const stay = live.filter((f) => f.fate === "keep").length;
-  const items = live.map((f) => `${characterDisplayName(f.characterId)}: “${f.name}”${f.fate === "keep" ? ` stays (${f.why})` : ""}`);
+  // what stays comes first: the list scrolls inside the dialog on a phone
+  const items = [...live.filter((f) => f.fate === "keep"), ...live.filter((f) => f.fate !== "keep")].map((f) => `${characterDisplayName(f.characterId)}: “${f.name}”${f.fate === "keep" ? ` stays (${f.why})` : ""}`);
   if (!stay) return { message: `Remove the ${builds(live.length)} and ${pinsBack}?`, items };
   if (stay === live.length) return { message: `None of the ${builds(live.length)} can be removed: each one changed after the save, so everything stays as it is and this Undo ends.`, items };
   return { message: `Remove ${live.length - stay} of the ${builds(live.length)} and put their pins back? The ones marked below changed after the save, so they stay.`, items };
