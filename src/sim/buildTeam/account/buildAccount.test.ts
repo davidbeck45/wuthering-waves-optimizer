@@ -10,6 +10,7 @@ import { useCharacterStore } from "../../../stores/character";
 import { useInventoryStore } from "../../../stores/inventory";
 import { useTeamRotationsStore } from "../../../stores/teamRotations";
 import { RANKING_ENEMY } from "../../myRankings/rankRoster";
+import { showNeed } from "../../energy/energyNeed";
 import { readHistory } from "../../buildHistory/history";
 import { memberAfter, teamTotalOf, type TeamSpec } from "../buildTeam";
 import { DEFAULT_OPTIONS } from "../constraints";
@@ -73,6 +74,13 @@ beforeAll(async () => {
 }, 120_000);
 
 describe("buildAccount on the engine", () => {
+  it("reads a member's Energy Regen need the way every other page prints it, and builds against that figure", async () => {
+    const plans = plansFor(teamA).map((p) => (p.characterId === "Cartethyia" ? { ...p, erNeed: 100.11 } : p));
+    const out = await buildAccount({ characters, inventory: { echoes, equipped }, teams: [{ spec: teamA, weight: 1, plans, memberOrder: [0, 1, 2] }], options: DEFAULT_OPTIONS }, inlineBackend());
+    expect(out.members.find((m) => m.characterId === "Cartethyia")!.erFloor).toBe(showNeed(100.11)); // 100.2: /energy, Build my team, Set lab
+    expect(out.members.find((m) => m.characterId === "Chisa")!.erFloor).toBeNull(); // no need: no floor
+  }, 120_000);
+
   it("one build per character, scored in their highest-priority team, worn in both", () => {
     const by = (id: string) => result.members.find((m) => m.characterId === id)!;
     expect(result.members.map((m) => m.characterId).sort()).toEqual(["Cartethyia", "Chisa", "Ciaccona", "Shorekeeper"]);

@@ -12,6 +12,7 @@ import { resolveCharactersForBuild } from "../../../calculator/buildOverride";
 import type { TeamEnemyConfig } from "../../../calculator/buildCharacterContext";
 import { RANKING_ENEMY } from "../../myRankings/rankRoster";
 import { resolveTeamCharacters } from "../../teamContext/resolveTeam";
+import { showNeed } from "../../energy/energyNeed";
 import type { AllocationApi, Candidate } from "../allocate";
 import { draftBuildFields, filterPoolIds, finishMember, memberSearchApi, prepareMember, teamTotalOf, teamTotalWithDrafts, wornByMap, type ActiveMember, type BuildTeamHooks, type MemberOutcome, type SearchContext, type TeamSpec } from "../buildTeam";
 import type { BuildOptions } from "../constraints";
@@ -180,7 +181,9 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
         outcome.slots.push({ slot, characterId, member: owner, sharedFrom: members[owner]!.team });
         continue;
       }
-      const { outcome: o, active: a } = await prepareMember({ slot, characterId, plan: t.plans[slot], team, resolution, characters, echoes, enemy, options: opts, wornOutside, hooks: teamHooks });
+      // the need as every other page prints it (useBuildTeam, buildTeamCli): raw it read 115.1 % where they read 115.2 %
+      const need = t.plans[slot]?.erNeed;
+      const { outcome: o, active: a } = await prepareMember({ slot, characterId, plan: t.plans[slot], team, resolution, characters, echoes, enemy, options: opts, erFloor: need == null ? undefined : showNeed(need), wornOutside, hooks: teamHooks });
       const index = members.length;
       members.push({ ...o, team: ti, alsoIn: [] });
       ownerOf.set(characterId, index);
