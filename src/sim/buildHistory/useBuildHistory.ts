@@ -177,8 +177,9 @@ export function useBuildHistory(charId: Ref<string | null>) {
     return planRestore(id, v, { characters: plain(characterStore.characters), echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) });
   }
 
-  function restore(v: HistoryVersion): RestoreOutcome | null {
-    const id = charId.value;
+  /** `id`: the character the player was asked about. The page can move on while the confirm is open, and a version
+   *  written onto whoever is picked by then puts one character's gear on another. */
+  function restore(v: HistoryVersion, id: string | null = charId.value): RestoreOutcome | null {
     if (!id) return null;
     const out = applyRestore({ character: characterStore, inventory: inventoryStore } as unknown as RestoreStores, id, v);
     // the best rotation may differ on the restored build

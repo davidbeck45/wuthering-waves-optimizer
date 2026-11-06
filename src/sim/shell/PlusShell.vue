@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { useInventoryStore } from "../../stores/inventory";
@@ -40,6 +40,7 @@ import { noticeRefusedWrites } from "../storage/persistGuard";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
+import { installConfirmRouteGuard } from "./confirmRouteGuard";
 import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { askInRail, DOCKED_CLASS, DOCK_MIN_WIDTH, shouldDock } from "./askDock";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
@@ -70,6 +71,7 @@ installImportGuard({ character: characterStore as never, inventory: inventorySto
 // two tabs on one account stay one account, and a write the browser refused is said out loud (src/sim/storage/)
 installCrossTabSync([characterStore, inventoryStore, teamStore] as unknown as SyncedStore[]);
 noticeRefusedWrites((text) => useToast().showToast(text, "error", 12000));
+installConfirmRouteGuard(useRouter());
 const modKey = modKeyLabel();
 
 // "New here?" on the calculator for a browser with nothing of its own yet (welcome.ts); gone for good once dismissed

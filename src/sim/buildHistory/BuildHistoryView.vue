@@ -234,10 +234,11 @@ async function openCompare(id: string): Promise<void> {
 }
 
 async function onRestore(v: HistoryVersion): Promise<void> {
-  if (!selected.value || v.id === NOW_ID) return;
+  const id = selected.value;
+  if (!id || v.id === NOW_ID) return;
   const plan = h.planFor(v);
   if (!plan) return;
-  const name = characterShortName(selected.value);
+  const name = characterShortName(id);
   if (plan.identical) {
     showToast(`That version is the same as ${name}'s build now: nothing to restore.`, "info", 5000);
     return;
@@ -250,7 +251,7 @@ async function onRestore(v: HistoryVersion): Promise<void> {
   });
   if (!ok) return;
   try {
-    const out = h.restore(v);
+    const out = h.restore(v, id);
     listTick.value++;
     if (!out) return;
     const kept = out.before.saved ? " The build from before is saved as “Before a restore”." : "";

@@ -142,6 +142,31 @@ describe("build history", () => {
     cy.get("[data-test-build-history-version]").should("have.length", 1).first().should("contain.text", "Before a Settings import");
   });
 
+  it("Back during a Restore confirm cancels it: the dialog goes and nothing is written", () => {
+    cy.visit("/today", seed());
+    cy.get("[data-test-today]", { timeout: 60000 }).should("exist"); // a push before the first route has landed replaces it
+    const go = (path: string) => cy.window().then((win) => ((win.document.querySelector("#wt-app") as unknown as { __vue_app__: { config: { globalProperties: { $router: { push(p: string): void } } } } }).__vue_app__.config.globalProperties.$router.push(path)));
+    go("/build-history?char=Cartethyia");
+    cy.get("[data-test-build-history-save]", { timeout: 60000 }).click();
+    cy.get("[data-test-build-history-version]").should("have.length", 1);
+    // the build changes after that version, so a restore has something to do
+    cy.window().then((win) => {
+      const store = (win.document.querySelector("#wt-app") as unknown as { __vue_app__: { config: { globalProperties: { $pinia: { _s: Map<string, { characters: { [k: string]: Record } }> } } } } }).__vue_app__.config.globalProperties.$pinia._s.get("character")!;
+      const cart = store.characters.Cartethyia!;
+      cart.weapons = { ...(cart.weapons ?? {}), [cart.weapon]: { refinement: "5" } };
+    });
+    cy.get("[data-test-build-history-now-gear]").should("contain.text", "Defier's Thorn R5");
+    cy.get("[data-test-build-history-restore]").first().click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Restore Cartethyia's build");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/today");
+    cy.get(".confirm-dialog .modal-box").should("not.exist");
+    cy.window().then((win) => {
+      const cart = readCart(win);
+      expect(cart.weapons?.[cart.weapon]?.refinement, "the restore did not run").to.eq("5");
+    });
+  });
+
   it("opens from the account drawer", () => {
     cy.visit("/account", seed());
     cy.get('[data-test-account-card="Cartethyia"]', { timeout: 120000 }).click();
