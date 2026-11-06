@@ -56,7 +56,7 @@
         <span>The roster could not be scored: {{ status.error }}</span>
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
-      <div v-if="partial" role="status" class="alert alert-warning text-sm mb-3" data-test-weapons-partial>{{ PARTIAL_RANKING_TEXT }}</div>
+      <div v-if="partial" role="status" class="alert alert-warning text-left text-sm mb-3" data-test-weapons-partial>{{ PARTIAL_RANKING_TEXT }}</div>
 
       <!-- ===================================================================== signatures -->
       <section v-show="prefs.tab === 'signatures'" class="wv-sig" data-test-weapons-signatures>

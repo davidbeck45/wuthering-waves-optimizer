@@ -138,7 +138,7 @@ export const rankingResultKey = (fingerprint: string, ranking: Pick<RosterRankin
 /** What a page shows beside a ranking that did not fully score. It says reload, not Recompute: a page load that lost a
  *  chunk stays marked (the engine's loaders may hold on to the failure), so only a new load can come out whole. */
 export const PARTIAL_RANKING_TEXT =
-  "Not everything scored on this visit: part of the app did not load or a run failed, so characters or teams can be missing and numbers can read low. This stays on this page only. Reload once your connection is back to score it all.";
+  "Not everything scored on this visit, so rows can be missing and numbers can read low. This stays on this page only: reload once your connection is back.";
 
 /** For tests: forget the in-memory entry and any run in flight. */
 export function clearRankingMemory(): void {

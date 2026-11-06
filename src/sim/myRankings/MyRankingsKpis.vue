@@ -39,7 +39,7 @@
     <div class="mr-kpi mr-kpi--status" :data-status="status.state" :data-saved-result="status.savedAt ?? undefined" data-test-my-rankings-status>
       <div class="mr-kpi__label">Data</div>
       <div class="mr-kpi__value mr-kpi__value--status" role="status">
-        <span class="mr-dot" :class="`mr-dot--${status.state}`" aria-hidden="true"></span>
+        <span class="mr-dot" :class="status.partial ? 'mr-dot--partial' : `mr-dot--${status.state}`" aria-hidden="true"></span>
         {{ statusLabel }}
       </div>
       <div class="mr-kpi__meter mr-kpi__meter--status">
@@ -190,6 +190,10 @@ const statusSub = computed(() => {
 .mr-dot--live {
   background: oklch(var(--su));
   box-shadow: 0 0 0 3px oklch(var(--su) / 0.2);
+}
+.mr-dot--partial {
+  background: oklch(var(--wa));
+  box-shadow: 0 0 0 3px oklch(var(--wa) / 0.2);
 }
 .mr-dot--scoring {
   background: oklch(var(--in));

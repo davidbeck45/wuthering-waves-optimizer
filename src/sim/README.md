@@ -2980,7 +2980,7 @@ Numbers:
   ER 10.8 % first, which would have left her about 15 points short. Each line set now scores damage × (1 − ER
   deficit) (`erFactorFor`, as the benchmark already did), so that line is worth +12.7 %, and the hard rule locks any
   ER line whose loss would drop the build under its need (marked "ER" on the Lock chip, with a sentence under the
-  table). The tab resolves the needs once per account state (`echoLabErNeeds` in `useEchoLab.ts`).
+  table). The tab resolves the needs once per account state (`lookupErNeeds` in `useEchoLab.ts`).
 - **One benchmark score** for a build: the calculator's engine panel resolves `erNeedsOf(useEnergyNeeds())` and
   sends it through `engineView` and its `reroll` jobs (Aemeath 132 % in both places, was 140 % in the panel). The
   panel and the re-roll tab print the ER state as one sentence (`erFloorLine`: "Energy Regen 110.8 % of the 115.2 %
@@ -3633,7 +3633,7 @@ new tab, a reload after the tab was closed, or tomorrow's visit paints it at onc
 |---|---|
 | `persist/resultStore.ts` | the store seam. `ResultStore` = `get` (both halves of one record) / `allMeta` / `put` (one transaction) / `putMeta` (the LRU touch: only a record that is still there, so a touch landing after an eviction or a Clear never leaves a meta-only record) / `remove` / `clear`. `idbResultStore(indexedDB)`: the plain indexedDB API behind a tiny promise wrapper, database `wtplus-results` v1 with two object stores, `meta` (key, cache, schema, build, savedAt, usedAt, bytes: what the LRU and Settings read) and `data` (the result as JSON text), so the LRU's "used just now" touch rewrites a few bytes, not megabytes. One connection, dropped on `close` and on `versionchange` (Clear in another tab, a Cypress delete), reopened on the next call. `memoryResultStore()`: a Map with the same contract, for the tests |
 | `persist/savedResults.ts` | the layer. `read(cache, schema, fingerprint, isValid)` → `{ value, savedAt }` or null; `write(cache, schema, fingerprint, value)`; `usage()`; `clear()`; `savedSlot(cache, schema, isValid)` binds one page cache. Key `${cache}\|${fingerprint}`: one record per cache and data state, so the two option states of /my-rankings and an undone edit each keep theirs. `appBuildId()` = package version + `WUWA_CALC_COMMIT` + the deployed commit (`VITE_VERCEL_GIT_COMMIT_SHA`, the one Vite inlines for `share/buildCodec.ts appStamp`; "dev" elsewhere) |
-| `persist/useSavedNote.ts` | "saved 2 h ago" + the tooltip ("Saved in this browser on …. Shown without scoring again because nothing it reads has changed since; Recompute scores it fresh."), ticking once a minute |
+| `persist/useSavedNote.ts` | "saved 2 h ago" + the tooltip ("Saved in this browser on …. Shown without scoring again because nothing it reads has changed since; Recompute scores it fresh.", naming Re-run on Echo Lab, whose button says that), ticking once a minute |
 | `persist/SavedResultsCard.vue` + one import and one line in Ryan's `pages/SettingsView.vue` | **Settings › Saved results** (under Preferences in v3, under the tabs in classic): a one-line "what this is", the count and size per page, **Clear saved results**. "This browser isn't keeping results" in a private window. Characters, echoes and teams are never touched |
 | `myRankings/rankingCache.ts` | `savedRankings` (cache `ranking`, schema `RANKING_CACHE_VERSION`); `writeCachedRanking` also saves (in the background) unless `persist` is false; `readSavedRanking(fp)` reads it back and makes it this tab's cached ranking too. Used by `MyRankingsView.vue`, `account/useAccountData.ts`, `weaponValue/useWeaponValueData.ts`: memory → sessionStorage → **saved** → score |
 | `account/investCache.ts` + `useAccountData.ts` `runPlan` | `savedPlans` (cache `investPlan`) files the plan under the **ranking fingerprint alone**, with its full key (ranking fingerprint + the ER needs key, as the tab cache uses) inside. The ER needs wait on the energy check (`energy.ready`, up to 20 s, a few seconds on a second visit), so /account paints the saved plan as soon as the ranking is there and compares the full key once the needs arrive: equal (the same data and build give the same needs) → kept; different (a measurement failed this time, say) → planned again exactly as before. `writeCachedPlan(key, plan, storage, savedUnder)` saves only when given the ranking fingerprint. A cancelled plan is never saved, and one that reads as cancelled is rejected |
@@ -3655,13 +3655,24 @@ neither moving. So every deploy is a miss, and the first visit after it scores a
 builds the commit reads "dev": after a code change that moves a number, bump that cache's version (as before) or press
 Clear in Settings.
 
+**Tab copies answer to the same rules** (hunt fix, 2026-11-05). The first read on every page is the tab copy, and a phone
+checks a deploy with a plain reload, so a tab copy with no build in it kept the old build's figures beside the new
+build's (Echo Lab's old benchmark 7.75M beside Set lab's new 7.59M). `tabCopyStamp()` = `appBuildId()` + when Clear was
+last pressed in any tab (`wtplus:savedResults:clearedAt` in localStorage). Every tab copy is filed under it, in
+sessionStorage and in module memory (the ranking, plan and echo-check keys, `valueCache`'s `full`, Echo Lab's `stamp`), so
+another build's copy is a miss and so is one from before a Clear in another tab. The stamp is read fresh on each read, and
+`sharedRanking` compares it at the end of a run, so a run that outlived a Clear keeps nothing.
+
 **Falls back silently.** No `indexedDB` (some private windows), a getter that throws, an open that fails, a quota error
 or a read slower than `READ_TIMEOUT_MS` (2.5 s): reads miss, writes report false, nothing throws, and the page scores
 exactly as before. The tab cache (memory + sessionStorage) is unchanged and still answers first.
 
-**Clear saved results** empties the database and this tab's copies: it removes the five sessionStorage keys itself
-(`TAB_COPY_KEYS`: Settings usually never loaded the cache modules; a unit test checks the list against each module's
-key) and calls every loaded cache's `onSavedResultsCleared` hook (module memory, Echo Lab's in-flight jobs).
+**Clear saved results** empties the database and this tab's copies: it removes the six sessionStorage keys itself
+(`TAB_COPY_KEYS`, the echo check included: Settings usually never loaded the cache modules; a unit test checks the list
+against each module's key), calls every loaded cache's `onSavedResultsCleared` hook (module memory, Echo Lab's in-flight
+jobs) and moves the tab-copy stamp, which ends another tab's copies and a ranking run still going. A plan or value run in
+another tab that ends after the Clear still saves; those two runs stop when their own page closes, so it takes a second
+tab open on them.
 
 **Measured** (production build under `vite preview`, 1440 px, David's export seeded, a fresh Chromium profile per page:
 visit once until the page is done, close the tab, open a new one and time it; ms after navigation start until the
@@ -3686,9 +3697,10 @@ Left as they were:
   and account) in a long-lived singleton; Clear does not reach it.
 - Re-roll advice and "How good is this roll" stay per page load (quick, asked one echo at a time).
 
-**Only what fully scored is saved.** A saved result repeats in every new tab until the data, the build or a Recompute
-changes it, so a transient failure must not get in. The tab cache keeps showing what it scored, as before; a new tab
-just scores again. The real case is a phone losing its signal mid-run: `perf/chunkReload.ts` stands aside when offline,
+**Only what fully scored is kept.** A saved result repeats in every new tab until the data, the build or a Recompute
+changes it, and a tab copy on every reload, so a transient failure must not get into either. Module memory keeps showing
+what it scored for this page load, the page says so ("Partial · this visit only" and `PARTIAL_RANKING_TEXT`), and a reload
+or a new tab scores again. The real case is a phone losing its signal mid-run: `perf/chunkReload.ts` stands aside when offline,
 Ryan's `getCharByName` swallows the failed import, and `rankRoster` reads it as "not a character this app knows", so a
 character drops out with no error. Ryan's `getWeaponByName` swallows it too, and `buildCharacterContext` then scores the
 build with no weapon at all: lower numbers, no error, nothing in the result to tell. Measured on a production build
@@ -3696,27 +3708,55 @@ before these guards: going offline mid-run saved a ranking of 1 character and 0 
 "Live · saved just now · data unchanged".
 - `watchLostChunks` in `savedResults.ts`: Vite's `vite:preloadError` on window is the one sign of a lost chunk, so a page
   load that sees it writes nothing from then on. One check covers every main-thread cache, kits and weapons alike.
-  `vite dev` has no such event (no preload helper), so the checks below still matter there.
+  `vite dev` has no such event (no preload helper), so the checks below still matter there. The flag lasts one page load,
+  so `sharedRanking` also marks the ranking `incomplete` (`lostChunk()`): a weapon loss sets nothing else, and a tab copy
+  of it used to come back healthy after the reload and let the plan and weapon values built on it into the saved results.
 - `rankRoster` sets `incomplete` when a character the roster offers (`isRosterCharacter`) lost its kit, a rotation list
   failed, or a runnable team threw. An id the app really lacks fails on every run and does not count, nor does a saved
   team with no actions. A whole ranking's JSON has no such key, so `npm run cli -- snapshot` is unchanged.
-- `writeCachedRanking` skips the save for an `incomplete` ranking; `planSavedUnder` does the same for a plan on such a
-  ranking or with errors of its own; `/weapons` passes `persist` false to `valueCache.write` on the same test.
+- `writeCachedRanking` keeps an `incomplete` ranking in memory only; `planSavedUnder` keeps a plan on such a ranking, with
+  errors of its own or finished after a lost chunk out of the saved results, and `runPlan` passes a null storage for it;
+  `/weapons`' value run and the selector pass `persist` false to `valueCache.write` on the same test, which keeps a value to
+  this page load.
+- `rankingResultKey`: a plan, a weapon value, the selector or the echo check built on an `incomplete` ranking is filed
+  under the fingerprint + `partial:<computedAt>`, so Recompute or a reload never reads it beside the whole ranking of the
+  same data. `useBuildAccount` does not reuse such a ranking's team damage.
 - Echo Lab's `savedCopyOf` drops a pass that skipped a roster character as `NOT_IN_APP` (the worker's kit failure;
   "needs five echoes" and the like are real and repeat on every run, so they are kept), and leaves benchmarks out when
   their ER needs were not whole (`erNeedsSettled`: the energy check timed out at 20 s or a team failed, so a floor can
   be missing and the numbers read too high; a team it answers "not measured", such as a custom team wuwa_calc has no
   loop for, is an answer that repeats on every visit, and does not count). The ER needs are not in Echo Lab's fingerprint, so two guards answer for
   them: this one at the write, and `benchErKey` at the read (the "Closed gap" note below), which also catches a copy
-  saved before this guard or from a tab reloaded after a short lookup. /account confirms its ER key on read the same way.
+  saved before this guard. /account confirms its ER key on read the same way. `writeCache` runs the tab copy through the
+  same `savedCopyOf`, so what did not fully score stays in module state.
+- A short lookup is not kept (`lookupErNeeds`): the next job asks again, and the energy check retries a team that failed.
+  Benchmarks on short needs are asked about again each time the tab opens and read the real floors once there are some.
+  Set lab and re-roll answers on short needs (`askedShort`) run again the next time they are asked for. Until then the
+  page says the needs are missing (`data-test-echo-lab-floors-missing`). A check that keeps timing out costs its 20 s on
+  each job.
 - A deterministic engine error on one account therefore means that page never saves for it: it scores on every visit,
   as it did before this feature. On David's export nothing trips it (24 characters, 96 teams, 72 plan items, 24 weapon
   rows, 0 errors; Echo Lab's one skip is "needs five echoes").
+- Echo Lab's Re-run asks for a `fresh` run: the worker drops that job's result and the session, so the button scores and
+  the line reads a time, not "cached". The first run of a job on a page still answers from the cache.
+- Writing the record merges with it (`writeSaved`): a tab holds less than the record when another tab added to it, so what
+  this tab lacks stays, and a tab copy counts as already saved (`hydrateFrom`), so roll chips rated after a reload write
+  nothing.
 - Left open: Echo Lab's worker has no `vite:preloadError`, so a weapon chunk alone failing there is not seen. It needs a
   blip that spares the next kit, and the ranking usually fetched those chunks first.
 
+**The fingerprints leave out the optimizer panel** (`scoredCharacters`, `echoLab/fingerprint.ts`). `mainEchoes`, `echoSets`,
+`minStats`, `optimizationTarget`, `damageType`, `ignoreOtherResonantorEchoes` and `loadoutFormat` say what to search for next,
+nothing scored reads them, and Set lab's "Filter and open" writes one, which used to throw away every saved result.
+`optimizer.echoSetPassives` and `.mainEchoBuffs` stay in: `headlessOptimizer` reads them for Build my team and the echo check.
+A team's `enemyConfig` stays in too: the ranking overrides it, but `buildTeam.ts` reads it for the echo check, whose key is
+built on this fingerprint.
+
+**Another tab's edit** (`storage/crossTabSync.ts`). A tab takes what another tab stores, and `onAccountAdopted` then
+refreshes /my-rankings, /account, /weapons and /echo-lab, once the writes settle and only while the tab is visible.
+
 Closed gap (verify1, fixed 2026-11-04): Echo Lab's benchmarks are scored against the energy check's ER needs
-(`echoLabErNeeds`), which the Echo Lab fingerprint does not carry; the tab cache had the same gap. If the energy check
+(`lookupErNeeds`), which the Echo Lab fingerprint does not carry; the tab cache had the same gap. If the energy check
 timed out (20 s) or failed on the visit that scored them, the saved benchmarks kept floors that were too low until the
 data, the build or Benchmark's re-run changed them. The record now carries `benchErKey`, and a copy on other needs is
 dropped where the figures are shown (the `echoLab/useEchoLab.ts` row above).
@@ -3732,6 +3772,11 @@ read's late touch after the record went). `myRankings/rankRosterIncomplete.test.
 and an id the app lacks or a team with no actions does not count as a failure. `persist/savedResultsLru.test.ts`: the LRU against a plain reference model
 on eight seeded random sequences of writes, overwrites, too-big results and reads. `weaponValue.test.ts`: a value cache
 forgets its tab copy on Clear until it is disposed (the selector makes one per mount and disposes it on unmount).
+`persist/tabCopies.test.ts`: every tab copy against a deploy, a Clear in another tab, a run that outlives a Clear, what did
+not fully score, and a page load that lost a chunk. `echoLab/useEchoLabSaved.test.ts`: a short lookup asked again, a tab
+reloaded onto its copy, a pressed Re-run. `myRankings/MyRankingsViewRun.test.ts`: the switch moved back during a run, the
+partial note. `weaponValue/selectorPersist.test.ts`: the selector's rows on a ranking with holes. `storage/storage.test.ts`:
+a scored page follows another tab's edit.
 `cypress/e2e/savedResults.cy.ts`: /my-rankings, /account and /echo-lab (pass + benchmarks) each scored once, then a new
 tab (sessionStorage cleared + reload) paints the saved result with the marker `data-saved-result` and the page never
 passes through "scoring" (a MutationObserver installed before load records every status), Recompute drops the note;

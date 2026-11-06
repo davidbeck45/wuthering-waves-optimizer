@@ -6,6 +6,7 @@
         <h1 class="acc-h1">My account</h1>
         <span
           class="acc-source"
+          :class="{ 'acc-source--partial': partial }"
           :data-state="sourceState"
           :data-saved-result="savedAt ?? undefined"
           role="status"
@@ -55,7 +56,7 @@
         <span>{{ runError }}</span>
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
-      <div v-if="partial" role="status" class="alert alert-warning text-sm mb-3" data-test-account-partial>{{ PARTIAL_RANKING_TEXT }}</div>
+      <div v-if="partial" role="status" class="alert alert-warning text-left text-sm mb-3" data-test-account-partial>{{ PARTIAL_RANKING_TEXT }}</div>
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
       <!-- Wuthering Tools+ energy check: "2 characters short on ER · 1 overcapping crit" (src/sim/energy/) -->
       <EnergySummaryTile class="acc-energy" data-test-account-energy />
@@ -276,6 +277,10 @@ onAccountAdopted(() => void refresh());
 .acc-source[data-state="live"] .acc-source__dot {
   background: oklch(var(--su));
   box-shadow: 0 0 0 3px oklch(var(--su) / 0.2);
+}
+.acc-source--partial[data-state="live"] .acc-source__dot {
+  background: oklch(var(--wa));
+  box-shadow: 0 0 0 3px oklch(var(--wa) / 0.2);
 }
 .acc-source[data-state="scoring"] .acc-source__dot {
   background: oklch(var(--in));

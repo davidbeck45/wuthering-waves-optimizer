@@ -348,12 +348,15 @@ describe("saved results", () => {
     cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live");
     cy.get('[data-test-my-rankings-row="Cartethyia"]').should("exist");
     cy.get('[data-test-my-rankings-row="Galbrena"]').should("not.exist");
+    cy.get("[data-test-my-rankings-partial]").should("contain.text", "This stays on this page only");
+    cy.get("[data-test-my-rankings-status]").should("contain.text", "Partial").and("contain.text", "this visit only");
     savedCount("ranking", 1, 2500).should("eq", 0);
 
     cy.intercept(KIT, (req) => req.continue()); // the signal is back
-    newTab();
+    cy.reload(); // the same tab: its copy must not bring the half-scored ranking back as Live
     cy.get('[data-test-my-rankings-row="Galbrena"]', { timeout: 120000 }).should("exist");
     cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live").and("not.have.attr", "data-saved-result");
+    cy.get("[data-test-my-rankings-partial]").should("not.exist");
     savedCount("ranking", 1).should("be.gte", 1);
   });
 
@@ -363,10 +366,11 @@ describe("saved results", () => {
     cy.get("[data-test-weapons-row]", { timeout: 120000 }).should("exist");
     cy.get("[data-test-weapons-progress]", { timeout: 120000 }).should("not.exist");
     cy.get('[data-test-weapons-row="Galbrena"]').should("not.exist");
+    cy.get("[data-test-weapons-partial]").should("exist");
     savedCount("weaponValue", 1, 2500).should("eq", 0);
 
     cy.intercept(KIT, (req) => req.continue()); // the signal is back
-    newTab();
+    cy.reload(); // the same tab
     cy.get('[data-test-weapons-row="Galbrena"]', { timeout: 120000 }).should("exist");
     cy.get("[data-test-weapons-progress]", { timeout: 120000 }).should("not.exist");
     savedCount("weaponValue", 1).should("be.gte", 1);
@@ -398,8 +402,15 @@ describe("saved results", () => {
     });
     cy.get("[data-test-echo-lab-benchmark-row]", { timeout: 90000 }).should("exist");
     cy.get("[data-test-echo-lab-benchmark-progress]", { timeout: 60000 }).should("not.exist");
+    cy.get("[data-test-echo-lab-floors-missing]").should("contain.text", "Energy Regen");
     waitSaved("echoLab", (values) => values.some((v) => v.pass)).should("eq", true);
     waitSaved("echoLab", (values) => values.some((v) => v.benchmarks), 2500).should("eq", false);
+
+    // the solver is back: Re-run asks again in this page load, and the figures are kept
+    cy.intercept("**/src/sim/rankings/solver.worker.ts*", (req) => req.continue());
+    cy.get("[data-test-echo-lab-benchmark-run]").click();
+    cy.get("[data-test-echo-lab-floors-missing]", { timeout: 90000 }).should("not.exist");
+    waitSaved("echoLab", (values) => values.some((v) => v.benchmarks), 30000).should("eq", true);
   });
 
   it("/echo-lab: a saved team the energy check cannot measure does not keep the benchmarks from being saved", () => {

@@ -91,9 +91,9 @@ describe("my roster rankings", () => {
     cy.visit("/my-rankings");
     cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live");
     cy.window().then((win) => {
-      const entry = JSON.parse(win.sessionStorage.getItem("wtplus:myRankings:last") ?? "{}") as { fingerprint?: string };
-      expect(entry.fingerprint, "cached fingerprint").to.be.a("string");
-      cy.wrap(entry.fingerprint).as("before");
+      const entry = JSON.parse(win.sessionStorage.getItem("wtplus:myRankings:last") ?? "{}") as { key?: string };
+      expect(entry.key, "cached key").to.be.a("string");
+      cy.wrap(entry.key).as("before");
     });
     // a reload: the rows are back without a scoring pass
     cy.reload();
@@ -114,8 +114,8 @@ describe("my roster rankings", () => {
     cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live");
     cy.get("@before").then((before) => {
       cy.window().should((win) => {
-        const entry = JSON.parse(win.sessionStorage.getItem("wtplus:myRankings:last") ?? "{}") as { fingerprint?: string };
-        expect(entry.fingerprint, "a new fingerprint for the edited echo").to.be.a("string").and.not.equal(before);
+        const entry = JSON.parse(win.sessionStorage.getItem("wtplus:myRankings:last") ?? "{}") as { key?: string };
+        expect(entry.key, "a new key for the edited echo").to.be.a("string").and.not.equal(before);
       });
     });
   });

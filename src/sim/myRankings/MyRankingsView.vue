@@ -44,7 +44,7 @@
           <span class="mr-section-head__meta">{{ sortLabel }}</span>
         </div>
         <div v-if="error" class="alert alert-error text-sm mb-2">{{ error }}</div>
-        <div v-if="partial" role="status" class="alert alert-warning text-sm mb-2" data-test-my-rankings-partial>{{ PARTIAL_RANKING_TEXT }}</div>
+        <div v-if="partial" role="status" class="alert alert-warning text-left text-sm mb-2" data-test-my-rankings-partial>{{ PARTIAL_RANKING_TEXT }}</div>
         <div v-if="isRunning" class="mr-progress" aria-hidden="true"><span :style="{ width: `${progress.total ? (progress.done / progress.total) * 100 : 3}%` }"></span></div>
         <MyRankingsCharacters
           v-if="shown || isRunning"

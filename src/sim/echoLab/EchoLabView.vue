@@ -128,8 +128,8 @@
           </button>
         </div>
 
-        <p v-if="floorsMissing" role="status" class="alert alert-warning mb-3 text-sm" data-test-echo-lab-floors-missing>
-          The Energy check did not finish, so the Energy Regen some builds need is left out here: scores can read high, and a build can look fine when it falls short. Open this tab again or press Re-run to ask again.
+        <p v-if="floorsMissing" role="status" class="alert alert-warning mb-3 text-left text-sm" data-test-echo-lab-floors-missing>
+          The Energy check did not finish, so these scores leave out the Energy Regen some builds need and can read high. Open this tab again or press Re-run to ask again.
         </p>
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
