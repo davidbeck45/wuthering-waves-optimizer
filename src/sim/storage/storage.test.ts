@@ -7,7 +7,7 @@ import { createPersistedState } from "pinia-plugin-persistedstate";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
-import { installCrossTabSync, type SyncedStore } from "./crossTabSync";
+import { accountAdoptions, installCrossTabSync, onAccountAdopted, type SyncedStore } from "./crossTabSync";
 import { accountStoresRefused, noticeRefusedWrites, persistStorage, PROBE_KEY, refusedStores, roomFor, STORAGE_FULL_TEXT, withoutPersisting } from "./persistGuard";
 
 function freshStores() {
@@ -34,6 +34,60 @@ afterEach(() => {
 beforeEach(() => {
   localStorage.clear();
   refusedStores.value = [];
+});
+
+describe("a scored page open when another tab edits", () => {
+  const host = (state: DocumentVisibilityState = "visible") => {
+    const listeners = new Set<() => void>();
+    return {
+      visibilityState: state,
+      addEventListener: (_: string, fn: () => void) => void listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => void listeners.delete(fn),
+      show() {
+        this.visibilityState = "visible";
+        for (const fn of listeners) fn();
+      },
+    };
+  };
+  const edit = async (stores: ReturnType<typeof freshStores>): Promise<void> => {
+    await nextTick();
+    otherTabWrites("character", { characters: { Aemeath: { level: 2 } }, activeCharacter: "", favoriteCharacters: [] });
+    otherTabWrites("inventory", { echoes: [], equipped: {}, echoPresets: [], equippedPresets: {} });
+    void stores;
+    await nextTick();
+  };
+
+  it("scores again once the other tab's writes settle: one refresh for a burst", async () => {
+    vi.useFakeTimers();
+    const stores = freshStores();
+    const stop = installCrossTabSync([stores.character, stores.inventory] as unknown as SyncedStore[]);
+    const refresh = vi.fn();
+    onAccountAdopted(refresh, 500, host() as unknown as Document);
+    const before = accountAdoptions.value;
+    await edit(stores);
+    expect(accountAdoptions.value).toBe(before + 2);
+    expect(refresh).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(500);
+    expect(refresh).toHaveBeenCalledTimes(1);
+    stop();
+  });
+
+  it("waits until this tab is looked at: an edit elsewhere is no reason to score in the background", async () => {
+    vi.useFakeTimers();
+    const stores = freshStores();
+    const stop = installCrossTabSync([stores.character, stores.inventory] as unknown as SyncedStore[]);
+    const refresh = vi.fn();
+    const page = host("hidden");
+    onAccountAdopted(refresh, 500, page as unknown as Document);
+    await edit(stores);
+    vi.advanceTimersByTime(5000);
+    expect(refresh).not.toHaveBeenCalled();
+    page.show();
+    expect(refresh).toHaveBeenCalledTimes(1);
+    page.show();
+    expect(refresh).toHaveBeenCalledTimes(1);
+    stop();
+  });
 });
 
 describe("two tabs on one account", () => {

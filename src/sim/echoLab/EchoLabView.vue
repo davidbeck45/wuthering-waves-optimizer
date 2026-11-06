@@ -175,6 +175,7 @@ import EchoLabTune from "./EchoLabTune.vue";
 import EchoLabVerdicts from "./EchoLabVerdicts.vue";
 import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilters } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
+import { onAccountAdopted } from "../storage/crossTabSync";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { useSavedNote } from "../persist/useSavedNote";
 import "./echoLab.css";
@@ -324,4 +325,5 @@ function bringUpToDate(): void {
   });
 }
 onMounted(bringUpToDate);
+onAccountAdopted(bringUpToDate);
 </script>

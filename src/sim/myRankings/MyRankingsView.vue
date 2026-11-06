@@ -92,6 +92,7 @@ import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamR
 import { PARTIAL_RANKING_TEXT, rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "./rankingCache";
 import type { SortDir, SortKey } from "./rows";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import { onAccountAdopted } from "../storage/crossTabSync";
 import { accountStateOf } from "../account/accountState";
 import MyRankingsInfo from "./MyRankingsInfo.vue";
 import MyRankingsToolbar from "./MyRankingsToolbar.vue";
@@ -245,6 +246,11 @@ async function compute(): Promise<void> {
   try {
     const result = await shared.promise;
     if (unmounted) return;
+    // an option moved during the run (the palette's team-buff switch is not disabled): these are the other state's numbers
+    if (key !== fingerprint()) {
+      rerun = true;
+      return;
+    }
     ranking.value = result;
     rankedInvestment.value = withInvestment;
     restored.value = false;
@@ -287,6 +293,7 @@ async function refresh(): Promise<void> {
 
 onMounted(() => void refresh());
 watch([investment, autoTeamBuffs], () => void refresh());
+onAccountAdopted(() => void refresh());
 </script>
 
 <style scoped>

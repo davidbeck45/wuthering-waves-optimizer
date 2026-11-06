@@ -269,6 +269,7 @@ import { PARTIAL_RANKING_TEXT } from "../myRankings/rankingCache";
 import WeaponValueBar from "./WeaponValueBar.vue";
 import { useWeaponValueData } from "./useWeaponValueData";
 import { useSavedNote } from "../persist/useSavedNote";
+import { onAccountAdopted } from "../storage/crossTabSync";
 import { PREFS_KEY, at, axisOf, axisTicks, barModel, filterBars, filterCounts, kpisOf, pctFine, readPrefs, sortBars, unscored, type FilterKey, type Scope, type SortKey, type WeaponPrefs } from "./weaponValueView";
 import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
 
@@ -402,6 +403,7 @@ watch(sheet, (open) => {
 });
 onBeforeUnmount(() => document.removeEventListener("keydown", onKey));
 
+onAccountAdopted(() => void refresh());
 onMounted(() => {
   // a remembered Selector tab shows in the URL, so a shared link opens what is on screen
   if (prefs.tab === "selector" && route.query.tab !== "selector") void router.replace({ query: { ...route.query, tab: "selector" } });

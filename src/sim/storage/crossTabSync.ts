@@ -6,6 +6,7 @@
 // deleted. It replaces each top-level field instead, with writes held back (persistGuard.ts): this tab's copy now is
 // what is stored, and a write back would answer the other tab forever, each keeping its own `activeCharacter`. Which
 // character a tab shows stays its own, unless that character left the account.
+import { getCurrentInstance, onBeforeUnmount, ref, watch } from "vue";
 import { ACCOUNT_STORE_KEYS, markStoreCurrent, withoutPersisting } from "./persistGuard";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -15,6 +16,9 @@ export interface SyncedStore {
   $patch(mutator: (state: any) => void): void;
   $reset(): void;
 }
+
+/** How many times this tab took another tab's write: a scored page follows it (`onAccountAdopted`). */
+export const accountAdoptions = ref(0);
 
 function adopt(store: SyncedStore, raw: string | null): void {
   let next: Record<string, any> | null = null;
@@ -39,6 +43,39 @@ function adopt(store: SyncedStore, raw: string | null): void {
     });
   });
   markStoreCurrent(store.$id);
+  accountAdoptions.value += 1;
+}
+
+/** A page that shows results scored on the account calls this with its refresh: the stores followed the other tab, and
+ *  the rows on screen must too, or they stand as "Live" for builds that have changed. One call once the other tab's
+ *  writes settle, and none until this tab is looked at: an edit there is no reason to score in the background. */
+export function onAccountAdopted(refresh: () => void, waitMs = 500, host: Pick<Document, "visibilityState" | "addEventListener" | "removeEventListener"> = document): void {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let waiting = false;
+  const run = (): void => {
+    timer = null;
+    if (host.visibilityState === "hidden") {
+      waiting = true;
+      return;
+    }
+    waiting = false;
+    refresh();
+  };
+  const onVisible = (): void => {
+    if (waiting) run();
+  };
+  const stop = watch(accountAdoptions, () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(run, waitMs);
+  });
+  host.addEventListener("visibilitychange", onVisible);
+  if (getCurrentInstance()) {
+    onBeforeUnmount(() => {
+      stop();
+      if (timer) clearTimeout(timer);
+      host.removeEventListener("visibilitychange", onVisible);
+    });
+  }
 }
 
 /** Starts listening; returns the unsubscribe. */

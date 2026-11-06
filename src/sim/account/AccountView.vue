@@ -142,6 +142,7 @@ import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
 import { useSavedNote } from "../persist/useSavedNote";
+import { onAccountAdopted } from "../storage/crossTabSync";
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",
@@ -225,6 +226,7 @@ function toCalculator(id: string): void {
 }
 
 onMounted(() => void refresh());
+onAccountAdopted(() => void refresh());
 </script>
 
 <style scoped>
