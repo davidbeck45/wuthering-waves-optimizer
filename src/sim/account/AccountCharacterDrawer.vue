@@ -235,6 +235,7 @@ function onBackdrop(event: MouseEvent): void {
   color: oklch(var(--bc));
   background: oklch(var(--b1));
   box-shadow: -24px 0 48px -24px rgb(0 0 0 / 0.6);
+  overscroll-behavior: contain; /* a swipe past the end stays here, as on the other sheets: it moved the page behind by 3,500 px */
 }
 .dr[open] {
   animation: dr-in 0.18s ease-out;
