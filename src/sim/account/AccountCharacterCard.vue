@@ -481,6 +481,8 @@ const teamsTitle = computed(() => {
     padding-top: 0.4rem;
   }
   .cc__up {
+    flex-wrap: wrap; /* two cards a row at 130 % text: the gain and its word drop a line rather than cut the label to "Crit Rat…" */
+    row-gap: 0;
     font-size: 0.65rem;
     max-width: 100%;
   }
