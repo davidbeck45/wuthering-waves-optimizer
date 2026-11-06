@@ -180,6 +180,9 @@ describe("Echo Lab", () => {
     cy.visit("/echo-lab", seed({ fontScale: 1.3 }));
     cy.get("[data-test-echo-lab-row]", RUN).should("have.length.at.least", 1);
     cy.window().its("scrollY").should("eq", 0);
+    // a tile that filters is a button; the counts beside it are not, so they don't offer a tap that does nothing
+    for (const id of ["keep", "spare", "feed"]) cy.get(`[data-test-echo-lab-kpi="${id}"]`).should("match", "button");
+    for (const id of ["echoes", "characters", "upgrades"]) cy.get(`[data-test-echo-lab-kpi="${id}"]`).should("not.match", "button");
     cy.get('[data-test-echo-lab-kpi="feed"]').click();
     cy.get('[data-test-echo-lab-kpi="feed"]').should("have.attr", "aria-pressed", "true");
     cy.get('[data-test-echo-lab-kpi="keep"]').should("have.attr", "aria-pressed", "false");
@@ -195,7 +198,7 @@ describe("Echo Lab", () => {
     cy.viewport(1440, 900);
     cy.visit("/echo-lab", seed({ empty: true }));
     cy.get("[data-test-echo-lab-empty]").should("be.visible").and("contain.text", "Bring your echoes in");
-    cy.get('[data-test-echo-lab-cta="import"]').should("have.attr", "href", "/settings");
+    cy.get('[data-test-echo-lab-cta="import"]').should("have.attr", "href", "/settings?section=backup-restore");
     cy.get('[data-test-echo-lab-cta="scan"]').should("have.attr", "href", "/inventory?open=import");
   });
 

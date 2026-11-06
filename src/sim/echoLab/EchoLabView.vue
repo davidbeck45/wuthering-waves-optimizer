@@ -66,12 +66,13 @@
     <template v-else>
       <!-- KPIs -->
       <div class="mt-3 grid grid-cols-3 gap-2 lg:grid-cols-6" data-test-echo-lab-kpis>
-        <button
+        <component
+          :is="k.verdict ? 'button' : 'div'"
           v-for="k in kpis"
           :key="k.id"
-          type="button"
+          :type="k.verdict ? 'button' : undefined"
           class="min-w-0 rounded-box border bg-base-100 px-3 py-2.5 text-left transition-colors max-sm:px-2.5 max-sm:py-2"
-          :class="[k.verdict ? 'hover:border-base-content/30' : 'cursor-default', kpiOn(k.verdict) ? 'border-primary ring-2 ring-primary/40' : 'border-base-300']"
+          :class="[k.verdict ? 'hover:border-base-content/30' : '', kpiOn(k.verdict) ? 'border-primary ring-2 ring-primary/40' : 'border-base-300']"
           :title="k.verdict ? `Show the ${k.label.toLowerCase()} verdicts` : undefined"
           :aria-pressed="k.verdict ? kpiOn(k.verdict) : undefined"
           :data-test-echo-lab-kpi="k.id"
@@ -84,7 +85,7 @@
             <span class="font-mono text-2xl font-bold tabular-nums max-sm:text-xl" :class="k.class">{{ k.value }}</span>
             <span v-if="k.sub" class="truncate text-xs opacity-60 max-sm:hidden">{{ k.sub }}</span>
           </div>
-        </button>
+        </component>
       </div>
 
       <!-- progress -->
@@ -312,7 +313,7 @@ function phaseFill(i: number): string {
 }
 
 const ctas = [
-  { id: "import", to: "/settings", title: "Import your data", text: "Restore a Wuthering Tools export under Settings › Backup & Restore." },
+  { id: "import", to: "/settings?section=backup-restore", title: "Import your data", text: "Restore a Wuthering Tools export under Settings › Backup & Restore." },
   { id: "scan", to: "/inventory?open=import", title: "Scan or add echoes", text: "Inventory › Import echoes: PC screenshots, phone screenshots or a shared album." },
   { id: "build", to: "/", title: "Build a character", text: "Pick a weapon and equip five echoes in the calculator." },
 ];
