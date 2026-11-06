@@ -97,6 +97,11 @@ describe("account view", () => {
     expect(moveText({ echoId: "1", echo: "Hecate", set: "MidnightVeil", cost: 4, stat: "CritDMG", to: "Lucilla", from: ["Chisa"] })).toMatch(/^Hecate \(4-cost Crit DMG, .+\): Chisa → Lucilla$/);
     const r = { teams: [{ spec: { id: "s1", name: "My team" } }] } as unknown as BuildAccountResult;
     expect(confirmItems(r, [{ characterId: "Aemeath", pins: [{ teamId: "s1", slot: 0 }] }], true, { Aemeath: "Account plan (2)" })).toEqual(["Aemeath: new build “Account plan (2)”, pinned in “My team” slot 1, made active"]);
+    // a saved team reads by its one name, as the review above the confirm prints it, however the stored name is written
+    const old = { teams: [{ spec: { id: "s1", name: "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae" } }] } as unknown as BuildAccountResult;
+    expect(confirmItems(old, [{ characterId: "Aemeath", pins: [{ teamId: "s1", slot: 0 }] }], false, {})).toEqual(["Aemeath: new build “Account plan”, pinned in “Aemeath · Mornye + Lynae” slot 1"]);
+    // a Sonata reads as the game writes it, as on Set lab
+    expect(moveText({ echoId: "1", echo: "Hecate", set: "HavocEclipse", cost: 4, stat: "CritDMG", to: "Lucilla", from: ["Chisa"] })).toContain("Sun-sinking Eclipse");
     expect(secondsText(48_400)).toBe("48 s");
     expect(secondsText(72_000)).toBe("1 min 12 s");
   });

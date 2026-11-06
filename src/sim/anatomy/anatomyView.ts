@@ -8,8 +8,8 @@ import type { MoveRow } from "./anatomyRun";
 /** A rotation's name in a select: its title, and the chips that tell two of the same title apart. */
 export function rotationTitle(name: string, owned: readonly string[] = []): string {
   const parts = parsePresetName(name, { owned: [...owned] });
-  const tier = parts.chips.filter((c) => c.kind === "own" || c.kind === "tier").map((c) => c.label)[0];
-  return [parts.title || name, tier].filter(Boolean).join(" · ");
+  const tiers = parts.chips.filter((c) => c.kind === "own" || c.kind === "tier" || c.kind === "dps" || c.kind === "team").map((c) => c.label);
+  return [parts.title || name, ...tiers].join(" · ");
 }
 
 export const enemyLine = (enemy: Pick<TeamEnemyConfig, "enemyLevel" | "enemyResist">): string => `enemy level ${enemy.enemyLevel}, ${Math.round(enemy.enemyResist * 100)} % RES`;

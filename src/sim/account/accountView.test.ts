@@ -75,7 +75,7 @@ const item = (characterId: string, gain: number, teamGain: number | null): Inves
   ({ id: `${characterId}:${gain}`, characterId, kind: "sequence", label: "S1", from: "S0", to: "S1", rotation: "r", base: 1, avgDamage: 1 + gain, gain, team: teamGain === null ? null : { teamId: "t1", teamName: "t1", characterIds: [], base: 1, avgDamage: 1 + teamGain, gain: teamGain }, teamNote: null }) as InvestItem;
 
 describe("roster cards", () => {
-  const state = accountStateOf(characters, { echoes, equipped: { a: 1, b: 2 } }, []);
+  const state = accountStateOf(characters, { echoes, equipped: { a: { Cartethyia: 0 }, b: { Cartethyia: 1 } } }, []);
   const plan = [item("Ciaccona", 0.02, 0.09), item("Ciaccona", 0.05, 0.01), item("Cartethyia", 0.3, 0.12)];
   const cards = rosterCards({ state, characters, inventoryEchoes: echoes, ranking, plan, favorites: ["Chisa"] });
   const card = (id: string): RosterCard => cards.find((c) => c.id === id)!;

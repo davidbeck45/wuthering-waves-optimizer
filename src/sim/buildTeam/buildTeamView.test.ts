@@ -1,7 +1,8 @@
 // Wuthering Tools+ "Build it for me" — the page's view model: deltas, the layout's cost groups, the buffs switched on
 // in words, and the notes a result card explains itself with.
 import { describe, expect, it } from "vitest";
-import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, shareConflicts, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
+import { setLabel } from "../echoLab/echoLabView";
+import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, setName, shareConflicts, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
 import type { MemberOutcome } from "./buildTeam";
 
@@ -67,6 +68,12 @@ describe("build-team view model", () => {
 
   it("names the buffs it switched on", () => {
     expect(buffDefaultNames(["SongofFeatheredTrace5SetChongming"])).toEqual(["Song of Feathered Trace 5pc (Chongming)"]);
+    // the game's name for a Sonata, as Echo Lab and Set lab print it: these pages tell you what to wear
+    expect(buffDefaultNames(["HavocEclipse5SetHavoc"])).toEqual(["Sun-sinking Eclipse 5pc (Havoc)"]);
+    expect(setName("HavocEclipse")).toBe("Sun-sinking Eclipse");
+    expect(setName("HavocEclipse")).toBe(setLabel("HavocEclipse"));
+    expect(setName("MoonlitClouds")).toBe("Moonlit Clouds");
+    expect(setName("NotASet")).toBe("NotASet");
     expect(buffDefaultNames(["PactofNeonlightLeap"])).toEqual(["Pact of Neonlight Leap"]);
     expect(buffDefaultNames(["FlamingClawprintLiberation"])).toEqual(["Flaming Clawprint (Liberation)"]);
     expect(buffDefaultNames(["Sigillum:Sigillum"])).toEqual(["Sigillum's buff"]);

@@ -31,7 +31,8 @@
 // Wuthering Tools+ "Build it for me" — one echo of a result: picture (rarity ring, cost), name, main stat, set, its
 // five substats, and where it comes from (already worn, unworn, a teammate's, or worn by someone outside the team).
 import { computed } from "vue";
-import { rankColors, getEchoSetLabelByType } from "../../echoes/stats";
+import { rankColors } from "../../echoes/stats";
+import { sonataName } from "../echoPlan/catalog";
 import { SUBSTAT_ABBR } from "../substats/substatWeights";
 import type { EchoSource } from "./buildTeam";
 import { echoImage, echoName, setIcon, sourceText, statShort } from "./buildTeamView";
@@ -43,7 +44,7 @@ const name = computed(() => echoName(props.echo.echo));
 const image = computed(() => echoImage(props.echo.echo));
 const cost = computed(() => Number(props.echo.type) || "?");
 const setImg = computed(() => setIcon(props.echo.echoSet));
-const setLabel = computed(() => getEchoSetLabelByType(props.echo.echoSet) ?? props.echo.echoSet ?? "");
+const setLabel = computed(() => (props.echo.echoSet ? sonataName(props.echo.echoSet) : ""));
 const ring = computed(() => (rankColors as unknown as Record<string, string>)[String(props.echo.rank ?? 5)] ?? null);
 const lines = computed(() => {
   const out: Array<{ key: string; label: string; value: string }> = [];

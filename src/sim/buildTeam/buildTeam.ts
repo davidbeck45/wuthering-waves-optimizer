@@ -14,7 +14,7 @@ import { calcTeamRotationDamage } from "../../calculator/teamRotation";
 import { applyBuildFields, extractBuildFields } from "../../characters/buildFields";
 import { buildEchoLoadoutFromIds } from "../../echoes/echoLoadout";
 import { getSetBonusEffects, getSetsFromEchoes } from "../../echoes/sets";
-import { echoSetLabelMap } from "../../echoes/stats";
+import { sonataName } from "../echoPlan/catalog";
 import { RANKING_ENEMY, rotationCandidates, scoreRotation } from "../myRankings/rankRoster";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { menuEnergyRegen } from "../energy/energyHave";
@@ -730,7 +730,7 @@ export function shortfallText(s: Shortfall): string {
 }
 
 function setsText(plan: MemberPlan, c: MemberConstraints): string {
-  return c.allowedSets ? plan.sets.map((x) => echoSetLabelMap[x.key] ?? x.key).join(" / ") : "any set";
+  return c.allowedSets ? plan.sets.map((x) => sonataName(x.key)).join(" / ") : "any set";
 }
 
 function noEchoesMessage(plan: MemberPlan, c: MemberConstraints, options: BuildOptions): string {

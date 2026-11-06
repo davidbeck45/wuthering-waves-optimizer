@@ -180,8 +180,8 @@
             </button>
             <div v-if="open.has(row.key)" :id="`farm-detail-${i}`" class="mt-1 space-y-2 border-t border-base-300 pt-2 text-xs" :data-test-echo-lab-farm-detail="row.key">
               <p>
-                Scored on <b>{{ row.rotationName }}</b>: {{ compact(row.base) }} average damage per rotation now.
-                <template v-if="row.team"> Team: {{ row.team.teamName }}, {{ compact(row.team.base) }} team damage per rotation; {{ pct(row.team.pGain, 0) }} of tries lift it.</template>
+                Scored on <b>{{ rotationTitle(row.rotationName) }}</b>: {{ compact(row.base) }} average damage per rotation now.
+                <template v-if="row.team"> Team: {{ teamTitle(row.team.teamName) }}, {{ compact(row.team.base) }} team damage per rotation; {{ pct(row.team.pGain, 0) }} of tries lift it.</template>
               </p>
               <p data-test-echo-lab-farm-spread>
                 If you always kept the new echo, its damage change would run from <b>{{ signedPct(row.p10, 1) }}</b> (1 try in 10 does worse) to <b>{{ signedPct(row.p90, 1) }}</b> (1 in 10 does better), {{ signedPct(row.p50, 1) }} in the middle.
@@ -222,6 +222,8 @@
 // with a character filter; a pending team figure is worked out on request. The page only sorts and words the numbers.
 import { computed, ref, watch } from "vue";
 import type { JobStatus } from "./useEchoLab";
+import { rotationTitle } from "../anatomy/anatomyView";
+import { teamTitle } from "../display/teamName";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, compact, echoName, mainLabel, pct, phaseLabel, portrait, setIcon, setLabel, signedPct, slotLabel } from "./echoLabView";
 import type { FarmAlternative, FarmNextResult, FarmRow, FarmTeamResult } from "./farmNext";

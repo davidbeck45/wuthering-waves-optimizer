@@ -131,6 +131,10 @@ export const IN_GAME_SET_NAME: Record<string, string> = {
   HavocEclipse: "Sun-sinking Eclipse",
 };
 
+/** A Sonata on a page that tells the player what to wear or farm, which they then look for in the game: the game's name,
+ *  else the calculator's. Ryan's own pages, and what prints an echo the way they do, keep the calculator's. */
+export const sonataName = (key: string): string => IN_GAME_SET_NAME[key] ?? echoSetLabelMap[key] ?? key;
+
 export interface Sonata {
   /** the app's set key (`echoSetLabelMap`) */
   key: string;

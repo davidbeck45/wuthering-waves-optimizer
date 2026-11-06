@@ -542,6 +542,12 @@ describe("the sheet's words", () => {
     expect(gainText(-0.01)).toBe("−1.00 %");
     expect(gainText(0.00002)).toBe("+under 0.01 %");
     expect(rotationTitle("Basic Rotation (Tune Break)")).toBe("Basic Rotation (Tune Break)");
+    // two loops of one team read apart: the picker showed "Aemeath · Mornye + Lynae · S6R5" twice, at 8.06M and 7.89M
+    const stock = "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)";
+    const saved = "Aemeath S6R5 Everbright Polestar R5 · Mornye + Lynae · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)";
+    expect(rotationTitle(stock)).toBe("Aemeath · Mornye + Lynae · S6R5");
+    expect(rotationTitle(saved)).toBe("Aemeath · Mornye + Lynae · S6R5 · supports S1R1 / S6R1");
+    expect(rotationTitle("Verina S0 Variation R1 · Lynae + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)")).toBe("Verina · Lynae + Jinhsi · S0R1 · main DPS S6R5 · supports S0R1");
     expect(rotationTitle("Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)")).toContain("Mornye + Lynae");
     const hit = { label: "Finale", typeLabel: "Resonance Liberation", perPress: 3_416_042, times: 1, share: 0.422 } as any;
     expect(hitOption(hit, true)).toBe("3.42M · Finale (biggest)");

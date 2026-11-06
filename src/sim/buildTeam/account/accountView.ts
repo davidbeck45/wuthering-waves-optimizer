@@ -1,5 +1,6 @@
 // Wuthering Tools+ — "Whole account": what the page says, kept out of the component so it is testable. Pure.
 import { characterDisplayName } from "../../display/names";
+import { teamTitle } from "../../display/teamName";
 import { buffDefaultNames, echoName, statShort, setName, teammatesNote, worthSaving } from "../buildTeamView";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
@@ -98,7 +99,7 @@ export function moveText(mv: EchoMove): string {
 
 /** The confirm dialog's list: each character's new build, where it is pinned, and whether it becomes active. */
 export function confirmItems(r: BuildAccountResult, saving: ReadonlyArray<{ characterId: string; pins: Array<{ teamId: string; slot: number }> }>, makeActive: boolean, names: Record<string, string>): string[] {
-  const teamName = (id: string): string => r.teams.find((t) => t.spec.id === id)?.spec.name ?? "a saved team";
+  const teamName = (id: string): string => teamTitle(r.teams.find((t) => t.spec.id === id)?.spec.name) || "a saved team";
   return saving.map((m) => {
     const pins = m.pins.length ? `, pinned in ${m.pins.map((p) => `“${teamName(p.teamId)}” slot ${p.slot + 1}`).join(" and ")}` : "";
     return `${characterDisplayName(m.characterId)}: new build “${names[m.characterId] ?? "Account plan"}”${pins}${makeActive ? ", made active" : ""}`;

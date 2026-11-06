@@ -1,6 +1,7 @@
 // Wuthering Tools+ — "Build it for me": the page's view model (labels, chips, formatters). Pure.
 import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
+import { sonataName } from "../echoPlan/catalog";
 import { characterDisplayName } from "../display/names";
 import type { UndoClash, UndoFate } from "./apply";
 import { memberAfter, shortfallText, type BuildTeamResult, type EchoSource, type MemberOutcome } from "./buildTeam";
@@ -38,7 +39,7 @@ export function layoutGroups(plan: Pick<MemberPlan, "mainStats">): Array<{ cost:
   return out;
 }
 
-export const setName = (key: string): string => echoSetLabelMap[key] ?? key;
+export const setName = sonataName;
 export const setIcon = (key: string | null | undefined): string | null => (key ? getEchoSetIconByType(key) ?? null : null);
 export const echoName = (key: string | null | undefined): string => (key ? (mainEchoesData as Record<string, { name: string }>)[key]?.name ?? key : "—");
 export const echoImage = (key: string | null | undefined): string | null => (key ? (mainEchoesData as Record<string, { image?: string }>)[key]?.image ?? null : null);
@@ -209,7 +210,7 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
     const buffsMoved = m.buffDefaults.length > 0 && rel != null && Math.abs(rel) > 0.0005;
     out.push({ tone: "info", text: buffsMoved ? "Same echoes as today: the change is the set or main-echo buffs below, switched on." : "Same echoes as today: this team's best build is the one you wear." });
   }
-  if (plan?.sets.length && !m.meetsPlanSets && m.relaxed !== "layout") out.push({ tone: "warn", text: `Wears ${Object.entries(m.setsWorn).map(([k, n]) => `${n} ${setName(k)}`).join(" + ")}, not the plan's ${plan.setsLabel}.` });
+  if (plan?.sets.length && !m.meetsPlanSets && m.relaxed !== "layout") out.push({ tone: "warn", text: `Wears ${Object.entries(m.setsWorn).map(([k, n]) => `${n} ${setName(k)}`).join(" + ")}, not the plan's ${plan.sets.map((s) => `${setName(s.key)} ${s.pieces}pc`).join(" + ")}.` });
   return out;
 }
 
@@ -245,14 +246,14 @@ export function buffDefaultNames(keys: readonly string[]): string[] {
     const key = buff ?? k;
     const m = /^(.*?)(\d)Set(.*)$/.exec(key);
     if (m) {
-      const label = echoSetLabelMap[m[1]!] ?? spaced(m[1]!);
+      const label = m[1]! in echoSetLabelMap ? sonataName(m[1]!) : spaced(m[1]!);
       return `${label} ${m[2]}pc${m[3] ? ` (${spaced(m[3])})` : ""}`;
     }
     // a passive named after its set alone ("PactofNeonlightLeap") or the set plus a suffix
     const set = Object.keys(echoSetLabelMap).filter((s) => key.startsWith(s)).sort((a, b) => b.length - a.length)[0];
     if (!set) return spaced(key);
     const rest = key.slice(set.length);
-    return `${echoSetLabelMap[set]}${rest ? ` (${spaced(rest)})` : ""}`;
+    return `${sonataName(set)}${rest ? ` (${spaced(rest)})` : ""}`;
   });
 }
 

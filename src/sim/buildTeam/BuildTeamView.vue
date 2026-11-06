@@ -388,7 +388,7 @@ async function onSave(): Promise<void> {
 
 async function onUndo(): Promise<void> {
   const rec = bt.undoRecord.value;
-  const words = undoConfirm(bt.undoPreview(), (n) => `${n} build${n === 1 ? "" : "s"} saved for “${rec?.teamName}”`, "put the team's pins back");
+  const words = undoConfirm(bt.undoPreview(), (n) => `${n} build${n === 1 ? "" : "s"} saved for “${teamTitle(rec?.teamName)}”`, "put the team's pins back");
   const ok = await confirm(rec ? words.message : "Undo the last build?", {
     title: "Undo last build",
     items: rec ? words.items : undefined,

@@ -60,7 +60,7 @@
         <p v-if="floorTop && floorTop.key !== top?.key" class="mt-1 text-sm" data-test-echo-lab-sets-floor-best>
           If no condition holds, the best for their own damage is {{ rowName(floorTop) }}, at {{ signedPct(floorOf(floorTop), 2) }}.
         </p>
-        <p class="mt-1 text-xs opacity-60">Scored on <b>{{ result.rotationName }}</b>: {{ compact(result.base) }} average damage per rotation today<template v-if="result.teamName">. Team: {{ result.teamName }}, {{ compact(result.teamBase ?? 0) }} team damage per rotation</template>.</p>
+        <p class="mt-1 text-xs opacity-60">Scored on <b>{{ rotationTitle(result.rotationName) }}</b>: {{ compact(result.base) }} average damage per rotation today<template v-if="result.teamName">. Team: {{ teamTitle(result.teamName) }}, {{ compact(result.teamBase ?? 0) }} team damage per rotation</template>.</p>
         <p v-if="result.pinned" class="mt-1 text-xs" data-test-echo-lab-sets-pinned>You pinned this set bonus in the calculator, so it is your layout here whatever your echoes' Sonatas say.</p>
         <p v-if="fullRow" class="mt-1 text-xs" data-test-echo-lab-sets-full>
           Your calculator has this layout at less than its best: with every condition met it reads <b>{{ signedPct(fullRow.gain, 1) }}</b>. Every other layout is credited with its conditions, so read them against that row too.
@@ -264,6 +264,8 @@ import { useRouter } from "vue-router";
 import { useConfirm } from "../../composables/useConfirm";
 import { useCharacterStore } from "../../stores/character";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import { rotationTitle } from "../anatomy/anatomyView";
+import { teamTitle } from "../display/teamName";
 import { showHave, showNeed } from "../energy/energyNeed";
 import type { LabCharacterSummary } from "./bestOwner";
 import EchoLabPopover from "./EchoLabPopover.vue";

@@ -18,6 +18,7 @@
 // preview and a confirm.
 import { applyBuildFields } from "../../characters/buildFields";
 import { echoSetLabelMap } from "../../echoes/stats";
+import { sonataName } from "../echoPlan/catalog";
 import { setBonusEffectsTwo } from "../../echoes/sets";
 import { buildMyTeam, currentEchoesOf, teamSpecOf, type TeamRequest } from "../buildTeam/buildTeam";
 import { DEFAULT_OPTIONS, type BuildOptions } from "../buildTeam/options";
@@ -188,7 +189,7 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
   const options = input.options ?? DEFAULT_OPTIONS;
   const aborted = (): boolean => !!hooks.signal?.aborted;
   const pause = (): Promise<void> => (hooks.yieldToUi === false ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, 0)));
-  const setLabel = (key: string): string => (echoSetLabelMap as Record<string, string>)[key] ?? key;
+  const setLabel = sonataName;
 
   const errors: string[] = [];
   const items: EchoUpgrade[] = [];
