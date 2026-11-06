@@ -54,6 +54,24 @@ describe("wuwa_calc stock presets", () => {
     cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
   });
 
+  it("a stock team starred before the 2026-11-04 rename keeps its star: Favorites still lists it", () => {
+    cy.visit("/teams", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem(
+          "teamRotations",
+          JSON.stringify({ teams: [], favoriteTeamIds: [], favoritePresetNames: ["wuwa_calc Aemeath S6R5 · Chisa + Denia", "wuwa_calc Aemeath S6R5 · Denia + Lynae"] }),
+        );
+      },
+    });
+    cy.get('[data-test="team-rotations-overflow-menu"]').click();
+    cy.get("[data-test-team-rotations-toggle-presets]").click();
+    cy.get("[data-test-team-rotations-preset]", { timeout: 30000 }).should("have.length.greaterThan", 20);
+    cy.get("[data-test-team-rotations-presets-favorites-filter]").click();
+    cy.get("[data-test-team-rotations-preset]").should("have.length", 2);
+    cy.get('[data-test-team-rotations-preset="Aemeath · Chisa + Denia · S6R5 (wuwa_calc)"]').should("exist");
+    cy.get('[data-test-team-rotations-preset="Aemeath · Denia + Lynae · S6R5 (wuwa_calc)"]').should("exist");
+  });
+
   it("lists the S6R5 full-team rotations under Teams > List Presets and imports one with its actions", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get('[data-test="team-rotations-overflow-menu"]').click();

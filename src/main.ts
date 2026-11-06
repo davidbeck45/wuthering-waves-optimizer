@@ -13,6 +13,7 @@ import { runMigrations } from "./migrations";
 import { injectAnalytics } from "./utils/analytics";
 import { installChunkReload, watchPendingRoute } from "./sim/perf/chunkReload"; // Wuthering Tools+: a stale tab reloads once after a deploy
 import { persistStorage } from "./sim/storage/persistGuard"; // Wuthering Tools+
+import { migrateStarredPresets } from "./sim/presets/starredPresets"; // Wuthering Tools+: stars on stock teams follow the 2026-11-04 rename
 
 import HomeView from "./pages/HomeView.vue";
 // Wuthering Tools+: every page but the calculator home loads on first visit, so the entry chunk only carries the
@@ -110,6 +111,7 @@ console.time("runMigrations");
 // Upgrade persisted localStorage before Pinia hydrates stores from it
 runMigrations();
 console.timeEnd("runMigrations");
+migrateStarredPresets(); // Wuthering Tools+
 
 const pinia = createPinia();
 pinia.use(
