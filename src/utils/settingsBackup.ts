@@ -16,6 +16,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { randomString } from "./strings";
 import { checkImport } from "../sim/buildHistory/importCheck"; // Wuthering Tools+
+import { savedResults } from "../sim/persist/savedResults"; // Wuthering Tools+
 import {
   applyMigrationTransforms,
   CURRENT_DATA_VERSION,
@@ -196,4 +197,5 @@ export function clearAllUserData() {
   localStorage.setItem("inventory", "");
   const inventoryStore = useInventoryStore();
   inventoryStore.$hydrate({ runHooks: false });
+  void savedResults.clear(); // Wuthering Tools+: they hold figures from the account just deleted
 }

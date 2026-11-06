@@ -451,6 +451,22 @@ describe("saved results", () => {
     cy.window().its("__seen").should("include", "scoring");
   });
 
+  it("Delete your data takes the saved results with it: they hold figures from the account just deleted", () => {
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/my-rankings");
+    cy.get("[data-test-my-rankings-status]", { timeout: 120000 }).should("have.attr", "data-status", "live");
+    savedCount("ranking", 1).should("be.gte", 1);
+    cy.window().then((win) => expect(win.sessionStorage.getItem("wtplus:myRankings:last"), "this tab's copy").to.not.eq(null));
+
+    cy.visit("/settings");
+    cy.get("[data-test-settings-advanced]").click();
+    cy.contains("button.btn-error", "Delete").click();
+    cy.get(".confirm-dialog[open] .modal-action .btn").last().click();
+    savedCount("ranking").should("eq", 0);
+    cy.window().then((win) => expect(win.sessionStorage.getItem("wtplus:myRankings:last"), "this tab's copy").to.eq(null));
+  });
+
   it("without IndexedDB (a private window) the pages compute as before and Settings says nothing is kept", () => {
     const noIdb = (win: Window) => {
       Object.defineProperty(win, "indexedDB", {
