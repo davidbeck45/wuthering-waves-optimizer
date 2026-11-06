@@ -9,7 +9,7 @@ import { SUBSTAT_KEYS, type SubstatKey } from "../substats/substatWeights";
 import { createLabSession, echoLines, prepareCharacter, scoreBuild, swapInto, withInventoryRecord, withLines, withSlotRecord, type LabAccount, type LabCharacter, type LabSession } from "./core";
 import { farmNext, rollout, type FarmRow } from "./farmNext";
 import { seededRandom } from "./fingerprint";
-import { MIN_PAIR_WORTH, lineFactor, lineModel, lineOutcomes, lineTable, type LineModel, type LineScorer } from "./lineModel";
+import { freshSeed, MIN_PAIR_WORTH, lineFactor, lineModel, lineOutcomes, lineTable, type LineModel, type LineScorer } from "./lineModel";
 import { linesPlan } from "./rerollAdvice";
 import { outcomeCount, sampleOutcome, tierOdds, type NewLine } from "./rolls";
 
@@ -199,7 +199,7 @@ describe("The line model against whole echoes through the engine", () => {
         const ctx = await scoreBuild(session, lab, characters, blank);
         const { model, sum } = await modelOf(ctx, SUBSTAT_KEYS, score);
         // the row's own figures, read again from this model and the row's seed
-        const seed = `${lab.id}|${row.slot}|farm|${row.target.main}|${row.target.set}`;
+        const seed = freshSeed(lab.id, row.slot);
         const again = rollout(model, lab.base, 5, 20000, seed);
         expect(again.expectedGain, row.key).toBeCloseTo(row.expectedGain, 10);
         expect(again.pBeat, row.key).toBeCloseTo(row.pBeat, 10);
@@ -263,7 +263,7 @@ describe("The line model against whole echoes through the engine", () => {
       const ctx = await scoreInv(blank);
       const { model, sum } = await modelOf(ctx, SUBSTAT_KEYS, score);
       const base = row.team!.base;
-      const seed = `${row.key}|farm|${row.target.main}|${row.target.set}`;
+      const seed = freshSeed(row.characterId, row.slot);
       expect(rollout(model, base, 5, 20000, seed).expectedGain).toBeCloseTo(row.team!.expectedGain, 10);
       const n = 40;
       const pairs = lineOutcomes(model, base, SUBSTAT_KEYS, 5, n, "whole|team");

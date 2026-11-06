@@ -11,7 +11,7 @@ import { createLabSession, prepareCharacter, scoreBuild, swapInto, withInventory
 import { FARM_ASSUMPTIONS, farmNext, farmTeam, mainStatsOf, rollout, sortFarmRows, speciesOf, type FarmRow } from "./farmNext";
 import { confirmDead, lineModel, lineTable } from "./lineModel";
 import { tierOdds } from "./rolls";
-import { tuneToMaxResources } from "./tunerPlan";
+import { tunerCandidates, tuneToMaxResources } from "./tunerPlan";
 import { createEchoLabHost, type EchoLabResponse } from "./workerHost";
 
 const account = fixture as unknown as LabAccount;
@@ -244,6 +244,27 @@ describe("Farm next: the numbers", () => {
       ] as unknown as FarmRow[];
       expect(sortFarmRows(rows, "team").map((r) => r.key)).toEqual(["c|1", "b|1", "a|1", "d|1"]);
       expect(sortFarmRows(rows, "own").map((r) => r.key)).toEqual(["a|1", "d|1", "c|1", "b|1"]);
+    },
+    T,
+  );
+});
+
+describe("Farm next and the Tuner plan's Then farm", () => {
+  it(
+    "read one figure for the same target: a slot draws the same tries on both lists",
+    async () => {
+      const session = createLabSession(clone());
+      const farm = await farmNext(session, { teamSlots: 0 }, quiet);
+      const { fresh } = await tunerCandidates(session, { freshSlots: 15 }, quiet);
+      const same = fresh.flatMap((f) => {
+        const row = farm.rows.find((r) => r.characterId === f.characterId && r.slot === f.slot && r.sameAsCurrent);
+        return row ? [{ f, row }] : [];
+      });
+      expect(same.length).toBeGreaterThan(0);
+      for (const { f, row } of same) {
+        expect(f.expectedGain, row.key).toBeCloseTo(row.expectedGain, 9);
+        expect(f.pKeep, row.key).toBeCloseTo(row.pBeat, 9);
+      }
     },
     T,
   );

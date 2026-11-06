@@ -31,6 +31,7 @@ import {
 import { echoPotential } from "./echoPotential";
 import { seededRandom } from "./fingerprint";
 import { rankSlots } from "./prescore";
+import { freshSeed } from "./lineModel";
 import { LINE_MODEL_NOTE } from "./lineModelNote";
 import { linesPlan } from "./rerollAdvice";
 import { enumerateOutcomes, outcomeCount, outcomeKey, remainingTypes, sampleOutcome, type NewLine } from "./rolls";
@@ -224,7 +225,7 @@ async function freshSlot(session: LabSession, lab: LabCharacter, slot: number, s
   };
   const current = echoLines(own.record);
   // a fresh echo rolls all five lines, even when the one in the slot has not finished tuning
-  const pairs = await linesPlan([], current, { scoreLines, base: lab.base, canRepeat: true, samples, seed: `${own.echoId ?? lab.id}|${slot}|fresh`, draw: 5 });
+  const pairs = await linesPlan([], current, { scoreLines, base: lab.base, canRepeat: true, samples, seed: freshSeed(lab.id, slot), draw: 5 });
   const { upside, pKeep } = upsideOf(pairs);
   const resources = tuneToMaxResources(0);
   const expectedDamage = upside * lab.base;

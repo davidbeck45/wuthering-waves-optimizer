@@ -167,6 +167,10 @@ export function lineFactor(model: LineModel, lines: readonly NewLine[]): number 
   return factor;
 }
 
+/** The tries a fresh echo in one slot is sampled on: Farm next and the Tuner plan's "Then farm" share it, so the same
+ *  target reads one figure on both lists instead of two inside the sampling noise. */
+export const freshSeed = (characterId: string, slot: number): string => `${characterId}|${slot}|fresh`;
+
 /**
  * What `draw` new lines from `pool` do against `base`, as (relative change, weight) pairs: `ctx / base × factor − 1`. The
  * base is the engine's score of what the player has now, never the model's own idea of it. Every outcome when there are

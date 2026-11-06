@@ -46,7 +46,7 @@ import {
   type SwapRules,
 } from "./core";
 import { stableKey } from "./fingerprint";
-import { confirmDead, lineModel, lineOutcomes, lineTable, type LineModel, type LineScorer } from "./lineModel";
+import { confirmDead, freshSeed, lineModel, lineOutcomes, lineTable, type LineModel, type LineScorer } from "./lineModel";
 import { tuneToMaxResources } from "./tunerPlan";
 import { FARM_ASSUMPTIONS, sortFarmRows } from "./farmView";
 
@@ -343,7 +343,7 @@ async function slotPlan(session: LabSession, lab: LabCharacter, slot: number, op
 
 async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: number, options: FarmOptions, pace: Pacer): Promise<SlotPlan> {
   const own = lab.slots[slot];
-  const seed = `${lab.id}|${slot}|farm`;
+  const seed = freshSeed(lab.id, slot);
   if (!own?.cost) return { row: null, reason: "no echo in the slot", chosen: null, seed };
   const cost = own.cost;
   const rules = options.rules ?? {};
@@ -388,7 +388,7 @@ async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: num
     const dead = await confirmDead(c.ctx ?? 0, likelyDead, scoreLines);
     const table = await lineTable(c.ctx ?? 0, (key, value) => scoreLines([{ key, value }]), dead);
     const model = await lineModel(c.ctx ?? 0, table, scoreLines, draw);
-    c.rollout = rollout(model, lab.base, draw, samples, `${seed}|${c.main}|${c.group.set}`);
+    c.rollout = rollout(model, lab.base, draw, samples, seed);
   }
   const chosen = [...worked].sort((a, b) => (b.rollout?.expectedGain ?? 0) - (a.rollout?.expectedGain ?? 0) || (b.ctx ?? 0) - (a.ctx ?? 0))[0];
   const r = chosen.rollout as Rollout;
@@ -442,7 +442,7 @@ async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: num
     teamNote: null,
     teamPending: false,
   };
-  return { row, reason: null, chosen, seed: `${seed}|${chosen.main}|${chosen.group.set}` };
+  return { row, reason: null, chosen, seed };
 }
 
 // ── teams (the /account rules) ──
