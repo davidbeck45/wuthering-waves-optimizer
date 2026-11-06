@@ -143,6 +143,10 @@ describe("constraints", () => {
     expect(legalInSlot(ones[3], 2, loadout, c)).toBe(ones[3].echo !== ones[1].echo && ones[3].echo !== ones[2].echo);
     expect(legalInSlot(ones[3], 1, loadout, c)).toBe(false); // a 1-cost in a 4-cost slot
     expect(legalInSlot(fours[0], 0, loadout, c)).toBe(false); // slot 0 is the main echo's
+    // hidden from the optimizer in the inventory: out of every search, the swap pass's included
+    const spare = ones.find((e) => !loadout.some((l) => l.echo === e.echo))!;
+    expect(legalInSlot(spare, 2, loadout, c)).toBe(true);
+    expect(legalInSlot({ ...spare, ignoreFromOptimizer: true }, 2, loadout, c)).toBe(false);
   });
 });
 

@@ -79,6 +79,26 @@ describe("memberSearchApi's memo and today's build", () => {
     expect(hasReuse(r.picks)).toBe(false);
   });
 
+  it("an echo hidden from the optimizer is no swap and no backfill: Whole account put one in a build and saved it", async () => {
+    const apiOn = (list: any[]) =>
+      memberSearchApi([member("H", ["A", "B"], [], ["a1", "a2", "a3", "a4", "a5"]), member("W", ["B"], [], ["b1", "b2", "b3", "b4", "b5"])], {
+        echoes: list,
+        echoById: new Map(list.map((e) => [e.echoId, e])),
+        options,
+        wornOutside: new Set(),
+        keptInTeam: new Set(),
+        backend,
+        hooks: {},
+      }).api;
+    const pick = { ids: ["b1", "b2", "b3", "b4", "b5"], value: 1, er: 100, meetsFloor: true };
+    const visible = [...echoes, E("b6", "B", 1)];
+    expect(apiOn(visible).free!(1, 3, pick, new Set(pick.ids))).toContain("b6"); // the fixture would use it
+    expect(apiOn(visible).legal(1, 3, "b6", pick)).toBe(true);
+    const flagged = [...echoes, { ...E("b6", "B", 1), ignoreFromOptimizer: true }];
+    expect(apiOn(flagged).free!(1, 3, pick, new Set(pick.ids))).not.toContain("b6");
+    expect(apiOn(flagged).legal(1, 3, "b6", pick)).toBe(false);
+  });
+
   it("acceptMove refuses an allocation with an echo twice, whatever its value", () => {
     const c = (ids: string[], value: number) => ({ ids, value, er: 100, meetsFloor: true });
     expect(acceptMove([c(["x", "y"], 50), c(["y", "z"], 50)], [c(["x", "y"], 1), c(["q", "z"], 1)], [1, 1])).toBe(false);

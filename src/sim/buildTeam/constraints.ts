@@ -71,10 +71,9 @@ export function filterPool(
   sets: { taken?: ReadonlySet<string>; wornOutside?: ReadonlySet<string> } = {},
 ): { pool: any[]; dropped: Record<PoolRule, number> } {
   const dropped: Record<PoolRule, number> = { ignored: 0, set: 0, cost: 0, mainStat: 0, fourCost: 0, taken: 0, worn: 0 };
-  const kept = new Set(filterEchoesForOptimizer(echoes as any[]));
   const pool: any[] = [];
   for (const echo of echoes) {
-    const rule = !kept.has(echo) ? "ignored" : ruleOf(echo, c, sets);
+    const rule = ruleOf(echo, c, sets);
     if (rule) dropped[rule] += 1;
     else pool.push(echo);
   }
@@ -82,7 +81,8 @@ export function filterPool(
 }
 
 function ruleOf(echo: any, c: MemberConstraints, sets: { taken?: ReadonlySet<string>; wornOutside?: ReadonlySet<string> }): PoolRule | null {
-  if (!echo || !echo.echoId) return "ignored";
+  // upstream's "hide from optimizer", here so the swap pass's `legalInSlot` obeys it as the search does
+  if (!echo || !echo.echoId || !filterEchoesForOptimizer([echo]).length) return "ignored";
   if (sets.taken?.has(echo.echoId)) return "taken";
   if (sets.wornOutside?.has(echo.echoId)) return "worn";
   if (c.allowedSets && !c.allowedSets.includes(echo.echoSet)) return "set";
