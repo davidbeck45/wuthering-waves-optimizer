@@ -15,7 +15,7 @@ import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../pe
 import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
-export const RANKING_CACHE_VERSION = 5; // 2: wuwa_calc loops beside a teammate the app lacks (Lily) are no longer scored; 3: the regenerated stock loops (named after a team the app can field, 2026-11-02); 4: each best rotation keeps its crit-luck range; 5: three playable stock loops per state, and stock teams renamed, so a cached team's `wuwa_calc:<name>` id is gone (2026-11-04)
+export const RANKING_CACHE_VERSION = 6; // 2: wuwa_calc loops beside a teammate the app lacks (Lily) are no longer scored; 3: the regenerated stock loops (named after a team the app can field, 2026-11-02); 4: each best rotation keeps its crit-luck range; 5: three playable stock loops per state, and stock teams renamed, so a cached team's `wuwa_calc:<name>` id is gone (2026-11-04); 6: a saved team is scored on its pinned builds (2026-11-05)
 export const RANKING_CACHE_KEY = "wtplus:myRankings:last";
 
 export interface RankingInputs {

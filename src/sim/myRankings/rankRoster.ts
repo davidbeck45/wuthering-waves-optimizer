@@ -294,8 +294,9 @@ export interface TeamCandidate {
   team: { name: string; characterIds: string[]; actions: TeamRotationAction[]; duration: number | string | null; handoffs?: Record<string, string[]> | null; buildIds?: Array<string | null> };
 }
 
-/** Every team the roster can be scored on: your saved teams with actions, then the curated and wuwa_calc team presets,
- *  each kept when its three members exist in your data (members without a weapon are flagged by the scorer, not excluded).
+/** Every team the roster can be scored on: your saved teams with actions (and their pinned builds: Build my team and
+ *  Whole account pin what they save, and a slot's pin decides which build it runs), then the curated and wuwa_calc team
+ *  presets, each kept when its three members exist in your data (members without a weapon are flagged by the scorer, not excluded).
  *  `skipped` counts your own teams that could not run. */
 export async function teamCandidatesOf(characters: Record<string, any>, teams: any[]): Promise<{ candidates: TeamCandidate[]; skipped: number }> {
   const wuwaTeams = await loadWuwaCalcTeamPresets();
@@ -304,7 +305,7 @@ export async function teamCandidatesOf(characters: Record<string, any>, teams: a
   const owned = (cids: Array<string | null>): cids is string[] => cids.length === 3 && cids.every((c) => !!c && !!characters[c]);
   for (const t of teams ?? []) {
     if (!t?.actions?.length || !owned(t.characterIds ?? [])) { skipped += 1; continue; }
-    candidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
+    candidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, buildIds: t.buildIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
   }
   for (const [source, list] of [["curated", teamRotationPresets], ["wuwa_calc", wuwaTeams]] as const) {
     for (const p of list) {
@@ -327,7 +328,7 @@ export async function scoreTeamCandidate(
   const enemy = options.enemy ?? RANKING_ENEMY;
   const resolution = await resolveTeamCharacters(c.team, characters, inventoryEchoes, { auto: options.autoTeamBuffs ?? true, enemyConfig: enemy });
   const result = await calcTeamRotationDamage(
-    { ...c.team, buildIds: resolution.auto ? resolution.buildIds : undefined },
+    { ...c.team, buildIds: resolution.buildIds }, // auto: baked into the records, so nulls; team buffs off: the team's own pins
     resolution.characters,
     enemy,
     inventoryEchoes,
