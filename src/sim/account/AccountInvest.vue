@@ -461,5 +461,14 @@ function rowTitle(item: InvestItem): string {
   .inv-row__value {
     font-size: 0.78rem;
   }
+  /* the item drops under the name when both don't fit, and wraps when it is wider than the row: the name and its R5 were
+     cut at 360 px ("Lethean…", "The Last…") */
+  .inv-row__title {
+    flex-wrap: wrap;
+    row-gap: 0.1rem;
+  }
+  .inv-tag {
+    white-space: normal;
+  }
 }
 </style>

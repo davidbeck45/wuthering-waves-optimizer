@@ -44,6 +44,11 @@ describe("my account", () => {
     cy.get("[data-test-account-empty]").should("exist");
     cy.get("[data-test-account-empty] [data-test-my-rankings-cta]").should("have.length", 3);
     cy.get("[data-test-account-hero]").should("not.exist");
+    // Import opens the section the card names: it landed on Preferences, with the section list behind a phone's menu
+    cy.contains("[data-test-my-rankings-cta]", "Import your export").should("have.attr", "href", "/settings?section=backup-restore").click();
+    cy.location("pathname").should("eq", "/settings");
+    cy.get("[data-test-settings-export-copy]").should("be.visible");
+    cy.visit("/account", seed({ empty: true }));
     cy.title().should("contain", "My account");
     // classic bar / v3 phone header: `btn-active`; v3 desktop rail: the rail item's own active class
     cy.get("[data-test-nav-rankings]").should("match", ".btn-active, .plus-nav__tab--on").click();
@@ -152,6 +157,8 @@ describe("my account", () => {
       expect($inner[0].getBoundingClientRect().right, "drawer inside the phone").to.be.at.most(412);
     });
     expectNoHorizontalScroll("/account drawer at 412 px");
+    // a swipe past the drawer's end stays in the drawer: it ran on and moved the page behind by 3,500 px
+    cy.get("[data-test-account-drawer]").should("have.css", "overscroll-behavior-y", "contain");
     cy.get("[data-test-account-drawer-close]").click({ force: true });
     cy.get("[data-test-account-drawer]").should("not.have.attr", "open");
     cy.viewport(360, 800);
@@ -159,5 +166,12 @@ describe("my account", () => {
       expect($grid.css("grid-template-columns").split(" ").length, "narrow phone roster columns").to.equal(1);
     });
     expectNoHorizontalScroll("/account at 360 px");
+    // an invest row keeps the whole item at 360 px: "Lethean…", "The Last…" lost the name and its R5. This fixture's items
+    // are too short to show that, so the row is handed one of the longest David's account prints
+    cy.get("[data-test-account-invest-row] .inv-tag__text").first().then(($tag) => {
+      $tag.text("Unflickering Valor R5");
+      expect($tag[0]!.scrollWidth, "the item whole in its tag").to.be.at.most($tag[0]!.clientWidth);
+      expect($tag[0]!.getBoundingClientRect().right, "and inside the row").to.be.at.most($tag.closest(".inv-row__body")[0]!.getBoundingClientRect().right + 0.5);
+    });
   });
 });
