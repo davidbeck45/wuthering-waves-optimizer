@@ -7,13 +7,13 @@
 //
 // The page snapshots every affected character into build history first ("Before Account plan", src/sim/buildHistory/)
 // and keeps one undo (`wtplus:buildAccount:undo:v1`, the last apply): created ids, every previous pin, the records of
-// the characters switched to their new build and the `equipped` maps. Restored verbatim while the touched records still
-// fingerprint as right after the apply; otherwise only what is still ours and unused is removed, and the page says what
-// it kept. Same rules as Build my team's apply.ts.
+// the characters switched to their new build and the `equipped` maps. Each character is decided on its own: one that
+// still fingerprints as right after the apply goes back verbatim, one changed since keeps what is in use, and the page
+// says which before and after. Same rules as Build my team's apply.ts, whose helpers do the work.
 import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
 import { snapshotCharacters } from "../../buildHistory/history";
 import { randomString } from "../../../utils/strings";
-import type { BuildTeamStores } from "../apply";
+import { buildExists, rollbackWrites, snapshotForWrite, undoCharacters, undoFates, type BuildTeamStores, type UndoClash } from "../apply";
 import { worthSaving } from "../buildTeamView";
 import type { BuildAccountResult } from "./buildAccount";
 
@@ -64,6 +64,7 @@ export interface AccountUndoOutcome {
   removed: Array<{ characterId: string; name: string }>;
   kept: Array<{ characterId: string; name: string; why: string }>;
   pinsRestored: number;
+  clashes: UndoClash[];
 }
 
 const clone = <T>(v: T): T => (v === undefined ? v : JSON.parse(JSON.stringify(v)));
@@ -92,21 +93,27 @@ export function applyAccountPlan(stores: BuildTeamStores, request: AccountApplyR
     if (request.makeActive) activated.push({ characterId: m.characterId, record: clone(record ?? {}) });
   }
   const inventory = request.makeActive ? { equipped: clone(stores.inventory.equipped ?? {}), equippedPresets: clone(stores.inventory.equippedPresets ?? {}) } : null;
+  const before = snapshotForWrite(stores, request.members.map((m) => m.characterId), request.members.flatMap((m) => m.pins.map((p) => p.teamId)));
 
-  for (const m of request.members) {
-    stores.character.ensureCharacterBuilds(m.characterId);
-    const record = stores.character.characters[m.characterId];
-    const name = accountBuildName((record.builds ?? []).map((b: any) => String(b.name ?? "")));
-    const build = { id: randomString(12), name, createdAt: now, updatedAt: now, ...clone(m.draft) };
-    record.builds.push(build);
-    created.push({ characterId: m.characterId, buildId: build.id, name });
-    for (const pin of m.pins) {
-      const team = stores.team.teams.find((t) => t.id === pin.teamId);
-      if (!team) continue;
-      pins.push({ teamId: pin.teamId, slot: pin.slot, previous: team.buildIds?.[pin.slot] ?? null, buildId: build.id, characterId: m.characterId });
-      stores.team.setTeamCharacterBuild(team.id, pin.slot, build.id);
+  try {
+    for (const m of request.members) {
+      stores.character.ensureCharacterBuilds(m.characterId);
+      const record = stores.character.characters[m.characterId];
+      const name = accountBuildName((record.builds ?? []).map((b: any) => String(b.name ?? "")));
+      const build = { id: randomString(12), name, createdAt: now, updatedAt: now, ...clone(m.draft) };
+      record.builds.push(build);
+      created.push({ characterId: m.characterId, buildId: build.id, name });
+      for (const pin of m.pins) {
+        const team = stores.team.teams.find((t) => t.id === pin.teamId);
+        if (!team) continue;
+        pins.push({ teamId: pin.teamId, slot: pin.slot, previous: team.buildIds?.[pin.slot] ?? null, buildId: build.id, characterId: m.characterId });
+        stores.team.setTeamCharacterBuild(team.id, pin.slot, build.id);
+      }
+      if (request.makeActive) stores.character.equipBuild(m.characterId, build.id);
     }
-    if (request.makeActive) stores.character.equipBuild(m.characterId, build.id);
+  } catch (e) {
+    rollbackWrites(stores, before);
+    throw e;
   }
 
   const pinnedTeams = [...new Set(pins.map((p) => p.teamId))];
@@ -119,70 +126,22 @@ export function applyAccountPlan(stores: BuildTeamStores, request: AccountApplyR
 }
 
 export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord): AccountUndoOutcome {
-  const touched = [...new Set(undo.created.map((c) => c.characterId))];
   const teamIds = [...new Set(undo.pins.map((p) => p.teamId))];
-  const untouched =
-    touched.every((id) => fp(stores.character.characters[id]) === undo.after[id]) &&
-    teamIds.every((id) => teamFp(stores, id) === undo.after[`team:${id}`]) &&
-    (!undo.inventory || invFp(stores) === undo.after.inventory);
-  const removed: AccountUndoOutcome["removed"] = [];
-  const kept: AccountUndoOutcome["kept"] = [];
+  const fates = undoFates(stores, undo);
+  const exact = fates.every((f) => f.fate === "restore") && teamIds.every((id) => teamFp(stores, id) === undo.after[`team:${id}`]) && (!undo.inventory || invFp(stores) === undo.after.inventory);
+  const { removed, kept, clashes } = undoCharacters(stores, undo, fates, exact);
   let pinsRestored = 0;
-  const restorePin = (p: AccountUndoRecord["pins"][number]): void => {
-    if (!stores.team.teams.some((t) => t.id === p.teamId)) return;
-    stores.team.setTeamCharacterBuild(p.teamId, p.slot, p.previous);
-    pinsRestored += 1;
-  };
-
-  if (untouched) {
-    for (const a of undo.activated) stores.character.characters[a.characterId] = clone(a.record);
-    if (undo.inventory) {
-      stores.inventory.equipped = clone(undo.inventory.equipped);
-      stores.inventory.equippedPresets = clone(undo.inventory.equippedPresets);
-    }
-    const restoredIds = new Set(undo.activated.map((a) => a.characterId));
-    for (const c of undo.created) {
-      if (restoredIds.has(c.characterId)) {
-        removed.push({ characterId: c.characterId, name: c.name });
-        continue;
-      }
-      const record = stores.character.characters[c.characterId];
-      if (!record) continue;
-      record.builds = (record.builds ?? []).filter((b: any) => b.id !== c.buildId);
-      if (undo.synthesized.includes(c.characterId)) {
-        delete record.builds;
-        delete record.activeBuildId;
-      }
-      removed.push({ characterId: c.characterId, name: c.name });
-    }
-    for (const p of [...undo.pins].reverse()) restorePin(p);
-    clearAccountUndo();
-    return { kind: "exact", removed, kept, pinsRestored };
-  }
-
-  // something changed since: never overwrite a record, only take out what is still ours and unused
-  for (const c of undo.created) {
-    const record = stores.character.characters[c.characterId];
-    const build = record?.builds?.find((b: any) => b.id === c.buildId);
-    if (!build) continue;
-    if (record.activeBuildId === c.buildId) {
-      kept.push({ characterId: c.characterId, name: c.name, why: "it is the active build now" });
-      continue;
-    }
-    if ((build.updatedAt ?? 0) > undo.at) {
-      kept.push({ characterId: c.characterId, name: c.name, why: "it was edited after it was made" });
-      continue;
-    }
-    record.builds = record.builds.filter((b: any) => b.id !== c.buildId);
-    removed.push({ characterId: c.characterId, name: c.name });
-  }
   for (const p of [...undo.pins].reverse()) {
-    const gone = !stores.character.characters[p.characterId]?.builds?.some((b: any) => b.id === p.buildId);
     const team = stores.team.teams.find((t) => t.id === p.teamId);
-    if (gone && team?.buildIds?.[p.slot] === p.buildId) restorePin(p);
+    if (!team) continue;
+    // changed since: a pin goes back only where its build is gone and the slot still holds it
+    if (!exact && (buildExists(stores, p.characterId, p.buildId) || team.buildIds?.[p.slot] !== p.buildId)) continue;
+    // and only to a build that still exists: another undo may have taken it out since
+    stores.team.setTeamCharacterBuild(p.teamId, p.slot, buildExists(stores, p.characterId, p.previous) ? p.previous : null);
+    pinsRestored += 1;
   }
   clearAccountUndo();
-  return { kind: "partial", removed, kept, pinsRestored };
+  return { kind: exact ? "exact" : "partial", removed, kept, pinsRestored, clashes };
 }
 
 /** Who the plan saves: every member with a new build, except one who keeps exactly today's echoes, scores the same with

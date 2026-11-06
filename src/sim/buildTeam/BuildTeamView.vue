@@ -242,8 +242,8 @@ import BuildTeamPlanCard from "./BuildTeamPlanCard.vue";
 import BuildTeamResultCard from "./BuildTeamResultCard.vue";
 import BuildTeamSwitch from "./BuildTeamSwitch.vue";
 import { menuErPercent, teamSlotRotation } from "./buildTeam";
-import { buildNameFor } from "./apply";
-import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary } from "./buildTeamView";
+import { buildNameFor, saveFailedText } from "./apply";
+import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary, undoConfirm, undoDoneText } from "./buildTeamView";
 import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
 import { usePlusBar } from "../shell/plusBar";
 import "./buildTeam.css";
@@ -377,23 +377,31 @@ async function onSave(): Promise<void> {
     { title: `Save ${toSave.value.length} team build${toSave.value.length === 1 ? "" : "s"}?`, items, confirmLabel: "Save", variant: makeActive.value ? "warning" : "primary" },
   );
   if (!ok) return;
-  const out = bt.save(makeActive.value);
-  if (out) showToast(`Saved ${out.created.length} build${out.created.length === 1 ? "" : "s"} for ${team.value.name}. Undo is on this page.`, "success", 6000);
+  try {
+    const out = await bt.save(makeActive.value);
+    if (out) showToast(`Saved ${out.created.length} build${out.created.length === 1 ? "" : "s"} for ${team.value?.name}. Undo is on this page.`, "success", 6000);
+  } catch (e) {
+    showToast(saveFailedText(e), "error", 10000);
+    if (!result.value) void loadFromRoute(); // the review went with the account it was planned on
+  }
 }
 
 async function onUndo(): Promise<void> {
   const rec = bt.undoRecord.value;
-  const ok = await confirm(rec ? `Remove the ${rec.created.length} build${rec.created.length === 1 ? "" : "s"} saved for “${rec.teamName}” and put the team's pins back?` : "Undo the last build?", {
+  const words = undoConfirm(bt.undoPreview(), (n) => `${n} build${n === 1 ? "" : "s"} saved for “${rec?.teamName}”`, "put the team's pins back");
+  const ok = await confirm(rec ? words.message : "Undo the last build?", {
     title: "Undo last build",
-    items: rec?.created.map((c) => `${characterDisplayName(c.characterId)}: “${c.name}”`),
+    items: rec ? words.items : undefined,
     confirmLabel: "Undo",
     variant: "warning",
   });
   if (!ok) return;
   const out = bt.undo();
   if (!out) return;
-  if (out.kind === "exact") showToast(`Undone: ${out.removed.length} build${out.removed.length === 1 ? "" : "s"} removed and everything put back as it was.`, "success", 6000);
-  else showToast(`Partly undone: ${out.removed.length} removed${out.kept.length ? `; kept ${out.kept.map((k) => `${characterDisplayName(k.characterId)} (${k.why})`).join(", ")}` : ""}.`, "warning", 9000);
+  const done = undoDoneText(out);
+  showToast(done.text, done.tone, done.tone === "success" ? 6000 : 9000);
+  // the plan and any review were read from what the undo just changed: only a review of the undone save itself stands
+  if (!result.value) void loadFromRoute();
 }
 
 watch(() => route.fullPath, () => {

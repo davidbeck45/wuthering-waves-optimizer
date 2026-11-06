@@ -2,7 +2,7 @@
 // ranks (its cached ranking when it holds this exact data), Riley's plan per team through the app's one solver worker
 // (rileyClient), the search through upstream's optimizer workers (workerBackend.ts, the backend Build my team uses —
 // no new worker); nothing is written until the player confirms (accountApply.ts).
-import { computed, reactive, ref, shallowRef, toRaw } from "vue";
+import { computed, nextTick, reactive, ref, shallowRef, toRaw } from "vue";
 import { useCharacterStore } from "../../../stores/character";
 import { useInventoryStore } from "../../../stores/inventory";
 import { useTeamRotationsStore } from "../../../stores/teamRotations";
@@ -18,10 +18,11 @@ import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
 import { workerBackend } from "../workerBackend";
 import { OPTIONS_KEY } from "../useBuildTeam";
-import type { BuildTeamStores } from "../apply";
+import { accountFingerprint, SaveRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
+import { accountStoresRefused } from "../../storage/persistGuard";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildAccount, type AccountPhase, type BuildAccountResult } from "./buildAccount";
-import { accountApplyRequest, accountUndoIsLive, readAccountUndo, saveAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
+import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, saveAccountPlan, saveAccountUndo, undoAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -87,9 +88,13 @@ export function useBuildAccount() {
   let stopFlag = false;
   /** a save or an undo moved the saved teams' pins and their damage: the rows and their specs are out of date */
   let rowsStale = false;
+  /** the account the review on screen was planned on: it stands for that account and no other */
+  let plannedOn: string | null = null;
+  let saving = false;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => accountUndoIsLive(stores(), undoRecord.value));
+  const reviewIsCurrent = (): boolean => plannedOn === accountFingerprint(stores());
   const byId = computed(() => new Map(choices.value.map((c) => [c.id, c])));
   const chosen = computed(() => selected.value.map((id) => byId.value.get(id)).filter((c): c is AccountTeamChoice => !!c));
   /** characters in two or more ticked teams: one build, scored in the first */
@@ -219,6 +224,7 @@ export function useBuildAccount() {
     const members = [...new Set(teams.flatMap((t) => t.characterIds))];
     progress.value = Object.fromEntries(members.map((id) => [id, { phase: "waiting", processed: 0, generated: 0 }]));
     const backend = workerBackend({ workerCount: resolveOptimizerWorkerCount((settingsStore.config as { optimizerWorkerCount?: unknown })?.optimizerWorkerCount) });
+    const fingerprint = accountFingerprint(stores());
     try {
       const chars = plain(characterStore.characters);
       const echoes = plain(inventoryStore.echoes);
@@ -250,6 +256,7 @@ export function useBuildAccount() {
       );
       if (ctrl.signal.aborted) return;
       progress.value = Object.fromEntries(Object.entries(progress.value).map(([k, v]) => [k, { ...v, phase: "done" }]));
+      plannedOn = fingerprint;
       result.value = out;
       phase.value = "result";
     } catch (e) {
@@ -282,13 +289,49 @@ export function useBuildAccount() {
   /** What a save would write: every member with a new build (accountApply.ts `accountApplyRequest`). */
   const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value).members : []));
 
-  function save(): AccountApplyOutcome | null {
-    if (!result.value || !toSave.value.length) return null;
-    const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value), { echoes: inventoryStore.echoes as any[] });
-    applied.value = out;
-    undoRecord.value = out.undo;
+  /** The review no longer says what the account is: back to Teams, the rows read again. */
+  function dropReview(): void {
+    result.value = null;
+    applied.value = null;
+    plannedOn = null;
     rowsStale = true;
-    return out;
+    void load(true);
+  }
+
+  /** The confirmed save, all or nothing: a store write that throws is put back in `applyAccountPlan`, a write the
+   *  browser refused here (only the next tick shows it), and the undo record of the save before stays. Throws
+   *  `SaveRefused` or the store's error. */
+  async function save(): Promise<AccountApplyOutcome | null> {
+    if (!result.value || !toSave.value.length || saving) return null;
+    if (!reviewIsCurrent()) {
+      dropReview();
+      throw new SaveRefused("stale");
+    }
+    saving = true;
+    try {
+      const previous = readAccountUndo();
+      const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value), { echoes: inventoryStore.echoes as any[] });
+      await nextTick();
+      if (accountStoresRefused()) {
+        undoAccountPlan(stores(), out.undo);
+        if (previous) saveAccountUndo(previous);
+        else clearAccountUndo();
+        await nextTick();
+        throw new SaveRefused("storage");
+      }
+      applied.value = out;
+      undoRecord.value = out.undo;
+      rowsStale = true;
+      return out;
+    } finally {
+      saving = false;
+    }
+  }
+
+  /** What Undo would do with each build, for the confirm. */
+  function undoPreview(): UndoFate[] {
+    const rec = undoRecord.value ?? readAccountUndo();
+    return rec ? undoFates(stores(), rec) : [];
   }
 
   function undo(): AccountUndoOutcome | null {
@@ -299,6 +342,10 @@ export function useBuildAccount() {
     applied.value = null;
     rowsStale = true;
     if (phase.value === "choose") void load(true);
+    // a review planned after the undone save (or one this undo could only partly take back) was read from what just
+    // changed: its "keeps today's echoes" and "already wears it" are no longer true, and a Save would write less than
+    // it shows, or one echo on two characters
+    else if (result.value && !reviewIsCurrent()) dropReview();
     return out;
   }
 
@@ -336,6 +383,7 @@ export function useBuildAccount() {
     cancel,
     save,
     undo,
+    undoPreview,
     backToTeams,
   };
 }

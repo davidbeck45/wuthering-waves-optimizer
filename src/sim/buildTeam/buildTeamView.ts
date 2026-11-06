@@ -2,6 +2,7 @@
 import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import { characterDisplayName } from "../display/names";
+import type { UndoClash, UndoFate } from "./apply";
 import { shortfallText, type BuildTeamResult, type EchoSource, type MemberOutcome } from "./buildTeam";
 import { LAYOUT_COSTS, type MemberPlan } from "./rileyPlan";
 
@@ -200,6 +201,28 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
   }
   if (plan?.sets.length && !m.meetsPlanSets && m.relaxed !== "layout") out.push({ tone: "warn", text: `Wears ${Object.entries(m.setsWorn).map(([k, n]) => `${n} ${setName(k)}`).join(" + ")}, not the plan's ${plan.setsLabel}.` });
   return out;
+}
+
+/** The undo confirm, true to what Undo will do: a build changed since the save stays, and it says so before the tap.
+ *  `builds(n)`: "9 Account plan builds". */
+export function undoConfirm(fates: readonly UndoFate[], builds: (n: number) => string, pinsBack: string): { message: string; items: string[] } {
+  const live = fates.filter((f) => f.fate !== "gone");
+  const stay = live.filter((f) => f.fate === "keep").length;
+  const items = live.map((f) => `${characterDisplayName(f.characterId)}: “${f.name}”${f.fate === "keep" ? ` stays (${f.why})` : ""}`);
+  if (!stay) return { message: `Remove the ${builds(live.length)} and ${pinsBack}?`, items };
+  if (stay === live.length) return { message: `None of the ${builds(live.length)} can be removed: each one changed after the save, so everything stays as it is and this Undo ends.`, items };
+  return { message: `Remove ${live.length - stay} of the ${builds(live.length)} and put their pins back? The ones marked below changed after the save, so they stay.`, items };
+}
+
+/** What Undo did, in one toast. */
+export function undoDoneText(out: { kind: "exact" | "partial"; removed: readonly unknown[]; kept: ReadonlyArray<{ characterId: string; why: string }>; clashes: readonly UndoClash[] }): { text: string; tone: "success" | "warning" } {
+  const n = out.removed.length;
+  const builds = `${n} build${n === 1 ? "" : "s"} removed`;
+  if (out.kind === "exact") return { text: `Undone: ${builds} and everything put back as it was.`, tone: "success" };
+  if (!out.kept.length) return { text: `Undone: ${builds}.`, tone: "success" };
+  const pairs = out.clashes.map((c) => `${characterDisplayName(c.kept)} and ${characterDisplayName(c.wearer)}`);
+  const clash = pairs.length ? ` ${pairs.join(", ")} now wear the same echo: their builds share it.` : "";
+  return { text: `Partly undone: ${n} removed; kept ${out.kept.map((k) => `${characterDisplayName(k.characterId)} (${k.why})`).join(", ")}.${clash}`, tone: "warning" };
 }
 
 /** "Pact of Neonlight Leap 5pc (Neonlight…)" — the buffs switched on, named. */

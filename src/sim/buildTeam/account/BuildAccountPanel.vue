@@ -258,7 +258,8 @@ import PresetNameLabel from "../../display/PresetNameLabel.vue";
 import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
-import { compactNum, deltaText, deltaTone, fmtInt, pctText } from "../buildTeamView";
+import { saveFailedText } from "../apply";
+import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
 import { WEIGHT_CHOICES, type AccountTeamChoice } from "./accountTeams";
 import { accountBuildName } from "./accountApply";
 import { accountRatio, confirmItems, erNeedsMet, memberNote, moveText, ratioText, searchLine, secondsText, STAGE_TEXT, whyLower } from "./accountView";
@@ -318,23 +319,28 @@ async function onSave(): Promise<void> {
     { title: `Save ${toSave.value.length} Account plan build${toSave.value.length === 1 ? "" : "s"}?`, items: confirmItems(r, toSave.value, makeActive.value, names), confirmLabel: "Save", variant: makeActive.value ? "warning" : "primary" },
   );
   if (!ok) return;
-  const out = ba.save();
-  if (out) showToast(`Saved ${out.created.length} Account plan build${out.created.length === 1 ? "" : "s"}. Undo is on this page.`, "success", 6000);
+  try {
+    const out = await ba.save();
+    if (out) showToast(`Saved ${out.created.length} Account plan build${out.created.length === 1 ? "" : "s"}. Undo is on this page.`, "success", 6000);
+  } catch (e) {
+    showToast(saveFailedText(e), "error", 10000);
+  }
 }
 
 async function onUndo(): Promise<void> {
   const rec = ba.undoRecord.value;
-  const ok = await confirm(rec ? `Remove the ${rec.created.length} Account plan build${rec.created.length === 1 ? "" : "s"} and put every pin back?` : "Undo the account plan?", {
+  const words = undoConfirm(ba.undoPreview(), (n) => `${n} Account plan build${n === 1 ? "" : "s"}`, "put every pin back");
+  const ok = await confirm(rec ? words.message : "Undo the account plan?", {
     title: "Undo account plan",
-    items: rec?.created.map((c) => `${characterDisplayName(c.characterId)}: “${c.name}”`),
+    items: rec ? words.items : undefined,
     confirmLabel: "Undo",
     variant: "warning",
   });
   if (!ok) return;
   const out = ba.undo();
   if (!out) return;
-  if (out.kind === "exact") showToast(`Undone: ${out.removed.length} build${out.removed.length === 1 ? "" : "s"} removed and everything put back as it was.`, "success", 6000);
-  else showToast(`Partly undone: ${out.removed.length} removed${out.kept.length ? `; kept ${out.kept.map((k) => `${characterDisplayName(k.characterId)} (${k.why})`).join(", ")}` : ""}.`, "warning", 9000);
+  const done = undoDoneText(out);
+  showToast(done.text, done.tone, done.tone === "success" ? 6000 : 9000);
 }
 
 onMounted(() => void ba.load());

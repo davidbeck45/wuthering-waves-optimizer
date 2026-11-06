@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Build it for me": the page's state. Plain copies of the stores go into the engine (buildTeam.ts);
 // Riley's plan comes through the app's one solver worker (rileyClient), the search through upstream's optimizer
 // workers (workerBackend.ts); nothing is written until the player confirms (apply.ts).
-import { computed, reactive, ref, shallowRef, toRaw } from "vue";
+import { computed, nextTick, reactive, ref, shallowRef, toRaw } from "vue";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -16,7 +16,8 @@ import { OPTIONS_KEY, readBuildOptions, type BuildOptions } from "./options";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
 import { priorityOrder, type MemberPlan } from "./rileyPlan";
 import { workerBackend } from "./workerBackend";
-import { applyBuildTeam, readUndo, undoBuildTeam, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoOutcome, type UndoRecord } from "./apply";
+import { accountFingerprint, applyBuildTeam, clearUndo, readUndo, SaveRefused, saveUndo, undoBuildTeam, undoFates, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoFate, type UndoOutcome, type UndoRecord } from "./apply";
+import { accountStoresRefused } from "../storage/persistGuard";
 import { snapshotCharacters } from "../buildHistory/history";
 import { defaultSaveSlots, shareConflicts } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
@@ -62,9 +63,13 @@ export function useBuildTeam() {
    *  echoes they wear and those stay out of the search — the exact run the row's figure came from */
   const only = ref<string | null>(null);
   let controller: AbortController | null = null;
+  /** the account the review on screen was planned on: it stands for that account and no other */
+  let plannedOn: string | null = null;
+  let saving = false;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => undoIsLive(stores(), undoRecord.value));
+  const reviewIsCurrent = (): boolean => plannedOn === accountFingerprint(stores());
 
   /** Echoes worn by characters outside the team (left out unless the option is on). */
   const wornOutsideCount = computed(() => {
@@ -170,6 +175,7 @@ export function useBuildTeam() {
     const onlySlot = only.value ? team.value.characterIds.indexOf(only.value) : -1;
     const runPlans: MemberPlan[] = onlySlot >= 0 ? [] : plans.value.plans;
     if (onlySlot >= 0) runPlans[onlySlot] = plans.value.plans[onlySlot]!;
+    const fingerprint = accountFingerprint(stores());
     try {
       const out = await buildMyTeam(
         {
@@ -194,6 +200,7 @@ export function useBuildTeam() {
       );
       if (ctrl.signal.aborted) return;
       progress.value = progress.value.map((p) => ({ ...p, phase: "done" }));
+      plannedOn = fingerprint;
       result.value = out;
       // ticked by default: new echoes that score at least as much (or less only to meet an ER floor today's build
       // misses), the same echoes only when the run's buff settings score more — plus any teammate a ticked build
@@ -242,18 +249,53 @@ export function useBuildTeam() {
    *  them twice): said in the save bar and the confirm dialog. */
   const conflicts = computed(() => shareConflicts(result.value?.members ?? [], new Set(toSave.value.map((m) => m.characterId))));
 
-  function save(makeActive: boolean): ApplyOutcome | null {
-    if (!team.value || !result.value || !toSave.value.length) return null;
-    // build history: each member's build as it is now, before the save (deduped against their newest version)
-    snapshotCharacters(toSave.value.map((m) => m.characterId), "before-build-team", { characters: characterStore.characters, echoes: inventoryStore.echoes as any[] });
-    const out = applyBuildTeam(stores(), {
-      team: { id: team.value.id, name: team.value.name, characterIds: team.value.characterIds },
-      members: toSave.value.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })),
-      makeActive,
-    });
-    applied.value = out;
-    undoRecord.value = out.undo;
-    return out;
+  /** The review no longer says what the account is: `result` goes, and the page reads the team again (`load`). */
+  function dropReview(): void {
+    result.value = null;
+    applied.value = null;
+    rileyAfter.value = null;
+    plannedOn = null;
+  }
+
+  /** The confirmed save, all or nothing: a store write that throws is put back in `applyBuildTeam`, a write the browser
+   *  refused here (only the next tick shows it), and the undo record of the save before stays. Throws `SaveRefused` or
+   *  the store's error. */
+  async function save(makeActive: boolean): Promise<ApplyOutcome | null> {
+    if (!team.value || !result.value || !toSave.value.length || saving) return null;
+    if (!reviewIsCurrent()) {
+      dropReview();
+      throw new SaveRefused("stale");
+    }
+    saving = true;
+    try {
+      const previous = readUndo();
+      // build history: each member's build as it is now, before the save (deduped against their newest version)
+      snapshotCharacters(toSave.value.map((m) => m.characterId), "before-build-team", { characters: characterStore.characters, echoes: inventoryStore.echoes as any[] });
+      const out = applyBuildTeam(stores(), {
+        team: { id: team.value.id, name: team.value.name, characterIds: team.value.characterIds },
+        members: toSave.value.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })),
+        makeActive,
+      });
+      await nextTick();
+      if (accountStoresRefused()) {
+        undoBuildTeam(stores(), out.undo);
+        if (previous) saveUndo(previous);
+        else clearUndo();
+        await nextTick();
+        throw new SaveRefused("storage");
+      }
+      applied.value = out;
+      undoRecord.value = out.undo;
+      return out;
+    } finally {
+      saving = false;
+    }
+  }
+
+  /** What Undo would do with each build, for the confirm. */
+  function undoPreview(): UndoFate[] {
+    const rec = undoRecord.value ?? readUndo();
+    return rec ? undoFates(stores(), rec) : [];
   }
 
   function undo(): UndoOutcome | null {
@@ -263,6 +305,9 @@ export function useBuildTeam() {
     const out = undoBuildTeam(stores(), rec);
     undoRecord.value = null;
     applied.value = null;
+    // a review planned after the undone save (or one this undo could only partly take back) was read from what just
+    // changed: it still shows the builds that are gone
+    if (result.value && !reviewIsCurrent()) dropReview();
     return out;
   }
 
@@ -295,6 +340,7 @@ export function useBuildTeam() {
     cancel,
     save,
     undo,
+    undoPreview,
     saveOptions,
   };
 }

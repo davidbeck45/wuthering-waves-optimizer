@@ -1,7 +1,7 @@
 // Wuthering Tools+ "Build it for me" — the page's view model: deltas, the layout's cost groups, the buffs switched on
 // in words, and the notes a result card explains itself with.
 import { describe, expect, it } from "vitest";
-import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, shareConflicts, worthSaving } from "./buildTeamView";
+import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, shareConflicts, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
 import type { MemberOutcome } from "./buildTeam";
 
@@ -138,5 +138,36 @@ describe("build-team view model", () => {
     expect(roleLine({ mainDps: true, share: 0.87 })).toBe("Main DPS · 87 % of team DPS");
     expect(roleLine({ mainDps: false, share: 0.0127 })).toBe("Support · 1.3 % of team DPS");
     expect(roleLine({ mainDps: false, share: null })).toBe("Support");
+  });
+});
+
+describe("Undo's words", () => {
+  const f = (characterId: string, fate: "restore" | "remove" | "keep" | "gone", why?: string) => ({ characterId, name: "Account plan", buildId: `b-${characterId}`, fate, why });
+  const builds = (n: number): string => `${n} Account plan build${n === 1 ? "" : "s"}`;
+
+  it("the confirm lists what it will remove, as it always did, when nothing changed", () => {
+    const out = undoConfirm([f("Aemeath", "restore"), f("Chisa", "restore")], builds, "put every pin back");
+    expect(out.message).toBe("Remove the 2 Account plan builds and put every pin back?");
+    expect(out.items).toEqual(["Aemeath: “Account plan”", "Chisa: “Account plan”"]);
+  });
+
+  it("says before the tap which builds stay", () => {
+    const out = undoConfirm([f("Aemeath", "restore"), f("Chisa", "keep", "it is the active build now"), f("Lucilla", "gone")], builds, "put every pin back");
+    expect(out.message).toBe("Remove 1 of the 2 Account plan builds and put their pins back? The ones marked below changed after the save, so they stay.");
+    expect(out.items).toEqual(["Aemeath: “Account plan”", "Chisa: “Account plan” stays (it is the active build now)"]);
+  });
+
+  it("says so when nothing can be removed, not that it will remove them", () => {
+    const out = undoConfirm([f("Aemeath", "keep", "it is the active build now")], builds, "put every pin back");
+    expect(out.message).toMatch(/^None of the 1 Account plan build can be removed/);
+  });
+
+  it("after: all back, all removed, or partly with who stayed and who now shares an echo", () => {
+    const removed = [{ characterId: "Aemeath", name: "x" }];
+    expect(undoDoneText({ kind: "exact", removed, kept: [], clashes: [] })).toEqual({ text: "Undone: 1 build removed and everything put back as it was.", tone: "success" });
+    expect(undoDoneText({ kind: "partial", removed, kept: [], clashes: [] })).toEqual({ text: "Undone: 1 build removed.", tone: "success" });
+    const partly = undoDoneText({ kind: "partial", removed, kept: [{ characterId: "Chisa", why: "it is the active build now" }], clashes: [{ kept: "Chisa", wearer: "Aemeath" }] });
+    expect(partly.tone).toBe("warning");
+    expect(partly.text).toBe("Partly undone: 1 removed; kept Chisa (it is the active build now). Chisa and Aemeath now wear the same echo: their builds share it.");
   });
 });

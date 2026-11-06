@@ -17,6 +17,7 @@ import { inlineBackend } from "../headlessOptimizer";
 import { echoKeysOf, emptyPlan, parseMainStats, type MemberPlan } from "../rileyPlan";
 import type { BuildTeamStores } from "../apply";
 import { accountReuse, buildAccount, type BuildAccountResult } from "./buildAccount";
+import { undoFates } from "../apply";
 import { ACCOUNT_UNDO_KEY, accountApplyRequest, accountBuildName, accountUndoIsLive, readAccountUndo, saveAccountPlan, undoAccountPlan, undoAccountPlanSaved } from "./accountApply";
 import { defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 
@@ -352,5 +353,62 @@ describe("saving the account plan", () => {
     expect(stores.character.characters.Cartethyia.weapon).toBe("SomethingElse");
     expect(stores.character.characters.Cartethyia.builds.some((b: any) => b.name === "Account plan")).toBe(false);
     expect(stores.team.teams[0].buildIds).toEqual([null, null, null]);
+  });
+
+  it("after one member's edit, undo gives everyone else back as they were and keeps only the changed one", () => {
+    const ciaccona = JSON.stringify(stores.character.characters.Ciaccona ?? null);
+    const out = saveAccountPlan(stores, accountApplyRequest(result, true), { echoes });
+    const plan = (id: string): string => out.created.find((c) => c.characterId === id)!.buildId;
+    stores.character.characters.Cartethyia.level = "80"; // one small edit after the save
+
+    expect(undoFates(stores, out.undo).map((f) => [f.characterId, f.fate])).toEqual([["Cartethyia", "keep"], ["Ciaccona", "restore"]]);
+    const undone = undoAccountPlan(stores, out.undo);
+
+    expect(undone.kind).toBe("partial");
+    expect(undone.removed.map((r) => r.characterId)).toEqual(["Ciaccona"]);
+    expect(undone.kept).toEqual([{ characterId: "Cartethyia", name: "Account plan", why: "it is the active build now" }]);
+    expect(JSON.stringify(stores.character.characters.Ciaccona ?? null)).toBe(ciaccona);
+    // her pin goes back; the kept build stays pinned
+    expect(stores.team.teams[0].buildIds.slice(0, 2)).toEqual([plan("Cartethyia"), null]);
+    // the equipped map follows who went back, and only them
+    for (const who of Object.values(stores.inventory.equipped)) expect((who as Record<string, number>).Ciaccona).toBe(undefined);
+    const hers = Object.values(stores.character.characters.Cartethyia.echoes ?? {}).map((s: any) => s?.echoId).filter(Boolean);
+    for (const id of hers) expect(stores.inventory.equipped[id]?.Cartethyia).toBeDefined();
+  });
+
+  it("says who shares an echo when a kept build and someone gone back both wear it", () => {
+    const out = saveAccountPlan(stores, accountApplyRequest(result, true), { echoes });
+    const ciaccona = out.undo.activated.find((a) => a.characterId === "Ciaccona")!;
+    const shared = Object.values(stores.character.characters.Cartethyia.echoes).find((s: any) => s?.echoId) as { echoId: string };
+    ciaccona.record.echoes = { 0: { echoId: shared.echoId } }; // the build she goes back to wears an echo the plan moved
+    stores.character.characters.Cartethyia.level = "80";
+    expect(undoAccountPlan(stores, out.undo).clashes).toEqual([{ kept: "Cartethyia", wearer: "Ciaccona" }]);
+  });
+
+  it("a pin goes back only to a build that still exists", () => {
+    const cart = stores.character.characters.Cartethyia;
+    cart.builds.push({ id: "older", name: "Built for Chisa", echoes: {} });
+    stores.team.teams[0].buildIds = ["older", null, null];
+    const out = saveAccountPlan(stores, accountApplyRequest(result, false), { echoes });
+    // another undo takes that build out first
+    cart.builds = cart.builds.filter((b: any) => b.id !== "older");
+    undoAccountPlan(stores, out.undo);
+    expect(stores.team.teams[0].buildIds[0]).toBeNull();
+  });
+
+  it("a store write that throws part-way puts everything back, and the save before keeps its undo", () => {
+    const first = saveAccountPlan(stores, accountApplyRequest(result, false), { echoes });
+    const pristine = snapshot();
+    const real = stores.character.equipBuild;
+    let calls = 0;
+    stores.character.equipBuild = (id: string, buildId: string) => {
+      calls += 1;
+      if (calls === 2) throw new Error("injected");
+      real(id, buildId);
+    };
+    expect(() => saveAccountPlan(stores, accountApplyRequest(result, true), { echoes })).toThrow("injected");
+    expect(snapshot()).toBe(pristine);
+    expect(readAccountUndo()?.at).toBe(first.undo.at);
+    expect(readAccountUndo()?.created.map((c) => c.buildId)).toEqual(first.created.map((c) => c.buildId));
   });
 });

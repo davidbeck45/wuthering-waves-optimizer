@@ -360,6 +360,47 @@ describe("apply and undo", () => {
     expect(stores.team.teams[0].buildIds[0]).toBeNull();
   });
 
+  it("after one member's edit, undo takes the other member back as they were and keeps only the changed build", () => {
+    const chisa = JSON.stringify(stores.character.characters.Chisa);
+    const out = applyBuildTeam(stores, {
+      team: { id: "t1", name: "Test team", characterIds: ["Cartethyia", "Chisa", null] },
+      members: [{ slot: 0, characterId: "Cartethyia", draft: draftFor(someIds()) }, { slot: 1, characterId: "Chisa", draft: { weapon: "Kumokiri", echoes: {} } }],
+      makeActive: true,
+    });
+    stores.character.characters.Cartethyia.level = "80";
+    const undone = undoBuildTeam(stores, out.undo);
+    expect(undone.kind).toBe("partial");
+    expect(undone.removed.map((r) => r.characterId)).toEqual(["Chisa"]);
+    expect(undone.kept.map((k) => k.characterId)).toEqual(["Cartethyia"]);
+    expect(JSON.stringify(stores.character.characters.Chisa)).toBe(chisa);
+    expect(stores.team.teams[0].buildIds).toEqual([out.created[0]!.buildId, null, null]);
+  });
+
+  it("a pin goes back only to a build that still exists", () => {
+    const c = stores.character.characters.Cartethyia;
+    c.builds.push({ id: "older", name: "Account plan", echoes: {} });
+    stores.team.teams[0].buildIds = ["older", null, null];
+    const out = applyBuildTeam(stores, { team: { id: "t1", name: "Test team", characterIds: ["Cartethyia", "Chisa", null] }, members: [{ slot: 0, characterId: "Cartethyia", draft: draftFor(someIds()) }] });
+    c.builds = c.builds.filter((b: any) => b.id !== "older");
+    undoBuildTeam(stores, out.undo);
+    expect(stores.team.teams[0].buildIds[0]).toBeNull();
+  });
+
+  it("a store write that throws part-way puts everything back and leaves no undo", () => {
+    const pristine = snapshot();
+    const real = stores.character.equipBuild;
+    let calls = 0;
+    stores.character.equipBuild = (id: string, buildId: string) => {
+      calls += 1;
+      if (calls === 2) throw new Error("injected");
+      real(id, buildId);
+    };
+    const request = { team: { id: "t1", name: "Test team", characterIds: ["Cartethyia", "Chisa", null] }, members: [{ slot: 0, characterId: "Cartethyia", draft: draftFor(someIds()) }, { slot: 1, characterId: "Chisa", draft: { weapon: "Kumokiri", echoes: {} } }], makeActive: true };
+    expect(() => applyBuildTeam(stores, request)).toThrow("injected");
+    expect(snapshot()).toBe(pristine);
+    expect(readUndo()).toBeNull();
+  });
+
   it("keeps the set bonus labels and buff settings the run used in the saved build", () => {
     const out = applyBuildTeam(stores, { team: { id: "t1", name: "Test team", characterIds: ["Cartethyia", "Chisa", null] }, members: [{ slot: 0, characterId: "Cartethyia", draft: draftFor(someIds()) }] });
     const build = stores.character.characters.Cartethyia.builds.find((b: any) => b.id === out.created[0]!.buildId);
