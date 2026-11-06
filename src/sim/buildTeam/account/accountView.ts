@@ -1,6 +1,6 @@
 // Wuthering Tools+ — "Whole account": what the page says, kept out of the component so it is testable. Pure.
 import { characterDisplayName } from "../../display/names";
-import { buffDefaultNames, echoName, statShort, setName, worthSaving } from "../buildTeamView";
+import { buffDefaultNames, echoName, statShort, setName, teammatesNote, worthSaving } from "../buildTeamView";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
 
@@ -77,6 +77,8 @@ export function memberNote(m: AccountMember): string | null {
   if (m.relaxed === "mainStats") notes.push("any main stat (the plan's ones ran out)");
   if (m.relaxed === "layout") notes.push("any cost layout (the plan's ran out)");
   if (m.mainEchoFallback) notes.push("another main echo (the plan's is not free)");
+  const teammates = teammatesNote(m);
+  if (teammates) notes.push(teammates.replace(/\.$/, ""));
   return notes.length ? notes.join(" · ") : null;
 }
 

@@ -8,7 +8,7 @@ import { int, pct, table } from "../cli/format";
 import { rileyHeadless } from "../engine/rileyNode";
 import { characterDisplayName } from "../display/names";
 import { showNeed } from "../energy/energyNeed";
-import { buildMyTeam, currentEchoesOf, type BuildTeamResult, type TeamSpec } from "./buildTeam";
+import { buildMyTeam, currentEchoesOf, memberAfter, type BuildTeamResult, type TeamSpec } from "./buildTeam";
 import { DEFAULT_OPTIONS, type BuildOptions } from "./constraints";
 import { inlineBackend } from "./headlessOptimizer";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
@@ -84,7 +84,7 @@ export function printBuildTeam(out: { team: TeamSpec; plans: TeamPlans; result: 
   for (const m of result.members) {
     const plan = plans.plans[m.slot];
     const before = m.before?.value ?? 0;
-    const after = m.after?.value ?? 0;
+    const after = memberAfter(m) ?? 0;
     rows.push([
       characterDisplayName(m.characterId),
       plan ? `${plan.source}: ${plan.setsLabel || "any set"} · ${plan.mainStats?.label ?? "any layout"}` : "",

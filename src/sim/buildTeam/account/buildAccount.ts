@@ -260,8 +260,9 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
     return draftBuildFields(slotRecord, pick.ids.map((id) => echoById.get(id)!), a.job.buffConfig);
   };
   const activeOf = new Map(activeMember.map((mi, a) => [mi, a]));
-  const totalsFor = async (picks: ReadonlyArray<Candidate | null>): Promise<Array<{ avg: number; dps: number | null }>> => {
-    const out: Array<{ avg: number; dps: number | null }> = [];
+  type Totals = { avg: number; dps: number | null; perSlot?: number[] };
+  const totalsFor = async (picks: ReadonlyArray<Candidate | null>): Promise<Totals[]> => {
+    const out: Totals[] = [];
     for (const team of teams) {
       check();
       const drafts = team.slots.flatMap((s) => {
@@ -279,8 +280,8 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   const locked: string[] = [];
   let solved: AccountSolveResult;
   let changed: boolean;
-  let searchTotals: Array<{ avg: number; dps: number | null }>;
-  let greedyTotals: Array<{ avg: number; dps: number | null }>;
+  let searchTotals: Totals[];
+  let greedyTotals: Totals[];
   let keptGreedy: boolean;
   let picks: Array<Candidate | null>;
   for (;;) {
@@ -326,6 +327,13 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
     // the first pass left them nothing after the members before them took the echoes they need
     if (dropped.has(m)) memberOfActive(m).message = "No new build is left for them once the members before them take the echoes they need, so they keep the echoes they wear today and no other build in the plan takes those.";
   }
+  // each member's part of the team they are scored in, with every new build worn: what the team's total adds up from
+  teams.forEach((t, i) => {
+    for (const s of t.slots) {
+      const m = members[s.member]!;
+      if (s.sharedFrom == null && m.after && m.objective?.source === "team") m.after.withTeam = finalTotals[i]!.perSlot?.[s.slot] ?? null;
+    }
+  });
 
   // 5. echoes that change hands, and the account's score
   const moves: EchoMove[] = [];

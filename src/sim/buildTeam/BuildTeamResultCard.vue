@@ -22,7 +22,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="bt-nums__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
         <div class="bt-num">
           <span class="bt-num__k">Built</span>
-          <span class="bt-num__v bt-num__v--after tabular-nums" :title="fmtInt(outcome.after.value)" data-test-build-team-after>{{ compactNum(outcome.after.value) }}</span>
+          <span class="bt-num__v bt-num__v--after tabular-nums" :title="fmtInt(built)" data-test-build-team-after>{{ compactNum(built) }}</span>
         </div>
         <span class="bt-delta" :class="`bt-delta--${tone}`" data-test-build-team-delta>{{ delta }}</span>
       </div>
@@ -84,7 +84,7 @@ import { computed } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import { characterDisplayName } from "../display/names";
 import BuildTeamEchoTile from "./BuildTeamEchoTile.vue";
-import { shortfallText, type MemberOutcome } from "./buildTeam";
+import { memberAfter, shortfallText, type MemberOutcome } from "./buildTeam";
 import type { MemberPlan } from "./rileyPlan";
 import { parsePresetName } from "../presets/presetName";
 import { kitErNote } from "../energy/energyHave";
@@ -95,8 +95,9 @@ defineEmits<{ "update:save": [value: boolean] }>();
 
 const name = computed(() => characterDisplayName(props.outcome.characterId));
 const ordinal = computed(() => ["first", "second", "third"][props.priority - 1] ?? `${props.priority}th`);
-const delta = computed(() => deltaText(props.outcome.before?.value, props.outcome.after?.value));
-const tone = computed(() => deltaTone(props.outcome.before?.value, props.outcome.after?.value));
+const built = computed(() => memberAfter(props.outcome));
+const delta = computed(() => deltaText(props.outcome.before?.value, built.value));
+const tone = computed(() => deltaTone(props.outcome.before?.value, built.value));
 const band = computed(() => erBand(props.outcome));
 const kitNote = computed(() => kitErNote(props.outcome.characterId));
 const notes = computed(() => resultNotes(props.outcome, props.plan));

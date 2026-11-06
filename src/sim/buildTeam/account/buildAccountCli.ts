@@ -7,7 +7,7 @@ import { resolveCharacterKey } from "../../cli/engine";
 import { int, pct, table } from "../../cli/format";
 import { rileyHeadless } from "../../engine/rileyNode";
 import { characterDisplayName } from "../../display/names";
-import { currentEchoesOf } from "../buildTeam";
+import { currentEchoesOf, memberAfter } from "../buildTeam";
 import { DEFAULT_OPTIONS, type BuildOptions } from "../constraints";
 import { inlineBackend } from "../headlessOptimizer";
 import { plansForTeam, type RileySource } from "../plans";
@@ -127,7 +127,7 @@ export function printBuildAccount(out: BuildAccountCliOut): string {
   const rows = [["Member", "Scored in", "Before", "After", "Δ", "ER after", "Need", "Echoes (source)"]];
   for (const m of r.members) {
     const before = m.before?.value ?? 0;
-    const after = m.after?.value ?? 0;
+    const after = memberAfter(m) ?? 0;
     rows.push([
       characterDisplayName(m.characterId) + (m.alsoIn.length ? ` (+ team ${m.alsoIn.map((i) => i + 1).join(", ")})` : ""),
       `team ${m.team + 1}`,

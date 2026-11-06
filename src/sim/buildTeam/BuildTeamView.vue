@@ -241,7 +241,7 @@ import BuildTeamPicker from "./BuildTeamPicker.vue";
 import BuildTeamPlanCard from "./BuildTeamPlanCard.vue";
 import BuildTeamResultCard from "./BuildTeamResultCard.vue";
 import BuildTeamSwitch from "./BuildTeamSwitch.vue";
-import { menuErPercent, teamSlotRotation } from "./buildTeam";
+import { memberAfter, menuErPercent, teamSlotRotation } from "./buildTeam";
 import { buildNameFor, saveFailedText } from "./apply";
 import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary, undoConfirm, undoDoneText } from "./buildTeamView";
 import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
@@ -317,7 +317,7 @@ function barValue(slot: number): number {
 }
 
 const switchDeltas = computed(() =>
-  (result.value?.members ?? []).map((m) => (m?.after && m.before ? { text: deltaText(m.before.value, m.after.value), tone: deltaTone(m.before.value, m.after.value) } : { text: m?.status === "ok" ? "" : "—", tone: "flat" })),
+  (result.value?.members ?? []).map((m) => (m?.after && m.before ? { text: deltaText(m.before.value, memberAfter(m)), tone: deltaTone(m.before.value, memberAfter(m)) } : { text: m?.status === "ok" ? "" : "—", tone: "flat" })),
 );
 const highGap = computed(() => {
   const high = plans.value?.dpsHigh;

@@ -110,7 +110,9 @@ export interface MemberOutcome {
      *  part of the gain that is a buff switched on, not an echo */
     withRunBuffs: number | null;
   } | null;
-  after: { value: number; optimizerValue: number; menuEr: number | null; picks: EchoPick[] } | null;
+  /** `value`: their damage with only their own build changed, what decides if it is worth saving. `withTeam`: their part
+   *  of the team's total with every new build worn, what a save gets (a teammate's new build can move it a lot) */
+  after: { value: number; optimizerValue: number; menuEr: number | null; picks: EchoPick[]; withTeam?: number | null } | null;
   erFloor: number | null;
   erMet: boolean | null;
   /** the search could not meet the floor with this inventory: the loadout kept is the one with the most ER, and of those
@@ -137,6 +139,9 @@ export interface MemberOutcome {
   /** what apply.ts saves: the slot's build with the new echoes, main echo and buff settings */
   draft: Record<string, any> | null;
 }
+
+/** A member's figure as saved, so the members add up to the team's total; their own alone without a team total. */
+export const memberAfter = (m: Pick<MemberOutcome, "after">): number | null => (m.after ? m.after.withTeam ?? m.after.value : null);
 
 export interface BuildTeamResult {
   members: MemberOutcome[];
@@ -671,6 +676,7 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
     const drafts = outcomes.filter((o) => o.draft).map((o) => ({ slot: o.slot, characterId: o.characterId, draft: o.draft! }));
     const { before, after } = await teamTotalsWith(team, characters, echoes, enemy, auto, drafts);
     teamTotals = { before: before.avg, after: after.avg, dpsBefore: before.dps, dpsAfter: after.dps };
+    for (const o of outcomes) if (o.after) o.after.withTeam = after.perSlot[o.slot] ?? null;
   }
 
   const fromOthers = options.takeFromOthers

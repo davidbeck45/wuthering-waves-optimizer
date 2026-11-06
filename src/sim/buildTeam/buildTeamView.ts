@@ -3,7 +3,7 @@ import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import { characterDisplayName } from "../display/names";
 import type { UndoClash, UndoFate } from "./apply";
-import { shortfallText, type BuildTeamResult, type EchoSource, type MemberOutcome } from "./buildTeam";
+import { memberAfter, shortfallText, type BuildTeamResult, type EchoSource, type MemberOutcome } from "./buildTeam";
 import { LAYOUT_COSTS, type MemberPlan } from "./rileyPlan";
 
 export const STAT_SHORT: Record<string, string> = {
@@ -104,6 +104,14 @@ export function sourceText(source: EchoSource, wornBy: readonly string[], charac
 const relChange = (m: Pick<MemberOutcome, "before" | "after">): number | null =>
   m.before && m.after ? m.after.value / Math.max(1, m.before.value) - 1 : null;
 
+/** When the team's other new builds move a member's figure: what it reads with only their build changed. */
+export function teammatesNote(m: Pick<MemberOutcome, "after">): string | null {
+  const shown = memberAfter(m);
+  const own = m.after?.value;
+  if (shown == null || own == null || Math.abs(shown - own) <= 0.0005 * Math.max(1, Math.abs(own))) return null;
+  return `${compactNum(own)} with only this build changed: the rest is the team's other new builds.`;
+}
+
 /** Today's build misses the ER floor and the new one meets it (what a lower number buys). */
 const buysErFloor = (m: Pick<MemberOutcome, "before" | "erFloor" | "erMet">): boolean =>
   m.erMet === true && m.erFloor != null && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor;
@@ -181,6 +189,8 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
   const b = m.before;
   const rel = relChange(m);
   const lower = rel != null && rel < -0.0005 && !m.sameEchoes;
+  const teammates = teammatesNote(m);
+  if (teammates) out.push({ tone: "info", text: teammates });
   if (b && m.erFloor != null && b.menuEr != null && buysErFloor(m) && lower) {
     out.push({ tone: "info", text: `Today's build is ${(m.erFloor - b.menuEr).toFixed(1)} points short of the ${pctText(m.erFloor)} Energy Regen this loop needs: the new build pays for that ER with a little damage.` });
   }

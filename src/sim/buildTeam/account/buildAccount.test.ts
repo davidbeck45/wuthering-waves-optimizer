@@ -11,7 +11,7 @@ import { useInventoryStore } from "../../../stores/inventory";
 import { useTeamRotationsStore } from "../../../stores/teamRotations";
 import { RANKING_ENEMY } from "../../myRankings/rankRoster";
 import { readHistory } from "../../buildHistory/history";
-import { teamTotalOf, type TeamSpec } from "../buildTeam";
+import { memberAfter, teamTotalOf, type TeamSpec } from "../buildTeam";
 import { DEFAULT_OPTIONS } from "../constraints";
 import { inlineBackend } from "../headlessOptimizer";
 import { echoKeysOf, emptyPlan, parseMainStats, type MemberPlan } from "../rileyPlan";
@@ -120,6 +120,25 @@ describe("buildAccount on the engine", () => {
     expect(result.score.final).toBeCloseTo(1 * (result.teams[0]!.after / result.teams[0]!.before) + 0.8 * (result.teams[1]!.after / result.teams[1]!.before), 9);
     // the plan is never below the greedy in the calculator's account score
     expect(result.score.final).toBeGreaterThanOrEqual(result.score.greedy - 1e-12);
+  }, 60_000);
+
+  it("a member's figure is their part of the team's total with every new build worn, not with teammates as they are today", async () => {
+    const worn: Record<string, any> = { ...characters };
+    for (const m of result.members) if (m.draft) worn[m.characterId] = applyBuildFields(worn[m.characterId], m.draft);
+    const specs = [teamA, teamB];
+    let checked = 0;
+    for (const [i, t] of result.teams.entries()) {
+      const saved = await teamTotalOf(specs[i]!, worn, echoes, RANKING_ENEMY, true);
+      for (const s of t.slots) {
+        const m = result.members[s.member]!;
+        if (s.sharedFrom != null || !m.after || m.objective?.source !== "team") continue;
+        expect(memberAfter(m)! / saved.perSlot[s.slot]!).toBeCloseTo(1, 6);
+        checked += 1;
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
+    // the deciding figure stays theirs alone
+    for (const m of result.members) if (m.after) expect(m.after.value).toBeGreaterThan(0);
   }, 60_000);
 
   it("names the echoes that change hands", () => {

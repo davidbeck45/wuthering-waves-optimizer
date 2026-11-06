@@ -1,7 +1,7 @@
 // Wuthering Tools+ "Build it for me" — the page's view model: deltas, the layout's cost groups, the buffs switched on
 // in words, and the notes a result card explains itself with.
 import { describe, expect, it } from "vitest";
-import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, shareConflicts, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
+import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, shareConflicts, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
 import type { MemberOutcome } from "./buildTeam";
 
@@ -169,5 +169,26 @@ describe("Undo's words", () => {
     const partly = undoDoneText({ kind: "partial", removed, kept: [{ characterId: "Chisa", why: "it is the active build now" }], clashes: [{ kept: "Chisa", wearer: "Aemeath" }] });
     expect(partly.tone).toBe("warning");
     expect(partly.text).toBe("Partly undone: 1 removed; kept Chisa (it is the active build now). Chisa and Aemeath now wear the same echo: their builds share it.");
+  });
+});
+
+describe("a figure a teammate's new build moves", () => {
+  const moved = (own: number, withTeam: number | null) => outcome({ after: { value: own, optimizerValue: own, menuEr: 116, picks: [], withTeam } });
+
+  it("says what it reads with only this build changed", () => {
+    expect(teammatesNote(moved(411_439, 325_504))).toBe("411K with only this build changed: the rest is the team's other new builds.");
+    expect(resultNotes(moved(411_439, 325_504), plan())[0]).toEqual({ tone: "info", text: "411K with only this build changed: the rest is the team's other new builds." });
+  });
+
+  it("says nothing when the two agree or there is no team total", () => {
+    expect(teammatesNote(moved(100, 100))).toBeNull();
+    expect(teammatesNote(moved(100, null))).toBeNull();
+    expect(teammatesNote(outcome({ after: null }))).toBeNull();
+  });
+
+  it("whether a build is worth saving stays on the member's own change: a teammate's gain is not theirs", () => {
+    const same = (own: number, withTeam: number) => outcome({ sameEchoes: true, before: { value: 100, menuEr: 120, withRunBuffs: null }, after: { value: own, optimizerValue: own, menuEr: 120, picks: [], withTeam } });
+    expect(worthSaving(same(100, 130))).toBe(false);
+    expect(worthSaving(same(103, 90))).toBe(true);
   });
 });

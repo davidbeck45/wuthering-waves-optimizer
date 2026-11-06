@@ -184,8 +184,8 @@
                 <CharacterAvatar :id="s.characterId" :size="28" />
                 <span class="ba-member__name">{{ shortName(s.characterId) }}</span>
                 <template v-if="memberOf(s).after && memberOf(s).before">
-                  <span class="ba-member__nums tabular-nums" :title="`${fmtInt(memberOf(s).before!.value)} → ${fmtInt(memberOf(s).after!.value)}`">{{ compactNum(memberOf(s).before!.value) }} → {{ compactNum(memberOf(s).after!.value) }}</span>
-                  <span class="bt-delta" :class="`bt-delta--${deltaTone(memberOf(s).before!.value, memberOf(s).after!.value)}`">{{ deltaText(memberOf(s).before!.value, memberOf(s).after!.value) || "±0 %" }}</span>
+                  <span class="ba-member__nums tabular-nums" :title="`${fmtInt(memberOf(s).before!.value)} → ${fmtInt(memberAfter(memberOf(s)))}`">{{ compactNum(memberOf(s).before!.value) }} → {{ compactNum(memberAfter(memberOf(s))) }}</span>
+                  <span class="bt-delta" :class="`bt-delta--${deltaTone(memberOf(s).before!.value, memberAfter(memberOf(s)))}`">{{ deltaText(memberOf(s).before!.value, memberAfter(memberOf(s))) || "±0 %" }}</span>
                 </template>
               </div>
               <p v-if="memberOf(s).after" class="ba-member__line">
@@ -259,6 +259,7 @@ import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
 import { saveFailedText } from "../apply";
+import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
 import { WEIGHT_CHOICES, type AccountTeamChoice } from "./accountTeams";
 import { accountBuildName } from "./accountApply";
