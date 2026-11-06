@@ -101,6 +101,38 @@ describe("One team's review and save", () => {
     expect(bt.applied.value).toBeNull();
   });
 
+  it("Cancel then Build again: the cancelled run's end leaves the second run's page alone (step 1 showed for a second)", async () => {
+    const bt = useBuildTeam();
+    await bt.load({ teamId: "t1", members: [] });
+    let cancelled: (reason: unknown) => void = () => {};
+    let finish: (value: unknown) => void = () => {};
+    vi.mocked(buildMyTeam)
+      .mockImplementationOnce(() => new Promise((_, reject) => (cancelled = reject)) as never)
+      .mockImplementationOnce(() => new Promise((resolve) => (finish = resolve)) as never);
+    const first = bt.run();
+    bt.cancel();
+    const second = bt.run();
+    expect(bt.phase.value).toBe("running");
+    cancelled(Object.assign(new Error("The build was cancelled"), { name: "AbortError" })); // member setup ends late
+    await first;
+    expect(bt.phase.value).toBe("running");
+    finish(run());
+    await second;
+    expect(bt.phase.value).toBe("result");
+  });
+
+  it("a run the player cancelled for good still lands on the plan", async () => {
+    const bt = useBuildTeam();
+    await bt.load({ teamId: "t1", members: [] });
+    let cancelled: (reason: unknown) => void = () => {};
+    vi.mocked(buildMyTeam).mockImplementationOnce(() => new Promise((_, reject) => (cancelled = reject)) as never);
+    const pending = bt.run();
+    bt.cancel();
+    cancelled(Object.assign(new Error("The build was cancelled"), { name: "AbortError" }));
+    await pending;
+    expect(bt.phase.value).toBe("plan");
+  });
+
   describe("a review you leave", () => {
     const REQUEST = { teamId: "t1", members: [] };
 

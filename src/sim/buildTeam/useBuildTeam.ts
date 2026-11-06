@@ -271,6 +271,8 @@ export function useBuildTeam() {
       void computeRileyAfter(out);
       void computeRankedFigure(out);
     } catch (e) {
+      // a run that ended after another took over (Cancel then Build, a team opened): the page is that one's now
+      if (controller !== ctrl) return;
       if ((e as { name?: string })?.name === "AbortError") {
         phase.value = "plan";
         return;
