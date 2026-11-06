@@ -173,6 +173,53 @@ describe("build my whole account", () => {
     });
   });
 
+  it("Undo on a review planned after the save drops that review: its figures were read from what the undo took back", () => {
+    cy.visit("/build-team?mode=account", seed());
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-run]").click();
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+    cy.get("[data-test-build-account-make-active]").check();
+    cy.get("[data-test-build-account-save]").click();
+    cy.get(".confirm-dialog .modal-action .btn-warning").click();
+    cy.get("[data-test-build-account-saved]").should("exist");
+    cy.get("[data-test-build-account-back]").click();
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-run]").click();
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+
+    cy.get("[data-test-build-account-undo]").click();
+    cy.get(".confirm-dialog .modal-action .btn-warning").click();
+
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-save]").should("not.exist");
+    cy.window().then((win) => {
+      expect(readChar(win, "Cartethyia").builds?.some((b) => b.name === "Account plan") ?? false, "the plan's builds are gone").to.eq(false);
+    });
+  });
+
+  it("after one edit, Undo says first which build stays, gives the others back and keeps only that one", () => {
+    const store = (win: Window, id: string) => (win.document.querySelector("#wt-app") as unknown as { __vue_app__: { config: { globalProperties: { $pinia: { _s: Map<string, { characters: { [k: string]: { level?: string } } }> } } } } }).__vue_app__.config.globalProperties.$pinia._s.get("character")!.characters[id]!;
+    cy.visit("/build-team?mode=account", seed());
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-run]").click();
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+    cy.get("[data-test-build-account-make-active]").check();
+    cy.get("[data-test-build-account-save]").click();
+    cy.get(".confirm-dialog .modal-action .btn-warning").click();
+    cy.get("[data-test-build-account-saved]").should("exist");
+    cy.window().then((win) => {
+      store(win, "Cartethyia").level = "80";
+    });
+    cy.get("[data-test-build-account-undo]").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "changed after the save, so they stay").and("contain.text", "“Account plan” stays (it is the active build now)");
+    cy.get(".confirm-dialog .modal-action .btn-warning").click();
+    cy.get(".toast").should("contain.text", "Partly undone").and("contain.text", "kept Cartethyia");
+    cy.window().then((win) => {
+      expect(readChar(win, "Cartethyia").builds?.some((b) => b.name === "Account plan"), "the edited one stays").to.eq(true);
+      expect(readChar(win, "Ciaccona").builds?.some((b) => b.name === "Account plan") ?? false, "Ciaccona went back").to.eq(false);
+    });
+  });
+
   it("after a save on a phone, Plan is not under the undo and planning again starts from the saved builds", () => {
     const todayAndPlan = (): Cypress.Chainable<string[][]> => cy.get("[data-test-build-account-result-team] .ba-team__nums > span:first-child").then(($n) => [...$n].map((n) => n.textContent!.split("→").map((s) => s.trim())));
     cy.viewport(412, 915);
