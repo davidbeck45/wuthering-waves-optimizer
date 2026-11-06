@@ -25,9 +25,11 @@ function account(edit: (zaniRecord: any) => void = () => {}): any {
   return data;
 }
 
-function visit(data: any, ui: "v3" | "classic" = "v3"): void {
+/** `reloadUsed`: the tab has had its one reload (chunkReload's guard), so a worker that cannot load shows its message. */
+function visit(data: any, ui: "v3" | "classic" = "v3", reloadUsed = false): void {
   cy.visit("/?screen=optimizer", {
     onBeforeLoad(win) {
+      if (reloadUsed) win.sessionStorage.setItem("wtplus:chunkReloadAt", String(Date.now()));
       win.localStorage.setItem("character", JSON.stringify(data));
       win.localStorage.setItem("inventory", zani.data.inventory);
       const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
@@ -124,9 +126,9 @@ describe("a run that cannot give rows says why", { defaultCommandTimeout: 30000 
   });
 
   for (const script of ["processor", "generator"]) {
-    it(`a ${script} worker that cannot load ends the run with a message, and the next run works`, () => {
+    it(`a ${script} worker that cannot load, with the tab's one reload spent: a message, and the next run works`, () => {
       cy.intercept(`**/src/workers/${script}.worker.ts*`, { forceNetworkError: true });
-      visit(account());
+      visit(account(), "v3", true);
       cy.get(RUN).click({ force: true });
       cy.get(WHY, { timeout: 30000 }).should("contain.text", "could not start");
       cy.get("[data-test-optimizer-workspace-running]").should("not.exist");
@@ -138,9 +140,23 @@ describe("a run that cannot give rows says why", { defaultCommandTimeout: 30000 
 
   it("classic, with no Cancel to get out: the same worker failure says so", () => {
     cy.intercept("**/src/workers/processor.worker.ts*", { forceNetworkError: true });
-    visit(account(), "classic");
+    visit(account(), "classic", true);
     cy.get("[data-test-optimizer-optimize-btn]").click({ force: true });
     cy.get("[data-test-optimizer-empty-reason]", { timeout: 30000 }).should("contain.text", "could not start");
+  });
+
+  it("a tab older than the site reloads once, onto the Optimizer: a second press with the script still gone says why", () => {
+    cy.intercept("**/src/workers/processor.worker.ts*", { forceNetworkError: true });
+    visit(account());
+    cy.window().then((win) => {
+      (win as any).__sameTab = true;
+    });
+    cy.get(RUN).click({ force: true });
+    cy.window({ timeout: 30000 }).should((win) => expect((win as any).__sameTab, "the page was reloaded").to.eq(undefined));
+    cy.get(RUN, { timeout: 30000 }).should("exist"); // a plain reload opens the calculator on Character
+    cy.wait(1500);
+    cy.get(RUN).click({ force: true });
+    cy.get(WHY, { timeout: 30000 }).should("contain.text", "could not start");
   });
 });
 

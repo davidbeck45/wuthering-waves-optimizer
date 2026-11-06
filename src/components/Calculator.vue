@@ -570,6 +570,7 @@ import {
 import { planOptimizerGeneration, pruneSetupOf } from "../sim/optimizer/optimizerPool";
 import { optimizerPress } from "../sim/optimizer/optimizerPress"; // Wuthering Tools+: a run never starts on a half-loaded character
 import { runBasisOf, runOutlived, type OptimizerRunBasis } from "../sim/optimizer/optimizerRunBasis"; // Wuthering Tools+: rows go with the build and weapon they were scored on
+import { reloadOnce, workerWouldNotLoad } from "../sim/perf/chunkReload"; // Wuthering Tools+: a tab older than the site reloads, as for a lost chunk
 import { getWeaponByName } from "../weapons/weapons";
 import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -1992,6 +1993,8 @@ export default defineComponent({
         if (cleanedUp) return;
         console.error("Optimizer worker failed:", (event as ErrorEvent).message ?? event.type);
         endOptimizerRunWith("worker-failed");
+        // to this screen: a plain reload opens the calculator on Character. The guard refusing leaves the message up
+        if (workerWouldNotLoad(event as ErrorEvent)) reloadOnce("/?screen=optimizer");
       };
       [...generatorWorkers, ...processorWorkers].forEach((w) => {
         w.onerror = failOptimizerRun;

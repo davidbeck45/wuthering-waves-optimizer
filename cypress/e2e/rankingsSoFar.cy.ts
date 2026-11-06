@@ -12,6 +12,20 @@ function dropHerSequence2(win: Cypress.AUTWindow): void {
 }
 
 describe("wuwa_calc rankings: rows so far at My account (Wuthering Tools+)", () => {
+  it("a solver worker that will not load: the tab reloads once, then the table is solved here instead of sitting at 0 for good", () => {
+    cy.intercept("**/src/sim/rankings/solver.worker.ts*", { forceNetworkError: true });
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=mine&own=0&r=Cartethyia");
+    cy.window().then((win) => {
+      (win as unknown as { __sameTab: boolean }).__sameTab = true;
+    });
+    cy.window({ timeout: 60000 }).should((win) => expect((win as unknown as { __sameTab?: boolean }).__sameTab, "the page was reloaded").to.eq(undefined));
+    cy.get(".skittle-root #loading", { timeout: 240000 }).should("have.attr", "hidden");
+    cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)").should("have.length", 10);
+    cy.get(".skittle-root .tgrid .trow[data-total]").first().invoke("attr", "data-total").then(Number).should("be.greaterThan", 0);
+  });
+
   it("draws the first rows while the rest still solve, says so, then draws the whole table", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);

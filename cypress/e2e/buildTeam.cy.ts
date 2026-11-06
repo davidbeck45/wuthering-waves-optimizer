@@ -154,6 +154,22 @@ describe("build my team", () => {
     cy.window().then((win) => expect(readTeam(win).buildIds).to.deep.eq([null, null, null]));
   });
 
+  it("a tab older than the site says to reload, with a button that does, instead of a Try again that cannot work", () => {
+    cy.intercept("**/src/workers/processor.worker.ts*", { forceNetworkError: true });
+    cy.visit(`/build-team?team=${TEAM_ID}`, seed());
+    cy.get('[data-test-build-team][data-phase="plan"]', RUN).should("exist");
+    cy.get("[data-test-build-team-run]").click();
+    cy.get("[data-test-build-team-fatal]", RUN).should("contain.text", "older than the site").and("contain.text", "Reload the page");
+    cy.get("[data-test-build-team-retry]").should("not.exist");
+    cy.window().then((win) => {
+      (win as unknown as { __sameTab: boolean }).__sameTab = true;
+    });
+    cy.intercept("**/src/workers/processor.worker.ts*", (req) => req.continue());
+    cy.get("[data-test-build-team-reload]").click();
+    cy.window(RUN).should((win) => expect((win as unknown as { __sameTab?: boolean }).__sameTab, "the page was reloaded").to.eq(undefined));
+    cy.get('[data-test-build-team][data-phase="plan"]', RUN).should("exist");
+  });
+
   it("fits a phone at 412 px with 130 % text: one member at a time, a sticky save bar", () => {
     cy.viewport(412, 915);
     cy.visit(`/build-team?team=${TEAM_ID}`, seed({ fontScale: 1.3 }));

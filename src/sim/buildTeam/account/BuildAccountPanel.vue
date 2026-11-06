@@ -17,7 +17,8 @@
     <section v-else-if="phase === 'error'" class="bt-card bt-fatal" role="alert" data-test-build-account-fatal>
       <p class="font-semibold">Something went wrong</p>
       <p class="text-sm opacity-80">{{ error }}</p>
-      <button type="button" class="btn btn-primary btn-sm mt-3" @click="retry">Try again</button>
+      <button v-if="error === STALE_TAB_ERROR" type="button" class="btn btn-primary btn-sm mt-3" data-test-build-account-reload @click="reloadPage">Reload page</button>
+      <button v-else type="button" class="btn btn-primary btn-sm mt-3" @click="retry">Try again</button>
     </section>
 
     <!-- step 1: teams, priority, weights -->
@@ -252,6 +253,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useConfirm } from "../../../composables/useConfirm";
 import { useToast } from "../../../composables/useToast";
+import { STALE_TAB_ERROR } from "../../perf/chunkReload";
 import { useCharacterStore } from "../../../stores/character";
 import CharacterAvatar from "../../display/CharacterAvatar.vue";
 import { characterDisplayName, characterShortName } from "../../display/names";
@@ -311,6 +313,8 @@ const movedIn = (characterId: string): number => result.value?.moves.filter((m) 
 function retry(): void {
   void ba.load();
 }
+
+const reloadPage = (): void => location.reload();
 
 async function onSave(): Promise<void> {
   const r = result.value;

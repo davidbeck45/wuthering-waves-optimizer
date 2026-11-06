@@ -11,7 +11,7 @@ import { createPinia } from "pinia";
 import { createPersistedState } from "pinia-plugin-persistedstate";
 import { runMigrations } from "./migrations";
 import { injectAnalytics } from "./utils/analytics";
-import { installChunkReload } from "./sim/perf/chunkReload"; // Wuthering Tools+: a stale tab reloads once after a deploy
+import { installChunkReload, watchPendingRoute } from "./sim/perf/chunkReload"; // Wuthering Tools+: a stale tab reloads once after a deploy
 import { persistStorage } from "./sim/storage/persistGuard"; // Wuthering Tools+
 
 import HomeView from "./pages/HomeView.vue";
@@ -104,7 +104,7 @@ const router = createRouter({
 });
 
 injectAnalytics();
-installChunkReload();
+installChunkReload(window, Date.now, watchPendingRoute(router));
 
 console.time("runMigrations");
 // Upgrade persisted localStorage before Pinia hydrates stores from it

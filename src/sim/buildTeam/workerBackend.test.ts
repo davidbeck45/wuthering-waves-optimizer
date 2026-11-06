@@ -3,11 +3,12 @@
 // instead of leaving the run waiting forever.
 import { describe, expect, it } from "vitest";
 import type { MemberJob } from "./headlessOptimizer";
+import { STALE_TAB_ERROR } from "../perf/chunkReload";
 import { workerBackend } from "./workerBackend";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-type Mode = "ok" | "crash" | "silent";
+type Mode = "ok" | "crash" | "silent" | "noScript";
 
 /** A processor worker stand-in: ready on init; on process, every loadout scored as the sum of its echo numbers and
  *  returned the way the real one returns it (slot 0, then the rest sorted). */
@@ -19,6 +20,7 @@ function fakeProcessor(mode: Mode) {
     postMessage(msg: any) {
       setTimeout(() => {
         if (w.terminated) return;
+        if (mode === "noScript") return w.onerror?.(new Event("error")); // what a 404 on the script raises: no message
         if (msg.type === "init") w.onmessage?.({ data: { type: "ready" } });
         else if (msg.type === "process") {
           if (mode === "crash") return w.onerror?.({ message: "boom" });
@@ -62,6 +64,18 @@ describe("workerBackend score()", () => {
     await expect(backend.score(job, [[echo(1), echo(3), echo(4), echo(5), echo(6)]])).rejects.toThrow(/worker failed/);
     const [r] = await backend.score(job, [[echo(1), echo(3), echo(4), echo(5), echo(6)]]);
     expect(r!.targetValue).toBe(19);
+    backend.dispose?.();
+  });
+
+  it("a worker whose script would not load says to reload: Try again can only fail the same way", async () => {
+    const backend = workerBackend({ workerCount: 2, createProcessor: () => fakeProcessor("noScript") });
+    await expect(backend.score(job, [[echo(1), echo(3), echo(4), echo(5), echo(6)]])).rejects.toThrow(STALE_TAB_ERROR);
+    backend.dispose?.();
+  });
+
+  it("a worker that threw keeps its own message: that one is no reason to reload", async () => {
+    const backend = workerBackend({ workerCount: 2, createProcessor: () => fakeProcessor("crash") });
+    await expect(backend.score(job, [[echo(1), echo(3), echo(4), echo(5), echo(6)]])).rejects.toThrow("An optimizer worker failed: boom");
     backend.dispose?.();
   });
 

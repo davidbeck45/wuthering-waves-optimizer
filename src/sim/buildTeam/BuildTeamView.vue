@@ -77,7 +77,8 @@
         <p class="font-semibold">Something went wrong</p>
         <p class="text-sm opacity-80">{{ error }}</p>
         <div class="mt-3 flex gap-2">
-          <button type="button" class="btn btn-primary btn-sm" data-test-build-team-retry @click="retry">Try again</button>
+          <button v-if="error === STALE_TAB_ERROR" type="button" class="btn btn-primary btn-sm" data-test-build-team-reload @click="reloadPage">Reload page</button>
+          <button v-else type="button" class="btn btn-primary btn-sm" data-test-build-team-retry @click="retry">Try again</button>
           <RouterLink to="/build-team" class="btn btn-ghost btn-sm">Pick another team</RouterLink>
         </div>
       </section>
@@ -236,6 +237,7 @@ import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useConfirm } from "../../composables/useConfirm";
 import { useToast } from "../../composables/useToast";
+import { STALE_TAB_ERROR } from "../perf/chunkReload";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -364,6 +366,8 @@ function retry(): void {
   if (plans.value) void run();
   else void loadFromRoute();
 }
+
+const reloadPage = (): void => location.reload();
 
 function backToPlan(): void {
   bt.backToPlan();

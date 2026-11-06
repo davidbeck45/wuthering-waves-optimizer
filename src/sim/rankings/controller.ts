@@ -20,6 +20,7 @@ import { spreadOf } from "../display/numberBasis";
 import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
+import { reloadOnce, workerWouldNotLoad } from "../perf/chunkReload";
 import { appKeyOf } from "./rileyNames";
 import { soFarScheduler, type SoFarScheduler } from "./soFar";
 import { dropUnkept, keepInLine } from "./solveQueue";
@@ -290,10 +291,31 @@ function listen(w: Worker): void {
   w.onerror = (e) => {
     const job = busy.get(w);
     e.preventDefault();
+    if (workerWouldNotLoad(e)) {
+      if (!reloadOnce()) retire(w);
+      return;
+    }
     if (!job || !mods) return;
     console.warn(`worker failed on ${job.key}, solving it here:`, e.message);
     settle(w, job, mods.solver.solveTeam(job.key, job.members, job.f, job.known));
   };
+}
+
+/** A worker whose script would not load never answers, and a load failure can land before it holds a team, so nothing
+ *  would ever ask again: it leaves the pool, its team goes back in line, and with no worker left the line is solved here. */
+function retire(w: Worker): void {
+  console.warn("a solver worker would not load");
+  w.terminate();
+  const job = busy.get(w);
+  busy.delete(w);
+  if (job) queue.unshift(job);
+  pool = pool?.filter((other) => other !== w) ?? null;
+  if (pool?.length) {
+    for (const other of pool) if (!busy.has(other)) handOut(other);
+    return;
+  }
+  pool = null;
+  void drainHere();
 }
 
 function file(job: Job, solved: Solved): void {

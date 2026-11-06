@@ -8,6 +8,7 @@
 // above any batch, so every loadout it scores comes back.
 import { getOptimizerLoadoutHash, splitOptimizerWorkerCount } from "../../calculator/optimizer";
 import { planOptimizerGeneration, pruneSetupOf, type LoadoutPruneSetup } from "../optimizer/optimizerPool";
+import { STALE_TAB_ERROR, workerWouldNotLoad } from "../perf/chunkReload";
 import type { MemberJob, OptimizeOutcome, OptimizeRequest, OptimizerBackend, ScoredLoadout } from "./headlessOptimizer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -58,6 +59,10 @@ export function serializeOptimizerEchoes(echoes: readonly any[]): any[] {
 const plain = <T>(value: T): T => JSON.parse(JSON.stringify(value, (_k, v) => (typeof v === "function" ? undefined : v)));
 
 const abortError = (): Error => Object.assign(new Error("The optimizer run was cancelled"), { name: "AbortError" });
+
+/** A script that would not load fails the same way on every try, so that error says to reload. */
+const workerFailed = (what: string, e: { message?: string } | null | undefined): Error =>
+  new Error(workerWouldNotLoad(e) ? STALE_TAB_ERROR : `${what} failed: ${e!.message}`);
 
 function initData(job: MemberJob, minStats: OptimizeRequest["minStats"], topN: number, pruning: LoadoutPruneSetup | null = null): Record<string, unknown> {
   return {
@@ -182,7 +187,7 @@ export function workerBackend(options: WorkerBackendOptions = {}): OptimizerBack
       const init = initData(job, request.minStats, request.topN, pruneSetupOf(plan, request.mainEchoKeys, request.loadoutFormat));
       for (const w of processors) {
         busy.set(w, false);
-        w.onerror = (e) => fail(new Error(`An optimizer worker failed${e?.message ? `: ${e.message}` : ""}`));
+        w.onerror = (e) => fail(workerFailed("An optimizer worker", e));
         w.onmessage = (e) => {
           const msg = e.data ?? {};
           if (msg.type === "ready") {
@@ -198,7 +203,7 @@ export function workerBackend(options: WorkerBackendOptions = {}): OptimizerBack
         };
         w.postMessage({ type: "init", data: init });
       }
-      generator.onerror = (e) => fail(new Error(`The optimizer's generator failed${e?.message ? `: ${e.message}` : ""}`));
+      generator.onerror = (e) => fail(workerFailed("The optimizer's generator", e));
       generator.onmessage = (e) => {
         const msg = e.data ?? {};
         if (msg.type === "ready") {
@@ -233,7 +238,7 @@ export function workerBackend(options: WorkerBackendOptions = {}): OptimizerBack
       worker.onmessage = (e) => {
         if (e.data?.type === "ready") resolve();
       };
-      worker.onerror = (e) => reject(new Error(`An optimizer worker failed${e?.message ? `: ${e.message}` : ""}`));
+      worker.onerror = (e) => reject(workerFailed("An optimizer worker", e));
     });
     worker.postMessage({ type: "init", data: initData(job, [], 1e9) });
     s = { worker, ready, queue: Promise.resolve() };
@@ -260,7 +265,7 @@ export function workerBackend(options: WorkerBackendOptions = {}): OptimizerBack
         };
         const onAbort = (): void => drop(abortError());
         opts.signal?.addEventListener("abort", onAbort, { once: true });
-        s.worker.onerror = (e) => drop(new Error(`An optimizer worker failed${e?.message ? `: ${e.message}` : ""}`));
+        s.worker.onerror = (e) => drop(workerFailed("An optimizer worker", e));
         s.worker.onmessage = (e) => {
           const msg = e.data ?? {};
           if (msg.type === "result") {
