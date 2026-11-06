@@ -12,7 +12,9 @@ import { DEFAULT_OPTIONS, type BuildOptions } from "../constraints";
 import { inlineBackend } from "../headlessOptimizer";
 import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
+import { accountApplyRequest } from "./accountApply";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
+import { buildCountText } from "./accountView";
 import { buildAccount, type AccountTeamInput, type BuildAccountResult } from "./buildAccount";
 
 export interface BuildAccountCliOptions extends Partial<Pick<BuildOptions, "useSets" | "useMainStats" | "keepMainEcho">> {
@@ -116,7 +118,7 @@ export function printBuildAccount(out: BuildAccountCliOut): string {
   }
   const r = out.result;
   const gain = (x: number): string => pct((x / Math.max(1e-9, r.score.today) - 1) * 100);
-  lines.push(`Whole account: ${r.teams.length} teams, ${r.members.filter((m) => m.status === "ok").length} new builds, ${r.moves.length} echo(es) change hands · ${(r.ms / 1000).toFixed(1)} s (+ ${(out.plansMs / 1000).toFixed(1)} s for wuwa_calc's plans)`);
+  lines.push(`Whole account: ${r.teams.length} teams, ${buildCountText(r.members, accountApplyRequest(r, false).members.length)}, ${r.moves.length} echo(es) change hands · ${(r.ms / 1000).toFixed(1)} s (+ ${(out.plansMs / 1000).toFixed(1)} s for wuwa_calc's plans)`);
   lines.push(`Weighted team damage vs today: greedy alone ${gain(r.score.greedy)}, after the local search ${gain(r.score.final)} (the calculator, Σ weight × team damage ÷ today's)`);
   lines.push(`Local search: ${r.search.moves.length} move(s) kept, ${r.search.conflicts} competing pair(s), ${r.search.rounds} round(s), ${(r.search.ms / 1000).toFixed(1)} s, ended: ${STOPPED[r.search.stoppedBy]}; optimizer score ${pct((r.search.value / Math.max(1e-9, r.search.greedy) - 1) * 100, 2)} over the greedy${r.search.kept === "greedy" ? " — the calculator's team totals scored the greedy higher, so the plan is the greedy's" : ""}`);
   lines.push("");

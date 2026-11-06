@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Whole account": the page's words (accountView.ts), on hand-made results.
 import { describe, expect, it } from "vitest";
 import type { AccountMember, BuildAccountResult } from "./buildAccount";
-import { accountRatio, confirmItems, erNeedsMet, memberNote, moveText, ratioText, ratioTone, searchLine, secondsText, whyLower } from "./accountView";
+import { accountRatio, buildCountText, confirmItems, erNeedsMet, memberNote, moveText, ratioText, ratioTone, searchLine, secondsText, whyLower } from "./accountView";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -42,6 +42,16 @@ describe("account view", () => {
     expect(ratioTone(1.01)).toBe("up");
     expect(ratioTone(0.99)).toBe("down");
     expect(accountRatio({ today: 1.8 }, 1.8 * 1.02)).toBeCloseTo(1.02, 9);
+  });
+
+  it("counts the builds the button saves, and says who keeps their echoes, so the review and 'Save 9 builds' agree", () => {
+    const ok = (n: number) => Array.from({ length: n }, () => member({}));
+    expect(buildCountText(ok(11), 9)).toBe("9 new builds, 2 keep today's echoes");
+    expect(buildCountText(ok(4), 3)).toBe("3 new builds, 1 keeps today's echoes");
+    expect(buildCountText(ok(3), 3)).toBe("3 new builds");
+    expect(buildCountText(ok(1), 1)).toBe("1 new build");
+    expect(buildCountText(ok(2), 0)).toBe("No new builds, 2 keep today's echoes");
+    expect(buildCountText([...ok(2), member({ status: "noEchoes" })], 2)).toBe("2 new builds"); // a member the plan could not build keeps nothing new, and says so on their row
   });
 
   it("counts Energy Regen needs met today and with the plan", () => {

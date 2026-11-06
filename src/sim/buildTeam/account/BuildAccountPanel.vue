@@ -159,7 +159,7 @@
         <p v-if="whyLower(result)" class="bt-summary__line" data-test-build-account-why>{{ whyLower(result) }}</p>
         <p class="bt-summary__line" data-test-build-account-search>{{ searchLine(result) }}</p>
         <p class="bt-summary__line">
-          {{ result.members.filter((m) => m.status === "ok").length }} builds, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
+          {{ buildCountText(result.members, toSave.length) }}, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
         </p>
       </section>
 
@@ -265,7 +265,7 @@ import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
 import { WEIGHT_CHOICES, type AccountTeamChoice } from "./accountTeams";
 import { accountBuildName } from "./accountApply";
-import { accountRatio, confirmItems, erNeedsMet, memberNote, moveText, ratioText, searchLine, secondsText, STAGE_TEXT, whyLower } from "./accountView";
+import { accountRatio, buildCountText, confirmItems, erNeedsMet, memberNote, moveText, ratioText, searchLine, secondsText, STAGE_TEXT, whyLower } from "./accountView";
 import { MAX_TEAMS, useBuildAccount, type AccountMemberProgress } from "./useBuildAccount";
 import "./buildAccount.css";
 

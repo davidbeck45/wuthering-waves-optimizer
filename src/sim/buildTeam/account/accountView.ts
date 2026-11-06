@@ -54,6 +54,14 @@ export function erNeedsMet(members: readonly AccountMember[]): { before: number;
   return { before, after, of };
 }
 
+/** "9 new builds, 2 keep today's echoes": the builds the Save button saves (`accountApplyRequest`), and the members it
+ *  leaves out because nothing would change for them. */
+export function buildCountText(members: ReadonlyArray<Pick<AccountMember, "status">>, saving: number): string {
+  const kept = members.filter((m) => m.status === "ok").length - saving;
+  const builds = saving ? `${saving} new build${saving === 1 ? "" : "s"}` : "No new builds";
+  return kept > 0 ? `${builds}, ${kept} keep${kept === 1 ? "s" : ""} today's echoes` : builds;
+}
+
 /** Why the plan scores below today, when it does: meeting Energy Regen needs costs damage, or the teams' builds were
  *  already the best these echoes allow under the plans. Null when it is not below. */
 export function whyLower(r: Pick<BuildAccountResult, "score" | "members">): string | null {
