@@ -128,6 +128,9 @@
           </button>
         </div>
 
+        <p v-if="floorsMissing" role="status" class="alert alert-warning mb-3 text-sm" data-test-echo-lab-floors-missing>
+          The Energy check did not finish, so the Energy Regen some builds need is left out here: scores can read high, and a build can look fine when it falls short. Open this tab again or press Re-run to ask again.
+        </p>
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
         <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" @farm="tab = 'farm'" />
@@ -191,10 +194,12 @@ const router = useRouter();
 const lab = useEchoLab();
 const { pass, passStatus, passSavedAt, benchmarks, benchStatus, tunerPlan, tunerStatus, farm, farmStatus } = lab;
 // Wuthering Tools+ saved results: a pass read back from this browser says when it was saved
-const savedNote = useSavedNote(() => passSavedAt.value);
+const savedNote = useSavedNote(() => passSavedAt.value, "Re-run");
 const activeCharacter = computed(() => (useCharacterStore() as unknown as { activeCharacter: string | null }).activeCharacter ?? null);
 
 const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 0);
+/** this tab's figures were worked out without every ER need (useEchoLab `lookupErNeeds`) */
+const floorsMissing = computed(() => (tab.value === "benchmark" ? lab.benchmarksShort.value && !!benchmarks.value && !benchStatus.running : (tab.value === "sets" || tab.value === "reroll") && lab.needsShort.value));
 /** the pass found no character with a weapon and five echoes: no verdict means anything (every echo would read Feed) */
 const noBuilds = computed(() => !!pass.value && !passStatus.running && pass.value.bestOwner.characters.length === 0);
 
@@ -311,11 +316,12 @@ const ctas = [
   { id: "build", to: "/", title: "Build a character", text: "Pick a weapon and equip five echoes in the calculator." },
 ];
 
-onMounted(() => {
+function bringUpToDate(): void {
   void lab.refresh().then(() => {
     if (tab.value === "benchmark") void lab.runBenchmarks();
     if (tab.value === "plan") void lab.runTunerPlan();
     if (tab.value === "farm") void lab.runFarm();
   });
-});
+}
+onMounted(bringUpToDate);
 </script>

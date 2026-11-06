@@ -26,7 +26,7 @@ import type { SetLabResult, SetLabTeamFigure } from "./setLab";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { erNeedsKey, erNeedsOf, erNeedsSettled } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
-import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
+import { onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
 
 /** sessionStorage: the last pass and benchmarks of one account fingerprint (derived data, safe to drop) */
 export const ECHO_LAB_CACHE_KEY = "wtplus:echoLab:cache";
@@ -82,26 +82,41 @@ const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
 let hydrated = false;
+interface NeedsLookup {
+  needs: Record<string, number>;
+  /** every saved team answered (`erNeedsSettled`): when false a floor can be missing and a figure reads too high */
+  whole: boolean;
+}
 /** the ER needs of the saved teams, resolved once per account state (the benchmark and re-roll jobs share them) */
-let needsMemo: { fingerprint: string; needs: Promise<Record<string, number>>; whole: boolean } | null = null;
-/** the benchmarks shown were scored on ER needs that were not whole (`erNeedsSettled`): they stay in this tab */
-let benchmarksShort = false;
+let needsMemo: { fingerprint: string; lookup: Promise<NeedsLookup> } | null = null;
+/** the benchmarks shown were scored on ER needs that were not whole (`erNeedsSettled`): they stay on this page */
+const benchmarksShort = ref(false);
+/** the last lookup was not whole: the Set lab and the re-roll advice shown may lack a floor */
+const needsShort = ref(false);
+/** Set lab and re-roll answers worked out on such a lookup: they show, and the next time they are asked for they run again */
+const askedShort = new Set<string>();
 
-/** Every character's ER need (%) in their saved teams — the floor the benchmark and the re-roll advice respect.
- *  Empty when the energy check fails; one lookup per account state. */
-export function echoLabErNeeds(fingerprint: string): Promise<Record<string, number>> {
-  if (needsMemo?.fingerprint !== fingerprint) {
-    const energy = useEnergyNeeds();
-    const memo = { fingerprint, whole: false, needs: Promise.resolve<Record<string, number>>({}) };
-    memo.needs = erNeedsOf(energy)
-      .then((needs) => {
-        memo.whole = erNeedsSettled(energy);
-        return needs;
-      })
-      .catch(() => ({}));
-    needsMemo = memo;
-  }
-  return needsMemo.needs;
+/** Every character's ER need (%) in their saved teams, the floor the benchmark and the re-roll advice respect, with
+ *  whether it is whole. One lookup per account state, once it has answered in full: one that failed or timed out is not
+ *  kept, so the next job asks again (the energy check retries a team that failed). */
+function lookupErNeeds(fingerprint: string): Promise<NeedsLookup> {
+  if (needsMemo?.fingerprint === fingerprint) return needsMemo.lookup;
+  const energy = useEnergyNeeds();
+  const memo: NonNullable<typeof needsMemo> = {
+    fingerprint,
+    lookup: erNeedsOf(energy)
+      .then((needs) => ({ needs, whole: erNeedsSettled(energy) }))
+      .catch(() => ({ needs: {}, whole: false }))
+      .then((answer) => {
+        if (needsMemo === memo) {
+          needsShort.value = !answer.whole;
+          if (!answer.whole) needsMemo = null;
+        }
+        return answer;
+      }),
+  };
+  needsMemo = memo;
+  return memo.lookup;
 }
 
 interface StoredCache {
@@ -109,6 +124,8 @@ interface StoredCache {
   fingerprint: string;
   pass: EchoLabPassResult | null;
   benchmarks: BenchmarkBatchResult | null;
+  /** `tabCopyStamp` of the tab copy: another build's, or one from before a Clear in any tab, is not read */
+  stamp?: string;
   /** `erNeedsKey` of the ER needs the benchmarks were scored on (added 2026-11-03: a copy without it is scored again
    *  once). A needs lookup that timed out or failed falls back to no floors, and those figures must not stand in a
    *  later tab whose lookup answers */
@@ -158,9 +175,11 @@ function restoreSaved(fingerprint: string): Promise<void> {
       benchConfirmed = false;
     }
     if (!tunerPlan.value && stored.tunerPlan) tunerPlan.value = stored.tunerPlan;
-    // the tab now shows exactly what was saved: a roll-chip or Farm next write next must not re-save it as "just now"
+    // the tab now shows what was saved (read here, or by its tab copy): a roll-chip or Farm next write next must not
+    // re-save it as "just now"
     const parts = [fingerprint, pass.value, benchmarks.value, tunerPlan.value];
-    if (parts[1] === (stored.pass ?? null) && parts[2] === (stored.benchmarks ?? null) && parts[3] === (stored.tunerPlan ?? null)) lastSaved = parts;
+    const asSaved = (i: number, value: unknown): boolean => parts[i] === (value ?? null) || parts[i] === lastSaved[i];
+    if (asSaved(1, stored.pass) && asSaved(2, stored.benchmarks) && asSaved(3, stored.tunerPlan)) lastSaved = parts;
   });
   restoring = { fingerprint, done };
   return done;
@@ -173,7 +192,8 @@ async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
   if (benchConfirmed) return !!benchmarks.value;
   const shown = benchmarks.value;
   if (!shown) return false;
-  const key = erNeedsKey(await echoLabErNeeds(fingerprint));
+  const { needs, whole } = await lookupErNeeds(fingerprint);
+  const key = erNeedsKey(needs);
   if (resultFingerprint.value !== fingerprint || benchmarks.value !== shown) return benchConfirmed && !!benchmarks.value;
   if (benchErKey === key) {
     benchConfirmed = true;
@@ -181,7 +201,7 @@ async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
   }
   // this visit's own lookup did not finish, so it has no say over a copy scored on a real key: dropping the copy for it
   // would show figures on floors too low. Not confirmed, so the next lookup still gets to ask
-  if (benchErKey && !needsMemo?.whole) return true;
+  if (benchErKey && !whole) return true;
   benchmarks.value = null;
   benchErKey = null;
   // the saved copy stays as it was (every reader checks its key): dropping them is no reason for a roll-chip write to
@@ -190,19 +210,20 @@ async function confirmBenchNeeds(fingerprint: string): Promise<boolean> {
   return false;
 }
 
-/** What of this tab's record may be saved past the tab, which is what did fully score: a saved result repeats in every
- *  new tab until the data changes, so a transient failure must not get in. A kit lost to a network failure reads as an
- *  unknown character (the worker skips them with no error): null. Benchmarks on short ER needs are left out. */
+/** What of this tab's record may be kept past this page load, which is what did fully score: a saved result repeats in
+ *  every new tab until the data changes, and a tab copy on every reload, so a transient failure must not get in. A kit
+ *  lost to a network failure reads as an unknown character (the worker skips them with no error): null. Benchmarks on
+ *  short ER needs are left out. */
 function savedCopyOf(value: StoredCache): StoredCache | null {
   if (value.pass?.bestOwner.skipped.some((s) => s.reason === NOT_IN_APP && isRosterCharacter(s.id))) return null;
-  return benchmarksShort ? { ...value, benchmarks: null, benchErKey: null } : value;
+  return benchmarksShort.value ? { ...value, benchmarks: null, benchErKey: null } : value;
 }
 
 function readCache(): StoredCache | null {
   try {
     const text = typeof sessionStorage !== "undefined" ? sessionStorage.getItem(ECHO_LAB_CACHE_KEY) : null;
     const stored = text ? (JSON.parse(text) as StoredCache) : null;
-    return stored?.v === CACHE_VERSION && typeof stored.fingerprint === "string" ? stored : null;
+    return stored?.v === CACHE_VERSION && stored.stamp === tabCopyStamp() && typeof stored.fingerprint === "string" ? stored : null;
   } catch {
     return null;
   }
@@ -210,15 +231,23 @@ function readCache(): StoredCache | null {
 
 /** The browser-wide copy keeps what `restoreSaved` paints: the pass, the benchmarks and the Tuner plan. It is not
  *  written when none of them is here (a roll-chip or Farm next write from another page must never blank a saved
- *  pass), nor when they are the ones it already got (a roll-chip batch or a Farm next team figure alone). What did not
- *  fully score stays in this tab (`savedCopyOf`). */
-function writeSaved(value: StoredCache): void {
-  const saved = savedCopyOf(value);
-  if (!saved || (!saved.pass && !saved.benchmarks && !saved.tunerPlan)) return;
+ *  pass), nor when they are the ones it already got (a roll-chip batch or a Farm next team figure alone). A tab can hold
+ *  less than the record does (another tab added to it, or this tab left its short benchmarks out): what it lacks stays. */
+async function writeSaved(saved: StoredCache): Promise<void> {
+  if (!saved.pass && !saved.benchmarks && !saved.tunerPlan) return;
   const parts = [saved.fingerprint, saved.pass, saved.benchmarks, saved.tunerPlan ?? null];
   if (parts.every((p, i) => p === lastSaved[i])) return;
   lastSaved = parts;
-  void savedLab.write(saved.fingerprint, { v: saved.v, fingerprint: saved.fingerprint, pass: saved.pass, benchmarks: saved.benchmarks, benchErKey: saved.benchErKey ?? null, tunerPlan: saved.tunerPlan ?? null });
+  const hit = await savedLab.read(saved.fingerprint);
+  const held = hit?.value.fingerprint === saved.fingerprint ? hit.value : null;
+  await savedLab.write(saved.fingerprint, {
+    v: saved.v,
+    fingerprint: saved.fingerprint,
+    pass: saved.pass ?? held?.pass ?? null,
+    benchmarks: saved.benchmarks ?? held?.benchmarks ?? null,
+    benchErKey: (saved.benchmarks ? saved.benchErKey : held?.benchErKey) ?? null,
+    tunerPlan: saved.tunerPlan ?? held?.tunerPlan ?? null,
+  });
 }
 
 function writeCache(): void {
@@ -228,6 +257,7 @@ function writeCache(): void {
     const asked = [...farmTeams.values()].filter((t): t is FarmTeamResult => typeof t === "object" && "key" in t);
     const value: StoredCache = {
       v: CACHE_VERSION,
+      stamp: tabCopyStamp(),
       fingerprint: resultFingerprint.value,
       pass: pass.value,
       benchmarks: benchmarks.value,
@@ -237,8 +267,10 @@ function writeCache(): void {
       farm: farm.value,
       farmTeams: asked,
     };
-    writeSaved(value);
-    sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(value));
+    const kept = savedCopyOf(value);
+    if (!kept) return; // module state still shows it, for this page load
+    void writeSaved(kept);
+    sessionStorage.setItem(ECHO_LAB_CACHE_KEY, JSON.stringify(kept));
   } catch {
     // quota or no storage: the module cache still holds it for this page load
   }
@@ -266,7 +298,9 @@ function adopt(fingerprint: string): void {
   qualities.clear();
   ratings.clear();
   passSavedAt.value = null;
-  benchmarksShort = false;
+  benchmarksShort.value = false;
+  needsShort.value = false;
+  askedShort.clear();
   Object.assign(passStatus, idle());
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
@@ -307,11 +341,13 @@ export function useEchoLab() {
     return { account, fingerprint: accountFingerprint(account) };
   }
 
-  async function run<J extends EchoLabJob>(job: J, status: JobStatus, signal: AbortSignal, account: LabAccount): Promise<EchoLabResult<J> | null> {
+  /** `fresh`: the player pressed Re-run, so the worker scores it again rather than answer from its cache */
+  async function run<J extends EchoLabJob>(job: J, status: JobStatus, signal: AbortSignal, account: LabAccount, fresh = false): Promise<EchoLabResult<J> | null> {
     Object.assign(status, { running: true, cancelled: false, progress: null, error: null });
     try {
       const result = await getEchoLabClient().run(job, account, {
         signal,
+        fresh,
         // Tune or Feed runs inside the echo phase with its own counts: keep the echo count on the bar
         onProgress: (p) => {
           if (p.phase === "potential" && status.progress?.phase === "echoes") return;
@@ -346,6 +382,8 @@ export function useEchoLab() {
       farm.value = stored.farm ?? null;
       for (const t of stored.farmTeams ?? []) farmTeams.set(`${fingerprint}|${t.key}`, t);
       passStatus.cached = true;
+      // this tab already saved all this: a roll-chip write next must not write it over what other tabs added since
+      lastSaved = [fingerprint, pass.value, benchmarks.value, tunerPlan.value];
     }
   }
 
@@ -372,7 +410,7 @@ export function useEchoLab() {
     passAbort?.abort();
     const controller = new AbortController();
     passAbort = controller;
-    const result = await run({ kind: "pass" }, passStatus, controller.signal, account);
+    const result = await run({ kind: "pass" }, passStatus, controller.signal, account, options.force);
     if (passAbort === controller) passAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       pass.value = result;
@@ -384,8 +422,9 @@ export function useEchoLab() {
   async function runBenchmarks(options: { force?: boolean } = {}): Promise<void> {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
-    if ((benchmarks.value && benchConfirmed && !options.force) || benchStatus.running || !builtCount.value) return;
-    if (!options.force) {
+    // figures on short needs are shown, and asked about again each time this tab opens
+    if ((benchmarks.value && benchConfirmed && !benchmarksShort.value && !options.force) || benchStatus.running || !builtCount.value) return;
+    if (!options.force && !benchmarksShort.value) {
       await restoreSaved(fingerprint);
       if (resultFingerprint.value !== fingerprint || benchStatus.running) return;
       // a saved copy stands only when it was scored on the ER needs the energy check reads now
@@ -396,19 +435,23 @@ export function useEchoLab() {
     const controller = new AbortController();
     benchAbort = controller;
     // Wuthering Tools+ energy check: ER counts as a floor up to each character's need in their saved teams
-    const erNeeds = await echoLabErNeeds(fingerprint);
+    const { needs: erNeeds, whole: needsWhole } = await lookupErNeeds(fingerprint);
     // a second press took over during that wait: running this one would only mark the shared status cancelled
     if (controller.signal.aborted) return;
-    const needsWhole = needsMemo?.whole ?? false;
+    // the same short answer as last time: the figures on the page stand, and they already say so
+    if (!options.force && benchmarks.value && !needsWhole && erNeedsKey(erNeeds) === benchErKey) {
+      if (benchAbort === controller) benchAbort = null;
+      return;
+    }
     // only the characters the pass could score (a weapon and five echoes): the progress counts what gets a row
     const characterIds = pass.value && resultFingerprint.value === fingerprint ? pass.value.bestOwner.characters.map((c) => c.id) : undefined;
-    const result = await run({ kind: "benchmark", characterIds, options: { erNeeds } }, benchStatus, controller.signal, account);
+    const result = await run({ kind: "benchmark", characterIds, options: { erNeeds } }, benchStatus, controller.signal, account, options.force);
     if (benchAbort === controller) benchAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       benchmarks.value = result;
       benchErKey = erNeedsKey(erNeeds);
       benchConfirmed = true;
-      benchmarksShort = !needsWhole;
+      benchmarksShort.value = !needsWhole;
       writeCache();
     }
   }
@@ -429,13 +472,18 @@ export function useEchoLab() {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
     const key = rerollKey(characterId, slot);
-    if (rerolls.has(key)) return;
+    if (rerolls.has(key) && !askedShort.has(key)) return;
     try {
       // Wuthering Tools+ energy check: an ER line the build needs is locked, and ER counts as a floor
-      const options = rerollOptionsFor(await echoLabErNeeds(fingerprint), characterId);
+      const { needs, whole } = await lookupErNeeds(fingerprint);
+      const options = rerollOptionsFor(needs, characterId);
       if (signal.aborted) return;
       const result = await getEchoLabClient().run({ kind: "reroll", characterId, slot, options }, account, { signal });
-      if (resultFingerprint.value === fingerprint) rerolls.set(key, result);
+      if (resultFingerprint.value === fingerprint) {
+        rerolls.set(key, result);
+        if (whole) askedShort.delete(key);
+        else askedShort.add(key);
+      }
     } catch (err) {
       if (!isCancel(err) && resultFingerprint.value === fingerprint) rerolls.set(key, { error: errorText(err) });
     }
@@ -456,7 +504,7 @@ export function useEchoLab() {
     tunerAbort?.abort();
     const controller = new AbortController();
     tunerAbort = controller;
-    const result = await run({ kind: "tunerPlan" }, tunerStatus, controller.signal, account);
+    const result = await run({ kind: "tunerPlan" }, tunerStatus, controller.signal, account, options.force);
     if (tunerAbort === controller) tunerAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       tunerPlan.value = result;
@@ -523,7 +571,7 @@ export function useEchoLab() {
     const controller = new AbortController();
     farmAbort = controller;
     if (options.force || stale) farmTeams.clear();
-    const result = await run({ kind: "farmNext", options: { autoTeamBuffs: autoTeamBuffs.value } }, farmStatus, controller.signal, account);
+    const result = await run({ kind: "farmNext", options: { autoTeamBuffs: autoTeamBuffs.value } }, farmStatus, controller.signal, account, options.force);
     if (farmAbort === controller) farmAbort = null;
     if (result && resultFingerprint.value === fingerprint) {
       farm.value = result;
@@ -568,7 +616,7 @@ export function useEchoLab() {
     adopt(fingerprint);
     const key = setLabKey(characterId);
     setLabAbort?.abort();
-    if (setLabs.has(key) && !options.force) {
+    if (setLabs.has(key) && !askedShort.has(key) && !options.force) {
       // nothing to run: another character's run, error or cancel must not stay on screen over this answer
       setLabRun += 1;
       Object.assign(setLabStatus, idle());
@@ -581,10 +629,11 @@ export function useEchoLab() {
     Object.assign(setLabStatus, { running: true, cancelled: false, progress: null, error: null });
     try {
       // Wuthering Tools+ energy check: the row says when a layout falls under what the saved teams need
-      const erNeeds = await echoLabErNeeds(fingerprint);
+      const { needs: erNeeds, whole } = await lookupErNeeds(fingerprint);
       const auto = autoTeamBuffs.value;
       const result = await getEchoLabClient().run({ kind: "setLab", characterId, options: { autoTeamBuffs: auto, erNeed: erNeeds[characterId] ?? null } }, account, {
         signal: controller.signal,
+        fresh: options.force,
         onProgress: (p) => {
           if (mine()) setLabStatus.progress = p;
         },
@@ -592,7 +641,12 @@ export function useEchoLab() {
           if (mine()) Object.assign(setLabStatus, { ms: info.ms, cached: info.cached });
         },
       });
-      if (resultFingerprint.value === fingerprint) setLabs.set(`${fingerprint}|${characterId}|${auto}`, result);
+      if (resultFingerprint.value === fingerprint) {
+        const done = `${fingerprint}|${characterId}|${auto}`;
+        setLabs.set(done, result);
+        if (whole) askedShort.delete(done);
+        else askedShort.add(done);
+      }
     } catch (err) {
       if (mine()) {
         setLabStatus.cancelled = isCancel(err);
@@ -649,6 +703,8 @@ export function useEchoLab() {
     passSavedAt,
     benchmarks,
     benchStatus,
+    benchmarksShort,
+    needsShort,
     echoCount,
     builtCount,
     refresh,

@@ -338,6 +338,18 @@ describe("worker host and client", () => {
     expect(host.stats).toEqual({ runs: 1, cacheHits: 1 });
   }, T);
 
+  it("a fresh run scores again from a new session: Re-run never answers from the cache", async () => {
+    const messages: EchoLabResponse[] = [];
+    const host = createEchoLabHost((m) => messages.push(m), { yieldMs: 1 });
+    const job = { kind: "bestOwner" as const, options: { echoIds: ["tmm72b568p"] } };
+    await host.onMessage({ type: "run", id: 1, job, account });
+    await host.onMessage({ type: "run", id: 2, job, account, fresh: true });
+    await host.onMessage({ type: "run", id: 3, job, account });
+    const results = messages.filter((m) => m.type === "result") as Array<Extract<EchoLabResponse, { type: "result" }>>;
+    expect(results.map((r) => [r.id, r.cached])).toEqual([[1, false], [2, false], [3, true]]);
+    expect(host.stats).toEqual({ runs: 2, cacheHits: 1 });
+  }, T);
+
   it("falls back to this thread without Worker support, and rejects an aborted job", async () => {
     const client = createEchoLabClient({ worker: () => null });
     expect(client.mode).toBe("inline");

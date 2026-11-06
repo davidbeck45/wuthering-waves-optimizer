@@ -14,6 +14,8 @@ const h = vi.hoisted(() => ({
   ready: vi.fn(async () => undefined),
   /** the browser's saved copy */
   stored: null as Record<string, unknown> | null,
+  /** `tabCopyStamp`: another build's tab copy reads as another stamp */
+  stamp: "build-a|",
   /** the inventory: another list is another account state */
   echoes: [{ echoId: "e1" }],
   write: vi.fn(async (_fingerprint: string, _value: Record<string, unknown>) => true),
@@ -36,6 +38,7 @@ vi.mock("../energy/useEnergyNeeds", () => ({
 }));
 vi.mock("../persist/savedResults", () => ({
   onSavedResultsCleared: () => () => undefined,
+  tabCopyStamp: () => h.stamp,
   savedSlot: () => ({
     read: async (fingerprint: string) => (h.stored ? { value: { ...h.stored, fingerprint }, savedAt: 1 } : null),
     write: h.write,
@@ -54,6 +57,8 @@ async function visit() {
 const savedCopy = (benchErKey?: string | null) => ({ v: 3, pass: PASS, benchmarks: OLD, tunerPlan: null, ...(benchErKey === undefined ? {} : { benchErKey }) });
 const benchmarkJobs = () => h.run.mock.calls.filter(([job]) => job.kind === "benchmark");
 const lastWrite = () => h.write.mock.calls.at(-1)![1];
+/** a save reads the record first, so it lands a moment after its job */
+const settled = (): Promise<void> => new Promise((resolve) => setTimeout(resolve));
 
 beforeEach(() => {
   sessionStorage.clear();
@@ -63,6 +68,7 @@ beforeEach(() => {
   h.teams = [];
   h.echoes = [{ echoId: "e1" }];
   h.stored = null;
+  h.stamp = "build-a|";
   h.ready.mockClear();
   h.write.mockClear();
   h.run.mockReset();
@@ -102,6 +108,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     expect(benchmarkJobs()).toHaveLength(1);
     expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({ Cartethyia: 130 });
     expect(lab.benchmarks.value).toEqual(FRESH);
+    await settled();
     expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
   });
 
@@ -112,6 +119,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await first.lab.runBenchmarks();
     expect(benchmarkJobs()).toHaveLength(1);
 
+    await settled();
     h.stored = lastWrite();
     const second = await visit();
     await second.lab.refresh();
@@ -128,9 +136,12 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await first.lab.runBenchmarks();
     expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({});
     expect(first.lab.benchmarks.value).toEqual(FRESH); // this tab shows what it scored
+    await settled();
     expect(h.write.mock.calls.map(([, value]) => value.benchmarks)).toEqual([null]); // the pass alone went past the tab
+    await settled();
     expect(lastWrite()).toMatchObject({ pass: PASS, benchmarks: null, benchErKey: null });
 
+    await settled();
     h.stored = lastWrite();
     h.busy = false;
     h.floors.set("Cartethyia", { need: 130 });
@@ -140,6 +151,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await second.lab.runBenchmarks();
     expect(benchmarkJobs()).toHaveLength(1);
     expect(benchmarkJobs()[0]![0].options.erNeeds).toEqual({ Cartethyia: 130 });
+    await settled();
     expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
   });
 
@@ -158,6 +170,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await lab.refresh();
     await lab.runBenchmarks();
     expect(lab.benchmarks.value).toEqual(FRESH);
+    await settled();
     expect(lastWrite()).toMatchObject({ benchmarks: null, benchErKey: null });
   });
 
@@ -166,6 +179,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     const { lab } = await visit();
     await lab.refresh();
     await lab.runBenchmarks();
+    await settled();
     expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
   });
 
@@ -178,6 +192,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await lab.runBenchmarks();
     expect(lab.benchmarks.value).toEqual(OLD); // scoring on a lookup that never finished would show floors too low
     expect(benchmarkJobs()).toHaveLength(0);
+    await settled();
     expect(h.write).not.toHaveBeenCalled();
   });
 
@@ -211,6 +226,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     const { lab } = await visit();
     await lab.refresh();
     await lab.runBenchmarks(); // short: this tab only
+    await settled();
     h.write.mockClear();
 
     h.echoes = [{ echoId: "e2" }]; // an edit, and that state has a whole copy saved
@@ -219,6 +235,7 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     expect(lab.benchmarks.value).toEqual(OLD);
     const done = await lab.runRollRatings([{ echoId: "e2", characterId: "Cartethyia", slot: 0 }] as never, new AbortController().signal);
     expect(done).toBe(true);
+    await settled();
     expect(h.write).not.toHaveBeenCalled(); // a roll-chip write must not blank those benchmarks
   });
 
@@ -230,18 +247,21 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     const lost = await visit();
     await lost.lab.refresh();
     expect(lost.lab.pass.value).toMatchObject({ bestOwner: { skipped: [{ id: "Cartethyia" }] } }); // this tab shows it
+    await settled();
     expect(h.write).not.toHaveBeenCalled();
 
     passOf(skipped("NotAnAppCharacter", NOT_IN_APP)); // an id the app lacks fails every time, so it says nothing
     sessionStorage.clear();
     const unknown = await visit();
     await unknown.lab.refresh();
+    await settled();
     expect(h.write).toHaveBeenCalledTimes(1);
 
     passOf(skipped("Cartethyia", "needs five echoes"));
     sessionStorage.clear();
     const real = await visit();
     await real.lab.refresh();
+    await settled();
     expect(h.write).toHaveBeenCalledTimes(2);
   });
 
@@ -283,12 +303,13 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     await lab.checkBenchmarks();
     const done = await lab.runRollRatings([{ echoId: "e1", characterId: "Cartethyia", slot: 0 }] as never, new AbortController().signal);
     expect(done).toBe(true);
+    await settled();
     expect(h.write).not.toHaveBeenCalled();
   });
 
   it("this tab's own copy answers too: a reload after a lookup that timed out scores again", async () => {
     const seeded = await visit();
-    const value = { ...savedCopy(""), fingerprint: seeded.lab.snapshot().fingerprint };
+    const value = { ...savedCopy(""), stamp: h.stamp, fingerprint: seeded.lab.snapshot().fingerprint };
     sessionStorage.setItem(seeded.ECHO_LAB_CACHE_KEY, JSON.stringify(value));
     const { lab } = await visit();
     await lab.refresh();
@@ -305,6 +326,151 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     h.floors.set("Cartethyia", { need: 140 });
     await lab.runBenchmarks({ force: true });
     expect(benchmarkJobs()).toHaveLength(1);
+    await settled();
     expect(lastWrite()).toMatchObject({ benchErKey: "Cartethyia:140" });
+  });
+
+  it("a tab copy from another build or from before a Clear is not read: a plain reload scores on this build", async () => {
+    const first = await visit();
+    await first.lab.refresh();
+    expect(sessionStorage.getItem(first.ECHO_LAB_CACHE_KEY)).not.toBeNull();
+    h.run.mockClear();
+    h.stamp = "build-b|";
+    const second = await visit();
+    await second.lab.refresh();
+    expect(h.run.mock.calls.map(([job]) => job.kind)).toEqual(["pass"]);
+  });
+
+  describe("a lookup that was not whole", () => {
+    const shortLookup = (): void => {
+      h.floors.clear();
+      h.teams = [{ state: { status: "error" } }];
+    };
+    const wholeLookup = (): void => {
+      h.floors.set("Cartethyia", { need: 130 });
+      h.teams = [{ state: { status: "ok" } }];
+    };
+
+    it("is not kept: Re-run asks again and scores on the real floors", async () => {
+      shortLookup();
+      const { lab } = await visit();
+      await lab.refresh();
+      await lab.runBenchmarks();
+      expect(benchmarkJobs().at(-1)![0].options.erNeeds).toEqual({});
+      expect(lab.benchmarksShort.value).toBe(true);
+      wholeLookup();
+      await lab.runBenchmarks({ force: true });
+      expect(benchmarkJobs().at(-1)![0].options.erNeeds).toEqual({ Cartethyia: 130 });
+      expect(lab.benchmarksShort.value).toBe(false);
+      await settled();
+      expect(lastWrite()).toMatchObject({ benchmarks: FRESH, benchErKey: "Cartethyia:130" });
+    });
+
+    it("is asked about again when the tab opens again, with no press", async () => {
+      shortLookup();
+      const { lab } = await visit();
+      await lab.refresh();
+      await lab.runBenchmarks();
+      wholeLookup();
+      await lab.runBenchmarks();
+      expect(benchmarkJobs()).toHaveLength(2);
+      expect(benchmarkJobs().at(-1)![0].options.erNeeds).toEqual({ Cartethyia: 130 });
+    });
+
+    it("that comes back short again leaves the figures on the page and starts nothing", async () => {
+      shortLookup();
+      const { lab } = await visit();
+      await lab.refresh();
+      await lab.runBenchmarks();
+      await lab.runBenchmarks();
+      expect(benchmarkJobs()).toHaveLength(1);
+      expect(lab.benchmarksShort.value).toBe(true);
+      expect(lab.benchmarks.value).toEqual(FRESH);
+    });
+
+    it("leaves its figures out of the tab copy too: a reload never reads them", async () => {
+      shortLookup();
+      const { lab, ECHO_LAB_CACHE_KEY } = await visit();
+      await lab.refresh();
+      await lab.runBenchmarks();
+      expect(JSON.parse(sessionStorage.getItem(ECHO_LAB_CACHE_KEY)!).benchmarks).toBeNull();
+    });
+
+    it("does not hold the Set lab: the next time it is asked for it runs on the real need, and says so until then", async () => {
+      h.run.mockImplementation(async (job: { kind: string }) => (job.kind === "setLab" ? { rows: [] } : PASS));
+      shortLookup();
+      const { lab } = await visit();
+      await lab.refresh();
+      await lab.runSetLab("Cartethyia");
+      const setLabJobs = () => h.run.mock.calls.filter(([job]) => job.kind === "setLab");
+      expect(setLabJobs().at(-1)![0].options.erNeed).toBeNull();
+      expect(lab.needsShort.value).toBe(true);
+      wholeLookup();
+      await lab.runSetLab("Cartethyia");
+      expect(setLabJobs()).toHaveLength(2);
+      expect(setLabJobs().at(-1)![0].options.erNeed).toBe(130);
+      expect(lab.needsShort.value).toBe(false);
+      await lab.runSetLab("Cartethyia");
+      expect(setLabJobs()).toHaveLength(2); // a whole answer stands
+    });
+
+    it("does not hold the re-roll advice either", async () => {
+      h.run.mockImplementation(async (job: { kind: string }) => (job.kind === "reroll" ? { lines: [] } : PASS));
+      shortLookup();
+      const { lab } = await visit();
+      await lab.refresh();
+      const signal = new AbortController().signal;
+      await lab.runReroll("Cartethyia", 0, signal);
+      wholeLookup();
+      await lab.runReroll("Cartethyia", 0, signal);
+      await lab.runReroll("Cartethyia", 0, signal);
+      expect(h.run.mock.calls.filter(([job]) => job.kind === "reroll")).toHaveLength(2);
+    });
+  });
+
+  describe("a tab reloaded onto its tab copy", () => {
+    /** a tab that ran the pass, reloaded after another tab added the benchmarks and the Tuner plan to the record */
+    async function reloaded() {
+      const first = await visit();
+      await first.lab.refresh();
+      await settled();
+      h.write.mockClear();
+      h.stored = { v: 3, pass: PASS, benchmarks: OLD, benchErKey: "Cartethyia:130", tunerPlan: { items: [] } };
+      const { lab } = await visit();
+      await lab.refresh();
+      return lab;
+    }
+    const rate = (lab: Awaited<ReturnType<typeof reloaded>>) => lab.runRollRatings([{ echoId: "e1", characterId: "Cartethyia", slot: 0 }] as never, new AbortController().signal);
+
+    it("rates its chips without writing over what other tabs added", async () => {
+      const lab = await reloaded();
+      expect(await rate(lab)).toBe(true);
+      await settled();
+      expect(h.write).not.toHaveBeenCalled();
+    });
+
+    it("keeps what it never had when a new result does write the record", async () => {
+      h.run.mockImplementation(async (job: { kind: string }) => (job.kind === "farmNext" ? { rows: [] } : job.kind === "pass" ? { ...PASS } : PASS));
+      const lab = await reloaded();
+      await lab.refresh({ force: true });
+      await settled();
+      expect(lastWrite()).toMatchObject({ benchmarks: OLD, benchErKey: "Cartethyia:130", tunerPlan: { items: [] } });
+    });
+
+    it("and after a read of the record, a chip still does not restamp it", async () => {
+      const lab = await reloaded();
+      await lab.runBenchmarks();
+      await rate(lab);
+      await settled();
+      expect(h.write).not.toHaveBeenCalled();
+    });
+  });
+
+  it("a pressed Re-run asks the worker to score again, and a first run does not", async () => {
+    const { lab } = await visit();
+    await lab.refresh();
+    expect(h.run.mock.calls.at(-1)![2]).toMatchObject({ fresh: false });
+    await lab.refresh({ force: true });
+    expect(h.run.mock.calls.at(-1)![2]).toMatchObject({ fresh: true });
   });
 });

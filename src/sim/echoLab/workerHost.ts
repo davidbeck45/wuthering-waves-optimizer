@@ -15,6 +15,8 @@ export interface EchoLabRunMessage {
   /** freshly scanned echoes to judge before they are saved (appended to the inventory for scoring) */
   extraEchoes?: any[];
   enemy?: TeamEnemyConfig;
+  /** the player asked for it again: score it from a new session, whatever is kept */
+  fresh?: boolean;
 }
 
 export interface EchoLabCancelMessage {
@@ -63,11 +65,15 @@ export function createEchoLabHost(post: (message: EchoLabResponse) => void, opti
   };
 
   async function runOne(message: EchoLabRunMessage): Promise<void> {
-    const { id, job, account, extraEchoes, enemy } = message;
+    const { id, job, account, extraEchoes, enemy, fresh } = message;
     const started = now();
     const fingerprint = accountFingerprint({ ...account, echoes: [...(account.echoes ?? []), ...(extraEchoes ?? [])] });
     const sessionKey = `${fingerprint}|${stableKey(enemy ?? null)}`;
     const resultKey = `${sessionKey}|${stableKey(job)}`;
+    if (fresh) {
+      results.delete(resultKey);
+      sessions.delete(sessionKey);
+    }
     if (results.has(resultKey)) {
       stats.cacheHits += 1;
       const result = results.get(resultKey);

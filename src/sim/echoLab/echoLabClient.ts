@@ -15,6 +15,8 @@ export interface EchoLabRunOptions {
   /** freshly scanned echoes to judge before they are saved */
   extraEchoes?: any[];
   enemy?: TeamEnemyConfig;
+  /** score it again rather than answer from the worker's cache */
+  fresh?: boolean;
   /** told whether the answer came from the cache, the account fingerprint and the time it took */
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   onInfo?: (info: EchoLabRunInfo) => void;
@@ -118,7 +120,7 @@ export function createEchoLabClient(options: { worker?: () => Worker | null; onF
         const onAbort = (): void => send({ type: "cancel", id });
         signal?.addEventListener("abort", onAbort, { once: true });
         pending.set(id, { resolve, reject, onProgress: runOptions.onProgress, onInfo: runOptions.onInfo, cleanup: () => signal?.removeEventListener("abort", onAbort) });
-        send({ type: "run", id, job, account, extraEchoes: runOptions.extraEchoes, enemy: runOptions.enemy });
+        send({ type: "run", id, job, account, extraEchoes: runOptions.extraEchoes, enemy: runOptions.enemy, fresh: runOptions.fresh });
       });
     },
     dispose() {
