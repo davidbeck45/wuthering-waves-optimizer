@@ -8,7 +8,7 @@ import { SUBSTAT_KEYS, maxRoll } from "../substats/substatWeights";
 import { createLabSession, type LabAccount } from "./core";
 import { bestOwners } from "./bestOwner";
 import { ratingOf } from "./echoLabView";
-import { additivePlan, rerollAdvice } from "./rerollAdvice";
+import { linesPlan, rerollAdvice } from "./rerollAdvice";
 import { rollQuality } from "./rollQuality";
 import { outcomeCount } from "./rolls";
 import { tunerCandidates, tuneToMaxResources, type FreshSlot, type TunerCandidate } from "./tunerPlan";
@@ -153,14 +153,14 @@ describe("Tuner plan candidates", () => {
   );
 
   it("prices a fresh echo with all five lines, even against an unfinished echo in the slot", async () => {
-    // every line adds 1 % of the build, whatever it is: a fresh echo's five lines beat the slot's one line by 4 %
-    const scoreLines = async (list: Array<{ key: string; value: number }>) => 1000 * (1 + 0.01 * list.length);
+    // every line multiplies the score by 1.01, whatever it is: a fresh echo's five lines beat the slot's one line by 1.01⁴
+    const scoreLines = async (list: Array<{ key: string; value: number }>) => 1000 * 1.01 ** list.length;
     const current = [{ field: 1, key: "CritRate", value: 6.3 }];
-    const deps = { scoreLines, base: 1000, canRepeat: true, samples: 50, seed: "fresh-five" };
-    const five = await additivePlan([], current, { ...deps, draw: 5 });
-    expect(five.every(([g]) => Math.abs(g - 0.04) < 1e-9)).toBe(true);
+    const deps = { scoreLines, base: 1010, canRepeat: true, samples: 50, seed: "fresh-five" };
+    const five = await linesPlan([], current, { ...deps, draw: 5 });
+    expect(five.every(([g]) => Math.abs(g - (1.01 ** 4 - 1)) < 1e-9)).toBe(true);
     // the re-roll advisor's own use (no draw): one line re-rolled for one line
-    const reroll = await additivePlan([], current, deps);
+    const reroll = await linesPlan([], current, deps);
     expect(reroll.every(([g]) => Math.abs(g) < 1e-9)).toBe(true);
   });
 

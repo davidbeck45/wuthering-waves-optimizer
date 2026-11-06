@@ -4,7 +4,7 @@
       <h2 class="text-base font-semibold">Farm next</h2>
       <EchoLabPopover id="farm" label="How Farm next is worked out" align="left">
         <p>For every slot of each built character (a weapon and five echoes), every echo the slot could take is tried: the slot's cost, another copy of the main echo in the main slot, a Sonata that keeps every set bonus the build has, and each main stat that cost can roll. The damage engine scores each one on the character's best rotation.</p>
-        <p>The best one is then rolled out as a new echo levelled to +25: each of the 13 substats at every value it can roll is scored exactly on that echo, and five of them are added up over 20,000 seeded tries.</p>
+        <p>The best one is then rolled out as a new echo levelled to +25: each of the 13 substats at every value it can roll is scored exactly on that echo, and five lines are put together over 20,000 seeded tries.</p>
         <p><b>Own gain</b> and <b>team gain</b> count a try only when the new echo beats the one there now. The team figure re-scores the character's strongest team you can field, as My account does.</p>
         <ul class="list-disc space-y-1 pl-4 opacity-80">
           <li v-for="a in assumptions" :key="a">{{ a }}</li>

@@ -51,7 +51,7 @@ async function visit() {
   const { useEchoLab, ECHO_LAB_CACHE_KEY } = await import("./useEchoLab");
   return { lab: useEchoLab(), ECHO_LAB_CACHE_KEY };
 }
-const savedCopy = (benchErKey?: string | null) => ({ v: 2, pass: PASS, benchmarks: OLD, tunerPlan: null, ...(benchErKey === undefined ? {} : { benchErKey }) });
+const savedCopy = (benchErKey?: string | null) => ({ v: 3, pass: PASS, benchmarks: OLD, tunerPlan: null, ...(benchErKey === undefined ? {} : { benchErKey }) });
 const benchmarkJobs = () => h.run.mock.calls.filter(([job]) => job.kind === "benchmark");
 const lastWrite = () => h.write.mock.calls.at(-1)![1];
 

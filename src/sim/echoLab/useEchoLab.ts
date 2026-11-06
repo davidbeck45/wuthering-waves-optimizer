@@ -29,8 +29,10 @@ import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
 
 /** sessionStorage: the last pass and benchmarks of one account fingerprint (derived data, safe to drop) */
 export const ECHO_LAB_CACHE_KEY = "wtplus:echoLab:cache";
-/** bump when the cached result shapes change: an older tab's cache is then ignored, never rendered */
-const CACHE_VERSION = 2;
+/** bump when the cached result shapes or their figures change: an older tab's cache is then ignored, never rendered.
+ *  3 (2026-11-04): the line model (lineModel.ts) moved Farm next's and the Tuner plan's figures, so a saved pass never
+ *  shows the old ones beside new ones. */
+const CACHE_VERSION = 3;
 
 export interface JobStatus {
   running: boolean;

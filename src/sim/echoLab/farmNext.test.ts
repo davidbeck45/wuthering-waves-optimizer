@@ -8,7 +8,8 @@ import { mainEchoesData } from "../../echoes/index";
 import { scoreTeamCandidate } from "../myRankings/rankRoster";
 import { SUBSTAT_KEYS } from "../substats/substatWeights";
 import { createLabSession, prepareCharacter, scoreBuild, swapInto, withInventoryRecord, withLines, type LabAccount } from "./core";
-import { FARM_ASSUMPTIONS, confirmDead, farmNext, farmTeam, lineTable, mainStatsOf, rollout, sortFarmRows, speciesOf, type FarmRow } from "./farmNext";
+import { FARM_ASSUMPTIONS, farmNext, farmTeam, mainStatsOf, rollout, sortFarmRows, speciesOf, type FarmRow } from "./farmNext";
+import { confirmDead, lineModel, lineTable } from "./lineModel";
 import { tierOdds } from "./rolls";
 import { tuneToMaxResources } from "./tunerPlan";
 import { createEchoLabHost, type EchoLabResponse } from "./workerHost";
@@ -207,16 +208,18 @@ describe("Farm next: the numbers", () => {
     expect(table.get("EnergyRegen")).toEqual(tierOdds("EnergyRegen").values.map(() => 100.25));
   });
 
-  it("keeps the better echo: a roll-out that can only lose expects nothing, and the same seed draws the same tries", () => {
-    const table = new Map(SUBSTAT_KEYS.map((k) => [k, tierOdds(k).values.map(() => 100)] as const));
-    const lose = rollout(table, 100, 110, 5, 2000, "seed");
+  it("keeps the better echo: a roll-out that can only lose expects nothing, and the same seed draws the same tries", async () => {
+    // no pairs: a table on its own (`draw` 1), so the roll-out's own rules are what this reads
+    const modelOf = (table: Map<(typeof SUBSTAT_KEYS)[number], number[]>) => lineModel(100, table, async () => 100, 1);
+    const flat = await modelOf(new Map(SUBSTAT_KEYS.map((k) => [k, tierOdds(k).values.map(() => 100)] as const)));
+    const lose = rollout(flat, 110, 5, 2000, "seed");
     expect(lose.expectedGain).toBe(0);
     expect(lose.pBeat).toBe(0);
     expect(lose.expectedChange).toBeCloseTo(100 / 110 - 1, 12);
-    const live = new Map(SUBSTAT_KEYS.map((k) => [k, tierOdds(k).values.map((_v, i) => 100 + i)] as const));
-    const a = rollout(live, 100, 103, 5, 2000, "seed");
-    expect(rollout(live, 100, 103, 5, 2000, "seed")).toEqual(a);
-    expect(a.method).toBe("additive");
+    const live = await modelOf(new Map(SUBSTAT_KEYS.map((k) => [k, tierOdds(k).values.map((_v, i) => 100 + i)] as const)));
+    const a = rollout(live, 103, 5, 2000, "seed");
+    expect(rollout(live, 103, 5, 2000, "seed")).toEqual(a);
+    expect(a.method).toBe("modelled");
     expect(a.pBeat).toBeGreaterThan(0);
     expect(a.pBeat).toBeLessThan(1);
     expect(a.expectedGain).toBeGreaterThanOrEqual(Math.max(0, a.expectedChange));

@@ -6,7 +6,7 @@
 //   spare — an unfinished inventory echo nobody wears: Tune or Feed's potential in its most promising owner's slot
 //           (the pass's pick), kept only if it ends up beating the echo there;
 //   fresh — no echo yet: a freshly farmed copy of a slot's echo (same set, cost and main stat) tuned to +25 — the
-//           re-roll advisor's "re-roll all five lines" model, each new line's exact value added up.
+//           re-roll advisor's "re-roll all five lines" plan, read through the line model (lineModel.ts).
 // What fits a budget (and when, from a weekly income the player types) is worked out on the page by tunerBudget.ts,
 // so changing the numbers never re-runs the engine. Pure/async, worker-safe.
 import { ECHO_LEVEL_EXP, ECHO_MAX_LEVEL, LEVELS_PER_TUNE, TUNERS_PER_TUNE, echoResources, type EchoResources } from "../../echoes/levelingCost";
@@ -31,7 +31,8 @@ import {
 import { echoPotential } from "./echoPotential";
 import { seededRandom } from "./fingerprint";
 import { rankSlots } from "./prescore";
-import { additivePlan } from "./rerollAdvice";
+import { LINE_MODEL_NOTE } from "./lineModelNote";
+import { linesPlan } from "./rerollAdvice";
 import { enumerateOutcomes, outcomeCount, outcomeKey, remainingTypes, sampleOutcome, type NewLine } from "./rolls";
 
 export const TUNER_PLAN_ASSUMPTIONS = [
@@ -39,7 +40,7 @@ export const TUNER_PLAN_ASSUMPTIONS = [
   "Costs are the game's levelling table for 5★ echoes (10 Tuners and 2,000 Shell Credits a tune, EXP per level); 4★ and lower echoes are left out.",
   "Each line still to roll is a substat the echo does not hold yet, drawn uniformly (the game does not publish type odds), at Kuro's published tier odds.",
   "A spare echo counts only if it ends up beating the echo in its owner's slot; a worn one stays on, so every line it rolls counts.",
-  "A fresh echo is a new copy of the slot's echo (same set, cost and main stat) tuned to +25; its five lines are each scored exactly and added up, as the re-roll advisor does.",
+  `A fresh echo is a new copy of the slot's echo (same set, cost and main stat) tuned to +25; its five lines use the re-roll advisor's model. ${LINE_MODEL_NOTE}`,
   "Feeding a failed echo back returns 75 % of its EXP and 30 % of its Tuners; the plan does not count that refund.",
 ] as const;
 
@@ -101,7 +102,7 @@ export interface FreshSlot {
   expectedGain: number;
   expectedDamage: number;
   damagePerTuner: number;
-  method: "additive";
+  method: "modelled";
 }
 
 export type LeftOutReason = "not-5-star" | "no-slot";
@@ -122,7 +123,7 @@ export interface TunerCandidatesResult {
 export interface TunerPlanOptions {
   /** Monte Carlo samples when an echo's outcomes are too many to enumerate (min 1000, default 1000) */
   samples?: number;
-  /** fresh-echo slots to work out exactly (default 5; 0 = none) */
+  /** fresh-echo slots to list (default 5; 0 = none) */
   freshSlots?: number;
   /** samples for the fresh-echo sums (default 20000; no engine call per sample) */
   freshSamples?: number;
@@ -185,7 +186,9 @@ const upsideOf = (pairs: Array<[number, number]>): { upside: number; pKeep: numb
 
 /**
  * The linear pre-screen for fresh echoes: what a new copy of a slot's echo is expected to add over it, every line
- * priced at the build's per-point value (the pass's prices). Only picks which slots get the exact sums.
+ * priced at the build's per-point value (the pass's prices). Only picks which slots the line model works out, and only
+ * roughly: a slot that truly belongs in the top five sat tenth here on David's export (2026-11-04), so `tunerCandidates`
+ * works out three times the slots it keeps.
  */
 async function freshLinear(session: LabSession, lab: LabCharacter, slot: number, samples: number): Promise<number> {
   const own = lab.slots[slot];
@@ -202,7 +205,7 @@ async function freshLinear(session: LabSession, lab: LabCharacter, slot: number,
   return upside / samples;
 }
 
-/** A fresh copy of the slot's echo tuned to +25: each new line's exact value added up (the re-roll advisor's 0-lock plan). */
+/** A fresh copy of the slot's echo tuned to +25: the re-roll advisor's 0-lock plan, all five lines through the line model. */
 async function freshSlot(session: LabSession, lab: LabCharacter, slot: number, samples: number, pace: ReturnType<typeof makePacer>): Promise<FreshSlot | null> {
   const own = lab.slots[slot];
   if (!own) return null;
@@ -221,7 +224,7 @@ async function freshSlot(session: LabSession, lab: LabCharacter, slot: number, s
   };
   const current = echoLines(own.record);
   // a fresh echo rolls all five lines, even when the one in the slot has not finished tuning
-  const pairs = await additivePlan([], current, { scoreLines, base: lab.base, canRepeat: true, samples, seed: `${own.echoId ?? lab.id}|${slot}|fresh`, draw: 5 });
+  const pairs = await linesPlan([], current, { scoreLines, base: lab.base, canRepeat: true, samples, seed: `${own.echoId ?? lab.id}|${slot}|fresh`, draw: 5 });
   const { upside, pKeep } = upsideOf(pairs);
   const resources = tuneToMaxResources(0);
   const expectedDamage = upside * lab.base;
@@ -240,7 +243,7 @@ async function freshSlot(session: LabSession, lab: LabCharacter, slot: number, s
     expectedGain: upside,
     expectedDamage,
     damagePerTuner: expectedDamage / resources.tuners,
-    method: "additive",
+    method: "modelled",
   };
 }
 
@@ -348,7 +351,7 @@ export async function tunerCandidates(session: LabSession, options: TunerPlanOpt
   }
   candidates.sort((a, b) => b.damagePerTuner - a.damagePerTuner || b.expectedDamage - a.expectedDamage || a.echoId.localeCompare(b.echoId));
 
-  // fresh echoes: pre-screen every 5★ slot linearly, work out the most promising ones exactly
+  // fresh echoes: pre-screen every 5★ slot linearly, work out the most promising ones with the line model
   const want = Math.max(0, Math.floor(options.freshSlots ?? 5));
   const fresh: FreshSlot[] = [];
   if (want > 0) {
@@ -363,7 +366,7 @@ export async function tunerCandidates(session: LabSession, options: TunerPlanOpt
     }
     screened.sort((a, b) => b.score - a.score || a.lab.id.localeCompare(b.lab.id) || a.slot - b.slot);
     const freshSamples = Math.max(1000, Math.floor(options.freshSamples ?? 20000));
-    for (const s of screened.slice(0, want + 3)) {
+    for (const s of screened.slice(0, Math.max(want + 3, want * 3))) {
       const slot = await freshSlot(session, s.lab, s.slot, freshSamples, pace);
       if (slot && slot.expectedDamage > 0) fresh.push(slot);
     }

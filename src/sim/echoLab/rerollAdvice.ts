@@ -4,8 +4,8 @@
 // place (every type the other four lines leave open × every tier, scored by the engine) → which lines to
 // lock and which to re-roll. Per lock count (0-4, the most valuable lines locked): the chance the re-roll beats
 // the current lines, the expected gain when you keep the better of old and new, and the Transducers it costs.
-// Re-rolling one line is enumerated exactly; re-rolling two or more adds the exact single-line values of the
-// new lines (see the assumptions). Pure/async, worker-safe.
+// Re-rolling one line is enumerated exactly; re-rolling two or more reads the new lines through the line model
+// (lineModel.ts: every line and every two stats scored by the engine). Pure/async, worker-safe.
 import { MIN_PLAN_GAIN } from "./rerollPick";
 import { SUBSTAT_KEYS, type SubstatKey } from "../substats/substatWeights";
 import {
@@ -21,8 +21,10 @@ import {
   type LabSession,
   type RunControl,
 } from "./core";
-import { seededRandom, stableKey } from "./fingerprint";
-import { outcomeKey, sampleOutcome, tierOdds, type NewLine } from "./rolls";
+import { stableKey } from "./fingerprint";
+import { lineModel, lineOutcomes, lineTable } from "./lineModel";
+import { LINE_MODEL_NOTE } from "./lineModelNote";
+import { outcomeKey, tierOdds, type NewLine } from "./rolls";
 // Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
 import { menuEnergyRegen } from "../energy/energyHave";
 import { showNeed, shortBy } from "../energy/energyNeed";
@@ -35,7 +37,7 @@ export const REROLL_ASSUMPTIONS = [
   "A re-rolled line takes a type the locked lines do not hold, drawn uniformly (it may come back as the type it replaced), at a value from Kuro's published tier odds — verify in game.",
   "You may keep the old lines when the new ones are worse; the Transducers are spent either way.",
   "Lock costs default to 0–2 locks: 1 Transducer, 3 locks: 2, 4 locks: 3 — verify in game.",
-  "Re-rolling two or more lines adds each new line's exact single-line value; how two new crit lines meet the crit cap together is not modelled.",
+  `Re-rolling one line is scored outcome by outcome; re-rolling more uses a model of the lines. ${LINE_MODEL_NOTE}`,
 ] as const;
 
 export interface RerollOptions {
@@ -75,7 +77,7 @@ export interface LockPlan {
   rerolledFields: number[];
   /** Transducers per attempt */
   cost: number;
-  method: "exact" | "additive";
+  method: "exact" | "modelled";
   /** chance the new lines beat the current ones */
   pImprove: number;
   /** expected relative gain when you keep the better of old and new */
@@ -244,8 +246,8 @@ async function computeRerollAdvice(
       method = "exact";
       pairs = tables.get(rerolled[0].field) ?? [[0, 1]];
     } else {
-      method = "additive";
-      pairs = await additivePlan(locked, rerolled, { scoreLines, base, canRepeat, samples, seed: options.seed ?? `${own.echoId ?? lab.id}|${slot}|${locks}` });
+      method = "modelled";
+      pairs = await linesPlan(locked, rerolled, { scoreLines, base, canRepeat, samples, seed: options.seed ?? `${own.echoId ?? lab.id}|${slot}|${locks}` });
     }
     const total = pairs.reduce((s, [, w]) => s + w, 0) || 1;
     const pImprove = pairs.reduce((s, [g, w]) => s + (g > 1e-12 ? w : 0), 0) / total;
@@ -292,9 +294,10 @@ async function computeRerollAdvice(
 export const rerollErNote = (need: number): string =>
   `Energy Regen is a floor: ${showNeed(need).toFixed(1)}% is this character's need in their saved teams. Every line is scored as damage × (1 − ER deficit), and an Energy Regen line the build can't lose without falling under the need is always locked.`;
 
-export interface AdditiveDeps {
+export interface LinesPlanDeps {
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   scoreLines: (list: Array<{ key: string; value: number }>) => Promise<number>;
+  /** the score of the lines the player has now */
   base: number;
   canRepeat: boolean;
   samples: number;
@@ -304,42 +307,19 @@ export interface AdditiveDeps {
 }
 
 /**
- * Re-rolling several lines at once: each candidate line's exact value on top of the locked lines alone (one
- * engine scoring per type × tier), then the joint outcome as the sum of the new lines' values against the sum
- * of the current re-rolled lines' — sampled with a seeded PRNG. Returns (relative change vs the build, weight).
+ * Re-rolling several lines at once: the line model on top of the locked lines alone (one engine scoring per type × tier,
+ * one per two stats that count), then each outcome against the build as the engine scores it. Returns (relative change
+ * vs the build, weight).
  */
-export async function additivePlan(locked: EchoLine[], rerolled: EchoLine[], deps: AdditiveDeps): Promise<Array<[number, number]>> {
+export async function linesPlan(locked: EchoLine[], rerolled: EchoLine[], deps: LinesPlanDeps): Promise<Array<[number, number]>> {
   const lockedLines = locked.map((l) => ({ key: l.key, value: l.value }));
   const context = await deps.scoreLines(lockedLines);
-  if (!(context > 0)) return [[0, 1]];
+  if (!(context > 0) || !(deps.base > 0)) return [[0, 1]];
   const held = new Set(locked.map((l) => l.key));
   if (!deps.canRepeat) for (const l of rerolled) held.add(l.key);
   const pool = SUBSTAT_KEYS.filter((k) => !held.has(k));
-  const g = new Map<string, number>();
-  const lineValue = async (key: string, value: number): Promise<number> => {
-    const id = `${key}=${value}`;
-    const hit = g.get(id);
-    if (hit !== undefined) return hit;
-    const v = relGain(context, await deps.scoreLines([...lockedLines, { key, value }]));
-    g.set(id, v);
-    return v;
-  };
-  for (const key of pool) {
-    const values = tierOdds(key).values;
-    const scores = await tierScores(lockedLines, key, context, deps.scoreLines);
-    values.forEach((value, i) => g.set(`${key}=${value}`, relGain(context, scores[i])));
-  }
-  let current = 0;
-  for (const l of rerolled) current += await lineValue(l.key, l.value);
-  const scale = context / deps.base;
-  const rng = seededRandom(deps.seed);
+  const onTop = (lines: NewLine[]): Promise<number> => deps.scoreLines([...lockedLines, ...lines]);
   const k = Math.min(deps.draw ?? rerolled.length, pool.length);
-  const pairs: Array<[number, number]> = [];
-  for (let i = 0; i < deps.samples; i++) {
-    const outcome = sampleOutcome(rng, pool, k);
-    let sum = 0;
-    for (const line of outcome) sum += g.get(`${line.key}=${line.value}`) ?? 0;
-    pairs.push([(sum - current) * scale, 1]);
-  }
-  return pairs;
+  const table = await lineTable(context, (key, value) => onTop([{ key, value }]), new Set(), pool);
+  return lineOutcomes(await lineModel(context, table, onTop, k), deps.base, pool, k, deps.samples, deps.seed);
 }

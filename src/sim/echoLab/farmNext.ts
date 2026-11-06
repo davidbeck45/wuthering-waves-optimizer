@@ -13,9 +13,10 @@
 //   3. The best one (and the runner-up when it is within half a percent) rolled out: each of the 13 substats at every
 //      tier scored exactly on that echo (one engine run per line, with shortcuts that change no number: stats whose
 //      top tiers add nothing, alone or five at a time, add nothing at any tier, and a stat whose lowest and highest
-//      tiers lie on one straight line with "no line" is read off that line), then five distinct lines drawn uniformly at Kuro's tier
-//      odds and added up — the re-roll advisor's 0-lock model (`additivePlan`), against the slot's echo as it is.
-//      One line is enumerated exactly; five are summed over seeded samples.
+//      tiers lie on one straight line with "no line" is read off that line), every two stats that count scored together
+//      once, then five distinct lines drawn uniformly at Kuro's tier odds and put together by the line model
+//      (lineModel.ts, the re-roll advisor's and the Tuner plan's too), against the slot's echo as it is. One line is
+//      enumerated exactly; five are read over seeded samples.
 // Main-stat drop odds are not modelled (no released source gives them per cost): every figure is for an echo that
 // drops with this main stat. Pure/async, worker-safe.
 import { mainEchoesData } from "../../echoes/index";
@@ -44,8 +45,8 @@ import {
   type SlotBlock,
   type SwapRules,
 } from "./core";
-import { seededRandom, stableKey } from "./fingerprint";
-import { enumerateOutcomes, outcomeCount, sampleOutcome, tierOdds } from "./rolls";
+import { stableKey } from "./fingerprint";
+import { confirmDead, lineModel, lineOutcomes, lineTable, type LineModel, type LineScorer } from "./lineModel";
 import { tuneToMaxResources } from "./tunerPlan";
 import { FARM_ASSUMPTIONS, sortFarmRows } from "./farmView";
 
@@ -125,7 +126,7 @@ export interface FarmRow {
   p10: number;
   p50: number;
   p90: number;
-  method: "exact" | "additive";
+  method: Rollout["method"];
   /** one try: a fresh 5★ echo levelled from +0 to +25 */
   resources: EchoResources;
   /** tries per echo that beats yours (1 / pBeat), null when none can */
@@ -271,70 +272,7 @@ export function setGroupsFor(lab: LabCharacter, slot: number, rules: SwapRules =
   return [...groups.values()];
 }
 
-// ── the line model ──
-
-/**
- * Each substat's score at every tier with one line of it on the echo: `scoreLine(key, value)` is the score with that
- * one line, `ctx` the score with none. Two shortcuts, neither of which changes a number: damage never falls as a stat
- * grows, so a stat whose top tier scores `ctx` scores `ctx` at every tier; and a stat whose lowest and highest tiers lie
- * on one straight line through (0, `ctx`) is linear on that range (damage is linear in one stat, bent only by caps, which
- * bend it one way), so its other tiers are read off the line. Everything else is scored tier by tier. `dead` names
- * stats already shown to add nothing on this echo (`confirmDead`): not scored again.
- */
-export async function lineTable(
-  ctx: number,
-  // eslint-disable-next-line no-unused-vars -- the parameters of a function type
-  scoreLine: (key: SubstatKey, value: number) => Promise<number>,
-  dead: ReadonlySet<string> = new Set(),
-): Promise<Map<SubstatKey, number[]>> {
-  const out = new Map<SubstatKey, number[]>();
-  const scale = Math.max(1, Math.abs(ctx));
-  for (const key of SUBSTAT_KEYS) {
-    const { values } = tierOdds(key);
-    const n = values.length;
-    if (dead.has(key)) {
-      out.set(key, values.map(() => ctx));
-      continue;
-    }
-    const top = await scoreLine(key, values[n - 1]);
-    if (Math.abs(top - ctx) <= 1e-12 * scale) {
-      out.set(key, values.map(() => ctx));
-      continue;
-    }
-    const low = await scoreLine(key, values[0]);
-    const slope = (top - ctx) / values[n - 1];
-    if (Math.abs(ctx + slope * values[0] - low) <= 1e-9 * scale) {
-      out.set(key, values.map((v, i) => (i === 0 ? low : i === n - 1 ? top : ctx + slope * v)));
-      continue;
-    }
-    const scores = [low];
-    for (let i = 1; i < n - 1; i++) scores.push(await scoreLine(key, values[i]));
-    scores.push(top);
-    out.set(key, scores);
-  }
-  return out;
-}
-
-/**
- * Which of `keys` add nothing on this echo, confirmed with their top tiers five lines at a time (one engine run per five):
- * damage never falls as a stat grows, so top tiers that together score `ctx` (the echo with no line) each add nothing at
- * any tier. A group that moves the score confirms none of its stats; `lineTable` then scores them one by one.
- */
-export async function confirmDead(
-  ctx: number,
-  keys: readonly SubstatKey[],
-  // eslint-disable-next-line no-unused-vars -- the parameters of a function type
-  scoreLines: (lines: Array<{ key: SubstatKey; value: number }>) => Promise<number>,
-): Promise<Set<string>> {
-  const out = new Set<string>();
-  const scale = Math.max(1, Math.abs(ctx));
-  for (let i = 0; i < keys.length; i += 5) {
-    const group = keys.slice(i, i + 5);
-    const score = await scoreLines(group.map((key) => ({ key, value: tierOdds(key).values[tierOdds(key).values.length - 1] })));
-    if (Math.abs(score - ctx) <= 1e-12 * scale) for (const key of group) out.add(key);
-  }
-  return out;
-}
+// ── the roll-out ──
 
 export interface Rollout {
   expectedGain: number;
@@ -343,35 +281,20 @@ export interface Rollout {
   p10: number;
   p50: number;
   p90: number;
-  method: "exact" | "additive";
+  method: "exact" | "modelled";
 }
 
 /**
- * A fresh echo's outcomes against `base`: `draw` distinct lines (types uniform over the thirteen, tiers by Kuro's odds),
- * each worth its exact single-line value on the echo (`table` over `ctx`), added up — relative change
- * `ctx / base × (1 + Σ line values) − 1`. Enumerated when there are no more outcomes than `samples`, else sampled with
- * a seeded PRNG (the same seed draws the same outcomes, so the own and team figures read one set of tries).
+ * A fresh echo's outcomes against `base`, the score of the build as it is: `draw` distinct lines (types uniform over the
+ * thirteen, tiers by Kuro's odds) put together by the line model. One line is the engine's own score ("exact"), several
+ * are the model's ("modelled"). Enumerated when there are no more outcomes than `samples`, else sampled with a seeded
+ * PRNG (the same seed draws the same outcomes, so the own and team figures read one set of tries).
  */
-export function rollout(table: Map<SubstatKey, number[]>, ctx: number, base: number, draw: number, samples: number, seed: string): Rollout {
-  if (!(ctx > 0) || !(base > 0)) return { expectedGain: 0, expectedChange: 0, pBeat: 0, p10: 0, p50: 0, p90: 0, method: "exact" };
-  const pool = SUBSTAT_KEYS;
-  const k = Math.max(0, Math.min(Math.floor(draw), pool.length));
-  const ratio = ctx / base;
-  const value = (key: SubstatKey, v: number): number => {
-    const { values } = tierOdds(key);
-    const i = values.indexOf(v);
-    return (table.get(key)?.[i] ?? ctx) / ctx - 1;
-  };
-  const pairs: Array<[number, number]> = [];
-  let method: Rollout["method"];
-  if (outcomeCount(pool, k) <= samples) {
-    method = "exact";
-    for (const o of enumerateOutcomes(pool, k)) pairs.push([ratio * (1 + o.lines.reduce((s, l) => s + value(l.key, l.value), 0)) - 1, o.p]);
-  } else {
-    method = "additive";
-    const rng = seededRandom(seed);
-    for (let i = 0; i < samples; i++) pairs.push([ratio * (1 + sampleOutcome(rng, pool, k).reduce((s, l) => s + value(l.key, l.value), 0)) - 1, 1]);
-  }
+export function rollout(model: LineModel, base: number, draw: number, samples: number, seed: string): Rollout {
+  const k = Math.max(0, Math.min(Math.floor(draw), SUBSTAT_KEYS.length));
+  const method = k <= 1 ? "exact" : "modelled";
+  if (!(model.ctx > 0) || !(base > 0)) return { expectedGain: 0, expectedChange: 0, pBeat: 0, p10: 0, p50: 0, p90: 0, method };
+  const pairs = lineOutcomes(model, base, SUBSTAT_KEYS, k, samples, seed);
   const total = pairs.reduce((s, [, w]) => s + w, 0) || 1;
   return {
     expectedGain: pairs.reduce((s, [g, w]) => s + Math.max(0, g) * w, 0) / total,
@@ -456,7 +379,7 @@ async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: num
   const worked = open.filter((c, i) => i === 0 || (i === 1 && (c.ctx ?? 0) >= (open[0].ctx ?? 0) * (1 - RUNNER_UP)));
   for (const c of worked) {
     const chars = c.characters as Record<string, any>;
-    const scoreLines = async (lines: Array<{ key: SubstatKey; value: number }>): Promise<number> => {
+    const scoreLines: LineScorer = async (lines) => {
       const inv = withInventoryRecord(echoes, withLines(c.record, lines));
       const avg = await scoreBuild(session, lab, chars, inv);
       await pace();
@@ -464,7 +387,8 @@ async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: num
     };
     const dead = await confirmDead(c.ctx ?? 0, likelyDead, scoreLines);
     const table = await lineTable(c.ctx ?? 0, (key, value) => scoreLines([{ key, value }]), dead);
-    c.rollout = rollout(table, c.ctx ?? 0, lab.base, draw, samples, `${seed}|${c.main}|${c.group.set}`);
+    const model = await lineModel(c.ctx ?? 0, table, scoreLines, draw);
+    c.rollout = rollout(model, lab.base, draw, samples, `${seed}|${c.main}|${c.group.set}`);
   }
   const chosen = [...worked].sort((a, b) => (b.rollout?.expectedGain ?? 0) - (a.rollout?.expectedGain ?? 0) || (b.ctx ?? 0) - (a.ctx ?? 0))[0];
   const r = chosen.rollout as Rollout;
@@ -582,10 +506,11 @@ async function teamFigure(session: LabSession, side: TeamSide, lab: LabCharacter
   };
   try {
     const teamCtx = await score(withInventoryRecord(echoes, chosen.record));
-    const table = await lineTable(teamCtx, (key, value) => score(withInventoryRecord(echoes, withLines(chosen.record, [{ key, value }]))));
+    const scoreLines: LineScorer = (lines) => score(withInventoryRecord(echoes, withLines(chosen.record, lines)));
+    const table = await lineTable(teamCtx, (key, value) => scoreLines([{ key, value }]));
     const draw = Math.max(1, Math.min(5, Math.floor(options.draw ?? 5)));
     const samples = Math.max(1000, Math.floor(options.samples ?? 20000));
-    const r = rollout(table, teamCtx, ctx.base, draw, samples, plan.seed);
+    const r = rollout(await lineModel(teamCtx, table, scoreLines, draw), ctx.base, draw, samples, plan.seed);
     return {
       team: {
         teamId: ctx.rank.id,

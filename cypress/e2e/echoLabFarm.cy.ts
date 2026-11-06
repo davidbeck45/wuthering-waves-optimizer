@@ -132,6 +132,8 @@ describe("Echo Lab: Farm next", () => {
     // the (i) explains the model and closes with Escape
     cy.get('[data-test-echo-lab-info="farm"]').click();
     cy.get('[data-test-echo-lab-info-panel="farm"]').should("contain.text", "20,000 seeded tries");
+    // the line model says what it was measured at, and no note says the gains run low
+    cy.get('[data-test-echo-lab-info-panel="farm"]').should("contain.text", "whole echoes run through the engine").and("not.contain.text", "run a little low").and("not.contain.text", "run low").and("not.contain.text", "added up");
     cy.get("body").type("{esc}");
     cy.get('[data-test-echo-lab-info-panel="farm"]').should("not.exist");
 
@@ -145,6 +147,32 @@ describe("Echo Lab: Farm next", () => {
       cy.get("[data-test-echo-lab-farm-team-gain]").should("have.length", 15 - $b.length);
       expect(15 - $b.length).to.be.at.least(9);
     });
+  });
+
+  it("never paints a saved list of an older version: figures of the old line model are dropped and worked out again", () => {
+    const KEY = "wtplus:echoLab:cache";
+    const STALE = 0.4242; // shows as +42.42%, a figure no fresh echo here reaches
+    /** This tab's saved copy with its first row's figure changed and `v` as given, then a reload of the same account. */
+    // eslint-disable-next-line no-unused-vars -- the parameters of a function type
+    const reloadWith = (version: (v: number) => number): void => {
+      cy.window().then((win) => {
+        const saved = JSON.parse(win.sessionStorage.getItem(KEY) as string);
+        saved.v = version(saved.v);
+        saved.farm.rows[0].expectedGain = STALE;
+        win.sessionStorage.setItem(KEY, JSON.stringify(saved));
+      });
+      cy.visit("/echo-lab?tab=farm", seed({ keepSession: true }));
+      cy.get("[data-test-echo-lab-farm-row]", RUN).should("have.length", 12);
+    };
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab?tab=farm", seed());
+    cy.get("[data-test-echo-lab-farm-row]", RUN).should("have.length", 12);
+    // the same version is read back as it stands, so the changed figure shows: the check below can see one
+    reloadWith((v) => v);
+    cy.get("[data-test-echo-lab-farm-gain]").first().invoke("text").should("contain", "42.42");
+    // the version before the line model is not
+    reloadWith(() => 2);
+    cy.get("[data-test-echo-lab-farm-gain]").each(($g) => expect($g.text()).not.to.contain("42.42"));
   });
 
   for (const width of [412, 360]) {
