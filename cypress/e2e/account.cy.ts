@@ -140,9 +140,11 @@ describe("my account", () => {
     expectNoHorizontalScroll("/account at 412 px");
     // the card's gain says whose it is on a phone too: the word was hidden here and nothing on a phone hovers
     cy.get("[data-test-account-card-upgrade]").first().find(".cc__up-scope").should("be.visible").invoke("text").should("match", /^(team|own)$/);
-    // and the word doesn't cost the label its end: "Crit Rate roll" read "Crit Rat…" beside it
-    cy.get(".cc__up-what").each(($what) => {
-      expect($what[0]!.scrollWidth, `"${$what.text()}" whole on the card`).to.be.at.most($what[0]!.clientWidth);
+    // and the word doesn't cost the label its end: "Crit Rate roll" read "Crit Rat…" beside it. This fixture's labels are
+    // too short to show that, so the card is handed the longest one David's account prints
+    cy.get("[data-test-account-card-upgrade] .cc__up-what").first().then(($what) => {
+      $what.text("Crit Rate roll");
+      expect($what[0]!.scrollWidth, "the label whole on the card").to.be.at.most($what[0]!.clientWidth);
     });
     cy.get('[data-test-account-card="Cartethyia"]').click();
     cy.get("[data-test-account-drawer]").should("have.attr", "open");
