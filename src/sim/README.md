@@ -4011,3 +4011,22 @@ The account lives in three persisted stores and every write path above leans on 
 Ryan's files touched, each the smallest that works: `main.ts` (one option, one import), `settingsBackup.ts` (one call replaces the three parses), `SettingsBackupRestore.vue` and `SettingsImport.vue` (the import lines wrapped so a refusal reaches a toast).
 
 Gates: `storage/storage.test.ts` (real stores and plugin), `confirmRouteGuard.test.ts` (a real router), `useBuildTeam.test.ts`, `account/useBuildAccount.test.ts`, `buildHistory/importCheck.test.ts`, `useBuildHistory.test.ts`, `syncUndo.test.ts`, `buildAccount.test.ts`, `buildTeam.test.ts`; `buildAccount.cy.ts`, `buildHistory.cy.ts`, `wavescanNewEchoes.cy.ts`.
+
+## Phone flows — what a tap, a swipe and Back do (hunt round 1, track "phone-flows", 2026-11-06)
+
+A walk of the phone flows at 412 and 360 px with real touch events. Nothing here changes a figure; each fix makes a page
+say or keep what it already knew.
+
+| Where | Rule now |
+|---|---|
+| `buildTeam/useBuildTeam.ts`, `account/useBuildAccount.ts` | **A review outlives Back.** The steps are no history entries, so Back left the review and Forward found step 1. Each keeps its last review in module memory (`keptReview`, `keptPlan`), tied to the account fingerprint and, on One team, to the request; `load()` restores it. Change plan / Change teams, a save, a new run, a stale review and Settings › Clear saved results all put it down. **Memory only:** a Back that crosses a full page load (a link opened straight into the page, then Back out of the app) costs a re-run, as a reload does |
+| `useBuildAccount.ts` | **The teams you chose outlive a reload:** `wtplus:buildAccount:choice:v1` holds the order and weights. A team that is gone is dropped, none left is the default |
+| `account/echoCheck.ts`, `ownUpgrades.ts`, `investPlan.ts` `rankedTeamImpact`, `BuildTeamView.vue` | **The page a row opens prints the row's figure.** A preset has no saved rotation, so the review had no team total and a +8.8 % team row opened a page showing only wuwa_calc's −1.7 %. The row's link names the team it was scored on (`?rankedTeam=`), and the review scores that team before and with the new build by the row's own rule: the tile "Team on My account". wuwa_calc's tile stays beside it: they are two engines and can disagree, both labelled |
+| `echoLab/EchoLabSets.vue`, `setLabView.ts` `setsNotOwned` | **No filter that finds nothing.** A layout of sets you own none of goes to Farm next and says why, so a saved filter is never swapped for an empty one. A layout with one set missing still filters, and the confirm says which set the optimizer can't use |
+| `shell/askBackGuard.ts` | **Back closes the Ask sheet on a phone** and stays: it is a section, so no close watcher takes the gesture. A guard on the router aborts that one Back, which puts the address back. A link in the sheet is a push and goes on; the side panel on a wide screen leaves Back to the page |
+| `shell/paletteItems.ts`, `paletteCommands.ts` | **A title beats a keyword for two or more words** (`TITLE_BONUS`), and the "reads as a title" test looks at every row, not only the best: "which set" opens the command, not Ask. One word stays with the keywords. "Set lab" is a section row; "Cost to max: <name>" opens `/account?focus=<id>&section=cost`, the drawer at that section. Closing it takes both off the address |
+| `account/useOwnUpgrades.ts` | **Leaving stops a check, and says so** on the way back, as Cancel does. A finished check is not told it stopped |
+| `account/AccountCharacterDrawer.vue` | `overscroll-behavior: contain`, as every other sheet: a swipe past its end moved the page behind by 3,500 px |
+| `shell/settingsLinks.test.ts` | Every plus link to Settings names its section: a bare `/settings` lands on Preferences, with the section list behind a phone's menu |
+| Phone text | A row that opens nothing shows its text whole: /endgame's team rows (`sm:` on the clamps), /account's invest rows (the item drops under the name and wraps), Set lab's conditions (no clamp) |
+| `echoLab/EchoLabView.vue`, `endgame/ToaView.vue` | Only a tile that filters is a button. The Plan tab counts crests only with a team: without one it is the low floors assumed clear, 12★ for nobody |
