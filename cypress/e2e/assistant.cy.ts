@@ -275,6 +275,21 @@ describe("Claude assistant", { scrollBehavior: "center" }, () => {
     cy.get("[data-test-ai-onboarding]").scrollIntoView().should("be.visible");
   });
 
+  it("closes the sheet on Back on a phone and stays on the page; the next Back leaves it", () => {
+    cy.viewport(412, 915);
+    cy.visit("/today", seedV3({ key: true }));
+    cy.get("[data-test-nav-rankings]").click();
+    cy.get('[data-test-nav-plus-page="/account"]').click();
+    cy.location("pathname").should("eq", "/account");
+    cy.get("[data-test-ai-open]").should("be.visible").click();
+    cy.get("[data-test-ai-panel]").should("be.visible");
+    cy.go("back");
+    cy.get("[data-test-ai-panel]").should("not.be.visible");
+    cy.location("pathname").should("eq", "/account");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/today");
+  });
+
   it("fits a 412 px phone at 130 % text as a bottom sheet", () => {
     cy.viewport(412, 915);
     stubAnthropic();

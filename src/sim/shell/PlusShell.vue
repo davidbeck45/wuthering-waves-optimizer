@@ -40,6 +40,7 @@ import { noticeRefusedWrites } from "../storage/persistGuard";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
+import { installAskBackGuard } from "./askBackGuard";
 import { installConfirmRouteGuard } from "./confirmRouteGuard";
 import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { askInRail, DOCKED_CLASS, DOCK_MIN_WIDTH, shouldDock } from "./askDock";
@@ -72,6 +73,8 @@ installImportGuard({ character: characterStore as never, inventory: inventorySto
 installCrossTabSync([characterStore, inventoryStore, teamStore] as unknown as SyncedStore[]);
 noticeRefusedWrites((text) => useToast().showToast(text, "error", 12000));
 installConfirmRouteGuard(useRouter());
+// the sheet's width rule is AssistantPanel.vue's `phoneQuery`
+installAskBackGuard(useRouter(), { sheetOpen: () => assistant.state.open && window.matchMedia("(max-width: 767px)").matches, close: () => assistant.close() });
 const modKey = modKeyLabel();
 
 // "New here?" on the calculator for a browser with nothing of its own yet (welcome.ts); gone for good once dismissed
