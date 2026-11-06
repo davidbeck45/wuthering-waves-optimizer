@@ -106,11 +106,11 @@ export function virtualLoadoutStats(
   echoStats: Record<string, number>,
   mainEchoKey: string,
   labels: Array<string | null>,
-): { finalStats: any; combinedEchoBuffs: Record<string, number>; mainEchoBuff: Record<string, number> } {
+): { finalStats: any; combinedEchoBuffs: Record<string, number>; mainEchoBuff: Record<string, number>; selfBuffsData: any; resonanceChainsBuffsData: any } {
   const context = scoring.context as any;
   const mainEchoBuff = scoring.mainEchoStats?.[mainEchoKey] ?? {};
   const combinedEchoBuffs = combineBuffObjects(echoStats, mainEchoBuff, ...labels.map((label) => scoring.echoSetPassiveBuffs?.[label as string] ?? {}));
-  const { finalStats } = calculateFinalStatsFromBuffs({
+  const { finalStats, selfBuffsData, resonanceChainsBuffsData } = calculateFinalStatsFromBuffs({
     baseHp: context.baseHp,
     baseAtk: context.baseAtk,
     baseDef: context.baseDef,
@@ -135,7 +135,7 @@ export function virtualLoadoutStats(
     resonanceChainsBuffsData: scoring.resonanceChainsBuffsData,
     injectEchoStats: combinedEchoBuffs,
   });
-  return { finalStats, combinedEchoBuffs, mainEchoBuff };
+  return { finalStats, combinedEchoBuffs, mainEchoBuff, selfBuffsData, resonanceChainsBuffsData };
 }
 
 const ROTATION_REF: Record<string, "normalDamage" | "avgDamage" | "critDamage"> = { Normal: "normalDamage", Average: "avgDamage", Crit: "critDamage" };
@@ -147,7 +147,8 @@ function virtualTarget(scoring: PrunerScoring, stats: ReturnType<typeof virtualL
   const { damageAggregation } = scoreOptimizerRotationDeduped(
     scoring.rotationData!,
     [],
-    { finalStats: stats.finalStats, combinedEchoBuffs: stats.combinedEchoBuffs, echoStats, mainEchoBuff: stats.mainEchoBuff, setBonusOnePiece: null, setBonusOne: null, setBonusTwo: null },
+    // the virtual loadout's own self buffs: its ER and HP top every real loadout's, so what scales on them does too
+    { finalStats: stats.finalStats, combinedEchoBuffs: stats.combinedEchoBuffs, echoStats, mainEchoBuff: stats.mainEchoBuff, setBonusOnePiece: null, setBonusOne: null, setBonusTwo: null, selfBuffsData: stats.selfBuffsData, resonanceChainsBuffsData: stats.resonanceChainsBuffsData },
     scoring.context as OptimizerContext,
     new Map(),
     { attacks: false },

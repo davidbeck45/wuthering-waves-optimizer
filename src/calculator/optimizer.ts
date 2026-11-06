@@ -469,6 +469,13 @@ export interface OptimizerLoadoutStats {
   setBonusOnePiece: string | null;
   setBonusOne: string | null;
   setBonusTwo: string | null;
+  /**
+   * Wuthering Tools+: self buffs and resonance chains as this loadout's stats resolve them. AdditionalBase modifiers
+   * scale on a stat, and some land only here (per-talent ones, Mornye's DMGBonus), so the attacks must read these
+   * and not the run's `context.charBuffsData`, which holds today's build's ER and HP.
+   */
+  selfBuffsData?: any;
+  resonanceChainsBuffsData?: any;
 }
 
 /** Sums multiple `{ stat: value }` buff objects into one, key by key. */
@@ -521,7 +528,11 @@ export function computeLoadoutFinalStats(
     setBonusTwoBuffs,
   );
 
-  const { finalStats } = calculateFinalStatsFromBuffs({
+  const {
+    finalStats,
+    selfBuffsData: loadoutSelfBuffsData,
+    resonanceChainsBuffsData: loadoutResonanceChainsBuffsData,
+  } = calculateFinalStatsFromBuffs({
     baseHp: context.baseHp,
     baseAtk: context.baseAtk,
     baseDef: context.baseDef,
@@ -555,6 +566,8 @@ export function computeLoadoutFinalStats(
     setBonusOnePiece,
     setBonusOne,
     setBonusTwo,
+    selfBuffsData: loadoutSelfBuffsData,
+    resonanceChainsBuffsData: loadoutResonanceChainsBuffsData,
   };
 }
 
@@ -575,7 +588,8 @@ export function buildOptimizerCalculationContext(
   // finalStats numbers), so passing the character's default data here for an
   // override action would silently reintroduce whatever self/resonance/team
   // buffs the override turned off (or double-count ones it left on).
-  overrideBuffData?: { selfBuffsData: any; resonanceChainsBuffsData: any; teamBuffsData: any },
+  // Wuthering Tools+: a plain action passes its `OptimizerLoadoutStats` here, so it reads that loadout's buffs too.
+  overrideBuffData?: { selfBuffsData?: any; resonanceChainsBuffsData?: any; teamBuffsData?: any },
 ): any {
   return getCalculationContext(
     context.chosenChar,
@@ -797,7 +811,7 @@ export function scoreOptimizerRotation(
   };
 
   if (rotationData.plainAttacks.length) {
-    const optimizerContext = buildOptimizerCalculationContext(context, finalStats, combinedEchoBuffs);
+    const optimizerContext = buildOptimizerCalculationContext(context, finalStats, combinedEchoBuffs, loadoutStats);
     const attacks = processAttacks(
       rotationData.plainAttacks,
       optimizerContext,
@@ -839,7 +853,11 @@ export function scoreOptimizerRotation(
         resolveSetBonusStats(setBonusTwoDef, variant.echoSetPassivesConfig, context.talentData),
       );
 
-      const { finalStats: overrideFinalStats } = calculateFinalStatsFromBuffs({
+      const {
+        finalStats: overrideFinalStats,
+        selfBuffsData: overrideSelfBuffsData,
+        resonanceChainsBuffsData: overrideResonanceChainsBuffsData,
+      } = calculateFinalStatsFromBuffs({
         baseHp: context.baseHp,
         baseAtk: context.baseAtk,
         baseDef: context.baseDef,
@@ -881,8 +899,9 @@ export function scoreOptimizerRotation(
         overrideFinalStats,
         overrideCombinedEchoBuffs,
         {
-          selfBuffsData: variant.selfBuffsData,
-          resonanceChainsBuffsData: variant.resonanceChainsBuffsData,
+          // Wuthering Tools+: as resolved on this loadout's stats, as the plain path above reads them
+          selfBuffsData: overrideSelfBuffsData,
+          resonanceChainsBuffsData: overrideResonanceChainsBuffsData,
           teamBuffsData: variant.teamBuffsData,
         },
       );
@@ -1106,6 +1125,7 @@ export function optimize(
         context,
         finalStats,
         combinedEchoBuffs,
+        loadoutStats,
       );
       const attacks = processAttacks(
         [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
