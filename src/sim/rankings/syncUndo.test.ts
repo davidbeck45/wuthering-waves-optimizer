@@ -1,6 +1,6 @@
 // Wuthering Tools+: Undo for "Sync my teams" (syncUndo.ts).
 import { describe, expect, it } from "vitest";
-import { applySyncUndo, makeSyncUndo, readSyncUndo, saveSyncUndo, SYNC_UNDO_KEY, type SyncUndoRecord } from "./syncUndo";
+import { applySyncUndo, fillsToUndo, makeSyncUndo, pendingSyncUndo, readSyncUndo, saveSyncUndo, settleSyncUndo, syncWithUndo, SYNC_UNDO_KEY, type SyncUndoRecord } from "./syncUndo";
 import type { SyncReport, SyncTeamReport, TeamLike } from "./syncTeams";
 
 const team = (id: string, name: string, stacks: number, extra: Record<string, unknown> = {}): TeamLike =>
@@ -75,5 +75,112 @@ describe("Sync my teams: undo", () => {
     expect(out.restored).toEqual([]);
     expect(out.kept).toEqual([]);
     expect(out.teams).toEqual(before);
+  });
+});
+
+describe("Undo sync after a pin", () => {
+  const before = [team("a", "wuwa_calc A", 1, { buildIds: ["old", null, null] }), team("b", "wuwa_calc B", 2, { buildIds: [null, null, null] })];
+  const synced = [team("a", "wuwa_calc A", 2, { buildIds: ["old", null, null], duration: 25 }), team("b", "wuwa_calc B", 3, { buildIds: [null, null, null], duration: 25 })];
+  const rep = report([row("a", "updated"), row("b", "updated")]);
+
+  it("a pin written since is not an edit: the team goes back and keeps today's pins", () => {
+    const undo = makeSyncUndo(before, synced, rep)!;
+    const pinned = [{ ...synced[0]!, buildIds: ["plan", "plan2", null] } as TeamLike, synced[1]!];
+    const out = applySyncUndo(pinned, undo);
+    expect(out.restored).toEqual(["a", "b"]);
+    expect(out.kept).toEqual([]);
+    expect(out.teams[0]!.actions[0]!.stacks).toBe(1);
+    expect((out.teams[0] as TeamLike & { buildIds: unknown }).buildIds).toEqual(["plan", "plan2", null]);
+    expect(out.teams[0]!.duration).toBe(26.92);
+  });
+
+  it("any other edit still keeps the team", () => {
+    const undo = makeSyncUndo(before, synced, rep)!;
+    const out = applySyncUndo([{ ...synced[0]!, duration: 30 }, synced[1]!], undo);
+    expect(out.restored).toEqual(["b"]);
+    expect(out.kept.map((k) => k.why)).toEqual(["edited since the sync"]);
+  });
+
+  it("reads a record stored before pins were left out", () => {
+    const undo = { ...makeSyncUndo(before, synced, rep)!, after: { a: JSON.stringify(synced[0]), b: JSON.stringify(synced[1]) } };
+    expect(applySyncUndo(synced, undo).restored).toEqual(["a", "b"]);
+  });
+
+  it("a team with no pins stays with no pins, in the shape it had", () => {
+    const plain = [team("c", "wuwa_calc C", 1)];
+    const after = [team("c", "wuwa_calc C", 2)];
+    const out = applySyncUndo(after, makeSyncUndo(plain, after, report([row("c", "updated")]))!);
+    expect(JSON.stringify(out.teams[0])).toBe(JSON.stringify(plain[0]));
+  });
+
+  it("only takes loop times out for teams actually put back", () => {
+    const fills = [{ teamId: "a", rotationId: "r1" }, { teamId: "b", rotationId: "r2" }, { teamId: "not-rewritten", rotationId: "r3" }];
+    const undo = makeSyncUndo(before, synced, rep)!;
+    expect(fillsToUndo(fills, undo, { restored: ["b"] }).map((f) => f.rotationId)).toEqual(["r2", "r3"]);
+    expect(fillsToUndo(fills, undo, { restored: ["a", "b"] })).toHaveLength(3);
+    // a sync that rewrote no team: nothing stands in the way of its times
+    expect(fillsToUndo(fills, { before: [] }, { restored: [] })).toHaveLength(3);
+  });
+});
+
+describe("a sync cut short", () => {
+  const mine = team("c", "My team", 0);
+  const before = [team("a", "wuwa_calc A", 1), team("b", "wuwa_calc B", 1), mine];
+  const halfway = [team("a", "wuwa_calc A", 2, { duration: 26.62 }), team("b", "wuwa_calc B", 1), mine];
+  const memory = () => {
+    const mem = new Map<string, string>();
+    return { mem, storage: { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) } };
+  };
+
+  it("has its undo stored before the first write", async () => {
+    const { storage } = memory();
+    let atFirstWrite: SyncUndoRecord | null = null;
+    await syncWithUndo(
+      before,
+      async () => {
+        atFirstWrite = readSyncUndo(storage);
+        return report([row("a", "updated")]);
+      },
+      () => halfway,
+      storage,
+    );
+    expect(atFirstWrite!.pending).toBe(true);
+    expect(atFirstWrite!.before.map((t) => t.id)).toEqual(["a", "b"]); // your own teams are not the sync's
+  });
+
+  it("ends as an ordinary record when the sync finishes", async () => {
+    const { storage } = memory();
+    const out = await syncWithUndo(before, async () => report([row("a", "updated"), row("b", "unchanged")]), () => halfway, storage);
+    expect(out.undo!.pending).toBeUndefined();
+    expect(out.undo!.before.map((t) => t.id)).toEqual(["a"]);
+    expect(readSyncUndo(storage)).toEqual(out.undo);
+    expect(out.after).toBe(halfway);
+  });
+
+  it("a tab closed part-way settles on the next load: the teams it reached go back, and the times it never reached stay", () => {
+    const rec = pendingSyncUndo(before);
+    const settled = settleSyncUndo(rec, halfway)!;
+    expect(settled.pending).toBeUndefined();
+    expect(settled.cut).toBe(true);
+    expect(settled.before.map((t) => t.id)).toEqual(["a"]);
+    const out = applySyncUndo(halfway, settled);
+    expect(out.restored).toEqual(["a"]);
+    expect(out.teams[0]).toEqual(before[0]);
+    expect(settleSyncUndo(rec, before)).toBeNull();
+  });
+
+  it("a sync that throws part-way leaves the undo of what it reached", async () => {
+    const { storage } = memory();
+    await expect(syncWithUndo(before, async () => { throw new Error("cut"); }, () => halfway, storage)).rejects.toThrow("cut");
+    expect(readSyncUndo(storage)!.before.map((t) => t.id)).toEqual(["a"]);
+    expect(readSyncUndo(storage)!.pending).toBeUndefined();
+  });
+
+  it("a sync that throws before any write leaves the last sync's undo as it was", async () => {
+    const { storage } = memory();
+    const last = { v: 1, at: "x", before: [before[0]!], after: { a: "fp" } } as SyncUndoRecord;
+    saveSyncUndo(last, storage);
+    await expect(syncWithUndo(before, async () => { throw new Error("still loading"); }, () => before, storage)).rejects.toThrow();
+    expect(readSyncUndo(storage)).toEqual(last);
   });
 });

@@ -336,8 +336,8 @@ import { notInApp } from "./importFromRankings";
 import { appKeyOf } from "./rileyNames";
 import { humanKey, isWuwaCalcTeam, type SyncReport, type SyncStatus, type TeamLike } from "./syncTeams";
 import { rememberTier } from "./tierMemory";
-import { applySyncUndo, makeSyncUndo, readSyncUndo, saveSyncUndo, type SyncUndoOutcome, type SyncUndoRecord } from "./syncUndo";
-import { planRotationDurations, readDurationUndo, revertRotationDurations, rotationsWithDurations, saveDurationUndo, type DurationPlan } from "./rotationDurations";
+import { applySyncUndo, fillsToUndo, readSyncUndo, saveSyncUndo, settleSyncUndo, syncWithUndo, type SyncUndoOutcome, type SyncUndoRecord } from "./syncUndo";
+import { planRotationDurations, readDurationUndo, revertRotationDurations, rotationsWithDurations, saveDurationUndo, type DurationFill, type DurationPlan } from "./rotationDurations";
 import {
   chipGroups,
   compactName,
@@ -623,7 +623,15 @@ const syncing = ref(false);
 const report = ref<SyncReport | null>(null);
 const syncError = ref<string | null>(null);
 const showDetails = ref(false);
-const undoRecord = ref<SyncUndoRecord | null>(readSyncUndo());
+/** The last sync's Undo. One still pending was cut short (the tab closed part-way): settled here from what it left. */
+function storedSyncUndo(): SyncUndoRecord | null {
+  const rec = readSyncUndo();
+  if (!rec?.pending) return rec;
+  const settled = settleSyncUndo(rec, (teams.value ?? []) as TeamLike[]);
+  saveSyncUndo(settled);
+  return settled;
+}
+const undoRecord = ref<SyncUndoRecord | null>(storedSyncUndo());
 const undone = ref<{ restored: number; kept: SyncUndoOutcome["kept"]; loops: number } | null>(null);
 const syncTitle = "re-import every saved wuwa_calc team (imports and presets) at your account's sequences, weapons and refinements, updating each in place; your own teams are left alone";
 const undoTitle = "put the teams the last sync rewrote back as they were and take out the rotation times it added (a team you edited since stays as it is)";
@@ -654,13 +662,13 @@ async function sync(): Promise<void> {
   syncError.value = null;
   undone.value = null;
   showDetails.value = false;
+  undoRecord.value = null; // an Undo of the last sync while this one writes would put back the wrong teams
   try {
     const snapshot: TeamLike[] = JSON.parse(JSON.stringify(list));
-    report.value = await syncMyTeams(snapshot);
-    const after: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
-    undoRecord.value = makeSyncUndo(snapshot, after, report.value);
-    saveSyncUndo(undoRecord.value);
-    const filled = fillLoopTimes(after);
+    const run = await syncWithUndo(snapshot, () => syncMyTeams(snapshot), () => JSON.parse(JSON.stringify(teams.value ?? [])));
+    report.value = run.report;
+    undoRecord.value = run.undo;
+    const filled = fillLoopTimes(run.after);
     durations.value = filled;
     // the confirm promises an Undo: a sync that rewrote no team but filled loop times gets one too, with no team in it
     if (!undoRecord.value && filled.fills.length) {
@@ -669,6 +677,7 @@ async function sync(): Promise<void> {
     }
     // the report under the bar is the outcome; a success toast only covered its Close button
   } catch (err) {
+    undoRecord.value = readSyncUndo();
     syncError.value = err instanceof Error ? err.message : String(err);
     report.value ??= { at: new Date().toISOString(), cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
     showToast(syncError.value, "error", 8000);
@@ -682,7 +691,8 @@ async function undoSync(): Promise<void> {
   open.value = null;
   // asks first, as /build-team's Undo does: the record outlives a reload, so the tap can come long after the sync
   const n = rec.before.length;
-  const loops = readDurationUndo().length;
+  const fills = rec.cut ? [] : readDurationUndo();
+  const loops = fills.length;
   const loopTimes = plural(loops, "rotation time");
   const ok = await confirm(
     n
@@ -705,7 +715,7 @@ async function undoSync(): Promise<void> {
   });
   undoRecord.value = null;
   saveSyncUndo(null);
-  undone.value = { restored: out.restored.length, kept: out.kept, loops: unfillLoopTimes() };
+  undone.value = { restored: out.restored.length, kept: out.kept, loops: unfillLoopTimes(fillsToUndo(fills, rec, out)) };
   report.value ??= { at: rec.at, cost: "mine", teams: [], updated: 0, unchanged: 0, skipped: 0, failed: 0 };
 }
 function closeReport(): void {
@@ -729,9 +739,8 @@ function fillLoopTimes(after: TeamLike[]): DurationPlan {
 }
 const loopTimesText = (plan: DurationPlan): string =>
   plan.fills.slice(0, 4).map((f) => `${characterShortName(f.characterId)} ${f.to} s`).join(", ") + (plan.fills.length > 4 ? `, +${plan.fills.length - 4} more` : "");
-/** Takes the last sync's filled times back out; how many it took (a time the player changed since stays). */
-function unfillLoopTimes(): number {
-  const fills = readDurationUndo();
+/** Takes these filled times back out; how many it took (a time the player changed since stays). */
+function unfillLoopTimes(fills: readonly DurationFill[]): number {
   const chars = characterStore.characters as Record<string, any>;
   let taken = 0;
   for (const id of new Set(fills.map((f) => f.characterId))) {
