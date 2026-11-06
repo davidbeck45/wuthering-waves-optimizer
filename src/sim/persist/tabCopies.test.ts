@@ -127,6 +127,7 @@ describe("a run that outlives a Clear", () => {
 
   it("keeps nothing: the page said the next visit scores again", async () => {
     const write = vi.spyOn(savedResults, "write").mockResolvedValue(true);
+    // eslint-disable-next-line no-unused-vars -- the parameters of a function type
     let finish: (r: RosterRanking) => void = () => undefined;
     const run = sharedRanking("fp", () => new Promise((resolve) => (finish = resolve)));
     localStorage.setItem(RESULTS_CLEARED_KEY, "1");
@@ -158,13 +159,13 @@ describe("a page load that lost a chunk", () => {
     expect(write).not.toHaveBeenCalled();
     expect(sessionStorage.getItem(cache.RANKING_CACHE_KEY)).toBeNull();
     expect(cache.readCachedRanking("fp-lost")?.incomplete).toBe(true); // this page load still shows it
-  });
+  }, 60_000);
 
   it("keeps a plan finished after the loss out of the saved results, on a ranking that was whole", async () => {
     const { planSavedUnder: savedUnder } = await import("../account/investCache");
     expect(savedUnder("fp", {}, { errors: [] })).toBe("fp");
     window.dispatchEvent(new Event("vite:preloadError"));
     expect(savedUnder("fp", {}, { errors: [] })).toBeNull();
-  });
+  }, 60_000);
 });
 

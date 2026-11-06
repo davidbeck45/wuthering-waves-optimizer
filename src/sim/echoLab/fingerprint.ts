@@ -35,8 +35,9 @@ export function scoredCharacters(characters: unknown): unknown {
       continue;
     }
     const kept = Object.fromEntries(Object.entries(panel).filter(([k]) => !OPTIMIZER_PANEL_FIELDS.includes(k)));
-    const { optimizer: _panel, ...rest } = data as Record<string, unknown>; // eslint-disable-line @typescript-eslint/no-unused-vars -- taken out
-    out[id] = Object.keys(kept).length ? { ...rest, optimizer: kept } : rest;
+    const copy: Record<string, unknown> = { ...data, optimizer: kept };
+    if (!Object.keys(kept).length) delete copy.optimizer;
+    out[id] = copy;
   }
   return out;
 }

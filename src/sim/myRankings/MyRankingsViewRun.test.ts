@@ -10,6 +10,7 @@ import { clearRankingMemory } from "./rankingCache";
 import MyRankingsView from "./MyRankingsView.vue";
 import type { RosterRanking } from "./rankRoster";
 
+// eslint-disable-next-line no-unused-vars -- the parameters of a function type
 const h = vi.hoisted(() => ({ runs: [] as Array<{ auto: boolean; finish: (r: unknown) => void }> }));
 vi.mock("./rankRoster", async (real) => ({
   ...(await real<typeof import("./rankRoster")>()),
