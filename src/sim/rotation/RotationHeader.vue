@@ -19,7 +19,7 @@
           <div class="text-xs opacity-80 truncate max-sm:hidden" :title="`${m.weapon} R${m.refinement}${m.weaponApproximated ? ' (stand-in: your weapon is not on this loadout list)' : ''}`">
             {{ m.weapon }} R{{ m.refinement }}<span v-if="m.weaponApproximated" class="opacity-70"> · stand-in</span>
           </div>
-          <div class="text-xs opacity-60 truncate max-sm:hidden" :title="`${m.echo} · ${m.mainStats} · ${m.spread}`">{{ m.echo }}</div>
+          <div class="text-xs opacity-60 truncate max-sm:hidden" :title="`${sonataText(m.echo)} · ${m.mainStats} · ${m.spread}`">{{ sonataText(m.echo) }}</div>
           <div class="sm:mt-1 flex items-center gap-2 max-sm:w-[64px] max-sm:shrink-0" :title="`${int(m.dps)} DPS of the team's ${int(run.total)}`">
             <div class="h-1.5 flex-1 rounded-full bg-base-300 overflow-hidden">
               <div class="h-full rv-hue-dot" :style="{ width: `${Math.round(m.share * 100)}%`, '--hue': hueOf(m.name) }"></div>
@@ -76,6 +76,7 @@ import { computed } from "vue";
 import type { RunLite, RunMember, SubsMode } from "../engine/rileyRun";
 import { runRange } from "../critLuck/runRange";
 import { rangeSentence } from "../critLuck/format";
+import { sonataText } from "../echoPlan/catalog";
 import MemberAvatar from "./MemberAvatar.vue";
 import type { Variant } from "./useRotationRun";
 

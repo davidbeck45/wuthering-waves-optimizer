@@ -10,6 +10,7 @@ import { cuePlan, type CuePlan } from "./cueModel";
 import { extractRotation, type RotationModel } from "./extract";
 import type { RotationTarget } from "./hash";
 import { membersOfCode, teamOfCode } from "./teamCode";
+import { sonataText } from "../echoPlan/catalog";
 
 export type RunPhase = "idle" | "engine" | "solving" | "tracing" | "ready" | "error";
 
@@ -45,7 +46,7 @@ export function variantLabels(solves: MineSolve[]): Variant[] {
       teamKey: s.teamKey,
       status: s.status,
       total: s.best?.total ?? null,
-      label: m ? `${m.name}: ${m.echo}` : s.teamKey,
+      label: m ? `${m.name}: ${sonataText(m.echo)}` : s.teamKey,
       ...(s.reason ? { reason: s.reason } : {}),
     };
   });

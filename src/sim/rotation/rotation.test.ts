@@ -13,6 +13,8 @@ import { DEFAULT_PREFS, readPrefs, ROTATION_PREFS_KEY, writePrefs } from "./pref
 import { BASE_HP, hpLines, hpText, onFieldAt, parseHp, rangesOf, rulerStep, valueAt } from "./timelineScale";
 import { membersOfCode, teamOfCode } from "./teamCode";
 import { variantLabels } from "./useRotationRun";
+import { setLabel } from "../echoLab/echoLabView";
+import { sonataText } from "../echoPlan/catalog";
 import { shortName, stagesOf, tokenOf, tokenText } from "./tokens";
 
 const RUN = fixture as unknown as RunLite;
@@ -455,6 +457,17 @@ describe("timeline arithmetic", () => {
     const v = variantLabels([{ ...base, best: best("Set A", 10) }, { ...base, teamKey: "t2", best: best("Set B", 12) }, { ...base, teamKey: "t3", status: "skipped", reason: "noBuild", best: null }]);
     expect(v.map((x) => x.label)).toEqual(["Lynae: Set A", "Lynae: Set B", "t3"]);
     expect(v[2]!.reason).toBe("noBuild");
+  });
+
+  it("names a Sonata as the game writes it, in the words the rest of the app prints (hunt 1, numbers L8)", () => {
+    const base = { teamKey: "t1", names: [], appKeys: [], status: "ok" as const, fieldable: true };
+    const best = (echo: string, total: number) => ({ rowKey: "", picks: [], total, bySlot: {}, seconds: 1, members: [{ ...RUN.members[0]! }, { ...RUN.members[1]!, echo }] });
+    const v = variantLabels([{ ...base, best: best("Havoc Eclipse 5pc", 10) }, { ...base, teamKey: "t2", best: best("Moonlit Clouds 5pc", 12) }]);
+    expect(v.map((x) => x.label)).toEqual(["Lynae: Sun-sinking Eclipse 5pc", "Lynae: Moonlit Clouds 5pc"]);
+    // the header prints the same words as Set lab, and the engine's own string stays what Build my team parses
+    expect(sonataText("Havoc Eclipse 5pc + Reactor Husk")).toBe(`${setLabel("HavocEclipse")} 5pc + Reactor Husk`);
+    expect(sonataText("Halo of Starry Radiance 5pc")).toBe("Halo of Starry Radiance 5pc");
+    expect(sonataText("")).toBe("");
   });
 });
 

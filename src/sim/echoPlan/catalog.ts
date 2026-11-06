@@ -135,6 +135,10 @@ export const IN_GAME_SET_NAME: Record<string, string> = {
  *  else the calculator's. Ryan's own pages, and what prints an echo the way they do, keep the calculator's. */
 export const sonataName = (key: string): string => IN_GAME_SET_NAME[key] ?? echoSetLabelMap[key] ?? key;
 
+/** wuwa_calc's loadout words ("Havoc Eclipse 5pc + Reactor Husk") with each Sonata as `sonataName` prints it. For printing
+ *  only: Build my team parses the engine's own string back into set keys, so that string stays as it is. */
+export const sonataText = (text: string): string => Object.entries(IN_GAME_SET_NAME).reduce((out, [key, name]) => out.replaceAll(echoSetLabelMap[key] ?? key, name), text);
+
 export interface Sonata {
   /** the app's set key (`echoSetLabelMap`) */
   key: string;
