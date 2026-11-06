@@ -62,6 +62,7 @@
  * See src/utils/settingsBackup.ts for the shared import/export/version logic.
  */
 import { ref } from "vue";
+import { importOrExplain } from "../sim/buildHistory/importCheck"; // Wuthering Tools+
 import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import {
@@ -88,7 +89,7 @@ function importRawCharacterData() {
   if (isJsonString(importedRawCharacterData.value) === false) {
     return showToast("Character data given is invalid", "error");
   }
-  applyImportedDatabase(importedRawCharacterData.value);
+  if (!importOrExplain(() => applyImportedDatabase(importedRawCharacterData.value), showToast)) return; // Wuthering Tools+
   showToast("Your data has been overwritten!", "success");
   importedRawCharacterData.value = "";
   window.setTimeout(() => location.reload(), 1500);
@@ -130,7 +131,8 @@ function confirmUpload() {
     showToast("Character data given is invalid", "error");
     return;
   }
-  applyImportedDatabase(fileData.value);
+  const backup = fileData.value;
+  if (!importOrExplain(() => applyImportedDatabase(backup), showToast)) return; // Wuthering Tools+
   showToast("Your data has been overwritten!", "success");
   fileData.value = null;
   window.setTimeout(() => location.reload(), 1500);

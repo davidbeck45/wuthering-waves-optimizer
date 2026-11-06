@@ -94,8 +94,8 @@
 // Wuthering Tools+ — "add only new echoes" for a Wavescan file (README "WaveScan: add only new echoes"). Hooked into
 // Ryan's SettingsWavescan.vue (one async-component line) once his panel has read and validated the file; it gets his
 // mapped rows and saves the new ones through the inventory store's `saveEcho`, the same call his import makes. It never
-// touches who wears what, and never deletes.
-import { computed, reactive, ref, watch } from "vue";
+// touches who wears what, and deletes only what it just added when the browser would not store it.
+import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useInventoryStore } from "../../stores/inventory";
 import { useToast } from "../../composables/useToast";
 import { useConfirm } from "../../composables/useConfirm";
@@ -103,6 +103,7 @@ import { pluralEchoes } from "../../composables/useWavescanLoadouts";
 import { randomString } from "../../utils/strings";
 import type { WavescanEchoMapResult } from "../../wavescan/echoes";
 import { characterDisplayName } from "../display/names";
+import { accountStoresRefused } from "../storage/persistGuard";
 import WavescanEchoGroups from "./WavescanEchoGroups.vue";
 import { groupByBaseEcho, matchNote, planNewEchoes, secondCopiesUpstreamWouldAdd, type EchoRow, type ReviewRow } from "./newEchoes";
 
@@ -219,11 +220,21 @@ async function addNew() {
     const ownedBefore = plan.value.owned.length;
     // Ryan's mapper picked ids free when the file was read; re-check, because saveEcho overwrites an echo with the same id
     const taken = new Set(inventory.value.map((echo) => echo.echoId));
+    const added: string[] = [];
     for (const echo of echoes) {
       let echoId = echo.echoId;
       while (taken.has(echoId)) echoId = randomString();
       taken.add(echoId);
       await inventoryStore.saveEcho({ ...echo, echoId });
+      added.push(echoId);
+    }
+    // the browser may have refused to store them: no "Added 3" for echoes a reload loses
+    await nextTick();
+    if (accountStoresRefused()) {
+      for (const id of added) inventoryStore.deleteEcho(id);
+      await nextTick();
+      showToast("Nothing was added: this browser's storage is full. Delete some versions in Build history to make room, then add them again.", "error", 10000);
+      return;
     }
     addedCount.value = echoes.length;
     showToast(

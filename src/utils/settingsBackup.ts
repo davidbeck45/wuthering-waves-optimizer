@@ -15,6 +15,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { randomString } from "./strings";
+import { checkImport } from "../sim/buildHistory/importCheck"; // Wuthering Tools+
 import {
   applyMigrationTransforms,
   CURRENT_DATA_VERSION,
@@ -144,17 +145,16 @@ export function applyImportedDatabase(raw: string) {
   const inventoryStore = useInventoryStore();
   const teamRotationsStore = useTeamRotationsStore();
 
-  characterStore.hardSetState(
-    parseStorePayload(importData.character, importData.dataVersion) as never,
-  );
-  inventoryStore.hardSetState(
-    parseStorePayload(importData.inventory, importData.dataVersion) as never,
-  );
+  // Wuthering Tools+: all three stores are read and checked before the first write; throws ImportRefused
+  const checked = checkImport(importData, parseStorePayload, {
+    characters: characterStore.characters,
+    echoes: inventoryStore.echoes,
+  });
+  characterStore.hardSetState(checked.character as never);
+  inventoryStore.hardSetState(checked.inventory as never);
   // Older exports (pre-version-5) never had team data — hardSetState
   // already treats undefined as "no teams" via `data?.teams ?? []`.
-  teamRotationsStore.hardSetState(
-    parseStorePayload(importData.teamRotations, importData.dataVersion) as never,
-  );
+  teamRotationsStore.hardSetState(checked.teamRotations as never);
   // Transforms above bring data to the latest schema
   setStoredDataVersion(CURRENT_DATA_VERSION);
 }

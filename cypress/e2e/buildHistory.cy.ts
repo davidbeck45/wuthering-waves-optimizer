@@ -142,6 +142,24 @@ describe("build history", () => {
     cy.get("[data-test-build-history-version]").should("have.length", 1).first().should("contain.text", "Before a Settings import");
   });
 
+  it("a paste that is not a backup, or is damaged, changes nothing and says why", () => {
+    cy.visit("/settings?section=backup-restore", seed());
+    const paste = (text: string) => {
+      cy.get("[data-test-import-raw-text]", { timeout: 60000 }).invoke("val", text).trigger("input");
+      cy.get("[data-test-import-raw-button]").click();
+    };
+    // what the Import echoes box just above it asks for
+    paste(JSON.stringify([{ echo: "Sigillum", type: 4 }]));
+    cy.get(".toast").should("contain.text", "That is not a backup from this site").and("not.contain.text", "overwritten");
+    // valid outer JSON, its inventory cut off
+    paste(JSON.stringify({ ...configOptimizer, data: { ...configOptimizer.data, inventory: configOptimizer.data.inventory.slice(0, 200) } }));
+    cy.get(".toast").should("contain.text", "That backup is damaged (its echo inventory can't be read)");
+    cy.window().then((win) => {
+      expect(win.localStorage.getItem("character"), "the characters are as they were").to.eq(configOptimizer.data.character);
+      expect(JSON.parse(win.localStorage.getItem("inventory")!).echoes).to.have.length(inventory().echoes.length);
+    });
+  });
+
   it("Back during a Restore confirm cancels it: the dialog goes and nothing is written", () => {
     cy.visit("/today", seed());
     cy.get("[data-test-today]", { timeout: 60000 }).should("exist"); // a push before the first route has landed replaces it

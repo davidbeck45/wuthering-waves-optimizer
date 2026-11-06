@@ -171,6 +171,28 @@ describe("Wavescan: add only new echoes", () => {
     expectNoHorizontalScroll("second paste", 412);
   });
 
+  it("adds nothing and says so when the browser will not store the inventory", () => {
+    cy.viewport(412, 915);
+    cy.visit("/settings?section=wavescan", seed());
+    uploadScan();
+    count("new").should("contain.text", "3");
+    cy.window().then((win) => {
+      const real = win.Storage.prototype.setItem;
+      // full for anything bigger than what is stored: the taking back fits, as it does in a real full browser
+      const stored = win.localStorage.getItem("inventory")!.length;
+      win.Storage.prototype.setItem = function (this: Storage, key: string, value: string) {
+        if (key === "inventory" && value.length > stored) throw new win.DOMException("full", "QuotaExceededError");
+        return real.call(this, key, value);
+      };
+    });
+    cy.get("[data-test-wavescan-new-only-add]").click();
+    cy.get(".confirm-dialog[open] .modal-action").contains("button", "Add 3 echoes").click();
+    cy.get(".toast").should("contain.text", "Nothing was added: this browser's storage is full");
+    cy.get("[data-test-wavescan-new-only-done]").should("not.exist");
+    cy.get("[data-test-wavescan-new-only-add]").should("contain.text", "Add 3 echoes");
+    cy.window().then((win) => expect(readInventory(win).echoes).to.have.length(fixture.inventory.echoes.length));
+  });
+
   it("is offered in the classic Settings › Wavescan tab too", () => {
     cy.viewport(1440, 900);
     cy.visit("/settings?section=wavescan", seed({ classic: true }));
