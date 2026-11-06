@@ -161,6 +161,39 @@ describe("build my whole account", () => {
     });
   });
 
+  it("keeps the teams you chose through a reload, and a review through Back and Forward", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/build-team", seed());
+    cy.get("[data-test-build-team-mode-account]").click();
+    cy.get("[data-test-build-account-team]", RUN).should("have.length", 2);
+    // this account has no third team to add, so the change is the other way: a reload put eight chosen back to the default
+    cy.get("[data-test-build-account-remove]").first().click();
+    cy.get("[data-test-build-account-team]").should("have.length", 1);
+    cy.get("[data-test-build-account-team]").then(($rows) => {
+      const chosen = $rows[0]!.getAttribute("data-test-build-account-team");
+      cy.reload();
+      cy.get("[data-test-build-account-team]", RUN).should("have.length", 1).and("have.attr", "data-test-build-account-team", chosen);
+    });
+    // the steps are no history entries: Back leaves the page, and Forward used to find step 1 with the plan gone
+    cy.get("[data-test-build-team-mode-team]").click();
+    cy.get("[data-test-build-team-mode-account]").click();
+    cy.get("[data-test-build-account-run]", RUN).click();
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+    cy.go("back");
+    cy.location("search").should("not.contain", "mode=account");
+    cy.go("forward");
+    cy.location("search").should("contain", "mode=account");
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+    cy.get("[data-test-build-account-save]").should("be.visible").and("not.be.disabled");
+    // Change teams puts the review down for good
+    cy.get("[data-test-build-account-back]").click();
+    cy.get('[data-test-build-account][data-phase="choose"]').should("exist");
+    cy.go("back");
+    cy.location("search").should("not.contain", "mode=account");
+    cy.go("forward");
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+  });
+
   it("cancel during the run goes back to the teams with nothing written", () => {
     cy.viewport(1440, 900);
     cy.visit("/build-team?mode=account", seed());

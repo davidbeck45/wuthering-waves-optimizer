@@ -20,6 +20,7 @@ import { workerBackend } from "../workerBackend";
 import { OPTIONS_KEY } from "../useBuildTeam";
 import { accountFingerprint, SaveRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
 import { accountStoresRefused } from "../../storage/persistGuard";
+import { onSavedResultsCleared } from "../../persist/savedResults";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildAccount, type AccountPhase, type BuildAccountResult } from "./buildAccount";
 import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, saveAccountPlan, saveAccountUndo, undoAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
@@ -41,6 +42,43 @@ export const MAX_TEAMS = 8;
 export const BUDGET_MS = 60_000;
 
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
+
+/** The teams picked for the run, their order and weights: they outlive a reload (eight teams chosen read four again). */
+export const ACCOUNT_CHOICE_KEY = "wtplus:buildAccount:choice:v1";
+
+interface StoredChoice {
+  selected: string[];
+  weights: Record<string, number>;
+  /** the player set a weight: `weightsTouched` */
+  touched: boolean;
+}
+
+function readChoice(): StoredChoice | null {
+  try {
+    const raw = JSON.parse(localStorage.getItem(ACCOUNT_CHOICE_KEY) ?? "null") as Partial<StoredChoice> | null;
+    if (!Array.isArray(raw?.selected)) return null;
+    const weights = Object.entries(raw.weights ?? {}).filter(([, w]) => typeof w === "number" && Number.isFinite(w) && w >= 0);
+    return { selected: raw.selected.filter((id) => typeof id === "string"), weights: Object.fromEntries(weights), touched: raw.touched === true };
+  } catch {
+    return null; // unreadable: the default teams
+  }
+}
+
+/** The last review, for this tab: its steps are no history entries, so Back left it behind and Forward found step 1
+ *  (2026-11-05 hunt). It stands for the account it was planned on and no other. */
+interface KeptPlan {
+  on: string;
+  choices: AccountTeamChoice[];
+  selected: string[];
+  weights: Record<string, number>;
+  touched: boolean;
+  result: BuildAccountResult;
+}
+let keptPlan: KeptPlan | null = null;
+export function clearKeptPlan(): void {
+  keptPlan = null;
+}
+onSavedResultsCleared(clearKeptPlan);
 
 function readOptions(): BuildOptions {
   try {
@@ -119,9 +157,32 @@ export function useBuildAccount() {
     selected.value.forEach((id, i) => (weights[id] = defaultWeight(i)));
   }
 
+  function setWeights(to: Record<string, number>, touched: boolean): void {
+    for (const k of Object.keys(weights)) delete weights[k];
+    Object.assign(weights, to);
+    weightsTouched.value = touched;
+  }
+
+  function saveChoice(): void {
+    try {
+      localStorage.setItem(ACCOUNT_CHOICE_KEY, JSON.stringify({ selected: selected.value, weights, touched: weightsTouched.value }));
+    } catch {
+      // storage unavailable — the choice still holds for this visit
+    }
+  }
+
   /** `keepChoice`: read the rows again after a save or an undo, the player's teams, order and weights staying. */
   async function load(keepChoice = false): Promise<void> {
     controller?.abort();
+    if (!keepChoice && keptPlan?.on === accountFingerprint(stores())) {
+      choices.value = keptPlan.choices;
+      selected.value = [...keptPlan.selected];
+      setWeights(keptPlan.weights, keptPlan.touched);
+      result.value = keptPlan.result;
+      plannedOn = keptPlan.on;
+      phase.value = "result";
+      return;
+    }
     const ctrl = new AbortController();
     controller = ctrl;
     phase.value = "loading";
@@ -138,13 +199,13 @@ export function useBuildAccount() {
       if (ctrl.signal.aborted) return;
       choices.value = rows;
       rowsStale = false;
-      const kept = keepChoice ? selected.value.filter((id) => rows.some((r) => r.id === id)) : [];
+      const stored = keepChoice ? null : readChoice();
+      const kept = (keepChoice ? selected.value : stored?.selected ?? []).filter((id) => rows.some((r) => r.id === id)).slice(0, MAX_TEAMS);
       selected.value = kept.length ? kept : defaultSelection(rows);
-      if (!kept.length) {
-        weightsTouched.value = false;
-        for (const k of Object.keys(weights)) delete weights[k];
-      }
+      if (!kept.length) setWeights({}, false);
+      else if (stored) setWeights(stored.weights, stored.touched);
       if (!weightsTouched.value) resetWeights();
+      else selected.value.forEach((id, i) => (weights[id] ??= defaultWeight(i)));
       phase.value = "choose";
     } catch (e) {
       if (ctrl.signal.aborted) return;
@@ -159,6 +220,7 @@ export function useBuildAccount() {
     selected.value = list;
     if (!weightsTouched.value) resetWeights();
     else if (on && weights[id] == null) weights[id] = defaultWeight(list.length - 1);
+    saveChoice();
   }
 
   function move(id: string, delta: number): void {
@@ -169,12 +231,14 @@ export function useBuildAccount() {
     [list[i], list[j]] = [list[j]!, list[i]!];
     selected.value = list;
     if (!weightsTouched.value) resetWeights();
+    saveChoice();
   }
 
   function setWeight(id: string, w: number): void {
     if (!Number.isFinite(w) || w < 0) return;
     weights[id] = w;
     weightsTouched.value = true;
+    saveChoice();
   }
 
   function saveOptions(): void {
@@ -216,6 +280,7 @@ export function useBuildAccount() {
     error.value = null;
     result.value = null;
     applied.value = null;
+    keptPlan = null;
     startedAt.value = Date.now();
     now.value = startedAt.value;
     startTicker();
@@ -259,6 +324,7 @@ export function useBuildAccount() {
       progress.value = Object.fromEntries(Object.entries(progress.value).map(([k, v]) => [k, { ...v, phase: "done" }]));
       plannedOn = fingerprint;
       result.value = out;
+      keptPlan = { on: fingerprint, choices: choices.value, selected: [...selected.value], weights: { ...weights }, touched: weightsTouched.value, result: out };
       phase.value = "result";
     } catch (e) {
       // a run cancelled and replaced by a newer one (Cancel, then Plan again) leaves the page to that run
@@ -295,6 +361,7 @@ export function useBuildAccount() {
     result.value = null;
     applied.value = null;
     plannedOn = null;
+    keptPlan = null;
     rowsStale = true;
     void load(true);
   }
@@ -323,6 +390,7 @@ export function useBuildAccount() {
       applied.value = out;
       undoRecord.value = out.undo;
       rowsStale = true;
+      keptPlan = null;
       return out;
     } finally {
       saving = false;
@@ -351,6 +419,7 @@ export function useBuildAccount() {
   }
 
   function backToTeams(): void {
+    keptPlan = null;
     if (rowsStale) void load(true);
     else phase.value = "choose";
   }

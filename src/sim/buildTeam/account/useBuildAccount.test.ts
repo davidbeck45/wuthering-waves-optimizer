@@ -11,7 +11,7 @@ import { saveFailedText, SaveRefused } from "../apply";
 import { clearAccountUndo, readAccountUndo } from "./accountApply";
 import { accountTeamChoices } from "./accountTeams";
 import { buildAccount } from "./buildAccount";
-import { useBuildAccount } from "./useBuildAccount";
+import { ACCOUNT_CHOICE_KEY, clearKeptPlan, useBuildAccount } from "./useBuildAccount";
 
 vi.mock("./accountTeams", async (original) => ({ ...(await original<typeof import("./accountTeams")>()), accountTeamChoices: vi.fn() }));
 vi.mock("./buildAccount", async (original) => ({ ...(await original<typeof import("./buildAccount")>()), buildAccount: vi.fn() }));
@@ -51,6 +51,7 @@ describe("Whole account's review and save", () => {
     setActivePinia(createPinia());
     localStorage.clear();
     clearAccountUndo();
+    clearKeptPlan();
     refusedStores.value = [];
     vi.mocked(accountTeamChoices).mockReset().mockResolvedValue([CHOICE] as never);
     vi.mocked(buildAccount).mockReset().mockImplementation(async () => plan() as never);
@@ -153,5 +154,85 @@ describe("Whole account's review and save", () => {
     store.equipBuild = real;
     const out = await ba.save();
     expect(out?.created.map((c) => c.name)).toEqual(["Account plan", "Account plan"]);
+  });
+
+  describe("the teams you chose", () => {
+    const row = (id: string) => ({ ...CHOICE, id, name: id, spec: { ...CHOICE.spec, id, name: id } });
+    const ROWS = ["t1", "t2", "t3", "t4", "t5", "t6"].map(row);
+
+    beforeEach(() => {
+      vi.mocked(accountTeamChoices).mockResolvedValue(ROWS as never);
+    });
+
+    it("are still chosen after a reload, in their order, with the weights you set", async () => {
+      const first = await page();
+      first.toggle("t6", true);
+      first.move("t6", -1);
+      first.setWeight("t6", 0.25);
+      const picked = [...first.selected.value];
+      expect(picked).toContain("t6");
+
+      clearKeptPlan(); // a reload: nothing in this tab's memory, only what the browser stored
+      const again = await page();
+      expect(again.selected.value).toEqual(picked);
+      expect(again.weights.t6).toBe(0.25);
+    });
+
+    it("drop a team that is gone and keep the rest, and fall back to the default when none is left", async () => {
+      const first = await page();
+      const defaults = [...first.selected.value];
+      first.toggle("t6", true);
+      vi.mocked(accountTeamChoices).mockResolvedValue(ROWS.filter((r) => r.id !== "t6") as never);
+      expect((await page()).selected.value).toEqual(defaults);
+
+      const second = await page();
+      second.toggle("t2", true);
+      vi.mocked(accountTeamChoices).mockResolvedValue([row("other")] as never);
+      expect((await page()).selected.value).toEqual(["other"]);
+    });
+
+    it("ignores a stored choice it can't read", async () => {
+      localStorage.setItem(ACCOUNT_CHOICE_KEY, "{not json");
+      expect((await page()).selected.value.length).toBeGreaterThan(0);
+      localStorage.setItem(ACCOUNT_CHOICE_KEY, JSON.stringify({ selected: "t1", weights: 3 }));
+      expect((await page()).selected.value.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("a review you leave", () => {
+    it("is still there when you come back to the page: Back then Forward lost the plan", async () => {
+      const first = await page();
+      await review(first);
+      const shown = first.result.value;
+
+      const back = await page(); // the panel is unmounted by Back and made again by Forward
+      expect(back.phase.value).toBe("result");
+      expect(back.result.value).toBe(shown);
+      expect(back.toSave.value.length).toBeGreaterThan(0);
+      expect(vi.mocked(buildAccount)).toHaveBeenCalledTimes(1);
+      await back.save(); // and it saves: it stands for this account
+      expect(back.applied.value).not.toBeNull();
+    });
+
+    it("is not kept for an account that changed since", async () => {
+      await review(await page());
+      useCharacterStore().characters = { A: { weapon: "new-A" }, B: { weapon: "old-B" } };
+      await nextTick();
+      const back = await page();
+      expect(back.phase.value).toBe("choose");
+      expect(back.result.value).toBeNull();
+    });
+
+    it("goes with Change teams and with a save: neither comes back", async () => {
+      const first = await page();
+      await review(first);
+      first.backToTeams();
+      expect((await page()).phase.value).toBe("choose");
+
+      const second = await page();
+      await review(second);
+      await second.save();
+      expect((await page()).phase.value).toBe("choose");
+    });
   });
 });
