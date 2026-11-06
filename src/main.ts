@@ -12,6 +12,7 @@ import { createPersistedState } from "pinia-plugin-persistedstate";
 import { runMigrations } from "./migrations";
 import { injectAnalytics } from "./utils/analytics";
 import { installChunkReload } from "./sim/perf/chunkReload"; // Wuthering Tools+: a stale tab reloads once after a deploy
+import { persistStorage } from "./sim/storage/persistGuard"; // Wuthering Tools+
 
 import HomeView from "./pages/HomeView.vue";
 // Wuthering Tools+: every page but the calculator home loads on first visit, so the entry chunk only carries the
@@ -114,6 +115,7 @@ const pinia = createPinia();
 pinia.use(
   createPersistedState({
     auto: true,
+    storage: persistStorage, // Wuthering Tools+: the same writes, and it remembers what the browser refused
   }),
 );
 

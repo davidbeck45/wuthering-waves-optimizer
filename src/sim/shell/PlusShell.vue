@@ -33,7 +33,10 @@ import { useRoute } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { useInventoryStore } from "../../stores/inventory";
+import { useToast } from "../../composables/useToast";
 import { installImportGuard } from "../buildHistory/importGuard";
+import { installCrossTabSync, type SyncedStore } from "../storage/crossTabSync";
+import { noticeRefusedWrites } from "../storage/persistGuard";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
@@ -64,6 +67,9 @@ const teamStore = useTeamRotationsStore();
 const inventoryStore = useInventoryStore();
 // build history: a version of every build a Settings import is about to replace (src/sim/buildHistory/importGuard.ts)
 installImportGuard({ character: characterStore as never, inventory: inventoryStore as never });
+// two tabs on one account stay one account, and a write the browser refused is said out loud (src/sim/storage/)
+installCrossTabSync([characterStore, inventoryStore, teamStore] as unknown as SyncedStore[]);
+noticeRefusedWrites((text) => useToast().showToast(text, "error", 12000));
 const modKey = modKeyLabel();
 
 // "New here?" on the calculator for a browser with nothing of its own yet (welcome.ts); gone for good once dismissed
