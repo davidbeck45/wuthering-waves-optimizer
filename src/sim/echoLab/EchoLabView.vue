@@ -137,7 +137,9 @@
           :status="farmStatus"
           :team-of="lab.farmTeamOf"
           @run="(force) => lab.runFarm({ force })"
+          :focus="farmFocus"
           @team="(characterId, slot) => lab.runFarmTeam(characterId, slot)" />
+        <EchoLabSets v-else-if="tab === 'sets'" v-model:character="rerollCharacter" :characters="pass.bestOwner.characters" :preferred="activeCharacter" @farm="showFarm" />
         <EchoLabReroll v-else-if="tab === 'reroll'" v-model:character="rerollCharacter" :result="pass.bestOwner" :benchmarks="benchmarks" :preferred="activeCharacter" />
         <EchoLabBenchmark v-else-if="tab === 'benchmark'" :result="benchmarks" :status="benchStatus" @run="(force) => lab.runBenchmarks({ force })" />
 
@@ -151,8 +153,8 @@
 
 <script setup lang="ts">
 // Wuthering Tools+ Echo Lab — the /echo-lab page: the engine-backed echo decisions (src/sim/echoLab/, run in a Web
-// Worker) in six views — inventory verdicts, Tune or Feed, the Tuner plan, Farm next, the re-roll advisor and the
-// build benchmark. Header KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and
+// Worker) in seven views — inventory verdicts, Tune or Feed, the Tuner plan, Farm next, the Set lab, the re-roll advisor
+// and the build benchmark. Header KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and
 // the classic UI.
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -165,6 +167,7 @@ import EchoLabFarm from "./EchoLabFarm.vue";
 import EchoLabPlan from "./EchoLabPlan.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import EchoLabReroll from "./EchoLabReroll.vue";
+import EchoLabSets from "./EchoLabSets.vue";
 import EchoLabTune from "./EchoLabTune.vue";
 import EchoLabVerdicts from "./EchoLabVerdicts.vue";
 import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilters } from "./echoLabView";
@@ -173,14 +176,14 @@ import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { useSavedNote } from "../persist/useSavedNote";
 import "./echoLab.css";
 
-type TabId = "verdicts" | "tune" | "plan" | "farm" | "reroll" | "benchmark";
-const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "farm", "reroll", "benchmark"];
+type TabId = "verdicts" | "tune" | "plan" | "farm" | "sets" | "reroll" | "benchmark";
+const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "farm", "sets", "reroll", "benchmark"];
 const PASS_PHASES = ["characters", "weights", "echoes"] as const;
 
 // each page sets its own tab title (Ryan's #672)
 useDocumentTitle(
   "Echo Lab — Wuthering Waves Calculator & Optimizer",
-  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, a Tuner plan for what you have, which echo to farm next for each slot, Transducer advice and a build benchmark.",
+  "Keep, tune, re-roll or feed: every echo in your inventory judged by the calculator's damage engine on your real builds, with Tune-or-Feed odds, a Tuner plan for what you have, which echo to farm next for each slot, which set is truly best for a character, Transducer advice and a build benchmark.",
 );
 
 const route = useRoute();
@@ -202,10 +205,16 @@ const queryTab = (): TabId => (queryEcho() ? "verdicts" : TAB_IDS.includes(route
 const tab = ref<TabId>(queryTab());
 const rerollCharacter = ref<string | null>(typeof route.query.character === "string" ? route.query.character : null);
 const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS, echo: queryEcho() });
+/** the character the Set lab's "Farm next" link asked Farm next to show */
+const farmFocus = ref<string | null>(null);
+function showFarm(characterId: string): void {
+  farmFocus.value = characterId;
+  tab.value = "farm";
+}
 watch([tab, rerollCharacter, () => filters.value.echo], ([t, c, e]) => {
   const query: Record<string, string> = {};
   if (t !== "verdicts") query.tab = t;
-  if (t === "reroll" && c) query.character = c;
+  if ((t === "reroll" || t === "sets") && c) query.character = c;
   if (t === "verdicts" && e) query.echo = e;
   if (route.query.tab !== query.tab || route.query.character !== query.character || route.query.echo !== query.echo) void router.replace({ query });
 });
@@ -276,6 +285,7 @@ const tabs = computed(() => {
     { id: "tune" as const, label: "Tune or Feed", short: "Tune or Feed", count: r ? r.echoes.filter((e) => e.lines < 5).length : null },
     { id: "plan" as const, label: "Tuner plan", short: "Tuner plan", count: null },
     { id: "farm" as const, label: "Farm next", short: "Farm next", count: farm.value ? farm.value.rows.length : null },
+    { id: "sets" as const, label: "Set lab", short: "Set lab", count: null },
     { id: "reroll" as const, label: "Re-roll advisor", short: "Re-roll", count: null },
     { id: "benchmark" as const, label: "Build benchmark", short: "Benchmark", count: null },
   ];

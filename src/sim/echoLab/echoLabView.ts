@@ -265,6 +265,8 @@ export const PHASE_LABELS: Record<string, string> = {
   farm: "Trying a fresh echo in every slot",
   teams: "Scoring the teams you can field",
   team: "Re-scoring the strongest teams",
+  sets: "Scoring every set layout on these echoes",
+  "set-team": "Re-scoring their strongest team",
 };
 export const phaseLabel = (phase: string | null | undefined): string => (phase ? PHASE_LABELS[phase] ?? phase : "Starting");
 

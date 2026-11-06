@@ -40,7 +40,7 @@ export const PLUS_PAGES: PlusPage[] = [
     path: "/echo-lab",
     title: "Echo Lab",
     description: "Keep, tune, re-roll or feed: every echo judged by the damage engine on your builds",
-    keywords: ["echo", "feed", "tune", "reroll", "transducer", "benchmark", "keep", "upgrade", "substats", "tuner", "tuners", "tuner plan", "budget", "echo exp", "roll", "percentile", "farm", "farm next", "main stat"],
+    keywords: ["echo", "feed", "tune", "reroll", "transducer", "benchmark", "keep", "upgrade", "substats", "tuner", "tuners", "tuner plan", "budget", "echo exp", "roll", "percentile", "farm", "farm next", "main stat", "set lab", "best set", "which set", "sonata", "5-piece", "set bonus"],
     icon: "M9 3h6M10 3v6.5L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9.5V3M7.5 15h9",
   },
   {

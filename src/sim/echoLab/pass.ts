@@ -10,6 +10,7 @@ import { farmNext, farmTeam, type FarmNextResult, type FarmOptions, type FarmTea
 import { rerollAdvice, type RerollAdviceResult, type RerollOptions } from "./rerollAdvice";
 import { rollQuality, type RollQualityOptions, type RollQualityResult, type RollQualityTarget } from "./rollQuality";
 import { rollRatings, type RollRatingItem, type RollRatingOptions, type RollRatingsResult } from "./rollRatings";
+import { setLab, setLabTeam, type SetLabOptions, type SetLabResult, type SetLabTeamResult } from "./setLab";
 import { tunerCandidates, type TunerCandidatesResult, type TunerPlanOptions } from "./tunerPlan";
 
 export interface BenchmarkBatchResult {
@@ -45,7 +46,9 @@ export type EchoLabJob =
   | { kind: "rollQuality"; echoId: string; target?: RollQualityTarget | null; options?: RollQualityOptions }
   | { kind: "rollRatings"; items: RollRatingItem[]; options?: RollRatingOptions }
   | { kind: "farmNext"; options?: FarmOptions }
-  | { kind: "farmTeam"; characterId: string; slot: number; options?: FarmOptions };
+  | { kind: "farmTeam"; characterId: string; slot: number; options?: FarmOptions }
+  | { kind: "setLab"; characterId: string; options?: SetLabOptions }
+  | { kind: "setLabTeam"; characterId: string; keys: string[]; options?: SetLabOptions };
 
 export interface EchoLabResultMap {
   pass: EchoLabPassResult;
@@ -59,6 +62,8 @@ export interface EchoLabResultMap {
   rollRatings: RollRatingsResult;
   farmNext: FarmNextResult;
   farmTeam: FarmTeamResult;
+  setLab: SetLabResult;
+  setLabTeam: SetLabTeamResult;
 }
 
 export type EchoLabResult<J extends EchoLabJob> = EchoLabResultMap[J["kind"]];
@@ -126,6 +131,10 @@ export async function runJob(session: LabSession, job: EchoLabJob, control: RunC
       return farmNext(session, job.options, control);
     case "farmTeam":
       return farmTeam(session, job.characterId, job.slot, job.options, control);
+    case "setLab":
+      return setLab(session, job.characterId, job.options, control);
+    case "setLabTeam":
+      return setLabTeam(session, job.characterId, job.keys, job.options, control);
     default:
       throw new Error(`Unknown Echo Lab job ${(job as { kind?: string }).kind}`);
   }

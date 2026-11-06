@@ -1080,6 +1080,79 @@ Decisions (made without David, 2026-11-04):
 - **Not used: every try through the engine.** It would be unbiased, and is what the check above does, but 20,000 tries × 115
   slots is half an hour in Node. A few hundred tries a slot would be noisier than this model is wrong.
 
+## Set lab — which set is truly best for this character, `/echo-lab?tab=sets` (batch 3c, track "set-lab", 2026-11-04)
+
+The optimizer answers "best from what I own", which depends on what dropped. **Set lab** (fifth of the Echo Lab's seven
+tabs) answers "which set is best for this character, all else equal": the five echoes they wear, main stats, substats and
+levels held, only the Sonata labels changed, every layout the game allows, on their best rotation. Two job kinds on the
+same `echoLab.worker` (no new worker entry: `pass.ts` gained `setLab` and `setLabTeam`). Read-only: the one write is the
+optimizer's set filter, behind a confirm that names what it replaces.
+
+| Piece | Role |
+|---|---|
+| `setLab.ts` rules | `allLayouts()`: from the app's own lists (`oneSetBonuses` … `fiveSetBonuses`), each Sonata left out or at one of its piece counts, five slots at most: 1,190 layouts today (31 five-pieces, 155 3 + 2, 465 2 + 2, the 1-piece riding on what leaves it a slot, and the smaller ones). A test runs every one through `getSetBonusEffects` and checks it gives exactly its bonuses. `validateLayout` refuses the rest (no such piece count, more than five, a Sonata twice, an unknown name). `placeLayout` seats a layout on this build: a Sonata counts one echo per name, so it needs enough different echoes of that set at these costs (`speciesOf`, a small backtrack); the seating keeps the main echo where it can, then as many echoes as it can. Layouts that can't be made are refused and counted (13 on Cartethyia's 4-1-4-1-1) |
+| `withSetLabels` (`core.ts`) | the clone: every slot inline data with a new `echoSet` (`withSlotRecord`'s form, so an echo a teammate also wears keeps its own label on them), through upstream's `resolveCandidateEchoPointersConfig`. A pinned `setOverride` is lifted, since comparing bonuses is the point. A free slot's label is null ("any Sonata") |
+| `setLab.ts` scoring | one engine run per distinct set of bonuses (`effectKey`: a bonus made only of always-on passives is its modifiers, so Molten Rift 2 and Flaming Clawprint 2 are one run; anything with a switch is its own name): about 560 runs for 1,190 layouts. Per layout: damage against the build as it is, the figure if no condition holds (`floorGain`), Energy Regen (`menuEnergyRegen`, once per always-on ER total), Healing Bonus points, the main echo, how each condition was counted. `groupKey` folds layouts that read the same into a row: anything with the same 3- or 5-piece and the same numbers, and any 2-piece-only layouts with the same numbers, so a 2-piece that adds nothing here is never a row of its own, while every 5-piece keeps one (two that do nothing for you can differ for the team). About 100 rows |
+| team figures | /account's rules through `teamSideOf` (now exported from `farmNext.ts`, its session memo shared) and `createTeamScorer`: one exact re-score of the strongest team you can field, or no figure with why. Up front for your layout, the eight best rows by own gain and every 5-piece that reaches teammates (`TEAM_BUFFS`, the ones `resolveTeam` hands out); the rest on request, `setLabTeam` (one row, or "Work out these N"). `layoutImpact` squares a teammate's Team Buffs panel with the layout first (see below) |
+| `setLabView.ts` | pure, no engine imports: `SET_LAB_ASSUMPTIONS`, layout names and shapes, `filterSetRows`, `sortSetRows` (team, own, or own with no condition held), the words for a condition and for Energy Regen |
+| `EchoLabSets.vue` | the tab: a Character select (shared with the Re-roll tab through `?character=`), the answer in a sentence with its other end ("If no condition holds, the best for their own damage is …"), Show (Every layout / 5-piece / 3 + 2 / 2 + 2), Rank by (Team gain / Own gain / Own, conditions off), "Only layouts my main echo can carry", ranked cards 12 a page. A card: Team damage vs yours, Own damage vs yours, Energy Regen (red, with the need, when the layout falls under what the saved teams need), Healing Bonus when it moves, **How its conditions were counted** with the game's text and the figure if they never hold, the main-echo note, a link, Details (what it gives, echo by echo, what you own of it, the layouts with the same result). Phones: one stat a line, as Farm next |
+| `useEchoLab.ts` | `runSetLab` / `setLabOf` / `runSetLabTeams` / `setLabTeamOf` / `cancelSetLab`, keyed by account state, character and the team-buff switch. Its own run counter, because picking another character starts a run while the old one is still cancelling (the shared `run()` would reset the status under it). Not in the session or saved caches: one job is about a second, and rows are many |
+| shell | `paletteCommands.ts` **"Which set is best for this character?"** → `/echo-lab?tab=sets` (the calculator's character); `plusPages.ts` keywords. `EchoLabFarm.vue` takes a `focus` character for the link |
+
+Decisions (made without David, 2026-11-04):
+- **The main echo is held, and the row says so.** A layout with no free slot needs an echo of its set in slot 0, and most main
+  echoes aren't. The brief said only the labels change; `core.ts` already says a different main echo is a different build; and
+  a rotation names its echo per action, so another main echo can't be scored exactly: its buff swaps, its hit stays. So the
+  ranked figure is the set alone, with the main echo's buff and hit kept, tagged **Needs another main echo**, and beside it the
+  figure for that set's best main echo, scored through upstream's main-echo recompute and labelled as such. "Only layouts my main
+  echo can carry" hides those rows. The gap is real: Brant's top own row reads +8.18 % held and +0.71 % with the echo the set allows.
+- **Conditions: your switches for your layout, on at most stacks for every other,** which is what the swap badges do
+  (`resolveNewlyActiveSetPassivesOverride`), and this engine has no uptime. That favours what you don't wear, so: a build wearing
+  its layout below its best also gets the row "…, every condition met" to read the others against (Zani's export layout reads
+  +16.7 % that way, and ranks 61st without it), each row prints its conditions in the game's words and the figure if they never
+  hold, and a third ranking sorts on that.
+- **One condition is checked, not assumed.** Tidebreaking Courage's +30 % needs 250 % Energy Regen, a plain switch in the set
+  data, so "on" credited it to everyone (Chisa +20.9 %). `ER_GATES` reads the layout's own Energy Regen instead. Nothing else
+  can be read from a build: whether a kit inflicts Havoc Bane, gains a Shield or holds 0 energy is not in the data, so those rows
+  can read high, and say what they assume. A switch you left on under 250 % stays yours (your layout reads 0 whatever it holds), the
+  row says the build doesn't reach it, and no "every condition met" row appears, since that would read below yours.
+- **Team gain ranks first where there is one,** as /account and Farm next: a support's own gain says little (Chisa +24.95 % own,
+  +0.42 % team on one layout). A ranking you tap stays across characters.
+- **Your layout is what the engine scores:** the stored `echoSetBonus`, pinned or not, drifted from the labels or not. It reads 0
+  by being the build itself, and a test runs the same echoes through `withSetLabels` to the same digit.
+- **The optimizer link replaces the filter,** behind `useConfirm`, which names the filter it replaces (a saved filter has no undo;
+  the same sets already there skip it), and links only rows with a set; your own layout links to Farm next, which keeps the
+  bonuses you have. `setCharacterData` is not used: lodash `merge` keeps a longer old array's tail, so a two-set filter over four
+  left the last two on. It changes the character record and the calculator's active character, so the account fingerprint moves
+  and the Echo Lab works its pass out again on the way back.
+- **A teammate's Team Buffs panel is squared with the layout.** `resolveTeam` keeps a panel that names the team verbatim, ticks and
+  all (with team buffs off, every panel), so left alone a 5-piece buff the layout gives up stayed on the teammate. The first pass
+  shipped that: on David's export Qiuyuan's top row read +0.89 % team while it cost Sigrika the Moonlit Clouds she wore it for,
+  really −5.24 %, and five other supports read the same way round. `layoutImpact` now unticks a given-up buff on those panels (on
+  the record and on its saved builds, since a team can run either), unless the team's other member wears that 5-piece too. A
+  5-piece the layout takes on can't be added the same way, because a panel holds stacks and a receiver, so a layout with one the
+  panel doesn't tick has no figure and says whose panel. That is /account's rule: exact, or absent with why. A figure for those
+  would need `resolveTeam`'s `providedBy` exported.
+- **A set's own hit** (`echoSetAttacks`: Midnight Veil's Outro hit) comes out of the rotation when a layout gives up the bonus
+  behind it, and only then. A rotation that never played it stays as it is, and the bonus says the own figure leaves it out.
+
+Things learned:
+- A slot that points at the inventory carries a blank placeholder, so a test edit there changes nothing. The first Crit-only test
+  did that on fixture Zani, who also sits at 120 % Crit Rate, over the cap: two no-ops compared equal and it passed. It now edits
+  the inventory record, strips the Crit Rate lines on both sides so the 25 lands under the cap, and a mutation (24 for 25) fails it.
+- Measured with mutations, since a pass alone proved little here: ignoring the labels, losing a substat line in the clone, a too
+  coarse `effectKey`, no Energy Regen gate, no species rule, and `setCharacterData` for the filter each fail a test.
+
+Left out: a team's own action list keeps a set hit a layout gives up (only the character's rotation is adjusted); a 3-piece's
+team buff (Law of Harmony) is not handed out, because `resolveTeam` counts five pieces; the assistant's `echo_lab` tool does not
+read this tab.
+
+Measured on David's export (23 five-echo builds, box shared with other agents): a character 0.6 to 1.2 s in Node, 2.6 s for the
+first (the team ranking, then memoised), 551 to 769 engine runs and 15 to 23 team runs (117 for the first); 14,162 runs for all 23.
+Your layout read exactly 0 on all 23 builds and on all 21 with a team; a second reviewer's hand-built records matched all 27,334
+layouts on those 23 builds, own damage and Energy Regen, with no difference, and an independent per-Sonata brute force of the seating
+agreed on 12 cost shapes; the account unchanged. Gates: `setLab.test.ts` (45), `cypress/e2e/echoLabSets.cy.ts` (7).
+
 ## Convene history, pity and the banner calendar (track "convene", stage 1: data layer) — `src/sim/convene/`
 
 Import the player's Convene (gacha) history straight from Kuro, keep it past the game's six-month window, read pity /

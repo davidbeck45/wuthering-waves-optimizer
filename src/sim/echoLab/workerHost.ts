@@ -87,9 +87,9 @@ export function createEchoLabHost(post: (message: EchoLabResponse) => void, opti
         yieldMs: options.yieldMs ?? 25,
       });
       stats.runs += 1;
-      // the inventory's roll ratings come in batches the session memoises one by one: caching each batch whole would
-      // only push the pass and the re-roll advice out of the result cache
-      if (job.kind !== "rollRatings") remember(results, resultKey, result, options.resultCache ?? 24);
+      // the inventory's roll ratings come in batches the session memoises one by one, and the page keeps the Set lab's
+      // team figures: caching each batch whole would only push the pass and the re-roll advice out of the result cache
+      if (job.kind !== "rollRatings" && job.kind !== "setLabTeam") remember(results, resultKey, result, options.resultCache ?? 24);
       post({ type: "result", id, result, cached: false, fingerprint, ms: now() - started });
     } catch (err) {
       post({ type: "error", id, message: err instanceof Error ? err.message : String(err), cancelled: isCancelled(err) });

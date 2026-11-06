@@ -268,6 +268,26 @@ export function withSlotRecord(session: LabSession, lab: LabCharacter, slot: num
 }
 
 /**
+ * A clone with the lab character's five echoes kept exactly as they are (main stats, substats, levels) and only their
+ * Sonata labels changed: `labels[i]` is slot i's set, null for a slot that feeds no bonus. Each slot becomes inline data
+ * (`withSlotRecord`'s form), so an echo a teammate also wears keeps its own label on them. The set bonus and the newly
+ * active set passives come from upstream's swap recompute, as a swap's do; a pinned `setOverride` is lifted here, since
+ * comparing set bonuses is the whole point of asking. A label change leaves the main echo alone; `mainSpecies` puts
+ * another echo in slot 0 instead (same main stat and substats), with upstream's main-echo recompute.
+ */
+export function withSetLabels(session: LabSession, lab: LabCharacter, labels: ReadonlyArray<string | null>, mainSpecies?: string): Record<string, any> {
+  const { characters, echoes } = session.account;
+  const data = characters?.[lab.id] ?? {};
+  const unpinned = data.setOverride ? { ...characters, [lab.id]: { ...data, setOverride: false } } : characters;
+  const pointers: Record<number, any> = {};
+  lab.slots.forEach((s, i) => {
+    if (s) pointers[i] = { ...s.record, echoSet: labels[i] ?? null, echoId: null };
+  });
+  if (mainSpecies) pointers[0] = { ...pointers[0], echo: mainSpecies };
+  return resolveCandidateEchoPointersConfig(lab.id, unpinned, pointers, Boolean(mainSpecies), echoes).syntheticCharacters;
+}
+
+/**
  * What a swap may not do to a build, beyond the game's own rules. The engine is static and scores a
  * character's own damage, so three things a build is made of read as worthless to it: Energy Regen (no
  * energy model), set bonuses that buff the *team* (a support's Moonlit Clouds or Rejuvenating Glow

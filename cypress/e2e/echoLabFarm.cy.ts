@@ -180,8 +180,8 @@ describe("Echo Lab: Farm next", () => {
       cy.viewport(width, 915);
       cy.visit("/echo-lab?tab=farm", seed({ fontScale: 1.3 }));
       cy.get("[data-test-echo-lab-farm-row]", RUN).should("have.length", 12);
-      // six tabs, two a row
-      cy.get("[data-test-echo-lab-tab]").should("have.length", 6);
+      // seven tabs, two a row
+      cy.get("[data-test-echo-lab-tab]").should("have.length", 7);
       cy.get('[data-test-echo-lab-tab="farm"]').then(($t) => {
         const strip = $t[0].parentElement!.getBoundingClientRect();
         const w = $t[0].getBoundingClientRect().width;

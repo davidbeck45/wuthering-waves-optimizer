@@ -232,13 +232,15 @@ const props = defineProps<{
   status: JobStatus;
   // eslint-disable-next-line no-unused-vars -- the parameters of a function type
   teamOf: (characterId: string, slot: number) => FarmTeamResult | { error: string } | "running" | null;
+  /** a character another tab asked to see (the Set lab's link) */
+  focus?: string | null;
 }>();
 // eslint-disable-next-line no-unused-vars -- the parameters of an emit signature
 const emit = defineEmits<{ (e: "run", force: boolean): void; (e: "team", characterId: string, slot: number): void }>();
 const assumptions = FARM_ASSUMPTIONS;
 const PAGE = 12;
 
-const characterFilter = ref("all");
+const characterFilter = ref(props.focus ?? "all");
 const sortBy = ref<FarmSort>("team");
 const sortOptions: Array<{ value: FarmSort; label: string }> = [
   { value: "team", label: "Team gain" },
@@ -247,6 +249,12 @@ const sortOptions: Array<{ value: FarmSort; label: string }> = [
 const limit = ref(PAGE);
 const open = ref(new Set<string>());
 watch([characterFilter, sortBy], () => (limit.value = PAGE));
+watch(
+  () => props.focus,
+  (id) => {
+    if (id) characterFilter.value = id;
+  },
+);
 
 const rows = computed((): FarmRow[] =>
   (props.result?.rows ?? []).map((r) => {

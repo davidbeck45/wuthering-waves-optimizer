@@ -5,7 +5,7 @@
 // (persist/savedResults.ts, IndexedDB) under the same fingerprint + the app build, so a new tab or another day paints
 // the last pass, benchmarks and Tuner plan at once instead of running them again. All numbers come from the worker
 // (echoLabClient.ts); this file only moves them. Vue, not engine: keep the engine pure.
-import { computed, reactive, ref, shallowRef } from "vue";
+import { computed, reactive, ref, shallowReactive, shallowRef } from "vue";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -21,6 +21,7 @@ import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
 import type { RollRating, RollRatingItem } from "./rollRatings";
 import type { TunerCandidatesResult } from "./tunerPlan";
 import type { FarmNextResult, FarmTeamResult } from "./farmNext";
+import type { SetLabResult, SetLabTeamFigure } from "./setLab";
 // Wuthering Tools+ team buffs from the team's real members (the app's switch, off under Cypress)
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { erNeedsKey, erNeedsOf, erNeedsSettled } from "../energy/energySubstats";
@@ -69,6 +70,14 @@ const farmStatus = reactive<JobStatus>(idle());
 /** team figures worked out on request, by `${fingerprint}|${characterId}|${slot}` */
 const farmTeams = reactive(new Map<string, FarmTeamResult | { error: string } | "running">());
 let farmAbort: AbortController | null = null;
+/** the Set lab, per character and team-buff switch (asked for one character at a time; rows are many, so shallow) */
+const setLabs = shallowReactive(new Map<string, SetLabResult>());
+const setLabStatus = reactive<JobStatus>(idle());
+/** team figures worked out on request, by `${setLabs key}|${layoutKey}` */
+const setLabTeams = shallowReactive(new Map<string, SetLabTeamFigure | { error: string } | "running">());
+let setLabAbort: AbortController | null = null;
+/** the run the status belongs to: picking another character starts a new one while the old one is still cancelling */
+let setLabRun = 0;
 const resultFingerprint = ref<string | null>(null);
 let passAbort: AbortController | null = null;
 let benchAbort: AbortController | null = null;
@@ -251,6 +260,8 @@ function adopt(fingerprint: string): void {
   tunerPlan.value = null;
   farm.value = null;
   farmTeams.clear();
+  setLabs.clear();
+  setLabTeams.clear();
   rerolls.clear();
   qualities.clear();
   ratings.clear();
@@ -260,11 +271,12 @@ function adopt(fingerprint: string): void {
   Object.assign(benchStatus, idle());
   Object.assign(tunerStatus, idle());
   Object.assign(farmStatus, idle());
+  Object.assign(setLabStatus, idle());
 }
 
 // Settings › Clear saved results: this tab's copies go too, so the next visit runs again
 onSavedResultsCleared(() => {
-  for (const c of [passAbort, benchAbort, tunerAbort, farmAbort]) c?.abort();
+  for (const c of [passAbort, benchAbort, tunerAbort, farmAbort, setLabAbort]) c?.abort();
   resultFingerprint.value = null;
   adopt("");
   resultFingerprint.value = null;
@@ -547,11 +559,88 @@ export function useEchoLab() {
 
   const farmTeamOf = (characterId: string, slot: number): FarmTeamResult | { error: string } | "running" | null => farmTeams.get(farmTeamKey(characterId, slot)) ?? null;
 
+  const setLabKey = (characterId: string): string => `${resultFingerprint.value}|${characterId}|${autoTeamBuffs.value}`;
+
+  /** The Set lab for one five-echo build: every set layout on the echoes it wears (cached per account state and team-buff
+   *  switch). Picking another character while one runs cancels it. */
+  async function runSetLab(characterId: string, options: { force?: boolean } = {}): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    const key = setLabKey(characterId);
+    setLabAbort?.abort();
+    if (setLabs.has(key) && !options.force) {
+      // nothing to run: another character's run, error or cancel must not stay on screen over this answer
+      setLabRun += 1;
+      Object.assign(setLabStatus, idle());
+      return;
+    }
+    const controller = new AbortController();
+    setLabAbort = controller;
+    const run = ++setLabRun;
+    const mine = (): boolean => run === setLabRun;
+    Object.assign(setLabStatus, { running: true, cancelled: false, progress: null, error: null });
+    try {
+      // Wuthering Tools+ energy check: the row says when a layout falls under what the saved teams need
+      const erNeeds = await echoLabErNeeds(fingerprint);
+      const auto = autoTeamBuffs.value;
+      const result = await getEchoLabClient().run({ kind: "setLab", characterId, options: { autoTeamBuffs: auto, erNeed: erNeeds[characterId] ?? null } }, account, {
+        signal: controller.signal,
+        onProgress: (p) => {
+          if (mine()) setLabStatus.progress = p;
+        },
+        onInfo: (info) => {
+          if (mine()) Object.assign(setLabStatus, { ms: info.ms, cached: info.cached });
+        },
+      });
+      if (resultFingerprint.value === fingerprint) setLabs.set(`${fingerprint}|${characterId}|${auto}`, result);
+    } catch (err) {
+      if (mine()) {
+        setLabStatus.cancelled = isCancel(err);
+        setLabStatus.error = setLabStatus.cancelled ? null : errorText(err);
+      }
+    } finally {
+      if (mine()) Object.assign(setLabStatus, { running: false, progress: null });
+      if (setLabAbort === controller) setLabAbort = null;
+    }
+  }
+
+  const setLabOf = (characterId: string): SetLabResult | null => setLabs.get(setLabKey(characterId)) ?? null;
+
+  /** Team figures for rows the first pass left pending, in one job. */
+  async function runSetLabTeams(characterId: string, keys: string[]): Promise<void> {
+    const { account, fingerprint } = snapshot();
+    adopt(fingerprint);
+    const base = setLabKey(characterId);
+    const todo = keys.filter((k) => {
+      const asked = setLabTeams.get(`${base}|${k}`);
+      return !asked || (typeof asked === "object" && "error" in asked);
+    });
+    if (!todo.length) return;
+    for (const k of todo) setLabTeams.set(`${base}|${k}`, "running");
+    try {
+      const result = await getEchoLabClient().run({ kind: "setLabTeam", characterId, keys: todo, options: { autoTeamBuffs: autoTeamBuffs.value } }, account);
+      if (resultFingerprint.value === fingerprint) for (const figure of result.figures) setLabTeams.set(`${base}|${figure.key}`, figure);
+    } catch (err) {
+      if (resultFingerprint.value !== fingerprint) return;
+      for (const k of todo) {
+        if (isCancel(err)) setLabTeams.delete(`${base}|${k}`);
+        else setLabTeams.set(`${base}|${k}`, { error: errorText(err) });
+      }
+    }
+  }
+
+  const setLabTeamOf = (characterId: string, key: string): SetLabTeamFigure | { error: string } | "running" | null => setLabTeams.get(`${setLabKey(characterId)}|${key}`) ?? null;
+
+  function cancelSetLab(): void {
+    setLabAbort?.abort();
+  }
+
   function cancel(): void {
     passAbort?.abort();
     benchAbort?.abort();
     tunerAbort?.abort();
     farmAbort?.abort();
+    setLabAbort?.abort();
   }
 
   return {
@@ -580,6 +669,12 @@ export function useEchoLab() {
     runFarm,
     runFarmTeam,
     farmTeamOf,
+    setLabStatus,
+    runSetLab,
+    setLabOf,
+    runSetLabTeams,
+    setLabTeamOf,
+    cancelSetLab,
     cancel,
     snapshot,
   };

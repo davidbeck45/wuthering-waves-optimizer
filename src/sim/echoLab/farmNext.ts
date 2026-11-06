@@ -447,13 +447,13 @@ async function computeSlotPlan(session: LabSession, lab: LabCharacter, slot: num
 
 // ── teams (the /account rules) ──
 
-interface TeamSide {
+export interface TeamSide {
   scorer: TeamScorer;
   auto: boolean;
 }
 
 /** Every team the roster can field, scored once per session (the rankings' own scorer), behind /account's team scorer. */
-async function teamSideOf(session: LabSession, auto: boolean, pace: Pacer, counter: { n: number }): Promise<TeamSide> {
+export async function teamSideOf(session: LabSession, auto: boolean, pace: Pacer, counter: { n: number }): Promise<TeamSide> {
   const key = `farm|teams|${auto}`;
   const memo = session.memo.get(key) as TeamSide | undefined;
   if (memo) return memo;
