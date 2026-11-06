@@ -13,7 +13,7 @@ import { scoreTeamCandidate } from "../myRankings/rankRoster";
 import { createLabSession, prepareCharacter, scoreBuild, setDeltaOf, withSetLabels, type LabAccount, type LabCharacter, type LabSession } from "./core";
 import { teamSideOf } from "./farmNext";
 import { SET_LAB_ASSUMPTIONS, allLayouts, bonusSizes, layoutBonuses, layoutKey, layoutOfSelection, parseLayoutKey, placeLayout, setLab, setLabTeam, validateLayout, type SetLabResult, type SetLabRow, type SlotShape } from "./setLab";
-import { assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, layoutShape, plainText, pointsText, sortSetRows, withSetTeam } from "./setLabView";
+import { assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, layoutShape, mineRankOf, plainText, pointsText, rankSentence, sortSetRows, withSetTeam, type MineRank } from "./setLabView";
 import { createEchoLabHost, type EchoLabResponse } from "./workerHost";
 
 const account = fixture as unknown as LabAccount;
@@ -792,6 +792,27 @@ describe("Set lab: the view model", () => {
     // the same floor: the layout with no condition leads, then the plainer one, not the one whose condition reads best
     const ties = [row("cond", 0.3, { floorGain: 0.1 }), row("plain", 0.1, { parts: [{ set: "A", pieces: 2 }] }), row("wide", 0.1, { parts: [{ set: "A", pieces: 2 }, { set: "B", pieces: 2 }] })];
     expect(sortSetRows(ties, "floor").map((r) => r.key)).toEqual(["plain", "wide", "cond"]);
+  });
+
+  it("a rank by team gain counts only the rows with a team figure, and says so until every figure is in", () => {
+    const sentenceOf = (r: MineRank | null): string | null => (r ? rankSentence(r) : null);
+    const team = (gain: number): SetLabRow["team"] => ({ gain }) as SetLabRow["team"];
+    const rows = [row("a", 0.3, { team: team(0.02) }), row("mine", 0, { current: true, team: team(0) }), row("p1", 0.2, { teamPending: true }), row("p2", 0.1, { teamPending: true }), row("none", 0.05)];
+    const byTeam = sortSetRows(rows, "team");
+    // the two pending rows may well beat yours: they do not count as worse than it
+    expect(sentenceOf(mineRankOf(byTeam, "team"))).toBe("ranks 2 of the 2 with a team figure so far, 2 still to work out");
+    expect(mineRankOf(byTeam, "team")).toMatchObject({ rank: 2, of: 2, pending: 2, partial: true });
+    // every figure in: the row that can have none stays out of the count, and nothing is left to work out
+    const done = rows.map((r) => (r.teamPending ? { ...r, teamPending: false, team: team(0.01) } : r));
+    expect(sentenceOf(mineRankOf(sortSetRows(done, "team"), "team"))).toBe("ranks 4 of the 4 with a team figure");
+    const whole = done.filter((r) => r.key !== "none");
+    expect(sentenceOf(mineRankOf(sortSetRows(whole, "team"), "team"))).toBe("ranks 4 of 4");
+    // own gain has a figure on every row
+    expect(sentenceOf(mineRankOf(sortSetRows(rows, "own"), "own"))).toBe("ranks 5 of 5");
+    expect(mineRankOf(sortSetRows(rows, "own"), "own")).toMatchObject({ partial: false, pending: 0 });
+    // no figure on your own layout: nothing to rank it by
+    expect(mineRankOf(sortSetRows(rows.map((r) => (r.current ? { ...r, team: null } : r)), "team"), "team")).toBeNull();
+    expect(mineRankOf(sortSetRows(rows.filter((r) => !r.current), "team"), "team")).toBeNull();
   });
 
   it("merges a figure asked for later, and words the rest", () => {

@@ -52,8 +52,10 @@
           </div>
         </div>
         <p class="mt-2 text-sm" data-test-echo-lab-sets-rank>
-          <template v-if="top?.current">Your layout is already first here.</template>
-          <template v-else-if="top">{{ topFigure }}. Your layout, {{ layoutName(mine?.parts ?? []) }}, ranks {{ mineRank }} of {{ sorted.length }}.</template>
+          <template v-if="top?.current && !mineRank?.pending">Your layout is already first here.</template>
+          <template v-else-if="top?.current">Your layout is first so far, {{ mineRank?.pending }} still to work out.</template>
+          <template v-else-if="top && mineRank">{{ topFigure }}. Your layout, {{ layoutName(mine?.parts ?? []) }}, {{ rankSentence(mineRank) }}.</template>
+          <template v-else-if="top">{{ topFigure }}.</template>
         </p>
         <p v-if="floorTop && floorTop.key !== top?.key" class="mt-1 text-sm" data-test-echo-lab-sets-floor-best>
           If no condition holds, the best for their own damage is {{ rowName(floorTop) }}, at {{ signedPct(floorOf(floorTop), 2) }}.
@@ -267,7 +269,7 @@ import type { LabCharacterSummary } from "./bestOwner";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, compact, echoName, phaseLabel, portrait, setIcon, setLabel, signedPct, slotLabel } from "./echoLabView";
 import type { SetLabRow } from "./setLab";
-import { SET_LAB_ASSUMPTIONS, SET_LAB_SHAPES, SET_LAB_SORTS, assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, pointsText, sortSetRows, withSetTeam, type SetLabShape, type SetLabSort } from "./setLabView";
+import { SET_LAB_ASSUMPTIONS, SET_LAB_SHAPES, SET_LAB_SORTS, assumptionState, changesText, erRange, erShort, filterSetRows, floorOf, layoutName, layoutSets, mineRankOf, pointsText, rankSentence, sortSetRows, withSetTeam, type SetLabShape, type SetLabSort } from "./setLabView";
 import { useEchoLab } from "./useEchoLab";
 
 const props = defineProps<{ characters: LabCharacterSummary[]; preferred?: string | null }>();
@@ -332,14 +334,14 @@ const pendingShown = computed(() => shown.value.filter((r) => r.teamPending && t
 
 const top = computed(() => sorted.value[0] ?? null);
 const mine = computed(() => rows.value.find((r) => r.current) ?? null);
-const mineRank = computed(() => sorted.value.findIndex((r) => r.current) + 1);
+const mineRank = computed(() => mineRankOf(sorted.value, sortBy.value));
 const fullRow = computed(() => rows.value.find((r) => r.yoursFull) ?? null);
 const mainSpecies = computed(() => result.value?.slots[0]?.species ?? null);
 
 /** the best layout if no condition ever holds: the other end of the answer, whichever ranking is on */
 const floorTop = computed(() => (sortBy.value === "floor" ? null : sortSetRows(filterSetRows(rows.value, shape.value, keepsMain.value).filter((r) => !r.yoursFull), "floor")[0] ?? null));
 
-const topCaption = computed(() => (sortBy.value === "team" ? "Best for the team" : sortBy.value === "floor" ? "Best with no condition met" : "Best for their own damage"));
+const topCaption = computed(() => (sortBy.value === "team" ? `Best for the team${mineRank.value?.pending ? " so far" : ""}` : sortBy.value === "floor" ? "Best with no condition met" : "Best for their own damage"));
 /** the top row's number, on the ranking chosen */
 const topFigure = computed(() => {
   const r = top.value;

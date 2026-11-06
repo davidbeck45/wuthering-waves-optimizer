@@ -100,6 +100,30 @@ export function sortSetRows<T extends SortRow>(rows: readonly T[], by: SetLabSor
   });
 }
 
+export interface MineRank {
+  rank: number;
+  of: number;
+  /** only the rows with a team figure are counted */
+  partial: boolean;
+  /** rows whose team figure can still be worked out */
+  pending: number;
+}
+
+/** Where your layout stands in a list `sortSetRows` ordered. By team gain a row with no figure sorts below every row with
+ *  one, so its place says nothing about it: such a row counts neither above nor below yours. Null: no place to give. */
+export function mineRankOf(sorted: ReadonlyArray<{ current: boolean; team: unknown; teamPending?: boolean }>, by: SetLabSort): MineRank | null {
+  const counted = by === "team" ? sorted.filter((r) => r.team) : sorted;
+  const at = counted.findIndex((r) => r.current);
+  if (at < 0) return null;
+  return { rank: at + 1, of: counted.length, partial: counted.length < sorted.length, pending: by === "team" ? sorted.filter((r) => !r.team && r.teamPending).length : 0 };
+}
+
+/** "ranks 9 of 106", "ranks 9 of the 9 with a team figure so far, 97 still to work out". */
+export function rankSentence(r: MineRank): string {
+  if (!r.partial) return `ranks ${r.rank} of ${r.of}`;
+  return r.pending ? `ranks ${r.rank} of the ${r.of} with a team figure so far, ${r.pending} still to work out` : `ranks ${r.rank} of the ${r.of} with a team figure`;
+}
+
 /** A row with the team figure a later request worked out (the first pass gives only the likeliest rows one). */
 export function withSetTeam<T extends { team: unknown; teamNote: string | null; teamPending: boolean }>(row: T, extra: { team: T["team"]; teamNote: string | null } | null | undefined): T {
   if (!extra || row.team) return row;

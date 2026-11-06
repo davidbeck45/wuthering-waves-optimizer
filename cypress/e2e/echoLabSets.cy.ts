@@ -143,6 +143,8 @@ describe("Echo Lab: Set lab", () => {
       const gains = [...$gains].map((el) => pctOf(el.textContent ?? ""));
       expect(gains).to.deep.equal([...gains].sort((a, b) => b - a));
     });
+    // the rank counts only the rows with a figure until they are all in
+    cy.get("[data-test-echo-lab-sets-rank]").invoke("text").should("match", /ranks \d+ of the \d+ with a team figure so far, \d+ still to work out|first so far, \d+ still to work out/);
     // what is left has its button, and the figure arrives in place
     cy.get("[data-test-echo-lab-sets-more]").click();
     cy.get("[data-test-echo-lab-sets-divider]").should("contain.text", "Without a team figure yet");
