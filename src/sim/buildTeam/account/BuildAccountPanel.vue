@@ -218,8 +218,9 @@
 
       <div v-if="applied" role="status" class="alert alert-success mt-3 text-sm" data-test-build-account-saved>
         <span>
-          Saved {{ applied.created.length }} “Account plan” build{{ applied.created.length === 1 ? "" : "s" }}<template v-if="applied.pinnedTeams.length">, pinned in {{ applied.pinnedTeams.length }} saved team{{ applied.pinnedTeams.length === 1 ? "" : "s" }}</template><template v-if="applied.activated.length"> and made active</template>. Each character's build before it is in
-          <RouterLink to="/build-history" class="link">Build history</RouterLink>.
+          Saved {{ applied.created.length }} “Account plan” build{{ applied.created.length === 1 ? "" : "s" }}<template v-if="applied.pinnedTeams.length">, pinned in {{ applied.pinnedTeams.length }} saved team{{ applied.pinnedTeams.length === 1 ? "" : "s" }}</template><template v-if="applied.activated.length"> and made active</template>.
+          <template v-if="historyFull">This browser would not store every build from before it, so those are in Build history only until you leave this page.</template>
+          <template v-else>Each character's build before it is in <RouterLink to="/build-history" class="link">Build history</RouterLink>.</template>
           <template v-if="applied.undoInMemoryOnly"> Undo lasts until you leave this page (this browser would not store it).</template>
         </span>
       </div>
@@ -258,6 +259,7 @@ import PresetNameLabel from "../../display/PresetNameLabel.vue";
 import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
+import { historyInMemoryOnly } from "../../buildHistory/history";
 import { saveFailedText } from "../apply";
 import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
@@ -281,6 +283,7 @@ const { toggle, move, setWeight, run, stopImproving, cancel, backToTeams } = ba;
 
 const runBar = ref<HTMLElement | null>(null);
 const saveBar = ref<HTMLElement | null>(null);
+const historyFull = ref(false);
 usePlusBar(runBar);
 usePlusBar(saveBar);
 
@@ -322,6 +325,7 @@ async function onSave(): Promise<void> {
   if (!ok) return;
   try {
     const out = await ba.save();
+    historyFull.value = historyInMemoryOnly();
     if (out) showToast(`Saved ${out.created.length} Account plan build${out.created.length === 1 ? "" : "s"}. Undo is on this page.`, "success", 6000);
   } catch (e) {
     showToast(saveFailedText(e), "error", 10000);

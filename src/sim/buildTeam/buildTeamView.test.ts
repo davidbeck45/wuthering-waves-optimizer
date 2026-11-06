@@ -159,7 +159,8 @@ describe("Undo's words", () => {
 
   it("says so when nothing can be removed, not that it will remove them", () => {
     const out = undoConfirm([f("Aemeath", "keep", "it is the active build now")], builds, "put every pin back");
-    expect(out.message).toMatch(/^None of the 1 Account plan build can be removed/);
+    expect(out.message).toMatch(/^The 1 Account plan build can't be removed: it changed after the save/);
+    expect(undoConfirm([f("Aemeath", "keep", "x"), f("Chisa", "keep", "x")], builds, "put every pin back").message).toMatch(/^None of the 2 Account plan builds can be removed: each one changed/);
   });
 
   it("after: all back, all removed, or partly with who stayed and who now shares an echo", () => {
