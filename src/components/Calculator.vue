@@ -569,6 +569,7 @@ import {
 // Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials) — src/sim/README.md
 import { planOptimizerGeneration, pruneSetupOf } from "../sim/optimizer/optimizerPool";
 import { optimizerPress } from "../sim/optimizer/optimizerPress"; // Wuthering Tools+: a run never starts on a half-loaded character
+import { runBasisOf, runOutlived, type OptimizerRunBasis } from "../sim/optimizer/optimizerRunBasis"; // Wuthering Tools+: rows go with the build and weapon they were scored on
 import { getWeaponByName } from "../weapons/weapons";
 import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -895,6 +896,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       stopOptimizerTimer();
+      stopOptimizerRun(); // Wuthering Tools+: its workers ran on for nobody, and a run from the page came back beside them
     });
     // base stats
     const baseHp = ref(0);
@@ -1500,6 +1502,7 @@ export default defineComponent({
       loadoutFormat = "Any",
     ) => {
       currentOptimizerCleanup?.(); // Wuthering Tools+: one run at a time, or the last to finish wins
+      optimizerScoredOn = optimizerBasisNow.value; // Wuthering Tools+: see the watch below
       const echoes = inventoryStore.echoes;
       const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
@@ -1644,6 +1647,9 @@ export default defineComponent({
           );
         } else {
           console.error("Could not find rotation:", rotationId);
+          // Wuthering Tools+: nothing to score; it ran every loadout to none and blamed the filters
+          endOptimizerRunWith("no-target");
+          return;
         }
       }
 
@@ -1683,6 +1689,24 @@ export default defineComponent({
       optimizerPressGate.drop();
       currentOptimizerCleanup?.();
     };
+    // Wuthering Tools+: a run that cannot give rows ends on the setup screen, saying why
+    const endOptimizerRunWith = (reason: OptimizerEmptyReason) => {
+      currentOptimizerCleanup?.();
+      stopOptimizerTimer();
+      isOptimizerRunning.value = false;
+      optimizerResults.value = [];
+      liveBestResult.value = null;
+      optimizerNoPossibleLoadouts.value = true;
+      optimizerEmptyReason.value = reason;
+    };
+    // Wuthering Tools+: a run's rows belong to the build and weapon they were scored on (src/sim/optimizer/optimizerRunBasis.ts)
+    const optimizerBasisNow = computed(() => runBasisOf(character.value, characters.value?.[character.value]));
+    let optimizerScoredOn: OptimizerRunBasis | null = null;
+    watch(optimizerBasisNow, (now) => {
+      if (!runOutlived(optimizerScoredOn, now)) return;
+      optimizerScoredOn = null;
+      if (isOptimizerRunning.value || optimizerResults.value.length) endOptimizerRunWith("run-outdated");
+    });
 
     // Helper function to serialize echoes array (only include needed properties)
     const serializeEchoes = (echoes: any[]): any[] => {
@@ -1960,6 +1984,18 @@ export default defineComponent({
         });
       };
       currentOptimizerCleanup = cleanupWorkers;
+
+      // Wuthering Tools+: a worker whose script cannot load (a tab older than the last deploy) or that dies says so here
+      // and nowhere else; the run waited on it for good
+      const failOptimizerRun = (event: Event) => {
+        event.preventDefault();
+        if (cleanedUp) return;
+        console.error("Optimizer worker failed:", (event as ErrorEvent).message ?? event.type);
+        endOptimizerRunWith("worker-failed");
+      };
+      [...generatorWorkers, ...processorWorkers].forEach((w) => {
+        w.onerror = failOptimizerRun;
+      });
 
       /** Ask each generator shard for another batch while the shared queue has room */
       const maybeContinueGenerator = () => {

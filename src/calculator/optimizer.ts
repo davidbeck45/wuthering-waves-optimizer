@@ -119,7 +119,11 @@ export type OptimizerEmptyReason =
   | "no-inventory"
   | "no-set-echoes"
   | "filtered"
-  | "none-found";
+  | "none-found"
+  // Wuthering Tools+: reasons a run ends without rows that are not about the echoes
+  | "no-target"
+  | "run-outdated"
+  | "worker-failed";
 
 export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
   OptimizerEmptyReason,
@@ -130,6 +134,9 @@ export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
   filtered:
     "There are no loadouts based on your filtering, such as minimum stat requirements",
   "none-found": "No loadouts were found",
+  "no-target": "The target you chose no longer exists. Pick another one and run again",
+  "run-outdated": "Your build or weapon changed, so the last run no longer applies. Run the optimizer again",
+  "worker-failed": "The optimizer could not start, usually because this tab is older than the site. Reload the page and run it again",
 };
 
 /**

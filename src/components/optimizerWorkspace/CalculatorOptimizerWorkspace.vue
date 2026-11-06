@@ -42,7 +42,7 @@
 
     <template v-else>
       <p
-        v-if="optimizerNoPossibleLoadouts"
+        v-if="optimizerNoPossibleLoadouts || optimizerEmptyReason"
         class="text-warning text-center"
         data-test-optimizer-workspace-empty-reason>
         {{ emptyReasonMessage }}
