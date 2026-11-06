@@ -13,7 +13,7 @@ import { DEFAULT_OPTIONS } from "../buildTeam/constraints";
 import { inlineBackend } from "../buildTeam/headlessOptimizer";
 import { plansForTeam } from "../buildTeam/plans";
 import type { MemberPlan } from "../buildTeam/rileyPlan";
-import { createTeamScorer } from "./investPlan";
+import { createTeamScorer, rankedTeamImpact } from "./investPlan";
 import { buffsWorn, checkOwnEchoes, echoCheckRequest, sortEchoUpgrades, type EchoCheck, type EchoUpgrade } from "./echoCheck";
 import { buildTeamRoute } from "./ownUpgrades";
 import { clearEchoCheckMemory, ECHO_CHECK_CACHE_KEY, ECHO_CHECK_CACHE_VERSION, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
@@ -62,7 +62,7 @@ describe("check my echoes", () => {
     expect(cart!.sets).toMatch(/\dpc/);
     // the strongest fieldable team is a preset of the three: /build-team opens on them, only she is re-geared
     expect(cart!.request.members).toEqual(expect.arrayContaining(["Cartethyia", "Ciaccona", "Chisa"]));
-    expect(buildTeamRoute(cart!.request, "Cartethyia")).toEqual({ path: "/build-team", query: { members: cart!.request.members!.join(","), only: "Cartethyia" } });
+    expect(buildTeamRoute(cart!.request, "Cartethyia")).toEqual({ path: "/build-team", query: { members: cart!.request.members!.join(","), only: "Cartethyia", rankedTeam: cart!.team!.teamId } });
   });
 
   it("equals Build my team's own run on the same team with only her planned, and never takes a teammate's echo", async () => {
@@ -130,13 +130,24 @@ describe("check my echoes", () => {
     const { team } = await scorer.impact(ctx, null, hypo, echoes);
     expect(team!.avgDamage).toBeCloseTo(cart!.team!.avgDamage, 4);
     expect(cart!.team!.gain).toBeGreaterThan(0);
+    // the page the row opens prints that figure from the team's id alone: same team, same base, same gain
+    const onPage = await rankedTeamImpact(cart!.team!.teamId, characters, echoes, [], hypo);
+    expect(onPage!.teamId).toBe(cart!.team!.teamId);
+    expect(onPage!.base).toBeCloseTo(cart!.team!.base, 4);
+    expect(onPage!.avgDamage).toBeCloseTo(cart!.team!.avgDamage, 4);
+    expect(onPage!.gain).toBeCloseTo(cart!.team!.gain, 8);
+    // a team that isn't a candidate any more has no figure, and no invented one
+    expect(await rankedTeamImpact("wuwa_calc:gone", characters, echoes, [], hypo)).toBeNull();
   }, 240000);
 
   it("asks /build-team for the saved team by id, a preset by its three, and the character alone without a team", () => {
     expect(echoCheckRequest({ rank: { id: "t1", source: "yours", characterIds: ["A", "B", "C"] } as any }, "A")).toEqual({ teamId: "t1" });
-    expect(echoCheckRequest({ rank: { id: "wuwa_calc:x", source: "wuwa_calc", characterIds: ["A", "B", "C"] } as any }, "B")).toEqual({ members: ["A", "B", "C"] });
+    expect(echoCheckRequest({ rank: { id: "wuwa_calc:x", source: "wuwa_calc", characterIds: ["A", "B", "C"] } as any }, "B")).toEqual({ members: ["A", "B", "C"], rankedTeam: "wuwa_calc:x" });
     expect(echoCheckRequest(null, "A")).toEqual({ members: ["A"] });
     expect(buildTeamRoute({ teamId: "t1" }, "A")).toEqual({ path: "/build-team", query: { team: "t1", only: "A" } });
+    // a preset has no saved rotation to total: the link names the team the row was scored on, for the review to print
+    expect(buildTeamRoute({ members: ["A", "B", "C"], rankedTeam: "wuwa_calc:x" }, "B")).toEqual({ path: "/build-team", query: { members: "A,B,C", only: "B", rankedTeam: "wuwa_calc:x" } });
+    expect(buildTeamRoute({ members: ["A", "B", "C"], rankedTeam: "wuwa_calc:x" }, null).query).toEqual({ members: "A,B,C" });
   });
 
   it("orders by own gain, then team gain, then id", () => {

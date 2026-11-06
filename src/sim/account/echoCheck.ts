@@ -129,7 +129,7 @@ const isAbort = (err: unknown): boolean => (err as { name?: string } | null)?.na
 export function echoCheckRequest(ctx: Pick<TeamContext, "rank"> | null, characterId: string): TeamRequest {
   if (!ctx) return { members: [characterId] };
   if (ctx.rank.source === "yours") return { teamId: ctx.rank.id };
-  return { members: [...ctx.rank.characterIds] };
+  return { members: [...ctx.rank.characterIds], rankedTeam: ctx.rank.id };
 }
 
 /** Best own gain first; ties by team gain, then id. */

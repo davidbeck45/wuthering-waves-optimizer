@@ -9,8 +9,9 @@ import { onSavedResultsCleared, tabCopyStamp } from "../persist/savedResults";
 import type { EchoCheck } from "./echoCheck";
 
 /** bump when EchoUpgrade's shape or the check's rules change; 4: an ER need out of reach keeps the most damage of the
- *  builds tied on the most ER, so a tab's older rows name another build than the one /build-team now gives */
-export const ECHO_CHECK_CACHE_VERSION = 4;
+ *  builds tied on the most ER, so a tab's older rows name another build than the one /build-team now gives; 5: a row on a
+ *  preset names the team it was scored on, which /build-team prints */
+export const ECHO_CHECK_CACHE_VERSION = 5;
 export const ECHO_CHECK_CACHE_KEY = "wtplus:account:echoCheck";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;

@@ -154,6 +154,12 @@
             <span class="bt-delta" :class="`bt-delta--${deltaTone(result.team.before, result.team.after)}`">{{ deltaText(result.team.before, result.team.after) }}</span>
             <span class="bt-kpi__s">avg damage per rotation{{ result.team.dpsAfter ? ` · ${compactNum(result.team.dpsAfter)} DPS` : "" }}</span>
           </div>
+          <div v-if="rankedFigure" class="bt-kpi" data-test-build-team-ranked>
+            <span class="bt-kpi__k">Team on My account</span>
+            <span class="bt-kpi__v tabular-nums">{{ compactNum(rankedFigure.base) }} → {{ compactNum(rankedFigure.avgDamage) }}</span>
+            <span class="bt-delta" :class="`bt-delta--${deltaTone(rankedFigure.base, rankedFigure.avgDamage)}`" data-test-build-team-ranked-delta>{{ deltaText(rankedFigure.base, rankedFigure.avgDamage) }}</span>
+            <span class="bt-kpi__s">avg team damage per rotation, as My account scores it</span>
+          </div>
           <div v-if="plans?.dpsMine" class="bt-kpi" data-test-build-team-riley-dps>
             <span class="bt-kpi__k">wuwa_calc at your account</span>
             <span class="bt-kpi__v tabular-nums">
@@ -272,7 +278,7 @@ const teamStore = useTeamRotationsStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 const bt = useBuildTeam();
-const { phase, error, team, plans, order, erFloors, options, progress, result, rileyAfter, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
+const { phase, error, team, plans, order, erFloors, options, progress, result, rileyAfter, rankedFigure, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
 const { move, run, cancel, only } = bt;
 
 const makeActive = ref(false);
@@ -292,6 +298,7 @@ const prioritySlots = computed(() => {
 function wholeTeam(): void {
   const query = { ...route.query };
   delete query.only;
+  delete query.rankedTeam;
   void router.replace({ query });
 }
 const ownedKeys = computed(() => Object.keys(characterStore.characters ?? {}));
@@ -338,7 +345,8 @@ async function loadFromRoute(): Promise<void> {
   const key = typeof q.key === "string" ? q.key : null;
   // /account's "Check my echoes" row: re-gear that member alone, teammates keeping their echoes
   const onlyId = typeof q.only === "string" ? q.only : null;
-  await bt.load({ teamId, members, key, only: onlyId });
+  const rankedTeam = typeof q.rankedTeam === "string" ? q.rankedTeam : null;
+  await bt.load({ teamId, members, key, only: onlyId, rankedTeam });
   shown.value = only.value ? Math.max(0, team.value?.characterIds.indexOf(only.value) ?? 0) : order.value[0] ?? 0;
   void loadCurrentEr();
 }
@@ -358,7 +366,7 @@ function retry(): void {
 }
 
 function backToPlan(): void {
-  phase.value = "plan";
+  bt.backToPlan();
 }
 
 async function onSave(): Promise<void> {

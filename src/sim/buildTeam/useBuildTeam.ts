@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Build it for me": the page's state. Plain copies of the stores go into the engine (buildTeam.ts);
 // Riley's plan comes through the app's one solver worker (rileyClient), the search through upstream's optimizer
 // workers (workerBackend.ts); nothing is written until the player confirms (apply.ts).
-import { computed, nextTick, reactive, ref, shallowRef, toRaw } from "vue";
+import { computed, nextTick, reactive, ref, shallowRef, toRaw, type Ref, type ShallowRef } from "vue";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -18,6 +18,8 @@ import { priorityOrder, type MemberPlan } from "./rileyPlan";
 import { workerBackend } from "./workerBackend";
 import { accountFingerprint, applyBuildTeam, clearUndo, readUndo, SaveRefused, saveUndo, undoBuildTeam, undoFates, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoFate, type UndoOutcome, type UndoRecord } from "./apply";
 import { accountStoresRefused } from "../storage/persistGuard";
+import { onSavedResultsCleared } from "../persist/savedResults";
+import type { TeamImpact } from "../account/investPlan";
 import { snapshotCharacters } from "../buildHistory/history";
 import { defaultSaveSlots, shareConflicts } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
@@ -37,6 +39,30 @@ export type { TeamRequest } from "./buildTeam";
 export { OPTIONS_KEY } from "./options";
 
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
+
+/** The last review, for this tab: its steps are no history entries, so Back left it behind and Forward found step 1
+ *  (2026-11-05 hunt). It stands for the request and the account it was planned on and no other. The refs are the page's
+ *  own, so what is ticked after the run and the figures that land after it come along. */
+interface KeptReview {
+  request: string;
+  on: string;
+  team: TeamSpec;
+  only: string | null;
+  plans: TeamPlans;
+  order: number[];
+  erFloors: Array<number | null>;
+  result: BuildTeamResult;
+  saveSlots: Ref<boolean[]>;
+  rileyAfter: Ref<number | null>;
+  rankedFigure: ShallowRef<TeamImpact | null>;
+}
+let keptReview: KeptReview | null = null;
+export function clearKeptReview(): void {
+  keptReview = null;
+}
+onSavedResultsCleared(clearKeptReview);
+
+const requestKey = (r: TeamRequest & { only?: string | null }): string => JSON.stringify([r.teamId ?? null, r.members ?? [], r.key ?? null, r.only ?? null, r.rankedTeam ?? null]);
 
 export function useBuildTeam() {
   const characterStore = useCharacterStore();
@@ -62,6 +88,11 @@ export function useBuildTeam() {
   /** re-gear only this member (`?only=`, /account's "Check my echoes" row): the others get no plan, so they keep the
    *  echoes they wear and those stay out of the search — the exact run the row's figure came from */
   const only = ref<string | null>(null);
+  /** the rankings' team the page was opened on (`?rankedTeam=`), and the figure /account printed for it, worked out for
+   *  this run: a preset has no team total of its own here, and that row's +8.8 % team was nowhere on the page it opened */
+  let rankedTeam: string | null = null;
+  const rankedFigure = shallowRef<TeamImpact | null>(null);
+  let requested = "";
   let controller: AbortController | null = null;
   /** the account the review on screen was planned on: it stands for that account and no other */
   let plannedOn: string | null = null;
@@ -101,11 +132,38 @@ export function useBuildTeam() {
     };
   }
 
+  function restoreReview(kept: KeptReview): void {
+    team.value = kept.team;
+    only.value = kept.only;
+    plans.value = kept.plans;
+    order.value = kept.order;
+    erFloors.value = kept.erFloors;
+    result.value = kept.result;
+    saveSlots.value = [...kept.saveSlots.value];
+    rileyAfter.value = kept.rileyAfter.value;
+    rankedFigure.value = kept.rankedFigure.value;
+    applied.value = null;
+    error.value = null;
+    plannedOn = kept.on;
+    keptReview = { ...kept, saveSlots, rileyAfter, rankedFigure };
+    phase.value = "result";
+    // a figure still on its way when the page was left lands on the old page's refs
+    if (rileyAfter.value == null) void computeRileyAfter(kept.result);
+    if (!rankedFigure.value) void computeRankedFigure(kept.result);
+  }
+
   async function load(request: TeamRequest & { only?: string | null }): Promise<void> {
     controller?.abort();
+    requested = requestKey(request);
+    rankedTeam = request.only ? request.rankedTeam ?? null : null;
+    if (keptReview?.request === requested && keptReview.on === accountFingerprint(stores())) {
+      restoreReview(keptReview);
+      return;
+    }
     result.value = null;
     applied.value = null;
     rileyAfter.value = null;
+    rankedFigure.value = null;
     error.value = null;
     // released content only: a composition with a kit the app does not list yet (a wuwa_calc team with Lily) never
     // reaches the page
@@ -168,6 +226,8 @@ export function useBuildTeam() {
     result.value = null;
     applied.value = null;
     rileyAfter.value = null;
+    rankedFigure.value = null;
+    keptReview = null;
     startedAt.value = Date.now();
     progress.value = team.value.characterIds.map(() => ({ phase: "waiting", processed: 0, generated: 0 }));
     const backend = workerBackend({ workerCount: resolveOptimizerWorkerCount((settingsStore.config as { optimizerWorkerCount?: unknown })?.optimizerWorkerCount) });
@@ -206,8 +266,10 @@ export function useBuildTeam() {
       // misses), the same echoes only when the run's buff settings score more — plus any teammate a ticked build
       // takes echoes from, so the saved team never wears one echo twice (buildTeamView.ts `defaultSaveSlots`)
       saveSlots.value = defaultSaveSlots(out.members);
+      keptReview = { request: requested, on: fingerprint, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, rileyAfter, rankedFigure };
       phase.value = "result";
       void computeRileyAfter(out);
+      void computeRankedFigure(out);
     } catch (e) {
       if ((e as { name?: string })?.name === "AbortError") {
         phase.value = "plan";
@@ -243,6 +305,24 @@ export function useBuildTeam() {
     }
   }
 
+  /** The team figure of the /account row that opened this run, by the row's own rule: its scorer, the new build worn, and
+   *  only when the run re-gears the build that row's figure reads (the active one). */
+  async function computeRankedFigure(out: BuildTeamResult): Promise<void> {
+    const m = out.members.find((x) => x?.characterId === only.value);
+    if (!rankedTeam || !m?.draft) return;
+    const chars = plain(characterStore.characters);
+    const activeId = chars[m.characterId]?.activeBuildId ?? null;
+    if (m.fromBuild.source !== "active" && (m.fromBuild.id == null || m.fromBuild.id !== activeId)) return;
+    try {
+      const { rankedTeamImpact } = await import("../account/investPlan");
+      const hypo = { ...chars, [m.characterId]: applyBuildFields(chars[m.characterId] ?? {}, m.draft) };
+      const figure = await rankedTeamImpact(rankedTeam, chars, plain(inventoryStore.echoes), plain(teamStore.teams), hypo, { autoTeamBuffs: autoTeamBuffs.value });
+      if (result.value === out) rankedFigure.value = figure;
+    } catch {
+      // the row's figure stays on /account: the review keeps the run's own numbers
+    }
+  }
+
   /** The members a save would write (ticked, with a build). */
   const toSave = computed(() => (result.value?.members ?? []).filter((m, i) => saveSlots.value[i] && m.draft));
   /** Echoes a build being saved takes from a teammate whose build here is not being replaced (the team would wear
@@ -254,7 +334,15 @@ export function useBuildTeam() {
     result.value = null;
     applied.value = null;
     rileyAfter.value = null;
+    rankedFigure.value = null;
     plannedOn = null;
+    keptReview = null;
+  }
+
+  /** "Change plan": the review is put down, so it is not there when the page is opened again. */
+  function backToPlan(): void {
+    keptReview = null;
+    phase.value = "plan";
   }
 
   /** The confirmed save, all or nothing: a store write that throws is put back in `applyBuildTeam`, a write the browser
@@ -286,6 +374,7 @@ export function useBuildTeam() {
       }
       applied.value = out;
       undoRecord.value = out.undo;
+      keptReview = null;
       return out;
     } finally {
       saving = false;
@@ -326,6 +415,7 @@ export function useBuildTeam() {
     result,
     rileyAfter,
     rileyAfterBusy,
+    rankedFigure,
     saveSlots,
     applied,
     undoRecord,
@@ -338,6 +428,7 @@ export function useBuildTeam() {
     move,
     run,
     cancel,
+    backToPlan,
     save,
     undo,
     undoPreview,

@@ -15,7 +15,7 @@ const TEAM_ID = "owncy1";
 const RUN = { timeout: 120000 };
 const CHECK_KEY = "wtplus:account:echoCheck";
 
-function seed(options: { fontScale?: number; tuners?: number } = {}) {
+function seed(options: { fontScale?: number; tuners?: number; noSavedTeam?: boolean } = {}) {
   const character = JSON.parse(configOptimizer.data.character);
   const inventory = JSON.parse(configOptimizer.data.inventory);
   // slots 4 and 5 go back to the inventory: unworn echoes a re-gear can use
@@ -41,7 +41,7 @@ function seed(options: { fontScale?: number; tuners?: number } = {}) {
       win.sessionStorage.clear(); // score and check on this visit, never a previous test's cache
       win.localStorage.setItem("character", JSON.stringify(character));
       win.localStorage.setItem("inventory", JSON.stringify(inventory));
-      win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+      win.localStorage.setItem("teamRotations", JSON.stringify({ teams: options.noSavedTeam ? [] : [team], favoriteTeamIds: [], favoritePresetNames: [] }));
       win.localStorage.removeItem("wtplus:buildTeam:options:v1");
       if (options.tuners != null) win.localStorage.setItem("wtplus:echoLab:tunerBudget", JSON.stringify({ v: 1, tuners: options.tuners, exp: null, weeklyTuners: null, weeklyExp: null }));
       else win.localStorage.removeItem("wtplus:echoLab:tunerBudget");
@@ -143,6 +143,40 @@ describe("my account: with what you own", () => {
         // "Build the whole team" drops ?only= and plans every member
         cy.get("[data-test-build-team-whole]").click();
         cy.location("search").should("not.contain", "only=");
+        cy.get("[data-test-build-team-plan]", RUN).should("have.length", 3);
+      });
+  });
+
+  it("prints a preset team's row figure on the page it opens, and keeps that review through Back and Forward", () => {
+    const signed = (text: string): number => Number(text.replace("−", "-").replace(/[^0-9.+-]/g, ""));
+    cy.viewport(1440, 900);
+    cy.visit("/account", seed({ noSavedTeam: true }));
+    runCheck();
+    cy.get(CART)
+      .invoke("attr", "data-team")
+      .then((team) => {
+        const expected = Number(team) * 100;
+        cy.get('[data-test-account-own-go="Cartethyia:echoes"]').click();
+        cy.location("search").should("contain", "rankedTeam=");
+        cy.get("[data-test-build-team-run]", RUN).click();
+        // no saved team, so no Team rotation tile: the +N % team the row showed was nowhere on this page
+        cy.get("[data-test-build-team-team-total]", RUN).should("not.exist");
+        cy.get("[data-test-build-team-ranked-delta]", RUN)
+          .invoke("text")
+          .then((text) => {
+            expect(signed(text), `team figure on /build-team (${text}) vs the row's ${expected.toFixed(2)} %`).to.be.closeTo(expected, 0.051);
+          });
+        // Back leaves the review, Forward finds it: it dropped to step 1 and cost a re-run
+        cy.go("back");
+        cy.location("pathname").should("eq", "/account");
+        cy.go("forward");
+        cy.location("pathname").should("eq", "/build-team");
+        cy.get("[data-test-build-team-save]", RUN).should("be.visible");
+        cy.get("[data-test-build-team-ranked-delta]").invoke("text").then((text) => expect(signed(text)).to.be.closeTo(expected, 0.051));
+        // Build the whole team is another run: the figure was for the row's
+        cy.get("[data-test-build-team-rebuild]").click();
+        cy.get("[data-test-build-team-whole]").click();
+        cy.location("search").should("not.contain", "rankedTeam=");
         cy.get("[data-test-build-team-plan]", RUN).should("have.length", 3);
       });
   });

@@ -87,6 +87,7 @@ export const teamTitle = (name: string): string => parsePresetName(name).title |
 export function buildTeamRoute(request: TeamRequest, only: string | null): { path: string; query: Record<string, string> } {
   const query: Record<string, string> = request.teamId ? { team: request.teamId } : { members: (request.members ?? []).join(",") };
   if (only) query.only = only;
+  if (only && request.rankedTeam) query.rankedTeam = request.rankedTeam;
   return { path: "/build-team", query };
 }
 

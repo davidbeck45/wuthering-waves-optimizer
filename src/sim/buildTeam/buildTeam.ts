@@ -45,6 +45,9 @@ export interface TeamRequest {
   members?: string[];
   /** a wuwa_calc team key the player came from */
   key?: string | null;
+  /** the rankings' team a figure on /account was scored on (`curated:<name>`, `wuwa_calc:<name>`): a preset has no spec of
+   *  its own here, so the review prints that figure from this */
+  rankedTeam?: string | null;
 }
 
 /** The team a request stands for, as the page runs it: a saved team with its rotation and pins; a composition that

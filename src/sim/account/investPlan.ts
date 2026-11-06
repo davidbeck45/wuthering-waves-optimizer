@@ -289,6 +289,25 @@ export async function createTeamScorer(
   return { teamFor, buildBlock, impact };
 }
 
+/** A team's figure as it is and on `hypoCharacters`, by the team's ranking id: what `createTeamScorer` works out for a row
+ *  on /account, for the page that row opens. Null when the team isn't a candidate any more or scores no damage. */
+export async function rankedTeamImpact(
+  teamId: string,
+  characters: Record<string, any>,
+  inventoryEchoes: any[],
+  teams: any[],
+  hypoCharacters: Record<string, any>,
+  options: { autoTeamBuffs?: boolean; enemy?: TeamEnemyConfig } = {},
+): Promise<TeamImpact | null> {
+  const score = { autoTeamBuffs: options.autoTeamBuffs ?? true, enemy: options.enemy ?? RANKING_ENEMY };
+  const candidate = (await teamCandidatesOf(characters, teams)).candidates.find((c) => c.id === teamId);
+  if (!candidate) return null;
+  const base = (await scoreTeamCandidate(candidate, characters, inventoryEchoes, score)).avgDamage;
+  if (base <= 0) return null;
+  const avgDamage = (await scoreTeamCandidate(candidate, hypoCharacters, inventoryEchoes, score)).avgDamage;
+  return { teamId, teamName: candidate.name, characterIds: candidate.team.characterIds as string[], base, avgDamage, gain: avgDamage / base - 1 };
+}
+
 /**
  * The investment list for a scored roster. `ranking` must come from the same `characters` / `inventoryEchoes` /
  * `teams` (the page keys both by the ranking fingerprint). Items whose gain is below `MIN_GAIN` are dropped; at
