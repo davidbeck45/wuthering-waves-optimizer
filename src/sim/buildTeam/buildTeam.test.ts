@@ -219,6 +219,29 @@ describe("parity with upstream's optimizer and calculator", () => {
     expect(m.erUnreachable).toBe(true);
   }, 120000);
 
+  it("a floor the search reads as met and the character screen does not is not called out of reach", async () => {
+    // Fallacy of No Return's 10 % ER buff is counted by the optimizer and left out of the character screen, and
+    // Cartethyia wears another main echo today, so the search reads this build 10 points above the screen. One legal
+    // loadout, so the run's own ER is known
+    const fallacy = { echo: "FallacyOfNoReturn", type: 4, rank: 5, stat: "CritRate", echoId: "fal1", echoSet: "WindwardPilgrimage", echoSubStatsType1: "CritDMG", echoSubStatsValue1: 21 };
+    const inventory = { echoes: [...echoes.filter((e) => e.echo !== "ReminiscenceFleurdelys"), fallacy], equipped: {} };
+    const team = { id: null, name: "Cartethyia", characterIds: ["Cartethyia", null, null] };
+    const plan: MemberPlan = { ...cartPlan(), mainEcho: { name: "Fallacy of No Return", keys: ["FallacyOfNoReturn"] }, erNeed: null };
+    const open = (await buildMyTeam({ characters, inventory, team, plans: [plan], order: [0], options: DEFAULT_OPTIONS }, inlineBackend())).members[0]!;
+    const screen = open.after!.menuEr!;
+    expect(open.after!.picks[0]!.echo.echo).toBe("FallacyOfNoReturn");
+
+    const misread = (await buildMyTeam({ characters, inventory, team, plans: [{ ...plan, erNeed: screen + 5 }], order: [0], options: DEFAULT_OPTIONS }, inlineBackend())).members[0]!;
+    expect(misread.after!.menuEr).toBe(screen);
+    expect(misread.erMet).toBe(false);
+    expect(misread.erUnreachable).toBe(false);
+
+    // past what the search can read as met, pass 2 runs and the claim is true again
+    const short = (await buildMyTeam({ characters, inventory, team, plans: [{ ...plan, erNeed: 400 }], order: [0], options: DEFAULT_OPTIONS }, inlineBackend())).members[0]!;
+    expect(short.erMet).toBe(false);
+    expect(short.erUnreachable).toBe(true);
+  }, 120000);
+
   it("a teammate who gets no new build keeps their echoes: nobody else's build takes them", async () => {
     const solo = await buildMyTeam(
       { characters, inventory: { echoes, equipped: {} }, team: { id: null, name: "Cartethyia", characterIds: ["Cartethyia", null, null] }, plans: [cartPlan()], order: [0], options: DEFAULT_OPTIONS },

@@ -61,7 +61,7 @@ export interface EchoUpgrade {
   /** the sets the new build wears ("Windward Pilgrimage 5pc") */
   sets: string;
   /** the Energy Regen floor the run kept (the team loop's need), with the character screen's ER before / after */
-  er: { floor: number; before: number | null; after: number | null; met: boolean; buys: boolean } | null;
+  er: { floor: number; before: number | null; after: number | null; met: boolean; buys: boolean; /** short, and the search looked for the most ER (`erUnreachable`) */ mostFound: boolean } | null;
   /** set passives / main-echo buffs nobody had set, switched on at max stacks (part of the gain), named as /build-team
    *  names them ("Havoc Eclipse 5pc", "Bell-Borne Geochelone's buff") */
   buffsOn: string[];
@@ -278,7 +278,7 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
               empty: onActive ? currentEchoesOf(id, characters, echoes).filter((e) => !e).length : 0,
               echoIds: changed.map((p) => String(p.echo?.echoId)),
               sets: setsText(m.setsWorn, setLabel),
-              er: m.erFloor == null ? null : { floor: m.erFloor, before: m.before.menuEr, after: m.after.menuEr, met: m.erMet === true, buys },
+              er: m.erFloor == null ? null : { floor: m.erFloor, before: m.before.menuEr, after: m.after.menuEr, met: m.erMet === true, buys, mostFound: m.erUnreachable },
               buffsOn: buffDefaultNames(buffsWorn(m.buffDefaults, m.setsWorn, m.draft.mainEcho?.echo ?? null)),
               plan: plans.plans[slot]?.source ?? "none",
               relaxed: m.relaxed && m.relaxed !== "plan" ? m.relaxed : null,

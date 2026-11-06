@@ -124,6 +124,43 @@ export interface OptimizerBackend {
   dispose?(): void;
 }
 
+/** Scores this close (relative) are one score reached by a different sum, not two. */
+const SAME_SCORE = 1e-9;
+/** How far `bestLoadoutOf` follows a tie: 5, 40, then this. */
+export const MAX_TIE_SEARCH = 320;
+
+/** The order ties break in: the main echo's id, then the other ids sorted, each a plain string compare (no locale). */
+function loadoutIdKey(l: ScoredLoadout): string {
+  const ids = l.loadout.map((e) => String(e?.echoId));
+  return `${ids[0]}|${ids.slice(1).sort().join(",")}`;
+}
+
+/** Which of two loadouts tied on score to keep: the fuller one (a slot left empty gains nothing), then the lower ids. */
+const winsTie = (a: ScoredLoadout, b: ScoredLoadout): boolean => (a.loadout.length !== b.loadout.length ? a.loadout.length > b.loadout.length : loadoutIdKey(a) < loadoutIdKey(b));
+
+/**
+ * The best loadout of a search, the same one on every backend. Upstream's top N keeps the first of equal scores, and what
+ * comes first differs: the inline loop walks the stream in order, each processor worker keeps its own heap of the
+ * batches it happened to get, and the main thread merges them as they answer. So a tie at the top can't be left to
+ * `results[0]`, and a top N full of ties may be missing some of them. The request is widened until the results reach
+ * past the tied group (a group smaller than the top N is complete on every backend: nothing in it can be pushed out),
+ * and the lowest echo ids win. Past `MAX_TIE_SEARCH` ties (every loadout scoring 0, say) the pick is the lowest ids
+ * among what came back.
+ */
+export async function bestLoadoutOf(backend: OptimizerBackend, job: MemberJob, request: OptimizeRequest, opts: NonNullable<Parameters<OptimizerBackend["optimize"]>[2]> = {}): Promise<{ best: ScoredLoadout | null; processed: number }> {
+  let processed = 0;
+  for (let topN = request.topN; ; topN = Math.min(topN * 8, MAX_TIE_SEARCH)) {
+    const before = processed;
+    const run = await backend.optimize(job, { ...request, topN }, { signal: opts.signal, onProgress: (p) => opts.onProgress?.({ processed: before + p.processed, generated: p.generated }) });
+    processed += run.processed;
+    if (!run.results.length) return { best: null, processed };
+    const top = run.results.reduce((n, r) => Math.max(n, r.targetValue), -Infinity);
+    const tied = run.results.filter((r) => r.targetValue >= top - Math.abs(top) * SAME_SCORE);
+    const complete = run.results.length < topN || tied.length < run.results.length;
+    if (complete || topN >= MAX_TIE_SEARCH) return { best: tied.reduce((a, b) => (winsTie(b, a) ? b : a)), processed };
+  }
+}
+
 let jobCounter = 0;
 
 /** Every set-bonus label of these sets (1 / 2 / 3 / 5 pieces), with its definition. */

@@ -7,8 +7,9 @@
 import { cyrb53, stableStringify } from "../myRankings/rankingCache";
 import type { EchoCheck } from "./echoCheck";
 
-/** bump when EchoUpgrade's shape or the check's rules change */
-export const ECHO_CHECK_CACHE_VERSION = 3;
+/** bump when EchoUpgrade's shape or the check's rules change; 4: an ER need out of reach keeps the most damage of the
+ *  builds tied on the most ER, so a tab's older rows name another build than the one /build-team now gives */
+export const ECHO_CHECK_CACHE_VERSION = 4;
 export const ECHO_CHECK_CACHE_KEY = "wtplus:account:echoCheck";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;

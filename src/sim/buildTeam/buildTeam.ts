@@ -20,7 +20,7 @@ import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { menuEnergyRegen } from "../energy/energyHave";
 import { allocateTeam, type AllocationApi, type Candidate, type SwapMove } from "./allocate";
 import { constraintsOf, costOf, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, setCounts, shortfallOf, type BuildOptions, type MemberConstraints, type RelaxLevel, type Shortfall } from "./constraints";
-import { erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizerBackend, type OptimizeProgress } from "./headlessOptimizer";
+import { bestLoadoutOf, erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizeRequest, type OptimizerBackend, type OptimizeProgress, type ScoredLoadout } from "./headlessOptimizer";
 import type { MemberPlan } from "./rileyPlan";
 import { characterShortName } from "../display/names";
 
@@ -113,7 +113,8 @@ export interface MemberOutcome {
   after: { value: number; optimizerValue: number; menuEr: number | null; picks: EchoPick[] } | null;
   erFloor: number | null;
   erMet: boolean | null;
-  /** the floor could not be met with this inventory: the loadout kept is the one with the most ER */
+  /** the search could not meet the floor with this inventory: the loadout kept is the one with the most ER, and of those
+   *  the most damage. False for a build it read as meeting the floor that the character screen shows short (`erMet` false) */
   erUnreachable: boolean;
   /** the plan's main echo was not in the pool: slot 0 is the optimizer's pick among the layout's cost */
   mainEchoFallback: boolean;
@@ -231,6 +232,10 @@ export function draftBuildFields(slotRecord: Record<string, any>, loadout: any[]
 export const menuErPercent = (characterId: string, characters: Record<string, any>, echoes: any[]): Promise<number | null> => menuEnergyRegen(characterId, characters, echoes);
 
 const idsOf = (loadout: any[]): string[] => loadout.map((e) => String(e.echoId));
+
+/** A pool in echo-id order: the search must not hang on the order the inventory happens to be in (of two stat-identical
+ *  copies the optimizer keeps the first). */
+const byEchoId = (pool: readonly any[]): any[] => [...pool].sort((a, b) => (String(a.echoId) < String(b.echoId) ? -1 : String(a.echoId) > String(b.echoId) ? 1 : 0));
 
 /** A character's five slots (active build) resolved to inventory echoes — the "current build" plan's input. */
 export function currentEchoesOf(characterId: string, characters: Record<string, any>, echoes: any[]): any[] {
@@ -358,7 +363,7 @@ export interface SearchContext {
 }
 
 /** The optimizer behind `AllocationApi` for these members (indices into `active`): the relax levels in two passes
- *  (floor met, then the most ER), today's build competing, memoised by pool; plus the exact scorer, the swap pass's
+ *  (floor met, then the most ER and the most damage at it), today's build competing, memoised by pool; plus the exact scorer, the swap pass's
  *  legality and backfill list. `combos` counts the loadouts scored per member. */
 export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchContext): { api: AllocationApi; combos: Map<number, number>; progress: (m: number, p: OptimizeProgress, phase?: "search" | "swap") => void } {
   const { echoes, echoById, options, wornOutside, keptInTeam, backend, hooks } = ctx;
@@ -393,6 +398,12 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
     if (loadout.some((e) => keptInTeam.has(String(e!.echoId)))) return null;
     return loadout as any[];
   };
+  /** The search's best loadout, the same one on either backend (`bestLoadoutOf`). */
+  const bestOf = async (m: number, job: MemberJob, request: OptimizeRequest): Promise<ScoredLoadout | null> => {
+    const { best, processed } = await bestLoadoutOf(backend, job, request, { signal: hooks.signal, onProgress: (p) => progress(m, p) });
+    combos.set(m, (combos.get(m) ?? 0) + processed);
+    return best;
+  };
   const searchLevels = async (m: number, pools: any[][]): Promise<Candidate | null> => {
     const { job, levels } = active[m]!;
     // pass 1: the strictest level that fills its layout and meets the ER floor
@@ -404,30 +415,31 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
       const { keys, fallback } = mainEchoCandidates(pool, c);
       if (!pool.length || !keys.length || shortfallOf(pool, c).length) continue;
       if (firstFillable < 0) firstFillable = i;
-      const request = { pool, mainEchoKeys: keys, loadoutFormat: c.loadoutFormat, minStats: erMinStat(job, c.erFloor), topN: 5 };
-      const run = await backend.optimize(job, request, { signal: hooks.signal, onProgress: (p) => progress(m, p) });
-      combos.set(m, (combos.get(m) ?? 0) + run.processed);
-      const best = run.results[0];
+      const best = await bestOf(m, job, { pool, mainEchoKeys: keys, loadoutFormat: c.loadoutFormat, minStats: erMinStat(job, c.erFloor), topN: 5 });
       if (best) return toCandidate(m, best.loadout, best.targetValue, best.energyRegen, { level, fallback, unreachable: false });
     }
-    // pass 2: no level meets the floor — the loadout with the most ER at the strictest level that fills, scored on
-    // the objective
+    // pass 2: no level meets the floor — the most ER at the strictest level that fills, and of the loadouts holding
+    // that much ER the most damage. One search finds the ER, a second scores the objective with that ER as its floor:
+    // a top N of the ER search can't answer the second question, since any number of loadouts tie on ER (nine for one
+    // support on David's account, where the echoes that hold no ER are free to change) and which of them it keeps is
+    // first come, first kept, a different few on each backend
     if (firstFillable < 0 || active[m]!.c.erFloor == null) return null;
     const { level, c } = levels[firstFillable]!;
     const pool = pools[firstFillable]!;
     const { keys, fallback } = mainEchoCandidates(pool, c);
+    const search = { pool, mainEchoKeys: keys, loadoutFormat: c.loadoutFormat, topN: 5 };
     const erJob: MemberJob = { ...job, id: `${job.id}:er`, target: "Stat:energyRegen" };
-    const erRun = await backend.optimize(erJob, { pool, mainEchoKeys: keys, loadoutFormat: c.loadoutFormat, minStats: [], topN: 5 }, { signal: hooks.signal, onProgress: (p) => progress(m, p) });
+    const erRun = await backend.optimize(erJob, { ...search, minStats: [] }, { signal: hooks.signal, onProgress: (p) => progress(m, p) });
     combos.set(m, (combos.get(m) ?? 0) + erRun.processed);
-    const best = erRun.results[0];
-    if (!best) return null;
-    const [scored] = await backend.score(job, [best.loadout], { signal: hooks.signal });
-    return scored ? toCandidate(m, scored.loadout, scored.targetValue, scored.energyRegen, { level, fallback, unreachable: true }) : null;
+    const most = erRun.results[0];
+    if (!most) return null;
+    const best = (await bestOf(m, job, { ...search, minStats: [{ stat: "energyRegen", minValue: most.energyRegen * 100 }] })) ?? (await backend.score(job, [most.loadout], { signal: hooks.signal }))[0];
+    return best ? toCandidate(m, best.loadout, best.targetValue, best.energyRegen, { level, fallback, unreachable: true }) : null;
   };
   const api: AllocationApi = {
     solve(m, taken) {
       const { job, levels } = active[m]!;
-      const pools = levels.map((l) => filterPool(echoes, l.c, { taken, wornOutside }).pool);
+      const pools = levels.map((l) => byEchoId(filterPool(echoes, l.c, { taken, wornOutside }).pool));
       // the build the member wears today competes too (when it keeps the plan's sets and nobody before took its
       // echoes): the result is never worse than what they have for no reason. It can hold echoes outside the pool (an
       // off-set piece when the plan names fewer than five pieces), so whether it is free is part of the memo key — a
@@ -554,8 +566,11 @@ export async function finishMember(m: number, active: readonly ActiveMember[], p
       out.before.withRunBuffs = scored ? scored.targetValue : null;
     }
   }
-  // pass 1 tried every level with the floor; a floor still unmet means no build of the plan's sets reaches it
-  out.erUnreachable = out.erMet === false;
+  // pass 1 tried every level with the floor; a floor still unmet means no build of the plan's sets reaches it. Unless
+  // the search read this build as meeting it: `erOffset` is today's build's, so a main echo whose ER buff the character
+  // screen leaves out (Fallacy of No Return's 10 %) reads high on a member who wears another today. No search for the
+  // most ER ran then, and a build with more may exist, so no page may say otherwise
+  out.erUnreachable = out.erMet === false && !pick.meetsFloor;
   out.mainEchoFallback = !!meta.fallback;
   out.setsWorn = setCounts(loadout);
   out.meetsPlanSets = meetsSetPieces(loadout, plan);

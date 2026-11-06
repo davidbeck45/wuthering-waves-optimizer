@@ -66,7 +66,11 @@ describe("account view", () => {
 
   it("notes per member in words", () => {
     expect(memberNote(member({}))).toMatch(/now meets the 115\.1 % Energy Regen need \(today 110\.0 %\)/);
-    expect(memberNote(member({ erMet: false, erFloor: 240 }))).toMatch(/out of reach/);
+    expect(memberNote(member({ erMet: false, erUnreachable: true, erFloor: 240 }))).toMatch(/out of reach.*the most ER found/);
+    // the search read it as met: no search for the most ER ran, so the note can't claim one
+    const misread = memberNote(member({ erMet: false, erUnreachable: false, erFloor: 230 }));
+    expect(misread).toMatch(/short of 230\.0 % Energy Regen on the character screen/);
+    expect(misread).not.toMatch(/most ER/);
     expect(memberNote(member({ keptCurrent: true, sameEchoes: true, erFloor: null, erMet: null }))).toBe("keeps today's echoes");
     // a swap changed a member who had kept today's build: their echoes are not today's, so no note may say they are
     expect(memberNote(member({ keptCurrent: true, sameEchoes: false, erFloor: null, erMet: null, relaxed: null }))).toBeNull();

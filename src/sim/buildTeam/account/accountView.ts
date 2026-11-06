@@ -72,7 +72,8 @@ export function memberNote(m: AccountMember): string | null {
   if (m.sameEchoes && worthSaving(m) && m.buffDefaults.length) notes.push(`same echoes as today: the change is ${buffDefaultNames(m.buffDefaults).join(", ")}, switched on`);
   else if (m.sameEchoes) notes.push("keeps today's echoes");
   if (m.erFloor != null && m.erMet && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor) notes.push(`now meets the ${m.erFloor.toFixed(1)} % Energy Regen need (today ${m.before.menuEr.toFixed(1)} %)`);
-  else if (m.erMet === false) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);
+  else if (m.erUnreachable) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);
+  else if (m.erMet === false) notes.push(`short of ${m.erFloor?.toFixed(1)} % Energy Regen on the character screen: the search counted a buff that isn't always on`);
   if (m.relaxed === "mainStats") notes.push("any main stat (the plan's ones ran out)");
   if (m.relaxed === "layout") notes.push("any cost layout (the plan's ran out)");
   if (m.mainEchoFallback) notes.push("another main echo (the plan's is not free)");

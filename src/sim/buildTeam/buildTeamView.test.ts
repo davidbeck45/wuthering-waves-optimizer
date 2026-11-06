@@ -85,6 +85,19 @@ describe("build-team view model", () => {
     expect(relaxed.some((n) => /3-cost Glacio DMG/.test(n.text) && /any main stat/.test(n.text))).toBe(true);
     const unreachable = resultNotes(outcome({ erMet: false, erUnreachable: true, erFloor: 240 }), plan());
     expect(unreachable[0]!.tone).toBe("error");
+    // what the search does, no more: pass 2 looks at the strictest level that fills, among the echoes the run may use
+    expect(unreachable[0]!.text).toMatch(/with the echoes this run can use/);
+    expect(unreachable[0]!.text).toMatch(/the most ER found; damage decided/);
+    expect(unreachable[0]!.text).not.toMatch(/your echoes allow/);
+    // with the plan's sets off the search looked at every set: there are no "these sets" to name
+    expect(unreachable[0]!.text).toMatch(/^No build reaches/);
+    const inSets = resultNotes(outcome({ erMet: false, erUnreachable: true, erFloor: 240, constraints: { allowedSets: ["RejuvenatingGlow"] } as MemberOutcome["constraints"] }), plan());
+    expect(inSets[0]!.text).toMatch(/^No build of these sets reaches 240\.0 %/);
+    // the search read the build as meeting the floor and the character screen says no: nothing searched for the most ER
+    const misread = resultNotes(outcome({ erMet: false, erUnreachable: false, erFloor: 230 }), plan());
+    expect(misread[0]!.tone).toBe("error");
+    expect(misread[0]!.text).toMatch(/^Short of 230\.0 % Energy Regen on the character screen/);
+    expect(misread[0]!.text).not.toMatch(/most ER found|No build/);
     const same = resultNotes(outcome({ sameEchoes: true, keptCurrent: true, buffDefaults: ["PactofNeonlightLeap"] }), plan());
     expect(same.some((n) => /Same echoes/.test(n.text))).toBe(true);
   });

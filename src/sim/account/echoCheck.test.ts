@@ -16,7 +16,7 @@ import type { MemberPlan } from "../buildTeam/rileyPlan";
 import { createTeamScorer } from "./investPlan";
 import { buffsWorn, checkOwnEchoes, echoCheckRequest, sortEchoUpgrades, type EchoCheck, type EchoUpgrade } from "./echoCheck";
 import { buildTeamRoute } from "./ownUpgrades";
-import { clearEchoCheckMemory, ECHO_CHECK_CACHE_KEY, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
+import { clearEchoCheckMemory, ECHO_CHECK_CACHE_KEY, ECHO_CHECK_CACHE_VERSION, echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -197,5 +197,15 @@ describe("the echo check cache", () => {
     clearEchoCheckMemory();
     expect(readCachedEchoCheck(key, s)!.items.map((i) => i.id)).toEqual(check.items.map((i) => i.id));
     expect(readCachedEchoCheck(echoCheckKey("v2:abc", "other", null), s)).toBeNull();
+  });
+
+  it("a tab's check from before the tied-ER rule is not read: its rows name another build than /build-team gives", () => {
+    const s = store();
+    const key = echoCheckKey("v2:abc", "inv", null);
+    expect(ECHO_CHECK_CACHE_VERSION).toBeGreaterThanOrEqual(4);
+    expect(key.startsWith(`e${ECHO_CHECK_CACHE_VERSION}:`)).toBe(true);
+    clearEchoCheckMemory();
+    s.setItem(ECHO_CHECK_CACHE_KEY, JSON.stringify({ key: key.replace(/^e\d+:/, "e3:"), check }));
+    expect(readCachedEchoCheck(key, s)).toBeNull();
   });
 });

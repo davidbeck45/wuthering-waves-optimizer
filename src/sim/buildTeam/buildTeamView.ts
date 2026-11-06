@@ -183,7 +183,8 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
   if (b && m.erFloor != null && b.menuEr != null && buysErFloor(m) && lower) {
     out.push({ tone: "info", text: `Today's build is ${(m.erFloor - b.menuEr).toFixed(1)} points short of the ${pctText(m.erFloor)} Energy Regen this loop needs: the new build pays for that ER with a little damage.` });
   }
-  if (m.erUnreachable && m.erFloor != null) out.push({ tone: "error", text: `No build of these sets reaches ${pctText(m.erFloor)} Energy Regen: this is the most ER your echoes allow.` });
+  if (m.erUnreachable && m.erFloor != null) out.push({ tone: "error", text: `No build${m.constraints?.allowedSets ? " of these sets" : ""} reaches ${pctText(m.erFloor)} Energy Regen with the echoes this run can use. This build has the most ER found; damage decided between builds with the same ER.` });
+  else if (m.erMet === false && m.erFloor != null) out.push({ tone: "error", text: `Short of ${pctText(m.erFloor)} Energy Regen on the character screen: the search counted a buff that isn't always on and read this build as meeting it. A build with more ER may exist.` });
   else if (lower && !buysErFloor(m)) {
     out.push({ tone: "warn", text: "Scores less than the build worn today: the plan's sets cost damage here, or a teammate earlier in the priority order took echoes it wore." });
   }

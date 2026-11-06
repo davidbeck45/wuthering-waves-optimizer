@@ -116,7 +116,7 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
     const rivals = items.filter((o) => o.characterId !== u.characterId && o.echoIds.some((id) => u.echoIds.includes(id))).map((o) => characterShortName(o.characterId));
     if (rivals.length) notes.push(`${rivals.length === 1 ? `${rivals[0]}'s row wants` : `${rivals.slice(0, -1).join(", ")} and ${rivals[rivals.length - 1]}'s rows want`} some of the same echoes: an echo goes on one character at a time, so choose who gets them.`);
     if (u.er?.buys) notes.push(`Meets the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs (today ${u.er.before == null ? "—" : pct1(showHave(u.er.before))}).`);
-    else if (u.er && !u.er.met) notes.push(`Still short of the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs: the most your echoes allow.`);
+    else if (u.er && !u.er.met) notes.push(`Still short of the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs: ${u.er.mostFound ? "the most ER found in the echoes this check can use." : "the search counted a buff that isn't always on, so a build with more ER may exist."}`);
     if (u.buffsOn.length) notes.push(`Counts ${u.buffsOn.join(", ")} switched on (nobody had set ${u.buffsOn.length === 1 ? "it" : "them"}).`);
     if (u.relaxed) notes.push(u.relaxed === "layout" ? "Your echoes can't fill the plan's layout: any layout of its sets." : "Your echoes can't fill the plan's main stats: any main stat of its sets.");
     return {

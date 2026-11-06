@@ -102,7 +102,7 @@ describe("echo rows", () => {
         objective: "Carlotta's best",
         team: null,
         teamNote: "not in a team you can field",
-        er: { floor: 120.04, before: 110.26, after: 121.3, met: true, buys: true },
+        er: { floor: 120.04, before: 110.26, after: 121.3, met: true, buys: true, mostFound: false },
         buffsOn: ["Frosty Resolve 5pc"],
         relaxed: "mainStats",
       }),
@@ -115,6 +115,18 @@ describe("echo rows", () => {
     expect(row!.team).toBeNull();
     expect(row!.teamNote).toBe("not in a team you can field");
     expect(row!.link.to).toEqual({ path: "/build-team", query: { members: "Carlotta,Zhezhi,Shorekeeper", only: "Carlotta" } });
+  });
+
+  it("a need out of reach says what was searched, not that it is the most the whole inventory holds", () => {
+    const [row] = echoRows([upgrade({ er: { floor: 240, before: 235, after: 235, met: false, buys: false, mostFound: true } })]);
+    expect(row!.note).toContain("Still short of the 240.0 % Energy Regen the team's loop needs: the most ER found in the echoes this check can use.");
+    expect(row!.note).not.toContain("your echoes allow");
+  });
+
+  it("short of a need the search read as met claims no search for the most ER", () => {
+    const [row] = echoRows([upgrade({ er: { floor: 230, before: 233.4, after: 225, met: false, buys: false, mostFound: false } })]);
+    expect(row!.note).toContain("the search counted a buff that isn't always on, so a build with more ER may exist.");
+    expect(row!.note).not.toContain("the most ER found");
   });
 });
 
@@ -204,7 +216,7 @@ describe("Energy Regen rows", () => {
 
   it("name the build the team runs and the kit floor, and point at the echoes row when its re-gear covers the need", () => {
     const kit = check("Shorekeeper", 140, 120, { buildName: "Healer", member: { setBy: "kit" } as any });
-    const rows = energyRows([view("t1", ["Carlotta", "Zhezhi", "Shorekeeper"], [kit])], characters, [upgrade({ characterId: "Shorekeeper", er: { floor: 140, before: 120, after: 141.2, met: true, buys: true } })]);
+    const rows = energyRows([view("t1", ["Carlotta", "Zhezhi", "Shorekeeper"], [kit])], characters, [upgrade({ characterId: "Shorekeeper", er: { floor: 140, before: 120, after: 141.2, met: true, buys: true, mostFound: false } })]);
     expect(rows[0]!.todo).toMatch(/^Shorekeeper's "Healer" build has 120\.0 %; the team's wuwa_calc loop keeps a kit floor of 140\.0 %/);
     expect(rows[0]!.note).toBe("The better echoes from your inventory (the Echoes row) bring Shorekeeper to 141.2 %.");
   });
@@ -250,7 +262,7 @@ describe("echo row headlines", () => {
     const t = (gain: number) => ({ ...upgrade().team!, gain });
     expect(echoRows([upgrade()])[0]!.title).toBe("Better echoes from your inventory");
     expect(echoRows([upgrade({ team: t(-0.12) })])[0]!.title).toBe("More own damage from echoes you own, less team damage");
-    expect(echoRows([upgrade({ gain: -0.015, team: t(-0.012), er: { floor: 115.2, before: 110.8, after: 116, met: true, buys: true } })])[0]!.title).toBe("Meet the Energy Regen need with echoes you own");
+    expect(echoRows([upgrade({ gain: -0.015, team: t(-0.012), er: { floor: 115.2, before: 110.8, after: 116, met: true, buys: true, mostFound: false } })])[0]!.title).toBe("Meet the Energy Regen need with echoes you own");
     expect(echoRows([upgrade({ gain: -0.01, team: t(0.02) })])[0]!.title).toBe("More team damage from echoes you own");
   });
 
