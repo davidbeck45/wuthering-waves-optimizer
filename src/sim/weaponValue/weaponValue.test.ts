@@ -292,12 +292,13 @@ describe("weapon selector pools", () => {
   it("forgets its tab copy on Settings › Clear saved results, until it is disposed (the selector makes one per mount)", async () => {
     const live = createValueCache<{ n: number }>("wtplus:test:live", 1);
     const disposed = createValueCache<{ n: number }>("wtplus:test:disposed", 1);
-    live.write("fp", { n: 1 }, null);
-    disposed.write("fp", { n: 2 }, null);
+    live.write("fp", { n: 1 });
+    disposed.write("fp", { n: 2 });
     disposed.dispose();
     await savedResults.clear();
     expect(live.read("fp", null)).toBeNull();
-    expect(disposed.read("fp", null)).toEqual({ n: 2 });
+    expect(sessionStorage.getItem("wtplus:test:live")).toBeNull();
+    expect(sessionStorage.getItem("wtplus:test:disposed")).not.toBeNull(); // no hook left behind
     live.dispose();
   });
 

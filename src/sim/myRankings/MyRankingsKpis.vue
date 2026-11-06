@@ -68,6 +68,8 @@ export interface RankingStatus {
   restored: boolean;
   /** when the ranking shown was saved (ms), if it came from this browser's saved results rather than this tab */
   savedAt?: number | null;
+  /** it did not fully score: shown on this page, not kept past it */
+  partial?: boolean;
 }
 
 const props = defineProps<{ account: AccountState; status: RankingStatus }>();
@@ -80,10 +82,11 @@ const now = ref(Date.now());
 const timer = setInterval(() => (now.value = Date.now()), 30000);
 onBeforeUnmount(() => clearInterval(timer));
 
-const statusLabel = computed(() => (props.status.state === "scoring" ? "Scoring" : props.status.state === "live" ? "Live" : "Not scored"));
+const statusLabel = computed(() => (props.status.state === "scoring" ? "Scoring" : props.status.partial ? "Partial" : props.status.state === "live" ? "Live" : "Not scored"));
 const savedNote = useSavedNote(() => props.status.savedAt);
 const statusSub = computed(() => {
   const s = props.status;
+  if (s.partial) return "this visit only";
   if (s.state === "live" && savedNote.value.text) return `${savedNote.value.text} · data unchanged`;
   if (s.state === "scoring") return `${s.done} / ${s.total || "…"}${s.label && s.label !== "done" ? ` · ${s.label}` : ""}`;
   if (s.state === "live" && s.computedAt) return `your builds as saved · scored ${ago(s.computedAt, now.value)}${s.restored ? " (this tab)" : ""}`;

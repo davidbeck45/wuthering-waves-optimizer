@@ -259,6 +259,7 @@ import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { CUSTOM_POOL_ID, POOLS, releasedItems, type SelectorPool } from "./pools";
 import { rankResonatorPool, rankWeaponPool, type ResonatorPickRow } from "./selector";
 import { browserSelectorRiley } from "./selectorRiley";
+import { lostChunk } from "../persist/savedResults";
 import { SELECTOR_CACHE_KEY, createValueCache } from "./valueCache";
 import { pctFine } from "./weaponValueView";
 import type { WeaponValueResult } from "./weaponValue";
@@ -410,7 +411,8 @@ watch(
 );
 
 async function run(force: boolean): Promise<void> {
-  if (!props.ranking || runState.value === "running") return;
+  const base = props.ranking;
+  if (!base || runState.value === "running") return;
   const key = runKey.value;
   if (!force && memory.has(key) && resonatorResult.value) return;
   controller = new AbortController();
@@ -426,7 +428,7 @@ async function run(force: boolean): Promise<void> {
         characters: JSON.parse(JSON.stringify(toRaw(characters.value ?? {}))),
         echoes: JSON.parse(JSON.stringify(toRaw(inventoryStore.echoes ?? []))),
         teams: JSON.parse(JSON.stringify(toRaw(teams.value ?? []))),
-        ranking: props.ranking,
+        ranking: base,
         autoTeamBuffs: autoTeamBuffs.value,
       },
       riley,
@@ -435,7 +437,8 @@ async function run(force: boolean): Promise<void> {
     if (signal.aborted) return;
     const result = { rows, computedAt: new Date().toISOString() };
     memory.set(key, result);
-    cache.write(key, result);
+    // like the value run: rows built on what did not fully score stay on this page
+    cache.write(key, result, undefined, !base.incomplete && !lostChunk());
     if (runKey.value === key) {
       resonatorResult.value = result;
       restored.value = false;

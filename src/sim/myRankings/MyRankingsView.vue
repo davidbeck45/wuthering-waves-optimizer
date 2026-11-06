@@ -44,6 +44,7 @@
           <span class="mr-section-head__meta">{{ sortLabel }}</span>
         </div>
         <div v-if="error" class="alert alert-error text-sm mb-2">{{ error }}</div>
+        <div v-if="partial" role="status" class="alert alert-warning text-sm mb-2" data-test-my-rankings-partial>{{ PARTIAL_RANKING_TEXT }}</div>
         <div v-if="isRunning" class="mr-progress" aria-hidden="true"><span :style="{ width: `${progress.total ? (progress.done / progress.total) * 100 : 3}%` }"></span></div>
         <MyRankingsCharacters
           v-if="shown || isRunning"
@@ -88,7 +89,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "./rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "./rankingCache";
+import { PARTIAL_RANKING_TEXT, rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "./rankingCache";
 import type { SortDir, SortKey } from "./rows";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "../account/accountState";
@@ -187,8 +188,10 @@ const sortLabel = computed(() => {
   const by = sort.value.key === "damage" ? "damage" : sort.value.key === "upgrade" ? "best upgrade" : "name";
   return `sorted by ${by}${sort.value.dir === "asc" ? " ↑" : " ↓"}`;
 });
+const partial = computed(() => !isRunning.value && !!ranking.value?.incomplete);
 const status = computed<RankingStatus>(() => ({
   state: isRunning.value ? "scoring" : ranking.value ? "live" : "idle",
+  partial: partial.value,
   done: progress.value.done,
   total: progress.value.total,
   label: progress.value.label,

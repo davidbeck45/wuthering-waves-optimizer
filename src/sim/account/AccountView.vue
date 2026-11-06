@@ -55,6 +55,7 @@
         <span>{{ runError }}</span>
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
+      <div v-if="partial" role="status" class="alert alert-warning text-sm mb-3" data-test-account-partial>{{ PARTIAL_RANKING_TEXT }}</div>
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
       <!-- Wuthering Tools+ energy check: "2 characters short on ER · 1 overcapping crit" (src/sim/energy/) -->
       <EnergySummaryTile class="acc-energy" data-test-account-energy />
@@ -129,6 +130,7 @@ import { useAccountData } from "./useAccountData";
 import { PREFS_KEY, accountKpis, fieldableTeams, readAccountPrefs, rosterCards, type AccountPrefs } from "./accountView";
 import { sortInvestItems } from "./investPlan";
 import MyRankingsEmpty from "../myRankings/MyRankingsEmpty.vue";
+import { PARTIAL_RANKING_TEXT } from "../myRankings/rankingCache";
 import AccountHero from "./AccountHero.vue";
 import AccountInvest from "./AccountInvest.vue";
 import AccountRoster from "./AccountRoster.vue";
@@ -203,8 +205,9 @@ const sourceTitle = computed(() => {
   const device = "Read from this browser's saved data — characters, inventory and teams. Nothing leaves the device.";
   return savedNote.value.text ? `${savedNote.value.title} ${device}` : device;
 });
+const partial = computed(() => !busy.value && (!!ranking.value?.incomplete || !!planStatus.value.partial));
 const sourceLabel = computed(() =>
-  busy.value ? "Scoring · this browser" : ranking.value ? (savedNote.value.text ? `Live · ${savedNote.value.text}` : "Live · this browser") : "This browser",
+  busy.value ? "Scoring · this browser" : partial.value ? "Partial · this visit only" : ranking.value ? (savedNote.value.text ? `Live · ${savedNote.value.text}` : "Live · this browser") : "This browser",
 );
 
 // ---- the character drawer

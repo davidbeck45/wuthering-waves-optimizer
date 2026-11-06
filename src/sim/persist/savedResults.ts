@@ -13,6 +13,10 @@
 // quota error or a slow answer (READ_TIMEOUT_MS) all fall back to today's behaviour: the page computes. Only what fully
 // scored may be saved, because a saved result repeats until the data changes: a page load that lost a lazy chunk writes
 // nothing (`watchLostChunks`), and the page caches keep their own incomplete results out.
+//
+// A tab copy (sessionStorage, read before all of this) answers to `tabCopyStamp`: the same build, and no Clear in any tab
+// since it was written. What did not fully score is no tab copy at all: it stays in this page load's memory, and the page
+// says so, because a reload is how a phone gets its signal back.
 import { version as APP_VERSION } from "../../../package.json";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 import { idbResultStore, type ResultStore, type SavedMeta } from "./resultStore";
@@ -113,16 +117,41 @@ export function watchLostChunks(host: EventHost | null = typeof window === "unde
 
 const clearHooks = new Set<() => void>();
 
-/** The sessionStorage keys where the page caches keep this tab's copy (rankingCache, investCache, useEchoLab,
- *  valueCache — savedResults.test.ts checks they match). Clear removes them itself, because the page Clear is pressed
- *  on (Settings) usually never loaded those modules, so their hooks are not registered there. */
+/** The sessionStorage keys where the page caches keep this tab's copy (rankingCache, investCache, echoCheckCache,
+ *  useEchoLab, valueCache — savedResults.test.ts checks they match). Clear removes them itself, because the page Clear
+ *  is pressed on (Settings) usually never loaded those modules, so their hooks are not registered there. */
 export const TAB_COPY_KEYS: readonly string[] = [
   "wtplus:myRankings:last",
   "wtplus:account:invest",
+  "wtplus:account:echoCheck",
   "wtplus:echoLab:cache",
   "wtplus:weapons:value",
   "wtplus:weapons:selector",
 ];
+
+/** localStorage: when Settings › Clear saved results was last pressed, in any tab. */
+export const RESULTS_CLEARED_KEY = "wtplus:savedResults:clearedAt";
+
+const browserStorage = (): Storage | null => {
+  try {
+    return typeof window === "undefined" ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+};
+
+/** What a tab copy must carry to be read. The first read on every page is the tab copy, so a plain reload after a
+ *  deploy would otherwise keep the old build's figures, and a Clear in another tab would miss this tab's. A run in
+ *  flight compares it too: what started before a Clear is not kept after it. */
+export function tabCopyStamp(): string {
+  let cleared: string | null = null;
+  try {
+    cleared = browserStorage()?.getItem(RESULTS_CLEARED_KEY) ?? null;
+  } catch {
+    /* storage blocked: the build alone */
+  }
+  return `${appBuildId()}|${cleared ?? ""}`;
+}
 
 type KeyStorage = Pick<Storage, "removeItem">;
 const tabStorage = (): KeyStorage | null => {
@@ -270,6 +299,12 @@ export function createSavedResults(options: SavedResultsOptions): SavedResults {
     },
 
     clear() {
+      // before the queue: a run ending right now must already see that it no longer counts
+      try {
+        browserStorage()?.setItem(RESULTS_CLEARED_KEY, String(now()));
+      } catch {
+        /* storage blocked: this tab's copies still go below */
+      }
       return serial(async () => {
         const tab = options.tabStorage === undefined ? tabStorage() : options.tabStorage;
         for (const key of TAB_COPY_KEYS) {
@@ -311,8 +346,11 @@ const defaultStore = (): ResultStore | null => {
   }
 };
 
+/** True once this page load lost a lazy chunk. Whatever is scored from then on can be missing a kit or a weapon. */
+export const lostChunk = watchLostChunks();
+
 /** The app's saved results (IndexedDB; nothing under Node, where every read misses and every write is a no-op). */
-export const savedResults: SavedResults = createSavedResults({ store: defaultStore, chunkLost: watchLostChunks() });
+export const savedResults: SavedResults = createSavedResults({ store: defaultStore, chunkLost: lostChunk });
 
 /* eslint-disable no-unused-vars -- the parameters of interface methods */
 /** One page cache's view of the saved results: its name and schema version bound, and what it accepts back. */
@@ -338,7 +376,7 @@ export function savedAgo(savedAt: number, at = Date.now()): string {
   return `saved ${new Date(savedAt).toLocaleDateString()}`;
 }
 
-/** The tooltip that goes with `savedAgo`: why the page did not score again. */
-export function savedTitle(savedAt: number): string {
-  return `Saved in this browser on ${new Date(savedAt).toLocaleString()}. Shown without scoring again because nothing it reads has changed since; Recompute scores it fresh.`;
+/** The tooltip that goes with `savedAgo`: why the page did not score again. `button` is what the page's own button says. */
+export function savedTitle(savedAt: number, button = "Recompute"): string {
+  return `Saved in this browser on ${new Date(savedAt).toLocaleString()}. Shown without scoring again because nothing it reads has changed since; ${button} scores it fresh.`;
 }

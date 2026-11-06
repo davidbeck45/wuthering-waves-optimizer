@@ -56,6 +56,7 @@
         <span>The roster could not be scored: {{ status.error }}</span>
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
+      <div v-if="partial" role="status" class="alert alert-warning text-sm mb-3" data-test-weapons-partial>{{ PARTIAL_RANKING_TEXT }}</div>
 
       <!-- ===================================================================== signatures -->
       <section v-show="prefs.tab === 'signatures'" class="wv-sig" data-test-weapons-signatures>
@@ -264,6 +265,7 @@ import CharacterAvatar from "../display/CharacterAvatar.vue";
 import { characterShortName } from "../display/names";
 import WorkStatus from "../display/WorkStatus.vue";
 import MyRankingsEmpty from "../myRankings/MyRankingsEmpty.vue";
+import { PARTIAL_RANKING_TEXT } from "../myRankings/rankingCache";
 import WeaponValueBar from "./WeaponValueBar.vue";
 import { useWeaponValueData } from "./useWeaponValueData";
 import { useSavedNote } from "../persist/useSavedNote";
@@ -347,6 +349,7 @@ const unscoredCount = computed(() => unscored(result.value));
 
 const running = computed(() => status.value.state === "ranking" || status.value.state === "scoring");
 const busy = running;
+const partial = computed(() => !busy.value && (!!ranking.value?.incomplete || !!status.value.partial));
 const progressPct = computed(() => {
   const s = status.value;
   if (!s.total) return 4;

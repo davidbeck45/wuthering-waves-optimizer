@@ -9,7 +9,7 @@
 //
 // Since 2026-11-02 a cache created with a `saved` name also keeps each value in this browser's saved results
 // (persist/savedResults.ts, IndexedDB, under the same key + the app build); `readSaved` reads it back in a new tab.
-import { onSavedResultsCleared, savedSlot, type Saved } from "../persist/savedResults";
+import { onSavedResultsCleared, savedSlot, tabCopyStamp, type Saved } from "../persist/savedResults";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
@@ -24,7 +24,8 @@ const sessionStore = (): StorageLike | null => {
 /* eslint-disable no-unused-vars -- the parameters of method and function types */
 export interface ValueCache<T> {
   read(key: string, storage?: StorageLike | null): T | null;
-  /** false when sessionStorage refused it (module memory still holds it); `persist` false keeps it to this tab */
+  /** false when sessionStorage refused it (module memory still holds it); `persist` false keeps it to this page load:
+   *  what did not fully score is not read back after a reload */
   write(key: string, value: T, storage?: StorageLike | null, persist?: boolean): boolean;
   /** the value this browser saved for `key` and this app build (null on a miss, or for a cache without a `saved`
    *  name); a hit becomes this tab's value too */
@@ -40,7 +41,7 @@ export interface ValueCache<T> {
 export function createValueCache<T>(storageKey: string, version: number, isValid: (value: unknown) => boolean = () => true, saved?: string): ValueCache<T> {
   /* eslint-enable no-unused-vars */
   let memory: { key: string; value: T } | null = null;
-  const full = (key: string): string => `v${version}:${key}`;
+  const full = (key: string): string => `v${version}:${tabCopyStamp()}:${key}`;
   const slot = saved ? savedSlot<T>(saved, version, isValid) : null;
   // Settings › Clear saved results: this tab's copies go too
   const off = onSavedResultsCleared(() => {
@@ -83,7 +84,7 @@ export function createValueCache<T>(storageKey: string, version: number, isValid
     },
     write(key, value, storage = sessionStore(), persist = true) {
       if (slot && persist) void slot.write(key, value);
-      return keep(key, value, storage);
+      return keep(key, value, persist ? storage : null);
     },
     async readSaved(key, storage = sessionStore()) {
       const hit = slot ? await slot.read(key) : null;

@@ -8,8 +8,9 @@
 // number moves the hash, and a stale entry is simply never read. Pure apart from the storage it is handed.
 // Since 2026-11-02 every ranking written here is also saved in this browser (persist/savedResults.ts, IndexedDB,
 // keyed by the same fingerprint + the app build), so a new tab reads it back with `readSavedRanking` instead of
-// scoring for seconds.
-import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
+// scoring for seconds. A ranking that did not fully score stays in module memory: the page that shows it says so, and
+// a reload scores again.
+import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
 import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
@@ -71,7 +72,9 @@ const sessionStore = (): StorageLike | null => {
   }
 };
 
-let memory: { fingerprint: string; ranking: RosterRanking } | null = null;
+let memory: { key: string; ranking: RosterRanking } | null = null;
+/** what a tab copy is filed under: another build's, or one from before a Clear in any tab, is a miss */
+const tabKey = (fingerprint: string): string => `${tabCopyStamp()}|${fingerprint}`;
 
 const isRanking = (v: unknown): boolean => Array.isArray((v as RosterRanking)?.characters) && Array.isArray((v as RosterRanking)?.teams);
 /** the browser-wide copy (IndexedDB): survives the tab */
@@ -79,14 +82,15 @@ export const savedRankings = savedSlot<RosterRanking>("ranking", RANKING_CACHE_V
 
 /** The last ranking for exactly these inputs: module memory first, then sessionStorage; null when none matches. */
 export function readCachedRanking(fingerprint: string, storage: StorageLike | null = sessionStore()): RosterRanking | null {
-  if (memory?.fingerprint === fingerprint) return memory.ranking;
+  const key = tabKey(fingerprint);
+  if (memory?.key === key) return memory.ranking;
   if (!storage) return null;
   try {
     const raw = storage.getItem(RANKING_CACHE_KEY);
     if (!raw) return null;
-    const entry = JSON.parse(raw) as { fingerprint?: string; ranking?: RosterRanking };
-    if (entry?.fingerprint !== fingerprint || !entry.ranking || !Array.isArray(entry.ranking.characters)) return null;
-    memory = { fingerprint, ranking: entry.ranking };
+    const entry = JSON.parse(raw) as { key?: string; ranking?: RosterRanking };
+    if (entry?.key !== key || !entry.ranking || !Array.isArray(entry.ranking.characters)) return null;
+    memory = { key, ranking: entry.ranking };
     return entry.ranking;
   } catch {
     return null;
@@ -94,14 +98,16 @@ export function readCachedRanking(fingerprint: string, storage: StorageLike | nu
 }
 
 /** Keep `ranking` as the result for `fingerprint`; false when sessionStorage refused it (memory still holds it).
- *  It is saved in this browser too (in the background) unless `persist` is false — a ranking that just came out
- *  of the saved results — or it is `incomplete`: this tab shows it, the next one scores again. */
+ *  It is saved in this browser too (in the background) unless `persist` is false: a ranking that just came out of the
+ *  saved results. One that is `incomplete` stays in memory: this page load shows it, a reload or a new tab scores again. */
 export function writeCachedRanking(fingerprint: string, ranking: RosterRanking, storage: StorageLike | null = sessionStore(), persist = true): boolean {
-  memory = { fingerprint, ranking };
-  if (persist && !ranking.incomplete) void savedRankings.write(fingerprint, ranking);
+  const key = tabKey(fingerprint);
+  memory = { key, ranking };
+  if (ranking.incomplete) return false;
+  if (persist) void savedRankings.write(fingerprint, ranking);
   if (!storage) return false;
   try {
-    storage.setItem(RANKING_CACHE_KEY, JSON.stringify({ fingerprint, savedAt: new Date().toISOString(), ranking }));
+    storage.setItem(RANKING_CACHE_KEY, JSON.stringify({ key, savedAt: new Date().toISOString(), ranking }));
     return true;
   } catch {
     // quota: drop the old entry rather than leave a stale one behind
@@ -122,6 +128,16 @@ export async function readSavedRanking(fingerprint: string, storage: StorageLike
   writeCachedRanking(fingerprint, hit.value, storage, false);
   return { ranking: hit.value, savedAt: hit.savedAt };
 }
+
+/** What a result built on `ranking` is cached under. One that did not fully score gets a key of its own, so a plan or a
+ *  weapon value built on it is never read beside the whole ranking of the same data. */
+export const rankingResultKey = (fingerprint: string, ranking: Pick<RosterRanking, "incomplete" | "computedAt">): string =>
+  ranking.incomplete ? `${fingerprint}|partial:${ranking.computedAt}` : fingerprint;
+
+/** What a page shows beside a ranking that did not fully score. It says reload, not Recompute: a page load that lost a
+ *  chunk stays marked (the engine's loaders may hold on to the failure), so only a new load can come out whole. */
+export const PARTIAL_RANKING_TEXT =
+  "Not everything scored on this visit: part of the app did not load or a run failed, so characters or teams can be missing and numbers can read low. This stays on this page only. Reload once your connection is back to score it all.";
 
 /** For tests: forget the in-memory entry and any run in flight. */
 export function clearRankingMemory(): void {
@@ -195,9 +211,13 @@ export function sharedRanking(
   } catch (err) {
     started = Promise.reject(err);
   }
+  const stamp = tabCopyStamp();
   fresh.promise = started
-    .then((ranking) => {
-      writeCachedRanking(fingerprint, ranking, storage);
+    .then((scored) => {
+      // the engine's loaders swallow a lost chunk: a weapon reads as no weapon, with nothing in the ranking to tell
+      const ranking = lostChunk() ? { ...scored, incomplete: true } : scored;
+      // Clear was pressed during the run: the pages were told they score again on the next visit
+      if (tabCopyStamp() === stamp) writeCachedRanking(fingerprint, ranking, storage);
       return ranking;
     })
     .finally(() => {

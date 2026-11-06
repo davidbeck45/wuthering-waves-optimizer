@@ -11,7 +11,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type CharacterRank, type RosterRanking, type TeamRank } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, rankingResultKey, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "./accountState";
 import { investPlan, type InvestItem, type InvestPlan, type InvestProgress } from "./investPlan";
@@ -30,6 +30,8 @@ export interface RunStatus {
   savedAt: number | null;
   computedAt: string | null;
   error: string | null;
+  /** did not fully score: shown on this page, not kept past it */
+  partial?: boolean;
 }
 
 const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, savedAt: null, computedAt: null, error: null });
@@ -123,8 +125,9 @@ export function useAccountData() {
       });
       if (gen !== generation || result.cancelled) return;
       plan.value = result;
-      writeCachedPlan(fp, result, undefined, planSavedUnder(rankingFp, base, result));
-      planStatus.value = { ...idle(), state: "done", computedAt: result.computedAt, done: result.characters, total: result.characters, error: result.errors.length ? `${result.errors.length} scoring errors` : null };
+      const savedUnder = planSavedUnder(rankingFp, base, result);
+      writeCachedPlan(fp, result, savedUnder ? undefined : null, savedUnder); // what did not fully score stays on this page
+      planStatus.value = { ...idle(), state: "done", computedAt: result.computedAt, done: result.characters, total: result.characters, error: result.errors.length ? `${result.errors.length} scoring errors` : null, partial: !savedUnder };
     } catch (err) {
       if (gen === generation) planStatus.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
     } finally {
@@ -193,7 +196,7 @@ export function useAccountData() {
       rankingStatus.value = { ...idle(), state: "done", computedAt: base.computedAt, done: rankingStatus.value.total, total: rankingStatus.value.total };
     }
     // a forced refresh re-plans too (the plan cache is keyed by the same fingerprint)
-    await runPlan(fp, gen, data, base, force);
+    await runPlan(rankingResultKey(fp, base), gen, data, base, force);
   }
 
   watch(autoTeamBuffs, () => void refresh());

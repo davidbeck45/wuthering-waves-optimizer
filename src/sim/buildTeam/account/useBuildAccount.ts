@@ -132,7 +132,8 @@ export function useBuildAccount() {
       const teams = plain(teamStore.teams);
       // /account's ranking for this exact data, when this tab has it: its team damage is reused
       const fp = rankingFingerprint({ characters: toRaw(characterStore.characters ?? {}), echoes: toRaw(inventoryStore.echoes ?? []), teams: toRaw(teamStore.teams ?? []), investment: true, autoTeamBuffs: autoTeamBuffs.value });
-      const ranking = readCachedRanking(fp);
+      const cached = readCachedRanking(fp);
+      const ranking = cached?.incomplete ? null : cached; // a figure that scored short is not reused
       const rows = await accountTeamChoices(chars, echoes, teams, { ranking, autoTeamBuffs: autoTeamBuffs.value, signal: ctrl.signal, onProgress: (done, total) => (scored.value = { done, total }) });
       if (ctrl.signal.aborted) return;
       choices.value = rows;

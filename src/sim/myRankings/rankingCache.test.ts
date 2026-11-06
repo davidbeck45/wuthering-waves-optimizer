@@ -215,7 +215,7 @@ describe("ranking cache and the saved results", () => {
     clearRankingMemory();
   });
 
-  it("saves a whole ranking, but keeps one that did not fully score to this tab: a new tab must score it again", () => {
+  it("saves a whole ranking, but keeps one that did not fully score to this page load: a reload or a new tab scores again", () => {
     const write = vi.spyOn(savedResults, "write").mockResolvedValue(true);
     const storage = fakeStorage();
     writeCachedRanking("fp-whole", ranking(), storage);
@@ -223,8 +223,8 @@ describe("ranking cache and the saved results", () => {
     write.mockClear();
     writeCachedRanking("fp-holes", ranking({ incomplete: true }), storage);
     expect(write).not.toHaveBeenCalled();
-    expect(readCachedRanking("fp-holes", storage)?.incomplete).toBe(true); // the tab still shows what it scored
+    expect(readCachedRanking("fp-holes", storage)?.incomplete).toBe(true); // the page still shows what it scored
     clearRankingMemory();
-    expect(readCachedRanking("fp-holes", storage)?.incomplete).toBe(true);
+    expect(readCachedRanking("fp-holes", storage)).toBeNull();
   });
 });

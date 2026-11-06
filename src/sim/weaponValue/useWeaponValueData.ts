@@ -9,7 +9,8 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { isSetUp, rankRoster, type RosterRanking } from "../myRankings/rankRoster";
-import { rankingFingerprint, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, rankingResultKey, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
+import { lostChunk } from "../persist/savedResults";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { WEAPON_VALUE_VERSION, weaponValue, type CharacterWeaponValue, type WeaponValueResult } from "./weaponValue";
 import { WEAPON_VALUE_CACHE_KEY, createValueCache } from "./valueCache";
@@ -27,6 +28,8 @@ export interface RunStatus {
   savedAt: number | null;
   computedAt: string | null;
   error: string | null;
+  /** did not fully score: shown on this page, not kept past it */
+  partial?: boolean;
 }
 
 const idle = (): RunStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, savedAt: null, computedAt: null, error: null });
@@ -124,12 +127,14 @@ export function useWeaponValueData() {
       if (gen !== generation) return;
     }
     ranking.value = base;
+    const resultKey = rankingResultKey(key, base);
+    fp.value = resultKey;
 
     // 2. weapon value on top of it
-    let cached = force ? null : valueCache.read(key);
+    let cached = force ? null : valueCache.read(resultKey);
     let savedAt: number | null = null;
     if (!cached && !force) {
-      const saved = await valueCache.readSaved(key);
+      const saved = await valueCache.readSaved(resultKey);
       if (gen !== generation) return;
       if (saved) ({ value: cached, savedAt } = saved);
     }
@@ -156,8 +161,9 @@ export function useWeaponValueData() {
       });
       if (gen !== generation || out.cancelled) return;
       result.value = out;
-      valueCache.write(key, out, undefined, !base.incomplete && !out.errors.length); // what did not fully score stays in this tab
-      status.value = { ...idle(), state: "done", computedAt: out.computedAt, done: out.rows.length, total: out.rows.length, error: out.errors.length ? `${out.errors.length} scoring errors` : null };
+      const whole = !base.incomplete && !out.errors.length && !lostChunk();
+      valueCache.write(resultKey, out, undefined, whole); // what did not fully score stays on this page
+      status.value = { ...idle(), state: "done", computedAt: out.computedAt, done: out.rows.length, total: out.rows.length, error: out.errors.length ? `${out.errors.length} scoring errors` : null, partial: !whole };
     } catch (err) {
       if (gen === generation) status.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
     } finally {

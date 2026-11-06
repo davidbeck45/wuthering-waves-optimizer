@@ -10,12 +10,13 @@ export interface SavedNote {
   title: string;
 }
 
-export function useSavedNote(savedAt: () => number | null | undefined): ComputedRef<SavedNote> {
+/** `button`: what the page's own button that scores again says, for the tooltip */
+export function useSavedNote(savedAt: () => number | null | undefined, button?: string): ComputedRef<SavedNote> {
   const now = ref(Date.now());
   const timer = setInterval(() => (now.value = Date.now()), 60_000);
   if (getCurrentInstance()) onBeforeUnmount(() => clearInterval(timer));
   return computed(() => {
     const at = savedAt();
-    return at ? { text: savedAgo(at, now.value), title: savedTitle(at) } : { text: null, title: "" };
+    return at ? { text: savedAgo(at, now.value), title: savedTitle(at, button) } : { text: null, title: "" };
   });
 }

@@ -7,10 +7,11 @@ import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 import { memoryResultStore, type ResultStore, type SavedMeta } from "./resultStore";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { ECHO_CHECK_CACHE_KEY } from "../account/echoCheckCache";
 import { INVEST_CACHE_KEY } from "../account/investCache";
 import { RANKING_CACHE_KEY } from "../myRankings/rankingCache";
 import { SELECTOR_CACHE_KEY, WEAPON_VALUE_CACHE_KEY } from "../weaponValue/valueCache";
-import { TAB_COPY_KEYS, appBuildId, createSavedResults, onSavedResultsCleared, savedAgo, savedResults, savedSlot, watchLostChunks } from "./savedResults";
+import { TAB_COPY_KEYS, appBuildId, createSavedResults, onSavedResultsCleared, savedAgo, savedResults, savedSlot, savedTitle, watchLostChunks } from "./savedResults";
 
 const isRows = (v: unknown): boolean => Array.isArray((v as { rows?: unknown })?.rows);
 const flush = () => new Promise((r) => setTimeout(r, 0));
@@ -318,7 +319,7 @@ describe("saved results: a page load that lost a lazy chunk saves nothing", () =
 describe("saved results: Clear", () => {
   it("names exactly the page caches' sessionStorage keys", () => {
     const echoLab = readFileSync(resolve(process.cwd(), "src/sim/echoLab/useEchoLab.ts"), "utf8").match(/ECHO_LAB_CACHE_KEY = "([^"]+)"/)?.[1];
-    expect([...TAB_COPY_KEYS].sort()).toEqual([RANKING_CACHE_KEY, INVEST_CACHE_KEY, echoLab, WEAPON_VALUE_CACHE_KEY, SELECTOR_CACHE_KEY].sort());
+    expect([...TAB_COPY_KEYS].sort()).toEqual([RANKING_CACHE_KEY, INVEST_CACHE_KEY, ECHO_CHECK_CACHE_KEY, echoLab, WEAPON_VALUE_CACHE_KEY, SELECTOR_CACHE_KEY].sort());
   });
 
   it("removes this tab's copies even where no cache module is loaded, and leaves other keys alone", async () => {
@@ -345,6 +346,13 @@ describe("saved results: Clear", () => {
     offBad();
     await saved.clear();
     expect(forgot).toBe(1);
+  });
+});
+
+describe("savedTitle", () => {
+  it("names the button the page has", () => {
+    expect(savedTitle(1)).toContain("Recompute scores it fresh");
+    expect(savedTitle(1, "Re-run")).toContain("Re-run scores it fresh");
   });
 });
 

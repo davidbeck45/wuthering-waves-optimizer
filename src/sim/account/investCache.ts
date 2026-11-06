@@ -5,7 +5,7 @@
 // browser (persist/savedResults.ts, IndexedDB) + the app build. The saved copy is filed under the ranking fingerprint
 // alone, with the full key (which adds the ER needs) inside, so /account can paint it before the energy check has
 // answered and confirm the ER needs when it does (`readSavedPlan`).
-import { onSavedResultsCleared, savedSlot } from "../persist/savedResults";
+import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
 import type { InvestPlan } from "./investPlan";
 
 /** bump when InvestItem's shape or the plan's rules change */
@@ -22,7 +22,7 @@ const sessionStore = (): StorageLike | null => {
   }
 };
 
-const keyOf = (rankingFingerprint: string): string => `p${INVEST_CACHE_VERSION}:${rankingFingerprint}`;
+const keyOf = (rankingFingerprint: string): string => `p${INVEST_CACHE_VERSION}:${tabCopyStamp()}:${rankingFingerprint}`;
 let memory: { key: string; plan: InvestPlan } | null = null;
 
 export interface SavedPlan {
@@ -52,7 +52,8 @@ export function readCachedPlan(rankingFingerprint: string, storage: StorageLike 
 }
 
 /** Keep a finished plan (a cancelled one is never cached); false when sessionStorage refused it. With `savedUnder`
- *  (the ranking fingerprint alone) it is saved in this browser too, in the background. */
+ *  (the ranking fingerprint alone) it is saved in this browser too, in the background. A plan that did not fully score
+ *  passes a null `storage`: this page load keeps it, and a reload plans again. */
 export function writeCachedPlan(rankingFingerprint: string, plan: InvestPlan, storage: StorageLike | null = sessionStore(), savedUnder: string | null = null): boolean {
   if (plan.cancelled) return false;
   const key = keyOf(rankingFingerprint);
@@ -73,9 +74,10 @@ export function writeCachedPlan(rankingFingerprint: string, plan: InvestPlan, st
 }
 
 /** Where a finished plan is saved past this tab (`writeCachedPlan`'s `savedUnder`): under the ranking fingerprint, or
- *  nowhere when it or the ranking under it did not fully score, so the next tab plans again. */
+ *  nowhere when it or the ranking under it did not fully score, or this page load lost a chunk meanwhile (a weapon it
+ *  tried would read as none), so the next tab plans again. */
 export function planSavedUnder(rankingFingerprint: string, base: { incomplete?: boolean }, plan: Pick<InvestPlan, "errors">): string | null {
-  return base.incomplete || plan.errors.length ? null : rankingFingerprint;
+  return base.incomplete || plan.errors.length || lostChunk() ? null : rankingFingerprint;
 }
 
 /** The plan this browser saved for this ranking fingerprint and app build: the plan, the full key it was computed

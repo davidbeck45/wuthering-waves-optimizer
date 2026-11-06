@@ -5,6 +5,7 @@
 // read) and the run's settings (Build my team's switches, the wuwa_calc commit). Any edit moves a key, and a stale
 // entry is simply never read. A cancelled check is never kept. The investCache pattern.
 import { cyrb53, stableStringify } from "../myRankings/rankingCache";
+import { onSavedResultsCleared, tabCopyStamp } from "../persist/savedResults";
 import type { EchoCheck } from "./echoCheck";
 
 /** bump when EchoUpgrade's shape or the check's rules change; 4: an ER need out of reach keeps the most damage of the
@@ -30,7 +31,7 @@ export function inventoryFingerprint(echoes: unknown, equipped: unknown): string
 
 /** The cache key: ranking fingerprint · inventory fingerprint · the run's settings (any string; hashed). */
 export function echoCheckKey(rankingFingerprint: string, inventoryFp: string, settings: unknown = null): string {
-  return `e${ECHO_CHECK_CACHE_VERSION}:${rankingFingerprint}|inv:${inventoryFp}|s:${cyrb53(stableStringify(settings))}`;
+  return `e${ECHO_CHECK_CACHE_VERSION}:${tabCopyStamp()}:${rankingFingerprint}|inv:${inventoryFp}|s:${cyrb53(stableStringify(settings))}`;
 }
 
 let memory: { key: string; check: EchoCheck } | null = null;
@@ -70,3 +71,13 @@ export function writeCachedEchoCheck(key: string, check: EchoCheck, storage: Sto
 export function clearEchoCheckMemory(): void {
   memory = null;
 }
+
+// Settings › Clear saved results: this tab's copies go too
+onSavedResultsCleared(() => {
+  memory = null;
+  try {
+    sessionStore()?.removeItem(ECHO_CHECK_CACHE_KEY);
+  } catch {
+    /* nothing to do */
+  }
+});

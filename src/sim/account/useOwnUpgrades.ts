@@ -18,6 +18,7 @@ import type { useEchoLab } from "../echoLab/useEchoLab";
 import { EMPTY_BUDGET, TUNER_BUDGET_KEY, readTunerBudget, type TunerBudget } from "../echoLab/tunerBudget";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import type { EchoCheck, EchoUpgrade } from "./echoCheck";
+import { rankingResultKey } from "../myRankings/rankingCache";
 import { echoCheckKey, inventoryFingerprint, readCachedEchoCheck, writeCachedEchoCheck } from "./echoCheckCache";
 import { ownUpgradeRows, type OwnRow } from "./ownUpgrades";
 import type { useAccountData } from "./useAccountData";
@@ -71,7 +72,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
     const fp = data.rankingFingerprint();
     if (!fp || !data.ranking.value) return null;
     const inv = inventoryFingerprint(toRaw(inventoryStore.echoes ?? []), toRaw(inventoryStore.equipped ?? {}));
-    return echoCheckKey(fp, inv, { options: readBuildOptions(), engine: WUWA_CALC_COMMIT, auto: autoTeamBuffs.value });
+    return echoCheckKey(rankingResultKey(fp, data.ranking.value), inv, { options: readBuildOptions(), engine: WUWA_CALC_COMMIT, auto: autoTeamBuffs.value });
   }
 
   /** The check for this exact data, when this tab ran it; else nothing (never another state's rows). */
