@@ -76,7 +76,7 @@
       <section v-else-if="phase === 'error'" class="bt-card bt-fatal" role="alert" data-test-build-team-fatal>
         <p class="font-semibold">Something went wrong</p>
         <p class="text-sm opacity-80">{{ error }}</p>
-        <div class="mt-3 flex gap-2">
+        <div class="mt-3 flex flex-wrap gap-2">
           <button v-if="error === STALE_TAB_ERROR" type="button" class="btn btn-primary btn-sm" data-test-build-team-reload @click="reloadPage">Reload page</button>
           <button v-else type="button" class="btn btn-primary btn-sm" data-test-build-team-retry @click="retry">Try again</button>
           <RouterLink to="/build-team" class="btn btn-ghost btn-sm">Pick another team</RouterLink>

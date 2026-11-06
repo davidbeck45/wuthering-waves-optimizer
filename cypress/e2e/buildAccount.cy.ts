@@ -109,6 +109,17 @@ describe("build my whole account", () => {
     });
   });
 
+  it("a tab older than the site says to reload, with a button that does, instead of a Try again that cannot work", () => {
+    cy.viewport(1440, 1000);
+    cy.intercept("**/src/workers/processor.worker.ts*", { forceNetworkError: true });
+    cy.visit("/build-team?mode=account", seed());
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    cy.get("[data-test-build-account-run]").click();
+    cy.get("[data-test-build-account-fatal]", RUN).should("contain.text", "older than the site");
+    cy.get("[data-test-build-account-reload]").should("be.visible");
+    cy.get("[data-test-build-account-fatal] button").should("have.length", 1);
+  });
+
   it("plans both teams with no echo twice, saves Account plan builds after build history, and undo puts it all back", () => {
     cy.viewport(1440, 1000);
     cy.visit("/build-team?mode=account", seed());

@@ -155,12 +155,15 @@ describe("build my team", () => {
   });
 
   it("a tab older than the site says to reload, with a button that does, instead of a Try again that cannot work", () => {
+    cy.viewport(360, 800); // the narrowest phone at David's 130 % text: the card's two buttons still fit
     cy.intercept("**/src/workers/processor.worker.ts*", { forceNetworkError: true });
-    cy.visit(`/build-team?team=${TEAM_ID}`, seed());
+    cy.visit(`/build-team?team=${TEAM_ID}`, seed({ fontScale: 1.3 }));
     cy.get('[data-test-build-team][data-phase="plan"]', RUN).should("exist");
     cy.get("[data-test-build-team-run]").click();
     cy.get("[data-test-build-team-fatal]", RUN).should("contain.text", "older than the site").and("contain.text", "Reload the page");
     cy.get("[data-test-build-team-retry]").should("not.exist");
+    cy.get("[data-test-build-team-reload]").should("be.visible");
+    expectNoHorizontalScroll("the stale tab's card", 360);
     cy.window().then((win) => {
       (win as unknown as { __sameTab: boolean }).__sameTab = true;
     });
