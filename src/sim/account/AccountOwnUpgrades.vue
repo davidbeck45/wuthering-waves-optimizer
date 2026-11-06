@@ -28,6 +28,7 @@
       <span class="own__progress-text"><template v-if="status.label">Checking {{ status.label }}'s echoes · {{ status.done }} / {{ status.total || "…" }} characters</template><template v-else>Getting the check ready (your teams and the plans)…</template><template v-if="tunerRunning"> · Tuner plan</template></span>
     </div>
     <p v-else-if="status.state === 'idle'" class="own__hint" data-test-account-own-idle>
+      <span v-if="status.left" class="own__left" data-test-account-own-left>The last check stopped when you left this page<template v-if="status.left.total">, after {{ status.left.done }} of {{ status.left.total }} characters</template>; it runs only while this page is open.</span>
       <b>Check my echoes</b> re-gears each character on their own from the echoes you have, with Build my team's engine
       (about a second each; you can cancel).<template v-if="!rankingReady"> It turns on once your roster is scored.</template>
     </p>
@@ -183,6 +184,10 @@ const summary = computed((): string => {
   margin-top: 0.5rem;
   font-size: 0.74rem;
   color: oklch(var(--bc) / 0.8);
+}
+.own__left {
+  display: block;
+  margin-bottom: 0.25rem;
 }
 .own__hint--small {
   font-size: 0.68rem;

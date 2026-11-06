@@ -251,6 +251,34 @@ describe("my account: with what you own", () => {
     cy.window().then((win) => expect(win.sessionStorage.getItem(CHECK_KEY)).to.eq(null));
   });
 
+  it("says so on the way back when leaving the page stopped a check, and a new check takes the note away", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/account", seed());
+    cy.get("[data-test-account-own-check]", RUN).should("not.be.disabled").click();
+    cy.get("[data-test-account-own-cancel]").should("be.visible");
+    // leave mid-run, the way a link does (a nav tap takes two commands, and the check can end between them)
+    cy.window().then((win) => {
+      win.history.pushState({}, "", "/today");
+      win.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    cy.location("pathname").should("eq", "/today");
+    cy.get("[data-test-account-own]").should("not.exist");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/account");
+    // it read as if no check had ever run; Cancel does say how far it got
+    cy.get("[data-test-account-own-left]", RUN).should("contain.text", "stopped when you left this page");
+    cy.get("[data-test-account-own-check]", RUN).should("not.be.disabled").click();
+    cy.get('[data-test-account-own][data-state="done"]', RUN).should("exist");
+    cy.get("[data-test-account-own-left]").should("not.exist");
+    // and a finished check isn't told it was stopped when the page is left and found again
+    cy.get("[data-test-nav-rankings]").click();
+    cy.get('[data-test-nav-plus-page="/my-rankings"]').click();
+    cy.location("pathname").should("eq", "/my-rankings");
+    cy.go("back");
+    cy.get('[data-test-account-own][data-state="done"]', RUN).should("exist");
+    cy.get("[data-test-account-own-left]").should("not.exist");
+  });
+
   it("lists the Tuner plan's steps the Tuners you entered cover, never a team figure for them", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed({ tuners: 400 }));

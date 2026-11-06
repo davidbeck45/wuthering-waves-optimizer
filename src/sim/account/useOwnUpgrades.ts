@@ -37,9 +37,14 @@ export interface EchoCheckStatus {
   cancelled: boolean;
   computedAt: string | null;
   error: string | null;
+  /** how far the last check got when the page was left, which stops it */
+  left: { done: number; total: number } | null;
 }
 
-const idle = (): EchoCheckStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, cancelled: false, computedAt: null, error: null });
+const idle = (): EchoCheckStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, cancelled: false, computedAt: null, error: null, left: null });
+/** Leaving the page stops a check, and coming back read as if none had run: Cancel says how far it got, so this does too.
+ *  For this tab, until the next check. */
+let leftAt: EchoCheckStatus["left"] = null;
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
 
 function readBudget(): TunerBudget {
@@ -81,7 +86,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
     const key = keyNow();
     const cached = key ? readCachedEchoCheck(key) : null;
     check.value = cached;
-    status.value = cached ? { ...idle(), state: "done", restored: true, done: cached.done, total: cached.total, computedAt: cached.computedAt } : idle();
+    status.value = cached ? { ...idle(), state: "done", restored: true, done: cached.done, total: cached.total, computedAt: cached.computedAt } : { ...idle(), left: leftAt };
   }
 
   function rileySource(signal: AbortSignal): RileySource {
@@ -104,6 +109,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
     controller?.abort();
     const ctrl = new AbortController();
     controller = ctrl;
+    leftAt = null;
     check.value = null;
     liveItems.value = [];
     // no label until the first character starts: the bar says the check is getting ready
@@ -186,6 +192,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
     restore();
   });
   onBeforeUnmount(() => {
+    if (status.value.state === "running") leftAt = { done: status.value.done, total: status.value.total };
     controller?.abort();
     energy.release();
   });
