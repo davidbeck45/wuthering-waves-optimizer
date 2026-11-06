@@ -379,6 +379,7 @@ import {
 } from "../echoes/sets";
 import { mainEchoesData, getEchoData } from "../echoes/index";
 import { useCharacterStore } from "../stores/character";
+import { liveOptimizerTarget } from "../sim/optimizer/optimizerTarget";
 import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
 import type { OptimizerMinStatRow } from "./CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
@@ -767,7 +768,7 @@ onMounted(() => {
   mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
   setFilters.value = ch.optimizer?.echoSets ?? [];
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
-  optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
+  optimizationTarget.value = liveOptimizerTarget(ch.optimizer?.optimizationTarget, characterStore.characters?.[props.character]?.rotations); // Wuthering Tools+: a deleted rotation is no target
   ignoreOtherResonantorEchoes.value =
     ch.optimizer?.ignoreOtherResonantorEchoes ?? false;
   loadoutFormat.value = normalizeLoadoutFormat(ch.optimizer?.loadoutFormat);

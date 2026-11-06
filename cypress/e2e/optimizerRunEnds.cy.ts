@@ -113,13 +113,42 @@ describe("a run that cannot give rows says why", { defaultCommandTimeout: 30000 
     cy.get(RUN).should("exist");
   });
 
-  it("a rotation target that has been deleted names the target, not the filters", () => {
-    visit(
-      account((record) => {
-        record.optimizer.optimizationTarget = "Rotation:gone123";
-      }),
-    );
-    cy.window().then((win) => cy.spy(win.Worker.prototype, "postMessage").as("post"));
+  it("a saved target naming a rotation she no longer has falls to her first rotation, and Run gives rows", () => {
+    const first = (data: any): string => data.characters.Zani.rotations[0].id;
+    const data = account((record) => {
+      record.optimizer.optimizationTarget = "Rotation:gone123";
+    });
+    expect(data.characters.Zani.rotations.length, "the fixture has a rotation").to.be.greaterThan(0);
+    visit(data);
+    cy.window().should((win) => expect(storeOf(win).characters.Zani.optimizer.optimizationTarget).to.eq(`Rotation:${first(data)}`));
+    finishedRun();
+    cy.get(WHY).should("not.exist");
+  });
+
+  for (const ui of ["v3", "classic"] as const) {
+    it(`${ui}: a saved rotation target on a character with no rotation at all falls to an attack, and Run gives rows`, () => {
+      visit(
+        account((record) => {
+          record.rotations = [];
+          record.optimizer.optimizationTarget = "Rotation:gone123";
+        }),
+        ui,
+      );
+      cy.window().should((win) => expect(storeOf(win).characters.Zani.optimizer.optimizationTarget).to.match(/^Attack:/));
+      if (ui === "v3") finishedRun();
+      else {
+        cy.get("[data-test-optimizer-optimize-btn]").click({ force: true });
+        cy.get("[data-test-optimizer-result-loadout]", { timeout: 60000 }).should("exist");
+      }
+    });
+  }
+
+  it("a rotation deleted while the screen is open: Run names the target, not the filters", () => {
+    visit(account());
+    cy.window().then((win) => {
+      storeOf(win).characters.Zani.rotations = []; // the screen read the target while it was still there
+      cy.spy(win.Worker.prototype, "postMessage").as("post");
+    });
     cy.get(RUN).click({ force: true });
     cy.get(WHY).should("contain.text", "no longer exists");
     cy.get<sinon.SinonSpy>("@post").should("not.have.been.called");
