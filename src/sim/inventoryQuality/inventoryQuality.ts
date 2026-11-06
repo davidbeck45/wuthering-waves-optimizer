@@ -31,11 +31,15 @@ export interface ChipRating {
 
 export type RollTone = "great" | "good" | "average" | "below" | "poor";
 
-/** "Top 4% roll" / "Bottom 30% roll", with "at +15" for an echo still being tuned; never "Top 0%". */
+/** "Top 4%" / "Bottom 30%", never "Top 0%". One rounding with Echo Lab's "Better than 96%" (ratingOf), so the two add to 100. */
+function rollPlace(percentile: number): string {
+  const better = Math.round(percentile * 100);
+  return percentile >= 0.5 ? `Top ${Math.max(1, 100 - better)}%` : `Bottom ${Math.max(1, better)}%`;
+}
+
+/** "Top 4% roll" / "Bottom 30% roll", with "at +15" for an echo still being tuned. */
 export function rollText(percentile: number, lines: number): string {
-  const at = lines < 5 ? ` at +${lines * 5}` : "";
-  if (percentile >= 0.5) return `Top ${Math.max(1, Math.round((1 - percentile) * 100))}% roll${at}`;
-  return `Bottom ${Math.max(1, Math.round(percentile * 100))}% roll${at}`;
+  return `${rollPlace(percentile)} roll${lines < 5 ? ` at +${lines * 5}` : ""}`;
 }
 
 /** the colour of the roll text: Echo Lab's rating bands (ratingOf: Excellent ≥ 90, Good ≥ 70, Average ≥ 40, Below ≥ 15) */
@@ -101,10 +105,9 @@ export function chipFor(input: {
   const sentences = [`Echo Lab: ${verdictLabel} (${reason.toLowerCase()}).`];
   if (stale) sentences.unshift("Updating: Echo Lab is judging your echoes again after a change.");
   if (rating) {
-    const better = Math.round(rating.percentile * 100);
     const where = rating.worn ? `where it sits on ${characterName(rating.characterId)}` : `in ${characterName(rating.characterId)}'s ${slotLabel(rating.slot).toLowerCase()}`;
     sentences.push(
-      `Roll: ${ratingOf(rating.percentile).band.toLowerCase()}, better than ${better}% of the +${rating.level} echoes of its kind it could have been, by damage ${where} on their best rotation${rating.exact ? "" : " (a quick estimate)"}.`,
+      `Roll: ${ratingOf(rating.percentile).band.toLowerCase()}, ${rollPlace(rating.percentile).toLowerCase()} of the +${rating.level} echoes of its kind it could have been, by damage ${where} on their best rotation${rating.exact ? "" : " (a quick estimate)"}.`,
     );
   } else if (!row.lines) {
     sentences.push("No substat lines yet, so no roll to rate.");

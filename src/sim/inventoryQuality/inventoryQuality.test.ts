@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import fixture from "../echoLab/__fixtures__/echoLabAccount.json";
 import { bestOwners, type BestOwnerResult, type EchoVerdict } from "../echoLab/bestOwner";
 import { createLabSession, type LabAccount } from "../echoLab/core";
-import { DEFAULT_FILTERS, activeFilterCount, applyFilters, qualityTarget } from "../echoLab/echoLabView";
+import { DEFAULT_FILTERS, activeFilterCount, applyFilters, qualityTarget, ratingOf } from "../echoLab/echoLabView";
 import { rollRatings, type RollRating } from "../echoLab/rollRatings";
 import {
   INVENTORY_SORTS,
@@ -96,6 +96,21 @@ describe("The chip", () => {
     expect(chip.aria).toBe(`Echo Lab: Keep, ${chip.roll!.text}, ${chip.reason}. Open in Echo Lab`);
     // Echo Lab's exact figure, once its detail ran: no "quick estimate"
     expect(chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: chipRating("xtbwqikno2", true), rateable: true }).title).not.toContain("quick estimate");
+  });
+
+  it("the hover says what the chip says, at both ends and at a rounding edge", () => {
+    const at = (percentile: number): ReturnType<typeof chipFor> => chipFor({ row: rows.get("xtbwqikno2")!, judged: true, rating: { ...chipRating("xtbwqikno2")!, percentile }, rateable: true });
+    // a simulation can't say 100 %: the chip read "Top 1% roll" over "better than 100%"
+    expect(at(0.998).roll!.text).toBe("Top 1% roll");
+    expect(at(0.998).title).toContain("top 1% of the");
+    expect(at(0.998).title).not.toContain("100%");
+    // the chip rounded 3.5 up and the hover 96.5 up: "Top 4%" over "better than 97%"
+    expect(at(0.965).roll!.text).toBe("Top 3% roll");
+    expect(at(0.965).title).toContain("top 3% of the");
+    expect(ratingOf(0.965).headline).toBe("Better than 97%"); // Echo Lab's words for the same echo: 97 + 3
+    expect(at(0.3).roll!.text).toBe("Bottom 30% roll");
+    expect(at(0.3).title).toContain("bottom 30% of the");
+    expect(at(0.002).title).toContain("bottom 1% of the");
   });
 
   it("names the slot an unworn echo is rated in, and the level of a partial echo", () => {
