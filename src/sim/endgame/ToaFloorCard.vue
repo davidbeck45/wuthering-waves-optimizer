@@ -113,8 +113,9 @@
               <span class="w-4 text-xs opacity-50 tabular-nums text-right shrink-0 max-sm:hidden">{{ i + 1 }}</span>
               <ToaPortraits :keys="r.team.appKeys" :main="r.team.mainDps" size="2rem" />
               <div class="min-w-0 flex-1 leading-tight">
-                <div class="text-[0.8rem] sm:text-sm font-medium line-clamp-2 break-words" :title="gearText(r.team)">{{ shortNames(r.team) }}</div>
-                <div class="text-[0.7rem] opacity-60 truncate">
+                <!-- whole on a phone: the row opens nothing, so a name or a figure cut here can't be read anywhere ("Aemeath · Mornye +…", "your team · 36…" at 360 px / 130 %) -->
+                <div class="text-[0.8rem] sm:text-sm font-medium sm:line-clamp-2 break-words" :title="gearText(r.team)">{{ shortNames(r.team) }}</div>
+                <div class="text-[0.7rem] opacity-60 sm:truncate">
                   <span v-if="r.team.saved" class="text-primary font-semibold">your team · </span>{{ compact(r.team.dps) }} DPS<span v-if="r.result.dps" class="max-sm:hidden"> · {{ compact(r.result.dps) }} on this floor</span>
                 </div>
               </div>

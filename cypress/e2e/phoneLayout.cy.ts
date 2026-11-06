@@ -589,6 +589,15 @@ describe("phone layout", () => {
       cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-timebar]').first().then(($bar) => {
         expect($bar[0].getBoundingClientRect().right, "time bar inside the viewport").to.be.at.most(width);
       });
+      // a team row keeps its whole name and figure: "Aemeath · Mornye +…" and "your team · 36…" at 360 px / 130 %, and the
+      // row is no control that opens them. The row is handed the longest name and line of David's account
+      cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-team]').first().find(".leading-tight").first().then(($col) => {
+        const [name, line] = [...$col.children()] as HTMLElement[];
+        name!.textContent = "Galbrena · Phrolova + Qiuyuan";
+        line!.textContent = "your team · 368k DPS";
+        expect(name!.scrollHeight, "the team's whole name").to.be.at.most(name!.clientHeight + 1);
+        expect(line!.scrollWidth, "the whole DPS line").to.be.at.most(line!.clientWidth + 1);
+      });
       // crit luck under each team row (src/sim/critLuck/): its chances wrap inside the card
       cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-odds]').first().then(($line) => {
         expect($line[0].getBoundingClientRect().right, "crit-luck line inside the viewport").to.be.at.most(width);
