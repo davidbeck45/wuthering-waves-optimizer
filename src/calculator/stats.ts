@@ -1997,17 +1997,10 @@ export const calculateFinalStatsFromBuffs = (context: {
     resonanceChainsConfig ?? {},
   );
 
-  // Merge AdditionalBase and CritOverflow into breakdown for UI
-  const mergedSelfBuffsForBreakdown = {
-    ...selfBuffsData,
-    ...additionalBaseBuffsData,
-    ...echoSetAdditionalBaseBuffsData,
-    CritDMG:
-      (selfBuffsData?.CritDMG || 0) +
-      (additionalBaseBuffsData?.CritDMG || 0) +
-      (echoSetAdditionalBaseBuffsData?.CritDMG || 0) +
-      (critOverflowBuffsData?.CritDMG || 0),
-  };
+  // Merge AdditionalBase and CritOverflow into breakdown for UI. Wuthering Tools+: the sums the final pass used, not a
+  // spread over them. Attacks read this as charBuffsData and re-derive ATK from it when they carry their own ATK buff,
+  // and the stat breakdown takes the echo set's part back out of it.
+  const mergedSelfBuffsForBreakdown = { ...mergedSelfBuffs };
   // merge the specificTalentBuffs together
   mergedSelfBuffsForBreakdown.specificTalentBuffs = Object.assign(
     {},
@@ -2025,9 +2018,7 @@ export const calculateFinalStatsFromBuffs = (context: {
     echoSetAdditionalBaseBuffsData,
     // The self buffs exactly as the final pass above summed them (selfBuffsData
     // plus AdditionalBase/echo-set AdditionalBase/CritOverflow). The
-    // `selfBuffsData` field is the UI breakdown copy, which spreads
-    // AdditionalBase keys over the originals rather than adding them, so it
-    // isn't safe for re-deriving the final numbers (see statSplit.ts).
+    // `selfBuffsData` field is the same sums plus the merged specificTalentBuffs.
     appliedSelfBuffsData: mergedSelfBuffs,
   };
 };
