@@ -65,6 +65,28 @@ const defaultWorker = (): WorkerLike =>
 
 const abortError = (signal: AbortSignal): unknown => signal.reason ?? new DOMException("The operation was aborted.", "AbortError");
 
+/** A promise other callers share, waited for under this caller's own signal: leaving ends the wait, not the promise. */
+const waitUnder = <T>(shared: Promise<T>, signal?: AbortSignal): Promise<T> => {
+  if (!signal) return shared;
+  return new Promise<T>((resolve, reject) => {
+    const onAbort = (): void => reject(abortError(signal));
+    signal.addEventListener("abort", onAbort, { once: true });
+    void shared.then(resolve, reject).finally(() => signal.removeEventListener("abort", onAbort));
+  });
+};
+
+/** A memoised request runs under the signal of whoever asked first, and their cancel is no answer to anyone else waiting
+ *  on it: those ask again. `remember` has dropped the cancelled entry by then, its handler being the first on the promise. */
+const askAgainIfCancelledElsewhere = async <T>(signal: AbortSignal | undefined, ask: () => Promise<T>): Promise<T> => {
+  for (;;) {
+    try {
+      return await ask();
+    } catch (e) {
+      if (signal?.aborted || (e as { name?: string })?.name !== "AbortError") throw e;
+    }
+  }
+};
+
 export function createRileyClient(options: RileyClientOptions = {}): RileyClient {
   const limit = options.memo ?? 200;
   const memo = new Map<string, Promise<unknown>>();
@@ -149,13 +171,21 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
 
   let teamList: Promise<{ teams: RileyTeamInfo[]; blocked: string[]; byKey: Record<string, Array<{ name: string }>> }> | null = null;
   const teamData = (signal?: AbortSignal): Promise<{ teams: RileyTeamInfo[]; blocked: string[]; byKey: Record<string, Array<{ name: string }>> }> => {
-    teamList ??= request<RileyTeamsResult>({ op: "teams" }, signal).then((r) => ({
-      teams: r.teams,
-      blocked: blockedKeysOf(r.teams, notInApp),
-      byKey: Object.fromEntries(r.teams.map((t) => [t.key, t.members])),
-    }));
-    teamList.catch(() => (teamList = null));
-    return teamList;
+    if (signal?.aborted) return Promise.reject(abortError(signal));
+    // one request for the whole app, tied to no caller's signal: it waits on the worker's start, and a page that opened
+    // a second team in that window aborted the first and was handed the abort itself
+    if (!teamList) {
+      const list = request<RileyTeamsResult>({ op: "teams" }).then((r) => ({
+        teams: r.teams,
+        blocked: blockedKeysOf(r.teams, notInApp),
+        byKey: Object.fromEntries(r.teams.map((t) => [t.key, t.members])),
+      }));
+      teamList = list;
+      list.catch(() => {
+        if (teamList === list) teamList = null;
+      });
+    }
+    return waitUnder(teamList, signal);
   };
 
   const client: RileyClient = {
@@ -164,63 +194,66 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
     blocked: async (signal) => (await teamData(signal)).blocked,
     teamKeysFor: async (ids, signal) => rileyTeamKeysFor(ids, (await teamData(signal)).byKey),
 
-    async solveMine(teamKeys, opts = {}) {
-      const { blocked } = await teamData(opts.signal);
-      const account = opts.account ?? null;
-      const subs = opts.subs ?? DEFAULT_SUBS;
-      const keyOf = (teamKey: string): string => memoKey({ op: "solve", commit: WUWA_CALC_COMMIT, account, subs, teamKey });
-      const found = new Map<string, Promise<MineSolve>>();
-      const missing: string[] = [];
-      for (const k of new Set(teamKeys)) {
-        const hit = recall<MineSolve>(keyOf(k));
-        if (hit) found.set(k, hit);
-        else missing.push(k);
-      }
-      const known = teamKeys.length - missing.length;
-      if (missing.length) {
-        const batch = request<MineSolve[]>({ op: "solveMine", teamKeys: missing, opts: { account, subs, blocked } }, opts.signal, (done) =>
-          opts.onProgress?.(known + done, teamKeys.length),
-        );
-        missing.forEach((k, i) => found.set(k, remember(keyOf(k), batch.then((r) => r[i]!))));
-      } else opts.onProgress?.(teamKeys.length, teamKeys.length);
-      return Promise.all(teamKeys.map((k) => found.get(k)!));
-    },
+    solveMine: (teamKeys, opts = {}) =>
+      askAgainIfCancelledElsewhere(opts.signal, async () => {
+        const { blocked } = await teamData(opts.signal);
+        const account = opts.account ?? null;
+        const subs = opts.subs ?? DEFAULT_SUBS;
+        const keyOf = (teamKey: string): string => memoKey({ op: "solve", commit: WUWA_CALC_COMMIT, account, subs, teamKey });
+        const found = new Map<string, Promise<MineSolve>>();
+        const missing: string[] = [];
+        for (const k of new Set(teamKeys)) {
+          const hit = recall<MineSolve>(keyOf(k));
+          if (hit) found.set(k, hit);
+          else missing.push(k);
+        }
+        const known = teamKeys.length - missing.length;
+        if (missing.length) {
+          const batch = request<MineSolve[]>({ op: "solveMine", teamKeys: missing, opts: { account, subs, blocked } }, opts.signal, (done) =>
+            opts.onProgress?.(known + done, teamKeys.length),
+          );
+          missing.forEach((k, i) => found.set(k, remember(keyOf(k), batch.then((r) => r[i]!))));
+        } else opts.onProgress?.(teamKeys.length, teamKeys.length);
+        return Promise.all(teamKeys.map((k) => found.get(k)!));
+      }),
 
     async bestFor(ids, opts = {}) {
       const keys = await client.teamKeysFor(ids, opts.signal);
       return keys.length ? bestOf(await client.solveMine(keys, opts)) : null;
     },
 
-    async tracedRun(teamKey, picks = null, opts = {}) {
-      const { blocked } = await teamData(opts.signal);
-      const account = opts.account ?? null;
-      const subs = opts.subs ?? DEFAULT_SUBS;
-      const key = memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks });
-      return recall<RunLite>(key) ?? remember(key, request<RunLite>({ op: "trace", teamKey, picks, opts: { account, subs, blocked } }, opts.signal));
-    },
+    tracedRun: (teamKey, picks = null, opts = {}) =>
+      askAgainIfCancelledElsewhere(opts.signal, async () => {
+        const { blocked } = await teamData(opts.signal);
+        const account = opts.account ?? null;
+        const subs = opts.subs ?? DEFAULT_SUBS;
+        const key = memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks });
+        return recall<RunLite>(key) ?? remember(key, request<RunLite>({ op: "trace", teamKey, picks, opts: { account, subs, blocked } }, opts.signal));
+      }),
 
-    async curves(teamKey, picks, profiles, opts = {}) {
-      const { blocked } = await teamData(opts.signal);
-      const account = opts.account ?? null;
-      const subs = opts.subs ?? DEFAULT_SUBS;
-      const keyOf = (spec: FloorProfileSpec | null): string =>
-        `curve${opts.spread ? "+spread" : ""}|${memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks })}|${spec ? profileSignature(spec) : "-"}`;
-      const found = new Map<number, Promise<FightCurve>>();
-      const missing: number[] = [];
-      profiles.forEach((spec, i) => {
-        const hit = recall<FightCurve>(keyOf(spec));
-        if (hit) found.set(i, hit);
-        else missing.push(i);
-      });
-      const known = profiles.length - missing.length;
-      if (missing.length) {
-        const batch = request<FightCurve[]>({ op: "curves", teamKey, picks, profiles: missing.map((i) => profiles[i]!), opts: { account, subs, blocked }, ...(opts.spread ? { spread: true } : {}) }, opts.signal, (done) =>
-          opts.onProgress?.(known + done, profiles.length),
-        );
-        missing.forEach((i, j) => found.set(i, remember(keyOf(profiles[i]!), batch.then((r) => r[j]!))));
-      } else opts.onProgress?.(profiles.length, profiles.length);
-      return Promise.all(profiles.map((_, i) => found.get(i)!));
-    },
+    curves: (teamKey, picks, profiles, opts = {}) =>
+      askAgainIfCancelledElsewhere(opts.signal, async () => {
+        const { blocked } = await teamData(opts.signal);
+        const account = opts.account ?? null;
+        const subs = opts.subs ?? DEFAULT_SUBS;
+        const keyOf = (spec: FloorProfileSpec | null): string =>
+          `curve${opts.spread ? "+spread" : ""}|${memoKey({ op: "trace", commit: WUWA_CALC_COMMIT, account, subs, teamKey, picks })}|${spec ? profileSignature(spec) : "-"}`;
+        const found = new Map<number, Promise<FightCurve>>();
+        const missing: number[] = [];
+        profiles.forEach((spec, i) => {
+          const hit = recall<FightCurve>(keyOf(spec));
+          if (hit) found.set(i, hit);
+          else missing.push(i);
+        });
+        const known = profiles.length - missing.length;
+        if (missing.length) {
+          const batch = request<FightCurve[]>({ op: "curves", teamKey, picks, profiles: missing.map((i) => profiles[i]!), opts: { account, subs, blocked }, ...(opts.spread ? { spread: true } : {}) }, opts.signal, (done) =>
+            opts.onProgress?.(known + done, profiles.length),
+          );
+          missing.forEach((i, j) => found.set(i, remember(keyOf(profiles[i]!), batch.then((r) => r[j]!))));
+        } else opts.onProgress?.(profiles.length, profiles.length);
+        return Promise.all(profiles.map((_, i) => found.get(i)!));
+      }),
 
     clear: () => memo.clear(),
     dispose() {
