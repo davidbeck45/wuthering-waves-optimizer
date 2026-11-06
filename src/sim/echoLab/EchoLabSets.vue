@@ -188,7 +188,7 @@
               <ul class="mt-0.5 space-y-1">
                 <li v-for="a in row.assumptions" :key="a.passive" data-test-echo-lab-sets-assumption>
                   <span class="font-medium">{{ assumptionState(a) }}.</span>
-                  <span class="block opacity-70 max-sm:line-clamp-2">{{ passiveText(a) }}</span>
+                  <span class="block opacity-70">{{ passiveText(a) }}</span>
                 </li>
               </ul>
               <div v-if="row.floorGain !== null" class="mt-0.5" data-test-echo-lab-sets-floor>If they never hold: <b>{{ signedPct(row.floorGain, 2) }}</b> own damage.</div>

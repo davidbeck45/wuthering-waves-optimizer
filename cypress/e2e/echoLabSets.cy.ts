@@ -254,6 +254,10 @@ describe("Echo Lab: Set lab", () => {
       cy.visit("/echo-lab?tab=sets&character=Cartethyia", seed({ fontScale: 1.3, active: "Cartethyia" }));
       rows();
       expectInside("list");
+      // the block that says what a row assumed keeps the game's whole sentence: a phone cut it after two lines
+      cy.get("[data-test-echo-lab-sets-assumption] .block").should("have.length.at.least", 1).each(($text) => {
+        expect($text[0]!.scrollHeight, $text.text().slice(0, 40)).to.be.at.most($text[0]!.clientHeight + 1);
+      });
       // a layout's name has the card's width, not what its icons leave (it ran to five lines beside them at 360 px)
       cy.get("[data-test-echo-lab-sets-name]").first().then(($name) => {
         const card = $name[0].closest("[data-test-echo-lab-sets-row]")!.getBoundingClientRect();
