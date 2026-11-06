@@ -7,6 +7,8 @@
 // factors must multiply back to the engine's own figure to float precision (`RECONCILE_TOLERANCE`), or they are not
 // shown at all: a hit that cannot be reconciled shows the engine's figures and says so. No factor is ever made up.
 
+import { displayInt } from "../../utils/numbers";
+
 /** How far (relative) a product may sit from the engine's figure and still count as the same number. A chain of about
  *  ten doubles rounds to ~1e-15, so this is float noise and nothing else. */
 export const RECONCILE_TOLERANCE = 1e-12;
@@ -169,6 +171,8 @@ const num = (value: unknown, fallback = 0): number => {
 const close = (a: number, b: number): boolean => Math.abs(a - b) <= RECONCILE_TOLERANCE * Math.max(Math.abs(a), Math.abs(b), 1);
 
 const grouped = (n: number): string => Math.round(n).toLocaleString();
+/** A stat as the calculator's stat card prints it: floored, where a damage figure is rounded. */
+export const statText = (n: number): string => displayInt(n);
 /** 3.48 → "348.00 %" */
 export const percentText = (fraction: number, digits = 2): string => `${(fraction * 100).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })} %`;
 const pct1 = (fraction: number): string => percentText(fraction, 1);
@@ -234,7 +238,7 @@ function attackFactors(ctx: any, line: DamageLine): Factor[] {
   const raised = (1 + num(ctx.talentModifierMultiply)) * (1 + num(ctx.totalTalentModifierSpecialMultiply));
   if (raised !== 1) mvBits.push(`× ${raised.toFixed(3)} from buffs`);
   return [
-    { id: "stat", label: statLabel, what: `The stat this attack scales on, after every buff that reaches this hit.`, times: stat, value: grouped(stat) },
+    { id: "stat", label: statLabel, what: `The stat this attack scales on, after every buff that reaches this hit.`, times: stat, value: statText(stat) },
     { id: "multiplier", label: "Skill multiplier", what: "The attack's percentage at your skill level, all its parts added up.", times: talent, value: `× ${percentText(talent)}`, detail: mvBits.join(", ") },
     {
       id: "dmgBonus",

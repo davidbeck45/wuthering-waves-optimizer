@@ -6,7 +6,8 @@ import { buildCharacterCalculationContext } from "../../calculator/buildCharacte
 import { getEchoData } from "../../echoes";
 import { RANKING_ENEMY, rankRoster, weaponOptionsFor, withSequence } from "../myRankings/rankRoster";
 import { medianRoll } from "../substats/substatWeights";
-import { hitAnatomy, RECONCILE_TOLERANCE, rotationAnatomy, type DamageLine, type FactorId, type HitAnatomy } from "./anatomy";
+import { displayInt } from "../../utils/numbers";
+import { hitAnatomy, RECONCILE_TOLERANCE, rotationAnatomy, statText, type DamageLine, type FactorId, type HitAnatomy } from "./anatomy";
 import { applyStep, BUFF_STEP, movesOf, openRotation, rotationChoices, stepsFor, type AnatomyInput, type AnatomyRun } from "./anatomyRun";
 import { critWords, enemyLine, gainText, hitMeta, hitOption, leftOutLine, rotationTitle, shareText, sortMoves } from "./anatomyView";
 import { anatomyRequest, requestAnatomy } from "./anatomyRequest";
@@ -52,6 +53,14 @@ async function firstAttack(id: string, group: string, match: (a: any) => boolean
 }
 
 describe("the factors of a hit multiply back to the engine's own figure", () => {
+  it("prints the stat the way the stat card does, though the product keeps the whole figure", async () => {
+    expect(statText(55141.6)).toBe("55,141"); // the card floors: the sheet read 55,142 against its 55,141 (hunt 1, numbers L7)
+    expect(statText(55141.6)).toBe(displayInt(55141.6));
+    const run = await open("Aemeath", [await firstAttack("Aemeath", "liberation")]);
+    const stat = factor(hitAnatomy(run.model.lines[0]!), "stat")!;
+    expect(stat.value).toBe(displayInt(stat.times));
+  }, 60_000);
+
   it("an ATK-scaling attack: the stat is the build's ATK, and every factor is named", async () => {
     const run = await open("Aemeath", [await firstAttack("Aemeath", "liberation")]);
     const a = expectReconciled(run.model.lines[0]!);
