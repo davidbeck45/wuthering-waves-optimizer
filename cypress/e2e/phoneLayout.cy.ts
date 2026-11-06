@@ -220,6 +220,44 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/ (character browser)");
   });
 
+  // Wuthering Tools+ "Why this number" (src/sim/anatomy/): the sheet fills a phone, and every part of it stays on screen
+  for (const [width, height] of [[412, 915], [360, 800]] as const) {
+    it(`keeps the Why this number sheet inside ${width} px at 130 % text`, () => {
+      cy.viewport(width, height);
+      const character = JSON.parse(configOptimizer.data.character);
+      character.characters.Cartethyia.rotations[0].name = "Cartethyia S6R5 Defier's Thorn R5 · Ciaccona + Shorekeeper · S6R5 DPS · S1R1/S6R1 team (wuwa_calc)";
+      cy.visit("/my-rankings", {
+        onBeforeLoad(win: Window) {
+          win.sessionStorage.clear();
+          win.localStorage.setItem("character", JSON.stringify(character));
+          win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+          const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+          settings.config = { ...settings.config, useClassicUi: false };
+          win.localStorage.setItem("settings", JSON.stringify(settings));
+        },
+        onLoad(win: Window) {
+          const style = win.document.createElement("style");
+          style.textContent = "html { font-size: 130%; }";
+          win.document.head.appendChild(style);
+        },
+      });
+      cy.get('[data-test-my-rankings-expand="Cartethyia"]', { timeout: 120000 }).click();
+      cy.get('[data-test-why-number="Cartethyia"]').click();
+      cy.get("[data-test-anatomy-move]", { timeout: 60000 }).should("have.length.at.least", 6);
+      cy.get("[data-test-anatomy-sheet]").then(($d) => {
+        const dialog = $d[0] as HTMLDialogElement;
+        expect(dialog.getBoundingClientRect().width, "the sheet fills the phone").to.be.at.most(width);
+        expect(dialog.scrollWidth, "no sideways scroll in the sheet").to.be.at.most(dialog.clientWidth);
+        const over = Array.from(dialog.querySelectorAll<HTMLElement>("*")).filter((el) => el.getBoundingClientRect().right > width + 0.5);
+        expect(over.map((el) => el.className), "past the right edge").to.deep.equal([]);
+      });
+      cy.get("[data-test-anatomy-close]").should(($b) => expect($b[0]!.offsetHeight, "close target").to.be.at.least(40));
+      cy.get("[data-test-anatomy-share]").first().should(($b) => expect($b[0]!.offsetHeight, "row target").to.be.at.least(40));
+      cy.get('[data-test-anatomy-by="attack"]').should(($b) => expect($b[0]!.offsetHeight, "toggle target").to.be.at.least(40));
+      cy.get("[data-test-anatomy-hit-select]").should(($s) => expect($s[0]!.offsetHeight, "picker target").to.be.at.least(40));
+    });
+  }
+
   // v3 is the default UI since Ryan #602 (ADR 0038); the support file seeds classic for every other
   // spec here, so this one seeds v3 itself, with the phone's 130 % text and a wuwa_calc-length
   // rotation name as the live result bar's headline. At David's S26 width: at 360 px and 130 % the

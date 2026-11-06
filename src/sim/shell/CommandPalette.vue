@@ -92,6 +92,7 @@ import { characterRowsOf, GROUP_LABELS, rankPalette, type PaletteGroup, type Pal
 import { isAppRoute, openCharacter, openTeam, TEAMS_ACTIVE_KEY } from "./navigation";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { requestShare } from "../share/shareRequest";
+import { requestAnatomy } from "../anatomy/anatomyRequest";
 import { paletteWithCommands, type PaletteContext } from "./paletteCommands";
 import type { CharacterStoreLike } from "./navigation";
 import { modKeyLabel, syncThemeMenus } from "./shellDom";
@@ -219,6 +220,9 @@ async function run(item: PaletteItem): Promise<void> {
       break;
     case "share":
       requestShare(r.source);
+      break;
+    case "anatomy":
+      requestAnatomy(r.characterId);
       break;
     case "theme":
       switchTheme(r.theme);

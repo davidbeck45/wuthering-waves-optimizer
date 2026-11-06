@@ -181,6 +181,23 @@ describe("commands (paletteCommands.ts)", () => {
     expect(withCtx(undefined).some((i) => i.key === "command:team-buffs")).toBe(false);
   });
 
+  it("'why this number' opens the sheet for a set-up character, and leads the page's own character's commands", () => {
+    const items = paletteWithCommands(sources({ context: { path: "/my-rankings", query: { focus: "Aemeath" }, hash: "", activeCharacter: null, openTeamId: null } }));
+    const here = items.find((i) => i.key === "context:character:Aemeath:anatomy")!;
+    expect(here.title).toBe("Why this number: Aemeath");
+    expect(here.run).toEqual({ kind: "anatomy", characterId: "Aemeath" });
+    expect(here.queryOnly).toBeFalsy();
+    // the same run isn't listed again under Commands; another set-up character waits for a query; one with no weapon has none
+    expect(items.filter((i) => JSON.stringify(i.run) === JSON.stringify(here.run))).toHaveLength(1);
+    expect(items.find((i) => i.key === "command:character:Mornye:anatomy")?.queryOnly).toBe(true);
+    expect(items.some((i) => i.key.endsWith("RoverAero:anatomy"))).toBe(false);
+    // "why" reads as a question, but the command's title is what was typed: Enter opens the sheet, not Claude
+    expect(rankPalette("why this number morn", items)[0]?.key).toBe("command:character:Mornye:anatomy");
+    expect(rankPalette("why this number", items)[0]?.key).toBe("context:character:Aemeath:anatomy");
+    expect(rankPalette("why is my team so low", items)[0]?.group).toBe("ask");
+    expect(rankPalette("damage formula", items).some((i) => i.key.endsWith(":anatomy"))).toBe(true);
+  });
+
   it("the empty list leaves the commands out; a query finds them, a character's own before its teams'", () => {
     const items = withCtx(undefined);
     expect(rankPalette("", items).some((i) => i.group === "command")).toBe(false);
@@ -219,7 +236,7 @@ describe("commands (paletteCommands.ts)", () => {
     const calc = withCtx(ctx("/", { activeCharacter: "Aemeath" }));
     const empty = rankPalette("", calc);
     expect(empty[0].group).toBe("context");
-    expect(empty.filter((i) => i.group === "context").map((i) => i.title)).toEqual(["Share Aemeath's build", "Weapon value: Aemeath", "Substats & what-if: Aemeath", "Ask Claude how to raise Aemeath's damage"]);
+    expect(empty.filter((i) => i.group === "context").map((i) => i.title)).toEqual(["Share Aemeath's build", "Weapon value: Aemeath", "Why this number: Aemeath", "Substats & what-if: Aemeath", "Ask Claude how to raise Aemeath's damage"]);
     expect(runs(calc, "context")).toContainEqual({ kind: "ask", question: "How can I raise Aemeath's damage on my account? What should I change first?" });
     // the same command isn't listed again under Commands
     expect(calc.filter((i) => i.title === "Share Aemeath's build")).toHaveLength(1);

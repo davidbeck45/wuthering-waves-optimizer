@@ -51,6 +51,7 @@
         <h3 class="dr__h3">Best rotation</h3>
         <PresetNameLabel :name="rank.best.name" :source="rank.best.source" :owned="owned" :max-chips="4" />
         <p class="dr__note">{{ rank.rotationsEvaluated }} rotation{{ rank.rotationsEvaluated === 1 ? "" : "s" }} tried on this build · enemy level 100, 20 % RES</p>
+        <WhyNumberButton class="dr__why" :character-id="rank.id" :rotation-name="rank.best.name" />
       </section>
 
       <section class="dr__section" data-test-account-drawer-invest>
@@ -165,6 +166,7 @@ import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WeaponIcon from "../display/WeaponIcon.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import MaterialsCostToMax from "../materials/MaterialsCostToMax.vue";
+import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
 import { characterShortName, elementColor, rarityColor, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
@@ -298,6 +300,10 @@ function onBackdrop(event: MouseEvent): void {
 .dr-pill--max {
   color: #4a3405;
   background: #e8b44c;
+}
+.dr__why {
+  align-self: flex-start;
+  margin-top: 0.15rem;
 }
 .dr__weapon {
   font-size: 0.75rem;

@@ -23,6 +23,7 @@
   <AiSettingsDialog v-if="assistant.state.settingsOpen" @close="assistant.closeSettings()" />
   <CommandPalette v-if="assistant.state.paletteOpen" @close="assistant.setPaletteOpen(false)" />
   <ShareSheetHost v-if="shareRequest" />
+  <AnatomySheetHost v-if="anatomyRequest" />
   <WelcomeCard v-if="showWelcome" @dismiss="hideWelcome" />
 </template>
 
@@ -40,6 +41,7 @@ import { anyModalOpen, modKeyLabel } from "./shellDom";
 import { askInRail, DOCKED_CLASS, DOCK_MIN_WIDTH, shouldDock } from "./askDock";
 import { TEAMS_ACTIVE_KEY } from "./navigation";
 import { shareRequest } from "../share/shareRequest";
+import { anatomyRequest } from "../anatomy/anatomyRequest";
 import { dismissWelcome, isNewVisitor, welcomeAllowed, welcomeDismissed } from "./welcome";
 import { foldInventoryFiltersOnPhone, installInventoryPagerJump } from "./inventoryPager";
 import { useSettingsStore } from "../../stores/settings";
@@ -50,6 +52,7 @@ const AssistantPanel = defineAsyncComponent(() => import("../ai/ui/AssistantPane
 const AiSettingsDialog = defineAsyncComponent(() => import("../ai/ui/AiSettingsDialog.vue"));
 const CommandPalette = defineAsyncComponent(() => import("./CommandPalette.vue"));
 const ShareSheetHost = defineAsyncComponent(() => import("../share/ShareSheetHost.vue"));
+const AnatomySheetHost = defineAsyncComponent(() => import("../anatomy/AnatomySheetHost.vue"));
 const WelcomeCard = defineAsyncComponent(() => import("./WelcomeCard.vue"));
 
 const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";

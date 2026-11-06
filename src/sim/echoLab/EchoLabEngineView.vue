@@ -74,6 +74,12 @@
         <p v-else-if="!reroll.running" class="mt-1 text-xs opacity-70" data-test-echo-lab-engine-reroll-none>{{ rerollNote }}</p>
         <div v-else class="skeleton mt-1 h-10 rounded-lg" aria-hidden="true"></div>
       </div>
+
+      <!-- Why this number: the damage this panel's figures stand on, opened up (src/sim/anatomy/) -->
+      <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg bg-base-100 px-3 py-2 sm:col-span-2" data-test-echo-lab-engine-why>
+        <span class="text-xs tabular-nums opacity-80"><b class="font-mono font-semibold">{{ compact(view.base) }}</b> average damage on this rotation, level 100, 20 % RES</span>
+        <WhyNumberButton :character-id="character" :rotation-name="view.rotationName" size="sm" />
+      </div>
     </div>
   </section>
 </template>
@@ -93,6 +99,8 @@ import { CANCELLED } from "./core";
 import { erNeedsOf } from "../energy/energySubstats";
 import { useEnergyNeeds } from "../energy/useEnergyNeeds";
 import EchoLabEcho from "./EchoLabEcho.vue";
+import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
+import { compact } from "../myRankings/format";
 import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { erFloorLine, lineText, pct, scoreBand, signedPct, slotLabel, substatIcon } from "./echoLabView";
 import type { EngineViewResult } from "./engineView";

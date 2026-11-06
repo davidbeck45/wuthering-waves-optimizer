@@ -22,6 +22,7 @@ import { accountStateOf, rileyAccountEntries, accountKeyOf, sequenceOf } from ".
 import { buildRollsOf } from "../rankings/myBuilds";
 import { SUBSTAT_ABBR } from "../substats/substatWeights";
 import { dmg, int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
+import { anatomyCheck, anatomyReport, type AnatomyReport } from "../anatomy/anatomyCli";
 
 interface CommonOptions extends OutputOptions {
   export?: string;
@@ -68,6 +69,25 @@ function guarded(action: Action): Action {
       process.exit(1);
     }
   };
+}
+
+function printAnatomy(r: AnatomyReport): void {
+  const share = (v: number): string => pct(v * 100);
+  console.log(`${r.character} on ${r.rotation}`);
+  console.log(`Average ${dmg(r.model.average)} per rotation, enemy level ${r.enemy.level}, ${pct(r.enemy.resistance * 100, 0)} RES`);
+  console.log("\nBy skill type");
+  console.log(table(r.model.byType.map((t) => [`  ${t.label}`, dmg(t.average), share(t.share)])));
+  console.log("\nBy attack");
+  console.log(table(r.model.byAttack.map((t) => [`  ${t.label}`, `x${t.times}`, dmg(t.average), share(t.share)])));
+  console.log(`\nOne hit: ${r.hit.label} (${r.hit.typeLabel}), ${r.hit.times} in this rotation, ${share(r.hit.share)} of it`);
+  console.log(table(r.hit.factors.map((f) => [`  ${f.label}`, f.value, f.detail ?? ""])));
+  if (r.hit.neutral.length) console.log(`  At x1 on this hit: ${r.hit.neutral.map((f) => f.label).join(", ")}`);
+  console.log(`  Non-crit ${dmg(r.hit.nonCrit)}  crit ${dmg(r.hit.crit)}  average ${dmg(r.hit.average)}`);
+  if (r.hit.critFactor) console.log(`  Crit Rate ${pct(r.hit.critFactor.rate * 100)}, Crit DMG ${pct(r.hit.critFactor.damage * 100)}: x ${r.hit.critFactor.times.toFixed(3)} on average`);
+  console.log(r.hit.note ?? "  Reconciled: the factors multiply back to the calculator's own figure");
+  console.log("\nWhat moves this number most");
+  console.log(table(r.moves.rows.map((m) => [`  ${m.label}`, m.step, `hit ${pct(m.hitGain * 100, 2)}`, `rotation ${pct(m.rotationGain * 100, 2)}`])));
+  if (r.moves.flat.length) console.log(`  No effect on this hit: ${r.moves.flat.map((m) => m.label).join(", ")}`);
 }
 
 function printCharacter(calc: CharacterCalc, options: { attacks: boolean; rotations: boolean }): void {
@@ -438,6 +458,34 @@ export function registerPlusCommands(program: Command): void {
       const calc = await quiet(() => calcSubstatWeights(id, exp, { rotation: options.rotation, team: options.team, echoes: options.echoes, autoBuffs: options.autoBuffs }));
       if (!wantsPretty(options)) return printJson({ export: exp.path, ...calc });
       printWeights(calc);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("anatomy [character]")
+      .description("Why this number: a rotation by attack and skill type, one hit as the factors of the formula, and what moves it most (Wuthering Tools+). Without a character, with --check: every hit of every rotation on the export, and what reconciles")
+      .option("--rotation <name>", "this rotation (by name) instead of the best-scoring one")
+      .option("--hit <name>", "this hit (key or label) instead of the biggest one")
+      .option("--check", "open every hit of every rotation of every set-up character and count what reconciles"),
+  ).action(
+    guarded(async (character: string | undefined, options: CommonOptions & { rotation?: string; hit?: string; check?: boolean }) => {
+      const exp = load(options);
+      if (options.check || !character) {
+        const check = await quiet(() => anatomyCheck(exp));
+        if (!wantsPretty(options)) return printJson({ export: exp.path, ...check });
+        console.log(`${check.characters} characters, ${check.rotations} rotations, ${check.hits} hits: ${Object.entries(check.byKind).map(([k, n]) => `${n} ${k}`).join(", ")}`);
+        console.log(`Hits that don't reconcile: ${check.unreconciled.length}. Rotations whose lines don't add up: ${check.rotationsOff.length}.`);
+        console.log(`Steps run on the best rotations' hits: ${check.steps}. Steps that lowered a hit: ${check.stepsDown.length}.`);
+        for (const d of check.stepsDown.slice(0, 20)) console.log(`  ${d.character}  ${d.key}  ${d.step}  ${pct(d.gain * 100, 2)}`);
+        for (const u of check.unreconciled.slice(0, 40)) console.log(`  ${u.character}  ${u.key}  ${u.kind}  base ${u.base}  crit ${u.crit}  (${u.rotation})`);
+        for (const r of check.rotationsOff.slice(0, 20)) console.log(`  ${r.character}  lines off  (${r.rotation})`);
+        return;
+      }
+      const id = resolveCharacterKey(character, exp.characters);
+      const report = await quiet(() => anatomyReport(id, exp, { rotation: options.rotation, hit: options.hit }));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...report });
+      printAnatomy(report);
     }),
   );
 

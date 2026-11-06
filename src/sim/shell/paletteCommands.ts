@@ -43,6 +43,7 @@ const ICON = {
   selector: "M20 12V8H4v4m16 0v8H4v-8m16 0H4m8-4v12M12 8c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z",
   buffs: "M12 3v18M3 12h18M7 7l10 10M17 7L7 17",
   farm: "M12 21c-4-3-7-6.5-7-10.5A7 7 0 0112 3a7 7 0 017 7.5c0 4-3 7.5-7 10.5zM12 13a2.5 2.5 0 100-5 2.5 2.5 0 000 5z",
+  anatomy: "M4 7h16M4 12h10M4 17h6M17 14v6m-3-3h6",
   sparkle: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z",
   palette: "M12 21a9 9 0 110-18c4.97 0 9 3.6 9 8a4 4 0 01-4 4h-1.8a1.7 1.7 0 00-1.2 2.9A1.8 1.8 0 0112 21zM7.5 11.5h.01M9.5 7.5h.01M14.5 7.5h.01M17 11h.01",
 };
@@ -105,6 +106,7 @@ function characterCommands(key: string, name: string, group: Group): Built[] {
   return [
     { key: `${k}:share`, group, order: 0, title: `Share ${name}'s build`, subtitle: "A card or a link that carries the whole build", keywords: ["share", "card", "link", "export", "png", name, key], icon: ICON.share, run: { kind: "share", source: { kind: "build", charId: key } } },
     { key: `${k}:weapons`, group, order: 0, title: `Weapon value: ${name}`, subtitle: "Is the signature worth it? Every refinement and alternative, own and team damage", keywords: ["weapon", "signature", "refinement", "r5", "worth", name, key], icon: ICON.weapon, opens: weapons, run: { kind: "route", path: weapons } },
+    { key: `${k}:anatomy`, group, order: 0, title: `Why this number: ${name}`, subtitle: "Where the damage comes from, one hit opened into the formula, what moves it most", keywords: ["why", "damage", "formula", "breakdown", "anatomy", "explain", "hit", "multiplier", "crit", "def", "res", "amplify", name, key], icon: ICON.anatomy, run: { kind: "anatomy", characterId: key } },
     { key: `${k}:substats`, group, order: 0, title: `Substats & what-if: ${name}`, subtitle: "What one more roll of each substat is worth; another sequence or weapon", keywords: ["substats", "rolls", "weights", "what if", "sequence", name, key], icon: ICON.substats, opens: substats, run: { kind: "route", path: substats } },
   ];
 }

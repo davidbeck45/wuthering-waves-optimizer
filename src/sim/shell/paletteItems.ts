@@ -13,6 +13,7 @@ export type PaletteRun =
   | { kind: "action"; action: PaletteAction }
   | { kind: "ask"; question: string }
   | { kind: "share"; source: { kind: "build"; charId: string } | { kind: "team"; teamId: string } }
+  | { kind: "anatomy"; characterId: string }
   | { kind: "theme"; theme: string };
 
 export type PaletteAction = "toggle-theme" | "toggle-ui" | "ai-settings" | "ai-open" | "ai-new-chat" | "toggle-team-buffs";
@@ -273,8 +274,10 @@ export function rankPalette(query: string, items: readonly PaletteItem[], option
   const out: PaletteItem[] = order.flatMap((g) => byGroup.get(g)!);
   if (options.ask !== false) {
     const ask: PaletteItem = { key: "ask", group: "ask", title: `Ask Claude: ${q}`, subtitle: "Answered from your account with the app's engine", icon: ICON.sparkle, run: { kind: "ask", question: q } };
-    // a question goes first; otherwise the ask row waits below the strong matches
-    if (looksLikeQuestion(q) || strong < 0.6) out.unshift(ask);
+    // a question goes first, unless a command's own title reads as what was typed ("why this number mornye" is the
+    // command, and Enter must not send it to Claude); otherwise the ask row waits below the strong matches
+    const named = scored.length > 0 && fuzzyScore(q, scored[0].item.title) >= 0.78;
+    if ((looksLikeQuestion(q) && !named) || strong < 0.6) out.unshift(ask);
     else out.push(ask);
   }
   return out;

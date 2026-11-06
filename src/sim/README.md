@@ -405,6 +405,7 @@ nothing is ever written back. Output is JSON when piped, a table on a terminal (
 | `calc <character>` | the calculator page for one character: the 17 stat cards, every attack row (normal / average / crit, healing and shield amounts), each saved rotation with its per-action rows; `--no-attacks`, `--no-rotations`; the name matches loosely (`xuanling`) |
 | `team [name\|id\|index]` | `calcTeamRotationDamage` for one team or all of them: totals, per-member, DPS when the team has a duration |
 | `rank [--investment]` | `rankRoster` — the `/my-rankings` page headless (best rotation per character, teams, next-S / R5 estimates) |
+| `anatomy [character] [--rotation name] [--hit name] [--check]` | "Why this number" (§ near the end): a rotation by attack and skill type, one hit as the factors of the formula, what one step of each factor does. `--check` (or no character) opens every hit of every rotation of every set-up character and counts what reconciles |
 | `weights <character> [--rotation name] [--team t] [--echoes]` | substat weights (§ below): what one more roll of each substat is worth on the build, scored on the best rotation as `/my-rankings` picks it (or a named one, or a team's rotation with the buffs derived from its real members — the character's share drives the weights, the team total rides along); `--echoes` adds what each equipped echo's substats are worth |
 | `sync-teams [-o file] [--dry-run] [--subs mode] [--rotations]` | "Sync my teams" headless (§ C4): every wuwa_calc team re-imported at the account's own state — actions, per-tick negative-status stacks, enemy settings and handoffs from the run — written to a new export (`<source>_synced.json` by default; a plain export is never overwritten), with the per-team report; `--rotations` also saves each member's loop to that character's rotations (replacing one of the same name) |
 | `team <one> --json` | also lists `actionRows`: every action's own normal / average / crit damage in execution order (what the audit compared against Riley's per-cast averages) |
@@ -3773,3 +3774,99 @@ Left alone, with the reason:
   element (tested: the fixed box stays at the viewport's origin), so the Echo Lab's phone popover sheet and the
   /my-rankings options sheet are safe inside the containers. And a container query needs its container to be an
   ancestor: `.el-table`'s own border is styled from `.el-verdicts`.
+
+## Why this number — the damage formula, opened up, `src/sim/anatomy/` (batch 3c, track "damage-anatomy", 2026-11-04)
+
+Ryan's breakdown says where a **stat** comes from; nothing said where the **damage** comes from. One sheet, for one
+character on one rotation, in this app's calculator at level 100, 20 % RES (`RANKING_ENEMY`): (1) the rotation's damage
+by skill type and by attack, as a share of the total; (2) one hit (the biggest press by default, any selectable, a tap on
+a table row opens that row's biggest) as a receipt of named factors down to the non-crit, crit and average figures; (3)
+"What moves this number most": each factor one step up, run through the engine on a copy of the build, sorted by this
+hit or by the whole rotation. Read-only: no AI, no key, nothing written, no route.
+
+| Piece | Role |
+|---|---|
+| `anatomy.ts` | pure, and it computes no damage: `rotationAnatomy(result)` → `lines` (one per rotation line that deals damage), `hits` (lines of one attack at one figure read as one `HitChoice`, biggest single press first), `byAttack`, `byType`, `leftOut`, `reconciled`. `hitAnatomy(line)` → `factors` / `neutral` (those at exactly × 1), `critFactor`, the per-press figures, `baseReconciled`, `critReconciled`, `note` |
+| `anatomyRun.ts` | the engine side: `openRotation(input)` (`calcCharacterRotationDamage`, the very call /my-rankings and /account score with, plus each action's attack data for what the rows don't carry: `attribute`, `talents`); `stepsFor(run, hit)`; `applyStep` (a clone: a roll through `withSubstat`, a custom buff, a skill level, a stack; nothing written to); `movesOf(run, hit)` → `rows`, `flat`; `rotationChoices` (every rotation of `rotationCandidates`, scored, best first) |
+| `anatomyView.ts` | the sheet's words: gains ("+8.48 %", "under 0.01 %" rather than a false zero), hit options, the crit sentence, why lines were left out, the two sorts |
+| `AnatomySheet.vue` | the one sheet: a native modal `<dialog>` (right side from 768 px, whole screen on a phone, sticky heading with the close button). On the main thread with a pause between runs, as /my-rankings' Substats panel is |
+| `AnatomySheetHost.vue`, `anatomyRequest.ts` | `requestAnatomy(id, rotationName?)` → the shell mounts the sheet lazily on the first request (the share sheet's pattern); only the request (a few lines) is in the entry chunk |
+| `WhyNumberButton.vue` | the button. On /my-rankings an opened row's actions, the /account drawer under Best rotation, the calculator's engine panel under a new line with the rotation's damage. The palette: "Why this number: <name>" per set-up character (`paletteCommands.ts`, run kind `anatomy`), first under "On this page" where the page has a character |
+| `anatomyCli.ts` | `cli anatomy`: the sheet as text, and `--check` |
+| `anatomy.test.ts`, `shell/paletteItems.test.ts`, `cypress/e2e/damageAnatomy.cy.ts`, `phoneLayout.cy.ts` (two cases) | below |
+
+**The seam.** `packages/formulas` already returns every figure's parts in `damage.totalDamageContext`, one shape per formula
+path, because Ryan's breakdown reads them. So no hook, no edit in `attacks.ts` or any upstream file, and no copy of the
+formula's inputs: `factorsOf` only says which of those fields multiply together on each path.
+
+| Path (`ctx.type`) | The factors | Steps |
+|---|---|---|
+| `attack` | stat × multiplier × (1 + DMG Bonus) × (1 + Amplify) × (1 + special) × (1 + Total DMG) × (1 + Endgame) × DEF × RES | one mid roll of the scaling stat, of the attack type's DMG Bonus (Echo: +10 % Echo DMG; Intro, Outro: +10 % element), of Crit Rate and of Crit DMG; +1 skill level; +10 % Amplify, special, Total DMG; 10 % more DEF ignored; 10 % less RES |
+| `attack` + `isFixed` | the fixed amount | none: nothing moves it |
+| `spectroFrazzle`, `aeroErosion`, `fusionBurst`, `glacioChafe`, `electroFlare` | level base × stacks' multiplier (+ Electro Rage) × (1 + multiplier bonus) × (1 + Amplify) × DEF × RES | one more stack on those ticks, +10 % that status's Amplify, 10 % more DEF **reduced** (DEF ignore can't reach it), 10 % less RES |
+| `glacioBiteForte` | as a status, with the Forte's percentage for the stacks, and special and Total DMG | Forte level, Glacio Chafe Amplify, special, Total DMG, DEF reduced, RES |
+| `tuneBreak` | level base × multiplier × (1 + multiplier bonus) × (1 + special) × (1 + Tune Break DMG Bonus) × enemy type × (1 + Tune Break Boost) × DEF × RES | +1 Forte level on an attack with its own table (the engine reads those at the Forte level, whatever the action type), special, Tune Break DMG Bonus, DEF ignored, RES |
+| none, or a type it doesn't know | nothing | nothing |
+
+Rules:
+- **Reconcile or don't show.** The factors must multiply back to the engine's own non-crit figure, and Crit Rate and Crit
+  DMG must lead from it to the engine's average and crit figures, within `RECONCILE_TOLERANCE` (1e-12 relative; a chain of ten
+  doubles rounds to ~1e-15). The two stages are judged apart. A stage that fails is not shown; the engine's figures stay and
+  a note says what is missing. Nothing is ever inferred to close a gap: there is no "other" factor.
+- **The real case.** `getGlacioBiteForteDamage` multiplies `(1 + totalDamageEndgame)` and leaves it out of its context, so a
+  Glacio Bite under an Endgame Total DMG can't be reconciled: the sheet shows no factors and says so (tested in both layers).
+  A hit with no context at all (the Magic Box's `calcMidnightVeilDMG`, a legacy `damage.damage`) shows its figure the same way.
+- **A step is what the row says.** A mid substat roll (`medianRoll`: a tier the game can show) where the game has that
+  substat, a skill level or a stack where the factor has one, otherwise a +10 % buff (`BUFF_STEP`). The test holds each one to
+  it: the factor moves by exactly that much in the engine's own context. A step that does nothing is listed as no effect
+  (Crit Rate past 100 %, RES reduction on a plain Tune Break), not hidden and not shown as a gain; a stack past the top of the
+  table is dropped (Electro Flare's 17th reads 0 in the engine, which would show as −100 %).
+- **No step is estimated.** A factor nothing can feed gets no row: the level base, the enemy type, Tune Break Boost (no
+  custom buff or substat reaches `computeTotalTuneBreakBoost`).
+- **Steps don't rest on the factors.** They are engine runs, so an unreconciled hit keeps them.
+- **The stat is the one the figure holds.** An action's own ATK, HP or DEF buff makes the engine recompute that stat in place of
+  the kit's (`finalAtkDefHpVal`: DEF over HP over ATK), so `scalingAttribute` follows it: the receipt and the roll name that stat.
+- **One figure.** The sheet's total is `calcCharacterRotationDamage` at `RANKING_ENEMY` on the rotation the row names (two of
+  one name wait for the scores, and the better one stands, as in the ranking): the /my-rankings row to the unit, and the
+  lines add up to it (`reconciled`). The calculator's own header can read higher: it is the character's own enemy and rotation,
+  so the engine panel's new line says "level 100, 20 % RES".
+- A rotation's healing and shields, lines a build hasn't unlocked and lines that deal nothing are left out and counted.
+
+Measured on David's 09-16 export: `cli anatomy --check` opens 24 characters, 117 rotations, 1,349 hits (1,305 attack, 30 Negative
+Status, 11 Tune Break, 3 fixed): none fails to reconcile, every rotation's lines add up, and 2,534 steps on the hits of each
+best rotation lowered nothing. The sheet's rotation and total equal `cli rank`'s for all 24 characters. Click to the figure 0.25 s, to the steps
+0.38 s, on a dev server; with Chromium's main-thread throttle at 4× (this all runs on the main thread, so the throttle does reach
+it): 1.1 s and 2.7 s, 0.5 s to another hit (a step's engine run is shared by the rotation's hits, so only that hit's own DMG Bonus
+step runs anew).
+
+Things learned:
+- Aemeath's biggest hit is 42 % of her rotation, and +10 % Total DMG moves it more than any substat, but one mid roll of Crit
+  Rate moves it 0.29 %: she sits at 99.6 %. The sheet says in one screen what the substat table implies.
+- `totalDamageContext.totalDamage` is the Total DMG **multiplier**, not the damage; `damage.totalDamage` is the non-crit figure.
+- `calcDamage`'s `talentModifierAdd` lands on the last hit, or on a kit's own split, and HeavySlashNightfall's stacks add
+  outside it, so `rawTotalTalent` + add is not always `totalTalentValue`. The multiplier factor is `totalTalentValue`; the parts
+  are only a note under it.
+- A chain-locked attack still has its figures on the row (`originalIsEnabled: false`); the sum skips it, so the sheet must too.
+- `cy.press` doesn't reach a native `<dialog>`'s close watcher in Electron: Escape was checked in Chromium over CDP.
+- A row's `talent` text is the kit's, even where a chain replaces the table (S6 Carlotta's Death Knell, Cantarella's Diffusion):
+  the hits under the multiplier come from the engine's `instanceDamageEntries`, which are what ran.
+- The seven Tune Break attacks with a table of their own (Tune Rupture, Hack Response, Seraphic Duet) read it at the **Forte**
+  level in `calculateAttackDamage`, even Lucy's, whose action type is `liberation`.
+- The sheet stops keydown at the `<dialog>`, as the palette does: over /rankings Riley's document-level handlers took the arrows
+  (`preventDefault`, and a `focus()` into the inert page), so they no longer scrolled the sheet.
+- "why this number" reads as a question, so `rankPalette` put "Ask Claude" first and Enter would have sent it to Claude (and
+  spent a call, with a key set). A question now goes first only when no command's title reads as what was typed; "why is my
+  team so low" still does.
+- The audit's contrast probe reads a gradient on `.an__inner` as the background of everything inside it, and the tint really did
+  put the top of the sheet at 4.1 : 1 in dark. The tint moved to the sticky heading, whose text uses `--wt-muted-tint`.
+
+Gates (2026-11-04): `anatomy.test.ts` (ATK, HP and DEF scalers against the build's own stat; five statuses; Electro Rage and a
+kit's proc; Tune Break and a Tune Rupture Response; Glacio Bite with and without the gap; fixed; every attack of every kit in the
+roster in one sweep; the Cartethyia account's every rotation against the ranking; each step's factor moved by its stated size;
+nothing written to; the words), `paletteItems.test.ts`, `damageAnatomy.cy.ts` 6/6, `phoneLayout.cy.ts`. Contrast (the audit's probe,
+scoped to the sheet): 0 of 131 text nodes under AA in dark, light, nord, pastel and synthwave.
+
+Left out: a team view (the sheet is one character; `/my-rankings` team rows have no single rotation of theirs to open);
+where each factor's value comes from (Ryan's stat breakdown says that for stats; for DMG Bonus and Amplify it would need the
+engine to report sources); an Explain button (the brief is no AI); a route (nothing needs a deep link: every entry is a button on a
+page that knows the character).

@@ -114,6 +114,7 @@
                   size="xs"
                   label="Explain" />
                 <ShareButton :source="{ kind: 'build', charId: c.id }" size="xs" label="Share build" />
+                <WhyNumberButton v-if="c.best" :character-id="c.id" :rotation-name="c.best.name" />
               </div>
               <div class="mr-tabs" role="tablist" :aria-label="`${c.name} details`">
                 <button
@@ -215,6 +216,7 @@ import MyRankingsRotations from "./MyRankingsRotations.vue";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
 import { explainCharacterRank } from "../ai/explain/explainPayloads";
 import ShareButton from "../share/ShareButton.vue";
+import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { rankingsMineHash } from "../account/accountState";
 import { damageRanks, DEFAULT_DIR, sortCharacters, upgradeOf, type SortDir, type SortKey, type UpgradeView } from "./rows";
