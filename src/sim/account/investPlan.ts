@@ -121,11 +121,16 @@ export interface InvestPlan {
   cancelled: boolean;
 }
 
+/** Where a substat row's roll goes, and what size it is: the mean of the stat's tiers (`expectedRoll`), which the game
+ *  need not be able to show (+9.4 % Energy Regen against the tiers' 9.2 %), so it says so beside the real tiers the Energy
+ *  check and Why this number print. */
+export const AVERAGE_ROLL_PLACE = "on an echo (an average roll)";
+
 /** What changes, in a few words: "S2 → S3", "Unflickering Valor R1 → R5", "Variation R5 → Stringmaster R1",
- *  "Crit Rate +7.5% on an echo". */
+ *  "Crit Rate +7.5% on an echo (an average roll)". */
 export function investChange(item: Pick<InvestItem, "kind" | "from" | "to" | "label">): string {
   if (item.kind === "refine") return `${item.from} → ${/R\d$/.exec(item.to)?.[0] ?? item.to}`;
-  if (item.kind === "substat") return `${item.label} on an echo`;
+  if (item.kind === "substat") return `${item.label} ${AVERAGE_ROLL_PLACE}`;
   return `${item.from} → ${item.to}`;
 }
 

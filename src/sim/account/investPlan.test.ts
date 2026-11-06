@@ -6,7 +6,7 @@ import { rankRoster, type RosterRanking } from "../myRankings/rankRoster";
 import { substatWeights, rotationScorer } from "../substats/substatWeights";
 import { RANKING_ENEMY } from "../myRankings/rankRoster";
 import { extractBuildFields } from "../../characters/buildFields";
-import { bestFieldableTeam, investPlan, ownedWeapons, sortInvestItems, type InvestItem, type InvestPlan, erGainNote, erGapOf } from "./investPlan";
+import { bestFieldableTeam, investChange, investPlan, ownedWeapons, sortInvestItems, type InvestItem, type InvestPlan, erGainNote, erGapOf } from "./investPlan";
 import { clearPlanMemory, planSavedUnder, readCachedPlan, writeCachedPlan } from "./investCache";
 
 const characters: Record<string, any> = {
@@ -28,6 +28,12 @@ beforeAll(async () => {
 }, 120000);
 
 const byKind = (kind: InvestItem["kind"]): InvestItem[] => plan.items.filter((i) => i.kind === kind);
+
+describe("what a substat row says", () => {
+  it("calls the roll it scored an average roll: +9.4 % is the mean of the tiers, not a tier the game can show (hunt 1, numbers L6)", () => {
+    expect(investChange({ kind: "substat", label: "Energy Regen +9.4%", from: "an echo line", to: "one more Energy Regen roll" })).toBe("Energy Regen +9.4% on an echo (an average roll)");
+  });
+});
 
 describe("investment plan", () => {
   it("says why an Energy Regen roll's own gain and team gain differ", () => {

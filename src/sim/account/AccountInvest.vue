@@ -119,7 +119,7 @@ import WeaponIcon from "../display/WeaponIcon.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { pct } from "../myRankings/format";
-import { erGainNote, INVEST_KIND_LABELS, investChange, sortInvestItems, type InvestItem, type InvestKind } from "./investPlan";
+import { AVERAGE_ROLL_PLACE, erGainNote, INVEST_KIND_LABELS, investChange, sortInvestItems, type InvestItem, type InvestKind } from "./investPlan";
 import type { RunStatus } from "./useAccountData";
 
 const props = defineProps<{ items: InvestItem[] | null; status: RunStatus; rankingReady: boolean; owned: string[]; investBy: "own" | "team" }>();
@@ -174,7 +174,7 @@ function subText(item: InvestItem): string {
     item.kind === "weapon"
       ? `from ${item.from} · worn by ${(item.wornBy ?? []).map((k) => characterShortName(k)).join(", ")}`
       : item.kind === "substat"
-        ? `${item.label.replace(/^.* (?=[+])/, "")} on an echo`
+        ? `${item.label.replace(/^.* (?=[+])/, "")} ${AVERAGE_ROLL_PLACE}`
         : item.kind === "refine"
           ? `${/R\d$/.exec(item.from)?.[0] ?? item.from} → ${item.label}` // the tag already names the weapon
           : `${item.from} → ${item.to}`;
