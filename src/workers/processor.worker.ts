@@ -285,9 +285,12 @@ function processLoadout(
         Average: "avgDamage",
         Crit: "critDamage",
       };
-      const damageTargetReference =
+      let damageTargetReference: string =
         damageTargetMap[damageType as keyof typeof damageTargetMap] ??
         "avgDamage";
+      // Wuthering Tools+: as upstream's inline optimize(); these attacks have no avgDamage, so every loadout read 0
+      if (attackData.type === "Shield") damageTargetReference = "shieldAmount";
+      if (attackData.type === "Healing") damageTargetReference = "healAmount";
 
       const optimizerContext = buildOptimizerCalculationContext(
         context,
