@@ -18,13 +18,36 @@ export function cyrb53(text: string, seed = 0): number {
 
 export const hashText = (text: string, seed = 0): string => cyrb53(text, seed).toString(36);
 
+/** What the optimizer panel saves on a character (Ryan's `syncOptimizerConfig`, Set lab's "Filter and open"): what to
+ *  search for next, which nothing scored reads. `optimizer.echoSetPassives` and `.mainEchoBuffs` are not here: Build my
+ *  team and the echo check read them. */
+const OPTIMIZER_PANEL_FIELDS = ["mainEchoes", "echoSets", "minStats", "optimizationTarget", "damageType", "ignoreOtherResonantorEchoes", "loadoutFormat"];
+
+/** The characters as a fingerprint should see them: without the optimizer panel, so a filter set for the next search
+ *  does not throw away every saved result. Copies only the characters it changes. */
+export function scoredCharacters(characters: unknown): unknown {
+  if (!characters || typeof characters !== "object") return characters;
+  const out: Record<string, unknown> = {};
+  for (const [id, data] of Object.entries(characters as Record<string, Record<string, unknown> | null>)) {
+    const panel = data?.optimizer as Record<string, unknown> | null | undefined;
+    if (!panel || typeof panel !== "object") {
+      out[id] = data;
+      continue;
+    }
+    const kept = Object.fromEntries(Object.entries(panel).filter(([k]) => !OPTIMIZER_PANEL_FIELDS.includes(k)));
+    const { optimizer: _panel, ...rest } = data as Record<string, unknown>; // eslint-disable-line @typescript-eslint/no-unused-vars -- taken out
+    out[id] = Object.keys(kept).length ? { ...rest, optimizer: kept } : rest;
+  }
+  return out;
+}
+
 /**
  * The account's fingerprint: one hash over the characters, the inventory echoes, the equipped map and the
  * teams, as JSON. A changed build, echo or team gives a new key, so a cached Echo Lab result is never read
  * against a different account.
  */
 export function accountFingerprint(account: { characters?: unknown; echoes?: unknown; equipped?: unknown; teams?: unknown }): string {
-  const text = JSON.stringify([account.characters ?? {}, account.echoes ?? [], account.equipped ?? {}, account.teams ?? []]);
+  const text = JSON.stringify([scoredCharacters(account.characters ?? {}), account.echoes ?? [], account.equipped ?? {}, account.teams ?? []]);
   return `${hashText(text)}-${text.length.toString(36)}`;
 }
 

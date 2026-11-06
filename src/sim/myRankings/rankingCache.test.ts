@@ -59,6 +59,21 @@ describe("ranking fingerprint", () => {
     expect(rankingFingerprint(inputs({ autoTeamBuffs: false }))).not.toBe(base);
   });
 
+  it("ignores what the optimizer panel saves for the next search, and nothing a score reads", () => {
+    const withPanel = (optimizer: Record<string, unknown> | undefined) => {
+      const data = inputs();
+      const id = Object.keys(data.characters as Record<string, unknown>)[0]!;
+      (data.characters as Record<string, Record<string, unknown>>)[id]!.optimizer = optimizer;
+      return rankingFingerprint(data);
+    };
+    const bare = withPanel(undefined);
+    const panel = { mainEchoes: ["a"], echoSets: ["x"], minStats: [{}], optimizationTarget: "t", damageType: "d", ignoreOtherResonantorEchoes: true, loadoutFormat: "f" };
+    expect(withPanel(panel)).toBe(bare); // Set lab's "Filter and open" writes these
+    // Build my team and the echo check read these, under this same fingerprint
+    expect(withPanel({ ...panel, echoSetPassives: { a: { isEnabled: true } } })).not.toBe(bare);
+    expect(withPanel({ mainEchoBuffs: { a: { isEnabled: true } } })).not.toBe(bare);
+  });
+
   it("ignores key order and is stable for equal data", () => {
     expect(rankingFingerprint(inputs())).toBe(rankingFingerprint(inputs()));
     const a = { characters: { X: { weapon: "W", level: 90 }, Y: { weapon: "V" } }, echoes: [{ a: 1, b: 2 }], teams: [], investment: true, autoTeamBuffs: false };

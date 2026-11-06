@@ -10,6 +10,7 @@
 // keyed by the same fingerprint + the app build), so a new tab reads it back with `readSavedRanking` instead of
 // scoring for seconds. A ranking that did not fully score stays in module memory: the page that shows it says so, and
 // a reload scores again.
+import { scoredCharacters } from "../echoLab/fingerprint";
 import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
 import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
@@ -58,7 +59,7 @@ export function cyrb53(text: string, seed = 0): string {
 
 /** One string that changes whenever anything the ranking reads changes. */
 export function rankingFingerprint(inputs: RankingInputs): string {
-  const data = stableStringify({ characters: inputs.characters ?? {}, echoes: inputs.echoes ?? [], teams: inputs.teams ?? [] });
+  const data = stableStringify({ characters: scoredCharacters(inputs.characters ?? {}), echoes: inputs.echoes ?? [], teams: inputs.teams ?? [] });
   return `v${RANKING_CACHE_VERSION}:${cyrb53(data)}:${data.length.toString(36)}:${inputs.investment ? "i" : "-"}${inputs.autoTeamBuffs ? "a" : "-"}`;
 }
 
