@@ -89,6 +89,22 @@ describe("ToA clear check (/endgame)", () => {
     cy.get("[data-test-toa-progress]").should("not.exist");
   });
 
+  it("puts no crest count on the Plan tab while there is no team to plan with", () => {
+    cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
+    const alone = v3(true);
+    cy.visit("/endgame", {
+      onBeforeLoad(win: Window) {
+        alone.onBeforeLoad(win);
+        // one 5★ with no 4★ team to borrow (Cartethyia alone still fields one, with the 4★s wuwa_calc counts as owned)
+        win.localStorage.setItem("character", JSON.stringify({ characters: { Aemeath: { weapon: "EverbrightPolestar" } }, activeCharacter: "Aemeath" }));
+      },
+    });
+    cy.contains("No fieldable team", { timeout: 60000 }).should("be.visible");
+    // the low floors are assumed clear by any spare team, so the plan counted 12★ for an account with no team at all
+    cy.get('[data-test-toa-tab="plan"]').should("have.text", "Plan").click();
+    cy.get("[data-test-toa-plan-empty]").should("contain.text", "Check your teams first");
+  });
+
   it("greys the last season once it has ended and says the data is due for the next", () => {
     cy.clock(Date.UTC(2026, 10, 20, 12), ["Date"]);
     cy.visit("/endgame", v3(true));

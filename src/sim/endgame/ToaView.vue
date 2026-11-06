@@ -49,7 +49,7 @@
         <b>Import your account</b> to time your own teams on every floor: characters with a weapon equipped count as owned, their echoes as
         their build.
       </span>
-      <RouterLink to="/settings" class="btn btn-sm btn-primary">Import data</RouterLink>
+      <RouterLink to="/settings?section=backup-restore" class="btn btn-sm btn-primary">Import data</RouterLink>
     </div>
     <div v-else-if="check && !running && !check.candidates.length" role="alert" class="alert max-sm:text-left max-sm:justify-items-start mb-4 text-sm flex flex-wrap" data-test-toa-no-team>
       <span class="flex-1 min-w-48"><b>No fieldable team</b>: wuwa_calc has no team of three resonators your account owns ({{ check.scanned }} checked).</span>
@@ -78,7 +78,7 @@
       <div class="flex flex-wrap items-center gap-2 mb-3">
         <div role="tablist" class="tabs tabs-boxed w-full sm:w-auto" data-test-toa-tabs>
           <button v-for="t in TABS" :key="t.id" type="button" role="tab" class="tab flex-1 sm:flex-none whitespace-nowrap max-sm:px-2" :class="{ 'tab-active': tab === t.id }" :aria-selected="tab === t.id" :data-test-toa-tab="t.id" @click="tab = t.id">
-            {{ t.label }}<span v-if="t.id === 'plan' && plan" class="ml-1.5 tabular-nums opacity-80">{{ plan.crests }}★</span>
+            {{ t.label }}<span v-if="t.id === 'plan' && planShown" class="ml-1.5 tabular-nums opacity-80">{{ plan!.crests }}★</span>
           </button>
         </div>
         <div class="flex items-center gap-2 ml-auto max-sm:w-full max-sm:justify-between">
@@ -143,7 +143,7 @@
       <!-- plan -->
       <div v-if="tab === 'plan'">
         <ToaPlan
-          v-if="plan && check && check.candidates.length"
+          v-if="planShown"
           v-model:use-pace="prefs.usePace"
           :season="season"
           :plan="plan"
@@ -248,6 +248,8 @@ const {
   forgetClear,
 } = useToa();
 
+/** a plan with teams in it: with none it is only the low floors assumed clear, 12★ for an account that can field nobody */
+const planShown = computed(() => !!plan.value && !!check.value?.candidates.length);
 const floorsOf = (towerId: string): ToaFloor[] => season.value?.towers.find((t) => t.id === towerId)?.floors ?? [];
 const hazardFloors = computed(() => floorsOf("hazard"));
 const sideFloors = computed(() => (season.value ? timedFloors(season.value).filter((f) => !f.id.startsWith("hazard")) : []));
