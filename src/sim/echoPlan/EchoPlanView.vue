@@ -53,7 +53,7 @@
         builds, the curated presets and wuwa_calc's loadouts. No character is set up in this browser yet.
       </p>
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
-        <RouterLink to="/settings" class="rounded-box border border-base-300 bg-base-200 p-4 text-base-content no-underline transition-colors hover:border-primary" data-test-echo-plan-cta="import">
+        <RouterLink to="/settings?section=backup-restore" class="rounded-box border border-base-300 bg-base-200 p-4 text-base-content no-underline transition-colors hover:border-primary" data-test-echo-plan-cta="import">
           <div class="font-semibold text-primary">Import your account ›</div>
           <p class="mt-1 text-sm text-base-content/70">Settings › Backup &amp; Restore takes a Wuthering Tools export; Wavescan imports land there too.</p>
         </RouterLink>

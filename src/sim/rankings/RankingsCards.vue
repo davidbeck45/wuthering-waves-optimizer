@@ -44,7 +44,7 @@
           <!-- the three ways in the other plus pages offer when nothing is set up (MyRankingsEmpty) -->
           <div class="mt-3 flex flex-wrap gap-2">
             <RouterLink to="/" class="btn btn-primary btn-sm" data-test-rankings-cards-setup>Open the calculator</RouterLink>
-            <RouterLink to="/settings" class="btn btn-ghost btn-sm border-base-300" data-test-rankings-cards-import title="Settings › Backup & Restore: restore a Wuthering Tools export">Import your export</RouterLink>
+            <RouterLink to="/settings?section=backup-restore" class="btn btn-ghost btn-sm border-base-300" data-test-rankings-cards-import title="Settings › Backup & Restore: restore a Wuthering Tools export">Import your export</RouterLink>
             <RouterLink to="/inventory" class="btn btn-ghost btn-sm border-base-300" data-test-rankings-cards-scan title="Inventory › Import echoes › Phone screenshots">Scan echoes from screenshots</RouterLink>
           </div>
         </template>

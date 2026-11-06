@@ -51,7 +51,7 @@
       <p class="en-empty__text">The energy check compares the Energy Regen each build has with what its team needs. Give your characters a weapon and echoes, or bring your account in.</p>
       <div class="en-empty__actions">
         <RouterLink to="/" class="btn btn-sm btn-primary">Open the calculator</RouterLink>
-        <RouterLink to="/settings" class="btn btn-sm btn-ghost">Import a backup</RouterLink>
+        <RouterLink to="/settings?section=backup-restore" class="btn btn-sm btn-ghost">Import a backup</RouterLink>
       </div>
     </div>
     <div v-else-if="!teams.length" class="en-empty" data-test-energy-no-teams>

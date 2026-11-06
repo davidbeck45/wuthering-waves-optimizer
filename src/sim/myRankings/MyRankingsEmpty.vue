@@ -32,7 +32,7 @@ const CARDS = [
     title: "Import your export",
     text: "Restore a Wuthering Tools export — characters, echoes and teams — under Settings › Backup & Restore.",
     action: "Open Settings",
-    to: "/settings",
+    to: "/settings?section=backup-restore",
     icon: "M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2",
   },
   {
