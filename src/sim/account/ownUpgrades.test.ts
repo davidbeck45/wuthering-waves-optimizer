@@ -117,6 +117,25 @@ describe("echo rows", () => {
     expect(row!.link.to).toEqual({ path: "/build-team", query: { members: "Carlotta,Zhezhi,Shorekeeper", only: "Carlotta" } });
   });
 
+  it("a re-gear that moves the Energy Regen need says its own figure leaves that out, and gives it on the paid list's basis", () => {
+    // the row's figure stays the page's figure: /build-team prints −1.5 %, and the paid list's ER roll on the same gap reads
+    // on damage × (1 − shortfall): the two were both labelled "own" (hunt 1, numbers M3)
+    const [row] = echoRows([upgrade({ gain: -0.015, er: { floor: 115.2, before: 110.8, after: 116, met: true, buys: true, mostFound: false } })]);
+    expect(row!.own).toBeCloseTo(-0.015, 6);
+    expect(row!.ownLabel).toBe("own damage");
+    expect(row!.note).toContain("Own damage leaves the Energy Regen need out. Counting the 4.4 points it closes, as What to invest in next does, it reads +3.0%.");
+    // short before and after, and further under than it was
+    const [worse] = echoRows([upgrade({ gain: 0.02, er: { floor: 120, before: 118, after: 113, met: false, buys: false, mostFound: false } })]);
+    expect(worse!.ownLabel).toBe("own damage");
+    expect(worse!.note).toContain("Counting the 5.0 points it loses, as What to invest in next does, it reads −3.2%.");
+    // the need met before and after, no need at all, or no ER read: the plain figure, nothing to square
+    for (const er of [{ floor: 110, before: 125, after: 118, met: true, buys: false, mostFound: false }, null, { floor: 110, before: null, after: 118, met: true, buys: false, mostFound: false }]) {
+      const [plain] = echoRows([upgrade({ er })]);
+      expect(plain!.ownLabel).toBe("own");
+      expect(plain!.note ?? "").not.toContain("Own damage leaves");
+    }
+  });
+
   it("a need out of reach says what was searched, not that it is the most the whole inventory holds", () => {
     const [row] = echoRows([upgrade({ er: { floor: 240, before: 235, after: 235, met: false, buys: false, mostFound: true } })]);
     expect(row!.note).toContain("Still short of the 240.0 % Energy Regen the team's loop needs: the most ER found in the echoes this check can use.");

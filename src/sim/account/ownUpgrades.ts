@@ -19,10 +19,10 @@ import { characterDisplayName, characterShortName } from "../display/names";
 import { isSetUp } from "../myRankings/rankRoster";
 import { compact as compactNum } from "../myRankings/format";
 import { parsePresetName } from "../presets/presetName";
-import { echoName, slotLabel } from "../echoLab/echoLabView";
+import { echoName, signedPct, slotLabel } from "../echoLab/echoLabView";
 import { planTuners, type TunerBudget } from "../echoLab/tunerBudget";
 import type { TunerCandidate, TunerCandidatesResult } from "../echoLab/tunerPlan";
-import { erRoll, showHave, showNeed } from "../energy/energyNeed";
+import { deficitFactor, erRoll, showHave, showNeed } from "../energy/energyNeed";
 import type { TeamView } from "../energy/useEnergyNeeds";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -47,7 +47,8 @@ export interface OwnRow {
   title: string;
   /** what to do, in plain words */
   todo: string;
-  /** the character's own gain (0.03 = +3 %), null without one; `ownLabel` says what it is ("own", "expected own") */
+  /** the character's own gain (0.03 = +3 %), null without one; `ownLabel` says what it is ("own", "own damage": a re-gear
+   *  that moves the Energy Regen need, so the paid list's own, which counts the need, reads differently; "expected own") */
   own: number | null;
   ownLabel: string;
   /** what the own figure is measured on, in words ("2.59M → 3.33M avg damage per rotation on their best rotation") */
@@ -99,6 +100,17 @@ export function echoTitle(u: Pick<EchoUpgrade, "gain" | "team" | "er">): string 
   return "Better echoes from your inventory";
 }
 
+/** What a re-gear does to the Energy Regen need, on the paid list's basis (investPlan's own gain: damage × (1 − shortfall)).
+ *  The row keeps the damage figure, since that is what /build-team prints for the same run. Null: the need doesn't move. */
+function erCounted(u: Pick<EchoUpgrade, "gain" | "er">): { points: number; own: number } | null {
+  if (!u.er) return null;
+  const before = deficitFactor(u.er.floor, u.er.before);
+  const after = deficitFactor(u.er.floor, u.er.after);
+  const points = (after - before) * 100;
+  if (!(before > 0) || Math.abs(points) < 0.05) return null;
+  return { points, own: ((1 + u.gain) * after) / before - 1 };
+}
+
 /** One row per character the inventory gives a better build. */
 export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
   return items.map((u) => {
@@ -117,6 +129,8 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
     if (rivals.length) notes.push(`${rivals.length === 1 ? `${rivals[0]}'s row wants` : `${rivals.slice(0, -1).join(", ")} and ${rivals[rivals.length - 1]}'s rows want`} some of the same echoes: an echo goes on one character at a time, so choose who gets them.`);
     if (u.er?.buys) notes.push(`Meets the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs (today ${u.er.before == null ? "—" : pct1(showHave(u.er.before))}).`);
     else if (u.er && !u.er.met) notes.push(`Still short of the ${pct1(showNeed(u.er.floor))} Energy Regen the team's loop needs: ${u.er.mostFound ? "the most ER found in the echoes this check can use." : "the search counted a buff that isn't always on, so a build with more ER may exist."}`);
+    const counted = erCounted(u);
+    if (counted) notes.push(`Own damage leaves the Energy Regen need out. Counting the ${Math.abs(counted.points).toFixed(1)} points it ${counted.points > 0 ? "closes" : "loses"}, as What to invest in next does, it reads ${signedPct(counted.own)}.`);
     if (u.buffsOn.length) notes.push(`Counts ${u.buffsOn.join(", ")} switched on (nobody had set ${u.buffsOn.length === 1 ? "it" : "them"}).`);
     if (u.relaxed) notes.push(u.relaxed === "layout" ? "Your echoes can't fill the plan's layout: any layout of its sets." : "Your echoes can't fill the plan's main stats: any main stat of its sets.");
     return {
@@ -127,7 +141,7 @@ export function echoRows(items: readonly EchoUpgrade[]): OwnRow[] {
       // a character in no team you can field is re-geared on their own: no "For <team>:"
       todo: `${alone ? `${action[0]!.toUpperCase()}${action.slice(1)}` : `For ${teamTitle(u.team?.teamName ?? u.teamName)}: ${action}`}${from}${u.sets ? ` (${u.sets})` : ""}.`,
       own: u.gain,
-      ownLabel: "own",
+      ownLabel: counted ? "own damage" : "own",
       // Build my team's figure: with this team's buffs on them, so it can differ from /my-rankings' solo number
       ownDetail: `${compactNum(u.before)} → ${compactNum(u.after)} avg damage per rotation on ${u.objective === "Team rotation" ? "their part of the team's rotation" : alone ? "their best rotation" : "their best rotation, with this team's buffs"}`,
       team: u.team,

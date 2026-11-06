@@ -678,7 +678,10 @@ Rules:
   in Echo Lab, ER from echoes they have. No row invents a number: no Tuners entered → no Tuner figure.
 - **The row's figure is the page's figure.** The button opens `/build-team` on the same team with `only=` the character;
   that page runs the same plan, floor, switches and inventory, and prints the same own Δ (Cypress checks it). Saving
-  stays on that page, behind its preview and confirm.
+  stays on that page, behind its preview and confirm. "What to invest in next" reads its own figure on damage × (1 − ER
+  shortfall), so a re-gear that moves the need would sit beside an ER roll on the opposite assumption: its figure is
+  labelled "own damage" and its note gives it on the paid list's basis (Aemeath: −1.5 % own damage, +3.0 % counting the
+  4.4 points it closes). Echoes rows keep the damage figure because the rule above is the stronger one.
 - **Each row stands alone, and says when it can't.** Every re-gear is worked out on today's inventory, so two rows can
   want the same spare echo (on David's export, Verina's and Rover Aero's rows both want one; the CLI's inline run has
   Verina and Shorekeeper sharing two more, because it builds Shorekeeper differently under her out-of-reach ER need).
