@@ -1328,7 +1328,7 @@ export default defineComponent({
     ) => {
       if (character.value === "Lupa") {
         await nextTick();
-        characterBuffsRef.value.retriggerBuffCalculations();
+        characterBuffsRef.value?.retriggerBuffCalculations(); // Wuthering Tools+: the v3 screens have no such panel, and the throw skipped the sums below
       }
 
       charResonanceChainsData.value = givenResonanceChainsData;
