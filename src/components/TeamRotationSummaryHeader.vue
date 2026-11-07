@@ -38,6 +38,14 @@
         <TeamRotationDamageBar :per-character="result.perCharacter" compact />
       </div>
       <button
+        v-if="showOptimize"
+        type="button"
+        class="btn btn-xs btn-outline btn-primary shrink-0"
+        data-test-team-rotation-summary-optimize
+        @click="emit('optimize')">
+        Optimize team
+      </button>
+      <button
         type="button"
         class="btn btn-xs btn-primary shrink-0"
         data-test-team-rotation-summary-view-damages
@@ -56,6 +64,14 @@
       <div class="flex items-center justify-between gap-2">
         <h2 class="font-semibold truncate">{{ teamName }}</h2>
         <div class="flex gap-2 shrink-0">
+          <button
+            v-if="showOptimize"
+            type="button"
+            class="btn btn-sm btn-outline btn-primary"
+            data-test-team-rotation-summary-optimize
+            @click="emit('optimize')">
+            Optimize team
+          </button>
           <button
             type="button"
             class="btn btn-sm btn-primary"
@@ -114,8 +130,10 @@ const props = defineProps<{
     total: DamageAggregation;
     dps: RotationDps;
   };
-  /** Length from frame data, or null while the frameTiming lab is off. */
+  /** Length from frame data, or null without any. */
   frameLength?: RotationLength | null;
+  /** The teamOptimizer lab's button (ADR 0052). */
+  showOptimize?: boolean;
 }>();
 
 // The typed duration's DPS, else frame data's (ADR 0048).
@@ -126,6 +144,7 @@ const headline = computed(() =>
 const emit = defineEmits<{
   "view-damages": [];
   "view-summary": [];
+  optimize: [];
 }>();
 
 function characterImage(characterId: string) {

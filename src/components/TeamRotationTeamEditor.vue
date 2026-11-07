@@ -7,8 +7,10 @@
       :duration="team.duration"
       :result="result"
       :frame-length="teamFrameLength"
+      :show-optimize="isTeamOptimizerOn"
       @view-damages="openDamages"
-      @view-summary="emit('view-summary')" />
+      @view-summary="emit('view-summary')"
+      @optimize="emit('optimize')" />
 
     <div class="card card-compact bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
@@ -156,8 +158,8 @@
             <span><b>{{ team.actions.length }}</b> action{{ team.actions.length === 1 ? "" : "s" }}</span>
             <span class="opacity-40">·</span>
             <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
-            <!-- The frame-timing panel below shows both lengths when it's on. -->
-            <template v-if="!isFrameTimingOn">
+            <!-- With frame data, the timing panel below shows both lengths. -->
+            <template v-if="!teamHasFrameData">
               <span class="opacity-40">·</span>
               <span><b>{{ team.duration !== null && team.duration !== "" ? `${team.duration}s` : "—" }}</b> duration</span>
             </template>
@@ -165,7 +167,6 @@
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
           <RotationFrameTiming
-            v-if="isFrameTimingOn"
             class="mb-3"
             is-team
             :timing="teamTiming"
@@ -262,9 +263,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
-                :has-frame-data="isFrameTimingOn && teamHasFrameData"
-                :attack-frames="isFrameTimingOn ? teamFramesFor(action) : null"
-                :frame-timing="isFrameTimingOn ? (teamTimingById[action.id] ?? null) : null"
+                :has-frame-data="teamHasFrameData"
+                :attack-frames="teamFramesFor(action)"
+                :frame-timing="teamTimingById[action.id] ?? null"
                 @update="handleActionUpdate"
                 @update:sequence="handleSequenceUpdate"
                 @remove="handleActionRemove"
@@ -401,7 +402,7 @@ import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTi
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
 import { rotationLength, type RotationLength, type TimingSlot } from "../calculator/rotationTiming";
-import { isFrameTimingEnabled } from "../utils/labs";
+import { isTeamOptimizerEnabled } from "../utils/labs";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useSettingsStore } from "../stores/settings";
@@ -453,7 +454,7 @@ import { ref as refPlus, watch as watchPlus } from "vue"; // Wuthering Tools+
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
-const emit = defineEmits<{ "view-summary": [] }>();
+const emit = defineEmits<{ "view-summary": []; optimize: [] }>();
 
 const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
@@ -861,7 +862,10 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+// v3 only, like other new features (ADR 0038).
+const isTeamOptimizerOn = computed(
+  () => isV3UiEnabled(settingsStore) && isTeamOptimizerEnabled(settingsStore),
+);
 
 const totalHits = computed(
   () =>
@@ -1060,7 +1064,7 @@ const {
   timingSlots,
 );
 const timelineStrip = computed<TimelineStrip | null>(() => {
-  if (!isFrameTimingOn.value || !teamHasFrameData.value) return null;
+  if (!teamHasFrameData.value) return null;
   const actionsById = new Map(((team.value?.actions ?? []) as TeamRotationAction[]).map((action) => [action.id, action]));
   const strip = buildTimelineStrip(
     teamTiming.value,
@@ -1084,7 +1088,7 @@ const timelineStrip = computed<TimelineStrip | null>(() => {
 
 // For the header's and damages panel's DPS (ADR 0048).
 const teamFrameLength = computed<RotationLength | null>(() =>
-  isFrameTimingOn.value && teamHasFrameData.value ? rotationLength(teamTiming.value) : null,
+  teamHasFrameData.value ? rotationLength(teamTiming.value) : null,
 );
 
 const primaryCharacterElement = computed(

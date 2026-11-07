@@ -140,7 +140,7 @@ export function scoreOptimizerRotationDeduped(
     return scoreOptimizerRotation(rotationData, loadout, loadoutStats, context, overrideBuffVariants);
   }
   const { finalStats, combinedEchoBuffs } = loadoutStats;
-  const optimizerContext = buildOptimizerCalculationContext(context, finalStats, combinedEchoBuffs, loadoutStats);
+  const optimizerContext = buildOptimizerCalculationContext(context, finalStats, combinedEchoBuffs, loadoutStats.loadoutBuffData);
   const scored = processAttacks(plan.unique, optimizerContext, null, false, true, false, finalStats, combinedEchoBuffs);
   if (scored.length !== plan.unique.length) {
     // processAttacks dropped one (it cannot with excludeDisabledAttacks off): let upstream do the whole rotation

@@ -535,6 +535,10 @@
       <TeamRotationSummary :team-id="selectedTeamId" @back="showSummary = false" />
     </template>
 
+    <template v-else-if="showOptimizer">
+      <TeamOptimizerWorkspace :team-id="selectedTeamId" @back="showOptimizer = false" />
+    </template>
+
     <template v-else>
       <button
         type="button"
@@ -546,7 +550,8 @@
       <TeamRotationTeamEditor
         :key="selectedTeamId"
         :team-id="selectedTeamId"
-        @view-summary="showSummary = true" />
+        @view-summary="showSummary = true"
+        @optimize="showOptimizer = true" />
     </template>
 
     <TeamRotationsImportModal v-model:open="isImportOpen" @import="importTeamData" />
@@ -565,6 +570,7 @@ import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import TeamRotationSummary from "./TeamRotationSummary.vue";
+import TeamOptimizerWorkspace from "./teamOptimizer/TeamOptimizerWorkspace.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import TeamRotationsImportModal from "./TeamRotationsImportModal.vue";
@@ -587,8 +593,6 @@ import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import { calcTeamRotationDamage, calcStrongestHit, headlineDps, rotationDpsReadings } from "../calculator/teamRotation";
 import { framesToSeconds, rotationLength, type RotationLength } from "../calculator/rotationTiming";
-import { useSettingsStore } from "../stores/settings";
-import { isFrameTimingEnabled } from "../utils/labs";
 import { resolveTeamCharacters } from "../sim/teamContext/resolveTeam"; // Wuthering Tools+
 import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
 import TeamListEngineNote from "../sim/teamLinks/TeamListEngineNote.vue"; // Wuthering Tools+
@@ -622,6 +626,10 @@ const selectedTeamId = ref<string | null>(
 );
 const showSummary = ref(false);
 
+const showOptimizer = ref(false);
+watch(selectedTeamId, () => {
+  showOptimizer.value = false;
+});
 watch(selectedTeamId, (teamId) => {
   if (teamId) {
     sessionStorage.setItem(ACTIVE_TEAM_ID_KEY, teamId);
@@ -887,9 +895,7 @@ interface TeamSummaryStats {
   normal: number;
   avg: number;
   crit: number;
-  /** From frame data, whether or not the frameTiming lab is on; DPS is
-   * worked out at display time (teamDps) so toggling the lab needs no
-   * recompute. */
+  /** From frame data; DPS is worked out at display time (teamDps). */
   frameLength: RotationLength | null;
   hitNormal: number;
   hitAvg: number;
@@ -900,27 +906,20 @@ interface TeamSummaryStats {
 
 const teamStats = ref<Record<string, TeamSummaryStats>>({});
 
-const settingsStore = useSettingsStore();
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
-
-function frameLengthOf(stats: TeamSummaryStats | undefined): RotationLength | null {
-  return isFrameTimingOn.value ? (stats?.frameLength ?? null) : null;
-}
-
-// A team's one DPS: its typed duration's, else frame data's while the lab is
-// on (ADR 0048). Null with neither, so a new team with no length never
+// A team's one DPS: its typed duration's, else frame data's (ADR 0048). Null
+// with neither, so a new team with no length never
 // "wins" the leaderboard on an Infinity.
 function teamDps(stats: TeamSummaryStats, team: any) {
   const readings = rotationDpsReadings(
     { normalDamage: stats.normal, avgDamage: stats.avg, critDamage: stats.crit, healing: 0, shield: 0 },
     team.duration,
-    frameLengthOf(stats),
+    stats.frameLength,
   );
   return headlineDps(readings)?.dps ?? null;
 }
 
 function frameSecondsOf(teamId: string): number | null {
-  const length = frameLengthOf(teamStats.value[teamId]);
+  const length = teamStats.value[teamId]?.frameLength;
   return length && length.gameFrames > 0 ? framesToSeconds(length.gameFrames) : null;
 }
 let statsComputeToken = 0;

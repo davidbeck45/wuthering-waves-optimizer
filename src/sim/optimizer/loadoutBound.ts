@@ -148,7 +148,7 @@ function virtualTarget(scoring: PrunerScoring, stats: ReturnType<typeof virtualL
     scoring.rotationData!,
     [],
     // the virtual loadout's own self buffs: its ER and HP top every real loadout's, so what scales on them does too
-    { finalStats: stats.finalStats, combinedEchoBuffs: stats.combinedEchoBuffs, echoStats, mainEchoBuff: stats.mainEchoBuff, setBonusOnePiece: null, setBonusOne: null, setBonusTwo: null, selfBuffsData: stats.selfBuffsData, resonanceChainsBuffsData: stats.resonanceChainsBuffsData },
+    { finalStats: stats.finalStats, combinedEchoBuffs: stats.combinedEchoBuffs, echoStats, mainEchoBuff: stats.mainEchoBuff, setBonusOnePiece: null, setBonusOne: null, setBonusTwo: null, loadoutBuffData: { selfBuffsData: stats.selfBuffsData, resonanceChainsBuffsData: stats.resonanceChainsBuffsData, teamBuffsData: (scoring.context as any).teamBuffsData } },
     scoring.context as OptimizerContext,
     new Map(),
     { attacks: false },
