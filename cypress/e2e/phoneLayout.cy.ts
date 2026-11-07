@@ -299,8 +299,9 @@ describe("phone layout", () => {
     cy.get(".rotation__action").each(($card) => {
       const r = $card[0].getBoundingClientRect();
       expect(r.right, "action card inside the screen").to.be.at.most(412);
-      // a card listing its own buff overrides (the fixture's first action has 16) is as tall as its list
-      if (!$card.find(".rotation__action__unified-chips").length) expect(r.height, "action card height at 412 px / 130 %").to.be.at.most(300);
+      // a card listing its own buff overrides (the fixture's first action has 16) is as tall as its list. 300 + one row:
+      // Ryan's frames chip has been on every card since #688
+      if (!$card.find(".rotation__action__unified-chips").length) expect(r.height, "action card height at 412 px / 130 %").to.be.at.most(340);
     });
     expectNoHorizontalScroll("/ rotation detail (v3)");
     cy.visit("/updates", seed);
@@ -411,7 +412,7 @@ describe("phone layout", () => {
       // (the stuck header's two-line strip is not measured here: its IntersectionObserver never fires under Cypress —
       // Ryan's own "sticks the summary header" test is red the same way — so the phone shots stand in for it)
       cy.get(".rotation__action").each(($card) => {
-        if (!$card.find(".rotation__action__unified-chips").length) expect($card[0].getBoundingClientRect().height, `action card height at ${width}`).to.be.at.most(320);
+        if (!$card.find(".rotation__action__unified-chips").length) expect($card[0].getBoundingClientRect().height, `action card height at ${width}`).to.be.at.most(360);
       });
     }
   });

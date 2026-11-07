@@ -148,8 +148,8 @@ describe("Team optimizer", () => {
         // The saved builds are what the team now uses.
         cy.get("[data-test-team-optimizer-back]").click();
         cy.get("[data-test-team-rotation-editor]").should("be.visible");
-        // The header prints the same number without separators.
-        cy.get("[data-test-team-rotation-summary]").should("contain.text", `Average: ${total.replaceAll(",", "")}`);
+        // Wuthering Tools+: this header prints thousands separators here, as the Summary page does.
+        cy.get("[data-test-team-rotation-summary]").should("contain.text", `Average: ${total}`);
         cy.window().then((win) => {
           const teams = JSON.parse(win.localStorage.getItem("teamRotations")!).teams;
           const characters = JSON.parse(win.localStorage.getItem("character")!).characters;
