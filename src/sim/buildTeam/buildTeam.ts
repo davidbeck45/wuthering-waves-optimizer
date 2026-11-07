@@ -462,7 +462,8 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
   /** A build short of five echoes: the plan's sets ran out (fewer than five owned, or a teammate holds the rest), and the
    *  search keeps sets at every level, since they decide a support's team buff. Each empty slot takes the best echo of
    *  any other set that fits under the cost limit; the set pieces stay, so all this can do is add. A build already at
-   *  the limit keeps its empty slot, and the page says so. */
+   *  the limit keeps its empty slot, and the page says so. The job holds the plan's sets only, so two fillers of one
+   *  set read their 2-piece bonus here at nothing: the score runs low, the calculator's figure on the page counts it. */
   const fillEmptySlots = (m: number, pick: Candidate, taken: ReadonlySet<string>): Promise<Candidate> => {
     const fillers = fillersFor(m, taken);
     const key = `${m}|${pick.ids.join(",")}|${fillers.map((e) => e.echoId).sort().join(",")}`;
