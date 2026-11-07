@@ -24,7 +24,7 @@ export interface BenchSource {
 export interface BenchCase {
   name: string;
   characterId: string;
-  /** "crit DPS", "4-star", "healer", "Rover", "edge" */
+  /** "crit DPS", "4-star", "healer", "Rover", "stat-scaled", "edge" */
   kind: string;
   /** "rotation" = the character's best rotation; else a `Stat:` target (`Stat:energyRegen` is build-team's ER run) */
   target: "rotation" | `Stat:${string}`;
@@ -292,6 +292,13 @@ export const STANDARD_SPECS: CaseSpec[] = [
   { characterId: "Shorekeeper", kind: "healer", plan: true, erFloors: [150, 220, 400], stats: ["Stat:energyRegen"] },
   { characterId: "Verina", kind: "healer", formats: ["Any", "43311"], erFloors: [180] },
   { characterId: "RoverAeroMale", kind: "Rover", plan: true, erFloors: [140] },
+  // what scales on the loadout's own stats (ER, HP, Crit Rate): the bound's hardest case, since the buff moves with the loadout
+  { characterId: "Mornye", kind: "stat-scaled", formats: ["Any", "43311"], erFloors: [140] },
+  { characterId: "Jingran", kind: "stat-scaled", formats: ["Any"] },
+  { characterId: "Brant", kind: "stat-scaled", formats: ["Any"] },
+  { characterId: "Roccia", kind: "stat-scaled", formats: ["Any"] },
+  { characterId: "Qiuyuan", kind: "stat-scaled", formats: ["Any"] },
+  { characterId: "Augusta", kind: "stat-scaled", formats: ["Any"] },
 ];
 
 /** The edge cases on top: an empty pool, a pool whose main echo is missing, a 250-echo pool (stat-identical copies). */
