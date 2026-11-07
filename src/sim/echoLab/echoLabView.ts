@@ -32,6 +32,13 @@ export const portrait = (id: string): string => characterPortraitUrl(id);
 export const substatIcon = (key: string): string | null => getSubStatIconByType(key) ?? null;
 export const rankColor = (rank: number | null | undefined): string | null => (rank ? (rankColors as unknown as Record<string, string>)[String(rank)] ?? null : null);
 
+/** A character a link asked for that this tab cannot show, and who it shows instead: the tab moves on by itself, and read
+ *  as the answer for the one asked for. */
+export function leftOutNote(asked: string, shown: string | null, skipped: ReadonlyArray<{ id: string; reason: string }>): string {
+  const why = skipped.find((s) => s.id === asked)?.reason ?? "no build with a weapon and five echoes";
+  return `${characterName(asked)} can't be shown here (${why}).${shown ? ` Showing ${characterName(shown)} instead.` : ""}`;
+}
+
 /** Main stats in a table cell's width. */
 export const MAIN_LABELS: Record<string, string> = {
   CritRate: "Crit Rate",

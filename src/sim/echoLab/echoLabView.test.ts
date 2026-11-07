@@ -12,6 +12,7 @@ import { menuEnergyRegen } from "../energy/energyHave";
 import {
   DEFAULT_FILTERS,
   activeFilterCount,
+  leftOutNote,
   erFloorLine,
   applyFilters,
   feedGroups,
@@ -189,5 +190,16 @@ describe("the inventory verdict view model", () => {
     expect(lineTier(perPoint, "DEF_FLAT", 60).tier).toBe("dead");
     expect(lineTier(null, "CritRate", 7.5).tier).toBe("good"); // no build to price it on: neutral
     expect([0.2, 0.7, 1, 1.5].map(scoreBand)).toEqual(["low", "fair", "good", "great"]);
+  });
+});
+
+describe("a link to a character the tab can't show", () => {
+  it("says who was asked for, why they are out, and who is on screen", () => {
+    expect(leftOutNote("Aemeath", "Sigrika", [{ id: "Aemeath", reason: "needs five echoes to compare against" }])).toBe("Aemeath can't be shown here (needs five echoes to compare against). Showing Sigrika instead.");
+  });
+
+  it("has a reason for someone the pass never looked at, and no one to name when nobody is on screen", () => {
+    expect(leftOutNote("Chisa", "Zani", [])).toBe("Chisa can't be shown here (no build with a weapon and five echoes). Showing Zani instead.");
+    expect(leftOutNote("Chisa", null, [])).toBe("Chisa can't be shown here (no build with a weapon and five echoes).");
   });
 });

@@ -132,6 +132,7 @@
         <p v-if="floorsMissing" role="status" class="alert alert-warning mb-3 text-left text-sm" data-test-echo-lab-floors-missing>
           The Energy check did not finish, so these scores leave out the Energy Regen some builds need and can read high. Open this tab again or press Re-run to ask again.
         </p>
+        <p v-if="askedNote" role="status" class="alert alert-info mb-3 text-left text-sm" data-test-echo-lab-left-out>{{ askedNote }}</p>
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
         <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" @farm="tab = 'farm'" />
@@ -174,7 +175,7 @@ import EchoLabReroll from "./EchoLabReroll.vue";
 import EchoLabSets from "./EchoLabSets.vue";
 import EchoLabTune from "./EchoLabTune.vue";
 import EchoLabVerdicts from "./EchoLabVerdicts.vue";
-import { DEFAULT_FILTERS, characterName, echoName, phaseLabel, type VerdictFilters } from "./echoLabView";
+import { DEFAULT_FILTERS, characterName, echoName, leftOutNote, phaseLabel, type VerdictFilters } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
 import { onAccountAdopted } from "../storage/crossTabSync";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
@@ -212,6 +213,18 @@ const queryTab = (): TabId => (queryEcho() ? "verdicts" : TAB_IDS.includes(route
 const tab = ref<TabId>(queryTab());
 const rerollCharacter = ref<string | null>(typeof route.query.character === "string" ? route.query.character : null);
 const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS, echo: queryEcho() });
+/** the character the link asked for: the Set lab and Re-roll tabs move on from one they can't show, and this says so
+ *  until the player picks someone themselves */
+const askedCharacter = ref(rerollCharacter.value);
+watch(rerollCharacter, (_now, was) => {
+  if (was !== askedCharacter.value) askedCharacter.value = null;
+});
+const askedNote = computed(() => {
+  const asked = askedCharacter.value;
+  const r = pass.value?.bestOwner;
+  if (!asked || !r || (tab.value !== "sets" && tab.value !== "reroll") || r.characters.some((c) => c.id === asked)) return null;
+  return leftOutNote(asked, rerollCharacter.value === asked ? null : rerollCharacter.value, r.skipped);
+});
 /** the character the Set lab's "Farm next" link asked Farm next to show */
 const farmFocus = ref<string | null>(null);
 function showFarm(characterId: string): void {

@@ -237,6 +237,21 @@ describe("Echo Lab: Set lab", () => {
     cy.get("[data-test-echo-lab-sets-error]").should("not.exist");
   });
 
+  it("says so when the link's character can't be shown, until you pick someone", () => {
+    cy.viewport(1440, 900);
+    // armed with a weapon, no echoes: not a built character
+    cy.visit("/echo-lab?tab=sets&character=Chisa", seed());
+    cy.get("[data-test-echo-lab-sets-character]", RUN).should("have.value", "Galbrena");
+    cy.get("[data-test-echo-lab-left-out]").should("contain.text", "Chisa can't be shown here").and("contain.text", "Showing Galbrena instead");
+    rows().should("have.length.at.least", 1);
+    // the Re-roll tab moves on the same way, so it carries the same note
+    cy.get('[data-test-echo-lab-tab="reroll"]').click();
+    cy.get("[data-test-echo-lab-left-out]").should("contain.text", "Chisa can't be shown here");
+    cy.get('[data-test-echo-lab-tab="sets"]').click();
+    cy.get("[data-test-echo-lab-sets-character]", RUN).select("Zani");
+    cy.get("[data-test-echo-lab-left-out]").should("not.exist");
+  });
+
   it("is in the palette", () => {
     cy.viewport(1440, 900);
     cy.visit("/echo-lab", seed({ teammates: false }));
