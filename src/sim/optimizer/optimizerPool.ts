@@ -1,7 +1,7 @@
 // Wuthering Tools+ — exact speedups for the echo optimizer (perf track, 2026-10-12).
 //
-// Pure module (no Vue, no stores, no DOM): `Calculator.vue` calls `planOptimizerGeneration` once per run on the main
-// thread, and `generator.worker.ts` walks `optimizerLoadoutStream` instead of looping over `generateLoadouts` itself.
+// Pure module (no Vue, no stores, no DOM): `workers/optimizerRun.ts` calls `planOptimizerGeneration` once per run on the
+// main thread, and `generator.worker.ts` walks `optimizerLoadoutStream` instead of looping over `generateLoadouts` itself.
 // Both changes keep the ranked results identical to upstream's pipeline — the proofs are in the comments below and in
 // src/sim/README.md ("Optimizer speedups"); the equivalence harness lives outside the repo (see the README).
 import {

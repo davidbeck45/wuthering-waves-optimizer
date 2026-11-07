@@ -1294,7 +1294,7 @@ equivalence harness (below) ran plus's optimizer pipeline and the new one side b
 | Piece | Role |
 |---|---|
 | `optimizer/optimizerPool.ts` | pure (no Vue, no stores): `prepareOptimizerEchoPool` (one echo per optimizer signature, first copy kept), `optimizerLoadoutStream` (the generator's loop: upstream's normalise + hash + skip-repeats by default, the deduped-pool fast path when asked), `hasLoadoutExtensions`, `canSkipDominatedPartials` (the preconditions), `planOptimizerGeneration` (one call per run), `normalizeOptimizerLoadoutCached` (upstream's slot sort with each echo's signature memoised) |
-| hooks (upstream files) | `Calculator.vue` `optimizeWithWorkers`: one `planOptimizerGeneration` call, the generator's start message carries the plan's pool plus `uniquePool` / `skipDominatedPartials`, the main-thread cross-shard hash runs only when the pool is not unique. `generator.worker.ts` walks `optimizerLoadoutStream`. `processor.worker.ts` imports `normalizeOptimizerLoadoutCached` under upstream's name. `optimizer.ts` is untouched |
+| hooks (upstream files) | `workers/optimizerRun.ts` `runOptimizerWorkers` (Ryan moved it out of `Calculator.vue` in #687, so his team optimizer gets all of this too): one `planOptimizerGeneration` call, the generator's start message carries the plan's pool plus `uniquePool` / `skipDominatedPartials`, the main-thread cross-shard hash runs only when the pool is not unique. `generator.worker.ts` walks `optimizerLoadoutStream`. `processor.worker.ts` imports `normalizeOptimizerLoadoutCached` under upstream's name. `optimizer.ts` is untouched |
 | `optimizer/optimizerPool.test.ts` | the deduped stream is upstream's stream (same loadouts, echo ids, order; all three formats; two main species; sharded); the skip drops exactly the partials with ≥ topN extensions; the cached sort equals upstream's on 2000 random loadouts; every guard; and the game-data preconditions of the monotonicity argument: every `AdditionalBase` / `CritOverflow` modifier has a positive step and non-negative values, no set bonus has a negative modifier, and adding an echo never removes an active set bonus (`getSetBonusEffects`, every pair of sets at every split plus 4000 random multisets) |
 | `perf/chunkReload.ts` | `vite:preloadError` → one reload (guarded by `sessionStorage["wtplus:chunkReloadAt"]`, once a minute): a tab opened before a deploy asks for chunk names that no longer exist; the reload fetches the new no-store `index.html`. No reload when offline (the import failed for want of a network; a reload would only show the browser's offline page) or when sessionStorage is blocked (nothing could stop a reload loop): the error then surfaces as before. Installed in `main.ts` |
 | `vercel.json` | `/assets/*` (Vite's hashed output) → `Cache-Control: public, max-age=31536000, immutable`; everything else stays `no-store`. The SPA fallback no longer answers `/assets/*`, so a missing chunk 404s instead of returning `index.html` under a year-long cache header. The api and umami rewrites are unchanged |
@@ -1398,7 +1398,7 @@ inline backend (CLI, tests) and in the processor workers (the calculator's optim
 | `optimizer/rotationScore.ts` | `scoreOptimizerRotationDeduped`: upstream's `scoreOptimizerRotation`, same arguments and result, with each distinct plain action scored once (`attackKeyOf` = every field but `id` as plain data; numbers by `Object.is`; functions, class instances and cycles never shared) and the results laid back out in the rotation's order, so `aggregateRotationDamage` adds the same numbers in the same order. Rotations with per-action overrides go to upstream's function untouched. `{ attacks: false }` skips building the per-action list (the inline backend reads only the total) |
 | `optimizer/loadoutBound.ts` | `createLoadoutPruner(setup, scoring)` → `skip(loadout, bar)`: per prefix of the incoming loadout (main echo first, then increasing pool order — the generator's walk) an upper bound on every score below it, computed once and lazily (`minSubtree` 2); a loadout is skipped when a bound is at or under the bar (the 5th score, once five are kept) or a min-stat floor (Energy Regen on build-team, any row in the calculator) is out of the subtree's reach. `virtualLoadoutStats` = `computeLoadoutFinalStats` for a loadout given by its echo stats and any number of set labels |
 | `optimizer/optimizerPool.ts` | the old preconditions split into `isMonotoneInEchoes` (unchanged for the dominated-partials skip); `canPruneByBound` (+ a `Stat:` / `Rotation:` target, no per-action overrides, no negative main-echo buff stat); the plan gains `pruneByBound`; `pruneSetupOf(plan, mainEchoKeys, format)` = what a scorer needs (the pool, the main echo keys, the format) |
-| hooks (upstream files) | `processor.worker.ts`: the deduped scorer imported under upstream's name, one pruner per `init` (from `data.pruning`), one `skip` line before `processLoadout` with the bar = the local heap's minimum once full. `Calculator.vue`: `pruning: pruneSetupOf(...)` in the processors' init (2 lines + the import). `optimizer.ts` is still untouched |
+| hooks (upstream files) | `processor.worker.ts`: the deduped scorer imported under upstream's name, one pruner per `init` (from `data.pruning`), one `skip` line before `processLoadout` with the bar = the local heap's minimum once full. `workers/optimizerRun.ts`: `pruning: pruneSetupOf(...)` in the processors' init (2 lines + the import). `optimizer.ts` is still untouched |
 | plus hooks | `workerBackend.ts` sends the same `pruning`; `headlessOptimizer.ts`'s inline loop uses all three and checks the ER floor before scoring the rotation (the processor already did); `processed` still counts every loadout (scored or ruled out), so `/build-team`'s "combos" and the calculator's "Evaluated N loadouts" read as before |
 | `optimizer/referenceOptimizer.ts` | the inline loop as it stood on plus-b3 d530c488 (upstream's normalise and scorer on every loadout), kept as the oracle, with a clock around generation and scoring |
 | `optimizer/optimizerBench.ts`, `benchCli.ts` | the cases (worn sets × formats, the curated preset's plan with its main stats, ER floors, `Stat:` targets, edge pools) and the side-by-side runner; `npm run cli -- optimizer-bench` |
@@ -1485,7 +1485,7 @@ on the report alone.
 
 Hooks in Ryan's `Calculator.vue` (kept to single lines, marked `Wuthering Tools+`): his `handleOptimize` is now `runOptimizer`
 behind the gate, which stops the last run first; the `character` watcher stops a run and ignores a load it has been picked
-past; `handleWeaponUpdated` records the report; `distributeWork` publishes nothing for a stopped run.
+past; `handleWeaponUpdated` records the report. `distributeWork`, which publishes nothing for a stopped run, moved to `workers/optimizerRun.ts` with #687.
 
 ### First useful paint — the speed pass (track "speed", 2026-11-02)
 
@@ -2725,6 +2725,9 @@ main build waits on 7 pending transforms that never return.
   `ROLLDOWN_WORKER_THREADS=4 ROLLDOWN_MAX_BLOCKING_THREADS=32 npm run build`, so the build no longer depends on the
   machine's core count. Verified on Vercel with a no-cache preview build of 480c3db4.
 - **When Vite or rolldown is bumped:** re-check with the 1/1 command above, and drop the override once it builds.
+- **Ryan's #687 makes it 8 sites** (`loadoutCount.worker.ts`; moving the optimizer's two sites from `Calculator.vue` to
+  `workers/optimizerRun.ts` changed nothing). Re-measured 2026-11-06: the pins on two CPUs 7 s, 2 workers / 1 blocking 6 s,
+  1 worker / 16 blocking 6 s. 1/1 still hangs, and so does a tree without his worker (786c87df), so that is the old repro.
 
 ## WaveScan: add only new echoes — `src/sim/wavescan/` (2026-10-31, track "wavescan")
 
@@ -4058,7 +4061,7 @@ build, a headline counting builds the Save skips, rows that outlive what they we
 | Where | Rule now |
 |---|---|
 | `calculator/stats.ts` `mergedSelfBuffsForBreakdown` (Ryan's) | A set's AdditionalBase ATK **adds** to the character's own. It replaced it, so an attack with its own ATK (Phrolova's Maestro on Hecate) moved 0.2 % for a passive worth 12.8 %, and the calculator read 2 to 6 % under the optimizer on what-ifs |
-| `calculator/optimizer.ts` `computeLoadoutFinalStats`, `sim/optimizer/rotationScore.ts`, `loadoutBound.ts` | **A loadout's attacks read that loadout's buffs.** `OptimizerLoadoutStats` carries the self and chain buffs as its stats resolve them. They came from `context.charBuffsData`, today's ER and HP: Mornye's rows read up to 22.8 % over Equip and in the wrong order. `optimizerCalculatorParity.test.ts` holds it |
+| `calculator/optimizer.ts` `computeLoadoutFinalStats`, `sim/optimizer/rotationScore.ts`, `loadoutBound.ts` | **A loadout's attacks read that loadout's buffs.** `OptimizerLoadoutStats.loadoutBuffData` (Ryan's field since #687; plus's fix and his were the same fix) carries the self and chain buffs as its stats resolve them. They came from `context.charBuffsData`, today's ER and HP: Mornye's rows read up to 22.8 % over Equip and in the wrong order. `optimizerCalculatorParity.test.ts` holds it |
 | `workers/processor.worker.ts` (Ryan's) | A Healing or Shield target reads `healAmount` / `shieldAmount`, as his inline `optimize()` does. Every loadout read 0 and the top five were whichever came first |
 | `optimizer/optimizerRunBasis.ts`, `Calculator.vue` | **A run's rows go with the build or weapon they were scored on**, in flight or finished, and the setup screen says why (`run-outdated`). Not on Equip (each row is still what that loadout scores), nor on a buff toggle, the enemy or the team, which would misstate a row too: dropping a run for every toggle is a bigger call than this fix made |
 | `Calculator.vue`, `CalculatorOptimizerWorkspace.vue` | A run that ends with no rows says why (`filtered`, `no-target`, `worker-failed`); leaving the page stops its workers, so coming back and running again can't hold 16 |
@@ -4069,3 +4072,79 @@ build, a headline counting builds the Save skips, rows that outlive what they we
 | `buildTeam/useBuildTeam.ts` | A run that ended after another took over leaves the page alone: Cancel then Build showed step 1 for a second |
 | `energy/energyFormat.ts` `kpiReading`, `unmeasuredDetail` | **An all-clear reaches only as far as what was measured.** With nothing measured /energy's tiles read a dash, not "0, every Liberation paid"; over some teams they say how many; the account tile tells a check that failed from teams it can't read |
 | `echoLab/EchoLabView.vue`, `echoLabView.ts` `leftOutNote` | Set lab and Re-roll move on from a character they can't show: a link to one says so and who it shows instead, until the player picks someone. Aemeath on four echoes opened on Sigrika's answer |
+
+## Ryan's Optimize team on plus — one optimizer path, the Team page's numbers (sync of #687 and #688, 2026-11-06)
+
+Ryan's #687 moves `optimizeWithWorkers` out of `Calculator.vue` into `workers/optimizerRun.ts` and adds an Optimize team
+button behind a lab (ADR 0052): one search per character, then an exact combiner over each character's best 2,000.
+Nothing here merges it with Build my team or Whole account: that is David's call, and the comparison below is for it.
+
+**Where the hooks went.** Every plus line in the old function body was diffed against the new file.
+
+| Hook | Now |
+|---|---|
+| `planOptimizerGeneration`, the deduped pool, `skipDominatedPartials`, the cross-shard hash off for a unique pool | `optimizerRun.ts` |
+| the load bound (`pruning: pruneSetupOf(...)`) | `optimizerRun.ts`, in the processors' init |
+| a stopped run publishes nothing (`distributeWork`) | `optimizerRun.ts` |
+| a worker that cannot load | `optimizerRun.ts` catches it and tears the run down; `onWorkerFailed` is the calculator's message and reload. A caller without the callback gets `onAborted`, so his team run rejects where it would have waited for good |
+| `optimizerPress`, `optimizerRunBasis`, `endOptimizerRunWith`, `stopOptimizerRun`, the character-change stop | stay in `Calculator.vue`, around his call |
+
+`optimizerRunHooks.test.ts` pins each of these: a sync that drops one fails there by name (nine mutants, all red).
+
+**One fix for stat-scaled buffs.** Ryan's `loadoutBuffData` does the same job as plus's 39af3d7c, at the same call sites,
+so his form stays and `rotationScore.ts` and `loadoutBound.ts` read it. Plus's two neighbours cover what his does not and
+stay: a Healing or Shield target in the worker (bd865860), and a set's AdditionalBase adding to the character's own
+(d952b5ed, `stats.ts`).
+
+**Why the bound still holds.** Steps 1 to 3 of its argument are about echo stats and set labels and do not change. Step 4
+said the score is non-decreasing in those inputs, and that needs one more line now that the buffs an attack reads depend
+on the loadout. A self or chain buff is its static part plus `floor((stat − min) / step) × value`, capped and clamped at
+0: non-decreasing in ER, Crit Rate or HP (CritOverflow likewise), each pinned by `optimizerPool.test.ts`. The virtual
+loadout goes through the same `calculateFinalStatsFromBuffs` and scores with the buffs it resolves itself, so every buff
+is read at a stat at or above any real loadout's. `specificTalentBuffs` are the one place a value replaces instead of
+adds (`Object.assign`), but a character's per-talent AdditionalBase writes its key at every stat, even 0, so the source
+of a key depends on the buff settings, never the loadout. A set's could break that, since it comes and goes with a label:
+none has one, and `statScaledBound.test.ts` pins it. Pruning stays on, and it costs nothing: `optimizer-bench` scores
+exactly the same loadouts as before the merge.
+
+Proof, none of it on the kits the first admissibility tests used (none of those scales on a stat):
+`statScaledBound.test.ts` scores every loadout through upstream's own path on Mornye, Jingran, Brant, Sigrika,
+Shorekeeper, Roccia, Qiuyuan, Augusta and a set's ER-scaled ATK, against every prefix's bound (run wider by hand:
+`STAT_SCALED_SEEDS=1,2,… STAT_SCALED_POOL=big`). Six mutants of the bound go red, and the one that drops a set's ER-scaled
+ATK is caught only there. Figures: `wto-wt/b3/reports/sync-687.md`.
+
+**Team page numbers.** His composable read each character's stored Team Buffs panel. The Team page on plus reads
+`resolveTeamCharacters`: builds by name, team buffs from the real members. Those sat −47 % to +123 % apart on the 9-14
+export, no team equal, and auto team buffs are off under Cypress, so his spec could not see it.
+
+| Piece | Role |
+|---|---|
+| `teamContext/teamOptimizerPage.ts` `readTeamPage` | the records the Team page reads; `withBuilds` re-reads them with new echoes on. A panel the resolver derived names the team, and it keeps a panel that does as the player's own, so `withBuilds` clears those first: without that, team buffs never followed the new builds |
+| `teamContext/teamOptimizerPage.ts` `allowStatRounding` | a derived buff holds its provider's stat to one decimal, so a floor taken from a build could rule that build out by 0.05 points and warn about a gap that isn't there |
+| hooks (his files) | `useTeamOptimizer.ts`: the records, the guards, `resolveForTeamPage`, the proof line, and Save starting from the build the page read (one named for the team, with no pin). `teamOptimizer.ts` `verifyTeamCombination`: `total` is the page's figure with the builds worn, `matches` still compares the search with what it scored, so a mismatch stays a real bug |
+| `teamContext/teamOptimizerOnPlus.test.ts` | the composable itself, real stores, the real worker modules, auto team buffs on: the current total, every row, and the page after Save (six mutants, all red) |
+
+**On a phone** (`phone.css` § 36, `cypress/e2e/teamOptimizerPhone.cy.ts`): the stat tiles sit two to a row, because three
+read "CRIT…", "CRIT…", "ENE…" at 412 px (his single-character Spotlight shares them and gains this too); the results table
+sizes to its content, so "vs current" and its figure show whole at 360 px with the per-character columns scrolling in
+beside them; small buttons are 40 px. `[data-test-team-optimizer]` joins the scope in `a11y.css` § 2, so the page gets the
+per-theme status colours and the muted floor: `text-warning` was 1.5 : 1 and `text-success` 2.7 on light. The edit sheet's
+26 px checkboxes are left: they are his Optimizer Workspace's panels. #688 puts his frames chip on every action card, one
+more row, so `phoneLayout.cy.ts`'s card budgets rose by a row.
+
+**With auto team buffs on, Optimize team never says "No better combination exists".** A member's echoes can move a
+teammate's buffs (Shorekeeper's Energy Regen, a 5-piece set), and the search scores each member alone. Its proof holds for
+buffs held still, which they aren't, so it reads "Best found". Rows are still the Team page's figures.
+
+**The three tools on one account** (9-16 export, the three saved teams, defaults, Team page figures):
+
+| Team | Today | Optimize team | Build my team | Whole account (one enemy, all three at once) |
+|---|---|---|---|---|
+| Aemeath + Mornye + Lynae | 9,458,277 | 9,458,277 (+0.0 %), Aemeath at 110.8 % ER | 9,341,889 (−1.2 %), Aemeath's 115.2 % met | −1.2 % |
+| Xuanling + Suisui + Chisa | 7,660,011 | 7,662,264 (+0.0 %) | 7,800,564 (+1.8 %) | +1.5 % (5.64M at the rankings' enemy) |
+| Sigrika + Mornye + Lucilla | 7,234,657 | 7,285,908 (+0.7 %) | 7,290,183 (+0.8 %) | +0.9 % |
+
+They can disagree, on purpose: Optimize team has no Energy Regen need and searches the sets you wear and saved, and
+keeps anyone under 5 % of the damage; Build my team follows wuwa_calc's plan and its ER need and may reach other sets;
+Whole account shares one inventory across teams at one enemy. Optimize team's edge is that the split of echoes between
+members is exact, not a best effort; on these teams it had little to split.

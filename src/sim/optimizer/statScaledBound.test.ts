@@ -10,6 +10,7 @@ import { buildTeamOptimizerSlotPlan } from "../../calculator/teamOptimizer";
 import { computeLoadoutFinalStats, normalizeOptimizerLoadout, scoreOptimizerRotation, type OptimizerContext, type OptimizerLoadoutFormat } from "../../calculator/optimizer";
 import { meetsMinStatThreshold } from "../../calculator/meetsMinStatThreshold";
 import { computeResonanceChainsBuffs, computeSelfBuffs } from "../../calculator/stats";
+import { setBonusEffectsOne, setBonusEffectsOnePiece, setBonusEffectsTwo } from "../../echoes/sets";
 import { getCombinedEchoStats } from "../../echoes/stats";
 import { createLoadoutPruner, virtualLoadoutStats, type PrunerScoring } from "./loadoutBound";
 import { optimizerLoadoutStream, planOptimizerGeneration, pruneSetupOf } from "./optimizerPool";
@@ -116,6 +117,17 @@ describe("the bound stays admissible when a buff scales on the loadout's own sta
       expect(tight).toBeGreaterThan(0);
     }, 120_000);
   }
+
+  it("no set's AdditionalBase writes a per-talent buff: those replace instead of add, and a set comes and goes with its label", () => {
+    // `calculateFinalStatsFromBuffs` Object.assigns specificTalentBuffs, so a set's key would overwrite a character's
+    // and the bound's virtual loadout, wearing every label, could read less than a real loadout does
+    const scaled = Object.values({ ...setBonusEffectsOnePiece, ...setBonusEffectsOne, ...setBonusEffectsTwo } as Record<string, any>)
+      .flatMap((set) => set?.passives ?? [])
+      .flatMap((passive: any) => passive?.modifiers ?? [])
+      .filter((modifier: any) => modifier?.modifier?.includes("AdditionalBase"));
+    expect(scaled.length).toBeGreaterThan(0);
+    for (const modifier of scaled) expect(modifier.modifySpecificTalents ?? []).toEqual([]);
+  });
 
   it("scoring today's buffs instead of the loadout's own would be wrong on these kits: the test above can tell", async () => {
     const { scoring, generation, format } = await prepare(KITS[0]!);

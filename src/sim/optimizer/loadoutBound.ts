@@ -23,6 +23,8 @@
 // 4. The stat pipeline and the score are non-decreasing in each of those inputs (the monotonicity argument in the
 //    README, the same one the dominated-partials skip rests on; IEEE rounding is monotone), so scoring that virtual
 //    loadout gives a number ≥ every score in the subtree, and its final stats are ≥ every L's (the min-stat check).
+//    That covers what scales on a loadout's own stats: the virtual loadout resolves its self and chain buffs at stats
+//    ≥ every L's and scores with those (`loadoutBuffData`), and each is non-decreasing in its stat (`statScaledBound.test.ts`).
 // 5. Floating point: the bound's vector is summed in a different order than L's, so each entry is inflated by 2^-40
 //    relative (summing ≤ 9 non-negative doubles is off by at most 8 ulps, ~1e-15 relative) and the final score by 1e-9
 //    relative, which also covers the last-bit noise of the pipeline's few subtractions. A non-finite bound skips nothing.
