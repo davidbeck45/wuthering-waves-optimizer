@@ -18,7 +18,7 @@ import { echoSetLabelMap } from "../../echoes/stats";
 import { constraintsOf, DEFAULT_OPTIONS, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, shortfallOf } from "./constraints";
 import { emptyPlan, echoKeysOf, erNeedOf, parseMainStats, planFromPreset, priorityOrder, setKeyOf, type MemberPlan } from "./rileyPlan";
 import { inlineBackend, menuErOf, prepareMemberJob, type Objective } from "./headlessOptimizer";
-import { buildMyTeam, draftBuildFields, teamSpecOf } from "./buildTeam";
+import { buildMyTeam, draftBuildFields, teamFigureOf, teamSpecOf } from "./buildTeam";
 import { applyBuildTeam, buildNameFor, readUndo, undoBuildTeam, undoIsLive, UNDO_KEY, type BuildTeamStores } from "./apply";
 import { serializeOptimizerEchoes } from "./workerBackend";
 import { buildEchoLoadoutFromIds } from "../../echoes/echoLoadout";
@@ -244,6 +244,19 @@ describe("parity with upstream's optimizer and calculator", () => {
     const short = (await buildMyTeam({ characters, inventory, team, plans: [{ ...plan, erNeed: 400 }], order: [0], options: DEFAULT_OPTIONS }, inlineBackend())).members[0]!;
     expect(short.erMet).toBe(false);
     expect(short.erUnreachable).toBe(true);
+  }, 120000);
+
+  it("the team's total under the ticks: every build ticked is the run's own total, none ticked is today's", async () => {
+    const team = { id: null, name: "Rotation", characterIds: ["Cartethyia", null, null], buildIds: [null, null, null], actions: rotation.actions.map((a: any) => ({ ...a, slot: 0 })), duration: rotation.duration ?? null, enemyConfig: {} };
+    // a floor out of reach: the most ER, not today's echoes
+    const run = await buildMyTeam({ characters, inventory: { echoes, equipped: {} }, team, plans: [{ ...cartPlan(), erNeed: 400 }], order: [0], options: DEFAULT_OPTIONS }, inlineBackend());
+    expect(run.objectiveKind).toBe("team");
+    expect(run.team!.after).not.toBeCloseTo(run.team!.before, 0); // the build moves it, or this says nothing
+    const all = await teamFigureOf(run, team, characters, echoes, [true, false, false]);
+    expect(all!.after).toBe(run.team!.after);
+    expect(all!.perSlot[0]).toBe(run.members[0]!.after!.withTeam);
+    const none = await teamFigureOf(run, team, characters, echoes, [false, false, false]);
+    expect(none!.after).toBeCloseTo(run.team!.before, 3);
   }, 120000);
 
   it("a teammate who gets no new build keeps their echoes: nobody else's build takes them", async () => {

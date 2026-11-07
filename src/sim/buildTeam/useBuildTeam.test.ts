@@ -1,21 +1,23 @@
 // Wuthering Tools+ One team: a review stands for the account it was planned on, and a save is all or nothing. The real
 // stores; the run is canned, since what is under test is what the page does around it.
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { refusedStores } from "../storage/persistGuard";
 import { clearUndo, readUndo, SaveRefused } from "./apply";
-import { buildMyTeam } from "./buildTeam";
+import { buildMyTeam, teamFigureOf } from "./buildTeam";
 import { rankedTeamImpact } from "../account/investPlan";
 import { clearKeptReview, useBuildTeam } from "./useBuildTeam";
 
-vi.mock("./buildTeam", async (original) => ({ ...(await original<typeof import("./buildTeam")>()), buildMyTeam: vi.fn() }));
+vi.mock("./buildTeam", async (original) => ({ ...(await original<typeof import("./buildTeam")>()), buildMyTeam: vi.fn(), teamFigureOf: vi.fn(async () => null) }));
 vi.mock("./plans", () => ({ plansForTeam: vi.fn(async () => ({ plans: [{ share: null, mainDps: false }, { share: null, mainDps: false }, null], riley: null })) }));
 vi.mock("./workerBackend", () => ({ workerBackend: () => ({ dispose() {} }) }));
-vi.mock("../engine/rileyClient", () => ({ rileyClient: () => ({}) }));
-vi.mock("../engine/rileyAccount", () => ({ rileyAccountOf: () => ({}) }));
+const solveMine = vi.hoisted(() => vi.fn());
+vi.mock("../engine/rileyClient", () => ({ rileyClient: () => ({ solveMine }) }));
+vi.mock("../engine/rileyAccount", () => ({ rileyAccountOf: vi.fn(() => ({})) }));
 vi.mock("../account/investPlan", () => ({ rankedTeamImpact: vi.fn() }));
 
 const member = (slot: number, characterId: string) => ({ slot, characterId, status: "ok", draft: { weapon: `w-${characterId}`, echoes: {} }, sameEchoes: false, fromBuild: { id: null, name: null, source: "active" }, before: { value: 100, menuEr: null, withRunBuffs: null }, after: { value: 110, optimizerValue: 110, menuEr: null, withTeam: null, picks: [] }, erMet: null, erFloor: null });
@@ -131,6 +133,152 @@ describe("One team's review and save", () => {
     cancelled(Object.assign(new Error("The build was cancelled"), { name: "AbortError" }));
     await pending;
     expect(bt.phase.value).toBe("plan");
+  });
+
+  describe("the team total reads what the Save gets", () => {
+    /** Phrolova's team on the export: the headline read 6.52M with every new build, the 1 build the Save writes read 7.01M */
+    const headlineRun = () => ({ ...run(), team: { before: 683, after: 652, dpsBefore: null, dpsAfter: null } });
+    const lower = (m: ReturnType<typeof member>) => ({ ...m, after: { ...m.after, value: 90 } });
+    const figure = (ticks: readonly boolean[]) => {
+      const n = ticks.filter(Boolean).length;
+      return { after: n === 1 ? 701 : n === 2 ? 652 : 683, dpsAfter: null, perSlot: [n ? 601 : 583, 100] };
+    };
+    const settle = async (): Promise<void> => {
+      await nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    };
+    const reviewed = async () => {
+      vi.mocked(buildMyTeam).mockImplementation(async () => {
+        const out = headlineRun();
+        out.members[1] = lower(out.members[1]!) as never;
+        return out as never;
+      });
+      vi.mocked(teamFigureOf).mockImplementation(async (_r, _t, _c, _e, ticks) => figure(ticks));
+      return review();
+    };
+    const ask = () => vi.mocked(teamFigureOf).mock.calls;
+    beforeEach(() => {
+      vi.mocked(teamFigureOf).mockReset().mockResolvedValue(null);
+    });
+
+    it("opens on the builds the default Save writes: the headline read -4.6 % over a Save worth +2.6 %", async () => {
+      const bt = await reviewed();
+      expect(bt.saveSlots.value).toEqual([true, false]);
+      expect(bt.teamFigure.value?.after).toBe(701);
+      expect(bt.toSave.value.map((m) => m.characterId)).toEqual(["A"]);
+    });
+
+    it("moves with the ticks, every way round, and the cards with it", async () => {
+      const bt = await reviewed();
+      expect(bt.reviewMembers.value[0]!.after!.withTeam).toBe(601);
+      expect(bt.reviewMembers.value[1]!.after!.withTeam).toBeNull(); // not saved: her card reads her build alone
+      bt.saveSlots.value[1] = true;
+      await settle();
+      expect(bt.teamFigure.value?.after).toBe(652);
+      expect(bt.reviewMembers.value[1]!.after!.withTeam).toBe(100);
+      bt.saveSlots.value = [false, false];
+      await settle();
+      expect(bt.teamFigure.value?.after).toBe(683);
+    });
+
+    it("an older answer never lands over a newer tick", async () => {
+      const bt = await reviewed();
+      let slow: (f: ReturnType<typeof figure>) => void = () => {};
+      vi.mocked(teamFigureOf).mockImplementationOnce(() => new Promise((resolve) => (slow = resolve as typeof slow)));
+      bt.saveSlots.value[1] = true;
+      await settle();
+      expect(bt.teamFigureBusy.value).toBe(true);
+      bt.saveSlots.value[1] = false;
+      await settle();
+      expect(bt.teamFigure.value?.after).toBe(701);
+      slow(figure([true, true]));
+      await settle();
+      expect(bt.teamFigure.value?.after).toBe(701);
+      expect(bt.teamFigureBusy.value).toBe(false);
+    });
+
+    it("a total that cannot be worked out reads blank, not the figure of other builds", async () => {
+      const bt = await reviewed();
+      vi.mocked(teamFigureOf).mockRejectedValueOnce(new Error("no"));
+      bt.saveSlots.value[1] = true;
+      await settle();
+      expect(bt.teamFigure.value).toBeNull();
+      expect(bt.teamFigureBusy.value).toBe(false);
+    });
+
+    it("comes back with the review, ticks and figure together, with no second run", async () => {
+      const first = await reviewed();
+      first.saveSlots.value[1] = true;
+      await settle();
+      const calls = ask().length;
+      const back = useBuildTeam();
+      await back.load({ teamId: "t1", members: [] });
+      await settle();
+      expect(back.phase.value).toBe("result");
+      expect(back.saveSlots.value).toEqual([true, true]);
+      expect(back.teamFigure.value?.after).toBe(652);
+      expect(ask()).toHaveLength(calls);
+      back.saveSlots.value[1] = false; // and still follows them
+      await settle();
+      expect(back.teamFigure.value?.after).toBe(701);
+    });
+
+    it("leaves a review of an account that changed since alone: Save refuses it", async () => {
+      const bt = await reviewed();
+      const calls = ask().length;
+      useCharacterStore().characters.A.weapon = "edited elsewhere";
+      bt.saveSlots.value[1] = true;
+      await settle();
+      expect(ask()).toHaveLength(calls);
+    });
+
+    it("a cancel while the headline is worked out leaves no review behind", async () => {
+      vi.mocked(buildMyTeam).mockImplementation(async () => headlineRun() as never);
+      let slow: (f: ReturnType<typeof figure>) => void = () => {};
+      vi.mocked(teamFigureOf).mockImplementationOnce(() => new Promise((resolve) => (slow = resolve as typeof slow)));
+      const bt = useBuildTeam();
+      await bt.load({ teamId: "t1", members: [] });
+      const pending = bt.run();
+      await settle();
+      bt.cancel();
+      slow(figure([true, true]));
+      await pending;
+      expect(bt.phase.value).toBe("plan");
+      expect(bt.result.value).toBeNull();
+    });
+
+    describe("wuwa_calc's figure", () => {
+      const withRiley = async () => {
+        const plans = await import("./plans");
+        vi.mocked(plans.plansForTeam).mockResolvedValueOnce({ plans: [{ share: null, mainDps: false }, { share: null, mainDps: false }, null], riley: { teamKey: "k" }, dpsMine: 500 } as never);
+        return reviewed();
+      };
+      beforeEach(() => {
+        solveMine.mockReset().mockResolvedValue([{ best: { total: 640 } }]);
+      });
+
+      it("reads the ticked builds and moves with them; nothing ticked is today's", async () => {
+        const accountOf = vi.mocked((await import("../engine/rileyAccount")).rileyAccountOf);
+        accountOf.mockClear();
+        const bt = await withRiley();
+        await settle();
+        expect(bt.rileyAfter.value).toBe(640);
+        const worn = accountOf.mock.calls.at(-1)![0] as Record<string, { weapon?: string }>;
+        expect(worn.A!.weapon).toBe("w-A");
+        expect(worn.B!.weapon).toBe("old-B"); // not ticked: not worn
+        bt.saveSlots.value = [false, false];
+        await settle();
+        expect(bt.rileyAfter.value).toBe(500);
+      });
+
+      it("a figure that fails says so rather than loading for good", async () => {
+        solveMine.mockRejectedValue(new Error("engine"));
+        const bt = await withRiley();
+        await settle();
+        expect(bt.rileyAfter.value).toBeNull();
+        expect(bt.rileyAfterBusy.value).toBe(false);
+      });
+    });
   });
 
   describe("a review you leave", () => {

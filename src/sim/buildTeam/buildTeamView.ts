@@ -149,6 +149,24 @@ export function defaultSaveSlots(members: readonly MemberOutcome[]): boolean[] {
   return ticks;
 }
 
+/** The members as the review reads them under these ticks: a ticked member's figure is their part of the team's total
+ *  with the ticked builds (`perSlot`, `teamFigureOf`), so the cards add up to the headline; an unticked member's team
+ *  part would be the build they keep, so their card reads their new build alone. */
+export function membersAsTicked(members: readonly MemberOutcome[], ticks: readonly boolean[], perSlot: readonly number[] | null): MemberOutcome[] {
+  if (!perSlot) return [...members];
+  return members.map((m) => (m.after ? { ...m, after: { ...m.after, withTeam: ticks[m.slot] ? perSlot[m.slot] ?? null : null } } : m));
+}
+
+/** Under the team total, when it is not every new build: which builds it counts, and what all of them would read. Null
+ *  when every new build is ticked (the total says it all). */
+export function teamTickNote(r: Pick<BuildTeamResult, "members" | "team">, ticks: readonly boolean[]): string | null {
+  const built = r.members.filter((m) => m.draft);
+  const ticked = built.filter((m) => ticks[m.slot]).length;
+  if (!r.team || !built.length || ticked === built.length) return null;
+  const every = `${built.length === 1 ? "The new build" : `All ${built.length} new builds`}: ${compactNum(r.team.after)}${r.team.before > 0 ? ` (${deltaText(r.team.before, r.team.after)})` : ""}.`;
+  return ticked ? `Counts the ${ticked} build${ticked === 1 ? "" : "s"} ticked for Save. ${every}` : `Nothing ticked for Save, so the team stays as it is. ${every}`;
+}
+
 export interface ShareConflict {
   /** the member whose new build takes the echo */
   characterId: string;

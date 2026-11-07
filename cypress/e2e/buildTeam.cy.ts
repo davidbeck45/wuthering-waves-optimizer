@@ -105,6 +105,21 @@ describe("build my team", () => {
     });
     cy.get("[data-test-build-team-summary]").should("contain.text", "Scored on the team's own rotation");
 
+    // the team total is what the Save gets, and follows its ticks: nothing ticked is today's total, said in words
+    cy.get("[data-test-build-team-team-total] .bt-kpi__v").invoke("text").then((opened) => {
+      cy.get("[data-test-build-team-save-slot]:checked").then(($ticked) => {
+        cy.wrap($ticked).uncheck({ force: true });
+        cy.get("[data-test-build-team-tick-note]").should("contain.text", "Nothing ticked for Save");
+        cy.get("[data-test-build-team-team-total] .bt-kpi__v").should(($v) => {
+          const [before, after] = $v.text().split("→").map((s) => s.trim());
+          expect(after, "total with nothing ticked").to.eq(before);
+        });
+        cy.get("[data-test-build-team-team-delta]").should("contain.text", "±0 %");
+        cy.wrap($ticked).check({ force: true });
+        cy.get("[data-test-build-team-team-total] .bt-kpi__v").should("have.text", opened);
+      });
+    });
+
     // save: confirm first, then the build exists and is pinned; the active build is untouched
     cy.get('[data-test-build-team-save-slot="Cartethyia"]').check({ force: true });
     cy.window().then((win) => cy.wrap(JSON.stringify(readCart(win).echoes ?? {})).as("liveEchoes"));

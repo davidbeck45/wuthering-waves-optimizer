@@ -383,6 +383,7 @@ export function registerPlusCommands(program: Command): void {
           riley: plans.riley ? { teamKey: plans.riley.teamKey, dpsMine: plans.dpsMine, dpsHigh: plans.dpsHigh } : { note: plans.rileyNote },
           plans: plans.plans,
           ...result,
+          defaultSave: out.defaultSave,
           members: result.members.map((m) => ({ ...m, draft: undefined, after: m.after ? { ...m.after, picks: m.after.picks.map((p) => ({ echoId: p.echo.echoId, echo: p.echo.echo, set: p.echo.echoSet, cost: p.echo.type, main: p.echo.stat, source: p.source, wornBy: p.wornBy, sharedWith: p.sharedWith })) } : null })),
         });
       }

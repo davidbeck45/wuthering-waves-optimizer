@@ -2,7 +2,7 @@
 // in words, and the notes a result card explains itself with.
 import { describe, expect, it } from "vitest";
 import { setLabel } from "../echoLab/echoLabView";
-import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, resultNotes, roleLine, setName, shareConflicts, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
+import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, membersAsTicked, resultNotes, roleLine, setName, shareConflicts, teamTickNote, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
 import type { MemberOutcome } from "./buildTeam";
 
@@ -198,5 +198,38 @@ describe("a figure a teammate's new build moves", () => {
     const same = (own: number, withTeam: number) => outcome({ sameEchoes: true, before: { value: 100, menuEr: 120, withRunBuffs: null }, after: { value: own, optimizerValue: own, menuEr: 120, picks: [], withTeam } });
     expect(worthSaving(same(100, 130))).toBe(false);
     expect(worthSaving(same(103, 90))).toBe(true);
+  });
+});
+
+describe("the review under the Save's ticks", () => {
+  const built = (slot: number, withTeam: number | null = null) => outcome({ slot, characterId: `C${slot}`, after: { value: 100, optimizerValue: 100, menuEr: 116, picks: [], withTeam } });
+  const skipped = outcome({ slot: 2, characterId: "C2", status: "skipped", draft: null, after: null });
+
+  it("a ticked member reads their part of the ticked total, an unticked one their build alone", () => {
+    const members = [built(0, 500), built(1, 300), skipped];
+    const out = membersAsTicked(members, [true, false, false], [640, 280, 0]);
+    expect(out.map((m) => m.after?.withTeam ?? null)).toEqual([640, null, null]);
+    expect(out[2]).toBe(skipped);
+    expect(members[0]!.after!.withTeam).toBe(500); // the run's own result is not touched
+  });
+
+  it("without a figure the run's members stand", () => {
+    const members = [built(0, 500)];
+    expect(membersAsTicked(members, [false], null)).toEqual(members);
+  });
+
+  it("says what the total counts unless it is every new build", () => {
+    const r = { members: [built(0), built(1), built(2)], team: { before: 6_830_000, after: 6_520_000, dpsBefore: null, dpsAfter: null } };
+    expect(teamTickNote(r, [true, true, true])).toBeNull();
+    expect(teamTickNote(r, [true, false, false])).toBe("Counts the 1 build ticked for Save. All 3 new builds: 6.52M (−4.5 %).");
+    expect(teamTickNote(r, [true, true, false])).toBe("Counts the 2 builds ticked for Save. All 3 new builds: 6.52M (−4.5 %).");
+    expect(teamTickNote(r, [false, false, false])).toBe("Nothing ticked for Save, so the team stays as it is. All 3 new builds: 6.52M (−4.5 %).");
+  });
+
+  it("names one build as that, and a member without a build counts for nothing", () => {
+    const r = { members: [built(0), skipped], team: { before: 100, after: 110, dpsBefore: null, dpsAfter: null } };
+    expect(teamTickNote(r, [false, false])).toBe("Nothing ticked for Save, so the team stays as it is. The new build: 110 (+10.0 %).");
+    expect(teamTickNote(r, [true, false])).toBeNull();
+    expect(teamTickNote({ ...r, team: null }, [false, false])).toBeNull();
   });
 });

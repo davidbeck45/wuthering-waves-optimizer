@@ -8,7 +8,8 @@ import { int, pct, table } from "../cli/format";
 import { rileyHeadless } from "../engine/rileyNode";
 import { characterDisplayName } from "../display/names";
 import { showNeed } from "../energy/energyNeed";
-import { buildMyTeam, currentEchoesOf, memberAfter, type BuildTeamResult, type TeamSpec } from "./buildTeam";
+import { buildMyTeam, currentEchoesOf, memberAfter, teamFigureOf, type BuildTeamResult, type TeamFigure, type TeamSpec } from "./buildTeam";
+import { defaultSaveSlots } from "./buildTeamView";
 import { DEFAULT_OPTIONS, type BuildOptions } from "./constraints";
 import { inlineBackend } from "./headlessOptimizer";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
@@ -24,6 +25,12 @@ export interface BuildTeamCliOptions extends Partial<BuildOptions> {
   autoBuffs?: boolean;
 }
 
+/** What the page's Save writes as it opens: its ticks, and the team with those builds worn (null without a team total). */
+export interface DefaultSave {
+  ticks: boolean[];
+  figure: TeamFigure | null;
+}
+
 const norm = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 export function teamFromArg(exp: ExportFile, arg: string): TeamSpec {
@@ -35,7 +42,7 @@ export function teamFromArg(exp: ExportFile, arg: string): TeamSpec {
   return { id: t.id ?? null, name: t.name, characterIds: t.characterIds ?? [], buildIds: t.buildIds, actions: t.actions ?? [], duration: t.duration ?? null, enemyConfig: t.enemyConfig ?? null, handoffs: t.handoffs ?? null };
 }
 
-export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeamCliOptions = {}): Promise<{ team: TeamSpec; plans: TeamPlans; result: BuildTeamResult }> {
+export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeamCliOptions = {}): Promise<{ team: TeamSpec; plans: TeamPlans; result: BuildTeamResult; defaultSave: DefaultSave }> {
   const team = teamFromArg(exp, arg);
   const riley = await rileyHeadless(exp);
   const source: RileySource = {
@@ -70,11 +77,12 @@ export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeam
     { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, team, plans: runPlans as typeof plans.plans, order, options, erFloors, autoTeamBuffs: opts.autoBuffs ?? true },
     inlineBackend(),
   );
-  return { team, plans, result };
+  const ticks = defaultSaveSlots(result.members);
+  return { team, plans, result, defaultSave: { ticks, figure: await teamFigureOf(result, team, exp.characters, exp.inventory.echoes, ticks) } };
 }
 
-export function printBuildTeam(out: { team: TeamSpec; plans: TeamPlans; result: BuildTeamResult }): string {
-  const { team, plans, result } = out;
+export function printBuildTeam(out: { team: TeamSpec; plans: TeamPlans; result: BuildTeamResult; defaultSave: DefaultSave }): string {
+  const { team, plans, result, defaultSave } = out;
   const lines: string[] = [];
   lines.push(`${team.name}${team.id ? "" : " (not a saved team)"}`);
   lines.push(plans.riley ? `wuwa_calc ${plans.riley.teamKey} at your account: ${int(plans.dpsMine ?? 0)} DPS${plans.dpsHigh ? ` · High Invest ${int(plans.dpsHigh)} DPS` : ""}` : plans.rileyNote ?? "");
@@ -99,6 +107,12 @@ export function printBuildTeam(out: { team: TeamSpec; plans: TeamPlans; result: 
   }
   lines.push(table(rows));
   for (const m of result.members) if (m.message && m.after) lines.push(`${characterDisplayName(m.characterId)}: ${m.message}`);
-  if (result.team) lines.push(`\nTeam rotation: ${int(result.team.before)} → ${int(result.team.after)} (${pct((result.team.after / Math.max(1, result.team.before) - 1) * 100)}) avg damage per rotation`);
+  if (result.team) {
+    const line = (after: number): string => `${int(result.team!.before)} → ${int(after)} (${pct((after / Math.max(1, result.team!.before) - 1) * 100)}) avg damage per rotation`;
+    const built = result.members.filter((m) => m.draft);
+    const saved = built.filter((m) => defaultSave.ticks[m.slot]).length;
+    lines.push(`\nTeam rotation: ${line(result.team.after)}`);
+    if (defaultSave.figure && saved !== built.length) lines.push(`As the page's Save opens (${saved} of ${built.length} builds): ${line(defaultSave.figure.after)}`);
+  }
   return lines.join("\n");
 }

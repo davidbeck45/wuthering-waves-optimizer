@@ -149,11 +149,12 @@
       <!-- step 3: result -->
       <template v-else-if="phase === 'result' && result">
         <section class="bt-summary" data-test-build-team-summary>
-          <div v-if="result.team" class="bt-kpi" data-test-build-team-team-total>
+          <div v-if="result.team" class="bt-kpi" :aria-busy="teamFigureBusy" data-test-build-team-team-total>
             <span class="bt-kpi__k">Team rotation</span>
-            <span class="bt-kpi__v tabular-nums">{{ compactNum(result.team.before) }} → {{ compactNum(result.team.after) }}</span>
-            <span class="bt-delta" :class="`bt-delta--${deltaTone(result.team.before, result.team.after)}`">{{ deltaText(result.team.before, result.team.after) }}</span>
-            <span class="bt-kpi__s">avg damage per rotation{{ result.team.dpsAfter ? ` · ${compactNum(result.team.dpsAfter)} DPS` : "" }}</span>
+            <span class="bt-kpi__v tabular-nums" :class="{ 'opacity-50': teamFigureBusy }">{{ compactNum(result.team.before) }} → {{ compactNum(teamFigure?.after) }}</span>
+            <span class="bt-delta" :class="[`bt-delta--${deltaTone(result.team.before, teamFigure?.after)}`, { 'opacity-50': teamFigureBusy }]" data-test-build-team-team-delta>{{ deltaText(result.team.before, teamFigure?.after) }}</span>
+            <span class="bt-kpi__s">avg damage per rotation{{ teamFigure?.dpsAfter ? ` · ${compactNum(teamFigure.dpsAfter)} DPS` : "" }}</span>
+            <span v-if="tickNote" class="bt-kpi__s" data-test-build-team-tick-note>{{ tickNote }}</span>
           </div>
           <div v-if="rankedFigure" class="bt-kpi" data-test-build-team-ranked>
             <span class="bt-kpi__k">Team on My account</span>
@@ -164,10 +165,10 @@
           <div v-if="plans?.dpsMine" class="bt-kpi" data-test-build-team-riley-dps>
             <span class="bt-kpi__k">wuwa_calc at your account</span>
             <span class="bt-kpi__v tabular-nums">
-              {{ compactNum(plans.dpsMine) }} → <template v-if="rileyAfter != null">{{ compactNum(rileyAfter) }}</template><span v-else class="loading loading-dots loading-xs align-middle"></span>
+              {{ compactNum(plans.dpsMine) }} → <template v-if="rileyAfter != null">{{ compactNum(rileyAfter) }}</template><span v-else-if="rileyAfterBusy" class="loading loading-dots loading-xs align-middle"></span><template v-else>—</template>
             </span>
             <span v-if="rileyAfter != null" class="bt-delta" :class="`bt-delta--${deltaTone(plans.dpsMine, rileyAfter)}`">{{ deltaText(plans.dpsMine, rileyAfter) }}</span>
-            <span class="bt-kpi__s">team DPS in Riley's engine with the new echoes</span>
+            <span class="bt-kpi__s">team DPS in Riley's engine with the ticked builds</span>
           </div>
           <div v-if="plans?.dpsHigh" class="bt-kpi" data-test-build-team-high>
             <span class="bt-kpi__k">Gap to High Invest</span>
@@ -184,7 +185,7 @@
             v-for="slot in prioritySlots"
             :key="slot"
             :class="{ 'bt-phone-hide': shown !== slot }"
-            :outcome="result.members[slot]!"
+            :outcome="reviewMembers[slot]!"
             :plan="plans?.plans[slot]"
             :priority="result.order.indexOf(slot) + 1 || order.indexOf(slot) + 1"
             :save="!!saveSlots[slot]"
@@ -251,7 +252,7 @@ import BuildTeamResultCard from "./BuildTeamResultCard.vue";
 import BuildTeamSwitch from "./BuildTeamSwitch.vue";
 import { memberAfter, menuErPercent, teamSlotRotation } from "./buildTeam";
 import { buildNameFor, saveFailedText } from "./apply";
-import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary, undoConfirm, undoDoneText } from "./buildTeamView";
+import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary, teamTickNote, undoConfirm, undoDoneText } from "./buildTeamView";
 import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
 import { usePlusBar } from "../shell/plusBar";
 import "./buildTeam.css";
@@ -280,7 +281,7 @@ const teamStore = useTeamRotationsStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 const bt = useBuildTeam();
-const { phase, error, team, plans, order, erFloors, options, progress, result, rileyAfter, rankedFigure, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
+const { phase, error, team, plans, order, erFloors, options, progress, result, reviewMembers, teamFigure, teamFigureBusy, rileyAfter, rileyAfterBusy, rankedFigure, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
 const { move, run, cancel, only } = bt;
 
 const makeActive = ref(false);
@@ -325,8 +326,9 @@ function barValue(slot: number): number {
   return p.phase === "prepare" ? 5 : 0;
 }
 
+const tickNote = computed(() => (result.value ? teamTickNote(result.value, saveSlots.value) : null));
 const switchDeltas = computed(() =>
-  (result.value?.members ?? []).map((m) => (m?.after && m.before ? { text: deltaText(m.before.value, memberAfter(m)), tone: deltaTone(m.before.value, memberAfter(m)) } : { text: m?.status === "ok" ? "" : "—", tone: "flat" })),
+  reviewMembers.value.map((m) => (m?.after && m.before ? { text: deltaText(m.before.value, memberAfter(m)), tone: deltaTone(m.before.value, memberAfter(m)) } : { text: m?.status === "ok" ? "" : "—", tone: "flat" })),
 );
 const highGap = computed(() => {
   const high = plans.value?.dpsHigh;

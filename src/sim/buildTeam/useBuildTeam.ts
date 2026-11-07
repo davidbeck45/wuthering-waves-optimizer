@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Build it for me": the page's state. Plain copies of the stores go into the engine (buildTeam.ts);
 // Riley's plan comes through the app's one solver worker (rileyClient), the search through upstream's optimizer
 // workers (workerBackend.ts); nothing is written until the player confirms (apply.ts).
-import { computed, nextTick, reactive, ref, shallowRef, toRaw, type Ref, type ShallowRef } from "vue";
+import { computed, nextTick, reactive, ref, shallowRef, toRaw, watch, type Ref, type ShallowRef } from "vue";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -11,7 +11,7 @@ import { applyBuildFields } from "../../characters/buildFields";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rileyClient } from "../engine/rileyClient";
 import { rileyAccountOf } from "../engine/rileyAccount";
-import { buildMyTeam, currentEchoesOf, teamSpecOf, wornByMap, type BuildTeamResult, type TeamRequest, type TeamSpec } from "./buildTeam";
+import { buildMyTeam, currentEchoesOf, teamFigureOf, teamSpecOf, wornByMap, type BuildTeamResult, type TeamFigure, type TeamRequest, type TeamSpec } from "./buildTeam";
 import { OPTIONS_KEY, readBuildOptions, type BuildOptions } from "./options";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
 import { priorityOrder, type MemberPlan } from "./rileyPlan";
@@ -21,7 +21,7 @@ import { accountStoresRefused } from "../storage/persistGuard";
 import { onSavedResultsCleared } from "../persist/savedResults";
 import type { TeamImpact } from "../account/investPlan";
 import { snapshotCharacters } from "../buildHistory/history";
-import { defaultSaveSlots, shareConflicts } from "./buildTeamView";
+import { defaultSaveSlots, membersAsTicked, shareConflicts } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
 import { showNeed } from "../energy/energyNeed";
 
@@ -53,6 +53,7 @@ interface KeptReview {
   erFloors: Array<number | null>;
   result: BuildTeamResult;
   saveSlots: Ref<boolean[]>;
+  teamFigure: ShallowRef<TeamFigure | null>;
   rileyAfter: Ref<number | null>;
   rankedFigure: ShallowRef<TeamImpact | null>;
 }
@@ -61,6 +62,8 @@ export function clearKeptReview(): void {
   keptReview = null;
 }
 onSavedResultsCleared(clearKeptReview);
+
+const ticksKey = (ticks: readonly boolean[]): string => ticks.map((t) => (t ? "1" : "0")).join("");
 
 const requestKey = (r: TeamRequest & { only?: string | null }): string => JSON.stringify([r.teamId ?? null, r.members ?? [], r.key ?? null, r.only ?? null, r.rankedTeam ?? null]);
 
@@ -82,6 +85,9 @@ export function useBuildTeam() {
   const rileyAfter = ref<number | null>(null);
   const rileyAfterBusy = ref(false);
   const saveSlots = ref<boolean[]>([]);
+  /** the team with the ticked builds worn, what the Save gets: the review's headline, and it moves with the ticks */
+  const teamFigure = shallowRef<TeamFigure | null>(null);
+  const teamFigureBusy = ref(false);
   const applied = shallowRef<ApplyOutcome | null>(null);
   const undoRecord = shallowRef<UndoRecord | null>(readUndo());
   const startedAt = ref(0);
@@ -97,6 +103,10 @@ export function useBuildTeam() {
   /** the account the review on screen was planned on: it stands for that account and no other */
   let plannedOn: string | null = null;
   let saving = false;
+  /** the ticks the figures on screen stand for, and the newest ask for each: an answer to an older one is dropped */
+  let figuredTicks: string | null = null;
+  let teamFigureAsk = 0;
+  let rileyAsk = 0;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => undoIsLive(stores(), undoRecord.value));
@@ -140,14 +150,17 @@ export function useBuildTeam() {
     erFloors.value = kept.erFloors;
     result.value = kept.result;
     saveSlots.value = [...kept.saveSlots.value];
+    teamFigure.value = kept.teamFigure.value;
     rileyAfter.value = kept.rileyAfter.value;
     rankedFigure.value = kept.rankedFigure.value;
     applied.value = null;
     error.value = null;
     plannedOn = kept.on;
-    keptReview = { ...kept, saveSlots, rileyAfter, rankedFigure };
+    figuredTicks = ticksKey(saveSlots.value);
+    keptReview = { ...kept, saveSlots, teamFigure, rileyAfter, rankedFigure };
     phase.value = "result";
     // a figure still on its way when the page was left lands on the old page's refs
+    if (!teamFigure.value) void computeTeamFigure(kept.result);
     if (rileyAfter.value == null) void computeRileyAfter(kept.result);
     if (!rankedFigure.value) void computeRankedFigure(kept.result);
   }
@@ -162,6 +175,7 @@ export function useBuildTeam() {
     }
     result.value = null;
     applied.value = null;
+    teamFigure.value = null;
     rileyAfter.value = null;
     rankedFigure.value = null;
     error.value = null;
@@ -225,6 +239,7 @@ export function useBuildTeam() {
     error.value = null;
     result.value = null;
     applied.value = null;
+    teamFigure.value = null;
     rileyAfter.value = null;
     rankedFigure.value = null;
     keptReview = null;
@@ -266,7 +281,13 @@ export function useBuildTeam() {
       // misses), the same echoes only when the run's buff settings score more — plus any teammate a ticked build
       // takes echoes from, so the saved team never wears one echo twice (buildTeamView.ts `defaultSaveSlots`)
       saveSlots.value = defaultSaveSlots(out.members);
-      keptReview = { request: requested, on: fingerprint, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, rileyAfter, rankedFigure };
+      // the headline before the page shows: read with every new build, its sign could be the opposite of the Save's
+      await computeTeamFigure(out);
+      if (ctrl.signal.aborted) {
+        if (result.value === out) result.value = null;
+        return;
+      }
+      keptReview = { request: requested, on: fingerprint, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, teamFigure, rileyAfter, rankedFigure };
       phase.value = "result";
       void computeRileyAfter(out);
       void computeRankedFigure(out);
@@ -289,23 +310,64 @@ export function useBuildTeam() {
     phase.value = plans.value ? "plan" : "pick";
   }
 
-  /** Riley's DPS for the team at the account with the new builds worn (his "My build" spread reads the echoes). */
+  /** The headline for the ticks as they are, from the calculator. A figure that can't be worked out is left blank rather
+   *  than kept: the old one would stand for other builds. */
+  async function computeTeamFigure(out: BuildTeamResult): Promise<void> {
+    figuredTicks = ticksKey(saveSlots.value);
+    const ask = ++teamFigureAsk;
+    if (!out.team || !team.value) return;
+    teamFigureBusy.value = true;
+    let figure: TeamFigure | null = null;
+    try {
+      figure = await teamFigureOf(out, team.value, plain(characterStore.characters), plain(inventoryStore.echoes), saveSlots.value);
+    } catch {
+      // blank, as said above
+    }
+    if (ask !== teamFigureAsk) return;
+    teamFigureBusy.value = false;
+    if (result.value === out) teamFigure.value = figure;
+  }
+
+  /** Riley's DPS for the team at the account with the ticked builds worn (his "My build" spread reads the echoes). */
   async function computeRileyAfter(out: BuildTeamResult): Promise<void> {
     const key = plans.value?.riley?.teamKey;
-    if (!key || !out.members.some((m) => m.draft)) return;
+    if (!key) return;
+    const ask = ++rileyAsk;
+    const saving = out.members.filter((m) => m.draft && saveSlots.value[m.slot]);
+    if (!saving.length) {
+      rileyAfter.value = plans.value?.dpsMine ?? null; // nothing would change
+      rileyAfterBusy.value = false;
+      return;
+    }
+    rileyAfter.value = null;
     rileyAfterBusy.value = true;
+    let total: number | null = null;
     try {
       const chars = plain(characterStore.characters);
-      for (const m of out.members) if (m.draft) chars[m.characterId] = applyBuildFields(chars[m.characterId] ?? {}, m.draft);
+      for (const m of saving) chars[m.characterId] = applyBuildFields(chars[m.characterId] ?? {}, m.draft!);
       const acc = rileyAccountOf(chars, { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams));
       const [solve] = await rileyClient().solveMine([key], { account: acc, subs: "mine" });
-      rileyAfter.value = solve?.best?.total ?? null;
+      total = solve?.best?.total ?? null;
     } catch {
-      rileyAfter.value = null;
-    } finally {
-      rileyAfterBusy.value = false;
+      // no figure: the tile says so
     }
+    if (ask !== rileyAsk) return;
+    rileyAfter.value = total;
+    rileyAfterBusy.value = false;
   }
+
+  // a tick moves what the Save writes, so what the review says it gets moves with it. Not on an account that changed
+  // since the run, a save included: the figures would read that account, and Save refuses that review anyway
+  watch(
+    saveSlots,
+    () => {
+      const out = result.value;
+      if (!out || phase.value !== "result" || ticksKey(saveSlots.value) === figuredTicks || !reviewIsCurrent()) return;
+      void computeTeamFigure(out);
+      void computeRileyAfter(out);
+    },
+    { deep: true },
+  );
 
   /** The team figure of the /account row that opened this run, by the row's own rule: its scorer, the new build worn, and
    *  only when the run re-gears the build that row's figure reads (the active one). */
@@ -327,6 +389,8 @@ export function useBuildTeam() {
 
   /** The members a save would write (ticked, with a build). */
   const toSave = computed(() => (result.value?.members ?? []).filter((m, i) => saveSlots.value[i] && m.draft));
+  /** The members as the review reads them under the ticks: the cards add up to the headline. */
+  const reviewMembers = computed(() => membersAsTicked(result.value?.members ?? [], saveSlots.value, teamFigure.value?.perSlot ?? null));
   /** Echoes a build being saved takes from a teammate whose build here is not being replaced (the team would wear
    *  them twice): said in the save bar and the confirm dialog. */
   const conflicts = computed(() => shareConflicts(result.value?.members ?? [], new Set(toSave.value.map((m) => m.characterId))));
@@ -335,6 +399,7 @@ export function useBuildTeam() {
   function dropReview(): void {
     result.value = null;
     applied.value = null;
+    teamFigure.value = null;
     rileyAfter.value = null;
     rankedFigure.value = null;
     plannedOn = null;
@@ -415,6 +480,9 @@ export function useBuildTeam() {
     options,
     progress,
     result,
+    reviewMembers,
+    teamFigure,
+    teamFigureBusy,
     rileyAfter,
     rileyAfterBusy,
     rankedFigure,

@@ -153,9 +153,12 @@ export interface BuildTeamResult {
   swaps: SwapMove[];
   /** the members' objective: the team's own rotation (one unit: team damage) or each member's best rotation */
   objectiveKind: "team" | "solo";
-  /** team rotation totals, average damage per rotation (and per second when it has a duration); team objective only */
+  /** team rotation totals, average damage per rotation (and per second when it has a duration), `after` with every new
+   *  build worn; team objective only. The page's headline reads what the ticked builds get (`teamFigureOf`) */
   team: { before: number; after: number; dpsBefore: number | null; dpsAfter: number | null } | null;
   enemy: TeamEnemyConfig;
+  /** the run's team-buff setting (`BuildTeamInput.autoTeamBuffs`), for totals worked out after it */
+  autoTeamBuffs: boolean;
   /** echoes worn by characters outside the team that the result uses (only with `takeFromOthers`) */
   fromOthers: string[];
   ms: number;
@@ -596,6 +599,26 @@ export async function teamTotalWithDrafts(team: TeamSpec, characters: Record<str
   return teamTotalOf({ ...team, buildIds: pins }, withDrafts, echoes, enemy, auto);
 }
 
+/** The team with some of a run's new builds worn. */
+export interface TeamFigure {
+  after: number;
+  dpsAfter: number | null;
+  /** each slot's part of `after` */
+  perSlot: number[];
+}
+
+/** What these members' new builds get the team: `ticks` as the page's Save ticks (or `defaultSaveSlots`), the other
+ *  members on the build they run today. This is what Teams reads after that Save; a run's own `team.after` wears every
+ *  new build, which the ticks often do not. Null without a team total. */
+export async function teamFigureOf(result: BuildTeamResult, team: TeamSpec, characters: Record<string, any>, echoes: any[], ticks: readonly boolean[]): Promise<TeamFigure | null> {
+  if (!result.team) return null;
+  const built = result.members.filter((m) => m.draft);
+  const saving = built.filter((m) => ticks[m.slot]);
+  if (saving.length === built.length) return { after: result.team.after, dpsAfter: result.team.dpsAfter, perSlot: team.characterIds.map((_, i) => result.members[i]?.after?.withTeam ?? 0) };
+  const total = await teamTotalWithDrafts(team, characters, echoes, result.enemy, result.autoTeamBuffs, saving.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })));
+  return { after: total.avg, dpsAfter: total.dps, perSlot: total.perSlot };
+}
+
 /** The team's total before and with these drafts pinned. */
 export async function teamTotalsWith(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean, drafts: Array<{ slot: number; characterId: string; draft: Record<string, any> }>): Promise<{ before: Awaited<ReturnType<typeof teamTotalOf>>; after: Awaited<ReturnType<typeof teamTotalOf>> }> {
   const before = await teamTotalOf(team, characters, echoes, enemy, auto);
@@ -693,6 +716,7 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
     objectiveKind,
     team: teamTotals,
     enemy,
+    autoTeamBuffs: auto,
     fromOthers,
     ms: Date.now() - t0,
   };
