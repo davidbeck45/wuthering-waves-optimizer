@@ -1682,3 +1682,34 @@ html.wt-ai-docked #wt-app .contain {
     white-space: normal;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   36. Ryan's Optimize team on a phone (sync of #687, 2026-11-06; TeamOptimizerResults.vue, the teamOptimizer lab).
+       a) The six stat tiles under each pick sit three to a row, so their captions ran out of room: Crit Rate and Crit DMG
+          both read "CRIT…", Energy Regen "ENE…", at 412 px, and "C…", "C…", "E…" at 360. Two to a row, a caption may wrap.
+          The tiles are his Optimizer Workspace's too (the Spotlight), which had the same captions.
+       b) The results table's min-w-[36rem] made every column wider than it needs at 130 %, and the page cut "vs current"
+          and its figure mid-word at 360 px. Sized to its content, the rank, the team's damage and the change all show,
+          and the per-character columns scroll in beside them.
+       c) 40 px targets, as § 33 gives plus pages: its small buttons read 31 to 37 px. */
+@media (max-width: 767px) {
+  [data-test-team-optimizer] :is(.btn-sm, .btn-xs) {
+    min-height: 2.5rem;
+  }
+  [data-test-optimizer-workspace-result-highlights] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  [data-test-optimizer-workspace-result-highlights] .truncate {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+  [data-test-team-optimizer-results] .table {
+    min-width: 0;
+    width: max-content;
+  }
+  [data-test-team-optimizer-results] .table :is(th, td) {
+    padding-inline: 0.25rem;
+    white-space: nowrap;
+  }
+}

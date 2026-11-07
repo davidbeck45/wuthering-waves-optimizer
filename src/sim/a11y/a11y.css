@@ -133,63 +133,65 @@
 /* 2. The plus scope: plus pages (PlusShell sets html[data-wt-plus] on every PLUS_PAGES route and the 404) and
       the plus shell's own surfaces, which open on Ryan's pages too (the Ask panel, AI settings, the palette, the
       Tools+ menu, the share sheet, the welcome card) or sit inside one of Ryan's (WaveScan's "Add only new echoes"
-      card on his Settings page, [data-test-wavescan-new-only]). Ryan's pages keep his look.
+      card on his Settings page, [data-test-wavescan-new-only]; and Optimize team, [data-test-team-optimizer], a lab on his
+      Teams page: `text-warning` read 1.5 : 1 and `text-success` 2.7 on light, its captions 2.8 to 3.5). Ryan's pages keep
+      his look.
       :where() keeps each rule at the weight of the utility it overrides (one class), so its variants still win:
       hover:opacity-100, focus:opacity-100 and group-hover:opacity-100 carry a pseudo-class.
       The floor is for text. Where the dim itself is the information (ToA's unearned crest stars) write an arbitrary
       value, opacity-[.25]: only the named utilities below are floored. */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-25 { opacity: max(0.25, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-30 { opacity: max(0.3, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-40 { opacity: max(0.4, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-45 { opacity: max(0.45, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-50 { opacity: max(0.5, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-55 { opacity: max(0.55, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-60 { opacity: max(0.6, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-65 { opacity: max(0.65, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-70 { opacity: max(0.7, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-75 { opacity: max(0.75, var(--wt-muted)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/30 { color: oklch(var(--bc) / max(0.3, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/40 { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/45 { color: oklch(var(--bc) / max(0.45, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/50 { color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/55 { color: oklch(var(--bc) / max(0.55, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/60 { color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/65 { color: oklch(var(--bc) / max(0.65, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/70 { color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-base-content\/75 { color: oklch(var(--bc) / max(0.75, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .placeholder\:text-base-content\/40::placeholder { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-25 { opacity: max(0.25, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-30 { opacity: max(0.3, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-40 { opacity: max(0.4, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-45 { opacity: max(0.45, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-50 { opacity: max(0.5, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-55 { opacity: max(0.55, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-60 { opacity: max(0.6, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-65 { opacity: max(0.65, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-70 { opacity: max(0.7, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-75 { opacity: max(0.75, var(--wt-muted)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/30 { color: oklch(var(--bc) / max(0.3, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/40 { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/45 { color: oklch(var(--bc) / max(0.45, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/50 { color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/55 { color: oklch(var(--bc) / max(0.55, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/60 { color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/65 { color: oklch(var(--bc) / max(0.65, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/70 { color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-base-content\/75 { color: oklch(var(--bc) / max(0.75, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .placeholder\:text-base-content\/40::placeholder { color: oklch(var(--bc) / max(0.4, var(--wt-muted))); }
 /* status colours as text */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) :is(.text-primary, .link-primary) { color: var(--wt-text-p); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-secondary { color: var(--wt-text-s); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-accent { color: var(--wt-text-a); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-info { color: var(--wt-text-in); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-success { color: var(--wt-text-su); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-warning { color: var(--wt-text-wa); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-error { color: var(--wt-text-er); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) :is(.text-primary, .link-primary) { color: var(--wt-text-p); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-secondary { color: var(--wt-text-s); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-accent { color: var(--wt-text-a); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-info { color: var(--wt-text-in); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-success { color: var(--wt-text-su); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-warning { color: var(--wt-text-wa); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-error { color: var(--wt-text-er); }
 /* an outlined primary badge (the "Tools+" badge beside the Echo Lab / Echo plan titles; text and border are the primary,
    1.6 : 1 in pastel, 3.3 in nord) */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .badge-outline.badge-primary { color: var(--wt-text-p); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .badge-outline.badge-primary { color: var(--wt-text-p); }
 /* the same for the secondary (WaveScan's "Phantom skin" badge: 1.5 : 1 in pastel, 2.3 in nord, 3.4 in light) */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .badge-outline.badge-secondary { color: var(--wt-text-s); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .badge-outline.badge-secondary { color: var(--wt-text-s); }
 /* a plain DaisyUI .link takes style.css's `a { color: #646cff }` (3.9 : 1 on dark, 4.1 on white): the theme's primary */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .link:not([class*="link-"]) { color: var(--wt-text-p); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .link:not([class*="link-"]) { color: var(--wt-text-p); }
 /* a line dimmed with opacity-50/60/70 that holds a link (the credit lines under /rotation, /endgame, /energy,
    /rankings, Build my team's "Or open one from roster rankings…"): the opacity dimmed the link with it (2.1–2.9 : 1 in
    every theme). Such a line is dimmed by its text colour instead, so the link inside keeps the full link colour. */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-50:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-60:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .opacity-70:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-50:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.5, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-60:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.6, var(--wt-muted))); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .opacity-70:has(a[href]):not(:is(.text-primary, .text-secondary, .text-accent, .text-info, .text-success, .text-warning, .text-error)) { opacity: 1; color: oklch(var(--bc) / max(0.7, var(--wt-muted))); }
 /* a link on a primary button or badge keeps that control's own text colour */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) :is(.btn-primary, .badge-primary:not(.badge-outline), .bg-primary) :is(.text-primary, .link-primary) { color: inherit; }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) :is(.btn-primary, .badge-primary:not(.badge-outline), .bg-primary) :is(.text-primary, .link-primary) { color: inherit; }
 /* L8, new-screens M5: fixed pixel sizes (text-[9px] / [10px] / [11px]: the palette's group labels, the Ask panel's
    captions, the fight timeline's axis and labels) ignored the phone's text size. The same size in rem follows it. */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-\[9px\] { font-size: 0.5625rem; }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-\[10px\] { font-size: 0.625rem; }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-\[9px\] { font-size: 0.5625rem; }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-\[10px\] { font-size: 0.625rem; }
 /* not the fight timeline's lane chips: they sit at their time in a narrow lane, and 130 % pushed "Wait 0.9s" past its edge */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) .text-\[11px\]:not(.rv-chip) { font-size: 0.6875rem; }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) .text-\[11px\]:not(.rv-chip) { font-size: 0.6875rem; }
 /* L7: form fields' borders (DaisyUI's are base-content at 0.2, 1.5 : 1 in dark) and the focus ring of a field */
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) :is(.input-bordered, .select-bordered, .textarea-bordered) { border-color: oklch(var(--bc) / var(--wt-edge)); }
-:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only]) :is(.input, .select, .textarea):focus-visible { outline-color: var(--wt-focus); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) :is(.input-bordered, .select-bordered, .textarea-bordered) { border-color: oklch(var(--bc) / var(--wt-edge)); }
+:where(html[data-wt-plus], .wt-palette, .ai-settings, [data-test-ai-panel], .plus-nav, .wt-welcome, .share-sheet, [data-test-wavescan-new-only], [data-test-team-optimizer]) :is(.input, .select, .textarea):focus-visible { outline-color: var(--wt-focus); }
 
 /* 3. Everywhere (Ryan's pages too; nothing changes for a mouse or a touch, only for the keyboard and screen
       readers). */
