@@ -702,8 +702,11 @@ export async function verifyTeamCombination(input: {
   inventoryEchoes: any[];
   damageType: TeamOptimizerDamageType;
   expectedTotal: number;
+  /** Wuthering Tools+: the records the Team page reads with these builds worn. Its team buffs follow the builds, so
+   *  `total` is that page's figure, and `matches` still compares the search with the records it scored. */
+  resolveForTeamPage?: (characters: Record<string, any>) => Promise<Record<string, any>>;
 }): Promise<TeamOptimizerVerification> {
-  const { team, loadoutBySlot, echoBuffsBySlot, enemyConfig, inventoryEchoes, damageType, expectedTotal } = input;
+  const { team, loadoutBySlot, echoBuffsBySlot, enemyConfig, inventoryEchoes, damageType, expectedTotal, resolveForTeamPage } = input;
   let characters = input.characters;
   team.characterIds.forEach((characterId, slot) => {
     if (!characterId) return;
@@ -718,18 +721,16 @@ export async function verifyTeamCombination(input: {
     }
   });
 
-  const result = await calcTeamRotationDamage(
-    { ...team, buildIds: [null, null, null] },
-    characters,
-    enemyConfig,
-    inventoryEchoes,
-  );
+  const read = (records: Record<string, any>) =>
+    calcTeamRotationDamage({ ...team, buildIds: [null, null, null] }, records, enemyConfig, inventoryEchoes);
+  const scored = await read(characters);
+  const result = resolveForTeamPage ? await read(await resolveForTeamPage(characters)) : scored; // Wuthering Tools+
   const perCharacter: Record<string, number> = {};
   for (const [characterId, characterResult] of Object.entries(result.perCharacter)) {
     perCharacter[characterId] = readTeamDamage(characterResult.damageAggregation, damageType);
   }
   const total = readTeamDamage(result.total, damageType);
-  const matches = expectedTotal > 0 && Math.abs(total / expectedTotal - 1) <= VERIFY_TOLERANCE;
+  const matches = expectedTotal > 0 && Math.abs(readTeamDamage(scored.total, damageType) / expectedTotal - 1) <= VERIFY_TOLERANCE;
   return { total, perCharacter, characterResults: result.perCharacter, matches };
 }
 

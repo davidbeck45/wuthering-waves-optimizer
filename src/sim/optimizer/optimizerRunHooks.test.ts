@@ -12,6 +12,7 @@ import { buildTeamOptimizerSlotPlan, TEAM_OPTIMIZER_LIST_DEPTH } from "../../cal
 import { computeLoadoutFinalStats, computeOverrideBuffVariants, filterEchoesForOptimizer, generateLoadouts, getOptimizerLoadoutHash, hasRequiredSetBonuses, normalizeLoadoutFormat, normalizeOptimizerLoadout, scoreOptimizerRotation } from "../../calculator/optimizer";
 import { meetsMinStatThreshold } from "../../calculator/meetsMinStatThreshold";
 import { computeResonanceChainsBuffs, computeSelfBuffs } from "../../calculator/stats";
+import { installFakeWorkers, type FakeWorker } from "./fakeWorkers";
 import { scalingPool, statScaledKit } from "./testFixture";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -33,73 +34,11 @@ vi.mock("./loadoutBound", async (importOriginal) => {
   };
 });
 
-const clone = <T>(value: T): T => structuredClone(value);
-const later = (fn: () => void): void => void setTimeout(fn, 0);
-
-/** Which module instance is running right now: a processor's replies are synchronous, a generator's are not. */
-let running: FakeWorker | null = null;
-let generatorHandler: (e: any) => void;
-const processorHandlers: Array<(e: any) => void> = [];
-const made: FakeWorker[] = [];
-
-class FakeWorker {
-  kind: "generator" | "processor";
-  handler: (e: any) => void;
-  posted: any[] = [];
-  onmessage: ((e: any) => void) | null = null;
-  onerror: ((e: any) => void) | null = null;
-  terminated = false;
-
-  constructor(url: URL) {
-    this.kind = String(url).includes("generator") ? "generator" : "processor";
-    const processors = made.filter((w) => w.kind === "processor").length;
-    this.handler = this.kind === "generator" ? generatorHandler : processorHandlers[processors % processorHandlers.length]!;
-    made.push(this);
-  }
-  postMessage(message: any): void {
-    this.posted.push(message);
-    const data = clone(message);
-    later(() => {
-      if (this.terminated) return;
-      running = this;
-      try {
-        this.handler({ data });
-      } finally {
-        running = null;
-      }
-    });
-  }
-  /** A message from the worker: delivered later, and never after a terminate. */
-  reply(message: any): void {
-    const data = clone(message);
-    later(() => {
-      if (!this.terminated) this.onmessage?.({ data });
-    });
-  }
-  terminate(): void {
-    this.terminated = true;
-  }
-}
-
-const selfStub: any = {
-  postMessage(message: any) {
-    (running ?? made.filter((w) => w.kind === "generator" && !w.terminated).at(-1))?.reply(message);
-  },
-};
-
 let runOptimizerWorkers: typeof import("../../workers/optimizerRun").runOptimizerWorkers;
+let made: FakeWorker[];
 
 beforeAll(async () => {
-  vi.stubGlobal("self", selfStub);
-  vi.stubGlobal("Worker", FakeWorker);
-  await import("../../workers/generator.worker");
-  generatorHandler = selfStub.onmessage;
-  // two processors, two module instances: each keeps its own heap, so each has its own bar
-  for (let i = 0; i < 2; i++) {
-    vi.resetModules();
-    await import("../../workers/processor.worker");
-    processorHandlers.push(selfStub.onmessage);
-  }
+  made = await installFakeWorkers(2);
   ({ runOptimizerWorkers } = await import("../../workers/optimizerRun"));
 }, 60_000);
 

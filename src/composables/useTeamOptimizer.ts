@@ -48,6 +48,9 @@ import { splitOptimizerWorkerCount } from "../calculator/optimizer";
 import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { runOptimizerWorkers, serializeEchoes, type OptimizerRunHandle } from "../workers/optimizerRun";
 import { trackEvent } from "../utils/analytics";
+// Wuthering Tools+: this page reads the records the Team page reads (src/sim/README.md, "Ryan's Optimize team on plus")
+import { autoTeamBuffs } from "../sim/teamContext/autoTeamBuffs";
+import { allowStatRounding, readTeamPage, type TeamPageRead } from "../sim/teamContext/teamOptimizerPage";
 
 /** Counting stops here: past this, the exact number no longer changes the warning. */
 const LOADOUT_COUNT_LIMIT = 5_000_000;
@@ -107,7 +110,10 @@ export function useTeamOptimizer(teamId: Ref<string>) {
   const inventoryStore = useInventoryStore();
   const settingsStore = useSettingsStore();
   const teamStore = useTeamRotationsStore();
-  const { characters } = storeToRefs(characterStore);
+  const { characters: storedCharacters } = storeToRefs(characterStore);
+  // Wuthering Tools+: what the Team page reads. Upstream's stored panels sat -47 % to +123 % off it on David's export.
+  const characters = shallowRef<Record<string, any>>(storedCharacters.value);
+  let teamPage: TeamPageRead | null = null;
 
   const phase = ref<TeamOptimizerPhase>("loading");
   const damageType = ref<TeamOptimizerDamageType>("Average");
@@ -173,7 +179,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
         inventoryEchoes: inventoryEchoes.value,
       };
     });
-    return deriveTeamBuffGuards(slots);
+    return autoTeamBuffs.value ? allowStatRounding(deriveTeamBuffGuards(slots)) : deriveTeamBuffGuards(slots); // Wuthering Tools+
   });
 
   function effectiveGuard(slot: number): TeamBuffGuard {
@@ -285,6 +291,8 @@ export function useTeamOptimizer(teamId: Ref<string>) {
   async function loadBaseline() {
     const t = team.value;
     if (!t) return;
+    teamPage = await readTeamPage(t, storedCharacters.value, inventoryEchoes.value, { auto: autoTeamBuffs.value, enemyConfig: enemyConfig.value }); // Wuthering Tools+
+    characters.value = teamPage.characters; // Wuthering Tools+
     baseline.value = await calcTeamRotationDamage(teamInput.value, characters.value, enemyConfig.value, inventoryEchoes.value);
     const stats: Record<number, Record<string, any>> = {};
     await Promise.all(
@@ -530,6 +538,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
             inventoryEchoes: inventoryEchoes.value,
             damageType: damageType.value,
             expectedTotal: combination.total,
+            resolveForTeamPage: autoTeamBuffs.value ? teamPage?.withBuilds : undefined, // Wuthering Tools+
           });
           return { combination, verification, rank };
         }),
@@ -556,7 +565,8 @@ export function useTeamOptimizer(teamId: Ref<string>) {
         })),
       }));
       echoBuffsForSave = echoBuffsBySlot;
-      isProven.value = combined.isProven;
+      // Wuthering Tools+: a member's echoes can move a teammate's team buffs on plus, and the search can't see that
+      isProven.value = combined.isProven && !autoTeamBuffs.value;
       totalEvaluated.value = evaluated;
       elapsedMs.value = performance.now() - started;
       phase.value = "results";
@@ -602,7 +612,8 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     const name = `${team.value?.name ?? "Team"} optimized`;
     for (const pick of row.picks) {
       if (!pick.loadout) continue;
-      const pinned = team.value?.buildIds?.[pick.slot] ?? null;
+      // Wuthering Tools+: without a pin, the build the page read (one named for the team is stamped active on the record)
+      const pinned = team.value?.buildIds?.[pick.slot] ?? characters.value?.[pick.characterId]?.activeBuildId ?? null;
       const character = characterStore.characters[pick.characterId] as any;
       // `createBuild` copies the active build, so start from the one this slot used.
       if (pinned && pinned !== character?.activeBuildId && character?.builds?.some((b: any) => b.id === pinned)) {

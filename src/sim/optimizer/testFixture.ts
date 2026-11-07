@@ -76,7 +76,7 @@ export async function statScaledKit(characterId: string, setPassives: string[] =
 
 /** A small pool that walks the stats kits scale on across their thresholds and caps: two main echoes, then seeded
  *  cost 4 / 3 / 1 echoes of real species whose Energy Regen, Crit Rate and HP spread wide (no personal data). */
-export function scalingPool(seed: number, mainEcho: string, sets: string[], counts: { main?: number; four?: number; three?: number; one?: number; critRate?: number } = {}): any[] {
+export function scalingPool(seed: number, mainEcho: string, sets: string[], counts: { main?: number; four?: number; three?: number; one?: number; critRate?: number; energyRegen?: number } = {}): any[] {
   const rnd = seeded(seed);
   const species = speciesByCost();
   const value = (lo: number, hi: number): number => Math.round((lo + rnd() * (hi - lo)) * 10) / 10;
@@ -88,7 +88,7 @@ export function scalingPool(seed: number, mainEcho: string, sets: string[], coun
     echoId: id,
     echoSet: sets[Math.floor(rnd() * sets.length)]!,
     echoSubStatsType1: "EnergyRegen",
-    echoSubStatsValue1: value(0, 30),
+    echoSubStatsValue1: value(0, counts.energyRegen ?? 30),
     echoSubStatsType2: "CritRate",
     echoSubStatsValue2: value(0, counts.critRate ?? 16),
     echoSubStatsType3: "CritDMG",
