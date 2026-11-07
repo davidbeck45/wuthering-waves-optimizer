@@ -203,19 +203,20 @@ describe("a figure a teammate's new build moves", () => {
 });
 
 describe("a build short of five echoes", () => {
-  const withPicks = (n: number, over: Partial<MemberOutcome> = {}) => outcome({ after: { value: 100, optimizerValue: 100, menuEr: 116, picks: Array.from({ length: n }, () => ({})) as never, withTeam: null }, ...over });
+  const withPicks = (costs: number[], over: Partial<MemberOutcome> = {}) => outcome({ after: { value: 100, optimizerValue: 100, menuEr: 116, picks: costs.map((type) => ({ echo: { type } })) as never, withTeam: null }, ...over });
   const texts = (m: MemberOutcome) => resultNotes(m, plan()).map((n) => n.text);
 
-  it("says so when a slot stays empty, in the plan's terms or not", () => {
-    expect(texts(withPicks(4, { constraints: { allowedSets: ["X"] } as never }))).toContain("Holds 4 echoes, not 5: the plan's sets have no more free, and nothing spare fits the empty slot under the 12 cost limit.");
-    expect(texts(withPicks(1))).toContain("Holds 1 echo, not 5: nothing spare fits the empty slot under the 12 cost limit.");
-    expect(texts(withPicks(5)).join()).not.toContain("not 5");
+  it("says so when a slot stays empty, and whether the cost limit is why", () => {
+    expect(texts(withPicks([4, 4, 3, 1]))).toContain("Holds 4 echoes, not 5: they already cost the full 12, so nothing fits the empty slot.");
+    expect(texts(withPicks([4, 3, 1, 1]))).toContain("Holds 4 echoes, not 5: nothing spare fits the empty slot under the 12 cost limit.");
+    expect(texts(withPicks([4]))).toContain("Holds 1 echo, not 5: nothing spare fits the empty slot under the 12 cost limit.");
+    expect(texts(withPicks([4, 3, 3, 1, 1])).join()).not.toContain("not 5");
   });
 
   it("says when a slot holds an echo of another set", () => {
-    expect(texts(withPicks(5, { otherSetEchoes: 1 }))).toContain("One slot holds an echo from outside the plan's sets: too few of them were free to fill the build.");
-    expect(texts(withPicks(5, { otherSetEchoes: 2 }))).toContain("2 slots hold echoes from outside the plan's sets: too few of them were free to fill the build.");
-    expect(texts(withPicks(5)).join()).not.toContain("outside the plan's sets");
+    expect(texts(withPicks([4, 3, 3, 1, 1], { otherSetEchoes: 1 }))).toContain("One slot holds an echo from outside the plan's sets: too few of them were free to fill the build.");
+    expect(texts(withPicks([4, 3, 3, 1, 1], { otherSetEchoes: 2 }))).toContain("2 slots hold echoes from outside the plan's sets: too few of them were free to fill the build.");
+    expect(texts(withPicks([4, 3, 3, 1, 1])).join()).not.toContain("outside the plan's sets");
   });
 });
 

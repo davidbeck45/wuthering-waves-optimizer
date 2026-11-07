@@ -91,10 +91,10 @@ describe("account view", () => {
     expect(memberNote(member({ keptCurrent: false, sameEchoes: true, erFloor: null, erMet: null }))).toMatch(/keeps today's echoes/);
     expect(memberNote(member({ status: "noEchoes", message: "No Moonlit Clouds echoes." }))).toBe("No Moonlit Clouds echoes.");
     expect(memberNote(member({ erFloor: null, erMet: null, relaxed: "layout" }))).toMatch(/any cost layout/);
-    const worn = (n: number) => ({ after: { value: 98, optimizerValue: 98, menuEr: 116, picks: Array.from({ length: n }, () => ({})) as never }, erFloor: null, erMet: null });
-    expect(memberNote(member(worn(3)))).toBe("3 echoes, not 5: nothing spare fits the empty slot under the 12 cost limit");
-    expect(memberNote(member(worn(5)))).toBeNull();
-    expect(memberNote(member({ ...worn(5), otherSetEchoes: 1 }))).toBe("one echo from outside the plan's sets (too few of them were free)");
+    const worn = (costs: number[]) => ({ after: { value: 98, optimizerValue: 98, menuEr: 116, picks: costs.map((type) => ({ echo: { type } })) as never }, erFloor: null, erMet: null });
+    expect(memberNote(member(worn([4, 3, 1])))).toBe("3 echoes, not 5: nothing spare fits the empty slot under the 12 cost limit");
+    expect(memberNote(member(worn([4, 3, 3, 1, 1])))).toBeNull();
+    expect(memberNote(member({ ...worn([4, 3, 3, 1, 1]), otherSetEchoes: 1 }))).toBe("one echo from outside the plan's sets (too few of them were free)");
   });
 
   it("names a moving echo and the confirm's items", () => {

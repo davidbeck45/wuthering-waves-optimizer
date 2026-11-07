@@ -203,6 +203,16 @@ export function conflictText(conflicts: readonly ShareConflict[]): string {
 
 const FULL_BUILD = 5;
 
+/** Why a build holds fewer than five echoes ("4 echoes, not 5: ..."), or null. What is left after `fillEmptySlots`: a
+ *  build at the cost limit (the search can rate 4 + 4 + 3 + 1 above any five), or nothing to spare. */
+export function emptySlotText(m: Pick<MemberOutcome, "after">): string | null {
+  const picks = m.after?.picks ?? [];
+  if (!picks.length || picks.length >= FULL_BUILD) return null;
+  const cost = picks.reduce((n, p) => n + (Number(p.echo?.type) || 0), 0);
+  const why = cost >= 12 ? "they already cost the full 12, so nothing fits the empty slot" : "nothing spare fits the empty slot under the 12 cost limit";
+  return `${picks.length} echo${picks.length === 1 ? "" : "es"}, not ${FULL_BUILD}: ${why}`;
+}
+
 /** The notes a result card lists under the numbers, most important first. */
 export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Array<{ tone: "info" | "warn" | "error"; text: string }> {
   const out: Array<{ tone: "info" | "warn" | "error"; text: string }> = [];
@@ -230,8 +240,8 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
     const buffsMoved = m.buffDefaults.length > 0 && rel != null && Math.abs(rel) > 0.0005;
     out.push({ tone: "info", text: buffsMoved ? "Same echoes as today: the change is the set or main-echo buffs below, switched on." : "Same echoes as today: this team's best build is the one you wear." });
   }
-  const worn = m.after?.picks.length ?? 0;
-  if (worn && worn < FULL_BUILD) out.push({ tone: "warn", text: `Holds ${worn} echo${worn === 1 ? "" : "es"}, not ${FULL_BUILD}: ${m.constraints?.allowedSets ? "the plan's sets have no more free, and " : ""}nothing spare fits the empty slot under the 12 cost limit.` });
+  const short = emptySlotText(m);
+  if (short) out.push({ tone: "warn", text: `Holds ${short}.` });
   if (m.otherSetEchoes) out.push({ tone: "info", text: `${m.otherSetEchoes === 1 ? "One slot holds an echo" : `${m.otherSetEchoes} slots hold echoes`} from outside the plan's sets: too few of them were free to fill the build.` });
   if (plan?.sets.length && !m.meetsPlanSets && m.relaxed !== "layout") out.push({ tone: "warn", text: `Wears ${Object.entries(m.setsWorn).map(([k, n]) => `${n} ${setName(k)}`).join(" + ")}, not the plan's ${plan.sets.map((s) => `${setName(s.key)} ${s.pieces}pc`).join(" + ")}.` });
   return out;
