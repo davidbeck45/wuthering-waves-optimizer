@@ -132,7 +132,7 @@
         <p v-if="floorsMissing" role="status" class="alert alert-warning mb-3 text-left text-sm" data-test-echo-lab-floors-missing>
           The Energy check did not finish, so these scores leave out the Energy Regen some builds need and can read high. Open this tab again or press Re-run to ask again.
         </p>
-        <p v-if="askedNote" role="status" class="alert alert-info mb-3 text-left text-sm" data-test-echo-lab-left-out>{{ askedNote }}</p>
+        <p v-if="askedNote" role="status" class="mb-3 rounded-box border border-base-300 bg-base-100 px-3 py-2 text-left text-sm" data-test-echo-lab-left-out>{{ askedNote }}</p>
         <EchoLabVerdicts v-if="tab === 'verdicts'" v-model:filters="filters" :result="pass.bestOwner" />
         <EchoLabTune v-else-if="tab === 'tune'" :result="pass.bestOwner" />
         <EchoLabPlan v-else-if="tab === 'plan'" :result="tunerPlan" :status="tunerStatus" @run="(force) => lab.runTunerPlan({ force })" @farm="tab = 'farm'" />
