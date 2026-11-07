@@ -259,6 +259,19 @@ describe("parity with upstream's optimizer and calculator", () => {
     expect(none!.after).toBeCloseTo(run.team!.before, 3);
   }, 120000);
 
+  it("four echoes of the plan's set: the fifth slot takes another set's best, and the calculator's number counts it", async () => {
+    const kept = [...new Set(echoes.filter((e) => e.echoSet === "WindwardPilgrimage").map((e) => e.echo))].slice(0, 4);
+    const fourSpecies = echoes.filter((e) => e.echoSet !== "WindwardPilgrimage" || kept.includes(e.echo));
+    const team = { id: null, name: "Cartethyia", characterIds: ["Cartethyia", null, null] };
+    const run = await buildMyTeam({ characters, inventory: { echoes: fourSpecies, equipped: {} }, team, plans: [cartPlan()], order: [0], options: DEFAULT_OPTIONS }, inlineBackend());
+    const m = run.members[0]!;
+    expect(m.after!.picks).toHaveLength(5);
+    expect(m.otherSetEchoes).toBe(1);
+    expect(m.setsWorn.WindwardPilgrimage).toBe(4);
+    expect(Object.values(m.draft!.echoes as Record<string, { echoId?: string }>).filter((e) => e?.echoId)).toHaveLength(5);
+    expect(m.after!.value).toBeCloseTo(m.after!.optimizerValue, 0);
+  }, 120000);
+
   it("a teammate who gets no new build keeps their echoes: nobody else's build takes them", async () => {
     const solo = await buildMyTeam(
       { characters, inventory: { echoes, equipped: {} }, team: { id: null, name: "Cartethyia", characterIds: ["Cartethyia", null, null] }, plans: [cartPlan()], order: [0], options: DEFAULT_OPTIONS },

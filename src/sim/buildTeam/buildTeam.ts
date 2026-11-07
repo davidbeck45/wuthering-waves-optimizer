@@ -133,6 +133,8 @@ export interface MemberOutcome {
   /** pieces worn per set, and whether that is the plan's split */
   setsWorn: Record<string, number>;
   meetsPlanSets: boolean;
+  /** echoes of no set the plan names: slots the plan's sets could not fill (`fillEmptySlots`) */
+  otherSetEchoes: number;
   /** set passives / main-echo buffs nobody had set, switched on at max for the run and the saved build */
   buffDefaults: string[];
   /** loadouts the optimizer scored for this member (every order and the fallback included) */
@@ -309,6 +311,7 @@ export async function prepareMember(a: PrepareMemberArgs): Promise<{ outcome: Me
     sameEchoes: false,
     setsWorn: {},
     meetsPlanSets: false,
+    otherSetEchoes: 0,
     buffDefaults: [],
     combos: 0,
     fromBuild,
@@ -382,7 +385,7 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
     if (hooks.signal?.aborted) throw abortError();
   };
   const combos = new Map<number, number>();
-  const solveMemo = new Map<string, Promise<Candidate | null>>();
+  const solveMemo = new Map<string, Promise<{ found: Candidate | null; mine: Candidate | null }>>();
   const toCandidate = (m: number, loadout: any[], value: number, energyRegen: number, meta: PickMeta): Candidate => {
     const { job, c } = active[m]!;
     const er = menuErOf(job, energyRegen);
@@ -447,8 +450,60 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
     const best = (await bestOf(m, job, { ...search, minStats: [{ stat: "energyRegen", minValue: most.energyRegen * 100 }] })) ?? (await backend.score(job, [most.loadout], { signal: hooks.signal }))[0];
     return best ? toCandidate(m, best.loadout, best.targetValue, best.energyRegen, { level, fallback, unreachable: true }) : null;
   };
+  /** what a member's empty slot may take: free, and no teammate's: not a set another member's plan names, not an echo
+   *  another member wears today (either could cost them a piece the search has not reached yet) */
+  const wearing = active.map((a) => new Set(Object.values(a.resolved[a.job.characterId]?.echoes ?? {}).map((s: any) => String(s?.echoId ?? ""))));
+  const fillersFor = (m: number, taken: ReadonlySet<string>): any[] => {
+    const loosest = active[m]!.levels[active[m]!.levels.length - 1]!.c;
+    const { pool } = filterPool(echoes, { ...loosest, allowedSets: null, layout: null, mainStatsByCost: null }, { taken, wornOutside });
+    return pool.filter((e) => active.every((a, i) => i === m || (!a.c.allowedSets?.includes(e.echoSet) && !wearing[i]!.has(String(e.echoId)))));
+  };
+  const fillMemo = new Map<string, Promise<Candidate>>();
+  /** A build short of five echoes: the plan's sets ran out (fewer than five owned, or a teammate holds the rest), and the
+   *  search keeps sets at every level, since they decide a support's team buff. Each empty slot takes the best echo of
+   *  any other set that fits under the cost limit; the set pieces stay, so all this can do is add. A build already at
+   *  the limit keeps its empty slot, and the page says so. */
+  const fillEmptySlots = (m: number, pick: Candidate, taken: ReadonlySet<string>): Promise<Candidate> => {
+    const fillers = fillersFor(m, taken);
+    const key = `${m}|${pick.ids.join(",")}|${fillers.map((e) => e.echoId).sort().join(",")}`;
+    let hit = fillMemo.get(key);
+    if (hit) return hit;
+    hit = (async (): Promise<Candidate> => {
+      const { job } = active[m]!;
+      const loadout = pick.ids.map((id) => echoById.get(id)!);
+      let best = pick;
+      for (let open = FULL_LOADOUT - loadout.length; open > 0; open--) {
+        // every other empty slot still needs room for a 1-cost
+        const room = MAX_LOADOUT_COST - loadout.reduce((n, e) => n + costOf(e), 0) - (open - 1);
+        const options = fillers
+          .filter((e) => costOf(e) >= 1 && costOf(e) <= room && !loadout.some((w) => w.echo === e.echo || w.echoId === e.echoId))
+          .sort((a, b) => roughWorth(b) - roughWorth(a) || String(a.echoId).localeCompare(String(b.echoId)))
+          .slice(0, FILLERS_SCORED);
+        if (!options.length) break;
+        const scored = await backend.score(job, options.map((e) => [...loadout, e]), { signal: hooks.signal });
+        combos.set(m, (combos.get(m) ?? 0) + options.length);
+        const top = scored.reduce<{ at: number; value: number } | null>((b, r, at) => (r && (!b || r.targetValue > b.value) ? { at, value: r.targetValue } : b), null);
+        if (!top) break;
+        const r = scored[top.at]!;
+        loadout.push(options[top.at]);
+        best = toCandidate(m, loadout, r.targetValue, r.energyRegen, pick.meta as unknown as PickMeta);
+      }
+      return best;
+    })();
+    fillMemo.set(key, hit);
+    hit.catch(() => fillMemo.delete(key));
+    return hit;
+  };
+  /** Does today's build beat what the search found: a met floor first; with neither meeting it, the one closer to it
+   *  (more ER); then damage. */
+  const todayWins = (mine: Candidate, found: Candidate): boolean =>
+    mine.meetsFloor !== found.meetsFloor
+      ? mine.meetsFloor
+      : !mine.meetsFloor && (mine.er ?? 0) !== (found.er ?? 0)
+        ? (mine.er ?? 0) > (found.er ?? 0)
+        : mine.value > found.value * (1 + 1e-9);
   const api: AllocationApi = {
-    solve(m, taken) {
+    async solve(m, taken) {
       const { job, levels } = active[m]!;
       const pools = levels.map((l) => byEchoId(filterPool(echoes, l.c, { taken, wornOutside }).pool));
       // the build the member wears today competes too (when it keeps the plan's sets and nobody before took its
@@ -459,26 +514,20 @@ export function memberSearchApi(active: readonly ActiveMember[], ctx: SearchCont
       const currentFree = !!current && !current.some((e) => taken.has(String(e.echoId)));
       const key = `${m}|${currentFree ? "c" : "-"}|${pools[pools.length - 1]!.map((e) => e.echoId).sort().join(",")}`;
       let hit = solveMemo.get(key);
-      if (hit) return hit;
-      hit = (async (): Promise<Candidate | null> => {
-        const found = await searchLevels(m, pools);
-        if (!current || !currentFree) return found;
-        const [scored] = await backend.score(job, [current], { signal: hooks.signal });
-        if (!scored) return found;
-        const mine = toCandidate(m, scored.loadout, scored.targetValue, scored.energyRegen, { level: "current", fallback: false, unreachable: false });
-        if (!found) return mine;
-        // a met floor first; with neither meeting it, the one closer to it (more ER); then damage
-        const better =
-          mine.meetsFloor !== found.meetsFloor
-            ? mine.meetsFloor
-            : !mine.meetsFloor && (mine.er ?? 0) !== (found.er ?? 0)
-              ? (mine.er ?? 0) > (found.er ?? 0)
-              : mine.value > found.value * (1 + 1e-9);
-        return better ? mine : found;
-      })();
-      solveMemo.set(key, hit);
-      hit.catch(() => solveMemo.delete(key));
-      return hit;
+      if (!hit) {
+        hit = (async () => {
+          const found = await searchLevels(m, pools);
+          if (!current || !currentFree) return { found, mine: null };
+          const [scored] = await backend.score(job, [current], { signal: hooks.signal });
+          return { found, mine: scored ? toCandidate(m, scored.loadout, scored.targetValue, scored.energyRegen, { level: "current", fallback: false, unreachable: false }) : null };
+        })();
+        solveMemo.set(key, hit);
+        hit.catch(() => solveMemo.delete(key));
+      }
+      const { found, mine } = await hit;
+      // past the memo: what is free to fill a slot is not what its key says
+      const full = found && found.ids.length < FULL_LOADOUT ? await fillEmptySlots(m, found, taken) : found;
+      return mine && (!full || todayWins(mine, full)) ? mine : full;
     },
     async score(m, list) {
       const { job } = active[m]!;
@@ -585,6 +634,7 @@ export async function finishMember(m: number, active: readonly ActiveMember[], p
   out.mainEchoFallback = !!meta.fallback;
   out.setsWorn = setCounts(loadout);
   out.meetsPlanSets = meetsSetPieces(loadout, plan);
+  out.otherSetEchoes = c.allowedSets && !out.keptCurrent ? loadout.filter((e) => !c.allowedSets!.includes(e.echoSet)).length : 0;
 }
 
 /** The team's total with these drafts pinned (one per slot that has one), the way Team Rotations would read it. */
@@ -721,6 +771,12 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
     ms: Date.now() - t0,
   };
 }
+
+const FULL_LOADOUT = 5;
+/** the game's limit on a build's echo cost (upstream's generator has the same) */
+const MAX_LOADOUT_COST = 12;
+/** an empty slot's likeliest echoes scored exactly, as the swap pass's backfill list */
+const FILLERS_SCORED = 16;
 
 /** A quick guess at what an echo is worth for the backfill list's order (crit first, then ER): only the order of the
  *  candidates the swap pass scores exactly. */
