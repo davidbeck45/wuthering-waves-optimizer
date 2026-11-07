@@ -30,18 +30,18 @@
       </div>
       <div class="en-kpi" :class="{ 'en-kpi--short': summary.shortCharacters.length }" data-test-energy-kpi-short>
         <span class="en-kpi__label"><EnergyStatusIcon status="short" class="en-kpi__icon en-kpi__icon--short" />Short on ER</span>
-        <span class="en-kpi__value">{{ summary.shortCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ summary.shortCharacters.length ? summary.shortCharacters.map(shortName).join(", ") : "every Liberation paid" }}</span>
+        <span class="en-kpi__value">{{ kpiShort.value }}</span>
+        <span class="en-kpi__sub">{{ kpiShort.sub }}</span>
       </div>
       <div class="en-kpi" data-test-energy-kpi-tight>
         <span class="en-kpi__label"><EnergyStatusIcon status="tight" class="en-kpi__icon en-kpi__icon--tight" />Tight · within {{ TIGHT_MARGIN }}%</span>
-        <span class="en-kpi__value">{{ tightCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ tightCharacters.length ? tightCharacters.map(shortName).join(", ") : "nobody one bad loop from late" }}</span>
+        <span class="en-kpi__value">{{ kpiTight.value }}</span>
+        <span class="en-kpi__sub">{{ kpiTight.sub }}</span>
       </div>
       <div class="en-kpi" data-test-energy-kpi-crit>
         <span class="en-kpi__label">Crit Rate past 100&nbsp;%</span>
-        <span class="en-kpi__value">{{ summary.overcapCharacters.length }}</span>
-        <span class="en-kpi__sub">{{ summary.overcapCharacters.length ? summary.overcapCharacters.map(shortName).join(", ") : "no damage wasted on crit" }}</span>
+        <span class="en-kpi__value">{{ kpiCrit.value }}</span>
+        <span class="en-kpi__sub">{{ kpiCrit.sub }}</span>
       </div>
     </section>
 
@@ -237,7 +237,7 @@ import EnergyChip from "./EnergyChip.vue";
 import EnergySheet from "./EnergySheet.vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
 import EnergyTeamCard from "./EnergyTeamCard.vue";
-import { haveText, intText, needText, pctText, stockSpreadNote } from "./energyFormat";
+import { haveText, intText, kpiReading, needText, pctText, stockSpreadNote } from "./energyFormat";
 import { characterShortName } from "../display/names";
 import { teamTitle } from "../display/teamName";
 import { WHY_ENGINES_DIFFER } from "../display/numberBasis";
@@ -329,6 +329,9 @@ const tightCharacters = computed(() => {
   for (const t of teams.value) for (const c of t.checks ?? []) if (c.status === "tight" && !short.has(c.characterId)) tight.add(c.characterId);
   return [...tight].sort();
 });
+const kpiShort = computed(() => kpiReading(summary.value.shortCharacters, "every Liberation paid", summary.value, energy.busy.value, shortName));
+const kpiTight = computed(() => kpiReading(tightCharacters.value, "nobody one bad loop from late", summary.value, energy.busy.value, shortName));
+const kpiCrit = computed(() => kpiReading(summary.value.overcapCharacters, "no damage wasted on crit", summary.value, energy.busy.value, shortName));
 const scan = energy.scan;
 const scanDoneText = computed(() => (scan.status === "cancelled" ? "Stopped measuring compositions" : scan.status === "error" ? "Measuring compositions failed" : "Finished measuring compositions"));
 const sheet = ref<{ view: TeamView; id: string } | null>(null);

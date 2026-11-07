@@ -44,6 +44,19 @@ export function measureNote(state: MeasureState | null): string {
   return "";
 }
 
+/** A summary tile on /energy: the count and who, or the all-clear, which reaches only as far as what was measured. With
+ *  nothing measured there is no figure: "0, every Liberation paid" read as a pass while the engine had failed. */
+export function kpiReading(names: readonly string[], clear: string, s: { teams: number; measured: number }, busy: boolean, name: (id: string) => string = nameOf): { value: string; sub: string } {
+  if (!s.measured) return { value: "—", sub: busy ? "measuring…" : "no team measured" };
+  if (names.length) return { value: String(names.length), sub: names.map(name).join(", ") };
+  return { value: "0", sub: s.measured < s.teams ? `${clear} in the ${s.measured === 1 ? "1 team" : `${s.measured} teams`} measured` : clear };
+}
+
+/** Why the account tile has no check to show when saved teams exist: an engine that failed is not a team it can't read. */
+export function unmeasuredDetail(states: ReadonlyArray<MeasureState | null | undefined>): string {
+  return states.some((s) => s?.status === "error") ? "the check could not run: open it to try again" : "none of your saved teams is one of wuwa_calc's compositions";
+}
+
 /** "S6 R5 · Everbright Polestar" for a member of his run. */
 export const gearText = (m: { sequence: number; refinement: number; weapon: string; owned: boolean }): string =>
   `S${m.sequence} R${m.refinement} · ${m.weapon}${m.owned ? "" : " (not set up)"}`;

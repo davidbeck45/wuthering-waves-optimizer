@@ -33,7 +33,7 @@
 // header link. Self-contained: activates the shared check (useEnergyNeeds) while mounted.
 import { computed, onBeforeUnmount, onMounted } from "vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
-import { nameOf } from "./energyFormat";
+import { nameOf, unmeasuredDetail } from "./energyFormat";
 import { useEnergyNeeds } from "./useEnergyNeeds";
 import "./energy.css";
 
@@ -68,7 +68,7 @@ const headline = computed(() => {
 const detail = computed(() => {
   const v = s.value;
   if (state.value === "loading") return "wuwa_calc is measuring your saved teams";
-  if (state.value === "none") return energy.savedTeams.value.length ? "none of your saved teams is one of wuwa_calc's compositions" : "save or sync a team to measure its ER needs";
+  if (state.value === "none") return energy.savedTeams.value.length ? unmeasuredDetail(energy.savedTeams.value.map((t) => t.state)) : "save or sync a team to measure its ER needs";
   const bits: string[] = [];
   if (v.shortCharacters.length) bits.push(`short: ${v.shortCharacters.map(nameOf).join(", ")}`);
   if (v.overcapCharacters.length) bits.push(`Crit Rate past 100 %: ${v.overcapCharacters.map(nameOf).join(", ")}`);

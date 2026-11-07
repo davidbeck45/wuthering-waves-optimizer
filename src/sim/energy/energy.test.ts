@@ -16,7 +16,7 @@ import { medianRoll, rotationScorer, substatWeights, type BuildScorer } from "..
 import { ENERGY_CACHE_KEY, energyCacheKey, keepable, loadEnergyCache, saveEnergyCache, type CachedMeasure } from "./energyCache";
 import { characterFloors, energySummary, measureComposition, memberChecks, memberIdOf, scanCandidates, type EnergyEngine, type TeamMeasure } from "./energyCheck";
 import { engineOfHeadless } from "./energyCli";
-import { needLabel, stockSpreadNote } from "./energyFormat";
+import { kpiReading, needLabel, stockSpreadNote, unmeasuredDetail } from "./energyFormat";
 import { erSignature, KIT_CONSTANT_ER, memoMenuEr, menuEnergyRegen } from "./energyHave";
 import {
   bandOf,
@@ -416,6 +416,30 @@ describe.skipIf(!existsSync(ORACLE))("oracle soft report (local only)", () => {
     console.info(`ER needs vs community figures (${oracle.date}):\n${lines.join("\n")}`);
     expect(lines.length).toBe(oracle.characters.length);
   }, 120_000);
+});
+
+describe("a summary tile says only what was measured", () => {
+  const clear = "every Liberation paid";
+
+  it("no figure and no all-clear when nothing was measured: 0 read as a pass while the engine had failed", () => {
+    expect(kpiReading([], clear, { teams: 3, measured: 0 }, false)).toEqual({ value: "—", sub: "no team measured" });
+    expect(kpiReading([], clear, { teams: 3, measured: 0 }, true)).toEqual({ value: "—", sub: "measuring…" });
+  });
+
+  it("an all-clear over some of the teams says how many", () => {
+    expect(kpiReading([], clear, { teams: 3, measured: 1 }, false)).toEqual({ value: "0", sub: "every Liberation paid in the 1 team measured" });
+    expect(kpiReading([], clear, { teams: 3, measured: 2 }, true)).toEqual({ value: "0", sub: "every Liberation paid in the 2 teams measured" });
+    expect(kpiReading([], clear, { teams: 3, measured: 3 }, false)).toEqual({ value: "0", sub: clear });
+  });
+
+  it("who is on the tile, whatever else is still to measure", () => {
+    expect(kpiReading(["Lynae", "Iuno"], clear, { teams: 3, measured: 1 }, false, (id) => id.toUpperCase())).toEqual({ value: "2", sub: "LYNAE, IUNO" });
+  });
+
+  it("the account tile tells an engine that failed from teams it cannot read", () => {
+    expect(unmeasuredDetail([{ status: "error", message: "x" }, null])).toMatch(/could not run/);
+    expect(unmeasuredDetail([{ status: "notMeasured", reason: "noTeam" } as never, null])).toMatch(/compositions/);
+  });
 });
 
 describe("stockSpreadNote", () => {
