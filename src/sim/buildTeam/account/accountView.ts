@@ -87,7 +87,7 @@ export function memberNote(m: AccountMember): string | null {
   if (m.relaxed === "layout") notes.push("any cost layout (the plan's ran out)");
   if (m.mainEchoFallback) notes.push("another main echo (the plan's is not free)");
   const worn = m.after?.picks.length ?? 0;
-  if (worn && worn < 5) notes.push(`${worn} echo${worn === 1 ? "" : "es"}, not 5: nothing free fits the empty slot under the 12 cost limit`);
+  if (worn && worn < 5) notes.push(`${worn} echo${worn === 1 ? "" : "es"}, not 5: nothing spare fits the empty slot under the 12 cost limit`);
   if (m.otherSetEchoes) notes.push(`${m.otherSetEchoes === 1 ? "one echo" : `${m.otherSetEchoes} echoes`} from outside the plan's sets (too few of them were free)`);
   const teammates = teammatesNote(m);
   if (teammates) notes.push(teammates.replace(/\.$/, ""));

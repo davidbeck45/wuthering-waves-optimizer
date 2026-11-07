@@ -207,8 +207,8 @@ describe("a build short of five echoes", () => {
   const texts = (m: MemberOutcome) => resultNotes(m, plan()).map((n) => n.text);
 
   it("says so when a slot stays empty, in the plan's terms or not", () => {
-    expect(texts(withPicks(4, { constraints: { allowedSets: ["X"] } as never }))).toContain("Holds 4 echoes, not 5: the plan's sets have no more free, and no free echo fits the empty slot under the 12 cost limit.");
-    expect(texts(withPicks(1))).toContain("Holds 1 echo, not 5: no free echo fits the empty slot under the 12 cost limit.");
+    expect(texts(withPicks(4, { constraints: { allowedSets: ["X"] } as never }))).toContain("Holds 4 echoes, not 5: the plan's sets have no more free, and nothing spare fits the empty slot under the 12 cost limit.");
+    expect(texts(withPicks(1))).toContain("Holds 1 echo, not 5: nothing spare fits the empty slot under the 12 cost limit.");
     expect(texts(withPicks(5)).join()).not.toContain("not 5");
   });
 

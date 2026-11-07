@@ -231,7 +231,7 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
     out.push({ tone: "info", text: buffsMoved ? "Same echoes as today: the change is the set or main-echo buffs below, switched on." : "Same echoes as today: this team's best build is the one you wear." });
   }
   const worn = m.after?.picks.length ?? 0;
-  if (worn && worn < FULL_BUILD) out.push({ tone: "warn", text: `Holds ${worn} echo${worn === 1 ? "" : "es"}, not ${FULL_BUILD}: ${m.constraints?.allowedSets ? "the plan's sets have no more free, and " : ""}no free echo fits the empty slot under the 12 cost limit.` });
+  if (worn && worn < FULL_BUILD) out.push({ tone: "warn", text: `Holds ${worn} echo${worn === 1 ? "" : "es"}, not ${FULL_BUILD}: ${m.constraints?.allowedSets ? "the plan's sets have no more free, and " : ""}nothing spare fits the empty slot under the 12 cost limit.` });
   if (m.otherSetEchoes) out.push({ tone: "info", text: `${m.otherSetEchoes === 1 ? "One slot holds an echo" : `${m.otherSetEchoes} slots hold echoes`} from outside the plan's sets: too few of them were free to fill the build.` });
   if (plan?.sets.length && !m.meetsPlanSets && m.relaxed !== "layout") out.push({ tone: "warn", text: `Wears ${Object.entries(m.setsWorn).map(([k, n]) => `${n} ${setName(k)}`).join(" + ")}, not the plan's ${plan.sets.map((s) => `${setName(s.key)} ${s.pieces}pc`).join(" + ")}.` });
   return out;
