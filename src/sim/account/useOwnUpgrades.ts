@@ -12,6 +12,7 @@ import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rileyClient } from "../engine/rileyClient";
 import { rileyAccountOf } from "../engine/rileyAccount";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
+import { lostChunk } from "../persist/savedResults";
 import { readBuildOptions } from "../buildTeam/options";
 import type { RileySource } from "../buildTeam/plans";
 import type { useEchoLab } from "../echoLab/useEchoLab";
@@ -39,9 +40,15 @@ export interface EchoCheckStatus {
   error: string | null;
   /** how far the last check got when the page was left, which stops it */
   left: { done: number; total: number } | null;
+  /** did not fully score: this page load lost a lazy chunk (a weapon or kit that will not load scores as none, with
+   *  no error), so the rows are shown on this page only, never kept for the tab (2026-11-08 hunt F1) */
+  partial: boolean;
+  /** the account changed while a check ran (another tab, the Ask panel): while it runs, its rows are the old data's;
+   *  once it ends they are not shown as current (F5) */
+  moved: boolean;
 }
 
-const idle = (): EchoCheckStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, cancelled: false, computedAt: null, error: null, left: null });
+const idle = (): EchoCheckStatus => ({ state: "idle", done: 0, total: 0, label: "", restored: false, cancelled: false, computedAt: null, error: null, left: null, partial: false, moved: false });
 /** Leaving the page stops a check, and coming back read as if none had run: Cancel says how far it got, so this does too.
  *  For this tab, until the next check. */
 let leftAt: EchoCheckStatus["left"] = null;
@@ -71,18 +78,36 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
   const status = ref<EchoCheckStatus>(idle());
   const budget = ref<TunerBudget>(readBudget());
   let controller: AbortController | null = null;
+  /** what the running check reads: the data and settings as they were when it started (`inputsNow`) */
+  let runInputs: string | null = null;
 
-  /** the cache key for the data as it is now; null until the ranking is in */
-  function keyNow(): string | null {
+  /** what a check reads, as the cache key's parts: the ranking, the inventory, the run's settings; null until the
+   *  ranking is in */
+  function inputsNow(): [string, string, unknown] | null {
     const fp = data.rankingFingerprint();
     if (!fp || !data.ranking.value) return null;
     const inv = inventoryFingerprint(toRaw(inventoryStore.echoes ?? []), toRaw(inventoryStore.equipped ?? {}));
-    return echoCheckKey(rankingResultKey(fp, data.ranking.value), inv, { options: readBuildOptions(), engine: WUWA_CALC_COMMIT, auto: autoTeamBuffs.value });
+    return [rankingResultKey(fp, data.ranking.value), inv, { options: readBuildOptions(), engine: WUWA_CALC_COMMIT, auto: autoTeamBuffs.value }];
   }
+  /** the cache key for the data as it is now; null until the ranking is in */
+  function keyNow(): string | null {
+    const inputs = inputsNow();
+    return inputs ? echoCheckKey(...inputs) : null;
+  }
+  /** the data a check reads, as it is now (the key without the tab-copy stamp: a Clear in another tab is no edit) */
+  const inputsKey = (): string | null => {
+    const inputs = inputsNow();
+    return inputs ? JSON.stringify(inputs) : null;
+  };
 
   /** The check for this exact data, when this tab ran it; else nothing (never another state's rows). */
   function restore(): void {
-    if (status.value.state === "running") return;
+    if (status.value.state === "running") {
+      // the check reads the data as it was when it started: say so while it runs, and drop it as current when it ends
+      const moved = inputsKey() !== runInputs;
+      if (moved !== status.value.moved) status.value = { ...status.value, moved };
+      return;
+    }
     const key = keyNow();
     const cached = key ? readCachedEchoCheck(key) : null;
     check.value = cached;
@@ -109,6 +134,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
     controller?.abort();
     const ctrl = new AbortController();
     controller = ctrl;
+    runInputs = inputsKey();
     leftAt = null;
     check.value = null;
     liveItems.value = [];
@@ -142,8 +168,20 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
         },
       );
       if (controller !== ctrl) return;
+      // Only what fully scored is kept: the check scores on this thread, where a weapon or kit chunk that would not load
+      // reads as none (Aemeath's row turned from "meet the Energy Regen need" into "+0.7 %"), and a reload repeated it
+      const whole = !out.cancelled && !lostChunk() && !ranking.incomplete;
+      if (inputsKey() !== runInputs) {
+        // the account changed while it ran: its rows are the old data's, under a hero that already moved (2026-11-08
+        // hunt F5). Not kept either (the tab keeps one check, and that is the one for the data as it is now): show the
+        // check this tab holds for the data as it is now, else none, and say why
+        status.value = idle();
+        restore();
+        if (status.value.state === "idle") status.value = { ...status.value, moved: !out.cancelled };
+        return;
+      }
+      if (whole) writeCachedEchoCheck(key, out);
       check.value = out;
-      if (!out.cancelled) writeCachedEchoCheck(key, out);
       status.value = {
         ...idle(),
         state: "done",
@@ -152,6 +190,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
         total: out.total,
         computedAt: out.computedAt,
         error: out.errors.length ? `${out.errors.length} could not be checked` : null,
+        partial: !out.cancelled && !whole,
       };
     } catch (err) {
       if (controller === ctrl) status.value = { ...idle(), state: "error", error: err instanceof Error ? err.message : String(err) };
@@ -160,6 +199,7 @@ export function useOwnUpgrades(data: ReturnType<typeof useAccountData>) {
       if (controller === ctrl) {
         liveItems.value = null;
         controller = null;
+        runInputs = null;
       }
     }
     await tuner;

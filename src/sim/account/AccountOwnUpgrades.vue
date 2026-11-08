@@ -26,14 +26,19 @@
     <div v-if="status.state === 'running'" class="own__progress" aria-live="polite" data-test-account-own-progress>
       <span class="own__track"><span :style="{ width: `${status.total ? Math.max(4, (status.done / status.total) * 100) : 4}%` }"></span></span>
       <span class="own__progress-text"><template v-if="status.label">Checking {{ status.label }}'s echoes · {{ status.done }} / {{ status.total || "…" }} characters</template><template v-else>Getting the check ready (your teams and the plans)…</template><template v-if="tunerRunning"> · Tuner plan</template></span>
+      <span v-if="status.moved" class="own__moved" data-test-account-own-moved>Your data changed after this check started (in another tab, perhaps), so these rows are from before the change. Check again when it ends.</span>
     </div>
     <p v-else-if="status.state === 'idle'" class="own__hint" data-test-account-own-idle>
+      <span v-if="status.moved" class="own__left" data-test-account-own-moved>The last check read your data from before a change made while it ran (in another tab, perhaps), so its rows are not shown.</span>
       <span v-if="status.left" class="own__left" data-test-account-own-left>The last check stopped when you left this page<template v-if="status.left.total">, after {{ status.left.done }} of {{ status.left.total }} characters</template>; it runs only while this page is open.</span>
       <b>Check my echoes</b> re-gears each character on their own from the echoes you have, with Build my team's engine
       (about a second each; you can cancel).<template v-if="!rankingReady"> It turns on once your roster is scored.</template>
     </p>
     <p v-else-if="status.state === 'error'" class="own__hint own__hint--bad" role="alert">The check stopped: {{ status.error }}</p>
     <p v-else-if="summary" class="own__hint" data-test-account-own-summary>{{ summary }}</p>
+    <p v-if="status.state === 'done' && status.partial" role="status" class="own__hint own__hint--warn" data-test-account-own-partial>
+      Not everything loaded on this visit, so a weapon or kit can be missing from these figures. They stay on this page only: reload once your connection is back, then check again.
+    </p>
 
     <ol v-if="views.length" class="own__list">
       <template v-for="(v, i) in shownViews" :key="v.row.id">
@@ -195,6 +200,15 @@ const summary = computed((): string => {
 }
 .own__hint--bad {
   color: oklch(var(--er));
+}
+/* the base colour, bold: AA on the tinted box in both themes (the warning hue is not, at this size) */
+.own__hint--warn {
+  font-weight: 600;
+  color: oklch(var(--bc));
+}
+.own__moved {
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 .own__progress {
   display: flex;
