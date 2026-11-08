@@ -172,14 +172,16 @@ export async function importEchoesFromRaw(
   const data = JSON.parse(normalized) as unknown[];
   let amount = 0;
   for (const echo of data) {
+    // Wuthering Tools+: only echo objects, and always under a fresh id (a pasted id overwrote the echo you own)
+    if (!echo || typeof echo !== "object" || Array.isArray(echo)) continue;
     let id = randomString();
     const anyCollisions = inventoryStore.echoById(id);
     if (anyCollisions.length > 0) {
       id = randomString();
     }
     const echoItem = {
-      echoId: id,
       ...(echo as object),
+      echoId: id,
     };
     await inventoryStore.saveEcho(echoItem as never);
     amount++;

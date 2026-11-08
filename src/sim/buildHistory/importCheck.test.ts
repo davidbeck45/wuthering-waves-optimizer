@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
-import { applyImportedDatabase } from "../../utils/settingsBackup";
+import { applyImportedDatabase, importEchoesFromRaw } from "../../utils/settingsBackup";
 import { PROBE_KEY } from "../storage/persistGuard";
 import { checkImport, ImportRefused, importOrExplain } from "./importCheck";
 
@@ -107,5 +107,30 @@ describe("a Settings import", () => {
     expect(toasts[0]).toMatch(/^That is not a backup from this site/);
     expect(importOrExplain(() => applyImportedDatabase(backup()), say)).toBe(true);
     expect(toasts).toHaveLength(1);
+  });
+});
+
+describe("Settings › Import echoes (2026-11-08 hunt M6)", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    localStorage.clear();
+    useInventoryStore().echoes = [{ echoId: "owned1", echo: "Sigillum", echoSubStatsValue1: "8.7" }] as any;
+  });
+
+  it("adds a pasted echo under a fresh id: one that carries the id of an echo you own leaves yours alone", async () => {
+    const inv = useInventoryStore();
+    const amount = await importEchoesFromRaw(JSON.stringify([{ echoId: "owned1", echo: "Sigillum", echoSubStatsValue1: "0.1" }]), inv);
+    expect(amount).toBe(1);
+    expect(inv.echoes).toHaveLength(2);
+    expect((inv.echoes as any[]).find((e) => e.echoId === "owned1")?.echoSubStatsValue1).toBe("8.7");
+    expect((inv.echoes as any[])[1]).toMatchObject({ echo: "Sigillum", echoSubStatsValue1: "0.1" });
+    expect((inv.echoes as any[])[1].echoId).not.toBe("owned1");
+  });
+
+  it("takes only echo objects from the list: numbers and words are not echoes", async () => {
+    const inv = useInventoryStore();
+    expect(await importEchoesFromRaw("[1, 2, 3]", inv)).toBe(0);
+    expect(await importEchoesFromRaw('["hello", null, [1]]', inv)).toBe(0);
+    expect(inv.echoes).toHaveLength(1);
   });
 });
