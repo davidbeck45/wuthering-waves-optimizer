@@ -116,7 +116,7 @@
         </section>
 
         <div ref="actionsBar" class="bt-actions wt-plus-bar">
-          <button type="button" class="btn btn-primary" :disabled="!runnable" data-test-build-team-run @click="run">
+          <button type="button" class="btn btn-primary" :disabled="!runnable" data-test-build-team-run @click="build">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-linejoin="round" /></svg>
             Build from my echoes
           </button>
@@ -251,9 +251,10 @@ import BuildTeamPlanCard from "./BuildTeamPlanCard.vue";
 import BuildTeamResultCard from "./BuildTeamResultCard.vue";
 import BuildTeamSwitch from "./BuildTeamSwitch.vue";
 import { memberAfter, menuErPercent, teamSlotRotation } from "./buildTeam";
-import { buildNameFor, saveFailedText } from "./apply";
+import { buildNameFor, saveFailedText, UNDO_CHANGED_TEXT, UndoRefused } from "./apply";
 import { compactNum, conflictText, deltaText, deltaTone, fmtInt, runSummary, teamTickNote, undoConfirm, undoDoneText } from "./buildTeamView";
-import { useBuildTeam, type MemberProgress } from "./useBuildTeam";
+import { TEAM_CHANGED_TEXT, useBuildTeam, type MemberProgress } from "./useBuildTeam";
+import { onAccountAdopted } from "../storage/crossTabSync";
 import { usePlusBar } from "../shell/plusBar";
 import "./buildTeam.css";
 
@@ -365,9 +366,23 @@ async function loadCurrentEr(): Promise<void> {
 }
 
 function retry(): void {
-  if (plans.value) void run();
+  if (plans.value) void build();
   else void loadFromRoute();
 }
+
+/** Build: on a team another tab changed since it was read, the page reads it again first and says so (2026-11-08 hunt
+ *  H1: a run on the old members pinned one character's build in another's slot). */
+async function build(): Promise<void> {
+  if (bt.planIsCurrent()) return run();
+  await readTeamAgain();
+}
+async function readTeamAgain(): Promise<void> {
+  await loadFromRoute();
+  if (phase.value === "plan") error.value = TEAM_CHANGED_TEXT;
+}
+onAccountAdopted(() => {
+  if (mode.value === "team" && phase.value === "plan" && !bt.planIsCurrent()) void readTeamAgain();
+});
 
 const reloadPage = (): void => location.reload();
 
@@ -401,8 +416,9 @@ async function onSave(): Promise<void> {
 }
 
 async function onUndo(): Promise<void> {
-  const rec = bt.undoRecord.value;
-  const words = undoConfirm(bt.undoPreview(), (n) => `${n} build${n === 1 ? "" : "s"} saved for “${teamTitle(rec?.teamName)}”`, "put the team's pins back");
+  const fates = bt.undoPreview();
+  const rec = bt.undoRecord.value; // the record the words describe: the last save's, another tab's included
+  const words = undoConfirm(fates, (n) => `${n} build${n === 1 ? "" : "s"} saved for “${teamTitle(rec?.teamName)}”`, "put the team's pins back");
   const ok = await confirm(rec ? words.message : "Undo the last build?", {
     title: "Undo last build",
     items: rec ? words.items : undefined,
@@ -410,7 +426,13 @@ async function onUndo(): Promise<void> {
     variant: "warning",
   });
   if (!ok) return;
-  const out = bt.undo();
+  let out;
+  try {
+    out = bt.undo(rec);
+  } catch (e) {
+    showToast(e instanceof UndoRefused ? UNDO_CHANGED_TEXT : String(e), "error", 9000);
+    return;
+  }
   if (!out) return;
   const done = undoDoneText(out);
   showToast(done.text, done.tone, done.tone === "success" ? 6000 : 9000);

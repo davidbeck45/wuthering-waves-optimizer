@@ -341,6 +341,8 @@ describe("saving the account plan", () => {
     expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), false))).toEqual([]);
     // make active: the one who wears another build today has to switch; the one already wearing it does not
     expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true))).toEqual(["Ciaccona"]);
+    // a pinned build that is the active one is worn already: no copy (planning again after a save made 7, 2026-11-08 hunt M5)
+    expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true, (id) => (id === "Ciaccona" ? "b" : "other")))).toEqual([]);
   });
 
   it("saves a member who keeps their echoes when the run's buffs move their number: the review counted that build", () => {

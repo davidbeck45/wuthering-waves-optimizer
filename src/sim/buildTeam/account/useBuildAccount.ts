@@ -18,12 +18,12 @@ import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
 import { workerBackend } from "../workerBackend";
 import { OPTIONS_KEY } from "../useBuildTeam";
-import { accountFingerprint, SaveRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
+import { accountFingerprint, newestUndo, SaveRefused, UndoRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
 import { accountStoresRefused } from "../../storage/persistGuard";
 import { onSavedResultsCleared } from "../../persist/savedResults";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildAccount, type AccountPhase, type BuildAccountResult } from "./buildAccount";
-import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, saveAccountPlan, saveAccountUndo, undoAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
+import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, readStoredAccountUndo, saveAccountPlan, saveAccountUndo, undoAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -42,6 +42,9 @@ export const MAX_TEAMS = 8;
 export const BUDGET_MS = 60_000;
 
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
+
+/** Said over the Teams step when the rows were read again because the account changed under them. */
+export const ROWS_CHANGED_TEXT = "Your builds or teams changed after these teams were read (in another tab, perhaps), so they were read again. Check them, then plan.";
 
 /** The teams picked for the run, their order and weights: they outlive a reload (eight teams chosen read four again). */
 export const ACCOUNT_CHOICE_KEY = "wtplus:buildAccount:choice:v1";
@@ -128,11 +131,15 @@ export function useBuildAccount() {
   let rowsStale = false;
   /** the account the review on screen was planned on: it stands for that account and no other */
   let plannedOn: string | null = null;
+  /** the account the rows (each team's members and pins) were read from: a Plan on rows read from another account
+   *  scored one team and pinned into another (2026-11-08 hunt H1) */
+  let rowsOn: string | null = null;
   let saving = false;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => accountUndoIsLive(stores(), undoRecord.value));
   const reviewIsCurrent = (): boolean => plannedOn === accountFingerprint(stores());
+  const rowsAreCurrent = (): boolean => rowsOn === accountFingerprint(stores());
   const byId = computed(() => new Map(choices.value.map((c) => [c.id, c])));
   const chosen = computed(() => selected.value.map((id) => byId.value.get(id)).filter((c): c is AccountTeamChoice => !!c));
   /** characters in two or more ticked teams: one build, scored in the first */
@@ -180,6 +187,7 @@ export function useBuildAccount() {
       setWeights(keptPlan.weights, keptPlan.touched);
       result.value = keptPlan.result;
       plannedOn = keptPlan.on;
+      rowsOn = keptPlan.on;
       phase.value = "result";
       return;
     }
@@ -191,6 +199,7 @@ export function useBuildAccount() {
       const chars = plain(characterStore.characters);
       const echoes = plain(inventoryStore.echoes);
       const teams = plain(teamStore.teams);
+      const readOn = accountFingerprint(stores());
       // /account's ranking for this exact data, when this tab has it: its team damage is reused
       const fp = rankingFingerprint({ characters: toRaw(characterStore.characters ?? {}), echoes: toRaw(inventoryStore.echoes ?? []), teams: toRaw(teamStore.teams ?? []), investment: true, autoTeamBuffs: autoTeamBuffs.value });
       const cached = readCachedRanking(fp);
@@ -198,6 +207,7 @@ export function useBuildAccount() {
       const rows = await accountTeamChoices(chars, echoes, teams, { ranking, autoTeamBuffs: autoTeamBuffs.value, signal: ctrl.signal, onProgress: (done, total) => (scored.value = { done, total }) });
       if (ctrl.signal.aborted) return;
       choices.value = rows;
+      rowsOn = readOn;
       rowsStale = false;
       const stored = keepChoice ? null : readChoice();
       const kept = (keepChoice ? selected.value : stored?.selected ?? []).filter((id) => rows.some((r) => r.id === id)).slice(0, MAX_TEAMS);
@@ -269,9 +279,21 @@ export function useBuildAccount() {
     ticker = null;
   }
 
+  /** The rows were read from an account that changed since (another tab's write): read them again, and say so. */
+  async function rereadRows(): Promise<void> {
+    await load(true);
+    if (phase.value === "choose") error.value = ROWS_CHANGED_TEXT;
+  }
+
+  /** Another tab's write was adopted (crossTabSync.ts `onAccountAdopted`): rows on the Teams step follow it. */
+  async function followAccount(): Promise<void> {
+    if (phase.value === "choose" && !rowsAreCurrent()) await rereadRows();
+  }
+
   async function run(): Promise<void> {
+    if (!chosen.value.length) return;
+    if (!rowsAreCurrent()) return rereadRows();
     const teams = chosen.value;
-    if (!teams.length) return;
     saveOptions();
     controller?.abort();
     const ctrl = new AbortController();
@@ -354,7 +376,8 @@ export function useBuildAccount() {
   }
 
   /** What a save would write: every member with a new build (accountApply.ts `accountApplyRequest`). */
-  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value).members : []));
+  const activeBuildOf = (id: string): string | null => characterStore.characters?.[id]?.activeBuildId ?? null;
+  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value, activeBuildOf).members : []));
 
   /** The review no longer says what the account is: back to Teams, the rows read again. */
   function dropReview(): void {
@@ -378,7 +401,7 @@ export function useBuildAccount() {
     saving = true;
     try {
       const previous = readAccountUndo();
-      const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value), { echoes: inventoryStore.echoes as any[] });
+      const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value, activeBuildOf), { echoes: inventoryStore.echoes as any[] });
       await nextTick();
       if (accountStoresRefused()) {
         undoAccountPlan(stores(), out.undo);
@@ -397,15 +420,25 @@ export function useBuildAccount() {
     }
   }
 
-  /** What Undo would do with each build, for the confirm. */
+  /** The Undo this page acts on: the last save's, even when another tab made it (apply.ts `newestUndo`). */
+  function currentUndo(): AccountUndoRecord | null {
+    const rec = newestUndo(undoRecord.value, readStoredAccountUndo()) ?? readAccountUndo();
+    if (rec?.at !== undoRecord.value?.at) undoRecord.value = rec;
+    return rec;
+  }
+
+  /** What Undo would do with each build, for the confirm; `undoRecord` is then the record it describes. */
   function undoPreview(): UndoFate[] {
-    const rec = undoRecord.value ?? readAccountUndo();
+    const rec = currentUndo();
     return rec ? undoFates(stores(), rec) : [];
   }
 
-  function undo(): AccountUndoOutcome | null {
-    const rec = undoRecord.value ?? readAccountUndo();
+  /** `described`: the record the confirm spoke for. A newer save since (another tab's) refuses with `UndoRefused`,
+   *  nothing written: the player was asked about the other one. */
+  function undo(described?: Pick<AccountUndoRecord, "at"> | null): AccountUndoOutcome | null {
+    const rec = currentUndo();
     if (!rec) return null;
+    if (described && described.at !== rec.at) throw new UndoRefused();
     const out = undoAccountPlanSaved(stores(), rec, { echoes: inventoryStore.echoes as any[] });
     undoRecord.value = null;
     applied.value = null;
@@ -455,5 +488,6 @@ export function useBuildAccount() {
     undo,
     undoPreview,
     backToTeams,
+    followAccount,
   };
 }

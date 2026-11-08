@@ -7,11 +7,11 @@ import { useCharacterStore } from "../../../stores/character";
 import { useInventoryStore } from "../../../stores/inventory";
 import { useTeamRotationsStore } from "../../../stores/teamRotations";
 import { refusedStores } from "../../storage/persistGuard";
-import { saveFailedText, SaveRefused } from "../apply";
-import { clearAccountUndo, readAccountUndo } from "./accountApply";
+import { saveFailedText, SaveRefused, UndoRefused, type BuildTeamStores } from "../apply";
+import { accountApplyRequest, clearAccountUndo, readAccountUndo, saveAccountPlan, undoAccountPlan } from "./accountApply";
 import { accountTeamChoices } from "./accountTeams";
 import { buildAccount } from "./buildAccount";
-import { ACCOUNT_CHOICE_KEY, clearKeptPlan, useBuildAccount } from "./useBuildAccount";
+import { ACCOUNT_CHOICE_KEY, clearKeptPlan, ROWS_CHANGED_TEXT, useBuildAccount } from "./useBuildAccount";
 
 vi.mock("./accountTeams", async (original) => ({ ...(await original<typeof import("./accountTeams")>()), accountTeamChoices: vi.fn() }));
 vi.mock("./buildAccount", async (original) => ({ ...(await original<typeof import("./buildAccount")>()), buildAccount: vi.fn() }));
@@ -154,6 +154,91 @@ describe("Whole account's review and save", () => {
     store.equipBuild = real;
     const out = await ba.save();
     expect(out?.created.map((c) => c.name)).toEqual(["Account plan", "Account plan"]);
+  });
+
+  describe("rows another tab changed (2026-11-08 hunt H1)", () => {
+    it("Plan on rows read before another tab changed a team reads them again and plans nothing", async () => {
+      const ba = await page();
+      useTeamRotationsStore().teams[0].characterIds = ["A", "C", null]; // the other tab put C in B's slot
+      vi.mocked(accountTeamChoices).mockClear();
+
+      await ba.run();
+
+      expect(buildAccount).not.toHaveBeenCalled();
+      expect(accountTeamChoices).toHaveBeenCalledOnce();
+      expect(ba.phase.value).toBe("choose");
+      expect(ba.error.value).toBe(ROWS_CHANGED_TEXT);
+      // on the rows read again it plans, and the review saves
+      await review(ba);
+      expect(ba.error.value).toBeNull();
+      expect((await ba.save())?.created).toHaveLength(2);
+    });
+
+    it("the Teams step follows another tab's write, and only when the account changed", async () => {
+      const ba = await page();
+      vi.mocked(accountTeamChoices).mockClear();
+      await ba.followAccount();
+      expect(accountTeamChoices).not.toHaveBeenCalled();
+      useCharacterStore().characters.B.weapon = "new-B";
+      await ba.followAccount();
+      expect(accountTeamChoices).toHaveBeenCalledOnce();
+      expect(ba.error.value).toBe(ROWS_CHANGED_TEXT);
+    });
+
+    it("this page's own save and undo are no reason to read the rows again on the next Plan", async () => {
+      const ba = await page();
+      await review(ba);
+      await ba.save();
+      ba.backToTeams();
+      await vi.waitFor(() => expect(ba.phase.value).toBe("choose"));
+      await review(ba);
+      expect(ba.error.value).toBeNull();
+    });
+  });
+
+  describe("two tabs, one Undo (2026-11-08 hunt M1)", () => {
+    const realStores = () => ({ character: useCharacterStore(), team: useTeamRotationsStore(), inventory: useInventoryStore() }) as unknown as BuildTeamStores;
+    /** the other tab's save: a newer plan, made active (its own module memory is not this tab's) */
+    const otherTabSaves = (at: number) => saveAccountPlan(realStores(), { ...accountApplyRequest(plan() as never, true), now: at }, { echoes: [] });
+
+    it("an older tab's Undo takes back the last save, the other tab's, and only that", async () => {
+      const a = await page();
+      await review(a);
+      const first = await a.save();
+      const afterFirst = JSON.stringify(useCharacterStore().characters);
+      otherTabSaves(first!.undo.at + 1000);
+
+      const fates = a.undoPreview();
+      expect(fates.map((f) => [f.name, f.fate])).toEqual([["Account plan (2)", "restore"], ["Account plan (2)", "restore"]]);
+      const out = a.undo(a.undoRecord.value);
+
+      expect(out?.kind).toBe("exact");
+      expect(JSON.stringify(useCharacterStore().characters)).toBe(afterFirst);
+      expect(readAccountUndo()).toBeNull();
+    });
+
+    it("taking back an older save leaves the newer save's Undo stored", () => {
+      const older = saveAccountPlan(realStores(), { ...accountApplyRequest(plan() as never, false), now: 1000 }, { echoes: [] });
+      otherTabSaves(2000);
+      undoAccountPlan(realStores(), older.undo);
+      expect(readAccountUndo()?.at).toBe(2000);
+    });
+
+    it("refuses when a newer save replaced the Undo while the question was open, and writes nothing", async () => {
+      const a = await page();
+      await review(a);
+      await a.save();
+      a.undoPreview();
+      const described = a.undoRecord.value!;
+      otherTabSaves(described.at + 1000);
+      const before = JSON.stringify(useCharacterStore().characters);
+
+      expect(() => a.undo(described)).toThrow(UndoRefused);
+      expect(JSON.stringify(useCharacterStore().characters)).toBe(before);
+      expect(readAccountUndo()?.at).toBe(described.at + 1000);
+      // asked again, it speaks for the newer save
+      expect(a.undoPreview().map((f) => f.name)).toEqual(["Account plan (2)", "Account plan (2)"]);
+    });
   });
 
   describe("the teams you chose", () => {

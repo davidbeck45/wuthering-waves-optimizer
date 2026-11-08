@@ -16,7 +16,7 @@ import { OPTIONS_KEY, readBuildOptions, type BuildOptions } from "./options";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
 import { priorityOrder, type MemberPlan } from "./rileyPlan";
 import { workerBackend } from "./workerBackend";
-import { accountFingerprint, applyBuildTeam, clearUndo, readUndo, SaveRefused, saveUndo, undoBuildTeam, undoFates, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoFate, type UndoOutcome, type UndoRecord } from "./apply";
+import { accountFingerprint, applyBuildTeam, clearUndo, newestUndo, readStoredUndo, readUndo, SaveRefused, saveUndo, undoBuildTeam, UndoRefused, undoFates, undoIsLive, type ApplyOutcome, type BuildTeamStores, type UndoFate, type UndoOutcome, type UndoRecord } from "./apply";
 import { accountStoresRefused } from "../storage/persistGuard";
 import { onSavedResultsCleared } from "../persist/savedResults";
 import type { TeamImpact } from "../account/investPlan";
@@ -65,6 +65,9 @@ onSavedResultsCleared(clearKeptReview);
 
 const ticksKey = (ticks: readonly boolean[]): string => ticks.map((t) => (t ? "1" : "0")).join("");
 
+/** Said over the plan when the team was read again because the account changed under it. */
+export const TEAM_CHANGED_TEXT = "Your builds or teams changed after this team was read (in another tab, perhaps), so it was read again. Check the plan, then build.";
+
 const requestKey = (r: TeamRequest & { only?: string | null }): string => JSON.stringify([r.teamId ?? null, r.members ?? [], r.key ?? null, r.only ?? null, r.rankedTeam ?? null]);
 
 export function useBuildTeam() {
@@ -99,9 +102,13 @@ export function useBuildTeam() {
   let rankedTeam: string | null = null;
   const rankedFigure = shallowRef<TeamImpact | null>(null);
   let requested = "";
+  let lastRequest: (TeamRequest & { only?: string | null }) | null = null;
   let controller: AbortController | null = null;
   /** the account the review on screen was planned on: it stands for that account and no other */
   let plannedOn: string | null = null;
+  /** the account the team (members, pins) and its plans were read from: a run on a team another tab changed saved one
+   *  member's build into another's slot (2026-11-08 hunt H1). This page's own save carries it forward. */
+  let loadedOn: string | null = null;
   let saving = false;
   /** the ticks the figures on screen stand for, and the newest ask for each: an answer to an older one is dropped */
   let figuredTicks: string | null = null;
@@ -111,6 +118,8 @@ export function useBuildTeam() {
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
   const undoLive = computed(() => undoIsLive(stores(), undoRecord.value));
   const reviewIsCurrent = (): boolean => plannedOn === accountFingerprint(stores());
+  /** Is the team on screen still what the account holds? */
+  const planIsCurrent = (): boolean => loadedOn === accountFingerprint(stores());
 
   /** Echoes worn by characters outside the team (left out unless the option is on). */
   const wornOutsideCount = computed(() => {
@@ -156,6 +165,7 @@ export function useBuildTeam() {
     applied.value = null;
     error.value = null;
     plannedOn = kept.on;
+    loadedOn = kept.on;
     figuredTicks = ticksKey(saveSlots.value);
     keptReview = { ...kept, saveSlots, teamFigure, rileyAfter, rankedFigure };
     phase.value = "result";
@@ -168,6 +178,7 @@ export function useBuildTeam() {
   async function load(request: TeamRequest & { only?: string | null }): Promise<void> {
     controller?.abort();
     requested = requestKey(request);
+    lastRequest = request;
     rankedTeam = request.only ? request.rankedTeam ?? null : null;
     if (keptReview?.request === requested && keptReview.on === accountFingerprint(stores())) {
       restoreReview(keptReview);
@@ -196,6 +207,7 @@ export function useBuildTeam() {
       return;
     }
     team.value = spec;
+    loadedOn = accountFingerprint(stores());
     only.value = request.only && spec.characterIds.includes(request.only) ? request.only : null;
     phase.value = "loading";
     const ctrl = new AbortController();
@@ -231,6 +243,12 @@ export function useBuildTeam() {
 
   async function run(): Promise<void> {
     if (!team.value || !plans.value) return;
+    if (!planIsCurrent()) {
+      // the view reads the team again itself (BuildTeamView `build`), with what it shows beside it
+      if (lastRequest) await load(lastRequest);
+      if (phase.value === "plan") error.value = TEAM_CHANGED_TEXT;
+      return;
+    }
     saveOptions();
     controller?.abort();
     const ctrl = new AbortController();
@@ -442,23 +460,35 @@ export function useBuildTeam() {
       applied.value = out;
       undoRecord.value = out.undo;
       keptReview = null;
+      loadedOn = accountFingerprint(stores()); // this page's own write: the team on screen is still the team
       return out;
     } finally {
       saving = false;
     }
   }
 
-  /** What Undo would do with each build, for the confirm. */
+  /** The Undo this page acts on: the last save's, even when another tab made it (apply.ts `newestUndo`). */
+  function currentUndo(): UndoRecord | null {
+    const rec = newestUndo(undoRecord.value, readStoredUndo()) ?? readUndo();
+    if (rec?.at !== undoRecord.value?.at) undoRecord.value = rec;
+    return rec;
+  }
+
+  /** What Undo would do with each build, for the confirm; `undoRecord` is then the record it describes. */
   function undoPreview(): UndoFate[] {
-    const rec = undoRecord.value ?? readUndo();
+    const rec = currentUndo();
     return rec ? undoFates(stores(), rec) : [];
   }
 
-  function undo(): UndoOutcome | null {
-    const rec = undoRecord.value ?? readUndo();
+  /** `described`: the record the confirm spoke for; a newer save since refuses with `UndoRefused`, nothing written. */
+  function undo(described?: Pick<UndoRecord, "at"> | null): UndoOutcome | null {
+    const rec = currentUndo();
     if (!rec) return null;
+    if (described && described.at !== rec.at) throw new UndoRefused();
+    const wasCurrent = planIsCurrent();
     snapshotCharacters(rec.created.map((c) => c.characterId), "before-build-team-undo", { characters: characterStore.characters, echoes: inventoryStore.echoes as any[] });
     const out = undoBuildTeam(stores(), rec);
+    if (wasCurrent) loadedOn = accountFingerprint(stores());
     undoRecord.value = null;
     applied.value = null;
     // a review planned after the undone save (or one this undo could only partly take back) was read from what just
@@ -503,5 +533,6 @@ export function useBuildTeam() {
     undo,
     undoPreview,
     saveOptions,
+    planIsCurrent,
   };
 }

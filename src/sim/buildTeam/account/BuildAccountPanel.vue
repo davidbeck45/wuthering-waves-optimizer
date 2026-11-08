@@ -261,7 +261,8 @@ import PresetNameLabel from "../../display/PresetNameLabel.vue";
 import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
-import { saveFailedText } from "../apply";
+import { saveFailedText, UNDO_CHANGED_TEXT, UndoRefused } from "../apply";
+import { onAccountAdopted } from "../../storage/crossTabSync";
 import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
 import { WEIGHT_CHOICES, type AccountTeamChoice } from "./accountTeams";
@@ -336,8 +337,8 @@ async function onSave(): Promise<void> {
 }
 
 async function onUndo(): Promise<void> {
-  const rec = ba.undoRecord.value;
   const words = undoConfirm(ba.undoPreview(), (n) => `${n} Account plan build${n === 1 ? "" : "s"}`, "put every pin back");
+  const rec = ba.undoRecord.value; // the record the words describe: the last save's, another tab's included
   const ok = await confirm(rec ? words.message : "Undo the account plan?", {
     title: "Undo account plan",
     items: rec ? words.items : undefined,
@@ -345,12 +346,20 @@ async function onUndo(): Promise<void> {
     variant: "warning",
   });
   if (!ok) return;
-  const out = ba.undo();
+  let out;
+  try {
+    out = ba.undo(rec);
+  } catch (e) {
+    showToast(e instanceof UndoRefused ? UNDO_CHANGED_TEXT : String(e), "error", 9000);
+    return;
+  }
   if (!out) return;
   const done = undoDoneText(out);
   showToast(done.text, done.tone, done.tone === "success" ? 6000 : 9000);
 }
 
 onMounted(() => void ba.load());
+// another tab changed a build or a team: the Teams step reads the rows again rather than plan on the old ones
+onAccountAdopted(() => void ba.followAccount());
 onBeforeUnmount(() => ba.cancel());
 </script>

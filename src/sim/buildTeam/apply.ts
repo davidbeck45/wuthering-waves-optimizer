@@ -47,6 +47,25 @@ export class SaveRefused extends Error {
   }
 }
 
+/** Why an Undo did nothing: the record the confirm described is no longer the last save's (another tab saved since). */
+export class UndoRefused extends Error {
+  constructor() {
+    super("changed");
+    this.name = "UndoRefused";
+  }
+}
+
+export const UNDO_CHANGED_TEXT = "Nothing was undone: a newer save replaced this Undo while the question was open (in another tab, perhaps). Press Undo again to see what it takes back now.";
+
+/** The Undo a page acts on: the newer of its own record and the stored one. Another tab's later save replaced the stored
+ *  record, and the older one in this tab's memory would take back the wrong save and delete the newer save's Undo
+ *  (2026-11-08 hunt M1). The tab's own stays when it is newer: its save could not store it. */
+export function newestUndo<T extends { at: number }>(mine: T | null, stored: T | null): T | null {
+  if (!mine) return stored;
+  if (!stored) return mine;
+  return stored.at >= mine.at ? stored : mine;
+}
+
 /** What a failed save tells the player. Every failure leaves the account as it was. */
 export function saveFailedText(e: unknown): string {
   if (e instanceof SaveRefused && e.reason === "stale") return "Nothing was saved: your builds or teams changed after this plan was made. Plan again from what they are now.";
@@ -346,7 +365,7 @@ export function undoBuildTeam(stores: BuildTeamStores, undo: UndoRecord): UndoOu
 
   if (exact) {
     if (team && undo.previousBuildIds) undo.previousBuildIds.forEach((_, slot) => stores.team.setTeamCharacterBuild(team.id, slot, previousPin(slot)));
-    clearUndo();
+    clearUndo(undo);
     return { kind: "exact", removed, kept, pinsRestored: !!team, clashes };
   }
 
@@ -359,7 +378,7 @@ export function undoBuildTeam(stores: BuildTeamStores, undo: UndoRecord): UndoOu
       }
     }
   }
-  clearUndo();
+  clearUndo(undo);
   return { kind: "partial", removed, kept, pinsRestored, clashes };
 }
 
@@ -388,7 +407,8 @@ export function saveUndo(undo: UndoRecord): boolean {
   }
 }
 
-export function readUndo(): UndoRecord | null {
+/** The record in localStorage only (another tab's save writes it too). */
+export function readStoredUndo(): UndoRecord | null {
   try {
     const raw = storage()?.getItem(UNDO_KEY);
     if (raw) {
@@ -396,15 +416,21 @@ export function readUndo(): UndoRecord | null {
       if (parsed?.v === 1 && Array.isArray(parsed.created)) return parsed;
     }
   } catch {
-    // unreadable: fall back to memory
+    // unreadable: none
   }
-  return memoryUndo;
+  return null;
 }
 
-export function clearUndo(): void {
-  memoryUndo = null;
+export function readUndo(): UndoRecord | null {
+  return readStoredUndo() ?? memoryUndo;
+}
+
+/** Forgets the undo record; with `undo`, only while it is that one: a newer save's (another tab's) stays. */
+export function clearUndo(undo?: Pick<UndoRecord, "at">): void {
+  if (!undo || memoryUndo?.at === undo.at) memoryUndo = null;
   try {
-    storage()?.removeItem(UNDO_KEY);
+    const stored = readStoredUndo();
+    if (!undo || !stored || stored.at === undo.at) storage()?.removeItem(UNDO_KEY);
   } catch {
     // nothing to clear
   }

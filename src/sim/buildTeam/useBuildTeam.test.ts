@@ -10,7 +10,7 @@ import { refusedStores } from "../storage/persistGuard";
 import { clearUndo, readUndo, SaveRefused } from "./apply";
 import { buildMyTeam, teamFigureOf } from "./buildTeam";
 import { rankedTeamImpact } from "../account/investPlan";
-import { clearKeptReview, useBuildTeam } from "./useBuildTeam";
+import { clearKeptReview, TEAM_CHANGED_TEXT, useBuildTeam } from "./useBuildTeam";
 
 vi.mock("./buildTeam", async (original) => ({ ...(await original<typeof import("./buildTeam")>()), buildMyTeam: vi.fn(), teamFigureOf: vi.fn(async () => null) }));
 vi.mock("./plans", () => ({ plansForTeam: vi.fn(async () => ({ plans: [{ share: null, mainDps: false }, { share: null, mainDps: false }, null], riley: null })) }));
@@ -52,6 +52,23 @@ describe("One team's review and save", () => {
     bt.undo();
     expect(bt.result.value).toBeNull();
     expect(bt.toSave.value).toEqual([]);
+  });
+
+  it("Build on a team another tab changed after it was read reads it again and runs nothing (2026-11-08 hunt H1)", async () => {
+    const bt = useBuildTeam();
+    await bt.load({ teamId: "t1", members: [] });
+    useTeamRotationsStore().teams[0].characterIds = ["A", "C", null]; // the other tab put C in B's slot
+    vi.mocked(buildMyTeam).mockClear();
+
+    await bt.run();
+
+    expect(buildMyTeam).not.toHaveBeenCalled();
+    expect(bt.team.value?.characterIds).toEqual(["A", "C", null]);
+    expect(bt.phase.value).toBe("plan");
+    expect(bt.error.value).toBe(TEAM_CHANGED_TEXT);
+    expect(bt.planIsCurrent()).toBe(true);
+    await bt.run();
+    expect(buildMyTeam).toHaveBeenCalledOnce();
   });
 
   it("Undo of the save the review made keeps the review", async () => {

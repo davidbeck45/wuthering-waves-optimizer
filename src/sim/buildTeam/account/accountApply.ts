@@ -145,7 +145,7 @@ export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord
     stores.team.setTeamCharacterBuild(p.teamId, p.slot, buildExists(stores, p.characterId, p.previous) ? p.previous : null);
     pinsRestored += 1;
   }
-  clearAccountUndo();
+  clearAccountUndo(undo);
   return { kind: exact ? "exact" : "partial", removed, kept, pinsRestored, clashes };
 }
 
@@ -154,12 +154,15 @@ export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord
  *  set or main-echo buffs switched on (`worthSaving`, Build my team's rule): the review's team totals count that build,
  *  so it is saved. With `makeActive` the exception also needs them to wear those echoes already: a team can pin a build
  *  they do not wear (an earlier save does), and left on their active build they would still wear echoes the plan gives
- *  to someone else. Each pinned in every chosen saved team they play in. */
-export function accountApplyRequest(result: Pick<BuildAccountResult, "members" | "teams">, makeActive: boolean): AccountApplyRequest {
+ *  to someone else. A pinned build that is also the active one is worn (`activeBuildOf`, echoCheck.ts's rule): planning
+ *  again after a save made 7 identical copies and made them active (2026-11-08 hunt M5). Each pinned in every chosen
+ *  saved team they play in. */
+export function accountApplyRequest(result: Pick<BuildAccountResult, "members" | "teams">, makeActive: boolean, activeBuildOf: (characterId: string) => string | null | undefined = () => null): AccountApplyRequest {
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
-    if (m.sameEchoes && !m.alsoIn.length && !worthSaving(m) && (!makeActive || m.fromBuild.source === "active")) return;
+    const wornNow = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeBuildOf(m.characterId));
+    if (m.sameEchoes && !m.alsoIn.length && !worthSaving(m) && (!makeActive || wornNow)) return;
     const pins = result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
     members.push({ characterId: m.characterId, draft: m.draft, pins });
   });
@@ -203,7 +206,8 @@ export function saveAccountUndo(undo: AccountUndoRecord): boolean {
   }
 }
 
-export function readAccountUndo(): AccountUndoRecord | null {
+/** The record in localStorage only (another tab's save writes it too). */
+export function readStoredAccountUndo(): AccountUndoRecord | null {
   try {
     const raw = storage()?.getItem(ACCOUNT_UNDO_KEY);
     if (raw) {
@@ -211,15 +215,21 @@ export function readAccountUndo(): AccountUndoRecord | null {
       if (parsed?.v === 1 && Array.isArray(parsed.created) && Array.isArray(parsed.pins)) return parsed;
     }
   } catch {
-    // unreadable: fall back to memory
+    // unreadable: none
   }
-  return memoryUndo;
+  return null;
 }
 
-export function clearAccountUndo(): void {
-  memoryUndo = null;
+export function readAccountUndo(): AccountUndoRecord | null {
+  return readStoredAccountUndo() ?? memoryUndo;
+}
+
+/** Forgets the undo record; with `undo`, only while it is that one: a newer save's (another tab's) stays. */
+export function clearAccountUndo(undo?: Pick<AccountUndoRecord, "at">): void {
+  if (!undo || memoryUndo?.at === undo.at) memoryUndo = null;
   try {
-    storage()?.removeItem(ACCOUNT_UNDO_KEY);
+    const stored = readStoredAccountUndo();
+    if (!undo || !stored || stored.at === undo.at) storage()?.removeItem(ACCOUNT_UNDO_KEY);
   } catch {
     // nothing to clear
   }
