@@ -89,7 +89,7 @@
           </button>
         </div>
         <div class="flex items-center gap-2 ml-auto max-sm:w-full max-sm:justify-between">
-          <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length - failedCount }} teams timed<template v-if="failedCount"> · {{ failedCount }} could not be</template> · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
+          <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length - failedCount }} teams timed<template v-if="failedCount"> · {{ failedCount }} could not be timed</template> · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
           <button v-if="hasAccount" type="button" class="btn btn-sm" :disabled="running || !status.current" data-test-toa-recompute @click="compute()">
             {{ check ? "Recompute" : "Check my teams" }}
           </button>
