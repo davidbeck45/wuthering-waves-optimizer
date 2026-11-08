@@ -83,7 +83,7 @@ export interface UndoRecord {
   activated: Array<{ characterId: string; record: Record<string, any> }>;
   /** with "also make active": upstream's `equipped` / `equippedPresets` maps as they were (equipBuild rewrites them) */
   inventory: { equipped: Record<string, Record<string, number>>; equippedPresets: Record<string, string> } | null;
-  /** fingerprints of the touched records (and the team's pins) right after the apply */
+  /** fingerprints of the touched records (rotations apart, `rotationsKey`) and the team's pins right after the apply */
   after: Record<string, string>;
 }
 
@@ -125,6 +125,34 @@ export interface ApplyOutcome {
 
 const clone = <T>(v: T): T => (v === undefined ? v : JSON.parse(JSON.stringify(v)));
 const fp = (v: unknown): string => cyrb53(stableStringify(v ?? null));
+
+/** A record as Undo compares it: its saved rotations left out. Sync my teams writes loop times there and never touches
+ *  gear, so a sync after a save is no edit of the saved build (2026-11-08 hunt M2: 7 of 9 kept "active" after one). */
+export const editFingerprint = (record: unknown): string => {
+  if (!record || typeof record !== "object") return fp(record);
+  const { rotations: _r, ...rest } = record as Record<string, unknown>;
+  void _r;
+  return fp(rest);
+};
+/** `after[rotationsKey(id)]`: "" when the save left that character's rotations as they were (Undo then keeps the
+ *  rotations of today), else their fingerprint right after the save (Undo goes back verbatim only while they read so). */
+export const rotationsKey = (characterId: string): string => `rotations:${characterId}`;
+const rotationsFp = (record: Record<string, any> | undefined): string => fp(record?.rotations ?? null);
+
+export const rotationsBeforeOf = (record: Record<string, any> | undefined): string => rotationsFp(record);
+
+/** What `after` keeps for one member right after a save: the record without rotations, and whether the save moved them. */
+export function afterEntries(characterId: string, record: Record<string, any> | undefined, rotationsBefore: string): Record<string, string> {
+  const rot = rotationsFp(record);
+  return { [characterId]: editFingerprint(record), [rotationsKey(characterId)]: rot === rotationsBefore ? "" : rot };
+}
+
+/** Does this record still read as the save left it? A record stored before rotations were left out holds the whole one. */
+function asSaved(record: Record<string, any>, characterId: string, after: Record<string, string>): boolean {
+  const rk = rotationsKey(characterId);
+  if (!(rk in after)) return fp(record) === after[characterId];
+  return editFingerprint(record) === after[characterId] && (after[rk] === "" || after[rk] === rotationsFp(record));
+}
 
 /** "Built for Mornye + Lynae" — the team's other members, as resolveTeam's by-name rule reads a build name; a name
  *  the character already has gets " (2)", " (3)", … so nothing is ever overwritten or ambiguous. */
@@ -189,7 +217,7 @@ export function undoFates(stores: Pick<BuildTeamStores, "character">, undo: Pick
     const record = stores.character.characters[c.characterId];
     const build = record?.builds?.find((b: any) => b.id === c.buildId);
     if (!build) return { ...base, fate: "gone" };
-    if (fp(record) === undo.after[c.characterId]) return { ...base, fate: "restore" };
+    if (asSaved(record, c.characterId, undo.after)) return { ...base, fate: "restore" };
     if (record.activeBuildId === c.buildId) return { ...base, fate: "keep", why: "it is the active build now" };
     if ((build.updatedAt ?? 0) > undo.at) return { ...base, fate: "keep", why: "it was edited after it was made" };
     return { ...base, fate: "remove" };
@@ -214,7 +242,14 @@ export function undoCharacters(stores: BuildTeamStores, undo: UndoCore, fates: r
     removed.push({ characterId: f.characterId, name: f.name });
     const snapshot = f.fate === "restore" ? undo.activated.find((a) => a.characterId === f.characterId) : undefined;
     if (snapshot) {
-      stores.character.characters[f.characterId] = clone(snapshot.record);
+      const back = clone(snapshot.record);
+      // the save left the rotations alone: what is there today (a sync's loop times, an edit) stays
+      if (undo.after[rotationsKey(f.characterId)] === "") {
+        const today = stores.character.characters[f.characterId]?.rotations;
+        if (today === undefined) delete back.rotations;
+        else back.rotations = clone(today);
+      }
+      stores.character.characters[f.characterId] = back;
       wentBack.push(f.characterId);
       continue;
     }
@@ -255,10 +290,12 @@ export function applyBuildTeam(stores: BuildTeamStores, request: ApplyRequest): 
   const activated: UndoRecord["activated"] = [];
 
   // snapshots first, before any write
+  const rotationsBefore: Record<string, string> = {};
   for (const m of request.members) {
     const record = stores.character.characters[m.characterId];
     if (!Array.isArray(record?.builds) || record.builds.length === 0) synthesized.push(m.characterId);
     if (request.makeActive) activated.push({ characterId: m.characterId, record: clone(record ?? {}) });
+    rotationsBefore[m.characterId] = rotationsBeforeOf(record);
   }
   const inventory = request.makeActive ? { equipped: clone(stores.inventory.equipped ?? {}), equippedPresets: clone(stores.inventory.equippedPresets ?? {}) } : null;
   const before = snapshotForWrite(stores, request.members.map((m) => m.characterId), team ? [team.id] : []);
@@ -280,7 +317,7 @@ export function applyBuildTeam(stores: BuildTeamStores, request: ApplyRequest): 
   }
 
   const after: Record<string, string> = { team: teamFp(stores, teamId), inventory: inventory ? invFp(stores) : "" };
-  for (const m of request.members) after[m.characterId] = fp(stores.character.characters[m.characterId]);
+  for (const m of request.members) Object.assign(after, afterEntries(m.characterId, stores.character.characters[m.characterId], rotationsBefore[m.characterId]!));
   const undo: UndoRecord = { v: 1, at: now, teamId, teamName: request.team.name, created, previousBuildIds, synthesized, activated, inventory, after };
   const stored = saveUndo(undo);
   return { undo, created, activated: activated.map((a) => a.characterId), undoInMemoryOnly: !stored };

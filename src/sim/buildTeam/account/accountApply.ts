@@ -13,7 +13,7 @@
 import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
 import { snapshotCharacters } from "../../buildHistory/history";
 import { randomString } from "../../../utils/strings";
-import { buildExists, rollbackWrites, snapshotForWrite, undoCharacters, undoFates, type BuildTeamStores, type UndoClash } from "../apply";
+import { afterEntries, buildExists, rollbackWrites, rotationsBeforeOf, snapshotForWrite, undoCharacters, undoFates, type BuildTeamStores, type UndoClash } from "../apply";
 import { worthSaving } from "../buildTeamView";
 import type { BuildAccountResult } from "./buildAccount";
 
@@ -46,7 +46,8 @@ export interface AccountUndoRecord {
   synthesized: string[];
   activated: Array<{ characterId: string; record: Record<string, any> }>;
   inventory: { equipped: Record<string, Record<string, number>>; equippedPresets: Record<string, string> } | null;
-  /** fingerprints right after the apply: each touched character, each touched team's pins, the inventory maps */
+  /** fingerprints right after the apply: each touched character (rotations apart, apply.ts `rotationsKey`), each touched
+   *  team's pins, the inventory maps */
   after: Record<string, string>;
 }
 
@@ -89,10 +90,12 @@ export function applyAccountPlan(stores: BuildTeamStores, request: AccountApplyR
   const activated: AccountUndoRecord["activated"] = [];
 
   // snapshots first, before any write
+  const rotationsBefore: Record<string, string> = {};
   for (const m of request.members) {
     const record = stores.character.characters[m.characterId];
     if (!Array.isArray(record?.builds) || record.builds.length === 0) synthesized.push(m.characterId);
     if (request.makeActive) activated.push({ characterId: m.characterId, record: clone(record ?? {}) });
+    rotationsBefore[m.characterId] = rotationsBeforeOf(record);
   }
   const inventory = request.makeActive ? { equipped: clone(stores.inventory.equipped ?? {}), equippedPresets: clone(stores.inventory.equippedPresets ?? {}) } : null;
   const before = snapshotForWrite(stores, request.members.map((m) => m.characterId), request.members.flatMap((m) => m.pins.map((p) => p.teamId)));
@@ -121,7 +124,7 @@ export function applyAccountPlan(stores: BuildTeamStores, request: AccountApplyR
   const pinnedTeams = [...new Set(pins.map((p) => p.teamId))];
   const after: Record<string, string> = { inventory: inventory ? invFp(stores) : "" };
   for (const id of pinnedTeams) after[`team:${id}`] = teamFp(stores, id);
-  for (const m of request.members) after[m.characterId] = fp(stores.character.characters[m.characterId]);
+  for (const m of request.members) Object.assign(after, afterEntries(m.characterId, stores.character.characters[m.characterId], rotationsBefore[m.characterId]!));
   const undo: AccountUndoRecord = { v: 1, at: now, created, pins, synthesized, activated, inventory, after };
   const stored = saveAccountUndo(undo);
   return { undo, created, activated: activated.map((a) => a.characterId), pinnedTeams, undoInMemoryOnly: !stored };

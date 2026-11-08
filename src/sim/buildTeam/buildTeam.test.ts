@@ -406,6 +406,19 @@ describe("apply and undo", () => {
     expect(stores.team.teams[0].buildIds).toEqual([out.created[0]!.buildId, null, null]);
   });
 
+  it("loop times a sync writes after the save are no edit: undo is exact and they stay (2026-11-08 hunt M2)", () => {
+    const pristine = JSON.parse(snapshot());
+    const out = applyBuildTeam(stores, { team: { id: "t1", name: "Test team", characterIds: ["Cartethyia", "Chisa", null] }, members: [{ slot: 0, characterId: "Cartethyia", draft: draftFor(someIds()) }], makeActive: true });
+    const loops = [...(stores.character.characters.Cartethyia.rotations ?? []), { id: "loop", name: "Steady-state loop", duration: 25 }];
+    useCharacterStore().setCharacterRotations("Cartethyia", loops);
+    const undone = undoBuildTeam(stores, out.undo);
+    expect(undone.kind).toBe("exact");
+    expect(stores.character.characters.Cartethyia.rotations).toEqual(loops);
+    const now = JSON.parse(snapshot());
+    now.c.Cartethyia.rotations = pristine.c.Cartethyia.rotations;
+    expect(now).toEqual(pristine);
+  });
+
   it("a pin goes back only to a build that still exists", () => {
     const c = stores.character.characters.Cartethyia;
     c.builds.push({ id: "older", name: "Account plan", echoes: {} });

@@ -19,6 +19,7 @@ import { echoKeysOf, emptyPlan, parseMainStats, type MemberPlan } from "../riley
 import type { BuildTeamStores } from "../apply";
 import { accountReuse, buildAccount, type BuildAccountResult } from "./buildAccount";
 import { undoFates } from "../apply";
+import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
 import { ACCOUNT_UNDO_KEY, accountApplyRequest, accountBuildName, accountUndoIsLive, readAccountUndo, saveAccountPlan, undoAccountPlan, undoAccountPlanSaved } from "./accountApply";
 import { defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 
@@ -410,6 +411,57 @@ describe("saving the account plan", () => {
     ciaccona.record.echoes = { 0: { echoId: shared.echoId } }; // the build she goes back to wears an echo the plan moved
     stores.character.characters.Cartethyia.level = "80";
     expect(undoAccountPlan(stores, out.undo).clashes).toEqual([{ kept: "Cartethyia", wearer: "Ciaccona" }]);
+  });
+
+  describe("loop times written after the save (Sync my teams, 2026-11-08 hunt M2)", () => {
+    const withoutRotations = (chars: Record<string, any>) => JSON.stringify(Object.fromEntries(Object.entries(chars).map(([id, r]) => [id, { ...r, rotations: undefined }])));
+    /** the sync's own write: a member loop gets the team's seconds, nothing else on the record moves */
+    const syncLoopTimes = (ids: string[]) => {
+      for (const id of ids) useCharacterStore().setCharacterRotations(id, [...(stores.character.characters[id]?.rotations ?? []), { id: `loop-${id}`, name: "Steady-state loop", duration: 25 }]);
+    };
+
+    it("are no edit: Undo gives every member back as they were, and the loop times stay", () => {
+      const pristine = JSON.parse(JSON.stringify(stores.character.characters));
+      const out = saveAccountPlan(stores, accountApplyRequest(result, true), { echoes });
+      const ids = out.created.map((c) => c.characterId);
+      syncLoopTimes(ids);
+      const synced = Object.fromEntries(ids.map((id) => [id, JSON.stringify(stores.character.characters[id].rotations)]));
+
+      expect(undoFates(stores, out.undo).map((f) => f.fate)).toEqual(ids.map(() => "restore"));
+      const undone = undoAccountPlan(stores, out.undo);
+
+      expect(undone.kind).toBe("exact");
+      expect(undone.kept).toEqual([]);
+      expect(withoutRotations(stores.character.characters)).toBe(withoutRotations(pristine));
+      for (const id of ids) expect(JSON.stringify(stores.character.characters[id].rotations)).toBe(synced[id]);
+    });
+
+    it("a save that changed the rotations goes back verbatim, and keeps the build once they were edited since", () => {
+      const pristine = snapshot();
+      const req = accountApplyRequest(result, true);
+      const cart = req.members.find((m) => m.characterId === "Cartethyia")!;
+      cart.draft = { ...cart.draft, rotations: [{ id: "the-plan-build's", name: "Its own loop" }] };
+      const out = saveAccountPlan(stores, req, { echoes });
+      expect(undoFates(stores, out.undo).every((f) => f.fate === "restore")).toBe(true);
+      undoAccountPlan(stores, structuredClone(out.undo));
+      expect(snapshot()).toBe(pristine);
+
+      const again = saveAccountPlan(stores, req, { echoes });
+      syncLoopTimes(["Cartethyia"]);
+      expect(undoFates(stores, again.undo).find((f) => f.characterId === "Cartethyia")?.fate).toBe("keep");
+    });
+
+    it("an undo stored before rotations were left out still reads the whole record", () => {
+      const pristine = snapshot();
+      const out = saveAccountPlan(stores, accountApplyRequest(result, true), { echoes });
+      const legacy = structuredClone(out.undo);
+      for (const c of out.created) {
+        legacy.after[c.characterId] = cyrb53(stableStringify(stores.character.characters[c.characterId] ?? null));
+        delete legacy.after[`rotations:${c.characterId}`];
+      }
+      expect(undoAccountPlan(stores, legacy).kind).toBe("exact");
+      expect(snapshot()).toBe(pristine);
+    });
   });
 
   it("a pin goes back only to a build that still exists", () => {
