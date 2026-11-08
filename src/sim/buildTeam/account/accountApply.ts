@@ -161,9 +161,11 @@ export function accountApplyRequest(result: Pick<BuildAccountResult, "members" |
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
-    const wornNow = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeBuildOf(m.characterId));
-    if (m.sameEchoes && !m.alsoIn.length && !worthSaving(m) && (!makeActive || wornNow)) return;
     const pins = result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
+    const wornNow = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeBuildOf(m.characterId));
+    // one who plays in several chosen teams needs a build only when one of them does not pin these echoes already
+    const pinnedEverywhere = m.fromBuild.id != null && pins.every((p) => result.teams.find((t) => t.spec.id === p.teamId)?.spec.buildIds?.[p.slot] === m.fromBuild.id);
+    if (m.sameEchoes && (!m.alsoIn.length || pinnedEverywhere) && !worthSaving(m) && (!makeActive || wornNow)) return;
     members.push({ characterId: m.characterId, draft: m.draft, pins });
   });
   return { members, makeActive };

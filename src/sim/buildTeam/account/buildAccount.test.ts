@@ -343,6 +343,14 @@ describe("saving the account plan", () => {
     expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true))).toEqual(["Ciaccona"]);
     // a pinned build that is the active one is worn already: no copy (planning again after a save made 7, 2026-11-08 hunt M5)
     expect(ids(accountApplyRequest(plan([pinnedKeeper, wearsIt]), true, (id) => (id === "Ciaccona" ? "b" : "other")))).toEqual([]);
+    // one who plays in two chosen teams that both pin these echoes already: nothing to save either (Mornye's copy)
+    const twoTeams = (member: any, pins: Array<string | null>) =>
+      ({ members: [member], teams: pins.map((pin, t) => ({ spec: { id: `saved-${t}`, buildIds: [pin, null, null] }, slots: [{ slot: 0, member: 0 }] })) }) as any;
+    const shared = m("Mornye", { alsoIn: [1] });
+    expect(ids(accountApplyRequest(twoTeams(shared, ["b", "b"]), false))).toEqual([]);
+    expect(ids(accountApplyRequest(twoTeams(shared, ["b", "b"]), true, () => "b"))).toEqual([]);
+    // one of them pins something else: she is saved, so both teams wear her build
+    expect(ids(accountApplyRequest(twoTeams(shared, ["b", null]), false))).toEqual(["Mornye"]);
   });
 
   it("saves a member who keeps their echoes when the run's buffs move their number: the review counted that build", () => {
