@@ -4148,3 +4148,21 @@ They can disagree, on purpose: Optimize team has no Energy Regen need and search
 keeps anyone under 5 % of the damage; Build my team follows wuwa_calc's plan and its ER need and may reach other sets;
 Whole account shares one inventory across teams at one enemy. Optimize team's edge is that the split of echoes between
 members is exact, not a best effort; on these teams it had little to split.
+
+## Writes that hold up, round 2 — two tabs, a sync, a full browser (hunt round 2, track "writes", 2026-11-08)
+
+Round 1 made each write say the truth; this round made each one act on what the account holds at the moment it writes.
+Report: `wto-wt/b3/reports/hunt2-writes-fix.md` (the hunt: `hunt2-writes.md`).
+
+| Where | Rule now |
+|---|---|
+| `account/useBuildAccount.ts` `rowsOn`, `useBuildTeam.ts` `loadedOn` | **Rows and the team carry the account they were read from.** A Teams step or a plan left open while another tab changed a team planned on the old members, passed the stale check (taken at Plan) and pinned one character's build in another's slot. Plan / Build on a changed account reads them again and says so (`ROWS_CHANGED_TEXT`, `TEAM_CHANGED_TEXT`); the Teams step and the plan follow `onAccountAdopted` too. This page's own save carries `loadedOn` forward, so Change plan → Build after a save still runs |
+| `apply.ts` `newestUndo`, `undo(described)`, `clearUndo(undo)` | **Undo acts on the last save, whichever tab made it.** An older tab's Undo took back its own older plan and deleted the newer plan's Undo. A page now undoes the newer of its record and the stored one; a newer save that came while the question was open refuses (`UndoRefused`, nothing written); a clear removes only the record it undid. Whole account and One team alike |
+| `apply.ts` `editFingerprint`, `rotationsKey` | **Loop times are no edit.** Sync my teams writes `rotations`, and Undo compared the whole record, so 7 of 9 stayed "active" after one sync. The fingerprint leaves rotations out; `after["rotations:<id>"]` is "" when the save left them alone (Undo then keeps today's) or their fingerprint when it changed them (verbatim only while they read so). An undo stored the old way still reads the whole record |
+| `account/accountApply.ts` `accountApplyRequest(…, activeBuildOf)` | a pinned build that is also the active one is worn: planning again with Also make active wrote 7 identical copies |
+| `buildHistory/history.ts` | **A page-memory list stands only until the browser takes a write.** After one refused write it went on standing for that character: a version stored later was hidden and then written over (the build from before a restore was lost). It is dropped on the next stored write, merged with what another tab stored after it, and an empty one still shadows a deleted version. `historyInMemoryOnly()` means "some history is held here only"; the restore toast and Whole account's note speak for their own write |
+| `buildHistory/restore.ts` `intoBuildId` | **Restore writes into the build its question named**, or refuses (`RestoreRefused`): another tab switched builds while the dialog was open |
+| `rankings/syncUndo.ts`, `RankingsAccountBar.vue` | **Sync keeps an Undo that works.** A sync that rewrote no team keeps the last one's (`carrySyncUndo`, fingerprints moved past the re-import's fresh action ids) with the loop times it filled. A browser that refuses the pending record refuses the sync (`SyncRefused`); a finished record or loop-time list it refuses lives in page memory with a "lasts this visit only" toast. `teamFingerprint` is a hash, so the finished record is no bigger than the pending one it replaces. The teams are read after the confirm, and a failed team stays out of the Undo |
+| `utils/settingsBackup.ts` `importEchoesFromRaw` (Ryan's, 3 lines) | Import echoes adds under a fresh id (a pasted id overwrote an echo you own) and skips anything that is not an echo object |
+
+Gates: `useBuildAccount.test.ts` (rows another tab changed, two tabs one Undo), `useBuildTeam.test.ts`, `buildAccount.test.ts` / `buildTeam.test.ts` (loop times after the save), `buildHistory.test.ts` (a refused write then room, restore into the named build), `syncUndo.test.ts`, `importCheck.test.ts` (Import echoes); `rankings.cy.ts` (a second, unchanged sync keeps the Undo).
