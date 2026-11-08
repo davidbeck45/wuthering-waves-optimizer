@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { setLabel } from "../echoLab/echoLabView";
 import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, membersAsTicked, resultNotes, roleLine, setName, shareConflicts, teamTickNote, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
-import type { MemberOutcome } from "./buildTeam";
+import { memberAfter, type MemberOutcome } from "./buildTeam";
 
 const plan = (over: Partial<MemberPlan> = {}): MemberPlan => ({
   characterId: "Aemeath",
@@ -224,12 +224,30 @@ describe("the review under the Save's ticks", () => {
   const built = (slot: number, withTeam: number | null = null) => outcome({ slot, characterId: `C${slot}`, after: { value: 100, optimizerValue: 100, menuEr: 116, picks: [], withTeam } });
   const skipped = outcome({ slot: 2, characterId: "C2", status: "skipped", draft: null, after: null });
 
-  it("a ticked member reads their part of the ticked total, an unticked one their build alone", () => {
+  it("every member reads their part of the ticked total, so the cards add up to the headline", () => {
     const members = [built(0, 500), built(1, 300), skipped];
     const out = membersAsTicked(members, [true, false, false], [640, 280, 0]);
-    expect(out.map((m) => m.after?.withTeam ?? null)).toEqual([640, null, null]);
+    expect(out.map((m) => m.after?.withTeam ?? null)).toEqual([640, 280, null]);
     expect(out[2]).toBe(skipped);
     expect(members[0]!.after!.withTeam).toBe(500); // the run's own result is not touched
+  });
+
+  it("an unticked member reads the build the Save leaves them, beside the ticked builds, and says so (hunt 2: Chisa read 484K, saved 386K)", () => {
+    // Xuanling · Suisui + Chisa: Chisa's new build is her echoes of today (484K alone); Suisui's ticked build leaves
+    // Thousand-Puppet Pavilion, which drops Chisa's part of the team to 385,665 once saved
+    const chisa = outcome({ slot: 1, characterId: "Chisa", sameEchoes: true, before: { value: 483_502, menuEr: 130, withRunBuffs: null }, after: { value: 483_502, optimizerValue: 483_502, menuEr: 130, picks: [], withTeam: 400_000 } });
+    const out = membersAsTicked([built(0, 7_000_000), chisa, built(2, 120_000)], [true, false, true], [7_293_408, 385_665, 121_491]);
+    expect(out.reduce((n, m) => n + (memberAfter(m) ?? 0), 0)).toBe(7_800_564);
+    expect(memberAfter(out[1]!)).toBe(385_665);
+    expect(out[1]!.after!.kept).toBe(true);
+    expect(out[0]!.after!.kept).toBeFalsy();
+    expect(teammatesNote(out[1]!)).toBe("Not ticked for Save: this is the build this team runs today, beside the ticked builds. The new build alone, with the team as it is today, reads 484K.");
+    expect(resultNotes(out[1]!, plan())[0]?.text).toBe(teammatesNote(out[1]!));
+    // ticked, the card is the new build's part of the team again, with no such note
+    const ticked = membersAsTicked([built(0), chisa, built(2)], [true, true, true], [7_000_000, 470_000, 121_491])[1]!;
+    expect(memberAfter(ticked)).toBe(470_000);
+    expect(ticked.after!.kept).toBeFalsy();
+    expect(teammatesNote(ticked)).toBe("484K with only this build changed: the rest is the team's other new builds.");
   });
 
   it("without a figure the run's members stand", () => {

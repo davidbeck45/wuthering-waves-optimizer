@@ -105,11 +105,13 @@ export function sourceText(source: EchoSource, wornBy: readonly string[], charac
 const relChange = (m: Pick<MemberOutcome, "before" | "after">): number | null =>
   m.before && m.after ? m.after.value / Math.max(1, m.before.value) - 1 : null;
 
-/** When the team's other new builds move a member's figure: what it reads with only their build changed. */
+/** When the team's other new builds move a member's figure: what it reads with only their build changed. A member
+ *  left unticked (`kept`) reads the build the Save leaves them, so the note says that and what the new build reads. */
 export function teammatesNote(m: Pick<MemberOutcome, "after">): string | null {
   const shown = memberAfter(m);
   const own = m.after?.value;
   if (shown == null || own == null || Math.abs(shown - own) <= 0.0005 * Math.max(1, Math.abs(own))) return null;
+  if (m.after?.kept) return `Not ticked for Save: this is the build this team runs today, beside the ticked builds. The new build alone, with the team as it is today, reads ${compactNum(own)}.`;
   return `${compactNum(own)} with only this build changed: the rest is the team's other new builds.`;
 }
 
@@ -149,12 +151,17 @@ export function defaultSaveSlots(members: readonly MemberOutcome[]): boolean[] {
   return ticks;
 }
 
-/** The members as the review reads them under these ticks: a ticked member's figure is their part of the team's total
- *  with the ticked builds (`perSlot`, `teamFigureOf`), so the cards add up to the headline; an unticked member's team
- *  part would be the build they keep, so their card reads their new build alone. */
+/** The members as the review reads them under these ticks: every member's figure is their part of the team's total
+ *  with the ticked builds (`perSlot`, `teamFigureOf`), so the cards add up to the headline and each reads what the Save
+ *  gets. An unticked member keeps the build the team runs today, which the ticked builds can still move (Suisui leaving
+ *  Thousand-Puppet Pavilion took Chisa from 484K to 386K), so their card reads that build and is marked `kept`. */
 export function membersAsTicked(members: readonly MemberOutcome[], ticks: readonly boolean[], perSlot: readonly number[] | null): MemberOutcome[] {
   if (!perSlot) return [...members];
-  return members.map((m) => (m.after ? { ...m, after: { ...m.after, withTeam: ticks[m.slot] ? perSlot[m.slot] ?? null : null } } : m));
+  return members.map((m) => {
+    if (!m.after) return m;
+    const kept = !ticks[m.slot] && !!m.draft;
+    return { ...m, after: { ...m.after, withTeam: perSlot[m.slot] ?? null, ...(kept ? { kept: true } : {}) } };
+  });
 }
 
 /** Under the team total, when it is not every new build: which builds it counts, and what all of them would read. Null

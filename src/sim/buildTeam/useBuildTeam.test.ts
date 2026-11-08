@@ -159,7 +159,7 @@ describe("One team's review and save", () => {
     const lower = (m: ReturnType<typeof member>) => ({ ...m, after: { ...m.after, value: 90 } });
     const figure = (ticks: readonly boolean[]) => {
       const n = ticks.filter(Boolean).length;
-      return { after: n === 1 ? 701 : n === 2 ? 652 : 683, dpsAfter: null, perSlot: [n ? 601 : 583, 100] };
+      return { after: n === 1 ? 701 : n === 2 ? 652 : 683, dpsAfter: null, perSlot: [n ? 601 : 583, ticks[1] ? 100 : 95] };
     };
     const settle = async (): Promise<void> => {
       await nextTick();
@@ -189,11 +189,14 @@ describe("One team's review and save", () => {
     it("moves with the ticks, every way round, and the cards with it", async () => {
       const bt = await reviewed();
       expect(bt.reviewMembers.value[0]!.after!.withTeam).toBe(601);
-      expect(bt.reviewMembers.value[1]!.after!.withTeam).toBeNull(); // not saved: her card reads her build alone
+      // not saved: her card reads the build she keeps beside the ticked one, what the Save gets (hunt 2 item 1)
+      expect(bt.reviewMembers.value[1]!.after!.withTeam).toBe(95);
+      expect(bt.reviewMembers.value[1]!.after!.kept).toBe(true);
       bt.saveSlots.value[1] = true;
       await settle();
       expect(bt.teamFigure.value?.after).toBe(652);
       expect(bt.reviewMembers.value[1]!.after!.withTeam).toBe(100);
+      expect(bt.reviewMembers.value[1]!.after!.kept).toBeFalsy();
       bt.saveSlots.value = [false, false];
       await settle();
       expect(bt.teamFigure.value?.after).toBe(683);

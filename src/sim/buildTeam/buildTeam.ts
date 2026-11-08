@@ -114,8 +114,10 @@ export interface MemberOutcome {
     withRunBuffs: number | null;
   } | null;
   /** `value`: their damage with only their own build changed, what decides if it is worth saving. `withTeam`: their part
-   *  of the team's total with every new build worn, what a save gets (a teammate's new build can move it a lot) */
-  after: { value: number; optimizerValue: number; menuEr: number | null; picks: EchoPick[]; withTeam?: number | null } | null;
+   *  of the team's total with every new build worn, what a save gets (a teammate's new build can move it a lot). On the
+   *  review (`membersAsTicked`), `withTeam` is their part under the Save's ticks, and `kept` marks a member the Save
+   *  leaves on the build the team runs today, so `withTeam` is that build beside the ticked ones */
+  after: { value: number; optimizerValue: number; menuEr: number | null; picks: EchoPick[]; withTeam?: number | null; kept?: boolean } | null;
   erFloor: number | null;
   erMet: boolean | null;
   /** the search could not meet the floor with this inventory: the loadout kept is the one with the most ER, and of those

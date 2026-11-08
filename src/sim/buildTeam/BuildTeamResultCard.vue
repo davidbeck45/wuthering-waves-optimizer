@@ -21,7 +21,7 @@
         </div>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="bt-nums__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
         <div class="bt-num">
-          <span class="bt-num__k">Built</span>
+          <span class="bt-num__k" data-test-build-team-after-label>{{ outcome.after.kept ? "After Save" : "Built" }}</span>
           <span class="bt-num__v bt-num__v--after tabular-nums" :title="fmtInt(built)" data-test-build-team-after>{{ compactNum(built) }}</span>
         </div>
         <span class="bt-delta" :class="`bt-delta--${tone}`" data-test-build-team-delta>{{ delta }}</span>
