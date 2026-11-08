@@ -46,6 +46,11 @@ const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
 interface KeptReview {
   request: string;
   on: string;
+  /** the team-buff switch the run was scored under: the account fingerprint does not hold it, and Back restored a
+   *  switch-on review with the switch off (2026-11-08 hunt F2: Mornye 132K where the page now gives 87.3K) */
+  auto: boolean;
+  /** the options it ran with: they come back with it, so Change plan shows what the review was searched with */
+  options: BuildOptions;
   team: TeamSpec;
   only: string | null;
   plans: TeamPlans;
@@ -64,6 +69,9 @@ export function clearKeptReview(): void {
 onSavedResultsCleared(clearKeptReview);
 
 const ticksKey = (ticks: readonly boolean[]): string => ticks.map((t) => (t ? "1" : "0")).join("");
+
+/** Said over the plan when a review (or a run) was put down because the team-buff switch moved after it was worked out. */
+export const SWITCH_CHANGED_TEXT = "Team-aware buffs were switched since this review was worked out, so its figures no longer apply. Build again for figures under the switch as it is now.";
 
 /** Said over the plan when the team was read again because the account changed under it. */
 export const TEAM_CHANGED_TEXT = "Your builds or teams changed after this team was read (in another tab, perhaps), so it was read again. Check the plan, then build.";
@@ -106,6 +114,8 @@ export function useBuildTeam() {
   let controller: AbortController | null = null;
   /** the account the review on screen was planned on: it stands for that account and no other */
   let plannedOn: string | null = null;
+  /** the team-buff switch the review on screen (or the run in flight) is scored under; null with neither */
+  let plannedAuto: boolean | null = null;
   /** the account the team (members, pins) and its plans were read from: a run on a team another tab changed saved one
    *  member's build into another's slot (2026-11-08 hunt H1). This page's own save carries it forward. */
   let loadedOn: string | null = null;
@@ -165,6 +175,8 @@ export function useBuildTeam() {
     applied.value = null;
     error.value = null;
     plannedOn = kept.on;
+    plannedAuto = kept.auto;
+    Object.assign(options, kept.options);
     loadedOn = kept.on;
     figuredTicks = ticksKey(saveSlots.value);
     keptReview = { ...kept, saveSlots, teamFigure, rileyAfter, rankedFigure };
@@ -181,7 +193,14 @@ export function useBuildTeam() {
     lastRequest = request;
     rankedTeam = request.only ? request.rankedTeam ?? null : null;
     if (keptReview?.request === requested && keptReview.on === accountFingerprint(stores())) {
-      restoreReview(keptReview);
+      if (keptReview.auto === autoTeamBuffs.value) {
+        restoreReview(keptReview);
+        return;
+      }
+      // planned under the other team-buff switch: its figures are not this page's any more
+      keptReview = null;
+      await load(request);
+      if (phase.value === "plan") error.value = SWITCH_CHANGED_TEXT;
       return;
     }
     result.value = null;
@@ -269,6 +288,8 @@ export function useBuildTeam() {
     const runPlans: MemberPlan[] = onlySlot >= 0 ? [] : plans.value.plans;
     if (onlySlot >= 0) runPlans[onlySlot] = plans.value.plans[onlySlot]!;
     const fingerprint = accountFingerprint(stores());
+    const auto = autoTeamBuffs.value;
+    plannedAuto = auto;
     try {
       const out = await buildMyTeam(
         {
@@ -305,7 +326,7 @@ export function useBuildTeam() {
         if (result.value === out) result.value = null;
         return;
       }
-      keptReview = { request: requested, on: fingerprint, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, teamFigure, rileyAfter, rankedFigure };
+      keptReview = { request: requested, on: fingerprint, auto, options: { ...options }, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, teamFigure, rileyAfter, rankedFigure };
       phase.value = "result";
       void computeRileyAfter(out);
       void computeRankedFigure(out);
@@ -421,8 +442,26 @@ export function useBuildTeam() {
     rileyAfter.value = null;
     rankedFigure.value = null;
     plannedOn = null;
+    plannedAuto = null;
     keptReview = null;
   }
+
+  // The team-buff switch moved (the palette, Settings, another page's toggle): a review, or a run in flight, scored under
+  // the other one would go on showing figures this page no longer gives (F2). It is put down, and the plan says why.
+  watch(autoTeamBuffs, () => {
+    if (plannedAuto === null || plannedAuto === autoTeamBuffs.value) return;
+    if (phase.value === "running") {
+      controller?.abort();
+      controller = null;
+      plannedAuto = null;
+      phase.value = plans.value ? "plan" : "pick";
+      error.value = SWITCH_CHANGED_TEXT;
+    } else if (phase.value === "result" && result.value) {
+      dropReview();
+      phase.value = plans.value ? "plan" : "pick";
+      error.value = SWITCH_CHANGED_TEXT;
+    }
+  });
 
   /** "Change plan": the review is put down, so it is not there when the page is opened again. */
   function backToPlan(): void {

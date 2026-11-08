@@ -1,7 +1,7 @@
 // Wuthering Tools+ One team: a review stands for the account it was planned on, and a save is all or nothing. The real
 // stores; the run is canned, since what is under test is what the page does around it.
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick } from "vue";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { effectScope, nextTick, type EffectScope } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
@@ -10,7 +10,8 @@ import { refusedStores } from "../storage/persistGuard";
 import { clearUndo, readUndo, SaveRefused } from "./apply";
 import { buildMyTeam, teamFigureOf } from "./buildTeam";
 import { rankedTeamImpact } from "../account/investPlan";
-import { clearKeptReview, TEAM_CHANGED_TEXT, useBuildTeam } from "./useBuildTeam";
+import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import { clearKeptReview, OPTIONS_KEY, SWITCH_CHANGED_TEXT, TEAM_CHANGED_TEXT, useBuildTeam } from "./useBuildTeam";
 
 vi.mock("./buildTeam", async (original) => ({ ...(await original<typeof import("./buildTeam")>()), buildMyTeam: vi.fn(), teamFigureOf: vi.fn(async () => null) }));
 vi.mock("./plans", () => ({ plansForTeam: vi.fn(async () => ({ plans: [{ share: null, mainDps: false }, { share: null, mainDps: false }, null], riley: null })) }));
@@ -430,5 +431,100 @@ describe("One team's review and save", () => {
       expect(bt.phase.value).toBe("result");
       expect(bt.rankedFigure.value).toBeNull();
     });
+  });
+});
+
+// Last in the file: the pages above are made outside any component, so their switch watchers are never stopped
+describe("One team and the team-buff switch (2026-11-08 hunt F2)", () => {
+  const REQUEST = { teamId: "t1", members: [] };
+  let scope: EffectScope;
+  const page = () => scope.run(() => useBuildTeam())!;
+  async function reviewed() {
+    const bt = page();
+    await bt.load(REQUEST);
+    await bt.run();
+    expect(bt.phase.value).toBe("result");
+    return bt;
+  }
+  beforeEach(async () => {
+    // the pages the tests above made (never unmounted) answer this flip and are done with the switch: only this
+    // block's pages answer the flips below, as only the mounted page does in the app
+    autoTeamBuffs.value = false;
+    await nextTick();
+    autoTeamBuffs.value = true;
+    await nextTick();
+    scope = effectScope();
+    setActivePinia(createPinia());
+    localStorage.clear();
+    clearUndo();
+    clearKeptReview();
+    refusedStores.value = [];
+    vi.mocked(buildMyTeam).mockReset().mockImplementation(async () => run() as never);
+    useCharacterStore().characters = { A: { weapon: "old-A" }, B: { weapon: "old-B" } };
+    useInventoryStore().echoes = [];
+    useTeamRotationsStore().teams = [{ id: "t1", name: "Team", characterIds: ["A", "B", null], buildIds: [null, null, null], actions: [] }];
+  });
+  afterEach(async () => {
+    scope.stop();
+    autoTeamBuffs.value = true;
+    await nextTick();
+  });
+
+  it("a review kept for Back is not restored under the other switch: it read 9.46M → 9.34M, Mornye 132K, where the page gives 87.3K", async () => {
+    await reviewed();
+    scope.stop(); // the page is left (/account) before the switch moves
+    scope = effectScope();
+    autoTeamBuffs.value = false;
+    await nextTick();
+    const back = page();
+    await back.load(REQUEST);
+    expect(back.result.value).toBeNull();
+    expect(back.phase.value).toBe("plan");
+    expect(back.error.value).toBe(SWITCH_CHANGED_TEXT);
+    expect(vi.mocked(buildMyTeam)).toHaveBeenCalledTimes(1); // nothing re-run without a Build
+  });
+
+  it("the review on the page is put down when the switch moves, and the plan says why", async () => {
+    const bt = await reviewed();
+    autoTeamBuffs.value = false;
+    await nextTick();
+    expect(bt.result.value).toBeNull();
+    expect(bt.phase.value).toBe("plan");
+    expect(bt.error.value).toBe(SWITCH_CHANGED_TEXT);
+    const back = page(); // and Back finds no review either
+    await back.load(REQUEST);
+    expect(back.result.value).toBeNull();
+  });
+
+  it("a run in flight when the switch moves never lands", async () => {
+    const bt = page();
+    await bt.load(REQUEST);
+    let finish: (value: unknown) => void = () => {};
+    vi.mocked(buildMyTeam).mockImplementationOnce(() => new Promise((resolve) => (finish = resolve)) as never);
+    const pending = bt.run();
+    expect(bt.phase.value).toBe("running");
+    autoTeamBuffs.value = false;
+    await nextTick();
+    finish(run());
+    await pending;
+    expect(bt.result.value).toBeNull();
+    expect(bt.phase.value).toBe("plan");
+    expect(bt.error.value).toBe(SWITCH_CHANGED_TEXT);
+    await bt.run(); // Build again runs under the switch as it is now
+    expect(vi.mocked(buildMyTeam).mock.calls.at(-1)?.[0].autoTeamBuffs).toBe(false);
+    expect(bt.phase.value).toBe("result");
+  });
+
+  it("still comes back under the switch it was planned on, with the options it ran with", async () => {
+    const first = page();
+    await first.load(REQUEST);
+    first.options.tryAllOrders = true;
+    await first.run();
+    expect(first.phase.value).toBe("result");
+    localStorage.setItem(OPTIONS_KEY, JSON.stringify({ tryAllOrders: false })); // Whole account saved others since
+    const back = page();
+    await back.load(REQUEST);
+    expect(back.phase.value).toBe("result");
+    expect(back.options.tryAllOrders).toBe(true);
   });
 });

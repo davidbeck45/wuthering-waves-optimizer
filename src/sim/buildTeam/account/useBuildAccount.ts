@@ -2,7 +2,7 @@
 // ranks (its cached ranking when it holds this exact data), Riley's plan per team through the app's one solver worker
 // (rileyClient), the search through upstream's optimizer workers (workerBackend.ts, the backend Build my team uses —
 // no new worker); nothing is written until the player confirms (accountApply.ts).
-import { computed, nextTick, reactive, ref, shallowRef, toRaw } from "vue";
+import { computed, nextTick, reactive, ref, shallowRef, toRaw, watch } from "vue";
 import { useCharacterStore } from "../../../stores/character";
 import { useInventoryStore } from "../../../stores/inventory";
 import { useTeamRotationsStore } from "../../../stores/teamRotations";
@@ -17,7 +17,7 @@ import { DEFAULT_OPTIONS, type BuildOptions } from "../constraints";
 import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
 import { workerBackend } from "../workerBackend";
-import { OPTIONS_KEY } from "../useBuildTeam";
+import { OPTIONS_KEY, SWITCH_CHANGED_TEXT } from "../useBuildTeam";
 import { accountFingerprint, newestUndo, SaveRefused, UndoRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
 import { accountStoresRefused } from "../../storage/persistGuard";
 import { onSavedResultsCleared } from "../../persist/savedResults";
@@ -71,6 +71,11 @@ function readChoice(): StoredChoice | null {
  *  (2026-11-05 hunt). It stands for the account it was planned on and no other. */
 interface KeptPlan {
   on: string;
+  /** the team-buff switch it was scored under, rows included: the account fingerprint does not hold it, and Back
+   *  restored a switch-on plan with the switch off (2026-11-08 hunt F2: −0.7 % where the page now gives −0.1 %) */
+  auto: boolean;
+  /** the options it ran with: they come back with it */
+  options: BuildOptions;
   choices: AccountTeamChoice[];
   selected: string[];
   weights: Record<string, number>;
@@ -134,6 +139,8 @@ export function useBuildAccount() {
   /** the account the rows (each team's members and pins) were read from: a Plan on rows read from another account
    *  scored one team and pinned into another (2026-11-08 hunt H1) */
   let rowsOn: string | null = null;
+  /** the team-buff switch the rows' team damage, and the run or review on screen, were scored under */
+  let scoredAuto: boolean | null = null;
   let saving = false;
 
   const stores = (): BuildTeamStores => ({ character: characterStore as any, team: teamStore as any, inventory: inventoryStore as any });
@@ -181,7 +188,16 @@ export function useBuildAccount() {
   /** `keepChoice`: read the rows again after a save or an undo, the player's teams, order and weights staying. */
   async function load(keepChoice = false): Promise<void> {
     controller?.abort();
+    if (!keepChoice && keptPlan?.on === accountFingerprint(stores()) && keptPlan.auto !== autoTeamBuffs.value) {
+      // planned under the other team-buff switch: its figures, and its rows' team damage, are not this page's any more
+      keptPlan = null;
+      await load(false);
+      if (phase.value === "choose") error.value = SWITCH_CHANGED_TEXT;
+      return;
+    }
     if (!keepChoice && keptPlan?.on === accountFingerprint(stores())) {
+      Object.assign(options, keptPlan.options);
+      scoredAuto = keptPlan.auto;
       choices.value = keptPlan.choices;
       selected.value = [...keptPlan.selected];
       setWeights(keptPlan.weights, keptPlan.touched);
@@ -200,14 +216,16 @@ export function useBuildAccount() {
       const echoes = plain(inventoryStore.echoes);
       const teams = plain(teamStore.teams);
       const readOn = accountFingerprint(stores());
+      const auto = autoTeamBuffs.value;
       // /account's ranking for this exact data, when this tab has it: its team damage is reused
       const fp = rankingFingerprint({ characters: toRaw(characterStore.characters ?? {}), echoes: toRaw(inventoryStore.echoes ?? []), teams: toRaw(teamStore.teams ?? []), investment: true, autoTeamBuffs: autoTeamBuffs.value });
       const cached = readCachedRanking(fp);
       const ranking = cached?.incomplete ? null : cached; // a figure that scored short is not reused
-      const rows = await accountTeamChoices(chars, echoes, teams, { ranking, autoTeamBuffs: autoTeamBuffs.value, signal: ctrl.signal, onProgress: (done, total) => (scored.value = { done, total }) });
+      const rows = await accountTeamChoices(chars, echoes, teams, { ranking, autoTeamBuffs: auto, signal: ctrl.signal, onProgress: (done, total) => (scored.value = { done, total }) });
       if (ctrl.signal.aborted) return;
       choices.value = rows;
       rowsOn = readOn;
+      scoredAuto = auto;
       rowsStale = false;
       const stored = keepChoice ? null : readChoice();
       const kept = (keepChoice ? selected.value : stored?.selected ?? []).filter((id) => rows.some((r) => r.id === id)).slice(0, MAX_TEAMS);
@@ -313,6 +331,8 @@ export function useBuildAccount() {
     progress.value = Object.fromEntries(members.map((id) => [id, { phase: "waiting", processed: 0, generated: 0 }]));
     const backend = workerBackend({ workerCount: resolveOptimizerWorkerCount((settingsStore.config as { optimizerWorkerCount?: unknown })?.optimizerWorkerCount) });
     const fingerprint = accountFingerprint(stores());
+    const auto = autoTeamBuffs.value;
+    scoredAuto = auto;
     try {
       const chars = plain(characterStore.characters);
       const echoes = plain(inventoryStore.echoes);
@@ -327,7 +347,7 @@ export function useBuildAccount() {
       }
       phase.value = "running";
       const out = await buildAccount(
-        { characters: chars, inventory: { echoes, equipped: plain(inventoryStore.equipped) }, teams: inputs, options: { ...options }, autoTeamBuffs: autoTeamBuffs.value, budgetMs: BUDGET_MS },
+        { characters: chars, inventory: { echoes, equipped: plain(inventoryStore.equipped) }, teams: inputs, options: { ...options }, autoTeamBuffs: auto, budgetMs: BUDGET_MS },
         backend,
         {
           signal: ctrl.signal,
@@ -346,7 +366,7 @@ export function useBuildAccount() {
       progress.value = Object.fromEntries(Object.entries(progress.value).map(([k, v]) => [k, { ...v, phase: "done" }]));
       plannedOn = fingerprint;
       result.value = out;
-      keptPlan = { on: fingerprint, choices: choices.value, selected: [...selected.value], weights: { ...weights }, touched: weightsTouched.value, result: out };
+      keptPlan = { on: fingerprint, auto, options: { ...options }, choices: choices.value, selected: [...selected.value], weights: { ...weights }, touched: weightsTouched.value, result: out };
       phase.value = "result";
     } catch (e) {
       // a run cancelled and replaced by a newer one (Cancel, then Plan again) leaves the page to that run
@@ -456,6 +476,29 @@ export function useBuildAccount() {
     if (rowsStale) void load(true);
     else phase.value = "choose";
   }
+
+  // The team-buff switch moved (the palette, Settings): the rows' team damage, a run in flight and a review were all
+  // scored under the other one (F2). The rows are read again, keeping the player's teams; a run or a review is put down
+  // and the Teams step says why.
+  watch(autoTeamBuffs, async () => {
+    const p = phase.value;
+    // rows being read under the old switch: read them under this one instead
+    if (p === "loading") return void load(choices.value.length > 0);
+    if (scoredAuto === null || scoredAuto === autoTeamBuffs.value) return;
+    if (p === "planning" || p === "running") {
+      controller?.abort();
+      controller = null;
+      stopTicker();
+    }
+    const said = p === "planning" || p === "running" || (p === "result" && !!result.value);
+    result.value = null;
+    applied.value = null;
+    plannedOn = null;
+    scoredAuto = null;
+    // the plan kept for Back stays: `load` restores it only under the switch it was planned on
+    await load(choices.value.length > 0);
+    if (said && phase.value === "choose") error.value = SWITCH_CHANGED_TEXT;
+  });
 
   return {
     phase,
