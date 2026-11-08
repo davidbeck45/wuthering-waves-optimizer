@@ -17,7 +17,7 @@ import { DEFAULT_OPTIONS, type BuildOptions } from "../constraints";
 import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
 import { workerBackend } from "../workerBackend";
-import { OPTIONS_KEY, SWITCH_CHANGED_TEXT } from "../useBuildTeam";
+import { OPTIONS_KEY } from "../useBuildTeam";
 import { accountFingerprint, newestUndo, SaveRefused, UndoRefused, undoFates, type BuildTeamStores, type UndoFate } from "../apply";
 import { accountStoresRefused } from "../../storage/persistGuard";
 import { onSavedResultsCleared } from "../../persist/savedResults";
@@ -42,6 +42,9 @@ export const MAX_TEAMS = 8;
 export const BUDGET_MS = 60_000;
 
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(toRaw(v) ?? null));
+
+/** Said over the Teams step when a plan (or a run) was put down because the team-buff switch moved after it was worked out. */
+export const PLAN_SWITCH_CHANGED_TEXT = "Team-aware buffs were switched since this plan was worked out, so its figures no longer apply. The teams were scored again: plan again for figures under the switch as it is now.";
 
 /** Said over the Teams step when the rows were read again because the account changed under them. */
 export const ROWS_CHANGED_TEXT = "Your builds or teams changed after these teams were read (in another tab, perhaps), so they were read again. Check them, then plan.";
@@ -192,7 +195,7 @@ export function useBuildAccount() {
       // planned under the other team-buff switch: its figures, and its rows' team damage, are not this page's any more
       keptPlan = null;
       await load(false);
-      if (phase.value === "choose") error.value = SWITCH_CHANGED_TEXT;
+      if (phase.value === "choose") error.value = PLAN_SWITCH_CHANGED_TEXT;
       return;
     }
     if (!keepChoice && keptPlan?.on === accountFingerprint(stores())) {
@@ -497,7 +500,7 @@ export function useBuildAccount() {
     scoredAuto = null;
     // the plan kept for Back stays: `load` restores it only under the switch it was planned on
     await load(choices.value.length > 0);
-    if (said && phase.value === "choose") error.value = SWITCH_CHANGED_TEXT;
+    if (said && phase.value === "choose") error.value = PLAN_SWITCH_CHANGED_TEXT;
   });
 
   return {

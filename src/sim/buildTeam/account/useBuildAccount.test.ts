@@ -11,9 +11,9 @@ import { saveFailedText, SaveRefused, UndoRefused, type BuildTeamStores } from "
 import { accountApplyRequest, clearAccountUndo, readAccountUndo, saveAccountPlan, undoAccountPlan } from "./accountApply";
 import { accountTeamChoices } from "./accountTeams";
 import { buildAccount } from "./buildAccount";
-import { ACCOUNT_CHOICE_KEY, clearKeptPlan, ROWS_CHANGED_TEXT, useBuildAccount } from "./useBuildAccount";
+import { ACCOUNT_CHOICE_KEY, clearKeptPlan, PLAN_SWITCH_CHANGED_TEXT, ROWS_CHANGED_TEXT, useBuildAccount } from "./useBuildAccount";
 import { autoTeamBuffs } from "../../teamContext/autoTeamBuffs";
-import { OPTIONS_KEY, SWITCH_CHANGED_TEXT } from "../useBuildTeam";
+import { OPTIONS_KEY } from "../useBuildTeam";
 
 vi.mock("./accountTeams", async (original) => ({ ...(await original<typeof import("./accountTeams")>()), accountTeamChoices: vi.fn() }));
 vi.mock("./buildAccount", async (original) => ({ ...(await original<typeof import("./buildAccount")>()), buildAccount: vi.fn() }));
@@ -370,7 +370,7 @@ describe("Whole account and the team-buff switch (2026-11-08 hunt F2)", () => {
     const back = await open();
     expect(back.result.value).toBeNull();
     expect(back.phase.value).toBe("choose");
-    expect(back.error.value).toBe(SWITCH_CHANGED_TEXT);
+    expect(back.error.value).toBe(PLAN_SWITCH_CHANGED_TEXT);
     expect(lastRowsSwitch()).toBe(false); // the rows' team damage, read under the switch as it is now
     expect(vi.mocked(buildAccount)).toHaveBeenCalledTimes(1);
   });
@@ -382,7 +382,7 @@ describe("Whole account and the team-buff switch (2026-11-08 hunt F2)", () => {
     await settle();
     expect(ba.result.value).toBeNull();
     expect(ba.phase.value).toBe("choose");
-    expect(ba.error.value).toBe(SWITCH_CHANGED_TEXT);
+    expect(ba.error.value).toBe(PLAN_SWITCH_CHANGED_TEXT);
     expect(ba.selected.value).toEqual(["t1"]);
     expect(lastRowsSwitch()).toBe(false);
     const back = await open(); // and Back finds no review either
@@ -412,7 +412,7 @@ describe("Whole account and the team-buff switch (2026-11-08 hunt F2)", () => {
     await settle();
     expect(ba.result.value).toBeNull();
     expect(ba.phase.value).toBe("choose");
-    expect(ba.error.value).toBe(SWITCH_CHANGED_TEXT);
+    expect(ba.error.value).toBe(PLAN_SWITCH_CHANGED_TEXT);
     await review(ba); // Plan again runs under the switch as it is now
     expect(vi.mocked(buildAccount).mock.calls.at(-1)?.[0].autoTeamBuffs).toBe(false);
   });
