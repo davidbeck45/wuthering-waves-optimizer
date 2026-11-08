@@ -353,6 +353,17 @@ describe("wuwa_calc rankings: Sync my teams (Wuthering Tools+)", () => {
       expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "undo kept").to.not.eq(null);
       expect(loopOf(win)?.duration, "the member loop has the team's rotation time").to.eq(store.teams[0]!.duration);
     });
+    // a second sync that changes nothing keeps that Undo: it re-imports the team with fresh action ids and fills no
+    // loop, and the Undo still puts the team back and takes the first sync's time out (2026-11-08 hunt M3)
+    cy.get("[data-test-rankings-sync-close]").click();
+    cy.get("[data-test-rankings-sync]").click();
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get("[data-test-rankings-sync-summary]", { timeout: 180000 }).should("contain.text", "1 unchanged");
+    cy.get("[data-test-rankings-sync-undo]").should("exist");
+    cy.window().should((win) => {
+      expect(win.localStorage.getItem("wtplus:rankings:sync:undo:v1"), "the first sync's undo kept").to.not.eq(null);
+      expect(win.localStorage.getItem("wtplus:rankings:sync:durations:v1"), "with its loop time").to.not.eq(null);
+    });
     // Undo asks first too (/build-team's pattern): Cancel keeps the synced team and the undo
     cy.get("[data-test-rankings-sync-undo]").click();
     cy.get(".confirm-dialog .modal-box").should("contain.text", "Undo the last sync").and("contain.text", "Put 1 team back");

@@ -664,17 +664,25 @@ async function sync(): Promise<void> {
   showDetails.value = false;
   undoRecord.value = null; // an Undo of the last sync while this one writes would put back the wrong teams
   try {
-    const snapshot: TeamLike[] = JSON.parse(JSON.stringify(list));
+    // the teams as they are now, not as the question found them: another tab may have changed one meanwhile, and the
+    // Undo would put its old members back (2026-11-08 hunt L2)
+    const snapshot: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
     const run = await syncWithUndo(snapshot, () => syncMyTeams(snapshot), () => JSON.parse(JSON.stringify(teams.value ?? [])));
     report.value = run.report;
-    undoRecord.value = run.undo;
-    const filled = fillLoopTimes(run.after);
-    durations.value = filled;
-    // the confirm promises an Undo: a sync that rewrote no team but filled loop times gets one too, with no team in it
-    if (!undoRecord.value && filled.fills.length) {
-      undoRecord.value = { v: 1, at: new Date().toISOString(), before: [], after: {} };
-      saveSyncUndo(undoRecord.value);
+    let rec = run.undo;
+    let kept = !rec || run.stored;
+    // a sync that rewrote no team keeps the last one's Undo, with the times that one filled (a cut one's are not known)
+    const filled = fillLoopTimes(run.after, run.carried && !rec?.cut ? undoFills(rec!) : []);
+    durations.value = filled.plan;
+    if (filled.plan.fills.length && (!rec || rec.cut)) {
+      // the confirm promises an Undo: a sync that rewrote no team but filled loop times gets one too, with no team in
+      // it (or the carried one, which now knows its times)
+      rec = rec ? { ...rec, cut: undefined } : { v: 1, at: new Date().toISOString(), before: [], after: {} };
+      kept = saveSyncUndo(rec);
     }
+    undoRecord.value = rec;
+    memoryFills = rec ? { at: rec.at, fills: filled.fills } : null;
+    if (rec && (!kept || !filled.stored)) showToast("Synced. Undo sync lasts this visit only: this browser's storage is full and refused to keep it. Delete some versions in Build history to make room.", "warning", 9000);
     // the report under the bar is the outcome; a success toast only covered its Close button
   } catch (err) {
     undoRecord.value = readSyncUndo();
@@ -691,7 +699,7 @@ async function undoSync(): Promise<void> {
   open.value = null;
   // asks first, as /build-team's Undo does: the record outlives a reload, so the tap can come long after the sync
   const n = rec.before.length;
-  const fills = rec.cut ? [] : readDurationUndo();
+  const fills = undoFills(rec);
   const loops = fills.length;
   const loopTimes = plural(loops, "rotation time");
   const ok = await confirm(
@@ -728,14 +736,19 @@ function closeReport(): void {
 // them the synced team's seconds, and its Undo takes them back out
 const characterStore = useCharacterStore();
 const durations = ref<DurationPlan | null>(null);
-function fillLoopTimes(after: TeamLike[]): DurationPlan {
+/** this visit's filled times, for the record they belong to: what the browser refused to store is still here */
+let memoryFills: { at: string; fills: DurationFill[] } | null = null;
+/** The times an Undo takes out: none for a record cut short (it never reached them). */
+const undoFills = (rec: SyncUndoRecord): DurationFill[] => (rec.cut ? [] : memoryFills?.at === rec.at ? memoryFills.fills : readDurationUndo());
+/** Fills the times; `carry`: the last sync's, still this Undo's. `stored`: the Undo of the times reached the browser. */
+function fillLoopTimes(after: TeamLike[], carry: readonly DurationFill[] = []): { plan: DurationPlan; fills: DurationFill[]; stored: boolean } {
   const chars = characterStore.characters as Record<string, any>;
   const plan = planRotationDurations(chars, after);
   for (const id of new Set(plan.fills.map((f) => f.characterId))) {
     characterStore.setCharacterRotations(id, rotationsWithDurations(chars[id]?.rotations ?? [], plan.fills.filter((f) => f.characterId === id)));
   }
-  saveDurationUndo(plan.fills);
-  return plan;
+  const fills = [...carry.filter((c) => !plan.fills.some((f) => f.characterId === c.characterId && f.rotationId === c.rotationId)), ...plan.fills];
+  return { plan, fills, stored: saveDurationUndo(fills) };
 }
 const loopTimesText = (plan: DurationPlan): string =>
   plan.fills.slice(0, 4).map((f) => `${characterShortName(f.characterId)} ${f.to} s`).join(", ") + (plan.fills.length > 4 ? `, +${plan.fills.length - 4} more` : "");
@@ -751,6 +764,7 @@ function unfillLoopTimes(fills: readonly DurationFill[]): number {
     characterStore.setCharacterRotations(id, next);
   }
   saveDurationUndo(null);
+  memoryFills = null;
   return taken;
 }
 

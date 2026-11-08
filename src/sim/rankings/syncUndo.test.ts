@@ -1,6 +1,6 @@
 // Wuthering Tools+: Undo for "Sync my teams" (syncUndo.ts).
 import { describe, expect, it } from "vitest";
-import { applySyncUndo, fillsToUndo, makeSyncUndo, pendingSyncUndo, readSyncUndo, saveSyncUndo, settleSyncUndo, syncWithUndo, SYNC_UNDO_KEY, type SyncUndoRecord } from "./syncUndo";
+import { applySyncUndo, fillsToUndo, makeSyncUndo, pendingSyncUndo, readSyncUndo, saveSyncUndo, settleSyncUndo, SyncRefused, syncWithUndo, SYNC_UNDO_KEY, type SyncUndoRecord } from "./syncUndo";
 import type { SyncReport, SyncTeamReport, TeamLike } from "./syncTeams";
 
 const team = (id: string, name: string, stacks: number, extra: Record<string, unknown> = {}): TeamLike =>
@@ -182,5 +182,84 @@ describe("a sync cut short", () => {
     saveSyncUndo(last, storage);
     await expect(syncWithUndo(before, async () => { throw new Error("still loading"); }, () => before, storage)).rejects.toThrow();
     expect(readSyncUndo(storage)).toEqual(last);
+  });
+});
+
+describe("the last sync's Undo, a full browser and a failed team (2026-11-08 hunt M3, M4, L2)", () => {
+  const mine = team("c", "My team", 0);
+  const before = [team("a", "wuwa_calc A", 1, { actions: [{ id: "a1", slot: 0, key: "Hit", stacks: 1 }] }), team("b", "wuwa_calc B", 1, { actions: [{ id: "b1", slot: 0, key: "Hit", stacks: 1 }] }), mine];
+  const synced = [team("a", "wuwa_calc A", 2, { actions: [{ id: "a2", slot: 0, key: "Hit", stacks: 2 }] }), before[1]!, mine];
+  /** the same teams re-imported unchanged: every action gets a fresh id */
+  const again = [team("a", "wuwa_calc A", 2, { actions: [{ id: "a3", slot: 0, key: "Hit", stacks: 2 }] }), team("b", "wuwa_calc B", 1, { actions: [{ id: "b3", slot: 0, key: "Hit", stacks: 1 }] }), mine];
+  const store = (full = false) => {
+    const mem = new Map<string, string>();
+    const box = { full };
+    return {
+      mem,
+      box,
+      storage: {
+        getItem: (k: string) => mem.get(k) ?? null,
+        setItem: (k: string, v: string) => {
+          if (box.full) throw new DOMException("full", "QuotaExceededError");
+          mem.set(k, v);
+        },
+        removeItem: (k: string) => void mem.delete(k),
+      },
+    };
+  };
+
+  it("a second sync that changes nothing keeps the first one's Undo, and it still puts the team back", async () => {
+    const { storage } = store();
+    const first = await syncWithUndo(before, async () => report([row("a", "updated"), row("b", "unchanged")]), () => synced, storage);
+    expect(first.undo!.before.map((t) => t.id)).toEqual(["a"]);
+
+    const second = await syncWithUndo(synced, async () => report([row("a", "unchanged"), row("b", "unchanged")]), () => again, storage);
+
+    expect(second.carried).toBe(true);
+    expect(second.undo!.before.map((t) => t.id)).toEqual(["a"]);
+    expect(readSyncUndo(storage)).toEqual(second.undo);
+    // the re-import gave team a fresh action ids: still the team the first sync left, so Undo puts it back
+    const out = applySyncUndo(again, second.undo!);
+    expect(out.restored).toEqual(["a"]);
+    expect(out.teams[0]).toEqual(before[0]);
+  });
+
+  it("refuses to sync when the browser will not store its Undo first, and leaves the last Undo as it was", async () => {
+    const { storage, box } = store();
+    const last = { v: 1, at: "x", before: [before[0]!], after: { a: "fp" } } as SyncUndoRecord;
+    saveSyncUndo(last, storage);
+    box.full = true;
+    let ran = false;
+    const failed = await syncWithUndo(before, async () => ((ran = true), report([])), () => before, storage).catch((e) => e);
+    expect(failed).toBeInstanceOf(SyncRefused);
+    expect(failed.message).toMatch(/^Nothing was synced: this browser's storage is full/);
+    expect(ran).toBe(false);
+    expect(readSyncUndo(storage)).toEqual(last);
+  });
+
+  it("says when the finished Undo could not be stored", async () => {
+    const { storage, box } = store();
+    const run = syncWithUndo(before, async () => {
+      box.full = true; // the sync's own writes took the last room
+      return report([row("a", "updated")]);
+    }, () => synced, storage);
+    const out = await run;
+    expect(out.undo).not.toBeNull();
+    expect(out.stored).toBe(false);
+  });
+
+  it("leaves a failed team out: what differs there is another tab's edit, which Undo must not take back", () => {
+    const edited = [synced[0]!, team("b", "wuwa_calc B", 1, { characterIds: ["A", "D", "C"] }), mine];
+    const undo = makeSyncUndo(before, edited, report([row("a", "updated"), row("b", "failed")]))!;
+    expect(undo.before.map((t) => t.id)).toEqual(["a"]);
+  });
+
+  it("is a short hash per team, and an Undo stored with the JSON itself still reads", () => {
+    const undo = makeSyncUndo(before, synced, report([row("a", "updated")]))!;
+    expect(undo.after.a!.length).toBeLessThan(20);
+    const { buildIds: _p, ...rest } = synced[0] as TeamLike & { buildIds?: unknown };
+    void _p;
+    const legacy = { ...undo, after: { a: JSON.stringify(rest) } };
+    expect(applySyncUndo(synced, legacy).restored).toEqual(["a"]);
   });
 });

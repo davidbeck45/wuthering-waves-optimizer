@@ -7,6 +7,10 @@
 // storage helpers; the bar writes the store.
 // "Rewrote" is any change to the stored record, not the report's "updated": a team whose loop did not move can still
 // have had its enemy level, name, description or handoffs rewritten (2026-11-02). Fresh action ids alone don't count.
+// A sync that rewrote no team keeps the last sync's Undo (`carrySyncUndo`), and a sync whose Undo the browser would not
+// store ahead of its first write does not run (`SyncRefused`) (2026-11-08 hunt M3, M4). A team that failed was never
+// written and stays out of the Undo (L2).
+import { cyrb53 } from "../myRankings/rankingCache";
 import { isWuwaCalcTeam, type SyncReport, type TeamLike } from "./syncTeams";
 
 export const SYNC_UNDO_KEY = "wtplus:rankings:sync:undo:v1";
@@ -33,14 +37,26 @@ export interface SyncUndoOutcome {
 
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 /** a team record as plain JSON (store proxies and key order as the store holds them), its pins left out */
-export const teamFingerprint = (team: unknown): string => {
+const teamJson = (team: unknown): string => {
   if (!team) return JSON.stringify(null);
   const { buildIds: _pins, ...rest } = team as Record<string, unknown>;
   return JSON.stringify(rest);
 };
+/** `teamJson`, hashed: the record then stays smaller than the pending one it replaces, which the browser took */
+export const teamFingerprint = (team: unknown): string => `h${cyrb53(teamJson(team))}`;
 
-/** Does this team still read as the sync left it? A record stored before pins were left out holds the whole team. */
-const asSynced = (team: TeamLike, fingerprint: string | undefined): boolean => fingerprint === teamFingerprint(team) || fingerprint === JSON.stringify(team);
+/** Does this team still read as the sync left it? Records stored before held the JSON itself, and before pins were left
+ *  out, the whole team. */
+const asSynced = (team: TeamLike, fingerprint: string | undefined): boolean =>
+  fingerprint === teamFingerprint(team) || fingerprint === teamJson(team) || fingerprint === JSON.stringify(team);
+
+/** The sync did not run: its Undo could not be stored ahead of the first write. */
+export class SyncRefused extends Error {
+  constructor() {
+    super("Nothing was synced: this browser's storage is full, so the sync could not keep its Undo. Delete some versions in Build history to make room, then sync again.");
+    this.name = "SyncRefused";
+  }
+}
 
 /** The team as it was before the sync, with the pins it has today. */
 function withPinsOf(before: TeamLike, now: TeamLike): TeamLike {
@@ -60,7 +76,8 @@ const contentFingerprint = (team: TeamLike): string =>
  *  report's "unchanged" included: a loop that did not move can still come back with wuwa_calc's enemy level or a new
  *  name), fingerprints from after. Null when the sync changed nothing (nothing to undo). */
 export function makeSyncUndo(before: TeamLike[], after: TeamLike[], report: SyncReport): SyncUndoRecord | null {
-  const synced = new Set(report.teams.filter((t) => t.status !== "skipped").map((t) => t.id));
+  // a failed team was never written: what differs there is another tab's edit, not the sync's
+  const synced = new Set(report.teams.filter((t) => t.status !== "skipped" && t.status !== "failed").map((t) => t.id));
   const now = new Map(after.map((t) => [t.id, t]));
   const ids = new Set(before.filter((t) => synced.has(t.id) && now.has(t.id) && contentFingerprint(t) !== contentFingerprint(now.get(t.id)!)).map((t) => t.id));
   if (!ids.size) return null;
@@ -109,18 +126,44 @@ export function settleSyncUndo(rec: SyncUndoRecord, current: readonly TeamLike[]
   return { v: 1, at: rec.at, before, after: Object.fromEntries(before.map((t) => [t.id, teamFingerprint(now.get(t.id))])), cut: true };
 }
 
-/** Runs a sync with its Undo stored ahead of the first write, and finished when the sync ends. A sync that throws
- *  leaves the Undo of what it reached, or the last sync's when it reached nothing. */
-export async function syncWithUndo(before: TeamLike[], run: () => Promise<SyncReport>, teamsNow: () => TeamLike[], storage: (Pick<Storage, "getItem" | "setItem" | "removeItem">) | null = safeStorage()): Promise<{ report: SyncReport; undo: SyncUndoRecord | null; after: TeamLike[] }> {
-  const previous = readSyncUndo(storage);
+/** The last sync's Undo, after a sync that rewrote no team: it still stands. A team this sync re-imported unchanged has
+ *  fresh action ids, so its fingerprint moves to the record as it is now, while it still read as the last sync left it. */
+export function carrySyncUndo(previous: SyncUndoRecord, before: readonly TeamLike[], after: readonly TeamLike[]): SyncUndoRecord {
+  const was = new Map(before.map((t) => [t.id, t]));
+  const now = new Map(after.map((t) => [t.id, t]));
+  const fps = { ...previous.after };
+  for (const id of Object.keys(fps)) {
+    const b = was.get(id);
+    const a = now.get(id);
+    if (b && a && asSynced(b, fps[id]) && contentFingerprint(b) === contentFingerprint(a)) fps[id] = teamFingerprint(a);
+  }
+  return { ...previous, after: fps };
+}
+
+export interface SyncRun {
+  report: SyncReport;
+  undo: SyncUndoRecord | null;
+  after: TeamLike[];
+  /** the sync rewrote no team, and `undo` is the last sync's, carried */
+  carried: boolean;
+  /** `undo` reached the browser's storage (false: it lasts this visit only) */
+  stored: boolean;
+}
+
+/** Runs a sync with its Undo stored ahead of the first write, and finished when the sync ends. Storage that refuses
+ *  that first record refuses the sync (`SyncRefused`, nothing written). A sync that throws leaves the Undo of what it
+ *  reached, or the last sync's when it reached nothing; one that rewrote nothing keeps the last sync's. */
+export async function syncWithUndo(before: TeamLike[], run: () => Promise<SyncReport>, teamsNow: () => TeamLike[], storage: (Pick<Storage, "getItem" | "setItem" | "removeItem">) | null = safeStorage()): Promise<SyncRun> {
+  const stored = readSyncUndo(storage);
+  const previous = stored?.pending ? settleSyncUndo(stored, before) : stored;
   const pending = pendingSyncUndo(before);
-  saveSyncUndo(pending, storage);
+  if (storage && !saveSyncUndo(pending, storage)) throw new SyncRefused();
   try {
     const report = await run();
     const after = teamsNow();
-    const undo = makeSyncUndo(before, after, report);
-    saveSyncUndo(undo, storage);
-    return { report, undo, after };
+    const fresh = makeSyncUndo(before, after, report);
+    const undo = fresh ?? (previous ? carrySyncUndo(previous, before, after) : null);
+    return { report, undo, after, carried: !fresh && !!undo, stored: saveSyncUndo(undo, storage) };
   } catch (err) {
     saveSyncUndo(settleSyncUndo(pending, teamsNow()) ?? previous, storage);
     throw err;

@@ -144,12 +144,14 @@ export function readDurationUndo(storage: Pick<Storage, "getItem"> | null = safe
   }
 }
 
-export function saveDurationUndo(fills: readonly DurationFill[] | null, storage: Pick<Storage, "setItem" | "removeItem"> | null = safeStorage()): void {
+/** False when the browser would not store it (quota): the caller keeps the times for this visit and says so. */
+export function saveDurationUndo(fills: readonly DurationFill[] | null, storage: Pick<Storage, "setItem" | "removeItem"> | null = safeStorage()): boolean {
   try {
-    if (!storage) return;
+    if (!storage) return false;
     if (fills?.length) storage.setItem(DURATION_UNDO_KEY, JSON.stringify(fills));
     else storage.removeItem(DURATION_UNDO_KEY);
+    return true;
   } catch {
-    // a full or blocked storage loses only the Undo of the times
+    return false;
   }
 }
