@@ -157,7 +157,7 @@ import PresetNameLabel, { type PresetSource } from "../display/PresetNameLabel.v
 import { characterDisplayName, characterShortName } from "../display/names";
 import { compact } from "../myRankings/format";
 import { changeText } from "./diff";
-import { charactersWithHistory, historyInMemoryOnly, MAX_PER_CHARACTER, readHistory, type HistoryVersion } from "./history";
+import { charactersWithHistory, MAX_PER_CHARACTER, readHistory, type HistoryVersion } from "./history";
 import { NOW_ID, useBuildHistory } from "./useBuildHistory";
 import { characterOptions, gearSummary, labelText, labelTone, pickCharacter, restoreItems, whenText } from "./view";
 import BuildHistoryDiff from "./BuildHistoryDiff.vue";
@@ -256,7 +256,7 @@ async function onRestore(v: HistoryVersion): Promise<void> {
     if (!out) return;
     const kept = out.before.saved ? " The build from before is saved as “Before a restore”." : "";
     const added = out.addedEchoes.length ? ` ${out.addedEchoes.length} echo${out.addedEchoes.length === 1 ? " was" : "es were"} added back to the inventory.` : "";
-    const memo = historyInMemoryOnly() ? " (History kept for this visit only: the browser refused to store more.)" : "";
+    const memo = out.before.inMemoryOnly ? " (That version is kept for this visit only: the browser refused to store it.)" : "";
     showToast(`Restored ${name}'s build from ${whenText(v.at)}.${kept}${added}${memo}`, "success", 7000);
   } catch (err) {
     showToast(err instanceof Error ? `The restore failed: ${err.message}` : "The restore failed; nothing was changed.", "error", 7000);

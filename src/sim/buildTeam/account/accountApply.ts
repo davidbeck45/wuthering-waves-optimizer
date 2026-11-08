@@ -57,6 +57,8 @@ export interface AccountApplyOutcome {
   /** saved teams that got a pin */
   pinnedTeams: string[];
   undoInMemoryOnly: boolean;
+  /** a build from before the save went to Build history in this page's memory only (the browser refused it) */
+  historyInMemoryOnly?: boolean;
 }
 
 export interface AccountUndoOutcome {
@@ -164,8 +166,8 @@ export function accountApplyRequest(result: Pick<BuildAccountResult, "members" |
 /** The confirmed save: every affected character's build into build history first ("Before Account plan"), then the
  *  new builds. */
 export function saveAccountPlan(stores: BuildTeamStores, request: AccountApplyRequest, history: { echoes: any[] }): AccountApplyOutcome {
-  snapshotCharacters(request.members.map((m) => m.characterId), "before-account-plan", { characters: stores.character.characters, echoes: history.echoes });
-  return applyAccountPlan(stores, request);
+  const kept = snapshotCharacters(request.members.map((m) => m.characterId), "before-account-plan", { characters: stores.character.characters, echoes: history.echoes });
+  return { ...applyAccountPlan(stores, request), historyInMemoryOnly: kept.some((r) => r.inMemoryOnly) };
 }
 
 /** Undo from the page: the builds as they are into build history first ("Before undoing Account plan"), then the undo. */

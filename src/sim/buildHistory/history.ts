@@ -71,9 +71,26 @@ export function memoryStorage(): HistoryStorage & { data: Map<string, string> } 
   };
 }
 
-/** Holds what the browser refused to store, for the rest of this visit. */
+/** Holds what the browser refused to store, for the rest of this visit: one whole list per character, which stands for
+ *  that character until a write to the browser takes it (then it is dropped, 2026-11-08 hunt H2). `since` is when the
+ *  list went to memory: a version stored after it (another tab's) is shown beside it. An empty list stays too, so a
+ *  version deleted while the browser was full does not come back from storage. */
 const fallback = memoryStorage();
-let fallbackUsed = false;
+const memoryKey = (key: string): string | null => fallback.getItem(key);
+
+function keepInMemory(key: string, versions: HistoryVersion[], now = Date.now()): void {
+  fallback.setItem(key, JSON.stringify({ v: 1, versions, since: now }));
+}
+
+/** The browser took this character's list: the page-memory copy is no longer ahead of it. */
+function dropMemory(storage: HistoryStorage, key: string): void {
+  if (storage !== fallback) fallback.removeItem(key);
+}
+
+/** Forgets every list held in page memory (tests; a reload does the same). */
+export function clearHistoryMemory(): void {
+  for (const k of fallback.keys()) fallback.removeItem(k);
+}
 
 function webStorage(): HistoryStorage | null {
   try {
@@ -102,9 +119,10 @@ export function defaultStorage(): HistoryStorage {
   return webStorage() ?? fallback;
 }
 
-/** True once a write was refused and the history went to page memory. */
+/** True while some character's history is held in page memory only (a write the browser refused, not yet followed by
+ *  one it took). A write's own `inMemoryOnly` says it for that write. */
 export function historyInMemoryOnly(): boolean {
-  return fallbackUsed;
+  return fallback.keys().length > 0;
 }
 
 const keyOf = (charId: string): string => `${HISTORY_PREFIX}${charId}`;
@@ -177,10 +195,19 @@ function parseStored(raw: string | null): HistoryVersion[] {
 /** A character's versions, newest first. */
 export function readHistory(charId: string, storage: HistoryStorage = defaultStorage()): HistoryVersion[] {
   const own = parseStored(storage.getItem(keyOf(charId)));
-  if (storage === fallback || !fallbackUsed) return own;
-  // a refused write left this character's newer list in memory
-  const mem = parseStored(fallback.getItem(keyOf(charId)));
-  return mem.length ? mem : own;
+  if (storage === fallback) return own;
+  const raw = memoryKey(keyOf(charId));
+  if (raw === null) return own;
+  // a refused write left this character's newer list in memory; what another tab stored since comes along
+  const mem = parseStored(raw);
+  let since = 0;
+  try {
+    since = Number((JSON.parse(raw) as { since?: unknown }).since) || 0;
+  } catch {
+    // parseStored read nothing either
+  }
+  const ids = new Set(mem.map((v) => v.id));
+  return [...mem, ...own.filter((v) => !ids.has(v.id) && v.at > since)].sort((a, b) => b.at - a.at);
 }
 
 /** Characters that have at least one version. */
@@ -262,6 +289,7 @@ export function recordVersion(charId: string, record: Record<string, any> | unde
   const key = keyOf(charId);
   try {
     writeList(storage, key, next);
+    dropMemory(storage, key);
     enforceBudget(storage, options.maxTotalChars ?? MAX_TOTAL_CHARS, key);
     return { saved: true, version, dropped, inMemoryOnly: false };
   } catch {
@@ -269,10 +297,10 @@ export function recordVersion(charId: string, record: Record<string, any> | unde
     try {
       enforceBudget(storage, Math.floor((options.maxTotalChars ?? MAX_TOTAL_CHARS) * 0.6), key);
       writeList(storage, key, next);
+      dropMemory(storage, key);
       return { saved: true, version, dropped, inMemoryOnly: false };
     } catch {
-      fallbackUsed = true;
-      writeList(fallback, key, next);
+      keepInMemory(key, next, options.now);
       return { saved: true, version, dropped, inMemoryOnly: true };
     }
   }
@@ -302,8 +330,9 @@ export function deleteVersion(charId: string, versionId: string, storage: Histor
   if (next.length === list.length) return false;
   try {
     writeList(storage, keyOf(charId), next);
+    dropMemory(storage, keyOf(charId));
   } catch {
-    writeList(fallback, keyOf(charId), next);
+    keepInMemory(keyOf(charId), next);
   }
   return true;
 }

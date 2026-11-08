@@ -261,7 +261,6 @@ import PresetNameLabel from "../../display/PresetNameLabel.vue";
 import { teamTierLine, teamTitle } from "../../display/teamName";
 import { usePlusBar } from "../../shell/plusBar";
 import BuildTeamEchoTile from "../BuildTeamEchoTile.vue";
-import { historyInMemoryOnly } from "../../buildHistory/history";
 import { saveFailedText } from "../apply";
 import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
@@ -329,7 +328,7 @@ async function onSave(): Promise<void> {
   if (!ok) return;
   try {
     const out = await ba.save();
-    historyFull.value = historyInMemoryOnly();
+    historyFull.value = out?.historyInMemoryOnly === true;
     if (out) showToast(`Saved ${out.created.length} Account plan build${out.created.length === 1 ? "" : "s"}. Undo is on this page.`, "success", 6000);
   } catch (e) {
     showToast(saveFailedText(e), "error", 10000);

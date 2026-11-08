@@ -1,7 +1,7 @@
 // Wuthering Tools+ build history: versions in the share format, dedupe and the caps, the diff in words, the engine
 // numbers of a version, and a restore through the real Pinia stores — on the Cartethyia account fixture (one full
 // build, 17 inventory echoes, one saved rotation; public data, already used by the share tests).
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import account from "../myRankings/__fixtures__/cartethyiaAccount.json";
 import { buildCharacterCalculationContext } from "../../calculator/buildCharacterContext";
@@ -13,7 +13,9 @@ import { buildHeadline } from "../share/headline";
 import {
   HISTORY_PREFIX,
   charactersWithHistory,
+  clearHistoryMemory,
   deleteVersion,
+  historyInMemoryOnly,
   memoryStorage,
   readHistory,
   recordVersion,
@@ -145,6 +147,87 @@ describe("dedupe and caps", () => {
     expect(readHistory("Cartethyia", storage)[0].label).toBe("before-build-team");
     expect(deleteVersion("Cartethyia", readHistory("Cartethyia", storage)[0].id, storage)).toBe(true);
     expect(readHistory("Cartethyia", storage)).toEqual([]);
+  });
+});
+
+describe("a write the browser refused, then room again (2026-11-08 hunt H2)", () => {
+  /** a browser storage that refuses every write while `full` */
+  function quotaStorage() {
+    const inner = memoryStorage();
+    const box = { full: false };
+    return {
+      box,
+      inner,
+      getItem: inner.getItem,
+      removeItem: inner.removeItem,
+      keys: inner.keys,
+      setItem(k: string, v: string) {
+        if (box.full) throw new DOMException("full", "QuotaExceededError");
+        inner.setItem(k, v);
+      },
+    };
+  }
+  /** Cartethyia with a marker, so each version is a build of its own */
+  const build = (n: number) => {
+    const r = clone(characters.Cartethyia);
+    r.weaponPassives = { probe: { stacks: n } };
+    return r;
+  };
+  /** each version by when it was taken: 0, 1, 2 … seconds after T0 */
+  const stacks = (list: HistoryVersion[]) => list.map((v) => (v.at - T0) / 1000);
+  const stored = (storage: ReturnType<typeof quotaStorage>) => stacks(readHistory("Cartethyia", storage.inner));
+
+  // the page-memory lists are the module's, per character: none may reach another test
+  beforeEach(() => clearHistoryMemory());
+  afterEach(() => clearHistoryMemory());
+
+  it("a version stored once there is room again is on the page, and nothing is written over later", () => {
+    const storage = quotaStorage();
+    recordVersion("Cartethyia", build(1), echoes, "manual", { storage, now: T0 });
+    storage.box.full = true;
+    expect(recordVersion("Cartethyia", build(2), echoes, "manual", { storage, now: T0 + 1000 }).inMemoryOnly).toBe(true);
+    expect(historyInMemoryOnly()).toBe(true);
+    storage.box.full = false;
+
+    // a restore's "Before a restore" of the build worn now (at 2 s), then another restore's (at 3 s)
+    const before = recordVersion("Cartethyia", build(3), echoes, "before-restore", { storage, now: T0 + 2000 });
+    expect(before).toMatchObject({ saved: true, inMemoryOnly: false });
+    expect(stacks(readHistory("Cartethyia", storage))).toEqual([2, 1, 0]);
+    expect(historyInMemoryOnly()).toBe(false);
+    recordVersion("Cartethyia", build(1), echoes, "before-restore", { storage, now: T0 + 3000 });
+    // the one at 2 s was lost: storage held 3, 1, 0
+    expect(stored(storage)).toEqual([3, 2, 1, 0]);
+    expect(stacks(readHistory("Cartethyia", storage))).toEqual([3, 2, 1, 0]);
+  });
+
+  it("deleting a row after room came back deletes only that row, from the page too", () => {
+    const storage = quotaStorage();
+    recordVersion("Cartethyia", build(1), echoes, "manual", { storage, now: T0 });
+    storage.box.full = true;
+    recordVersion("Cartethyia", build(2), echoes, "manual", { storage, now: T0 + 1000 });
+    storage.box.full = false;
+    recordVersion("Cartethyia", build(3), echoes, "manual", { storage, now: T0 + 2000 });
+    const oldest = readHistory("Cartethyia", storage).at(-1)!;
+    expect(deleteVersion("Cartethyia", oldest.id, storage)).toBe(true);
+    // storage went from 3 versions to 1, and the deleted row stayed on the page
+    expect(stored(storage)).toEqual([2, 1]);
+    expect(stacks(readHistory("Cartethyia", storage))).toEqual([2, 1]);
+  });
+
+  it("while the browser stays full, the page's list stands, a deleted row stays deleted, and another tab's version shows beside it", () => {
+    const storage = quotaStorage();
+    recordVersion("Cartethyia", build(1), echoes, "manual", { storage, now: T0 });
+    recordVersion("Cartethyia", build(2), echoes, "manual", { storage, now: T0 + 1000 });
+    storage.box.full = true;
+    recordVersion("Cartethyia", build(3), echoes, "manual", { storage, now: T0 + 2000 });
+    const list = readHistory("Cartethyia", storage);
+    expect(stacks(list)).toEqual([2, 1, 0]);
+    deleteVersion("Cartethyia", list[1]!.id, storage);
+    expect(stacks(readHistory("Cartethyia", storage))).toEqual([2, 0]);
+    // another tab with room stores a version of its own
+    const other = versionOf("Cartethyia", build(9), echoes, "manual", Date.now() + 60_000);
+    storage.inner.setItem(`${HISTORY_PREFIX}Cartethyia`, JSON.stringify({ v: 1, versions: [other, ...readHistory("Cartethyia", storage.inner)] }));
+    expect(readHistory("Cartethyia", storage).map((v) => v.id)).toEqual([other.id, list[0]!.id, list[2]!.id]);
   });
 });
 
