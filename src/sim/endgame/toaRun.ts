@@ -193,6 +193,17 @@ export function floorResults(season: ToaSeason, team: CandidateTeam, curves: Fig
 const failed = (season: ToaSeason, team: CandidateTeam, error: string): FloorResult[] =>
   timedFloors(season).map((f) => ({ floorId: f.id, teamId: team.id, seconds: null, extrapolated: false, crests: 0, splits: [], dps: null, error }));
 
+/** The candidates a check could not time (the engine failed on them, its worker crashed under them): they drop to the
+ *  bottom of every floor and out of the plan, so the page says so and such a check is never kept (2026-11-08 hunt F4:
+ *  a worker that ran out of memory left David's first saved team out of every visit's plan). */
+export function failedTeams(check: Pick<ToaCheck, "results" | "candidates">): string[] {
+  const ids = new Set(check.candidates.map((c) => c.id));
+  return [...new Set(check.results.filter((r) => r.error && ids.has(r.teamId)).map((r) => r.teamId))];
+}
+
+/** Tries per team: a worker that crashed starts afresh on the next ask (rileyClient), so a second try usually works. */
+const TRIES = 2;
+
 /** The whole check: scan → solve → time every candidate on every timed floor. With `onPartial`, the player's saved
  *  teams go first — solved and timed on their own (about a second), handed over as a `partial` check so the page can
  *  paint them — then the rest of the fieldable teams; the final check is the same as without it (the saved teams'
@@ -232,18 +243,22 @@ export async function runToaCheck(
     for (let i = 0; i < candidates.length; i++) {
       const team = candidates[i]!;
       const kept = timed.get(`${team.id}|${team.rowKey}`);
-      if (kept) {
+      // a team the first pass could not time is tried again, not carried into the check
+      if (kept && !kept.some((r) => r.error)) {
         results.push(...kept);
         continue;
       }
       opts.onProgress?.({ phase: "floors", done: i, total: candidates.length, label: label(team) });
-      let mine: FloorResult[];
-      try {
-        const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal, spread: true });
-        mine = floorResults(season, team, curves, byFloor);
-      } catch (e) {
-        if (signal?.aborted) throw e;
-        mine = failed(season, team, e instanceof Error ? e.message : String(e));
+      let mine: FloorResult[] = [];
+      for (let attempt = 1; attempt <= TRIES; attempt++) {
+        try {
+          const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal, spread: true });
+          mine = floorResults(season, team, curves, byFloor);
+          break;
+        } catch (e) {
+          if (signal?.aborted) throw e;
+          mine = failed(season, team, e instanceof Error ? e.message : String(e));
+        }
       }
       timed.set(`${team.id}|${team.rowKey}`, mine);
       results.push(...mine);

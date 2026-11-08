@@ -20,7 +20,7 @@ import {
   type ToaIndex,
   type ToaSeason,
 } from "./toaData";
-import { fieldableKeys, floorFactor, pickCandidates, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaCheck, type ToaRunner } from "./toaRun";
+import { failedTeams, fieldableKeys, floorFactor, pickCandidates, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaCheck, type ToaRunner } from "./toaRun";
 import { nearMisses, planAlternatives, planVigor, vigorPool, type PlanInput, type PlanStage } from "./vigorPlan";
 
 const DAY = 86_400_000;
@@ -461,5 +461,46 @@ describe("candidates", () => {
     const none: ToaCheck[] = [];
     await runToaCheck(runner, season, { account, limit: 5, savedTeams: [], onPartial: (c) => none.push(c) });
     expect(none).toHaveLength(0);
+  });
+
+  describe("a team the engine fails on (2026-11-08 hunt F4)", () => {
+    const comp: Record<string, string[]> = { t1: ["A", "B", "C"], t2: ["A", "B", "Mortefi"] };
+    const dps: Record<string, number> = { t1: 300_000, t2: 30_000 };
+    const savedTeams = [{ name: "saved", characterIds: ["C", "A", "B"] }];
+    /** t1's curves throw `fails` times, as a worker that ran out of memory under it does */
+    function runner(fails: number): ToaRunner & { tries: () => number } {
+      let tries = 0;
+      return {
+        commit: "test",
+        teams: async () => Object.entries(comp).map(([key, names]) => ({ key, members: names.map((n) => ({ name: n, appKey: n, mainDps: n === names[2], free: n === "Mortefi" })) })),
+        solveMine: async (keys) => keys.map((k) => solve(k, comp[k]!, dps[k]!)),
+        curves: async (k, _p, specs) => {
+          if (k === "t1" && tries++ < fails) throw new Error("The rankings engine worker failed: Uncaught Error: renderer ran out of memory");
+          return specs.map(() => ({ teamKey: k, rowKey: k, commit: "test", total: dps[k]!, ...curve(dps[k]!) }));
+        },
+        tries: () => tries,
+      };
+    }
+
+    it("is tried once more, on the fresh worker the crash leaves", async () => {
+      const r = runner(1);
+      const check = await runToaCheck(r, await S41(), { account, limit: 5, savedTeams });
+      expect(failedTeams(check)).toEqual([]);
+      expect(check.results.some((x) => x.error)).toBe(false);
+      expect(r.tries()).toBe(2);
+    });
+
+    it("left untimed, is named by failedTeams, and the saved teams' first pass hands no failure to the check", async () => {
+      const season = await S41();
+      const always = await runToaCheck(runner(99), season, { account, limit: 5, savedTeams });
+      expect(failedTeams(always)).toEqual([always.candidates.find((c) => c.teamKey === "t1")!.id]);
+      // failed in the first pass, timed in the second: the check is whole
+      const r = runner(2);
+      const partials: ToaCheck[] = [];
+      const check = await runToaCheck(r, season, { account, limit: 5, savedTeams, onPartial: (c) => partials.push(c) });
+      expect(failedTeams(partials[0]!)).toHaveLength(1);
+      expect(failedTeams(check)).toEqual([]);
+      expect(r.tries()).toBe(3);
+    });
   });
 });

@@ -3,7 +3,8 @@
 // the Vigor plan, and the player's logged clears. Everything heavy runs in the worker; the plan is a few ms here.
 //
 // localStorage: `wtplus:endgame:prefs` (server region, plan with my pace, time left / used on Calibrate), `wtplus:endgame:check` (the last check,
-// reused while its key — engine commit, account, builds, season data — still matches), `wtplus:endgame:clears`.
+// reused while its key — engine commit, account, builds, season data — still matches; a check with a team it could not
+// time is shown, never kept), `wtplus:endgame:clears`.
 import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
@@ -21,7 +22,7 @@ import {
   type ServerRegionId,
   type ToaSeason,
 } from "./toaData";
-import { checkKey, planInputOf, rankFloor, runToaCheck, type CandidateTeam, type FloorResult, type Progress, type ToaCheck } from "./toaRun";
+import { checkKey, failedTeams, planInputOf, rankFloor, runToaCheck, type CandidateTeam, type FloorResult, type Progress, type ToaCheck } from "./toaRun";
 import { nearMisses, planAlternatives, planVigor, type Plan, type PlanAlternative } from "./vigorPlan";
 
 export const PREFS_KEY = "wtplus:endgame:prefs";
@@ -122,12 +123,13 @@ export function useToa() {
   /** the key the run in flight was started for — a second request for the same one joins it */
   let runningKey = "";
 
-  /** the stored check where it still fits this account and season, else a new one */
+  /** the stored check where it still fits this account and season, else a new one (one with a team it could not time
+   *  is no check to keep: its teams are tried again) */
   function adopt(): boolean {
     const want = wantKey.value;
     if (!want) return false;
     for (const c of [check.value, sessionCheck, readStoredCheck()]) {
-      if (c?.key === want) {
+      if (c?.key === want && !failedTeams(c).length) {
         check.value = c;
         sessionCheck = c;
         return true;
@@ -162,8 +164,12 @@ export function useToa() {
       });
       if (controller !== ctrl) return;
       check.value = result;
-      sessionCheck = result;
-      storeCheck(result);
+      // a team the engine failed on (a worker that ran out of memory) is missing from every floor and the plan: shown
+      // with a note, kept nowhere, so the next visit or a Recompute times it again (2026-11-08 hunt F4)
+      if (!failedTeams(result).length) {
+        sessionCheck = result;
+        storeCheck(result);
+      }
     } catch (e) {
       if (ctrl.signal.aborted) return;
       error.value = e instanceof Error ? e.message : String(e);
@@ -211,6 +217,9 @@ export function useToa() {
     writeClearLog(clears.value);
   }
 
+  /** teams the check on screen could not time */
+  const failedCount = computed(() => (check.value ? failedTeams(check.value).length : 0));
+
   const ranked = computed(() => {
     const out = new Map<string, Array<{ result: FloorResult; team: CandidateTeam }>>();
     if (!check.value || !season.value) return out;
@@ -247,6 +256,7 @@ export function useToa() {
     hasAccount,
     owned,
     check,
+    failedCount,
     running,
     progress,
     error,

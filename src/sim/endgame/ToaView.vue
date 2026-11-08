@@ -59,8 +59,15 @@
       <span class="flex-1 min-w-48">The engine failed: {{ error }}</span>
       <button type="button" class="btn btn-sm" @click="compute()">Try again</button>
     </div>
+    <div v-if="check && !running && !check.partial && failedCount" role="status" class="alert alert-warning max-sm:text-left max-sm:justify-items-start mb-4 text-sm flex flex-wrap" data-test-toa-failed>
+      <span class="flex-1 min-w-48">
+        <b>{{ failedCount }} {{ failedCount === 1 ? "team" : "teams" }} could not be timed</b>: wuwa_calc's engine failed on {{ failedCount === 1 ? "it" : "them" }} (on a
+        phone, usually memory), so the floors and the plan leave {{ failedCount === 1 ? "it" : "them" }} out. This check is not kept: try again now, or on your next visit.
+      </span>
+      <button type="button" class="btn btn-sm" data-test-toa-failed-retry @click="compute()">Try again</button>
+    </div>
 
-    <WorkStatus :busy="running" busy-text="Working out your Tower of Adversity plan" :done-text="error ? '' : 'Tower of Adversity plan finished'" />
+    <WorkStatus :busy="running" busy-text="Working out your Tower of Adversity plan" :done-text="error ? '' : failedCount ? `Tower of Adversity plan finished without ${failedCount} ${failedCount === 1 ? 'team' : 'teams'} it could not time` : 'Tower of Adversity plan finished'" />
     <div v-if="running" class="card bg-base-100 border border-base-300 shadow-sm mb-4" data-test-toa-progress>
       <div class="card-body p-3 gap-1.5">
         <div class="flex items-center gap-2 text-sm">
@@ -82,7 +89,7 @@
           </button>
         </div>
         <div class="flex items-center gap-2 ml-auto max-sm:w-full max-sm:justify-between">
-          <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length }} teams timed · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
+          <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length - failedCount }} teams timed<template v-if="failedCount"> · {{ failedCount }} could not be</template> · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
           <button v-if="hasAccount" type="button" class="btn btn-sm" :disabled="running || !status.current" data-test-toa-recompute @click="compute()">
             {{ check ? "Recompute" : "Check my teams" }}
           </button>
@@ -231,6 +238,7 @@ const {
   seasonError,
   hasAccount,
   check,
+  failedCount,
   running,
   progress,
   error,
