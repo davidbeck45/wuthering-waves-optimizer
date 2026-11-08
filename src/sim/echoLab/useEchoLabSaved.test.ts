@@ -474,3 +474,56 @@ describe("Echo Lab's saved benchmarks and the ER needs they were scored on", { t
     expect(h.run.mock.calls.at(-1)![2]).toMatchObject({ fresh: true });
   });
 });
+
+describe("Farm next's team figures and the team-buff switch (2026-11-08 hunt F6)", { timeout: 60_000 }, () => {
+  /** Verina slot 4 on the export: +697 team damage with the switch on, +491 with it off */
+  const figure = (auto: boolean) => ({ key: "Cartethyia|3", team: { teamId: "t", teamName: "t", base: 1, avgDamage: 1, gain: auto ? 0.0002 : 0.0001, damage: auto ? 697 : 491 }, teamNote: null, teamScorings: 1 });
+  let finish: () => void = () => undefined;
+  beforeEach(() => {
+    localStorage.setItem("wtplus:teamBuffs:auto", "1");
+    h.run.mockImplementation((job: { kind: string; options?: { autoTeamBuffs?: boolean } }) => {
+      if (job.kind === "farmNext") return Promise.resolve({ rows: [], autoTeamBuffs: job.options?.autoTeamBuffs });
+      // held until told: the player flips the switch while it is worked out
+      if (job.kind === "farmTeam") return new Promise((resolve) => (finish = () => resolve(figure(job.options!.autoTeamBuffs!))));
+      return Promise.resolve(PASS);
+    });
+  });
+
+  it("one that lands after the switch moved is never shown under the other switch, nor brought back by the tab copy", async () => {
+    const { lab } = await visit();
+    const { autoTeamBuffs } = await import("../teamContext/autoTeamBuffs");
+    await lab.runFarm();
+    const asked = lab.runFarmTeam("Cartethyia", 3); // "Work it out", switch on
+    autoTeamBuffs.value = false; // the palette, at once
+    await lab.runFarm(); // the list works itself out again for the switch off
+    finish(); // the switch-on figure lands
+    await asked;
+    expect(lab.farmTeamOf("Cartethyia", 3)).toBeNull(); // it read +697, the switch-on figure, as the switch-off one
+    autoTeamBuffs.value = true;
+    expect(lab.farmTeamOf("Cartethyia", 3)).toMatchObject({ team: { damage: 697 } }); // it is the switch-on figure
+
+    // a reload, the switch off: the tab copy brings back nothing for the switch off
+    await settled(); // (the switch stores itself a moment after it moves)
+    localStorage.setItem("wtplus:teamBuffs:auto", "0");
+    const reloaded = await visit();
+    const again = await import("../teamContext/autoTeamBuffs");
+    expect(again.autoTeamBuffs.value).toBe(false);
+    reloaded.lab.hydrate();
+    expect(reloaded.lab.farmTeamOf("Cartethyia", 3)).toBeNull();
+    again.autoTeamBuffs.value = true;
+    expect(reloaded.lab.farmTeamOf("Cartethyia", 3)).toMatchObject({ team: { damage: 697 } });
+  });
+
+  it("one worked out and shown under the same switch stands, and comes back after a reload", async () => {
+    localStorage.setItem("wtplus:teamBuffs:auto", "0");
+    const { lab } = await visit();
+    await lab.runFarm();
+    const asked = lab.runFarmTeam("Cartethyia", 3);
+    finish();
+    await asked;
+    expect(lab.farmTeamOf("Cartethyia", 3)).toMatchObject({ team: { damage: 491 } });
+    const reloaded = await visit();
+    reloaded.lab.hydrate();
+    expect(reloaded.lab.farmTeamOf("Cartethyia", 3)).toMatchObject({ team: { damage: 491 } });
+  });
+});

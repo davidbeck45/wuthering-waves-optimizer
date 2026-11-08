@@ -67,8 +67,12 @@ let tunerAbort: AbortController | null = null;
 /** "Farm next": every slot's farm target (the first pass gives the most promising slots a team figure) */
 const farm = shallowRef<FarmNextResult | null>(null);
 const farmStatus = reactive<JobStatus>(idle());
-/** team figures worked out on request, by `${fingerprint}|${characterId}|${slot}` */
-const farmTeams = reactive(new Map<string, FarmTeamResult | { error: string } | "running">());
+/** A team figure worked out on request, with the team-buff switch it was worked out under. */
+type FarmTeamFigure = FarmTeamResult & { autoTeamBuffs?: boolean };
+/** team figures worked out on request, by `${fingerprint}|${switch}|${characterId}|${slot}` (`farmTeamKeyOf`): a figure
+ *  that lands after the switch moved is never read under the other one (2026-11-08 hunt F6) */
+const farmTeams = reactive(new Map<string, FarmTeamFigure | { error: string } | "running">());
+const farmTeamKeyOf = (fingerprint: string | null, auto: boolean, key: string): string => `${fingerprint}|${auto ? "on" : "off"}|${key}`;
 let farmAbort: AbortController | null = null;
 /** the Set lab, per character and team-buff switch (asked for one character at a time; rows are many, so shallow) */
 const setLabs = shallowReactive(new Map<string, SetLabResult>());
@@ -136,7 +140,7 @@ interface StoredCache {
   ratings?: RollRating[];
   /** added with "Farm next" (likewise), with the team figures worked out on request */
   farm?: FarmNextResult | null;
-  farmTeams?: FarmTeamResult[];
+  farmTeams?: FarmTeamFigure[];
 }
 
 const isStoredCache = (v: unknown): boolean => {
@@ -254,7 +258,7 @@ function writeCache(): void {
   if (!resultFingerprint.value) return;
   try {
     const rated = [...ratings.values()].filter((r): r is RollRating => r !== null);
-    const asked = [...farmTeams.values()].filter((t): t is FarmTeamResult => typeof t === "object" && "key" in t);
+    const asked = [...farmTeams.values()].filter((t): t is FarmTeamFigure => typeof t === "object" && "key" in t && typeof t.autoTeamBuffs === "boolean");
     const value: StoredCache = {
       v: CACHE_VERSION,
       stamp: tabCopyStamp(),
@@ -380,7 +384,8 @@ export function useEchoLab() {
       tunerPlan.value = stored.tunerPlan ?? null;
       for (const r of stored.ratings ?? []) ratings.set(ratingKey(r), r);
       farm.value = stored.farm ?? null;
-      for (const t of stored.farmTeams ?? []) farmTeams.set(`${fingerprint}|${t.key}`, t);
+      // each under the switch it was worked out under (a copy without one is from before that was kept: left out)
+      for (const t of stored.farmTeams ?? []) if (typeof t.autoTeamBuffs === "boolean") farmTeams.set(farmTeamKeyOf(fingerprint, t.autoTeamBuffs, t.key), t);
       passStatus.cached = true;
       // this tab already saved all this: a roll-chip write next must not write it over what other tabs added since
       lastSaved = [fingerprint, pass.value, benchmarks.value, tunerPlan.value];
@@ -579,7 +584,7 @@ export function useEchoLab() {
     }
   }
 
-  const farmTeamKey = (characterId: string, slot: number): string => `${resultFingerprint.value}|${characterId}|${slot}`;
+  const farmTeamKey = (characterId: string, slot: number, auto = autoTeamBuffs.value): string => farmTeamKeyOf(resultFingerprint.value, auto, `${characterId}|${slot}`);
 
   /** One slot's team figure, worked out on request (the same options as the list, so the worker reuses its slot plan). */
   async function runFarmTeam(characterId: string, slot: number): Promise<void> {
@@ -587,15 +592,18 @@ export function useEchoLab() {
     adopt(fingerprint);
     // the list is from the other team-buff switch: work the list out again rather than mix the two
     if (farm.value && farm.value.autoTeamBuffs !== autoTeamBuffs.value) return runFarm();
-    const key = farmTeamKey(characterId, slot);
+    // the switch it is worked out under: it lands under that switch's key, wherever the switch is by then (a flip while
+    // it ran showed the switch-on +697 as the switch-off figure, and the tab copy brought it back after a reload)
+    const auto = autoTeamBuffs.value;
+    const key = farmTeamKey(characterId, slot, auto);
     const asked = farmTeams.get(key);
     // one already worked out (or on its way) stands; one that failed may be tried again
     if (asked && !(typeof asked === "object" && "error" in asked)) return;
     farmTeams.set(key, "running");
     try {
-      const result = await getEchoLabClient().run({ kind: "farmTeam", characterId, slot, options: { autoTeamBuffs: autoTeamBuffs.value } }, account);
+      const result = await getEchoLabClient().run({ kind: "farmTeam", characterId, slot, options: { autoTeamBuffs: auto } }, account);
       if (resultFingerprint.value === fingerprint) {
-        farmTeams.set(key, result);
+        farmTeams.set(key, { ...result, autoTeamBuffs: auto });
         writeCache();
       }
     } catch (err) {
