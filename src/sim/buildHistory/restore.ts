@@ -38,8 +38,9 @@ export interface RestoreEcho {
 export interface RestorePlan {
   charId: string;
   versionId: string;
-  /** the build the restore writes into: the one worn now */
+  /** the build the restore writes into: the one worn now (its id, `null` with no builds list yet) */
   targetBuildName: string;
+  targetBuildId: string | null;
   /** the build the version was taken from */
   versionBuildName: string;
   echoes: RestoreEcho[];
@@ -112,6 +113,7 @@ export function planRestore(charId: string, version: HistoryVersion, account: Re
     charId,
     versionId: version.id,
     targetBuildName,
+    targetBuildId: typeof record?.activeBuildId === "string" ? record.activeBuildId : null,
     versionBuildName: version.buildName,
     echoes,
     changes: diff?.summary ?? [],
@@ -161,9 +163,19 @@ export interface RestoreOutcome {
   addedEchoes: string[];
 }
 
+/** Nothing was restored: the character wears another build than the one the confirm named (another tab switched it). */
+export class RestoreRefused extends Error {
+  constructor(charName: string, named: string, now: string) {
+    super(`${charName} wears “${now}” now, not “${named}” that the question named (another tab switched it, perhaps), so nothing was restored. Press Restore again to see what it changes now.`);
+    this.name = "RestoreRefused";
+  }
+}
+
 export interface RestoreOptions {
   storage?: HistoryStorage;
   now?: number;
+  /** the build the confirm named (`RestorePlan.targetBuildId`): anything else worn now refuses, nothing written */
+  intoBuildId?: string | null;
   // eslint-disable-next-line no-unused-vars -- the parameter of a function type
   newId?: (length: number) => string;
 }
@@ -174,6 +186,11 @@ export function applyRestore(stores: RestoreStores, charId: string, version: His
   const newId = options.newId ?? ((n: number) => randomString(n));
   const account = (): RestoreAccount => ({ characters: stores.character.characters, echoes: stores.inventory.echoes, equipped: stores.inventory.equipped });
   const plan = planRestore(charId, version, account());
+  // the confirm said which build is written into: a tap after another tab switched builds must not write another one
+  if (options.intoBuildId !== undefined && plan.targetBuildId !== options.intoBuildId) {
+    const named = (stores.character.characters[charId]?.builds ?? []).find((b: any) => b?.id === options.intoBuildId)?.name ?? "the build it named";
+    throw new RestoreRefused(characterName(charId), String(named), plan.targetBuildName);
+  }
 
   // 1. the build as it is now goes into the history before anything is written
   const before = recordVersion(charId, stores.character.characters[charId], stores.inventory.echoes, "before-restore", { storage: options.storage, now });

@@ -159,6 +159,7 @@ import { compact } from "../myRankings/format";
 import { changeText } from "./diff";
 import { charactersWithHistory, MAX_PER_CHARACTER, readHistory, type HistoryVersion } from "./history";
 import { NOW_ID, useBuildHistory } from "./useBuildHistory";
+import { RestoreRefused } from "./restore";
 import { characterOptions, gearSummary, labelText, labelTone, pickCharacter, restoreItems, whenText } from "./view";
 import BuildHistoryDiff from "./BuildHistoryDiff.vue";
 import "./buildHistory.css";
@@ -251,7 +252,7 @@ async function onRestore(v: HistoryVersion): Promise<void> {
   });
   if (!ok) return;
   try {
-    const out = h.restore(v, id);
+    const out = h.restore(v, id, plan.targetBuildId);
     listTick.value++;
     if (!out) return;
     const kept = out.before.saved ? " The build from before is saved as “Before a restore”." : "";
@@ -259,7 +260,7 @@ async function onRestore(v: HistoryVersion): Promise<void> {
     const memo = out.before.inMemoryOnly ? " (That version is kept for this visit only: the browser refused to store it.)" : "";
     showToast(`Restored ${name}'s build from ${whenText(v.at)}.${kept}${added}${memo}`, "success", 7000);
   } catch (err) {
-    showToast(err instanceof Error ? `The restore failed: ${err.message}` : "The restore failed; nothing was changed.", "error", 7000);
+    showToast(err instanceof RestoreRefused ? err.message : err instanceof Error ? `The restore failed: ${err.message}` : "The restore failed; nothing was changed.", "error", 7000);
   }
 }
 

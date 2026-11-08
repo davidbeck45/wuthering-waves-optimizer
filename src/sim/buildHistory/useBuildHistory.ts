@@ -179,9 +179,10 @@ export function useBuildHistory(charId: Ref<string | null>) {
 
   /** `id`: the character the player was asked about. The page can move on while the confirm is open, and a version
    *  written onto whoever is picked by then puts one character's gear on another. */
-  function restore(v: HistoryVersion, id: string | null = charId.value): RestoreOutcome | null {
+  /** `intoBuildId`: the build the confirm named; another one worn now refuses (`RestoreRefused`), nothing written. */
+  function restore(v: HistoryVersion, id: string | null = charId.value, intoBuildId?: string | null): RestoreOutcome | null {
     if (!id) return null;
-    const out = applyRestore({ character: characterStore, inventory: inventoryStore } as unknown as RestoreStores, id, v);
+    const out = applyRestore({ character: characterStore, inventory: inventoryStore } as unknown as RestoreStores, id, v, { intoBuildId });
     // the best rotation may differ on the restored build
     rotation.value = null;
     reload();

@@ -24,7 +24,7 @@ import {
   type HistoryVersion,
 } from "./history";
 import { bestRotationOf, changeText, characterScreenStats, damageOf, gearDiff, memberRecord, slotDiffs, statRows } from "./diff";
-import { applyRestore, planRestore, restoredRecord, type RestoreStores } from "./restore";
+import { applyRestore, planRestore, RestoreRefused, restoredRecord, type RestoreStores } from "./restore";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -379,6 +379,34 @@ describe("restore", () => {
     const want = await buildCharacterCalculationContext("Cartethyia", { Cartethyia: original }, enemy, echoes);
     const got = await buildCharacterCalculationContext("Cartethyia", stores.character.characters, enemy, stores.inventory.echoes);
     expect(got.finalStats).toEqual(want.finalStats);
+  });
+
+  it("writes only into the build the question named: another tab switched builds, so nothing is written (2026-11-08 hunt L1)", () => {
+    const old = versionOf("Cartethyia", stores.character.characters.Cartethyia, stores.inventory.echoes, "manual", T0);
+    const c = stores.character.characters.Cartethyia;
+    const plan = planRestore("Cartethyia", old, { characters: stores.character.characters, echoes: stores.inventory.echoes, equipped: stores.inventory.equipped });
+    expect(plan.targetBuildId).toBe(c.activeBuildId);
+    // the other tab: a second build, made active
+    c.builds.push({ ...clone(c.builds[0]), id: "fusion", name: "Fusion Burst" });
+    c.activeBuildId = "fusion";
+    c.weapon = "SomethingElse";
+    const before = JSON.stringify(stores.character.characters);
+
+    const failed = (() => {
+      try {
+        applyRestore(stores, "Cartethyia", old, { storage, now: T0 + 5000, newId, intoBuildId: plan.targetBuildId });
+      } catch (e) {
+        return e;
+      }
+    })();
+
+    expect(failed).toBeInstanceOf(RestoreRefused);
+    expect((failed as Error).message).toMatch(/wears “Fusion Burst” now, not “Default build”/);
+    expect(JSON.stringify(stores.character.characters)).toBe(before);
+    expect(readHistory("Cartethyia", storage)).toEqual([]);
+    // the build it named is worn again: it restores
+    c.activeBuildId = plan.targetBuildId;
+    expect(applyRestore(stores, "Cartethyia", old, { storage, now: T0 + 6000, newId, intoBuildId: plan.targetBuildId }).before.saved).toBe(true);
   });
 
   it("adds an echo the inventory lost back to it, and says so first", () => {
