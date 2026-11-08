@@ -8,6 +8,7 @@ import type { EchoVerdict, LabCharacterSummary } from "../echoLab/bestOwner";
 import { qualityTarget } from "../echoLab/echoLabView";
 import type { RollRatingItem } from "../echoLab/rollRatings";
 import { useEchoLab } from "../echoLab/useEchoLab";
+import { onAccountAdopted } from "../storage/crossTabSync";
 import { applyInventoryView, isInventorySort, type ChipRating, type InventorySort, type InventoryView, type QualityLookup } from "./inventoryQuality";
 
 /** localStorage: the plus sort the player picked (the filter is per visit, like Ryan's own) */
@@ -253,6 +254,12 @@ function buildShared(scope: EffectScope): Shared {
   function watchStores(): void {
     if (watchingStores) return;
     watchingStores = true;
+    // Another tab's edit (a character's weapon, a build, a team), adopted by this one: judged again, as every other
+    // scored page does. The inventory watch below never saw it, so the chips, the Feed candidates filter and the plus
+    // sort kept the old verdicts until the page was left (2026-11-08 hunt F3: 71 feed where the page now says 66).
+    // Registered here, from the bar's first activation (a task of its own, no component current), so it belongs to
+    // this layer's scope and not to the chip that happened to make it
+    scope.run(() => onAccountAdopted(() => ensurePass()));
     scope.run(() =>
       watch(
         () => [inventoryStore.echoes, inventoryStore.equipped],
