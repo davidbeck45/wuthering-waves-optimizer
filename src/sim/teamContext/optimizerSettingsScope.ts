@@ -23,7 +23,7 @@ export interface OptimizerSettingsScope {
   buildId: string | null;
 }
 
-export const OPTIMIZER_SETTINGS_SCOPE: InjectionKey<Ref<OptimizerSettingsScope | null>> = Symbol("wtplus:optimizerSettingsScope");
+export const OPTIMIZER_SETTINGS_SCOPE: InjectionKey<Ref<OptimizerSettingsScope | null>> = Symbol("wtplus-optimizer-settings-scope");
 
 /** The stored build a scope addresses, or null when it is the live record (no pin, the active build, a build since deleted). */
 export function scopedBuild(characters: Record<string, any> | null | undefined, scope: OptimizerSettingsScope | null | undefined): Record<string, any> | null {
