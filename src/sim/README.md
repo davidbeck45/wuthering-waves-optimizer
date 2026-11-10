@@ -4324,3 +4324,20 @@ guides needed nothing.
 **His "Also on …" against plus's worn rules.** `echoes/equippedBy.ts` reads the inventory's `equipped` map: the echoes
 on each character's active build. A build pinned to a team but not active, which Build my team and Whole account leave
 by default, does not show there, so a loadout can read as free of other wearers while a pinned build holds the echo.
+
+**Hunt round 2 on Optimize team (2026-11-09, report `wto-wt/b3/reports/3d-optimize-team.md`).** Five more hooks in his
+files, each one line or a short marked block that calls a plus module:
+
+| Hook | Where in his files | Plus module |
+|---|---|---|
+| a stat floor row with no stat picked is not a floor | `workers/optimizerRun.ts` (`plainMinStats`), the bar's count in `OptimizerWorkspaceSetup.vue`, the "minimums" chip in `TeamOptimizerSetup.vue` | `optimizer/statFloors.ts` |
+| the Edit drawer edits the build the team pins | `optimizerSettingsStore(useCharacterStore())` in `CalculatorOptimizerEchoSetPassive.vue`, `CalculatorMainEchoBuff.vue`, `CalculatorOptimizerMinStats.vue`, `useOptimizerEchoBuffs.ts`; `provide` and the drawer's line in `TeamOptimizerSetup.vue`; `await loadBaseline()` first in `run()` | `teamContext/optimizerSettingsScope.ts` |
+| a run's sets, main echoes, minimums and advanced settings are its own | `OptimizerWorkspaceSetup.vue`: `if (props.embedded) return` before its store write, and the `initialChoice` prop | same |
+| a pick that is the build of today is not saved again | `useTeamOptimizer.ts`: `alreadyWorn`, a filter in `changedCharacters`, a skip in `saveAsBuilds`; `TeamOptimizerResults.vue` shows the Save button only when there are names to save | `teamContext/teamOptimizerSave.ts` |
+| a tab older than the site reloads once | `useTeamOptimizer.ts`: `onWorkerFailed` on the search, the count worker's `onerror` | `perf/chunkReload.ts` `workerFailureMessage` |
+
+The drawer's echo buff switches are the only thing it saves, on the pinned build when that is not the active one (the
+calculator's Optimizer reads them when that build is active), and the drawer says so. Auto team buffs keep a snapshot of
+a pinned build, which is why `run()` reads the records again. The light-theme stat tile icons are a rule at the end of
+`a11y/a11y.css`. Not done: leaving Optimize team still drops a run without a word, and the search's scorer still drops
+a per-action weapon passive override (his Discord alert is untouched).
