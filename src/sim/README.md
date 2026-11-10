@@ -4150,6 +4150,13 @@ deploy itself is safe. Nothing here changes a figure; the first row is the batch
 
 A tab on production 786c87df at the deploy still has the old code, so it can hang once more; these rules start with the tab after it.
 
+**A starred stock team is kept under both names** (`presets/starredPresets.ts`, hunt round 2 F3, 2026-11-09). Rewriting
+the old name to the new one lost every star on a rollback: the build from before the rename looks a star up by the old
+name. A name that matches no preset is ignored by either build, so both stay in the list. `installStarTwins` (PlusShell)
+moves the pair together when this build stars or unstars, or the old name left behind would star the team again on the
+next load. A lone name gets its twin on load and nothing is unstarred on a guess, so an unstar made on the old build
+during a rollback comes back on return. Checked on the production build: 2 of 220 starred with both names, 0 with one.
+
 ## The optimizer and the solvers at their edges — a figure stands for what it says (hunt round 1, track "solver", 2026-11-06)
 
 1,544 random configs never moved a top five through the bound; every wrong number below was elsewhere: a stat read from today's

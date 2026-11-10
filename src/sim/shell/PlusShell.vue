@@ -36,6 +36,7 @@ import { useInventoryStore } from "../../stores/inventory";
 import { useToast } from "../../composables/useToast";
 import { installImportGuard } from "../buildHistory/importGuard";
 import { installCrossTabSync, type SyncedStore } from "../storage/crossTabSync";
+import { installStarTwins, type StarStore } from "../presets/starredPresets";
 import { noticeRefusedWrites } from "../storage/persistGuard";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
@@ -71,6 +72,8 @@ const inventoryStore = useInventoryStore();
 installImportGuard({ character: characterStore as never, inventory: inventoryStore as never });
 // two tabs on one account stay one account, and a write the browser refused is said out loud (src/sim/storage/)
 installCrossTabSync([characterStore, inventoryStore, teamStore] as unknown as SyncedStore[]);
+// a starred stock team is kept under its old and new name, and both move together (src/sim/presets/starredPresets.ts)
+installStarTwins(teamStore as unknown as StarStore);
 noticeRefusedWrites((text) => useToast().showToast(text, "error", 12000));
 installConfirmRouteGuard(useRouter());
 // the sheet's width rule is AssistantPanel.vue's `phoneQuery`

@@ -72,6 +72,43 @@ describe("wuwa_calc stock presets", () => {
     cy.get('[data-test-team-rotations-preset="Aemeath · Denia + Lynae · S6R5 (wuwa_calc)"]').should("exist");
   });
 
+  it("a starred stock team keeps its old name too, so a rollback still shows it, and an unstar stays an unstar", () => {
+    const oldA = "wuwa_calc Aemeath S6R5 · Chisa + Denia";
+    const oldB = "wuwa_calc Aemeath S6R5 · Denia + Lynae";
+    const newA = "Aemeath · Chisa + Denia · S6R5 (wuwa_calc)";
+    const newB = "Aemeath · Denia + Lynae · S6R5 (wuwa_calc)";
+    const stars = (win: Window): string[] => JSON.parse(win.localStorage.getItem("teamRotations")!).favoritePresetNames;
+    const openFavorites = (): void => {
+      cy.get('[data-test="team-rotations-overflow-menu"]').click();
+      cy.get("[data-test-team-rotations-toggle-presets]").click();
+      cy.get("[data-test-team-rotations-preset]", { timeout: 30000 }).should("have.length.greaterThan", 20);
+      cy.get("[data-test-team-rotations-presets-favorites-filter]").click();
+    };
+    // production's storage: two stock teams starred under the names they had before the rename
+    cy.visit("/teams", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [], favoriteTeamIds: [], favoritePresetNames: [oldA, oldB] }));
+      },
+    });
+    // this build shows both, and the build from before the rename would too: its cards carry the old names
+    cy.window().then((win) => expect(stars(win)).to.have.members([oldA, newA, oldB, newB]));
+    openFavorites();
+    cy.get("[data-test-team-rotations-preset]").should("have.length", 2);
+
+    // unstar one here: both of its names go
+    cy.get(`[data-test-favorite="${newA}"]`).click();
+    cy.get("[data-test-team-rotations-preset]").should("have.length", 1);
+    cy.window().should((win) => expect(stars(win)).to.have.members([oldB, newB]));
+
+    // and it stays unstarred after a reload (the old name left behind used to bring it back)
+    cy.reload();
+    cy.window().then((win) => expect(stars(win)).to.have.members([oldB, newB]));
+    openFavorites();
+    cy.get("[data-test-team-rotations-preset]").should("have.length", 1);
+    cy.get(`[data-test-team-rotations-preset="${newB}"]`).should("exist");
+    cy.get(`[data-test-team-rotations-preset="${newA}"]`).should("not.exist");
+  });
+
   it("lists the S6R5 full-team rotations under Teams > List Presets and imports one with its actions", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get('[data-test="team-rotations-overflow-menu"]').click();
