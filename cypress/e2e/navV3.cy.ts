@@ -124,6 +124,10 @@ describe("v3 nav", () => {
     cy.get(".screen--character").should("be.visible");
     cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
 
+    // Wuthering Tools+: wait for the calculator's sections before scrolling. cy.scrollTo only waits while the page
+    // cannot scroll at all. With an announcement banner up, plus's first paint is 901 px on this 844 px screen (his
+    // is 844), so the scroll went at once, stopped at 57 px, and the bar had nothing to tuck for.
+    cy.document().its("documentElement.scrollHeight").should("be.gte", 2000);
     cy.scrollTo(0, 600);
     cy.get("[data-test-nav-bottom-bar]").should("have.class", "nav-bottom-bar--tucked");
     cy.scrollTo(0, 400);
