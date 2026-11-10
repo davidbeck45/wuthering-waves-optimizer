@@ -4166,3 +4166,42 @@ Report: `wto-wt/b3/reports/hunt2-writes-fix.md` (the hunt: `hunt2-writes.md`).
 | `utils/settingsBackup.ts` `importEchoesFromRaw` (Ryan's, 3 lines) | Import echoes adds under a fresh id (a pasted id overwrote an echo you own) and skips anything that is not an echo object |
 
 Gates: `useBuildAccount.test.ts` (rows another tab changed, two tabs one Undo), `useBuildTeam.test.ts`, `buildAccount.test.ts` / `buildTeam.test.ts` (loop times after the save), `buildHistory.test.ts` (a refused write then room, restore into the named build), `syncUndo.test.ts`, `importCheck.test.ts` (Import echoes); `rankings.cy.ts` (a second, unchanged sync keeps the Undo).
+
+## Ryan's #689 to #697 on plus — buff plans, guides, loadout pills, build card layouts (sync of 2026-11-09)
+
+Merge 05323856 (upstream 186c54f6, 8 commits, 115 files). Six conflicts; no character, attack or echo data changed, so
+no preset, breakpoint or table was regenerated and the snapshot moved no number on either export.
+
+**What he changed that plus hooks into.** #689 rewrote `useTeamOptimizer.ts` around team buff plans (ADR 0053): it
+lists which set and main echo team buffs each member could provide, builds every combination ("plan"), scouts each
+one, fully searches the closest, and a result may carry changed Team Buffs panels that Save writes into the new build.
+
+| Hook | Now |
+|---|---|
+| the Team page's records (`readTeamPage`, `characters`, `storedCharacters`) | `useTeamOptimizer.ts`, same lines in `loadBaseline`; his offers and plans start from them |
+| `allowStatRounding` on the guards | same line; with buffs linked his guards keep only the typed stat floors, which is what it adjusts |
+| `resolveForTeamPage` (each row is the Team page's figure with those builds worn) | same call, now inside his per-plan loop; `verifyTeamCombination` in `teamOptimizer.ts` merged untouched |
+| never "No better combination exists" with auto team buffs | one line under his new proof expression, which stays byte-identical |
+| Save starts from the build the page read | under his two new `teamBuffs` lines in `saveAsBuilds` |
+| **new: a plan's panel is not saved over a derived one** | `teamPage.derived` (`teamOptimizerPage.ts`), one condition where he fills `teamBuffsBySlot` |
+| lazy routes, `#wt-app`, chunk reload, storage guard | `main.ts`: his two guide routes load lazily like the other info pages |
+| the build card's address | moved with his rewrite from `CalculatorBuildCard.vue` to `buildCard/BuildCardWatermark.vue` |
+| wuwa_calc's credit | `InfoCredits.vue`: its own section under his new layout, his `THANKS` list untouched |
+| the product's name on Legal | `LegalView.vue`: eight places in his text, and the page description |
+| plus pages menu, presets hooks, inventory chips and sort, the share strip | `navSections.ts`, `CalculatorRotations.vue`, `InventoryEchoesBrowser.vue`, `Calculator.vue`: merged with every plus line in place |
+| `public/sitemap.xml` | plus's six addresses plus his guides hub and 13 guides on the plus address (his `guides.test.ts` reads the file) |
+
+**Buff plans with auto team buffs.** The search scores a plan on the panels the plan sets. The row shown is still the
+Team page's figure with those builds worn, where a derived panel follows the builds: a member wearing Moonlit Clouds
+turns it on for the next one, as the plan assumed. Why the new hook: a derived panel names the team, and the resolver
+keeps a panel that does as the player's own. Saved into a build, it would stop following the builds from then on.
+`teamOptimizerOnPlus.test.ts` goes red without it (`["panel", "derived"]`). A panel the player set is saved as he
+wrote it. Not done: his "team buff changes" lines list what the plan asked for, not a re-read of the derived panels.
+
+**On a phone:** `phone.css` § 37. § 3's echo card grid had caught his v3 loadout card, so content ran over the next card
+and the new "Already equipped" pill sat off screen; one card to a row below 640 px. The build card's layout picker cut
+"Showcase" and its opacity slider ran off at 360 px. His info pages, guides and guide drawer needed nothing.
+
+**His "Also on …" against plus's worn rules.** `echoes/equippedBy.ts` reads the inventory's `equipped` map: the echoes
+on each character's active build. A build pinned to a team but not active, which Build my team and Whole account leave
+by default, does not show there, so a loadout can read as free of other wearers while a pinned build holds the echo.
