@@ -1713,3 +1713,65 @@ html.wt-ai-docked #wt-app .contain {
     white-space: nowrap;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   37. Ryan's #689 to #697 on a phone (sync of 2026-11-09; 412 and 360 px at 130 % text).
+       a) Optimizer loadouts (CalculatorOptimizerResultLoadoutEcho.vue, the v3 Spotlight). § 3 reflows the calculator
+          and inventory echo cards into a two-column grid, and its selector also caught this card, whose v3 content is
+          a plain column: name, stats, substats, and since #695 / #696 the "Already equipped" pill and "Also on …".
+          In two columns each half-width card was 252 px of content in a 159 px tile: names and substat rows ran over
+          the next card and the new pill landed off the right edge of the screen ("…pped"). Back to his column here;
+          the pill may wrap. The classic card keeps § 3's grid (§ 7 tunes it), and its new pill row spans both columns.
+          His column still needs about 250 px at 130 % (a substat row is icon, name and value), and the Spotlight puts
+          two cards to a row below 640 px: 159 px tiles at 412, 133 at 360, so every value sat under the next card.
+          One card to a row there, as the fifth card already was.
+       b) Build card (#697, CalculatorBuildCard.vue). The Columns / Hero / Showcase picker is one 422 px row at 130 %,
+          so "Showcase" was cut off at both widths; three equal tiles, icon over label. The "Background opacity"
+          slider is w-64 (333 px at 130 %): at 360 px its right end, where the thumb sits at 100 %, was off screen. */
+@media (max-width: 1023px) {
+  [data-test-optimizer-result-echo-id].echo__item .card-body .echo__content.echo__content.gap-1\.5 {
+    display: flex;
+  }
+  [data-test-optimizer-result-echo-id] .echo__content > .mt-auto {
+    grid-column: 1 / -1;
+    max-width: 100%;
+  }
+  [data-test-optimizer-result-echo-id] [data-test-optimizer-result-echo-equipped] {
+    height: auto;
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  /* "Reminiscence: Kronaclaw" ran 20 px past its card at 360 px: his `truncate` sits in a wrapping row, so it never cut */
+  [data-test-optimizer-result-echo-id] .echo__content.gap-1\.5 .font-bold.truncate {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 639px) {
+  [data-test-optimizer-workspace-spotlight] .grid.grid-cols-2:has(> [data-test-optimizer-result-echo-id]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  [data-test-build-card-layout-picker] {
+    display: flex;
+    width: 100%;
+  }
+  [data-test-build-card-layout-picker] > .btn {
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    height: auto;
+    min-height: 2.75rem;
+    padding: 0.375rem 0.25rem;
+  }
+  [data-test-build-card] div:has(> .form-control > [data-test-build-card-background-opacity]) {
+    min-width: 0;
+    max-width: 100%;
+  }
+  [data-test-build-card] .form-control:has(> [data-test-build-card-background-opacity]) {
+    width: min(16rem, 100%);
+  }
+}
