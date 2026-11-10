@@ -32,6 +32,13 @@ function seed(extra: (win: Window) => void = () => undefined) {
   };
 }
 
+/* eslint-disable no-unused-vars -- the parameters of method types */
+type AppRouter = { currentRoute: { value: { path: string } }; push(to: string): Promise<unknown> };
+/* eslint-enable no-unused-vars */
+/** the app's router, for a move inside the app that no link on the page makes */
+const routerOf = (doc: Document): AppRouter =>
+  (doc.querySelector("[data-v-app]") as unknown as { __vue_app__: { config: { globalProperties: { $router: AppRouter } } } }).__vue_app__.config.globalProperties.$router;
+
 describe("rotation view", () => {
   it("writes the cue card: an opener and the loop, one line per swap, with checkpoints", () => {
     cy.viewport(1280, 900);
@@ -189,5 +196,27 @@ describe("rotation view", () => {
     cy.get("[data-test-rotation-picker-stock]").first().find("[data-test-rotation-open-cue]").click();
     cy.location("hash").should("match", /^#chars=/);
     cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
+  });
+
+  // last on purpose: it moves through the history, and the tests above stay in the order and timing they had
+  it("Back leaves Play along and stays on the loop; the next Back leaves the page", () => {
+    cy.viewport(412, 915);
+    cy.visit("/today", seed());
+    // a move inside the app (the router's own push, as a link does), so there is a page to go back to. Only once the
+    // first page is in: a push during the router's first navigation replaces the entry instead of adding one
+    cy.document().should((doc) => expect(routerOf(doc).currentRoute.value.path).to.eq("/today"));
+    cy.document().then((doc) => void routerOf(doc).push(STOCK));
+    cy.location("hash").should("eq", "#team=t404");
+    cy.get("[data-test-rotation-play-open]", { timeout: 90000 }).click();
+    cy.get("[data-test-rotation-play]").should("be.visible");
+    cy.get("body").trigger("keydown", { key: " " }); // the clock is running: this is the lap Back used to throw away
+    cy.get("[data-test-rotation-start-hint]").should("not.exist");
+    cy.go("back");
+    cy.get("[data-test-rotation-play]").should("not.exist");
+    cy.location("pathname").should("eq", "/rotation");
+    cy.location("hash").should("eq", "#team=t404");
+    cy.get("[data-test-rotation-cue]").should("be.visible");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/today");
   });
 });

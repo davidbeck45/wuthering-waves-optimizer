@@ -4136,6 +4136,9 @@ Round 2 (2026-11-09), three more of the same kind:
 - `account/pinSection.ts`: **the drawer opened at Cost to max stays there.** On a cold load it grew from 881 to 2,835 px
   after its one `scrollIntoView`, leaving the section at y 1193 of 915. The section is put back whenever the content
   above it changes size, until the player touches the drawer (wheel, touch, pointer, key) or 20 s pass.
+- `shell/askBackGuard.ts` `installSheetBackGuard`: **Back closes /my-rankings' Options sheet and /rotation's Play along**
+  and stays on the page, as it does for the Ask sheet (neither is a `<dialog>`). One Back closes one sheet, and each
+  guard forgets the Back once that move is over, so a link in a sheet still open is not swallowed.
 
 ## Upgrades and stale tabs — what a deploy does to someone already here (hunt round 1, track "upgrade-regress", 2026-11-06)
 

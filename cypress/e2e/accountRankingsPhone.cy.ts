@@ -163,6 +163,21 @@ describe("account and rankings pages on a phone (v3, 130 % text)", () => {
     });
   });
 
+  it("Back closes /my-rankings' Options sheet and stays on the page; the next Back leaves it", () => {
+    cy.visit("/account", v3Seed());
+    cy.get("[data-test-nav-rankings]").click();
+    cy.get('[data-test-nav-plus-page="/my-rankings"]').click();
+    cy.location("pathname").should("eq", "/my-rankings");
+    cy.get("[data-test-my-rankings-options]").should("be.visible").click();
+    cy.get("[data-test-my-rankings-sheet]").should("be.visible");
+    cy.go("back");
+    cy.get("[data-test-my-rankings-sheet]").should("not.exist");
+    cy.location("pathname").should("eq", "/my-rankings");
+    cy.get("[data-test-my-rankings-options]").should("be.visible");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/account");
+  });
+
   it("says what each number is on /account and /my-rankings, and gives the 360 px weapon its own line", () => {
     cy.visit("/account", v3Seed());
     cy.get('[data-test-account-kpi="s6"] .kpi__sub', { timeout: 60000 }).should("be.visible").and("contain.text", "set up");

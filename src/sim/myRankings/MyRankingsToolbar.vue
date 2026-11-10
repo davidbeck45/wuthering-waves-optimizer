@@ -81,6 +81,8 @@
 // Wuthering Tools+ — the /my-rankings controls: inline on desktop, one "Options" bottom sheet on a phone
 // (like /rankings' "Filters & options").
 import { onBeforeUnmount, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { installSheetBackGuard } from "../shell/askBackGuard";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rankingsMineHash } from "../account/accountState";
 import { DEFAULT_DIR, type SortDir, type SortKey } from "./rows";
@@ -118,6 +120,9 @@ watch(sheet, (open) => {
   else document.removeEventListener("keydown", onKey);
 });
 onBeforeUnmount(() => document.removeEventListener("keydown", onKey));
+// Back closes the sheet and stays on the page, as it does for the Ask sheet (it is no <dialog>: Back left for the page before)
+const router = useRouter();
+if (router) onBeforeUnmount(installSheetBackGuard(router, { sheetOpen: () => sheet.value, close: () => (sheet.value = false) }));
 </script>
 
 <style scoped>

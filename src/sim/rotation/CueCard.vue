@@ -100,8 +100,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useToast } from "../../composables/useToast";
+import { installSheetBackGuard } from "../shell/askBackGuard";
 import type { RunMember } from "../engine/rileyRun";
 import CueChips from "./CueChips.vue";
 import CuePlay from "./CuePlay.vue";
@@ -133,6 +135,9 @@ const compact = (n: number): string => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : 
 
 const pip = usePip();
 const playOpen = ref(false);
+// Back leaves Play along and stays on the loop, as it closes the Ask sheet: it left for the team list, the lap with it
+const router = useRouter();
+if (router) onBeforeUnmount(installSheetBackGuard(router, { sheetOpen: () => playOpen.value, close: () => (playOpen.value = false) }));
 const player = usePlayer(
   computed(() => props.plan),
   { beep: computed(() => props.prefs.beep), pace: computed(() => props.prefs.pace), host: pip.win },
