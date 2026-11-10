@@ -166,6 +166,16 @@ describe("the synthetic run (engine fixture)", () => {
     const s = energySummary([{ checks: memberChecks(energy, { Lynae: 105, Iuno: 99.5, Shorekeeper: 243 }) }, { checks: null }]);
     expect(s).toMatchObject({ teams: 2, measured: 1, members: 3, short: 1, tight: 2, shortCharacters: ["Lynae"] });
     expect(s.overcapCharacters).toEqual(overcapWeight(energy.members.find((m) => m.name === "Iuno")!) >= 0.02 ? ["Iuno"] : []);
+    expect(s.built).toBe(3);
+  });
+
+  it("a team whose members have no build counts none as built, and names nobody for crit: the run wore a stand-in", () => {
+    const overcapping: TeamEnergy = { ...energy, members: energy.members.map((m) => ({ ...m, share: 0.5, overcap: { share: 0.4, over: 1, damage: 2, top: [], rest: null } })) };
+    expect(overcapping.members.every((m) => overcapWeight(m) >= 0.02)).toBe(true);
+    const none = energySummary([{ checks: memberChecks(overcapping, {}) }]);
+    expect(none).toMatchObject({ teams: 1, measured: 1, members: 3, built: 0, short: 0, tight: 0, ok: 0, shortCharacters: [], overcapCharacters: [] });
+    const one = energySummary([{ checks: memberChecks(overcapping, { Iuno: 150 }) }]);
+    expect(one).toMatchObject({ members: 3, built: 1, overcapCharacters: ["Iuno"] });
   });
 });
 
@@ -430,6 +440,18 @@ describe("a summary tile says only what was measured", () => {
     expect(kpiReading([], clear, { teams: 3, measured: 1 }, false)).toEqual({ value: "0", sub: "every Liberation paid in the 1 team measured" });
     expect(kpiReading([], clear, { teams: 3, measured: 2 }, true)).toEqual({ value: "0", sub: "every Liberation paid in the 2 teams measured" });
     expect(kpiReading([], clear, { teams: 3, measured: 3 }, false)).toEqual({ value: "0", sub: clear });
+  });
+
+  it("no all-clear with no build to compare: after Delete the leftover teams read 0, every Liberation paid for nine members with no build", () => {
+    expect(kpiReading([], clear, { teams: 3, measured: 3, members: 9, built: 0 }, false)).toEqual({ value: "—", sub: "no build to check" });
+    expect(kpiReading([], "no damage wasted on crit", { teams: 3, measured: 3, members: 9, built: 0 }, false)).toEqual({ value: "—", sub: "no build to check" });
+  });
+
+  it("an all-clear over some of the members says how many have no build", () => {
+    expect(kpiReading([], clear, { teams: 3, measured: 3, members: 9, built: 5 }, false)).toEqual({ value: "0", sub: "every Liberation paid, 4 members have no build" });
+    expect(kpiReading([], clear, { teams: 3, measured: 3, members: 9, built: 8 }, false)).toEqual({ value: "0", sub: "every Liberation paid, 1 member has no build" });
+    expect(kpiReading([], clear, { teams: 3, measured: 2, members: 6, built: 5 }, false)).toEqual({ value: "0", sub: "every Liberation paid in the 2 teams measured, 1 member has no build" });
+    expect(kpiReading([], clear, { teams: 3, measured: 3, members: 9, built: 9 }, false)).toEqual({ value: "0", sub: clear });
   });
 
   it("who is on the tile, whatever else is still to measure", () => {

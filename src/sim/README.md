@@ -4104,6 +4104,14 @@ Ryan's files touched, each the smallest that works: `main.ts` (one option, one i
 
 Gates: `storage/storage.test.ts` (real stores and plugin), `confirmRouteGuard.test.ts` (a real router), `useBuildTeam.test.ts`, `account/useBuildAccount.test.ts`, `buildHistory/importCheck.test.ts`, `useBuildHistory.test.ts`, `syncUndo.test.ts`, `buildAccount.test.ts`, `buildTeam.test.ts`; `buildAccount.cy.ts`, `buildHistory.cy.ts`, `wavescanNewEchoes.cy.ts`.
 
+**Settings › Delete your data takes the whole account** (`storage/deleteAccount.ts`, hunt round 2, 2026-11-09). Upstream
+blanks `character` and `inventory`; `deleteAccountData` (one line in `clearAllUserData`) adds the teams and everything
+kept from the account. `STORAGE_RULES` lists every key and database the app writes with "goes" or "stays" and why: the
+account and what was copied or worked out from it goes, this device's settings stay, and so do the Convene pull history
+(the game drops pulls after six months) and Today. `deleteAccount.test.ts` reads the source and fails on a `wtplus:` key
+that is not listed. The card and the confirm say what goes and what stays (`DELETE_*`, 3 lines in `SettingsDelete.vue`).
+An /energy tile gives no all-clear, and names nobody for crit, where no member has a build (`EnergySummary.built`).
+
 ## Phone flows — what a tap, a swipe and Back do (hunt round 1, track "phone-flows", 2026-11-06)
 
 A walk of the phone flows at 412 and 360 px with real touch events. Nothing here changes a figure; each fix makes a page

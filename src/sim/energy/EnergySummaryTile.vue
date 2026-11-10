@@ -33,7 +33,7 @@
 // header link. Self-contained: activates the shared check (useEnergyNeeds) while mounted.
 import { computed, onBeforeUnmount, onMounted } from "vue";
 import EnergyStatusIcon from "./EnergyStatusIcon.vue";
-import { nameOf, unmeasuredDetail } from "./energyFormat";
+import { nameOf, NO_BUILD_TEXT, unmeasuredDetail } from "./energyFormat";
 import { useEnergyNeeds } from "./useEnergyNeeds";
 import "./energy.css";
 
@@ -44,13 +44,14 @@ onMounted(() => energy.activate());
 onBeforeUnmount(() => energy.release());
 
 const s = computed(() => energy.summary.value);
-const state = computed<"loading" | "none" | "short" | "overcap" | "ok">(() => {
+const state = computed<"loading" | "none" | "unbuilt" | "short" | "overcap" | "ok">(() => {
   const teams = energy.savedTeams.value;
   if (!teams.length) return "none";
   if (energy.busy.value && !s.value.measured) return "loading";
   if (!s.value.measured) return "none";
   if (s.value.shortCharacters.length) return "short";
   if (s.value.overcapCharacters.length) return "overcap";
+  if (s.value.members && !s.value.built) return "unbuilt"; // teams measured, no build to compare: no all-clear
   return "ok";
 });
 const icon = computed(() => (state.value === "short" ? "short" : state.value === "overcap" ? "tight" : state.value === "ok" ? "ok" : "muted"));
@@ -59,6 +60,7 @@ const headline = computed(() => {
   const v = s.value;
   if (state.value === "loading") return "measuring…";
   if (state.value === "none") return energy.savedTeams.value.length ? "not measured" : "no saved team";
+  if (state.value === "unbuilt") return NO_BUILD_TEXT;
   const short = v.shortCharacters.length;
   const over = v.overcapCharacters.length;
   const parts = [short ? `${plural(short, "character", "characters")} short on ER` : "every Liberation paid"];
@@ -69,6 +71,7 @@ const detail = computed(() => {
   const v = s.value;
   if (state.value === "loading") return "wuwa_calc is measuring your saved teams";
   if (state.value === "none") return energy.savedTeams.value.length ? unmeasuredDetail(energy.savedTeams.value.map((t) => t.state)) : "save or sync a team to measure its ER needs";
+  if (state.value === "unbuilt") return "give your characters a weapon and echoes: the check compares their Energy Regen with what the team needs";
   const bits: string[] = [];
   if (v.shortCharacters.length) bits.push(`short: ${v.shortCharacters.map(nameOf).join(", ")}`);
   if (v.overcapCharacters.length) bits.push(`Crit Rate past 100 %: ${v.overcapCharacters.map(nameOf).join(", ")}`);

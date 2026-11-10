@@ -44,12 +44,20 @@ export function measureNote(state: MeasureState | null): string {
   return "";
 }
 
+/** Said where an all-clear would stand when no member has a build of their own to compare. */
+export const NO_BUILD_TEXT = "no build to check";
+
 /** A summary tile on /energy: the count and who, or the all-clear, which reaches only as far as what was measured. With
- *  nothing measured there is no figure: "0, every Liberation paid" read as a pass while the engine had failed. */
-export function kpiReading(names: readonly string[], clear: string, s: { teams: number; measured: number }, busy: boolean, name: (id: string) => string = nameOf): { value: string; sub: string } {
+ *  nothing measured there is no figure: "0, every Liberation paid" read as a pass while the engine had failed. The same
+ *  with no build to compare: after Settings › Delete the leftover teams read "0, every Liberation paid" for nine
+ *  members who had no build (2026-11-08 hunt, M2). Members without one are counted beside an all-clear. */
+export function kpiReading(names: readonly string[], clear: string, s: { teams: number; measured: number; members?: number; built?: number }, busy: boolean, name: (id: string) => string = nameOf): { value: string; sub: string } {
   if (!s.measured) return { value: "—", sub: busy ? "measuring…" : "no team measured" };
   if (names.length) return { value: String(names.length), sub: names.map(name).join(", ") };
-  return { value: "0", sub: s.measured < s.teams ? `${clear} in the ${s.measured === 1 ? "1 team" : `${s.measured} teams`} measured` : clear };
+  const unbuilt = s.members != null && s.built != null ? s.members - s.built : 0;
+  if (unbuilt > 0 && !s.built) return { value: "—", sub: NO_BUILD_TEXT };
+  const reach = s.measured < s.teams ? `${clear} in the ${s.measured === 1 ? "1 team" : `${s.measured} teams`} measured` : clear;
+  return { value: "0", sub: unbuilt > 0 ? `${reach}, ${unbuilt === 1 ? "1 member has" : `${unbuilt} members have`} no build` : reach };
 }
 
 /** Why the account tile has no check to show when saved teams exist: an engine that failed is not a team it can't read. */

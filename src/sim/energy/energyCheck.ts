@@ -169,6 +169,9 @@ export interface EnergySummary {
   teams: number;
   measured: number;
   members: number;
+  /** members whose own build was read (a weapon equipped). The rest are measured on a stand-in, so nothing can be
+   *  said of them: no all-clear without a build to compare, and no crit flag on a build that does not exist */
+  built: number;
   short: number;
   tight: number;
   ok: number;
@@ -181,7 +184,7 @@ export interface EnergySummary {
 
 /** The account-wide count the /account tile and the page header read: "2 characters short on ER · 1 overcapping crit". */
 export function energySummary(teams: Array<{ checks: MemberCheck[] | null }>): EnergySummary {
-  const s: EnergySummary = { teams: teams.length, measured: 0, members: 0, short: 0, tight: 0, ok: 0, noGate: 0, shortCharacters: [], overcapCharacters: [] };
+  const s: EnergySummary = { teams: teams.length, measured: 0, members: 0, built: 0, short: 0, tight: 0, ok: 0, noGate: 0, shortCharacters: [], overcapCharacters: [] };
   const short = new Set<string>();
   const over = new Set<string>();
   for (const t of teams) {
@@ -189,11 +192,12 @@ export function energySummary(teams: Array<{ checks: MemberCheck[] | null }>): E
     s.measured += 1;
     for (const c of t.checks) {
       s.members += 1;
+      if (c.have != null) s.built += 1;
       if (c.status === "short") (s.short += 1, short.add(c.characterId));
       else if (c.status === "tight") s.tight += 1;
       else if (c.status === "ok") s.ok += 1;
       else if (c.status === "noGate") s.noGate += 1;
-      if (overcapWeight(c.member) >= OVERCAP_FLAG) over.add(c.characterId);
+      if (c.have != null && overcapWeight(c.member) >= OVERCAP_FLAG) over.add(c.characterId);
     }
   }
   s.shortCharacters = [...short].sort();

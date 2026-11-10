@@ -7,7 +7,7 @@
       <span v-else class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
         Danger Zone
       </span>
-      <p :class="{ 'text-sm opacity-70': variant === 'v3' }">This will reset your data to a blank state.</p>
+      <p :class="{ 'text-sm opacity-70': variant === 'v3' }" data-test-delete-what>{{ DELETE_CARD_TEXT }}</p>
       <button @click="confirmDelete" class="btn btn-error" :class="{ 'btn-sm self-start': variant === 'v3' }">
         Delete
       </button>
@@ -19,6 +19,7 @@
 import { useToast } from "../composables/useToast";
 import { useConfirm } from "../composables/useConfirm";
 import { clearAllUserData } from "../utils/settingsBackup";
+import { DELETE_CARD_TEXT, DELETE_CONFIRM_ITEMS, DELETE_CONFIRM_TEXT } from "../sim/storage/deleteAccount"; // Wuthering Tools+: says what goes and what stays
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",
@@ -31,8 +32,9 @@ const { confirm } = useConfirm();
  * Confirms the deletion of user data
  */
 async function confirmDelete() {
-  const confirmed = await confirm("Do you really want to delete everything?", {
+  const confirmed = await confirm(DELETE_CONFIRM_TEXT, {
     title: "Delete your data",
+    items: [...DELETE_CONFIRM_ITEMS],
     confirmLabel: "Delete",
     variant: "error",
   });
