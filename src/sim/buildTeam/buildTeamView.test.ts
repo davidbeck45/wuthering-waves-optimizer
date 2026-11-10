@@ -2,7 +2,7 @@
 // in words, and the notes a result card explains itself with.
 import { describe, expect, it } from "vitest";
 import { setLabel } from "../echoLab/echoLabView";
-import { buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, membersAsTicked, resultNotes, roleLine, setName, shareConflicts, teamTickNote, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
+import { bestSaveTicks, buffDefaultNames, conflictText, defaultSaveSlots, deltaText, deltaTone, erBand, layoutGroups, membersAsTicked, resultNotes, roleLine, setName, shareConflicts, teamTickNote, teammatesNote, undoConfirm, undoDoneText, worthSaving } from "./buildTeamView";
 import { parseMainStats, type MemberPlan } from "./rileyPlan";
 import { memberAfter, type MemberOutcome } from "./buildTeam";
 
@@ -268,5 +268,74 @@ describe("the review under the Save's ticks", () => {
     expect(teamTickNote(r, [false, false])).toBe("Nothing ticked for Save, so the team stays as it is. The new build: 110 (+10.0 %).");
     expect(teamTickNote(r, [true, false])).toBeNull();
     expect(teamTickNote({ ...r, team: null }, [false, false])).toBeNull();
+  });
+});
+
+describe("the Save's ticks, judged on the team (hunt round 2, M1)", () => {
+  // Xuanling keeps his echoes and gains from a set buff switched on; Suisui sheds Energy Regen for her own damage
+  const xuan = (over: Partial<MemberOutcome> = {}): MemberOutcome =>
+    outcome({ slot: 0, characterId: "YangyangXuanling", erFloor: 115.9, erMet: true, sameEchoes: true, buffDefaults: ["SongofFeatheredTrace5Set"], before: { value: 7065588, menuEr: 120, withRunBuffs: null }, after: { value: 7293408, optimizerValue: 7293408, menuEr: 120, picks: [] }, ...over });
+  const sui = (over: Partial<MemberOutcome> = {}): MemberOutcome =>
+    outcome({ slot: 1, characterId: "Suisui", erFloor: 187.5, erMet: true, before: { value: 110920, menuEr: 262.6, withRunBuffs: null }, after: { value: 121491, optimizerValue: 121491, menuEr: 189.4, picks: [] }, ...over });
+  const TODAY = 7660011;
+  /** a stand-in for the calculator: the team's total for each set of ticks ("10" = the first member's build alone) */
+  const totals = (by: Record<string, number>) => {
+    const asked: string[] = [];
+    const totalOf = async (ticks: boolean[]): Promise<number | null> => {
+      const key = ticks.map((t) => (t ? "1" : "0")).join("");
+      asked.push(key);
+      return by[key] ?? null;
+    };
+    return { asked, totalOf };
+  };
+
+  it("each build alone is worth saving and the two together lose 15.2 %: the Save opens on the set that reads the most", async () => {
+    const members = [xuan(), sui()];
+    expect(members.map(worthSaving)).toEqual([true, true]); // each judged alone: both ticked, 7.66M → 6.50M
+    // both: the hunt's 6,497,900; Xuanling's alone: its +3.0 %; Suisui's alone: any figure under today
+    const pick = await bestSaveTicks(members, TODAY, totals({ "10": 7888570, "01": 6480000, "11": 6497900 }).totalOf);
+    expect(pick).toEqual({ ticks: [true, false], why: "best" });
+  });
+
+  it("no set reads higher than today: nothing is ticked, and the line under the total says so", async () => {
+    const members = [xuan(), sui()];
+    // a hair above today is rounding, not a gain
+    const pick = await bestSaveTicks(members, TODAY, totals({ "10": TODAY * 1.0002, "01": 6480000, "11": 6497900 }).totalOf);
+    expect(pick).toEqual({ ticks: [false, false], why: "none" });
+    const team = { before: TODAY, after: 6497900, dpsBefore: null, dpsAfter: null };
+    expect(teamTickNote({ members, team }, pick!.ticks, pick!.why)).toBe("No set of these new builds reads higher than the team as it is, so none is ticked for Save. All 2 new builds: 6.50M (−15.2 %).");
+    expect(teamTickNote({ members: [xuan()], team }, [false], "none")).toBe("The new build does not read higher than the team as it is, so it is not ticked for Save. The new build: 6.50M (−15.2 %).");
+    // unticked by hand, the plain line stays
+    expect(teamTickNote({ members, team }, [false, false], "best")).toContain("Nothing ticked for Save, so the team stays as it is.");
+  });
+
+  it("an Energy Regen need still comes first: a build that meets one today's misses is ticked though the team reads lower", async () => {
+    const aemeath = outcome(); // 110.8 % today, the loop needs 115.2 %, the new build has 116 %
+    expect(await bestSaveTicks([aemeath], 9458277, totals({ "1": 9341889 }).totalOf)).toEqual({ ticks: [true], why: "needs" });
+    // with the need met today as well, the lower total is no reason to save
+    const met = outcome({ before: { value: 7974124, menuEr: 116, withRunBuffs: null } });
+    expect(await bestSaveTicks([met], 9458277, totals({ "1": 9341889 }).totalOf)).toEqual({ ticks: [false], why: "none" });
+    // and a build that loses a need today's build meets is never the pick, whatever it reads
+    const lost = outcome({ before: { value: 7974124, menuEr: 116, withRunBuffs: null }, erMet: false });
+    expect(await bestSaveTicks([lost], 9458277, totals({ "1": 9999999 }).totalOf)).toEqual({ ticks: [false], why: "none" });
+  });
+
+  it("a second build has to add to the first: one that changes nothing stays unticked", async () => {
+    const members = [xuan(), sui()];
+    expect((await bestSaveTicks(members, TODAY, totals({ "10": 7888570, "01": TODAY, "11": 7888570 }).totalOf))!.ticks).toEqual([true, false]);
+    expect((await bestSaveTicks(members, TODAY, totals({ "10": 7888570, "01": 7700000, "11": 7950000 }).totalOf))!.ticks).toEqual([true, true]);
+  });
+
+  it("never a set that leaves an echo on two members: a build that takes a teammate's echo is only weighed with theirs", async () => {
+    const taker = xuan({ after: { value: 7293408, optimizerValue: 7293408, menuEr: 120, picks: [{ echo: { echoId: "e1", echo: "FogLionarch" }, source: "teammate", wornBy: ["Suisui"], sharedWith: ["Suisui"] }] } });
+    const calc = totals({ "10": 9000000, "01": 7700000, "11": 7800000 });
+    expect(await bestSaveTicks([taker, sui()], TODAY, calc.totalOf)).toEqual({ ticks: [true, true], why: "best" });
+    expect(calc.asked).not.toContain("10");
+  });
+
+  it("answers nothing when no set could be scored, so the caller keeps the per-member rule", async () => {
+    expect(await bestSaveTicks([xuan(), sui()], TODAY, totals({}).totalOf)).toBeNull();
+    // a member without a build is no set at all: nothing to tick
+    expect(await bestSaveTicks([outcome({ status: "noLoadout", draft: null, after: null })], TODAY, totals({}).totalOf)).toEqual({ ticks: [false], why: "none" });
   });
 });

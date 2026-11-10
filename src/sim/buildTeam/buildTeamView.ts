@@ -173,6 +173,53 @@ export function defaultSaveSlots(members: readonly MemberOutcome[]): boolean[] {
   return ticks;
 }
 
+/** Why a team review opens on the ticks it does. "best": the set of new builds that reads the highest team total.
+ *  "needs": a set that reads lower than today and meets an Energy Regen need today's builds miss. "none": no set reads
+ *  higher than the team as it is, so nothing is ticked. */
+export type SaveWhy = "best" | "needs" | "none";
+
+/** The Save ticks a team review opens with (hunt round 2, M1): of every set of new builds that can be saved together,
+ *  the one that gives the team the most, by the calculator's total with exactly those builds worn (`totalOf`) and never
+ *  each member alone. `worthSaving` ticked Xuanling for +3.2 % (with Suisui's old build) and Suisui for +9.5 % (her own
+ *  part), and the two saved together read −15.2 % where Xuanling's alone read +3.0 %. An Energy Regen need comes first,
+ *  as in the search: a set that meets more of them wins even when it reads lower. Otherwise a set has to read higher
+ *  than today by more than rounding, a bigger set has to beat a smaller one the same way, and with no such set nothing
+ *  is ticked. A set leaves no echo twice in the team: a ticked build's `sharedWith` teammates are ticked too. Null when
+ *  no set could be scored (the caller keeps the per-member rule). */
+export async function bestSaveTicks(members: readonly MemberOutcome[], before: number, totalOf: (ticks: boolean[]) => Promise<number | null>): Promise<{ ticks: boolean[]; why: SaveWhy } | null> {
+  const none = members.map(() => false);
+  const can = members.map((m) => m.status === "ok" && !!m.draft);
+  const slots = members.map((_, i) => i).filter((i) => can[i]);
+  const needsMet = (ticks: readonly boolean[]): number =>
+    members.reduce((n, m, i) => {
+      if (m.status !== "ok" || m.erFloor == null) return n;
+      const met = ticks[i] ? m.erMet === true : m.before?.menuEr != null && m.before.menuEr + 1e-6 >= m.erFloor;
+      return n + (met ? 1 : 0);
+    }, 0);
+  const noEchoTwice = (ticks: readonly boolean[]): boolean =>
+    members.every((m, i) => !ticks[i] || (m.after?.picks ?? []).every((p) => (p.sharedWith ?? []).every((w) => {
+      const j = members.findIndex((x) => x.characterId === w);
+      return j < 0 || !can[j] || ticks[j];
+    })));
+  const sets: boolean[][] = [];
+  for (let mask = 1; mask < 1 << slots.length; mask++) sets.push(members.map((_, i) => slots.includes(i) && !!(mask & (1 << slots.indexOf(i)))));
+  const size = (ticks: readonly boolean[]): number => ticks.filter(Boolean).length;
+  sets.sort((a, b) => size(a) - size(b));
+  const margin = 0.0005 * Math.max(1, before);
+  let best = { ticks: none, needs: needsMet(none), total: before };
+  let scored = 0;
+  for (const ticks of sets) {
+    if (!noEchoTwice(ticks)) continue;
+    const total = await totalOf(ticks);
+    if (total == null || !Number.isFinite(total)) continue;
+    scored += 1;
+    const needs = needsMet(ticks);
+    if (needs > best.needs || (needs === best.needs && total > best.total + margin)) best = { ticks, needs, total };
+  }
+  if (sets.length && !scored) return null;
+  return { ticks: best.ticks, why: !best.ticks.some(Boolean) ? "none" : best.total < before - margin ? "needs" : "best" };
+}
+
 /** The members as the review reads them under these ticks: every member's figure is their part of the team's total
  *  with the ticked builds (`perSlot`, `teamFigureOf`), so the cards add up to the headline and each reads what the Save
  *  gets. An unticked member keeps the build the team runs today, which the ticked builds can still move (Suisui leaving
@@ -188,11 +235,13 @@ export function membersAsTicked(members: readonly MemberOutcome[], ticks: readon
 
 /** Under the team total, when it is not every new build: which builds it counts, and what all of them would read. Null
  *  when every new build is ticked (the total says it all). */
-export function teamTickNote(r: Pick<BuildTeamResult, "members" | "team">, ticks: readonly boolean[]): string | null {
+export function teamTickNote(r: Pick<BuildTeamResult, "members" | "team">, ticks: readonly boolean[], why: SaveWhy | null = null): string | null {
   const built = r.members.filter((m) => m.draft);
   const ticked = built.filter((m) => ticks[m.slot]).length;
   if (!r.team || !built.length || ticked === built.length) return null;
   const every = `${built.length === 1 ? "The new build" : `All ${built.length} new builds`}: ${compactNum(r.team.after)}${r.team.before > 0 ? ` (${deltaText(r.team.before, r.team.after)})` : ""}.`;
+  // the review opened with nothing ticked because nothing it found is worth saving (`bestSaveTicks`): said, not left blank
+  if (!ticked && why === "none") return `${built.length === 1 ? "The new build does not read higher than the team as it is, so it is not ticked for Save" : "No set of these new builds reads higher than the team as it is, so none is ticked for Save"}. ${every}`;
   return ticked ? `Counts the ${ticked} build${ticked === 1 ? "" : "s"} ticked for Save. ${every}` : `Nothing ticked for Save, so the team stays as it is. ${every}`;
 }
 

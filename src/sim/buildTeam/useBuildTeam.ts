@@ -21,7 +21,7 @@ import { accountStoresRefused } from "../storage/persistGuard";
 import { onSavedResultsCleared } from "../persist/savedResults";
 import type { TeamImpact } from "../account/investPlan";
 import { snapshotCharacters } from "../buildHistory/history";
-import { defaultSaveSlots, membersAsTicked, shareConflicts } from "./buildTeamView";
+import { bestSaveTicks, defaultSaveSlots, membersAsTicked, shareConflicts, type SaveWhy } from "./buildTeamView";
 import { notInApp } from "../rankings/importFromRankings";
 import { showNeed } from "../energy/energyNeed";
 
@@ -58,6 +58,8 @@ interface KeptReview {
   erFloors: Array<number | null>;
   result: BuildTeamResult;
   saveSlots: Ref<boolean[]>;
+  /** why the ticks opened as they did (`bestSaveTicks`); null without a team total */
+  saveWhy: SaveWhy | null;
   teamFigure: ShallowRef<TeamFigure | null>;
   rileyAfter: Ref<number | null>;
   rankedFigure: ShallowRef<TeamImpact | null>;
@@ -96,6 +98,8 @@ export function useBuildTeam() {
   const rileyAfter = ref<number | null>(null);
   const rileyAfterBusy = ref(false);
   const saveSlots = ref<boolean[]>([]);
+  /** why the review opened on these ticks: "none" when no set of the new builds beats the team as it is */
+  const saveWhy = ref<SaveWhy | null>(null);
   /** the team with the ticked builds worn, what the Save gets: the review's headline, and it moves with the ticks */
   const teamFigure = shallowRef<TeamFigure | null>(null);
   const teamFigureBusy = ref(false);
@@ -169,6 +173,7 @@ export function useBuildTeam() {
     erFloors.value = kept.erFloors;
     result.value = kept.result;
     saveSlots.value = [...kept.saveSlots.value];
+    saveWhy.value = kept.saveWhy;
     teamFigure.value = kept.teamFigure.value;
     rileyAfter.value = kept.rileyAfter.value;
     rankedFigure.value = kept.rankedFigure.value;
@@ -320,13 +325,37 @@ export function useBuildTeam() {
       // misses), the same echoes only when the run's buff settings score more — plus any teammate a ticked build
       // takes echoes from, so the saved team never wears one echo twice (buildTeamView.ts `defaultSaveSlots`)
       saveSlots.value = defaultSaveSlots(out.members);
+      saveWhy.value = null;
+      // with a team total the ticks are judged on it: the set of builds that reads the highest, never a set that reads
+      // lower than today (but for an Energy Regen need), and nothing when no set beats today (`bestSaveTicks`). Each
+      // member judged alone opened a Save its own headline put at −15.2 % (hunt round 2, M1)
+      if (out.team) {
+        const spec = team.value;
+        const chars = plain(characterStore.characters);
+        const inv = plain(inventoryStore.echoes);
+        const pick = await bestSaveTicks(out.members, out.team.before, async (ticks) => {
+          try {
+            return (await teamFigureOf(out, spec, chars, inv, ticks))?.after ?? null;
+          } catch {
+            return null; // this set stays out of the choice
+          }
+        });
+        if (ctrl.signal.aborted) {
+          if (result.value === out) result.value = null;
+          return;
+        }
+        if (pick) {
+          saveSlots.value = pick.ticks;
+          saveWhy.value = pick.why;
+        }
+      }
       // the headline before the page shows: read with every new build, its sign could be the opposite of the Save's
       await computeTeamFigure(out);
       if (ctrl.signal.aborted) {
         if (result.value === out) result.value = null;
         return;
       }
-      keptReview = { request: requested, on: fingerprint, auto, options: { ...options }, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, teamFigure, rileyAfter, rankedFigure };
+      keptReview = { request: requested, on: fingerprint, auto, options: { ...options }, team: team.value, only: only.value, plans: plans.value, order: [...order.value], erFloors: [...erFloors.value], result: out, saveSlots, saveWhy: saveWhy.value, teamFigure, rileyAfter, rankedFigure };
       phase.value = "result";
       void computeRileyAfter(out);
       void computeRankedFigure(out);
@@ -556,6 +585,7 @@ export function useBuildTeam() {
     rileyAfterBusy,
     rankedFigure,
     saveSlots,
+    saveWhy,
     applied,
     undoRecord,
     undoLive,

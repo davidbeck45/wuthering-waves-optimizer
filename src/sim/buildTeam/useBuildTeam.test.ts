@@ -186,6 +186,36 @@ describe("One team's review and save", () => {
       expect(bt.toSave.value.map((m) => m.characterId)).toEqual(["A"]);
     });
 
+    /** the calculator's total per set of ticks ("10": the first member's build alone); today's with none */
+    const totals = (before: number, by: Record<string, number>) => {
+      vi.mocked(buildMyTeam).mockImplementation(async () => ({ ...run(), team: { before, after: by["11"]!, dpsBefore: null, dpsAfter: null } }) as never);
+      vi.mocked(teamFigureOf).mockImplementation(async (_r, _t, _c, _e, ticks) => ({ after: by[ticks.map((t) => (t ? "1" : "0")).join("")] ?? before, dpsAfter: null, perSlot: [0, 0] }));
+    };
+
+    it("opens on the set of builds that reads the most, not on each member judged alone (hunt round 2, M1: both ticked read -15.2 %)", async () => {
+      // each build scores more on its own part (100 → 110), so each alone was ticked; together the team reads lower
+      totals(766, { "10": 789, "01": 648, "11": 650 });
+      const bt = await review();
+      expect(bt.saveSlots.value).toEqual([true, false]);
+      expect(bt.saveWhy.value).toBe("best");
+      expect(bt.teamFigure.value?.after).toBe(789);
+      expect(bt.toSave.value.map((m) => m.characterId)).toEqual(["A"]);
+    });
+
+    it("ticks nothing when no set of the new builds beats the team as it is, and the review keeps its reason on the way back", async () => {
+      totals(766, { "10": 760, "01": 648, "11": 650 });
+      const bt = await review();
+      expect(bt.saveSlots.value).toEqual([false, false]);
+      expect(bt.saveWhy.value).toBe("none");
+      expect(bt.toSave.value).toEqual([]);
+      expect(bt.teamFigure.value?.after).toBe(766);
+      const back = useBuildTeam();
+      await back.load({ teamId: "t1", members: [] });
+      expect(back.phase.value).toBe("result");
+      expect(back.saveSlots.value).toEqual([false, false]);
+      expect(back.saveWhy.value).toBe("none");
+    });
+
     it("moves with the ticks, every way round, and the cards with it", async () => {
       const bt = await reviewed();
       expect(bt.reviewMembers.value[0]!.after!.withTeam).toBe(601);

@@ -282,7 +282,7 @@ const teamStore = useTeamRotationsStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 const bt = useBuildTeam();
-const { phase, error, team, plans, order, erFloors, options, progress, result, reviewMembers, teamFigure, teamFigureBusy, rileyAfter, rileyAfterBusy, rankedFigure, saveSlots, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
+const { phase, error, team, plans, order, erFloors, options, progress, result, reviewMembers, teamFigure, teamFigureBusy, rileyAfter, rileyAfterBusy, rankedFigure, saveSlots, saveWhy, applied, undoLive, wornOutsideCount, toSave, conflicts } = bt;
 const { move, run, cancel, only } = bt;
 
 const makeActive = ref(false);
@@ -327,7 +327,7 @@ function barValue(slot: number): number {
   return p.phase === "prepare" ? 5 : 0;
 }
 
-const tickNote = computed(() => (result.value ? teamTickNote(result.value, saveSlots.value) : null));
+const tickNote = computed(() => (result.value ? teamTickNote(result.value, saveSlots.value, saveWhy.value) : null));
 const switchDeltas = computed(() =>
   reviewMembers.value.map((m) => (m?.after && m.before ? { text: deltaText(m.before.value, memberAfter(m)), tone: deltaTone(m.before.value, memberAfter(m)) } : { text: m?.status === "ok" ? "" : "—", tone: "flat" })),
 );

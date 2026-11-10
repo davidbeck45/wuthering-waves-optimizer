@@ -2674,6 +2674,17 @@ Regen is the one floor; a Crit Rate buff gets rule 2. On the 9-16 export the Xua
 (+3.0 %) with Suisui at 263.4 %, and Teams agrees whether the panel says 260 % or her real figure. Gate:
 `teamBuffNeeds.test.ts` (the shipped Cartethyia · Shorekeeper rotation; the floor and rule 2 each go red alone).
 
+**The Save opens on the set of builds that reads the most** (hunt round 2, M1, 2026-11-09; `buildTeamView.ts`
+`bestSaveTicks`). `worthSaving` judged each member alone: Xuanling's +3.2 % was with Suisui's old build, Suisui's +9.5 %
+her own part, and the two ticked together read 7.66M → 6.50M (−15.2 %) where Xuanling's alone read +3.0 %. With a team
+total the ticks are now the set with the highest total among the sets that leave no echo twice, each read from the
+calculator with exactly those builds worn. An Energy Regen need today's build misses still comes first, as in the search
+(the one way a ticked set reads lower than today); a bigger set has to beat a smaller one by more than rounding
+(0.05 %); and when no set beats today nothing is ticked and the line under the total says so. Without a team total the
+per-member rule stands. `build-team`'s `defaultSave` follows. Whole account has no ticks (its plan is a whole): rule 1
+above is what keeps a support there from spending what her team rests on. Gates: `buildTeamView.test.ts`,
+`useBuildTeam.test.ts`.
+
 ## Set from the icon next to +25: echo screenshots without the Sonata filter — `src/sim/echoScan/setGlyph.ts` (track "glyph", 2026-10-31)
 
 The phone importer (phase D) and `wuwa-tools/echo-import/extract.py` used to read an echo's set from the Sonata-filter chip

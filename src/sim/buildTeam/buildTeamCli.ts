@@ -9,7 +9,7 @@ import { rileyHeadless } from "../engine/rileyNode";
 import { characterDisplayName } from "../display/names";
 import { showNeed } from "../energy/energyNeed";
 import { buildMyTeam, currentEchoesOf, memberAfter, teamFigureOf, type BuildTeamResult, type TeamFigure, type TeamSpec } from "./buildTeam";
-import { defaultSaveSlots } from "./buildTeamView";
+import { bestSaveTicks, defaultSaveSlots } from "./buildTeamView";
 import { DEFAULT_OPTIONS, type BuildOptions } from "./constraints";
 import { inlineBackend } from "./headlessOptimizer";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
@@ -77,7 +77,9 @@ export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeam
     { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, team, plans: runPlans as typeof plans.plans, order, options, erFloors, autoTeamBuffs: opts.autoBuffs ?? true },
     inlineBackend(),
   );
-  const ticks = defaultSaveSlots(result.members);
+  // as the page's Save opens: judged on the team total when there is one (`bestSaveTicks`), else each member alone
+  const judged = result.team ? await bestSaveTicks(result.members, result.team.before, async (t) => (await teamFigureOf(result, team, exp.characters, exp.inventory.echoes, t))?.after ?? null) : null;
+  const ticks = judged?.ticks ?? defaultSaveSlots(result.members);
   return { team, plans, result, defaultSave: { ticks, figure: await teamFigureOf(result, team, exp.characters, exp.inventory.echoes, ticks) } };
 }
 
