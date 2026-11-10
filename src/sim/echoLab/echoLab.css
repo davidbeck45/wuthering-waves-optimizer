@@ -327,6 +327,15 @@ html[data-theme-style="light"] .el-score-text--good {
 .el-reason-card {
   display: none;
 }
+/* a saved build holds the echo: one line across the row, under its cells, in the table and on a card (a card's footer
+   gives the reason 40 % of the width, too little for a build's name and whose it is) */
+.el-cell-held {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: oklch(var(--bc) / 0.8);
+  overflow-wrap: anywhere;
+}
 @container el-verdicts (width >= 71.25rem) {
   .el-table .el-echo-sub,
   .el-table .el-echo-cost,

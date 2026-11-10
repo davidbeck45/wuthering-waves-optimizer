@@ -3,6 +3,8 @@
 import { echoSetLabelMap, getEchoCritValue, getEchoSubStatEntries, statsTable, subStatLabelMap } from "../../../echoes/stats";
 import { mainEchoesData } from "../../../echoes/index";
 import { SUBSTAT_ABBR } from "../../substats/substatWeights";
+import { wornByIndex } from "../../echoLab/core";
+import { savedBuildsHolding } from "../../echoLab/echoLabView";
 import { characterName, clampInt, compactJson, defineTool, echoName, resolveOwnCharacter, round, setName, statLabel, topN } from "./shared";
 
 const squash = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -107,11 +109,16 @@ export const searchInventoryTool = defineTool<{
     const equippedMode = input.equipped ?? "any";
     const limit = clampInt(input.limit, 1, 30, 15);
 
+    // The echoes of saved builds that are not worn now (Echo Lab's own index, so both tools agree on what is held): never
+    // "unequipped", the filter the description gives for fodder. The description itself stays as it is: this tool is one
+    // of the twelve whose definition bytes are pinned for the prompt cache (tools.test.ts); the row's field says it.
+    const holders = wornByIndex({ characters: exp.characters ?? {}, echoes: [] });
     const rows = [];
     for (const e of exp.inventory.echoes as Array<Record<string, any>>) {
       const wornBy = Object.entries((exp.inventory.equipped?.[e.echoId] ?? {}) as Record<string, number>);
+      const held = savedBuildsHolding({ wornBy: holders.get(String(e.echoId)) ?? [] });
       if (equippedMode === "equipped" && !wornBy.length) continue;
-      if (equippedMode === "unequipped" && wornBy.length) continue;
+      if (equippedMode === "unequipped" && (wornBy.length || held.length)) continue;
       if (wearer && !wornBy.some(([c]) => c === wearer)) continue;
       if (setKey && e.echoSet !== setKey) continue;
       if (input.cost != null && Number(e.type) !== input.cost) continue;
@@ -137,6 +144,7 @@ export const searchInventoryTool = defineTool<{
           lines: subs.length,
           cv: round(getEchoCritValue(e), 1),
           equippedBy: wornBy.map(([c, slot]) => `${characterName(c)} (slot ${Number(slot) + 1})`),
+          ...(held.length ? { heldBySavedBuilds: held } : {}),
           ...(e.locked ? { locked: true } : {}),
           ...(e.trash ? { markedTrash: true } : {}),
         },

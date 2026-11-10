@@ -3,9 +3,10 @@
 // rotation by the app's own engine (set bonuses that break or complete count — the swap recomputes them).
 // A cheap linear pre-score (set change scored exactly + stat change at the build's per-point values) picks
 // the top-K characters per echo; only those are scored exactly, in every slot the echo may go into. Verdicts:
-//   keep  — an upgrade for someone, or worn, or (not fully tuned) likely to become one;
+//   keep  — an upgrade for someone, or worn, or held by a saved build that is not the one worn now (core.ts
+//           `wornByIndex`), or (not fully tuned) likely to become one;
 //   spare — no upgrade, but close to what its best owner wears (a backup), or a fair gamble to tune;
-//   feed  — nobody gains from it and nobody wears it.
+//   feed  — nobody gains from it, nobody wears it and no saved build holds it.
 // Pure/async, worker-safe.
 import { SUBSTAT_KEYS, type SubstatKey } from "../substats/substatWeights";
 import {

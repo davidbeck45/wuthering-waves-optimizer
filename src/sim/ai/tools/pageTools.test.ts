@@ -11,6 +11,7 @@ import { parseNewsArticle } from "../../today/durations";
 import { TODAY_NEWS_KEY } from "../../today/news";
 import { TODAY_STATE_KEY } from "../../today/state";
 import { clearToolMemo, readOnlyStorage, runTool } from "./index";
+import { echoLabFor } from "./memo";
 import { MAX_RESULT_CHARS, type ToolContext } from "./shared";
 import { deepLinksOf, summarizeTool } from "../ui/toolSummary";
 
@@ -56,6 +57,36 @@ describe("echo_lab", () => {
     }
     expect(mine.path).toBe("/echo-lab?tab=verdicts&character=Aemeath");
   });
+
+  it("never lists an echo a saved build holds as feed, and says which build holds it and whose", async () => {
+    const { verdicts } = await echoLabFor(exp);
+    const fed = verdicts.echoes.find((e) => e.verdict === "feed")!;
+    // Mornye's "Account plan" build, saved beside the one she wears (Whole account without "Also make active")
+    const held: ExportFile = JSON.parse(JSON.stringify(exp));
+    const mornye = held.characters.Mornye;
+    mornye.activeBuildId = "live";
+    mornye.builds = [
+      { id: "live", name: "Default build", echoes: { ...mornye.echoes } },
+      { id: "plan", name: "Account plan", echoes: { ...mornye.echoes, 4: { echoId: fed.echoId } } },
+    ];
+    const ctx: ToolContext = { exp: held, now: NOW, storage: readOnlyStorage({}) };
+    const feed = await call("echo_lab", { show: "feed", character: null }, ctx);
+    expect(feed.counts).toEqual({ keep: verdicts.counts.keep + 1, spare: verdicts.counts.spare, feed: verdicts.counts.feed - 1 });
+    const listed = feed.feedGroups.reduce((n: number, g: any) => n + Number(g.group.split(" × ")[0]), 0);
+    if (!feed.groupsOmitted) expect(listed).toBe(verdicts.counts.feed - 1);
+    const keep = await call("echo_lab", { show: "keep", character: null }, ctx);
+    const row = keep.echoes.find((e: any) => e.heldBySavedBuilds);
+    expect(row).toMatchObject({ verdict: "keep", why: "In a saved build", heldBySavedBuilds: ["Mornye's saved build “Account plan”"] });
+    expect(row.wornBy).toBeUndefined();
+    // the inventory search agrees: held is not "unequipped", and the row names the build
+    const before = await call("search_inventory", { equipped: "unequipped", sort: "crit_value_asc", limit: 30 }, ctxWith());
+    const after = await call("search_inventory", { equipped: "unequipped", sort: "crit_value_asc", limit: 30 }, ctx);
+    expect(before.echoes.map((e: any) => e.id)).toContain(fed.echoId);
+    expect(after.echoes.map((e: any) => e.id)).not.toContain(fed.echoId);
+    expect(after.matching).toBe(before.matching - 1);
+    const all = await call("search_inventory", { limit: 30 }, ctx);
+    expect(all.echoes.find((e: any) => e.id === fed.echoId)).toMatchObject({ equippedBy: [], heldBySavedBuilds: ["Mornye's saved build “Account plan”"] });
+  }, 60_000);
 
   it("re-roll advice per equipped echo, and a clear error without a character", async () => {
     const r = await call("echo_lab", { show: "reroll", character: "Aemeath" }, ctxWith());

@@ -19,6 +19,7 @@ import {
   withInventoryRecord,
   withLines,
   withSlotRecord,
+  wearsNow,
   wornByIndex,
   type LabCharacter,
   type LabSession,
@@ -91,7 +92,7 @@ const DEAD_BELOW = 0.0005;
 /** Who to rate an echo for: the built character wearing it (its slot really points at it), else none. */
 export function wornTarget(session: LabSession, echoId: string): RollQualityTarget | null {
   for (const w of wornByIndex(session.account).get(echoId) ?? []) {
-    if (w.stale) continue;
+    if (!wearsNow(w)) continue; // a saved build that holds it is not where it sits
     const pointer = session.account.characters?.[w.characterId]?.echoes?.[w.slot]?.echoId;
     if (pointer === echoId) return { characterId: w.characterId, slot: w.slot };
   }

@@ -32,8 +32,10 @@ import { onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/saved
 export const ECHO_LAB_CACHE_KEY = "wtplus:echoLab:cache";
 /** bump when the cached result shapes or their figures change: an older tab's cache is then ignored, never rendered.
  *  3 (2026-11-04): the line model (lineModel.ts) moved Farm next's and the Tuner plan's figures, so a saved pass never
- *  shows the old ones beside new ones. */
-const CACHE_VERSION = 3;
+ *  shows the old ones beside new ones.
+ *  4 (2026-11-09): an echo a saved build holds is kept (core.ts `wornByIndex`); a pass saved before that still says Feed
+ *  for it on the same account, so it is judged again. */
+const CACHE_VERSION = 4;
 
 export interface JobStatus {
   running: boolean;

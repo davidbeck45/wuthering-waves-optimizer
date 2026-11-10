@@ -3,7 +3,7 @@
 // "Feed first") and the "Feed candidates" filter. Pure (no Vue, no stores): the verdicts come from the Echo Lab pass
 // (bestOwner.ts), the ratings from rollRatings.ts (quick) or rollQuality.ts (exact, when Echo Lab's detail ran it).
 import type { EchoVerdict, EchoVerdictKind } from "../echoLab/bestOwner";
-import { VERDICT_LABEL, characterName, ratingOf, reasonText, slotLabel } from "../echoLab/echoLabView";
+import { VERDICT_LABEL, characterName, ratingOf, reasonText, savedBuildNote, slotLabel } from "../echoLab/echoLabView";
 
 export type InventorySort = "default" | "best-rolls" | "feed-first";
 
@@ -103,6 +103,9 @@ export function chipFor(input: {
   const roll = rating ? { text: rollText(rating.percentile, rating.lines), tone: rollTone(rating.percentile), exact: rating.exact } : null;
   const rollPending = rateable && rating === undefined && !stale;
   const sentences = [`Echo Lab: ${verdictLabel} (${reason.toLowerCase()}).`];
+  // which saved build holds it and whose (the chip itself has room for "In a saved build" only)
+  const held = savedBuildNote(row);
+  if (held) sentences.push(held[0].toUpperCase() + held.slice(1));
   if (stale) sentences.unshift("Updating: Echo Lab is judging your echoes again after a change.");
   if (rating) {
     const where = rating.worn ? `where it sits on ${characterName(rating.characterId)}` : `in ${characterName(rating.characterId)}'s ${slotLabel(rating.slot).toLowerCase()}`;
@@ -117,7 +120,7 @@ export function chipFor(input: {
     sentences.push("Echo Lab could not rate this roll on its build.");
   }
   sentences.push("Tap for the details in Echo Lab.");
-  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}${rollPending ? ", rating roll…" : ""}, ${reason}${stale ? " (updating)" : ""}. Open in Echo Lab`;
+  const aria = `Echo Lab: ${verdictLabel}${roll ? `, ${roll.text}` : ""}${rollPending ? ", rating roll…" : ""}, ${reason}${held ? `: ${held.replace(/\.$/, "")}` : ""}${stale ? " (updating)" : ""}. Open in Echo Lab`;
   return { state: stale ? "stale" : "ready", verdict: row.verdict, verdictLabel, reason, roll, rollPending, title: sentences.join(" "), aria };
 }
 

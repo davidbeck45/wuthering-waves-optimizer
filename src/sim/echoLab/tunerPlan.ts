@@ -22,6 +22,7 @@ import {
   weightedQuantile,
   withLines,
   withSlotRecord,
+  wearsNow,
   wornByIndex,
   type LabCharacter,
   type LabSession,
@@ -289,7 +290,7 @@ export async function tunerCandidates(session: LabSession, options: TunerPlanOpt
       continue;
     }
     // worn by a built character (the slot really points at it): tune it where it sits
-    const wearer = (worn.get(common.echoId) ?? []).find((w) => !w.stale && labById.get(w.characterId)?.slots[w.slot]?.echoId === common.echoId);
+    const wearer = (worn.get(common.echoId) ?? []).find((w) => wearsNow(w) && labById.get(w.characterId)?.slots[w.slot]?.echoId === common.echoId);
     if (wearer) {
       const lab = labById.get(wearer.characterId) as LabCharacter;
       const spread = await inPlaceSpread(session, lab, wearer.slot, samples, pace);

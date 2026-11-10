@@ -9,6 +9,7 @@ import { SUBSTAT_ABBR, SUBSTAT_KEYS, expectedRoll, isFlatSubstat, type SubstatKe
 import { IN_GAME_SET_NAME } from "../echoPlan/catalog";
 import { checkOf, showHave, showNeed } from "../energy/energyNeed";
 import type { EchoVerdict, EchoVerdictKind, LabCharacterSummary, VerdictReason } from "./bestOwner";
+import { wearsNow } from "./core";
 import type { LockPlan } from "./rerollAdvice";
 import { MIN_PLAN_GAIN, rerolledLines } from "./rerollPick";
 
@@ -87,7 +88,7 @@ export const VERDICT_ORDER: Record<EchoVerdictKind, number> = { keep: 0, spare: 
 export function reasonText(row: Pick<EchoVerdict, "reason" | "upgradeFor" | "wornBy" | "potential">): string {
   const reasons: Record<VerdictReason, string> = {
     upgrade: row.upgradeFor.length > 1 ? `Upgrade for ${row.upgradeFor.length}` : "Upgrade",
-    worn: row.wornBy.every((w) => w.stale) ? "Marked equipped" : "Worn",
+    worn: row.wornBy.some(wearsNow) ? "Worn" : row.wornBy.some((w) => w.build) ? "In a saved build" : "Marked equipped",
     tune: "Worth tuning",
     close: "Backup, within 2 %",
     gamble: "Gamble to tune",
@@ -98,9 +99,27 @@ export function reasonText(row: Pick<EchoVerdict, "reason" | "upgradeFor" | "wor
   return reasons[row.reason];
 }
 
+/** The saved builds that hold an echo (builds that are not the one their character wears now), each as the player
+ *  knows it: whose it is and its name: "Sigrika's saved build “Account plan”". Empty when none holds it. */
+export function savedBuildsHolding(row: Pick<EchoVerdict, "wornBy">): string[] {
+  return row.wornBy.filter((w) => w.build).map((w) => `${characterName(w.characterId)}'s saved build “${w.build!.name}”`);
+}
+
+/** One plain sentence for an echo a saved build holds, null for any other. Echo Lab's row, the inventory chip's hover
+ *  text and the assistant's row all say this one, so the three agree on why the echo is kept. */
+export function savedBuildNote(row: Pick<EchoVerdict, "wornBy">): string | null {
+  const held = savedBuildsHolding(row);
+  if (!held.length) return null;
+  const list = held.length === 1 ? held[0] : held.length === 2 ? `${held[0]} and ${held[1]}` : `${held[0]}, ${held[1]} and ${held.length - 2} more`;
+  return `${list} hold${held.length === 1 ? "s" : ""} this echo: feeding it would break ${held.length === 1 ? "that build" : "those builds"}.`;
+}
+
+/** The words before the portraits on a card: someone wears it, or only saved builds hold it. */
+export const holdersLabel = (row: Pick<EchoVerdict, "wornBy">): string => (!row.wornBy.some(wearsNow) && row.wornBy.some((w) => w.build) ? "held by" : "worn by");
+
 /** The character whose build colours an echo's lines: its best owner, else who wears it. */
 export function referenceCharacter(row: Pick<EchoVerdict, "best" | "wornBy">): string | null {
-  return row.best?.characterId ?? row.wornBy.find((w) => !w.stale)?.characterId ?? row.wornBy[0]?.characterId ?? null;
+  return row.best?.characterId ?? row.wornBy.find(wearsNow)?.characterId ?? row.wornBy.find((w) => !w.stale)?.characterId ?? row.wornBy[0]?.characterId ?? null;
 }
 
 export type LineTier = "great" | "good" | "weak" | "dead";
@@ -292,7 +311,7 @@ export function qualityTarget(
   const built: ReadonlyMap<string, Pick<LabCharacterSummary, "slots">> = Array.isArray(characters)
     ? new Map((characters as ReadonlyArray<Pick<LabCharacterSummary, "id" | "slots">>).map((c) => [c.id, c]))
     : (characters as ReadonlyMap<string, Pick<LabCharacterSummary, "slots">>);
-  const wearer = row.wornBy.find((w) => !w.stale && built.get(w.characterId)?.slots[w.slot]?.echoId === row.echoId);
+  const wearer = row.wornBy.find((w) => wearsNow(w) && built.get(w.characterId)?.slots[w.slot]?.echoId === row.echoId);
   if (wearer) return { characterId: wearer.characterId, slot: wearer.slot };
   if (row.best) return { characterId: row.best.characterId, slot: row.best.slot };
   if (row.potential) return { characterId: row.potential.characterId, slot: row.potential.slot };

@@ -444,14 +444,30 @@ export async function setDeltaOf(session: LabSession, lab: LabCharacter, slot: n
   return delta;
 }
 
-/** Who wears an echo: the inventory's `equipped` map and the characters' slot pointers (stale map entries flagged). */
+/** Who holds an echo: the inventory's `equipped` map and the characters' slot pointers (stale map entries flagged), and
+ *  every saved build that is not the one worn now. */
 export interface WornBy {
   characterId: string;
   slot: number;
   /** the inventory map says so, but the character's slot points at another echo */
   stale: boolean;
+  /** not worn now: one of the character's saved builds holds it in that slot (an "Account plan" or "Built for …" build
+   *  that Whole account or Build my team saved, any second build made in the calculator) */
+  build?: { id: string; name: string };
 }
 
+/** an entry of someone wearing the echo now (their slot points at it), as against a saved build holding it */
+export const wearsNow = (w: WornBy): boolean => !w.stale && !w.build;
+
+/**
+ * Echo id → who holds it. Three sources: the characters' slot pointers (worn now), the inventory's `equipped` map (stale
+ * when the slot points elsewhere), and the echoes of every saved build that is not the active one. A saved build's echoes
+ * are spoken for: Whole account and Build my team save such builds by default, pin them in teams and tell the player to
+ * switch to them later, so an echo one of them holds must never read as free to feed (2026-11-08 hunt, numbers 3: four
+ * plan echoes read Feed and counted in the Feed list that Copy list copies). The active build's own entry in `builds[]`
+ * is left out: it is a copy that is only refreshed when the player switches away (buildOverride.ts), the live record is
+ * the truth.
+ */
 export function wornByIndex(account: LabAccount): Map<string, WornBy[]> {
   const index = new Map<string, WornBy[]>();
   const add = (echoId: string, entry: WornBy): void => {
@@ -472,6 +488,21 @@ export function wornByIndex(account: LabAccount): Map<string, WornBy[]> {
     for (const [characterId, slot] of Object.entries(map ?? {})) {
       const pointer = (account.characters?.[characterId]?.echoes as Record<string, any> | undefined)?.[slot]?.echoId;
       add(echoId, { characterId, slot: Number(slot), stale: pointer !== echoId });
+    }
+  }
+  for (const [id, data] of Object.entries(account.characters ?? {})) {
+    for (const build of Array.isArray(data?.builds) ? (data.builds as Array<Record<string, any> | null>) : []) {
+      if (!build || build.id == null || build.id === data.activeBuildId) continue;
+      const stored = (build.echoes ?? {}) as Record<string, any>;
+      for (let slot = 0; slot < 5; slot++) {
+        const echoId = stored?.[slot]?.echoId;
+        if (!echoId) continue;
+        const list = index.get(String(echoId)) ?? [];
+        // wearing it now says more than a second build of theirs holding it too; one entry per build
+        if (list.some((w) => w.characterId === id && (wearsNow(w) || w.build?.id === build.id))) continue;
+        list.push({ characterId: id, slot, stale: false, build: { id: String(build.id), name: String(build.name ?? "").trim() || "Unnamed build" } });
+        index.set(String(echoId), list);
+      }
     }
   }
   return index;

@@ -10,7 +10,7 @@
           <span class="el-chip el-chip--feed">Feed list</span>
           <EchoLabPopover id="feed" label="Clearing the feed list in game" align="left">
             <p>Each group is one filter in the game's echo list: <b>Sonata</b> (the set), <b>Cost</b> and <b>Main Stat</b>. Filter, check the echoes against the list, and use them as tuning EXP.</p>
-            <p>Feed means no built character gains damage from the echo in any slot it may take (same cost, keeping every active set bonus and any Healing Bonus, at most one ER roll lost), nobody wears it, and its substats are below what your builds already wear.</p>
+            <p>Feed means no built character gains damage from the echo in any slot it may take (same cost, keeping every active set bonus and any Healing Bonus, at most one ER roll lost), nobody wears it, no saved build holds it, and its substats are below what your builds already wear.</p>
             <p class="opacity-70">Lock your favourites in game first. Characters you have not built yet are not counted.</p>
           </EchoLabPopover>
         </span>
@@ -93,8 +93,8 @@
         </select>
         <select :value="filters.worn" class="el-select select select-bordered select-xs" aria-label="Worn" data-test-echo-lab-filter-worn @change="set('worn', ($event.target as HTMLSelectElement).value as VerdictFilters['worn'])">
           <option value="all">Worn or not</option>
-          <option value="worn">Worn</option>
-          <option value="free">Not worn</option>
+          <option value="worn">Worn or in a saved build</option>
+          <option value="free">In no build</option>
         </select>
         <div class="flex items-center gap-1 lg:ml-auto">
           <span class="text-xs opacity-60">Sort</span>
@@ -178,12 +178,12 @@
             </div>
             <div class="el-cell-worn flex min-w-0 items-center gap-2.5" role="cell">
               <span v-if="row.reason !== 'upgrade'" class="el-reason-card min-w-0 text-xs opacity-60">{{ reasonText(row) }}</span>
-              <span v-if="row.wornBy.length && row.reason !== 'worn'" class="el-card-only shrink-0 text-xs opacity-60">worn by</span>
+              <span v-if="row.wornBy.length && row.reason !== 'worn'" class="el-card-only shrink-0 text-xs opacity-60">{{ holdersLabel(row) }}</span>
               <span class="flex shrink-0 items-center -space-x-1.5">
                 <img
                   v-for="w in row.wornBy.slice(0, 3)"
-                  :key="`${w.characterId}|${w.slot}`"
-                  :title="w.stale ? `${characterName(w.characterId)}: marked equipped, but the build points at another echo` : `Worn by ${characterName(w.characterId)} (${slotLabel(w.slot)})`"
+                  :key="`${w.characterId}|${w.slot}|${w.build?.id ?? ''}`"
+                  :title="holderTip(w)"
                   :src="portrait(w.characterId)"
                   :alt="characterName(w.characterId)"
                   class="el-portrait size-6 ring-2 ring-base-100"
@@ -196,6 +196,9 @@
               <span class="el-chip" :class="`el-chip--${row.verdict}`" :data-test-echo-lab-verdict="row.verdict">{{ VERDICT_LABEL[row.verdict] }}</span>
               <span class="el-reason text-[0.7rem] leading-tight opacity-60">{{ reasonText(row) }}</span>
             </div>
+            <!-- a saved build holds it (an "Account plan" or "Built for …" build, any build that is not worn now): which
+            build and whose, in words, on the row itself, so nobody feeds it from the list -->
+            <div v-if="savedBuildNote(row)" class="el-cell-held" role="cell" :data-test-echo-lab-held="row.echoId">{{ savedBuildNote(row) }}</div>
           </div>
           <div v-if="open === row.echoId" class="el-detail border-b border-base-300 bg-base-200 px-4 py-3 text-sm" :data-test-echo-lab-detail="row.echoId">
             <div v-if="row.owners.length" class="mb-2">
@@ -263,6 +266,7 @@ import {
   echoName,
   feedGroups,
   feedListText,
+  holdersLabel,
   lineText,
   lineTier,
   mainLabel,
@@ -270,6 +274,7 @@ import {
   portrait,
   reasonText,
   referenceCharacter,
+  savedBuildNote,
   setIcon,
   setLabel,
   signedPct,
@@ -384,6 +389,11 @@ const headers: Array<{ label: string; sort: VerdictSortKey | null; class?: strin
   { label: "Worn by", sort: "worn" },
   { label: "Verdict", sort: "verdict" },
 ];
+
+function holderTip(w: EchoVerdict["wornBy"][number]): string {
+  if (w.build) return `In ${characterName(w.characterId)}'s saved build “${w.build.name}” (${slotLabel(w.slot)})`;
+  return w.stale ? `${characterName(w.characterId)}: marked equipped, but the build points at another echo` : `Worn by ${characterName(w.characterId)} (${slotLabel(w.slot)})`;
+}
 
 function ownerTip(row: EchoVerdict): string {
   const b = row.best;

@@ -2,7 +2,7 @@
 // Feed by the app's engine on each character's best rotation (who it is an upgrade for, by how much), the feed list
 // grouped the way the game filters echoes, and Transducer re-roll advice for a character's five echoes.
 import type { EchoVerdict } from "../../echoLab/bestOwner";
-import { feedGroups, reasonText } from "../../echoLab/echoLabView";
+import { feedGroups, reasonText, savedBuildsHolding } from "../../echoLab/echoLabView";
 import { runJob } from "../../echoLab/pass";
 import type { RerollAdviceResult } from "../../echoLab/rerollAdvice";
 import { MIN_PLAN_GAIN, pickRerollFirst, planChips } from "../../echoLab/rerollPick";
@@ -33,7 +33,9 @@ function echoRow(r: EchoVerdict): Record<string, unknown> {
     ...(r.lines < 5 ? { substatLines: r.lines } : {}),
     verdict: r.verdict,
     why: reasonText(r),
-    ...(r.wornBy.length ? { wornBy: r.wornBy.map((w) => `${characterName(w.characterId)} (slot ${w.slot + 1})${w.stale ? " · marked only" : ""}`) } : {}),
+    ...(r.wornBy.some((w) => !w.build) ? { wornBy: r.wornBy.filter((w) => !w.build).map((w) => `${characterName(w.characterId)} (slot ${w.slot + 1})${w.stale ? " · marked only" : ""}`) } : {}),
+    // a saved build that is not worn now holds it (an "Account plan" or "Built for …" build, pinned in teams): never feed it
+    ...(savedBuildsHolding(r).length ? { heldBySavedBuilds: savedBuildsHolding(r) } : {}),
     ...(r.best && r.best.gain > 0
       ? { bestFor: { character: characterName(r.best.characterId), slot: r.best.slot + 1, replaces: echoName(r.best.replacedEcho), damageGainPct: pct(r.best.gain) } }
       : {}),
@@ -45,9 +47,10 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
   name: "echo_lab",
   description:
     "The /echo-lab page: every echo in the inventory judged by the app's engine on each character's best rotation (the ranking " +
-    "enemy, Lv 100 / 20 % RES). keep = an upgrade for someone (exact damage gain, slot and the echo it replaces), worn, or worth " +
+    "enemy, Lv 100 / 20 % RES). keep = an upgrade for someone (exact damage gain, slot and the echo it replaces), worn, held " +
+    "by a saved build that is not worn now (heldBySavedBuilds names the build and whose it is), or worth " +
     "tuning; spare = no upgrade but within 2 % of its best owner's echo, a gamble to tune, or good substats nobody can slot; " +
-    "feed = the rest. Swap rules: a swap keeps every set bonus and Healing Bonus and loses at most one ER roll. show feed gives " +
+    "feed = the rest: no build gains from it, nobody wears it and no saved build holds it. Swap rules: a swap keeps every set bonus and Healing Bonus and loses at most one ER roll. show feed gives " +
     "the feed list grouped as the game filters echoes (Sonata · Cost · Main Stat) with each echo; keep / spare list those " +
     "echoes; reroll gives Transducer advice for one character's equipped five-line echoes (lock or re-roll each line, the " +
     "chance a re-roll improves it, expected gain) and which echo to re-roll first. character narrows keep / spare to " +

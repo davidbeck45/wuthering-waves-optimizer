@@ -867,6 +867,15 @@ Chromium through the worker: pass 2.1 s with the main thread never blocked over 
 benchmarks 3.3 s on the warm session, one re-roll advice 0.7 s, cancel honoured within ms. Gates: `echoLab.test.ts`
 (16), `vue-tsc`, the CLI snapshot diff (no number moved).
 
+**A saved build holds its echoes (2026-11-09, hunt round 2 numbers 3).** `wornByIndex` also reads every build in
+`builds[]` that is not the active one (an "Account plan" or "Built for …" build, a second build from the calculator):
+its echoes get a `WornBy` entry with `build: { id, name }`, so they are Keep ("In a saved build"), never Feed, and
+the row, the inventory chip's hover text and the assistant's `echo_lab` / `search_inventory` rows name the build and
+whose it is (`savedBuildNote`). The active build's own `builds[]` entry is left out on purpose: it is a copy from the
+last switch (buildOverride.ts) and the live record is the truth. On the 9-16 export with Whole account's 9 builds
+saved without "Also make active": 128 / 59 / 71 becomes 138 keep / 53 spare / 67 feed. `CACHE_VERSION` 4 drops
+passes saved before it. Gate: `savedBuildHolds.test.ts`.
+
 ## Echo Lab page and the calculator's engine panel — `/echo-lab` (stage 2, 2026-10-26)
 
 `/echo-lab` (lazy route in `main.ts`, no nav entry yet — `plusPages.ts` gets it at integration) puts the engine above

@@ -15,12 +15,14 @@ const RUN = { timeout: 60000 };
 
 interface SeedOptions {
   empty?: boolean;
+  /** Cartethyia also has an "Account plan" build saved beside the one she wears, holding this echo in slot 3 */
+  planHolds?: string;
   /** weapons kept, every character's echoes taken off: nobody to judge the inventory against */
   unequipped?: boolean;
   fontScale?: number;
 }
 
-function seed({ empty = false, unequipped = false, fontScale }: SeedOptions = {}) {
+function seed({ empty = false, unequipped = false, fontScale, planHolds }: SeedOptions = {}) {
   return {
     onBeforeLoad(win: Window) {
       // a fresh tab: no cached pass from the previous test
@@ -28,7 +30,9 @@ function seed({ empty = false, unequipped = false, fontScale }: SeedOptions = {}
       if (!empty) {
         const characters = unequipped
           ? Object.fromEntries(Object.entries(fixture.characters).map(([id, c]) => [id, { ...(c as Record<string, unknown>), echoes: {} }]))
-          : fixture.characters;
+          : planHolds
+            ? withPlanBuild(planHolds)
+            : fixture.characters;
         win.localStorage.setItem("character", JSON.stringify({ characters, activeCharacter: "Cartethyia" }));
         win.localStorage.setItem(
           "inventory",
@@ -46,6 +50,17 @@ function seed({ empty = false, unequipped = false, fontScale }: SeedOptions = {}
       win.document.head.appendChild(style);
     },
   };
+}
+
+/** The account after a Whole account save without "Also make active": Cartethyia keeps the build she wears and gets an
+ *  "Account plan" build beside it, the same echoes with `echoId` in slot 3. */
+function withPlanBuild(echoId: string): Record<string, unknown> {
+  const car = fixture.characters.Cartethyia as Record<string, unknown> & { echoes: Record<string, unknown> };
+  const builds = [
+    { id: "car-live", name: "Default build", createdAt: 1, updatedAt: 1, echoes: car.echoes },
+    { id: "car-plan", name: "Account plan", createdAt: 2, updatedAt: 2, echoes: { ...car.echoes, 2: { echoId } } },
+  ];
+  return { ...fixture.characters, Cartethyia: { ...car, activeBuildId: "car-live", builds } };
 }
 
 function expectNoHorizontalScroll(label: string): void {
@@ -192,6 +207,33 @@ describe("Echo Lab", () => {
       const top = $list[0].getBoundingClientRect().top;
       expect(top, "verdict list top after the tap").to.be.lessThan(915 * 0.45);
     });
+  });
+
+  it("keeps an echo a saved build holds: off the Feed list, with the build's name and whose it is on the row", () => {
+    // "labdeadwp01" gains nobody anything: fed while no build holds it (2026-11-08 hunt, numbers 3: on a real account
+    // four echoes of the "Account plan" builds read Feed and counted in the list Copy list hands to the game)
+    cy.viewport(412, 915);
+    cy.visit("/echo-lab?echo=labdeadwp01", seed({ fontScale: 1.3 }));
+    cy.get('[data-test-echo-lab-row="labdeadwp01"]', RUN).should("have.attr", "data-verdict", "feed");
+    cy.get("[data-test-echo-lab-held]").should("not.exist");
+    cy.get('[data-test-echo-lab-filter-verdict="feed"]')
+      .invoke("text")
+      .then((before) => {
+        const fedBefore = Number(before.replace(/\D/g, ""));
+        cy.visit("/echo-lab?echo=labdeadwp01", seed({ fontScale: 1.3, planHolds: "labdeadwp01" }));
+        cy.get('[data-test-echo-lab-row="labdeadwp01"]', RUN).should("have.attr", "data-verdict", "keep").and("contain.text", "In a saved build");
+        cy.get('[data-test-echo-lab-held="labdeadwp01"]')
+          .should("be.visible")
+          .and("have.text", "Cartethyia's saved build “Account plan” holds this echo: feeding it would break that build.");
+        expectNoHorizontalScroll("an echo a saved build holds");
+        cy.get('[data-test-echo-lab-filter-verdict="feed"]').should(($b) => expect(Number($b.text().replace(/\D/g, ""))).to.eq(fedBefore - 1));
+        // the Feed list (what Copy list copies) counts one echo fewer and no row left to feed is held
+        cy.get("[data-test-echo-lab-show-all]").click();
+        cy.get("[data-test-echo-lab-feed-list]").should("contain.text", `${fedBefore - 1} echo`);
+        cy.get('[data-test-echo-lab-filter-verdict="feed"]').click();
+        cy.get("[data-test-echo-lab-row]").should("have.length", fedBefore - 1);
+        cy.get('[data-test-echo-lab-row="labdeadwp01"]').should("not.exist");
+      });
   });
 
   it("offers import and scan when there is nothing to judge", () => {
