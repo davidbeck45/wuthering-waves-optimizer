@@ -15,6 +15,7 @@ import { resolveTeamCharacters } from "../../teamContext/resolveTeam";
 import { showNeed } from "../../energy/energyNeed";
 import type { AllocationApi, Candidate } from "../allocate";
 import { draftBuildFields, filterPoolIds, finishMember, memberSearchApi, prepareMember, teamTotalOf, teamTotalWithDrafts, wornByMap, type ActiveMember, type BuildTeamHooks, type MemberOutcome, type SearchContext, type TeamSpec } from "../buildTeam";
+import { teamBuffNeedsFor, type TeamBuffNeed } from "../teamBuffNeeds";
 import type { BuildOptions } from "../constraints";
 import type { OptimizerBackend } from "../headlessOptimizer";
 import type { MemberPlan } from "../rileyPlan";
@@ -161,11 +162,37 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   const slotEchoes = new Map<string, Set<string>>();
   const wornInTeams = new Map<string, Set<string>>(); // character → the echoes their builds in every chosen team wear
   const teams: AccountTeamOutcome[] = [];
+  // every chosen team as it runs today, and the stats its team buffs rest on (teamBuffNeeds.ts): a character keeps
+  // what any of their teams rests on, so all of them are read before the first member is set up
+  const resolutions: Array<Awaited<ReturnType<typeof resolveTeamCharacters>>> = [];
+  const teamNeeds: TeamBuffNeed[][] = [];
+  for (const t of input.teams) {
+    check();
+    const team = t.spec;
+    const resolution = await resolveTeamCharacters({ characterIds: team.characterIds, buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null }, characters, echoes, { auto, enemyConfig: enemy });
+    resolutions.push(resolution);
+    teamNeeds.push(await teamBuffNeedsFor(team, resolution, echoes, enemy));
+  }
+  /** one need per stat and kind of panel for a character: the highest any of their teams rests on, and everyone it reaches */
+  const needsOf = (characterId: string): TeamBuffNeed[] => {
+    const out: TeamBuffNeed[] = [];
+    for (const n of teamNeeds.flat()) {
+      if (n.provider !== characterId) continue;
+      const have = out.find((x) => x.stat === n.stat && x.own === n.own);
+      if (!have) out.push({ ...n, receivers: [...n.receivers] });
+      else {
+        have.value = Math.max(have.value, n.value);
+        have.target = Math.max(have.target, n.target);
+        for (const r of n.receivers) if (!have.receivers.some((x) => x.characterId === r.characterId)) have.receivers.push(r);
+      }
+    }
+    return out;
+  };
   for (let ti = 0; ti < input.teams.length; ti++) {
     check();
     const t = input.teams[ti]!;
     const team = t.spec;
-    const resolution = await resolveTeamCharacters({ characterIds: team.characterIds, buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null }, characters, echoes, { auto, enemyConfig: enemy });
+    const resolution = resolutions[ti]!;
     const today = await teamTotalOf(team, characters, echoes, enemy, auto);
     const outcome: AccountTeamOutcome = { index: ti, spec: team, weight: t.weight, choiceId: t.choiceId, slots: [], before: today.avg, after: today.avg, greedyAfter: null, dpsBefore: today.dps, dpsAfter: today.dps };
     teams.push(outcome);
@@ -183,7 +210,7 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
       }
       // the need as every other page prints it (useBuildTeam, buildTeamCli): raw it read 115.1 % where they read 115.2 %
       const need = t.plans[slot]?.erNeed;
-      const { outcome: o, active: a } = await prepareMember({ slot, characterId, plan: t.plans[slot], team, resolution, characters, echoes, enemy, options: opts, erFloor: need == null ? undefined : showNeed(need), wornOutside, hooks: teamHooks });
+      const { outcome: o, active: a } = await prepareMember({ slot, characterId, plan: t.plans[slot], team, resolution, characters, echoes, enemy, options: opts, erFloor: need == null ? undefined : showNeed(need), wornOutside, teamBuffNeeds: needsOf(characterId), hooks: teamHooks });
       const index = members.length;
       members.push({ ...o, team: ti, alsoIn: [] });
       ownerOf.set(characterId, index);
@@ -273,7 +300,7 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
         const d = a != null ? draftOf(a, picks[a] ?? null) : null;
         return d ? [{ slot: s.slot, characterId: s.characterId, draft: d }] : [];
       });
-      out.push(drafts.length ? await teamTotalWithDrafts(team.spec, characters, echoes, enemy, auto, drafts) : { avg: team.before, dps: team.dpsBefore });
+      out.push(drafts.length ? await teamTotalWithDrafts(team.spec, characters, echoes, enemy, auto, drafts, teamNeeds[team.index]) : { avg: team.before, dps: team.dpsBefore });
     }
     return out;
   };

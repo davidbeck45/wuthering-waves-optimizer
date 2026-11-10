@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Whole account": what the page says, kept out of the component so it is testable. Pure.
 import { characterDisplayName } from "../../display/names";
 import { teamTitle } from "../../display/teamName";
-import { buffDefaultNames, echoName, emptySlotText, setName, statShort, teammatesNote, worthSaving } from "../buildTeamView";
+import { buffDefaultNames, echoName, emptySlotText, setName, statShort, teamBuffNotes, teammatesNote, worthSaving } from "../buildTeamView";
 import type { SameEchoesSave } from "./accountApply";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
@@ -97,6 +97,7 @@ export function memberNote(m: AccountMember, saved: SameEchoesSave | null = null
   if (m.erFloor != null && m.erMet && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor) notes.push(`now meets the ${m.erFloor.toFixed(1)} % Energy Regen need (today ${m.before.menuEr.toFixed(1)} %)`);
   else if (m.erUnreachable) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);
   else if (m.erMet === false) notes.push(`short of ${m.erFloor?.toFixed(1)} % Energy Regen on the character screen: the search counted a buff that isn't always on`);
+  for (const n of teamBuffNotes(m)) notes.push(n.text.replace(/\.$/, ""));
   if (m.relaxed === "mainStats") notes.push("any main stat (the plan's ones ran out)");
   if (m.relaxed === "layout") notes.push("any cost layout (the plan's ran out)");
   if (m.mainEchoFallback) notes.push("another main echo (the plan's is not free)");

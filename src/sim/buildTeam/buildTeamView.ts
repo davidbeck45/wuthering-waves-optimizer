@@ -2,7 +2,7 @@
 import { mainEchoesData } from "../../echoes/index";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import { sonataName } from "../echoPlan/catalog";
-import { characterDisplayName } from "../display/names";
+import { characterDisplayName, characterShortName } from "../display/names";
 import type { UndoClash, UndoFate } from "./apply";
 import { memberAfter, shortfallText, type BuildTeamResult, type EchoSource, type MemberOutcome } from "./buildTeam";
 import { LAYOUT_COSTS, type MemberPlan } from "./rileyPlan";
@@ -113,6 +113,28 @@ export function teammatesNote(m: Pick<MemberOutcome, "after">): string | null {
   if (shown == null || own == null || Math.abs(shown - own) <= 0.0005 * Math.max(1, Math.abs(own))) return null;
   if (m.after?.kept) return `Not ticked for Save: this is the build this team runs today, beside the ticked builds. The new build alone, with the team as it is today, reads ${compactNum(own)}.`;
   return `${compactNum(own)} with only this build changed: the rest is the team's other new builds.`;
+}
+
+/** "260 %", "189.4 %": a stat as the Team Buffs panel prints it. */
+const statText = (n: number): string => `${Number(n.toFixed(1))} %`;
+const andList = (names: readonly string[]): string => (names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? "");
+
+/** What the review says about a stat of this member that a teammate's team buffs rest on (teamBuffNeeds.ts): that the
+ *  build keeps it, and why; or that it could not, and what the team total counts then. */
+export function teamBuffNotes(m: Pick<MemberOutcome, "characterId" | "teamBuffNeeds" | "after">): Array<{ tone: "info" | "warn"; text: string }> {
+  const out: Array<{ tone: "info" | "warn"; text: string }> = [];
+  const me = characterShortName(m.characterId);
+  for (const n of m.teamBuffNeeds ?? []) {
+    const own = n.own;
+    const who = andList(n.receivers.map((id) => characterShortName(id)));
+    const short = n.after != null && n.after + 1e-6 < n.target && !m.after?.kept;
+    if (short && own) out.push({ tone: "warn", text: `${who}'s team buffs assume ${statText(n.value)} ${n.label} from ${me}, but this build has ${statText(n.after!)}. The team total here counts the ${statText(n.after!)} it gives; Teams keeps reading ${statText(n.value)} until ${who}'s Team Buffs panel says otherwise.` });
+    else if (short) out.push({ tone: "warn", text: `${who}'s team buffs scale on ${me}'s ${n.label}: this build has ${statText(n.after!)}${n.today != null ? `, down from ${statText(n.today)}` : ""}, and the team total counts that.` });
+    else if (n.held) out.push({ tone: "info", text: `${me} keeps ${statText(n.target)} ${n.label}: ${who}'s team buffs ${own ? "are set for it" : "scale on it"}.` });
+    // today's build is already short of the player's own panel: the plan holds what there is, and both figures rest on the panel
+    if (own && n.today != null && n.today + 1e-6 < n.value) out.push({ tone: "warn", text: `${who}'s team buffs assume ${statText(n.value)} ${n.label} from ${me}, but the build worn today has ${statText(n.today)}. The team's figures, here and on Teams, count the ${statText(n.value)}.` });
+  }
+  return out;
 }
 
 /** Today's build misses the ER floor and the new one meets it (what a lower number buys). */
@@ -229,6 +251,7 @@ export function resultNotes(m: MemberOutcome, plan: MemberPlan | undefined): Arr
   const lower = rel != null && rel < -0.0005 && !m.sameEchoes;
   const teammates = teammatesNote(m);
   if (teammates) out.push({ tone: "info", text: teammates });
+  out.push(...teamBuffNotes(m));
   if (b && m.erFloor != null && b.menuEr != null && buysErFloor(m) && lower) {
     out.push({ tone: "info", text: `Today's build is ${(m.erFloor - b.menuEr).toFixed(1)} points short of the ${pctText(m.erFloor)} Energy Regen this loop needs: the new build pays for that ER with a little damage.` });
   }

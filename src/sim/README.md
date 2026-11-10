@@ -2660,6 +2660,20 @@ the note; 412 px / 130 %), `phoneLayout.cy.ts` (`/build-team` in the
 route loop, plan and result at 360 px), `themes.cy.ts`; the CLI snapshot diff against the base commit is empty on both
 exports.
 
+**A stat a teammate's team buffs rest on is kept** (hunt round 2, H1, 2026-11-09; `buildTeam/teamBuffNeeds.ts`). A team
+buff can scale on its provider's stat (Suisui's Floral Epistle tiers, Shorekeeper's Stellarealm and the Song of Feathered
+Trace 5-piece, by whoever wears it, on Energy Regen; two on Crit Rate), and the search scores a member on their own part: Suisui shed 73 points of ER for +9.5 % of
+her 1.2 %, while Xuanling's panel, which names the team and so is kept as his own, went on reading the stored 260 %
+(7.80M printed and saved, 6.61M once the panel said 189.4 %). Two rules, One team and Whole account alike. (1) The
+provider's search (never the main DPS's, whose own damage is most of the team's) holds the stat as a floor beside the loop's need: what the panel says, capped where the buff tops out
+(Ryan's `teamBuffStatFloor`), or today's when today's build is already short of it; a panel plus derives counts too, at
+what today's build has. The card says "Suisui keeps 260 % Energy Regen: Xuanling's team buffs are set for it". (2) A
+floor the echoes can't hold is never scored as held: every total with new builds worn (`teamTotalWithDrafts`) counts
+the player's own panel at what the changed build gives, and the card says which figure Teams keeps reading. Energy
+Regen is the one floor; a Crit Rate buff gets rule 2. On the 9-16 export the Xuanling team now reads 7.66M → 7.89M
+(+3.0 %) with Suisui at 263.4 %, and Teams agrees whether the panel says 260 % or her real figure. Gate:
+`teamBuffNeeds.test.ts` (the shipped Cartethyia · Shorekeeper rotation; the floor and rule 2 each go red alone).
+
 ## Set from the icon next to +25: echo screenshots without the Sonata filter — `src/sim/echoScan/setGlyph.ts` (track "glyph", 2026-10-31)
 
 The phone importer (phase D) and `wuwa-tools/echo-import/extract.py` used to read an echo's set from the Sonata-filter chip

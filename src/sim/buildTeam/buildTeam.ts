@@ -20,6 +20,7 @@ import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { menuEnergyRegen } from "../energy/energyHave";
 import { allocateTeam, type AllocationApi, type Candidate, type SwapMove } from "./allocate";
 import { constraintsOf, costOf, filterPool, legalInSlot, mainEchoCandidates, meetsSetPieces, relaxLevels, setCounts, shortfallOf, type BuildOptions, type MemberConstraints, type RelaxLevel, type Shortfall } from "./constraints";
+import { bakedRecords, deliveredRecords, providerStat, teamBuffNeedsFor, type ShortDelivery, type TeamBuffNeed } from "./teamBuffNeeds";
 import { bestLoadoutOf, erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizeRequest, type OptimizerBackend, type OptimizeProgress, type ScoredLoadout } from "./headlessOptimizer";
 import type { MemberPlan } from "./rileyPlan";
 import { characterShortName } from "../display/names";
@@ -96,6 +97,24 @@ export interface EchoPick {
   sharedWith: string[];
 }
 
+/** A stat this member's build feeds into a teammate's team buff (teamBuffNeeds.ts), as the run left it; figures in %. */
+export interface MemberBuffNeed {
+  stat: string;
+  label: string;
+  /** what the teammates' buffs rest on, and what a new build had to keep (today's, when today's build is short of it) */
+  value: number;
+  target: number;
+  today: number | null;
+  /** what the new build gives; null without one */
+  after: number | null;
+  /** whose buffs rest on it; `own`: their Team Buffs panel is the player's and holds the figure (else plus derives
+   *  the buffs from the team, and the figure is the build's own) */
+  own: boolean;
+  receivers: string[];
+  /** the search held it as a floor, above the loop's own need */
+  held: boolean;
+}
+
 export interface MemberOutcome {
   slot: number;
   characterId: string;
@@ -145,6 +164,9 @@ export interface MemberOutcome {
   fromBuild: { id: string | null; name: string | null; source: "pinned" | "named" | "active" };
   /** what apply.ts saves: the slot's build with the new echoes, main echo and buff settings */
   draft: Record<string, any> | null;
+  /** the stats of this member that teammates' team buffs rest on (Suisui's Energy Regen for Xuanling's Floral Epistle
+   *  tiers): the search keeps them, and the review says so */
+  teamBuffNeeds?: MemberBuffNeed[];
 }
 
 /** A member's figure as saved, so the members add up to the team's total; their own alone without a team total. */
@@ -160,6 +182,9 @@ export interface BuildTeamResult {
   /** team rotation totals, average damage per rotation (and per second when it has a duration), `after` with every new
    *  build worn; team objective only. The page's headline reads what the ticked builds get (`teamFigureOf`) */
   team: { before: number; after: number; dpsBefore: number | null; dpsAfter: number | null } | null;
+  /** the stats team buffs rest on in this team as it runs today (teamBuffNeeds.ts): a total worked out after the run
+   *  counts no more of one than the builds it wears give */
+  teamBuffNeeds?: TeamBuffNeed[];
   enemy: TeamEnemyConfig;
   /** the run's team-buff setting (`BuildTeamInput.autoTeamBuffs`), for totals worked out after it */
   autoTeamBuffs: boolean;
@@ -209,11 +234,31 @@ export async function bestRotationOf(characterId: string, characters: Record<str
 }
 
 /** The team's total the way Team Rotations computes it: builds and team buffs resolved, then `calcTeamRotationDamage`. */
-export async function teamTotalOf(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean): Promise<{ avg: number; dps: number | null; perSlot: number[] }> {
+export async function teamTotalOf(
+  team: TeamSpec,
+  characters: Record<string, any>,
+  echoes: any[],
+  enemy: TeamEnemyConfig,
+  auto: boolean,
+  /** with new builds worn: the stats team buffs rest on today, and whose build changed. A panel of the player's own then
+   *  counts no more of a stat than the changed build gives (teamBuffNeeds.ts); `short` lists where that happened */
+  deliver?: { needs: readonly TeamBuffNeed[]; changed: ReadonlySet<string> },
+): Promise<{ avg: number; dps: number | null; perSlot: number[]; short: ShortDelivery[] }> {
   const resolution = await resolveTeamCharacters({ characterIds: team.characterIds, buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null }, characters, echoes, { auto, enemyConfig: enemy });
+  let records = resolution.characters;
+  let buildIds = resolution.auto ? resolution.buildIds : team.buildIds;
+  let short: ShortDelivery[] = [];
+  if (deliver?.needs.some((n) => n.own && deliver.changed.has(n.provider))) {
+    const out = await deliveredRecords(bakedRecords(team, resolution), deliver.needs, deliver.changed, echoes, enemy);
+    if (out.short.length) {
+      records = out.records;
+      buildIds = team.characterIds.map(() => null); // baked in
+      short = out.short;
+    }
+  }
   const res = await calcTeamRotationDamage(
-    { name: team.name, characterIds: team.characterIds, buildIds: resolution.auto ? resolution.buildIds : team.buildIds, actions: team.actions ?? [], duration: team.duration ?? null },
-    resolution.characters,
+    { name: team.name, characterIds: team.characterIds, buildIds, actions: team.actions ?? [], duration: team.duration ?? null },
+    records,
     enemy,
     echoes,
   );
@@ -222,7 +267,14 @@ export async function teamTotalOf(team: TeamSpec, characters: Record<string, any
     avg: res.total.avgDamage ?? 0,
     dps: Number.isFinite(seconds) && seconds > 0 ? res.dps.avg : null,
     perSlot: team.characterIds.map((id) => (id ? res.perCharacter[id]?.damageAggregation?.avgDamage ?? 0 : 0)),
+    short,
   };
+}
+
+/** The stats team buffs rest on in this team as it runs today. */
+export async function teamBuffNeedsOfTeam(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean): Promise<TeamBuffNeed[]> {
+  const resolution = await resolveTeamCharacters({ characterIds: team.characterIds, buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null }, characters, echoes, { auto, enemyConfig: enemy });
+  return teamBuffNeedsFor(team, resolution, echoes, enemy);
 }
 
 /** The fields of the build apply.ts saves: the slot's build with these echoes (inventory pointers, upstream's
@@ -286,6 +338,8 @@ export interface PrepareMemberArgs {
   erFloor?: number | null;
   /** echoes out of the search (worn outside the team): a member with none left in the pool gets "noEchoes" */
   wornOutside: ReadonlySet<string>;
+  /** the stats team buffs rest on in the member's team(s) (teamBuffNeeds.ts): theirs become a floor */
+  teamBuffNeeds?: readonly TeamBuffNeed[];
   hooks: BuildTeamHooks;
 }
 
@@ -343,7 +397,7 @@ export async function prepareMember(a: PrepareMemberArgs): Promise<{ outcome: Me
   const c = constraintsOf(plan, options, { mainEcho: resolved[characterId]?.mainEcho?.echo ?? null, ...(floorOverride !== undefined ? { erFloor: floorOverride } : {}) });
   base.constraints = c;
   base.erFloor = c.erFloor;
-  const levels = relaxLevels(c);
+  let levels = relaxLevels(c);
   const loosest = levels[levels.length - 1]!.c;
   const { pool } = filterPool(echoes, loosest, { wornOutside });
   const candidateKeys = new Set(c.mainEchoKeys ?? []);
@@ -351,6 +405,20 @@ export async function prepareMember(a: PrepareMemberArgs): Promise<{ outcome: Me
   const setKeys = c.allowedSets ?? [...new Set(pool.map((e) => e.echoSet).filter(Boolean))];
   const job = await prepareMemberJob({ characterId, characters: resolved, inventoryEchoes: echoes, enemy, objective, setKeys, mainEchoKeys: [...candidateKeys] });
   base.buffDefaults = job.buffConfig.defaulted;
+  // a teammate's team buffs rest on this member's Energy Regen: the build keeps it, beside the loop's own need. The need
+  // is on the full stat and the floor on the ER the Energy check reads, `erOffset` apart; rounded down, so a build with
+  // exactly that much passes. Not the main DPS: their own damage is most of the team's, and holding their stat for what
+  // a set buff of theirs gives a support would cost more than it keeps (the team total still counts what they give)
+  const fed = (a.teamBuffNeeds ?? []).filter((n) => n.provider === characterId);
+  const erFed = plan.mainDps ? undefined : fed.filter((n) => n.stat === "energyRegen").sort((x, y) => y.target - x.target)[0];
+  const heldFloor = erFed ? Math.floor((erFed.target - job.erOffset * 100) * 1e4 + 1e-6) / 1e4 : null;
+  const held = heldFloor != null && (c.erFloor == null || heldFloor > c.erFloor + 1e-9);
+  if (held) {
+    c.erFloor = heldFloor;
+    base.erFloor = heldFloor;
+    levels = relaxLevels(c);
+  }
+  if (fed.length) base.teamBuffNeeds = fed.map((n) => ({ stat: n.stat, label: n.label, value: n.value, target: n.target, today: n.today, after: null, own: n.own, receivers: n.receivers.map((r) => r.characterId), held: n === erFed && held }));
   const beforeRun = await calcCharacterRotationDamage(objective.rotation, null, characterId, resolved, enemy, echoes);
   base.before = { value: beforeRun.damageAggregation.avgDamage ?? 0, menuEr: job.currentMenuEr, withRunBuffs: null };
   if (!pool.length) {
@@ -602,6 +670,7 @@ export async function finishMember(m: number, active: readonly ActiveMember[], p
   const afterChars = { ...resolved, [job.characterId]: afterRecord };
   const afterRun = await calcCharacterRotationDamage(job.rotation, null, job.characterId, afterChars, enemy, echoes);
   const menuEr = await menuErPercent(job.characterId, afterChars, echoes);
+  for (const need of out.teamBuffNeeds ?? []) need.after = await providerStat(job.characterId, need.stat, afterChars, echoes, enemy);
   const currentIds = new Set(Object.values(resolved[job.characterId]?.echoes ?? {}).map((s: any) => s?.echoId).filter(Boolean));
   out.status = "ok";
   out.after = {
@@ -641,7 +710,16 @@ export async function finishMember(m: number, active: readonly ActiveMember[], p
 }
 
 /** The team's total with these drafts pinned (one per slot that has one), the way Team Rotations would read it. */
-export async function teamTotalWithDrafts(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean, drafts: ReadonlyArray<{ slot: number; characterId: string; draft: Record<string, any> }>): Promise<Awaited<ReturnType<typeof teamTotalOf>>> {
+export async function teamTotalWithDrafts(
+  team: TeamSpec,
+  characters: Record<string, any>,
+  echoes: any[],
+  enemy: TeamEnemyConfig,
+  auto: boolean,
+  drafts: ReadonlyArray<{ slot: number; characterId: string; draft: Record<string, any> }>,
+  /** the team's `teamBuffNeedsOfTeam` when the caller has it; read here otherwise */
+  needs?: readonly TeamBuffNeed[],
+): Promise<Awaited<ReturnType<typeof teamTotalOf>>> {
   const withDrafts: Record<string, any> = { ...characters };
   const pins = [...(team.buildIds ?? team.characterIds.map(() => null))];
   for (const d of drafts) {
@@ -649,7 +727,10 @@ export async function teamTotalWithDrafts(team: TeamSpec, characters: Record<str
     withDrafts[d.characterId] = { ...withDrafts[d.characterId], builds: [...(withDrafts[d.characterId]?.builds ?? []), { id: draftId, name: "draft", ...d.draft }] };
     pins[d.slot] = draftId;
   }
-  return teamTotalOf({ ...team, buildIds: pins }, withDrafts, echoes, enemy, auto);
+  if (!drafts.length) return teamTotalOf({ ...team, buildIds: pins }, withDrafts, echoes, enemy, auto);
+  // a new build that no longer gives what a teammate's own panel says is counted for what it gives
+  const fed = needs ?? (await teamBuffNeedsOfTeam(team, characters, echoes, enemy, auto));
+  return teamTotalOf({ ...team, buildIds: pins }, withDrafts, echoes, enemy, auto, { needs: fed, changed: new Set(drafts.map((d) => d.characterId)) });
 }
 
 /** The team with some of a run's new builds worn. */
@@ -658,6 +739,8 @@ export interface TeamFigure {
   dpsAfter: number | null;
   /** each slot's part of `after` */
   perSlot: number[];
+  /** where a ticked build gives less of a stat than a teammate's own Team Buffs panel says: `after` counts what it gives */
+  short?: ShortDelivery[];
 }
 
 /** What these members' new builds get the team: `ticks` as the page's Save ticks (or `defaultSaveSlots`), the other
@@ -668,14 +751,14 @@ export async function teamFigureOf(result: BuildTeamResult, team: TeamSpec, char
   const built = result.members.filter((m) => m.draft);
   const saving = built.filter((m) => ticks[m.slot]);
   if (saving.length === built.length) return { after: result.team.after, dpsAfter: result.team.dpsAfter, perSlot: team.characterIds.map((_, i) => result.members[i]?.after?.withTeam ?? 0) };
-  const total = await teamTotalWithDrafts(team, characters, echoes, result.enemy, result.autoTeamBuffs, saving.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })));
-  return { after: total.avg, dpsAfter: total.dps, perSlot: total.perSlot };
+  const total = await teamTotalWithDrafts(team, characters, echoes, result.enemy, result.autoTeamBuffs, saving.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })), result.teamBuffNeeds);
+  return { after: total.avg, dpsAfter: total.dps, perSlot: total.perSlot, short: total.short };
 }
 
 /** The team's total before and with these drafts pinned. */
-export async function teamTotalsWith(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean, drafts: Array<{ slot: number; characterId: string; draft: Record<string, any> }>): Promise<{ before: Awaited<ReturnType<typeof teamTotalOf>>; after: Awaited<ReturnType<typeof teamTotalOf>> }> {
+export async function teamTotalsWith(team: TeamSpec, characters: Record<string, any>, echoes: any[], enemy: TeamEnemyConfig, auto: boolean, drafts: Array<{ slot: number; characterId: string; draft: Record<string, any> }>, needs?: readonly TeamBuffNeed[]): Promise<{ before: Awaited<ReturnType<typeof teamTotalOf>>; after: Awaited<ReturnType<typeof teamTotalOf>> }> {
   const before = await teamTotalOf(team, characters, echoes, enemy, auto);
-  const after = await teamTotalWithDrafts(team, characters, echoes, enemy, auto, drafts);
+  const after = await teamTotalWithDrafts(team, characters, echoes, enemy, auto, drafts, needs);
   return { before, after };
 }
 
@@ -693,6 +776,8 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
   const enemy = hasActions ? resolveTeamEnemyConfig(team.enemyConfig ?? {}) : RANKING_ENEMY;
   const resolution = await resolveTeamCharacters({ characterIds: ids, buildIds: team.buildIds, enemyConfig: team.enemyConfig, actions: team.actions ?? [], handoffs: team.handoffs ?? null }, characters, echoes, { auto, enemyConfig: enemy });
   const resolved = resolution.characters;
+  // the stats team buffs rest on here (Suisui's Energy Regen for Xuanling's): their provider's search keeps them
+  const teamBuffNeeds = await teamBuffNeedsFor(team, resolution, echoes, enemy);
   const teamSet = new Set(ids.filter((x): x is string => !!x));
   const worn = wornByMap(input.inventory.equipped ?? {});
   // echoes out of every member's search: worn outside the team (unless allowed), and — added once step 1 knows who
@@ -708,7 +793,7 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
   const active: ActiveMember[] = [];
   for (let slot = 0; slot < ids.length; slot++) {
     check();
-    const { outcome, active: a } = await prepareMember({ slot, characterId: ids[slot] ?? null, plan: plans[slot], team, resolution, characters, echoes, enemy, options, erFloor: input.erFloors?.[slot], wornOutside, hooks });
+    const { outcome, active: a } = await prepareMember({ slot, characterId: ids[slot] ?? null, plan: plans[slot], team, resolution, characters, echoes, enemy, options, erFloor: input.erFloors?.[slot], wornOutside, teamBuffNeeds, hooks });
     outcomes.push(outcome);
     if (a) active.push(a);
   }
@@ -753,7 +838,7 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
   let teamTotals: BuildTeamResult["team"] = null;
   if (objectiveKind === "team" && hasActions) {
     const drafts = outcomes.filter((o) => o.draft).map((o) => ({ slot: o.slot, characterId: o.characterId, draft: o.draft! }));
-    const { before, after } = await teamTotalsWith(team, characters, echoes, enemy, auto, drafts);
+    const { before, after } = await teamTotalsWith(team, characters, echoes, enemy, auto, drafts, teamBuffNeeds);
     teamTotals = { before: before.avg, after: after.avg, dpsBefore: before.dps, dpsAfter: after.dps };
     for (const o of outcomes) if (o.after) o.after.withTeam = after.perSlot[o.slot] ?? null;
   }
@@ -768,6 +853,7 @@ export async function buildMyTeam(input: BuildTeamInput, backend: OptimizerBacke
     swaps: allocation.swaps.map((s) => ({ ...s, taker: active[s.taker]!.slot, giver: active[s.giver]!.slot })),
     objectiveKind,
     team: teamTotals,
+    teamBuffNeeds,
     enemy,
     autoTeamBuffs: auto,
     fromOthers,
