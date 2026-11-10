@@ -63,6 +63,9 @@ describe("long computes, said to a screen reader", () => {
 
   it("/endgame says when the plan is being worked out and when it is done", () => {
     cy.viewport(412, 915);
+    // the season ships dated and the plan needs a run: pin the clock inside Season 41, whose floors have their HP
+    // (on the real clock this went red on 2026-11-09, the day that season ended)
+    cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
     cy.visit("/endgame", seed());
     expectStartAndEnd("Working out your Tower of Adversity plan", "Tower of Adversity plan finished");
   });

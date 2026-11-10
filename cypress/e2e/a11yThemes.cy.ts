@@ -124,6 +124,9 @@ describe("contrast, focus and keyboard", () => {
 
   it("keeps ToA's unearned crest stars dim: the dim is the count, so the text floor stays off them", () => {
     cy.viewport(412, 915);
+    // the season ships dated and a crest row needs a run: pin the clock inside Season 41, whose floors have their HP
+    // (on the real clock this went red on 2026-11-09, the day that season ended)
+    cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
     cy.visit("/endgame", seed());
     cy.get("[data-test-toa-crests]", ENGINE).should("have.length.greaterThan", 0);
     cy.document().then((doc) => {
