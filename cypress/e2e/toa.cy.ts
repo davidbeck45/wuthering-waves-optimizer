@@ -1,6 +1,7 @@
 // Wuthering Tools+ — /endgame, the ToA clear check (src/sim/endgame/), in the v3 UI: the season's floor cards, the
 // account's teams timed by Riley's engine in the real worker, a crest badge, the 12-stage plan, a logged clear; the
-// empty state without an account and the stale-season banner once the shipped season has ended.
+// empty state without an account, a season synced before its floor HP is published, and the stale-season banner once
+// the newest shipped season has ended.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 
 const v3 = (withAccount: boolean) => ({
@@ -105,10 +106,56 @@ describe("ToA clear check (/endgame)", () => {
     cy.get("[data-test-toa-plan-empty]").should("contain.text", "Check your teams first");
   });
 
-  it("greys the last season once it has ended and says the data is due for the next", () => {
-    cy.clock(Date.UTC(2026, 10, 20, 12), ["Date"]);
+  it("shows a new season from its first day and says its floor HP is not published yet, with no number of the last one", () => {
+    // 2026-11-09 21:00 US Central: Season 42 began that morning, and the HP sheet has no block for it yet.
+    // This one reads the shipped Season 42 file: once its HP is synced, it asserts the HP figures instead (the unit
+    // tests fight a season stripped of its HP and hold either way).
+    cy.clock(Date.UTC(2026, 10, 10, 3), ["Date"]);
     cy.visit("/endgame", v3(true));
-    cy.get("[data-test-toa-stale]").should("be.visible").and("contain.text", "S42");
+    cy.get("[data-test-toa-season-badge]").should("contain.text", "Season 42");
+    cy.get("[data-test-toa-countdown]").should("have.text", "26 d 17 h");
+    cy.get("[data-test-toa-season]").should("contain.text", "2026-11-09 → 2026-12-07 04:00");
+    cy.get("[data-test-toa-stale]").should("not.exist");
+    cy.get("[data-test-toa-hp-pending-note]").should("be.visible").and("contain.text", "Season 42's floor HP is not published yet");
+    for (const id of ["hazard-1", "hazard-2", "hazard-3", "hazard-4", "resonant-4", "echoing-4"]) {
+      cy.get(`[data-test-toa-floor="${id}"]`).should("be.visible").and("not.have.class", "opacity-60");
+      cy.get(`[data-test-toa-floor="${id}"] [data-test-toa-hp-pending]`).should("contain.text", "HP not published yet");
+      cy.get(`[data-test-toa-floor="${id}"] [data-test-toa-effect]`).should("have.length.at.least", 2);
+      cy.get(`[data-test-toa-floor="${id}"] [data-test-toa-goals]`).should("be.visible");
+      cy.get(`[data-test-toa-floor="${id}"] [data-test-toa-teams-pending]`).should("contain.text", "once the floor's HP is published");
+    }
+    // no HP figure anywhere: it read "0 HP" on every card, and "estimate · waves summed" over a 0
+    cy.get("[data-test-toa-hp]").should("not.exist");
+    cy.get("[data-test-toa-estimate]").should("not.exist");
+    // what is known is shown: the enemies, what they resist, the effects in the game's wording, the crest goals
+    cy.get('[data-test-toa-floor="hazard-1"]').should("contain.text", "Crownless");
+    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-res] .toa-res').should("have.length", 6);
+    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-effect="approx"]').should("contain.text", "Crit DMG +25%").click();
+    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-effect-note]')
+      .should("contain.text", "Modelled (approximation)")
+      .and("contain.text", "Crit. DMG is increased by 25%. Resonators gain 30% Glacio DMG Bonus.");
+    cy.get('[data-test-toa-floor="echoing-4"] [data-test-toa-effect="none"]').should("have.length", 2);
+    // the fold keeps to the six low side floors: the Hazard floors, HP or not, are no "any spare team" stages
+    cy.get("[data-test-toa-low-floor]").should("have.length", 6);
+    cy.get('[data-test-toa-low-floor^="hazard"]').should("not.exist");
+    // nothing can be timed: no run starts, the button stays off, and the Plan tab counts no crest (it planned 36★)
+    cy.get("[data-test-toa-recompute]").should("be.disabled");
+    cy.get("[data-test-toa-progress]").should("not.exist");
+    cy.get('[data-test-toa-tab="plan"]').should("have.text", "Plan").click();
+    cy.get("[data-test-toa-plan-empty]").should("contain.text", "The plan comes once Season 42's floor HP is published");
+    cy.get("[data-test-toa-stage]").should("not.exist");
+    // and nothing of Season 41 is left on the page (its Hazard 1 had 5.51M HP)
+    cy.get("[data-test-toa]").should("not.contain.text", "5.51M");
+  });
+
+  it("greys the last season once it has ended and says the data is due for the next", () => {
+    // past the newest shipped season's end (Season 42 ends 2026-12-07)
+    cy.clock(Date.UTC(2026, 11, 20, 12), ["Date"]);
+    cy.visit("/endgame", v3(true));
+    cy.get("[data-test-toa-season-badge]").should("contain.text", "Season 42");
+    cy.get("[data-test-toa-stale]").should("be.visible").and("contain.text", "S43");
+    // a season that has ended is not waiting for anything: the one banner says what is due
+    cy.get("[data-test-toa-hp-pending-note]").should("not.exist");
     cy.get('[data-test-toa-floor="hazard-1"]').should("have.class", "opacity-60");
     // an ended season's floors are not fought again: no run starts, and the button stays off
     cy.get("[data-test-toa-recompute]").should("be.disabled");

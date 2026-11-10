@@ -14,10 +14,12 @@ import { appKeyOf } from "../rankings/castMapper";
 import { defaultPace, paceOf, readClearLog, teamSignature, writeClearLog, type ClearLog, type ClockReading, type LoggedClear } from "./crests";
 import {
   guessRegion,
+  hpPending,
   loadSeason,
   offsetOf,
   seasonStatus,
   SERVER_REGIONS,
+  timedFloors,
   toaIndex,
   type ServerRegionId,
   type ToaSeason,
@@ -114,6 +116,10 @@ export function useToa() {
     savedTeams.value.map((t) => t.characterIds.filter((x): x is string => !!x)).filter((ids) => ids.length === 3).map(teamSignature),
   );
   const wantKey = computed(() => (season.value ? checkKey(riley.commit, account.value, season.value, [...new Set(savedSignatures.value)], CANDIDATES) : ""));
+  /** the floors still waiting for their HP (a season synced before the HP sheet has its block): shown, never timed */
+  const pending = computed(() => (season.value ? hpPending(season.value) : []));
+  /** is there a floor to time at all? With none, no check runs: the solve would time nothing */
+  const canTime = computed(() => !!season.value && timedFloors(season.value).length > 0);
 
   const check = shallowRef<ToaCheck | null>(null);
   const running = ref(false);
@@ -139,7 +145,7 @@ export function useToa() {
   }
 
   async function compute(opts: { force?: boolean } = {}): Promise<void> {
-    if (!season.value || !hasAccount.value) return;
+    if (!season.value || !hasAccount.value || !canTime.value) return;
     if (!opts.force && controller && runningKey === wantKey.value) return;
     controller?.abort();
     const ctrl = new AbortController();
@@ -230,7 +236,8 @@ export function useToa() {
   const planInput = computed(() =>
     check.value && season.value ? planInputOf(season.value, check.value, { owned: owned.value, paceOf: prefs.usePace ? paceFor : undefined }) : null,
   );
-  const plan = computed<Plan | null>(() => (planInput.value ? planVigor(planInput.value) : null));
+  // no plan while a floor's HP is unpublished: it would seat teams around stages nobody could be timed on
+  const plan = computed<Plan | null>(() => (planInput.value && !pending.value.length ? planVigor(planInput.value) : null));
   const alternatives = computed<PlanAlternative[]>(() => (planInput.value && plan.value ? planAlternatives(planInput.value, plan.value) : []));
   const misses = computed(() => {
     if (!plan.value || !season.value) return [];
@@ -255,6 +262,8 @@ export function useToa() {
     seasonError,
     hasAccount,
     owned,
+    pending,
+    canTime,
     check,
     failedCount,
     running,

@@ -7,6 +7,13 @@
       "end": "2026-11-09",
       "resetHour": 4,
       "file": "s41.json"
+    },
+    {
+      "season": 42,
+      "start": "2026-11-09",
+      "end": "2026-12-07",
+      "resetHour": 4,
+      "file": "s42.json"
     }
   ]
 }

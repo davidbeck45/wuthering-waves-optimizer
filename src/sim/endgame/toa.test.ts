@@ -9,9 +9,11 @@ import {
   countdown,
   floorChips,
   guessRegion,
+  hpPending,
   hpSegments,
   loadSeason,
   releasedSeasons,
+  resSegments,
   seasonStatus,
   segmentProfiles,
   serverMoment,
@@ -25,6 +27,7 @@ import { nearMisses, planAlternatives, planVigor, vigorPool, type PlanInput, typ
 
 const DAY = 86_400_000;
 const S41 = (): Promise<ToaSeason> => loadSeason(toaIndex.seasons.find((s) => s.season === 41)!);
+const S42 = (): Promise<ToaSeason> => loadSeason(toaIndex.seasons.find((s) => s.season === 42)!);
 
 /* ------------------------------------------------------------------------------------------ season data */
 
@@ -51,8 +54,9 @@ describe("season data and the release guard", () => {
   });
 
   it("only ships seasons that have started (the generated index), with S41 parsing", async () => {
-    expect(toaIndex.seasons.every((s) => s.start <= "2026-10-26")).toBe(true);
-    expect(toaIndex.seasons.some((s) => s.season === 42)).toBe(false);
+    // the index as synced on 2026-11-09, the day Season 42 began: nothing later is in it
+    expect(toaIndex.seasons.every((s) => s.start <= "2026-11-09")).toBe(true);
+    expect(toaIndex.seasons.map((s) => s.season)).toEqual([41, 42]);
     const s = await S41();
     expect(s.season).toBe(41);
     expect(s.towers.map((t) => t.id)).toEqual(["resonant", "hazard", "echoing"]);
@@ -101,6 +105,98 @@ describe("season data and the release guard", () => {
     expect(guessRegion(-300)).toBe("america");
     expect(guessRegion(60)).toBe("europe");
     expect(guessRegion(480)).toBe("asia");
+  });
+});
+
+/* ------------------------------------------------------------------- a season before its HP is published */
+
+/** A season as the generator ships it before the HP sheet has its block: no HP on any floor or enemy. The behaviour is
+ *  tested on Season 41 stripped this way, so it holds whatever state Season 42's own file is in. */
+const withoutHp = (s: ToaSeason, only?: string[]): ToaSeason => ({
+  ...s,
+  towers: s.towers.map((t) => ({
+    ...t,
+    floors: t.floors.map((f) => (only && !only.includes(f.id) ? f : { ...f, hp: null, hpRaw: null, hpType: null, enemies: f.enemies.map((e) => ({ ...e, hp: null })) })),
+  })),
+});
+
+describe("a season synced before the HP sheet has its block (Season 42 on 2026-11-09)", () => {
+  const SHEET_FLOORS = ["resonant-4", "hazard-1", "hazard-2", "hazard-3", "hazard-4", "echoing-4"];
+
+  it("is the running season on every server clock from its own reset, for 28 days", () => {
+    const now = Date.UTC(2026, 10, 10, 3); // 2026-11-09 21:00 US Central
+    for (const offset of [8, -5, 1]) expect(seasonStatus(toaIndex, now, offset)).toMatchObject({ entry: { season: 42, start: "2026-11-09", end: "2026-12-07" }, current: true, next: null });
+    expect(countdown(seasonStatus(toaIndex, now, -5).endsAt!, now)).toBe("27 d 6 h");
+    // an hour before America's reset Season 41 is still the one running there, while Asia is a day into Season 42
+    const early = serverMoment("2026-11-09", 4, -5) - 3600_000;
+    expect(seasonStatus(toaIndex, early, -5)).toMatchObject({ entry: { season: 41 }, current: true });
+    expect(seasonStatus(toaIndex, early, 8)).toMatchObject({ entry: { season: 42 }, current: true });
+  });
+
+  it("Season 42 carries all 12 floors with goals, Vigor and every effect translated", async () => {
+    const s = await S42();
+    const floors = s.towers.flatMap((t) => t.floors);
+    const floor = (id: string) => floors.find((f) => f.id === id)!;
+    expect(floors).toHaveLength(12);
+    expect([s.start, s.end, s.resetHour]).toEqual(["2026-11-09", "2026-12-07", 4]);
+    expect(floors.every((f) => f.enemies.length > 0)).toBe(true);
+    // the six floors the HP sheet covers either wait for their HP (as synced on the season's first day) or have it
+    expect([...timedFloors(s), ...hpPending(s)].map((f) => f.id).sort()).toEqual([...SHEET_FLOORS].sort());
+    expect(floor("hazard-1").goals).toEqual([90, 150, 180]);
+    expect(floor("hazard-3").goals).toEqual([60, 120, 150]);
+    expect([1, 2, 3, 4].map((n) => floor(`resonant-${n}`).cost)).toEqual([1, 2, 3, 4]);
+    expect([1, 2, 3, 4].map((n) => floor(`hazard-${n}`).level)).toEqual([100, 100, 100, 100]);
+    // every buff id of the season has its translation: no placeholder chip, and each floor shows its effects
+    expect(floors.every((f) => f.effects.length >= 2)).toBe(true);
+    const rows = new Map(floors.flatMap((f) => floorChips(f).map((c) => [c.key, c] as const)));
+    expect([...rows.values()].some((c) => c.label === "Not modelled yet")).toBe(false);
+    const count = (fidelity: string): number => [...rows.values()].filter((c) => c.fidelity === fidelity).length;
+    expect([count("exact"), count("approx"), count("none")]).toEqual([9, 4, 2]);
+    // an unmodelled row keeps the game's own wording in its note
+    expect(floorChips(floor("echoing-4")).find((c) => c.label === "Ignore 25% of enemy DEF")).toMatchObject({ fidelity: "none", note: expect.stringContaining("Resonators ignore 25% of the enemy's DEF when dealing damage.") });
+    // the ramp is Season 41's, id and wording unchanged
+    expect(floor("hazard-3").effects.find((e) => e.id === 92008205)?.model).toEqual((await S41()).towers[1]!.floors[2]!.effects.find((e) => e.id === 92008205)?.model);
+    expect(JSON.stringify(s)).not.toMatch(/encore/i);
+  });
+
+  it("lists the floors waiting for their HP: the six the sheet covers, never a low side floor", async () => {
+    const s41 = await S41();
+    expect(hpPending(s41)).toEqual([]);
+    const bare = withoutHp(s41);
+    expect(timedFloors(bare)).toEqual([]);
+    expect(hpPending(bare).map((f) => f.id)).toEqual(SHEET_FLOORS);
+    // a block that came in part: only the floor without its HP waits
+    const part = withoutHp(s41, ["hazard-2"]);
+    expect(hpPending(part).map((f) => f.id)).toEqual(["hazard-2"]);
+    expect(timedFloors(part).map((f) => f.id)).toEqual(SHEET_FLOORS.filter((id) => id !== "hazard-2"));
+  });
+
+  it("still shows what a floor's enemies resist (their own RES plus the floor's), with nothing for the engine to fight", async () => {
+    const s41 = await S41();
+    const h4 = withoutHp(s41).towers[1]!.floors[3]!;
+    // the same two tables as with its HP (Sentry Construct, then Crownless), and no HP in them
+    expect(resSegments(h4).map((x) => [x.names, x.hp])).toEqual([[["Sentry Construct"], 0], [["Crownless"], 0]]);
+    expect(resSegments(h4).map((x) => x.res)).toEqual(hpSegments(s41.towers[1]!.floors[3]!).map((x) => x.res));
+    expect(hpSegments(h4)).toEqual([]);
+    expect(segmentProfiles(h4)).toEqual([]);
+    // a floor with HP lists exactly what the engine fights
+    expect(resSegments(s41.towers[1]!.floors[3]!)).toEqual(hpSegments(s41.towers[1]!.floors[3]!));
+  });
+
+  it("makes no spare stage of a floor waiting for its HP: nobody is timed there and it earns no crest", async () => {
+    const s41 = await S41();
+    const input = planInputOf(withoutHp(s41), { results: [], candidates: [] }, { owned: ["A", "B", "C", "D", "E", "F", "G", "H", "I"] });
+    const stage = new Map(input.stages.map((x) => [x.id, x]));
+    for (const id of SHEET_FLOORS) expect(stage.get(id), id).toMatchObject({ timed: true, options: [] });
+    expect(stage.get("resonant-1")).toMatchObject({ timed: false, assumedCrests: 3 });
+    const plan = planVigor(input);
+    for (const id of SHEET_FLOORS) expect(plan.assignments.find((a) => a.stageId === id)?.crests ?? 0, id).toBe(0);
+    // it counted all 12 stages as spare ones assumed to 3-crest: 36 of 36 with not one floor timed
+    expect(plan.crests).toBeLessThanOrEqual(18);
+    // with its HP the season plans as before: the six sheet floors are timed stages, the six low ones spare
+    const whole = planInputOf(s41, { results: [], candidates: [] });
+    expect(whole.stages.filter((x) => x.timed).map((x) => x.id)).toEqual(SHEET_FLOORS);
+    expect(whole.stages.filter((x) => !x.timed)).toHaveLength(6);
   });
 });
 

@@ -2,16 +2,27 @@
 // Wuthering Tools+ AI: the tools on Riley31415's engine (energy_check, team_rotation, build_team_plan, toa_check) on the
 // fixture account (Aemeath / Mornye / Lynae, src/sim/ai/__fixtures__/aiAccount.json) through the headless seam the CLI
 // uses (src/sim/cli/aiRiley.ts — the browser hands in rileyClient() instead), plus fakes for the refusals.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import fixture from "../__fixtures__/aiAccount.json";
 import { parseExport, type ExportFile } from "../../cli/exportShape";
 import { headlessRiley } from "../../cli/aiRiley";
 import { readOnlyStorage, runTool } from "./index";
 import { MAX_RESULT_CHARS, type ToolContext } from "./shared";
 import { teamTarget, type RileyToolEngine } from "./riley";
-import { floorIdOf, seasonCheck, TOA_CHECK_KEY } from "./endgame";
+import { floorIdOf, hpNotPublished, seasonCheck, TOA_CHECK_KEY } from "./endgame";
 import { memberPlanSummary } from "./teamRun";
 import { emptyPlan, parseMainStats } from "../../buildTeam/rileyPlan";
+
+// `season.noHp`: the season file as the generator ships it before the HP sheet has its block
+const season = vi.hoisted(() => ({ noHp: false }));
+vi.mock("../../endgame/toaData", async (original) => {
+  const real = await original<typeof import("../../endgame/toaData")>();
+  const bare = (s: Awaited<ReturnType<typeof real.loadSeason>>): typeof s => ({
+    ...s,
+    towers: s.towers.map((t) => ({ ...t, floors: t.floors.map((f) => ({ ...f, hp: null, hpRaw: null, hpType: null, enemies: f.enemies.map((e) => ({ ...e, hp: null })) })) })),
+  });
+  return { ...real, loadSeason: async (entry: Parameters<typeof real.loadSeason>[0]) => (season.noHp ? bare(await real.loadSeason(entry)) : real.loadSeason(entry)) };
+});
 
 const exp: ExportFile = parseExport(fixture, "aiAccount.json");
 /** inside ToA season 41 (2026-10-12 → 11-09) */
@@ -108,6 +119,28 @@ describe("tools on Riley's engine", () => {
     expect(planned.fittingEchoes).toBeGreaterThanOrEqual(0);
     expect(planned.fittingEchoes).toBeLessThan(echoes.length);
   });
+
+  it("toa_check: a season in the build before its floor HP is published says so, times nobody and gives no plan", async () => {
+    // Season 41 as the generator ships a season before the HP sheet has its block (Season 42 on its first day)
+    const real = await headlessRiley(exp);
+    const noSolve: RileyToolEngine = { ...real, solveMine: async () => Promise.reject(new Error("solved")), curves: async () => Promise.reject(new Error("fought")) };
+    const firstDay: ToolContext = { ...ctx, riley: async () => noSolve };
+    expect(await hpNotPublished(ctx)).toBeNull(); // with its HP there is a check to run
+    season.noHp = true;
+    try {
+      const r = await call("toa_check", { floor: null }, firstDay);
+      expect(r).toMatchObject({ season: 41, hpNotPublished: true, path: "/endgame" });
+      expect(r.why).toMatch(/Season 41's floor HP is not published yet/);
+      expect(r.floors.map((f: any) => f.floor)).toEqual(["Resonant 4", "Hazard 1", "Hazard 2", "Hazard 3", "Hazard 4", "Echoing 4"]);
+      expect(r.floors[1]).toMatchObject({ level: 100, enemies: ["Lampylumen Myriad"], effects: expect.arrayContaining(["+30% Electro & Fusion DMG"]) });
+      expect(r).not.toHaveProperty("plan");
+      expect(JSON.stringify(r)).not.toMatch(/killTime|crests/);
+      // a floor asked by name gets the same answer, not "not a timed floor this season: (nothing)"
+      expect(await call("toa_check", { floor: "Hazard 4" }, firstDay)).toMatchObject({ season: 41, hpNotPublished: true });
+    } finally {
+      season.noHp = false;
+    }
+  }, 60_000);
 
   it("toa_check: a floor's best teams with kill time and crests, every floor with a Vigor plan, the page's check reused", async () => {
     const found = await seasonCheck(ctx, null);

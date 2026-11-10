@@ -4,7 +4,7 @@
 // the account (`wtplus:endgame:check`); a fresh one solves every fieldable team (~10 s on a large account).
 import { appKeyOf } from "../../rankings/castMapper";
 import { clockText, teamSignature } from "../../endgame/crests";
-import { countdown, floorChips, floorLabel, guessRegion, loadSeason, offsetOf, seasonStatus, SERVER_REGIONS, timedFloors, toaIndex, type ServerRegionId, type ToaFloor, type ToaSeason } from "../../endgame/toaData";
+import { countdown, floorChips, floorLabel, guessRegion, hpPending, loadSeason, offsetOf, seasonStatus, SERVER_REGIONS, timedFloors, toaIndex, type ServerRegionId, type ToaFloor, type ToaSeason } from "../../endgame/toaData";
 import { checkKey, planInputOf, rankFloor, runToaCheck, type ToaCheck, type ToaRunner } from "../../endgame/toaRun";
 import { planVigor } from "../../endgame/vigorPlan";
 import { floorOdds } from "../../critLuck/floorOdds";
@@ -80,6 +80,26 @@ function floorView(check: ToaCheck, f: ToaFloor, top: number): Record<string, un
   };
 }
 
+/** A season that is in this build before its floor HP is published (the HP sheet gets a new season's block some time
+ *  after the reset): nothing can be timed, so the tool says so, with the floors as they are, instead of running. */
+export async function hpNotPublished(ctx: ToolContext): Promise<Record<string, unknown> | null> {
+  const now = ctx.now.getTime();
+  const region = regionOf(ctx.storage, ctx.now);
+  const status = seasonStatus(toaIndex, now, offsetOf(region));
+  if (!status.entry) return null;
+  const season = await loadSeason(status.entry);
+  if (timedFloors(season).length) return null;
+  return {
+    season: season.season,
+    ...(status.current ? { endsIn: countdown(status.endsAt!, now), serverClock: region } : {}),
+    hpNotPublished: true,
+    why: `Season ${season.season}'s floor HP is not published yet, so no team can be timed and there is no plan. The enemies, effects and crest goals are this season's.`,
+    floors: hpPending(season).map((f) => ({ floor: floorLabel(f.id), level: f.level, enemies: f.enemies.map((e) => e.name), effects: floorChips(f).map((c) => c.label) })),
+    path: "/endgame",
+    label: "ToA clear check",
+  };
+}
+
 /** This season and the check for it: the page's stored one while its key still fits the account, else a new run. */
 export async function seasonCheck(ctx: ToolContext, floor: string | null) {
   const now = ctx.now.getTime();
@@ -129,6 +149,8 @@ export const toaCheckTool = defineTool<{ floor?: string }>({
   riley: true,
   reads: [TOA_CHECK_KEY, TOA_PREFS_KEY],
   async run(input, ctx: ToolContext) {
+    const waiting = await hpNotPublished(ctx);
+    if (waiting) return compactJson(waiting);
     const found = await seasonCheck(ctx, input.floor ?? null);
     if (!found) return compactJson({ season: null, why: "no Tower of Adversity season has started in this build's data", path: "/endgame", label: "ToA clear check" });
     const { season, status, region, check, reused, account, wanted } = found;
@@ -153,6 +175,17 @@ export const toaCheckTool = defineTool<{ floor?: string }>({
     const owned = Object.entries(account?.entries ?? {}).filter(([, e]) => e.owned).map(([name]) => appKeyOf(name));
     const plan = planVigor(planInputOf(season, result, { owned }));
     const teams = new Map(result.candidates.map((c) => [c.id, c]));
+    // some floors timed, others still waiting for their HP: their teams can't be seated, so there is no plan to give
+    const waitingFloors = hpPending(season).map((f) => floorLabel(f.id));
+    if (waitingFloors.length)
+      return compactJson({
+        ...header,
+        floors: timedFloors(season).map((f) => floorView(result, f, 3)),
+        planWithheld: `floor HP is not published yet for ${waitingFloors.join(", ")}: no plan until it is`,
+        notes,
+        path: "/endgame",
+        label: "ToA clear check",
+      });
     return compactJson({
       ...header,
       floors: timedFloors(season).map((f) => floorView(result, f, 3)),

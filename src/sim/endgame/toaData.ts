@@ -232,6 +232,23 @@ export function timedFloors(season: ToaSeason): ToaFloor[] {
   return season.towers.flatMap((t) => t.floors).filter((f) => f.hp !== null && f.hp > 0);
 }
 
+/** The floors the HP sheet covers every season: Hazard 1–4 and each side tower's 4th (side floors 1–3 never get HP). */
+export const hpExpected = (floor: ToaFloor): boolean => floor.id.startsWith("hazard-") || floor.floor === 4;
+
+/** The floors of a season still waiting for their HP. The sheet gets a new season's block some time after the reset
+ *  and the generator ships the floors without it until then: such a floor says "HP not published yet", is never
+ *  timed, and no plan is made while one is waiting (it is no spare stage to assume three crests on). */
+export function hpPending(season: ToaSeason): ToaFloor[] {
+  return season.towers.flatMap((t) => t.floors).filter((f) => hpExpected(f) && !f.hp);
+}
+
+/** The RES tables a floor's enemies show, in order, whether or not its HP is published — what a card lists.
+ *  With HP these are `hpSegments` (what the engine fights); without, the same grouping with no HP in it. */
+export function resSegments(floor: ToaFloor): HpSegment[] {
+  if (floor.hp) return hpSegments(floor);
+  return hpSegments({ ...floor, hp: null, enemies: floor.enemies.map((e) => ({ ...e, hp: 1 })) }).map((s) => ({ ...s, hp: 0 }));
+}
+
 export const towerOf = (season: ToaSeason, floor: ToaFloor): ToaTower => season.towers.find((t) => t.floors.includes(floor))!;
 
 /** Short names: "Hazard 1", "Resonant 4". */

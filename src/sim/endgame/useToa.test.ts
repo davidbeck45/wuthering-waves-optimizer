@@ -10,7 +10,16 @@ import type { CurveLike } from "./killTime";
 import type { ToaRunner } from "./toaRun";
 import { CHECK_KEY, useToa } from "./useToa";
 
-const engine = vi.hoisted(() => ({ fails: 0, tries: 0, account: "k0" }));
+const engine = vi.hoisted(() => ({ fails: 0, tries: 0, solves: 0, account: "k0", noHp: false }));
+// `noHp`: the season file as the generator ships it before the HP sheet has its block (no HP on any floor or enemy)
+vi.mock("./toaData", async (original) => {
+  const real = await original<typeof import("./toaData")>();
+  const bare = (s: Awaited<ReturnType<typeof real.loadSeason>>): typeof s => ({
+    ...s,
+    towers: s.towers.map((t) => ({ ...t, floors: t.floors.map((f) => ({ ...f, hp: null, hpRaw: null, hpType: null, enemies: f.enemies.map((e) => ({ ...e, hp: null })) })) })),
+  });
+  return { ...real, loadSeason: async (entry: Parameters<typeof real.loadSeason>[0]) => (engine.noHp ? bare(await real.loadSeason(entry)) : real.loadSeason(entry)) };
+});
 const comp: Record<string, string[]> = { t1: ["A", "B", "C"], t2: ["A", "B", "Mortefi"] };
 const dps: Record<string, number> = { t1: 300_000, t2: 30_000 };
 
@@ -30,7 +39,7 @@ const solve = (teamKey: string): MineSolve => ({
 const runner: ToaRunner = {
   commit: "test",
   teams: async () => Object.entries(comp).map(([key, names]) => ({ key, members: names.map((n) => ({ name: n, appKey: n, mainDps: n === names[2], free: n === "Mortefi" })) })),
-  solveMine: async (keys) => keys.map(solve),
+  solveMine: async (keys) => (engine.solves++, keys.map(solve)),
   curves: async (k, _p, specs) => {
     // t1 is the team the worker runs out of memory under
     if (k === "t1" && engine.tries++ < engine.fails) throw new Error("The rankings engine worker failed: Uncaught Error: renderer ran out of memory");
@@ -58,6 +67,7 @@ describe("the ToA check across visits", () => {
     setActivePinia(createPinia());
     localStorage.clear();
     engine.tries = 0;
+    engine.noHp = false;
     engine.account = `k${++visits}`;
   });
   afterEach(() => vi.useRealTimers());
@@ -86,5 +96,51 @@ describe("the ToA check across visits", () => {
     expect(engine.tries).toBeGreaterThan(0);
     expect(again.toa.failedCount.value).toBe(0);
     expect(stored()?.check?.results?.some((r: { error?: string }) => r.error)).toBe(false);
+  }, 60_000);
+});
+
+describe("a season in the build before its floor HP is published (as Season 42 was on its first day)", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-11-01T12:00:00Z") }); // Season 41 runs, here without its HP
+    setActivePinia(createPinia());
+    localStorage.clear();
+    engine.tries = 0;
+    engine.solves = 0;
+    engine.noHp = true;
+    engine.account = `k${++visits}`;
+  });
+  afterEach(() => {
+    engine.noHp = false;
+    vi.useRealTimers();
+  });
+
+  it("shows the season, times nobody and plans nothing, and brings back no check kept from before", async () => {
+    // what an earlier visit kept
+    localStorage.setItem(CHECK_KEY, JSON.stringify({ v: 1, check: { key: "kept", season: 40, computedAt: 1, scanned: 1, skipped: {}, candidates: [], results: [{ floorId: "hazard-1", teamId: "t1", seconds: 30, crests: 3 }] } }));
+    let toa!: ReturnType<typeof useToa>;
+    const wrapper = mount(defineComponent({ setup: () => ((toa = useToa()), () => h("div")) }));
+    await vi.waitFor(() => expect(toa.season.value?.season).toBe(41), { timeout: 20_000 });
+    expect(toa.status.value).toMatchObject({ current: true, entry: { season: 41 } });
+    expect(toa.hasAccount.value).toBe(true);
+    expect(toa.pending.value.map((f) => f.id)).toEqual(["resonant-4", "hazard-1", "hazard-2", "hazard-3", "hazard-4", "echoing-4"]);
+    expect(toa.canTime.value).toBe(false);
+    await toa.compute(); // "Check my teams", were it pressed
+    await toa.compute({ force: true });
+    expect(toa.running.value).toBe(false);
+    expect(engine.solves).toBe(0); // the solve is most of the work, and here it would time nothing
+    expect(toa.check.value).toBeNull();
+    expect(toa.plan.value).toBeNull();
+    expect(toa.ranked.value.size).toBe(0);
+    wrapper.unmount();
+  }, 60_000);
+
+  it("with its HP the same visit runs the check and plans (the switch is the HP, nothing else)", async () => {
+    engine.noHp = false;
+    const { toa, wrapper } = await visit();
+    expect(toa.pending.value).toEqual([]);
+    expect(toa.canTime.value).toBe(true);
+    expect(engine.solves).toBeGreaterThan(0);
+    expect(toa.plan.value).not.toBeNull();
+    wrapper.unmount();
   }, 60_000);
 });

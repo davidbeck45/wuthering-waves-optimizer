@@ -1,0 +1,991 @@
+{
+  "v": 1,
+  "season": 42,
+  "start": "2026-11-09",
+  "end": "2026-12-07",
+  "resetHour": 4,
+  "generatedAt": "2026-11-10T03:18:35.423Z",
+  "credits": {
+    "hp": "Floor HP: ChemX32's DPR Calc sheet (data from Sleep)",
+    "hpUrl": "https://docs.google.com/spreadsheets/d/1eoCTrwYIsRpacvL3KrcQpR5rwY3pbJ6gEljZdBj_DHs"
+  },
+  "towers": [
+    {
+      "id": "resonant",
+      "name": "Resonant Tower",
+      "floors": [
+        {
+          "id": "resonant-1",
+          "floor": 1,
+          "cost": 1,
+          "level": 70,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Fae Ignis",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Havoc"
+            },
+            {
+              "name": "Hocus Pocus",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007111,
+              "text": "Enemy Fusion RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Fusion RES −10%",
+                  "res": {
+                    "Fusion": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008036,
+              "text": "When Resonators cast Intro Skill, their Crit. DMG is increased by 20%, and they gain 40% Basic Attack DMG for 18s. Retriggering the effect resets its duration.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: Crit DMG +20%, Basic Attack DMG +40% (18 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Basic"
+                    }
+                  ],
+                  "seconds": 18,
+                  "target": "self",
+                  "note": "Given to the resonator who casts the Intro Skill, both lines for 18 s; a new Intro Skill starts the 18 s again. “40% Basic Attack DMG” is played as Basic Attack DMG Bonus."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-2",
+          "floor": 2,
+          "cost": 2,
+          "level": 75,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Havoc Warrior",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Havoc"
+            },
+            {
+              "name": "Chasm Guardian",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007111,
+              "text": "Enemy Fusion RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Fusion RES −10%",
+                  "res": {
+                    "Fusion": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008036,
+              "text": "When Resonators cast Intro Skill, their Crit. DMG is increased by 20%, and they gain 40% Basic Attack DMG for 18s. Retriggering the effect resets its duration.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: Crit DMG +20%, Basic Attack DMG +40% (18 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Basic"
+                    }
+                  ],
+                  "seconds": 18,
+                  "target": "self",
+                  "note": "Given to the resonator who casts the Intro Skill, both lines for 18 s; a new Intro Skill starts the 18 s again. “40% Basic Attack DMG” is played as Basic Attack DMG Bonus."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-3",
+          "floor": 3,
+          "cost": 3,
+          "level": 80,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Nocturnus Knight",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Exile Leader",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Havoc Dreadmane",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007111,
+              "text": "Enemy Fusion RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Fusion RES −10%",
+                  "res": {
+                    "Fusion": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008036,
+              "text": "When Resonators cast Intro Skill, their Crit. DMG is increased by 20%, and they gain 40% Basic Attack DMG for 18s. Retriggering the effect resets its duration.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: Crit DMG +20%, Basic Attack DMG +40% (18 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Basic"
+                    }
+                  ],
+                  "seconds": 18,
+                  "target": "self",
+                  "note": "Given to the resonator who casts the Intro Skill, both lines for 18 s; a new Intro Skill starts the 18 s again. “40% Basic Attack DMG” is played as Basic Attack DMG Bonus."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resonant-4",
+          "floor": 4,
+          "cost": 4,
+          "level": 90,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Fractsidus Milliner",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Havoc"
+            },
+            {
+              "name": "Impermanence Heron",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007111,
+              "text": "Enemy Fusion RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Fusion RES −10%",
+                  "res": {
+                    "Fusion": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008036,
+              "text": "When Resonators cast Intro Skill, their Crit. DMG is increased by 20%, and they gain 40% Basic Attack DMG for 18s. Retriggering the effect resets its duration.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "Intro: Crit DMG +20%, Basic Attack DMG +40% (18 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 20
+                    },
+                    {
+                      "stat": "dmgBonus",
+                      "value": 40,
+                      "skill": "Basic"
+                    }
+                  ],
+                  "seconds": 18,
+                  "target": "self",
+                  "note": "Given to the resonator who casts the Intro Skill, both lines for 18 s; a new Intro Skill starts the 18 s again. “40% Basic Attack DMG” is played as Basic Attack DMG Bonus."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hazard",
+      "name": "Hazard Tower",
+      "floors": [
+        {
+          "id": "hazard-1",
+          "floor": 1,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            90,
+            150,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Crownless",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Havoc"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007154,
+              "text": "Enemy Electro RES and Glacio RES are decreased by 10%, and their Fusion RES and Havoc RES are increased by 10%.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Electro & Glacio RES −10%",
+                  "res": {
+                    "Electro": -10,
+                    "Glacio": -10
+                  }
+                },
+                {
+                  "kind": "res",
+                  "label": "Fusion & Havoc RES +10%",
+                  "res": {
+                    "Fusion": 10,
+                    "Havoc": 10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008202,
+              "text": "Crit. DMG is increased by 25%. Resonators gain 30% Glacio DMG Bonus.",
+              "model": [
+                {
+                  "kind": "dmgBonus",
+                  "label": "+30% Glacio DMG",
+                  "value": 30,
+                  "elements": [
+                    "Glacio"
+                  ]
+                },
+                {
+                  "kind": "buff",
+                  "label": "Crit DMG +25%",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 25
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "fidelity": "approx",
+                  "note": "Always on in game. Played for the whole team from its first Intro Skill to the end of the fight, so the opening resonator's first turn on field goes without it."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-2",
+          "floor": 2,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            90,
+            150,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Viridblaze Saurian",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Fusion"
+            },
+            {
+              "name": "Ironhoof",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Fusion"
+            },
+            {
+              "name": "Inferno Rider",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Fusion"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007154,
+              "text": "Enemy Electro RES and Glacio RES are decreased by 10%, and their Fusion RES and Havoc RES are increased by 10%.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Electro & Glacio RES −10%",
+                  "res": {
+                    "Electro": -10,
+                    "Glacio": -10
+                  }
+                },
+                {
+                  "kind": "res",
+                  "label": "Fusion & Havoc RES +10%",
+                  "res": {
+                    "Fusion": 10,
+                    "Havoc": 10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008202,
+              "text": "Crit. DMG is increased by 25%. Resonators gain 30% Glacio DMG Bonus.",
+              "model": [
+                {
+                  "kind": "dmgBonus",
+                  "label": "+30% Glacio DMG",
+                  "value": 30,
+                  "elements": [
+                    "Glacio"
+                  ]
+                },
+                {
+                  "kind": "buff",
+                  "label": "Crit DMG +25%",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "critDmg",
+                      "value": 25
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "fidelity": "approx",
+                  "note": "Always on in game. Played for the whole team from its first Intro Skill to the end of the fight, so the opening resonator's first turn on field goes without it."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-3",
+          "floor": 3,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            60,
+            120,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Exile Technician",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
+              "name": "Zig Zag",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Spectro"
+            },
+            {
+              "name": "Capitaneus",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
+              "name": "Diurnus Knight",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
+              "name": "Sigillum",
+              "count": 1,
+              "hp": null,
+              "class": "Calamity",
+              "element": "Spectro"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92008205,
+              "text": "60s after the battle starts, after a Resonator's attacks hit an enemy, that enemy takes 5% more total DMG. This value increases by 5% every 5s, up to a maximum of 60%.",
+              "model": [
+                {
+                  "kind": "ramp",
+                  "label": "DMG taken +5% from 60 s, +5% / 5 s (max 60%)",
+                  "start": 60,
+                  "first": 5,
+                  "step": 5,
+                  "every": 5,
+                  "cap": 60,
+                  "fidelity": "approx",
+                  "note": "Played on the fight clock as DMG taken for every hit from 60 s on (it reaches 60% at 115 s); Negative Status ticks don't read it, as in the engine's other DMG-taken debuffs."
+                }
+              ]
+            },
+            {
+              "id": 92008203,
+              "text": "Enemies' All-Attribute RES is increased by 15%. This effect does not affect the Electro DMG and Echo Skill DMG they take.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Enemy RES +15% (not Electro)",
+                  "res": {
+                    "Aero": 15,
+                    "Fusion": 15,
+                    "Glacio": 15,
+                    "Havoc": 15,
+                    "Physical": 15,
+                    "Spectro": 15
+                  },
+                  "fidelity": "approx",
+                  "note": "Applied to the enemy's resistance table for every attribute but Electro. In game Echo Skill DMG of any attribute is spared too; here an Echo Skill that is not Electro still meets the raised RES."
+                }
+              ]
+            },
+            {
+              "id": 92008204,
+              "text": "Casting Intro Skill increases the total DMG dealt by all Resonators in the team by 15% for 20s. When a Resonator inflicts Electro Flare, they deal 55% more total DMG for 20s. When a Resonator triggers Unison Response, they deal 50% more total Electro DMG for 20s. Resonators deal 50% more total Echo Skill DMG.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+15% team DMG on Intro (20 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 15
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "team"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+55% DMG on inflicting Electro Flare (20 s)",
+                  "on": "electroFlare",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 55
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Electro DMG on Unison Response (20 s)",
+                  "on": "unisonResponse",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "element": "Electro"
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Echo Skill DMG",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "skill": "Echo"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "fidelity": "approx",
+                  "note": "Always on in game (“Resonators deal 50% more total Echo Skill DMG”). Played for the whole team from its first Intro Skill to the end of the fight, so an Echo Skill cast before the first swap goes without it."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hazard-4",
+          "floor": 4,
+          "cost": 5,
+          "level": 100,
+          "goals": [
+            60,
+            120,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Fallacy of No Return",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Spectro"
+            },
+            {
+              "name": "Mourning Aix",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Spectro"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92008205,
+              "text": "60s after the battle starts, after a Resonator's attacks hit an enemy, that enemy takes 5% more total DMG. This value increases by 5% every 5s, up to a maximum of 60%.",
+              "model": [
+                {
+                  "kind": "ramp",
+                  "label": "DMG taken +5% from 60 s, +5% / 5 s (max 60%)",
+                  "start": 60,
+                  "first": 5,
+                  "step": 5,
+                  "every": 5,
+                  "cap": 60,
+                  "fidelity": "approx",
+                  "note": "Played on the fight clock as DMG taken for every hit from 60 s on (it reaches 60% at 115 s); Negative Status ticks don't read it, as in the engine's other DMG-taken debuffs."
+                }
+              ]
+            },
+            {
+              "id": 92008203,
+              "text": "Enemies' All-Attribute RES is increased by 15%. This effect does not affect the Electro DMG and Echo Skill DMG they take.",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Enemy RES +15% (not Electro)",
+                  "res": {
+                    "Aero": 15,
+                    "Fusion": 15,
+                    "Glacio": 15,
+                    "Havoc": 15,
+                    "Physical": 15,
+                    "Spectro": 15
+                  },
+                  "fidelity": "approx",
+                  "note": "Applied to the enemy's resistance table for every attribute but Electro. In game Echo Skill DMG of any attribute is spared too; here an Echo Skill that is not Electro still meets the raised RES."
+                }
+              ]
+            },
+            {
+              "id": 92008204,
+              "text": "Casting Intro Skill increases the total DMG dealt by all Resonators in the team by 15% for 20s. When a Resonator inflicts Electro Flare, they deal 55% more total DMG for 20s. When a Resonator triggers Unison Response, they deal 50% more total Electro DMG for 20s. Resonators deal 50% more total Echo Skill DMG.",
+              "model": [
+                {
+                  "kind": "buff",
+                  "label": "+15% team DMG on Intro (20 s)",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 15
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "team"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+55% DMG on inflicting Electro Flare (20 s)",
+                  "on": "electroFlare",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 55
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Electro DMG on Unison Response (20 s)",
+                  "on": "unisonResponse",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "element": "Electro"
+                    }
+                  ],
+                  "seconds": 20,
+                  "target": "self"
+                },
+                {
+                  "kind": "buff",
+                  "label": "+50% Echo Skill DMG",
+                  "on": "intro",
+                  "stats": [
+                    {
+                      "stat": "totalDmg",
+                      "value": 50,
+                      "skill": "Echo"
+                    }
+                  ],
+                  "seconds": 0,
+                  "target": "team",
+                  "fidelity": "approx",
+                  "note": "Always on in game (“Resonators deal 50% more total Echo Skill DMG”). Played for the whole team from its first Intro Skill to the end of the fight, so an Echo Skill cast before the first swap goes without it."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "echoing",
+      "name": "Echoing Tower",
+      "floors": [
+        {
+          "id": "echoing-1",
+          "floor": 1,
+          "cost": 1,
+          "level": 70,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Cuddle Wuddle",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Physical"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007114,
+              "text": "Enemy Spectro RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Spectro RES −10%",
+                  "res": {
+                    "Spectro": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008110,
+              "text": "Resonators ignore 25% of the enemy's DEF when dealing damage. When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.",
+              "model": [
+                {
+                  "kind": "unmodelled",
+                  "label": "Ignore 25% of enemy DEF",
+                  "note": "In game: “Resonators ignore 25% of the enemy's DEF when dealing damage.” The floor effects have no DEF-ignore line yet, so kill times on this tower read a little slow."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "DMG taken +20% under a Negative Status",
+                  "note": "In game: “When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.” The floor effects have no DMG Amplify line yet, so a team that keeps a Negative Status up reads a little slow here."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-2",
+          "floor": 2,
+          "cost": 2,
+          "level": 75,
+          "goals": [
+            0,
+            90,
+            150
+          ],
+          "enemies": [
+            {
+              "name": "Stonewall Bracer",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Physical"
+            },
+            {
+              "name": "Fusion Warrior",
+              "count": 1,
+              "hp": null,
+              "class": "Standard",
+              "element": "Fusion"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007114,
+              "text": "Enemy Spectro RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Spectro RES −10%",
+                  "res": {
+                    "Spectro": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008110,
+              "text": "Resonators ignore 25% of the enemy's DEF when dealing damage. When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.",
+              "model": [
+                {
+                  "kind": "unmodelled",
+                  "label": "Ignore 25% of enemy DEF",
+                  "note": "In game: “Resonators ignore 25% of the enemy's DEF when dealing damage.” The floor effects have no DEF-ignore line yet, so kill times on this tower read a little slow."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "DMG taken +20% under a Negative Status",
+                  "note": "In game: “When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.” The floor effects have no DMG Amplify line yet, so a team that keeps a Negative Status up reads a little slow here."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-3",
+          "floor": 3,
+          "cost": 3,
+          "level": 80,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Chop Chop",
+              "count": 1,
+              "hp": null,
+              "class": "Elite",
+              "element": "Fusion"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007114,
+              "text": "Enemy Spectro RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Spectro RES −10%",
+                  "res": {
+                    "Spectro": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008110,
+              "text": "Resonators ignore 25% of the enemy's DEF when dealing damage. When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.",
+              "model": [
+                {
+                  "kind": "unmodelled",
+                  "label": "Ignore 25% of enemy DEF",
+                  "note": "In game: “Resonators ignore 25% of the enemy's DEF when dealing damage.” The floor effects have no DEF-ignore line yet, so kill times on this tower read a little slow."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "DMG taken +20% under a Negative Status",
+                  "note": "In game: “When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.” The floor effects have no DMG Amplify line yet, so a team that keeps a Negative Status up reads a little slow here."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "echoing-4",
+          "floor": 4,
+          "cost": 4,
+          "level": 90,
+          "goals": [
+            0,
+            120,
+            180
+          ],
+          "enemies": [
+            {
+              "name": "Dragon of Dirge",
+              "count": 1,
+              "hp": null,
+              "class": "Overlord",
+              "element": "Fusion"
+            }
+          ],
+          "hp": null,
+          "hpRaw": null,
+          "hpType": null,
+          "effects": [
+            {
+              "id": 92007114,
+              "text": "Enemy Spectro RES decreases by 10%",
+              "model": [
+                {
+                  "kind": "res",
+                  "label": "Spectro RES −10%",
+                  "res": {
+                    "Spectro": -10
+                  }
+                }
+              ]
+            },
+            {
+              "id": 92008110,
+              "text": "Resonators ignore 25% of the enemy's DEF when dealing damage. When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.",
+              "model": [
+                {
+                  "kind": "unmodelled",
+                  "label": "Ignore 25% of enemy DEF",
+                  "note": "In game: “Resonators ignore 25% of the enemy's DEF when dealing damage.” The floor effects have no DEF-ignore line yet, so kill times on this tower read a little slow."
+                },
+                {
+                  "kind": "unmodelled",
+                  "label": "DMG taken +20% under a Negative Status",
+                  "note": "In game: “When enemies are affected by Negative Statuses, their DMG taken is Amplified by 20%.” The floor effects have no DMG Amplify line yet, so a team that keeps a Negative Status up reads a little slow here."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

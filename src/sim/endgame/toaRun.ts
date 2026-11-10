@@ -10,7 +10,7 @@ import { rampAt, type FloorProfileSpec } from "./effects";
 import { crestsFor, teamSignature } from "./crests";
 import { killTime, type TimeFactor } from "./killTime";
 import { killOdds, type KillOdds } from "../critLuck/killOdds";
-import { hpSegments, segmentProfiles, timedFloors, type ToaFloor, type ToaSeason } from "./toaData";
+import { hpExpected, hpSegments, segmentProfiles, timedFloors, type ToaFloor, type ToaSeason } from "./toaData";
 import { profileSignature } from "./effects";
 import { vigorPool, type PlanInput, type PlanOption, type PlanStage } from "./vigorPlan";
 
@@ -341,7 +341,11 @@ export function planInputOf(
             return { id: r.teamId, members: teams.get(r.teamId)!.appKeys, seconds, crests: crestsFor(f.goals, seconds) };
           });
         stages.push({ id: f.id, cost: f.cost, timed: true, options });
-      } else stages.push({ id: f.id, cost: f.cost, timed: false, options: [], assumedCrests: f.goals.length });
+      }
+      // a Hazard floor or a side tower's 4th whose HP is not published yet is no spare stage: nobody is timed on it,
+      // so it earns nothing here (a season synced on its first day counted all 12 stages as 36 assumed crests)
+      else if (hpExpected(f)) stages.push({ id: f.id, cost: f.cost, timed: true, options: [] });
+      else stages.push({ id: f.id, cost: f.cost, timed: false, options: [], assumedCrests: f.goals.length });
     }
   }
   // spare picks prefer whoever the timed stages need least: never in a candidate, then the weakest team they're in

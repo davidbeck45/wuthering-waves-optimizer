@@ -227,6 +227,7 @@ function headlineOf(name: string, r: Json): string | null {
     }
     case "toa_check": {
       if (r.season == null) return "no season";
+      if (r.hpNotPublished) return `season ${r.season}: floor HP not published yet`;
       const best = Array.isArray(r.best) ? r.best[0] : null;
       if (best) return `${r.floor}: best kill ${best.killTime} · ${best.crests} crest${best.crests === 1 ? "" : "s"}`;
       return r.plan?.crests ? `plan: ${r.plan.crests} crests` : `season ${r.season}`;

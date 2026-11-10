@@ -7,7 +7,7 @@ import { rileyHeadless } from "../engine/rileyNode";
 import { appKeyOf } from "../rankings/castMapper";
 import { floorCurves } from "./effects";
 import { clockText } from "./crests";
-import { loadSeason, seasonStatus, timedFloors, toaIndex, floorLabel, type ToaSeason } from "./toaData";
+import { hpPending, loadSeason, seasonStatus, timedFloors, toaIndex, floorLabel, type ToaSeason } from "./toaData";
 import { planInputOf, rankFloor, runToaCheck, type ToaCheck, type ToaRunner } from "./toaRun";
 import { planVigor, type Plan } from "./vigorPlan";
 import { floorOdds } from "../critLuck/floorOdds";
@@ -16,7 +16,10 @@ export interface ToaCliResult {
   season: number;
   current: boolean;
   check: ToaCheck;
-  plan: Plan;
+  /** the floors still waiting for their HP (a season synced before the HP sheet has its block): never timed */
+  hpPending: string[];
+  /** null while a floor's HP is unpublished: no team can be seated on it */
+  plan: Plan | null;
   ms: number;
 }
 
@@ -40,14 +43,22 @@ export async function toaCheck(exp: ExportFile, opts: { limit?: number; now?: nu
     limit: opts.limit,
   });
   const owned = Object.entries(riley.account?.entries ?? {}).filter(([, e]) => e.owned).map(([name]) => appKeyOf(name));
-  const plan = planVigor(planInputOf(season, check, { owned }));
-  return { season, result: { season: season.season, current: status.current, check, plan, ms: Math.round(performance.now() - t0) } };
+  const waiting = hpPending(season).map((f) => f.id);
+  const plan = waiting.length ? null : planVigor(planInputOf(season, check, { owned }));
+  return { season, result: { season: season.season, current: status.current, check, hpPending: waiting, plan, ms: Math.round(performance.now() - t0) } };
 }
 
 export function printToa(season: ToaSeason, r: ToaCliResult): void {
   const { check, plan } = r;
   console.log(`Tower of Adversity · Season ${season.season} (${season.start} → ${season.end})${r.current ? "" : " — ended, newer data not in this build"}`);
   console.log(`${check.scanned} fieldable teams solved, ${check.candidates.length} timed on ${timedFloors(season).length} floors in ${r.ms} ms (sim, perfect execution)\n`);
+  // a season in this build before the HP sheet has its block: the floors are shown as they are, nobody is timed on them
+  const waiting = hpPending(season);
+  if (waiting.length) {
+    console.log(`Floor HP not published yet: ${waiting.map((f) => floorLabel(f.id)).join(", ")}. No team is timed there and no plan is made until it is.`);
+    for (const f of waiting) console.log(`  ${floorLabel(f.id)} · ${f.enemies.map((e) => e.name).join(", ")} · Lv${f.level} · goals ${f.goals.map((g) => `${g}s`).join(" / ")} left · ${f.effects.flatMap((e) => e.model.map((m) => m.label)).join("; ")}`);
+    console.log("");
+  }
   for (const f of timedFloors(season)) {
     const rows = rankFloor(check, f.id).slice(0, 5);
     console.log(`${floorLabel(f.id)} · ${f.enemies.map((e) => (e.count > 1 ? `${e.name} ×${e.count}` : e.name)).join(", ")} · ${(f.hp ?? 0).toLocaleString("en-US")} HP · Lv${f.level} · goals ${f.goals.map((g) => `${g}s`).join(" / ")} left`);
@@ -68,6 +79,7 @@ export function printToa(season: ToaSeason, r: ToaCliResult): void {
     );
     console.log("");
   }
+  if (waiting.length || !plan) return;
   console.log(`Plan: ${plan.crests} / ${plan.maxCrests} crests${plan.exhausted ? " (search budget hit: best found)" : ""} · * = past Riley's ~100 s run, extrapolated`);
   const teams = new Map(check.candidates.map((c) => [c.id, c]));
   const resultOf = (stageId: string, teamId: string) => check.results.find((x) => x.floorId === stageId && x.teamId === teamId);

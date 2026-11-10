@@ -2188,6 +2188,11 @@ Things learned:
 - On David's account every timed floor reads 3 crests in 16–41 s (sim): his teams sit at 236–372 k DPS against
   floors of 3.1–10 M HP. The crest goals only bite once real clears are logged (lumenastrum measured a 35–65 s fixed
   overhead on hard floors) — which is what the Calibrate tab and "plan at my pace" are for.
+- A season can be in the build before its HP is (Season 42, synced on its first day, 2026-11-09: the HP sheet had no
+  block for it). `hpPending()` (toaData.ts) lists the floors the sheet covers that have none: each card says "HP not
+  published yet" and still shows enemies, RES (`resSegments`), effects and goals; no check runs while no floor can be
+  timed, the plan is withheld while any floor waits (`planInputOf` never makes a spare stage of one — it had planned
+  36★ off 12 assumed stages), and the assistant's `toa_check` and `npm run cli -- toa` say the same.
 
 ## Rotation view — `src/sim/rotation/` + `/rotation` (batch 2, 2026-10-26)
 

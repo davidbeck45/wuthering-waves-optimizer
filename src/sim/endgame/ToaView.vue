@@ -42,6 +42,13 @@
       <span>No Tower of Adversity season in this build has started yet.</span>
     </div>
     <div v-if="seasonError" role="alert" class="alert max-sm:text-left max-sm:justify-items-start alert-error mb-4 text-sm">{{ seasonError }}</div>
+    <!-- the season is here, its HP is not: the HP sheet gets a new season's block some time after the reset -->
+    <div v-if="season && status.current && pending.length" role="status" class="alert max-sm:text-left max-sm:justify-items-start alert-warning mb-4 py-2 text-sm" data-test-toa-hp-pending-note>
+      <span>
+        <b>{{ canTime ? `Floor HP is not published yet for ${pending.length} of Season ${season.season}'s floors` : `Season ${season.season}'s floor HP is not published yet` }}.</b>
+        The enemies, effects and crest goals below are this season's. Your teams' kill times, crests and the plan come once the HP is in this page's data.
+      </span>
+    </div>
 
     <!-- account / engine state -->
     <div v-if="status.entry && !hasAccount" role="alert" class="alert max-sm:text-left max-sm:justify-items-start mb-4 text-sm flex flex-wrap" data-test-toa-empty>
@@ -90,7 +97,7 @@
         </div>
         <div class="flex items-center gap-2 ml-auto max-sm:w-full max-sm:justify-between">
           <span v-if="check && (!running || check.partial)" class="text-xs opacity-60" data-test-toa-summary>{{ check.candidates.length - failedCount }} teams timed<template v-if="failedCount"> · {{ failedCount }} could not be timed</template> · {{ check.scanned }} solved<template v-if="check.partial"> · {{ running ? "your saved teams so far, the rest still solving" : "your saved teams only" }}</template></span>
-          <button v-if="hasAccount" type="button" class="btn btn-sm" :disabled="running || !status.current" data-test-toa-recompute @click="compute()">
+          <button v-if="hasAccount" type="button" class="btn btn-sm" :disabled="running || !status.current || !canTime" data-test-toa-recompute @click="compute()">
             {{ check ? "Recompute" : "Check my teams" }}
           </button>
         </div>
@@ -163,7 +170,7 @@
           :vigor="VIGOR_PER_RESONATOR"
         />
         <div v-else class="alert text-sm" data-test-toa-plan-empty>
-          <span>{{ running ? "The plan appears once every team has fought the floors." : hasAccount ? "Check your teams first." : "Import your account to plan the zone." }}</span>
+          <span>{{ pending.length ? `The plan comes once Season ${season.season}'s floor HP is published: until then no team can be timed on ${pending.length === 1 ? "a floor" : "the floors"} still waiting for it.` : running ? "The plan appears once every team has fought the floors." : hasAccount ? "Check your teams first." : "Import your account to plan the zone." }}</span>
         </div>
       </div>
 
@@ -211,7 +218,7 @@ import { computed, ref } from "vue";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import WorkStatus from "../display/WorkStatus.vue";
-import { countdown, SERVER_REGIONS, timedFloors, VIGOR_PER_RESONATOR, type ToaFloor } from "./toaData";
+import { countdown, hpExpected, SERVER_REGIONS, timedFloors, VIGOR_PER_RESONATOR, type ToaFloor } from "./toaData";
 import { useToa } from "./useToa";
 import ToaFloorCard from "./ToaFloorCard.vue";
 import ToaPlan from "./ToaPlan.vue";
@@ -237,6 +244,8 @@ const {
   season,
   seasonError,
   hasAccount,
+  pending,
+  canTime,
   check,
   failedCount,
   running,
@@ -258,8 +267,10 @@ const {
 
 const floorsOf = (towerId: string): ToaFloor[] => season.value?.towers.find((t) => t.id === towerId)?.floors ?? [];
 const hazardFloors = computed(() => floorsOf("hazard"));
-const sideFloors = computed(() => (season.value ? timedFloors(season.value).filter((f) => !f.id.startsWith("hazard")) : []));
-const lowFloors = computed(() => (season.value ? season.value.towers.flatMap((t) => t.floors).filter((f) => !f.hp) : []));
+/** the side towers' floors: the 4th gets a card (with its HP, or waiting for it), floors 1–3 the fold */
+const sideAll = computed(() => (season.value ? season.value.towers.filter((t) => t.id !== "hazard").flatMap((t) => t.floors) : []));
+const sideFloors = computed(() => sideAll.value.filter((f) => !!f.hp || hpExpected(f)));
+const lowFloors = computed(() => sideAll.value.filter((f) => !f.hp && !hpExpected(f)));
 /** the timed floors, Hazard first (what a clear is usually logged on) */
 const timed = computed(() => (season.value ? [...timedFloors(season.value)].sort((a, b) => Number(!a.id.startsWith("hazard")) - Number(!b.id.startsWith("hazard"))) : []));
 const towerName = (f: ToaFloor): string => season.value?.towers.find((t) => t.floors.includes(f))?.name ?? "";

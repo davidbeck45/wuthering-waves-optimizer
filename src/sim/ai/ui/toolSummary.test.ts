@@ -89,6 +89,7 @@ describe("the batch-2 page tools in the timeline", () => {
     expect(row("team_rotation", { rotation: null }).headline).toBe("no wuwa_calc rotation");
     expect(row("toa_check", { season: 41, floor: "Hazard 4", best: [{ killTime: "0:28", crests: 3 }] }).headline).toBe("Hazard 4: best kill 0:28 · 3 crests");
     expect(row("toa_check", { season: 41, plan: { crests: "34 of 36" } }).headline).toBe("plan: 34 of 36 crests");
+    expect(row("toa_check", { season: 42, hpNotPublished: true, floors: [] }).headline).toBe("season 42: floor HP not published yet");
     expect(row("echo_lab", { counts: { keep: 128, spare: 59, feed: 71 } }, { show: "feed" })).toMatchObject({ label: "Echo Lab", chips: ["feed"], headline: "128 keep · 59 spare · 71 feed" });
     expect(row("pull_advice", { items: [{ rank: 1, steps: [{ step: "Lucilla S1", damageGainPct: 10.46 }] }] }).headline).toBe("#1 Lucilla S1 · +10.46 % damage");
     expect(row("pull_advice", { onABannerNow: false }).headline).toBe("not on a banner now");

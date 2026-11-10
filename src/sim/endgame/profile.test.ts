@@ -9,7 +9,7 @@ import { createRileyClient, type WorkerLike } from "../engine/rileyClient";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
 import { fightCurve, type RileyEngine, type RileyPick, type RunError } from "../engine/rileyRun";
 import { createRileyHandler } from "../engine/rileyWorker";
-import { ELEMENTS, floorCurves, touchesCrit, withFloorProfile, type Element, type FloorProfileSpec } from "./effects";
+import { ELEMENTS, floorCurves, hasGear, resTable, touchesCrit, withFloorProfile, type Element, type FloorProfileSpec } from "./effects";
 import { damageAt } from "./killTime";
 import { chanceBy, killOdds } from "../critLuck/killOdds";
 import { loadSeason, toaIndex } from "./toaData";
@@ -119,6 +119,37 @@ describe("the fork's enemy profile", () => {
     const c = run(0, at({}, 100, [{ kind: "buff", label: "intro", on: "intro", stats: [{ stat: "totalDmg", value: 15 }], seconds: 20, target: "team" }]));
     expect(c.total).toBeGreaterThan(PINNED[0]!.total * 1.05);
   });
+
+  it("plays Season 42's effects: every modelled row builds its Gear on the real engine and only ever adds damage", async () => {
+    const season = await loadSeason(toaIndex.seasons.find((s) => s.season === 42)!);
+    const floors = season.towers.flatMap((t) => t.floors);
+    // one floor per effect set: the Resonant Tower, Hazard 1–2, Hazard 3–4, the Echoing Tower
+    for (const id of ["resonant-4", "hazard-1", "hazard-3", "echoing-4"]) {
+      const f = floors.find((x) => x.id === id)!;
+      const effects = f.effects.flatMap((e) => e.model);
+      const geared = effects.filter(hasGear);
+      // the floor's RES changes on the engine's own 20 % enemy, at the floor's level: with and without the floor's Gear
+      const bare = at(resTable({}, effects, 20), f.level);
+      for (let i = 0; i < PINNED.length; i++) {
+        const without = run(i, bare).total;
+        const withGear = run(i, { ...bare, effects: geared }).total;
+        if (!geared.length) expect(withGear, `${id} ${PINNED[i]!.teamKey}`).toBe(without);
+        else expect(withGear, `${id} ${PINNED[i]!.teamKey}`).toBeGreaterThan(without);
+      }
+    }
+    expect(floors.find((x) => x.id === "echoing-4")!.effects.flatMap((e) => e.model).filter(hasGear)).toEqual([]);
+    // the two always-on lines, played from the team's first Intro Skill on (approximations): each adds on its own
+    const row = (id: string, label: string) => floors.find((x) => x.id === id)!.effects.flatMap((e) => e.model).filter((m) => m.label === label);
+    const critDmg = row("hazard-1", "Crit DMG +25%");
+    const echoSkill = row("hazard-3", "+50% Echo Skill DMG");
+    expect([critDmg.length, echoSkill.length]).toEqual([1, 1]);
+    expect(touchesCrit(at({}, 100, critDmg))).toBe(true);
+    for (let i = 0; i < PINNED.length; i++) {
+      expect(run(i, at({}, 100, critDmg)).total, `Crit DMG ${PINNED[i]!.teamKey}`).toBeGreaterThan(PINNED[i]!.total * 1.02);
+      expect(run(i, at({}, 100, echoSkill)).total, `Echo Skill ${PINNED[i]!.teamKey}`).toBeGreaterThanOrEqual(PINNED[i]!.total);
+    }
+    expect(PINNED.some((_, i) => run(i, at({}, 100, echoSkill)).total > PINNED[i]!.total)).toBe(true);
+  }, LOAD);
 });
 
 describe("each hit's crit on a floor (the clear odds)", () => {

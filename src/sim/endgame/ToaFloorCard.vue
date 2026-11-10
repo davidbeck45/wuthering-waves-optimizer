@@ -35,7 +35,10 @@
       </div>
 
       <!-- HP and what the enemy resists -->
-      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <div v-if="!floor.hp" class="flex flex-col gap-0.5" data-test-toa-hp-pending>
+        <span class="text-base font-bold leading-tight">HP not published yet</span>
+      </div>
+      <div v-else class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span class="text-2xl font-bold tabular-nums leading-none" data-test-toa-hp>{{ compact(floor.hp ?? 0) }}</span>
         <span class="text-xs opacity-70">HP{{ floor.hpType === "adjusted" ? " (adjusted)" : "" }}</span>
         <span
@@ -98,7 +101,8 @@
 
       <!-- teams -->
       <div class="border-t border-base-300 pt-2">
-        <div v-if="!hasAccount" class="text-sm opacity-70 py-2">Import your account to see which of your teams clear it.</div>
+        <div v-if="!floor.hp" class="text-sm opacity-70 py-2" data-test-toa-teams-pending>Your teams are timed here once the floor's HP is published.</div>
+        <div v-else-if="!hasAccount" class="text-sm opacity-70 py-2">Import your account to see which of your teams clear it.</div>
         <div v-else-if="running && !rows.length" class="flex flex-col gap-2 py-1" aria-busy="true">
           <div v-for="n in 3" :key="n" class="flex items-center gap-2">
             <div class="skeleton size-8 rounded-full shrink-0"></div>
@@ -176,7 +180,7 @@ import { characterElementsSetImageMap, getCharacterRosterDisplayName } from "../
 import { teamLabel } from "../display/names";
 import { clockText } from "./crests";
 import { ELEMENTS } from "./effects";
-import { enemyInfo, floorChips, hpSegments, multiEnemy, type ToaFloor } from "./toaData";
+import { enemyInfo, floorChips, multiEnemy, resSegments, type ToaFloor } from "./toaData";
 import type { CandidateTeam, FloorResult } from "./toaRun";
 import ToaPortraits from "./ToaPortraits.vue";
 import ToaTimeBar from "./ToaTimeBar.vue";
@@ -207,7 +211,7 @@ const chips = computed(() => floorChips(props.floor));
 const FIDELITY = { exact: "Modelled", approx: "Modelled (approximation)", none: "Not modelled" } as const;
 const openChip = ref<string | null>(null);
 const chipOpen = computed(() => chips.value.find((c) => c.key === openChip.value) ?? null);
-const segments = computed(() => hpSegments(props.floor));
+const segments = computed(() => resSegments(props.floor));
 const multi = computed(() => multiEnemy(props.floor));
 const sortedGoals = computed(() => [...props.floor.goals].sort((a, b) => a - b));
 /** each HP segment's RES (one line unless two bosses resist differently), the weakest elements first */
