@@ -15,6 +15,7 @@ const SETS = ["RejuvenatingGlow", "MoonlitClouds"];
 const enemyConfig = { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" };
 
 // all loaded after the fake workers: they reset the module registry, and the composable must share these instances
+let made: import("../optimizer/fakeWorkers").FakeWorker[] = [];
 let useTeamOptimizer: typeof import("../../composables/useTeamOptimizer").useTeamOptimizer;
 let autoTeamBuffs: typeof import("./autoTeamBuffs").autoTeamBuffs;
 let resolveTeamCharacters: typeof import("./resolveTeam").resolveTeamCharacters;
@@ -28,7 +29,7 @@ let useTeamRotationsStore: typeof import("../../stores/teamRotations").useTeamRo
 beforeAll(async () => {
   vi.stubGlobal("localStorage", { getItem: () => null, setItem: () => {}, removeItem: () => {} });
   vi.stubGlobal("window", {});
-  await installFakeWorkers(2);
+  made = await installFakeWorkers(2);
   ({ autoTeamBuffs } = await import("./autoTeamBuffs"));
   ({ resolveTeamCharacters } = await import("./resolveTeam"));
   ({ calcTeamRotationDamage } = await import("../../calculator/teamRotation"));
@@ -165,6 +166,74 @@ describe("Optimize team on plus", () => {
     expect(matches).toBe(true);
     expect(await teamPageTotal()).toBeCloseTo(row.total, 3);
   }, 120_000);
+});
+
+describe("Optimize team in a tab older than the site", () => {
+  const STALE = "This tab is older than the site, so the optimizer cannot start here. Reload the page, then run it again.";
+  let reloads = 0;
+  beforeEach(async () => {
+    await seedAccount();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    reloads = 0;
+    const stored: Record<string, string> = {};
+    vi.stubGlobal("window", {
+      sessionStorage: { getItem: (key: string) => stored[key] ?? null, setItem: (key: string, value: string) => void (stored[key] = value) },
+      navigator: { onLine: true },
+      location: { reload: () => void reloads++, assign: () => void reloads++, pathname: "/teams", search: "" },
+    });
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.stubGlobal("window", {});
+  });
+  /** What a worker whose script is a 404 fires: a bare `error` event, no message. */
+  const cannotLoad = { type: "error", preventDefault() {} };
+
+  it("Run reloads the page once and says why, where it said only 'Could not start the search.'", async () => {
+    autoTeamBuffs.value = true;
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "keep");
+    optimizer.setGoal(1, "damage");
+    // the first generator of the run is a 404: its `error` lands before anything it was sent
+    const Fake = (globalThis as any).Worker;
+    let failed = false;
+    vi.stubGlobal("Worker", class extends Fake {
+      constructor(url: URL, options: unknown) {
+        super(url, options);
+        if (failed || !String(url).includes("generator")) return;
+        failed = true;
+        setTimeout(() => (this as any).onerror?.(cannotLoad), 0);
+      }
+    });
+    try {
+      await optimizer.run();
+    } finally {
+      vi.stubGlobal("Worker", Fake);
+    }
+    expect(failed).toBe(true);
+    expect(optimizer.errorMessage.value).toBe(STALE);
+    expect(optimizer.phase.value).toBe("setup");
+    expect(reloads).toBe(1);
+  }, 60_000);
+
+  it("the loadout count does the same, where it spun for good", async () => {
+    autoTeamBuffs.value = true;
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    made.length = 0;
+    await optimizer.initialize();
+    optimizer.setGoal(1, "damage");
+    // its count starts a quarter of a second after the setup settles; an earlier test's optimizer may be counting too,
+    // so every count worker alive gets the failure
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const counters = made.filter((w) => !w.terminated && w.posted.some((m) => m?.limit !== undefined));
+    expect(counters.length).toBeGreaterThan(0);
+    expect(optimizer.errorMessage.value).toBeNull();
+    for (const worker of counters) worker.onerror!(cannotLoad);
+    expect(optimizer.errorMessage.value).toBe(STALE);
+    expect(reloads).toBe(1);
+  }, 60_000);
 });
 
 describe("Optimize team's Save", () => {

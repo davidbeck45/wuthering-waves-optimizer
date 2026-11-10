@@ -21,6 +21,7 @@ import {
 } from "../calculator/buildCharacterContext";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { slotsAlreadyWorn } from "../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
+import { workerFailureMessage } from "../sim/perf/chunkReload"; // Wuthering Tools+
 import { calcTeamRotationDamage, type TeamRotationInput } from "../calculator/teamRotation";
 import {
   TEAM_OPTIMIZER_LIST_DEPTH,
@@ -611,8 +612,9 @@ export function useTeamOptimizer(teamId: Ref<string>) {
             if (!remaining) loadoutCounts[view.slot] = { ...tally };
             worker.terminate();
           };
-          worker.onerror = () => {
+          worker.onerror = (event) => {
             worker.terminate();
+            errorMessage.value = workerFailureMessage(event, "") || errorMessage.value; // Wuthering Tools+: or the count spins for good in a tab older than the site
           };
           worker.postMessage({
             echoes: serializeEchoes(eligibleEchoes(view.slot, option)),
@@ -690,6 +692,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
                   lane.isSearchComplete = true;
                 },
                 onAborted: () => reject(new Error("Could not start the search.")),
+                onWorkerFailed: (event) => reject(new Error(workerFailureMessage(event, "Could not start the search."))), // Wuthering Tools+: a tab older than the site reloads once
                 onFinished: ({ results: found, totalProcessed }) => {
                   activeRun = null;
                   const rows: SearchRow[] = found.map((result: any) => ({

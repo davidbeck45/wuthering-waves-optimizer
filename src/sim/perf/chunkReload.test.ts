@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { CHUNK_RELOAD_KEY, installChunkReload, reloadOnce, watchPendingRoute, workerWouldNotLoad } from "./chunkReload";
+import { CHUNK_RELOAD_KEY, STALE_TAB_ERROR, installChunkReload, reloadOnce, watchPendingRoute, workerFailureMessage, workerWouldNotLoad } from "./chunkReload";
 
 function fakeHost() {
   const listeners: Record<string, ((event: Event) => void)[]> = {};
@@ -184,5 +184,34 @@ describe("workerWouldNotLoad", () => {
     expect(workerWouldNotLoad({})).toBe(true);
     expect(workerWouldNotLoad(null)).toBe(true);
     expect(workerWouldNotLoad({ message: "Uncaught TypeError: x is not a function" })).toBe(false);
+  });
+});
+
+describe("workerFailureMessage", () => {
+  const host = (stored: Record<string, string> = {}) => {
+    const calls: string[] = [];
+    return {
+      calls,
+      addEventListener: () => {},
+      sessionStorage: { getItem: (key: string) => stored[key] ?? null, setItem: (key: string, value: string) => void (stored[key] = value) },
+      navigator: { onLine: true },
+      location: { reload: () => void calls.push("reload"), assign: (url: string) => void calls.push(`assign ${url}`), pathname: "/teams", search: "" },
+    };
+  };
+
+  it("a worker whose script would not load reloads the page once and says the tab is older than the site", () => {
+    const page = host();
+    expect(workerFailureMessage({ type: "error" } as unknown as Event, "Could not start the search.", page)).toBe(STALE_TAB_ERROR);
+    expect(page.calls).toEqual(["reload"]);
+    // a second failure inside the minute: no reload loop, the line stays up
+    expect(workerFailureMessage({ type: "error" } as unknown as Event, "Could not start the search.", page)).toBe(STALE_TAB_ERROR);
+    expect(page.calls).toEqual(["reload"]);
+  });
+
+  it("a worker that threw while running keeps the page's own words and reloads nothing", () => {
+    const page = host();
+    expect(workerFailureMessage({ message: "boom" }, "Could not start the search.", page)).toBe("Could not start the search.");
+    expect(workerFailureMessage({ message: "boom" }, "", page)).toBe("");
+    expect(page.calls).toEqual([]);
   });
 });

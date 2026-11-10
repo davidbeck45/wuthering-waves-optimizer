@@ -78,3 +78,13 @@ export function watchPendingRoute(router: RouteHooks): () => string | null {
 export function workerWouldNotLoad(event: Event | { message?: string } | null | undefined): boolean {
   return !(event as { message?: string } | null | undefined)?.message;
 }
+
+/** One answer for a page whose worker failed and that holds nothing a reload would lose (Ryan's Optimize team: its run
+ *  and its loadout count). A script that would not load is a tab older than the site: reload once, and say so in case
+ *  the guard stood aside (a reload in the last minute, storage blocked, offline). Anything else is the page's own
+ *  `otherwise`. Returns what the page should show. */
+export function workerFailureMessage(event: Event | { message?: string } | null | undefined, otherwise: string, host?: ReloadHost): string {
+  if (!workerWouldNotLoad(event)) return otherwise;
+  reloadOnce(null, host ?? window);
+  return STALE_TAB_ERROR;
+}
