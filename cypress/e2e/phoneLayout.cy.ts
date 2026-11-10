@@ -55,6 +55,8 @@ function expectNothingCutOff(what: string): void {
     const cut: string[] = [];
     for (const el of doc.querySelectorAll(".calculations__screens *")) {
       if (!past(el) || !shown(el) || [...el.children].some((child) => past(child) && shown(child))) continue;
+      // Ryan's build card backdrop (#697) is blurred art drawn 20 % wider than the card and clipped by it on purpose
+      if (el.closest(".build-card-backdrop")) continue;
       let scroller = false;
       for (let a = el.parentElement; a && a !== doc.body && !scroller; a = a.parentElement) {
         scroller = /(auto|scroll)/.test(win.getComputedStyle(a).overflowX) && a.scrollWidth > a.clientWidth + 1;
