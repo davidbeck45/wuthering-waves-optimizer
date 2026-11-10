@@ -21,6 +21,8 @@ import HomeView from "./pages/HomeView.vue";
 const UpdatesView = () => import("./pages/UpdatesView.vue");
 const InfoView = () => import("./pages/InfoView.vue");
 const InfoOverview = () => import("./components/info/InfoOverview.vue");
+const InfoGuides = () => import("./components/info/InfoGuides.vue");
+const InfoGuideArticle = () => import("./components/info/InfoGuideArticle.vue");
 const InfoCvRv = () => import("./components/info/InfoCvRv.vue");
 const InfoTuningOdds = () => import("./components/info/InfoTuningOdds.vue");
 const InfoFormulas = () => import("./components/info/InfoFormulas.vue");
@@ -49,6 +51,8 @@ const routes = [
     name: "InfoView",
     children: [
       { path: "", component: InfoOverview, name: "InfoOverview" },
+      { path: "guides", component: InfoGuides, name: "InfoGuides" },
+      { path: "guides/:slug", component: InfoGuideArticle, name: "InfoGuideArticle" },
       { path: "cv-echo-rating", component: InfoCvRv, name: "InfoCvRv" },
       { path: "tuning-odds", component: InfoTuningOdds, name: "InfoTuningOdds" },
       { path: "formulas", component: InfoFormulas, name: "InfoFormulas" },
@@ -99,6 +103,8 @@ const router = createRouter({
   // Query-only changes (e.g. /settings?section=wavescan) keep the position.
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
+    // Guide links land on a section (/scanners#wavescan); its CSS scroll-margin clears the nav.
+    if (to.hash) return { el: to.hash };
     if (to.path !== from.path) return { top: 0 };
     return false;
   },

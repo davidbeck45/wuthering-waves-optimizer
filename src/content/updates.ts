@@ -2,12 +2,25 @@
 // hand-written UpdatesView.vue markup - see docs/adr/0023-updates-page-search-and-grouping-redesign.md.
 // Going forward, add new entries directly here (newest first), not as markup.
 
+import { GUIDE_IMAGES } from "./guides/images";
+import type { GuideImage } from "./guides/types";
+
+/** What a bullet is. Hand-written and optional: history stays untagged (ADR 0054). */
+export type UpdateTag = "feature" | "content" | "labs" | "fix";
+
+export interface UpdateItemDetails {
+  tag?: UpdateTag;
+  image?: GuideImage;
+}
+
 export interface UpdateEntry {
   /** ISO date, e.g. "2026-08-29" - sort/group key, do not derive from dateLabel at runtime. */
   date: string;
   /** Exact display text, e.g. "August 29, 2026". */
   dateLabel: string;
   items: string[];
+  /** Optional tag and picture for a bullet, keyed by its index in `items`. */
+  itemDetails?: Record<number, UpdateItemDetails>;
 }
 
 export interface Announcement {
@@ -31,16 +44,49 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = null;
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-11-09",
+  headline: "Build cards got redesigned!",
+};
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-11-09",
+    dateLabel: "November 9, 2026",
+    items: [
+      "Build cards got a new look and three layouts to pick from: Columns, Hero and Showcase. Uploaded backgrounds now show evenly behind every panel, and without one the card uses your character's art as a soft background. Pick character art and backgrounds for your build card from a curated list, or keep uploading your own. Each character now keeps its own background, and a new slider fades it if it's too busy",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
+    date: "2026-11-08",
+    dateLabel: "November 8, 2026",
+    items: [
+      "Optimizer loadout results now show which other resonators are already wearing an echo (\"Also on Zani +2\"), next to \"Already equipped\" for the current one. Hover it to see everyone. Equipping the loadout keeps the echo on them too",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
+    date: "2026-11-07",
+    dateLabel: "November 7, 2026",
+    items: [
+      "Guides now open beside the screen they explain instead of covering it. Try the Optimizer Guide, the Echoes screen's Rating Guide and Presets guide, or How the odds are worked out on Convene",
+      "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
+      "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",
+    ],
+    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
+  },
   {
     date: "2026-11-06",
     dateLabel: "November 6, 2026",
     items: [
       "Fixed the optimizer scoring some builds too low when a character's buffs scale with their own stats, like Mornye's with Energy Regen. It used the stats of what the character was wearing, so a build could score higher after you equipped it. Results for these characters may change, and may pick different builds",
       "Rotation timing from frame data is now on for everyone, out of Labs. Character and team rotations show how long they take and the DPS from each action's frame data (thanks to wuwalab), next to the DPS from your typed duration. Set how each action ends (cancel, dash, swap) from its frame chip, and rotations with frame data get the new timeline charts. Feedback is welcome in the Discord",
+      "New Guides section under Info, with step-by-step guides and pictures for scanning echoes, setting up a character, the Optimizer, rotations and more. Find them under Info → Guides",
+      "The Info, Formulas, CV & Echo Rating, Credits, Privacy and Legal pages got a visual makeover. Try scoring an echo on CV & Echo Rating, or moving the sliders on Formulas to see how a hit adds up",
+      "The Optimizer Guide no longer says echoes have to be entered by hand, and points to the scanners instead",
     ],
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "feature" }, 4: { tag: "fix" } },
   },
   {
     date: "2026-11-02",
@@ -49,6 +95,7 @@ export const updateEntries: UpdateEntry[] = [
       "Your stats now show how much comes from your build and how much from buffs. Each stat has a bar: gray is your build (the same number as your build card) and colored is what your buffs add on top",
       "Click a stat in the full breakdown to see where it comes from: your build plus your buffs equals what you have now, with each source listed",
     ],
+    itemDetails: { 0: { tag: "feature", image: GUIDE_IMAGES.statBar }, 1: { tag: "feature" } },
   },
   {
     date: "2026-10-30",
@@ -57,6 +104,7 @@ export const updateEntries: UpdateEntry[] = [
       "Labs: with Rotation timing from frame data on, rotations get new charts. A character rotation shows your damage adding up over time and its biggest hits, and a team rotation shows each character in their own row, with when they swap in and out and their share of the damage",
       "Labs: when you swap out of an attack, the rest of its hits now count. Before, frame-data timing could leave them out",
     ],
+    itemDetails: { 0: { tag: "labs" }, 1: { tag: "labs" } },
   },
   {
     date: "2026-10-29",
@@ -68,6 +116,7 @@ export const updateEntries: UpdateEntry[] = [
       "Labs: frame-data timing works for team rotations too, and rotation results and leaderboards show the frame-data DPS",
       "Frame data comes from wuwalab, now listed on the Credits page",
     ],
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "labs" }, 2: { tag: "labs" }, 3: { tag: "labs" } },
   },
   {
     date: "2026-10-28",
@@ -75,6 +124,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Fixed a few misspelled attack and buff names. Your saved builds and rotations update automatically, and nothing changes in your numbers",
     ],
+    itemDetails: { 0: { tag: "fix" } },
   },
   {
     date: "2026-10-27",

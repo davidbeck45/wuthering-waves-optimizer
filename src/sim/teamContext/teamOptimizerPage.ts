@@ -10,6 +10,10 @@ import { resolveTeamCharacters, type TeamResolution } from "./resolveTeam";
 export interface TeamPageRead {
   /** the records the Team page reads today */
   characters: Record<string, any>;
+  /** members whose Team Buffs panel was derived from the real team (auto team buffs), not set by the player. His buff
+   *  plans (#689) must not save such a panel into a build: a saved panel names the team, so the resolver would keep it
+   *  as the player's own and it would stop following the builds. */
+  derived: string[];
   /** the records it would read with these builds worn (records from `characters`, with the new echoes on them) */
   withBuilds: (records: Record<string, any>) => Promise<Record<string, any>>;
 }
@@ -19,6 +23,7 @@ export async function readTeamPage(team: any, stored: Record<string, any>, inven
   const derived = resolution.slots.filter((slot) => slot.buffSource === "derived").map((slot) => slot.characterId);
   return {
     characters: resolution.characters,
+    derived,
     withBuilds: async (records) => {
       // A derived panel names the team, and the resolver keeps a panel that does as the player's own. A panel the
       // player did set stays as it is, as on the Team page.

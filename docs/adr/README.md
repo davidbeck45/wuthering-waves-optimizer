@@ -76,13 +76,13 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) (Scanners "New" pill) | components, navigation |
 | [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, settings, stores |
-| [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
+| [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0054](./0054-visual-info-pages-and-guides.md) (optional tags) | components, content |
 | [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, routing, content |
 | [0025](./0025-privacy-legal-formatting-consistency.md) | Privacy & Legal formatting consistency (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
 | [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes, weapons, enemies |
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | | team-rotations, components |
 | [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes |
-| [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0043 (Presets Guide moved to the Presets menu) | calculator, components, composables, echoes |
+| [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0043 (Presets Guide moved to the Presets menu), 0056 (build card echo substats) | calculator, components, composables, echoes |
 | [0033](./0033-team-buffs-summary-grouping-and-hide-impossible.md) | Team Buffs summary: drop contribution totals, group the active tray, add "Hide impossible" | accepted | | components, buffs, weapons |
 | [0038](./0038-v3-ui-default.md) | Make the v3 UI the default, with classic as an opt-in | accepted | | components, stores, analytics, release |
 | [0039](./0039-resizable-live-result-panel.md) | Drag-to-resize the Full breakdown panel | accepted | | components, stores |
@@ -97,6 +97,11 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0050](./0050-swapped-out-hits-still-land.md) | A swapped-out character's hits all land | accepted | | calculator |
 | [0051](./0051-build-vs-live-stats.md) | v3 stats show build vs live (buffs) | accepted | | calculator, components |
 | [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | | calculator, components, workers, labs, team-rotations |
+| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | [0053](./0053-team-optimizer-buff-plans.md) (partly) | calculator, components, workers, labs, team-rotations |
+| [0053](./0053-team-optimizer-buff-plans.md) | Team optimizer: compare who provides which team buff | accepted | | calculator, components, labs, team-rotations |
+| [0054](./0054-visual-info-pages-and-guides.md) | Visual Info pages and guides as shared data | accepted | | components, content |
+| [0055](./0055-in-app-guides-drawer.md) | In-app help opens guides in a drawer | accepted | | components, content |
+| [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
 
 ## When to write a new ADR
 

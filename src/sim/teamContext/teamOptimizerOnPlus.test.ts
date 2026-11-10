@@ -116,10 +116,17 @@ describe("Optimize team on plus", () => {
     expect(optimizer.isProven.value).toBe(false);
     // Shorekeeper's Energy Regen moved her team's crit: the row reads what the page will, not the search's sum
     expect(rows.some((row) => Math.abs(row.total / row.combinerTotal - 1) > 1e-6)).toBe(true);
+    // his buff plans (#689) ran: more than one plan, and a row says who provides what
+    expect(optimizer.planCount.value).toBeGreaterThan(1);
+    expect(rows[0]!.provisions.length).toBeGreaterThan(0);
     const { total, matches } = await optimizer.saveAsBuilds(rows[0]!);
     expect(matches).toBe(true);
     expect(total).toBeCloseTo(rows[0]!.total, 3);
     expect(await teamPageTotal()).toBeCloseTo(rows[0]!.total, 3);
+    // a plan's panel is not saved over one plus derives: after Save the team buffs still follow the builds
+    const team = useTeamRotationsStore().getTeamById("team-plus") as any;
+    const after = await resolveTeamCharacters(team, useCharacterStore().characters as any, useInventoryStore().echoes as any[], { auto: true });
+    expect(after.slots.map((slot) => slot.buffSource)).toEqual(["derived", "derived"]);
   }, 120_000);
 
   it("with auto team buffs off it is upstream's: the stored panels, and a proof when there is one", async () => {
@@ -129,7 +136,11 @@ describe("Optimize team on plus", () => {
     expect(optimizer.readCurrentTotal()).toBeCloseTo(await storedPanelTotal(), 6);
     optimizer.setGoal(0, "damage");
     optimizer.setGoal(1, "damage");
+    // One plan, nobody asked to provide a team buff. Since #689 his defaults tick Moonlit Clouds and the main echo for both,
+    // and on a 14-echo pool his shortlist keeps only plans whose two best builds share echoes ("No combination works").
+    for (const slot of optimizer.slots.value) for (const offer of slot.offers) optimizer.setOfferTicked(slot.slot, offer.defKey, false);
     await optimizer.run();
+    expect(optimizer.errorMessage.value).toBeNull();
     expect(optimizer.phase.value).toBe("results");
     expect(optimizer.results.value.every((row) => row.matchesTeamPage && Math.abs(row.total / row.combinerTotal - 1) <= 1e-6)).toBe(true);
     expect(optimizer.isProven.value).toBe(true); // every loadout fits the 2,000-row lists: nothing is cut off
