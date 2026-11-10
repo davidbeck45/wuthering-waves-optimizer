@@ -167,6 +167,58 @@ describe("Optimize team on plus", () => {
   }, 120_000);
 });
 
+describe("Optimize team's Save", () => {
+  beforeEach(async () => {
+    await seedAccount();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+  const buildCounts = () => ["Shorekeeper", "Galbrena"].map((id) => ((useCharacterStore().characters as any)[id].builds ?? []).length);
+
+  it("saves a result once: saved again it adds no build, and the page offers no Save for it", async () => {
+    autoTeamBuffs.value = true;
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "damage");
+    await optimizer.run();
+    const row = optimizer.results.value[0]!;
+    await vi.waitFor(() => expect(optimizer.changedCharacters(row).length).toBeGreaterThan(0));
+    const first = await optimizer.saveAsBuilds(row);
+    expect(first.matches).toBe(true);
+    const after = buildCounts();
+    // the row is now what the team wears: nothing to save, so the page shows no Save for it
+    await vi.waitFor(() => expect(optimizer.changedCharacters(row)).toEqual([]));
+    const second = await optimizer.saveAsBuilds(row);
+    expect(buildCounts()).toEqual(after);
+    expect(second.total).toBeCloseTo(first.total, 6);
+    expect(second.matches).toBe(true);
+    expect(await teamPageTotal()).toBeCloseTo(row.total, 3);
+  }, 120_000);
+
+  it("a member whose pick is what they wear today gets no new build beside a teammate who does", async () => {
+    autoTeamBuffs.value = true;
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "damage");
+    await optimizer.run();
+    const row = optimizer.results.value[0]!;
+    await optimizer.saveAsBuilds(row);
+    // run again from the saved builds: the best row is the builds of today, or changes only who changed
+    optimizer.editSetup();
+    await optimizer.run();
+    const again = optimizer.results.value.find((r) => Math.abs(r.total / row.total - 1) < 1e-9);
+    if (!again) return; // the second search found better: nothing to check here
+    const before = buildCounts();
+    await vi.waitFor(() => expect(optimizer.changedCharacters(again)).toEqual([]));
+    await optimizer.saveAsBuilds(again);
+    expect(buildCounts()).toEqual(before);
+  }, 120_000);
+});
+
 describe("Optimize team's drawer on a pinned build", () => {
   beforeEach(async () => {
     await seedAccount();

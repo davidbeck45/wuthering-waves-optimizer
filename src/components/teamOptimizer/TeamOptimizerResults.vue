@@ -26,9 +26,11 @@
           <button type="button" class="btn btn-sm btn-outline" data-test-team-optimizer-edit-setup @click="optimizer.editSetup()">
             Edit &amp; run again
           </button>
-          <button type="button" class="btn btn-sm btn-primary" data-test-team-optimizer-save @click="openConfirm">
+          <button v-if="changedNames" type="button" class="btn btn-sm btn-primary" data-test-team-optimizer-save @click="openConfirm">
             Save as new builds
           </button>
+          <!-- Wuthering Tools+: a result that is the builds of today has nothing to save -->
+          <p v-else class="text-sm opacity-70 self-center" role="status" data-test-team-optimizer-nothing-to-save>{{ NOTHING_TO_SAVE }}</p>
         </div>
       </div>
       <TeamRotationDamageBar :per-character="selected.characterResults" />
@@ -189,6 +191,7 @@ import { sortLoadoutForDisplay } from "../optimizerWorkspace/optimizerLoadoutSor
 import { readTeamDamage } from "../../calculator/teamOptimizer";
 import { teamBuffSource } from "../../calculator/teamBuffPlans";
 import { getEchoSetLabelByType } from "../../echoes/stats";
+import { NOTHING_TO_SAVE } from "../../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerResults" });
 

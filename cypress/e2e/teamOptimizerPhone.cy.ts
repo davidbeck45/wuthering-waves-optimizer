@@ -121,6 +121,32 @@ describe("Optimize team's Edit drawer", () => {
   });
 });
 
+describe("Optimize team's Save", () => {
+  const builds = (win: Window) => ["Suoming", "Hsin"].map((id) => (JSON.parse(win.localStorage.getItem("character")!).characters[id].builds ?? []).length);
+
+  it("saves a result once, then says there is nothing to save", () => {
+    results(412, 915, "dark");
+    cy.get("[data-test-team-optimizer-nothing-to-save]").should("not.exist");
+    cy.get("[data-test-team-optimizer-save]").click();
+    cy.get("[data-test-team-optimizer-confirm-save]").click();
+    cy.get("[data-test-team-optimizer-saved]").should("contain", "Saved.");
+    // the result is now what the team wears: no second Save to stack a copy with the same name
+    cy.get("[data-test-team-optimizer-nothing-to-save]").should("be.visible").and("contain", "Nothing to save: these are the builds this team already wears.");
+    cy.get("[data-test-team-optimizer-save]").should("not.exist");
+    cy.window().then((win) => {
+      const saved = builds(win);
+      // run again from the saved builds: the same result comes back, and it is not offered for saving
+      cy.get("[data-test-team-optimizer-edit-setup]").click();
+      cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+      cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
+      cy.contains("[data-test-team-optimizer-results]", "+0.00% vs current");
+      cy.get("[data-test-team-optimizer-nothing-to-save]").should("be.visible");
+      cy.get("[data-test-team-optimizer-save]").should("not.exist");
+      cy.window().should((after) => expect(builds(after)).to.deep.equal(saved));
+    });
+  });
+});
+
 describe("Optimize team on a phone at 130 % text", () => {
   for (const [width, height] of [[412, 915], [360, 800]] as const) {
     it(`names every stat tile and shows the team's change whole at ${width} px`, () => {

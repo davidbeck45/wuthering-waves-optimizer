@@ -20,6 +20,7 @@ import {
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
+import { slotsAlreadyWorn } from "../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
 import { calcTeamRotationDamage, type TeamRotationInput } from "../calculator/teamRotation";
 import {
   TEAM_OPTIMIZER_LIST_DEPTH,
@@ -983,10 +984,22 @@ export function useTeamOptimizer(teamId: Ref<string>) {
 
   // --- Saving ------------------------------------------------------------
 
+  // Wuthering Tools+: the picks that are the build of today already (teamOptimizerSave.ts); a Save of those stacked copies
+  const alreadyWorn = (row: TeamOptimizerResultRow) =>
+    slotsAlreadyWorn({ picks: row.picks, teamBuffsBySlot: row.teamBuffsBySlot, echoBuffsBySlot: row.echoBuffsBySlot, record: slotData, wornIds: wornEchoIds, flat: flatTeamCharacters(), total: async (records) => readTeamDamage((await calcFlat(records)).total, damageType.value) });
+  const wornSlotsByRow = shallowRef<Record<string, number[]>>({});
+  watch([results, baseline], async () => {
+    const rows = results.value;
+    const next: Record<string, number[]> = {};
+    for (const row of rows) next[row.id] = await alreadyWorn(row);
+    if (results.value === rows) wornSlotsByRow.value = next;
+  });
+
   /** Characters a result would add a build for: new echoes, or team buff settings to save. */
   function changedCharacters(row: TeamOptimizerResultRow): string[] {
     return row.picks
       .filter((pick) => pick.loadout || row.teamBuffsBySlot[pick.slot])
+      .filter((pick) => !wornSlotsByRow.value[row.id]?.includes(pick.slot)) // Wuthering Tools+
       .map((pick) => pick.characterId);
   }
 
@@ -1007,9 +1020,11 @@ export function useTeamOptimizer(teamId: Ref<string>) {
    */
   async function saveAsBuilds(row: TeamOptimizerResultRow): Promise<{ total: number; matches: boolean }> {
     const name = `${team.value?.name ?? "Team"} optimized`;
+    const worn = await alreadyWorn(row); // Wuthering Tools+: a pick that is the build of today is not saved again
     for (const pick of row.picks) {
       const teamBuffs = row.teamBuffsBySlot[pick.slot];
       if (!pick.loadout && !teamBuffs) continue;
+      if (worn.includes(pick.slot)) continue; // Wuthering Tools+
       // Wuthering Tools+: without a pin, the build the page read (one named for the team is stamped active on the record)
       const pinned = team.value?.buildIds?.[pick.slot] ?? characters.value?.[pick.characterId]?.activeBuildId ?? null;
       const character = characterStore.characters[pick.characterId] as any;
