@@ -1,5 +1,5 @@
 // Wuthering Tools+: the fight pages after the 2026-10-31 night audit ("fight") — the Teams editor's way into the plus
-// team tools (src/sim/teamLinks/), the calculator's empty Rotations panel (src/sim/presets/RotationsEmptyState.vue),
+// team tools (src/sim/teamLinks/), the calculator's empty Rotations panel (Ryan's own since #690; plus's was retired),
 // the right page in the v3 phone header for /energy and /rotation, the energy chips' "has / needs" words and a
 // /rotation link that is not a team. v3 UI (the default since Ryan #602), seeded through onBeforeLoad like
 // energyCheck.cy.ts: the Cartethyia optimizer fixture and two saved teams — one of wuwa_calc's compositions
@@ -69,16 +69,19 @@ describe("fight pages", () => {
     cy.get('[data-test-team-plus-links][data-state="none"]', ENGINE).should("exist").and("not.be.visible");
   });
 
-  it("explains an empty Rotations panel and puts the presets on screen", () => {
+  // Ryan's #690 ships this panel with the test ids plus's own had, so after the 2026-11-09 sync both showed and each
+  // button existed twice. Plus's is retired; what plus adds is in the presets his button opens.
+  it("explains an empty Rotations panel once and puts the presets on screen", () => {
     cy.viewport(1280, 900);
     cy.visit("/", seed({ rotations: false }));
     cy.get('[data-test-calculator-nav="rotations"]').click();
-    cy.get("[data-test-rotations-empty]").should("be.visible").and("contain.text", "No rotation for Cartethyia yet").and("contain.text", "list of attacks");
-    cy.get("[data-test-rotations-empty-presets]").should("be.visible").click();
+    cy.get("[data-test-rotations-empty-state]").should("have.length", 1).and("be.visible").and("contain.text", "No rotations yet");
+    cy.get("[data-test-rotations-empty]").should("not.exist");
+    cy.get("[data-test-rotations-empty-presets]").should("have.length", 1).and("be.visible").click();
     cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
     cy.get("[data-test-rotations-presets-cancel]").click();
-    cy.get("[data-test-rotations-empty-create]").click();
-    cy.get("[data-test-rotations-empty]").should("not.exist");
+    cy.get("[data-test-rotations-empty-create]").should("have.length", 1).click();
+    cy.get("[data-test-rotations-empty-state]").should("not.exist");
   });
 
   // The darker crest stars on light themes once compiled to `html[data-theme-style="light"] { color: amber }` (a
