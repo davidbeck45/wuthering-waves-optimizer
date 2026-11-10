@@ -158,6 +158,43 @@ describe("phone layout", () => {
     expectNoHorizontalScroll("/build-team result");
   });
 
+  // the member card's title at 360 px and 130 % text: "Yangyang: Xuanling" read "Yangyan…" beside the avatar and the
+  // order arrows (2026-11-08 hunt, L5). The card carries the short name, and no name is cut: what does not fit beside
+  // the arrows or the Save switch sends them to a second row
+  it("says each member's whole name on /build-team's cards at 360 px and 130 % text", () => {
+    const character = JSON.parse(configOptimizer.data.character);
+    character.characters.YangyangXuanling = { weapon: "AzureOath" };
+    character.characters.Chisa = { weapon: "Kumokiri" };
+    const team = { id: "btname", name: "Name team", characterIds: ["YangyangXuanling", "Cartethyia", "Chisa"], buildIds: [null, null, null], actions: [], duration: null, enemyConfig: {} };
+    cy.visit("/build-team?team=btname", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("character", JSON.stringify(character));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory);
+        win.localStorage.setItem("teamRotations", JSON.stringify({ teams: [team], favoriteTeamIds: [], favoritePresetNames: [] }));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+      onLoad(win) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.get('[data-test-build-team][data-phase="plan"]', { timeout: 90000 }).should("exist");
+    const whole = (id: string, text: string, full: string): void => {
+      cy.get(`[data-test-build-team-switch="${id}"]`).click();
+      cy.get(`[data-test-build-team-plan="${id}"] [data-test-build-team-card-name]`)
+        .should("be.visible")
+        .and("have.text", text)
+        .and("have.attr", "title", full)
+        .and(($name) => expect($name[0]!.scrollWidth, `${text} is not cut`).to.be.at.most($name[0]!.clientWidth + 1));
+    };
+    whole("YangyangXuanling", "Xuanling", "Yangyang: Xuanling");
+    whole("Cartethyia", "Cartethyia", "Cartethyia");
+    expectNoHorizontalScroll("/build-team plan at 130 %");
+  });
+
   it("keeps the wuwa_calc rankings page inside the viewport with its phone controls", () => {
     cy.visit("/rankings");
     // Search sits in the account bar's chip row; the credit and the My roster link moved into the ⋯ menu

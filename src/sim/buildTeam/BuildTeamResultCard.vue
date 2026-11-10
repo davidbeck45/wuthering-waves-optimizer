@@ -4,7 +4,7 @@
       <span class="bt-prio" :title="`Picked echoes ${ordinal}`">{{ priority }}</span>
       <CharacterAvatar :id="outcome.characterId" :size="44" dot />
       <div class="bt-card__who">
-        <div class="bt-card__name">{{ name }}</div>
+        <div class="bt-card__name" :title="fullName" data-test-build-team-card-name>{{ name }}</div>
         <div class="bt-card__role">{{ plan ? roleLine(plan) : "" }}</div>
       </div>
       <label v-if="outcome.status === 'ok' && outcome.draft" class="bt-save" :title="save ? 'Saved as a new build when you press Save' : 'Not saved'">
@@ -82,7 +82,7 @@
 // from, and every caveat in words.
 import { computed } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
-import { characterDisplayName } from "../display/names";
+import { characterDisplayName, characterShortName } from "../display/names";
 import BuildTeamEchoTile from "./BuildTeamEchoTile.vue";
 import { memberAfter, shortfallText, type MemberOutcome } from "./buildTeam";
 import type { MemberPlan } from "./rileyPlan";
@@ -93,7 +93,9 @@ import { buffDefaultNames, compactNum, deltaText, deltaTone, erBand, fmtInt, pct
 const props = defineProps<{ outcome: MemberOutcome; plan: MemberPlan | undefined; priority: number; save: boolean }>();
 defineEmits<{ "update:save": [value: boolean] }>();
 
-const name = computed(() => characterDisplayName(props.outcome.characterId));
+const fullName = computed(() => characterDisplayName(props.outcome.characterId));
+// the short name, as the team switch above the card and every other plus page ("Xuanling"): "Yangyang: Xuanling" read "Yangyan…" at 360 px
+const name = computed(() => characterShortName(props.outcome.characterId) || fullName.value);
 const ordinal = computed(() => ["first", "second", "third"][props.priority - 1] ?? `${props.priority}th`);
 const built = computed(() => memberAfter(props.outcome));
 const delta = computed(() => deltaText(props.outcome.before?.value, built.value));

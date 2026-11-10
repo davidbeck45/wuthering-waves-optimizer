@@ -4139,6 +4139,9 @@ Round 2 (2026-11-09), three more of the same kind:
 - `shell/askBackGuard.ts` `installSheetBackGuard`: **Back closes /my-rankings' Options sheet and /rotation's Play along**
   and stays on the page, as it does for the Ask sheet (neither is a `<dialog>`). One Back closes one sheet, and each
   guard forgets the Back once that move is over, so a link in a sheet still open is not swallowed.
+- `buildTeam/BuildTeamPlanCard.vue`, `BuildTeamResultCard.vue`, `phone.css` § 38: **a member card says the whole name.**
+  "Yangyang: Xuanling" read "Yangyan…" at 360 px; the card carries the short name, and a name that still does not fit
+  sends the Save switch or the order arrows to a second row.
 
 ## Upgrades and stale tabs — what a deploy does to someone already here (hunt round 1, track "upgrade-regress", 2026-11-06)
 

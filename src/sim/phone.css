@@ -1787,3 +1787,24 @@ html.wt-ai-docked #wt-app .contain {
     scrollbar-width: none;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   38. Build my team's member card says the whole name (2026-11-08 hunt, phone-flows L5; BuildTeamPlanCard.vue,
+       BuildTeamResultCard.vue). At 360 px the head's badge, avatar and Save switch left the name 106 px, so
+       "Yangyang: Xuanling" read "Yangyan…". The card now carries the short name ("Xuanling"), and where a name still
+       does not fit beside the switch (Shorekeeper at 130 %) the switch or the order arrows drop to a second row
+       instead of the name being cut. The role line under the name takes the width the head gives it and asks for
+       none, so it is the name alone that decides whether the switch fits beside it. */
+@media (max-width: 767px) {
+  .bt-card__head {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+  .bt-card__role {
+    width: 0;
+    min-width: 100%;
+  }
+  .bt-card__head > :is(.bt-save, .bt-move) {
+    margin-left: auto;
+  }
+}

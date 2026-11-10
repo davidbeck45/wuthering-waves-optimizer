@@ -4,7 +4,7 @@
       <span class="bt-prio" :title="`Priority ${priority}: picks echoes ${priority === 1 ? 'first' : priority === 2 ? 'second' : 'third'}`">{{ priority }}</span>
       <CharacterAvatar :id="characterId" :size="44" dot />
       <div class="bt-card__who">
-        <div class="bt-card__name">{{ name }}</div>
+        <div class="bt-card__name" :title="fullName" data-test-build-team-card-name>{{ name }}</div>
         <div class="bt-card__role">{{ role }}</div>
       </div>
       <div v-if="count > 1" class="bt-move" role="group" :aria-label="`Priority of ${name}`">
@@ -97,7 +97,7 @@
 // their priority, and the Energy Regen floor the run must keep (editable).
 import { computed } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
-import { characterDisplayName } from "../display/names";
+import { characterDisplayName, characterShortName } from "../display/names";
 import { kitErNote } from "../energy/energyHave";
 import type { BuildOptions } from "./constraints";
 import type { MemberPlan } from "./rileyPlan";
@@ -116,7 +116,9 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{ move: [delta: number]; "update:erFloor": [value: number | null] }>();
 
-const name = computed(() => characterDisplayName(props.characterId));
+const fullName = computed(() => characterDisplayName(props.characterId));
+// the short name, as the team switch above the card and every other plus page ("Xuanling"): "Yangyang: Xuanling" read "Yangyan…" at 360 px
+const name = computed(() => characterShortName(props.characterId) || fullName.value);
 /** "you have" is on the Energy check's basis: a kit's always-on ER (Mornye's inherent) is in it, and says so */
 const kitNote = computed(() => kitErNote(props.characterId));
 const role = computed(() => roleLine(props.plan));
