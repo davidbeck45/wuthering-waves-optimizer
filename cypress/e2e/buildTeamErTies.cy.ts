@@ -96,20 +96,22 @@ describe("build my team: an Energy Regen need out of reach", () => {
     cy.get(result).should("have.attr", "data-status", "ok");
     cy.get(`${result} [data-test-build-team-er-line]`).should("have.attr", "data-band", "short");
     cy.get(result).should("contain.text", "with the echoes this run can use").and("contain.text", "damage decided between builds with the same ER").and("not.contain.text", "your echoes allow");
+    // a build that loses damage and still misses the need is not ticked for Save, and an unticked card reads the build the
+    // Save leaves her (497cd51d): ticked, it reads the new build, once the team total for that tick has landed
+    cy.get('[data-test-build-team-save-slot="Cartethyia"]').check();
+    cy.get(`${result} [data-test-build-team-after-label]`).should("have.text", "Built");
     cy.get(`${result} [data-test-build-team-echo]`).then(($tiles) => {
       const page = [...$tiles].map((t) => t.getAttribute("data-echo-id"));
       expect(page, "five echoes").to.have.length(5);
-      cy.get(`${result} [data-test-build-team-after]`)
-        .invoke("attr", "title")
-        .then((after) => {
-          cy.window().then((win) => {
-            cy.wrap(win.eval(inlineRun(400)) as Promise<Inline[]>, RUN).then((inline) => {
-              const cart = (inline as Inline[]).find((m) => m.id === "Cartethyia")!;
-              expect([...page].sort(), "the same five echoes").to.deep.eq([...cart.echoes].sort());
-              expect(Number(String(after).replace(/\D/g, "")), "the same damage").to.eq(Math.round(cart.value));
-            });
+      cy.window().then((win) => {
+        cy.wrap(win.eval(inlineRun(400)) as Promise<Inline[]>, RUN).then((inline) => {
+          const cart = (inline as Inline[]).find((m) => m.id === "Cartethyia")!;
+          expect([...page].sort(), "the same five echoes").to.deep.eq([...cart.echoes].sort());
+          cy.get(`${result} [data-test-build-team-after]`, RUN).should(($after) => {
+            expect(Number(String($after.attr("title")).replace(/\D/g, "")), "the same damage").to.eq(Math.round(cart.value));
           });
         });
+      });
     });
   });
 
