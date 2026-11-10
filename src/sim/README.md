@@ -671,6 +671,14 @@ Every /account enemy label now ends "no stacks on it" (`ONE_ENEMY_TEXT`, display
 drawer's team list open with that line, and a saved team whose own enemy differs carries `ownEnemyNote`: "Teams scores this
 team at its own enemy (9 Havoc Bane + 13 Glacio Chafe stacks), so it reads a different figure there" (`useOwnEnemyNotes`).
 
+**"No team figure" says which thing is true (2026-11-09, hunt 2 item 7).** A team figure needs a team rotation in the app
+(a saved team with actions, a curated team, a wuwa_calc team preset) with all three set up. Every page said "not in a team
+you can field" when it found none, also for Danjin, whom the account fields but none of the 149 team presets lists. The
+scorer's `noTeamNote(id)` (noTeamNote.ts) now answers "the app has no team rotation with Danjin (save one on Teams to get a
+team figure)" when no team rotation lists the character (both Rover genders count as one kit), and keeps "not in a team you
+can field" when rotations exist and the account lacks a member. Used by /account, With what you own, Farm next, Set lab
+and /weapons; Invest next's divider reads "No team figure · own damage".
+
 ### "With what you own" — free upgrades on `/account` (batch 3b, track "own-upgrades", 2026-11-02)
 
 "What to invest in next" lists things that cost pulls or Tuners. This group, at the top of that panel and in the

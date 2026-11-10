@@ -250,7 +250,7 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
           let teamNote: string | null = null;
           const activeId = characters[id]?.activeBuildId ?? null;
           const onActive = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeId);
-          if (!ctx) teamNote = "not in a team you can field";
+          if (!ctx) teamNote = await scorer.noTeamNote(id);
           else if (!onActive) teamNote = `Build my team re-gears ${name}'s "${m.fromBuild.name ?? "other"}" build in this team, not the active one`;
           else {
             const block = await scorer.buildBlock(ctx, id);

@@ -616,7 +616,7 @@ async function teamReaderOf(session: LabSession, lab: LabCharacter, auto: boolea
   const side = await teamSideOf(session, auto, pace, counter);
   const ctx = await side.scorer.teamFor(lab.id);
   const block = ctx ? await side.scorer.buildBlock(ctx, lab.id) : null;
-  const note = !ctx ? "not in a team you can field" : block ?? (ctx.base > 0 ? null : "the team scores no damage");
+  const note = !ctx ? await side.scorer.noTeamNote(lab.id) : block ?? (ctx.base > 0 ? null : "the team scores no damage");
   const panels = ctx && !note ? await panelMatesOf(session, lab, ctx, auto) : [];
   return { side, ctx, block, note, worn: fivesOf(session.account.characters[lab.id], session.account.echoes).filter((s) => TEAM_BUFFS.has(s)), panels };
 }

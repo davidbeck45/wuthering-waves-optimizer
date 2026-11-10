@@ -59,7 +59,7 @@
 
     <ol v-if="rows.length" class="inv__list">
       <template v-for="(row, i) in visibleRows" :key="row.item.id">
-        <li v-if="row.divider" class="inv__divider" aria-hidden="true">Not in a team you can field · own damage</li>
+        <li v-if="row.divider" class="inv__divider" aria-hidden="true">No team figure · own damage</li>
         <li class="inv-row" :data-test-account-invest-row="row.item.id" :data-kind="row.item.kind">
           <button type="button" class="inv-row__btn" :title="rowTitle(row.item)" @click="emit('open', row.item.characterId)">
             <span class="inv-row__n">{{ i + 1 }}</span>

@@ -27,6 +27,7 @@ import { equippedEchoCount } from "./buildScore";
 import { erAdjustedGain, erFactorFor } from "../energy/erAwareScorer";
 import { showHave, showNeed } from "../energy/energyNeed";
 import { panelsFollowWeapon } from "../weaponValue/teamPanels";
+import { NO_FIELDABLE_TEAM, noTeamNote } from "./noTeamNote";
 
 export type InvestKind = "sequence" | "refine" | "weapon" | "substat";
 
@@ -231,6 +232,9 @@ export interface TeamScorer {
   buildBlock(ctx: TeamContext, characterId: string): Promise<string | null>;
   /** the team re-scored on `hypoCharacters` / `hypoEchoes` (the character upgraded), or why there is no figure */
   impact(ctx: TeamContext | null, block: string | null, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<{ team: TeamImpact | null; note: string | null }>;
+  /** why `teamFor` found no team for the character: the app has no team rotation with them at all, or it has and the
+   *  account lacks a member of each (noTeamNote.ts) */
+  noTeamNote(characterId: string): Promise<string>;
 }
 /* eslint-enable no-unused-vars */
 
@@ -277,7 +281,7 @@ export async function createTeamScorer(
   }
 
   async function impact(ctx: TeamContext | null, block: string | null, hypoCharacters: Record<string, any>, hypoEchoes: any[]): Promise<{ team: TeamImpact | null; note: string | null }> {
-    if (!ctx) return { team: null, note: "not in a team you can field" };
+    if (!ctx) return { team: null, note: NO_FIELDABLE_TEAM }; // a caller that knows the character asks `noTeamNote`
     if (block) return { team: null, note: block };
     if (ctx.base <= 0) return { team: null, note: "the team scores no damage" };
     try {
@@ -291,7 +295,14 @@ export async function createTeamScorer(
     }
   }
 
-  return { teamFor, buildBlock, impact };
+  const notes = new Map<string, Promise<string>>();
+  const missing = (characterId: string): Promise<string> => {
+    let note = notes.get(characterId);
+    if (!note) notes.set(characterId, (note = noTeamNote(characterId, teams)));
+    return note;
+  };
+
+  return { teamFor, buildBlock, impact, noTeamNote: missing };
 }
 
 /** A team's figure as it is and on `hypoCharacters`, by the team's ranking id: what `createTeamScorer` works out for a row
@@ -355,6 +366,7 @@ export async function investPlan(
       if (base > 0) {
         const ctx = await scorer.teamFor(id);
         const block = ctx ? await scorer.buildBlock(ctx, id) : null;
+        const noTeam = ctx ? null : await scorer.noTeamNote(id);
         const push = async (item: Omit<InvestItem, "base" | "avgDamage" | "gain" | "team" | "teamNote" | "rotation" | "characterId">, hypo: { characters: Record<string, any>; inventoryEchoes: any[] }, extraBlock: string | null = null): Promise<void> => {
           const avgDamage = (await scoreRotation(rotation, id, hypo.characters, enemy, hypo.inventoryEchoes)).avgDamage;
           await pause();
@@ -365,7 +377,7 @@ export async function investPlan(
           if (gain < MIN_GAIN && !(team && team.gain >= MIN_GAIN)) return;
           // a weapon step a teammate's hand-set panel would have to follow: this figure keeps the panel as set
           const kept = ctx && team && (item.kind === "refine" || item.kind === "weapon") ? (await panelsFollowWeapon(ctx.candidate.team, characters, hypo.characters, id, hypo.inventoryEchoes, enemy)).adjusted.map((a) => a.member) : [];
-          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: note, ...(erGap ? { erGap } : {}), ...(kept.length ? { panelsKept: kept } : {}) });
+          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: noTeam ?? note, ...(erGap ? { erGap } : {}), ...(kept.length ? { panelsKept: kept } : {}) });
         };
         const withData = (next: Record<string, any>) => ({ characters: { ...characters, [id]: next }, inventoryEchoes });
 

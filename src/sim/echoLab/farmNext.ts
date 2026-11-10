@@ -478,7 +478,7 @@ export async function teamSideOf(session: LabSession, auto: boolean, pace: Pacer
 /** Why a character's row can't have a team figure (null: it can), and their share of that team's damage. */
 async function teamBlock(side: TeamSide, characterId: string): Promise<{ note: string | null; share: number }> {
   const ctx = await side.scorer.teamFor(characterId);
-  if (!ctx) return { note: "not in a team you can field", share: 0 };
+  if (!ctx) return { note: await side.scorer.noTeamNote(characterId), share: 0 };
   const block = await side.scorer.buildBlock(ctx, characterId);
   if (block) return { note: block, share: 0 };
   if (!(ctx.base > 0)) return { note: "the team scores no damage", share: 0 };
@@ -490,7 +490,7 @@ async function teamBlock(side: TeamSide, characterId: string): Promise<{ note: s
 /** The slot's fresh echo on the character's strongest fieldable team: the same line model, every line a team re-score. */
 async function teamFigure(session: LabSession, side: TeamSide, lab: LabCharacter, plan: SlotPlan, options: FarmOptions, pace: Pacer, counter: { n: number }): Promise<{ team: FarmTeam | null; note: string | null }> {
   const ctx = await side.scorer.teamFor(lab.id);
-  if (!ctx) return { team: null, note: "not in a team you can field" };
+  if (!ctx) return { team: null, note: await side.scorer.noTeamNote(lab.id) };
   const block = await side.scorer.buildBlock(ctx, lab.id);
   if (block) return { team: null, note: block };
   if (!(ctx.base > 0)) return { team: null, note: "the team scores no damage" };

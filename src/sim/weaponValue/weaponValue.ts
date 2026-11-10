@@ -213,7 +213,7 @@ export async function weaponValue(
       const ctx: TeamContext | null = await scorer.teamFor(id);
       const block = ctx ? await scorer.buildBlock(ctx, id) : null;
       if (ctx) row.team = { id: ctx.rank.id, name: ctx.rank.name, characterIds: ctx.rank.characterIds, base: ctx.base };
-      row.teamNote = !ctx ? "not in a team you can field" : block;
+      row.teamNote = !ctx ? await scorer.noTeamNote(id) : block;
 
       /** one option: its own figure (already scored) and the team re-run with the weapon in hand */
       const option = async (kind: OptionKind, key: string, r: number, own: WeaponCopyScore, label: string): Promise<ValueOption> => {
