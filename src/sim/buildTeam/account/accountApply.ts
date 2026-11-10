@@ -149,6 +149,10 @@ export function undoAccountPlan(stores: BuildTeamStores, undo: AccountUndoRecord
   return { kind: exact ? "exact" : "partial", removed, kept, pinsRestored, clashes };
 }
 
+/** The saved teams and slots a member plays in among the chosen teams. */
+const pinsOf = (result: Pick<BuildAccountResult, "teams">, index: number): AccountApplyMember["pins"] =>
+  result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
+
 /** Who the plan saves: every member with a new build, except one who keeps exactly today's echoes, scores the same with
  *  them and plays in no other chosen team (nothing would change for them). The same echoes can score more with the run's
  *  set or main-echo buffs switched on (`worthSaving`, Build my team's rule): the review's team totals count that build,
@@ -161,14 +165,32 @@ export function accountApplyRequest(result: Pick<BuildAccountResult, "members" |
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
-    const pins = result.teams.flatMap((t) => (t.spec.id ? t.slots.filter((s) => s.member === index).map((s) => ({ teamId: t.spec.id!, slot: s.slot })) : []));
-    const wornNow = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeBuildOf(m.characterId));
-    // one who plays in several chosen teams needs a build only when one of them does not pin these echoes already
-    const pinnedEverywhere = m.fromBuild.id != null && pins.every((p) => result.teams.find((t) => t.spec.id === p.teamId)?.spec.buildIds?.[p.slot] === m.fromBuild.id);
-    if (m.sameEchoes && (!m.alsoIn.length || pinnedEverywhere) && !worthSaving(m) && (!makeActive || wornNow)) return;
-    members.push({ characterId: m.characterId, draft: m.draft, pins });
+    if (m.sameEchoes && !sameEchoesSave(result, index, makeActive, activeBuildOf)) return;
+    members.push({ characterId: m.characterId, draft: m.draft, pins: pinsOf(result, index) });
   });
   return { members, makeActive };
+}
+
+/** Why the Save writes a build for a member whose echoes stay exactly today's:
+ *  - `buffs`: the same echoes score more with the run's set or main-echo buffs switched on (`worthSaving`);
+ *  - `teams`: they play in several chosen teams and not every one pins these echoes yet;
+ *  - `active`: "Also make active" is on and they do not wear these echoes now (a team pins a build they don't wear). */
+export type SameEchoesSave = "buffs" | "teams" | "active";
+
+/** The reason a member who keeps today's echoes still gets a build saved, or null when the Save writes none for them
+ *  (also null for a member whose echoes change, or who has no build). The Save's own rule (`accountApplyRequest` asks
+ *  this), so the member's card can say the same thing the Save does: a card read "keeps today's echoes" for Mornye while
+ *  the Save wrote her a build, three cards under a headline that counted two (2026-11-08 hunt, numbers 5). */
+// eslint-disable-next-line no-unused-vars -- the parameter of a function type
+export function sameEchoesSave(result: Pick<BuildAccountResult, "members" | "teams">, index: number, makeActive: boolean, activeBuildOf: (characterId: string) => string | null | undefined = () => null): SameEchoesSave | null {
+  const m = result.members[index];
+  if (!m || m.status !== "ok" || !m.draft || !m.sameEchoes) return null;
+  if (worthSaving(m)) return "buffs";
+  // one who plays in several chosen teams needs a build only when one of them does not pin these echoes already
+  const pinnedEverywhere = m.fromBuild.id != null && pinsOf(result, index).every((p) => result.teams.find((t) => t.spec.id === p.teamId)?.spec.buildIds?.[p.slot] === m.fromBuild.id);
+  if (m.alsoIn.length && !pinnedEverywhere) return "teams";
+  const wornNow = m.fromBuild.source === "active" || (m.fromBuild.id != null && m.fromBuild.id === activeBuildOf(m.characterId));
+  return makeActive && !wornNow ? "active" : null;
 }
 
 /** The confirmed save: every affected character's build into build history first ("Before Account plan"), then the

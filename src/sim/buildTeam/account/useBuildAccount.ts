@@ -23,7 +23,7 @@ import { accountStoresRefused } from "../../storage/persistGuard";
 import { onSavedResultsCleared } from "../../persist/savedResults";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildAccount, type AccountPhase, type BuildAccountResult } from "./buildAccount";
-import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, readStoredAccountUndo, saveAccountPlan, saveAccountUndo, undoAccountPlan, undoAccountPlanSaved, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
+import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, readStoredAccountUndo, saveAccountPlan, saveAccountUndo, sameEchoesSave, undoAccountPlan, undoAccountPlanSaved, type SameEchoesSave, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -401,6 +401,8 @@ export function useBuildAccount() {
   /** What a save would write: every member with a new build (accountApply.ts `accountApplyRequest`). */
   const activeBuildOf = (id: string): string | null => characterStore.characters?.[id]?.activeBuildId ?? null;
   const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value, activeBuildOf).members : []));
+  /** Why a member whose echoes stay today's still gets a build from that save (null: none is written), for their card. */
+  const sameEchoesSaveOf = (index: number): SameEchoesSave | null => (result.value ? sameEchoesSave(result.value, index, makeActive.value, activeBuildOf) : null);
 
   /** The review no longer says what the account is: back to Teams, the rows read again. */
   function dropReview(): void {
@@ -522,6 +524,7 @@ export function useBuildAccount() {
     undoLive,
     makeActive,
     toSave,
+    sameEchoesSaveOf,
     elapsed,
     load,
     toggle,

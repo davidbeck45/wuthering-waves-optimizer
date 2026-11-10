@@ -2,6 +2,7 @@
 import { characterDisplayName } from "../../display/names";
 import { teamTitle } from "../../display/teamName";
 import { buffDefaultNames, echoName, emptySlotText, setName, statShort, teammatesNote, worthSaving } from "../buildTeamView";
+import type { SameEchoesSave } from "./accountApply";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
 
@@ -56,7 +57,8 @@ export function erNeedsMet(members: readonly AccountMember[]): { before: number;
 }
 
 /** "9 new builds, 2 keep today's echoes": the builds the Save button saves (`accountApplyRequest`), and the members it
- *  leaves out because nothing would change for them. */
+ *  leaves out because nothing would change for them. Those members' cards, and only theirs, read "keeps today's echoes"
+ *  (`memberNote` with the Save's own reason), so the cards count up to this line. */
 export function buildCountText(members: ReadonlyArray<Pick<AccountMember, "status">>, saving: number): string {
   const kept = members.filter((m) => m.status === "ok").length - saving;
   const builds = saving ? `${saving} new build${saving === 1 ? "" : "s"}` : "No new builds";
@@ -73,12 +75,24 @@ export function whyLower(r: Pick<BuildAccountResult, "score" | "members">): stri
   return "Below today: under the plans' sets and main stats your echoes cannot match what the teams wear now. Turn off “The plans' sets” or “The plans' main stats” to let the builds move further.";
 }
 
-/** Why a member's number moved, in a few words (or null). */
-export function memberNote(m: AccountMember): string | null {
+/** "teams 1 and 2" / "teams 1, 2 and 4": the chosen teams a member plays in, as the review numbers them. */
+function teamsText(m: Pick<AccountMember, "team" | "alsoIn">): string {
+  const n = [...new Set([m.team, ...m.alsoIn])].sort((a, b) => a - b).map((i) => String(i + 1));
+  return n.length < 2 ? `team ${n[0] ?? "1"}` : `teams ${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}`;
+}
+
+/** Why a member's number moved, in a few words (or null). `saved`: why the Save writes a build for one whose echoes stay
+ *  today's (accountApply.ts `sameEchoesSave`), null when it writes none. "keeps today's echoes" is said only of a member
+ *  the Save leaves alone, the ones the review's "2 keep today's echoes" counts; one who gets a build says why. Left out
+ *  (a caller with no Save to speak of), the note is about the echoes alone. */
+export function memberNote(m: AccountMember, saved: SameEchoesSave | null = null): string | null {
   if (m.status !== "ok") return m.message ?? null;
   const notes: string[] = [];
   // `keptCurrent` alone is not enough: a swap can change a build that started as today's
   if (m.sameEchoes && worthSaving(m) && m.buffDefaults.length) notes.push(`same echoes as today: the change is ${buffDefaultNames(m.buffDefaults).join(", ")}, switched on`);
+  else if (m.sameEchoes && saved === "teams") notes.push(`same echoes as today, saved as a new build so ${teamsText(m)} pin the same one`);
+  else if (m.sameEchoes && saved === "active") notes.push(`same echoes as the build this team pins${m.fromBuild?.name ? ` (“${m.fromBuild.name}”)` : ""}, which is not the one worn now: saved as a new build and made active`);
+  else if (m.sameEchoes && saved === "buffs") notes.push("same echoes as today, saved as a new build: they score more under this plan's buff settings");
   else if (m.sameEchoes) notes.push("keeps today's echoes");
   if (m.erFloor != null && m.erMet && m.before?.menuEr != null && m.before.menuEr + 1e-6 < m.erFloor) notes.push(`now meets the ${m.erFloor.toFixed(1)} % Energy Regen need (today ${m.before.menuEr.toFixed(1)} %)`);
   else if (m.erUnreachable) notes.push(`${m.erFloor?.toFixed(1)} % Energy Regen is out of reach with these echoes: the most ER found`);

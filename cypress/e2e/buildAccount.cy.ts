@@ -135,6 +135,18 @@ describe("build my whole account", () => {
     cy.get('[data-test-build-account-member="Cartethyia"][data-shared="yes"]').should("have.length", 1).and("contain.text", "planned in team 1");
     // Chisa has no echo of her sets: said in words
     cy.get('[data-test-build-account-member="Chisa"]').should("not.have.attr", "data-status", "ok");
+    // the cards and the headline count the same members: as many cards say "keeps today's echoes" as the summary's
+    // "N keep today's echoes" (none when it has no such count). A member who kept her echoes but got a build for her
+    // second team read "keeps" too: three cards under a headline of two (2026-11-08 hunt, numbers 5)
+    cy.get("[data-test-build-account-summary]")
+      .invoke("text")
+      .then((summary) => {
+        const counted = Number(/(\d+) keeps? today's echoes/.exec(summary)?.[1] ?? 0);
+        cy.get('[data-test-build-account-member][data-shared="no"]').then(($cards) => {
+          const keeping = [...$cards].filter((c) => /keeps today's echoes/.test(c.querySelector("[data-test-build-account-member-note]")?.textContent ?? ""));
+          expect(keeping.length, "cards that say keeps today's echoes").to.eq(counted);
+        });
+      });
     // no echo in two builds across the account
     cy.get('[data-test-build-account-member][data-shared="no"] [data-test-build-team-echo]').then(($tiles) => {
       const ids = [...$tiles].map((t) => t.getAttribute("data-echo-id"));

@@ -1,6 +1,7 @@
 // Wuthering Tools+ — "Whole account": the page's words (accountView.ts), on hand-made results.
 import { describe, expect, it } from "vitest";
 import type { AccountMember, BuildAccountResult } from "./buildAccount";
+import { accountApplyRequest, sameEchoesSave } from "./accountApply";
 import { accountRatio, buildCountText, confirmItems, erNeedsMet, memberNote, moveText, ratioText, ratioTone, searchLine, secondsText, whyLower } from "./accountView";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -95,6 +96,69 @@ describe("account view", () => {
     expect(memberNote(member(worn([4, 3, 1])))).toBe("3 echoes, not 5: nothing spare fits the empty slot under the 12 cost limit");
     expect(memberNote(member(worn([4, 3, 3, 1, 1])))).toBeNull();
     expect(memberNote(member({ ...worn([4, 3, 3, 1, 1]), otherSetEchoes: 1 }))).toBe("one echo from outside the plan's sets (too few of them were free)");
+  });
+
+  it("says 'keeps today's echoes' only on the cards the headline counts: a member who keeps them and still gets a build says why", () => {
+    // The review of 2026-11-08 (hunt, numbers 5), by shape: 11 members in 4 teams. Lynae and Ciaccona keep today's echoes
+    // and get no build. Mornye keeps hers too, but plays in teams 1 and 2, so the Save writes her a build both pin.
+    // Xuanling's same echoes score more with a set buff on. Seven members change echoes.
+    const same = { sameEchoes: true, erFloor: null, erMet: null } as const;
+    const names = ["Aemeath", "Lynae", "Mornye", "Sigrika", "Lucilla", "Cartethyia", "Shorekeeper", "Ciaccona", "YangyangXuanling", "Suisui", "Chisa"];
+    const over: Record<string, Partial<AccountMember>> = {
+      Lynae: { ...same, keptCurrent: true },
+      Mornye: { ...same, alsoIn: [1] },
+      Ciaccona: { ...same, keptCurrent: true, mainEchoFallback: true, team: 2 },
+      YangyangXuanling: { ...same, team: 3, before: { value: 100, menuEr: 110, withRunBuffs: 103 }, after: { value: 103, optimizerValue: 103, menuEr: 110, picks: [] }, buffDefaults: ["SongofFeatheredTrace5SetChongming"] },
+    };
+    const members = names.map((characterId) => member({ characterId, ...(over[characterId] ?? {}) }));
+    const at = (id: string): number => names.indexOf(id);
+    const teams = [
+      { spec: { id: "t1" }, slots: [{ slot: 0, member: at("Aemeath") }, { slot: 1, member: at("Mornye") }, { slot: 2, member: at("Lynae") }] },
+      { spec: { id: "t2" }, slots: [{ slot: 0, member: at("Sigrika") }, { slot: 1, member: at("Mornye") }, { slot: 2, member: at("Lucilla") }] },
+      { spec: { id: null }, slots: [{ slot: 0, member: at("Cartethyia") }, { slot: 1, member: at("Shorekeeper") }, { slot: 2, member: at("Ciaccona") }] },
+      { spec: { id: "t4" }, slots: [{ slot: 0, member: at("YangyangXuanling") }, { slot: 1, member: at("Suisui") }, { slot: 2, member: at("Chisa") }] },
+    ];
+    const plan = { members, teams } as unknown as BuildAccountResult;
+
+    for (const makeActive of [false, true]) {
+      const saved = accountApplyRequest(plan, makeActive).members.map((m) => m.characterId);
+      expect(saved).toHaveLength(9);
+      expect(saved).toContain("Mornye");
+      const headline = buildCountText(members, saved.length);
+      expect(headline).toBe("9 new builds, 2 keep today's echoes");
+      const notes = members.map((m, i) => memberNote(m, sameEchoesSave(plan, i, makeActive)) ?? "");
+      const keepers = names.filter((_, i) => /keeps today's echoes/.test(notes[i]!));
+      // the cards that say it are the two the headline counts, and exactly the members the Save leaves out
+      expect(keepers).toEqual(["Lynae", "Ciaccona"]);
+      expect(keepers).toEqual(names.filter((id) => !saved.includes(id)));
+      expect(notes[at("Ciaccona")]).toBe("keeps today's echoes · another main echo (the plan's is not free)");
+      expect(notes[at("Mornye")]).toBe("same echoes as today, saved as a new build so teams 1 and 2 pin the same one");
+      expect(notes[at("YangyangXuanling")]).toMatch(/^same echoes as today: the change is Song of Feathered Trace 5pc \(Chongming\), switched on$/i);
+    }
+    // the reason is the Save's own: none for a member it leaves alone or whose echoes change
+    expect(sameEchoesSave(plan, at("Lynae"), false)).toBeNull();
+    expect(sameEchoesSave(plan, at("Aemeath"), false)).toBeNull();
+    expect(sameEchoesSave(plan, at("Mornye"), false)).toBe("teams");
+    expect(sameEchoesSave(plan, at("YangyangXuanling"), false)).toBe("buffs");
+    // without the Save's reason the note is about the echoes alone, as it was
+    expect(memberNote(members[at("Mornye")]!)).toBe("keeps today's echoes");
+  });
+
+  it("says why a member wearing another build gets one saved under Also make active, and when a build is saved for its buffs alone", () => {
+    // a team pins a build she does not wear: the plan keeps its echoes, and making it active needs a build to switch to
+    const pinned = member({ characterId: "Ciaccona", sameEchoes: true, erFloor: null, erMet: null, fromBuild: { id: "b", name: "Support", source: "pinned" } });
+    const plan = { members: [pinned], teams: [{ spec: { id: "t1", buildIds: ["b", null, null] }, slots: [{ slot: 0, member: 0 }] }] } as unknown as BuildAccountResult;
+    expect(sameEchoesSave(plan, 0, false)).toBeNull();
+    expect(memberNote(pinned, sameEchoesSave(plan, 0, false))).toBe("keeps today's echoes");
+    expect(sameEchoesSave(plan, 0, true)).toBe("active");
+    expect(memberNote(pinned, sameEchoesSave(plan, 0, true))).toBe("same echoes as the build this team pins (“Support”), which is not the one worn now: saved as a new build and made active");
+    // she wears that pinned build already: nothing to save, and the card says so
+    expect(sameEchoesSave(plan, 0, true, () => "b")).toBeNull();
+    // more damage from the same echoes with no buff named: still a new build, never "keeps"
+    const more = member({ sameEchoes: true, erFloor: null, erMet: null, before: { value: 100, menuEr: 110, withRunBuffs: null }, after: { value: 103, optimizerValue: 103, menuEr: 110, picks: [] } });
+    expect(memberNote(more, "buffs")).toBe("same echoes as today, saved as a new build: they score more under this plan's buff settings");
+    // three teams read as a list
+    expect(memberNote(member({ sameEchoes: true, erFloor: null, erMet: null, team: 0, alsoIn: [3, 1] }), "teams")).toBe("same echoes as today, saved as a new build so teams 1, 2 and 4 pin the same one");
   });
 
   it("names a moving echo and the confirm's items", () => {

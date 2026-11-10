@@ -3315,6 +3315,13 @@ per-member Save tick (the plan is a whole — saving part of it could put an ech
 order (12 members have too many; the local search does that job); a team-objective score for supports (Build my team's
 follow-up, unchanged here); weights other than the five steps on the page (the CLI takes any).
 
+**The cards count up to the headline (2026-11-09, hunt round 2 numbers 5).** "keeps today's echoes" is said only of a
+member the Save leaves alone, the ones "N keep today's echoes" counts. A member whose echoes stay today's and who still
+gets a build says why, from the Save's own rule (`sameEchoesSave`, which `accountApplyRequest` now asks): `teams` ("same
+echoes as today, saved as a new build so teams 1 and 2 pin the same one": Mornye, in two chosen teams), `active` (Also
+make active, and the pinned build is not the one worn), `buffs` (the same echoes score more with the run's buffs on).
+The CLI's member table reads "(same echoes, new build)" beside "(kept)" the same way.
+
 ## Echo Lab in the inventory — verdict and roll chips, a plus sort, Feed candidates (track "inventory-quality", 2026-11-02) — `src/sim/inventoryQuality/`
 
 Echo Lab rated every echo, but only on `/echo-lab`; Ryan's inventory (250+ echoes on David's phone) showed none of it.

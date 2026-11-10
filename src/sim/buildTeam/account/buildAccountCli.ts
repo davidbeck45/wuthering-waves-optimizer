@@ -12,7 +12,7 @@ import { DEFAULT_OPTIONS, type BuildOptions } from "../constraints";
 import { inlineBackend } from "../headlessOptimizer";
 import { plansForTeam, type RileySource } from "../plans";
 import { priorityOrder } from "../rileyPlan";
-import { accountApplyRequest } from "./accountApply";
+import { accountApplyRequest, sameEchoesSave } from "./accountApply";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildCountText } from "./accountView";
 import { buildAccount, type AccountTeamInput, type BuildAccountResult } from "./buildAccount";
@@ -127,14 +127,14 @@ export function printBuildAccount(out: BuildAccountCliOut): string {
   lines.push(table(teamRows));
   lines.push("");
   const rows = [["Member", "Scored in", "Before", "After", "Δ", "ER after", "Need", "Echoes (source)"]];
-  for (const m of r.members) {
+  for (const [index, m] of r.members.entries()) {
     const before = m.before?.value ?? 0;
     const after = memberAfter(m) ?? 0;
     rows.push([
       characterDisplayName(m.characterId) + (m.alsoIn.length ? ` (+ team ${m.alsoIn.map((i) => i + 1).join(", ")})` : ""),
       `team ${m.team + 1}`,
       m.before ? int(before) : "—",
-      m.after ? `${int(after)}${m.sameEchoes ? " (kept)" : m.relaxed && m.relaxed !== "plan" ? ` (any ${m.relaxed === "layout" ? "layout" : "main stat"})` : ""}` : m.message ?? m.status,
+      m.after ? `${int(after)}${m.sameEchoes ? (sameEchoesSave(r, index, false) ? " (same echoes, new build)" : " (kept)") : m.relaxed && m.relaxed !== "plan" ? ` (any ${m.relaxed === "layout" ? "layout" : "main stat"})` : ""}` : m.message ?? m.status,
       m.after && before > 0 ? pct((after / before - 1) * 100) : "",
       m.after?.menuEr != null ? `${m.after.menuEr.toFixed(1)}%${m.erMet === false ? " SHORT" : ""}` : "—",
       m.erFloor != null ? `${m.erFloor.toFixed(1)}%` : "—",
