@@ -1727,7 +1727,11 @@ html.wt-ai-docked #wt-app .contain {
           One card to a row there, as the fifth card already was.
        b) Build card (#697, CalculatorBuildCard.vue). The Columns / Hero / Showcase picker is one 422 px row at 130 %,
           so "Showcase" was cut off at both widths; three equal tiles, icon over label. The "Background opacity"
-          slider is w-64 (333 px at 130 %): at 360 px its right end, where the thumb sits at 100 %, was off screen. */
+          slider is w-64 (333 px at 130 %): at 360 px its right end, where the thumb sits at 100 %, was off screen.
+       c) Guide drawer (#691, GuideDrawer.vue). His own spec asks that it fill a 390 px screen. A phone's scrollbars take
+          no room, so it does; where they do (a desktop browser narrowed to phone width, Cypress) daisyUI reserves the
+          page's scrollbar gutter while a drawer is open and the drawer scrolls with a bar of its own, so it came out
+          360 px with a strip beside it. His CI has no shard for root-level specs, so the test only ran on his machine. */
 @media (max-width: 1023px) {
   [data-test-optimizer-result-echo-id].echo__item .card-body .echo__content.echo__content.gap-1\.5 {
     display: flex;
@@ -1773,5 +1777,13 @@ html.wt-ai-docked #wt-app .contain {
   }
   [data-test-build-card] .form-control:has(> [data-test-build-card-background-opacity]) {
     width: min(16rem, 100%);
+  }
+}
+@media (max-width: 767px) {
+  html:has([data-test-guide-drawer-root] > .drawer-toggle:checked) {
+    scrollbar-gutter: auto;
+  }
+  [data-test-guide-drawer-root] > .drawer-side {
+    scrollbar-width: none;
   }
 }
