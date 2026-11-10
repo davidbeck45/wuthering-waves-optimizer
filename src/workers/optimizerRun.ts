@@ -12,6 +12,7 @@ import {
 import { randomString } from "../utils/strings";
 // Wuthering Tools+: exact optimizer speedups (pool dedup, dominated partials, the bound skip) — src/sim/README.md
 import { planOptimizerGeneration, pruneSetupOf } from "../sim/optimizer/optimizerPool";
+import { appliedStatFloors } from "../sim/optimizer/statFloors"; // Wuthering Tools+: a row with no stat picked is not a floor
 
 export interface OptimizerRunInput {
   echoes: any[];
@@ -302,7 +303,7 @@ export function runOptimizerWorkers(
   // Serialize static processor config once (not per batch)
   const serializableContext = createSerializableContext(context);
   const plainMinStats = Array.isArray(minStats)
-    ? minStats.map((s: any) =>
+    ? appliedStatFloors(minStats).map((s: any) =>
         s && typeof s === "object" ? { ...s } : s,
       )
     : minStats;

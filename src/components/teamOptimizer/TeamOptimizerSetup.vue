@@ -149,8 +149,8 @@
           <span class="opacity-70 ml-2">Main echo:</span>
           <span v-if="!view.choice.mainEchoes.length" class="opacity-50">None</span>
           <span v-for="echo in displayMains(view)" :key="echo" class="badge h-auto py-1">{{ echoName(echo) }}</span>
-          <span v-if="view.choice.minStats.length" class="badge h-auto py-1">
-            {{ view.choice.minStats.length }} minimum{{ view.choice.minStats.length === 1 ? "" : "s" }}
+          <span v-if="floorCount(view)" class="badge h-auto py-1" data-test-team-optimizer-minimums>
+            {{ floorCount(view) }} minimum{{ floorCount(view) === 1 ? "" : "s" }}
           </span>
           <span
             v-if="loadoutCount(view.slot)"
@@ -272,6 +272,7 @@ import {
   type useTeamOptimizer,
 } from "../../composables/useTeamOptimizer";
 import OptimizerWorkspaceSetup from "../optimizerWorkspace/OptimizerWorkspaceSetup.vue";
+import { appliedStatFloors } from "../../sim/optimizer/statFloors"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerSetup" });
 
@@ -318,6 +319,10 @@ function offerName(offer: TeamOptimizerOffer) {
   if (offer.source.kind === "main") return echoName(offer.source.echoKey);
   const label = setLabel(offer.source.setKey);
   return offer.defKey === offer.source.setKey ? label : `${label} (${offer.defKey.slice(offer.source.setKey.length)})`;
+}
+// Wuthering Tools+: a row left on "Choose a stat" is not a minimum
+function floorCount(view: TeamOptimizerSlotView) {
+  return appliedStatFloors(view.choice.minStats).length;
 }
 function displayMains(view: TeamOptimizerSlotView) {
   return view.choice.protectTeamBuffs && view.guard.requiredMainEcho

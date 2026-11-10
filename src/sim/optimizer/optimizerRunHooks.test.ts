@@ -158,6 +158,25 @@ describe("runOptimizerWorkers with plus's hooks", () => {
     await expectExact(plan, pool, "Any", 50, [{ stat: "totalCritRate", minValue: 60 }], ["Moonlit Clouds 2 Set"]);
   }, 180_000);
 
+  it("a stat floor row with no stat picked is not applied: the run gives what it gives with no floors, and a real floor beside it holds", async () => {
+    const { plan, pool } = await planFor("Mornye", ["RejuvenatingGlow", "MoonlitClouds"]);
+    const blank = { id: "373ytdazci", stat: null, minValue: null };
+    made.length = 0;
+    const free = await run(plan, pool, {});
+    made.length = 0;
+    const withBlank = await run(plan, pool, { minStats: [blank] });
+    expect(free.results).toHaveLength(5);
+    expect(withBlank.results.map((r) => r.targetValue)).toEqual(free.results.map((r) => r.targetValue));
+    // no processor is handed the blank row
+    for (const init of sentBy("processor", "init")) expect(init.data.minStats).toEqual([]);
+    // a floor that does name a stat is still checked on every loadout, with the blank row beside it
+    const floor = { stat: "energyRegen", minValue: 240 };
+    expect(bruteForce(plan, pool, "Any", [floor], []).length).toBeLessThan(bruteForce(plan, pool, "Any", [], []).length);
+    made.length = 0;
+    const both = await run(plan, pool, { minStats: [blank, floor] });
+    expect(both.results.map((r) => r.targetValue)).toEqual(bruteForce(plan, pool, "Any", [floor], []).slice(0, 5).map((r) => r.score));
+  }, 120_000);
+
   it("turns the bound off for a rotation with per-action overrides, and the run stays exact", async () => {
     const { plan, pool } = await planFor("Mornye", ["RejuvenatingGlow", "MoonlitClouds"], { overrideFirstAction: true });
     expect(plan.rotationData.overrideActions.length).toBeGreaterThan(0);

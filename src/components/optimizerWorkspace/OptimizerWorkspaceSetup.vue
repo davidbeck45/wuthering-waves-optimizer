@@ -68,7 +68,7 @@
         :main-echo-count="mainEchoes.length"
         :has-target="hasValidTarget"
         :buffs-not-set-count="buffsNotSetCount"
-        :min-stats-count="minStats.length"
+        :min-stats-count="appliedStatFloors(minStats).length"
         @run="handleOptimizeClick"
         @jump="jumpToSection"></OptimizerWorkspaceRunBar>
     </div>
@@ -303,6 +303,7 @@ import OptimizerWorkspaceRunBar, {
 } from "./OptimizerWorkspaceRunBar.vue";
 import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
 import { liveOptimizerTarget } from "../../sim/optimizer/optimizerTarget";
+import { appliedStatFloors } from "../../sim/optimizer/statFloors"; // Wuthering Tools+: the bar counts floors, not blank rows
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
