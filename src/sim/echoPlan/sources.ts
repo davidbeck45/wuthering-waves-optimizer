@@ -5,7 +5,6 @@
 // the same per-character chunk the calculator loads, so no new chunk is split off.
 import { getCharByName } from "../../characters/characters";
 import { loadWuwaCalcRotationPresets } from "../presets";
-import { appKeyOf, rileyNameOf } from "../rankings/castMapper";
 import { kitFactsOf, type CuratedPreset, type EnginePreset, type KitFacts } from "./wants";
 
 // Under Vite (the app, vitest) `import.meta.glob` is rewritten at build time — it is never a runtime function, so the
@@ -22,12 +21,10 @@ export async function loadCuratedPresets(key: string): Promise<CuratedPreset[]> 
   return Array.isArray(echoes) ? (echoes as CuratedPreset[]) : [];
 }
 
-/** A character's wuwa_calc presets: their own file, else their wuwa_calc twin's (both Rover genders are one kit). */
+/** A character's wuwa_calc presets: their own file, else their wuwa_calc twin's (both Rover genders are one kit). The
+ *  loader itself falls back since 2026-11-09, for every reader. */
 export async function loadEnginePresets(key: string): Promise<EnginePreset[]> {
-  const own = (await loadWuwaCalcRotationPresets(key)) as EnginePreset[];
-  if (own.length) return own;
-  const twin = appKeyOf(rileyNameOf(key));
-  return twin !== key ? ((await loadWuwaCalcRotationPresets(twin)) as EnginePreset[]) : [];
+  return (await loadWuwaCalcRotationPresets(key)) as EnginePreset[];
 }
 
 /** A kit default's role facts from the character's own data; null when it can't be read. */

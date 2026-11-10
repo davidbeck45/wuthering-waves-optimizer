@@ -216,6 +216,21 @@ describe("tools on the fixture account", () => {
     expect(all.teams.some((t: any) => t.notSetUp.length > 0)).toBe(true);
   });
 
+  it("list_team_presets reads a Rover in the form the account plays, and by either gender's name", async () => {
+    // the stock teams name the female key; this account plays a male Electro Rover beside Mornye and Lynae
+    const his: ExportFile = { ...exp, characters: { ...exp.characters, Roverelectromale: { weapon: "BloodpactsPledge" } } };
+    const mine = JSON.parse((await runTool("list_team_presets", { character: "Rover Electro" }, { ...ctx, exp: his })).content);
+    expect(mine.matching).toBeGreaterThan(0);
+    // his form in every team, hers in none (the tool's own spelling of a key)
+    for (const t of mine.teams) expect(t.members.filter((m: string) => /electro/i.test(m)).map((m: string) => /female/i.test(m))).toEqual([false]);
+    expect(mine.teams.map((t: any) => t.team)).toContain("Electro Rover · Mornye + Lynae · S6R5 (wuwa_calc)");
+    // an account without him: asked for by the male name, the same teams as by the female one (none fieldable)
+    const male = await call("list_team_presets", { character: "Roverelectromale", fieldable_only: false });
+    const female = await call("list_team_presets", { character: "Roverelectrofemale", fieldable_only: false });
+    expect(female.matching).toBeGreaterThan(0);
+    expect(male.teams.map((t: any) => t.team)).toEqual(female.teams.map((t: any) => t.team));
+  });
+
   it("sequence_breakpoints and get_kit read any character the app knows", async () => {
     const bp = await call("sequence_breakpoints", { character: "Aemeath" });
     expect(bp.available).toBe(true);

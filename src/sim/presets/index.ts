@@ -9,7 +9,7 @@
 // getCharByName stays exactly upstream's.
 import type { CharacterRotationPreset } from "../../characters/rotationExportImport";
 import type { TeamRotationPreset } from "../../teamRotations/presets";
-import { rileyNameOf } from "../rankings/rileyNames";
+import { accountKeyOf, appKeyOf, rileyNameOf } from "../rankings/rileyNames";
 
 /** Author tag carried by every preset generated from wuwa_calc. */
 export const WUWA_CALC_AUTHOR = "Riley31415 (wuwa_calc)";
@@ -39,19 +39,33 @@ async function nodeRotationLoader(characterKey: string): Promise<CharacterRotati
   }
 }
 
+/** The key a character's generated loops are filed under: their own, or for a male Rover the female form's (wuwa_calc
+ *  has one Rover per element and the generator writes it under the female key; both genders are one kit). */
+const presetFileKeyOf = (characterKey: string): string => appKeyOf(rileyNameOf(characterKey));
+
 export function hasWuwaCalcRotationPresets(characterKey: string): boolean {
-  return `./data/rotations/${characterKey}.json` in rotationModules;
+  return `./data/rotations/${characterKey}.json` in rotationModules || `./data/rotations/${presetFileKeyOf(characterKey)}.json` in rotationModules;
 }
 
-export async function loadWuwaCalcRotationPresets(
-  characterKey: string,
-): Promise<CharacterRotationPreset[]> {
-  if (!underVite) return nodeRotationLoader(characterKey);
-  const loader = rotationModules[`./data/rotations/${characterKey}.json`];
+async function loadRotationFile(fileKey: string): Promise<CharacterRotationPreset[]> {
+  if (!underVite) return nodeRotationLoader(fileKey);
+  const loader = rotationModules[`./data/rotations/${fileKey}.json`];
   if (!loader) {
     return [];
   }
   return (await loader()).default;
+}
+
+/** A character's wuwa_calc loops: their own file, else the one their kit is filed under (`presetFileKeyOf`). The
+ *  fallback lives here, in the loader, so every reader gets it: the rankings' rotation pick, the calculator's Rotation
+ *  presets modal, the team editor's import dialog and the Echo plan (which had its own copy of it). */
+export async function loadWuwaCalcRotationPresets(
+  characterKey: string,
+): Promise<CharacterRotationPreset[]> {
+  const own = await loadRotationFile(characterKey);
+  if (own.length) return own;
+  const fileKey = presetFileKeyOf(characterKey);
+  return fileKey !== characterKey ? loadRotationFile(fileKey) : [];
 }
 
 let teamPresetsPromise: Promise<TeamRotationPreset[]> | null = null;
@@ -62,6 +76,25 @@ export function loadWuwaCalcTeamPresets(): Promise<TeamRotationPreset[]> {
     (m) => m.default as unknown as TeamRotationPreset[],
   );
   return teamPresetsPromise;
+}
+
+/**
+ * A stock team as this account fields it: each member under the key the account plays (`accountKeyOf`: a male Rover for
+ * the female key the presets carry), in `characterIds` and in `handoffs` (who hands off to whom, keyed by character).
+ * The actions name slots, not characters, so they are untouched. The preset itself when nothing changes; never mutated.
+ */
+export function teamPresetForAccount<T extends TeamRotationPreset>(preset: T, characters: Record<string, any> | null | undefined): T {
+  const ids = (preset.data.characterIds ?? []) as Array<string | null>;
+  const mapped = ids.map((id) => (id ? accountKeyOf(id, characters) : id));
+  if (mapped.every((id, i) => id === ids[i])) return preset;
+  const renamed = new Map<string, string>();
+  ids.forEach((id, i) => {
+    if (id && mapped[i] && id !== mapped[i]) renamed.set(id, mapped[i] as string);
+  });
+  const rename = (id: string): string => renamed.get(id) ?? id;
+  const data = preset.data as T["data"] & { handoffs?: Record<string, string[]> | null };
+  const handoffs = data.handoffs ? Object.fromEntries(Object.entries(data.handoffs).map(([from, to]) => [rename(from), (to ?? []).map(rename)])) : data.handoffs;
+  return { ...preset, data: { ...preset.data, characterIds: mapped, ...(data.handoffs !== undefined ? { handoffs } : {}) } };
 }
 
 // ---------------------------------------------------------------- sequence breakpoints (Track I phase 2)

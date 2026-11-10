@@ -338,6 +338,15 @@ solved picks.
 
 Metric: average damage per rotation (DPR). DPS appears only when a rotation carries a duration.
 
+**Both Rover genders are one kit (2026-11-09, hunt round 2 numbers 4).** wuwa_calc has one Rover per element and the
+generator files everything under the female key, so a male Rover read 0 wuwa_calc loops and 0 stock teams.
+`loadWuwaCalcRotationPresets` now falls back to the kit's file for every reader, and `teamPresetForAccount` (presets)
+puts a stock team's Rover under the key the account plays (`accountKeyOf`, rileyNames.ts): `teamCandidatesOf`, the
+assistant's `list_team_presets` and Teams › List Presets use it. On the 9-16 export (a male Aero Rover): 1 rotation
+tried, "Standard" 101,653 becomes 7 tried, 170,451; no other row or team moves. Gate: `roverForms.test.ts` (each
+element, both forms). Not done here: `/rotation`'s picker (`RotationPicker.vue`) still lists stock teams by the
+female key.
+
 
 ## Account State and the "My account" tier — `src/sim/account/` + `/rankings` (Track I, 2026-09-14)
 

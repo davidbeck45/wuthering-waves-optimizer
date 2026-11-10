@@ -8,7 +8,7 @@ import { calcCharacterRotationDamage, type CharacterRotationInput } from "../../
 import { calcTeamRotationDamage, type TeamRotationAction } from "../../calculator/teamRotation";
 import { resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { teamRotationPresets } from "../../teamRotations/presets";
-import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets } from "../presets";
+import { loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets, teamPresetForAccount } from "../presets";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
 import { characterDisplayName, isRosterCharacter, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
@@ -142,7 +142,8 @@ export function namesTeammateOutsideApp(name: string | null | undefined): boolea
 }
 
 /** Every rotation a character can be scored on: their own saved ones, the curated presets, wuwa_calc's loops (minus the
- *  ones played beside a teammate the app lacks, `namesTeammateOutsideApp`). */
+ *  ones played beside a teammate the app lacks, `namesTeammateOutsideApp`). A male Rover gets the loops of his kit: they
+ *  are filed under the female key and the loader reads them for both (presets/index.ts). */
 export async function rotationCandidates(id: string, characterData: Record<string, any>): Promise<RotationCandidate[]> {
   const out: RotationCandidate[] = [];
   for (const r of (characterData.rotations ?? []) as any[]) {
@@ -296,7 +297,8 @@ export interface TeamCandidate {
 
 /** Every team the roster can be scored on: your saved teams with actions (and their pinned builds: Build my team and
  *  Whole account pin what they save, and a slot's pin decides which build it runs), then the curated and wuwa_calc team
- *  presets, each kept when its three members exist in your data (members without a weapon are flagged by the scorer, not excluded).
+ *  presets, each kept when its three members exist in your data (members without a weapon are flagged by the scorer, not
+ *  excluded; a Rover counts in either gender, `teamPresetForAccount`).
  *  `skipped` counts your own teams that could not run. */
 export async function teamCandidatesOf(characters: Record<string, any>, teams: any[]): Promise<{ candidates: TeamCandidate[]; skipped: number }> {
   const wuwaTeams = await loadWuwaCalcTeamPresets();
@@ -308,7 +310,9 @@ export async function teamCandidatesOf(characters: Record<string, any>, teams: a
     candidates.push({ id: t.id, name: t.name, source: "yours", team: { name: t.name, characterIds: t.characterIds, buildIds: t.buildIds, actions: t.actions, duration: t.duration ?? null, handoffs: t.handoffs ?? null } });
   }
   for (const [source, list] of [["curated", teamRotationPresets], ["wuwa_calc", wuwaTeams]] as const) {
-    for (const p of list) {
+    for (const stock of list) {
+      // the presets name a Rover by the female key; the account may play the male form (one kit, two keys)
+      const p = teamPresetForAccount(stock, characters);
       const actions = (p.data.actions ?? []) as TeamRotationAction[];
       if (!actions.length || !owned(p.data.characterIds)) continue;
       candidates.push({ id: `${source}:${p.name}`, name: p.name, source, team: { name: p.name, characterIds: p.data.characterIds as string[], actions, duration: p.data.duration ?? null, handoffs: (p.data as { handoffs?: Record<string, string[]> }).handoffs ?? null } });

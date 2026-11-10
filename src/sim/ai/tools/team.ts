@@ -1,9 +1,10 @@
 // Wuthering Tools+ AI tools — teams: one saved team's rotation through the engine, and the team presets the
 // player could field.
 import { calcTeam, findTeam } from "../../cli/engine";
-import { loadWuwaCalcTeamPresets } from "../../presets";
+import { loadWuwaCalcTeamPresets, teamPresetForAccount } from "../../presets";
 import { teamRotationPresets } from "../../../teamRotations/presets";
 import { isSetUp } from "../../myRankings/rankRoster";
+import { roverTwinOf } from "../../rankings/rileyNames";
 import { enemyLabel } from "./character";
 import { characterName, compactJson, defineTool, int, resolveAnyCharacter, share, topN } from "./shared";
 
@@ -98,9 +99,12 @@ export const listTeamPresetsTool = defineTool<{ character?: string; fieldable_on
     const rows: PresetRow[] = [];
     let total = 0;
     for (const [source, list] of [["wuwa_calc", wuwa], ["curated", teamRotationPresets]] as const) {
-      for (const p of list) {
+      for (const stock of list) {
+        // a Rover under the key this account plays (the presets carry the female one)
+        const p = teamPresetForAccount(stock, ctx.exp.characters);
         const ids = (p.data.characterIds ?? []).filter(Boolean) as string[];
-        if (wanted && !ids.includes(wanted)) continue;
+        // asked for by either gender's name: a Rover's teams are the same teams
+        if (wanted && !ids.some((id) => id === wanted || roverTwinOf(id) === wanted)) continue;
         total += 1;
         const notSetUp = ids.filter((id) => !isSetUp(ctx.exp.characters[id]));
         const fieldable = ids.length === 3 && notSetUp.length === 0;

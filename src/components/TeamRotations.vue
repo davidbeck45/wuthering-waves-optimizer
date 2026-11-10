@@ -600,7 +600,7 @@ import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
-import { loadWuwaCalcTeamPresets } from "../sim/presets";
+import { loadWuwaCalcTeamPresets, teamPresetForAccount } from "../sim/presets";
 
 const teamRotationsStore = useTeamRotationsStore();
 const { teams } = storeToRefs(teamRotationsStore);
@@ -668,7 +668,8 @@ let wuwaCalcTeamPresetsLoaded = false;
 watch(isPresetsOpen, async (open) => {
   if (open && !wuwaCalcTeamPresetsLoaded) {
     wuwaCalcTeamPresetsLoaded = true;
-    teamPresets.value = [...teamRotationPresets, ...(await loadWuwaCalcTeamPresets())];
+    // a Rover under the key this account plays: the presets carry the female one, so a male Rover's team imported him as her
+    teamPresets.value = [...teamRotationPresets, ...(await loadWuwaCalcTeamPresets())].map((p) => teamPresetForAccount(p, characters.value));
   }
 });
 
