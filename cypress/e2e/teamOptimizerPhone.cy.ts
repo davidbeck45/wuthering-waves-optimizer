@@ -68,6 +68,59 @@ function results(width: number, height: number, theme: string) {
   cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
 }
 
+describe("Optimize team's Edit drawer", () => {
+  // Whole account's default: the member is pinned to "Account plan", the active build stays "Default build"
+  const pinned = (win: Window) => {
+    seed("dark")(win);
+    const stored = JSON.parse(win.localStorage.getItem("character")!);
+    const fields = () => JSON.parse(JSON.stringify({ weapon: "EmeraldOfGenesis", mainEcho: { echo: MAIN_ECHO, rank: 5, buffs: {} }, optimizer: { echoSets: ["HeartofSwornVigil"], mainEchoes: [MAIN_ECHO], minStats: [{ id: "blank", stat: null, minValue: null }] } }));
+    stored.characters.Suoming = { ...fields(), activeBuildId: "default", builds: [{ id: "default", name: "Default build", ...fields() }, { id: "plan", name: "Account plan", ...fields() }] };
+    win.localStorage.setItem("character", JSON.stringify(stored));
+    const teams = JSON.parse(win.localStorage.getItem("teamRotations")!);
+    teams.teams[0].buildIds = ["plan", null, null];
+    win.localStorage.setItem("teamRotations", JSON.stringify(teams));
+  };
+  const suoming = (win: Window) => JSON.parse(win.localStorage.getItem("character")!).characters.Suoming;
+
+  it("keeps a run's sets out of the saved filter, and saves an echo buff switch on the build the team pins", () => {
+    cy.viewport(412, 915);
+    cy.visit("/teams", { onBeforeLoad: pinned });
+    cy.get(`[data-test-team-rotations-item="${TEAM_NAME}"]`).contains(TEAM_NAME).click();
+    cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled");
+    // a stat floor row left on "Choose a stat" is not a minimum
+    cy.get("[data-test-team-optimizer-minimums]").should("not.exist");
+    cy.get('[data-test-team-optimizer-edit="0"]').click();
+    cy.get("[data-test-team-optimizer-drawer-scope]")
+      .should("be.visible")
+      .and("contain", "for this team run only")
+      .and("contain", 'saved on Suoming\'s build "Account plan", the one this team uses');
+    cy.get("[data-test-team-optimizer-drawer]").within(() => {
+      cy.get('[data-test-optimizer-workspace-echo-set="MoonlitClouds"]').click();
+      cy.get('[data-test-echo-set-passive-enabled="HeartofSwornVigilElectro"]').should("not.be.checked").check({ force: true });
+      cy.get('[data-test-echo-set-passive-enabled="HeartofSwornVigilElectro"]').should("be.checked"); // the drawer shows what it wrote
+    });
+    cy.get("[data-test-team-optimizer-drawer-done]").click();
+    cy.contains("Moonlit Clouds").should("be.visible"); // the run has the set
+    cy.window().should((win) => {
+      const record = suoming(win);
+      expect(record.builds[1].optimizer.echoSetPassives.HeartofSwornVigilElectro.isEnabled, "the pinned build has the switch").to.equal(true);
+      expect(record.optimizer.echoSetPassives?.HeartofSwornVigilElectro, "the active build's switch is as it was").to.equal(undefined);
+      for (const optimizer of [record.optimizer, record.builds[0].optimizer, record.builds[1].optimizer]) {
+        expect(optimizer.echoSets, "no saved set filter changed").to.deep.equal(["HeartofSwornVigil"]);
+        expect(optimizer.mainEchoes).to.deep.equal([MAIN_ECHO]);
+        expect(optimizer.minStats, "the saved blank row is left where it is").to.deep.equal([{ id: "blank", stat: null, minValue: null }]);
+      }
+    });
+    // opened again, the drawer starts from the run's choice, not the saved filter
+    cy.get('[data-test-team-optimizer-edit="0"]').click();
+    cy.get('[data-test-team-optimizer-drawer] [data-test-optimizer-workspace-echo-set="MoonlitClouds"]').should("have.class", "border-primary");
+    cy.get("[data-test-team-optimizer-drawer-done]").click();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+    cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
+  });
+});
+
 describe("Optimize team on a phone at 130 % text", () => {
   for (const [width, height] of [[412, 915], [360, 800]] as const) {
     it(`names every stat tile and shows the team's change whole at ${width} px`, () => {

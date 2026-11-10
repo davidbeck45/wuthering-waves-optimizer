@@ -304,6 +304,7 @@ import OptimizerWorkspaceRunBar, {
 import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
 import { liveOptimizerTarget } from "../../sim/optimizer/optimizerTarget";
 import { appliedStatFloors } from "../../sim/optimizer/statFloors"; // Wuthering Tools+: the bar counts floors, not blank rows
+import type { EmbeddedSetupStart } from "../../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
@@ -319,8 +320,10 @@ const props = withDefaults(
     /** Embedded only: the team optimizer's current choices, used instead of the saved ones. */
     initialSets?: string[];
     initialMainEchoes?: string[];
+    /** Wuthering Tools+, embedded only: the team run's minimums and advanced settings, used instead of the saved ones. */
+    initialChoice?: EmbeddedSetupStart | null;
   }>(),
-  { embedded: false, initialSets: () => [], initialMainEchoes: () => [] },
+  { embedded: false, initialSets: () => [], initialMainEchoes: () => [], initialChoice: null },
 );
 
 const emit = defineEmits<{
@@ -520,6 +523,7 @@ async function syncOptimizerConfig() {
     ignoreOtherResonatorEchoes: ignoreOtherResonantorEchoes.value,
     loadoutFormat: loadoutFormat.value,
   });
+  if (props.embedded) return; // Wuthering Tools+: a team run's sets, main echoes and minimums are its own; the saved filter is the calculator's
   await characterStore.setCharacterData(props.character, {
     optimizer: {
       mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
@@ -626,6 +630,12 @@ onMounted(() => {
   ignoreOtherResonantorEchoes.value = ch.optimizer?.ignoreOtherResonantorEchoes ?? false;
   loadoutFormat.value = normalizeLoadoutFormat(ch.optimizer?.loadoutFormat);
   if (ch.optimizer?.damageType) damageType.value = ch.optimizer.damageType;
+  if (props.embedded && props.initialChoice) {
+    // Wuthering Tools+: what the team run holds now, so an edit made here is still here when the drawer opens again
+    minStats.value = JSON.parse(JSON.stringify(props.initialChoice.minStats ?? [])) as OptimizerMinStatRow[];
+    ignoreOtherResonantorEchoes.value = props.initialChoice.ignoreOtherResonatorEchoes === true;
+    loadoutFormat.value = normalizeLoadoutFormat(props.initialChoice.loadoutFormat);
+  }
   isLoading.value = false;
 });
 </script>

@@ -745,6 +745,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     errorMessage.value = null;
     results.value = [];
     progress.value = null;
+    await loadBaseline(); // Wuthering Tools+: the records as they are stored now, with what the drawer changed on a pinned build
     const views = slots.value;
     const { plans, isCapped } = planEnumeration.value;
     lanes.value = views.map((view) => ({

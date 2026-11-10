@@ -35,6 +35,7 @@ import { computed, onMounted, ref } from "vue";
 import CalculatorOptimizerMinStat from "./CalculatorOptimizerMinStat.vue";
 import { randomString } from "../utils/strings";
 import { useCharacterStore } from "../stores/character";
+import { optimizerSettingsStore } from "../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+: under Optimize team's drawer, the build the team pins
 
 defineOptions({ name: "CalculatorOptimizerMinStats" });
 
@@ -55,7 +56,7 @@ const emit = defineEmits<{
   "updated-min-stats": [stats: OptimizerMinStatRow[]];
 }>();
 
-const characterStore = useCharacterStore();
+const characterStore = optimizerSettingsStore(useCharacterStore());
 
 const stats = ref<OptimizerMinStatRow[]>([]);
 

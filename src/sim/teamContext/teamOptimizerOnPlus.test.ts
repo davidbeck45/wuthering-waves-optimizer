@@ -167,6 +167,53 @@ describe("Optimize team on plus", () => {
   }, 120_000);
 });
 
+describe("Optimize team's drawer on a pinned build", () => {
+  beforeEach(async () => {
+    await seedAccount();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("an echo buff switched in the drawer reaches the run, on the build the team pins and no other", async () => {
+    autoTeamBuffs.value = true;
+    const { scopedSettingsStore } = await import("./optimizerSettingsScope");
+    const store = useCharacterStore();
+    // Whole account's default: the member is pinned to "Account plan", the active build stays "Default build"
+    const fields = (): any => JSON.parse(JSON.stringify((store.characters as any).Galbrena));
+    const builds = [{ id: "default", name: "Default build", ...fields() }, { id: "plan", name: "Account plan", ...fields() }];
+    store.$patch((state: any) => {
+      state.characters.Galbrena.activeBuildId = "default";
+      state.characters.Galbrena.builds = builds;
+    });
+    (useTeamRotationsStore().getTeamById("team-plus") as any).buildIds = [null, "plan", null];
+
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "keep");
+    optimizer.setGoal(1, "damage");
+    await optimizer.run();
+    expect(optimizer.errorMessage.value).toBeNull();
+    const before = optimizer.results.value[0]!.echoBuffsBySlot[1]!.echoSetPassives;
+    const key = "RejuvenatingGlow5SetATK"; // a passive with a switch: off until the player turns it on
+    expect(before[key]!.isEnabled).toBe(false);
+
+    // what the drawer's buff row does, under the scope the drawer provides
+    const drawer = scopedSettingsStore(store, ref({ characterId: "Galbrena", buildId: optimizer.team.value.buildIds[1] })) as any;
+    drawer.setCharacterData("Galbrena", { optimizer: { echoSetPassives: { [key]: { isEnabled: true } } } });
+    const stored = (store.characters as any).Galbrena;
+    expect(stored.builds[1].optimizer.echoSetPassives[key].isEnabled).toBe(true);
+    expect(stored.optimizer.echoSetPassives?.[key]).toBeUndefined(); // the active build's settings, the calculator's, are as they were
+    expect(stored.builds[0].optimizer.echoSetPassives?.[key]).toBeUndefined();
+
+    optimizer.editSetup();
+    await optimizer.run();
+    expect(optimizer.errorMessage.value).toBeNull();
+    expect(optimizer.results.value[0]!.echoBuffsBySlot[1]!.echoSetPassives[key]!.isEnabled).toBe(true);
+  }, 120_000);
+});
+
 describe("allowStatRounding", () => {
   it("lets a build meet the one-decimal figure read from it, and keeps a real gap", () => {
     const [guard] = allowStatRounding([{ floors: [{ stat: "energyRegen", minValue: 125, label: "Energy Regen" }], drifts: [{ label: "Energy Regen", teammateId: "A", expected: 125, actual: 124.96 }, { label: "Energy Regen", teammateId: "B", expected: 125, actual: 120 }] }]);

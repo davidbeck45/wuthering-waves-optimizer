@@ -60,6 +60,7 @@
 import { computed, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { optimizerSettingsStore } from "../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+: under Optimize team's drawer, the build the team pins
 import {
   getMainEchoBuffStacks,
   isMainEchoBuffEnabled,
@@ -112,7 +113,7 @@ const emit = defineEmits<{
   ];
 }>();
 
-const characterStore = useCharacterStore();
+const characterStore = optimizerSettingsStore(useCharacterStore());
 const { characters } = storeToRefs(characterStore);
 
 const currentCharacter = computed(

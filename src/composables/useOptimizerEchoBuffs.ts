@@ -7,6 +7,7 @@
 import { computed, type Ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { optimizerSettingsStore } from "../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+: under Optimize team's drawer, the build the team pins
 import { getSetBonusEffectsFromListOfSetKeys } from "../echoes/sets";
 import { getEchoData } from "../echoes/index";
 import { getMainEchoBuffs, type MainEchoState } from "../echoes/mainEchoBuffs";
@@ -41,7 +42,7 @@ export function useOptimizerEchoBuffs(
   setFilters: Ref<string[]>,
   mainEchoes: Ref<string[]>,
 ) {
-  const characterStore = useCharacterStore();
+  const characterStore = optimizerSettingsStore(useCharacterStore());
   const { characters } = storeToRefs(characterStore);
 
   const characterData = computed(

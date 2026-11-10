@@ -243,6 +243,8 @@
             Done
           </button>
         </div>
+        <!-- Wuthering Tools+: what an edit here changes, and where it is kept -->
+        <p v-if="drawerView" class="text-xs opacity-70" data-test-team-optimizer-drawer-scope>{{ drawerScopeNote }}</p>
         <OptimizerWorkspaceSetup
           v-if="drawerView"
           :key="drawerView.characterId"
@@ -250,6 +252,7 @@
           embedded
           :initial-sets="drawerView.choice.sets"
           :initial-main-echoes="drawerView.choice.mainEchoes"
+          :initial-choice="drawerView.choice"
           @settings-updated="handleSettingsUpdated"></OptimizerWorkspaceSetup>
       </div>
       <form method="dialog" class="modal-backdrop">
@@ -260,7 +263,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, provide, ref } from "vue";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { getEchoData } from "../../echoes/index";
 import { getEchoSetIconByType, getEchoSetLabelByType } from "../../echoes/stats";
@@ -273,6 +276,8 @@ import {
 } from "../../composables/useTeamOptimizer";
 import OptimizerWorkspaceSetup from "../optimizerWorkspace/OptimizerWorkspaceSetup.vue";
 import { appliedStatFloors } from "../../sim/optimizer/statFloors"; // Wuthering Tools+
+import { OPTIMIZER_SETTINGS_SCOPE, drawerScopeLine, type OptimizerSettingsScope } from "../../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+
+import { useCharacterStore } from "../../stores/character"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerSetup" });
 
@@ -282,6 +287,16 @@ const drawerEl = ref<HTMLDialogElement | null>(null);
 const drawerSlot = ref<number | null>(null);
 const drawerView = computed(() =>
   props.optimizer.slots.value.find((view) => view.slot === drawerSlot.value) ?? null,
+);
+
+// Wuthering Tools+: the drawer edits the build this team reads for the member (its pin), not whichever is active
+const drawerScope = computed<OptimizerSettingsScope | null>(() =>
+  drawerView.value ? { characterId: drawerView.value.characterId, buildId: props.optimizer.team.value?.buildIds?.[drawerView.value.slot] ?? null } : null,
+);
+provide(OPTIMIZER_SETTINGS_SCOPE, drawerScope);
+const characterStore = useCharacterStore();
+const drawerScopeNote = computed(() =>
+  drawerScope.value ? drawerScopeLine(characterStore.characters, drawerScope.value, characterName(drawerScope.value.characterId)) : "",
 );
 
 const isLarge = computed(() => props.optimizer.totalLoadouts.value.count >= LARGE_SEARCH_LOADOUTS);
