@@ -8,6 +8,8 @@
       </h2>
       <RouterLink to="/teams" class="tm__link" data-test-account-teams-editor>Team Rotations</RouterLink>
     </div>
+    <!-- one enemy for every team here; Teams uses each saved team's own (README "One enemy, said on the page") -->
+    <p v-if="teams.length" class="tm__basis" data-test-account-teams-basis>Average damage per rotation, every team at one enemy: {{ ONE_ENEMY_TEXT.replace(/^enemy /, "") }}.</p>
 
     <ol v-if="teams.length" class="tm__list">
       <li v-for="(t, i) in visible" :key="t.id" class="tm-card" :data-test-account-team="t.id">
@@ -24,6 +26,8 @@
         <div class="tm-card__name">
           <PresetNameLabel :name="t.name" :source="t.source" :owned="owned" :max-chips="2" />
         </div>
+        <!-- a saved team whose own enemy differs: what Teams' figure has that this one has not -->
+        <p v-if="enemyNote(t)" class="tm-card__enemy" :data-test-account-team-enemy="t.id">{{ enemyNote(t) }}</p>
         <div class="tm-card__bar" aria-hidden="true">
           <span v-for="m in sharesOf(t)" :key="m.id" :style="{ width: `${m.share * 100}%`, background: m.color }"></span>
         </div>
@@ -58,8 +62,11 @@ import { characterShortName } from "../display/names";
 import { memberShares, type TeamRow } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
 import { rankingsMineHash } from "./accountState";
+import { ONE_ENEMY_TEXT } from "../display/ownEnemy";
+import { useOwnEnemyNotes } from "./useOwnEnemyNotes";
 
 const props = defineProps<{ teams: TeamRow[]; scoring: boolean; owned: string[] }>();
+const enemyNote = useOwnEnemyNotes();
 const expanded = ref(false);
 const limit = 5;
 const visible = computed(() => (expanded.value ? props.teams : props.teams.slice(0, limit)));
@@ -84,6 +91,17 @@ const sharesOf = (t: TeamRow) => shares.value.get(t.id) ?? memberShares(t);
 }
 .tm__link:hover {
   text-decoration: underline;
+}
+.tm__basis {
+  margin: -0.15rem 0 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: oklch(var(--bc) / 0.65);
+}
+.tm-card__enemy {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: oklch(var(--bc) / 0.7);
 }
 .tm__list {
   display: flex;

@@ -50,7 +50,7 @@
       <section v-if="rank?.best" class="dr__section">
         <h3 class="dr__h3">Best rotation</h3>
         <PresetNameLabel :name="rank.best.name" :source="rank.best.source" :owned="owned" :max-chips="4" />
-        <p class="dr__note">{{ rank.rotationsEvaluated }} rotation{{ rank.rotationsEvaluated === 1 ? "" : "s" }} tried on this build · enemy level 100, 20 % RES</p>
+        <p class="dr__note">{{ rank.rotationsEvaluated }} rotation{{ rank.rotationsEvaluated === 1 ? "" : "s" }} tried on this build · enemy level 100, 20 % RES, no stacks on it</p>
         <WhyNumberButton class="dr__why" :character-id="rank.id" :rotation-name="rank.best.name" />
       </section>
 
@@ -126,8 +126,11 @@
             <!-- title + source / tier chips: two teams of the same three read apart (yours vs a preset, S6R5 vs S0R1) -->
             <PresetNameLabel class="dr-team__name" :name="t.name" :source="t.source" :owned="owned" :max-chips="2" />
             <b class="dr-team__dmg">{{ compact(t.avgDamage) }}</b>
+            <!-- a saved team whose own enemy differs from the one every figure here uses: what Teams' figure adds -->
+            <span v-if="enemyNote(t)" class="dr-team__enemy" :data-test-account-drawer-team-enemy="t.id">{{ enemyNote(t) }}</span>
           </li>
         </ul>
+        <p class="dr__note" data-test-account-drawer-teams-basis>Average damage per rotation, every team at one enemy: {{ ONE_ENEMY_TEXT.replace(/^enemy /, "") }}.</p>
       </section>
 
       <section class="dr__section" data-test-account-drawer-history>
@@ -177,6 +180,8 @@ import { rankingsMineHash } from "./accountState";
 import { erGainNote, INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
 import { OWN_KIND_LABELS, type DrawerOwn } from "./ownUpgrades";
 import { panelKeptNote } from "../weaponValue/weaponValueView";
+import { ONE_ENEMY_TEXT } from "../display/ownEnemy";
+import { useOwnEnemyNotes } from "./useOwnEnemyNotes";
 import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
@@ -184,6 +189,7 @@ import type { CharacterRank } from "../myRankings/rankRoster";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
 const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null; /** "cost": open at Cost to max (the palette's command) */ section?: string | null }>();
+const enemyNote = useOwnEnemyNotes();
 const rankSub = computed(() =>
   props.scoring
     ? props.rosterSize
@@ -472,8 +478,15 @@ html[data-theme-style="light"] .dr-own__figure {
   height: auto;
   margin-top: 0.2rem;
 }
+.dr-team__enemy {
+  flex-basis: 100%;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: oklch(var(--bc) / 0.7);
+}
 .dr-team {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.55rem;
   padding: 0.35rem 0.55rem;

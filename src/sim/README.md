@@ -664,6 +664,13 @@ Verify pass (2026-10-26, fresh eyes before the merge):
   with no long task (> 50 ms) on the main thread. The CLI `snapshot` diff against plus is empty, and `rank --investment` differs
   only in the Rover label ("Rover Aero (Male)" for the kit's "RoverAeroFemale").
 
+**/account's enemy label says what Teams' has (2026-11-09, hunt 2 item 6).** Xuanling · Suisui + Chisa read 5.56M here and
+7.66M on Teams under the same words (level 100, 20 % RES): Teams scores a saved team at its own enemy, and that team's
+carries the 9 Havoc Bane and 13 Glacio Chafe stacks of its wuwa_calc run. The one-enemy rule stands; the labels changed.
+Every /account enemy label now ends "no stacks on it" (`ONE_ENEMY_TEXT`, display/ownEnemy.ts), the Teams panel and the
+drawer's team list open with that line, and a saved team whose own enemy differs carries `ownEnemyNote`: "Teams scores this
+team at its own enemy (9 Havoc Bane + 13 Glacio Chafe stacks), so it reads a different figure there" (`useOwnEnemyNotes`).
+
 ### "With what you own" — free upgrades on `/account` (batch 3b, track "own-upgrades", 2026-11-02)
 
 "What to invest in next" lists things that cost pulls or Tuners. This group, at the top of that panel and in the

@@ -37,7 +37,7 @@
       <p class="acc-head__sub">
         <span class="max-md:hidden">
           Your roster at a glance — builds, sequences, the teams you can field and what to invest in next, scored by this
-          app's engine on your real builds (enemy level 100 · 20 % RES).
+          app's engine on your real builds (enemy level 100 · 20 % RES, no stacks on it).
         </span>
         <span class="md:hidden">Your roster and teams, scored by this app's engine on your real builds.</span>
       </p>
@@ -98,8 +98,8 @@
 
       <p v-if="ranking" class="acc-foot">
         Scored {{ new Date(ranking.computedAt).toLocaleString() }}{{ rankingStatus.savedAt ? " (saved in this browser)" : rankingStatus.restored ? " (kept for this tab)" : "" }} · average damage
-        per rotation on each character's best rotation, enemy level 100, 20 % RES · {{ ranking.characters.length }} characters,
-        {{ ranking.teams.length }} team rotations.
+        per rotation on each character's best rotation, enemy level 100, 20 % RES, no stacks on it (Teams scores a saved team at its own enemy) ·
+        {{ ranking.characters.length }} characters, {{ ranking.teams.length }} team rotations.
       </p>
     </template>
 
