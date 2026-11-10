@@ -22,7 +22,7 @@ import {
   type ToaIndex,
   type ToaSeason,
 } from "./toaData";
-import { failedTeams, fieldableKeys, floorFactor, pickCandidates, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaCheck, type ToaRunner } from "./toaRun";
+import { checkKey, failedTeams, fieldableKeys, floorFactor, pickCandidates, pinnedAccounts, planInputOf, rankFloor, runToaCheck, seasonProfiles, type ToaCheck, type ToaRunner } from "./toaRun";
 import { nearMisses, planAlternatives, planVigor, vigorPool, type PlanInput, type PlanStage } from "./vigorPlan";
 
 const DAY = 86_400_000;
@@ -557,6 +557,48 @@ describe("candidates", () => {
     const none: ToaCheck[] = [];
     await runToaCheck(runner, season, { account, limit: 5, savedTeams: [], onPartial: (c) => none.push(c) });
     expect(none).toHaveLength(0);
+  });
+
+  it("solves and times a saved team at its own account, the builds it pins, and everyone else at the active builds (hunt 2, item 2)", async () => {
+    const season = await S41();
+    const comp: Record<string, string[]> = { t1: ["A", "B", "C"], t2: ["A", "B", "Mortefi"], t3: ["B", "A", "C"] };
+    // the pinned builds hit for less than the active ones: 363k against 368k on David's Aemeath team
+    const dpsAt = (k: string, builds: string | undefined): number => (k === "t2" ? 30_000 : builds === "plan" ? 290_000 : 300_000);
+    const solved: Array<[string[], string | undefined]> = [];
+    const timedAt: Array<[string, string | undefined]> = [];
+    const runner: ToaRunner = {
+      commit: "test",
+      teams: async () => Object.entries(comp).map(([key, names]) => ({ key, members: names.map((n) => ({ name: n, appKey: n, mainDps: n === names[2], free: n === "Mortefi" })) })),
+      solveMine: async (keys, o) => {
+        solved.push([[...keys], o?.account?.buildsKey]);
+        return keys.map((k) => solve(k, comp[k]!, dpsAt(k, o?.account?.buildsKey)));
+      },
+      curves: async (k, _p, specs, o) => {
+        timedAt.push([k, o?.account?.buildsKey]);
+        return specs.map(() => ({ teamKey: k, rowKey: k, commit: "test", total: dpsAt(k, o?.account?.buildsKey), ...curve(dpsAt(k, o?.account?.buildsKey)) }));
+      },
+    };
+    const own = { ...account, buildsKey: "plan" };
+    const pinnedTeams = [{ name: "saved", characterIds: ["C", "A", "B"], account: own }];
+    const partials: ToaCheck[] = [];
+    const check = await runToaCheck(runner, season, { account, limit: 5, savedTeams: pinnedTeams, onPartial: (c) => partials.push(c) });
+    // both variants of the saved three at the team's account, the other team at the account's
+    expect(solved).toEqual([[["t1", "t3"], "plan"], [["t2"], account.buildsKey]]);
+    expect(timedAt).toEqual([["t1", "plan"], ["t2", account.buildsKey]]);
+    expect(check.candidates.find((c) => c.saved)!.dps).toBe(290_000);
+    expect(partials[0]!.candidates[0]!.dps).toBe(290_000);
+    // one pass, no first paint: still each team at its own account
+    solved.length = 0;
+    const plain = await runToaCheck(runner, season, { account, limit: 5, savedTeams: pinnedTeams });
+    expect(solved).toEqual([[["t1", "t3"], "plan"], [["t2"], account.buildsKey]]);
+    expect(plain.candidates.find((c) => c.saved)!.dps).toBe(290_000);
+    // a check kept before the pin moved is not this one: the key names the team's account
+    const unpinned = await runToaCheck(runner, season, { account, limit: 5, savedTeams: [{ name: "saved", characterIds: ["C", "A", "B"], account }] });
+    expect(unpinned.candidates.find((c) => c.saved)!.dps).toBe(300_000);
+    expect(unpinned.key).not.toBe(check.key);
+    expect(unpinned.key).toBe(checkKey("test", account, season, [teamSignature(["A", "B", "C"])], 5));
+    expect(pinnedAccounts(pinnedTeams, account).get(teamSignature(["A", "B", "C"]))).toBe(own);
+    expect(pinnedAccounts([{ name: "saved", characterIds: ["C", "A", "B"], account }], account).size).toBe(0);
   });
 
   describe("a team the engine fails on (2026-11-08 hunt F4)", () => {

@@ -9,7 +9,7 @@ import type { MineSolve, RileyAccount, RileyPick, RileyTeamInfo, RunLite } from 
 import { bestOf } from "../engine/rileyRun";
 import { allCharactersList } from "../../characters/characters";
 import { rileyNameOf } from "../rankings/castMapper";
-import { resolveTeamCharacters } from "../teamContext/resolveTeam";
+import { resolveTeamBuilds } from "../teamContext/resolveTeam";
 import { menuEnergyRegen } from "./energyHave";
 import { checkOf, compositionKey, OVERCAP_FLAG, overcapWeight, teamEnergyOf, type EnergyCheck, type MemberEnergy, type TeamEnergy } from "./energyNeed";
 
@@ -74,16 +74,18 @@ export interface SlotHave {
   buildName: string | null;
 }
 
-/** The ER each member of a saved team has, on the build the team really runs: `resolveTeamCharacters` picks it the
- *  way the team editor does (a pin, a build named after both teammates, else the active one — `auto` off: pins only). */
+/** The ER each member of a saved team has, on the build the team really runs: `resolveTeamBuilds` picks it the way the
+ *  team editor does (a pin, a build named after both teammates, else the active one — `auto` off: pins only). The
+ *  team's wuwa_calc figures are asked at the same builds (`rileyAccountForTeam`), so the ER and the DPS beside it are
+ *  one build's. */
 export async function teamHaves(team: { characterIds: Array<string | null>; buildIds?: Array<string | null> }, characters: Record<string, any>, inventoryEchoes: any[], options: { auto?: boolean } = {}): Promise<SlotHave[]> {
   const ids = (team.characterIds ?? []).filter((id): id is string => Boolean(id));
   let resolved: Record<string, any> = characters;
   const names = new Map<string, string | null>();
   try {
-    const resolution = await resolveTeamCharacters({ ...team, actions: [] } as any, characters, inventoryEchoes, { auto: options.auto ?? true });
-    resolved = resolution.characters;
-    for (const s of resolution.slots) {
+    const built = resolveTeamBuilds(team, characters, { auto: options.auto ?? true });
+    resolved = built.characters;
+    for (const s of built.slots) {
       const active = characters?.[s.characterId]?.activeBuildId ?? null;
       names.set(s.characterId, s.buildId && s.buildId !== active ? (s.buildName ?? null) : null);
     }

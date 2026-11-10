@@ -12,7 +12,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { createRileyClient, rileyClient, type RileyClient } from "../engine/rileyClient";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 import type { RileyAccount } from "../engine/rileyRun";
-import { useRileyAccount } from "../engine/useRileyAccount";
+import { useRileyTeamAccounts } from "../engine/useRileyAccount";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { energyCacheKey, keepable, loadEnergyCache, saveEnergyCache, type CachedMeasure } from "./energyCache";
 import {
@@ -140,7 +140,9 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
   const teamStore = useTeamRotationsStore();
   const { characters } = storeToRefs(characterStore) as unknown as { characters: Ref<Record<string, any>> };
   const { teams } = storeToRefs(teamStore) as unknown as { teams: Ref<Array<Record<string, any>>> };
-  const account = useRileyAccount();
+  // a saved team is measured at its own account (the builds it pins), every other composition at the active builds
+  const accounts = useRileyTeamAccounts();
+  const account = accounts.base;
   const commit = WUWA_CALC_COMMIT;
 
   const disk: Map<string, CachedMeasure> = loadEnergyCache();
@@ -165,9 +167,9 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
     for (const [key, entry] of disk) if (key.startsWith(p) && !measures[key]) measures[key] = entry.m;
   };
 
-  function measure(characterIds: ReadonlyArray<string | null>, options: { force?: boolean } = {}): Promise<void> {
+  function measure(characterIds: ReadonlyArray<string | null>, options: { force?: boolean; account?: RileyAccount } = {}): Promise<void> {
     const ids = characterIds.filter((id): id is string => Boolean(id));
-    const acc = account.value;
+    const acc = options.account ?? accounts.ofComposition(ids);
     const key = keyOf(ids, acc);
     const running = inflight.get(key);
     if (running) return running;
@@ -200,12 +202,12 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
   const saved = computed(() =>
     (teams.value ?? [])
       .filter((t) => idsOf(t).length > 0)
-      .map((t) => ({ id: String(t.id), name: String(t.name || "Untitled team"), characterIds: idsOf(t), buildIds: (t.buildIds ?? []) as Array<string | null>, raw: t })),
+      .map((t) => ({ id: String(t.id), name: String(t.name || "Untitled team"), characterIds: idsOf(t), buildIds: (t.buildIds ?? []) as Array<string | null>, raw: t, account: accounts.ofTeam(t) })),
   );
   const savedKeys = computed(() => new Set(saved.value.map((t) => compositionKey(t.characterIds))));
 
   function measureSaved(options: { force?: boolean } = {}): Promise<void> {
-    return Promise.all(saved.value.map((t) => measure(t.characterIds, options))).then(() => undefined);
+    return Promise.all(saved.value.map((t) => measure(t.characterIds, { ...options, account: t.account }))).then(() => undefined);
   }
 
   // ---- the builds' ER
@@ -230,7 +232,8 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
       }
       const nextSlots: Record<string, SlotHave[]> = {};
       for (const t of saved.value) {
-        nextSlots[t.id] = await teamHaves({ characterIds: t.characterIds, buildIds: t.buildIds }, chars, echoes, { auto: autoTeamBuffs.value });
+        // the slots as the team stores them, so each pin meets its own member
+        nextSlots[t.id] = await teamHaves({ characterIds: (t.raw.characterIds ?? t.characterIds) as Array<string | null>, buildIds: t.buildIds }, chars, echoes, { auto: autoTeamBuffs.value });
         await slice();
         if (mine !== generation) return;
       }
@@ -265,7 +268,7 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
     // the watchers belong to the shared scope, not to the component that happened to activate first
     stopWatching = scope.run(() => {
       const a = watch([characters, () => inventoryStore.echoes, teams, autoTeamBuffs], onDataChange, { deep: true });
-      const b = watch(() => `${account.value.key}|${account.value.buildsKey}`, onDataChange);
+      const b = watch(() => `${account.value.key}|${account.value.buildsKey}|${accounts.key.value}`, onDataChange);
       return () => (a(), b());
     })!;
     refresh();
@@ -279,14 +282,14 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
   }
 
   // ---- views
-  function viewFrom(ids: string[], id: string, name: string, source: TeamView["source"], slots: SlotHave[] | null): TeamView {
+  function viewFrom(ids: string[], id: string, name: string, source: TeamView["source"], slots: SlotHave[] | null, acc: RileyAccount = account.value): TeamView {
     const key = compositionKey(ids);
-    const state = measures[keyOf(ids)] ?? null;
+    const state = measures[keyOf(ids, acc)] ?? null;
     const energy = state?.status === "ok" ? state.energy : null;
     const checks = energy && havesReady.value ? memberChecks(energy, slots ?? haves, ids) : null;
     return { key, id, name, source, characterIds: ids, state, energy, checks };
   }
-  const savedTeams = computed(() => saved.value.map((t) => viewFrom(t.characterIds, t.id, t.name, "saved", slotHaves[t.id] ?? null)));
+  const savedTeams = computed(() => saved.value.map((t) => viewFrom(t.characterIds, t.id, t.name, "saved", slotHaves[t.id] ?? null, t.account)));
   const checkedTeams = computed(() => {
     const p = prefix.value;
     const out: TeamView[] = [];

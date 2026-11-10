@@ -1649,6 +1649,17 @@ Capture the fixture again after a submodule bump (the test compares it field for
 → `tracedRun(best.teamKey, best.best.picks)` → `JSON.stringify` into `__fixtures__/runLite.json`; recreate it from
 those four lines if /tmp was cleared.
 
+**A saved team runs at its own account (2026-11-09, hunt 2 item 2).** `rileyAccountOf` reads every character's active
+build, but a saved team pins the builds it runs and Teams, /account and /my-rankings score it on those. So wherever a
+wuwa_calc figure belongs to a saved team it is asked at `rileyAccountForTeam(team, …)`: that team's members on
+`resolveTeamBuilds`' builds (a pin, with team buffs on a build named after both teammates, else the active one; sync, no
+team buffs), everyone else as the account has them, and the base account itself when no slot runs another build.
+`useRileyTeamAccounts()` serves `base` / `ofTeam` / `ofComposition` / `key` to /energy (measure and cache key per team),
+/endgame (`runToaCheck` solves and times a saved team at `savedTeams[].account`, and `checkKey` names it) and /rotation
+(`chars=` and `team=t…` targets; a Team rankings row with its own picks keeps the base account); `cli er` and `cli toa`
+do the same. A composition nobody saved keeps the active builds. Before: 367,567 DPS beside the pinned build's 116.0 %
+on /energy for a team that runs 362,854.
+
 ## Echo plan — the in-game Echo Management grid from the roster (batch 2, 2026-10-26) — `src/sim/echoPlan/`
 
 `/echo-plan` builds the plan the game applies since 3.2 (Kuro's notes, article 4447): per Sonata Effect, every new

@@ -9,7 +9,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch 
 import { storeToRefs } from "pinia";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { rileyClient } from "../engine/rileyClient";
-import { useRileyAccount } from "../engine/useRileyAccount";
+import { useRileyTeamAccounts } from "../engine/useRileyAccount";
 import { appKeyOf } from "../rankings/castMapper";
 import { defaultPace, paceOf, readClearLog, teamSignature, writeClearLog, type ClearLog, type ClockReading, type LoggedClear } from "./crests";
 import {
@@ -24,7 +24,7 @@ import {
   type ServerRegionId,
   type ToaSeason,
 } from "./toaData";
-import { checkKey, failedTeams, planInputOf, rankFloor, runToaCheck, type CandidateTeam, type FloorResult, type Progress, type ToaCheck } from "./toaRun";
+import { checkKey, failedTeams, pinnedAccounts, planInputOf, rankFloor, runToaCheck, type CandidateTeam, type FloorResult, type Progress, type ToaCheck } from "./toaRun";
 import { nearMisses, planAlternatives, planVigor, type Plan, type PlanAlternative } from "./vigorPlan";
 
 export const PREFS_KEY = "wtplus:endgame:prefs";
@@ -72,9 +72,11 @@ function storeCheck(check: ToaCheck): void {
 let sessionCheck: ToaCheck | null = null;
 
 export function useToa() {
-  const account = useRileyAccount();
+  // a saved team is solved and timed at its own account (the builds it pins), every other team at the active builds
+  const accounts = useRileyTeamAccounts();
+  const account = accounts.base;
   const teamStore = useTeamRotationsStore();
-  const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: Array<{ name?: string; characterIds?: Array<string | null> }> } };
+  const { teams } = storeToRefs(teamStore) as unknown as { teams: { value: Array<{ name?: string; characterIds?: Array<string | null>; buildIds?: Array<string | null> }> } };
   const riley = rileyClient();
 
   const prefs = reactive(readPrefs());
@@ -108,14 +110,16 @@ export function useToa() {
   );
 
   const savedTeams = computed(() =>
-    (teams.value ?? []).map((t) => ({ name: String(t.name ?? ""), characterIds: (t.characterIds ?? []).map((x) => (x ? String(x) : null)) })),
+    (teams.value ?? []).map((t) => ({ name: String(t.name ?? ""), characterIds: (t.characterIds ?? []).map((x) => (x ? String(x) : null)), account: accounts.ofTeam(t) })),
   );
   const owned = computed(() => Object.entries(account.value.entries).filter(([, e]) => e.owned).map(([name]) => appKeyOf(name)));
   const hasAccount = computed(() => owned.value.length > 0);
   const savedSignatures = computed(() =>
     savedTeams.value.map((t) => t.characterIds.filter((x): x is string => !!x)).filter((ids) => ids.length === 3).map(teamSignature),
   );
-  const wantKey = computed(() => (season.value ? checkKey(riley.commit, account.value, season.value, [...new Set(savedSignatures.value)], CANDIDATES) : ""));
+  const wantKey = computed(() =>
+    season.value ? checkKey(riley.commit, account.value, season.value, [...new Set(savedSignatures.value)], CANDIDATES, pinnedAccounts(savedTeams.value, account.value)) : "",
+  );
   /** the floors still waiting for their HP (a season synced before the HP sheet has its block): shown, never timed */
   const pending = computed(() => (season.value ? hpPending(season.value) : []));
   /** is there a floor to time at all? With none, no check runs: the solve would time nothing */

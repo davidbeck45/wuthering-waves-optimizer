@@ -113,7 +113,7 @@ import { teamLabel } from "../display/names";
 import WorkStatus from "../display/WorkStatus.vue";
 import { rileyClient } from "../engine/rileyClient";
 import type { RileyTeamInfo, SubsMode } from "../engine/rileyRun";
-import { useRileyAccount } from "../engine/useRileyAccount";
+import { useRileyTeamAccounts } from "../engine/useRileyAccount";
 import CueCard from "./CueCard.vue";
 import { buildRotationHash, parseRotationHash, type RotationTab, type RotationTarget } from "./hash";
 import { readPrefs, writePrefs } from "./prefs";
@@ -132,7 +132,9 @@ const TABS: Array<{ value: RotationTab; label: string }> = [
 const route = useRoute();
 const router = useRouter();
 const parsed = computed(() => parseRotationHash(route.hash));
-const account = useRileyAccount();
+// a team you saved runs at the builds it pins, as on Teams and /energy; any other team at your active builds
+const accounts = useRileyTeamAccounts();
+const account = accounts.base;
 const client = rileyClient();
 
 const { phase, run, model, plan, problem, notice, variants, hues, progress, teamKey, reload } = useRotationRun(
@@ -140,6 +142,7 @@ const { phase, run, model, plan, problem, notice, variants, hues, progress, team
   computed(() => parsed.value.subs),
   account,
   client,
+  accounts,
 );
 
 const exactRow = computed(() => parsed.value.target?.kind === "team" && !!parsed.value.target.rowKey);

@@ -8,9 +8,10 @@ import { createPinia, setActivePinia } from "pinia";
 import type { MineSolve, RileyAccount } from "../engine/rileyRun";
 import type { CurveLike } from "./killTime";
 import type { ToaRunner } from "./toaRun";
+import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { CHECK_KEY, useToa } from "./useToa";
 
-const engine = vi.hoisted(() => ({ fails: 0, tries: 0, solves: 0, account: "k0", noHp: false }));
+const engine = vi.hoisted(() => ({ fails: 0, tries: 0, solves: 0, account: "k0", noHp: false, pin: "", timedAt: [] as Array<[string, string]> }));
 // `noHp`: the season file as the generator ships it before the HP sheet has its block (no HP on any floor or enemy)
 vi.mock("./toaData", async (original) => {
   const real = await original<typeof import("./toaData")>();
@@ -40,7 +41,8 @@ const runner: ToaRunner = {
   commit: "test",
   teams: async () => Object.entries(comp).map(([key, names]) => ({ key, members: names.map((n) => ({ name: n, appKey: n, mainDps: n === names[2], free: n === "Mortefi" })) })),
   solveMine: async (keys) => (engine.solves++, keys.map(solve)),
-  curves: async (k, _p, specs) => {
+  curves: async (k, _p, specs, o) => {
+    engine.timedAt.push([k, o?.account?.buildsKey ?? ""]);
     // t1 is the team the worker runs out of memory under
     if (k === "t1" && engine.tries++ < engine.fails) throw new Error("The rankings engine worker failed: Uncaught Error: renderer ran out of memory");
     return specs.map(() => ({ teamKey: k, rowKey: k, commit: "test", total: dps[k]!, ...curve(dps[k]!) }));
@@ -49,7 +51,16 @@ const runner: ToaRunner = {
 vi.mock("../engine/rileyClient", () => ({ rileyClient: () => runner }));
 const account: RileyAccount = { key: "k", buildsKey: "b", builds: [], entries: { A: { sequence: 0, weapon: null, refine: 1, owned: true }, B: { sequence: 0, weapon: null, refine: 1, owned: true }, C: { sequence: 0, weapon: null, refine: 1, owned: true } } };
 // an account of its own per test: this tab's module memory keeps the last check it kept
-vi.mock("../engine/useRileyAccount", () => ({ useRileyAccount: () => computed(() => ({ ...account, key: engine.account })) }));
+vi.mock("../engine/useRileyAccount", () => {
+  const base = () => computed(() => ({ ...account, key: engine.account }));
+  // a saved team's own account: the base one unless the test pins it (`engine.pin` = its builds key)
+  const useRileyTeamAccounts = () => {
+    const b = base();
+    const own = (): RileyAccount => (engine.pin ? { ...b.value, buildsKey: engine.pin } : b.value);
+    return { base: b, ofTeam: own, ofComposition: own, key: computed(() => engine.pin) };
+  };
+  return { useRileyAccount: base, useRileyTeamAccounts };
+});
 
 /** /endgame opened: the check it shows once it settles */
 async function visit() {
@@ -68,6 +79,8 @@ describe("the ToA check across visits", () => {
     localStorage.clear();
     engine.tries = 0;
     engine.noHp = false;
+    engine.pin = "";
+    engine.timedAt.length = 0;
     engine.account = `k${++visits}`;
   });
   afterEach(() => vi.useRealTimers());
@@ -96,6 +109,19 @@ describe("the ToA check across visits", () => {
     expect(engine.tries).toBeGreaterThan(0);
     expect(again.toa.failedCount.value).toBe(0);
     expect(stored()?.check?.results?.some((r: { error?: string }) => r.error)).toBe(false);
+  }, 60_000);
+  it("times a saved team at the builds it pins, and a check kept before the pin is not served after it (hunt 2, item 2)", async () => {
+    engine.fails = 0;
+    useTeamRotationsStore().teams = [{ id: "mine", name: "saved", characterIds: ["C", "A", "B"], buildIds: ["plan", null, null] }] as never;
+    const first = await visit();
+    expect(engine.timedAt).toEqual([["t1", "b"], ["t2", "b"]]); // nothing pinned yet: the active builds
+    first.wrapper.unmount();
+    engine.timedAt.length = 0;
+    engine.pin = "plan"; // Whole account saved its builds without "Also make active"
+    const again = await visit();
+    expect(again.toa.check.value?.key).not.toBe(first.toa.check.value?.key);
+    expect(engine.timedAt).toEqual([["t1", "plan"], ["t2", "b"]]);
+    expect(stored()?.check?.key).toBe(again.toa.check.value?.key);
   }, 60_000);
 });
 

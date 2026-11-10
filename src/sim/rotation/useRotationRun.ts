@@ -52,7 +52,16 @@ export function variantLabels(solves: MineSolve[]): Variant[] {
   });
 }
 
-export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<SubsMode>, account: Ref<RileyAccount>, client: RileyClient = rileyClient()) {
+/** The saved teams' own accounts (`useRileyTeamAccounts`), as the loader reads them. */
+export interface TeamAccountSource {
+  // eslint-disable-next-line no-unused-vars -- the parameter of a method type
+  ofComposition(characterIds: ReadonlyArray<string | null | undefined>): RileyAccount;
+  key: Ref<string>;
+}
+
+/** `teamAccounts`: with it, a team the player saved runs at the builds it pins (the figure Teams and /energy show for
+ *  it) — except a Team rankings row opened with its own picks, which stays at the account /rankings showed it at. */
+export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<SubsMode>, account: Ref<RileyAccount>, client: RileyClient = rileyClient(), teamAccounts: TeamAccountSource | null = null) {
   const phase = ref<RunPhase>("idle");
   const run = shallowRef<RunLite | null>(null);
   const problem = shallowRef<RunProblem | null>(null);
@@ -101,7 +110,7 @@ export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<Sub
       run.value = null;
       return;
     }
-    const opts = { account: account.value, subs: subs.value, signal };
+    let opts = { account: account.value, subs: subs.value, signal };
     try {
       phase.value = "engine";
       teams.value = await client.teams(signal);
@@ -138,6 +147,8 @@ export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<Sub
         chars = team.members.map((m) => m.appKey);
         if (t2.picks) picks = t2.picks;
       }
+      // a saved team's own account: its members on the builds it pins (a row's own picks keep the account it came with)
+      if (teamAccounts && !picks) opts = { ...opts, account: teamAccounts.ofComposition(chars) };
       const hidden = chars.filter((c) => blocked.includes(c));
       if (hidden.length) {
         run.value = null;
@@ -194,7 +205,7 @@ export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<Sub
 
   // one string, so a hash change that leaves the team alone (the tab) does not run it again
   watch(
-    () => `${target.value ? JSON.stringify(target.value) : ""}|${subs.value}|${account.value.key}|${account.value.buildsKey}`,
+    () => `${target.value ? JSON.stringify(target.value) : ""}|${subs.value}|${account.value.key}|${account.value.buildsKey}|${teamAccounts?.key.value ?? ""}`,
     () => void load(),
     { immediate: true },
   );

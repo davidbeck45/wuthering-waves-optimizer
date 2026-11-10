@@ -345,6 +345,40 @@ function needsStats(provider: string, providerData: Record<string, any>): boolea
   return [...defs, ...weaponDefs].some((d) => d.inputBase);
 }
 
+/** One slot's build as a team runs it. */
+export type SlotBuild = Pick<SlotResolution, "slot" | "characterId" | "buildId" | "buildName" | "buildSource">;
+
+/**
+ * The builds a team runs, baked into the records and nothing else: a slot's pin, else (team buffs on) a saved build
+ * named after both teammates, else the active build. `auto: false` reads pins only, as the engine does with the team's
+ * own `buildIds`. Sync, and no team buffs: what a caller needs that only asks "which build does this slot wear" — the
+ * wuwa_calc account of a saved team (rileyAccountForTeam), the Energy check's ER per slot. `characters` comes back
+ * as the same object when every slot runs its active build.
+ */
+export function resolveTeamBuilds(
+  team: Pick<TeamLike, "characterIds" | "buildIds">,
+  characters: Record<string, any>,
+  options: { auto?: boolean } = {},
+): { characters: Record<string, any>; slots: SlotBuild[] } {
+  const auto = options.auto ?? true;
+  const ids = team.characterIds ?? [];
+  const pins = team.buildIds ?? [];
+  const present = ids.filter((id): id is string => Boolean(id));
+  const slots: SlotBuild[] = [];
+  let resolved: Record<string, any> = characters ?? {};
+  for (let slot = 0; slot < ids.length; slot++) {
+    const id = ids[slot];
+    if (!id || !characters?.[id]) continue;
+    const pick = pickBuild(characters[id], pins[slot], auto ? present.filter((m) => m !== id) : []);
+    resolved = resolveCharactersForBuild(resolved, id, pick.buildId);
+    // the record now *is* that build: stamped as its active one, so the engine resolving the team's own pin again
+    // (calcTeamRotationDamage's buildIds) is a no-op instead of re-applying the stored build over the team buffs below
+    if (pick.buildId && resolved[id]?.activeBuildId !== pick.buildId) resolved = { ...resolved, [id]: { ...resolved[id], activeBuildId: pick.buildId } };
+    slots.push({ slot, characterId: id, ...pick });
+  }
+  return { characters: resolved, slots };
+}
+
 /**
  * Resolves a team's members for the engine: builds pinned per slot (explicit, then by name, then
  * active) and, in auto mode, each member's team buffs rewritten for the team's real composition.
@@ -372,21 +406,11 @@ export async function resolveTeamCharacters(
   }
 
   const present = ids.filter((id): id is string => Boolean(id));
-  const slots: SlotResolution[] = [];
-  let resolved: Record<string, any> = characters;
 
   // 1. builds
-  for (let slot = 0; slot < ids.length; slot++) {
-    const id = ids[slot];
-    if (!id || !characters[id]) continue;
-    const teammates = present.filter((m) => m !== id);
-    const pick = pickBuild(characters[id], pins[slot], teammates);
-    resolved = resolveCharactersForBuild(resolved, id, pick.buildId);
-    // the record now *is* that build: stamped as its active one, so the engine resolving the team's own pin again
-    // (calcTeamRotationDamage's buildIds) is a no-op instead of re-applying the stored build over the team buffs below
-    if (pick.buildId) resolved = { ...resolved, [id]: { ...resolved[id], activeBuildId: pick.buildId } };
-    slots.push({ slot, characterId: id, ...pick, teammates, buffSource: "derived", enabled: [], skipped: [] });
-  }
+  const built = resolveTeamBuilds(team, characters, { auto: true });
+  const resolved: Record<string, any> = built.characters;
+  const slots: SlotResolution[] = built.slots.map((s) => ({ ...s, teammates: present.filter((m) => m !== s.characterId), buffSource: "derived", enabled: [], skipped: [] }));
 
   // 2. team buffs, from the build-resolved records
   const enemy = options.enemyConfig ?? resolveTeamEnemyConfig(team.enemyConfig ?? {});

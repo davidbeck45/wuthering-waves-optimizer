@@ -87,9 +87,45 @@ export interface Progress {
  *  ("odds1": each result's crit-luck kill-time distribution). */
 export const CHECK_CONTENT = "odds1";
 
-/** The key a stored check is valid for: engine commit, account, its builds, season data, candidate breadth, content. */
-export const checkKey = (commit: string, account: RileyAccount | null, season: ToaSeason, saved: string[], limit: number): string =>
-  [commit, account?.key ?? "-", account?.buildsKey ?? "-", `s${season.season}`, season.generatedAt, [...saved].sort().join(","), limit, CHECK_CONTENT].join("|");
+/** A saved team for the check: three app keys, a name, and the account it runs at when its pins run other builds than
+ *  the active ones (`rileyAccountForTeam`; absent or the check's own account: the active builds). */
+export interface SavedToaTeam {
+  name: string;
+  characterIds: Array<string | null>;
+  account?: RileyAccount | null;
+}
+
+const accountSig = (a: RileyAccount | null | undefined): string => `${a?.key ?? "-"}.${a?.buildsKey ?? "-"}`;
+
+/** The saved teams that run at an account of their own, by team signature: the first saved team of a composition
+ *  speaks for it, as its name does. */
+export function pinnedAccounts(savedTeams: readonly SavedToaTeam[] | undefined, account: RileyAccount | null): Map<string, RileyAccount> {
+  const seen = new Set<string>();
+  const out = new Map<string, RileyAccount>();
+  for (const t of savedTeams ?? []) {
+    const ids = t.characterIds.filter((x): x is string => !!x);
+    if (ids.length !== 3 || seen.has(teamSignature(ids))) continue;
+    seen.add(teamSignature(ids));
+    if (t.account && accountSig(t.account) !== accountSig(account)) out.set(teamSignature(ids), t.account);
+  }
+  return out;
+}
+
+/** The key a stored check is valid for: engine commit, account, its builds, season data, candidate breadth, content —
+ *  and each saved team's own account where its pins run other builds (`pins`, from `pinnedAccounts`), so a check made
+ *  before a pin moved is not served after it. */
+export const checkKey = (commit: string, account: RileyAccount | null, season: ToaSeason, saved: string[], limit: number, pins: ReadonlyMap<string, RileyAccount> = new Map()): string =>
+  [
+    commit,
+    account?.key ?? "-",
+    account?.buildsKey ?? "-",
+    `s${season.season}`,
+    season.generatedAt,
+    [...saved].sort().join(","),
+    limit,
+    CHECK_CONTENT,
+    ...(pins.size ? [[...pins].map(([sig, a]) => `${sig}@${accountSig(a)}`).sort().join(",")] : []),
+  ].join("|");
 
 /** His team keys whose every member the account owns (a 4-star / Rover form always counts, as his `mine` reads it). */
 export function fieldableKeys(teams: RileyTeamInfo[], account: RileyAccount | null): string[] {
@@ -213,8 +249,9 @@ export async function runToaCheck(
   season: ToaSeason,
   opts: {
     account: RileyAccount | null;
-    /** the player's saved teams: three app keys and a name each */
-    savedTeams?: Array<{ name: string; characterIds: Array<string | null> }>;
+    /** the player's saved teams: three app keys and a name each, and the account a team runs at when its pins run
+     *  other builds than the active ones — that team is solved and timed there, as Teams scores it */
+    savedTeams?: SavedToaTeam[];
     limit?: number;
     signal?: AbortSignal;
     onProgress?: (p: Progress) => void;
@@ -234,7 +271,10 @@ export async function runToaCheck(
   const teams = await runner.teams(signal);
   const keys = fieldableKeys(teams, account);
   const { profiles, byFloor } = seasonProfiles(season);
-  const key = checkKey(runner.commit, account, season, [...saved.keys()], limit);
+  const pinned = pinnedAccounts(opts.savedTeams, account);
+  /** the account a composition runs at: a saved team's own (its pinned builds), else the active builds */
+  const accountFor = (teamId: string): RileyAccount | null => pinned.get(teamId) ?? account;
+  const key = checkKey(runner.commit, account, season, [...saved.keys()], limit, pinned);
   const now = opts.now ?? Date.now;
   /** each timed candidate's results, by composition and row: the full pass reuses the saved teams' first pass */
   const timed = new Map<string, FloorResult[]>();
@@ -252,7 +292,7 @@ export async function runToaCheck(
       let mine: FloorResult[] = [];
       for (let attempt = 1; attempt <= TRIES; attempt++) {
         try {
-          const curves = await runner.curves(team.teamKey, team.picks, profiles, { account, signal, spread: true });
+          const curves = await runner.curves(team.teamKey, team.picks, profiles, { account: accountFor(team.id), signal, spread: true });
           mine = floorResults(season, team, curves, byFloor);
           break;
         } catch (e) {
@@ -273,10 +313,28 @@ export async function runToaCheck(
 
   // 1. the saved teams on their own, when there are others to solve after them
   const byKey = new Map(teams.map((t) => [t.key, t]));
-  const savedKeys = opts.onPartial ? keys.filter((k) => saved.has(teamSignature(byKey.get(k)!.members.map((m) => m.appKey)))) : [];
+  const signatureOf = (k: string): string => teamSignature(byKey.get(k)!.members.map((m) => m.appKey));
+  /** solve his keys, each at its team's account, in the order asked (one request per account) */
+  async function solve(list: string[], label: string): Promise<MineSolve[]> {
+    const groups = new Map<RileyAccount | null, string[]>();
+    for (const k of list) {
+      const a = accountFor(signatureOf(k));
+      groups.set(a, [...(groups.get(a) ?? []), k]);
+    }
+    const out = new Map<string, MineSolve>();
+    let before = 0;
+    for (const [a, ks] of groups) {
+      const start = before;
+      const solved = await runner.solveMine(ks, { account: a, signal, onProgress: (done) => opts.onProgress?.({ phase: "solve", done: start + done, total: list.length, label }) });
+      ks.forEach((k, i) => out.set(k, solved[i]!));
+      before += ks.length;
+    }
+    return list.map((k) => out.get(k)!);
+  }
+  const savedKeys = opts.onPartial ? keys.filter((k) => saved.has(signatureOf(k))) : [];
   const solves: MineSolve[] = [];
   if (opts.onPartial && savedKeys.length && savedKeys.length < keys.length) {
-    const first = await runner.solveMine(savedKeys, { account, signal, onProgress: (done, total) => opts.onProgress?.({ phase: "solve", done, total, label: "Solving your saved teams first" }) });
+    const first = await solve(savedKeys, "Solving your saved teams first");
     solves.push(...first);
     const mine = pickCandidates(first, saved, limit).filter((c) => c.saved);
     if (mine.length) {
@@ -288,8 +346,7 @@ export async function runToaCheck(
   // 2. every other team the account can field
   const done = new Set(solves.map((s) => s.teamKey));
   const rest = keys.filter((k) => !done.has(k));
-  if (rest.length)
-    solves.push(...(await runner.solveMine(rest, { account, signal, onProgress: (d, total) => opts.onProgress?.({ phase: "solve", done: d, total, label: "Solving the teams you can field at your account" }) })));
+  if (rest.length) solves.push(...(await solve(rest, "Solving the teams you can field at your account")));
   const candidates = pickCandidates(solves, saved, limit);
   const results = await time(candidates, (team) => `Fighting each floor with ${team.names.join(" · ")}`);
   opts.onProgress?.({ phase: "floors", done: candidates.length, total: candidates.length, label: "Done" });

@@ -5,6 +5,7 @@
 import type { ExportFile } from "../cli/exportFile";
 import { findTeam } from "../cli/engine";
 import { int, pct, table } from "../cli/format";
+import { rileyAccountForTeam } from "../engine/rileyAccount";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
 import {
   characterFloors,
@@ -66,7 +67,9 @@ export async function energyReport(exp: ExportFile, options: { team?: string; al
   const teams: EnergyTeamReport[] = [];
   for (const t of saved) {
     const ids = (t.characterIds ?? []).filter(Boolean) as string[];
-    const measure = await measureComposition(engine, ids);
+    // a saved team is measured on the builds it pins, the ones its ER column reads (rileyAccountForTeam)
+    const own = rileyAccountForTeam(t, exp.characters, exp.inventory, exp.teams, { auto, base: riley.account });
+    const measure = await measureComposition(own === riley.account ? engine : engineOfHeadless(await rileyHeadless(own)), ids);
     const checks = measure.status === "ok" ? memberChecks(measure.energy, await teamHaves(t, exp.characters, exp.inventory.echoes, { auto }), ids) : null;
     teams.push({ id: String(t.id), name: String(t.name ?? "team"), source: "saved", characterIds: ids, measure, checks });
   }
@@ -139,5 +142,5 @@ export function printEnergy(r: EnergyReport): void {
   const s = r.summary;
   console.log(`\n${s.shortCharacters.length} character${s.shortCharacters.length === 1 ? "" : "s"} short on ER${s.shortCharacters.length ? ` (${s.shortCharacters.map(nameOf).join(", ")})` : ""} · ${s.overcapCharacters.length} overcapping crit${s.overcapCharacters.length ? ` (${s.overcapCharacters.map(nameOf).join(", ")})` : ""}`);
   console.log("ER need = the constant ER at which every Liberation of this team's wuwa_calc loop is paid on time (or the kit's own floor, if higher).");
-  console.log("ER have = the ER of the build the team runs (equipment + permanent bonuses, plus an always-on inherent the app keeps as a switch: Mornye +10 %; fight buffs are inside the need). * = not on this account (runs S0 R1).");
+  console.log("ER have and DPS = on the build each saved team runs (a slot's pinned build, else the active one). ER have = equipment + permanent bonuses, plus an always-on inherent the app keeps as a switch (Mornye +10 %); fight buffs are inside the need. * = not on this account (runs S0 R1).");
 }

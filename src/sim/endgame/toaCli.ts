@@ -3,7 +3,9 @@
 // Node-only (the CLI imports it lazily).
 import type { ExportFile } from "../cli/exportFile";
 import { table } from "../cli/format";
+import { rileyAccountForTeam } from "../engine/rileyAccount";
 import { rileyHeadless } from "../engine/rileyNode";
+import { solveMine } from "../engine/rileyRun";
 import { appKeyOf } from "../rankings/castMapper";
 import { floorCurves } from "./effects";
 import { clockText } from "./crests";
@@ -33,13 +35,18 @@ export async function toaCheck(exp: ExportFile, opts: { limit?: number; now?: nu
   const runner: ToaRunner = {
     commit: E.commit,
     teams: async () => riley.teams,
-    solveMine: async (keys, o = {}) => riley.solveMine(keys, { onProgress: o.onProgress }),
-    curves: async (teamKey, picks, profiles, o = {}) => floorCurves(E, teamKey, picks, profiles, { account: riley.account, blocked: riley.blocked }, !!o.spread),
+    // the check names the account per team: a saved team's own (its pinned builds), else the export's active builds
+    solveMine: async (keys, o = {}) => solveMine(E, keys, { account: o.account ?? riley.account, blocked: riley.blocked, onProgress: o.onProgress }),
+    curves: async (teamKey, picks, profiles, o = {}) => floorCurves(E, teamKey, picks, profiles, { account: o.account ?? riley.account, blocked: riley.blocked }, !!o.spread),
   };
   const t0 = performance.now();
   const check = await runToaCheck(runner, season, {
     account: riley.account,
-    savedTeams: (exp.teams ?? []).map((t: Record<string, unknown>) => ({ name: String(t.name ?? ""), characterIds: (t.characterIds as Array<string | null>) ?? [] })),
+    savedTeams: (exp.teams ?? []).map((t: Record<string, unknown>) => ({
+      name: String(t.name ?? ""),
+      characterIds: (t.characterIds as Array<string | null>) ?? [],
+      account: rileyAccountForTeam(t, exp.characters, exp.inventory, exp.teams, { base: riley.account }),
+    })),
     limit: opts.limit,
   });
   const owned = Object.entries(riley.account?.entries ?? {}).filter(([, e]) => e.owned).map(([name]) => appKeyOf(name));
