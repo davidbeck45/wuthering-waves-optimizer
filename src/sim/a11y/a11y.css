@@ -261,3 +261,10 @@ html {
     animation: none !important;
   }
 }
+
+/* Ryan's optimizer result stat tiles (HP, ATK, DEF, Crit Rate, Crit DMG, Energy Regen), in the calculator's results and
+   Optimize team's: white art on a white tile in the light themes (hunt round 2, phone-flows L4). Inverted there, as
+   his own light-theme rules do for the Team page's and the nav's icons (style.css keys them off data-theme-style). */
+html[data-theme-style="light"] [data-test-optimizer-workspace-result-highlights] img {
+  filter: invert(100%);
+}

@@ -157,6 +157,9 @@ describe("Optimize team on a phone at 130 % text", () => {
           expect($caption[0].scrollWidth, `"${$caption.text()}" fits its tile`).to.be.at.most($caption[0].clientWidth + 1);
           expect($caption[0].getBoundingClientRect().height, `"${$caption.text()}" is on the page`).to.be.greaterThan(0);
         });
+        cy.get("img").each(($icon) => {
+          expect($icon[0].ownerDocument.defaultView!.getComputedStyle($icon[0]).filter, `${$icon.attr("alt")} icon on a dark tile`).to.equal("none");
+        });
         cy.get(".font-mono.text-sm").each(($value) => {
           const tile = $value[0].closest(".card")!.getBoundingClientRect();
           expect($value[0].getBoundingClientRect().right, `${$value.text()} inside its tile`).to.be.at.most(tile.right);
@@ -204,6 +207,10 @@ describe("Optimize team on a phone at 130 % text", () => {
       const [a, b] = [lum(mixed), lum(bg)];
       return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
     };
+    // the stat tile icons are white art: inverted on a light tile, or they are white on white
+    cy.get("[data-test-optimizer-workspace-result-highlights] img").should("have.length.at.least", 6).each(($icon) => {
+      expect($icon[0].ownerDocument.defaultView!.getComputedStyle($icon[0]).filter, `${$icon.attr("alt")} icon on a light tile`).to.equal("invert(1)");
+    });
     cy.get("[data-test-team-optimizer-results]").within(() => {
       cy.get(".text-success, .text-warning, .opacity-50, .opacity-60").filter(":visible").each(($el) => {
         if ($el[0].children.length || !$el.text().trim()) return;
