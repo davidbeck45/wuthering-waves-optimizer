@@ -4201,7 +4201,9 @@ wrote it. Not done: his "team buff changes" lines list what the plan asked for, 
 
 **On a phone:** `phone.css` § 37. § 3's echo card grid had caught his v3 loadout card, so content ran over the next card
 and the new "Already equipped" pill sat off screen; one card to a row below 640 px. The build card's layout picker cut
-"Showcase" and its opacity slider ran off at 360 px. His info pages, guides and guide drawer needed nothing.
+"Showcase" and its opacity slider ran off at 360 px. His guide drawer came out 360 px on a 390 px screen wherever
+scrollbars take room (his own spec, which his CI never runs: it has no shard for root-level specs). His info pages and
+guides needed nothing.
 
 **His "Also on …" against plus's worn rules.** `echoes/equippedBy.ts` reads the inventory's `equipped` map: the echoes
 on each character's active build. A build pinned to a team but not active, which Build my team and Whole account leave
