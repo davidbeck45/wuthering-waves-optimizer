@@ -22,6 +22,8 @@ function optionRow(o: ValueOption): Record<string, unknown> {
     ...(o.low ? { statsOnlyGainPct: pct(o.low.gain) } : {}),
     ...(o.team ? { teamGainPct: pct(o.team.gain) } : o.teamNote ? { team: o.teamNote } : {}),
     ...(o.panels.length ? { assumes: `you tick it in ${o.panels.map((p) => characterName(p.member)).join(", ")}'s Team Buffs panel` } : {}),
+    // the same upgrade with that panel left as set: what Teams and /account read until the player changes it
+    ...(o.teamAsSet ? { teamGainPanelAsSetPct: pct(o.teamAsSet.gain) } : {}),
   };
 }
 

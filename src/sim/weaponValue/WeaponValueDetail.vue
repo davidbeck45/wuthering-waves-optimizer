@@ -51,12 +51,16 @@
                 <span v-if="o.team" :class="cls(o.team.gain)">{{ pctFine(o.team.gain) }}</span>
                 <span v-else class="wvd__muted">—</span>
                 <span v-if="o.panels.length" class="wvd__floor">panel follows</span>
+                <!-- the same upgrade with the teammate's hand-set panel left as it is: /account's and Teams' figure -->
+                <span v-if="o.teamAsSet" class="wvd__floor wvd__as-set" :data-test-weapons-as-set="o.id">panel as set {{ pctFine(o.teamAsSet.gain) }}</span>
               </td>
             </tr>
           </template>
         </tbody>
       </table>
       <p v-if="!groups.length" class="wvd__empty">{{ row.note ?? "Nothing to compare for this character." }}</p>
+      <!-- said on the page, not in a tooltip: a phone has no hover, and /account shows the smaller of the two -->
+      <p v-if="panelMembers.length" class="wvd__panel-note" data-test-weapons-panel-note>{{ panelFiguresNote(panelMembers) }}</p>
     </div>
 
     <aside class="wvd__side">
@@ -101,7 +105,7 @@ import WeaponIcon from "../display/WeaponIcon.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import { characterShortName, weaponDisplayName } from "../display/names";
 import { compact } from "../myRankings/format";
-import { pctFine, prydwenUrl, type Scope } from "./weaponValueView";
+import { followedPanelMembers, panelFiguresNote, pctFine, prydwenUrl, type Scope } from "./weaponValueView";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
 import { explainWeaponValue } from "../ai/explain/explainPayloads";
 import type { CharacterWeaponValue, ValueOption } from "./weaponValue";
@@ -122,6 +126,7 @@ const groups = computed(() => {
   return out;
 });
 
+const panelMembers = computed(() => followedPanelMembers(props.row));
 const cls = (g: number): string => (g > 0.0005 ? "wvd__up" : g < -0.0005 ? "wvd__down" : "");
 function optionSub(o: ValueOption): string {
   if (o.kind === "signature") return props.row.signature.status === "swap" ? `${o.refinement} ${o.refinement === 1 ? "copy" : "copies"}` : `+${o.refinement - props.row.current.refinement} ${o.refinement - props.row.current.refinement === 1 ? "copy" : "copies"}`;
@@ -222,6 +227,16 @@ function panelsText(o: ValueOption): string {
 .wvd__floor {
   font-size: 0.66rem;
   color: oklch(var(--bc) / 0.5);
+}
+.wvd__as-set {
+  display: block;
+  color: oklch(var(--bc) / 0.72);
+}
+.wvd__panel-note {
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.75);
 }
 .wvd__up {
   color: oklch(var(--su));

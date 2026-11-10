@@ -160,6 +160,7 @@ describe("explain payloads", () => {
       team: team === null ? null : { teamId: "t1", teamName: "T", characterIds: ["Aemeath", "Mornye", "Lynae"], base: 9e6, avgDamage: 9e6 * (1 + team), gain: team },
       teamNote: team === null ? "the strongest team picks another build" : null,
       panels: [],
+      teamAsSet: null,
       ...extra,
     });
     const row: CharacterWeaponValue = {

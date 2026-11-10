@@ -12,6 +12,8 @@ import { weaponMeta } from "../display/names";
 import { withWeaponAtFullStacks } from "../weapons/weaponLadder";
 import { weaponValue, weaponsOfType, type CharacterWeaponValue, type WeaponValueResult } from "./weaponValue";
 import { keptPanelMembers, panelsFollowWeapon, weaponTeamBuffKeys } from "./teamPanels";
+import { investPlan } from "../account/investPlan";
+import { followedPanelMembers, panelFiguresNote, panelKeptNote, panelKeptTag } from "./weaponValueView";
 import { POOLS, releasedItems, standardWeaponKeys } from "./pools";
 import { rankWeaponPool } from "./selector";
 import { createValueCache } from "./valueCache";
@@ -313,5 +315,57 @@ describe("weapon selector pools", () => {
     expect(cache.read("holes", null)).toEqual({ n: 2 });
     cache.dispose();
     write.mockRestore();
+  });
+});
+
+// 2026-11-09 hunt 2, item 8: one refinement step, one team, /weapons +8.2 % and /account +2.8 %, and a real R5 delivered
+// /account's. The two are different questions (the teammate's hand-set panel changed to match, or left as set), so
+// /weapons names both and /account says which one it shows.
+describe("a support's weapon beside a teammate's hand-set panel: two team figures, both named", () => {
+  it("/weapons keeps the figure with the panel as set beside the one with the panel following", async () => {
+    const ciac = rowOf("Ciaccona");
+    const r1 = ciac.signature.steps[0]!;
+    expect(r1.panels.map((p) => p.member)).toEqual(["Cartethyia"]);
+    expect(r1.teamAsSet).not.toBeNull();
+    // the app the day the weapon is in hand: Ciaccona on Woodland Aria, Cartethyia's panel untouched
+    const { candidates } = await teamCandidatesOf(characters, []);
+    const team = candidates.find((c) => c.id === ciac.team!.id)!;
+    const armed = { ...characters, Ciaccona: await withWeaponAtFullStacks("Ciaccona", characters.Ciaccona, "WoodlandAria", 1) };
+    expect(r1.teamAsSet!.avgDamage).toBeCloseTo((await scoreTeamCandidate(team, armed, echoes)).avgDamage, 6);
+    expect(r1.teamAsSet!.base).toBeCloseTo(r1.team!.base, 6);
+    // the shred never reaches the carry through a panel that doesn't tick it: less than the followed figure
+    expect(r1.teamAsSet!.gain).toBeLessThan(r1.team!.gain - 0.001);
+    // an option no panel followed has one team figure, and no second one to confuse it with
+    const cart = rowOf("Cartethyia");
+    for (const o of [...cart.signature.steps, ...cart.standard, ...(cart.four ? [cart.four] : []), ...(cart.refine ? [cart.refine] : [])]) {
+      if (!o.panels.length) expect(o.teamAsSet, o.id).toBeNull();
+    }
+  }, 60_000);
+
+  it("/account marks a refinement whose team figure keeps a hand-set panel, and its figure is /weapons' \"panel as set\"", async () => {
+    // Cartethyia's panel ticks Chisa's Kumokiri buff at R1; Chisa holds Kumokiri R1 and refines it
+    const kumokiri = weaponTeamBuffKeys("Kumokiri");
+    const panel = { ...characters.Cartethyia.teamBuffs, selectedCharacter1: "Ciaccona", selectedCharacter2: "Chisa", buffs: { ...characters.Cartethyia.teamBuffs.buffs, ...Object.fromEntries(kumokiri.map((k) => [k, { isEnabled: true, refinement: "1" }])) } };
+    const kept: Record<string, any> = { ...characters, Cartethyia: { ...characters.Cartethyia, teamBuffs: panel } };
+    const rank = await rankRoster(kept, echoes, [], { investment: false, yieldToUi: false });
+    const plan = await investPlan(kept, echoes, [], rank, { yieldToUi: false, substatKeys: [] });
+    const refine = plan.items.find((i) => i.characterId === "Chisa" && i.kind === "refine" && i.refinement === 2)!;
+    expect(refine, JSON.stringify(plan.items.filter((i) => i.characterId === "Chisa").map((i) => i.id))).toBeTruthy();
+    expect(refine.panelsKept).toEqual(["Cartethyia"]);
+    const weapons = await weaponValue(kept, echoes, [], rank, { yieldToUi: false });
+    const step = rowOf("Chisa", weapons).signature.steps.find((s) => s.refinement === 2) ?? rowOf("Chisa", weapons).refine!;
+    expect(step.panels.map((p) => p.member)).toEqual(["Cartethyia"]);
+    expect(step.teamAsSet!.gain).toBeCloseTo(refine.team!.gain, 6);
+    expect(step.team!.gain).toBeGreaterThan(refine.team!.gain);
+    // a row no panel is kept for carries no mark
+    for (const i of plan.items.filter((x) => x.characterId === "Cartethyia")) expect(i.panelsKept, i.id).toBeUndefined();
+  }, 120_000);
+
+  it("the words tell the two apart, and name the teammate", () => {
+    expect(followedPanelMembers(rowOf("Ciaccona"))).toEqual(["Cartethyia"]);
+    expect(followedPanelMembers(rowOf("Cartethyia"))).toEqual([]);
+    expect(panelFiguresNote(["Aemeath"])).toBe('Two team figures: Aemeath has the Team Buffs panel set by hand for this team. The team gain counts this weapon\'s buff on that panel, as the game applies it. "Panel as set" is what Teams and My account read until you change the panel yourself: Invest next on My account shows that figure.');
+    expect(panelKeptNote(["Aemeath"])).toBe("Team figure with Aemeath's Team Buffs panel as you set it, which is what Teams reads. Weapon value counts the panel changed to match and reads more.");
+    expect(panelKeptTag(["Aemeath"])).toBe("Aemeath's panel as set");
   });
 });

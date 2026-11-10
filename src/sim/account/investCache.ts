@@ -9,7 +9,7 @@ import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../pe
 import type { InvestPlan } from "./investPlan";
 
 /** bump when InvestItem's shape or the plan's rules change */
-export const INVEST_CACHE_VERSION = 2; // 2: items carry the ER shortfall (erGap) their own gain is read against
+export const INVEST_CACHE_VERSION = 3; // 2: items carry the ER shortfall (erGap) their own gain is read against; 3: weapon rows say when a teammate's hand-set panel is kept (panelsKept)
 export const INVEST_CACHE_KEY = "wtplus:account:invest";
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;

@@ -73,6 +73,9 @@
                 </span>
               </span>
               <span class="inv-row__sub">{{ subText(row.item) }}</span>
+              <!-- its own line, so a phone never cuts it: this team figure keeps a teammate's hand-set panel as set, and
+                   Weapon value shows the same step with the panel changed (a bigger figure) -->
+              <span v-if="keptTag(row.item)" class="inv-row__sub inv-row__kept" data-test-account-invest-panel-kept>team: {{ keptTag(row.item) }}</span>
             </span>
             <span class="inv-row__gain">
               <span class="inv-row__value" :class="row.value >= 0 ? 'acc-gain-up' : 'acc-gain-down'" data-test-account-invest-gain>
@@ -101,7 +104,7 @@
       <summary>How these are scored</summary>
       <ul>
         <li><b>Own</b>: the character's average damage per rotation on the best rotation /my-rankings found for them, with that one thing changed.</li>
-        <li><b>Team</b>: their strongest team you can field (all three armed), re-run the way the rankings run it — teammates' buffs from the upgrade count, except for a teammate whose own team-buff panel is already set for this team (the rankings use that panel as you set it, so a buff a new node unlocks counts once you tick it there). Left out, with the reason, when that team runs another saved build of the character.</li>
+        <li><b>Team</b>: their strongest team you can field (all three armed), re-run the way the rankings run it — teammates' buffs from the upgrade count, except for a teammate whose own team-buff panel is already set for this team (the rankings use that panel as you set it, so a buff a new node unlocks counts once you tick it there; a weapon row marked "panel as set" reads more on Weapon value, which counts the panel changed to match). Left out, with the reason, when that team runs another saved build of the character.</li>
         <li><b>Weapons</b>: only ones somebody on your account wears, at that copy's refinement (the app has no weapon inventory).</li>
         <li><b>Echo roll</b>: one more expected roll of the substat that pays most — the full table is on the character's Substats tab in Roster rankings.</li>
         <li>A gain is not a price: a sequence is a copy of the character, a refinement a copy of the weapon, a roll some tuners.</li>
@@ -121,6 +124,7 @@ import { parsePresetName } from "../presets/presetName";
 import { pct } from "../myRankings/format";
 import { AVERAGE_ROLL_PLACE, erGainNote, INVEST_KIND_LABELS, investChange, sortInvestItems, type InvestItem, type InvestKind } from "./investPlan";
 import type { RunStatus } from "./useAccountData";
+import { panelKeptNote, panelKeptTag } from "../weaponValue/weaponValueView";
 
 const props = defineProps<{ items: InvestItem[] | null; status: RunStatus; rankingReady: boolean; owned: string[]; investBy: "own" | "team" }>();
 const emit = defineEmits<{ "update:investBy": [value: "own" | "team"]; open: [characterId: string] }>();
@@ -182,10 +186,13 @@ function subText(item: InvestItem): string {
   const er = erGainNote(item) ? `closes a ${item.erGap!.toFixed(1)}-pt ER gap${item.team ? " · team ignores ER" : ""}` : "";
   return [what, other, er].filter(Boolean).join(" · ");
 }
+/** a teammate's hand-set panel keeps this weapon's buff as set: /weapons reads the same step with it changed */
+const keptTag = (item: InvestItem): string => (item.team && item.panelsKept?.length ? panelKeptTag(item.panelsKept) : "");
 function rowTitle(item: InvestItem): string {
   const lines = [`${characterShortName(item.characterId)} — ${INVEST_KIND_LABELS[item.kind]}: ${investChange(item)}`, `Own, on "${parsePresetName(item.rotation, { owned: props.owned }).title}": ${pct(item.gain)}`];
   if (item.team) lines.push(`Team "${parsePresetName(item.team.teamName, { owned: props.owned }).title}": ${pct(item.team.gain)}`);
   else if (item.teamNote) lines.push(`No team figure: ${item.teamNote}`);
+  if (item.team && item.panelsKept?.length) lines.push(panelKeptNote(item.panelsKept));
   const er = erGainNote(item);
   if (er) lines.push(er);
   return lines.join("\n");

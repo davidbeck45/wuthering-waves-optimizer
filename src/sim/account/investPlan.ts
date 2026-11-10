@@ -26,6 +26,7 @@ import { equippedEchoCount } from "./buildScore";
 // Wuthering Tools+ energy check: Energy Regen as a floor (src/sim/energy/)
 import { erAdjustedGain, erFactorFor } from "../energy/erAwareScorer";
 import { showHave, showNeed } from "../energy/energyNeed";
+import { panelsFollowWeapon } from "../weaponValue/teamPanels";
 
 export type InvestKind = "sequence" | "refine" | "weapon" | "substat";
 
@@ -66,6 +67,10 @@ export interface InvestItem {
   team: TeamImpact | null;
   /** why there is no team figure (null with a team figure) */
   teamNote: string | null;
+  /** weapon and refinement rows: the teammates whose hand-set Team Buffs panel keeps this weapon's team buff as they
+   *  set it, so `team` is the figure Teams reads the day the weapon is in hand. /weapons scores the same step with
+   *  the panel following the weapon and reads more (teamPanels.ts; hunt 2, item 8). Absent when no panel is kept. */
+  panelsKept?: string[];
   /** weapon swaps: who wears that copy now */
   wornBy?: string[];
   weaponKey?: string;
@@ -358,7 +363,9 @@ export async function investPlan(
           await pause();
           // an upgrade a support's own rotation does not show can still lift their team (an outro buff, a sequence node)
           if (gain < MIN_GAIN && !(team && team.gain >= MIN_GAIN)) return;
-          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: note, ...(erGap ? { erGap } : {}) });
+          // a weapon step a teammate's hand-set panel would have to follow: this figure keeps the panel as set
+          const kept = ctx && team && (item.kind === "refine" || item.kind === "weapon") ? (await panelsFollowWeapon(ctx.candidate.team, characters, hypo.characters, id, hypo.inventoryEchoes, enemy)).adjusted.map((a) => a.member) : [];
+          items.push({ ...item, characterId: id, rotation: rotation.name, base, avgDamage, gain, team, teamNote: note, ...(erGap ? { erGap } : {}), ...(kept.length ? { panelsKept: kept } : {}) });
         };
         const withData = (next: Record<string, any>) => ({ characters: { ...characters, [id]: next }, inventoryEchoes });
 

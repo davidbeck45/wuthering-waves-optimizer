@@ -48,7 +48,7 @@ describe("weapon value", () => {
     cy.visit("/weapons", seed({ empty: true }));
     cy.get("[data-test-weapons-empty]").should("exist");
     cy.get("[data-test-weapons-empty] [data-test-my-rankings-cta]").should("have.length", 3);
-    cy.get('[data-test-weapons-empty] [data-test-my-rankings-cta="import"]').should("have.attr", "href", "/settings");
+    cy.get('[data-test-weapons-empty] [data-test-my-rankings-cta="import"]').should("have.attr", "href", "/settings?section=backup-restore"); // since 3c0dff04
     cy.get("[data-test-weapons-chart]").should("not.exist");
     cy.title().should("contain", "Weapon value");
     cy.get("[data-test-nav-rankings]").click();
@@ -101,6 +101,35 @@ describe("weapon value", () => {
     cy.get('[data-test-weapons-row="Ciaccona"]', { timeout: 60000 }).should("exist");
     cy.get("[data-test-weapons-skeleton]").should("not.exist");
     cy.get(".wv-foot").should("contain.text", "kept for this tab");
+  });
+
+  it("names both team figures when a teammate's Team Buffs panel is set by hand (hunt 2, item 8)", () => {
+    // Cartethyia's exported panel names Ciaccona + Chisa. Without its stale Woodland Aria tick, Ciaccona's new weapon
+    // reaches her only once that panel is changed: /weapons counts it changed, /account and Teams read it as set
+    cy.viewport(412, 915);
+    const visit = seed({ fontScale: 1.3 });
+    cy.visit("/weapons", {
+      ...visit,
+      onBeforeLoad(win: Window) {
+        visit.onBeforeLoad(win);
+        const character = JSON.parse(win.localStorage.getItem("character")!);
+        delete character.characters.Cartethyia.teamBuffs.buffs.WoodlandAriaAeroShred;
+        win.localStorage.setItem("character", JSON.stringify(character));
+      },
+    });
+    cy.get('[data-test-weapons-row="Ciaccona"]', { timeout: 120000 }).scrollIntoView();
+    cy.get('[data-test-weapons-row="Ciaccona"] [data-test-weapons-row-as-set]').invoke("text").should("match", /^panel as set .*%$/);
+    cy.get('[data-test-weapons-toggle="Ciaccona"]').click();
+    cy.get('[data-test-weapons-as-set="signature:WoodlandAria:R1"]').scrollIntoView().invoke("text").should("match", /^panel as set .*%$/);
+    cy.get('[data-test-weapons-detail="Ciaccona"] [data-test-weapons-panel-note]')
+      .scrollIntoView()
+      .should("be.visible")
+      .and("contain.text", "Two team figures: Cartethyia has the Team Buffs panel set by hand")
+      .and("contain.text", "Invest next on My account shows that figure");
+    expectNoHorizontalScroll("an opened row with two team figures");
+    // Cartethyia's own options follow nobody's panel: one team figure each, no note
+    cy.get('[data-test-weapons-toggle="Cartethyia"]').scrollIntoView().click();
+    cy.get('[data-test-weapons-detail="Cartethyia"]').should("be.visible").find("[data-test-weapons-panel-note]").should("not.exist");
   });
 
   it("opens the row a /my-rankings link points at", () => {

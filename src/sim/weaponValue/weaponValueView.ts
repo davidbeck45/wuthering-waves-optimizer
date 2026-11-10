@@ -1,7 +1,7 @@
 // Wuthering Tools+ — /weapons' view model: a weapon-value row (weaponValue.ts) as one chart bar, in either scope
 // (the character's own damage, or their strongest fieldable team's), plus the sorts, filters, KPI tiles, the shared
 // axis and the prefs. Pure: no Vue, no stores.
-import { characterDisplayName } from "../display/names";
+import { characterDisplayName, characterShortName } from "../display/names";
 import type { CharacterWeaponValue, SignatureStatus, ValueOption, WeaponValueResult } from "./weaponValue";
 
 export type Scope = "own" | "team";
@@ -66,6 +66,41 @@ export interface BarModel {
   /** why the scope has no figure (team scope without a team, an engine note) */
   note: string | null;
 }
+
+/* ---- a teammate's hand-set Team Buffs panel: the two team figures of one upgrade ----------------------------------
+ * /weapons scores a support's weapon with the carry's hand-set panel following it (teamPanels.ts), the way the game
+ * applies the buff. Teams, /account and /my-rankings read that panel exactly as it was set, so the day the weapon is in
+ * hand they show less until the panel is changed: Lynae's Spectrum Blaster R1 to R5 read +8.2 % team here and +2.8 % on
+ * /account, and a real R5 delivered +2.78 % (2026-11-09 hunt 2, item 8). Which of the two the app should deliver is a
+ * product decision left open (README, Weapon value), so each page names its own figure and points at the other. */
+
+/** The teammates whose hand-set panel gives some option of this row two team figures (followed, and as set), in the
+ *  order they first appear. */
+export function followedPanelMembers(row: Pick<CharacterWeaponValue, "signature" | "refine" | "standard" | "four">): string[] {
+  const options = [...row.signature.steps, ...(row.refine ? [row.refine] : []), ...row.standard, ...(row.four ? [row.four] : [])];
+  return [...new Set(options.flatMap((o) => (o.teamAsSet ? o.panels.map((p) => p.member) : [])))];
+}
+
+const namesOf = (members: readonly string[]): string => {
+  const names = members.map((m) => characterShortName(m) || m);
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? "a teammate";
+};
+
+/** /weapons, under an opened row with a followed panel: what the two team figures are. */
+export function panelFiguresNote(members: readonly string[]): string {
+  const who = namesOf(members);
+  const their = members.length > 1 ? "their Team Buffs panels" : "the Team Buffs panel";
+  return `Two team figures: ${who} ${members.length > 1 ? "have" : "has"} ${their} set by hand for this team. The team gain counts this weapon's buff on ${members.length > 1 ? "those panels" : "that panel"}, as the game applies it. "Panel as set" is what Teams and My account read until you change the panel yourself: Invest next on My account shows that figure.`;
+}
+
+/** /account, beside a weapon or refinement row whose team figure keeps a hand-set panel: what it leaves out. */
+export function panelKeptNote(members: readonly string[]): string {
+  const who = namesOf(members);
+  return `Team figure with ${who}'s Team Buffs panel as you set it, which is what Teams reads. Weapon value counts the panel changed to match and reads more.`;
+}
+
+/** The short tag for the same thing, where a row has one line: "Aemeath's panel as set". */
+export const panelKeptTag = (members: readonly string[]): string => `${namesOf(members)}'s panel as set`;
 
 const SIG_TEXT: Record<SignatureStatus, string> = {
   swap: "",

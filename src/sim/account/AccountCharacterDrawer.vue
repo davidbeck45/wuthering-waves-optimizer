@@ -72,6 +72,8 @@
             </span>
             <span v-if="erNote(item)" class="dr-inv__note" data-test-account-er-note>{{ erNote(item) }}</span>
             <span v-if="!item.team && item.teamNote" class="dr-inv__note">no team figure: {{ item.teamNote }}</span>
+            <!-- a teammate's hand-set panel keeps this weapon's buff as set: Weapon value shows the other figure -->
+            <span v-if="item.team && item.panelsKept?.length" class="dr-inv__note" data-test-account-panel-kept>{{ panelKeptNote(item.panelsKept) }}</span>
           </li>
         </ul>
         <p v-else class="dr__note">{{ card.owned ? (card.sequence >= 6 && card.refinement >= 5 ? "S6 with the weapon at R5 — the next gains are in the echoes (Substats tab)." : "Nothing scored yet, or nothing left to gain from one step.") : "Equip a weapon to score this character." }}</p>
@@ -174,6 +176,7 @@ import { rangeSentence } from "../critLuck/format";
 import { rankingsMineHash } from "./accountState";
 import { erGainNote, INVEST_KIND_LABELS, investChange, type InvestItem } from "./investPlan";
 import { OWN_KIND_LABELS, type DrawerOwn } from "./ownUpgrades";
+import { panelKeptNote } from "../weaponValue/weaponValueView";
 import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";

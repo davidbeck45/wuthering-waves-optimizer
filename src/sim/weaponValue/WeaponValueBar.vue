@@ -59,6 +59,8 @@
       <span class="wv-value">
         <span class="wv-value__main" :class="valueClass" data-test-weapons-value>{{ headText }}</span>
         <span class="wv-value__sub">{{ subText }}</span>
+        <!-- a teammate's hand-set panel followed this weapon: the figure Teams and My account read until it is changed -->
+        <span v-if="asSetText" class="wv-value__sub wv-value__as-set" data-test-weapons-row-as-set>{{ asSetText }}</span>
       </span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="wv-chev" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </button>
@@ -120,6 +122,10 @@ const subText = computed(() => {
   // no team figure: the character's own gain still says something (Own scope shows it as the bar)
   if (b.head && b.head.value === null) return props.scope === "team" ? (b.head.option ? `own ${pctFine(b.head.option.gain)}` : "no team figure") : "";
   return b.alt && b.alt.value !== null ? `best other ${pctFine(b.alt.value)}` : "";
+});
+const asSetText = computed(() => {
+  const o = props.bar.head?.option;
+  return props.scope === "team" && props.bar.head?.value != null && o?.teamAsSet ? `panel as set ${pctFine(o.teamAsSet.gain)}` : "";
 });
 const trackNote = computed(() => {
   const b = props.bar;

@@ -234,6 +234,7 @@ function option(o: ValueOption): Record<string, unknown> {
     "team gain vs today (%)": o.team ? percent(o.team.gain, 2) : undefined,
     "why no team figure": o.team ? undefined : (o.teamNote ?? undefined),
     "teammates' team-buff panels assumed to follow the weapon": o.panels.length ? o.panels.map((p) => name(p.member)) : undefined,
+    "team gain with those panels left as set, what Teams and My account read until they are changed (%)": o.teamAsSet ? percent(o.teamAsSet.gain, 2) : undefined,
   };
 }
 

@@ -30,7 +30,7 @@ import { standardWeaponKeys } from "./pools";
 import { panelsFollowWeapon, type PanelFollow } from "./teamPanels";
 
 /** bump when a row's shape or the scoring rules change (the cache drops older entries) */
-export const WEAPON_VALUE_VERSION = 1;
+export const WEAPON_VALUE_VERSION = 2; // 2: an option whose teammate panel followed also keeps the team figure with the panel as set (`teamAsSet`)
 
 export type OptionKind = "signature" | "refine" | "standard" | "four";
 
@@ -54,6 +54,10 @@ export interface ValueOption {
   /** teammates whose hand-set team-buff panel was made to follow the weapon for `team` (teamPanels.ts): the old
    *  weapon's buffs off, this one's on — "assumes you tick it there" */
   panels: PanelFollow["adjusted"];
+  /** the same team with those panels left exactly as the player set them: what Teams, /account and /my-rankings read
+   *  the day the weapon is in hand, until the panel is changed (the figure /account's Invest next shows). Null when no
+   *  panel followed, or following changed nothing, so `team` already is that figure. */
+  teamAsSet: TeamImpact | null;
 }
 
 /** `swap`: they don't hold it (R1…R5); `held`: they hold it below R5; `maxed`: R5 held; `none`: the kit names no
@@ -216,6 +220,7 @@ export async function weaponValue(
         let team: TeamImpact | null = null;
         let teamNote: string | null = row.teamNote;
         let panels: PanelFollow["adjusted"] = [];
+        let teamAsSet: TeamImpact | null = null;
         if (ctx && !block) {
           const armed = key === held ? withWeapon(data, key, r) : await withWeaponAtFullStacks(id, data, key, r);
           const follow = await panelsFollowWeapon(ctx.candidate.team, characters, { ...characters, [id]: armed }, id, inventoryEchoes, enemy);
@@ -224,8 +229,15 @@ export async function weaponValue(
           teamNote = result.note;
           panels = follow.adjusted;
           await pause();
+          // the app after the purchase alone: the weapon in hand, the teammate's panel still as set (/account's figure)
+          if (panels.length && team) {
+            const asSet = (await scorer.impact(ctx, null, { ...characters, [id]: armed }, inventoryEchoes)).team;
+            // a panel that already says what the weapon brings reads the same either way: one figure, nothing to tell apart
+            if (asSet && Math.abs(asSet.avgDamage - team.avgDamage) > 1e-6 * Math.max(1, team.base)) teamAsSet = asSet;
+            await pause();
+          }
         }
-        return { id: optionId(kind, key, r), kind, weaponKey: key, refinement: r, label, avgDamage: own.avgDamage, gain: own.gain, low: own.low ?? null, team, teamNote, panels };
+        return { id: optionId(kind, key, r), kind, weaponKey: key, refinement: r, label, avgDamage: own.avgDamage, gain: own.gain, low: own.low ?? null, team, teamNote, panels, teamAsSet };
       };
 
       // the signature: R1…R5 (or the held one's next refinements)

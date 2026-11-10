@@ -2516,6 +2516,14 @@ Things learned:
 Gates: `weaponValue.test.ts`, `selector.test.ts`, `selectorRiley.test.ts`, `advisorEngine.test.ts`, `investPlan.test.ts`;
 `cypress/e2e/weaponValue.cy.ts`, `phoneLayout.cy.ts`, `themes.cy.ts`. The CLI `snapshot` diff is empty (nothing on the
 calc / team / rank paths moved).
+- **Two team figures for one weapon step, both named (2026-11-09, hunt 2 item 8).** With a hand-set panel on the carry,
+  /weapons read Lynae's Spectrum Blaster R1 to R5 as +8.2 % team and /account as +2.8 %, and a real R5 on a copy of the
+  export delivered +2.78 %: the app keeps the panel as set until the player changes it. Which one the app should deliver
+  (panels follow a teammate's real weapon everywhere, or /weapons stops following) is still David's call, so neither
+  moved. Instead an option whose panel followed also carries `teamAsSet` (the same team, the panel untouched: /account's
+  figure, tested equal), shown as "panel as set +2.8 %" in the detail and under the row's figure, with a note in words
+  under the table; /account's weapon and refinement rows carry `panelsKept` and say "Aemeath's panel as set", and the
+  drawer says Weapon value reads more. Wording: `panelFiguresNote` / `panelKeptNote` / `panelKeptTag` (weaponValueView.ts).
 
 ## Build my team — re-gear a team from the echo inventory, `/build-team` (batch 2, Roadmap Phase 4, 2026-10-26)
 
