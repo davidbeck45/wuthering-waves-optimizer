@@ -166,7 +166,7 @@
 // the best rotation, the character's investments with own and team gains, the teams they can field, and the way on:
 // the calculator, their Substats / What if tabs on /my-rankings, Riley's table at the account's own state; and what it
 // costs to raise them (Cost to max, src/sim/materials/).
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WeaponIcon from "../display/WeaponIcon.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
@@ -186,6 +186,7 @@ import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
 import type { CharacterRank } from "../myRankings/rankRoster";
+import { pinSection } from "./pinSection";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
 const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null; /** "cost": open at Cost to max (the palette's command) */ section?: string | null }>();
@@ -212,17 +213,23 @@ const rangeLine = computed(() => {
   return c?.range && c.damage !== null ? rangeSentence({ mean: c.damage, p10: c.range.p10, p90: c.range.p90 }, compact) : null;
 });
 
+/** lets go of the section the drawer was opened on (pinSection.ts) */
+let unpin: (() => void) | null = null;
 watch(
   () => props.card?.id ?? null,
   async (id) => {
     await nextTick();
+    unpin?.();
+    unpin = null;
     const el = dialog.value;
     if (!el) return;
     if (id && !el.open) el.showModal();
     else if (!id && el.open) el.close();
-    if (id && props.section === "cost") el.querySelector("[data-test-cost-to-max]")?.scrollIntoView({ block: "start" });
+    // held there while the sections above it load: one scroll left Cost to max a screen below the fold
+    if (id && props.section === "cost") unpin = pinSection(el, el.querySelector(".dr__inner"), () => el.querySelector("[data-test-cost-to-max]"));
   },
 );
+onBeforeUnmount(() => unpin?.());
 
 function close(): void {
   dialog.value?.close();

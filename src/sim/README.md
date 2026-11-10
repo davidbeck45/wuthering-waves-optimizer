@@ -4131,6 +4131,12 @@ say or keep what it already knew.
 | Phone text | A row that opens nothing shows its text whole: /endgame's team rows (`sm:` on the clamps), /account's invest rows (the item drops under the name and wraps), Set lab's conditions (no clamp) |
 | `echoLab/EchoLabView.vue`, `endgame/ToaView.vue` | Only a tile that filters is a button. The Plan tab counts crests only with a team: without one it is the low floors assumed clear, 12★ for nobody |
 
+Round 2 (2026-11-09), three more of the same kind:
+
+- `account/pinSection.ts`: **the drawer opened at Cost to max stays there.** On a cold load it grew from 881 to 2,835 px
+  after its one `scrollIntoView`, leaving the section at y 1193 of 915. The section is put back whenever the content
+  above it changes size, until the player touches the drawer (wheel, touch, pointer, key) or 20 s pass.
+
 ## Upgrades and stale tabs — what a deploy does to someone already here (hunt round 1, track "upgrade-regress", 2026-11-06)
 
 Both builds served in turn on one origin, the way `vercel.json` serves them, with one real browser profile carried across. The

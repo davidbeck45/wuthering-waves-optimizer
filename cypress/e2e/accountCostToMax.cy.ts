@@ -65,6 +65,31 @@ describe("cost to max in the account drawer", () => {
     cy.get("[data-test-account-drawer]").should("not.have.attr", "open");
   });
 
+  it("stays at Cost to max while the drawer above it fills in, until the player touches the drawer", () => {
+    cy.viewport(412, 915);
+    cy.visit("/account?focus=Cartethyia&section=cost", seed({ fontScale: 1.3 }).visit);
+    cy.get("[data-test-account-drawer]", { timeout: 120000 }).should("have.attr", "open");
+    cy.get("[data-test-cost-total]", { timeout: 20000 }).should("exist");
+    /** what a cold load does on a full account: sections arrive above Cost to max after the drawer opened (881 to 2,835 px) */
+    const arrives = (px: number): void => {
+      cy.get("[data-test-account-drawer] .dr__head").then(($head) => {
+        const late = $head[0]!.ownerDocument.createElement("div");
+        late.style.cssText = `height:${px}px;flex:none`;
+        $head[0]!.after(late);
+      });
+    };
+    arrives(1900);
+    cy.get("[data-test-cost-to-max]").should(($section) => {
+      expect($section[0]!.getBoundingClientRect().top, "Cost to max still at the top of the drawer").to.be.within(0, 915 * 0.5);
+    });
+    // a swipe, the wheel, a key: from here where the drawer scrolls is the player's
+    cy.get("[data-test-account-drawer]").trigger("wheel", { deltaY: -40, force: true });
+    arrives(1900);
+    cy.get("[data-test-cost-to-max]").should(($section) => {
+      expect($section[0]!.getBoundingClientRect().top, "left where the player has it").to.be.greaterThan(915);
+    });
+  });
+
   it("counts from the saved levels, says what was assumed, and from level 1 adds the inherent skills and stat bonuses", () => {
     cy.viewport(1440, 900);
     const { character, visit } = seed();
