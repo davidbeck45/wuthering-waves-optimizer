@@ -166,7 +166,11 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.selectWorkspaceCharacter("Brant");
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
-    cy.get('[data-test-echo-item="0"]').click();
+    // Wuthering Tools+: no scroll-into-view. It scrolls this tile under the sticky command bar, the bar goes compact
+    // and back as the page moves, and Cypress reads the moving tile as animating (red on plus's CI, 2026-11-10). A
+    // section starts at the top, where the first tile is on screen.
+    cy.window().its("scrollY").should("eq", 0);
+    cy.get('[data-test-echo-item="0"]').click({ scrollBehavior: false });
 
     cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "true");
     cy.get('[data-test-echo-item="0"] [data-test-echo-edit-find]').should("be.visible");

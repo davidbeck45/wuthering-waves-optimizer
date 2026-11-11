@@ -72,11 +72,16 @@ describe("Command Bar on phones", () => {
   it("changes the measured action from the label on the bar", () => {
     cy.selectWorkspaceCharacter("Brant");
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    // Wuthering Tools+: the bar goes compact once the page scrolls, which hides this label by design. With an
+    // announcement banner above the sticky bar, Cypress's scroll-into-view before a click scrolls the page past it,
+    // so start at the top and click where the label is (as navV3's bottom bar test does).
+    cy.scrollTo(0, 0);
+    cy.get("[data-test-live-result-bar]").should("not.have.class", "command-bar--compact");
 
-    cy.get("[data-test-live-result-bar-target-trigger]").click();
+    cy.get("[data-test-live-result-bar-target-trigger]").click({ scrollBehavior: false });
     cy.get("[data-test-live-result-bar-settings]").should("be.visible");
     cy.get('[data-test-live-result-bar-settings] input[aria-label="Crit"]').click();
-    cy.get("[data-test-live-result-bar-target-trigger]").click();
+    cy.get("[data-test-live-result-bar-target-trigger]").click({ scrollBehavior: false });
     cy.get("[data-test-live-result-bar-settings]").should("not.exist");
   });
 
