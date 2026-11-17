@@ -6,6 +6,7 @@ import type { ExportFile } from "../cli/exportFile";
 import { findTeam } from "../cli/engine";
 import { int, pct, table } from "../cli/format";
 import { rileyAccountForTeam } from "../engine/rileyAccount";
+import { accountKeyOf } from "../rankings/rileyNames";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
 import {
   characterFloors,
@@ -81,7 +82,7 @@ export async function energyReport(exp: ExportFile, options: { team?: string; al
       if (!haves.has(id)) haves.set(id, await menuEnergyRegen(id, exp.characters, exp.inventory.echoes).catch(() => null));
       return haves.get(id) ?? null;
     };
-    for (const c of scanCandidates(riley.teams, riley.account, riley.blocked, isFreeCharacter)) {
+    for (const c of scanCandidates(riley.teams, riley.account, riley.blocked, isFreeCharacter, (k) => accountKeyOf(k, exp.characters))) {
       if (seen.has(c.key)) continue;
       const measure = await measureKeys(engine, c.teamKeys);
       if (measure.status === "ok" && !measure.energy.members.every((m) => m.owned)) continue; // the fork says not fieldable after all

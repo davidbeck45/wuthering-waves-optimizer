@@ -220,15 +220,24 @@ export interface ScanCandidate {
 
 /** His team list grouped by composition, keeping the ones whose every member the account can field: owned in the
  *  Account State, or free for everyone (`free(appKey)`: a 4-star, a Rover form — the fork's `Tier.Free`). Teams with
- *  a member the app has not released (`blocked`) are left out. The fork re-checks after the solve (`fieldable`). */
-// eslint-disable-next-line no-unused-vars -- the parameters of a function type
-export function scanCandidates(teams: RileyTeamInfo[], account: Pick<RileyAccount, "entries"> | null, blocked: readonly string[], free: (appKey: string) => boolean): ScanCandidate[] {
+ *  a member the app has not released (`blocked`) are left out. The fork re-checks after the solve (`fieldable`).
+ *  `memberKey` gives the key a member goes by in the account (`accountKeyOf`): his list names a Rover by the female
+ *  key, and filed under it a male Rover's compositions read "not set up" and were never found by his team's own key. */
+/* eslint-disable no-unused-vars -- the parameters of function types */
+export function scanCandidates(
+  teams: RileyTeamInfo[],
+  account: Pick<RileyAccount, "entries"> | null,
+  blocked: readonly string[],
+  free: (appKey: string) => boolean,
+  memberKey: (appKey: string) => string = (appKey) => appKey,
+): ScanCandidate[] {
+  /* eslint-enable no-unused-vars */
   const owned = (name: string, appKey: string): boolean => Boolean(account?.entries?.[name]?.owned) || free(appKey);
   const groups = new Map<string, ScanCandidate>();
   for (const t of teams) {
     if (t.members.length !== 3) continue;
     if (t.members.some((m) => blocked.includes(m.appKey) || !owned(m.name, m.appKey))) continue;
-    const ids = t.members.map((m) => m.appKey);
+    const ids = t.members.map((m) => memberKey(m.appKey));
     const key = compositionKey(ids);
     const g = groups.get(key);
     if (g) g.teamKeys.push(t.key);

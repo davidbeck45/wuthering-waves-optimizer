@@ -7,6 +7,7 @@
 import { computed, effectScope, reactive, ref, watch, type ComputedRef, type EffectScope, type Ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
+import { accountKeyOf } from "../rankings/rileyNames";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { createRileyClient, rileyClient, type RileyClient } from "../engine/rileyClient";
@@ -349,7 +350,8 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
     try {
       const base = rileyClient();
       const [list, blocked] = await Promise.all([base.teams(signal), base.blocked(signal)]);
-      const todo = scanCandidates(list, acc, blocked, isFreeCharacter).filter((c) => {
+      // a Rover under the key this account plays: a team row looks its measurement up by its own members' keys
+      const todo = scanCandidates(list, acc, blocked, isFreeCharacter, (k) => accountKeyOf(k, characters.value)).filter((c) => {
         const key = keyOf(c.characterIds, acc);
         const kept = options.force ? null : disk.get(key);
         if (kept) measures[key] = kept.m;

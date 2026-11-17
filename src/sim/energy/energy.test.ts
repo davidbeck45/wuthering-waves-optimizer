@@ -405,6 +405,24 @@ describe("on the engine", () => {
     const c = scanCandidates(teams, SYNTHETIC_ACCOUNT, ["Lily"], free);
     expect(c).toEqual([{ key: "Iuno+Lynae+Shorekeeper", characterIds: ["Shorekeeper", "Lynae", "Iuno"], teamKeys: ["t1", "t2"] }]);
   });
+
+  // 2026-11-16, second check of the male Rover fix: his list names a Rover by the female key, so on an account that
+  // plays Rover Aero (Male) the scan filed "Shorekeeper + RoverAeroFemale + Sigrika" and eight more under a character
+  // the account does not have. `cli er --all` read "Aero Rover · have - · not set up" on each (he is set up, at 158 %
+  // against a need of 139.1 %), and a team row of his never found its measurement, which is looked up by his own key.
+  it("files a Rover's compositions under the key the account plays", () => {
+    const teams: RileyTeamInfo[] = [
+      { key: "t249", members: [{ name: "Shorekeeper", appKey: "Shorekeeper", mainDps: false }, { name: "Aero Rover", appKey: "RoverAeroFemale", mainDps: false }, { name: "Sigrika", appKey: "Sigrika", mainDps: true }] },
+    ];
+    const everyone = (): boolean => true;
+    // the keys as his list has them, when nobody says otherwise
+    expect(scanCandidates(teams, null, [], everyone)[0]!.characterIds).toEqual(["Shorekeeper", "RoverAeroFemale", "Sigrika"]);
+    // the account's own key: what `accountKeyOf` gives for an account that holds the male record
+    const his = (appKey: string): string => (appKey === "RoverAeroFemale" ? "RoverAeroMale" : appKey);
+    expect(scanCandidates(teams, null, [], everyone, his)).toEqual([{ key: "RoverAeroMale+Shorekeeper+Sigrika", characterIds: ["Shorekeeper", "RoverAeroMale", "Sigrika"], teamKeys: ["t249"] }]);
+    // an unreleased member is still told by the key his list carries
+    expect(scanCandidates(teams, null, ["RoverAeroFemale"], everyone, his)).toEqual([]);
+  });
 });
 
 // Soft report against other sites' published ER figures (Prydwen / wudamage, numbers + URLs + date). The file is
