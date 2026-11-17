@@ -60,6 +60,10 @@ const PINNED: Array<{ teamKey: string; names: string[]; picks: RileyPick[]; tota
 
 let h: HeadlessRiley;
 let E: RileyEngine;
+/** The app lists every kit of Riley's since Ryan's 3.8 (#685), so nothing is blocked on its own: the release guard is
+ *  tested with one that holds a kit of his back, as the app's own list held Lily back until then. */
+const HELD_BACK = "Lily";
+const holdBack = (keys: string[]): string[] => [...new Set(keys.filter((k) => k === HELD_BACK))];
 const at = (res: Partial<Record<Element, number>> = {}, level = 100, effects: FloorProfileSpec["effects"] = []): FloorProfileSpec => ({
   level,
   res: Object.fromEntries(ELEMENTS.map((el) => [el, res[el] ?? 20])) as Record<Element, number>,
@@ -245,7 +249,7 @@ describe("the floors through the worker protocol", () => {
   }
 
   it("answers `curves` per profile, memoised, and refuses a team with a member the app hasn't released", async () => {
-    const client = createRileyClient({ createWorker: () => inProcessWorker(E) });
+    const client = createRileyClient({ createWorker: () => inProcessWorker(E), notInApp: holdBack });
     const specs = [null, at({ Electro: 10 })];
     const [plain, low] = await client.curves(PINNED[1]!.teamKey, PINNED[1]!.picks, specs, { account: SYNTHETIC_ACCOUNT });
     expect(plain!.total).toBe(PINNED[1]!.total);
@@ -253,18 +257,18 @@ describe("the floors through the worker protocol", () => {
     expect(plain!.points[plain!.points.length - 1]![1]).toBe(plain!.sectionTotals.reduce((a, b) => a + b, 0));
     const again = await client.curves(PINNED[1]!.teamKey, PINNED[1]!.picks, specs, { account: SYNTHETIC_ACCOUNT });
     expect(again[1]).toBe(low);
-    const lily = h.teams.find((t) => t.members.some((m) => m.appKey === "Lily"))!;
-    await expect(client.curves(lily.key, PINNED[0]!.picks, [null], { account: SYNTHETIC_ACCOUNT })).rejects.toMatchObject({ reason: "notInApp" } satisfies Partial<RunError>);
+    const heldTeam = h.teams.find((t) => t.members.some((m) => m.appKey === HELD_BACK))!;
+    await expect(client.curves(heldTeam.key, PINNED[0]!.picks, [null], { account: SYNTHETIC_ACCOUNT })).rejects.toMatchObject({ reason: "notInApp" } satisfies Partial<RunError>);
     client.dispose();
   });
 
-  it("runs the whole check on the season's floors: every candidate timed on every timed floor, Lily never among them", async () => {
+  it("runs the whole check on the season's floors: every candidate timed on every timed floor, a held-back kit never among them", async () => {
     const season = await loadSeason(toaIndex.seasons[0]!);
-    const client = createRileyClient({ createWorker: () => inProcessWorker(E) });
+    const client = createRileyClient({ createWorker: () => inProcessWorker(E), notInApp: holdBack });
     const check = await runToaCheck(client, season, { account: SYNTHETIC_ACCOUNT, savedTeams: [{ name: "mine", characterIds: SYNTHETIC_TEAM }], limit: 4 });
     expect(check.candidates.length).toBeGreaterThan(0);
     expect(check.candidates.find((c) => c.saved === "mine")).toBeTruthy();
-    expect(check.candidates.flatMap((c) => c.appKeys)).not.toContain("Lily");
+    expect(check.candidates.flatMap((c) => c.appKeys)).not.toContain(HELD_BACK);
     const floors = seasonProfiles(season).byFloor;
     expect(check.results).toHaveLength(check.candidates.length * floors.size);
     for (const r of check.results) {

@@ -378,7 +378,7 @@ describe("merge preview", () => {
     const result = await applyImport(p, plan, { characters: {}, echoes: [] }, { now: NOW, newId });
     expect(result.characters.Cartethyia.weapon).toBeNull();
     expect(result.newEchoes).toHaveLength(4);
-    const ghost = planImport({ ...p, members: [{ ...p.members[0], charId: "Lily" }] }, { characters: {}, echoes: [] });
+    const ghost = planImport({ ...p, members: [{ ...p.members[0], charId: "Nobody" }] }, { characters: {}, echoes: [] });
     expect(ghost.members[0].status).toBe("skip");
     expect(ghost.canApply).toBe(false);
   });

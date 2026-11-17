@@ -4,9 +4,11 @@ import { actionCounts, diffActions, diffEnemy, humanKey, isWuwaCalcTeam, rileyTe
 import { loopSecondsOf, notInApp } from "./importFromRankings";
 
 describe("sync my teams", () => {
-  it("refuses a team with a character the app has not released (Lily, Riley 7bcbb24)", () => {
-    expect(notInApp(["Lily", "Shorekeeper", "Verina"])).toEqual(["Lily"]);
+  it("refuses a team with a character the app has not released (a made-up one: Lily was the last, until Ryan's 3.8)", () => {
+    expect(notInApp(["Nobody", "Shorekeeper", "Verina"])).toEqual(["Nobody"]);
     expect(notInApp(["Aemeath", "Mornye", "Lynae"])).toEqual([]);
+    // Ryan released Lily in #685 (3.8, merged 2026-11-16): her teams import now
+    expect(notInApp(["Lily", "Sanhua", "Suoming"])).toEqual([]);
     // Ryan released Suoming in #655 (2026-10-24): her teams import now
     expect(notInApp(["Hsin", "Shorekeeper", "Suoming"])).toEqual([]);
   });

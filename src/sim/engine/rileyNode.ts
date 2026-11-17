@@ -67,7 +67,7 @@ export function loadRileyEngine(): Promise<RileyEngine> {
 export interface HeadlessRiley {
   engine: RileyEngine;
   account: RileyAccount | null;
-  /** app keys the app has not released (Lily) — every request carries them */
+  /** app keys the app has not released (Lily, until Ryan's 3.8; none today) — every request carries them */
   blocked: string[];
   teams: RileyTeamInfo[];
   solveMine(teamKeys: string[], opts?: { subs?: SubsMode; onProgress?: (done: number, total: number) => void }): MineSolve[];
@@ -78,12 +78,14 @@ export interface HeadlessRiley {
   bestFor(characterIds: Array<string | null>, opts?: { subs?: SubsMode }): MineSolve | null;
 }
 
-/** The seam over an export's account (or a hand-made one; null = nobody registered, everyone `s0r1`). */
-export async function rileyHeadless(source: ExportFile | RileyAccount | null = null): Promise<HeadlessRiley> {
+/** The seam over an export's account (or a hand-made one; null = nobody registered, everyone `s0r1`). `guard` is the
+ *  release guard, the app's own list by default; a test hands in one that holds a kit back (since Ryan's 3.8 the app
+ *  lists every kit of Riley's, so nothing is blocked on its own). */
+export async function rileyHeadless(source: ExportFile | RileyAccount | null = null, guard: (keys: string[]) => string[] = notInApp): Promise<HeadlessRiley> {
   const E = await loadRileyEngine();
   const account = !source ? null : "entries" in source ? source : rileyAccountOf(source.characters, source.inventory, source.teams);
   const teams = listTeams(E);
-  const blocked = blockedKeysOf(teams, notInApp);
+  const blocked = blockedKeysOf(teams, guard);
   const byKey = Object.fromEntries(teams.map((t) => [t.key, t.members]));
   const teamKeysFor = (ids: Array<string | null>): string[] => rileyTeamKeysFor(ids, byKey);
   const solveMine: HeadlessRiley["solveMine"] = (keys, opts = {}) => solveMineOn(E, keys, { account, blocked, subs: opts.subs, onProgress: opts.onProgress });

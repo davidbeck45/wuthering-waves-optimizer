@@ -3,7 +3,7 @@
 // rileyWorker.ts). Request ids, progress, cancellation through an AbortSignal, and a memo keyed by engine commit
 // + account (+ its builds) + spread + team key + picks, so a page re-opened on the same account never re-solves.
 // The release guard runs here, on the main thread, where the app's character list lives: the worker only ever
-// receives the blocked keys (Lily, until the app ships her).
+// receives the blocked keys (Lily, until the app shipped her with 3.8; none today).
 //
 //   const riley = rileyClient();                         // one worker for the app
 //   const account = rileyAccountOf(characters, { echoes, equipped }, teams)   // or useRileyAccount()
@@ -58,6 +58,8 @@ export interface RileyClientOptions {
   createWorker?: () => WorkerLike;
   /** memo entries kept, least recently used dropped first */
   memo?: number;
+  /** the release guard (default: the app's own list, `notInApp`); a test hands in one that holds a kit back */
+  notInApp?: (keys: string[]) => string[];
 }
 
 const defaultWorker = (): WorkerLike =>
@@ -177,7 +179,7 @@ export function createRileyClient(options: RileyClientOptions = {}): RileyClient
     if (!teamList) {
       const list = request<RileyTeamsResult>({ op: "teams" }).then((r) => ({
         teams: r.teams,
-        blocked: blockedKeysOf(r.teams, notInApp),
+        blocked: blockedKeysOf(r.teams, options.notInApp ?? notInApp),
         byKey: Object.fromEntries(r.teams.map((t) => [t.key, t.members])),
       }));
       teamList = list;

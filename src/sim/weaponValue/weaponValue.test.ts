@@ -212,7 +212,7 @@ describe("weapon value", () => {
     const pool = rankWeaponPool(["NotAWeapon", "StaticMist"], r, odd);
     expect(pool.find((p) => p.key === "NotAWeapon")).toMatchObject({ status: "not-in-app", best: null });
     expect(releasedItems({ kind: "weapon", items: ["NotAWeapon", "StaticMist"] })).toEqual(["StaticMist"]);
-    expect(releasedItems({ kind: "resonator", items: ["Lily", "Verina"] })).toEqual(["Verina"]);
+    expect(releasedItems({ kind: "resonator", items: ["Nobody", "Verina", "Lily"] })).toEqual(["Verina", "Lily"]); // Lily: released with 3.8
     // characters without a weapon are listed, not scored
     const withEmpty = await weaponValue({ ...characters, Verina: { resonanceChains: {} } }, echoes, [], ranking, { yieldToUi: false, ids: ["Verina"] });
     expect(withEmpty.rows).toEqual([]);

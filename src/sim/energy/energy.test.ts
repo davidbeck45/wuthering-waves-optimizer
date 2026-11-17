@@ -384,8 +384,12 @@ describe("on the engine", () => {
     const engine = engineOfHeadless(none);
     expect(await measureComposition(engine, ["Shorekeeper", "Lynae"])).toMatchObject({ status: "notMeasured", reason: "incomplete" });
     expect(await measureComposition(engine, ["Rover", "Nobody", "Ghost"])).toMatchObject({ status: "notMeasured", reason: "notRiley" });
-    const lily = none.teams.find((t) => t.members.some((m) => m.appKey === "Lily"))!;
-    expect(await measureComposition(engine, lily.members.map((m) => m.appKey))).toMatchObject({ status: "notMeasured", reason: "notInApp" });
+    // the app lists every kit of Riley's since Ryan's 3.8 (#685): a guard that holds one of them back stands in for the
+    // next kit his engine has first, and the same team is measured on the app's own list
+    const held = await rileyHeadless(null, (keys) => keys.filter((k) => k === "Lily"));
+    const heldTeam = held.teams.find((t) => t.members.some((m) => m.appKey === "Lily"))!.members.map((m) => m.appKey);
+    expect(await measureComposition(engineOfHeadless(held), heldTeam)).toMatchObject({ status: "notMeasured", reason: "notInApp" });
+    expect(await measureComposition(engine, heldTeam)).toMatchObject({ status: "ok" });
     const failing: EnergyEngine = { ...engine, solveMine: async (keys) => keys.map((teamKey) => ({ teamKey, names: [], appKeys: [], status: "skipped", reason: "noBuild", fieldable: true, best: null })) };
     expect(await measureComposition(failing, ["Shorekeeper", "Lynae", "Iuno"])).toMatchObject({ status: "notMeasured", reason: "noBuild" });
   }, LOAD);

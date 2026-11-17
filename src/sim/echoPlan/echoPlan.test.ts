@@ -195,9 +195,9 @@ describe("wants", () => {
   it("ignores characters the app doesn't list (unreleased kits) and characters without a weapon", () => {
     const echo = { type: 4, echo: "ReminiscenceFleurdelys", echoSet: "FreezingFrost", stat: "HP" };
     const result = collectWants({
-      characters: { Lily: { weapon: "SomeWeapon", echoes: { 0: echo } }, Changli: { echoes: { 0: echo } } },
+      characters: { Nobody: { weapon: "SomeWeapon", echoes: { 0: echo } }, Changli: { echoes: { 0: echo } } },
       echoes: [],
-      planned: ["Lily"],
+      planned: ["Nobody"],
     });
     expect(result.roster).toEqual([]);
     expect(result.wants).toEqual([]);

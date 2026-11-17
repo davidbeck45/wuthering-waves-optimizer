@@ -25,7 +25,8 @@ describe("display names", () => {
     expect(elementColor(null)).toContain("oklch");
     expect(isRosterCharacter("Aemeath")).toBe(true);
     expect(isRosterCharacter("Suoming")).toBe(true); // released 2026-10 (Ryan #655–#672)
-    expect(isRosterCharacter("Lily")).toBe(false); // a wuwa_calc kit the app has no folder for, named by stock presets
+    expect(isRosterCharacter("Lily")).toBe(true); // released with 3.8 (Ryan #685, merged 2026-11-16)
+    expect(isRosterCharacter("Nobody")).toBe(false); // a kit the app has no folder for: Lily, until that merge
   });
 
   it("names weapons from the registry with their rarity and art", () => {

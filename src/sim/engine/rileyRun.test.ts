@@ -16,13 +16,22 @@ const LOAD = 60_000;
 let h: HeadlessRiley;
 let E: RileyEngine;
 let best: MineSolve;
-let lilyKey: string;
+/** Since Ryan's 3.8 (#685, merged 2026-11-16) the app lists every kit of Riley's, Lily included, so the release guard
+ *  blocks nobody on its own. The seam has to honour it again the day his engine is ahead of the app: these tests hand
+ *  it a guard that holds one of his kits back, the way the app's own list held Lily back until that merge. */
+const HELD_BACK = "Lily";
+const holdBack = (keys: string[]): string[] => [...new Set(keys.filter((k) => k === HELD_BACK))];
+/** the same engine and account behind `holdBack` */
+let held: HeadlessRiley;
+/** a team of his with the held-back kit in it */
+let heldKey: string;
 
 beforeAll(async () => {
   h = await rileyHeadless(SYNTHETIC_ACCOUNT);
+  held = await rileyHeadless(SYNTHETIC_ACCOUNT, holdBack);
   E = h.engine;
   best = h.bestFor(SYNTHETIC_TEAM)!;
-  lilyKey = h.teams.find((t) => t.members.some((m) => m.appKey === "Lily"))!.key;
+  heldKey = h.teams.find((t) => t.members.some((m) => m.appKey === HELD_BACK))!.key;
 }, LOAD);
 
 /** A worker in this thread: the same handler the solver worker runs, messages structured-cloned both ways. */
@@ -47,15 +56,17 @@ describe("the engine it runs", () => {
     expect(E.commit).toBe(WUWA_CALC_COMMIT);
   });
 
-  it("keeps Lily — Riley's newest kit, not in the app — on the blocked list", () => {
-    expect(h.blocked).toContain("Lily");
+  it("blocks the kits the release guard names: Lily and Suoming no longer, on the app's own list", () => {
+    expect(h.blocked).not.toContain("Lily"); // released with 3.8 (Ryan #685)
     expect(h.blocked).not.toContain("Suoming");
+    expect(held.blocked).toEqual([HELD_BACK]);
+    expect(held.teams).toEqual(h.teams);
   });
 });
 
 describe("solveMine", () => {
   it("returns the best `mine` row per key and skips — never throws — unreleased and unknown teams", () => {
-    const [ok, lily, gone] = h.solveMine([best.teamKey, lilyKey, "t99999"]);
+    const [ok, lily, gone] = held.solveMine([best.teamKey, heldKey, "t99999"]);
     expect(ok).toMatchObject({ teamKey: best.teamKey, status: "ok", names: SYNTHETIC_TEAM, fieldable: true });
     expect(ok!.best!.members.map((m) => [m.name, m.sequence, m.weapon, m.refinement, m.spread])).toEqual([
       ["Shorekeeper", 2, "Variation", 5, expect.stringMatching(/^ChemX32/)],
@@ -64,8 +75,10 @@ describe("solveMine", () => {
     ]);
     expect(ok!.best!.members[2]!.erRolls).toBeNull();
     expect(ok!.best!.members[0]!.erRolls).toBeGreaterThan(0);
-    expect(lily).toMatchObject({ status: "skipped", reason: "notInApp", notInApp: ["Lily"], best: null });
+    expect(lily).toMatchObject({ status: "skipped", reason: "notInApp", notInApp: [HELD_BACK], best: null });
     expect(gone).toMatchObject({ status: "skipped", reason: "unknownTeam", best: null });
+    // the same team on the app's own list, which has her since 3.8: solved
+    expect(h.solveMine([heldKey])[0]).toMatchObject({ teamKey: heldKey, status: "ok" });
   });
 
   it("reads DPS the traced run reads", () => {
@@ -166,7 +179,7 @@ describe("tracedRun → RunLite", () => {
   });
 
   it("refuses an unreleased team and stale picks with a reason", () => {
-    expect(() => h.tracedRun(lilyKey, null)).toThrowError(expect.objectContaining({ reason: "notInApp", notInApp: ["Lily"] }) as RunError);
+    expect(() => held.tracedRun(heldKey, null)).toThrowError(expect.objectContaining({ reason: "notInApp", notInApp: [HELD_BACK] }) as RunError);
     const stale = best.best!.picks.map((p, i) => (i === 0 ? { ...p, weapon: 99 } : p));
     expect(() => h.tracedRun(best.teamKey, stale)).toThrowError(expect.objectContaining({ reason: "stalePicks" }) as RunError);
     expect(() => h.tracedRun("t99999", null)).toThrowError(expect.objectContaining({ reason: "unknownTeam" }) as RunError);
@@ -229,15 +242,15 @@ describe("the worker protocol", () => {
     const out: RileyResponse[] = [];
     const handle = createRileyHandler(E, (m) => out.push(structuredClone(m)));
     expect(handle({ type: "mySubstats" })).toBe(false);
-    const opts = { account: SYNTHETIC_ACCOUNT, subs: "mine" as const, blocked: h.blocked };
+    const opts = { account: SYNTHETIC_ACCOUNT, subs: "mine" as const, blocked: held.blocked };
     const traced = await ask(handle, out, { type: RILEY_MESSAGE, id: 1, op: "trace", teamKey: best.teamKey, picks: best.best!.picks, opts });
     expect(traced).toMatchObject({ ok: true });
     expect((traced as { result: RunLite }).result).toEqual(h.tracedRun(best.teamKey, best.best!.picks));
-    const solved = await ask(handle, out, { type: RILEY_MESSAGE, id: 2, op: "solveMine", teamKeys: [best.teamKey, lilyKey], opts });
-    expect((solved as { result: MineSolve[] }).result).toEqual(h.solveMine([best.teamKey, lilyKey]));
+    const solved = await ask(handle, out, { type: RILEY_MESSAGE, id: 2, op: "solveMine", teamKeys: [best.teamKey, heldKey], opts });
+    expect((solved as { result: MineSolve[] }).result).toEqual(held.solveMine([best.teamKey, heldKey]));
     expect(out.filter((m) => m.type === RILEY_PROGRESS && m.id === 2).map((m) => (m as { done: number }).done)).toEqual([1, 2]);
-    const refused = await ask(handle, out, { type: RILEY_MESSAGE, id: 3, op: "trace", teamKey: lilyKey, picks: null, opts });
-    expect(refused).toMatchObject({ ok: false, reason: "notInApp", notInApp: ["Lily"] });
+    const refused = await ask(handle, out, { type: RILEY_MESSAGE, id: 3, op: "trace", teamKey: heldKey, picks: null, opts });
+    expect(refused).toMatchObject({ ok: false, reason: "notInApp", notInApp: [HELD_BACK] });
   });
 
   it("drops a cancelled request before it runs", async () => {
@@ -253,13 +266,13 @@ describe("the worker protocol", () => {
 describe("rileyClient", () => {
   it("solves, traces and memoises over the worker; cancels on abort", async () => {
     const sent: any[] = [];
-    const client = createRileyClient({ createWorker: () => inProcessWorker(E, sent) });
+    const client = createRileyClient({ createWorker: () => inProcessWorker(E, sent), notInApp: holdBack });
     const account = SYNTHETIC_ACCOUNT;
-    expect(await client.blocked()).toContain("Lily");
+    expect(await client.blocked()).toEqual([HELD_BACK]);
     expect(await client.teamKeysFor(["Iuno", "Shorekeeper", "Lynae"])).toContain(best.teamKey);
     const progress: number[] = [];
-    const solves = await client.solveMine([best.teamKey, lilyKey], { account, onProgress: (d) => progress.push(d) });
-    expect(solves).toEqual(h.solveMine([best.teamKey, lilyKey]));
+    const solves = await client.solveMine([best.teamKey, heldKey], { account, onProgress: (d) => progress.push(d) });
+    expect(solves).toEqual(held.solveMine([best.teamKey, heldKey]));
     expect(progress).toEqual([1, 2]);
     expect(await client.bestFor(SYNTHETIC_TEAM, { account })).toEqual(best);
     const run = await client.tracedRun(best.teamKey, best.best!.picks, { account });
@@ -272,7 +285,7 @@ describe("rileyClient", () => {
     // a different spread is another entry
     await client.tracedRun(best.teamKey, null, { account, subs: "standard" });
     expect(traces()).toBe(2);
-    await expect(client.tracedRun(lilyKey, null, { account })).rejects.toMatchObject({ reason: "notInApp" });
+    await expect(client.tracedRun(heldKey, null, { account })).rejects.toMatchObject({ reason: "notInApp" });
 
     const abort = new AbortController();
     const cancelled = client.tracedRun(best.teamKey, null, { account: { ...account, key: "fresh" }, signal: abort.signal });
