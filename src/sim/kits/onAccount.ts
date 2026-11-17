@@ -5,7 +5,7 @@
 // Two engines, never mixed in one figure (display/numberBasis.ts): the team named from Riley's table carries his
 // figure on his standard builds; the team from the roster ranking carries this app's figure on the account's builds.
 import { accountKeyOf, appKeyOf } from "../rankings/rileyNames";
-import { changeScope, costLabel, fieldableTeams, loopChanges, mainOf, nearestCost, type InApp, type Kit, type KitIndexEntry, type KitMember, type KitsFile, type KitTeam, type LoopChange } from "./kits";
+import { changeScope, costLabel, fieldableTeams, loopChanges, mainOf, nearestCost, teamsWith, type InApp, type Kit, type KitIndexEntry, type KitMember, type KitsFile, type KitTeam, type LoopChange } from "./kits";
 
 /** What the Account State holds for one character (account/accountState.ts `AccountCharacter`). */
 export interface AccountSide {
@@ -42,8 +42,11 @@ export interface OnAccount {
   sequence: number;
   weapon: string | null;
   refinement: number;
-  /** the best of Riley's teams for them that the account can field, at `cost` (his Team Cost nearest to the account's
-   *  sequence where it has such a team); his figure on his standard builds */
+  /** his Team Cost nearest to the account's own state (kits.ts `nearestCost`); his default view when not owned */
+  nearest: string;
+  /** the best team with them that the account can field, among the top teams of every resonator on Riley's table, at
+   *  `cost` (`nearest` where it has such a team, else his default view, else the first on his menu that has one); his
+   *  figure on his standard builds */
   team: null | { cost: string; costLabel: string; team: KitTeam; keys: string[]; main: string | null };
   /** his best team at his default view when the account cannot field one of the listed teams: who is missing */
   wanted: null | { cost: string; costLabel: string; team: KitTeam; keys: string[]; main: string | null; missing: KitMember[] };
@@ -51,6 +54,8 @@ export interface OnAccount {
   ranked: RankedTeam | null;
   /** whether a roster ranking was handed in at all */
   hasRanking: boolean;
+  /** the team the links act on: the ranking's (the one the account really plays) when there is one, else `team` */
+  play: null | { keys: string[]; main: string | null; source: "ranking" | "riley" };
   /** the next sequence above the account's that changes how they are played */
   next: LoopChange | null;
   /** changes at or below the account's sequence: already in play */
@@ -95,7 +100,7 @@ export function onAccountOf(input: OnAccountInput): OnAccount {
   let team: OnAccount["team"] = null;
   if (owned || free) {
     for (const cost of costs) {
-      const hit = fieldableTeams(file, kit.best[cost], inApp).find((t) => t.members.every((m) => m.name === kit.name || has(m)));
+      const hit = teamsWith(file, cost, kit.name, inApp).find((t) => t.members.every((m) => m.name === kit.name || has(m)));
       if (hit) {
         team = shape(cost, hit);
         break;
@@ -121,19 +126,22 @@ export function onAccountOf(input: OnAccountInput): OnAccount {
 
   const enc = encodeURIComponent;
   const links: KitLink[] = [];
-  const fielded = team ?? null;
-  if (fielded && owned) {
-    links.push({ id: "build", label: "Build from your echoes", why: "new echoes for them from your inventory, teammates keeping theirs", to: `/build-team?members=${fielded.keys.map(enc).join(",")}&only=${enc(key)}` });
-    links.push({ id: "rotation", label: "Rotation cue card", why: "this team's rotation one swap per line, at your account", to: `/rotation#chars=${fielded.keys.map(enc).join(",")}` });
+  const rankedKeys = ranked && ranked.characterIds.length === 3 && ranked.characterIds.every(Boolean) ? ranked.characterIds : null;
+  const play: OnAccount["play"] = rankedKeys ? { keys: rankedKeys, main: null, source: "ranking" } : team ? { keys: team.keys, main: team.main, source: "riley" } : null;
+  if (play && owned) {
+    links.push({ id: "build", label: "Build from your echoes", why: "new echoes for them from your inventory, teammates keeping theirs", to: `/build-team?members=${play.keys.map(enc).join(",")}&only=${enc(key)}` });
+    links.push({ id: "rotation", label: "Rotation cue card", why: "this team's rotation one swap per line, at your account", to: `/rotation#chars=${play.keys.map(enc).join(",")}` });
   }
   if (owned) {
     links.push({ id: "cost", label: "Cost to max", why: "every material left for the character, the weapon and the skills", to: `/account?focus=${enc(key)}&section=cost` });
     links.push({ id: "weapons", label: "Weapon value", why: "what the signature and each refinement add on your build", to: `/weapons?focus=${enc(key)}` });
   }
   links.push({ id: "echo-plan", label: "Echo plan", why: "which echoes to lock and discard for your roster", to: "/echo-plan" });
-  if (!ranked) links.push({ id: "rank", label: "Rank my teams", why: "scores every team you can field on your own builds", to: "/my-rankings" });
+  // no ranking saved for the account as it is now: the page that scores one. With a ranking that simply has no team of
+  // theirs, scoring again would change nothing, so the link is not offered as the way to get a figure
+  if (rankedTeams === null) links.push({ id: "rank", label: "Rank my teams", why: "scores every team you can field on your own builds", to: "/my-rankings" });
 
-  return { key, owned, free, sequence, weapon: owned ? mine!.weapon : null, refinement: owned ? mine!.refinement : 1, team, wanted, ranked, hasRanking: rankedTeams !== null, next, passed, links };
+  return { key, owned, free, sequence, weapon: owned ? mine!.weapon : null, refinement: owned ? mine!.refinement : 1, nearest: near, team, wanted, ranked, hasRanking: rankedTeams !== null, play, next, passed, links };
 }
 
 /** "You have Aemeath at S2 with Everbright Polestar at R1." */
@@ -149,4 +157,22 @@ export function nextText(a: Pick<OnAccount, "owned" | "sequence" | "next" | "pas
   if (a.next) return `${at}The next sequence that changes how ${name} is played: ${a.next.text}${changeScope(a.next) ? ` (${changeScope(a.next)})` : ""}.`;
   if (a.passed.length) return `${at}No later sequence changes how ${name} is played: you already have ${[...new Set(a.passed.map((c) => `S${c.level}`))].join(" and ")}, the last that does.`;
   return `${at}No sequence changes how ${name} is played: one loop at every level.`;
+}
+
+/** Under the team the account can field: whose figure it is, and why this Team Cost. */
+export function teamBasisText(a: Pick<OnAccount, "team" | "nearest">, figure: string): string {
+  if (!a.team) return "";
+  const why =
+    a.team.cost === a.nearest ? (a.nearest === "s0r1" ? "" : ", the Team Cost nearest to your sequence") : ", the first of his Team Costs where one of the top teams is one you can field";
+  return `${figure} is his figure on his standard builds at ${a.team.costLabel}${why}, not on yours.`;
+}
+
+/** Under Riley's best team when the account can field none: who is missing, by the names the app shows. */
+export function missingText(a: Pick<OnAccount, "wanted" | "owned" | "free">, name: string, kitName: string, shown: (member: KitMember) => string): string {
+  const missing = a.wanted?.missing ?? [];
+  if (!missing.length) return "";
+  const names = missing.map(shown);
+  const all = names.length <= 1 ? names[0]! : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+  if (missing.length === 1 && missing[0]!.name === kitName) return `You have both teammates of this one: with ${name} you could field it.`;
+  return `You cannot field one of ${name}'s top teams yet. For this one you are missing ${all}.`;
 }

@@ -83,8 +83,9 @@
 // Wuthering Tools+ — /kit: every resonator the app has a brief for (src/sim/kits/), the ones set up on the account
 // first with their sequence and weapon rank, filtered by element, role and a search box. Reads the small index only
 // (data/kitIndex.json); the briefs themselves load when one is opened.
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useCharacterStore } from "../../stores/character";
@@ -110,14 +111,23 @@ const ROLE_HELP: Record<KitRole, string> = {
 
 const { characters } = storeToRefs(useCharacterStore()) as unknown as { characters: { value: Record<string, Record<string, any>> } };
 
-const query = ref("");
-const element = ref<string | null>(null);
-const role = ref<KitRole | null>(null);
+// the filters live in the address (/kit?element=Fusion&role=main&q=aem): Back from a brief lands on the list as it
+// was left, and a filtered list can be bookmarked. Replaced, not pushed, so typing adds nothing to Back's stack.
+const route = useRoute();
+const router = useRouter();
+const one = (v: unknown): string => (typeof v === "string" ? v : "");
+const query = ref(one(route.query.q));
+const element = ref<string | null>(one(route.query.element) || null);
+const role = ref<KitRole | null>(ROLES.includes(one(route.query.role) as KitRole) ? (one(route.query.role) as KitRole) : null);
 function clear(): void {
   query.value = "";
   element.value = null;
   role.value = null;
 }
+watch([query, element, role], () => {
+  const next = { ...(element.value ? { element: element.value } : {}), ...(role.value ? { role: role.value } : {}), ...(query.value.trim() ? { q: query.value.trim() } : {}) };
+  void router.replace({ query: next });
+});
 
 interface Row extends KitIndexEntry {
   /** the key the account plays them under (a male Rover) */
@@ -141,6 +151,8 @@ const all = computed<Row[]>(() =>
   }),
 );
 const elements = computed(() => [...new Set(all.value.map((k) => k.element))].sort());
+// an element the address names and no brief has (a typo, an old link) filters nothing out
+if (element.value && !KIT_INDEX_ENTRIES.some((k) => k.element === element.value)) element.value = null;
 const shown = computed(() =>
   filterKits(all.value, { element: element.value, role: role.value, query: query.value }, (k) => k.label).sort((a, b) => a.label.localeCompare(b.label)),
 );

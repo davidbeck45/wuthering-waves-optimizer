@@ -13,9 +13,10 @@
         </span>
       </li>
     </ul>
-    <p class="kit-muted">
+    <p v-if="team.share != null" class="kit-muted">
       {{ subjectLabel }} deals {{ dpsText(team.share) }} of that ({{ sharePercent }}% of the team's DPS)<template v-if="team.seconds"> · one loop takes {{ team.seconds }} s</template>
     </p>
+    <p v-else-if="team.seconds" class="kit-muted">One loop takes {{ team.seconds }} s.</p>
     <p v-if="team.insteadOf" class="kit-muted" data-test-kit-team-instead>
       Riley's first pick for {{ flexLabel }}'s slot is {{ team.insteadOf }}, who this app has no character for yet: this is the next best.
     </p>
@@ -57,7 +58,7 @@ const main = computed(() => mainOf(props.team, props.subject));
 const label = computed(() => teamLabel(members.value.map((m) => m.key), main.value ? keyOf(main.value) : null));
 const subjectMember = computed(() => props.team.members.find((m) => m.name === props.subject) ?? null);
 const subjectLabel = computed(() => (subjectMember.value ? characterShortName(keyOf(subjectMember.value)) : props.subject));
-const sharePercent = computed(() => (props.team.dps ? Math.round((props.team.share / props.team.dps) * 100) : 0));
+const sharePercent = computed(() => (props.team.dps && props.team.share != null ? Math.round((props.team.share / props.team.dps) * 100) : 0));
 const flexLabel = computed(() => {
   const m = props.team.flex == null ? null : props.team.members[props.team.flex];
   return m ? characterShortName(keyOf(m)) : "the sustain";

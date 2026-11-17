@@ -6,7 +6,7 @@ import indexFile from "./data/kitIndex.json";
 import { isRosterCharacter } from "../display/names";
 import { accountCharacterOf } from "../account/accountState";
 import type { KitIndexFile, KitsFile } from "./kits";
-import { nextText, onAccountOf, ownedText, type AccountSide, type RankedTeam } from "./onAccount";
+import { missingText, nextText, onAccountOf, ownedText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
 
 const file = kitsFile as unknown as KitsFile;
 const index = (indexFile as KitIndexFile).kits;
@@ -43,6 +43,13 @@ describe("On your account", () => {
     expect(b.wanted!.missing.map((m) => m.name)).not.toContain("Mornye"); // owned, so not missing
     expect(b.links.map((l) => l.id)).toEqual(["echo-plan", "rank"]);
     expect(ownedText(b, "Aemeath", "")).toBe("Aemeath is not on your account in this app: no weapon is equipped on them.");
+    expect(b.nearest).toBe("s0r1");
+    // with both teammates set up, only she is missing: the line says the team is one pull away
+    const first = file.kits.Aemeath!.best.s0r1![0]!;
+    const mates = first.m.map((i) => file.builds[i]![1]).filter((n) => n !== "Aemeath");
+    const ready = block("Aemeath", Object.fromEntries(mates.map((n) => [n.replace(/ /g, ""), record("X")])));
+    expect(ready.wanted!.missing.map((m) => m.name)).toEqual(["Aemeath"]);
+    expect(missingText(ready, "Aemeath", "Aemeath", (m) => m.name)).toBe("You have both teammates of this one: with Aemeath you could field it.");
     // from S0, the first change is still ahead
     expect(b.next).toMatchObject({ level: 1, kind: "chain" });
     expect(nextText(b, "Aemeath")).toMatch(/^The next sequence that changes how Aemeath is played: S1 changes only the opener/);
@@ -58,6 +65,7 @@ describe("On your account", () => {
     expect(b.team!.team.dps).toBe(first.dps);
     expect(b.team!.keys.slice().sort()).toEqual(Object.keys(characters).sort());
     expect(b.team!.main).toBe("Aemeath");
+    expect(b.play).toEqual({ keys: b.team!.keys, main: "Aemeath", source: "riley" }); // no ranking: Riley's team it is
     expect(b.links.map((l) => l.id)).toEqual(["build", "rotation", "cost", "weapons", "echo-plan", "rank"]);
     expect(b.links.find((l) => l.id === "build")!.to).toBe(`/build-team?members=${b.team!.keys.join(",")}&only=Aemeath`);
     expect(b.links.find((l) => l.id === "rotation")!.to).toBe(`/rotation#chars=${b.team!.keys.join(",")}`);
@@ -79,6 +87,32 @@ describe("On your account", () => {
     expect(b.wanted!.missing.map((m) => m.name)).not.toContain("Aemeath");
     expect(b.wanted!.missing.length).toBe(2);
     expect(b.links.map((l) => l.id)).toEqual(["cost", "weapons", "echo-plan", "rank"]);
+    expect(missingText(b, "Aemeath", "Aemeath", (m) => m.name)).toMatch(/^You cannot field one of Aemeath's top teams yet\. For this one you are missing \w[\w ]* and \w[\w ]*\.$/);
+    expect(teamBasisText(b, "1K")).toBe("");
+  });
+
+  it("a support: her team is read from every resonator's top teams, not only her own three rows", () => {
+    // Mornye stands in 115 of Riley's teams; her own top rows are other accounts' teams. With Aemeath and Lynae set up,
+    // the team is the one Aemeath's brief lists, at his default view
+    const characters = { Mornye: record("StarfieldCalibrator", 1, 1), Aemeath: record("EverbrightPolestar", 6, 5), Lynae: record("SpectrumBlaster") };
+    const b = block("Mornye", characters);
+    expect(b.nearest).toBe("s0r1"); // a support reads his default view, whatever her sequence
+    expect(b.team!.cost).toBe("s0r1");
+    expect(b.team!.keys.slice().sort()).toEqual(["Aemeath", "Lynae", "Mornye"]);
+    const aemeathRow = file.kits.Aemeath!.best.s0r1!.find((r) => r.m.map((i) => file.builds[i]![1]).sort().join() === "Aemeath,Lynae,Mornye")!;
+    expect(b.team!.team.dps).toBe(aemeathRow.dps);
+    expect(b.team!.team.share).toBeNull(); // the row is Aemeath's: Mornye's part of it is not in the table
+    expect(teamBasisText(b, "89.3K")).toBe("89.3K is his figure on his standard builds at S0R1 all, not on yours.");
+    // nobody to play with at his default view or anywhere else: no team, and her own best row says who is missing
+    expect(block("Mornye", { Mornye: record("StarfieldCalibrator") }).team).toBeNull();
+  });
+
+  it("says why a team is read at the Team Cost it is", () => {
+    const team = { cost: "s6r5mdps", costLabel: "S6R5 DPS · S0R1 supports" } as NonNullable<ReturnType<typeof block>["team"]>;
+    expect(teamBasisText({ team, nearest: "s6r5mdps" }, "266K")).toBe("266K is his figure on his standard builds at S6R5 DPS · S0R1 supports, the Team Cost nearest to your sequence, not on yours.");
+    expect(teamBasisText({ team, nearest: "s0r1" }, "266K")).toBe(
+      "266K is his figure on his standard builds at S6R5 DPS · S0R1 supports, the first of his Team Costs where one of the top teams is one you can field, not on yours.",
+    );
   });
 
   it("owned past a breakpoint: nothing is ahead, and the change already in play is named", () => {
@@ -132,10 +166,16 @@ describe("On your account", () => {
     expect(b.hasRanking).toBe(true);
     expect(b.ranked).toMatchObject({ id: "t2", avgDamage: 300 });
     expect(b.links.map((l) => l.id)).not.toContain("rank");
-    // a ranking with no team of hers: still nothing to show, and the link is back
+    // the links act on the team the account really plays: the ranking's, though Riley's table gives her none she can field
+    expect(b.team).toBeNull();
+    expect(b.play).toEqual({ keys: ["Chisa", "Denia", "Aemeath"], main: null, source: "ranking" });
+    expect(b.links.find((l) => l.id === "build")!.to).toBe("/build-team?members=Chisa,Denia,Aemeath&only=Aemeath");
+    expect(b.links.find((l) => l.id === "rotation")!.to).toBe("/rotation#chars=Chisa,Denia,Aemeath");
+    // a ranking with no team of hers: nothing to show, and scoring again would not change that, so no "Rank my teams"
     const none = block("Aemeath", { Aemeath: record("EverbrightPolestar") }, [ranked[2]!]);
     expect(none.ranked).toBeNull();
     expect(none.hasRanking).toBe(true);
-    expect(none.links.map((l) => l.id)).toContain("rank");
+    expect(none.links.map((l) => l.id)).not.toContain("rank");
+    expect(block("Aemeath", { Aemeath: record("EverbrightPolestar") }, []).hasRanking).toBe(true); // an empty ranking is still one
   });
 });

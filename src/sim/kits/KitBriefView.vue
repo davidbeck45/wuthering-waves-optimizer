@@ -75,13 +75,17 @@
           </template>
 
           <template v-if="account.team">
-            <h3 class="kit-h3 mt-3">{{ account.ranked ? "Of Riley's top teams, the best you can field" : `The best of Riley's top teams you can field` }}</h3>
+            <h3 class="kit-h3 mt-3">{{ account.ranked ? "Of Riley's top teams, the best you can field" : "The best of Riley's top teams you can field" }}</h3>
             <KitTeamRow :team="account.team.team" :subject="kit.name" :cost="account.team.cost" :characters="characters" />
             <p class="kit-muted mt-1" data-test-kit-team-basis>
-              {{ dpsText(account.team.team.dps) }} is his figure on his standard builds at {{ account.team.costLabel }}{{ account.team.cost === "s0r1" ? "" : ", the Team Cost nearest to your sequence" }}, not on yours.
-              <template v-if="!account.ranked">
+              {{ teamBasisText(account, dpsText(account.team.team.dps)) }}
+              <template v-if="!account.hasRanking">
                 No roster ranking is saved in this browser for your account as it is now:
-                <RouterLink to="/my-rankings" class="kit-link" data-test-kit-rank>Rank my teams</RouterLink> scores this team on your builds.
+                <RouterLink to="/my-rankings" class="kit-link" data-test-kit-rank>Rank my teams</RouterLink> scores the teams you can field on your builds.
+              </template>
+              <template v-else-if="!account.ranked">
+                Your roster ranking has no team with {{ name }} in it: it scores the teams you saved and Riley's stock teams you can field.
+                <RouterLink to="/my-rankings" class="kit-link" data-test-kit-open-ranking>Open My roster rankings</RouterLink>
               </template>
             </p>
           </template>
@@ -89,8 +93,8 @@
             <h3 class="kit-h3 mt-3">Riley's best team for {{ name }}</h3>
             <KitTeamRow :team="account.wanted.team" :subject="kit.name" :cost="account.wanted.cost" :characters="characters" />
             <p class="kit-muted mt-1" data-test-kit-missing-members>
-              You cannot field one of {{ name }}'s top teams yet. For this one you are missing {{ missingText }}.
-              <template v-if="!account.ranked"><RouterLink to="/my-rankings" class="kit-link" data-test-kit-rank>Rank my teams</RouterLink> scores the teams you can field.</template>
+              {{ missingText(account, name, kit.name, (m) => characterShortName(memberKey(m))) }}
+              <template v-if="!account.hasRanking"><RouterLink to="/my-rankings" class="kit-link" data-test-kit-rank>Rank my teams</RouterLink> scores the teams you can field.</template>
             </p>
           </template>
 
@@ -118,12 +122,20 @@
         <section id="kit-play" class="kit-card kit-section" aria-labelledby="kit-play-h" data-test-kit-play>
           <h2 id="kit-play-h" class="kit-h2">How {{ name }} is played</h2>
           <p class="kit-muted">The loop Riley's engine presses every time {{ name }} takes the field, in order{{ account.owned ? `, at your S${account.sequence}` : ", at S0" }}. Cast names are the engine's.</p>
-          <div v-for="l in loops" :key="l.id" class="mt-2" data-test-kit-loop>
+          <div v-for="l in loops.slice(0, 1)" :key="l.id" class="mt-2" data-test-kit-loop>
             <h3 v-if="loops.length > 1" class="kit-h3">{{ l.title }}</h3>
             <p v-else-if="l.shared > 1" class="kit-muted">All {{ l.shared }} builds press this same loop.</p>
             <p v-if="l.locked" class="kit-text">This build has no loop below S{{ l.minSequence }}: Riley only fields it from S{{ l.minSequence }} up. From there:</p>
             <p class="kit-text">{{ l.sentence }}.</p>
           </div>
+          <details v-if="loops.length > 1" class="kit-more mt-2" data-test-kit-more-loops>
+            <summary>The {{ loops.length === 2 ? "other build's loop" : `${loops.length - 1} other builds' loops` }}</summary>
+            <div v-for="l in loops.slice(1)" :key="l.id" class="mt-2" data-test-kit-loop>
+              <h3 class="kit-h3">{{ l.title }}</h3>
+              <p v-if="l.locked" class="kit-text">This build has no loop below S{{ l.minSequence }}: Riley only fields it from S{{ l.minSequence }} up. From there:</p>
+              <p class="kit-text">{{ l.sentence }}.</p>
+            </div>
+          </details>
           <div v-if="cueCard" class="kit-actions mt-3">
             <RouterLink :to="cueCard.to" class="btn btn-primary btn-sm" data-test-kit-cue>Cue card: {{ cueCard.label }}</RouterLink>
           </div>
@@ -166,16 +178,16 @@
         <section id="kit-builds" class="kit-section" aria-labelledby="kit-builds-h" data-test-kit-builds>
           <h2 id="kit-builds-h" class="kit-h2">{{ kit.loadouts.length > 1 ? `${name}'s ${kit.loadouts.length} builds` : `${name}'s build` }}</h2>
           <p class="kit-muted mb-2">
-            Each is a build Riley declares; his solver tries its weapons, echo sets and main stats per team and keeps the best. Shown: its pick in the best team that
-            fields the build.
+            {{ kit.loadouts.length > 1 ? "Each is a build Riley declares, the one he fields most first" : "The build Riley declares" }}; his solver tries its weapons, echo sets
+            and main stats per team and keeps the best. Shown: its pick in the best team that fields the build.
           </p>
           <div class="kit-list">
-            <article v-for="l in builds" :key="l.id" class="kit-card" :data-test-kit-build="l.id">
-              <h3 class="kit-h3">{{ l.title }}</h3>
-              <p class="kit-muted mb-2">
-                <template v-if="l.mode">{{ l.mode }}. </template>{{ l.teams }} {{ l.teams === 1 ? "team" : "teams" }} on Riley's table: main DPS in {{ l.main }}, support in
-                {{ l.support }}.
-              </p>
+            <details v-for="(l, n) in builds" :key="l.id" class="kit-card kit-cost" :open="n === 0" :data-test-kit-build="l.id">
+              <summary class="kit-cost__head">
+                <h3 class="kit-cost__label">{{ l.title }}</h3>
+                <span class="kit-cost__best">{{ l.teams }} {{ l.teams === 1 ? "team" : "teams" }} on Riley's table: main DPS in {{ l.main }}, support in {{ l.support }}</span>
+              </summary>
+              <p v-if="l.mode" class="kit-muted mb-2">{{ l.mode }}.</p>
               <dl class="kit-dl">
                 <dt>Weapon</dt>
                 <dd>
@@ -201,10 +213,10 @@
                 <dd>{{ l.energy }}</dd>
                 <template v-if="l.minCritRate">
                   <dt>Crit Rate</dt>
-                  <dd>The kit wants at least {{ l.minCritRate }} % Crit Rate on the character screen.</dd>
+                  <dd>The kit wants at least {{ l.minCritRate }}% Crit Rate on the character screen.</dd>
                 </template>
               </dl>
-            </article>
+            </details>
           </div>
         </section>
 
@@ -362,7 +374,7 @@ import {
 import briefsUrl from "./data/kits.json?url"; // the file's address, not its contents: fetched below, with this page
 import { BriefsError, KIT_INDEX_ENTRIES, loadKits } from "./load";
 import { reloadOnce } from "../perf/chunkReload";
-import { nextText, onAccountOf, ownedText, type AccountSide, type RankedTeam } from "./onAccount";
+import { missingText, nextText, onAccountOf, ownedText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
 import "./kits.css";
 
 const route = useRoute();
@@ -455,7 +467,6 @@ const labelOfTeam = (team: KitTeam): string => {
   return teamLabel(team.members.map(memberKey), main ? memberKey(main) : null);
 };
 const list = (items: string[]): string => (items.length <= 1 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`);
-const missingText = computed(() => list((account.value?.wanted?.missing ?? []).map((m) => characterShortName(memberKey(m)))));
 
 const sections = computed(() => [
   { id: "kit-account", label: "Your account" },
@@ -493,10 +504,12 @@ const loops = computed(() => {
   });
   return out;
 });
-/** the cue card of the team the account fields them in, else of Riley's best team for them that the app can field */
+/** the cue card of the team the account plays them in (the ranking's, else Riley's best it can field), else of Riley's
+ *  best team for them that the app can field */
 const cueCard = computed(() => {
   const a = account.value;
   if (!a || !kit.value || !file.value) return null;
+  if (a.play?.source === "ranking" && a.ranked) return { to: rotationPath({ kind: "chars", chars: a.play.keys }), label: teamTitle(a.ranked.name, a.ranked.characterIds) };
   const team = a.team ?? a.wanted;
   if (!team) return null;
   return { to: rotationPath({ kind: "chars", chars: team.keys }), label: labelOfTeam(team.team) };

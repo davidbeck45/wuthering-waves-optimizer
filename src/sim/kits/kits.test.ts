@@ -35,6 +35,7 @@ import {
   rolesOf,
   signedPercent,
   teamOf,
+  teamsWith,
   teamsByCost,
   weaponSteps,
   type Kit,
@@ -217,6 +218,48 @@ describe("who the app shows (the registry rule)", () => {
     expect(teams[0]!.members[0]!.name).toBe("Zzyzx");
     expect(teams[0]!.insteadOf).toBeNull();
     expect(teams[0]!.alts.map((a) => a.member.name)).toEqual(["Mornye", "Shorekeeper"]);
+  });
+
+  it("teams with a resonator are read from every brief's rows, alternates included, never one the app lacks", () => {
+    const table = {
+      builds,
+      kits: {
+        Aemeath: { name: "Aemeath", best: { s0r1: rows } },
+        Mornye: { name: "Mornye", best: { s0r1: [{ m: [3, 1, 0], mains: [2], dps: 90, share: 4, flex: 0, alts: [[4, 80, 5]] }] } },
+      },
+    } as unknown as KitsFile;
+    // Mornye's own row, and nothing else: Aemeath's rows field her only as an alternate of a row that is the same team
+    const mornye = teamsWith(table, "s0r1", "Mornye", inApp);
+    expect(mornye.map((t) => [t.members.map((m) => m.name).join("+"), t.dps, t.share])).toEqual([["Mornye+Lynae+Aemeath", 90, 4]]);
+    // Shorekeeper has no brief here: her teams come from the others' rows and alternates, without her part of them
+    const shorekeeper = teamsWith(table, "s0r1", "Shorekeeper", inApp);
+    expect(shorekeeper.map((t) => [t.members.map((m) => m.name).join("+"), t.dps, t.share])).toEqual([
+      ["Shorekeeper+Lynae+Aemeath", 80, null],
+    ]);
+    // Aemeath: her own rows keep her part; the team with the absent resonator is out, its alternates stand as teams
+    const aemeath = teamsWith(table, "s0r1", "Aemeath", inApp);
+    expect(aemeath.map((t) => [t.members.map((m) => m.name).join("+"), t.dps, t.share])).toEqual([
+      ["Mornye+Lynae+Aemeath", 90, 55],
+      ["Shorekeeper+Lynae+Aemeath", 80, 50],
+    ]);
+    expect(teamsWith(table, "s0r1", "Zzyzx", inApp)).toEqual([]);
+    expect(teamsWith(table, "s0r1", "Zzyzx", () => true).map((t) => t.dps)).toEqual([100, 95]);
+    expect(teamsWith(table, "s6r5", "Aemeath", inApp)).toEqual([]); // a Team Cost the table lacks
+  });
+
+  it("on the shipped file, a support's teams reach past her own three rows, each once, best first", () => {
+    const own = fieldableTeams(file, file.kits.Mornye!.best.s0r1, isRosterCharacter);
+    const all = teamsWith(file, "s0r1", "Mornye", isRosterCharacter);
+    expect(all.length).toBeGreaterThan(own.length + 5);
+    for (const t of all) {
+      expect(t.members.some((m) => m.name === "Mornye")).toBe(true);
+      for (const m of t.members) expect(isRosterCharacter(m.appKey), m.name).toBe(true);
+    }
+    expect(all.map((t) => t.dps)).toEqual([...all.map((t) => t.dps)].sort((a, b) => b - a));
+    const ids = all.map((t) => t.members.map((m) => m.label).sort().join("+"));
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(all[0]!.share).not.toBeNull(); // her best row is her own
+    expect(all.some((t) => t.share === null)).toBe(true); // and others come from another brief
   });
 
   it("on the shipped file, no shown team fields a resonator the app lacks, and every kit keeps a team at every cost", () => {

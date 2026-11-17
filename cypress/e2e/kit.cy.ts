@@ -75,6 +75,26 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-clear]").click();
     cy.get("[data-test-kit-search]").should("have.value", "");
     cy.get('[data-test-kit-row="cartethyia"]').should("exist");
+    cy.location("search").should("eq", "");
+
+    // the filters live in the address: Back from a brief lands on the list as it was left
+    cy.get('[data-test-kit-element="Fusion"]').click();
+    cy.get('[data-test-kit-role="main"]').click();
+    cy.location("search").should("eq", "?element=Fusion&role=main");
+    cy.get('[data-test-kit-row="aemeath"]').click();
+    cy.location("pathname").should("eq", "/kit/aemeath");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/kit");
+    cy.location("search").should("eq", "?element=Fusion&role=main");
+    cy.get('[data-test-kit-element="Fusion"]').should("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-kit-role="main"]').should("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-kit-row="cartethyia"]').should("not.exist");
+    cy.get('[data-test-kit-row="aemeath"]').should("exist");
+    // an address that names an element no brief has filters nothing out
+    cy.visit("/kit?element=Plasma&role=boss&q=aem", seed());
+    cy.get("[data-test-kit-row]").should("have.length", 1).first().should("have.attr", "data-test-kit-row", "aemeath");
+    cy.get('[data-test-kit-element="all"]').should("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-kit-role="all"]').should("have.attr", "aria-pressed", "true");
   });
 
   it("opens a brief from the list: every section, read against the account, with links that lead somewhere", () => {
@@ -106,6 +126,7 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-no-changes]").should("be.visible");
     cy.get("[data-test-kit-sequence]").should("have.length", 6);
     cy.get("[data-test-kit-build]").its("length").should("be.gte", 1);
+    cy.get("[data-test-kit-build]").first().should("have.attr", "open");
     cy.get("[data-test-kit-build]").first().should("contain.text", "Main stats").and("contain.text", "-cost").and("contain.text", "Substats, in order");
     cy.get("[data-test-kit-cost]").should("have.length", 9);
     // the Team Cost nearest to her S2 (one main DPS at S2) is the one that stands open; the rest are one line each

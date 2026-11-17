@@ -234,8 +234,8 @@ export interface KitTeam {
   members: KitMember[];
   /** team DPS on his standard builds */
   dps: number;
-  /** the subject's part of it */
-  share: number;
+  /** the subject's part of it; null where the row comes from another resonator's brief (`teamsWith`) */
+  share: number | null;
   seconds: number | null;
   /** the slot his sustain supports share, or null */
   flex: number | null;
@@ -291,6 +291,45 @@ export function fieldableTeams(file: Pick<KitsFile, "builds">, rows: readonly Ki
       alts: alts.filter((a) => a.member.name !== pick.member!.name),
       insteadOf: team.members[flex]!.name,
     });
+  }
+  return out.sort((a, b) => b.dps - a.dps);
+}
+
+/**
+ * Every team the table holds at one Team Cost that fields `subject` and that the app can field, best first. Their own
+ * rows hold three (five when they play both roles), which for a support in a hundred teams are rarely the ones an
+ * account has; so the rows of every other resonator's brief count too, and each row's alternates as teams of their own.
+ * `share` is the subject's part where the row is theirs, null where it is another resonator's.
+ */
+export function teamsWith(file: Pick<KitsFile, "builds" | "kits">, cost: string, subject: string, inApp: InApp): KitTeam[] {
+  const seen = new Set<string>();
+  const out: KitTeam[] = [];
+  const push = (team: KitTeam): void => {
+    if (!team.members.some((m) => m.name === subject) || !team.members.every((m) => inApp(m.appKey))) return;
+    const id = team.members
+      .map((m) => m.label)
+      .sort()
+      .join("+");
+    if (seen.has(id)) return;
+    seen.add(id);
+    out.push(team);
+  };
+  // their own rows first, so a team listed under two briefs keeps the row that knows their part of it
+  const kits = [...(file.kits[subject] ? [file.kits[subject]!] : []), ...Object.values(file.kits).filter((k) => k.name !== subject)];
+  for (const kit of kits) {
+    const own = kit.name === subject;
+    for (const fact of kit.best[cost] ?? []) {
+      const team = teamOf(file, fact);
+      if (!team) continue;
+      const flex = fact.flex ?? -1;
+      push({ ...team, share: own ? team.share : null, alts: own ? team.alts.filter((a) => inApp(a.member.appKey)) : [], flex: own ? team.flex : null });
+      // each alternate is the same team with another sustain support in the flex slot, at its own DPS
+      for (const [build, dps, share] of fact.alts ?? []) {
+        const member = memberOf(file, build, false);
+        if (!member || flex < 0 || !team.members[flex]) continue;
+        push({ members: team.members.map((m, slot) => (slot === flex ? { ...member, main: m.main } : m)), dps, share: own ? share : null, seconds: null, flex: null, alts: [], insteadOf: null });
+      }
+    }
   }
   return out.sort((a, b) => b.dps - a.dps);
 }
