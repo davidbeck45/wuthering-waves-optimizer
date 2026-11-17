@@ -9,11 +9,29 @@
         <button type="button" class="lw-seg__btn" :class="{ 'lw-seg__btn--on': from === 'scratch' }" :aria-pressed="from === 'scratch'" data-test-levels-from="scratch" @click="from = 'scratch'">
           From level 1
         </button>
+        <button type="button" class="lw-seg__btn" :class="{ 'lw-seg__btn--on': from === 'custom' }" :aria-pressed="from === 'custom'" :disabled="!table" data-test-levels-from="custom" @click="tryOther">
+          Other levels
+        </button>
       </div>
     </div>
     <p class="lw__intro" data-test-levels-intro>
-      What each level-up still open adds to damage on {{ name }}'s build, and what it costs<template v-if="from === 'scratch'">: counted from a new {{ name }} at level 1<template v-if="weaponName"> with {{ weaponName }} at level 1</template>, wearing this build's echoes</template>.
+      What each level-up still open adds to damage on {{ name }}'s build, and what it costs<template v-if="from === 'scratch'">: counted from a new {{ name }} at level 1<template v-if="weaponName"> with {{ weaponName }} at level 1</template>, wearing this build's echoes</template><template v-else-if="from === 'custom'">: counted from the levels you set here</template>.
     </p>
+
+    <!-- a what-if: where the character stands in game, for an account whose calculator has no levels saved -->
+    <div v-if="from === 'custom' && tryFields.length" class="lw-try" data-test-levels-try>
+      <p class="lw__note">
+        Set where {{ name }} stands in game. This is a what-if: nothing here is saved, and every other page keeps counting the saved levels. To keep them, set them in the calculator.
+      </p>
+      <div class="lw-try__grid">
+        <label v-for="f in tryFields" :key="f.key" class="lw-try__field">
+          <span class="lw-try__label">{{ f.label }}</span>
+          <select v-model="tried[f.key]" class="lw-try__select" :data-test-levels-try-field="f.key">
+            <option v-for="o in f.options" :key="o" :value="o">{{ o }}</option>
+          </select>
+        </label>
+      </div>
+    </div>
 
     <p v-if="!table" class="lw__note" data-test-levels-loading>{{ failed ? "The cost table did not load. Reload the page to try again." : "Loading the cost table…" }}</p>
     <p v-else-if="waiting" class="lw__note" role="status" data-test-levels-waiting>Waiting for the roster to be scored…</p>
@@ -24,7 +42,7 @@
       <!-- what the calculator has not saved: it runs the top there, so nothing shows as left -->
       <p v-if="from === 'saved' && assumed" class="lw__note lw__note--warn" data-test-levels-assumed>
         The calculator has not saved {{ name }}'s {{ assumed }}, so it counts {{ assumedMany ? "them" : "it" }} at the top and nothing is left to level there. If that is not where
-        {{ name }} is in game, set the real values in the calculator, or count from level 1.
+        {{ name }} is in game, set the real values in the calculator, try them under "Other levels", or count from level 1.
         <button type="button" class="lw-link" data-test-levels-set @click="emit('calculator')">Set levels in the calculator</button>
       </p>
 
@@ -116,13 +134,19 @@
   </section>
 </template>
 
+<script lang="ts">
+import type { TrackKey as TriedTrack } from "./levelSteps";
+/** the levels tried under "Other levels", per character, for this page visit only (nothing is stored) */
+const triedThisVisit = new Map<string, Partial<Record<TriedTrack, string>>>();
+</script>
+
 <script setup lang="ts">
 // Wuthering Tools+ — "What each level is worth" in the /account character drawer, under Cost to max: every level-up
 // the character has left (level, weapon level, the five Forte skills), what each adds to damage on their own build
 // and what it costs. Two views of the same steps: each track on its own to its top, and the order to take them in.
 // The numbers are levelPlan.ts (the roster ranking's own scorers); this component loads the cost table, runs the
 // plan once the section is on screen, and lays it out.
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, toRaw, useId, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, toRaw, useId, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
@@ -134,7 +158,7 @@ import { count, hasSavedProgress, savedProgressOf, type MaterialsData } from "..
 import { loadMaterials } from "../materials/materialsData";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { assumedWords, BASIS_WORDS, inertText, levelPlan, type LevelPlan } from "./levelPlan";
-import { stateText } from "./levelSteps";
+import { FORTE_KEYS, levelOptions, levelsToday, stateLevels, stateText, TOP_LEVEL, trackLabel, type TrackKey } from "./levelSteps";
 import { basisLine, costText, everythingText, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const props = defineProps<{
@@ -171,7 +195,7 @@ loadMaterials()
 const saved = computed(() => savedProgressOf(characters.value?.[props.characterKey]));
 /** opens on the saved levels when anything below the top is saved, else from level 1, as Cost to max does: with
  *  nothing saved the calculator runs the top everywhere and the saved view has nothing to list */
-const from = ref<"saved" | "scratch">(hasSavedProgress(saved.value) ? "saved" : "scratch");
+const from = ref<"saved" | "scratch" | "custom">(hasSavedProgress(saved.value) ? "saved" : "scratch");
 const view = ref<"list" | "path">("list");
 const allSteps = ref(false);
 
@@ -183,6 +207,29 @@ const progress = ref({ done: 0, total: 0 });
 const seen = ref(false);
 const waiting = computed(() => Boolean(props.scoring));
 
+/** "Other levels": the levels tried for this character, by track. Kept for the visit (the drawer closes and opens
+ *  again on the same character), never stored: it is a what-if, and the calculator stays the place levels are saved. */
+const tried = reactive<Partial<Record<TrackKey, string>>>({ ...(triedThisVisit.get(props.characterKey) ?? {}) });
+const today = computed(() => (table.value ? levelsToday(table.value, saved.value) : null));
+const tryFields = computed(() => {
+  const t = today.value;
+  if (!t) return [];
+  const forte = Array.from({ length: 10 }, (_, i) => String(i + 1));
+  return [
+    { key: "level" as TrackKey, label: trackLabel("level"), options: levelOptions(TOP_LEVEL) },
+    ...(t.weaponTop != null ? [{ key: "weapon" as TrackKey, label: trackLabel("weapon"), options: levelOptions(t.weaponTop) }] : []),
+    ...FORTE_KEYS.map((key) => ({ key: key as TrackKey, label: trackLabel(key), options: forte })),
+  ];
+});
+/** opens on the saved levels (the top, where none are saved): lower what is not there yet */
+function tryOther(): void {
+  const t = today.value;
+  if (!t) return;
+  const start = stateLevels(t, t.state);
+  for (const f of tryFields.value) if (!tried[f.key] || !f.options.includes(tried[f.key]!)) tried[f.key] = start[f.key];
+  from.value = "custom";
+}
+
 let signal: { cancelled: boolean } | null = null;
 let generation = 0;
 /** what the plan on show was worked out for */
@@ -192,7 +239,8 @@ async function run(): Promise<void> {
   const data = table.value;
   if (!data || !seen.value || waiting.value) return;
   const withPath = view.value === "path";
-  const key = `${props.characterKey}|${from.value}`;
+  const levels = from.value === "custom" ? Object.fromEntries(tryFields.value.map((f) => [f.key, tried[f.key]])) : null;
+  const key = `${props.characterKey}|${from.value}|${levels ? JSON.stringify(levels) : ""}`;
   // the same character and start: keep what is there unless the order is wanted and not worked out yet
   if (shownFor === key && plan.value && (!withPath || plan.value.pathState === "complete" || plan.value.pathState === "capped" || running.value)) return;
   if (signal) signal.cancelled = true;
@@ -216,7 +264,7 @@ async function run(): Promise<void> {
         materials: data,
       },
       {
-        from: from.value,
+        from: levels ?? (from.value === "scratch" ? "scratch" : "saved"),
         autoTeamBuffs: autoTeamBuffs.value,
         path: withPath,
         signal: mine,
@@ -240,6 +288,10 @@ watch([table, seen, waiting, view], () => void run());
 watch(from, () => {
   allSteps.value = false;
   void run();
+});
+watch(tried, () => {
+  triedThisVisit.set(props.characterKey, { ...tried });
+  if (from.value === "custom") void run();
 });
 // a new ranking (Recompute, or the roster finishing): what is shown was scored on the old one
 watch([() => props.rank, () => props.rankingTeams], () => {
@@ -275,7 +327,7 @@ const title = (name: string | null | undefined): string | null => (name ? parseP
 const titles = computed(() => ({ name: props.name, rotation: title(plan.value?.rotation?.name), team: title(plan.value?.team?.name) }));
 const basis = computed(() => (plan.value ? basisLine(plan.value, titles.value) : ""));
 const basisWords = computed(() => (plan.value ? BASIS_WORDS[plan.value.basis] : ""));
-const startWords = computed(() => (plan.value?.today ? (from.value === "scratch" ? "level 1" : stateText(plan.value.today, plan.value.today.state).replace(/^Level/, "level")) : ""));
+const startWords = computed(() => (plan.value?.today ? (from.value === "scratch" ? "level 1" : from.value === "custom" ? "the levels set above" : stateText(plan.value.today, plan.value.today.state).replace(/^Level/, "level")) : ""));
 const everything = computed(() => (plan.value ? everythingText(plan.value) : null));
 const headline = computed(() => (plan.value ? headlineText(plan.value) : null));
 const shownPath = computed(() => (allSteps.value ? (plan.value?.path ?? []) : (plan.value?.path ?? []).slice(0, PATH_FIRST)));
@@ -357,11 +409,53 @@ const smallTeam = computed(() => (plan.value ? smallTeamLine(plan.value, props.n
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
 }
 .lw-seg__btn:focus-visible,
+.lw-try__select:focus-visible,
 .lw-cost__sum:focus-visible,
 .lw-link:focus-visible,
 .lw-more:focus-visible {
   outline: 2px solid oklch(var(--p));
   outline-offset: 2px;
+}
+.lw-try {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.7rem;
+  background: oklch(var(--b2));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);
+}
+.lw-try__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.45rem 0.6rem;
+}
+/* two to a row at 360 px and 130 % text; a label that wraps keeps its picker on the row's bottom line */
+.lw-try__field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.lw-try__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: oklch(var(--bc) / 0.8);
+}
+.lw-try__select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: oklch(var(--bc));
+  background: oklch(var(--b1));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.2);
+}
+.lw-seg__btn:disabled {
+  opacity: 0.5;
 }
 .lw-done,
 .lw-total {

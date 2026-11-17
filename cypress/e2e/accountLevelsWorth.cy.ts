@@ -146,6 +146,44 @@ describe("what each level is worth, in the account drawer", () => {
     cy.location("pathname").should("eq", "/");
   });
 
+  it("Other levels: a what-if from where the character stands in game, and nothing is saved", () => {
+    cy.viewport(1440, 900);
+    const { character, visit } = seed();
+    cy.visit("/account", visit);
+    openSection("Ciaccona");
+    cy.get('[data-test-levels-from="custom"]').click();
+    cy.get('[data-test-levels-from="custom"]').should("have.attr", "aria-pressed", "true");
+    cy.get("[data-test-levels-intro]").should("contain.text", "counted from the levels you set here");
+    cy.get("[data-test-levels-try]").should("contain.text", "This is a what-if: nothing here is saved");
+    // it opens on what the calculator counts (the top, nothing being saved): nothing left until a level is lowered
+    cy.get('[data-test-levels-try-field="level"]').should("have.value", "90");
+    cy.get('[data-test-levels-try-field="weapon"]').should("have.value", "90");
+    cy.get('[data-test-levels-try-field="liberation"]').should("have.value", "10");
+    cy.get("[data-test-levels-done]").should("contain.text", "Nothing left to level");
+    cy.get('[data-test-levels-try-field="liberation"]').select("6");
+    cy.get('[data-test-levels-try-field="level"]').select("80");
+    cy.get("[data-test-levels-row]", { timeout: 60000 }).should("have.length", 2);
+    cy.get('[data-test-levels-row="liberation"]').should("contain.text", "Resonance Liberation 6 → 10").and("contain.text", "250,000 Shell Credits");
+    cy.get('[data-test-levels-row="level"]').should("contain.text", "Level 80 → 90").and("contain.text", "39 × Premium Resonance Potion · 1 ascension");
+    cy.get("[data-test-levels-row] .lw-gain").should("have.length.at.least", 2);
+    cy.get('[data-test-levels-view="path"]').click();
+    cy.get("[data-test-levels-step]", { timeout: 60000 }).should("have.length", 5); // one level cap, four Resonance Liberation levels
+    cy.get("[data-test-levels-path-blind]").should("contain.text", "It does not know what the game unlocks when");
+    // the calculator's data is as it was: the what-if wrote nothing
+    cy.window().then((win) => {
+      expect(JSON.parse(win.localStorage.getItem("character")!).characters.Ciaccona).to.deep.equal(character.characters.Ciaccona);
+      expect(Object.keys(win.localStorage).filter((k) => /level/i.test(k)), "no storage key of its own").to.deep.equal([]);
+    });
+    // closing and opening the drawer again on the same character keeps the levels tried, for this visit
+    cy.get("[data-test-account-drawer-close]").click({ force: true });
+    cy.get("[data-test-account-drawer]").should("not.have.attr", "open");
+    openSection("Ciaccona");
+    cy.get('[data-test-levels-from="custom"]').click();
+    cy.get('[data-test-levels-try-field="liberation"]').should("have.value", "6");
+    cy.get('[data-test-levels-try-field="level"]').should("have.value", "80");
+    cy.get("[data-test-levels-row]", { timeout: 60000 }).should("have.length", 2);
+  });
+
   it("no weapon: says what is missing and shows the steps with their costs only", () => {
     cy.viewport(1440, 900);
     const { character, visit } = seed();
@@ -192,7 +230,7 @@ describe("what each level is worth, in the account drawer", () => {
           .map((el) => `${el.className}:${Math.round(el.getBoundingClientRect().right)}`);
         expect(over, "elements past the right edge").to.deep.equal([]);
         // offsetHeight = layout px (Electron's page-enter scale skews getBoundingClientRect)
-        doc.querySelectorAll<HTMLElement>("[data-test-levels-from], [data-test-levels-view], [data-test-levels-row] summary, [data-test-levels-path-more]").forEach((el) => {
+        doc.querySelectorAll<HTMLElement>("[data-test-levels-from], [data-test-levels-view], [data-test-levels-row] summary, [data-test-levels-path-more], [data-test-levels-try-field]").forEach((el) => {
           expect(el.offsetHeight, `${el.textContent?.trim().slice(0, 30)} tap height`).to.be.at.least(40);
         });
       });
@@ -207,6 +245,10 @@ describe("what each level is worth, in the account drawer", () => {
     cy.get("[data-test-levels-path-more]").click({ force: true });
     cy.get("[data-test-levels-step]").should("have.length", 59);
     cy.get("[data-test-levels-path-more]").should("have.attr", "aria-expanded", "true");
+    fits();
+    // the what-if's seven pickers, two to a row
+    cy.get('[data-test-levels-from="custom"]').click({ force: true });
+    cy.get("[data-test-levels-try-field]").should("have.length", 7);
     fits();
     // closing takes the link off the address, as Cost to max's does
     cy.get("[data-test-account-drawer-close]").click({ force: true });

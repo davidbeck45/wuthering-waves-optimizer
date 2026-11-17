@@ -132,6 +132,23 @@ export function stateFrom(today: LevelsToday, levels: Partial<Record<TrackKey, s
   return next;
 }
 
+/** The values a level picker offers up to `top`: every `LEVEL_OPTIONS` entry below it, then the top itself (which
+ *  cannot be ascended further, so "70+" is not offered for a weapon that stops at 70). */
+export function levelOptions(top: number = TOP_LEVEL): string[] {
+  return LEVEL_OPTIONS.filter((o) => {
+    const step = parseLevel(o)!;
+    return step.level < top || (step.level === top && !step.ascended);
+  });
+}
+
+/** A state as the strings the pickers hold, by track (the weapon left out when there is none). */
+export function stateLevels(today: Pick<LevelsToday, "weaponTop">, state: LevelState): Partial<Record<TrackKey, string>> {
+  const out: Partial<Record<TrackKey, string>> = { level: stepText(state.level) };
+  if (state.weapon) out.weapon = stepText(state.weapon, today.weaponTop ?? TOP_LEVEL);
+  for (const key of FORTE_KEYS) out[key] = String(state.talents[key]);
+  return out;
+}
+
 /** "level=80,weapon=70+,basic=6" → levels by track, for `stateFrom` (the CLI's --at, the assistant's `levels`). Throws
  *  on a track it does not know; `what` names the input in the message. */
 export function parseLevels(text: string, what = "levels"): Partial<Record<TrackKey, string>> {

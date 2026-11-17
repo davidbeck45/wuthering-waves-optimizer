@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import table from "../materials/data/materials.json";
 import { costToMax, savedProgressOf, type MaterialsData } from "../materials/costToMax";
-import { FORTE_KEYS, LEVEL_OPTIONS, levelsToday, nextStep, stateFrom, stateText, stepsLeft, stepText, sumCosts, topState, TRACKS, trackToTop, withLevels, type LevelCost, type LevelState } from "./levelSteps";
+import { FORTE_KEYS, LEVEL_OPTIONS, levelOptions, levelsToday, nextStep, parseLevels, stateFrom, stateLevels, stateText, stepsLeft, stepText, sumCosts, topState, TRACKS, trackToTop, withLevels, type LevelCost, type LevelState } from "./levelSteps";
 
 const data = table as unknown as MaterialsData;
 const camellya = { weapon: "RedSpring", characterLevel: "70", talents: { basic: 6, skill: "8", forte: 6, liberation: 10 }, weapons: { RedSpring: { weaponLevel: "80+", refinement: "2" } } };
@@ -156,6 +156,17 @@ describe("the record the engine reads", () => {
     expect(stepText({ level: 90, ascended: true })).toBe("90");
     // no weapon: no weapons map is invented
     expect(withLevels({ characterLevel: "20" }, { level: { level: 40, ascended: false }, weapon: null, talents: { basic: 1, skill: 1, forte: 1, liberation: 1, intro: 1 } }).weapons).toBeUndefined();
+  });
+
+  it("offers a picker every value the calculator can hold up to the top, and a state round-trips through it", () => {
+    expect(levelOptions()).toEqual([...LEVEL_OPTIONS]);
+    expect(levelOptions(70)).toEqual(["1", "20", "20+", "40", "40+", "50", "50+", "60", "60+", "70"]); // no "70+": a 1-star weapon ends there
+    const today = levelsToday(data, savedProgressOf(camellya));
+    const levels = stateLevels(today, today.state);
+    expect(levels).toEqual({ level: "70", weapon: "80+", basic: "6", skill: "8", forte: "6", liberation: "10", intro: "10" });
+    expect(stateFrom(today, levels)).toEqual(today.state);
+    expect(stateLevels(levelsToday(data, savedProgressOf({})), { level: { level: 1, ascended: false }, weapon: null, talents: { basic: 1, skill: 1, forte: 1, liberation: 1, intro: 1 } }).weapon).toBeUndefined();
+    expect(parseLevels("level=70, weapon=80+")).toEqual({ level: "70", weapon: "80+" });
   });
 
   it("takes other starting levels by track, and refuses what the calculator could not hold", () => {
