@@ -878,6 +878,98 @@ describe("phone layout", () => {
     }
   });
 
+  // Ryan's roll table (#693, phone.css § 39). His table folds Top roll under Typical roll in a narrow panel, which left
+  // three columns in a 327 px box (275 px at 360): at 130 % text "top +403K · 3 in 100" broke into four lines under
+  // every figure, and at 360 px the table was 331 px wide in that 275 px box, its last column cut. On a phone each row
+  // is a card: the substat on a line of its own, then the three figures side by side, each under its caption.
+  it("lays Ryan's roll table out as cards at 412 and 360 px / 130 % text, every figure under its caption, and keeps Try a change in its card", () => {
+    for (const [width, height] of [
+      [412, 915],
+      [360, 780],
+    ] as const) {
+      cy.viewport(width, height);
+      cy.visit("/", v3Phone(1.3));
+      cy.get("[data-test-live-result-bar]").should("be.visible");
+      cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
+      cy.get(".screen--echoes").should("be.visible");
+      // his pinned bar remounts while the build loads (it is keyed by the build): tap until it stays open
+      cy.get(".echoes-mobile-score [data-test-echo-insights-toggle]").should(($toggle) => {
+        if ($toggle.attr("aria-expanded") !== "true") $toggle[0]!.click();
+        expect($toggle.attr("aria-expanded"), "the Echo Insights bar is open").to.equal("true");
+      });
+      // the phone's instance by its class: Cypress counts a panel the scroll area clips as hidden
+      cy.get(".echoes-mobile-score[data-test-echo-insights-panel]").as("panel");
+      cy.get("@panel").find("[data-test-echo-insights-typical]", { timeout: 60000 }).should("have.length.greaterThan", 1);
+      cy.get("@panel")
+        .find("[data-test-echo-insights-substat-table]")
+        .then(($box) => {
+          const box = $box[0]!;
+          const win = box.ownerDocument.defaultView!;
+          const edge = box.getBoundingClientRect().right;
+          expect(box.querySelector("table")!.getBoundingClientRect().right, `the table at ${width}: inside its box`).to.be.at.most(edge + 1);
+          expect(win.getComputedStyle(box.querySelector("thead")!).display, `the header row at ${width}: each cell says its own caption`).to.equal("none");
+          const lines = (el: Element): number => {
+            const range = box.ownerDocument.createRange();
+            range.selectNodeContents(el);
+            return new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+          };
+          const rows = [...box.querySelectorAll<HTMLElement>("tr.echo-substat-table__row")].filter((row) => row.querySelector("[data-test-echo-insights-typical]"));
+          expect(rows.length, `rows with figures at ${width}`).to.be.greaterThan(1);
+          for (const row of rows) {
+            const name = (row.querySelector("td")!.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 24);
+            const card = row.getBoundingClientRect();
+            const [substat, perStep, typical, top] = [...row.children].map((cell) => cell.getBoundingClientRect());
+            expect(card.right, `${name} at ${width}: the card is inside the table's box`).to.be.at.most(edge + 1);
+            // the substat has the card's first line to itself, the three figures share the next
+            expect(substat!.width, `${name} at ${width}: the substat's line is the card's width`).to.be.greaterThan(card.width * 0.85);
+            for (const [what, cell] of [["Per 1%", perStep], ["Typical roll", typical], ["Top roll", top]] as const) {
+              expect(cell!.width, `${name} at ${width}: ${what} shows`).to.be.greaterThan(0);
+              expect(cell!.top, `${name} at ${width}: ${what} is under the substat's line`).to.be.at.least(substat!.bottom - 1);
+              expect(Math.abs(cell!.top - perStep!.top), `${name} at ${width}: ${what} is on the figures' line`).to.be.lessThan(2);
+              expect(cell!.right, `${name} at ${width}: ${what} ends inside the card`).to.be.at.most(card.right + 1);
+            }
+            expect(perStep!.right, `${name} at ${width}: Per 1% ends before Typical roll`).to.be.at.most(typical!.left + 1);
+            expect(typical!.right, `${name} at ${width}: Typical roll ends before Top roll`).to.be.at.most(top!.left + 1);
+            // every figure is under a caption: his header's words, or a flat stat's own "per 10"
+            const caption = (cell: Element): string => win.getComputedStyle(cell, "::before").content.replace(/^"|"$/g, "");
+            expect(caption(row.children[2]!), `${name} at ${width}: caption`).to.equal("Typical roll");
+            expect(caption(row.children[3]!), `${name} at ${width}: caption`).to.equal("Top roll");
+            const perStepCell = row.children[1] as HTMLElement;
+            if (perStepCell.children.length > 1) {
+              expect(perStepCell.children[1]!.textContent, `${name} at ${width}: a flat stat's caption`).to.match(/per \d+/);
+              expect(perStepCell.children[1]!.getBoundingClientRect().bottom, `${name} at ${width}: "per 10" is above its figure`).to.be.at.most(perStepCell.children[0]!.getBoundingClientRect().top + 1);
+            } else expect(caption(perStepCell), `${name} at ${width}: caption`).to.equal("Per 1%");
+            // his folded line is not shown twice, and the top roll's size and chance take two lines at most (they took four)
+            expect(win.getComputedStyle(row.querySelector(".echo-substat-table__top-inline")!).display, `${name} at ${width}: the folded top roll`).to.equal("none");
+            expect(lines(row.children[3]!.lastElementChild!), `${name} at ${width}: lines of the top roll's size and chance`).to.be.at.most(2);
+            expect(lines(row.children[2]!.children[0]!), `${name} at ${width}: the typical figure is one line`).to.equal(1);
+          }
+        });
+      expectTextInsideItsBox("[data-test-echo-insights-substat-table] tr.echo-substat-table__row td", `roll table cells at ${width}`);
+      // Try a change: the select took the width of its longest option and ran past the card at 360 px
+      cy.get("@panel")
+        .find("[data-test-echo-insights-try-change]")
+        .then(($form) => {
+          const form = $form[0]!.getBoundingClientRect();
+          for (const control of $form[0]!.querySelectorAll("input, select, output")) {
+            expect(control.getBoundingClientRect().right, `Try a change at ${width}: <${control.tagName.toLowerCase()}> ends inside the card`).to.be.at.most(form.right - 4);
+          }
+        });
+      // plus's Engine view is a bar above his table, a few lines tall
+      cy.get("@panel")
+        .find("[data-test-echo-lab-engine]")
+        .then(($engine) => {
+          const bar = $engine[0]!.getBoundingClientRect();
+          const table = Cypress.$(".echoes-mobile-score [data-test-echo-insights-substat-table]")[0]!.getBoundingClientRect();
+          expect(bar.bottom, `the Engine view bar at ${width}: above his table`).to.be.at.most(table.top);
+          expect(bar.height, `the Engine view bar at ${width}: a few lines`).to.be.lessThan(220);
+          expect(bar.right, `the Engine view bar at ${width}: inside the screen`).to.be.at.most(width);
+        });
+      expectNothingCutOff(`echo insights at ${width}`);
+      expectNoHorizontalScroll(`echo insights at ${width}`);
+    }
+  });
+
   // 2026-11-02 core audit M1 (phone.css § 30): at the end of a calculator section Ryan's result bar compacted, the page
   // got shorter, scroll anchoring moved the page by more than his 8 px threshold, the bar expanded again, and so on
   // about five times a second, with the bottom bar and Ask sliding in and out. Scrolled to the end, the bottom bar must

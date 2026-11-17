@@ -1808,3 +1808,114 @@ html.wt-ai-docked #wt-app .contain {
     margin-left: auto;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   39. Ryan's #693 to #725 on a phone (sync of 2026-11-16; 412 and 360 px at 130 % text).
+       a) What each substat adds (#693, EchoInsightsSubstatTable.vue, in the Echo Insights bar on the Echoes screen). His
+          table folds Top roll under Typical roll below 380 px of panel width, which leaves three columns in a box that is
+          327 px wide at 412 px and 275 px at 360. At 130 % the third column was about 75 px, so "top +403K · 3 in 100"
+          broke into four lines of two words under every figure, and at 360 px the table was 331 px in that 275 px box:
+          the Typical roll column and the Energy Regen note were cut at the card's edge. Each row is a card here: the
+          substat on its own line, then Per 1%, Typical roll and Top roll side by side, each under its own caption (the
+          header row is one line for the whole table and cannot sit over three cells that no longer line up). With a line
+          of its own there is room for his Top roll cell again, so the fold is undone on a phone. A flat stat's "per 10"
+          is its caption: his header says "Per 1%" over it.
+       b) Try a change (EchoInsightsTryChange.vue). The select is as wide as its longest option ("Resonance Liberation
+          DMG Bonus"), 258 px at 130 %, and ran past the card at 360 px. It takes the room the row has. */
+@media (max-width: 767px) {
+  [data-test-echo-insights-substat-table] table,
+  [data-test-echo-insights-substat-table] table tbody {
+    display: block;
+    width: 100%;
+  }
+  [data-test-echo-insights-substat-table] table thead {
+    display: none;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr {
+    display: grid;
+    /* the first column holds "+21,551" at 130 %, so Typical roll starts at the same place on every card */
+    grid-template-columns: 3.9rem 1fr auto;
+    column-gap: 0.35rem;
+    row-gap: 0.35rem;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr.echo-substat-table__row {
+    margin-top: 0.3rem;
+    padding: 0.45rem;
+    border: 1px solid oklch(var(--b3));
+    border-radius: 0.5rem;
+    background: oklch(var(--b2));
+  }
+  [data-test-echo-insights-substat-table] table tbody tr.echo-substat-table__row--missing {
+    border-style: dashed;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td {
+    display: block;
+    text-align: left;
+  }
+  /* the card is the row now, so his cells lose their own edges. :nth-child(n) is every cell: it lifts the rule over
+     his scoped `.echo-substat-table__row td:first-child` (0,3,1) */
+  [data-test-echo-insights-substat-table] table tbody tr.echo-substat-table__row td:nth-child(n) {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  /* the substat, a group's heading, and a note in place of the three figures: a line of their own */
+  [data-test-echo-insights-substat-table] table tbody tr td:first-child,
+  [data-test-echo-insights-substat-table] table tbody tr td[colspan] {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr.echo-substat-table__row td.echo-substat-table__top:nth-child(n) {
+    display: block;
+    text-align: right;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td .echo-substat-table__top-inline {
+    display: none;
+  }
+  /* "21% · 3 in 100" under the top roll: where it has to break, it breaks into "21% ·" and "3 in 100" */
+  [data-test-echo-insights-substat-table] table tbody tr td .whitespace-nowrap {
+    white-space: normal;
+    text-wrap: balance;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td:is([data-test-echo-insights-per-step], [data-test-echo-insights-typical], [data-test-echo-insights-top])::before {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-per-step]::before {
+    content: "Per 1%";
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-typical]::before {
+    content: "Typical roll";
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-top]::before {
+    content: "Top roll";
+  }
+  /* a flat stat: his "per 10" under the figure goes above it, as the caption */
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-per-step]:has(> div + div):nth-child(n) {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-per-step]:has(> div + div)::before {
+    content: none;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-per-step]:has(> div + div) > div + div {
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  [data-test-echo-insights-substat-table] table tbody tr td[data-test-echo-insights-per-step]:has(> div + div) > div + div::first-letter {
+    text-transform: uppercase;
+  }
+  [data-test-echo-insights-try-change] .select {
+    flex: 1 1 8rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
