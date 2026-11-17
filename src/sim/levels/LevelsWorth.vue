@@ -100,7 +100,7 @@
         <!-- the order to take them in, one step at a time -->
         <template v-else>
           <p class="lw__note" data-test-levels-path-how>{{ pathHow(plan) }}</p>
-          <p v-if="running" class="lw__note" role="status" data-test-levels-path-working>Working out the order: {{ progress.done }} of {{ progress.total }} steps…</p>
+          <p v-if="running" class="lw__note" role="status" data-test-levels-path-working>Working out the order<template v-if="progress.total">: {{ progress.done }} of {{ progress.total }} steps</template>…</p>
           <p v-else-if="headline" class="lw-headline" data-test-levels-path-headline>{{ headline }}</p>
           <ol class="lw-path" data-test-levels-path>
             <li v-for="s in shownPath" :key="s.index" class="lw-step" :data-test-levels-step="s.index">
@@ -213,7 +213,8 @@ const tried = reactive<Partial<Record<TrackKey, string>>>({ ...(triedThisVisit.g
 const today = computed(() => (table.value ? levelsToday(table.value, saved.value) : null));
 const tryFields = computed(() => {
   const t = today.value;
-  if (!t) return [];
+  // no pickers for a character the cost table has no entry for: there is nothing to count from
+  if (!t || !table.value?.characters[props.characterKey]) return [];
   const forte = Array.from({ length: 10 }, (_, i) => String(i + 1));
   return [
     { key: "level" as TrackKey, label: trackLabel("level"), options: levelOptions(TOP_LEVEL) },
