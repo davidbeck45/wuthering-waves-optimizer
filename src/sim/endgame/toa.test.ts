@@ -140,8 +140,46 @@ describe("a season synced before the HP sheet has its block (Season 42 on 2026-1
     expect(floors).toHaveLength(12);
     expect([s.start, s.end, s.resetHour]).toEqual(["2026-11-09", "2026-12-07", 4]);
     expect(floors.every((f) => f.enemies.length > 0)).toBe(true);
-    // the six floors the HP sheet covers either wait for their HP (as synced on the season's first day) or have it
-    expect([...timedFloors(s), ...hpPending(s)].map((f) => f.id).sort()).toEqual([...SHEET_FLOORS].sort());
+    // the six floors the HP sheet covers have their HP since the sheet's cycle 42 block was synced (2026-11-16; the
+    // season's first week shipped without it): none waits, and the six low side floors carry none
+    expect(hpPending(s)).toEqual([]);
+    expect(timedFloors(s).map((f) => f.id).sort()).toEqual([...SHEET_FLOORS].sort());
+    // the sheet's figures: `hp` counts a group of identical enemies once, `hpRaw` every enemy
+    expect(Object.fromEntries(SHEET_FLOORS.map((id) => [id, [floor(id).hp, floor(id).hpRaw, floor(id).hpType]]))).toEqual({
+      "resonant-4": [3_125_010, 3_755_264, "adjusted"],
+      "hazard-1": [5_510_473, 5_510_473, "raw"],
+      "hazard-2": [5_206_156, 5_818_430, "adjusted"],
+      "hazard-3": [8_894_019, 11_368_992, "adjusted"],
+      "hazard-4": [10_017_616, 10_017_616, "adjusted"],
+      "echoing-4": [3_371_859, 3_371_859, "raw"],
+    });
+    expect(floor("hazard-3").enemies.map((e) => [e.name, e.count, e.hp])).toEqual([
+      ["Zig Zag", 4, 367_000],
+      ["Exile Technician", 2, 549_225],
+      ["Capitaneus", 2, 824_748],
+      ["Diurnus Knight", 1, 1_740_974],
+      ["Sigillum", 1, 5_412_072],
+    ]);
+    // every enemy of a timed floor has its own HP and adds up to the floor's two totals
+    for (const id of SHEET_FLOORS) {
+      const f = floor(id);
+      expect(f.enemies.every((e) => (e.hp ?? 0) > 0 && e.count >= 1), id).toBe(true);
+      expect([f.enemies.reduce((sum, e) => sum + (e.hp ?? 0), 0), f.enemies.reduce((sum, e) => sum + (e.hp ?? 0) * e.count, 0)], id).toEqual([f.hp, f.hpRaw]);
+    }
+    expect(floors.filter((f) => !SHEET_FLOORS.includes(f.id)).every((f) => f.hp === null && f.enemies.every((e) => e.hp === null))).toBe(true);
+    // Hazard 4's two bosses resist alike this season (Spectro 55 with the floor's wall, the rest 25, Electro 10): one
+    // fight of both HP bars, where Season 41's Sentry Construct and Crownless were two
+    expect(hpSegments(floor("hazard-4")).map((x) => [x.names, x.hp])).toEqual([[["Fallacy of No Return", "Mourning Aix"], 10_017_616]]);
+    expect(hpSegments(floor("hazard-4"))[0]!.res).toMatchObject({ Spectro: 55, Havoc: 25, Glacio: 25, Electro: 10 });
+    // Hazard 1: Crownless resists Havoc 40, the floor takes 10 off Electro and Glacio and adds 10 to Fusion and Havoc
+    expect(segmentProfiles(floor("hazard-1"))[0]).toMatchObject({ level: 100, res: { Electro: 0, Glacio: 0, Fusion: 20, Havoc: 50, Spectro: 10, Aero: 10 } });
+    expect(SHEET_FLOORS.map((id) => hpSegments(floor(id)).length)).toEqual([1, 1, 1, 1, 1, 1]);
+    // every enemy of the timed floors is one the app knows (its RES comes from the app's own enemy list, by name:
+    // none falls back to a guessed 10 %), and the fights add up to the floor's figure
+    for (const id of SHEET_FLOORS) {
+      expect(hpSegments(floor(id)).map((x) => [x.names, x.resGuessed]).filter(([, guessed]) => guessed), id).toEqual([]);
+      expect(hpSegments(floor(id)).reduce((sum, x) => sum + x.hp, 0), id).toBe(floor(id).hp);
+    }
     expect(floor("hazard-1").goals).toEqual([90, 150, 180]);
     expect(floor("hazard-3").goals).toEqual([60, 120, 150]);
     expect([1, 2, 3, 4].map((n) => floor(`resonant-${n}`).cost)).toEqual([1, 2, 3, 4]);

@@ -4,7 +4,7 @@
   "start": "2026-11-09",
   "end": "2026-12-07",
   "resetHour": 4,
-  "generatedAt": "2026-11-10T03:18:35.423Z",
+  "generatedAt": "2026-11-17T02:41:47.281Z",
   "credits": {
     "hp": "Floor HP: ChemX32's DPR Calc sheet (data from Sleep)",
     "hpUrl": "https://docs.google.com/spreadsheets/d/1eoCTrwYIsRpacvL3KrcQpR5rwY3pbJ6gEljZdBj_DHs"
@@ -244,22 +244,22 @@
           "enemies": [
             {
               "name": "Fractsidus Milliner",
-              "count": 1,
-              "hp": null,
+              "count": 2,
+              "hp": 630254,
               "class": "Elite",
               "element": "Havoc"
             },
             {
               "name": "Impermanence Heron",
               "count": 1,
-              "hp": null,
+              "hp": 2494756,
               "class": "Overlord",
               "element": "Havoc"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 3125010,
+          "hpRaw": 3755264,
+          "hpType": "adjusted",
           "effects": [
             {
               "id": 92007111,
@@ -321,14 +321,14 @@
             {
               "name": "Crownless",
               "count": 1,
-              "hp": null,
+              "hp": 5510473,
               "class": "Overlord",
               "element": "Havoc"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 5510473,
+          "hpRaw": 5510473,
+          "hpType": "raw",
           "effects": [
             {
               "id": 92007154,
@@ -396,29 +396,29 @@
           "enemies": [
             {
               "name": "Viridblaze Saurian",
-              "count": 1,
-              "hp": null,
+              "count": 2,
+              "hp": 612274,
               "class": "Elite",
               "element": "Fusion"
             },
             {
               "name": "Ironhoof",
               "count": 1,
-              "hp": null,
+              "hp": 612274,
               "class": "Elite",
               "element": "Fusion"
             },
             {
               "name": "Inferno Rider",
               "count": 1,
-              "hp": null,
+              "hp": 3981608,
               "class": "Overlord",
               "element": "Fusion"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 5206156,
+          "hpRaw": 5818430,
+          "hpType": "adjusted",
           "effects": [
             {
               "id": 92007154,
@@ -485,44 +485,44 @@
           ],
           "enemies": [
             {
-              "name": "Exile Technician",
-              "count": 1,
-              "hp": null,
-              "class": "Elite",
-              "element": "Spectro"
-            },
-            {
               "name": "Zig Zag",
-              "count": 1,
-              "hp": null,
+              "count": 4,
+              "hp": 367000,
               "class": "Standard",
               "element": "Spectro"
             },
             {
+              "name": "Exile Technician",
+              "count": 2,
+              "hp": 549225,
+              "class": "Elite",
+              "element": "Spectro"
+            },
+            {
               "name": "Capitaneus",
-              "count": 1,
-              "hp": null,
+              "count": 2,
+              "hp": 824748,
               "class": "Elite",
               "element": "Spectro"
             },
             {
               "name": "Diurnus Knight",
               "count": 1,
-              "hp": null,
+              "hp": 1740974,
               "class": "Elite",
               "element": "Spectro"
             },
             {
               "name": "Sigillum",
               "count": 1,
-              "hp": null,
+              "hp": 5412072,
               "class": "Calamity",
               "element": "Spectro"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 8894019,
+          "hpRaw": 11368992,
+          "hpType": "adjusted",
           "effects": [
             {
               "id": 92008205,
@@ -639,21 +639,21 @@
             {
               "name": "Fallacy of No Return",
               "count": 1,
-              "hp": null,
+              "hp": 3299723,
               "class": "Overlord",
               "element": "Spectro"
             },
             {
               "name": "Mourning Aix",
               "count": 1,
-              "hp": null,
+              "hp": 6717893,
               "class": "Overlord",
               "element": "Spectro"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 10017616,
+          "hpRaw": 10017616,
+          "hpType": "adjusted",
           "effects": [
             {
               "id": 92008205,
@@ -945,14 +945,14 @@
             {
               "name": "Dragon of Dirge",
               "count": 1,
-              "hp": null,
+              "hp": 3371859,
               "class": "Overlord",
               "element": "Fusion"
             }
           ],
-          "hp": null,
-          "hpRaw": null,
-          "hpType": null,
+          "hp": 3371859,
+          "hpRaw": 3371859,
+          "hpType": "raw",
           "effects": [
             {
               "id": 92007114,
