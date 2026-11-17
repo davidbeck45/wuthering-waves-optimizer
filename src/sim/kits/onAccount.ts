@@ -50,6 +50,9 @@ export interface OnAccount {
   team: null | { cost: string; costLabel: string; team: KitTeam; keys: string[]; main: string | null };
   /** his best team at his default view when the account cannot field one of the listed teams: who is missing */
   wanted: null | { cost: string; costLabel: string; team: KitTeam; keys: string[]; main: string | null; missing: KitMember[] };
+  /** not owned (and not a 4★ or Rover form): the best team with them whose teammates the account already has, the
+   *  team a pull would open (same search as `team`); null when none, or when it is `wanted` itself */
+  ifPulled: null | { cost: string; costLabel: string; team: KitTeam; keys: string[]; main: string | null };
   /** their best team in the cached roster ranking: this app's figure on the account's builds; null without a cache or a team */
   ranked: RankedTeam | null;
   /** whether a roster ranking was handed in at all */
@@ -98,21 +101,23 @@ export function onAccountOf(input: OnAccountInput): OnAccount {
   const shape = (cost: string, team: KitTeam) => ({ cost, costLabel: costLabel(cost), team, keys: team.members.map(accountKey), main: mainOf(team, kit.name) ? accountKey(mainOf(team, kit.name)!) : null });
 
   let team: OnAccount["team"] = null;
-  if (owned || free) {
+  const fieldableWith = (): OnAccount["team"] => {
     for (const cost of costs) {
       const hit = teamsWith(file, cost, kit.name, inApp).find((t) => t.members.every((m) => m.name === kit.name || has(m)));
-      if (hit) {
-        team = shape(cost, hit);
-        break;
-      }
+      if (hit) return shape(cost, hit);
     }
-  }
+    return null;
+  };
+  if (owned || free) team = fieldableWith();
   let wanted: OnAccount["wanted"] = null;
   if (!team) {
     const cost = costs[0];
     const best = cost ? fieldableTeams(file, kit.best[cost], inApp)[0] : undefined;
     if (cost && best) wanted = { ...shape(cost, best), missing: best.members.filter((m) => (m.name === kit.name ? !(owned || free) : !has(m))) };
   }
+  const pulled = !owned && !free ? fieldableWith() : null;
+  const sameTeam = (a: { cost: string; keys: string[] }, b: { cost: string; keys: string[] }) => a.cost === b.cost && [...a.keys].sort().join() === [...b.keys].sort().join();
+  const ifPulled = pulled && !(wanted && sameTeam(pulled, wanted)) ? pulled : null;
 
   const twin = key !== kit.appKey ? kit.appKey : null;
   const ranked =
@@ -141,7 +146,7 @@ export function onAccountOf(input: OnAccountInput): OnAccount {
   // theirs, scoring again would change nothing, so the link is not offered as the way to get a figure
   if (rankedTeams === null) links.push({ id: "rank", label: "Rank my teams", why: "scores every team you can field on your own builds", to: "/my-rankings" });
 
-  return { key, owned, free, sequence, weapon: owned ? mine!.weapon : null, refinement: owned ? mine!.refinement : 1, nearest: near, team, wanted, ranked, hasRanking: rankedTeams !== null, play, next, passed, links };
+  return { key, owned, free, sequence, weapon: owned ? mine!.weapon : null, refinement: owned ? mine!.refinement : 1, nearest: near, team, wanted, ifPulled, ranked, hasRanking: rankedTeams !== null, play, next, passed, links };
 }
 
 /** "You have Aemeath at S2 with Everbright Polestar at R1." */
@@ -165,6 +170,12 @@ export function teamBasisText(a: Pick<OnAccount, "team" | "nearest">, figure: st
   const why =
     a.team.cost === a.nearest ? (a.nearest === "s0r1" ? "" : ", the Team Cost nearest to your sequence") : ", the first of his Team Costs where one of the top teams is one you can field";
   return `${figure} is his figure on his standard builds at ${a.team.costLabel}${why}, not on yours.`;
+}
+
+/** Under the team a pull would open: whose figure it is, at which Team Cost. */
+export function pulledText(a: Pick<OnAccount, "ifPulled">, name: string, figure: string): string {
+  if (!a.ifPulled) return "";
+  return `You already have both of ${name}'s teammates here. ${figure} is Riley's figure on his standard builds at ${a.ifPulled.costLabel}, not on yours: once ${name} is set up, Rank my teams scores it on your own builds.`;
 }
 
 /** Under Riley's best team when the account can field none: who is missing, by the names the app shows. */

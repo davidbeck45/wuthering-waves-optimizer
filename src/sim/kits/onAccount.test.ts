@@ -6,7 +6,8 @@ import indexFile from "./data/kitIndex.json";
 import { isRosterCharacter } from "../display/names";
 import { accountCharacterOf } from "../account/accountState";
 import type { KitIndexFile, KitsFile } from "./kits";
-import { missingText, nextText, onAccountOf, ownedText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
+import { teamsWith } from "./kits";
+import { missingText, nextText, onAccountOf, ownedText, pulledText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
 
 const file = kitsFile as unknown as KitsFile;
 const index = (indexFile as KitIndexFile).kits;
@@ -53,6 +54,29 @@ describe("On your account", () => {
     // from S0, the first change is still ahead
     expect(b.next).toMatchObject({ level: 1, kind: "chain" });
     expect(nextText(b, "Aemeath")).toMatch(/^The next sequence that changes how Aemeath is played: S1 changes only the opener/);
+  });
+
+  it("not owned, with the teammates of one of her teams but not of her best: names the team a pull would open", () => {
+    // nobody on the account: nothing a pull would open
+    expect(block("Lily", {}).ifPulled).toBeNull();
+    // the account holds both teammates of a Lily team further down Riley's default view, not those of her best
+    const rows = teamsWith(file, "s0r1", "Lily", isRosterCharacter);
+    const best = block("Lily", {}).wanted!;
+    const other = rows.find((t) => t.members.filter((m) => m.name !== "Lily").every((m) => !best.team.members.some((b) => b.name === m.name)))!;
+    expect(other).toBeDefined();
+    const mates = other.members.filter((m) => m.name !== "Lily").map((m) => m.name.replace(/ /g, ""));
+    const b = block("Lily", Object.fromEntries(mates.map((n) => [n, record("X")])));
+    expect(b.owned).toBe(false);
+    expect(b.team).toBeNull();
+    expect(b.wanted!.missing.map((m) => m.name)).toContain("Lily");
+    expect(b.ifPulled).not.toBeNull();
+    for (const m of b.ifPulled!.team.members) if (m.name !== "Lily") expect(mates.includes(m.name.replace(/ /g, "")) || index.find((k) => k.name === m.name)?.tier === "Free", m.name).toBe(true);
+    expect(b.ifPulled!.team.dps).toBeGreaterThanOrEqual(other.dps);
+    expect(pulledText(b, "Lily", "90K team DPS")).toMatch(/^You already have both of Lily's teammates here\. 90K team DPS is Riley's figure on his standard builds at /);
+    // with both teammates of her best team, the pull opens that very team: said once, under it, not twice
+    const ready = block("Lily", Object.fromEntries(best.team.members.filter((m) => m.name !== "Lily").map((m) => [m.name.replace(/ /g, ""), record("X")])));
+    expect(ready.wanted!.missing.map((m) => m.name)).toEqual(["Lily"]);
+    expect(ready.ifPulled).toBeNull();
   });
 
   it("owned at S0 with her team: the best of Riley's teams the account can field, with links that carry the team", () => {

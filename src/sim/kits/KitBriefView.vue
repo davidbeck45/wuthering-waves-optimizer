@@ -106,6 +106,11 @@
               <template v-if="!account.hasRanking"><RouterLink to="/my-rankings" class="kit-link" data-test-kit-rank>Rank my teams</RouterLink> scores the teams you can field.</template>
             </p>
           </template>
+          <template v-if="account.ifPulled">
+            <h3 class="kit-h3 mt-3">If you pull {{ name }}: the best of Riley's teams with them you could field</h3>
+            <KitTeamRow :team="account.ifPulled.team" :subject="kit.name" :cost="account.ifPulled.cost" :characters="characters" />
+            <p class="kit-muted mt-1" data-test-kit-if-pulled>{{ pulledText(account, name, dpsText(account.ifPulled.team.dps)) }}</p>
+          </template>
 
           <h3 class="kit-h3 mt-3">Do something about it</h3>
           <ul class="kit-list" data-test-kit-links>
@@ -390,7 +395,7 @@ import {
 import briefsUrl from "./data/kits.json?url"; // the file's address, not its contents: fetched below, with this page
 import { BriefsError, KIT_INDEX_ENTRIES, loadKits } from "./load";
 import { reloadOnce } from "../perf/chunkReload";
-import { missingText, nextText, onAccountOf, ownedText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
+import { missingText, nextText, onAccountOf, ownedText, pulledText, teamBasisText, type AccountSide, type RankedTeam } from "./onAccount";
 import "./kits.css";
 
 const route = useRoute();
