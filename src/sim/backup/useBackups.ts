@@ -79,6 +79,9 @@ export function useBackups() {
     });
   }
 
+  /** a restore went through and the page is about to reload: nothing else starts in that second and a half */
+  let reloading = false;
+
   /** one action at a time: a second tap while the first is reading or writing does nothing */
   async function once<T>(fn: () => Promise<T>): Promise<T | undefined> {
     if (busy.value) return undefined;
@@ -86,7 +89,7 @@ export function useBackups() {
     try {
       return await fn();
     } finally {
-      busy.value = false;
+      if (!reloading) busy.value = false;
     }
   }
 
@@ -159,6 +162,7 @@ export function useBackups() {
       const outcome = await restoreBackupText(text, { saveFirst: () => takeNow("before-restore"), apply: applyImportedDatabase, plusDone: settledPlusRestore });
       const pulls = outcome.plus.pullsAdded ? ` ${outcome.plus.pullsAdded.toLocaleString("en-US")} pull${outcome.plus.pullsAdded === 1 ? "" : "s"} added to your history.` : "";
       showToast(`Restored ${backupName(when)}.${pulls} Reloading…`, "success", RELOAD_MS + 500);
+      reloading = true;
       window.setTimeout(() => location.reload(), RELOAD_MS);
       return true;
     } catch (e) {

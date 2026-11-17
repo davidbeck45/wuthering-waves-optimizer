@@ -4,10 +4,10 @@
 // file. Share hands a file to the phone's share sheet (Drive, Files, email), with no sign-in for the site: the Google
 // Drive backup, without an OAuth client.
 //
-// The shared file is a .txt. Chromium's share sheet (Chrome and Samsung Internet on Android) only takes files of a
-// short list of types, and .json is not on it while plain text is: a .json share is refused with "Permission denied"
-// even where `canShare` said yes. The text inside is the same backup, character for character. Restore from a file
-// (BackupsView) takes either; Ryan's Settings › Import takes the .json, or the .txt's text pasted, or the file renamed.
+// The shared file is a .txt. Browsers share files of a short list of types (MDN, Navigator.share(), "Shareable file
+// types"): .txt / text/plain is on it and .json is not, and a file that is not is blocked. The text inside is the same
+// backup, character for character. Restore from a file (BackupsView) takes either; Ryan's Settings › Import takes the
+// .json, or the .txt's text pasted, or the file renamed.
 import { shallowRef } from "vue";
 import { downloadBlob } from "../../utils/downloadFile";
 import { backupFileName } from "./backupFile";

@@ -39,7 +39,8 @@
         <li v-for="b in list" :key="b.id" class="bk-row" :data-test-backup-row="b.id" :data-reason="b.reason">
           <div class="bk-row__top">
             <span class="bk-row__when" data-test-backup-when>{{ whenText(b.at, now) }}</span>
-            <span class="bk-muted" data-test-backup-age>{{ ageText(b.at, now) }}</span>
+            <!-- "Yesterday 18:43" has said how old it is -->
+            <span v-if="ageText(b.at, now) !== 'yesterday'" class="bk-muted" data-test-backup-age>{{ ageText(b.at, now) }}</span>
             <span class="bk-chip" :class="chipClass(b.reason)" :title="REASON_TITLE[b.reason]" data-test-backup-reason>{{ REASON_TEXT[b.reason] }}</span>
           </div>
           <p class="bk-row__inside" data-test-backup-inside>{{ countsText(b.counts) }}</p>

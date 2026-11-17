@@ -379,6 +379,16 @@ describe("automatic backups", () => {
     cy.get(".confirm-dialog .modal-action .btn-warning").click();
     cy.contains(/Restored the backup of/).should("be.visible");
     cy.window().its("localStorage").should((ls) => expect(JSON.parse(ls.getItem("inventory")!).echoes).to.have.length(fewer.echoes.length));
+    // the copy is from an older version of the site (data version 6): it came in through Ryan's migrations, so
+    // every character has the saved builds version 8 added, and the stored data is on today's version
+    cy.window().then((win) => {
+      expect(configOptimizer.meta.version).to.eq("6");
+      expect(JSON.parse(configOptimizer.data.character).characters.Cartethyia.builds, "the file itself has no builds").to.eq(undefined);
+      const restored = JSON.parse(win.localStorage.getItem("character")!).characters.Cartethyia;
+      expect(restored.builds, "builds after the restore").to.have.length(1);
+      expect(restored.activeBuildId).to.eq(restored.builds[0].id);
+      expect(Number(win.localStorage.getItem("dataVersion"))).to.be.at.least(10);
+    });
 
     // a file that is no backup is refused before any question is asked
     cy.get("[data-test-backups-file-input]", { timeout: 20000 }).selectFile({ contents: Cypress.Buffer.from("[1,2,3]"), fileName: "echoes.json", mimeType: "application/json" });
