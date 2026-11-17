@@ -59,7 +59,7 @@ describe("Settings › Delete your data", () => {
     cy.get("[data-test-delete-what]").should("contain.text", "characters, builds, echoes and teams").and("contain.text", "settings stay");
     cy.contains("button.btn-error", "Delete").click();
     cy.get(".confirm-dialog[open] .modal-box").within(() => {
-      cy.contains("p", "cannot be undone").should("be.visible").and("contain.text", "your teams").and("contain.text", "Build history").and("contain.text", "export a backup first");
+      cy.contains("p", "cannot be undone").should("be.visible").and("contain.text", "your teams").and("contain.text", "Build history").and("contain.text", "the automatic backups in this browser").and("contain.text", "download a copy first");
       cy.get(".confirm-dialog__items li").should("have.length", 2);
       cy.contains("li", "Convene pull history").should("contain.text", "Kept");
       cy.contains("li", "API key").should("contain.text", "Kept");
