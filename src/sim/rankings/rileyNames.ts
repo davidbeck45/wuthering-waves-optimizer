@@ -28,6 +28,9 @@ for (const app of Object.values(ALIAS)) {
 }
 export const roverTwinOf = (appKey: string): string | null => ROVER_TWIN[appKey] ?? null;
 
+/** Whether two app keys are one kit: the same character, or a Rover's two genders of one element. */
+export const sameKit = (a: string, b: string): boolean => a === b || rileyNameOf(a) === rileyNameOf(b);
+
 /**
  * The key this account plays a character under. Everything generated from wuwa_calc (the loops, the stock teams) names
  * a Rover by the female key, and an account holds one form: `key` comes back as it is unless the account has only the

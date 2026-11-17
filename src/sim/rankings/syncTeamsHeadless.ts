@@ -10,6 +10,7 @@ import type { ExportFile } from "../cli/exportFile";
 import {
   isGeneratedTeamName,
   prepareTeamImport,
+  preparedForTeam,
   reslotActions,
   toCharacterRotation,
   toImportedActions,
@@ -17,6 +18,7 @@ import {
   type PreparedTeam,
 } from "./importFromRankings";
 import { buildRollsOf } from "./myBuilds";
+import { accountKeyOf as rileyAccountKeyOf } from "./rileyNames";
 import { runSync, type SolvedBest, type SyncReport, type TeamLike } from "./syncTeams";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -99,11 +101,14 @@ export async function syncTeamsHeadless(exp: ExportFile, options: HeadlessSyncOp
  *  settings merged over its own, the loop's rotation time, a generated name renamed (a typed one stays), the
  *  description and handoffs; with `rotations`, each member's loop saved on that character, replacing a rotation of the
  *  same name (a second sync never appends it twice). Nothing else in `teams` or `characters` is touched. */
-export function writePreparedTeam(teams: any[], characters: Record<string, any>, teamId: string, prepared: PreparedTeam, options: { rotations?: boolean } = {}): ImportResult {
+export function writePreparedTeam(teams: any[], characters: Record<string, any>, teamId: string, run: PreparedTeam, options: { rotations?: boolean } = {}): ImportResult {
   const target = teams.find((t) => t.id === teamId);
   if (!target) throw new Error("The team to update no longer exists.");
-  const written = reslotActions(prepared, target.characterIds as Array<string | null>);
-  if (!written) throw new Error(`${target.name} does not hold the same three characters as the rankings row.`);
+  // under the keys the saved team holds its three by: a male Rover's team names him, the run names the female form
+  const forTeam = preparedForTeam(run, target.characterIds as Array<string | null>);
+  const written = forTeam && reslotActions(forTeam, target.characterIds as Array<string | null>);
+  if (!forTeam || !written) throw new Error(`${target.name} does not hold the same three characters as the rankings row.`);
+  const prepared = forTeam;
   target.actions = written.map((a) => ({ ...a, id: randomString(12) }));
   target.enemyConfig = { ...(target.enemyConfig ?? {}), ...prepared.enemyConfig };
   if (prepared.duration != null) target.duration = prepared.duration;
@@ -114,7 +119,8 @@ export function writePreparedTeam(teams: any[], characters: Record<string, any>,
   const skipped: string[] = [];
   if (options.rotations) {
     for (const r of prepared.rotations) {
-      const c = characters[r.key];
+      // the record the account has for that kit, whichever key the team holds
+      const c = characters[rileyAccountKeyOf(r.key, characters)];
       if (!c || !r.actions.length) { skipped.push(r.name); continue; }
       // a re-run must not append the same loop again: replace a rotation already saved under this name
       const existing = (c.rotations ?? []).findIndex((x: any) => x?.name === r.rotationName);

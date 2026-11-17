@@ -14,6 +14,7 @@ import { mainEchoesData } from "../../echoes/index";
 import { randomString } from "../../utils/strings";
 import { wuwaCalcTeamName } from "../presets/presetName";
 import { spreadLabel } from "../display/numberBasis";
+import { accountKeyOf, sameKit } from "./rileyNames";
 import {
   OVERRIDES,
   appKeyOf,
@@ -399,11 +400,45 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
 }
 
 /** A prepared team's actions re-pointed at the slots an existing team holds those characters in; null when the
- *  existing team does not hold the same three characters. */
+ *  existing team does not hold the same three characters. A Rover is matched in either gender (`sameKit`): the run
+ *  names her by the female key, and a male Rover's team holds him under his own. */
 export function reslotActions(prepared: PreparedTeam, characterIds: Array<string | null>): TeamAction[] | null {
-  const slotIn = prepared.keys.map((k) => characterIds.indexOf(k));
-  if (slotIn.some((s) => s < 0)) return null;
+  const slotIn = prepared.keys.map((k) => characterIds.findIndex((id) => !!id && sameKit(id, k)));
+  if (slotIn.some((s) => s < 0) || new Set(slotIn).size !== slotIn.length) return null;
   return prepared.actions.map((a) => ({ ...a, slot: slotIn[a.slot] }));
+}
+
+/**
+ * A prepared team under other keys for the same three: `keyFor` gives each of its keys the one to write, and the
+ * members, the handoffs (keyed by character) and each member's own loop follow. The actions name slots, so they are
+ * untouched. The prepared team itself when nothing changes; never mutated.
+ *
+ * Why (2026-11-16, second check of 52cdb575): Riley has one Rover per element and everything read off his run names her
+ * by the female key, while an account holds one form. A male Rover's team could not be synced ("does not hold the same
+ * three characters as the rankings row") and a fresh import made a team of the form the account does not have.
+ */
+export function rekeyPrepared(prepared: PreparedTeam, keyFor: (key: string) => string): PreparedTeam { // eslint-disable-line no-unused-vars -- the parameter of a function type
+  const renamed = new Map(prepared.keys.map((k) => [k, keyFor(k)]));
+  if ([...renamed].every(([from, to]) => from === to)) return prepared;
+  const re = (k: string): string => renamed.get(k) ?? k;
+  return {
+    ...prepared,
+    keys: prepared.keys.map(re),
+    handoffs: Object.fromEntries(Object.entries(prepared.handoffs).map(([from, to]) => [re(from), (to ?? []).map(re)])),
+    members: prepared.members.map((m) => ({ ...m, key: re(m.key) })),
+    rotations: prepared.rotations.map((r) => ({ ...r, key: re(r.key) })),
+  };
+}
+
+/** A prepared team as this account fields it: a Rover under the form the account plays (`accountKeyOf`). */
+export const preparedForAccount = (prepared: PreparedTeam, characters: Record<string, any> | null | undefined): PreparedTeam => // eslint-disable-line @typescript-eslint/no-explicit-any
+  rekeyPrepared(prepared, (k) => accountKeyOf(k, characters));
+
+/** A prepared team under the keys a saved team holds its three by; null when that team does not hold the same three. */
+export function preparedForTeam(prepared: PreparedTeam, characterIds: Array<string | null>): PreparedTeam | null {
+  const held = (k: string): string | null => characterIds.find((id): id is string => !!id && sameKit(id, k)) ?? null;
+  if (!reslotActions(prepared, characterIds)) return null;
+  return rekeyPrepared(prepared, (k) => held(k) ?? k);
 }
 
 /** The report's view of written actions: slot, attack, count, main echo, a tick's stack count. */
@@ -451,20 +486,24 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     mods.model.results.set(key, run);
   }
   const traced = run.rotationLines ? run : mods.teamrun.runTeam(run.teamKey, run.members, run.combo, true);
-  const prepared = await prepareTeamImport(mods, traced);
+  let prepared = await prepareTeamImport(mods, traced);
 
   // the stores load here, not at the top: they pull lodash through a CJS named import that tsx cannot resolve,
   // and the headless CLI shares this module for `prepareTeamImport` (syncTeamsHeadless.ts)
   const [{ useTeamRotationsStore }, { useCharacterStore }] = await Promise.all([import("../../stores/teamRotations"), import("../../stores/character")]);
   const teamStore = useTeamRotationsStore();
+  const characterStore = useCharacterStore();
   let team: { id: string; name: string };
   let written: TeamAction[] = prepared.actions;
   if (options.replaceTeamId) {
     const existing = (teamStore.teams as any[]).find((t) => t.id === options.replaceTeamId);
     if (!existing) throw new Error("The team to update no longer exists.");
-    // the saved team keeps its slot order: re-point every action at the slot that character holds there
-    const reslotted = reslotActions(prepared, existing.characterIds as Array<string | null>);
-    if (!reslotted) throw new Error(`${existing.name} does not hold the same three characters as the rankings row.`);
+    // the saved team keeps its members' keys (a male Rover's is his own) and its slot order: re-point every action at
+    // the slot that character holds there
+    const forTeam = preparedForTeam(prepared, existing.characterIds as Array<string | null>);
+    const reslotted = forTeam && reslotActions(forTeam, existing.characterIds as Array<string | null>);
+    if (!forTeam || !reslotted) throw new Error(`${existing.name} does not hold the same three characters as the rankings row.`);
+    prepared = forTeam;
     written = reslotted;
     teamStore.setTeamActions(existing.id, written.map((a) => ({ ...a, id: randomString(12) })));
     teamStore.setTeamEnemyConfig(existing.id, { ...prepared.enemyConfig });
@@ -475,6 +514,8 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     existing.handoffs = prepared.handoffs;
     team = existing;
   } else {
+    // a new team is made of the characters this account has: a Rover in the form it plays
+    prepared = preparedForAccount(prepared, characterStore.characters as Record<string, any>);
     team = teamStore.importTeam({
       name: prepared.teamName,
       characterIds: prepared.keys,
@@ -490,14 +531,15 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
   const saved: string[] = [];
   const skipped: string[] = [];
   if (options.characterRotations) {
-    const characterStore = useCharacterStore();
     for (const r of prepared.rotations) {
-      const existing = (characterStore.characters as Record<string, any>)[r.key];
+      // the member's own loop goes on the record the account has for that kit, whichever key the team holds
+      const key = accountKeyOf(r.key, characterStore.characters as Record<string, any>);
+      const existing = (characterStore.characters as Record<string, any>)[key];
       if (!existing || !r.actions.length) {
         skipped.push(r.name);
         continue;
       }
-      characterStore.setCharacterRotations(r.key, [...(existing.rotations ?? []), toCharacterRotation(r, (existing.rotations ?? []).length)]);
+      characterStore.setCharacterRotations(key, [...(existing.rotations ?? []), toCharacterRotation(r, (existing.rotations ?? []).length)]);
       saved.push(r.name);
     }
   }

@@ -14,6 +14,7 @@ import { ENEMY, importTeamFromRankings, prepareTeamImport, reslotActions, type E
 import { runSync, type SolvedBest, type SyncDeps, type TeamLike } from "./syncTeams";
 import { applySyncUndo, makeSyncUndo } from "./syncUndo";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { useCharacterStore } from "../../stores/character";
 import { writePreparedTeam } from "./syncTeamsHeadless";
 import { readExport, writeSyncedExport } from "../cli/exportFile";
 import { enemyConfigOf, type Cast } from "./castMapper";
@@ -540,5 +541,103 @@ describe("Sync my teams on the CLI: what lands in the new export", () => {
     expect(typed[0]!.name).toBe("My Cartethyia team");
     expect(() => writePreparedTeam(twice.teams, twice.characters, "gone", prepared)).toThrow("The team to update no longer exists.");
     expect(() => writePreparedTeam([{ id: "x", name: "wuwa_calc X", characterIds: ["Zani", "Chisa", "Cartethyia"], actions: [] }], {}, "x", prepared)).toThrow(/does not hold the same three characters/);
+  });
+});
+
+/* ------------------------------------------------- a male Rover: Riley's one Rover per element, the account's own key */
+
+// 2026-11-16, second check of 52cdb575. Everything read off a wuwa_calc run names a Rover by the female key. List Presets
+// has saved a male Rover's stock team under his own key since that fix, and Sync my teams then refused that very team:
+// "Electro Rover · Mornye + Lynae · S6R5 (wuwa_calc) does not hold the same three characters as the rankings row."
+// A fresh import from Team rankings still made a team of the female form the account does not have.
+describe("a male Rover's team: synced in place, imported under the key the account plays", () => {
+  /** Electro Rover (main DPS) + Chisa + Shorekeeper, each member's recorded loop in turn */
+  function tracedRover() {
+    const loop = [...hitsFor("Electro Rover", loopOf("Electro Rover")), ...hitsFor("Chisa", loopOf("Chisa")), ...hitsFor("Shorekeeper", loopOf("Shorekeeper"))];
+    return {
+      members: [
+        { name: "Chisa", mainDps: false, loadout: loadout([]) },
+        { name: "Electro Rover", mainDps: true, loadout: loadout([]) },
+        { name: "Shorekeeper", mainDps: false, loadout: loadout([]) },
+      ],
+      combo: [
+        { sequence: 0, weapon: { refinement: 1, name: "Kumokiri" }, echo: {}, mainstat: { name: "CD CD" } },
+        { sequence: 6, weapon: { refinement: 1, name: "Emerald of Genesis" }, echo: {}, mainstat: { name: "CR ATK" } },
+        { sequence: 0, weapon: { refinement: 1, name: "Stellar Symphony" }, echo: {}, mainstat: { name: "HB ER" } },
+      ],
+      rotationLines: [loop, loop],
+      sectionSeconds: [26, 25],
+      total: 500_000,
+    };
+  }
+  const HIS = ["Chisa", "Roverelectromale", "Shorekeeper"];
+  const maleAccount = () => ({ Roverelectromale: { weapon: "EmeraldOfGenesis", rotations: [] as any[] }, Chisa: { weapon: "Kumokiri", rotations: [] as any[] }, Shorekeeper: { weapon: "StellarSymphony", rotations: [] as any[] } });
+
+  it("the run itself names her: the female key, as every generated preset does", async () => {
+    const prepared = await prepareTeamImport(mods, tracedRover());
+    expect(prepared.keys).toEqual(["Roverelectrofemale", "Chisa", "Shorekeeper"]);
+    expect(Object.keys(prepared.handoffs)).toContain("Roverelectrofemale");
+  });
+
+  it("re-points the actions at the slot the saved team holds him in, and still refuses another three", async () => {
+    const prepared = await prepareTeamImport(mods, tracedRover());
+    const reslotted = reslotActions(prepared, HIS);
+    expect(reslotted, "his team holds the same three").not.toBeNull();
+    const map = [1, 0, 2]; // prepared slot (Rover, Chisa, Shorekeeper) → the slot his team holds each in
+    reslotted!.forEach((a, i) => expect(a.slot).toBe(map[prepared.actions[i].slot]));
+    // another element's Rover is another kit, and so is anyone else
+    expect(reslotActions(prepared, ["Chisa", "RoverAeroMale", "Shorekeeper"])).toBeNull();
+    expect(reslotActions(prepared, ["Chisa", "Zani", "Shorekeeper"])).toBeNull();
+  });
+
+  it("the CLI's sync updates his team in place: his key in the handoffs, his loop on his own record", async () => {
+    const prepared = await prepareTeamImport(mods, tracedRover());
+    const teams = [{ id: "his", name: "Electro Rover · Chisa + Shorekeeper · S6R5 (wuwa_calc)", characterIds: [...HIS], actions: [] as any[], duration: 30 }];
+    const characters: Record<string, any> = maleAccount();
+    const result = writePreparedTeam(teams, characters, "his", prepared, { rotations: true });
+    const team = teams[0] as any;
+    expect(team.characterIds).toEqual(HIS); // the saved team keeps its members and their order
+    expect(team.actions).toHaveLength(prepared.actions.length);
+    expect(team.duration).toBe(25);
+    const named = [...Object.keys(team.handoffs), ...Object.values(team.handoffs as Record<string, string[]>).flat()];
+    expect(named).toContain("Roverelectromale");
+    expect(named).not.toContain("Roverelectrofemale");
+    expect(result.characterRotationsSkipped).toEqual([]);
+    expect(characters.Roverelectromale.rotations.map((r: any) => r.name)).toEqual([prepared.rotations.find((r) => r.name === "Electro Rover")!.rotationName]);
+    expect(characters.Roverelectrofemale).toBeUndefined();
+  });
+
+  it("the page's sync and a fresh import both write the Rover the account has", async () => {
+    setActivePinia(createPinia());
+    const store = useTeamRotationsStore();
+    const characterStore = useCharacterStore();
+    characterStore.hardSetState({ characters: maleAccount(), activeCharacter: "Chisa", favoriteCharacters: [] } as never);
+    const runs = new Map<string, any>([["rover", tracedRover()]]);
+    const page = { ...mods, model: { results: runs, rowFromKey: () => null } };
+
+    // Team rankings › Import team: the team is made of his Rover, not of the form this account does not have
+    const fresh = await importTeamFromRankings(page as any, "rover", { characterRotations: true });
+    const made = (store.teams as any[]).find((t) => t.id === fresh.teamId);
+    expect(made.characterIds).toEqual(["Roverelectromale", "Chisa", "Shorekeeper"]);
+    expect(Object.keys(made.handoffs)).toContain("Roverelectromale");
+    expect(JSON.stringify(made.handoffs)).not.toContain("Roverelectrofemale");
+    expect(fresh.characterRotationsSkipped).toEqual([]);
+    expect((characterStore.characters as Record<string, any>).Roverelectromale.rotations).toHaveLength(1);
+
+    // Sync my teams on the team List Presets saved under his key: updated in place, no "does not hold the same three"
+    const saved = store.importTeam({ name: "Electro Rover · Chisa + Shorekeeper · S6R5 (wuwa_calc)", characterIds: [...HIS], actions: [] });
+    const report = await runSync({
+      teams: JSON.parse(JSON.stringify(store.teams)) as TeamLike[],
+      rileyTeams: { t7: [{ name: "Electro Rover" }, { name: "Chisa" }, { name: "Shorekeeper" }] },
+      solveBest: async (keys: string[]) => new Map<string, SolvedBest | null>(keys.map((k) => [k, { total: 500_000, ref: "rover" }])),
+      importInto: (team, best) => importTeamFromRankings(page as any, best.ref as string, { replaceTeamId: team.id }),
+    });
+    const row = report.teams.find((t) => t.id === saved.id)!;
+    expect(row.reason).toBeNull();
+    expect(row.status).toBe("updated");
+    const synced = (store.teams as any[]).find((t) => t.id === saved.id);
+    expect(synced.characterIds).toEqual(HIS);
+    expect(synced.actions).toHaveLength(fresh.actions);
+    expect(JSON.stringify(synced.handoffs)).not.toContain("Roverelectrofemale");
   });
 });
