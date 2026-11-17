@@ -999,8 +999,14 @@ describe("phone layout", () => {
       cy.get("[data-test-live-result-bar]").should("be.visible");
       cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
       cy.get(".screen--echoes").should("be.visible");
-      cy.get("[data-test-echo-item-browse]").first().click({ force: true });
-      cy.get("[data-test-workspace-echoes-browser-list]", { timeout: 20000 }).should("exist");
+      // the Echoes screen is keyed by the build and remounts while it loads: a tap on a tile that is then replaced
+      // opens nothing. Wait for the Build Score, then tap Browse until the browser's list is there
+      cy.get(".echoes-mobile-score [data-test-echo-insights-build-score]", { timeout: 30000 }).should("contain.text", "%");
+      cy.get("[data-test-echo-item-browse]", { timeout: 30000 }).should(($browse) => {
+        const open = (): boolean => Cypress.$("[data-test-workspace-echoes-browser-list]").length > 0;
+        if (!open()) $browse[0]!.click();
+        expect(open(), "the echo browser is open with its list").to.equal(true);
+      });
       // nobody has closed the filter panel: it is open, and the list still has room
       cy.get(".app-chooser-modal[open] [data-test-filter-panel-toggle]").should("have.attr", "aria-expanded", "true");
       cy.get(".app-chooser-modal[open] .app-chooser-modal__body").should(($body) => {
@@ -1020,12 +1026,21 @@ describe("phone layout", () => {
           expect(badge.scrollHeight, `impact badge "${(badge.textContent ?? "").trim()}" at ${width}: text inside the pill`).to.be.at.most(badge.clientHeight + 2);
         }
       });
-      cy.get(".app-chooser-modal[open] [data-test-workspace-echoes-browser-close]").click();
+      // the same remount can replace the dialog's Close under a tap: tap it until no chooser is open
+      cy.get("body").should(() => {
+        const close = Cypress.$(".app-chooser-modal[open] [data-test-workspace-echoes-browser-close]");
+        if (close.length) close[0]!.click();
+        expect(Cypress.$(".app-chooser-modal[open]").length, "the echo browser is closed").to.equal(0);
+      });
 
       cy.get('[data-test-calculator-mobile-nav="weapon"]').click({ force: true });
       cy.get(".screen--weapon").should("be.visible");
-      cy.get("[data-test-workspace-weapon-open-browser]").filter(":visible").first().click({ force: true });
-      cy.get("[data-test-workspace-weapon-browser-row]", { timeout: 20000 }).should("have.length.greaterThan", 2);
+      cy.get("[data-test-workspace-weapon-open-browser]", { timeout: 30000 }).should(($open) => {
+        const rows = (): number => Cypress.$("[data-test-workspace-weapon-browser-row]").length;
+        const button = [...$open].find((el) => el.getClientRects().length) ?? $open[0]!;
+        if (!rows()) button.click();
+        expect(rows(), "the weapon browser is open with its rows").to.be.greaterThan(2);
+      });
       cy.get(".app-chooser-modal[open] .app-chooser-modal__box").then(($box) => {
         const box = $box[0]!;
         const edge = box.getBoundingClientRect().right;
@@ -1061,8 +1076,15 @@ describe("phone layout", () => {
     cy.get("[data-test-live-result-bar]").should("be.visible");
     cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
     cy.get(".screen--echoes").should("be.visible");
-    cy.get("[data-test-echo-item-edit]").first().click({ force: true });
-    cy.contains(".screen--echoes span", "Changes save automatically").should(($note) => {
+    // wait for the build to be in before the tap: the screen remounts while it loads (see the browsers test above)
+    cy.get(".echoes-mobile-score [data-test-echo-insights-build-score]", { timeout: 30000 }).should("contain.text", "%");
+    // and a tap on an Edit that is then replaced opens nothing: tap until the tile's edit footer is there
+    cy.get("[data-test-echo-item-edit]", { timeout: 30000 }).should(() => {
+      const editing = (): boolean => [...Cypress.$(".screen--echoes span")].some((s) => (s.textContent ?? "").includes("Changes save automatically"));
+      if (!editing()) Cypress.$("[data-test-echo-item-edit]")[0]?.click();
+      expect(editing(), "an echo tile is being edited").to.equal(true);
+    });
+    cy.contains(".screen--echoes span", "Changes save automatically", { timeout: 20000 }).should(($note) => {
       expect($note[0]!.getBoundingClientRect().right, "the note under an echo being edited: on the screen").to.be.at.most(360);
     });
 
