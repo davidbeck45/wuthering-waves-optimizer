@@ -233,6 +233,8 @@ describe("Today", () => {
       .and("contain.text", "the cycle's last phase")
       .and("not.contain.text", "3.9");
     cy.get("[data-test-today-banners]").should("contain.text", "3.8 Phase I").and("contain.text", "Sigrika").and("contain.text", "Qiuyuan");
+    // the new resonator's banner and her weapon's, which Kuro announced in an image only (hand-entered from post 5736)
+    cy.get("[data-test-today-banners]").should("contain.text", "Lily").and("contain.text", "Bloom of Yesterday's Dreamsoil").and("contain.text", "Lullaby");
   });
 
   // the double drop while it runs: the banner states it as numbers (3 doubled claims a day, 40 Waveplates each)

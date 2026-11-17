@@ -6,6 +6,9 @@ import { describe, expect, it, vi } from "vitest";
 import menu from "./__fixtures__/kuroArticleMenu.json";
 import notices from "./__fixtures__/kuroNotices.json";
 import seed from "./data/bannerSeed.json";
+import { MANUAL_BANNERS, SHIPPED_BANNERS } from "./data/shippedBanners";
+import { allCharactersList } from "../../characters/characters";
+import { getWeaponsByType } from "../../weapons/weapons";
 import {
   BANNER_CACHE_KEY,
   BANNER_FEED_OFFLINE,
@@ -299,6 +302,82 @@ describe("the shipped seed", () => {
     // resonators the app has whose banners up to 3.8's first phase have no notice: absent from the feed, not "never featured"
     const seededUpTo = Date.UTC(2026, 10, 17);
     for (const key of ["Jingran", "Hsin", "Suoming"]) expect((runs.get(key) ?? []).filter((r) => r.startMs < seededUpTo), key).toEqual([]);
+  });
+});
+
+describe("hand-entered banners (data/bannerManual.json): the ones Kuro announced in an image post only", () => {
+  /** 2026-11-16 21:00 US Central, five days into 3.8 */
+  const AT = Date.UTC(2026, 10, 17, 3, 0);
+  const shipped = (now: number, extra: Parameters<typeof buildBannerList>[0] = []) =>
+    buildBannerList([...Object.values(SHIPPED_BANNERS.articles), ...extra], { now, releases: SHIPPED_BANNERS.releases });
+  /** the app's own lists, read directly: a name the app does not carry has no key */
+  const appKey = (list: ReadonlyArray<{ key: string; name: string }>, name: string): string | null => list.find((x) => x.name === name)?.key ?? null;
+  const pistols = Object.values(getWeaponsByType("Pistols") as Record<string, { key: string; name: string }[]>).flat();
+
+  it("adds Lily's banner and Lullaby's to 3.8's first phase, with the phase's own dates and 4-stars (Kuro's post 5736)", () => {
+    const live = liveBanners(shipped(AT), AT);
+    expect(live.map((b) => [b.type, b.fiveStars.map((f) => f.name).join(), b.articleId])).toEqual([
+      ["resonator", "Lily", 5736],
+      ["resonator", "Sigrika", 5754],
+      ["resonator", "Qiuyuan", 5754],
+      ["weapon", "Lullaby", 5736],
+      ["weapon", "Solsworn Ciphers", 5754],
+      ["weapon", "Emerald Sentence", 5754],
+    ]);
+    const [lily, sigrika, , lullaby, solsworn] = live;
+    expect([lily!.label, lily!.title, lily!.category, lily!.poolTypes, lily!.selectable]).toEqual(["3.8 Phase I", "Bloom of Yesterday's Dreamsoil", "featured", [1], false]);
+    expect([lullaby!.label, lullaby!.title, lullaby!.category, lullaby!.poolTypes]).toEqual(["3.8 Phase I", "Lullaby", "featured", [2]]);
+    // the image's Duration line is the phase notice's: "Version 3.8 Update - 2026-12-03 09:59 (server time)"
+    expect([lily!.startApprox, lily!.startMs, lily!.endMs]).toEqual([true, sigrika!.startMs, sigrika!.endMs]);
+    expect([lullaby!.startApprox, lullaby!.startMs, lullaby!.endMs]).toEqual([true, solsworn!.startMs, solsworn!.endMs]);
+    expect(lily!.fourStars).toEqual(sigrika!.fourStars);
+    expect(lullaby!.fourStars).toEqual(solsworn!.fourStars);
+    // released only: not listed a minute before 3.8's patch notes
+    expect(shipped(Date.UTC(2026, 10, 12, 1, 59)).some((b) => b.articleId === 5736)).toBe(false);
+  });
+
+  it("gives Lily and Lullaby the key the app's own lists have for them, and none while the app does not carry them", () => {
+    // Lily and Lullaby reach the app with its own 3.8 sync: before it both names stay without a key (the cards and the
+    // advisor say the calculator does not have the item yet), after it they resolve. Either way the banner is listed.
+    const live = liveBanners(shipped(AT), AT);
+    const lily = live.find((b) => b.title === "Bloom of Yesterday's Dreamsoil")!;
+    const lullaby = live.find((b) => b.title === "Lullaby")!;
+    expect(lily.fiveStars).toEqual([{ name: "Lily", key: appKey(allCharactersList, "Lily") }]);
+    expect(lullaby.fiveStars).toEqual([{ name: "Lullaby", key: appKey(pistols, "Lullaby") }]);
+    // the 4-stars are old items: all in the app
+    expect([...lily.fourStars, ...lullaby.fourStars].filter((f) => !f.key)).toEqual([]);
+    // a hand-entered name the app does not know is the only kind allowed to stay without a key
+    const unresolved = shipped(Number.POSITIVE_INFINITY).flatMap((b) => [...b.fiveStars, ...b.fourStars].map((f) => ({ f, b }))).filter((x) => !x.f.key);
+    for (const { f, b } of unresolved) {
+      expect(MANUAL_BANNERS.articles[String(b.articleId)], `${f.name} (notice ${b.articleId})`).toBeDefined();
+      expect(appKey(b.type === "weapon" ? pistols : allCharactersList, f.name), f.name).toBeNull();
+    }
+  });
+
+  it("keeps a hand-entered record apart from the generated seed, and folds it into Kuro's text notice of the same banner", () => {
+    const generated = decodeBannerCache(JSON.stringify(seed))!;
+    for (const [id, a] of Object.entries(MANUAL_BANNERS.articles)) {
+      expect(a.id).toBe(Number(id));
+      expect(generated.articles[id], `no generated notice ${id}`).toBeUndefined();
+      // the refresh only ever fetches Convene notices, so it never writes over the image post's record
+      expect(isConveneNotice({ articleId: a.id, articleTitle: a.title })).toBe(false);
+      expect(a.published).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+      expect(a.banners.length).toBeGreaterThan(0);
+      for (const b of a.banners) expect([b.fiveStars.length, b.fourStars.length, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(b.end)]).toEqual([1, 3, true]);
+    }
+    expect(decodeBannerCache(JSON.stringify(MANUAL_BANNERS))).not.toBeNull();
+    // everything hand-entered has started (released content only)
+    expect(buildBannerList(Object.values(MANUAL_BANNERS.articles), { now: AT, releases: SHIPPED_BANNERS.releases })).toHaveLength(2);
+    // should Kuro post the banner as text after all, there is still one card for it
+    const lilyRaw = MANUAL_BANNERS.articles["5736"]!.banners[0]!;
+    const text = { id: 5990, title: "[Bloom of Yesterday's Dreamsoil] Featured Resonator Convene", published: "2026-11-11 11:05:00", version: null, phase: null, banners: [{ ...lilyRaw }] };
+    const cards = shipped(AT, [text]).filter((b) => b.fiveStars[0]!.name === "Lily");
+    expect(cards).toHaveLength(1);
+    expect(cards[0]!.sourceIds).toEqual(["5736:0", "5990:0"]);
+    // and the seed a first visit is handed is the two together, with the seed's release times
+    expect(Object.keys(SHIPPED_BANNERS.articles).length).toBe(Object.keys(generated.articles).length + Object.keys(MANUAL_BANNERS.articles).length);
+    expect(SHIPPED_BANNERS.releases).toEqual(generated.releases);
+    expect(SHIPPED_BANNERS.fetchedAt).toBe(0);
   });
 });
 

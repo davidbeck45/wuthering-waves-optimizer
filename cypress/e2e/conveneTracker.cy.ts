@@ -258,15 +258,20 @@ describe("released content only", () => {
     cy.get("[data-test-convene-live-chip]").should("contain.text", "3.7 Phase I");
   });
 
-  // The shipped seed alone (the menu answers empty): Kuro's notice 5754 and 3.8's patch notes entry, 2026-11-12 10:00 CST.
+  // The shipped data alone (the menu answers empty): Kuro's notice 5754 and 3.8's patch notes entry, 2026-11-12 10:00
+  // CST, plus the two banners Kuro announced in an image only (post 5736, hand-entered): Lily's and Lullaby's.
   const IN_3_8 = Date.UTC(2026, 10, 17, 3, 0); // 2026-11-16 21:00 US Central, five days into 3.8
 
   it("lists version 3.8's first phase as Kuro's notice states it", () => {
     cy.clock(IN_3_8, ["Date"]);
     interceptNews([]);
     cy.visit("/convene?tab=banners", asia);
-    cy.get("[data-test-convene-live-banner]").should("have.length", 4);
-    for (const name of ["Sigrika", "Qiuyuan", "Solsworn Ciphers", "Emerald Sentence"]) {
+    cy.get("[data-test-convene-live-banner]").should("have.length", 6);
+    // the new resonator and her weapon come first in their kind, under the banner's own title, and link to the image post
+    cy.get("[data-test-convene-live-banner]").first().should("have.attr", "data-test-convene-live-banner", "Lily").and("contain.text", "Bloom of Yesterday's Dreamsoil");
+    cy.get('[data-test-convene-live-banner="Lily"] a').should("have.attr", "href", "https://wutheringwaves.kurogames.com/en/main/news/detail/5736");
+    cy.get('[data-test-convene-live-banner="Sigrika"] a').should("have.attr", "href", "https://wutheringwaves.kurogames.com/en/main/news/detail/5754");
+    for (const name of ["Lily", "Lullaby", "Sigrika", "Qiuyuan", "Solsworn Ciphers", "Emerald Sentence"]) {
       cy.get(`[data-test-convene-live-banner="${name}"]`).should("contain.text", "Nov 12, 10:00 (version update) – Dec 3, 09:59");
       cy.get(`[data-test-convene-live-banner="${name}"] [data-test-convene-countdown]`).should("have.text", "15d 22h left");
     }
@@ -280,7 +285,7 @@ describe("released content only", () => {
     cy.clock(IN_3_8, ["Date"]);
     interceptNews([]);
     cy.visit("/convene?tab=banners", asia);
-    cy.get("[data-test-convene-live-banner]").should("have.length", 4);
+    cy.get("[data-test-convene-live-banner]").should("have.length.at.least", 4);
     // Sigrika first ran in 3.2's first phase (that version's patch notes), a phase Kuro's news has no notice for: with
     // no earlier banner in the feed her rerun read "First run". The card says what the feed holds instead
     cy.get("[data-test-convene-live]").should("not.contain.text", "First run");

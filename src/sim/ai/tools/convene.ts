@@ -2,7 +2,7 @@
 // on the banners running now, what its next copies add to the player's own build (the app's engine, best rotation),
 // what they cost in Astrite from the player's pity (their imported Convene history, or the pity typed on the page),
 // and the chance their Astrite budget gets there. Reads the page's stored history, banner cache and preferences.
-import seedFile from "../../convene/data/bannerSeed.json";
+import { SHIPPED_BANNERS } from "../../convene/data/shippedBanners";
 import { MAX_PULLS_SINCE_LAST_FIVE } from "../../../convene/simulateConvene";
 import { adviceSummary, advisorTargets, priceAdvice, pullsForAstrite, stepTitle, type AdviceRow, type PoolPityInput } from "../../convene/advisor";
 import { scoreAdvisorTargets } from "../../convene/advisorEngine";
@@ -13,7 +13,7 @@ import { poolOf } from "../../convene/pools";
 import { CONVENE_PREFS_KEY, guessServerRegion, readConvenePrefs, serverOffsetHours } from "../../convene/prefs";
 import { characterName, compactJson, defineTool, nullableString, pct, round, type ToolContext } from "./shared";
 
-const seed = ((seedFile as { default?: unknown }).default ?? seedFile) as unknown as BannerCache;
+const seed: BannerCache = SHIPPED_BANNERS;
 const squash = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 const STATUS_TEXT: Record<AdviceRow["status"], string> = {

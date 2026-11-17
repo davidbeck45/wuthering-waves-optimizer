@@ -39,7 +39,7 @@ const newsLoading = ref(false);
 let refreshing: Promise<void> | null = null;
 let seedPromise: Promise<BannerCache> | null = null;
 function bannerSeed(): Promise<BannerCache> {
-  seedPromise ??= import("../convene/data/bannerSeed.json").then((m) => ((m as { default?: unknown }).default ?? m) as BannerCache);
+  seedPromise ??= import("../convene/data/shippedBanners").then((m) => m.SHIPPED_BANNERS);
   return seedPromise;
 }
 

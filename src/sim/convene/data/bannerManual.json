@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "fetchedAt": 0,
+  "note": "HAND-ENTERED, not generated. Banners Kuro announced in an image post only, so the news feed has no Convene notice to parse them from. Each record is keyed by that image post's article id, carries its title and publish time, and holds only banners that have started. Transcribe the banner title, the featured 5-star, the three 4-stars and the Duration line exactly as the image shows them. A text notice of the same banner folds into the same card (buildBannerList). bannerSeed.json stays generated: never add these there.",
+  "articles": {
+    "5736": {
+      "id": 5736,
+      "title": "Wuthering Waves Update Content | Version 3.8 \"Lilies in a Dying Dream\" Planned for Release on November 12th (UTC+8)",
+      "published": "2026-11-09 18:30:00",
+      "version": "3.8",
+      "phase": "I",
+      "banners": [
+        {
+          "title": "Bloom of Yesterday's Dreamsoil",
+          "category": "featured",
+          "type": "resonator",
+          "selectable": false,
+          "fiveStars": ["Lily"],
+          "fourStars": ["Youhu", "Aalto", "Yangyang"],
+          "start": null,
+          "end": "2026-12-03 09:59",
+          "version": "3.8"
+        },
+        {
+          "title": "Lullaby",
+          "category": "featured",
+          "type": "weapon",
+          "selectable": false,
+          "fiveStars": ["Lullaby"],
+          "fourStars": ["Cadenza", "Celestial Spiral", "Comet Flare"],
+          "start": null,
+          "end": "2026-12-03 09:59",
+          "version": "3.8"
+        }
+      ]
+    }
+  }
+}

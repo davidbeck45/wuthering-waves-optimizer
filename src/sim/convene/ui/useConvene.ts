@@ -132,7 +132,8 @@ let seedPromise: Promise<BannerCache> | null = null;
 let revalidatedAt = 0;
 
 function loadSeed(): Promise<BannerCache> {
-  seedPromise ??= import("../data/bannerSeed.json").then((m) => ((m as { default?: unknown }).default ?? m) as BannerCache);
+  // the generated seed plus the hand-entered records for banners Kuro announced in an image only
+  seedPromise ??= import("../data/shippedBanners").then((m) => m.SHIPPED_BANNERS);
   return seedPromise;
 }
 

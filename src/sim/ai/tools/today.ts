@@ -2,7 +2,7 @@
 // server clock, the Waveplates they logged (when they are full), the events ending soon / running / starting soon read
 // from Kuro's own notices, double drops, the endgame cycles and the Convene banners running now. Reads the page's own
 // caches: an event list exists only once /today has fetched Kuro's notices in this browser.
-import seedFile from "../../convene/data/bannerSeed.json";
+import { SHIPPED_BANNERS } from "../../convene/data/shippedBanners";
 import { BANNER_CACHE_KEY, liveBanners, loadBanners, type BannerCache } from "../../convene/banners";
 import { CONVENE_PREFS_KEY, guessServerRegion, readConvenePrefs, serverOffsetHours } from "../../convene/prefs";
 import { bucketEvents, buildEventList, doubleDropsAt, type TimedEvent } from "../../today/durations";
@@ -14,7 +14,7 @@ import { readTodayState, TODAY_STATE_KEY } from "../../today/state";
 import { projectWaveplates } from "../../today/waveplates";
 import { compactJson, defineTool, topN } from "./shared";
 
-const seed = ((seedFile as { default?: unknown }).default ?? seedFile) as unknown as BannerCache;
+const seed: BannerCache = SHIPPED_BANNERS;
 
 export const todayTool = defineTool<Record<string, never>>({
   name: "today",
