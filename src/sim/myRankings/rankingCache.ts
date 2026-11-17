@@ -11,7 +11,7 @@
 // scoring for seconds. A ranking that did not fully score stays in module memory: the page that shows it says so, and
 // a reload scores again.
 import { scoredCharacters } from "../echoLab/fingerprint";
-import { lostChunk, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
+import { lostChunk, onOtherBuildRecord, onSavedResultsCleared, savedSlot, tabCopyStamp } from "../persist/savedResults";
 import type { RankProgressItem, RosterRanking } from "./rankRoster";
 
 /** bump when RosterRanking's shape or the scoring changes in a way an old cached entry must not survive */
@@ -255,6 +255,17 @@ function noteScored(fingerprint: string, ranking: RosterRanking): void {
   if (ranking.incomplete || typeof window === "undefined") return;
   void import("../numbersLog/recordRanking").then((m) => m.recordScoredRanking(fingerprint, ranking)).catch(() => undefined);
 }
+
+// After an update a page asks for the saved ranking and finds the last build's: it is dropped unread, as ever, but the
+// numbers log is handed it first and keeps it as that build's record, so the run about to start has a "before"
+// (src/sim/numbersLog/recordRanking.ts `recordEarlierRanking`). Without this the first visit after an update could
+// never say what the update moved.
+onOtherBuildRecord((record) => {
+  if (record.cache !== "ranking" || typeof window === "undefined") return;
+  void import("../numbersLog/recordRanking")
+    .then((m) => m.recordEarlierRanking(record.fingerprint, record.value as RosterRanking, { build: record.build, at: record.savedAt }))
+    .catch(() => undefined);
+});
 
 // Settings › Clear saved results: this tab's copies go too
 onSavedResultsCleared(() => {

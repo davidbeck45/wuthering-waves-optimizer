@@ -88,6 +88,29 @@ export interface SavedResultsOptions {
 
 const keyOf = (cache: string, fingerprint: string): string => `${cache}|${fingerprint}`;
 
+/** A saved result of another app build, as it is handed over just before it is dropped unread. */
+export interface OtherBuildRecord {
+  cache: string;
+  fingerprint: string;
+  /** the build that computed it */
+  build: string;
+  /** when it was saved (ms since epoch) */
+  savedAt: number;
+  value: unknown;
+}
+// eslint-disable-next-line no-unused-vars -- the parameter of a function type
+type OtherBuildHook = (record: OtherBuildRecord) => void;
+const otherBuildHooks = new Set<OtherBuildHook>();
+
+/** A saved result is never shown under another app build: it is dropped when it is read. A listener here is handed it
+ *  first, when everything else about it holds: the same cache, schema and data (the fingerprint), and a value its cache
+ *  accepts. The numbers log listens (myRankings/rankingCache.ts): the last build's ranking of this very account is the
+ *  "before" of the first record after an update. Returns the unregister function. */
+export function onOtherBuildRecord(hook: OtherBuildHook): () => void {
+  otherBuildHooks.add(hook);
+  return () => otherBuildHooks.delete(hook);
+}
+
 function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
   return new Promise((resolve) => {
     const timer = setTimeout(() => resolve(fallback), ms);
@@ -222,6 +245,15 @@ export function createSavedResults(options: SavedResultsOptions): SavedResults {
       }
     }
     if (!ok) {
+      // another build's result of exactly this data: still never shown, but a listener may keep what it says
+      if (otherBuildHooks.size && meta && meta.cache === cache && meta.schema === schema && meta.build !== build && typeof text === "string") {
+        try {
+          const old: unknown = JSON.parse(text);
+          if (old != null && isValid(old)) for (const hook of [...otherBuildHooks]) hook({ cache, fingerprint, build: meta.build, savedAt: meta.savedAt, value: old });
+        } catch {
+          /* unparseable, or a listener that threw: dropped below as before */
+        }
+      }
       // stale (another build or schema) or corrupt: never shown, and not kept
       void store.remove([key]).catch(() => undefined);
       return null;

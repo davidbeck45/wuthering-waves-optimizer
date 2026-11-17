@@ -23,6 +23,8 @@
       </div>
     </div>
 
+    <!-- while a ranking runs, the note above says a record is on its way: "open My account" would send him away from it -->
+    <div v-else-if="state.kind === 'empty' && running" data-test-numbers-empty-running></div>
     <div v-else-if="state.kind === 'empty'" class="nm-card" data-test-numbers-empty>
       <p>{{ EMPTY_TEXT }}</p>
       <div class="nm-card__actions">

@@ -55,10 +55,14 @@ function whenIdle(): Promise<void> {
   });
 }
 
+/** an earlier ranking on its way into the log (`recordEarlierRanking`): the run's own record goes in after it */
+let earlier: Promise<unknown> = Promise.resolve();
+
 export async function recordScoredRanking(fingerprint: string, ranking: RosterRanking, env: Partial<RecordEnv> = {}): Promise<RecordOutcome> {
   try {
     if (!fingerprint || !ranking || ranking.incomplete) return "skipped";
     await (env.idle ?? whenIdle)();
+    await earlier;
     const storage = "storage" in env ? (env.storage ?? null) : localArea();
     if (!storage) return "skipped";
     const account = (env.account ?? storesAccount)();
@@ -86,4 +90,44 @@ export async function recordScoredRanking(fingerprint: string, ranking: RosterRa
   } catch {
     return "skipped"; // no Pinia (a test, a script), a store that will not read: the page that ranked is untouched
   }
+}
+
+/**
+ * The last app build's ranking of this very account, found in the Saved results as a page asked for the saved one
+ * (persist/savedResults.ts `onOtherBuildRecord`, through rankingCache.ts). It becomes a record of that build, at the
+ * time it was saved, so the run about to start is read against it: the first visit after an update says what the
+ * update moved. The signatures are taken from the stores, as for a run, and for the same reason they are right: the
+ * record was filed under the fingerprint the stores hash to now.
+ *
+ * Not taken: from this same build (a run records itself), behind a record the log already has, equal to the last
+ * record (from the next update on the log has it already: it was recorded when it was scored), or dated in the future.
+ */
+export function recordEarlierRanking(fingerprint: string, ranking: RosterRanking, meta: { build: string; at: number }, env: Partial<RecordEnv> = {}): Promise<RecordOutcome> {
+  const job = (async (): Promise<RecordOutcome> => {
+    try {
+      if (!fingerprint || !ranking || ranking.incomplete || !meta?.build || !Number.isFinite(meta.at)) return "skipped";
+      if (env.idle) await env.idle(); // no wait of its own: it has to be in before the run ends
+      const storage = "storage" in env ? (env.storage ?? null) : localArea();
+      if (!storage) return "skipped";
+      if (meta.build === (env.build ?? appBuildId())) return "skipped";
+      if (meta.at > (env.now ?? Date.now)()) return "skipped";
+      const account = (env.account ?? storesAccount)();
+      const options = fingerprintOptions(fingerprint);
+      if (rankingFingerprint({ characters: account.characters, echoes: account.echoes, teams: account.teams, ...options }) !== fingerprint) return "skipped";
+      const entry = entryFromRanking(ranking, account, { at: meta.at, build: meta.build, autoTeamBuffs: options.autoTeamBuffs });
+      if (!entry) return "skipped";
+      return await withLogLock((): RecordOutcome => {
+        const log = readLog(storage);
+        const last = log.entries[log.entries.length - 1];
+        if (last && meta.at <= last.at) return "skipped";
+        const result = appendEntry(log, entry, null);
+        if (!result.stored) return "same";
+        return writeLog(result.log, storage) ? "stored" : "skipped";
+      });
+    } catch {
+      return "skipped";
+    }
+  })();
+  earlier = job.catch(() => undefined);
+  return job;
 }

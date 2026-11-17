@@ -120,8 +120,10 @@ export interface AppendResult {
   stored: boolean;
 }
 
-/** `entry` at the end of the log, unless it equals the last one; then the caps. `seen` is noted either way. */
-export function appendEntry(log: NumbersLog, entry: LogEntry, seen: LastSeen, caps: { maxEntries?: number; maxBytes?: number } = {}): AppendResult {
+/** `entry` at the end of the log, unless it equals the last one; then the caps. `seen` is noted either way (null: this
+ *  entry is not a ranking just seen, the log's own note stands). */
+export function appendEntry(log: NumbersLog, entry: LogEntry, seen: LastSeen | null, caps: { maxEntries?: number; maxBytes?: number } = {}): AppendResult {
+  seen ??= log.seen;
   const maxEntries = caps.maxEntries ?? MAX_ENTRIES;
   const maxBytes = caps.maxBytes ?? MAX_BYTES;
   const last = log.entries[log.entries.length - 1];

@@ -288,6 +288,8 @@ describe("what moved in your numbers", () => {
     cy.get("[data-test-numbers-newest]").should("contain.text", "15 Nov");
     cy.get("[data-test-numbers-since] option:checked").should("contain.text", "the one before").and("contain.text", "12 Nov");
     cy.get("[data-test-numbers-summary]").should("have.text", "3 figures moved, 2 did not.");
+    // this log was seeded, not scored here: the page says the newest record is behind and where a new one comes from
+    cy.get("[data-test-numbers-stale]").should("contain.text", "since the last record").find('a[href="/account"]').should("contain.text", "Open My account");
     // no import and no app update between these two: neither is said
     cy.get("[data-test-numbers-import]").should("not.exist");
     cy.get("[data-test-numbers-app-update]").should("not.exist");
@@ -376,21 +378,65 @@ describe("what moved in your numbers", () => {
     cy.get("[data-test-numbers-move]").should("have.length", 1);
   });
 
-  it("records a real ranking, and after a build change says what moved and why", () => {
-    const visit = (edit?: (characters: Record<string, any>) => void) =>
-      cy.visit("/account", {
-        onBeforeLoad(win: Window) {
-          win.sessionStorage.clear(); // score on this visit
-          const stored = win.localStorage.getItem("character");
-          const data = stored ? JSON.parse(stored) : { activeCharacter: "Chisa", characters: { Chisa: { weapon: "Kumokiri", weapons: { Kumokiri: { refinement: "1" } } } } };
-          edit?.(data.characters);
-          win.localStorage.setItem("character", JSON.stringify(data));
-          const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
-          settings.config = { ...settings.config, useClassicUi: false };
-          win.localStorage.setItem("settings", JSON.stringify(settings));
-        },
-      });
+  /** /account on a one-character account (kept across visits of one test), scored on this visit */
+  const visit = (edit?: (characters: Record<string, any>) => void) =>
+    cy.visit("/account", {
+      onBeforeLoad(win: Window) {
+        win.sessionStorage.clear(); // score on this visit
+        const stored = win.localStorage.getItem("character");
+        const data = stored ? JSON.parse(stored) : { activeCharacter: "Chisa", characters: { Chisa: { weapon: "Kumokiri", weapons: { Kumokiri: { refinement: "1" } } } } };
+        edit?.(data.characters);
+        win.localStorage.setItem("character", JSON.stringify(data));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
 
+  /** Make the ranking this browser saved look like the last app build's: another build id, three days old, and
+   *  `edit` applied to it. Resolves with how many records it changed. */
+  function ageSavedRanking(win: Window, edit: (ranking: any) => void): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const open = win.indexedDB.open("wtplus-results", 1);
+      open.onupgradeneeded = () => {
+        // not there yet: the same two stores the app makes (persist/resultStore.ts)
+        if (!open.result.objectStoreNames.contains("meta")) open.result.createObjectStore("meta", { keyPath: "key" });
+        if (!open.result.objectStoreNames.contains("data")) open.result.createObjectStore("data");
+      };
+      open.onerror = () => reject(open.error);
+      open.onsuccess = () => {
+        const db = open.result;
+        const tx = db.transaction(["meta", "data"], "readwrite");
+        const metas = tx.objectStore("meta");
+        const data = tx.objectStore("data");
+        let changed = 0;
+        const all = metas.getAll();
+        all.onsuccess = () => {
+          for (const meta of all.result) {
+            if (meta.cache !== "ranking") continue;
+            const get = data.get(meta.key);
+            get.onsuccess = () => {
+              const ranking = JSON.parse(get.result);
+              edit(ranking);
+              data.put(JSON.stringify(ranking), meta.key);
+              metas.put({ ...meta, build: "0.0.1+e95d4e6+olderbuild00", savedAt: meta.savedAt - 3 * 86_400_000 });
+              changed += 1;
+            };
+          }
+        };
+        tx.oncomplete = () => {
+          db.close();
+          resolve(changed);
+        };
+        tx.onerror = () => {
+          db.close();
+          reject(tx.error);
+        };
+      };
+    });
+  }
+
+  it("records a real ranking, and after a build change says what moved and why", () => {
     // the first visit: one record, nothing to compare
     visit();
     cy.get("[data-test-numbers-card]").should("exist");
@@ -425,6 +471,45 @@ describe("what moved in your numbers", () => {
     cy.get('[data-test-numbers-move][data-id="Chisa"] [data-test-numbers-to-rankings]').click();
     cy.location("pathname").should("eq", "/my-rankings");
     cy.location("search").should("contain", "focus=Chisa");
+  });
+
+  it("after an app update, the first visit already says what the update moved", () => {
+    visit();
+    cy.get("[data-test-numbers-card-first]", { timeout: 120000 }).should("exist");
+    cy.get("[data-test-account-source]", { timeout: 120000 }).should("have.attr", "data-state", "live"); // the ranking is saved by now
+    // the state the site is in on the first visit after an update: the last build's ranking in the Saved results
+    // (here with Chisa a tenth lower, as if the update raised her), and a log that has never seen that build
+    cy.window()
+      .then((win) =>
+        ageSavedRanking(win, (ranking) => {
+          for (const c of ranking.characters) if (c.best) c.best.avgDamage *= 0.9;
+        }),
+      )
+      .should("eq", 1);
+    cy.window().then((win) => win.localStorage.removeItem(LOG_KEY));
+    visit();
+    cy.get('[data-test-numbers-card][data-state="compared"]', { timeout: 120000 }).should("exist");
+    cy.get("[data-test-numbers-card-app-update]").should("have.text", "The app was updated between the two.");
+    cy.get('[data-test-numbers-card] [data-test-numbers-move][data-id="Chisa"]').within(() => {
+      cy.get("[data-test-numbers-change]").should("contain.text", "+11.1 %");
+      cy.get("[data-test-numbers-cause]").should("have.text", "An app update: no build in it changed.");
+    });
+    cy.window().then((win) => {
+      const log = JSON.parse(win.localStorage.getItem(LOG_KEY) ?? "{}");
+      expect(log.e, "the last build's record, then this one's").to.have.length(2);
+      expect(log.s[log.e[0].b], "the older record names the build that scored it").to.eq("0.0.1+e95d4e6+olderbuild00");
+      expect(log.e[0].t, "and keeps the time it was saved").to.be.lessThan(log.e[1].t - 2 * 86_400_000);
+    });
+    // the full list says it once, with where to read what changed
+    cy.get("[data-test-numbers-card-all]").click();
+    cy.get("[data-test-numbers-app-update]").should("have.length", 1).find('a[href="/updates"]').should("exist");
+    cy.get("[data-test-numbers-summary]").should("have.text", "1 figure moved, 0 did not.");
+
+    // a second visit on the same build: the saved ranking is this build's now, nothing more is recorded
+    visit();
+    cy.get("[data-test-account-source]", { timeout: 120000 }).should("have.attr", "data-state", "live");
+    cy.wait(1500);
+    cy.window().then((win) => expect(JSON.parse(win.localStorage.getItem(LOG_KEY) ?? "{}").e, "still two entries").to.have.length(2));
   });
 
   it("fits a phone", () => {
