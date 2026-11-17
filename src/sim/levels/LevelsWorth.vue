@@ -100,6 +100,9 @@
         <!-- the order to take them in, one step at a time -->
         <template v-else>
           <p class="lw__note" data-test-levels-path-how>{{ pathHow(plan) }}</p>
+          <button type="button" class="lw-more" data-test-levels-path-order @click="pathOrder = pathOrder === 'value' ? 'gain' : 'value'">
+            {{ pathOrder === "value" ? "Order by the biggest gain instead" : "Order by gain per Shell Credit instead" }}
+          </button>
           <p v-if="running" class="lw__note" role="status" data-test-levels-path-working>Working out the order<template v-if="progress.total">: {{ progress.done }} of {{ progress.total }} steps</template>…</p>
           <p v-else-if="headline" class="lw-headline" data-test-levels-path-headline>{{ headline }}</p>
           <ol class="lw-path" data-test-levels-path>
@@ -197,6 +200,8 @@ const saved = computed(() => savedProgressOf(characters.value?.[props.characterK
  *  nothing saved the calculator runs the top everywhere and the saved view has nothing to list */
 const from = ref<"saved" | "scratch" | "custom">(hasSavedProgress(saved.value) ? "saved" : "scratch");
 const view = ref<"list" | "path">("list");
+/** how the order picks its next step: the most gain per Shell Credit, or the biggest gain (one tap away) */
+const pathOrder = ref<"value" | "gain">("value");
 const allSteps = ref(false);
 
 const plan = shallowRef<LevelPlan | null>(null);
@@ -235,20 +240,24 @@ let signal: { cancelled: boolean } | null = null;
 let generation = 0;
 /** what the plan on show was worked out for */
 let shownFor = "";
+let shownStart = "";
 
 async function run(): Promise<void> {
   const data = table.value;
   if (!data || !seen.value || waiting.value) return;
   const withPath = view.value === "path";
   const levels = from.value === "custom" ? Object.fromEntries(tryFields.value.map((f) => [f.key, tried[f.key]])) : null;
-  const key = `${props.characterKey}|${from.value}|${levels ? JSON.stringify(levels) : ""}`;
+  const start = `${props.characterKey}|${from.value}|${levels ? JSON.stringify(levels) : ""}`;
+  const key = `${start}|${pathOrder.value}`;
   // the same character and start: keep what is there unless the order is wanted and not worked out yet
   if (shownFor === key && plan.value && (!withPath || plan.value.pathState === "complete" || plan.value.pathState === "capped" || running.value)) return;
   if (signal) signal.cancelled = true;
   const mine = { cancelled: false };
   signal = mine;
   const gen = ++generation;
-  if (shownFor !== key) plan.value = null;
+  // a new start empties the section; a new order for the same start keeps what is on show while it is worked out
+  if (shownStart !== start) plan.value = null;
+  shownStart = start;
   shownFor = key;
   error.value = null;
   running.value = withPath;
@@ -268,6 +277,7 @@ async function run(): Promise<void> {
         from: levels ?? (from.value === "scratch" ? "scratch" : "saved"),
         autoTeamBuffs: autoTeamBuffs.value,
         path: withPath,
+        pathOrder: pathOrder.value,
         signal: mine,
         onProgress: (p, done) => {
           if (gen !== generation) return;
@@ -285,7 +295,7 @@ async function run(): Promise<void> {
   }
 }
 
-watch([table, seen, waiting, view], () => void run());
+watch([table, seen, waiting, view, pathOrder], () => void run());
 watch(from, () => {
   allSteps.value = false;
   void run();
@@ -297,6 +307,7 @@ watch(tried, () => {
 // a new ranking (Recompute, or the roster finishing): what is shown was scored on the old one
 watch([() => props.rank, () => props.rankingTeams], () => {
   shownFor = "";
+  shownStart = "";
   void run();
 });
 

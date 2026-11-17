@@ -118,6 +118,25 @@ describe("what each level is worth, in the account drawer", () => {
       expect($steps[0]!.querySelector(".lw-step__n")!.textContent, "numbered from 1").to.eq("1");
       expect($steps[0]!.querySelector(".lw-gain")!.textContent, "each step says what its percent is of").to.match(/^\+[\d.,<]+%\s*team$/);
     });
+    // one tap for the other order: the biggest gain first. The same steps, the same end
+    cy.get("[data-test-levels-step]").then(($steps) => {
+      const end = $steps.last().find(".lw-step__run").text();
+      const firstByValue = percent($steps.first().find(".lw-gain b").text());
+      const count = $steps.length;
+      cy.get("[data-test-levels-path-order]").should("contain.text", "Order by the biggest gain instead").click();
+      cy.get("[data-test-levels-path-how]", { timeout: 60000 }).should("contain.text", "adds the most team damage at that point").and("not.contain.text", "for its Shell Credits");
+      cy.get("[data-test-levels-path-order]").should("contain.text", "Order by gain per Shell Credit instead");
+      cy.get("[data-test-levels-path-headline]", { timeout: 60000 }).should("exist");
+      cy.get("[data-test-levels-step]").should("have.length", count);
+      cy.get("[data-test-levels-step]").last().find(".lw-step__run").should("have.text", end);
+      // both orders choose their first step among the same next steps: by the biggest gain it gains at least as much
+      cy.get("[data-test-levels-step]").first().find(".lw-gain b").should(($first) => {
+        expect(percent($first.text()), "the first step by the biggest gain").to.be.at.least(firstByValue);
+      });
+      cy.get("[data-test-levels-path-order]").click();
+      cy.get("[data-test-levels-path-how]", { timeout: 60000 }).should("contain.text", "for its Shell Credits");
+      cy.get("[data-test-levels-path-headline]", { timeout: 60000 }).should("exist");
+    });
     cy.get('[data-test-levels-view="list"]').click();
     cy.get("[data-test-levels-row]").should("have.length", 4);
 
@@ -230,7 +249,7 @@ describe("what each level is worth, in the account drawer", () => {
           .map((el) => `${el.className}:${Math.round(el.getBoundingClientRect().right)}`);
         expect(over, "elements past the right edge").to.deep.equal([]);
         // offsetHeight = layout px (Electron's page-enter scale skews getBoundingClientRect)
-        doc.querySelectorAll<HTMLElement>("[data-test-levels-from], [data-test-levels-view], [data-test-levels-row] summary, [data-test-levels-path-more], [data-test-levels-try-field]").forEach((el) => {
+        doc.querySelectorAll<HTMLElement>("[data-test-levels-from], [data-test-levels-view], [data-test-levels-row] summary, [data-test-levels-path-more], [data-test-levels-path-order], [data-test-levels-try-field]").forEach((el) => {
           expect(el.offsetHeight, `${el.textContent?.trim().slice(0, 30)} tap height`).to.be.at.least(40);
         });
       });
