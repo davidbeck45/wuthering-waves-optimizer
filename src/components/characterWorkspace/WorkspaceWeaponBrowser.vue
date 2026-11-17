@@ -160,6 +160,8 @@ import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import AppChooserModal from "../AppChooserModal.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
+import { useWeaponBrowserFilters } from "../../composables/useWeaponBrowserFilters";
+import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
@@ -194,9 +196,10 @@ const settingsStore = useSettingsStore();
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const search = ref("");
-const rarityFilter = ref<number | null>(null);
-const mainStatFilter = ref<string | null>(null);
-const sortBy = ref<"impact" | "rarity" | "name">("impact");
+// Search is local and clears on pick; the filters and sort are remembered
+// per character (see useWeaponBrowserFilters).
+const { rarityFilter, mainStatFilter, sortBy, resetWeaponBrowserFilters } =
+  useWeaponBrowserFilters(() => props.character);
 const impactByKey = ref<Record<string, WeaponImpactRange | null>>({});
 const impactsLoading = ref(false);
 
@@ -291,13 +294,12 @@ function rarityTextClasses(rarity: number) {
 
 function formatImpact(range: WeaponImpactRange | null | undefined): string {
   if (!range) return "";
-  const sign = range.fullyBuffedDelta >= 0 ? "+" : "";
-  return `${sign}${Math.round(range.fullyBuffedDelta).toLocaleString()} · ${sign}${(range.fullyBuffedPct * 100).toFixed(1)}%`;
+  return signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).text;
 }
 
 function impactBadgeClasses(range: WeaponImpactRange | null | undefined) {
   if (!range) return "badge-ghost";
-  return range.fullyBuffedPct >= 0 ? "badge-success" : "badge-error";
+  return deltaToneBadgeClass(signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).tone);
 }
 
 const enemyConfig = computed(() => resolveTeamEnemyConfig(characters.value[props.character]));
@@ -358,14 +360,14 @@ function triggerCloseModal() {
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
 
+// After a pick only the search clears — the filters are remembered for this
+// character. "Clear" (resetFilters) is the way to drop them.
 function reset() {
   search.value = "";
-  resetFilters();
 }
 
 function resetFilters() {
-  rarityFilter.value = null;
-  mainStatFilter.value = null;
+  resetWeaponBrowserFilters();
 }
 
 function toggleRarityFilter(rarity: number) {

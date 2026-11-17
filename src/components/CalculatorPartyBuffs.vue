@@ -106,6 +106,7 @@
         </div>
         <CalculatorCharacterBrowser
           :character="character"
+          :filter-scope-character="character"
           ref="partyMemberBrowser1Ref"
           @character-browser:chosen-character="handlePartyMember1Chosen" />
       </div>
@@ -153,6 +154,7 @@
         </div>
         <CalculatorCharacterBrowser
           :character="character"
+          :filter-scope-character="character"
           ref="partyMemberBrowser2Ref"
           @character-browser:chosen-character="handlePartyMember2Chosen" />
       </div>
@@ -337,7 +339,7 @@ import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
-import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
+import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch, resolveHideImpossible } from "../buffs/buffFilters";
 
 type PartyBuffEmit = { key: string; data: Record<string, unknown> };
 
@@ -436,9 +438,9 @@ const hideUnusedBuffs = computed({
 // "Hide impossible" (ADR 0033).
 const hideImpossibleBuffs = computed({
   get() {
-    return (
+    return resolveHideImpossible(
       (currentCharacter.value as { teamBuffs?: { hideImpossible?: boolean } })?.teamBuffs
-        ?.hideImpossible ?? false
+        ?.hideImpossible,
     );
   },
   set(value: boolean) {

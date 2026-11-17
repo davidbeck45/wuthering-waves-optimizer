@@ -128,6 +128,7 @@
       populate. -->
       <WorkspaceCharacterBrowser
         :character="character"
+        :filter-scope-character="character"
         ref="partyMemberBrowser1Ref"
         @character-browser:chosen-character="handlePartyMember1Chosen" />
     </div>
@@ -205,6 +206,7 @@
       Teammate 1's browser instance. -->
       <WorkspaceCharacterBrowser
         :character="character"
+        :filter-scope-character="character"
         ref="partyMemberBrowser2Ref"
         @character-browser:chosen-character="handlePartyMember2Chosen" />
     </div>
@@ -388,7 +390,7 @@ import {
   getModifierLabel,
   type PartyBuffModifier,
 } from "../buffs/teamBuffs";
-import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
+import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch, resolveHideImpossible } from "../buffs/buffFilters";
 import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
@@ -673,9 +675,8 @@ const hideUnused = computed({
 
 const hideImpossible = computed({
   get() {
-    return (
-      (currentCharacter.value as { teamBuffs?: { hideImpossible?: boolean } })?.teamBuffs?.hideImpossible ??
-      false
+    return resolveHideImpossible(
+      (currentCharacter.value as { teamBuffs?: { hideImpossible?: boolean } })?.teamBuffs?.hideImpossible,
     );
   },
   set(value: boolean) {

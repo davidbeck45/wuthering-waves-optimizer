@@ -5,8 +5,18 @@
 import { GUIDE_IMAGES } from "./guides/images";
 import type { GuideImage } from "./guides/types";
 
-/** What a bullet is. Hand-written and optional: history stays untagged (ADR 0054). */
-export type UpdateTag = "feature" | "content" | "labs" | "fix";
+/**
+ * What a bullet is. Hand-written and optional: history before Oct 28, 2026
+ * stays untagged (ADR 0054). Pick the first that fits:
+ * - `labs`: behind a Labs flag
+ * - `fix`: something was wrong and now isn't (including game data errors)
+ * - `content`: game data: a new version, characters, weapons, echoes, rotation presets
+ * - `feature`: something you couldn't do before (including new guides)
+ * - `improvement`: an existing feature does more or works better
+ * - `qol`: a small usability touch that makes things easier or quicker
+ */
+export const UPDATE_TAGS = ["feature", "improvement", "qol", "content", "fix", "labs"] as const;
+export type UpdateTag = (typeof UPDATE_TAGS)[number];
 
 export interface UpdateItemDetails {
   tag?: UpdateTag;
@@ -44,19 +54,81 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = {
-  date: "2026-11-09",
-  headline: "Build cards got redesigned!",
-};
+export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-11-16",
+    dateLabel: "November 16, 2026",
+    items: [
+      "Dragging to reorder echoes, rotations, actions and the Wavescan loadout now shows just the item you're moving, instead of the whole screen in Chrome",
+      "Sigrika's Schemata of Runes and Soliskin Vitality buffs can no longer both be on, matching the game, where each Rune consumption gets one or the other",
+    ],
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" } },
+  },
+  {
+    date: "2026-11-15",
+    dateLabel: "November 15, 2026",
+    items: [
+      "Lily now has frame data, so her rotations show how long they take and the DPS from frame data, and she has four rotation presets: an opener and a loop at RC0 and at RC3",
+      "Lily now has her own substat weights, so echo ratings score HP%, Heavy Attack DMG, Crit DMG and Energy Regen higher for her instead of using the general defaults",
+      "Shorekeeper's echo ratings now value Energy Regen more, since she builds around a high ER target",
+      "Fixed Lily's echo preset, which had the wrong main stats, echoes and substats",
+      "Hide impossible on Team Buffs is now on by default, so weapon buffs your teammates can't use stay out of the way. Turn it off anytime, and your choice is remembered",
+      "Fixed Sound of True Name's 5-piece bonus giving +20% Crit Rate to every attack. It now only applies to Echo Skill damage, as in game, so damage for builds using it is lower and correct",
+    ],
+    itemDetails: {
+      0: { tag: "content" },
+      1: { tag: "improvement" },
+      2: { tag: "improvement" },
+      3: { tag: "fix" },
+      4: { tag: "qol" },
+      5: { tag: "fix" },
+    },
+  },
+  {
+    date: "2026-11-14",
+    dateLabel: "November 14, 2026",
+    items: [
+      "Improved the many damage delta previews for weapons, optimizer loadouts, etc. to handle near 0 better, and make 0 more clear too",
+      "Echo rows on the character Echoes tab and in the inventory now show the echo set icon before the set name, and the set name is easier to read",
+      "The optimizer now shows Already equipped when you're wearing a loadout, so you can't shuffle your echo slots by accident. If your buff settings differ from the optimizer's, a Use optimizer buffs button syncs them",
+      "The Updates page has two new tags, Improvement and Quality of life, so it's easier to tell new features apart from upgrades to existing ones",
+    ],
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "qol" }, 2: { tag: "improvement" }, 3: { tag: "qol" } },
+  },
+  {
+    date: "2026-11-12",
+    dateLabel: "November 12, 2026",
+    items: [
+      "Removes Static Mist from Lily as a recommended weapon",
+      "App now remembers your filters and other settings for characters in teams, weapons, echoes, inventory"
+    ],
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "qol" } },
+  },
+  {
+    date: "2026-11-11",
+    dateLabel: "November 11, 2026",
+    items: [
+      "Version 3.8 is released",
+    ],
+    itemDetails: { 0: { tag: "content" } },
+  },
+  {
+    date: "2026-11-10",
+    dateLabel: "November 10, 2026",
+    items: [
+      "Echo Insights now shows what each priority substat adds to your damage: per 1%, for a typical roll and for a top roll (with how often it drops). A Try a change box answers questions like \"what would 2.5% more Crit Rate give me?\"",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
   {
     date: "2026-11-09",
     dateLabel: "November 9, 2026",
     items: [
       "Build cards got a new look and three layouts to pick from: Columns, Hero and Showcase. Uploaded backgrounds now show evenly behind every panel, and without one the card uses your character's art as a soft background. Pick character art and backgrounds for your build card from a curated list, or keep uploading your own. Each character now keeps its own background, and a new slider fades it if it's too busy",
     ],
-    itemDetails: { 0: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" } },
   },
   {
     date: "2026-11-08",
@@ -64,7 +136,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Optimizer loadout results now show which other resonators are already wearing an echo (\"Also on Zani +2\"), next to \"Already equipped\" for the current one. Hover it to see everyone. Equipping the loadout keeps the echo on them too",
     ],
-    itemDetails: { 0: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" } },
   },
   {
     date: "2026-11-07",
@@ -74,7 +146,7 @@ export const updateEntries: UpdateEntry[] = [
       "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
       "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",
     ],
-    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" }, 1: { tag: "qol" }, 2: { tag: "feature" } },
   },
   {
     date: "2026-11-06",
@@ -86,7 +158,7 @@ export const updateEntries: UpdateEntry[] = [
       "The Info, Formulas, CV & Echo Rating, Credits, Privacy and Legal pages got a visual makeover. Try scoring an echo on CV & Echo Rating, or moving the sliders on Formulas to see how a hit adds up",
       "The Optimizer Guide no longer says echoes have to be entered by hand, and points to the scanners instead",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "feature" }, 4: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "improvement" }, 4: { tag: "fix" } },
   },
   {
     date: "2026-11-02",

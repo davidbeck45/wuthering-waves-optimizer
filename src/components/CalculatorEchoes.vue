@@ -125,7 +125,10 @@
     <CalculatorEchoInsightsPanel
       v-if="isLiveResultBarEnabled"
       class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
-      :character="character"></CalculatorEchoInsightsPanel>
+      :character="character"
+      :roll-values="substatRollValues"
+      :roll-values-loading="substatRollValuesLoading"
+      :measure-change="measureSubstatChange"></CalculatorEchoInsightsPanel>
     <div v-if="!isLiveResultBarEnabled" class="flex flex-wrap items-center gap-2 mb-4">
       <div v-if="echoPresetName" class="badge badge-primary badge-outline">
         Preset: {{ echoPresetName }}
@@ -225,7 +228,10 @@
       <div class="echoes-sidebar">
         <CalculatorEchoInsightsPanel
           :always-expanded="true"
-          :character="character"></CalculatorEchoInsightsPanel>
+          :character="character"
+          :roll-values="substatRollValues"
+          :roll-values-loading="substatRollValuesLoading"
+          :measure-change="measureSubstatChange"></CalculatorEchoInsightsPanel>
       </div>
     </div>
 
@@ -340,11 +346,12 @@ import { isV3UiEnabled } from "../utils/uiVersion";
 import { useGuideDrawer } from "../composables/useGuideDrawer";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
+import { useSubstatRollValues } from "../composables/useSubstatRollValues";
 import { randomString } from "../utils/strings.ts";
 import { useCommunityEchoPresets, type EchoPresetsOpenOptions } from "../composables/useCommunityEchoPresets";
 import { useEchoPresetStatus } from "../composables/useEchoPresetStatus";
 import { trackEvent } from "../utils/analytics";
-import { useDragReorder } from "../composables/useDragReorder";
+import { setDragPreview, useDragReorder } from "../composables/useDragReorder";
 
 const MAX_ECHO_COST = 12;
 
@@ -393,6 +400,7 @@ function handleEchoDragStart(index: number, event: DragEvent) {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", String(index));
   }
+  setDragPreview(event, event.currentTarget as HTMLElement | null);
   onEchoDragStart(index);
 }
 
@@ -403,6 +411,16 @@ const settingsStore = useSettingsStore() as any;
 const { openGuide } = useGuideDrawer();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
+);
+
+// What each substat adds, shared by both insights panels (ADR 0057).
+// Classic has no panel, so nothing is calculated there.
+const {
+  values: substatRollValues,
+  loading: substatRollValuesLoading,
+  measureChange: measureSubstatChange,
+} = useSubstatRollValues(() =>
+  isLiveResultBarEnabled.value ? props.character : null,
 );
 
 const echoesImporter = ref<any>(null);
@@ -761,7 +779,9 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
  * panel indefinitely on very wide screens.
  */
 .echoes-sidebar {
-  flex: 1 1 auto;
+  /* A 0 basis, not auto: sized from its content, the panel's substat value
+     table (ADR 0057) would squeeze the tiles column below its 50%. */
+  flex: 1 1 0;
   max-width: 900px;
   min-width: 0;
   position: sticky;

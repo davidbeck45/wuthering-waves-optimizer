@@ -292,8 +292,9 @@ import WorkspaceWeaponPreview from "./WorkspaceWeaponPreview.vue";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { subStatLabelMap } from "../../echoes/stats";
-import { displayInt, displayPercentage } from "../../utils/numbers";
+import { displayPercentage } from "../../utils/numbers";
 import { aggregateWeaponPassiveStats } from "../../weapons/weaponPassives";
+import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 import { ownedWeaponCandidate } from "../../sim/weapons/ownedWeaponCandidate"; // Wuthering Tools+
 
 const WEAPON_IMAGE_BASE =
@@ -733,13 +734,12 @@ const enemyConfig = computed(() => ({
 
 function formatImpact(range: WeaponImpactRange | null | undefined): string {
   if (!range) return "";
-  const sign = range.fullyBuffedDelta >= 0 ? "+" : "";
-  return `${sign}${displayInt(range.fullyBuffedDelta)} · ${sign}${displayPercentage(range.fullyBuffedPct * 100)}`;
+  return signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).text;
 }
 
 function impactBadgeClasses(range: WeaponImpactRange | null | undefined) {
   if (!range) return "badge-ghost";
-  return range.fullyBuffedPct >= 0 ? "badge-success" : "badge-error";
+  return deltaToneBadgeClass(signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).tone);
 }
 
 let impactRequestId = 0;

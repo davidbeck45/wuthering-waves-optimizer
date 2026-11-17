@@ -1,0 +1,34 @@
+export const rotations: RotationPreset[] = [
+  {
+    name: `Opener at RC0`,
+    description: `Opener for Lily at RC0`,
+    author: `Dorito`,
+    data: {"name":"Opener at RC0","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"basic","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"skill","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"basic","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"basic","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage2DMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":5,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":6,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":7,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Loop at RC0`,
+    description: `Loop for Lily at RC0`,
+    author: `Dorito`,
+    data: {"name":"Loop at RC0","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"intro","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"IntroSkillEternalBloomDMG","isDisabled":false,"buffs":[]},{"type":"skill","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"basic","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":5,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":6,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Opener at RC3`,
+    description: `Opener for Lily at RC3`,
+    author: `Dorito`,
+    data: {"name":"Opener at RC3","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"skill","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Loop at RC3`,
+    description: `Loop for Lily at RC3`,
+    author: `Dorito`,
+    data: {"name":"Loop at RC3","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"intro","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"IntroSkillEternalBloomDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+];
+export const echoes = [
+    {
+        name: `Standard Healing Build`,
+        description: `43311 HealingBonus / ER Flower of Tinged Yearning Build 40.5% CR, 81% CD, 17.2% HP, 17.2% Heavy, 100 HP, 46% ER`,
+        author: `thundertooth`,
+        data: {"echoes":{"0":{"type":3,"echo":"Formrender","echoSet":"FlowerofTingedYearning","stat":"HP","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"HP","echoSubStatsValue3":8.6,"echoSubStatsType4":"HP_FLAT","echoSubStatsValue4":430,"echoSubStatsType5":"EnergyRegen","echoSubStatsValue5":9.2},"1":{"type":3,"echo":"SkywatchLancer","echoSet":"FlowerofTingedYearning","stat":"EnergyRegen","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"HP","echoSubStatsValue3":8.6,"echoSubStatsType4":"HP_FLAT","echoSubStatsValue4":430,"echoSubStatsType5":"EnergyRegen","echoSubStatsValue5":9.2},"2":{"type":4,"echo":"ThousandPuppetPavilion","echoSet":"FlowerofTingedYearning","stat":"HP","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"DEF_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"ATK_FLAT","echoSubStatsValue5":50},"3":{"type":1,"echo":"KernelPuppetAnger","echoSet":"FlowerofTingedYearning","stat":"HP","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"HeavyAttackDMGBonus","echoSubStatsValue5":8.6},"4":{"type":1,"echo":"KernelPuppetGrief","echoSet":"FlowerofTingedYearning","stat":"HP","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HeavyAttackDMGBonus","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF_FLAT","echoSubStatsValue5":50}},"mainEcho":{"echo":"Formrender","rank":5}}
+    }
+];
