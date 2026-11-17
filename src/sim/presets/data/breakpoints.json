@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-17T04:05:40.896Z",
+ "generated": "2026-11-17T04:26:21.018Z",
  "wuwaCalcCommit": "e95d4e6",
  "resonators": {
   "Aemeath": {
@@ -47,7 +47,7 @@
     {
      "level": 2,
      "name": "Aemeath S2: Downy Notes of Snowfluff",
-     "note": "S2: both Duets at x2 of their multiplier — no sequence row on nanoka, so multiplicative. In Tune Rupture the volley ramps 20% an instance to a cap of 5, which over its own 5 instances averages 40% and over Stardust's 10 averages 70%;…"
+     "note": "S2: both Duets at x2 of their multiplier. In Tune Rupture the volley ramps 20% an instance to a cap of 5, which over its own 5 instances averages 40% and over Stardust's 10 averages 70%; the mode's other two lines are paid by Stardust…"
     },
     {
      "level": 3,
@@ -310,7 +310,7 @@
     {
      "level": 2,
      "name": "Camellya S2: Calling Upon the Silent Rose",
-     "note": "S2: Ephemeral at x2.2 of its multiplier — nanoka's second row (2777.38% against 1262.45%), so multiplicative — and Perennial with it, being 100% of Ephemeral's DMG."
+     "note": "S2: Ephemeral at x2.2 of its multiplier — and Perennial with it, being 100% of Ephemeral's DMG."
     },
     {
      "level": 3,
@@ -356,7 +356,7 @@
     {
      "level": 1,
      "name": "Cantarella S1: Embrace the Endless Waves",
-     "note": "S1: every Resonance Skill cast banks a Trance, and Graceful Step, Flickering Reverie and Perception Drain hit at x1.5 — nanoka's second rows (110.40/294.34/1001.99%), multiplicative. The interrupt immunity is no stat."
+     "note": "S1: every Resonance Skill cast banks a Trance, and Graceful Step, Flickering Reverie and Perception Drain hit at x1.5. The interrupt immunity is no stat."
     },
     {
      "level": 2,
@@ -700,7 +700,7 @@
     {
      "level": 2,
      "name": "Denia S2: Tossed in the Tides of Reality",
-     "note": "S2: the mode's own handout above, and Banish at x1.4 — nanoka's second Stage 2 ladder (392.04/627.26/862.48/1097.70/1332.92% against 280.03/448.04/616.06/784.07/952.09), so multiplicative, and over the Dark Core ladder rather than under it."
+     "note": "S2: the mode's own handout above, and Banish at x1.4."
     },
     {
      "level": 3,
@@ -715,7 +715,7 @@
     {
      "level": 5,
      "name": "Denia S5: If Lies Patch Up a Heart",
-     "note": "S5: Final Act - Stagecraft deals 100% more. \"DMG\", not \"DMG Multiplier\", and nanoka carries no second row for it — so a damage bonus rather than a multiplier."
+     "note": "S5: Final Act - Stagecraft deals 100% more. so a damage bonus rather than a multiplier."
     },
     {
      "level": 6,
@@ -800,7 +800,7 @@
     {
      "level": 3,
      "name": "Galbrena S3: Hunter's Blood Oath Rekindled",
-     "note": "S3: the Liberation at x2.3 — nanoka's second rows (255.07% and 208.69% against 110.90% and 90.74%), and nothing else multiplies it, so a plain multiplier reaches exactly that."
+     "note": "S3: the Liberation at x2.3."
     },
     {
      "level": 4,
@@ -810,12 +810,12 @@
     {
      "level": 5,
      "name": "Galbrena S5: Though Light Fades, Torment Consumes",
-     "note": "S5: Encroach, Ascent of Malice and Ravage at x2.5 — nanoka's second rows (26.83%+62.60% and 128.93%), and none of the three carries another multiplier, so this lands on exactly that."
+     "note": "S5: Encroach, Ascent of Malice and Ravage at x2.5."
     },
     {
      "level": 6,
      "name": "Galbrena S6: I Remain Who I am, Eternal My Flame",
-     "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every enhanced form (Ravage aside) at x1.6 — over the Hellfire window rather than beside it, which nanoka's rows settle: 174.61% is 58.99% x 1.85 x 1.6. Multipliers…"
+     "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every enhanced form (Ravage aside) at x1.6. Multipliers sum in one bracket here, so the share this contributes is 60% of whatever already stands. Its Afterflame…"
     }
    ]
   },
@@ -1003,7 +1003,7 @@
     {
      "level": 6,
      "name": "Iuno S6: I Am the Constant in the Chaos",
-     "note": "S6: Absolute Fullness gains 1600% of ATK on its multiplier — additive, nanoka's own S6 row is 1759.05% against the plain 159.05% — and casting it puts her straight back into New Moon (FHA's own updateBuffs) with a full 100 Sentience and…"
+     "note": "S6: Absolute Fullness gains 1600% of ATK on its multiplier — and casting it puts her straight back into New Moon (FHA's own updateBuffs) with a full 100 Sentience and both Arc charges: the second Moonbow string the S6 rotations press…"
     }
    ]
   },
@@ -1083,12 +1083,12 @@
     {
      "level": 1,
      "name": "Jingran S1: Yin and Yang in Harmony, the Ultimate Law of Being",
-     "note": "S1: all four Resonance Skill forms at x1.8 — nanoka's second rows (118.10%+59.05%*3, 93.03%+46.52%*2+69.77%*4, 118.57%*2+237.13%), and nothing else multiplies them, so a plain multiplier lands on exactly that. The interrupt immunity is…"
+     "note": "S1: all four Resonance Skill forms at x1.8. The interrupt immunity is no stat."
     },
     {
      "level": 2,
      "name": "Jingran S2: A Solitary Lantern, Across Lands Shade-Trodden",
-     "note": "S2: both Forte heavies at x1.46 — nanoka's second rows (35.10%+35.10%+70.19%+210.56% and 23.95%*2+30.79%*3+201.80%) — which is one multiplier over the whole bracket, so it carries Fire of Life's own per-HP increase with it, exactly as…"
+     "note": "S2: both Forte heavies at x1.46 — which is one multiplier over the whole bracket, so it carries Fire of Life's own per-HP increase with it, exactly as the node's second sentence says. Entering combat banks 300 Qi and the Boon above."
     },
     {
      "level": 3,
@@ -1147,7 +1147,7 @@
     {
      "level": 5,
      "name": "Jinhsi S5: Frostfire Illumination",
-     "note": "S5: Purge of Light's own 1666.03% x 2.2, which is nanoka's second row for it."
+     "note": ""
     },
     {
      "level": 6,
@@ -1320,7 +1320,7 @@
     {
      "level": 3,
      "name": "Lucy S3: Cyberpunk",
-     "note": "S3, all three clauses against nanoka's own second rows: the Override at 1341.97%/2683.94% (x1.5), Cripple Movement at 1504.51% and Data Crash at 2256.77% (x1.65 apiece). The Crit. DMG is the Override's own, so it is added on that cast…"
+     "note": "The Crit. DMG is the Override's own, so it is added on that cast rather than held as a buff."
     },
     {
      "level": 4,
@@ -1364,12 +1364,12 @@
     {
      "level": 3,
      "name": "Lupa S3: Wolflame Howls in Her Wake",
-     "note": "S3: Nowhere to Run! at x2 — nanoka's second rows (1587.14%+99.20%*4), and nothing else multiplies it. Pack Hunt's own Fusion-count gate and Glory's extra 15% are paid by those two."
+     "note": "S3: Nowhere to Run! at x2. Pack Hunt's own Fusion-count gate and Glory's extra 15% are paid by those two."
     },
     {
      "level": 4,
      "name": "Lupa S4: High and Aflame Is Her Banner",
-     "note": "S4: Dance With the Wolf: Climax at x2.25 — nanoka's second rows (170.16%+127.62%*4+1020.92%), and nothing else multiplies it either."
+     "note": "S4: Dance With the Wolf: Climax at x2.25."
     },
     {
      "level": 5,
@@ -1403,12 +1403,12 @@
     {
      "level": 2,
      "name": "Luuk S2: Avalanche Roaring in Eyes",
-     "note": "S2: the Liberation +60% multiplier — additive with Endnotes' own, which the node says outright and nanoka's rows confirm (1839.00% at one Endnote against 994.09% base, so 1 + 0.6 + 0.25) — and Uncaused Diagnosis doubled: 10% a 10 points…"
+     "note": "S2: the Liberation +60% multiplier — and Uncaused Diagnosis doubled: 10% a 10 points of Tune Break Boost to a 60% cap, which is the base reading again on top of itself."
     },
     {
      "level": 3,
      "name": "Luuk S3: Spine Tempered by Golden Rain",
-     "note": "S3: +136% multiplier on every Aureole form in Aureate Judge, and on the Gavel and Ichor Deposit a Glare marks — additive with the state's own +110%, which nanoka's third row for each hit gives exactly (Ring 766.90% against 221.33%, so…"
+     "note": "S3: +136% multiplier on every Aureole form in Aureate Judge, and on the Gavel and Ichor Deposit a Glare marks. Perpetuating Daytime never fires here."
     },
     {
      "level": 4,
@@ -1449,7 +1449,7 @@
     {
      "level": 1,
      "name": "Lynae S1: Days to be Painted Like a Canvas",
-     "note": "S1: all three Polychrome Leaps at x2.2 — multiplicative, nanoka's own second rows (74.36% against 33.80%, and the same 2.2 on the other two). Spray Paint's longer window and the interrupt immunity are no stat, and the out-of-combat…"
+     "note": "S1: all three Polychrome Leaps at x2.2. Spray Paint's longer window and the interrupt immunity are no stat, and the out-of-combat Overflow restore reaches nothing here."
     },
     {
      "level": 2,
@@ -1598,7 +1598,7 @@
     {
      "level": 3,
      "name": "Phoebe S3: Daisy Wreaths and Dreams",
-     "note": "S3: Starflash's multiplier x1.91 in Absolution — nanoka's twin row (82.69% -> 157.92%). In Confession it is FHA_S3, which the rotation's Starflash resolves to while this is held."
+     "note": "S3: Starflash's multiplier x1.91 in Absolution. In Confession it is FHA_S3, which the rotation's Starflash resolves to while this is held."
     },
     {
      "level": 4,
@@ -1976,7 +1976,7 @@
     {
      "level": 1,
      "name": "Sigrika S1: The Gleam Meant for Radiance",
-     "note": "S1: Elucidated, Decipher, BIG BOOMY BOOM! and Soliskin to the Aid deal x1.7 — multiplicative, nanoka's own S1 rows (104.64% against 61.56%). The interrupt immunity and the Encapsulated stagnation stacks are no stat."
+     "note": "S1: Elucidated, Decipher, BIG BOOMY BOOM! and Soliskin to the Aid deal x1.7. The interrupt immunity and the Encapsulated stagnation stacks are no stat."
     },
     {
      "level": 2,
@@ -2223,7 +2223,7 @@
     {
      "level": 5,
      "name": "Xiangli Yao S5: End of Stars",
-     "note": "S5: Chain Rule's lasers at x3.22 and Cogitation Model at x2 — multiplicative, nanoka's own row for the Liberation (2932.11% against 1466.06%). The Outro carries no second row to read, so it is taken the same way its own sentence is written."
+     "note": "S5: Chain Rule's lasers at x3.22 and Cogitation Model at x2. The Outro carries no second row to read, so it is taken the same way its own sentence is written."
     },
     {
      "level": 6,
@@ -2300,7 +2300,7 @@
     {
      "level": 1,
      "name": "Yinlin S1: Morality's Crossroads",
-     "note": "S1: Magnetic Roar and Lightning Execution deal 70% more — a damage bonus, not a multiplier, which is both how the sentence reads and why nanoka's second Lightning Execution row is the same 89.47% as the first."
+     "note": "S1: Magnetic Roar and Lightning Execution deal 70% more."
     },
     {
      "level": 2,
@@ -2310,7 +2310,7 @@
     {
      "level": 3,
      "name": "Yinlin S3: Unyielding Verdict",
-     "note": "S3: Judgment Strike at x1.55 — multiplicative, nanoka's own second row (121.89% against 78.64%)."
+     "note": "S3: Judgment Strike at x1.55."
     },
     {
      "level": 4,
@@ -2361,7 +2361,7 @@
     {
      "level": 2,
      "name": "Zani S2: Stale Bread With Energy Drink",
-     "note": "S2: +20% Crit. Rate flat, and Targeted Action's multiplier x1.8 — nanoka's own S-chain twin of that row is 287.29% x 1.8, so the 80% is a multiplier on it rather than points added to it."
+     "note": "S2: +20% Crit. Rate flat, and Targeted Action's multiplier x1.8."
     },
     {
      "level": 3,
@@ -2376,7 +2376,7 @@
     {
      "level": 5,
      "name": "Zani S5: Delivered In Full On Time",
-     "note": "S5: Rekindle's multiplier x2.2 — nanoka's twin row again (318.52% x 2.2)."
+     "note": "S5: Rekindle's multiplier x2.2."
     },
     {
      "level": 6,

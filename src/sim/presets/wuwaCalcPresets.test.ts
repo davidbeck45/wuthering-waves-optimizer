@@ -171,6 +171,19 @@ describe("wuwa_calc sequence breakpoints (generated data)", () => {
     expect(await loadSequenceBreakpoints("NotACharacter")).toBeNull();
   });
 
+  // the Rotation presets modal and the assistant's kit tool print these notes. Riley cites his source in some of them
+  // ("…no sequence row on <site>, so multiplicative"); the generator leaves those clauses out of the app's copy
+  // (wuwa-tools rotation-port/plain_note.mjs). Until 2026-11-16 25 notes on the site named one
+  it("no sequence note names a datamine site", async () => {
+    const file = (await import("./data/breakpoints.json")).default as unknown as { resonators: Record<string, { sequences: Array<{ level: number; note: string }> }> };
+    const named = Object.entries(file.resonators).flatMap(([name, r]) => r.sequences.filter((s) => /nanoka|hakush|encore\.moe/i.test(s.note)).map((s) => `${name} S${s.level}`));
+    expect(named).toEqual([]);
+    // and the notes are still there: the filter drops a clause, not the note
+    const notes = Object.values(file.resonators).flatMap((r) => r.sequences.map((s) => s.note));
+    expect(notes.filter(Boolean).length).toBeGreaterThan(150);
+    expect(file.resonators.Camellya.sequences.find((s) => s.level === 2)?.note).toContain("Ephemeral at x2.2 of its multiplier");
+  });
+
   it("describes a loadout's loop map in one line", () => {
     expect(describeBreakpoints({ label: "", minSequence: 0, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("one loop at every sequence");
     expect(describeBreakpoints({ label: "", minSequence: 2, loopChangesAt: [], changes: {}, intendedTeams: 1 })).toBe("no loop below S2; one loop from S2 up");
