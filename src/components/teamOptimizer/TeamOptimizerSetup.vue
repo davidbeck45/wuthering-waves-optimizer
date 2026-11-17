@@ -279,6 +279,8 @@ import { signedPercent } from "../../utils/signedDelta";
 import { appliedStatFloors } from "../../sim/optimizer/statFloors"; // Wuthering Tools+
 import { OPTIMIZER_SETTINGS_SCOPE, drawerScopeLine, type OptimizerSettingsScope } from "../../sim/teamContext/optimizerSettingsScope"; // Wuthering Tools+
 import { useCharacterStore } from "../../stores/character"; // Wuthering Tools+
+import { drawerScopeOf } from "../../sim/teamContext/optimizerDrawerScope"; // Wuthering Tools+
+import { autoTeamBuffs } from "../../sim/teamContext/autoTeamBuffs"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerSetup" });
 
@@ -292,7 +294,7 @@ const drawerView = computed(() =>
 
 // Wuthering Tools+: the drawer edits the build this team reads for the member (its pin), not whichever is active
 const drawerScope = computed<OptimizerSettingsScope | null>(() =>
-  drawerView.value ? { characterId: drawerView.value.characterId, buildId: props.optimizer.team.value?.buildIds?.[drawerView.value.slot] ?? null } : null,
+  drawerView.value ? drawerScopeOf(props.optimizer.team.value, characterStore.characters, drawerView.value, autoTeamBuffs.value) : null,
 );
 provide(OPTIMIZER_SETTINGS_SCOPE, drawerScope);
 const characterStore = useCharacterStore();

@@ -122,6 +122,49 @@ describe("Optimize team's Edit drawer", () => {
   });
 });
 
+// 2026-11-16, second check of ad5aa25b (verify-a, row 2): with no pin the Team page reads a build named for the
+// teammates while team buffs follow the team's members, and the drawer was told the pin and nothing else, so it said
+// "Default build" and wrote the calculator's settings. Team buffs are off under Cypress until the switch is ticked.
+describe("Optimize team's Edit drawer on a build the team reads by its name", () => {
+  const named = (win: Window) => {
+    seed("dark")(win);
+    const stored = JSON.parse(win.localStorage.getItem("character")!);
+    const fields = () => JSON.parse(JSON.stringify({ weapon: "EmeraldOfGenesis", mainEcho: { echo: MAIN_ECHO, rank: 5, buffs: {} }, optimizer: { echoSets: ["HeartofSwornVigil"], mainEchoes: [MAIN_ECHO] } }));
+    stored.characters.Suoming = { ...fields(), activeBuildId: "default", builds: [{ id: "default", name: "Default build", ...fields() }, { id: "named", name: "For Hsin", ...fields() }] };
+    win.localStorage.setItem("character", JSON.stringify(stored));
+  };
+  const suoming = (win: Window) => JSON.parse(win.localStorage.getItem("character")!).characters.Suoming;
+
+  it("names that build and saves an echo buff switch on it, not on the active one", () => {
+    cy.viewport(412, 915);
+    cy.visit("/teams", { onBeforeLoad: named });
+    cy.get(`[data-test-team-rotations-item="${TEAM_NAME}"]`).contains(TEAM_NAME).click();
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.get("[data-test-auto-team-buffs]").check({ force: true });
+    cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled");
+    cy.get('[data-test-team-optimizer-edit="0"]').click();
+    cy.get("[data-test-team-optimizer-drawer-scope]").should("be.visible").and("contain", 'saved on Suoming\'s build "For Hsin", the one this team uses');
+    cy.get("[data-test-team-optimizer-drawer]").within(() => {
+      cy.get('[data-test-echo-set-passive-enabled="HeartofSwornVigilElectro"]').should("not.be.checked").check({ force: true });
+      cy.get('[data-test-echo-set-passive-enabled="HeartofSwornVigilElectro"]').should("be.checked");
+    });
+    cy.get("[data-test-team-optimizer-drawer-done]").click();
+    cy.window().should((win) => {
+      const record = suoming(win);
+      expect(record.builds[1].optimizer.echoSetPassives.HeartofSwornVigilElectro.isEnabled, "the build named for the team has the switch").to.equal(true);
+      expect(record.optimizer.echoSetPassives?.HeartofSwornVigilElectro, "the active build's switch is as it was").to.equal(undefined);
+      expect(record.builds[0].optimizer.echoSetPassives?.HeartofSwornVigilElectro).to.equal(undefined);
+    });
+    // with team buffs as each character has them set, the team reads the active build again, and the drawer says so
+    cy.get("[data-test-team-optimizer-back]").click();
+    cy.get("[data-test-auto-team-buffs]").uncheck({ force: true });
+    cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+    cy.get('[data-test-team-optimizer-edit="0"]').click();
+    cy.get("[data-test-team-optimizer-drawer-scope]").should("be.visible").and("not.contain", "For Hsin");
+  });
+});
+
 describe("Optimize team's Save", () => {
   const builds = (win: Window) => ["Suoming", "Hsin"].map((id) => (JSON.parse(win.localStorage.getItem("character")!).characters[id].builds ?? []).length);
 
