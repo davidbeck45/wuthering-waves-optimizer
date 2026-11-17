@@ -139,7 +139,8 @@ describe("buffs that cannot be on together", () => {
       cy.get("[data-test-account-drawer] [data-test-buff-conflicts-quiet]").should("not.exist");
       cy.get(`${inDrawer} button`).each(($btn) => {
         const r = $btn[0].getBoundingClientRect();
-        expect(r.height, `"${$btn.text().trim()}" height`).to.be.at.least(40);
+        // the layout height: the drawer is still easing in when this runs, and its box's rect reads a fraction short
+        expect($btn[0].offsetHeight, `"${$btn.text().trim()}" height`).to.be.at.least(40);
         expect(r.left, `"${$btn.text().trim()}" left`).to.be.at.least(0);
         expect(r.right, `"${$btn.text().trim()}" right`).to.be.at.most(width);
       });
