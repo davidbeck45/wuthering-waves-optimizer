@@ -38,7 +38,7 @@
         <span v-if="live[0]?.label" class="text-sm font-normal text-base-content/60">{{ live[0].label }}</span>
       </h2>
       <!-- Kuro's news is the only source here, and it has holes: say so where the list is read as "everything running" -->
-      <p class="-mt-1 mb-3 max-w-3xl text-xs text-base-content/70" data-test-convene-live-note>
+      <p class="-mt-1 mb-3 max-w-3xl text-xs text-base-content/80" data-test-convene-live-note>
         These are the banners Kuro's news lists. A new resonator's or weapon's own banner is often not posted there, so the game's Convene page may show more.
       </p>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -60,7 +60,8 @@
               </div>
               <h3 class="mt-1 truncate text-lg font-semibold leading-tight">{{ b.fiveStars.map((f) => f.name).join(" · ") }}</h3>
               <p v-if="b.title && !b.fiveStars.some((f) => normalizeItemName(f.name) === normalizeItemName(b.title ?? ''))" class="truncate text-sm text-base-content/60">{{ b.title }}</p>
-              <p v-if="runInfo(b)?.detail" class="mt-0.5 text-xs text-base-content/55" data-test-convene-run-detail>{{ runInfo(b)!.detail }}</p>
+              <!-- /80: these small lines read at AA on every theme (/55 measured 3.0 to 4.0 on the card) -->
+              <p v-if="runInfo(b)?.detail" class="mt-0.5 text-xs text-base-content/80" data-test-convene-run-detail>{{ runInfo(b)!.detail }}</p>
             </div>
           </div>
           <div v-if="b.fourStars.length" class="mt-3 flex flex-wrap items-center gap-1.5">
@@ -148,7 +149,7 @@
       <button v-if="groups.length > GROUP_PREVIEW && !query" type="button" class="btn btn-ghost btn-sm mt-4 w-full" data-test-convene-history-more @click="historyAll = !historyAll">
         {{ historyAll ? "Show recent versions only" : `Show all ${groups.length} versions` }}
       </button>
-      <p class="mt-6 text-xs text-base-content/50">
+      <p class="mt-6 text-xs text-base-content/80" data-test-convene-history-note>
         Kuro's news feed does not carry every banner, so some are missing here: 1.0's launch banner, version 3.2's first phase, and since
         version 3.6 the first banner of most new resonators and weapons. Banners that open with a version update start when Kuro
         posts that version's patch notes, usually about an hour before the servers open.

@@ -55,6 +55,35 @@ function expectNoHorizontalScroll(what: string): void {
   cy.window().then((win) => expect(win.innerWidth, `${what} layout viewport`).to.be.at.most(412));
 }
 
+/** WCAG contrast of an element's text against what is painted behind it (alpha blended down to an opaque layer). */
+function contrastOf(el: HTMLElement): number {
+  const win = el.ownerDocument.defaultView!;
+  const cx = el.ownerDocument.createElement("canvas").getContext("2d", { willReadFrequently: true })!;
+  const rgba = (css: string): number[] => {
+    cx.clearRect(0, 0, 1, 1);
+    cx.fillStyle = "rgba(0,0,0,0)";
+    cx.fillStyle = css;
+    cx.fillRect(0, 0, 1, 1);
+    const d = cx.getImageData(0, 0, 1, 1).data;
+    return [d[0]!, d[1]!, d[2]!, d[3]! / 255];
+  };
+  const over = (top: number[], bottom: number[]): number[] => [0, 1, 2].map((i) => top[i]! * top[3]! + bottom[i]! * (1 - top[3]!)).concat([1]);
+  const layers: number[][] = [];
+  for (let e: HTMLElement | null = el; e; e = e.parentElement) {
+    const c = rgba(win.getComputedStyle(e).backgroundColor);
+    if (c[3]! > 0) layers.push(c);
+    if (c[3]! >= 0.999) break;
+  }
+  const bg = layers.reverse().reduce((base, layer) => over(layer, base), [255, 255, 255, 1]);
+  const fg = over(rgba(win.getComputedStyle(el).color), bg);
+  const lum = (c: number[]): number => {
+    const f = (v: number) => (v / 255 <= 0.03928 ? v / 255 / 12.92 : Math.pow((v / 255 + 0.055) / 1.055, 2.4));
+    return 0.2126 * f(c[0]!) + 0.7152 * f(c[1]!) + 0.0722 * f(c[2]!);
+  };
+  const [a, b] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+  return (a! + 0.05) / (b! + 0.05);
+}
+
 function importFromLink(): void {
   cy.get("[data-test-convene-link]").type(LINK, { delay: 0 });
   cy.get("[data-test-convene-import-link]").click();
@@ -302,6 +331,28 @@ describe("released content only", () => {
     cy.get("[data-test-convene-tab='advisor']").click();
     cy.get("[data-test-convene-advisor-source]").should("be.visible").and("contain.text", "is then not scored here");
   });
+
+  // small muted lines: /70 and below measured 3.0 to 4.4 against the cards on the dark and nord themes
+  for (const theme of ["light", "dark", "nord"]) {
+    it(`reads the lines about Kuro's news at AA on the ${theme} theme`, () => {
+      cy.clock(IN_3_8, ["Date"]);
+      interceptNews([]);
+      const themed = v3((win) => {
+        win.localStorage.setItem("wtplus:convene:prefs", JSON.stringify({ v: 1, tab: "banners", server: "asia", budgetAstrite: null, manualPity: {} }));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, theme };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      });
+      cy.visit("/convene?tab=banners", themed);
+      cy.get("html").should("have.attr", "data-theme", theme);
+      cy.get("[data-test-convene-live-banner]").should("have.length.at.least", 4);
+      for (const sel of ["[data-test-convene-live-note]", "[data-test-convene-run-detail]", "[data-test-convene-history-note]"]) {
+        cy.get(sel).each(($el) => expect(contrastOf($el[0]!), `${sel} on ${theme}`).to.be.at.least(4.5));
+      }
+      cy.get("[data-test-convene-tab='advisor']").click();
+      cy.get("[data-test-convene-advisor-source]").then(($el) => expect(contrastOf($el[0]!), `advisor source line on ${theme}`).to.be.at.least(4.5));
+    });
+  }
 
   it("shows nothing running between 3.7's last banner and the 3.8 update, and no 3.8 banner before its patch notes", () => {
     cy.clock(Date.UTC(2026, 10, 11, 12, 0), ["Date"]); // 2026-11-11 20:00 CST: 3.7 Phase II ended at 11:59, 3.8's notice is up

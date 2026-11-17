@@ -10,7 +10,7 @@
           For each featured 5★ on the banners running now: what the next copy adds to <b>your</b> build, scored by the
           calculator's engine on that character's best rotation, and what it costs in Astrite from your current pity.
           Ranked by damage gained per 1,000 Astrite.
-          <span data-test-convene-advisor-source>The banners are the ones Kuro's news lists: a new resonator's or weapon's own banner is often not posted there, and is then not scored here.</span>
+          <span class="text-base-content/80" data-test-convene-advisor-source>The banners are the ones Kuro's news lists: a new resonator's or weapon's own banner is often not posted there, and is then not scored here.</span>
         </p>
       </div>
       <button type="button" class="btn btn-sm" :disabled="running || !targets.length" data-test-convene-advisor-rescore @click="score(true)">
