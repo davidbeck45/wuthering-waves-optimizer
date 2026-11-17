@@ -134,6 +134,7 @@ export async function readSavedRanking(fingerprint: string, storage: StorageLike
   const hit = await savedRankings.read(fingerprint);
   if (!hit) return null;
   writeCachedRanking(fingerprint, hit.value, storage, false);
+  notePainted(fingerprint, hit.value);
   return { ranking: hit.value, savedAt: hit.savedAt };
 }
 
@@ -254,6 +255,13 @@ export function rankingsInFlight(): number {
 function noteScored(fingerprint: string, ranking: RosterRanking): void {
   if (ranking.incomplete || typeof window === "undefined") return;
   void import("../numbersLog/recordRanking").then((m) => m.recordScoredRanking(fingerprint, ranking)).catch(() => undefined);
+}
+
+/** A ranking painted from the saved results: the numbers log keeps it when the account was put back to a state scored
+ *  before and the log's last ranking is another one (recordRanking.ts `recordSavedRanking`); else it adds nothing. */
+function notePainted(fingerprint: string, ranking: RosterRanking): void {
+  if (ranking.incomplete || typeof window === "undefined") return;
+  void import("../numbersLog/recordRanking").then((m) => m.recordSavedRanking(fingerprint, ranking)).catch(() => undefined);
 }
 
 // After an update a page asks for the saved ranking and finds the last build's: it is dropped unread, as ever, but the

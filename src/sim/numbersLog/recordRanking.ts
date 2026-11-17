@@ -1,6 +1,7 @@
 // Wuthering Tools+ numbers log — one entry per finished ranking. `sharedRanking` (myRankings/rankingCache.ts) calls
-// `recordScoredRanking` when a run it started ends whole and is cached; a ranking painted from a tab copy or from the
-// saved results never comes through there, so it is not recorded a second time as if new. This module loads after
+// `recordScoredRanking` when a run it started ends whole and is cached; a ranking painted from a tab copy never comes
+// through there, so it is not recorded a second time as if new. One painted from the saved results is recorded only
+// when it is not the ranking the log saw last (`recordSavedRanking`): the account was put back to a state scored before. This module loads after
 // that run (a dynamic import), waits for idle time, and never throws: a full browser or a private window just means
 // no entry.
 //
@@ -103,6 +104,24 @@ export async function recordScoredRanking(fingerprint: string, ranking: RosterRa
     });
   } catch {
     return "skipped"; // no Pinia (a test, a script), a store that will not read: the page that ranked is untouched
+  }
+}
+
+/**
+ * A ranking of this build painted from the Saved results (rankingCache.ts `readSavedRanking`): the account was put back
+ * to a state already scored, an echo or a weapon changed and changed back. No run follows, so without this the log
+ * would never get a record of the account as it is, and the page would ask him to open My account forever ("Your
+ * account changed since the last record"). It is recorded only when it is not the ranking the log saw last; one equal
+ * to the newest record only moves "last seen" (`appendEntry`), so a page that paints the same ranking again adds nothing.
+ */
+export async function recordSavedRanking(fingerprint: string, ranking: RosterRanking, env: Partial<RecordEnv> = {}): Promise<RecordOutcome> {
+  try {
+    const storage = "storage" in env ? (env.storage ?? null) : localArea();
+    const seen = readLog(storage).seen;
+    if (seen && seen.fp === fingerprint && seen.build === (env.build ?? appBuildId())) return "skipped";
+    return await recordScoredRanking(fingerprint, ranking, env);
+  } catch {
+    return "skipped";
   }
 }
 

@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
-import { clearRankingMemory, fingerprintOptions, rankingFingerprint, readCachedRanking, sharedRanking } from "../myRankings/rankingCache";
+import { clearRankingMemory, fingerprintOptions, rankingFingerprint, readCachedRanking, readSavedRanking, savedRankings, sharedRanking } from "../myRankings/rankingCache";
 import { IMPORT_STAMP_KEY, readImportStamp, stampImport } from "./importStamp";
 import type { RankedAccount } from "./entry";
 import { NUMBERS_LOG_KEY, decodeLog } from "./log";
@@ -266,6 +266,45 @@ describe("the wiring: a run is logged, a ranking read back from a cache is not",
     expect(readCachedRanking(fp, sessionStorage)).not.toBeNull();
     await new Promise((resolve) => setTimeout(resolve, 600));
     expect(localStorage.getItem(NUMBERS_LOG_KEY)).toBe(before);
+  }, 20_000);
+
+  // Found on 2026-11-17 in a real browser: change an echo (a record), change it back. The ranking of the account as it
+  // is now is in the saved results, so My account painted it and no run followed; nothing was recorded, and the page
+  // said "Your account changed since the last record. Open My account" however often he opened it.
+  it("logs a ranking painted from the saved results when the account went back to a state scored before", async () => {
+    const acc = account();
+    fillStores(acc);
+    const fpNow = (): string => rankingFingerprint({ characters: useCharacterStore().characters, echoes: useInventoryStore().echoes, teams: useTeamRotationsStore().teams, investment: true, autoTeamBuffs: true });
+    const fpA = fpNow();
+    const rankingA = ranking({ at: Date.now() - 2000 });
+    await sharedRanking(fpA, async () => rankingA, {}, sessionStorage).promise;
+    await vi.waitFor(() => expect(stored()).toBe(1), { timeout: 5000 });
+
+    // an echo changes: a run, a second record
+    useInventoryStore().echoes[0].echoSubStatsValue1 = 6.3;
+    const fpB = fpNow();
+    expect(fpB).not.toBe(fpA);
+    clearRankingMemory();
+    await sharedRanking(fpB, async () => ranking({ Aaa: 900_000, at: Date.now() - 1000 }), {}, sessionStorage).promise;
+    await vi.waitFor(() => expect(stored()).toBe(2), { timeout: 5000 });
+
+    // and back: the page finds A's ranking in the saved results and paints it
+    useInventoryStore().echoes[0].echoSubStatsValue1 = 17.4;
+    expect(fpNow()).toBe(fpA);
+    clearRankingMemory();
+    const read = vi.spyOn(savedRankings, "read").mockResolvedValue({ value: rankingA, savedAt: Date.now() - 2000 } as never);
+    expect((await readSavedRanking(fpA, sessionStorage))?.ranking).toBe(rankingA);
+    await vi.waitFor(() => expect(stored()).toBe(3), { timeout: 5000 });
+    const log = decodeLog(localStorage.getItem(NUMBERS_LOG_KEY));
+    expect(log.entries[2].characters.find((c) => c.id === "Aaa")?.damage).toBe(1_000_000);
+    expect(log.seen?.fp).toBe(fpA);
+
+    // painted once more: it is the ranking the log saw last, so nothing is added
+    const before = localStorage.getItem(NUMBERS_LOG_KEY);
+    await readSavedRanking(fpA, sessionStorage);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    expect(localStorage.getItem(NUMBERS_LOG_KEY)).toBe(before);
+    read.mockRestore();
   }, 20_000);
 
   it("logs nothing for a run that did not fully score", async () => {
