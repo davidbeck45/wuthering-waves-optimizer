@@ -115,6 +115,7 @@
               </span>
               <span class="lw-step__cost">{{ costText(s.cost) }}<template v-if="s.cost.materials.length"> · {{ materialsText(s.cost) }}</template></span>
               <span class="lw-step__run">{{ runningText(s, plan.basis) }}</span>
+              <span v-if="flatNote(s)" class="lw-row__note" data-test-levels-step-flat>{{ flatNote(s) }}</span>
             </li>
           </ol>
           <button v-if="plan.path.length > PATH_FIRST" type="button" class="lw-more" :aria-expanded="allSteps" data-test-levels-path-more @click="allSteps = !allSteps">
@@ -162,7 +163,7 @@ import { loadMaterials } from "../materials/materialsData";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { assumedWords, BASIS_WORDS, inertText, levelPlan, type LevelPlan } from "./levelPlan";
 import { FORTE_KEYS, levelOptions, levelsToday, stateLevels, stateText, TOP_LEVEL, trackLabel, type TrackKey } from "./levelSteps";
-import { basisLine, costText, everythingText, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
+import { basisLine, costText, everythingText, flatNote, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const props = defineProps<{
   characterKey: string;

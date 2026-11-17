@@ -19,7 +19,7 @@ import { createTeamScorer, slicer, type TeamContext, type TeamImpact } from "../
 import { characterDisplayName, characterShortName } from "../display/names";
 import { savedProgressOf, type MaterialsData } from "../materials/costToMax";
 import { RANKING_ENEMY, scoreTeamCandidate, teamCandidatesOf, type CharacterRank, type TeamRank } from "../myRankings/rankRoster";
-import { levelsToday, nextStep, stateFrom, stateText, stepsLeft, sumCosts, topState, trackToTop, TRACKS, withLevels, type LevelCost, type LevelState, type LevelStepDef, type TrackKey } from "./levelSteps";
+import { joinSteps, levelsToday, nextStep, stateFrom, stateText, stepsLeft, sumCosts, topState, trackToTop, TRACKS, withLevels, type LevelCost, type LevelState, type LevelStepDef, type TrackKey } from "./levelSteps";
 import { basisOf, compareWorth, type Figure, type LevelPlan, type LevelRow, type Score, type StepWorth } from "./levelWorth";
 
 export * from "./levelWorth";
@@ -242,10 +242,21 @@ export async function levelPlan(input: LevelPlanInput, options: LevelPlanOptions
         const candidates: Array<{ row: LevelRow; after: Score }> = [];
         for (const { key } of TRACKS) {
           if (dead.has(key) || cancelled()) continue;
-          const step = nextStep(materials, id, today, state, key);
+          let step = nextStep(materials, id, today, state, key);
           if (!step) continue;
           try {
-            const w = await worth(step, cur, curTeam);
+            let w = await worth(step, cur, curTeam);
+            // A level that moves nothing by itself is not the end of its track: the calculator's tables hold a few
+            // levels equal to the one before (Galbrena's Resonance Skill 9 reads like 8), and the levels after it
+            // still count. Such a level is taken together with the next one that moves something, as one step with
+            // both costs; only a track with nothing left that moves is dropped.
+            while (w.worth.inert && !cancelled()) {
+              const more = nextStep(materials, id, today, step.next, key);
+              if (!more) break;
+              step = joinSteps(materials, step, more);
+              w = await worth(step, cur, curTeam);
+            }
+            if (cancelled()) continue;
             if (w.worth.inert) dead.add(key);
             else candidates.push({ row: { ...step, ...w.worth }, after: w.after });
           } catch (err) {

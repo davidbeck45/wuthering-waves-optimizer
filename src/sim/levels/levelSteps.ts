@@ -276,6 +276,9 @@ export interface LevelStepDef {
   /** every track's value once the step is taken */
   next: LevelState;
   cost: LevelCost;
+  /** levels passed inside this step that add nothing by themselves ("9" in "Resonance Skill 8 → 10"): the order
+   *  takes such a level together with the next one that moves something (`joinSteps`) */
+  flat?: string[];
 }
 
 const nextCap = (level: number, top: number): number | null => LEVEL_CAPS.find((cap) => cap > level && cap <= top) ?? null;
@@ -306,6 +309,12 @@ export const nextStep = (data: MaterialsData, key: string, today: Pick<LevelsTod
 /** A track taken from `state` to its top in one go ("Resonance Liberation 6 → 10"). Null at the top. */
 export const trackToTop = (data: MaterialsData, key: string, today: Pick<LevelsToday, "weaponKey" | "weaponTop">, state: LevelState, track: TrackKey): LevelStepDef | null =>
   stepOf(data, key, today, state, track, true);
+
+/** Two steps of one track taken as one: `a`, which on its own moved nothing, and `b`, the step after it. The label
+ *  runs from `a`'s start to `b`'s end, the cost is both, and `flat` names the level in between. */
+export function joinSteps(data: MaterialsData, a: LevelStepDef, b: LevelStepDef): LevelStepDef {
+  return { track: a.track, from: a.from, to: b.to, label: `${trackLabel(a.track)} ${a.from} → ${b.to}`, next: b.next, cost: sumCosts(data, [a.cost, b.cost]), flat: [...(a.flat ?? []), a.to] };
+}
 
 /** Every track at its top (the weapon at its own last level). */
 export function topState(today: Pick<LevelsToday, "weaponTop">, state: LevelState): LevelState {

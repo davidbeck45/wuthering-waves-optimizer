@@ -10,7 +10,7 @@ import { rankRoster } from "../myRankings/rankRoster";
 import { levelPlan } from "./levelPlan";
 import { parseLevels } from "./levelSteps";
 import { assumedWords, BASIS_WORDS, inertText, type LevelPlan, type LevelRow } from "./levelWorth";
-import { basisLine, costText, everythingText, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "./levelsView";
+import { basisLine, costText, everythingText, flatNote, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "./levelsView";
 
 export interface LevelsCliOptions {
   /** "saved" (default) or "1" / "scratch": level 1 across the board */
@@ -87,6 +87,10 @@ export function printLevels(plan: LevelPlan): string {
         ...plan.path.map((s) => [`  ${s.index}`, s.label, signed(s.team?.gain), signed(s.own?.gain), count(s.cost.credits), signed(s.running.teamGain), signed(s.running.gain), count(s.running.cost.credits)]),
       ]),
     );
+    for (const s of plan.path) {
+      const note = flatNote(s);
+      if (note) out.push(`  ${s.label}: ${note}`);
+    }
     const head = headlineText(plan);
     if (head) out.push(`  ${head}`);
     out.push(`  ${ORDER_BLIND}`);
@@ -128,7 +132,7 @@ export function levelsJson(plan: LevelPlan): Record<string, unknown> {
     everything: plan.everything ? { ...worth(plan.everything), cost: cost(plan.everything.cost) } : null,
     pathOrder: plan.pathOrder,
     pathState: plan.pathState,
-    path: plan.path.map((s) => ({ index: s.index, step: s.label, track: s.track, ...worth(s), shellCredits: s.cost.credits, soFar: { ownGain: s.running.gain, teamGain: s.running.teamGain, ...(s.running.healingGain != null ? { healingGain: s.running.healingGain } : {}), shellCredits: s.running.cost.credits } })),
+    path: plan.path.map((s) => ({ index: s.index, step: s.label, track: s.track, ...worth(s), ...(flatNote(s) ? { note: flatNote(s) } : {}), shellCredits: s.cost.credits, soFar: { ownGain: s.running.gain, teamGain: s.running.teamGain, ...(s.running.healingGain != null ? { healingGain: s.running.healingGain } : {}), shellCredits: s.running.cost.credits } })),
     leftOut: plan.inert.map((r) => r.label),
     notModelled: NOT_MODELLED,
     table: plan.table,

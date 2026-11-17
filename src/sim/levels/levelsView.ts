@@ -104,6 +104,15 @@ export function runningText(step: PathStep, basis: Basis): string {
   return `so far ${gain == null ? "" : `${gainText(gain)} ${scope} `}for ${count(r.cost.credits)} Shell Credits`;
 }
 
+/** Why a step of the order spans two levels of a skill: "Counted as one step: level 9 alone adds nothing here (the
+ *  calculator's table gives it level 8's figures)." Null for an ordinary step. */
+export function flatNote(step: Pick<PathStep, "flat" | "from">): string | null {
+  const flat = step.flat ?? [];
+  if (!flat.length) return null;
+  const levels = flat.length > 1 ? `levels ${flat.slice(0, -1).join(", ")} and ${flat.at(-1)} alone add` : `level ${flat[0]} alone adds`;
+  return `Counted as one step: ${levels} nothing here (the calculator's table gives ${flat.length > 1 ? "them" : "it"} level ${step.from}'s figures).`;
+}
+
 /** Everything left, in one sentence: "+40.1% team · +59.2% own for 2,125,595 Shell Credits". */
 export function everythingText(plan: Pick<LevelPlan, "everything" | "basis">): string | null {
   const e = plan.everything;
