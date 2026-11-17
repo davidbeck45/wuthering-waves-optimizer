@@ -4910,3 +4910,117 @@ retry; no sideways scroll).
 Not done: a brief does not run wuwa_calc at the account (the links to Team rankings' My account tier and to the cue
 card do); a team's figure is per Team Cost, not per account; the ladder is his best s0r1 team's only; the briefs page
 has no assistant tool of its own (`ai/tools/kit.ts` still reads the breakpoints table).
+
+## What's new on Tools+, and what moved in your numbers — `/whats-new`, `src/sim/whatsNew/` + `src/sim/numbersLog/` (batch 4, lane "after-update", 2026-11-16)
+
+Two questions the site could not answer: "what was added, and where is it?" (he read a report file on a computer) and
+"why did this number change?" (asked after every sync). One page, two parts.
+
+### Part 1: New on Tools+
+
+| Piece | Role |
+|---|---|
+| `whatsNew/entries.ts` | the list, hand-kept: `id` (stable, never reused: the marker stores it), `date` (the day it **reached the site**, not the day it was built), `title`, `text` (one or two sentences, the way you would tell a friend), `where` (the taps, joined with " › "), `link` (an in-app route; `{character}` = a character of the account), optional `tag`. New entries go at the marked spot at the top. Ryan's `/updates` is linked from the page in one line, never copied |
+| `whatsNew/whatsNew.ts` | pure: `groupByDate` (newest day first, the file's order inside a day), `unseenIds`, `readSeen` / `seenMarker`, `entryLink` / `linkCharacter`, `unseenText`, `dateLabel` (read from the text, not through `Date`: a day is a day in every time zone) |
+| `whatsNew/useWhatsNew.ts` | the one reactive copy of the marker (`wtplus:whatsNew:seen`, `{ v: 1, ids }`). The menu, the card and the page read it, so showing the list clears the other two at once; another tab's visit clears this tab through the `storage` event |
+| `whatsNew/WhatsNewView.vue` | the page: two tabs (`?tab=numbers` is part 2; a tab change is a `replace`, so Back leaves the page). Entries by day with a tag chip, "Where", and **Open**. What was unseen when the page opened keeps a "New" chip until it is left |
+| `whatsNew/WhatsNewCard.vue` | `/account`'s one line, "3 new things on Tools+ since your last visit", only while something is unseen |
+| `nav/PlusNavMenu.vue` | a dot on the Tools+ icon (bar, header and rail), a count on the What's new row, and one line at the top of the open menu while something is unseen: the row itself is the last of 14, and nothing else would say what the dot is for |
+
+**What counts as new.** No account in this browser (`isNewVisitor`): nothing, so no dot. An account and no marker: the
+newest day only (he has used the rest for weeks). A marker: every id not in it, so an entry added later under a day
+already seen still counts. The marker is written when the **list** is shown, not when the page is reached on Your
+numbers. It is a preference: Delete your data leaves it (`STORAGE_RULES`).
+
+**Truth of the list.** `whatsNew.test.ts` reads `main.ts` and fails on a `link` that is not a route, on a repeated id, on
+a date that is not a day, and on a file that is not newest-first. `cypress/e2e/whatsNew.cy.ts` clicks every distinct
+Open link and expects a page that is not "Page not found". Left out on purpose, because there is no page to open for
+them: the Ask assistant's tools, the search palette's commands, Page not found.
+
+### Part 2: Your numbers
+
+A small log of the account's own figures, and a plain answer to "what changed since last time, and why".
+
+| Piece | Role |
+|---|---|
+| `numbersLog/signature.ts` | the signature's shape (`BuildSig`) and how two are read against each other (`changedParts`). Imports nothing: the pages load it |
+| `numbersLog/entry.ts` | the recorder's side, loaded only after a ranking has run (it borrows `sequenceOf` and `refinementOf` from the engine): `entryFromRanking`, and `buildSignature(record, echoIndex)`: the build a ranking scored, hashed in five parts (weapon · Resonance Chain · levels · echoes · the rest) plus the weapon key, refinement and sequence in plain values, and `rec`, the whole record with every saved build and the echoes those wear (a team can pin any of them). Echoes are resolved through the inventory and hashed without their id, so tuning an echo moves the hash and a re-import under new ids does not. Bookkeeping no score reads (a build's saved time, notes, the optimizer's search panel) is left out, so it is never named as a cause. `teamDefinitionHash`: a saved team as the ranking reads it (members, pins, actions, timing; not its name or its own enemy) |
+| `numbersLog/log.ts` | the entry's shape (`at`, `build`, `autoTeamBuffs`, per character: best rotation, damage, signature; per fieldable team: damage, members, definition hash), `sameRecord`, `appendEntry` (an entry equal to the last is not stored; `MAX_ENTRIES` 30; `MAX_BYTES` 160,000, oldest dropped first), and the stored form: every string once in a table, rows of indexes. Two records of David's account (24 characters, 50 teams) are 15 KB, about 3 KB for each one after the first |
+| `numbersLog/recordRanking.ts` | the one writer. `sharedRanking` calls it (through a dynamic import, so the module loads after the run) when a run it **started** ends whole and is cached. It waits for idle time, checks that the stores still hash to the run's fingerprint (an account edited mid-run records nothing), builds the entry, and appends it under a Web Lock. Never throws |
+| `numbersLog/logStore.ts` | `localStorage["wtplus:numbers:log:v1"]`: read, write (a refused write drops the older half and tries once more, then gives up), `withLogLock`, `logVersion` (this tab's writes and other tabs', through `storage`) |
+| `numbersLog/importStamp.ts` + one line in `buildHistory/importGuard.ts` | `wtplus:numbers:importedAt`: stamped in the same `hardSetState` listener that keeps a Build history version, which only `applyImportedDatabase` (Settings import, backup restore) reaches |
+| `numbersLog/compare.ts` | two entries → `moves` (before, after, the change as a share of the old figure, the cause), `appeared`, `gone`, `steady`, `appUpdated`, `importedAt`; `causeText`, `changeText`, `biggestMoves` |
+| `numbersLog/view.ts`, `useNumbersLog.ts` | the four states (`no-account`, `empty`, `first`, `compared`), their sentences, `staleness` |
+| `numbersLog/NumbersMoved.vue`, `NumbersMoveRow.vue`, `NumbersMovedCard.vue` | the full list on `/whats-new?tab=numbers`; one row; `/account`'s card with the three biggest moves and **See all** |
+| `myRankings/rankingCache.ts` | `noteScored` in `sharedRanking`'s `then`; `fingerprintOptions`; `rankingsInFlight`; the `onOtherBuildRecord` listener that hands the log the last build's ranking |
+| `persist/savedResults.ts` | `onOtherBuildRecord(hook)`: a saved result of another app build is still dropped unread, but a listener is handed it first when the cache, the schema and the fingerprint all match and its cache accepts the value |
+
+**What is recorded, and when.** Only a run: `/account`, `/my-rankings` and `/weapons` all go through `sharedRanking`, and
+its `then` is the one place a ranking is both finished and known to be whole (`incomplete` is set there for a lost
+chunk). A ranking painted from this tab's copy or from Saved results never passes it, so it is not recorded a second
+time as if new. A Recompute scores again and finds its entry equal to the last: nothing is stored, only `seen` (the
+last finished ranking this browser saw: fingerprint, build, time) moves. A new app build with the very same figures
+**is** a record (the build id is part of `recordKey`), so "the update moved nothing" can be said. So is a build that
+changed without moving a figure (the signatures are part of the key): were it skipped, the next update would be read
+against the old signature and the build would be blamed for what the update did. A team he only renamed is not. Two tabs that score
+the same account add one entry: the second reads the first's under the lock and finds its own equal.
+
+**The "before" of the first record after an update** (`recordEarlierRanking`). Saved results drop the last build's
+ranking the moment a page asks for it, which is also the moment before the new build's run starts. The log is handed
+that ranking first and keeps it as a record of that build, at the time it was saved, when: it is a ranking of the very
+account in the browser (the stores hash to the fingerprint it was filed under, so the signatures taken now are the
+ones it was scored on), it is newer than anything the log holds, and it does not equal the last record. From the
+second update on, the log has it already (it was recorded when it was scored) and nothing is added. On the first
+visit after this feature ships it is what lets `/account` say "The app was updated between the two" with each figure
+that moved, instead of "Nothing to compare yet". The run's own record awaits it, so the two cannot land out of order.
+It is lost when `RANKING_CACHE_VERSION` is bumped in the same release (the fingerprint, and so the record's key,
+changes), when Ryan's migrations rewrite the stored account, or when another page's write swept the old build's
+records before a ranking page was opened: then the first record is simply the first.
+
+**The cause of a move** is the first of these that is true, and each is a fact the two records hold:
+
+| Figure | True | Said |
+|---|---|---|
+| a character | their signature changed | "You changed this build: echoes, weapon (A → B)", naming each part |
+| a team | a member's `rec` changed | "Chisa's build changed." |
+| a team | its definition changed | "You changed this team: its rotation, its timing or the builds it pins." |
+| a team | the team-aware buffs switch differs | "The team-aware buffs switch was turned off." |
+| either | the app build differs, and none of the above | "An app update: no build in it changed." |
+| either | none of it | "Nothing the log records changed: the builds, the team and the app are the same." |
+
+When one of the first four is true **and** the app build differs too, the row adds "The app was updated between the two
+records too, so part of this may be the update.": the log cannot split a move between the two, and naming the build
+alone would be a guess. An app update is never tied to a named upstream change: the log cannot know which one, so the
+page links What's new and Ryan's Updates once, above the list. A Settings import between the two records is said once at the top, and the
+rows then read "This build is different", not "You changed". An import that changed nothing is not blamed for a later
+change (the stamp must be newer than `seen`). A character or team in only one record is listed under "New since then"
+or "No longer there". Rotations of one trio with the very same two figures are one row (the pages fold them the same
+way, `dedupeTeams`), his own team first.
+
+**Edges.** First record ever: "Nothing to compare yet. This is the first record, taken just now." No account: the page
+says what it will do. An older record he picked that the cap has since dropped: the picker and the list both fall back
+to "the one before" (`pickedBase`). A ranking running in this tab: said, and the list follows when it ends (a poll every two
+seconds, and `logVersion`). A log behind the account or the app (`seen` against the stores' fingerprint and
+`appBuildId()`, worked out off the first paint): "Your account changed since the last record. Open My account"; a log
+that holds only the last build's ranking (the run after the update has not finished) reads as behind the app. Delete
+your data deletes the log and the stamp. A clock set back never reorders the log (`at` is forced past the last entry).
+
+**Weight.** `/whats-new` and `/account`'s card read the log through `log.ts`, `compare.ts`, `view.ts`, `logStore.ts` and
+`signature.ts`, none of which may import the ranking engine or the recorder except as types (`signature.test.ts` reads
+their import lines). The recorder (`recordRanking.ts`, `entry.ts`) is a lazy chunk of its own, fetched after a run.
+
+**Storage.** `localStorage`, not the Saved results database: that one drops every other build's records, and this log
+exists to outlive a deploy. It is capped well under the account's own size and is the first thing to yield when the
+browser is full.
+
+**Known limits.** A character's own figure is scored solo, so a teammate's build is a cause for team rows only. The page
+starts no ranking of its own: with a stale log it sends him to My account. The "before" of an update needs the old
+build's ranking of this exact account to still be in Saved results (see above).
+
+Gates: `whatsNew/whatsNew.test.ts` (13); `numbersLog/log.test.ts`, `compare.test.ts`, `signature.test.ts`,
+`view.test.ts`, `recordRanking.test.ts`, `earlierRanking.test.ts` (85: dedupe, both caps, a half-scored ranking refused
+at three layers, every cause and its precedence, bookkeeping never blamed, a full browser, a second tab, a clock set
+back, the wiring through `sharedRanking`, another build's record handed over and what is never taken from it);
+`cypress/e2e/whatsNew.cy.ts` (15: the list, every Open link, the dot, seeded logs for each state, a real run (score,
+reload without a second record, refine a weapon, score again, read the cause) and a simulated update (the saved
+ranking rewritten in IndexedDB as an older build's, then the first visit)).
