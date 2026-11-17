@@ -8,6 +8,7 @@ import { findTeam } from "../../cli/engine";
 import type { FightCurve, MineSolve, RileyAccount, RileyPick, RileyTeamInfo, RunLite, SubsMode } from "../../engine/rileyRun";
 import type { FloorProfileSpec } from "../../endgame/effects";
 import { characterName, resolveAnyCharacter, type ToolContext } from "./shared";
+import { accountKeyOf } from "../../rankings/rileyNames";
 
 /* eslint-disable no-unused-vars -- the parameters of an interface's method types */
 /** Riley's engine at one account. Every call is the seam's: the release guard (Lily) rides on it. */
@@ -86,7 +87,8 @@ export async function rileyTeamTarget(input: string, exp: ExportFile, riley: Ril
   if (TEAM_KEY.test(key)) {
     const info = (await riley.teams()).find((t) => t.key === key);
     if (info) {
-      const ids = info.members.map((m) => m.appKey);
+      // his list names a Rover by the female key: the account's own form, so its saved team and its build are found
+      const ids = info.members.map((m) => accountKeyOf(m.appKey, exp.characters));
       const same = savedTeamOf(ids, exp);
       return { name: same ? String(same.name) : ids.map(characterName).join(" · "), characterIds: ids, saved: same };
     }
