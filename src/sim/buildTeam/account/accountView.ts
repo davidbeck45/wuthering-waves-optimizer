@@ -59,11 +59,18 @@ export function erNeedsMet(members: readonly AccountMember[]): { before: number;
 /** "9 new builds, 2 keep today's echoes": the builds the Save button saves (`accountApplyRequest`), and the members it
  *  leaves out because nothing would change for them. Those members' cards, and only theirs, read "keeps today's echoes"
  *  (`memberNote` with the Save's own reason), so the cards count up to this line. */
-export function buildCountText(members: ReadonlyArray<Pick<AccountMember, "status">>, saving: number): string {
-  const kept = members.filter((m) => m.status === "ok").length - saving;
+export function buildCountText(members: ReadonlyArray<Pick<AccountMember, "status">>, saving: number, stored = 0): string {
+  const kept = members.filter((m) => m.status === "ok").length - saving - stored;
   const builds = saving ? `${saving} new build${saving === 1 ? "" : "s"}` : "No new builds";
-  return kept > 0 ? `${builds}, ${kept} keep${kept === 1 ? "s" : ""} today's echoes` : builds;
+  const parts = [builds];
+  if (kept > 0) parts.push(`${kept} keep${kept === 1 ? "s" : ""} today's echoes`);
+  // a plan saved before and not worn since (accountApply.ts `alreadyStored`): neither new nor today's
+  if (stored > 0) parts.push(`${stored} already saved`);
+  return parts.join(", ");
 }
+
+/** A member's card when their plan is a build the account already holds (accountApply.ts `alreadyStored`). */
+export const storedNote = (name: string): string => `this build is already saved as “${name || "a build"}”, so it is not saved again: switch to it in the calculator to wear it`;
 
 /** Why the plan scores below today, when it does: meeting Energy Regen needs costs damage, or the teams' builds were
  *  already the best these echoes allow under the plans. Null when it is not below. */
@@ -85,9 +92,10 @@ function teamsText(m: Pick<AccountMember, "team" | "alsoIn">): string {
  *  today's (accountApply.ts `sameEchoesSave`), null when it writes none. "keeps today's echoes" is said only of a member
  *  the Save leaves alone, the ones the review's "2 keep today's echoes" counts; one who gets a build says why. Left out
  *  (a caller with no Save to speak of), the note is about the echoes alone. */
-export function memberNote(m: AccountMember, saved: SameEchoesSave | null = null): string | null {
+export function memberNote(m: AccountMember, saved: SameEchoesSave | null = null, stored: string | null = null): string | null {
   if (m.status !== "ok") return m.message ?? null;
   const notes: string[] = [];
+  if (stored != null) notes.push(storedNote(stored));
   // `keptCurrent` alone is not enough: a swap can change a build that started as today's
   if (m.sameEchoes && worthSaving(m) && m.buffDefaults.length) notes.push(`same echoes as today: the change is ${buffDefaultNames(m.buffDefaults).join(", ")}, switched on`);
   else if (m.sameEchoes && saved === "teams") notes.push(`same echoes as today, saved as a new build so ${teamsText(m)} pin the same one`);

@@ -20,7 +20,7 @@ import type { BuildTeamStores } from "../apply";
 import { accountReuse, buildAccount, type BuildAccountResult } from "./buildAccount";
 import { undoFates } from "../apply";
 import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
-import { ACCOUNT_UNDO_KEY, accountApplyRequest, accountBuildName, accountUndoIsLive, readAccountUndo, saveAccountPlan, undoAccountPlan, undoAccountPlanSaved } from "./accountApply";
+import { ACCOUNT_UNDO_KEY, accountApplyRequest, accountBuildName, accountUndoIsLive, readAccountUndo, saveAccountPlan, storedBuildOf, undoAccountPlan, undoAccountPlanSaved } from "./accountApply";
 import { defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -314,6 +314,31 @@ describe("saving the account plan", () => {
     saveAccountPlan(stores, accountApplyRequest(result, false), { echoes });
     const again = saveAccountPlan(stores, accountApplyRequest(result, false), { echoes });
     expect(again.created.map((c) => c.name)).toEqual(["Account plan (2)", "Account plan (2)"]);
+  });
+
+  it("the same plan run again on a team nobody saved saves nothing: its builds are stored already (they stacked as 'Account plan (2)')", () => {
+    // the plan's team as one nobody saved: the Save pins its builds nowhere, and nobody wears them
+    const loose = { ...result, teams: result.teams.map((t) => ({ ...t, spec: { ...t.spec, id: null } })) };
+    const holds = (id: string, draft: Record<string, any>) => storedBuildOf(stores.character.characters[id], draft);
+    expect(holds("Cartethyia", result.members.find((m) => m.characterId === "Cartethyia")!.draft!)).toBeNull();
+    const first = accountApplyRequest(loose, false, undefined, holds);
+    expect(first.members.map((m) => m.characterId).sort()).toEqual(["Cartethyia", "Ciaccona"]);
+    expect(first.members.every((m) => m.pins.length === 0)).toBe(true);
+    const out = saveAccountPlan(stores, first, { echoes });
+    const before = snapshot();
+    // the review of the next run: the same builds come out, and the account holds each one
+    for (const m of first.members) expect(holds(m.characterId, m.draft)).toEqual({ id: out.created.find((c) => c.characterId === m.characterId)!.buildId, name: "Account plan" });
+    expect(accountApplyRequest(loose, false, undefined, holds).members).toEqual([]);
+    expect(snapshot()).toBe(before);
+    // a build that differs in one echo is another build: it is saved
+    const cart = result.members.find((m) => m.characterId === "Cartethyia")!;
+    const other = { ...cart.draft!, echoes: { ...cart.draft!.echoes, 4: { ...cart.draft!.echoes[4], echoId: "another-echo" } } };
+    expect(holds("Cartethyia", other)).toBeNull();
+    // the build a character wears is "today's", never a stored twin: that is `sameEchoes`' question
+    const live = stores.character.characters.Cartethyia;
+    expect(storedBuildOf({ ...live, activeBuildId: out.created.find((c) => c.characterId === "Cartethyia")!.buildId }, cart.draft!)).toBeNull();
+    // and "Also make active" still writes the builds, so they can be worn
+    expect(accountApplyRequest(loose, true, undefined, holds).members.map((m) => m.characterId).sort()).toEqual(["Cartethyia", "Ciaccona"]);
   });
 
   it("also make active: every member wears the plan, the equipped map follows, undo brings both back exactly", () => {

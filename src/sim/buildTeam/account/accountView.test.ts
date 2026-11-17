@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Whole account": the page's words (accountView.ts), on hand-made results.
 import { describe, expect, it } from "vitest";
 import type { AccountMember, BuildAccountResult } from "./buildAccount";
-import { accountApplyRequest, sameEchoesSave } from "./accountApply";
+import { accountApplyRequest, alreadyStored, sameEchoesSave } from "./accountApply";
 import { accountRatio, buildCountText, confirmItems, erNeedsMet, memberNote, moveText, ratioText, ratioTone, searchLine, secondsText, whyLower } from "./accountView";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -142,6 +142,45 @@ describe("account view", () => {
     expect(sameEchoesSave(plan, at("YangyangXuanling"), false)).toBe("buffs");
     // without the Save's reason the note is about the echoes alone, as it was
     expect(memberNote(members[at("Mornye")]!)).toBe("keeps today's echoes");
+  });
+
+  it("a plan the account already holds is not saved again, and the review says so (the second run wrote 'Account plan (2)')", () => {
+    // The second Whole account run of 2026-11-16, by shape. Team 3 (Cartethyia · Shorekeeper + Ciaccona) is not a saved
+    // team, so the first Save pinned its two new builds nowhere and the team kept reading the active builds: the next run
+    // planned the same two builds, the review said "2 new builds, 9 keep today's echoes", and Save wrote exact copies.
+    // The members of the saved teams read their pinned plan as today's (the 11-08 fix), so they keep today's echoes.
+    const names = ["Aemeath", "Lynae", "Mornye", "Sigrika", "Lucilla", "Cartethyia", "Shorekeeper", "Ciaccona", "YangyangXuanling", "Suisui", "Chisa"];
+    const kept = { sameEchoes: true, keptCurrent: true, erFloor: null, erMet: null, fromBuild: { id: "plan", name: "Account plan", source: "pinned" } } as const;
+    const fresh = new Set(["Cartethyia", "Shorekeeper"]);
+    const members = names.map((characterId) => member({ characterId, ...(fresh.has(characterId) ? {} : kept), ...(characterId === "Ciaccona" ? { fromBuild: { id: null, name: null, source: "active" } } : {}) }));
+    const at = (id: string): number => names.indexOf(id);
+    const pinned = (id: string | null, ...who: string[]) => ({ spec: { id, buildIds: id ? ["plan", "plan", "plan"] : undefined }, slots: who.map((w, slot) => ({ slot, member: at(w) })) });
+    const plan = { members, teams: [pinned("t1", "Aemeath", "Mornye", "Lynae"), pinned("t2", "Sigrika", "Mornye", "Lucilla"), pinned(null, "Cartethyia", "Shorekeeper", "Ciaccona"), pinned("t4", "YangyangXuanling", "Suisui", "Chisa")] } as unknown as BuildAccountResult;
+    const ids = (r: { members: Array<{ characterId: string }> }) => r.members.map((m) => m.characterId);
+    // what the account holds: the first Save's two builds, unworn
+    const holds = (id: string) => (fresh.has(id) ? { id: `${id}-plan`, name: "Account plan" } : null);
+
+    // before the fix, and for an account that holds no such build: both are written
+    expect(ids(accountApplyRequest(plan, false))).toEqual(["Cartethyia", "Shorekeeper"]);
+    // the account holds them already: nothing to save, and the headline and the two cards say why
+    expect(ids(accountApplyRequest(plan, false, undefined, holds))).toEqual([]);
+    const stored = members.map((_, i) => alreadyStored(plan, i, false, holds));
+    expect(names.filter((_, i) => stored[i])).toEqual(["Cartethyia", "Shorekeeper"]);
+    expect(buildCountText(members, 0, 2)).toBe("No new builds, 9 keep today's echoes, 2 already saved");
+    // the card says it first, and keeps what the plan does for them
+    expect(memberNote(members[at("Cartethyia")]!, null, stored[at("Cartethyia")]!.name)).toMatch(/^this build is already saved as “Account plan”, so it is not saved again: switch to it in the calculator to wear it( · |$)/);
+    expect(memberNote(members[at("Ciaccona")]!, null, stored[at("Ciaccona")]?.name ?? null)).toBe("keeps today's echoes");
+    // a member the Save leaves alone keeps today's echoes whatever twin of their build is stored: one line per card
+    const twinOfAll = (id: string) => ({ id: `${id}-twin`, name: "Old copy" });
+    expect(names.filter((_, i) => alreadyStored(plan, i, false, twinOfAll))).toEqual(["Cartethyia", "Shorekeeper"]);
+    // "Also make active": the build has to be worn, so the Save still writes it and the card says nothing else
+    expect(ids(accountApplyRequest(plan, true, undefined, holds))).toEqual(expect.arrayContaining(["Cartethyia", "Shorekeeper"]));
+    expect(alreadyStored(plan, at("Cartethyia"), true, holds)).toBeNull();
+    // a member a chosen saved team would pin is never left out for a twin: the pin is what the Save is for
+    const inSaved = { members, teams: [pinned("t1", "Aemeath", "Mornye", "Lynae"), pinned("t2", "Sigrika", "Mornye", "Lucilla"), pinned("t3", "Cartethyia", "Shorekeeper", "Ciaccona"), pinned("t4", "YangyangXuanling", "Suisui", "Chisa")] } as unknown as BuildAccountResult;
+    expect(ids(accountApplyRequest(inSaved, false, undefined, holds))).toEqual(["Cartethyia", "Shorekeeper"]);
+    // the count without the third figure is as it was
+    expect(buildCountText(members, 2)).toBe("2 new builds, 9 keep today's echoes");
   });
 
   it("says why a member wearing another build gets one saved under Also make active, and when a build is saved for its buffs alone", () => {

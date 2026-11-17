@@ -160,7 +160,7 @@
         <p v-if="whyLower(result)" class="bt-summary__line" data-test-build-account-why>{{ whyLower(result) }}</p>
         <p class="bt-summary__line" data-test-build-account-search>{{ searchLine(result) }}</p>
         <p class="bt-summary__line">
-          {{ buildCountText(result.members, toSave.length) }}, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
+          {{ buildCountText(result.members, toSave.length, storedCount) }}, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
         </p>
       </section>
 
@@ -192,7 +192,7 @@
               <p v-if="memberOf(s).after" class="ba-member__line">
                 Damage on their part of this rotation · <span class="whitespace-nowrap">Energy Regen <b class="tabular-nums">{{ pctText(memberOf(s).after!.menuEr) }}</b></span><template v-if="memberOf(s).erFloor != null"> · need <span class="whitespace-nowrap">{{ pctText(memberOf(s).erFloor) }}</span></template><template v-if="memberOf(s).alsoIn.length"> · also worn in team {{ memberOf(s).alsoIn.map((x) => x + 1).join(", ") }}</template>
               </p>
-              <p v-if="memberNote(memberOf(s), sameEchoesSaveOf(s.member))" class="ba-member__note" :class="{ 'ba-member__note--fail': memberOf(s).status !== 'ok' }" data-test-build-account-member-note>{{ memberNote(memberOf(s), sameEchoesSaveOf(s.member)) }}</p>
+              <p v-if="memberNote(memberOf(s), sameEchoesSaveOf(s.member), storedOf(s.member)?.name ?? null)" class="ba-member__note" :class="{ 'ba-member__note--fail': memberOf(s).status !== 'ok' }" data-test-build-account-member-note>{{ memberNote(memberOf(s), sameEchoesSaveOf(s.member), storedOf(s.member)?.name ?? null) }}</p>
               <details v-if="memberOf(s).after" class="ba-echoes">
                 <summary>Their 5 echoes<template v-if="movedIn(s.characterId)"> · {{ movedIn(s.characterId) }} from other characters</template></summary>
                 <div class="bt-tiles">
@@ -280,7 +280,7 @@ const characterStore = useCharacterStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 const ba = useBuildAccount();
-const { phase, error, choices, scored, selected, chosen, weights, options, shared, stage, stageInfo, progress, result, applied, undoLive, makeActive, toSave, sameEchoesSaveOf, elapsed } = ba;
+const { phase, error, choices, scored, selected, chosen, weights, options, shared, stage, stageInfo, progress, result, applied, undoLive, makeActive, toSave, sameEchoesSaveOf, storedOf, storedCount, elapsed } = ba;
 const { toggle, move, setWeight, run, stopImproving, cancel, backToTeams } = ba;
 
 const runBar = ref<HTMLElement | null>(null);

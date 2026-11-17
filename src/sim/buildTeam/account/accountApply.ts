@@ -11,6 +11,7 @@
 // still fingerprints as right after the apply goes back verbatim, one changed since keeps what is in use, and the page
 // says which before and after. Same rules as Build my team's apply.ts, whose helpers do the work.
 import { cyrb53, stableStringify } from "../../myRankings/rankingCache";
+import { omitBuildMetadata } from "../../../characters/buildFields";
 import { snapshotCharacters } from "../../buildHistory/history";
 import { randomString } from "../../../utils/strings";
 import { afterEntries, buildExists, rollbackWrites, rotationsBeforeOf, snapshotForWrite, undoCharacters, undoFates, type BuildTeamStores, type UndoClash } from "../apply";
@@ -161,14 +162,54 @@ const pinsOf = (result: Pick<BuildAccountResult, "teams">, index: number): Accou
  *  to someone else. A pinned build that is also the active one is worn (`activeBuildOf`, echoCheck.ts's rule): planning
  *  again after a save made 7 identical copies and made them active (2026-11-08 hunt M5). Each pinned in every chosen
  *  saved team they play in. */
-export function accountApplyRequest(result: Pick<BuildAccountResult, "members" | "teams">, makeActive: boolean, activeBuildOf: (characterId: string) => string | null | undefined = () => null): AccountApplyRequest {
+export function accountApplyRequest(
+  result: Pick<BuildAccountResult, "members" | "teams">,
+  makeActive: boolean,
+  activeBuildOf: (characterId: string) => string | null | undefined = () => null,
+  storedBuildFor: StoredBuildFor = () => null,
+): AccountApplyRequest {
   const members: AccountApplyMember[] = [];
   result.members.forEach((m, index) => {
     if (m.status !== "ok" || !m.draft) return;
     if (m.sameEchoes && !sameEchoesSave(result, index, makeActive, activeBuildOf)) return;
+    if (alreadyStored(result, index, makeActive, storedBuildFor)) return;
     members.push({ characterId: m.characterId, draft: m.draft, pins: pinsOf(result, index) });
   });
   return { members, makeActive };
+}
+
+/** A stored build of a character, by what a card needs to name it. */
+export interface StoredBuild {
+  id: string;
+  name: string;
+}
+// eslint-disable-next-line no-unused-vars -- the parameters of a function type
+export type StoredBuildFor = (characterId: string, draft: Record<string, any>) => StoredBuild | null;
+
+const plainJson = (v: unknown): unknown => JSON.parse(JSON.stringify(v ?? null));
+
+/** A build this character already has stored with exactly a plan's fields, other than the one they wear (that one is
+ *  the live record, and "the same as today" is `sameEchoes`' question). Null when there is none. */
+export function storedBuildOf(record: Record<string, any> | null | undefined, draft: Record<string, any>): StoredBuild | null {
+  const want = stableStringify(plainJson(draft));
+  for (const build of (Array.isArray(record?.builds) ? record!.builds : []) as Array<Record<string, any>>) {
+    if (!build?.id || build.id === record?.activeBuildId) continue;
+    if (stableStringify(plainJson(omitBuildMetadata(build))) === want) return { id: String(build.id), name: String(build.name ?? "") };
+  }
+  return null;
+}
+
+/** The build a member's plan is already stored as, when a Save would only stack a copy of it: they play in no chosen
+ *  saved team (nothing would pin the new build) and "Also make active" is off (nothing would wear it). That is what an
+ *  earlier Save of the same plan leaves for the members of a team nobody saved: the team keeps reading their active
+ *  builds, so every further run planned the same build and Save wrote "Account plan (2)", "(3)" … beside it, each an
+ *  exact copy (2026-11-16, second check of the 11-10 fixes). Null where the Save has something to write. */
+export function alreadyStored(result: Pick<BuildAccountResult, "members" | "teams">, index: number, makeActive: boolean, storedBuildFor: StoredBuildFor = () => null): StoredBuild | null {
+  const m = result.members[index];
+  if (!m || m.status !== "ok" || !m.draft || makeActive || pinsOf(result, index).length) return null;
+  // one the Save leaves alone anyway keeps today's echoes, and their card says that
+  if (m.sameEchoes && !sameEchoesSave(result, index, false)) return null;
+  return storedBuildFor(m.characterId, m.draft);
 }
 
 /** Why the Save writes a build for a member whose echoes stay exactly today's:

@@ -23,7 +23,7 @@ import { accountStoresRefused } from "../../storage/persistGuard";
 import { onSavedResultsCleared } from "../../persist/savedResults";
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildAccount, type AccountPhase, type BuildAccountResult } from "./buildAccount";
-import { accountApplyRequest, accountUndoIsLive, clearAccountUndo, readAccountUndo, readStoredAccountUndo, saveAccountPlan, saveAccountUndo, sameEchoesSave, undoAccountPlan, undoAccountPlanSaved, type SameEchoesSave, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord } from "./accountApply";
+import { accountApplyRequest, accountUndoIsLive, alreadyStored, clearAccountUndo, readAccountUndo, readStoredAccountUndo, saveAccountPlan, saveAccountUndo, sameEchoesSave, storedBuildOf, undoAccountPlan, undoAccountPlanSaved, type SameEchoesSave, type AccountApplyOutcome, type AccountUndoOutcome, type AccountUndoRecord, type StoredBuild, type StoredBuildFor } from "./accountApply";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -400,7 +400,13 @@ export function useBuildAccount() {
 
   /** What a save would write: every member with a new build (accountApply.ts `accountApplyRequest`). */
   const activeBuildOf = (id: string): string | null => characterStore.characters?.[id]?.activeBuildId ?? null;
-  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value, activeBuildOf).members : []));
+  /** A plan this account already holds as a stored build is not saved again (accountApply.ts `alreadyStored`). Not
+   *  asked once this review's own Save is in: the builds it just wrote would read as "already saved" on its own cards. */
+  const storedBuildFor: StoredBuildFor = (id, draft) => (applied.value ? null : storedBuildOf(characterStore.characters?.[id], draft));
+  const toSave = computed(() => (result.value ? accountApplyRequest(result.value, makeActive.value, activeBuildOf, storedBuildFor).members : []));
+  /** The stored build a member's plan already is, when the Save leaves them out for it (null otherwise), for their card. */
+  const storedOf = (index: number): StoredBuild | null => (result.value ? alreadyStored(result.value, index, makeActive.value, storedBuildFor) : null);
+  const storedCount = computed(() => (result.value ? result.value.members.filter((_, index) => storedOf(index)).length : 0));
   /** Why a member whose echoes stay today's still gets a build from that save (null: none is written), for their card. */
   const sameEchoesSaveOf = (index: number): SameEchoesSave | null => (result.value ? sameEchoesSave(result.value, index, makeActive.value, activeBuildOf) : null);
 
@@ -426,7 +432,7 @@ export function useBuildAccount() {
     saving = true;
     try {
       const previous = readAccountUndo();
-      const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value, activeBuildOf), { echoes: inventoryStore.echoes as any[] });
+      const out = saveAccountPlan(stores(), accountApplyRequest(result.value, makeActive.value, activeBuildOf, storedBuildFor), { echoes: inventoryStore.echoes as any[] });
       await nextTick();
       if (accountStoresRefused()) {
         undoAccountPlan(stores(), out.undo);
@@ -525,6 +531,8 @@ export function useBuildAccount() {
     makeActive,
     toSave,
     sameEchoesSaveOf,
+    storedOf,
+    storedCount,
     elapsed,
     load,
     toggle,
