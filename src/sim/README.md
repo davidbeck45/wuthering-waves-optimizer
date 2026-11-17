@@ -5024,3 +5024,78 @@ back, the wiring through `sharedRanking`, another build's record handed over and
 `cypress/e2e/whatsNew.cy.ts` (15: the list, every Open link, the dot, seeded logs for each state, a real run (score,
 reload without a second record, refine a weapon, score again, read the cause) and a simulated update (the saved
 ranking rewritten in IndexedDB as an older build's, then the first visit)).
+
+## The generated data with Lily in the app (regen of 2026-11-16)
+
+Ryan's 3.8 registers Lily and the pistol Lullaby. Riley's engine has had her since 2026-10-22, and until this sync the
+generators cut everything for an app without her. Everything derived from the pair of upstreams was regenerated on the
+merged head. Riley is unchanged at 7bcbb24; the app's vendored fork of his engine is e95d4e6.
+
+| File | Before | After |
+|---|---|---|
+| `presets/data/rotations/*.json` | 151 loops on 49 characters | 155 on 50: Lily's own two, one more each for Hsin and Mortefi |
+| `presets/data/teams.json` | 149 teams, none with her | 149, 15 of them with her |
+| `presets/data/manifest.json` | `notInApp: ["Lily"]`, 13 loops renamed | `notInApp: []`, nothing renamed, 0 casts unmatched |
+| `presets/data/breakpoints.json` | 49 resonators | the same content, stamps only (she runs one loop at every sequence) |
+| `materials/data/materials.json` | version 3.7: 64 characters, 124 weapons, 150 items | 3.8: 65, 125, 151 (Lily, Lullaby, Reverie Lily) |
+| `rankings/__fixtures__/wuwaCalcLoops.json` | 51 loops of 17 resonators | 54 of 18 (her three; the 51 before unchanged) |
+
+**Her loop, and the one rule it needed.** A loop of hers presses the four Basic Attack stages, Reverie Blend, the Woven
+Fairytale heavy, Fairytale's Finale, her echo and Eternal Bloom: nine actions. Riley wrote her kit from the 3.8 beta.
+Her Basic Attack stages read 74.28 / 100.68 / 106.09 / 159.08 % there and 63.62 / 116.60 / 95.43 / 153.80 % in the
+released game, which is what Ryan's rows hold. So no motion value matched. Left to the cascade, Stage 4 landed on her
+Resonance Skill (159.08 against 159.05, inside the ±0.06 tolerance: a second Blend in every loop), Stage 2 stayed
+unmatched, and Stages 1 and 3 passed as kit multipliers. `castMapper.ts` `OVERRIDES.Lily` names the four rows, and its
+`DIFFERS` entry (`"_differs"`) says the two sides hold other data for these presses. A hand-mapped cast under it is
+pressed at the app's own value and reported under `MapReport.differs`, never as a multiplier the kit's buffs would have
+to supply. The stock card says so in words: "Motion values that differ between the two (wuwa_calc's Lily is the 3.8
+beta's kit, the app's rows are the released game's; each press is scored at the app's)". Same rule in wuwa-tools
+`map_rotations.py`; the fixture test replays her loops through both.
+
+**What her stock loops do not carry.**
+- **Healing.** Riley's `heal` is a marker with no amount, so his run has no cast for Slumberland or the Woven heals,
+  as for every other healer. The app has rows for them, and Ryan's own four presets press Slumberland Healing.
+- **Her Liberation and Outro.** Both are 0-MV casts in his run and no action here. What they give the team (25 % All
+  DMG Amplification, Dream Aroma's ATK, Silvered Dream's Echo Skill crit) reaches a teammate through the team buffs,
+  which `teamContext` derives from the real team, never through her own rotation.
+- **Dreambind's continuous damage.** His kit leaves it out (no tick rate in his data); the app has the row.
+- **Numbers that are the beta's in his table.** Dream Aroma is a flat 7 % ATK a stack in his kit, and in the game it is
+  0.1 % for each 1 % of her Energy Regen above 190 %, up to 7 %. The Blend's cooldown is 5 s there, 13 s in the game.
+  His DPS for a team with her is his engine's figure under those rules. The app scores its own rows.
+
+**Stock teams are the best three line-ups for each main DPS at each tier.** With her in, 15 of the 149 are teams with
+her, and they took the place of teams without her. For an account that does not own her the list holds fewer teams it
+can field: on David's export `cli rank` scores 84 stock teams where it scored 93 (ten left, one came in). No figure of
+his moved: the snapshot
+shows 0 changes on both exports, and every character's best rotation deals what it did. Loop names changed on
+three characters: the best loop of his Galbrena reads "Lily + Qiuyuan" where it read "Lupa + Qiuyuan" (same actions,
+same 6,566,772), and two stock loops of Sigrika and one of Zhezhi name Lily, none of them their best.
+
+**Caches.** `RANKING_CACHE_VERSION` stays 6 through this regeneration (the lane had raised it to 7; the coordinator
+took that back at integration). On the site a deploy already drops every tab copy and every saved result, because each
+answers to the app build (`tabCopyStamp`, `appBuildId`), so a cached best rotation cannot name a preset that is gone.
+And a bump changes the fingerprint and the schema a saved ranking is filed under, so `onOtherBuildRecord` would never
+hand the last build's ranking to the numbers log, and the first visit after the deploy could not say what it moved
+(`numbersLog/recordRanking.ts`). Where the build id does not move, as on a dev server, press Recompute after a
+regeneration. No other cache needed a bump: `echoCheckCache`, `investCache` and `valueCache` carry the same stamp and
+no version of the preset data.
+
+**Cost to max, 3.8.** Lily's six ascension ranks, the five Forte ladders, both inherent skills and the eight stat
+bonuses, and Lullaby's six ascension steps, were compared with Kuro's own wiki: 20 comparisons, all equal. The source
+of the tables now serves a Forte skill's ten rows out of level order for 19 of 65 records. The generator reads each row
+by the level it names, and stops when the rows are not exactly levels 1 to 10.
+
+**Things learned.**
+- **A match inside the tolerance is not a match across groups.** 159.08 and 159.05 are a Basic Attack stage and a
+  Resonance Skill. The cascade's first rule looks at the number before the group. When a kit's values are other data
+  on the two sides, name the rows.
+- **A git-ignored scratch folder can hold the only copy of something shipped.** Encore's one stock loop is a mapping
+  from before Riley stopped solving her. It lives in `rotation-port/out/<state>/presets/Encore.json` and nowhere else.
+  A fresh worktree emitted 154 loops on 49 characters, without a word. The three files were copied over, and the
+  emitter now reads the app's manifest first and stops, before it writes, when a run would leave a character without
+  the stock loops the app ships.
+- **A stamp names the engine that ran, which is not always the upstream commit.** The breakpoints and the kit briefs
+  read e95d4e6 (the vendored fork) where they read 7bcbb24, with the same content. The presets' manifest still reads
+  7bcbb24, through a fallback.
+- **A check that passes for an empty list checks nothing.** With `notInApp` empty, the loop over it in
+  `wuwaCalcPresets.test.ts` ran zero times. The test now tries its rule on a made-up resonator first.
