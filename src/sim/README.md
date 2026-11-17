@@ -4482,3 +4482,64 @@ the History footnote, the advisor's source sentence) are `text-base-content/80`,
 nord and pastel; `conveneTracker.cy.ts` measures them on three themes. `/70` gave 4.2 on dark, `/55` 3.0 to 4.0 on a
 card. The tabs' other muted text is still at `/50` to `/60` and below AA on dark and nord: the plus text floor
 (`a11y/a11y.css`) is scoped to plus pages and `/convene` is Ryan's page with plus tabs on it.
+
+## A second check of the 2026-11-10 fixes — data, a male Rover, the Tower (batch 4, lane "verify-b", 2026-11-16)
+
+Each fix shipped on 2026-11-10 had been checked once, by the agent that wrote it. This lane used the site again as a
+player would: a second tab, a restored tab, a run still in flight, an account that plays the other Rover, the clock past
+a season's end. What it changed, and the rule behind each change.
+
+**Delete your data reaches every tab.** `sessionStorage` is per tab, so the tab that deletes cannot reach what another
+tab keeps there, and that tab's pages hold the account in memory. After a Delete the other tab's Ask sheet still showed
+the conversation about the deleted account, its copies of the ranking and the investment plan stayed, and an Energy
+check still running there wrote the deleted teams' measurements back into `localStorage` when it finished.
+`deleteAccountData` (`storage/deleteAccount.ts`) now ends by writing a stamp, `wtplus:account:deletedAt`, and marks it
+as acted on in its own tab (`wtplus:account:deleteSeen`, sessionStorage). `installDeleteWatch` (PlusShell, before
+anything reads a tab copy) does two things with it:
+
+- on load, a tab whose seen mark is not the stamp drops every session key the rules say goes (`honourDeleteElsewhere`:
+  the Ask chat, the saved results' tab copies, the open team). This is the tab a phone put to sleep and restores later
+  with its sessionStorage: no `storage` event ever reaches it;
+- on the stamp's `storage` event, a tab that is open drops the same keys and reloads, as the deleting tab does 1.5 s
+  after its toast. The reload is what ends a check in flight and empties the page caches (the Energy check keeps every
+  measurement it loaded in a module Map and writes the whole Map back on its next save).
+
+A chat started after the Delete carries a seen mark equal to the stamp, so it stays. In the deleting tab the same keys
+go once more on `pagehide`: a check that ends inside the 1.5 s before the reload would otherwise write its result after
+the sweep. Both names are in `STORAGE_RULES` as bookkeeping that stays.
+
+**One Rover, two keys, at every bridge from wuwa_calc.** Riley has one Rover per element; everything read off his run
+names her by the female key (`appKeyOf`), and an account holds one form. The first fix (52cdb575) covered the loops and
+the stock teams. Three bridges still wrote or matched the female key:
+
+- `reslotActions` (Sync my teams, both the page's and the CLI's writer) matched a saved team's members by exact key, so
+  the team List Presets had just saved under the male key was refused: "does not hold the same three characters as the
+  rankings row". It now matches by kit (`sameKit`, rankings/rileyNames.ts); `preparedForTeam` re-keys the prepared
+  team's members, handoffs and member loops to the keys the saved team holds, and `preparedForAccount` gives a new
+  import the form the account plays (`accountKeyOf`). A member's own loop is saved on the record the account has;
+- `plansForTeam` (buildTeam/plans.ts) joined wuwa_calc's pick to a member by exact key, so a male Rover got no pick: he
+  read "Your current build" and "no measured need", was labelled Main DPS and was served echoes first. Matched by kit
+  now, and the plan carries the member's own key;
+- `teamSpecOf` reads a Rover named in a `?members=` link as the form the account plays. Team rankings' "Build from my
+  echoes" names the female key, and the page opened on a character the account does not have.
+
+`sameKit(a, b)` is the question to ask whenever a key that came from a wuwa_calc name meets a key from the account.
+Left as they are, display only: `/rotation`'s stock tiles and the cue card's portraits show the female form.
+
+**An ended season waits for nothing.** `planEmptyText` (endgame/planEmpty.ts) is the Plan tab's sentence while there is
+no plan. The day after a season ends it read "The plan comes once Season 42's floor HP is published" (or, with the HP
+in, "Check your teams first." beside a button that is off). An ended season is asked first and names the season that
+is due.
+
+**Checked and holding**, each tried in the browser at 412 and 360 px, 130 % text: Delete in one tab (storage,
+IndexedDB, every page, Back four times, an empty account twice, a ranking in flight); an echo a saved build holds
+(the chips and Feed candidates after a build is saved elsewhere, two builds holding one echo, the assistant's
+`echo_lab` and `search_inventory`); a season without floor HP with last season's check and a logged clear in the
+browser, on its last day, in `cli toa` and `toa_check`; stars under the old name; Cost to max held at the top for 10 s
+on three characters, through the palette too; Back on Options and Play along after an in-app move; the stat tile icons
+on light, pastel and nord; the member card's name; the three "numbers" labels.
+
+**Not fixed, known.** Back with the Ask sheet, Options or Play along open leaves the site when the page is the first
+one of the visit (a bookmark, a shared `/rotation#chars=` link): the guard cancels a router move, and there is none to
+cancel when the entry behind is another document. A fix needs a history entry of the app's own behind the sheet, made
+on the tap that opens it; it was left out of this run because the real Back button cannot be driven from a test here.
