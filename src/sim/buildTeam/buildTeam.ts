@@ -24,6 +24,7 @@ import { bakedRecords, deliveredRecords, providerStat, teamBuffNeedsFor, type Sh
 import { bestLoadoutOf, erMinStat, mainEchoRecordOf, menuErOf, prepareMemberJob, type BuffConfig, type MemberJob, type Objective, type OptimizeRequest, type OptimizerBackend, type OptimizeProgress, type ScoredLoadout } from "./headlessOptimizer";
 import type { MemberPlan } from "./rileyPlan";
 import { characterShortName } from "../display/names";
+import { accountKeyOf } from "../rankings/rileyNames";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -54,15 +55,17 @@ export interface TeamRequest {
 /** The team a request stands for, as the page runs it: a saved team with its rotation and pins; a composition that
  *  is also a saved team with a rotation becomes that team; else the members alone (no rotation: each is scored on
  *  their best one). Null when the saved team is gone or no member is named. Pure: /account's echo check runs the
- *  exact spec the page will. */
-export function teamSpecOf(request: TeamRequest, teams: readonly any[]): TeamSpec | null {
+ *  exact spec the page will.
+ *  With `characters` (the account), a named Rover is read as the form the account plays (`accountKeyOf`): Team rankings
+ *  names wuwa_calc's one Rover by the female key, and its link opened this page on a Rover a male account does not have. */
+export function teamSpecOf(request: TeamRequest, teams: readonly any[], characters?: Record<string, any> | null): TeamSpec | null {
   if (request.teamId) {
     const t = (teams ?? []).find((x) => x?.id === request.teamId);
     if (!t) return null;
     const copy = <T>(v: T): T => JSON.parse(JSON.stringify(v ?? null));
     return { id: t.id, name: t.name, characterIds: [...(t.characterIds ?? [])], buildIds: [...(t.buildIds ?? [null, null, null])], actions: copy(t.actions ?? []), duration: t.duration ?? null, enemyConfig: copy(t.enemyConfig ?? null), handoffs: copy(t.handoffs ?? null) };
   }
-  const ids = (request.members ?? []).filter(Boolean).slice(0, 3);
+  const ids = (request.members ?? []).filter(Boolean).slice(0, 3).map((id) => accountKeyOf(id, characters));
   if (!ids.length) return null;
   const saved = (teams ?? []).find((t) => (t?.actions ?? []).length && (t.characterIds ?? []).length === ids.length && ids.every((id) => t.characterIds.includes(id)));
   if (saved) return teamSpecOf({ teamId: saved.id }, teams);

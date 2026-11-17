@@ -459,4 +459,23 @@ describe("the team a request stands for", () => {
     expect(teamSpecOf({ members: ["RoverAeroMale"] }, [])!.name).toBe("Rover Aero");
     expect(teamSpecOf({ members: ["RoverAeroFemale", "Cartethyia"] }, [])!.name).toBe("Rover Aero + Cartethyia");
   });
+
+  // 2026-11-16, second check of the male Rover fix. Team rankings names a Rover by wuwa_calc's one form, the female key,
+  // so its "Build from my echoes" link opened this page on a Rover the account does not have: a male Rover's own five
+  // echoes counted as "worn by characters outside this team" (106 against 101), Cartethyia took his place as main DPS
+  // in the plan, and the builds were for the wrong record.
+  it("reads a Rover as the form the account plays, whichever gender the link names", () => {
+    const his = { RoverAeroMale: { weapon: "BloodpactsPledge" }, Suisui: { weapon: "Variation" }, Cartethyia: { weapon: "DefiersThorn" } };
+    const link = { members: ["RoverAeroFemale", "Suisui", "Cartethyia"], key: "t77" };
+    expect(teamSpecOf(link, [], his)!.characterIds).toEqual(["RoverAeroMale", "Suisui", "Cartethyia"]);
+    // and so finds the team he saved under his own key, with its rotation and pins
+    const saved = { id: "t1", name: "My Rover team", characterIds: ["Suisui", "RoverAeroMale", "Cartethyia"], buildIds: [null, "b2", null], actions: [{ slot: 1, key: "BasicAttack1", type: "basic", count: 1 }] };
+    expect(teamSpecOf(link, [saved], his)).toMatchObject({ id: "t1", characterIds: ["Suisui", "RoverAeroMale", "Cartethyia"], buildIds: [null, "b2", null] });
+    // an account that plays her, one with neither, and no account at all: the link as it is
+    expect(teamSpecOf(link, [], { RoverAeroFemale: { weapon: "BloodpactsPledge" } })!.characterIds).toEqual(["RoverAeroFemale", "Suisui", "Cartethyia"]);
+    expect(teamSpecOf(link, [], { Suisui: {} })!.characterIds).toEqual(["RoverAeroFemale", "Suisui", "Cartethyia"]);
+    expect(teamSpecOf(link, [])!.characterIds).toEqual(["RoverAeroFemale", "Suisui", "Cartethyia"]);
+    // anyone but a Rover is never renamed
+    expect(teamSpecOf({ members: ["Cartethyia", "Chisa"] }, [], his)!.characterIds).toEqual(["Cartethyia", "Chisa", null]);
+  });
 });

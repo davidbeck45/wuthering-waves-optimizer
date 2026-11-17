@@ -3,6 +3,7 @@
 // CLI (rileyHeadless): the seam is passed in as `RileySource`, so this module never loads his engine itself.
 import { getCharByName } from "../../characters/characters";
 import type { MineSolve, RileyPick, RunLite } from "../engine/rileyRun";
+import { sameKit } from "../rankings/rileyNames";
 import { emptyPlan, planFromCurrent, planFromPreset, planFromRiley, type MemberPlan, type PresetEcho } from "./rileyPlan";
 
 /** The Riley run seam as this feature uses it (rileyClient in the browser, rileyHeadless on Node). */
@@ -95,8 +96,10 @@ export async function plansForTeam(
   for (let slot = 0; slot < characterIds.length; slot++) {
     const id = characterIds[slot];
     if (!id) continue;
-    const member = best?.best?.members.find((m) => m.appKey === id) ?? null;
-    if (member) plans[slot] = planFromRiley(member, run?.needs?.[member.name] ?? null);
+    // his run names a Rover by the female key; a male Rover's team holds him under his own (one kit, `sameKit`), and
+    // the plan is for the member this team has
+    const member = best?.best?.members.find((m) => sameKit(m.appKey, id)) ?? null;
+    if (member) plans[slot] = { ...planFromRiley(member, run?.needs?.[member.name] ?? null), characterId: id };
     else {
       const preset = await presetPlanFor(id, slot === 0);
       plans[slot] = preset.source !== "none" ? preset : options.currentEchoes ? planFromCurrent(id, options.currentEchoes(id), slot === 0) : preset;

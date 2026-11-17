@@ -151,7 +151,7 @@ export function useBuildTeam() {
     }
   }
 
-  const specOf = (request: TeamRequest): TeamSpec | null => teamSpecOf(request, plain(teamStore.teams as any[]));
+  const specOf = (request: TeamRequest): TeamSpec | null => teamSpecOf(request, plain(teamStore.teams as any[]), characterStore.characters as Record<string, any>);
 
   const account = () => rileyAccountOf(plain(characterStore.characters), { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams));
 

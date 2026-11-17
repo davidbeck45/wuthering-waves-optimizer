@@ -218,7 +218,7 @@ export async function checkOwnEchoes(input: EchoCheckInput, deps: EchoCheckDeps,
     try {
       const ctx = await scorer.teamFor(id);
       const request = echoCheckRequest(ctx, id);
-      const spec = teamSpecOf(request, teams);
+      const spec = teamSpecOf(request, teams, characters);
       const slot = spec ? spec.characterIds.indexOf(id) : -1;
       if (!spec || slot < 0) {
         skipped.push({ characterId: id, reason: "Their team is not in this browser's data any more." });
