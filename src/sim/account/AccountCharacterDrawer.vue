@@ -116,6 +116,18 @@
       <!-- what it takes to raise them: level, Forte, inherents / stat bonuses, weapon (src/sim/materials/) -->
       <MaterialsCostToMax :key="card.id" class="dr__section" :character-key="card.id" :name="shortName" />
 
+      <!-- which level-up to do first: what each one adds on this build and what it costs (src/sim/levels/) -->
+      <LevelsWorth
+        :key="`levels:${card.id}`"
+        class="dr__section"
+        :character-key="card.id"
+        :name="shortName"
+        :rank="rank"
+        :ranking-teams="rankingTeams ?? []"
+        :scoring="scoring"
+        :owned="owned"
+        @calculator="emit('calculator', card.id)" />
+
       <section v-if="card.teams.length" class="dr__section">
         <h3 class="dr__h3">Teams {{ shortName }} can field <span class="dr__count">{{ card.teams.length }}</span></h3>
         <ul class="dr__teams">
@@ -164,13 +176,14 @@
 // Wuthering Tools+ — the /account character drawer: a native modal dialog (focus kept inside, Escape and a backdrop
 // click close it) that slides in from the right on desktop and up from the bottom on a phone. The card's numbers,
 // the best rotation, the character's investments with own and team gains, the teams they can field, and the way on:
-// the calculator, their Substats / What if tabs on /my-rankings, Riley's table at the account's own state; and what it
-// costs to raise them (Cost to max, src/sim/materials/).
+// the calculator, their Substats / What if tabs on /my-rankings, Riley's table at the account's own state; what it
+// costs to raise them (Cost to max, src/sim/materials/) and which level-up is worth most (src/sim/levels/).
 import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WeaponIcon from "../display/WeaponIcon.vue";
 import PresetNameLabel from "../display/PresetNameLabel.vue";
 import MaterialsCostToMax from "../materials/MaterialsCostToMax.vue";
+import LevelsWorth from "../levels/LevelsWorth.vue";
 import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
 import { characterShortName, elementColor, rarityColor, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
@@ -185,11 +198,25 @@ import { useOwnEnemyNotes } from "./useOwnEnemyNotes";
 import { readHistory } from "../buildHistory/history";
 import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
-import type { CharacterRank } from "../myRankings/rankRoster";
+import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { pinSection } from "./pinSection";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
-const props = defineProps<{ card: RosterCard | null; items: InvestItem[]; rank: CharacterRank | null; rosterSize: number; owned: string[]; scoring?: boolean; own?: DrawerOwn | null; /** "cost": open at Cost to max (the palette's command) */ section?: string | null }>();
+const props = defineProps<{
+  card: RosterCard | null;
+  items: InvestItem[];
+  rank: CharacterRank | null;
+  rosterSize: number;
+  owned: string[];
+  scoring?: boolean;
+  own?: DrawerOwn | null;
+  /** "cost": open at Cost to max, "levels": at What each level is worth (the palette's commands) */
+  section?: string | null;
+  /** the finished roster ranking's teams, for What each level is worth */
+  rankingTeams?: TeamRank[];
+}>();
+/** the drawer sections a link can open on */
+const SECTION_TARGETS: Record<string, string> = { cost: "[data-test-cost-to-max]", levels: "[data-test-levels-worth]" };
 const enemyNote = useOwnEnemyNotes();
 const rankSub = computed(() =>
   props.scoring
@@ -226,7 +253,8 @@ watch(
     if (id && !el.open) el.showModal();
     else if (!id && el.open) el.close();
     // held there while the sections above it load: one scroll left Cost to max a screen below the fold
-    if (id && props.section === "cost") unpin = pinSection(el, el.querySelector(".dr__inner"), () => el.querySelector("[data-test-cost-to-max]"));
+    const target = props.section ? SECTION_TARGETS[props.section] : undefined;
+    if (id && target) unpin = pinSection(el, el.querySelector(".dr__inner"), () => el.querySelector(target));
   },
 );
 onBeforeUnmount(() => unpin?.());

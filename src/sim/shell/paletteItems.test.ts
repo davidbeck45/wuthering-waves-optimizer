@@ -144,6 +144,15 @@ describe("rankPalette", () => {
     expect(rankPalette("materials", items).some((i) => i.title === "Cost to max: Aemeath")).toBe(true);
   });
 
+  it("finds What to level first per character, and opens the drawer at that section", () => {
+    const items = paletteWithCommands(sources());
+    expect(rankPalette("what to level first", items)[0]?.title).toMatch(/^What to level first: /);
+    expect(rankPalette("what to level first aemeath", items)[0]).toMatchObject({ title: "What to level first: Aemeath", group: "command", run: { kind: "route", path: "/account?focus=Aemeath&section=levels" } });
+    expect(rankPalette("skill priority", items).some((i) => i.title === "What to level first: Mornye")).toBe(true);
+    // Cost to max keeps its own line
+    expect(rankPalette("cost to max", items)[0]?.title).toMatch(/^Cost to max: /);
+  });
+
   it("puts 'Ask Claude' first for a question or a weak match, and leaves it out on request", () => {
     expect(rankPalette("why is my team lower than riley's?", items)[0]).toMatchObject({ group: "ask", title: "Ask Claude: why is my team lower than riley's?" });
     expect(rankPalette("zzzz qqq", items)[0].group).toBe("ask");

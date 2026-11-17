@@ -113,6 +113,7 @@
       :owned="ownedKeys"
       :own="drawerOwn"
       :section="drawerSection"
+      :ranking-teams="ranking?.teams ?? []"
       @close="closeDrawer"
       @calculator="toCalculator" />
   </div>
@@ -226,8 +227,8 @@ const drawerOwn = computed(() => (drawerId.value ? drawerOwnOf(drawerId.value, o
 function openCharacter(id: string): void {
   drawerId.value = id;
 }
-/** `?focus=<character>` (the palette's "Cost to max: <name>"): that drawer, once their card is in. `&section=cost` opens it
- *  at that section. Closing takes both off the address, so the same link opens it again and a reload doesn't. */
+/** `?focus=<character>` (the palette's "Cost to max: <name>"): that drawer, once their card is in. `&section=cost` (or
+ *  `levels`, "What each level is worth") opens it at that section. Closing takes both off the address, so the same link opens it again and a reload doesn't. */
 const drawerSection = computed(() => (typeof route.query.section === "string" ? route.query.section : null));
 function openFocused(): void {
   const focus = route.query.focus;

@@ -117,6 +117,12 @@ function costCommand(key: string, name: string): Built {
   return { key: `command:character:${key}:cost`, group: "command", order: 1, title: `Cost to max: ${name}`, subtitle: "Every material and Shell Credit left to take them, their weapon and their skills to the top", keywords: ["cost", "materials", "shell credits", "ascension", "level up", "what it costs", name, key], icon: ICON.substats, opens: path, run: { kind: "route", path } };
 }
 
+/** What each level is worth sits under Cost to max in the same drawer. */
+function levelsCommand(key: string, name: string): Built {
+  const path = `/account?focus=${encodeURIComponent(key)}&section=levels`;
+  return { key: `command:character:${key}:levels`, group: "command", order: 1, title: `What to level first: ${name}`, subtitle: "What each level-up left adds to damage on their build, what it costs, and the order to take them in", keywords: ["level", "level up", "levels", "skill priority", "forte", "talent", "weapon level", "ascension", "which skill", "what to level", "worth", name, key], icon: ICON.substats, opens: path, run: { kind: "route", path } };
+}
+
 function teamCommands(t: TeamTarget, displayName: NameOf, group: Group): Built[] {
   if (t.members.length !== 3) return [];
   // a wuwa_calc name reads as the team's one name ("Aemeath · Mornye + Lynae", teamTitle); else the members
@@ -164,7 +170,7 @@ export function commandItems(s: PaletteSources, displayName: NameOf): PaletteIte
   const seen = new Set(context.map((c) => JSON.stringify(c.run)));
   const fresh = (b: Built): boolean => !seen.has(JSON.stringify(b.run));
   const commands: Built[] = [];
-  for (const c of s.characters) if (c.setUp) commands.push(...characterCommands(c.key, c.name, "command").filter(fresh), costCommand(c.key, c.name));
+  for (const c of s.characters) if (c.setUp) commands.push(...characterCommands(c.key, c.name, "command").filter(fresh), costCommand(c.key, c.name), levelsCommand(c.key, c.name));
   for (const t of s.teams) if (t.memberKeys?.length === 3) commands.push(...teamCommands({ id: t.id, name: t.name, members: t.memberKeys }, displayName, "command").filter(fresh));
   commands.push(
     { key: "command:toa", group: "command", order: 2, title: "ToA clear check for my teams", subtitle: "This Tower of Adversity season's floors against the teams you can field: kill time and crests", keywords: ["toa", "tower of adversity", "clear check", "crests", "hazard zone", "endgame", "abyss"], icon: ICON.toa, run: { kind: "route", path: "/endgame" } },
