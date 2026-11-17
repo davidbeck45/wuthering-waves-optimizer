@@ -5277,3 +5277,66 @@ Things learned:
 - **A harness that calls a composable outside a component never unmounts it.** `effectScope()` and `scope.stop()` give
   a leave to test, and `onScopeDispose` in the plus module needs no line in his unmount hook.
 - **His cancelled run's promise never settles.** A test that awaits it hangs.
+
+## Lily on every plus page — the first kit built on Unison and on Intro-counted stacks (batch 4, track "lily", 2026-11-16)
+
+Version 3.8's resonator arrived with the sync above and plus stopped skipping her by itself: nothing in plus named her,
+it asked the app's own character list. What was left was what her kit does that no kit before it did. Report:
+`wto-wt/b4/reports/lily.md`.
+
+**Three rules in `teamContext/resolveTeam.ts`** (team buffs derived from the real team). Each over- or under-buffed
+every team she is in:
+
+| Rule | The game's text | What plus did before |
+|---|---|---|
+| A buff for a Resonator who has Unison reaches only a kit that has it | Silvered Dream's ATK: "can trigger Unison Response". Lullaby's ATK and Flower of Tinged Yearning's rider: "gains Unison or triggers Unison Response". Hsin's Shared Light: "when they gain Unison". Suoming's Canopy Rumble rider: "while having Unison Boon" | every teammate got them: up to +59 % ATK on a Galbrena or a Qiuyuan |
+| A stack count the team's loop decides is read off the team | Dream Aroma: "1 stack per Intro Skill cast by a Resonator in the team other than Lily … Removed when Lily is the incoming Resonator"; 2 per Intro from her S1; her S2 pays crit per stack | the buff's cap, 4 stacks, at S0 |
+| A clause that says when a buff ends is no Outro handoff | the same "Removed when Lily is the incoming Resonator" | in an imported team (it records who follows whom) only the member after Lily got Dream Aroma |
+
+Who has Unison is read off the kit, never a list of names: `boon` = the kit has a `UnisonBoon` buff (Ryan's own marker,
+the one `effectiveBuffStacks.ts` reads), `gains` = a skill text of the kit grants it ("Jinhsi gains Unison", "grants
+Hsin Unison"). A kit with a Resonance Mode named Unison (Hsin) has both in that mode only. Riley's engine draws the same
+line ("Only a Unison Boon reactor can gain Unison Boon at all, so a Jinhsi beside Suoming never holds it"). The receiver
+of Dream Aroma hears one Intro when they are next in line after Lily and every teammate's when they are not; where the
+team's order is not known it is every teammate's, the most the loop reaches. Silvered Dream counts the Unison Boon the
+receiver can hold (`getEffectiveMaxStacks`, with what the team just handed them). `teamCountedNodes()` names the nodes
+the resolver reads although their definition has no number (her S1); the assistant's `get_kit` uses it, so the node is
+no longer "text only".
+
+Measured on three imported teams at S0 with a standard pistol (David's export plus a Lily record, never committed): the
+team totals read 6.0 % to 6.1 % lower than before (Sigrika · Lily + Lucilla 6,753,568 to 6,348,715), 8 % to 9 % lower at
+S2 with Lullaby. Derived buffs and the same ticks set on each member's own panel give the same total to the digit.
+
+**`/energy`: the need is not the whole story for a kit that turns Energy Regen into team buffs.** The need is what a
+Liberation costs in the loop, or the floor Riley's loadout keeps (Mornye 260 %, Shorekeeper 240 %). Lily's buffs grow up
+to 260 % and his loadout keeps no floor for her, so a Lily at 239.8 % read "ok · +67.2 %". `energy/buffCeiling.ts` reads
+the ceiling off the app's own buff definitions (a stack's own cap, `perStackMaximumValue`, not the four stacks' total)
+and the card, the breakdown, `cli er` and the `energy_check` tool say it beside the need: "Lily's team buffs (Dream
+Aroma, Silvered Dream) grow with Lily's Energy Regen up to 260%. This build has 239.8%: 20.2 points more would raise
+them." Suisui (260 %) and Shorekeeper (250 %) get the same line. It is never folded into the need: no band, score or
+substat weight changes.
+
+**The pull advisor answers for a resonator the account lacks** (`convene/newResonator.ts`,
+`ui/ConveneNewResonator.vue`). The calculator has no build to score, and the row said so and stopped. Riley's engine
+plays whole teams for such a resonator, and the weapon page's selector already asked it (`rankResonatorPool`): one copy
+at S0 on his best weapon for her that is not a signature, each main DPS's best team with her against that main DPS's
+best team today. Under the row a button runs it on demand in the app's one solver worker (266 team runs in about 12 s
+here) and prints a sentence with both teams and both figures. Nothing is stored. DPS is named as wuwa_calc's on every
+figure.
+
+**Looked at and right as it was:** the release guard and everything behind it (rankings chips and portraits, Sync my
+teams, the import, Build my team, the Tower check, the energy scan), `/account` and `/my-rankings` (her card says "own"
+beside her own damage and "no team figure" until a team is saved), `/weapons` (Lullaby as her signature; the page offers
+nobody another kit's signature), Build my team (her Energy Regen is kept through `teamBuffNeeds`), Echo Lab (she is
+judged on her own rotation like every build), `/echo-plan`, `/rotation`.
+
+**Things learned.**
+- **A new kit's buff text is a new kind of sentence.** The handoff rule matched "incoming Resonator" anywhere, and
+  Dream Aroma says it about its own end. After a version, read every new team buff's text against each text rule.
+- **A cap in the data is not a realistic stack count.** `maxStacks: 4` was true of Dream Aroma and reached only at S1.
+  Where the stacks come from the team's loop, the team has to be asked.
+- **Two engines can both be right and disagree on what "need" means.** Riley's kit pays Dream Aroma in full whatever
+  her Energy Regen is, the app scales it with what she has. The page shows his need and says the app's ceiling beside
+  it, and neither figure is changed to match the other.
+- **A cached prompt prefix is a contract.** `get_kit`'s description could not take a new sentence (a test holds the
+  first twelve tool definitions byte for byte), so the new fact went into the result, where a field name explains it.
