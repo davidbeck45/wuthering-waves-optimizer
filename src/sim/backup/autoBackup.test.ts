@@ -203,15 +203,21 @@ describe("which backups are kept", () => {
 });
 
 describe("a browser that is full, or keeps nothing", () => {
-  it("full: the oldest backups go, as many as the new one needs, the new one is stored, and nothing is thrown", async () => {
+  /** A store with room for `budget` bytes, as a full browser has: a write that would pass it is refused whole. */
+  function tightStore(budget: number) {
     const store = memoryBackupStore();
-    for (let i = 1; i <= 4; i++) await store.add(meta(`auto-old-${i}`, T0 - i * DAY, "daily", 5000), "x");
-    let refusals = 1;
     const add = store.add.bind(store);
-    store.add = async (m, d) => {
-      if (refusals-- > 0) throw new DOMException("full", "QuotaExceededError");
-      return add(m, d);
+    const used = (without: readonly string[] = []): number => [...store.records.values()].reduce((n, r) => n + (r.meta && !without.includes(r.meta.id) ? r.meta.bytes : 0), 0);
+    store.add = async (m, d, replacing = []) => {
+      if (used(replacing) + m.bytes > budget) throw new DOMException("full", "QuotaExceededError");
+      return add(m, d, replacing);
     };
+    return { store, seed: (m: BackupMeta) => add(m, "x") };
+  }
+
+  it("full: the oldest backup goes to make room for the new one, in one step, and nothing is thrown", async () => {
+    const { store, seed } = tightStore(20_500);
+    for (let i = 1; i <= 4; i++) await seed(meta(`auto-old-${i}`, T0 - i * DAY, "daily", 5000));
     const { layer } = setup(store);
     const taken = await layer.take("daily", testCapture());
     expect(taken.saved).toBe(true);
@@ -220,30 +226,29 @@ describe("a browser that is full, or keeps nothing", () => {
   });
 
   it("full, and small old ones: never more than half the list goes for one new backup", async () => {
-    const store = memoryBackupStore();
-    for (let i = 1; i <= 6; i++) await store.add(meta(`auto-old-${i}`, T0 - i * DAY, "daily", 1), "x");
-    let refusals = 1;
-    const add = store.add.bind(store);
-    store.add = async (m, d) => {
-      if (refusals-- > 0) throw new DOMException("full", "QuotaExceededError");
-      return add(m, d);
-    };
+    const { store, seed } = tightStore(250);
+    for (let i = 1; i <= 6; i++) await seed(meta(`auto-old-${i}`, T0 - i * DAY, "daily", 40));
     const { layer } = setup(store);
-    expect((await layer.take("daily", testCapture())).saved).toBe(true);
-    expect((await layer.list()).map((m) => m.id)).toEqual(["auto-2026-11-16", "auto-old-1", "auto-old-2", "auto-old-3"]);
+    // the new one is a few hundred bytes: three small ones are not room enough, and three is the most it may take
+    expect(await layer.take("daily", testCapture())).toEqual({ saved: false, why: "full" });
+    expect(await layer.list()).toHaveLength(6);
   });
 
-  it("still full after that, or nothing older to give up: the backup is not taken, and the app hears no error", async () => {
-    const full = async (): Promise<boolean> => {
-      throw new DOMException("full", "QuotaExceededError");
-    };
-    const store = memoryBackupStore();
-    store.add = full;
+  it("still full after that: the backup is not taken, and EVERY old backup is still there, however often it is tried", async () => {
+    const { store, seed } = tightStore(100);
+    for (let i = 1; i <= 4; i++) await seed(meta(`auto-old-${i}`, T0 - i * DAY, "daily", 25));
+    const { layer, clock } = setup(store);
+    for (let attempt = 0; attempt < 6; attempt++) {
+      expect(await layer.take(attempt % 2 ? "manual" : "daily", testCapture({ echoes: attempt + 1 }))).toEqual({ saved: false, why: "full" });
+      clock.now += DAY;
+    }
+    expect((await layer.list()).map((m) => m.id)).toEqual(["auto-old-1", "auto-old-2", "auto-old-3", "auto-old-4"]);
+  });
+
+  it("full with nothing older to give up: not taken, and the app hears no error", async () => {
+    const { store } = tightStore(10);
     expect(await setup(store).layer.take("daily", testCapture())).toEqual({ saved: false, why: "full" });
-    const withOld = memoryBackupStore();
-    await withOld.add(meta("auto-old", T0 - DAY), "x");
-    withOld.add = full;
-    expect(await setup(withOld).layer.take("before-import", testCapture())).toEqual({ saved: false, why: "full" });
+    expect(await store.list()).toEqual([]);
   });
 
   it("a write refused for any other reason costs no old backup: every one of them is still there", async () => {

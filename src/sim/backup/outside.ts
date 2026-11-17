@@ -35,25 +35,75 @@ function localArea(): Storage | null {
   }
 }
 
-export function readOutside(storage: Pick<Storage, "getItem"> | null = localArea()): OutsideState | null {
+/** An automatic backup that could not be stored: when, and whether the browser was out of room. */
+export interface MissedBackup {
+  at: number;
+  why: "full" | "failed";
+}
+
+interface StoredState {
+  v: 1;
+  outside?: Partial<OutsideState>;
+  missed?: Partial<MissedBackup>;
+}
+
+type Area = Pick<Storage, "getItem" | "setItem">;
+
+function readState(storage: Pick<Storage, "getItem"> | null): StoredState | null {
   try {
-    const state = JSON.parse(storage?.getItem(BACKUP_STATE_KEY) ?? "null") as { v?: number; outside?: Partial<OutsideState> } | null;
-    const o = state?.v === 1 ? state.outside : null;
-    if (!o || typeof o.at !== "number" || !Number.isFinite(o.at)) return null;
-    return { at: o.at, how: o.how === "share" ? "share" : "download", kind: o.kind === "plain" ? "plain" : "full" };
+    const state = JSON.parse(storage?.getItem(BACKUP_STATE_KEY) ?? "null") as StoredState | null;
+    return state && typeof state === "object" && state.v === 1 ? state : null;
   } catch {
     return null;
   }
 }
 
-/** A copy just left this browser. A refused write only means the line stays as it was. */
-export function noteCopyLeft(how: OutsideState["how"], kind: CopyKind, at = Date.now(), storage: Pick<Storage, "setItem"> | null = localArea()): void {
+function writeState(storage: Area | null, change: (state: StoredState) => StoredState): void {
   try {
-    storage?.setItem(BACKUP_STATE_KEY, JSON.stringify({ v: 1, outside: { at, how, kind } }));
+    storage?.setItem(BACKUP_STATE_KEY, JSON.stringify(change(readState(storage) ?? { v: 1 })));
   } catch {
-    /* storage full or blocked */
+    /* storage full or blocked: the line stays as it was */
   }
   outsideChanged.value += 1;
+}
+
+export function readOutside(storage: Pick<Storage, "getItem"> | null = localArea()): OutsideState | null {
+  const o = readState(storage)?.outside;
+  if (!o || typeof o.at !== "number" || !Number.isFinite(o.at)) return null;
+  return { at: o.at, how: o.how === "share" ? "share" : "download", kind: o.kind === "plain" ? "plain" : "full" };
+}
+
+/** A copy just left this browser. A refused write only means the line stays as it was. */
+export function noteCopyLeft(how: OutsideState["how"], kind: CopyKind, at = Date.now(), storage: Area | null = localArea()): void {
+  writeState(storage, (state) => ({ ...state, outside: { at, how, kind } }));
+}
+
+/** The automatic backup that last could not be stored, if the one after it has not been stored since. */
+export function readMissed(storage: Pick<Storage, "getItem"> | null = localArea()): MissedBackup | null {
+  const m = readState(storage)?.missed;
+  if (!m || typeof m.at !== "number" || !Number.isFinite(m.at)) return null;
+  return { at: m.at, why: m.why === "full" ? "full" : "failed" };
+}
+
+/** What became of an automatic backup: one that could not be stored is remembered until one is. A backup that was
+ *  not due (nothing changed, today's is there, an empty account) says nothing either way about room. */
+export function noteAutomatic(result: { saved: boolean; why?: string }, at = Date.now(), storage: Area | null = localArea()): void {
+  const missed: MissedBackup | null = !result.saved && (result.why === "full" || result.why === "failed") ? { at, why: result.why } : null;
+  if (!missed && !result.saved) return;
+  if (!missed && !readState(storage)?.missed) return; // nothing to clear: no write on an ordinary day
+  writeState(storage, (state) => {
+    const next: StoredState = { ...state };
+    if (missed) next.missed = missed;
+    else delete next.missed;
+    return next;
+  });
+}
+
+/** The words for it, on the Backups page and in Settings. */
+export function missedText(missed: MissedBackup, when: string): string {
+  return missed.why === "full"
+    ? `The automatic backup of ${when} could not be stored: this browser has no room left. The backups it has are kept. Download or share a copy instead.`
+    : `The automatic backup of ${when} could not be stored. The backups this browser has are kept. Download or share a copy instead.`;
 }
 
 /** "today", "yesterday", "34 days ago": whole days on the player's own calendar. */

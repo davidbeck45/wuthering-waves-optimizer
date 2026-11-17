@@ -1,7 +1,7 @@
 // The words on the Backups page: times, ages, sizes and the confirms say what the code does.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { STORAGE_RULES } from "../storage/deleteAccount";
-import { daysAgoText, outsideIsStale, outsideText, readOutside, noteCopyLeft, canShareFiles, shareBackupText, downloadBackupText, shareFileOf, BACKUP_STATE_KEY, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT } from "./outside";
+import { daysAgoText, outsideIsStale, outsideText, readOutside, noteCopyLeft, canShareFiles, shareBackupText, downloadBackupText, shareFileOf, BACKUP_STATE_KEY, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT, missedText, noteAutomatic, readMissed } from "./outside";
 import { ageText, deleteConfirm, HOW_KEPT_TEXT, notTakenText, REASON_TEXT, restoreConfirm, sizesText, sizeText, WHAT_IS_INSIDE_TEXT, WHAT_IS_LEFT_OUT_TEXT, whenText } from "./backupText";
 import { KEEP_DAILY, KEEP_OTHERS, KEEP_WEEKLY } from "./retention";
 
@@ -72,7 +72,7 @@ describe("the confirms say what will happen", () => {
     expect(notTakenText("empty", undefined, NOW)).toMatch(/nothing to back up yet/);
     expect(notTakenText("unchanged", { at: at(16, 14, 2) }, NOW)).toMatch(/Nothing has changed since the backup of Today/);
     expect(notTakenText("unavailable", undefined, NOW)).toMatch(/isn't keeping backups/);
-    expect(notTakenText("full", undefined, NOW)).toMatch(/no room/);
+    expect(notTakenText("full", undefined, NOW)).toMatch(/no room for another backup\. The ones it has are kept/);
     expect(notTakenText("failed", undefined, NOW)).toMatch(/could not be made/);
   });
 
@@ -129,7 +129,47 @@ describe("a copy outside this browser", () => {
       expect(readOutside(store), junk).toBeNull();
     }
     // a storage that refuses: nothing thrown, the line stays as it was
-    expect(() => noteCopyLeft("share", "full", NOW, { setItem: () => void (() => { throw new Error("full"); })() })).not.toThrow();
+    const refusing = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException("full", "QuotaExceededError");
+      },
+    };
+    expect(() => noteCopyLeft("share", "full", NOW, refusing)).not.toThrow();
+    expect(() => noteAutomatic({ saved: false, why: "full" }, NOW, refusing)).not.toThrow();
+  });
+
+  it("an automatic backup that could not be stored is remembered until one is stored, beside the copy line and not instead of it", () => {
+    const store = area();
+    noteCopyLeft("share", "full", NOW - 5, store);
+    expect(readMissed(store)).toBeNull();
+    noteAutomatic({ saved: false, why: "full" }, NOW, store);
+    expect(readMissed(store)).toEqual({ at: NOW, why: "full" });
+    expect(readOutside(store)).toEqual({ at: NOW - 5, how: "share", kind: "full" });
+    // a day on which none was due says nothing about room: the note stays
+    for (const why of ["unchanged", "today", "empty", "unavailable"]) noteAutomatic({ saved: false, why }, NOW + 1, store);
+    expect(readMissed(store)).toEqual({ at: NOW, why: "full" });
+    noteAutomatic({ saved: false, why: "failed" }, NOW + 2, store);
+    expect(readMissed(store)).toEqual({ at: NOW + 2, why: "failed" });
+    // a copy leaving the browser does not clear it; a stored backup does
+    noteCopyLeft("download", "full", NOW + 3, store);
+    expect(readMissed(store)?.why).toBe("failed");
+    noteAutomatic({ saved: true }, NOW + 4, store);
+    expect(readMissed(store)).toBeNull();
+    expect(readOutside(store)?.at).toBe(NOW + 3);
+  });
+
+  it("an ordinary day writes nothing: a stored backup with no miss on record leaves the state alone", () => {
+    const store = area();
+    const setItem = vi.fn(store.setItem);
+    noteAutomatic({ saved: true }, NOW, { getItem: store.getItem, setItem });
+    noteAutomatic({ saved: false, why: "unchanged" }, NOW, { getItem: store.getItem, setItem });
+    expect(setItem).not.toHaveBeenCalled();
+  });
+
+  it("the note says the backups it has are kept, and what to do instead", () => {
+    expect(missedText({ at: NOW, why: "full" }, "Today 09:00")).toBe("The automatic backup of Today 09:00 could not be stored: this browser has no room left. The backups it has are kept. Download or share a copy instead.");
+    expect(missedText({ at: NOW, why: "failed" }, "Today 09:00")).toMatch(/could not be stored\. The backups this browser has are kept/);
   });
 
   it("Download saves a .json under the backup's own day and time, and counts as a copy outside", () => {

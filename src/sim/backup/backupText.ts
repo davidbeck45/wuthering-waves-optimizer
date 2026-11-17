@@ -109,7 +109,7 @@ export function notTakenText(why: "empty" | "unchanged" | "today" | "unavailable
     case "unavailable":
       return "This browser isn't keeping backups (a private window, or storage turned off). Download a copy instead.";
     case "full":
-      return "This browser has no room for another backup, even after the oldest were removed. Download a copy instead.";
+      return "This browser has no room for another backup. The ones it has are kept. Download a copy instead.";
     default:
       return "The backup could not be made. Download a copy instead.";
   }

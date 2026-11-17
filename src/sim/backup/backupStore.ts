@@ -51,9 +51,10 @@ export interface BackupStore {
   list(): Promise<BackupMeta[]>;
   /** both halves of one backup (either may be missing: a torn or foreign record) */
   get(id: string): Promise<{ meta?: BackupMeta; data?: BackupData }>;
-  /** stores a backup unless one with this id is already there; false when it was. Check and write are one transaction,
-   *  which is what keeps two tabs to one backup a day */
-  add(meta: BackupMeta, data: BackupData): Promise<boolean>;
+  /** Stores a backup unless one with this id is already there; false when it was. Check and write are one transaction,
+   *  which is what keeps two tabs to one backup a day. `replacing`: backups that go in that same transaction, to make
+   *  room. It is all or nothing: when the write is refused, they are all still there. */
+  add(meta: BackupMeta, data: BackupData, replacing?: readonly string[]): Promise<boolean>;
   remove(ids: readonly string[]): Promise<void>;
   clear(): Promise<void>;
 }
@@ -71,8 +72,9 @@ export function memoryBackupStore(): BackupStore & { records: Map<string, { meta
       const r = records.get(id);
       return { meta: r?.meta ? { ...r.meta, counts: { ...r.meta.counts } } : undefined, data: r?.data };
     },
-    async add(meta, data) {
+    async add(meta, data, replacing = []) {
       if (records.get(meta.id)?.meta) return false;
+      for (const id of replacing) records.delete(id);
       records.set(meta.id, { meta: { ...meta, counts: { ...meta.counts } }, data });
       return true;
     },
@@ -148,15 +150,22 @@ export function idbBackupStore(factory: IDBFactory, name = BACKUP_DB_NAME): Back
       const usable = typeof data === "string" || data instanceof Uint8Array ? data : data instanceof ArrayBuffer ? new Uint8Array(data) : undefined;
       return { meta: meta as BackupMeta | undefined, data: usable };
     },
-    async add(meta, data) {
+    async add(meta, data, replacing = []) {
       const t = await tx([META, DATA], "readwrite");
       const metas = t.objectStore(META);
+      const datas = t.objectStore(DATA);
       let added = false;
       const there = metas.get(meta.id);
       there.onsuccess = () => {
         if (there.result !== undefined) return;
+        // the ones that make room go in this same transaction: a browser that still refuses the write aborts it,
+        // and they are all still there
+        for (const id of replacing) {
+          metas.delete(id);
+          datas.delete(id);
+        }
         metas.put(meta);
-        t.objectStore(DATA).put(data, meta.id);
+        datas.put(data, meta.id);
         added = true;
       };
       await finished(t);

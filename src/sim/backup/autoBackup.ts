@@ -4,8 +4,8 @@
 // keeping. It is not when the account is empty, when nothing changed since the newest backup (the content hash), or,
 // for the automatic one, when today already has one. The day's automatic backup has the day in its id and is stored
 // with "only if not there" in one transaction, so two tabs make one. After every write the list is pruned
-// (retention.ts). A browser that is full gives up its oldest backups, as many as the new one needs, and the write is
-// tried once more.
+// (retention.ts). A browser that is full gives up its oldest backups, as many as the new one needs, in the same
+// transaction that stores the new one: if that is refused too, none is lost.
 //
 // Nothing here throws into the app: a failed backup is a result, never an error on the page.
 import { shallowRef } from "vue";
@@ -140,8 +140,10 @@ export function createBackups(env: BackupsEnv) {
     try {
       added = await store.add(meta, packed.data);
     } catch (e) {
-      // Only a full browser costs old backups, and only as many as the new one needs: the oldest go, never more than
-      // half the list, and it is tried once more. Any other refusal leaves every backup where it is.
+      // Only a full browser costs old backups, and only together with the new one getting in: the oldest, as many
+      // as the new one needs and never more than half the list, go in the same transaction that stores it. If the
+      // browser refuses that too, nothing has changed: every old backup is still there. (Deleting first and writing
+      // after lost them for nothing in a real full Chromium, where a delete does not give its room back at once.)
       if (!isQuotaError(e)) return { saved: false, why: "failed" };
       const victims: string[] = [];
       let freed = 0;
@@ -152,9 +154,7 @@ export function createBackups(env: BackupsEnv) {
       }
       if (!victims.length) return { saved: false, why: "full" };
       try {
-        await store.remove(victims);
-        touched();
-        added = await store.add(meta, packed.data);
+        added = await store.add(meta, packed.data, victims);
       } catch {
         return { saved: false, why: "full" };
       }

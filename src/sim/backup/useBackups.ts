@@ -11,7 +11,7 @@ import { backupName, deleteConfirm, notTakenText, restoreConfirm } from "./backu
 import { captureCounts, countsText, isEmptyAccount } from "./counts";
 import { settledPlusRestore } from "./importHook";
 import { captureNow, currentFileText, takeNow } from "./liveCapture";
-import { canShareFiles, downloadBackupText, outsideChanged, readOutside, shareBackupText, SHARE_FAILED_TEXT, SHARED_AS_TEXT, type OutsideState } from "./outside";
+import { canShareFiles, downloadBackupText, outsideChanged, readMissed, readOutside, shareBackupText, SHARE_FAILED_TEXT, SHARED_AS_TEXT, type MissedBackup, type OutsideState } from "./outside";
 import { DAMAGED_BACKUP_TEXT, GONE_BACKUP_TEXT, inspectBackupText, restoreBackupText, RestoreRefused, UNAVAILABLE_TEXT } from "./restore";
 
 export type BackupsState = "loading" | "ready" | "unavailable";
@@ -25,6 +25,8 @@ export function useBackups() {
   const list = shallowRef<BackupMeta[]>([]);
   const state = ref<BackupsState>("loading");
   const outside = ref<OutsideState | null>(readOutside());
+  /** an automatic backup that could not be stored, and none stored since */
+  const missed = ref<MissedBackup | null>(readMissed());
   const canShare = canShareFiles();
   const busy = ref(false);
   /** the account has nothing in it yet: there is nothing to copy */
@@ -51,13 +53,17 @@ export function useBackups() {
   }
 
   watch(backupsChanged, () => void load());
-  watch(outsideChanged, () => (outside.value = readOutside()));
+  watch(outsideChanged, () => {
+    outside.value = readOutside();
+    missed.value = readMissed();
+  });
 
   // another tab may have made, restored or deleted one: look again when this tab is looked at again
   const onVisible = (): void => {
     if (document.visibilityState !== "visible") return;
     now.value = Date.now();
     outside.value = readOutside();
+    missed.value = readMissed();
     void load();
   };
   let timer: ReturnType<typeof setInterval> | null = null;
@@ -180,5 +186,5 @@ export function useBackups() {
       return restoreText(text, null);
     });
 
-  return { list, state, outside, canShare, busy, empty, now, load, backUpNow, download, share, remove, restore, restoreFile };
+  return { list, state, outside, missed, canShare, busy, empty, now, load, backUpNow, download, share, remove, restore, restoreFile };
 }

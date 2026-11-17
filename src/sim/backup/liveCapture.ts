@@ -9,6 +9,7 @@ import { backupFile, captureAccount, type Capture, type RyanExport } from "./bac
 import type { BackupReason } from "./backupStore";
 import { installBulkGuard, type ActionStore } from "./bulkGuard";
 import { backupAllowed } from "./install";
+import { noteAutomatic } from "./outside";
 
 export const captureNow = (): Capture => captureAccount(getExportData as () => RyanExport);
 
@@ -20,11 +21,15 @@ export async function takeNow(reason: BackupReason): Promise<TakeResult> {
   } catch {
     return { saved: false, why: "failed" }; // storage blocked
   }
+  let result: TakeResult;
   try {
-    return await backups.take(reason, capture);
+    result = await backups.take(reason, capture);
   } catch {
-    return { saved: false, why: "failed" };
+    result = { saved: false, why: "failed" };
   }
+  // an automatic backup that could not be stored is said on the Backups page, until one is stored again
+  if (reason === "daily" || result.saved) noteAutomatic(result);
+  return result;
 }
 
 let bulkGuardOn = false;

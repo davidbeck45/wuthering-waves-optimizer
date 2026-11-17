@@ -37,6 +37,7 @@
       </template>
       <RouterLink to="/backups" class="bk-link" data-test-backup-all>See and restore backups</RouterLink>
     </p>
+    <p v-if="variant === 'settings' && missed" class="bk-missed" role="status" data-test-backup-missed>{{ missedText(missed, whenText(missed.at, now)) }}</p>
   </section>
 </template>
 
@@ -47,14 +48,14 @@
 // dot turns amber after a month without a copy outside.
 import { computed, onBeforeUnmount, onMounted } from "vue";
 import { whenText } from "./backupText";
-import { noteCopyLeft, outsideIsStale, outsideText, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT } from "./outside";
+import { missedText, noteCopyLeft, outsideIsStale, outsideText, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT } from "./outside";
 import { useBackups } from "./useBackups";
 import "./backup.css";
 
 defineOptions({ name: "BackupStatus" });
 const props = withDefaults(defineProps<{ variant?: "page" | "settings" | "account" }>(), { variant: "page" });
 
-const { list, state, outside, canShare, busy, empty, now, download, share } = useBackups();
+const { list, state, outside, missed, canShare, busy, empty, now, download, share } = useBackups();
 const line = computed(() => outsideText(outside.value, now.value));
 const stale = computed(() => outsideIsStale(outside.value, now.value));
 

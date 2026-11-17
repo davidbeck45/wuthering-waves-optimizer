@@ -28,6 +28,7 @@
         <button type="button" class="btn btn-sm btn-outline" :disabled="busy || state === 'loading' || empty" data-test-backups-now @click="backUpNow()">Back up now</button>
       </div>
 
+      <p v-if="missed" class="bk-missed" role="status" data-test-backups-missed>{{ missedText(missed, whenText(missed.at, now)) }}</p>
       <p v-if="state === 'loading'" class="bk-muted" role="status">Reading this browser's backups…</p>
       <p v-else-if="!list.length" class="bk-muted" data-test-backups-empty>
         <template v-if="empty">Nothing to back up yet: no character set up, no echoes, no teams and no pulls.</template>
@@ -99,6 +100,7 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import type { BackupReason } from "./backupStore";
 import { ageText, backupName, HOW_KEPT_TEXT, REASON_TEXT, REASON_TITLE, sizesText, sizeText, WHAT_IS_INSIDE_TEXT, WHAT_IS_LEFT_OUT_TEXT, whenText } from "./backupText";
 import { countsText } from "./counts";
+import { missedText } from "./outside";
 import { useBackups } from "./useBackups";
 import BackupStatus from "./BackupStatus.vue";
 import "./backup.css";
@@ -108,7 +110,7 @@ useDocumentTitle(
   "Automatic backups of your Wuthering Waves account, kept in your browser: restore one, download it, or share a copy to your own storage.",
 );
 
-const { list, state, canShare, busy, empty, now, backUpNow, download, share, remove, restore, restoreFile } = useBackups();
+const { list, state, missed, canShare, busy, empty, now, backUpNow, download, share, remove, restore, restoreFile } = useBackups();
 const totalBytes = computed(() => list.value.reduce((n, b) => n + b.bytes, 0));
 const chipClass = (reason: BackupReason): string => (reason === "daily" ? "" : reason === "manual" ? "bk-chip--manual" : "bk-chip--before");
 
