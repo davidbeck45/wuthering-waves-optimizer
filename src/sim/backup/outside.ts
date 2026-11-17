@@ -78,6 +78,8 @@ export const OUTSIDE_STALE_DAYS = 30;
 export const outsideIsStale = (state: OutsideState | null, now = Date.now()): boolean => !state || now - state.at > OUTSIDE_STALE_DAYS * 86_400_000;
 
 export const WHY_OUTSIDE_TEXT = "Backups here live in this browser. If the phone clears this site's data they go with your account, so put a copy somewhere else now and then.";
+/** the same reason in one short sentence, for the line on My account */
+export const WHY_OUTSIDE_SHORT = "The backups here go with your account if the phone clears this site's data.";
 
 // ---- download
 

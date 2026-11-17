@@ -1,7 +1,7 @@
 // The words on the Backups page: times, ages, sizes and the confirms say what the code does.
 import { describe, expect, it } from "vitest";
 import { STORAGE_RULES } from "../storage/deleteAccount";
-import { daysAgoText, outsideIsStale, outsideText, readOutside, noteCopyLeft, canShareFiles, shareBackupText, downloadBackupText, shareFileOf, BACKUP_STATE_KEY } from "./outside";
+import { daysAgoText, outsideIsStale, outsideText, readOutside, noteCopyLeft, canShareFiles, shareBackupText, downloadBackupText, shareFileOf, BACKUP_STATE_KEY, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT } from "./outside";
 import { ageText, deleteConfirm, HOW_KEPT_TEXT, notTakenText, REASON_TEXT, restoreConfirm, sizesText, sizeText, WHAT_IS_INSIDE_TEXT, WHAT_IS_LEFT_OUT_TEXT, whenText } from "./backupText";
 import { KEEP_DAILY, KEEP_OTHERS, KEEP_WEEKLY } from "./retention";
 
@@ -104,6 +104,11 @@ describe("a copy outside this browser", () => {
     expect(outsideText({ at: at(15, 23, 59), how: "download", kind: "full" }, NOW)).toBe("Last copy saved outside this browser: yesterday");
     expect(daysAgoText(new Date(2026, 9, 13, 10).getTime(), NOW)).toBe("34 days ago");
     expect(outsideText({ at: NOW, how: "download", kind: "plain" }, NOW)).toMatch(/today \(a plain \.json from Settings: characters, echoes and teams, no pull history\)$/);
+  });
+
+  it("one sentence says why it matters, on the page and in short on My account", () => {
+    for (const text of [WHY_OUTSIDE_TEXT, WHY_OUTSIDE_SHORT]) expect(text).toMatch(/if the phone clears this site's data/i);
+    expect(WHY_OUTSIDE_SHORT.length).toBeLessThan(90);
   });
 
   it("is marked after a month, or when there never was one", () => {

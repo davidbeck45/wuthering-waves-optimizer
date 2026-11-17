@@ -3,11 +3,12 @@
     v-if="variant === 'page' || !empty"
     class="bk-status"
     :class="[`bk-status--${variant}`, { 'bk-status--stale': stale, 'bk-card': variant !== 'account' }]"
-    aria-labelledby="bk-status-title"
+    :aria-label="variant === 'page' ? 'A copy outside this browser' : 'Backups'"
     data-test-backup-status
     :data-variant="variant"
     :data-stale="stale">
-    <h2 id="bk-status-title" class="bk-status__title">
+    <!-- My account gets the line alone: no heading, the short reason, the buttons -->
+    <h2 v-if="variant !== 'account'" class="bk-status__title">
       <template v-if="variant === 'page'">A copy outside this browser</template>
       <template v-else>Backups <span class="badge badge-primary badge-outline badge-sm font-semibold">Tools+</span></template>
     </h2>
@@ -15,7 +16,11 @@
       <span class="bk-status__dot" aria-hidden="true"></span>
       <span>{{ line }}</span>
     </p>
-    <p class="bk-muted">{{ WHY_OUTSIDE_TEXT }}</p>
+    <p v-if="variant === 'account'" class="bk-muted" data-test-backup-why>
+      {{ WHY_OUTSIDE_SHORT }}
+      <RouterLink to="/backups" class="bk-link" data-test-backup-all>See backups</RouterLink>
+    </p>
+    <p v-else class="bk-muted" data-test-backup-why>{{ WHY_OUTSIDE_TEXT }}</p>
     <p v-if="empty" class="bk-muted" data-test-backup-nothing>There is nothing to copy yet: no character set up, no echoes, no teams and no pulls.</p>
     <div v-else class="bk-actions">
       <button v-if="canShare" type="button" class="btn btn-sm btn-primary" :disabled="busy" data-test-backup-share-now @click="share()">Share a copy</button>
@@ -23,7 +28,7 @@
         Download a copy
       </button>
     </div>
-    <p v-if="variant !== 'page'" class="bk-muted" data-test-backup-auto>
+    <p v-if="variant === 'settings'" class="bk-muted" data-test-backup-auto>
       <template v-if="state === 'loading'">Checking this browser's automatic backups…</template>
       <template v-else-if="state === 'unavailable'">This browser isn't keeping automatic backups (a private window, or storage turned off).</template>
       <template v-else-if="!list.length">No automatic backup in this browser yet: the first is made a few seconds after you open the site.</template>
@@ -42,7 +47,7 @@
 // dot turns amber after a month without a copy outside.
 import { computed, onBeforeUnmount, onMounted } from "vue";
 import { whenText } from "./backupText";
-import { noteCopyLeft, outsideIsStale, outsideText, WHY_OUTSIDE_TEXT } from "./outside";
+import { noteCopyLeft, outsideIsStale, outsideText, WHY_OUTSIDE_SHORT, WHY_OUTSIDE_TEXT } from "./outside";
 import { useBackups } from "./useBackups";
 import "./backup.css";
 
