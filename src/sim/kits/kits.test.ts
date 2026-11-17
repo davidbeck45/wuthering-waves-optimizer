@@ -349,6 +349,13 @@ describe("the model's readings", () => {
     expect(mainstatText([[4, "Crit DMG"], [3, "ATK%"], [3, "Fusion DMG"], [1, "ATK%"], [1, "ATK%"]])).toBe("4-cost Crit DMG · 3-cost ATK% + Fusion DMG · 1-cost ATK% ×2");
     expect(mainstatText([[4, "Crit Rate"], [4, "Crit DMG"], [1, "ATK%"], [1, "ATK%"], [1, "ATK%"]])).toBe("4-cost Crit Rate + Crit DMG · 1-cost ATK% ×3");
     expect(loopSentence(["Basic - A ×2", "Liberation - B ×1"])).toBe("Basic - A ×2, then Liberation - B");
+    // a build carries one main echo: his loop's one cast per possible main echo is one step, not three presses
+    expect(loopSentence(["Basic - A ×1", "Echo - X ×1", "Heavy - B ×1", "Echo - Y ×1", "Echo - Z ×1", "Echo - Other ×1"], ["X", "Y", "Z"])).toBe(
+      "Basic - A, then the Echo Skill of the main echo you carry (X, Y or Z), then Heavy - B, then Echo - Other",
+    );
+    expect(loopSentence(["Echo - X ×1", "Basic - A ×1"], ["X", "Q"])).toBe("Echo - X, then Basic - A");
+    const lily = file.kits.Lily!.loadouts[0]!;
+    expect(loopSentence(lily.loops["0"]!, lily.echoes.map((e) => e.main))).toMatch(/then the Echo Skill of the main echo you carry \(Fallacy of No Return, Formrender or Spacetrek Explorer\)$/);
     const steps = ladderSteps(aemeath.ladder);
     expect(steps[0]).toMatchObject({ level: 0, step: null, total: null });
     expect(steps.at(-1)!.level).toBe(6);

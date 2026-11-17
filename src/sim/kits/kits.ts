@@ -486,7 +486,25 @@ export function loopAt(loadout: Pick<KitLoadout, "loops" | "minSequence">, seque
 }
 
 /** "Basic - Aemeath 3 ×2, then Liberation - Overdrive, …": the loop as one sentence (a cast pressed once loses its ×1). */
-export const loopSentence = (casts: readonly string[]): string => casts.map((c) => c.replace(/ ×1$/, "")).join(", then ");
+export const loopSentence = (casts: readonly string[], mainEchoes: readonly string[] = []): string => {
+  // his loop lists the Echo Skill of every main echo the build may carry, each behind its own condition; a build
+  // carries one, so those casts read as one step, at the place of the first
+  const options = new Set(mainEchoes);
+  const isOption = (c: string): boolean => {
+    const m = /^Echo - (.+?) ×\d+$/.exec(c);
+    return Boolean(m && options.has(m[1]!));
+  };
+  const alternatives = casts.filter(isOption).map((c) => /^Echo - (.+?) ×\d+$/.exec(c)![1]!);
+  const steps: string[] = [];
+  for (const c of casts) {
+    if (alternatives.length > 1 && isOption(c)) {
+      if (c === casts.find(isOption)) steps.push(`the Echo Skill of the main echo you carry (${alternatives.slice(0, -1).join(", ")} or ${alternatives.at(-1)})`);
+      continue;
+    }
+    steps.push(c.replace(/ ×1$/, ""));
+  }
+  return steps.join(", then ");
+};
 
 export const CHANGE_WORDS: Record<LoopChangeKind, { short: string; long: string }> = {
   loop: { short: "new loop", long: "switches the loop: other buttons from here on" },

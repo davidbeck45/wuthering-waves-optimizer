@@ -515,7 +515,7 @@ const loops = computed(() => {
   (kit.value?.loadouts ?? []).forEach((l, n) => {
     const at = loopAt(l, account.value?.sequence ?? 0);
     if (!at) return;
-    const sentence = loopSentence(at.casts);
+    const sentence = loopSentence(at.casts, l.echoes.map((e) => e.main));
     const locked = l.minSequence > (account.value?.sequence ?? 0);
     // builds that press the same loop (Aemeath's two Resonance Modes) are one paragraph under both names
     const same = out.find((o) => o.sentence === sentence && o.locked === locked && o.minSequence === l.minSequence);
