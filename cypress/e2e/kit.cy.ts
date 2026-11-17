@@ -7,14 +7,20 @@ import { configOptimizer } from "./calculator/data/Cartethyia/data";
 const S26 = { width: 412, height: 915 };
 const TITLE = " — Wuthering Waves Calculator & Optimizer";
 
-function seed() {
+function seed(options: { theme?: string; teammates?: boolean } = {}) {
   return {
     onBeforeLoad(win: Window) {
       win.sessionStorage.clear();
-      win.localStorage.setItem("character", configOptimizer.data.character);
+      const character = JSON.parse(configOptimizer.data.character);
+      if (options.teammates) {
+        // her two best teammates, set up the way a first weapon sets a character up (made-up records, not an account's)
+        character.characters.Ciaccona = { weapon: "WoodlandAria" };
+        character.characters.Chisa = { weapon: "Kumokiri" };
+      }
+      win.localStorage.setItem("character", JSON.stringify(character));
       win.localStorage.setItem("inventory", configOptimizer.data.inventory);
       const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
-      settings.config = { ...settings.config, useClassicUi: false };
+      settings.config = { ...settings.config, useClassicUi: false, ...(options.theme ? { theme: options.theme } : {}) };
       win.localStorage.setItem("settings", JSON.stringify(settings));
     },
     onLoad(win: Window) {
@@ -30,6 +36,38 @@ function expectNoHorizontalScroll(what: string): void {
     expect(win.document.documentElement.scrollWidth, `${what} page width`).to.be.at.most(win.document.documentElement.clientWidth);
     expect(win.innerWidth, `${what} layout viewport`).to.eq(S26.width);
   });
+}
+
+type Rgba = [number, number, number, number];
+/** The WCAG contrast of an element's text against what is painted behind it, colours read through a canvas (so oklch
+ *  works) and backgrounds blended up to the page. */
+function contrastOf(el: Element): number {
+  const win = el.ownerDocument.defaultView!;
+  const canvas = el.ownerDocument.createElement("canvas");
+  canvas.width = canvas.height = 1;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+  const rgba = (css: string): Rgba => {
+    ctx.clearRect(0, 0, 1, 1);
+    ctx.fillStyle = "#000";
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    return [d[0]! / 255, d[1]! / 255, d[2]! / 255, d[3]! / 255];
+  };
+  const over = (fg: Rgba, bg: Rgba): Rgba => [fg[0] * fg[3] + bg[0] * (1 - fg[3]), fg[1] * fg[3] + bg[1] * (1 - fg[3]), fg[2] * fg[3] + bg[2] * (1 - fg[3]), 1];
+  const linear = (x: number): number => (x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4));
+  const lum = (c: Rgba): number => 0.2126 * linear(c[0]) + 0.7152 * linear(c[1]) + 0.0722 * linear(c[2]);
+  const layers: Rgba[] = [];
+  for (let node: Element | null = el; node; node = node.parentElement) {
+    const c = rgba(win.getComputedStyle(node).backgroundColor);
+    if (c[3] > 0) layers.push(c);
+    if (c[3] >= 0.999) break;
+  }
+  let bg: Rgba = [1, 1, 1, 1];
+  for (const c of layers.reverse()) bg = over(c, bg);
+  const fg = over(rgba(win.getComputedStyle(el).color), bg);
+  const [hi, lo] = [lum(fg), lum(bg)].sort((a, b) => b - a) as [number, number];
+  return (hi + 0.05) / (lo + 0.05);
 }
 
 /** the pages a brief may link to */
@@ -194,6 +232,40 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-missing]").should("contain.text", "No brief for “nobody-at-all”");
     cy.get("[data-test-kit-missing] a").should("have.attr", "href", "/kit");
     cy.get("[data-test-kit-account]").should("not.exist");
+  });
+
+  it("with her teammates set up: the team the account can field, read at the Team Cost nearest to her sequence, and links that carry it", () => {
+    cy.visit("/kit/cartethyia", seed({ teammates: true }));
+    cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+    cy.get("[data-test-kit-missing-members]").should("not.exist");
+    // Cartethyia · Ciaccona + Chisa, her at S2: Riley's figure at the cost that runs one main DPS at S2
+    cy.get("[data-test-kit-account] [data-test-kit-team]").first().should("contain.text", "Cartethyia · Ciaccona + Chisa").and("contain.text", "S2 · Defier's Thorn R1");
+    cy.get("[data-test-kit-account] [data-test-kit-team-dps]").first().invoke("text").should("match", /^\d+K team DPS, wuwa_calc$/);
+    cy.get("[data-test-kit-team-basis]").should("contain.text", "is his figure on his standard builds at S2R1 DPS · R1 supports, the Team Cost nearest to your sequence, not on yours.");
+    cy.get("[data-test-kit-rank]").should("have.attr", "href", "/my-rankings");
+    cy.get('[data-test-kit-link="build"]').invoke("attr", "href").should("match", /^\/build-team\?members=(Ciaccona|Chisa|Cartethyia),(Ciaccona|Chisa|Cartethyia),(Ciaccona|Chisa|Cartethyia)&only=Cartethyia$/);
+    cy.get('[data-test-kit-link="rotation"]').invoke("attr", "href").should("match", /^\/rotation#chars=(Ciaccona|Chisa|Cartethyia),/);
+    cy.get("[data-test-kit-cue]").should("contain.text", "Cartethyia · Ciaccona + Chisa");
+    // the list counts all three as the account's
+    cy.visit("/kit", seed({ teammates: true }));
+    cy.get("[data-test-kit-mine] [data-test-kit-row]").should("have.length", 3);
+    expectNoHorizontalScroll("the list with three on the account");
+  });
+
+  it("reads at AA contrast on a light and a dark theme: links, chips, pills and the small print", () => {
+    for (const theme of ["light", "dark"]) {
+      cy.visit("/kit/cartethyia", seed({ theme, teammates: true }));
+      cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+      cy.get("html").should("have.attr", "data-theme", theme);
+      cy.get("[data-test-kit-brief]").find(".kit-link, .kit-pill, .kit-chip, .kit-muted, .kit-note, .kit-sub, .kit-team__unit, .kit-th, dt").each(($el) => {
+        if (!$el.text().trim()) return;
+        expect(contrastOf($el[0]!), `${theme}: "${$el.text().trim().slice(0, 40)}" (${$el[0]!.className})`).to.be.at.least(4.5);
+      });
+      cy.visit("/kit", seed({ theme, teammates: true }));
+      cy.get("[data-test-kit-list]").find(".kit-row__name, .kit-chip, .kit-pill, .kit-muted, .kit-intro").each(($el) => {
+        expect(contrastOf($el[0]!), `${theme} list: "${$el.text().trim().slice(0, 40)}" (${$el[0]!.className})`).to.be.at.least(4.5);
+      });
+    }
   });
 
   it("says so when the brief does not load, and Try again loads it", () => {
