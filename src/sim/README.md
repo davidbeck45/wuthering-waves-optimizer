@@ -4565,3 +4565,86 @@ two entries with one address and one router state: B, marked as a base, and P, t
   the router guard does the work, as before. In a tab with nothing at all behind the page, the passed-on Back has
   nowhere to go and the page stays: leaving then takes one more press. Not checked: a phone's real Back button, which
   a test here cannot press (Chrome skips entries a page adds without a tap; this one is added on a tap).
+
+## Automatic backups — the whole account kept in this browser, and a copy out through the share sheet, `/backups` (batch 4, track "auto-backup", 2026-11-16) — `src/sim/backup/`
+
+The account lives in one browser's storage. Before this, the only copy was a file the player had to remember to
+download from Settings. Writes were already guarded (the two "Writes that hold up" rounds): a refused write takes the
+save back, two tabs stay one account, an import is checked whole before its first write and keeps the builds worn in
+Build history, Build my team / Whole account / Sync my teams each have an Undo. Not guarded: the account as a whole
+against the browser losing its storage, an import's teams, levels, other builds and unworn echoes, a bulk delete, and
+the records only plus keeps (they were in no file but Convene's own export). Report: `wto-wt/b4/reports/auto-backup.md`.
+
+| Piece | Role |
+|---|---|
+| `backupStore.ts` | the store seam, the pattern of `persist/resultStore.ts`: IndexedDB `wtplus-backups` v1 with `meta` (id, when, why, content hash, sizes, what is inside) and `data` (the file, gzip bytes or text). `add(meta, data, replacing?)` is one transaction: nothing is stored when the id is there (two tabs, one backup a day), and the backups that make room go in that same transaction or not at all. `memoryBackupStore()` for the tests; `dropBackupDatabase()` for Delete your data. Imports nothing |
+| `codec.ts` | gzip through the browser's own `CompressionStream` (a 362 KB account is 39 KB), plain text where there is none. No dependency |
+| `backupFile.ts` | what a backup is, as one file: **Ryan's own export, made by his `getExportData`**, plus one top-level field `wtplus: { v, madeAt, reason, keys }`. `BACKUP_PLUS_KEYS` is every rule of `STORAGE_RULES` whose `backup` is "account". `contentHash` is over the content alone (not when or why), and over a file as written, so a later build that stops keeping a record does not read old backups as damaged. `parseBackupText` takes one of ours or his plain export, and takes only those four keys from a file: a file is never a way to write another key |
+| `storage/deleteAccount.ts` | each `StorageRule` now also says `backup`: `export` (his three stores and the data version), `account` (in a backup: the Convene pull history, the logged Tower clears, the Echo plan, the album-import record), `copy`, `cache`, `preference`, `session`, `marker` (none of them in one) or `secret` (the assistant's API key: never in a backup or a file). The type makes a rule without a decision a compile error; `deleteAccount.test.ts` pins both lists by name |
+| `counts.ts` | "24 characters · 258 echoes · 3 teams · 40 saved builds · 0 pulls": a character counts once a weapon is equipped (My account's "set up"), saved builds are his builds list, pulls go through Convene's own decoder. `isEmptyAccount`: none of the four |
+| `retention.ts` | pure. The newest 7 daily; of the older daily ones the newest of each of the 4 most recent weeks; the newest 20 taken before something or by hand; all under 12 MB as stored, oldest first, never the one just written |
+| `autoBackup.ts` | `createBackups({ store, now, cap, channel })`: `take(reason, capture)`, `read(id)` (both halves there, the bytes unpack, the content still gives its hash: else "damaged"), `list`, `remove`, `clear`, `available`. Never throws into the app. Every change is told to the other tabs (a BroadcastChannel) and to the list on screen (`backupsChanged`) |
+| `liveCapture.ts` | the account as stored now through his export code, `takeNow(reason)`, the current account as file text (Download and Share work where the browser keeps no backups), and the start of the bulk guard. Apart from `autoBackup.ts` so that module never imports his `settingsBackup.ts` |
+| `install.ts` | the only part in the main bundle (PlusShell): a 4 s timer, a visibility listener (again after an hour: a home-screen app stays open for days) and one lazy import. `backupAllowed()`: under Cypress the backups stand aside unless a spec sets `wtplus:backup:e2e`, as the welcome card does |
+| `importHook.ts` | two lines in his `applyImportedDatabase`: `beforeAccountReplaced(raw, getExportData)` after his checks and before his first write reads the account on the spot and keeps it as "Before an import"; `.restore()` after his last write puts the plus records back one tick later, so his stores are in storage first and a full browser refuses these rather than them |
+| `plusRestore.ts` | the plus records of a backup. **The pull history is merged, never replaced** (`mergeIntoHistory`, Convene's own): pulls are facts, the game drops them after six months, and a restore must not lose one made since. A history this build cannot read is left alone. The clears, the Echo plan and the album record go back to the backup's, removed when it had none; a record the file does not list is not touched |
+| `restore.ts` | `restoreBackupText`: read and checked first (not a backup, a newer format, stores that do not parse: refused with today's account not even saved), then `takeNow("before-restore")` (a browser that keeps backups but could not store this one stops here), then his import, then the plus half. `inspectBackupText` counts what is inside after his migrations, for the confirm |
+| `bulkGuard.ts` | a backup before a bulk delete, with no line in his files: `$onAction` on `inventory.deleteEcho` and `teamRotations.deleteTeam`, which his Delete selected, Delete all trash, Wavescan Replace and Teams' Delete selected all call in a loop. The account is read before the first delete and kept once the burst reaches 5 echoes or 2 teams (1.5 s without another ends it) |
+| `outside.ts` | Download (`.json`), Share (`navigator.share` with a File, offered only where `canShare` says yes), and `wtplus:backup:state`: when a copy last left this browser, and an automatic backup that could not be stored |
+| `BackupsView.vue`, `BackupStatus.vue`, `BackupCopyFirst.vue`, `useBackups.ts`, `backupText.ts`, `backup.css` | the page, the status card (page / Settings / My account), the button in the Danger Zone, their state, their words, their styles (`.bk-`) |
+
+**Where it is.** A page, `/backups` (Tools+ menu, palette: "backup" opens it, Settings › Backup & restore is the next
+row). Not a panel inside Ryan's Backup & Restore: eleven backups with four buttons each under his three cards would be
+a screen and a half of scrolling on a phone before the first row, and a page is found from the palette and linked from
+My account. Settings › Backup & Restore gets the status card under his cards (one line in `SettingsView.vue`, like
+Saved results), My account gets the line alone under Today, and both link to the page.
+
+**When a backup is taken.** The day's: 4 s after the first load of a day on which the content hash differs from the
+newest backup's. So it holds the account as the last session left it, before today's first change. Before an import
+(his Settings import, text or file, classic or v3), before a restore, before a bulk delete, and by hand. Never of an
+empty account, never twice for the same content. An account that was deleted keeps its pull history (Delete's own
+rule), and that is still backed up.
+
+**Restore.** The confirm says what is replaced and with which backup, that today's account is saved first, and what
+happens to the plus records; the list is two short lines because the dialog's list box scrolls past 12 rem. Then the
+page reloads, as after a Settings import. A second tab follows through `crossTabSync` without a reload. **Restore from
+a file** takes a `.json` or `.txt` copy, or his plain export (then the plus records stay as they are).
+
+**A copy outside.** Download is a `.json` that imports on plain wutheringtools as it is: his import reads `meta` and
+`data` and ends with the same three stores as from his own export (`restore.test.ts`). **Share sends the same text as
+a `.txt`.** Browsers share files of a short list of types (MDN, `Navigator.share()`, "Shareable file types"): `.txt` /
+`text/plain` is on it, `.json` is not, and a file that is not is blocked. The line "Last copy saved outside
+this browser: 34 days ago / never" turns amber after 30 days, counts his own Download .json too (heard by its test id
+from the Settings card, no line in his components) and then says what that copy lacks.
+
+**A full browser.** With the origin's quota really hit (Chromium's `Storage.overrideQuotaForOrigin`), deleting the
+oldest and writing again lost backups for nothing: a delete does not give its room back at once. So the oldest go only
+in the transaction that stores the new one. In Chromium that swap is refused as well, which means a full browser keeps
+the backups it has and takes no new one; the page says so until one is stored again ("could not be stored: this
+browser has no room left").
+
+**Delete your data** takes the backups (the database is deleted) and the outside-copy record: they are whole copies
+of the account. The Danger Zone card offers "Download a copy first"; the confirm says the automatic backups go.
+Deleting a Convene history says the backups made before still hold it.
+
+Ryan's files touched: `utils/settingsBackup.ts` (one import, two lines in `applyImportedDatabase`),
+`pages/SettingsView.vue` (one import, one tag), `components/SettingsDelete.vue` (one import, one tag), `main.ts` (one
+route). `phone.css` is not used: every rule is the page's own.
+
+Tried in a real browser: the day's backup on David's seeds (39 KB stored, 362 KB as a file); two tabs opened together
+on one profile (one backup, both lists show it); Restore in one tab with another open on /teams (it follows); the
+quota above; a damaged record (stored bytes overwritten: refused, account untouched); IndexedDB that throws on access
+(the page says backups are unavailable, Download still works, a file restores after saying today is not saved first).
+Not tried on a phone: the share sheet itself (no Web Share on this machine; the spec stubs it).
+
+Gates: `backup/backupFile.test.ts` (what is in a file and what never is, his import reads it as his own, the hash),
+`autoBackup.test.ts` (one a day, unchanged, empty, two tabs, retention, a full browser, no IndexedDB, damaged records,
+the codec), `restore.test.ts` (real stores and plugin: a version 3 export through his migrations, pulls merged,
+refusals that change nothing, the hook in his import), `bulkGuard.test.ts`, `install.test.ts`, `backupText.test.ts`,
+`storage/deleteAccount.test.ts` (each rule's backup decision); `cypress/e2e/backups.cy.ts` (11 tests on a real
+IndexedDB at 412 px and 130 % text, 360 px too), `deleteYourData.cy.ts`.
+
+Left out: Build history and every Undo (copies of builds: a restore would write over the "Before a Settings import"
+versions the import has just made, and the backups are now the whole-account history), this device's settings (as in
+his export), an "after" backup of a bulk delete, scrubbing a deleted Convene history out of older backups, encryption
+of a file (it holds the in-game UID the pull history is filed under, and no token).
