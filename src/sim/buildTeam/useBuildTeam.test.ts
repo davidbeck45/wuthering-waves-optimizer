@@ -18,7 +18,7 @@ vi.mock("./plans", () => ({ plansForTeam: vi.fn(async () => ({ plans: [{ share: 
 vi.mock("./workerBackend", () => ({ workerBackend: () => ({ dispose() {} }) }));
 const solveMine = vi.hoisted(() => vi.fn());
 vi.mock("../engine/rileyClient", () => ({ rileyClient: () => ({ solveMine }) }));
-vi.mock("../engine/rileyAccount", () => ({ rileyAccountOf: vi.fn(() => ({})) }));
+vi.mock("../engine/rileyAccount", () => ({ rileyAccountOf: vi.fn(() => ({})), rileyAccountForTeam: vi.fn(() => ({})) }));
 vi.mock("../account/investPlan", () => ({ rankedTeamImpact: vi.fn() }));
 
 const member = (slot: number, characterId: string) => ({ slot, characterId, status: "ok", draft: { weapon: `w-${characterId}`, echoes: {} }, sameEchoes: false, fromBuild: { id: null, name: null, source: "active" }, before: { value: 100, menuEr: null, withRunBuffs: null }, after: { value: 110, optimizerValue: 110, menuEr: null, withTeam: null, picks: [] }, erMet: null, erFloor: null });
@@ -309,14 +309,16 @@ describe("One team's review and save", () => {
       });
 
       it("reads the ticked builds and moves with them; nothing ticked is today's", async () => {
-        const accountOf = vi.mocked((await import("../engine/rileyAccount")).rileyAccountOf);
+        // a saved team is asked at its own account (buildTeamAccount.ts): a ticked build pinned in its slot's place
+        const accountOf = vi.mocked((await import("../engine/rileyAccount")).rileyAccountForTeam);
         accountOf.mockClear();
         const bt = await withRiley();
         await settle();
         expect(bt.rileyAfter.value).toBe(640);
-        const worn = accountOf.mock.calls.at(-1)![0] as Record<string, { weapon?: string }>;
-        expect(worn.A!.weapon).toBe("w-A");
-        expect(worn.B!.weapon).toBe("old-B"); // not ticked: not worn
+        const [asked, records] = accountOf.mock.calls.at(-1)! as unknown as [{ buildIds: Array<string | null> }, Record<string, { weapon?: string; builds?: Array<{ id: string; weapon?: string }> }>];
+        expect(records.A!.builds!.find((b) => b.id === asked.buildIds[0])!.weapon).toBe("w-A");
+        expect(asked.buildIds[1]).toBeNull(); // not ticked: not worn, the slot keeps the build the team runs
+        expect(records.B!.weapon).toBe("old-B");
         bt.saveSlots.value = [false, false];
         await settle();
         expect(bt.rileyAfter.value).toBe(500);

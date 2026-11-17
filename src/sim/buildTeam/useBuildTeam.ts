@@ -10,7 +10,7 @@ import { resolveOptimizerWorkerCount } from "../../utils/optimizerPreferences";
 import { applyBuildFields } from "../../characters/buildFields";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { rileyClient } from "../engine/rileyClient";
-import { rileyAccountOf } from "../engine/rileyAccount";
+import { buildTeamAccount, type DraftOnSlot } from "./buildTeamAccount";
 import { buildMyTeam, currentEchoesOf, teamFigureOf, teamSpecOf, wornByMap, type BuildTeamResult, type TeamFigure, type TeamRequest, type TeamSpec } from "./buildTeam";
 import { OPTIONS_KEY, readBuildOptions, type BuildOptions } from "./options";
 import { plansForTeam, type RileySource, type TeamPlans } from "./plans";
@@ -153,7 +153,11 @@ export function useBuildTeam() {
 
   const specOf = (request: TeamRequest): TeamSpec | null => teamSpecOf(request, plain(teamStore.teams as any[]), characterStore.characters as Record<string, any>);
 
-  const account = () => rileyAccountOf(plain(characterStore.characters), { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams));
+  /** The account wuwa_calc is asked at: a saved team's members on the builds the team runs (its pins), as /energy and
+   *  /rotation ask for that team; every member's active build for three nobody saved. `drafts`: new builds worn in
+   *  their slots' place, for the figure after a Save (buildTeamAccount.ts). */
+  const account = (drafts: DraftOnSlot[] = []) =>
+    buildTeamAccount(team.value, plain(characterStore.characters), { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams), { auto: autoTeamBuffs.value, drafts });
 
   function rileySource(signal: AbortSignal): RileySource {
     const client = rileyClient();
@@ -411,9 +415,8 @@ export function useBuildTeam() {
     rileyAfterBusy.value = true;
     let total: number | null = null;
     try {
-      const chars = plain(characterStore.characters);
-      for (const m of saving) chars[m.characterId] = applyBuildFields(chars[m.characterId] ?? {}, m.draft!);
-      const acc = rileyAccountOf(chars, { echoes: plain(inventoryStore.echoes), equipped: plain(inventoryStore.equipped) }, plain(teamStore.teams));
+      // the ticked builds in their slots, every other member on the build the team runs: what the Save leaves
+      const acc = account(saving.map((m) => ({ slot: m.slot, characterId: m.characterId, draft: m.draft! })));
       const [solve] = await rileyClient().solveMine([key], { account: acc, subs: "mine" });
       total = solve?.best?.total ?? null;
     } catch {

@@ -6,6 +6,7 @@ import type { ExportFile } from "../cli/exportFile";
 import { findTeam, resolveCharacterKey } from "../cli/engine";
 import { int, pct, table } from "../cli/format";
 import { rileyHeadless } from "../engine/rileyNode";
+import { buildTeamAccount } from "./buildTeamAccount";
 import { characterDisplayName } from "../display/names";
 import { showNeed } from "../energy/energyNeed";
 import { buildMyTeam, currentEchoesOf, memberAfter, teamFigureOf, type BuildTeamResult, type TeamFigure, type TeamSpec } from "./buildTeam";
@@ -44,7 +45,8 @@ export function teamFromArg(exp: ExportFile, arg: string): TeamSpec {
 
 export async function runBuildTeam(exp: ExportFile, arg: string, opts: BuildTeamCliOptions = {}): Promise<{ team: TeamSpec; plans: TeamPlans; result: BuildTeamResult; defaultSave: DefaultSave }> {
   const team = teamFromArg(exp, arg);
-  const riley = await rileyHeadless(exp);
+  // a saved team is asked at the builds it pins, as `er` and the page ask (buildTeamAccount.ts)
+  const riley = await rileyHeadless(buildTeamAccount(team, exp.characters, exp.inventory, exp.teams, { auto: opts.autoBuffs ?? true }));
   const source: RileySource = {
     teamKeysFor: async (ids) => riley.teamKeysFor(ids),
     solveMine: async (keys, subs) => riley.solveMine(keys, { subs: subs ?? "mine" }),
