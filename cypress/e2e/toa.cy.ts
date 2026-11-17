@@ -244,6 +244,9 @@ describe("ToA clear check (/endgame)", () => {
       cy.get("[data-test-toa-recompute]").should("be.disabled");
       cy.get("[data-test-toa-progress]").should("not.exist");
       cy.get("[data-test-toa-team]").should("not.exist");
+      // and the Plan tab says the same as the banner: it read "The plan comes once Season 42's floor HP is published"
+      cy.get('[data-test-toa-tab="plan"]').click();
+      cy.get("[data-test-toa-plan-empty]").should("contain.text", "Season 42 has ended").and("contain.text", "Season 43").and("not.contain.text", "floor HP is published").and("not.contain.text", "Check your teams");
     });
   }
 });

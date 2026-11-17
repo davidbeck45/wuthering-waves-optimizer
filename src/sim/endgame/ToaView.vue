@@ -170,7 +170,7 @@
           :vigor="VIGOR_PER_RESONATOR"
         />
         <div v-else class="alert text-sm" data-test-toa-plan-empty>
-          <span>{{ pending.length ? `The plan comes once Season ${season.season}'s floor HP is published: until then no team can be timed on ${pending.length === 1 ? "a floor" : "the floors"} still waiting for it.` : running ? "The plan appears once every team has fought the floors." : hasAccount ? "Check your teams first." : "Import your account to plan the zone." }}</span>
+          <span>{{ planEmptyText({ season: season.season, ended: !status.current, next: status.next, pending: pending.length, running, hasAccount }) }}</span>
         </div>
       </div>
 
@@ -219,6 +219,7 @@ import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import WorkStatus from "../display/WorkStatus.vue";
 import { countdown, hpExpected, SERVER_REGIONS, timedFloors, VIGOR_PER_RESONATOR, type ToaFloor } from "./toaData";
+import { planEmptyText } from "./planEmpty";
 import { useToa } from "./useToa";
 import ToaFloorCard from "./ToaFloorCard.vue";
 import ToaPlan from "./ToaPlan.vue";
