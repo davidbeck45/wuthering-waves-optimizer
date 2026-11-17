@@ -61,9 +61,20 @@ export function firstRecordText(entry: LogEntry, now = Date.now()): string {
 export function summaryText(c: Comparison): string {
   const n = c.moves.length;
   const head = n ? `${n} figure${n === 1 ? "" : "s"} moved, ${c.steady} did not` : `No figure moved (${c.steady} compared)`;
-  const extra = [c.appeared.length ? `${c.appeared.length} new` : "", c.gone.length ? `${c.gone.length} gone` : ""].filter(Boolean);
+  const own = { appeared: c.appeared.filter((x) => !x.stockByUpdate).length, gone: c.gone.filter((x) => !x.stockByUpdate).length };
+  const stock = { appeared: c.appeared.length - own.appeared, gone: c.gone.length - own.gone };
+  const teams = (k: number): string => `${k} stock team${k === 1 ? "" : "s"}`;
+  const extra = [
+    own.appeared ? `${own.appeared} new` : "",
+    own.gone ? `${own.gone} gone` : "",
+    stock.appeared ? `the update added ${teams(stock.appeared)}` : "",
+    stock.gone ? `the update took ${teams(stock.gone)} off the list` : "",
+  ].filter(Boolean);
   return `${[head, ...extra].join(" · ")}.`;
 }
+
+/** Under the stock teams an app update added to the list or took off it: whose list it is. */
+export const STOCK_BY_UPDATE_TEXT = "The app's own list of stock teams changed with the update. Your characters, builds and saved teams did not.";
 
 export type Stale =
   /** the app was updated since the last ranking this browser saw */

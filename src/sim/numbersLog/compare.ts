@@ -14,6 +14,11 @@
 // A Settings import inside the window is said once for the whole comparison (`importedAt`), and the rows then say
 // "this build is different", not "you changed". A character or team in only one of the two records is listed as
 // appeared or gone, never as a move.
+// A stock team's id is its rotation's name, and an app update can rename, drop or add stock rotations. So a stock
+// rotation in only one record is read by its three members: the best of a trio's renamed rotations against the best of
+// what it is called now is one row (`renamed`); a dropped twin of a trio the list still has is neither gone nor new; a
+// trio the list no longer has (or has for the first time) is gone (new) once, marked `stockByUpdate` when the app was
+// updated between the two, so the page can say it is the app's list that changed, not his roster.
 import type { CharacterFigure, LogEntry, TeamFigure } from "./log";
 import { changedParts, type SigPart } from "./signature";
 
@@ -43,6 +48,8 @@ export interface Move {
   rotation: { before: string | null; after: string | null } | null;
   /** the rotation the newer figure is on (a character), for "Why this number" */
   rotationNow: string | null;
+  /** a stock team the app now lists under another rotation name: the old name and the new */
+  renamed?: { before: string; after: string } | null;
   cause: Cause;
 }
 
@@ -52,6 +59,8 @@ export interface Listed {
   members: string[];
   teamName: string | null;
   damage: number;
+  /** a stock team (one row per trio) the app's list dropped or added between two app builds: nothing of his changed */
+  stockByUpdate?: boolean;
 }
 
 export interface Comparison {
@@ -134,29 +143,54 @@ export function compareEntries(before: LogEntry, after: LogEntry, window: readon
   const folded = new Map<string, Move>();
   const steadyTeams = new Set<string>();
   const ordered = [...after.teams].sort((a, b) => Number(b.source === "yours") - Number(a.source === "yours"));
-  for (const t of ordered) {
-    const was = teams.before.get(t.id);
-    if (!was) {
-      appeared.push({ kind: "team", id: t.id, members: t.members, teamName: t.name, damage: t.damage });
-      continue;
-    }
-    const trio = [...t.members].sort().join("+");
+  const trioOf = (t: TeamFigure): string => [...t.members].sort().join("+");
+  const stock = (t: TeamFigure): boolean => t.source !== "yours";
+  const compareTeam = (was: TeamFigure, t: TeamFigure, renamed: Move["renamed"] = null): void => {
+    const trio = trioOf(t);
     if (was.damage === t.damage) {
       steadyTeams.add(`${trio}|${t.damage}`);
-      continue;
+      return;
     }
     const key = `${trio}|${was.damage}|${t.damage}`;
     const row = folded.get(key);
     if (row) {
       row.alsoNamed.push(t.name);
-      continue;
+      return;
     }
-    const move: Move = { kind: "team", id: t.id, members: t.members, teamName: t.name, alsoNamed: [], before: was.damage, after: t.damage, change: share(was.damage, t.damage), rotation: null, rotationNow: null, cause: teamCause(was, t, chars, before, after) };
+    // a renamed stock rotation may list the same three in another order: that is not an edit of a team
+    const cause = teamCause(renamed ? { ...was, members: t.members } : was, t, chars, before, after);
+    const move: Move = { kind: "team", id: t.id, members: t.members, teamName: t.name, alsoNamed: [], before: was.damage, after: t.damage, change: share(was.damage, t.damage), rotation: null, rotationNow: null, renamed, cause };
     folded.set(key, move);
     moves.push(move);
+  };
+  // stock rotations in only one of the two records, by trio
+  const unmatched = { before: new Map<string, TeamFigure[]>(), after: new Map<string, TeamFigure[]>() };
+  const park = (side: Map<string, TeamFigure[]>, t: TeamFigure): void => void side.set(trioOf(t), [...(side.get(trioOf(t)) ?? []), t]);
+  for (const t of ordered) {
+    const was = teams.before.get(t.id);
+    if (was) compareTeam(was, t);
+    else if (stock(t)) park(unmatched.after, t);
+    else appeared.push({ kind: "team", id: t.id, members: t.members, teamName: t.name, damage: t.damage });
   }
+  for (const t of before.teams) {
+    if (teams.after.has(t.id)) continue;
+    if (stock(t)) park(unmatched.before, t);
+    else gone.push({ kind: "team", id: t.id, members: t.members, teamName: t.name, damage: t.damage });
+  }
+  const trios = { before: new Set(before.teams.map(trioOf)), after: new Set(after.teams.map(trioOf)) };
+  const best = (list: readonly TeamFigure[]): TeamFigure => list.reduce((a, b) => (b.damage > a.damage ? b : a));
+  const byUpdate = before.build !== after.build;
+  const listed = (t: TeamFigure): Listed => ({ kind: "team", id: t.id, members: t.members, teamName: t.name, damage: t.damage, ...(byUpdate ? { stockByUpdate: true } : {}) });
+  for (const [trio, olds] of unmatched.before) {
+    const news = unmatched.after.get(trio);
+    if (news) {
+      const was = best(olds);
+      const now = best(news);
+      compareTeam(was, now, { before: was.name, after: now.name });
+    } else if (!trios.after.has(trio)) gone.push(listed(best(olds)));
+  }
+  for (const [trio, news] of unmatched.after) if (!unmatched.before.has(trio) && !trios.before.has(trio)) appeared.push(listed(best(news)));
   steady += steadyTeams.size;
-  for (const t of before.teams) if (!teams.after.has(t.id)) gone.push({ kind: "team", id: t.id, members: t.members, teamName: t.name, damage: t.damage });
 
   const size = (m: Move): number => (m.change === null ? Number.POSITIVE_INFINITY : Math.abs(m.change));
   moves.sort((a, b) => size(b) - size(a) || Math.abs(b.after - b.before) - Math.abs(a.after - a.before));

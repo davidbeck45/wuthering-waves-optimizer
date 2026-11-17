@@ -60,6 +60,52 @@ describe("what moved", () => {
     ]);
   });
 
+  // The two-build test (2026-11-17): production's build against tonight's. A stock team's id is its rotation's name, and
+  // the regenerated presets renamed one rotation of a trio, dropped a second rotation of another and took a few trios off
+  // the stock list. The page read "1 new · 8 gone" although no character or team of his came or went, and listed
+  // Sigrika · Qiuyuan · Lucilla both as moved and as gone.
+  it("reads a stock rotation the update renamed as the same team, and keeps the rest of a re-keyed stock list apart", () => {
+    const r1 = ranking();
+    r1.teams = [
+      teamRank("t-mine", 2_000_000),
+      teamRank("wuwa_calc:Aaa · Bbb + Ccc · S6R5", 2_400_000), // renamed by the update, figure moves
+      teamRank("wuwa_calc:Aaa · Bbb + Ddd · S6R5", 1_500_000, ["Aaa", "Bbb", "Ddd"]), // stays, figure moves
+      teamRank("wuwa_calc:Aaa · Bbb + Ddd · S6R5 DPS · S0R1 team", 1_500_000, ["Aaa", "Bbb", "Ddd"]), // a twin the update dropped
+      teamRank("wuwa_calc:Bbb · Ccc + Ddd · S6R5", 900_000, ["Bbb", "Ccc", "Ddd"]), // a trio the update took off the list
+      teamRank("wuwa_calc:Bbb · Ccc + Ddd · S6R5 DPS · S0R1 team", 900_000, ["Bbb", "Ccc", "Ddd"]),
+    ];
+    const r2 = ranking();
+    r2.teams = [
+      teamRank("t-mine", 2_000_000),
+      teamRank("wuwa_calc:Aaa · Bbb + Ccc · S6R5 DPS · S0R1 team", 2_380_000),
+      teamRank("wuwa_calc:Aaa · Bbb + Ddd · S6R5", 1_490_000, ["Aaa", "Bbb", "Ddd"]),
+      teamRank("wuwa_calc:Aaa · Ccc + Ddd · S6R5", 700_000, ["Aaa", "Ccc", "Ddd"]), // a trio the update added
+    ];
+    const at = (r: typeof r1, t: number, build: string): LogEntry => entryFromRanking(r, account(), { at: t, build, autoTeamBuffs: true }) as LogEntry;
+    const c = compareEntries(at(r1, T0, BUILD), at(r2, T0 + DAY, NEXT_BUILD));
+
+    const renamed = move(c, "wuwa_calc:Aaa · Bbb + Ccc · S6R5 DPS · S0R1 team");
+    expect(renamed).toMatchObject({ before: 2_400_000, after: 2_380_000, cause: { kind: "app-update" }, renamed: { before: "Aaa · Bbb + Ccc · S6R5", after: "Aaa · Bbb + Ccc · S6R5 DPS · S0R1 team" } });
+    expect(move(c, "wuwa_calc:Aaa · Bbb + Ddd · S6R5")).toMatchObject({ before: 1_500_000, after: 1_490_000 });
+    // the dropped twin is not "gone": the trio is still listed, and it already shows as moved
+    expect(c.gone.map((x) => x.id)).toEqual(["wuwa_calc:Bbb · Ccc + Ddd · S6R5"]); // one row per trio
+    expect(c.gone[0]).toMatchObject({ stockByUpdate: true, damage: 900_000 });
+    expect(c.appeared.map((x) => [x.id, x.stockByUpdate])).toEqual([["wuwa_calc:Aaa · Ccc + Ddd · S6R5", true]]);
+    expect(c.moves.map((m) => m.id).sort()).toEqual(["wuwa_calc:Aaa · Bbb + Ccc · S6R5 DPS · S0R1 team", "wuwa_calc:Aaa · Bbb + Ddd · S6R5"]);
+  });
+
+  it("matches a renamed stock rotation with the same figure as steady, not as a move or as new and gone", () => {
+    const r1 = ranking();
+    r1.teams = [teamRank("t-mine", 2_000_000), teamRank("wuwa_calc:Aaa · Bbb + Ccc · S6R5", 2_400_000)];
+    const r2 = ranking();
+    r2.teams = [teamRank("t-mine", 2_000_000), teamRank("wuwa_calc:Lll · Bbb + Ccc · S6R5", 2_400_000, ["Bbb", "Aaa", "Ccc"])];
+    const c = compareEntries(entryFromRanking(r1, account(), { at: T0, build: BUILD, autoTeamBuffs: true }) as LogEntry, entryFromRanking(r2, account(), { at: T0 + DAY, build: NEXT_BUILD, autoTeamBuffs: true }) as LogEntry);
+    expect(c.moves).toEqual([]);
+    expect(c.appeared).toEqual([]);
+    expect(c.gone).toEqual([]);
+    expect(c.steady).toBe(5);
+  });
+
   it("says when a character's best rotation is another one now", () => {
     const r = ranking({ Aaa: 1_200_000 });
     r.characters[0] = charRank("Aaa", 1_200_000, "Aaa quickswap");

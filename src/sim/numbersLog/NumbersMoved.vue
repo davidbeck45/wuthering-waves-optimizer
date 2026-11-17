@@ -87,24 +87,17 @@
         </button>
       </template>
 
-      <template v-if="c.appeared.length">
-        <h3 class="nm-h3">New since then <span class="nm-count">{{ c.appeared.length }}</span></h3>
-        <ul class="nm-chips" data-test-numbers-appeared>
-          <li v-for="x in shownAppeared" :key="`${x.kind}:${x.id}`" class="nm-chip" :data-id="x.id">
-            <b>{{ listedName(x) }}</b> <span class="nm-muted">{{ x.kind === "team" ? "team" : "best rotation" }} · {{ compact(x.damage) }} damage per rotation</span>
-          </li>
-        </ul>
-        <button v-if="c.appeared.length > shownAppeared.length" type="button" class="btn btn-outline btn-sm nm-more" @click="allAppeared = true">Show all {{ c.appeared.length }}</button>
-      </template>
-
-      <template v-if="c.gone.length">
-        <h3 class="nm-h3">No longer there <span class="nm-count">{{ c.gone.length }}</span></h3>
-        <ul class="nm-chips" data-test-numbers-gone>
-          <li v-for="x in shownGone" :key="`${x.kind}:${x.id}`" class="nm-chip" :data-id="x.id">
-            <b>{{ listedName(x) }}</b> <span class="nm-muted">{{ x.kind === "team" ? "team" : "best rotation" }} · it was {{ compact(x.damage) }} damage per rotation</span>
-          </li>
-        </ul>
-        <button v-if="c.gone.length > shownGone.length" type="button" class="btn btn-outline btn-sm nm-more" @click="allGone = true">Show all {{ c.gone.length }}</button>
+      <template v-for="list in lists" :key="list.key">
+        <template v-if="list.items.length">
+          <h3 class="nm-h3">{{ list.title }} <span class="nm-count">{{ list.items.length }}</span></h3>
+          <p v-if="list.stock" class="nm-intro" data-test-numbers-stock-note>{{ STOCK_BY_UPDATE_TEXT }}</p>
+          <ul class="nm-chips" :data-test-numbers-list="list.key" v-bind="list.attr">
+            <li v-for="x in list.shown" :key="`${x.kind}:${x.id}`" class="nm-chip" :data-id="x.id">
+              <b>{{ listedName(x) }}</b> <span class="nm-muted">{{ x.kind === "team" ? "team" : "best rotation" }} · {{ list.gone ? "it was " : "" }}{{ compact(x.damage) }} damage per rotation</span>
+            </li>
+          </ul>
+          <button v-if="list.items.length > list.shown.length" type="button" class="btn btn-outline btn-sm nm-more" @click="openList(list.key)">Show all {{ list.items.length }}</button>
+        </template>
       </template>
 
       <p class="nm-basis" data-test-numbers-basis>{{ BASIS_TEXT }} The log keeps the last {{ MAX_ENTRIES }} records that differ, in this browser only.</p>
@@ -125,7 +118,7 @@ import { whenText, type Comparison, type Listed } from "./compare";
 import { MAX_ENTRIES } from "./log";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
 import { NAMES, useNumbersLog } from "./useNumbersLog";
-import { BASIS_TEXT, EMPTY_TEXT, NO_ACCOUNT_TEXT, RUNNING_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
+import { BASIS_TEXT, EMPTY_TEXT, NO_ACCOUNT_TEXT, RUNNING_TEXT, STOCK_BY_UPDATE_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
 
 const SHOWN = 8;
 const { state, baseAt, running, stale, now } = useNumbersLog();
@@ -140,14 +133,25 @@ const c = computed(() => (state.value as { comparison: Comparison }).comparison)
 const characterMoves = computed(() => (state.value.kind === "compared" ? c.value.moves.filter((m) => m.kind === "character") : []));
 const teamMoves = computed(() => (state.value.kind === "compared" ? c.value.moves.filter((m) => m.kind === "team") : []));
 const allTeams = ref(false);
-const allAppeared = ref(false);
-const allGone = ref(false);
+const opened = ref<string[]>([]);
+const openList = (key: string): void => void (opened.value = [...opened.value, key]);
 const shownTeams = computed(() => (allTeams.value ? teamMoves.value : teamMoves.value.slice(0, SHOWN)));
-const shownAppeared = computed(() => (allAppeared.value ? c.value.appeared : c.value.appeared.slice(0, SHOWN)));
-const shownGone = computed(() => (allGone.value ? c.value.gone : c.value.gone.slice(0, SHOWN)));
+// what came and went: his own characters and teams first; stock teams an app update added or dropped apart, under a
+// line that says it is the app's list that changed
+const lists = computed(() => {
+  if (state.value.kind !== "compared") return [];
+  const of = (items: Listed[], stock: boolean): Listed[] => items.filter((x) => !!x.stockByUpdate === stock);
+  return [
+    { key: "appeared", title: "New since then", items: of(c.value.appeared, false), gone: false, stock: false, attr: { "data-test-numbers-appeared": "" } },
+    { key: "gone", title: "No longer there", items: of(c.value.gone, false), gone: true, stock: false, attr: { "data-test-numbers-gone": "" } },
+    { key: "stock-appeared", title: "Stock teams the update added", items: of(c.value.appeared, true), gone: false, stock: true, attr: {} },
+    { key: "stock-gone", title: "Stock teams the update took off the list", items: of(c.value.gone, true), gone: true, stock: true, attr: {} },
+  ].map((l) => ({ ...l, shown: opened.value.includes(l.key) ? l.items : l.items.slice(0, SHOWN) }));
+});
 // another pair of records: the long lists fold again
 watch(baseAt, () => {
-  allTeams.value = allAppeared.value = allGone.value = false;
+  allTeams.value = false;
+  opened.value = [];
 });
 
 const listedName = (x: Listed): string => (x.kind === "team" ? x.members.map((id) => characterShortName(id) || id).join(" · ") : NAMES.character(x.id));

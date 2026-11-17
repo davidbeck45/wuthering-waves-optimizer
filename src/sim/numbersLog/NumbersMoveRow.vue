@@ -25,6 +25,7 @@
       <p v-if="move.teamName" class="nm-row__sub">
         {{ move.teamName }}<template v-if="move.alsoNamed.length"> · and {{ move.alsoNamed.length }} more rotation{{ move.alsoNamed.length === 1 ? "" : "s" }} of these three with the same two figures</template>
       </p>
+      <p v-if="move.renamed" class="nm-row__sub" data-test-numbers-renamed>In the older record the app listed this stock team as “{{ move.renamed.before }}”.</p>
       <p v-if="move.rotation" class="nm-row__sub" data-test-numbers-rotation>
         Best rotation is now “{{ move.rotation.after ?? "none" }}”; it was “{{ move.rotation.before ?? "none" }}”.
       </p>

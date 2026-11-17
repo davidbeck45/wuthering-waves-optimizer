@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { entryFromRanking } from "./entry";
 import { appendEntry, emptyLog, type LogEntry, type NumbersLog } from "./log";
 import { DAY, HOUR, T0, account, ranking } from "./testAccount";
+import { compareEntries } from "./compare";
 import { EMPTY_TEXT, NO_ACCOUNT_TEXT, agoText, firstRecordText, numbersState, pickedBase, staleness, staleText, summaryText } from "./view";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";
@@ -89,6 +90,13 @@ describe("what the page shows", () => {
     const none = numbersState(logOf(entry(), entry({}, T0 + DAY, "0.0.1+abc+bbbbbbbbbbbb")), true); // an update that moved nothing
     expect(none.kind === "compared" && summaryText(none.comparison)).toBe("No figure moved (5 compared).");
     expect(none.kind === "compared" && none.comparison.appUpdated).toBe(true);
+  });
+
+  it("says it is the app's stock list that changed, not his roster, for stock teams an update dropped or added", () => {
+    const base = compareEntries(entry(), entry({}, T0 + DAY));
+    const stockTeam = (id: string) => ({ kind: "team" as const, id, members: ["Aaa", "Bbb", "Ddd"], teamName: id, damage: 900_000 });
+    const c = { ...base, appeared: [{ ...stockTeam("wuwa_calc:new"), stockByUpdate: true }, stockTeam("t-x")], gone: [1, 2, 3, 4, 5].map((i) => ({ ...stockTeam(`wuwa_calc:old${i}`), stockByUpdate: true })) };
+    expect(summaryText(c)).toBe("No figure moved (5 compared) · 1 new · the update added 1 stock team · the update took 5 stock teams off the list.");
   });
 });
 
