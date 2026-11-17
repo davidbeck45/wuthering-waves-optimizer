@@ -892,14 +892,15 @@ describe("phone layout", () => {
       cy.get("[data-test-live-result-bar]").should("be.visible");
       cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
       cy.get(".screen--echoes").should("be.visible");
-      // his pinned bar remounts while the build loads (it is keyed by the build): tap until it stays open
-      cy.get(".echoes-mobile-score [data-test-echo-insights-toggle]").should(($toggle) => {
+      // his pinned bar remounts while the build loads (it is keyed by the build) and comes back closed: tap until it
+      // stays open with its figures in
+      cy.get(".echoes-mobile-score [data-test-echo-insights-toggle]", { timeout: 60000 }).should(($toggle) => {
         if ($toggle.attr("aria-expanded") !== "true") $toggle[0]!.click();
         expect($toggle.attr("aria-expanded"), "the Echo Insights bar is open").to.equal("true");
+        expect($toggle.closest("[data-test-echo-insights-panel]").find("[data-test-echo-insights-typical]").length, "figures in his roll table").to.be.greaterThan(1);
       });
       // the phone's instance by its class: Cypress counts a panel the scroll area clips as hidden
       cy.get(".echoes-mobile-score[data-test-echo-insights-panel]").as("panel");
-      cy.get("@panel").find("[data-test-echo-insights-typical]", { timeout: 60000 }).should("have.length.greaterThan", 1);
       cy.get("@panel")
         .find("[data-test-echo-insights-substat-table]")
         .then(($box) => {
@@ -967,6 +968,87 @@ describe("phone layout", () => {
         });
       expectNothingCutOff(`echo insights at ${width}`);
       expectNoHorizontalScroll(`echo insights at ${width}`);
+    }
+  });
+
+  // Ryan's chooser dialogs (phone.css § 39 c, d and § 40 a). The filter panel is open until someone closes it, and it
+  // sits in a toolbar that does not scroll: at 130 % text the echo browser's panel was taller than the screen and the
+  // list under it a strip 21 px tall. Behind it, plus's own echo card grid (§ 3) had caught his v3 card: the main
+  // stats sat off the right edge and every substat value was cut. The weapon browser lost "1✦" off the screen at
+  // 360 px and stacked a row's badges on its stars.
+  it("keeps Ryan's echo and weapon browsers usable at 412 and 360 px / 130 % text with their filters open", () => {
+    const inside = (root: HTMLElement, what: string): void => {
+      const edge = root.getBoundingClientRect().right;
+      const over = [...root.querySelectorAll<HTMLElement>("*")]
+        .filter((el) => el.getClientRects().length && !el.children.length && (el.textContent ?? "").trim())
+        .map((el) => {
+          const range = el.ownerDocument.createRange();
+          range.selectNodeContents(el);
+          return { text: (el.textContent ?? "").trim().slice(0, 24), right: Math.max(...[...range.getClientRects()].map((r) => r.right)) };
+        })
+        .filter((leaf) => leaf.right > edge + 1)
+        .map((leaf) => `"${leaf.text}" ends at ${Math.round(leaf.right)}, the card at ${Math.round(edge)}`);
+      expect(over, `${what}: text past the card's edge`).to.deep.equal([]);
+    };
+    for (const [width, height] of [
+      [412, 915],
+      [360, 780],
+    ] as const) {
+      cy.viewport(width, height);
+      cy.visit("/", v3Phone(1.3));
+      cy.get("[data-test-live-result-bar]").should("be.visible");
+      cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
+      cy.get(".screen--echoes").should("be.visible");
+      cy.get("[data-test-echo-item-browse]").first().click({ force: true });
+      cy.get("[data-test-workspace-echoes-browser-list]", { timeout: 20000 }).should("exist");
+      // nobody has closed the filter panel: it is open, and the list still has room
+      cy.get(".app-chooser-modal[open] [data-test-filter-panel-toggle]").should("have.attr", "aria-expanded", "true");
+      cy.get(".app-chooser-modal[open] .app-chooser-modal__body").should(($body) => {
+        expect($body[0]!.clientHeight, `the echo list's height at ${width}`).to.be.greaterThan(200);
+      });
+      cy.get(".app-chooser-modal[open] .app-chooser-modal__body").then(($body) => {
+        const body = $body[0]!;
+        const edge = body.getBoundingClientRect().right;
+        const cards = [...body.querySelectorAll<HTMLElement>("[data-test-workspace-echoes-browser-list] > .echo__item")];
+        expect(cards.length, `echo cards at ${width}`).to.be.greaterThan(0);
+        for (const card of cards.slice(0, 6)) {
+          expect(card.getBoundingClientRect().right, `an echo card at ${width}: inside the dialog`).to.be.at.most(edge + 1);
+          inside(card, `an echo card at ${width}`);
+        }
+        // the impact badge may take two lines: its text stays inside the pill
+        for (const badge of body.querySelectorAll<HTMLElement>("[data-test-workspace-echoes-browser-impact]")) {
+          expect(badge.scrollHeight, `impact badge "${(badge.textContent ?? "").trim()}" at ${width}: text inside the pill`).to.be.at.most(badge.clientHeight + 2);
+        }
+      });
+      cy.get(".app-chooser-modal[open] [data-test-workspace-echoes-browser-close]").click();
+
+      cy.get('[data-test-calculator-mobile-nav="weapon"]').click({ force: true });
+      cy.get(".screen--weapon").should("be.visible");
+      cy.get("[data-test-workspace-weapon-open-browser]").filter(":visible").first().click({ force: true });
+      cy.get("[data-test-workspace-weapon-browser-row]", { timeout: 20000 }).should("have.length.greaterThan", 2);
+      cy.get(".app-chooser-modal[open] .app-chooser-modal__box").then(($box) => {
+        const box = $box[0]!;
+        const edge = box.getBoundingClientRect().right;
+        for (const rarity of box.querySelectorAll("[data-test-workspace-weapon-browser-filter-rarity]")) {
+          expect(rarity.getBoundingClientRect().right, `rarity button ${(rarity.textContent ?? "").trim()} at ${width}: on the screen`).to.be.at.most(edge - 8);
+        }
+        const rows = [...box.querySelectorAll<HTMLElement>("[data-test-workspace-weapon-browser-row]")].slice(0, 6);
+        for (const row of rows) {
+          const [name, group] = [...row.querySelector(".card-body")!.children].map((part) => part.getBoundingClientRect());
+          inside(row, `weapon row "${(row.textContent ?? "").trim().slice(0, 16)}" at ${width}`);
+          // the badges and Equip do not sit on the name, the stars or the stat
+          const overlap = name!.left < group!.right - 1 && name!.right > group!.left + 1 && name!.top < group!.bottom - 1 && name!.bottom > group!.top + 1;
+          if (overlap) {
+            const text = [...row.querySelector(".card-body")!.firstElementChild!.querySelectorAll("*")].filter((el) => !el.children.length && (el.textContent ?? "").trim());
+            for (const el of text) {
+              const r = el.getBoundingClientRect();
+              const hit = r.left < group!.right - 1 && r.right > group!.left + 1 && r.top < group!.bottom - 1 && r.bottom > group!.top + 1;
+              expect(hit, `weapon row at ${width}: the badges sit on "${(el.textContent ?? "").trim().slice(0, 16)}"`).to.equal(false);
+            }
+          }
+        }
+      });
+      expectNoHorizontalScroll(`weapon browser at ${width}`);
     }
   });
 

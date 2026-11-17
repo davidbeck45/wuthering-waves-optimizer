@@ -1918,4 +1918,76 @@ html.wt-ai-docked #wt-app .contain {
     max-width: 100%;
   }
 }
+/* c) His chooser dialogs (AppChooserModal.vue: the echo, weapon and character browsers, whose filters #709 now remembers
+      per character). The search, sort and filter panel sit in a toolbar that does not scroll, and the panel is open
+      until someone closes it. On a phone at 130 % the echo browser's open panel is 1,400 px tall, the dialog 915: the
+      toolbar took all of it and the list under it was a strip 21 px tall, so the browser showed no echo at all. The
+      toolbar now takes 45 % of the screen at most and scrolls inside that, and the list keeps the rest. */
+@media (max-width: 767px) {
+  .app-chooser-modal__box > div:has(.app-filter-panel__collapse--open) {
+    max-height: 45vh;
+    max-height: 45dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* d) In those dialogs. The weapon browser's five rarity buttons are one row that does not wrap: "1✦" was off the
+        screen at 360 px and the panel 8 px wider than the dialog at 412. A weapon's row keeps its name and its
+        Equipped / impact / Equip group on one line, and at 360 px the group sat on top of the stars and the Signature
+        badge: the group takes a line of its own when the name needs the room. An echo's impact badge ("-2,001,714 ·
+        -23.0%", the format of #703) wrapped to two lines inside a pill one line tall, the text over the pill's edge. */
+  .app-filter-panel__body div:has(> [data-test-workspace-weapon-browser-filter-rarity]) {
+    flex-wrap: wrap;
+  }
+  .app-filter-panel__body div:has(> div > [data-test-workspace-weapon-browser-filter-rarity]) {
+    min-width: 0;
+  }
+  [data-test-workspace-weapon-browser-list] .card-body.flex-row {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+  /* his name button is flex-1 with a zero basis, so it never asked for a line of its own: 11rem is the picture and a name */
+  [data-test-workspace-weapon-browser-list] .card-body.flex-row > button {
+    flex-basis: 11rem;
+  }
+  /* the group itself is 275 px at 130 % ("-3,069,956 · -35.3%" and Equip): where the card is narrower, Equip drops under */
+  [data-test-workspace-weapon-browser-list] .card-body.flex-row > .shrink-0 {
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    min-width: 0;
+    margin-left: auto;
+  }
+  .app-chooser-modal__box [data-test-workspace-echoes-browser-impact] {
+    height: auto;
+    padding-block: 0.1rem;
+    text-align: center;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   40. Plus's own rules that Ryan's screens moved out from under (found on the phone look after the sync of 2026-11-16).
+       a) § 3's echo card grid in his v3 echo browser (WorkspaceEchoesBrowser.vue, "Browse inventory"). § 3 was written
+          for the classic card, picture and menu beside the stats. CalculatorEchoCard.vue has a v3 layout too, a plain
+          column (name row, main stats, substats), and § 3's selector caught it: the name row became a 331 px grid
+          column in a 292 px card, the main stats ("22%", "+150") landed in a second column 0 px wide, off the right
+          edge of the screen, and every substat value was cut at the dialog's edge. Nobody saw it because the list was
+          the 21 px strip of § 39 c. Back to his column inside his chooser dialogs, as § 37 a did for the optimizer's
+          loadout card (whose classic form has the same classes and keeps § 3's grid, so this is scoped to the dialog).
+          His `truncate` on the echo's name sits in a wrapping row, so it never cut: "Reminiscence: Fleurdelys" held
+          the card 39 px wider than the dialog, and "Resonance Liberation DMG Bonus" did the same from a substat row.
+          Both wrap, as in § 37 a, and the card is held to the list's width. */
+@media (max-width: 1023px) {
+  .app-chooser-modal__box .echo__item .card-body .echo__content.echo__content.flex-col.gap-2:not(.echo__content--compact) {
+    display: flex;
+    align-items: stretch;
+  }
+  .app-chooser-modal__body .grid > .echo__item {
+    min-width: 0;
+  }
+  .app-chooser-modal__box .echo__item .echo__content.flex-col.gap-2:not(.echo__content--compact) .truncate {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
 
