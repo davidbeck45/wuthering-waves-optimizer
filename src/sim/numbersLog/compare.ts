@@ -9,6 +9,8 @@
 //   either                     the app build changed and no build did   → "An app update" (never a named upstream change:
 //                                                                         the log cannot know which one)
 //   either                     none of it                               → says that nothing recorded explains it
+// When a build, a team or the switch changed AND the app was updated between the two records, the row says both: the
+// log cannot split a move between the two (`withUpdate`).
 // A Settings import inside the window is said once for the whole comparison (`importedAt`), and the rows then say
 // "this build is different", not "you changed". A character or team in only one of the two records is listed as
 // appeared or gone, never as a move.
@@ -16,10 +18,11 @@ import type { CharacterFigure, LogEntry, TeamFigure } from "./log";
 import { changedParts, type SigPart } from "./signature";
 
 export type Cause =
-  | { kind: "own-build"; parts: SigPart[]; before: CharacterFigure; after: CharacterFigure }
-  | { kind: "members"; who: string[] }
-  | { kind: "team-edited" }
-  | { kind: "buffs-switch"; on: boolean }
+  /** `withUpdate`: the app build changed between the two records as well, so the update may be part of the move */
+  | { kind: "own-build"; parts: SigPart[]; before: CharacterFigure; after: CharacterFigure; withUpdate: boolean }
+  | { kind: "members"; who: string[]; withUpdate: boolean }
+  | { kind: "team-edited"; withUpdate: boolean }
+  | { kind: "buffs-switch"; on: boolean; withUpdate: boolean }
   | { kind: "app-update" }
   | { kind: "unknown" };
 
@@ -74,16 +77,17 @@ function teamCause(before: TeamFigure, after: TeamFigure, chars: { before: Map<s
     const b = chars.after.get(id);
     return !!a && !!b && a.sig.rec !== b.sig.rec;
   });
-  if (who.length) return { kind: "members", who };
-  if (before.def !== after.def || before.members.join("+") !== after.members.join("+")) return { kind: "team-edited" };
-  if (from.autoTeamBuffs !== to.autoTeamBuffs) return { kind: "buffs-switch", on: to.autoTeamBuffs };
-  if (from.build !== to.build) return { kind: "app-update" };
+  const withUpdate = from.build !== to.build;
+  if (who.length) return { kind: "members", who, withUpdate };
+  if (before.def !== after.def || before.members.join("+") !== after.members.join("+")) return { kind: "team-edited", withUpdate };
+  if (from.autoTeamBuffs !== to.autoTeamBuffs) return { kind: "buffs-switch", on: to.autoTeamBuffs, withUpdate };
+  if (withUpdate) return { kind: "app-update" };
   return { kind: "unknown" };
 }
 
 function characterCause(before: CharacterFigure, after: CharacterFigure, from: LogEntry, to: LogEntry): Cause {
   const parts = changedParts(before.sig, after.sig);
-  if (parts.length) return { kind: "own-build", parts, before, after };
+  if (parts.length) return { kind: "own-build", parts, before, after, withUpdate: from.build !== to.build };
   if (from.build !== to.build) return { kind: "app-update" };
   return { kind: "unknown" };
 }
@@ -207,25 +211,30 @@ function partText(part: SigPart, before: CharacterFigure, after: CharacterFigure
   }
 }
 
-/** One sentence for a row. `imported`: a Settings import sits between the two records, so nothing is put on "you". */
-export function causeText(cause: Cause, names: Namer, imported = false): string {
+/** said after a cause that is not the update, when the app was updated between the two records too */
+export const ALSO_UPDATED_TEXT = "The app was updated between the two records too, so part of this may be the update.";
+
+/** One or two sentences for a row. `imported`: a Settings import sits between the two records, so nothing is put on
+ *  "you". `kind`: whose figure it is (the last sentence names what was looked at). */
+export function causeText(cause: Cause, names: Namer, imported = false, kind: Move["kind"] = "team"): string {
+  const also = (text: string, withUpdate: boolean): string => (withUpdate ? `${text} ${ALSO_UPDATED_TEXT}` : text);
   switch (cause.kind) {
     case "own-build": {
       const what = list(cause.parts.map((p) => partText(p, cause.before, cause.after, names)));
-      return imported ? `This build is different: ${what}.` : `You changed this build: ${what}.`;
+      return also(imported ? `This build is different: ${what}.` : `You changed this build: ${what}.`, cause.withUpdate);
     }
     case "members": {
       const who = cause.who.map(names.character);
-      return who.length === 1 ? `${who[0]}'s build changed.` : `The builds of ${list(who)} changed.`;
+      return also(who.length === 1 ? `${who[0]}'s build changed.` : `The builds of ${list(who)} changed.`, cause.withUpdate);
     }
     case "team-edited":
-      return imported ? "This team is different: its rotation, its timing or the builds it pins." : "You changed this team: its rotation, its timing or the builds it pins.";
+      return also(imported ? "This team is different: its rotation, its timing or the builds it pins." : "You changed this team: its rotation, its timing or the builds it pins.", cause.withUpdate);
     case "buffs-switch":
-      return `The team-aware buffs switch was turned ${cause.on ? "on" : "off"}.`;
+      return also(`The team-aware buffs switch was turned ${cause.on ? "on" : "off"}.`, cause.withUpdate);
     case "app-update":
       return "An app update: no build in it changed.";
     default:
-      return "Nothing the log records changed: the builds, the team and the app are the same.";
+      return kind === "character" ? "Nothing the log records changed: the build and the app are the same." : "Nothing the log records changed: the members' builds, the team and the app are the same.";
   }
 }
 

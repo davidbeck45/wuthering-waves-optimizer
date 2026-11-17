@@ -105,7 +105,8 @@ export function entryFromRanking(ranking: RosterRanking, account: RankedAccount,
 
 const sigKey = (s: BuildSig): string => [s.weapon ?? "", s.refinement, s.sequence, s.hw, s.hs, s.hl, s.he, s.ho, s.rec].join("|");
 const characterKey = (c: CharacterFigure): string => [c.id, c.rotation ?? "", c.damage, sigKey(c.sig)].join("|");
-const teamKey = (t: TeamFigure): string => [t.id, t.name, t.source, t.members.join("+"), t.damage, t.def].join("|");
+// not its name: a team he renamed is the same team with the same figure, and no record is taken for that
+const teamKey = (t: TeamFigure): string => [t.id, t.source, t.members.join("+"), t.damage, t.def].join("|");
 
 /** Everything of an entry but when it was taken, as one string: two entries with the same one are the same record. */
 export function recordKey(entry: LogEntry): string {

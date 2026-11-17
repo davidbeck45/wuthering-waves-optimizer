@@ -61,6 +61,11 @@ describe("the same record", () => {
     const edited = account();
     edited.characters.Aaa.buffs.OwnBuff.isEnabled = false;
     expect(sameRecord(entry(), entryFromRanking(ranking(), edited, meta()) as LogEntry)).toBe(false); // same damage, another build
+    const renamed = account();
+    renamed.teams[0].name = "Another name";
+    const r = ranking();
+    r.teams[0].name = "Another name";
+    expect(sameRecord(entry(), entryFromRanking(r, renamed, meta()) as LogEntry)).toBe(true); // a renamed team is no new record
     const reordered = entry();
     reordered.characters.reverse();
     reordered.teams.reverse();

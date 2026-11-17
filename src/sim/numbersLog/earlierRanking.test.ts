@@ -106,7 +106,7 @@ describe("the last build's ranking as a record", () => {
     const c = compareEntries(log.entries[0], log.entries[1]);
     expect(c.appUpdated).toBe(true);
     expect(c.moves.map((m) => m.id).sort()).toEqual(["Aaa", "wuwa_calc:Aaa hypercarry"]);
-    for (const m of c.moves) expect(causeText(m.cause, { character: (id) => id, weapon: (k) => k ?? "" })).toBe("An app update: no build in it changed.");
+    for (const m of c.moves) expect(causeText(m.cause, { character: (id) => id, weapon: (k) => k ?? "" }, false, m.kind)).toBe("An app update: no build in it changed.");
     // the earlier ranking is not "the last ranking seen": that is the run's
     expect(log.seen).toEqual({ fp: fpOf(acc), build: NEW, at: T0 + DAY });
   });

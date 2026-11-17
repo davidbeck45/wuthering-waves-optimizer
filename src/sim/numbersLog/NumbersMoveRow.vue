@@ -56,7 +56,7 @@ const shortName = computed(() => characterShortName(props.move.id) || props.move
 const show = (n: number): string => (props.compact ? compactNumber(n) : fmt(n));
 const pct = computed(() => changeText(props.move.change));
 const up = computed(() => props.move.after >= props.move.before);
-const cause = computed(() => causeText(props.move.cause, NAMES, props.imported));
+const cause = computed(() => causeText(props.move.cause, NAMES, props.imported, props.move.kind));
 const rankingsLink = computed(() => (props.move.kind === "character" ? { path: "/my-rankings", query: { focus: props.move.id, tab: "rotations" } } : { path: "/my-rankings" }));
 </script>
 

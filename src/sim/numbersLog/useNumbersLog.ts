@@ -30,7 +30,9 @@ export interface NumbersLogView {
   now: Ref<number>;
 }
 
-export function useNumbersLog(): NumbersLogView {
+/** `stale: false` for a view that does not say whether the log is behind (/account's card: the page itself scores
+ *  whenever the account changed), so the account is not hashed for nothing. */
+export function useNumbersLog(options: { stale?: boolean } = {}): NumbersLogView {
   watchLog();
   const characterStore = useCharacterStore();
   const inventoryStore = useInventoryStore();
@@ -49,9 +51,11 @@ export function useNumbersLog(): NumbersLogView {
 
   /** the fingerprint hashes the whole account, so it is worked out off the first paint and again when the log moves */
   function checkStale(): void {
+    if (options.stale === false) return;
     const seen = log.value.seen;
+    const newest = log.value.entries[log.value.entries.length - 1] ?? null;
     if (!seen) {
-      stale.value = null;
+      stale.value = staleness(null, { fp: "", build: appBuildId() }, newest?.build ?? null);
       return;
     }
     try {

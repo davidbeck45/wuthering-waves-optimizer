@@ -75,8 +75,10 @@ export type Stale =
 /** Whether the newest thing the log saw is still the account and the app as they are now. `current.fp` is the ranking
  *  fingerprint of the stores as they are; the two option letters at its end are compared apart, because a ranking with
  *  the investment estimates off is the same figures. */
-export function staleness(seen: LastSeen | null, current: { fp: string; build: string }): Stale {
-  if (!seen) return null;
+export function staleness(seen: LastSeen | null, current: { fp: string; build: string }, newestBuild: string | null = null): Stale {
+  // no ranking seen on this visit or before, yet a record: the last build's, kept as the "before" of a run that has
+  // not finished (or failed). The app has moved on from it
+  if (!seen) return newestBuild !== null && newestBuild !== current.build ? "app" : null;
   if (seen.build !== current.build) return "app";
   const data = (fp: string): string => fp.slice(0, -2);
   const buffs = (fp: string): string => fp.slice(-1);

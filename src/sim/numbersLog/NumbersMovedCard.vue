@@ -42,7 +42,7 @@ import { firstRecordText, summaryText } from "./view";
 /** `scoring`: the page's own ranking is running (useAccountData's status) */
 withDefaults(defineProps<{ scoring?: boolean }>(), { scoring: false });
 
-const { state, now } = useNumbersLog();
+const { state, now } = useNumbersLog({ stale: false });
 const top = computed(() => (state.value.kind === "compared" ? biggestMoves(state.value.comparison.moves, 3) : []));
 const more = computed(() => (state.value.kind === "compared" ? state.value.comparison.moves.length - top.value.length : 0));
 </script>

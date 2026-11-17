@@ -98,12 +98,15 @@ describe("a log that is behind", () => {
     expect(staleness(seen, { fp: "v6:hash1:9:ia", build: BUILD })).toBeNull();
     expect(staleness({ ...seen, fp: "v6:hash1:9:-a" }, { fp: "v6:hash1:9:ia", build: BUILD })).toBeNull();
     expect(staleness(null, { fp: "v6:hash1:9:ia", build: BUILD })).toBeNull(); // nothing seen yet: the empty state speaks
+    expect(staleness(null, { fp: "", build: BUILD }, BUILD)).toBeNull();
   });
 
   it("says the app was updated, or the account changed, with what to do about it", () => {
     expect(staleness(seen, { fp: "v6:hash1:9:ia", build: "0.0.1+abc+bbbbbbbbbbbb" })).toBe("app");
     expect(staleness(seen, { fp: "v6:hash2:9:ia", build: BUILD })).toBe("account");
     expect(staleness(seen, { fp: "v6:hash1:9:i-", build: BUILD })).toBe("account"); // the team-aware buffs switch
+    // only the last build's ranking is in the log (the run after the update has not finished, or failed)
+    expect(staleness(null, { fp: "", build: "0.0.1+abc+bbbbbbbbbbbb" }, BUILD)).toBe("app");
     expect(staleText("app")).toMatch(/^The app was updated since the last record\. Open My account/);
     expect(staleText("account")).toMatch(/^Your account changed since the last record\. Open My account/);
   });

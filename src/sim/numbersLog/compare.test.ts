@@ -1,7 +1,7 @@
 // Wuthering Tools+ numbers log — two records against each other: what moved and the cause given for it, from facts
 // only. Synthetic account (testAccount.ts).
 import { describe, expect, it } from "vitest";
-import { biggestMoves, causeText, changeText, compareEntries, dayText, whenText, type Move, type Namer } from "./compare";
+import { ALSO_UPDATED_TEXT, biggestMoves, causeText, changeText, compareEntries, dayText, whenText, type Move, type Namer } from "./compare";
 import { entryFromRanking, type LogEntry, type RankedAccount } from "./log";
 import { DAY, T0, account, charRank, ranking, teamRank } from "./testAccount";
 
@@ -12,7 +12,7 @@ const names: Namer = { character: (id) => `<${id}>`, weapon: (key) => (key ? `[$
 const entry = (over: Parameters<typeof ranking>[0] = {}, acc: RankedAccount = account(), at = T0, build = BUILD, auto = true): LogEntry =>
   entryFromRanking(ranking(over), acc, { at, build, autoTeamBuffs: auto }) as LogEntry;
 const move = (c: ReturnType<typeof compareEntries>, id: string): Move => c.moves.find((m) => m.id === id) as Move;
-const say = (m: Move, imported = false): string => causeText(m.cause, names, imported);
+const say = (m: Move, imported = false): string => causeText(m.cause, names, imported, m.kind);
 
 describe("what moved", () => {
   it("lists a figure that moved with before, after and the change as a share of the old figure", () => {
@@ -149,19 +149,27 @@ describe("the cause", () => {
     expect(say(move(c, "wuwa_calc:Aaa hypercarry"))).toBe("An app update: no build in it changed.");
   });
 
-  it("the build, not the update, when both changed", () => {
+  it("the build first when both changed, and then that the update may be part of it: the log cannot split the two", () => {
     const acc = account();
     acc.characters.Aaa.echoes[1] = { echoId: "e9" };
     const c = compareEntries(entry(), entry({ Aaa: 1_030_000, Bbb: 410_000, mine: 2_100_000 }, acc, T0 + DAY, NEXT_BUILD));
-    expect(say(move(c, "Aaa"))).toBe("You changed this build: echoes.");
-    expect(say(move(c, "t-mine"))).toBe("<Aaa>'s build changed.");
+    expect(say(move(c, "Aaa"))).toBe(`You changed this build: echoes. ${ALSO_UPDATED_TEXT}`);
+    expect(say(move(c, "t-mine"))).toBe(`<Aaa>'s build changed. ${ALSO_UPDATED_TEXT}`);
     expect(say(move(c, "Bbb"))).toBe("An app update: no build in it changed."); // his build is as it was
+    expect(ALSO_UPDATED_TEXT).toBe("The app was updated between the two records too, so part of this may be the update.");
+    // the team itself, and the switch, the same way
+    const edited = account();
+    edited.teams[0].duration = 25;
+    expect(say(move(compareEntries(entry(), entry({ mine: 2_300_000 }, edited, T0 + DAY, NEXT_BUILD)), "t-mine"))).toBe(`You changed this team: its rotation, its timing or the builds it pins. ${ALSO_UPDATED_TEXT}`);
+    expect(say(move(compareEntries(entry(), entry({ mine: 1_700_000 }, account(), T0 + DAY, NEXT_BUILD, false)), "t-mine"))).toBe(`The team-aware buffs switch was turned off. ${ALSO_UPDATED_TEXT}`);
+    // and never without an update
+    expect(say(move(compareEntries(entry(), entry({ Aaa: 1_030_000 }, acc, T0 + DAY)), "Aaa"))).toBe("You changed this build: echoes.");
   });
 
   it("says so when nothing the log records explains a move", () => {
     const c = compareEntries(entry(), entry({ Aaa: 1_000_500, stock: 2_400_900 }, account(), T0 + DAY));
-    expect(say(move(c, "Aaa"))).toBe("Nothing the log records changed: the builds, the team and the app are the same.");
-    expect(say(move(c, "wuwa_calc:Aaa hypercarry"))).toMatch(/^Nothing the log records changed/);
+    expect(say(move(c, "Aaa"))).toBe("Nothing the log records changed: the build and the app are the same.");
+    expect(say(move(c, "wuwa_calc:Aaa hypercarry"))).toBe("Nothing the log records changed: the members' builds, the team and the app are the same.");
   });
 
   it("never blames a change of bookkeeping: a build's saved time, notes, the optimizer's search panel", () => {

@@ -155,7 +155,8 @@ describe("what's new on Tools+", () => {
       expect(hrefs.filter((h) => h.includes("{")), "no placeholder left in a link").to.have.length(0);
       for (const href of hrefs) {
         cy.get(`[data-test-whats-new-open][href="${href}"]`).first().click();
-        cy.location().should((loc) => expect(loc.pathname + loc.search, `Open → ${href}`).to.contain(href.split("?")[0]));
+        // a page's chunk loads on its first visit, and the dev server builds it on demand: Teams alone can take seconds
+        cy.location({ timeout: 30000 }).should((loc) => expect(loc.pathname + loc.search, `Open → ${href}`).to.contain(href.split("?")[0]));
         cy.get("[data-test-not-found]").should("not.exist");
         cy.get("[data-test-whats-new]").should("not.exist");
         cy.visit("/whats-new", seed({ account: true }));
@@ -342,9 +343,11 @@ describe("what moved in your numbers", () => {
     cy.get("[data-test-numbers-summary]").should("have.text", "3 figures moved, 2 did not.");
     cy.get("[data-test-numbers-import]").should("have.length", 1).and("contain.text", "A Settings import replaced your account on 12 Nov");
     cy.get("[data-test-numbers-app-update]").should("have.length", 1);
-    cy.get(`${row("Chisa")} [data-test-numbers-cause]`).should("have.text", "This build is different: weapon (Kumokiri → Emerald Of Genesis).");
+    // her build differs AND the app was updated in the stretch: the row says both, it cannot split the move between them
+    const TOO = " The app was updated between the two records too, so part of this may be the update.";
+    cy.get(`${row("Chisa")} [data-test-numbers-cause]`).should("have.text", `This build is different: weapon (Kumokiri → Emerald Of Genesis).${TOO}`);
     cy.get(`${row("Chisa")} [data-test-numbers-change]`).should("contain.text", "−10.0 %");
-    cy.get(`${row("team-mine")} [data-test-numbers-cause]`).should("have.text", "Chisa's build changed.");
+    cy.get(`${row("team-mine")} [data-test-numbers-cause]`).should("have.text", `Chisa's build changed.${TOO}`);
     cy.get(`${row("Cartethyia")} [data-test-numbers-cause]`).should("have.text", "An app update: no build in it changed.");
     cy.get("[data-test-numbers] [data-test-numbers-cause]").each(($p) => expect($p.text()).not.to.match(/You changed/));
   });
