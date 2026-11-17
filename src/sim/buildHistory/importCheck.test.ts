@@ -8,6 +8,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { applyImportedDatabase, importEchoesFromRaw } from "../../utils/settingsBackup";
 import { PROBE_KEY } from "../storage/persistGuard";
 import { checkImport, ImportRefused, importOrExplain } from "./importCheck";
+import { CURRENT_DATA_VERSION } from "../../migrations";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -98,6 +99,17 @@ describe("a Settings import", () => {
     const replaced = { Aemeath: { notes: "x".repeat(50_000) } };
     checkImport({ character: { characters: {} }, inventory: null, teamRotations: null, dataVersion: 8 }, (p) => p, { characters: replaced, echoes: [] }, storage);
     expect((storage.setItem.mock.calls[0]![1] as string).length).toBeGreaterThan(100_000);
+  });
+
+  it("refuses a file made in a newer data version than this build, before anything is replaced", () => {
+    const newer = JSON.parse(backup()) as { meta: { version: string } };
+    newer.meta.version = String(CURRENT_DATA_VERSION + 1);
+    const before = account();
+    expect(() => applyImportedDatabase(JSON.stringify(newer))).toThrow(/made by a newer version of this site/);
+    expect(account()).toBe(before);
+    expect(localStorage.getItem("dataVersion")).toBeNull();
+    newer.meta.version = String(CURRENT_DATA_VERSION);
+    expect(() => applyImportedDatabase(JSON.stringify(newer))).not.toThrow();
   });
 
   it("the page tells the player why, and does not go on to say it was overwritten", () => {

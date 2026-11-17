@@ -4,6 +4,7 @@
 // replaced characters while their echoes stayed behind (2026-11-05 hunt, H4, H5, M5). `checkImport` throws
 // `ImportRefused`, before anything is replaced, unless all three stores parse, the characters are there and they fit
 // along with the "Before a Settings import" versions the panel promises. One call in src/utils/settingsBackup.ts.
+import { CURRENT_DATA_VERSION } from "../../migrations";
 import { ACCOUNT_STORE_KEYS, roomFor } from "../storage/persistGuard";
 import { pendingFrom } from "./importGuard";
 
@@ -32,6 +33,7 @@ export interface CheckedImport {
 
 const NOT_A_BACKUP = "That is not a backup from this site: it has no characters in it, so nothing was changed. A list of echoes goes under Import echoes.";
 const NO_ROOM = "That backup does not fit in this browser's storage, so nothing was changed. Delete some versions in Build history to make room, then import it again.";
+const NEWER = "That backup was made by a newer version of this site, so nothing was changed. Reload the page to update, then import it again.";
 const damaged = (what: string): string => `That backup is damaged (its ${what} can't be read), so nothing was changed.`;
 
 const isRecord = (v: unknown): v is Record<string, any> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -41,6 +43,9 @@ const SLACK = 4096;
 
 /** All three stores, read and checked. `parse` is upstream's `parseStorePayload`; nothing here writes. */
 export function checkImport(read: ImportPayloads, parse: (payload: unknown, fromVersion: number) => unknown, account: { characters: Record<string, any>; echoes: any[] }, storage: Pick<Storage, "getItem" | "setItem" | "removeItem"> = localStorage): CheckedImport {
+  // A data version ahead of this build's (a tab opened before a deploy, a rollback): upstream's migrations would run
+  // none and his import would stamp the stores as this build's version, so the next deploy migrates them a second time.
+  if (read.dataVersion > CURRENT_DATA_VERSION) throw new ImportRefused(NEWER);
   const parsed = (what: string, payload: unknown): any => {
     try {
       return parse(payload, read.dataVersion);
