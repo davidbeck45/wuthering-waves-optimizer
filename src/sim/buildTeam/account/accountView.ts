@@ -1,7 +1,7 @@
 // Wuthering Tools+ — "Whole account": what the page says, kept out of the component so it is testable. Pure.
-import { characterDisplayName } from "../../display/names";
+import { characterDisplayName, characterShortName, teamLabel } from "../../display/names";
 import { teamTitle } from "../../display/teamName";
-import { buffDefaultNames, echoName, emptySlotText, setName, statShort, teamBuffNotes, teammatesNote, worthSaving } from "../buildTeamView";
+import { buffDefaultNames, echoName, emptySlotText, fmtInt, setName, statShort, teamBuffNotes, teammatesNote, worthSaving } from "../buildTeamView";
 import type { SameEchoesSave } from "./accountApply";
 import type { AccountMember, BuildAccountResult, EchoMove } from "./buildAccount";
 import type { AccountStage } from "./useBuildAccount";
@@ -24,6 +24,12 @@ export const STAGE_TEXT: Record<AccountStage, string> = {
   greedy: "Best build for each member, in priority order",
   improve: "Improving: trying to hand contested echoes to whoever gains more",
   verify: "Checking every team with the calculator",
+};
+
+/** Under the stage line while the account is planned a second time: why (buildAccount.ts steps 3b and 3c). */
+export const AGAIN_TEXT: Record<"locked" | "guard", string> = {
+  locked: "Planning again: a member the first plan left without a build keeps the echoes they wear, so those are out of the other builds.",
+  guard: "Planning again: with the first plan's builds a team read lower than it does today, so it keeps today's builds and the others are planned without its echoes.",
 };
 
 export const STOPPED_TEXT: Record<BuildAccountResult["search"]["stoppedBy"], string> = {
@@ -136,4 +142,52 @@ export function confirmItems(r: BuildAccountResult, saving: ReadonlyArray<{ char
 export function secondsText(ms: number): string {
   const s = Math.max(0, Math.round(ms / 1000));
   return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${s % 60} s`;
+}
+
+// ── the guard: teams the plan would have lowered (buildAccount.ts step 3c) ─────────────────────────────────────
+
+const listOf = (names: readonly string[]): string => (names.length < 2 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`);
+
+/** "2.6 %" below today, from the two totals; a loss under a twentieth of a percent is still a loss and is said as one. */
+function belowText(before: number, planned: number): string {
+  const d = before > 0 ? (1 - planned / before) * 100 : 0;
+  return d < 0.05 ? "less than 0.1 %" : `${d.toFixed(1)} %`;
+}
+
+export interface GuardNote {
+  /** index into the result's teams */
+  team: number;
+  /** the summary's line: which team stays as it is, and by how much the plan read lower */
+  line: string;
+  /** the team card's own sentence: the two totals, who keeps today's build, who still wears a planned one */
+  card: string;
+}
+
+/** The teams the plan would have lowered, in plain words (the guard, buildAccount.ts step 3c): one note per team that
+ *  keeps today's builds. "Stays as it is" is said only of a team none of whose members gets a build; a team that keeps a
+ *  build planned in an earlier team is told apart, since its number can still move. A result kept from before the guard
+ *  has no list and gets no note. */
+export function guardNotes(r: Pick<BuildAccountResult, "teams" | "members"> & { guard?: BuildAccountResult["guard"] }): GuardNote[] {
+  return (r.guard ?? []).flatMap((g) => {
+    const t = r.teams[g.team];
+    if (!t) return [];
+    const label = `Team ${g.team + 1} (${teamLabel(t.spec.characterIds, t.spec.characterIds[0])})`;
+    const names = listOf(g.kept.map(characterShortName));
+    const still = t.slots.filter((s) => !!r.members[s.member]?.draft);
+    const below = belowText(g.before, g.planned);
+    const read = `it read ${fmtInt(g.planned)} damage per rotation, ${below} below today's ${fmtInt(g.before)}`;
+    if (!still.length) {
+      return [{
+        team: g.team,
+        line: `${label} stays as it is: the plan's builds read ${below} lower there than the builds it runs today.`,
+        card: `Stays as it is. With the plan's builds ${read}, so ${names} keep${g.kept.length === 1 ? "s" : ""} today's build${g.kept.length === 1 ? "" : "s"} and no other build takes their echoes.`,
+      }];
+    }
+    const wearers = listOf(still.map((s) => `${characterShortName(s.characterId)} (planned in team ${(s.sharedFrom ?? g.team) + 1})`));
+    return [{
+      team: g.team,
+      line: `${label}: ${names} keep${g.kept.length === 1 ? "s" : ""} today's build${g.kept.length === 1 ? "" : "s"}, because with new ones the team read ${below} lower than it does today.`,
+      card: `${names} keep${g.kept.length === 1 ? "s" : ""} today's build${g.kept.length === 1 ? "" : "s"}: with new ones ${read}. No other build takes their echoes. ${wearers} still wear${still.length === 1 ? "s" : ""} a new build here.`,
+    }];
+  });
 }

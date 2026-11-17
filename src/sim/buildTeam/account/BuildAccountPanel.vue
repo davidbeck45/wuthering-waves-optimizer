@@ -120,6 +120,7 @@
       <p class="ba-stage" data-test-build-account-stage>
         {{ STAGE_TEXT[stage] }}<template v-if="stage === 'plans'"> ({{ stageInfo.done }} of {{ stageInfo.total }})</template><template v-else-if="stage === 'improve'"> · {{ stageInfo.accepted }} kept so far</template>
       </p>
+      <p v-if="stageInfo.again" class="ba-hint" data-test-build-account-again>{{ AGAIN_TEXT[stageInfo.again] }}</p>
       <ul class="bt-run__list">
         <li v-for="id in runIds" :key="id" class="bt-run__row" :data-test-build-account-progress="id">
           <CharacterAvatar :id="id" :size="28" />
@@ -158,6 +159,7 @@
           <span class="bt-kpi__s">a build that meets its need comes before damage</span>
         </div>
         <p v-if="whyLower(result)" class="bt-summary__line" data-test-build-account-why>{{ whyLower(result) }}</p>
+        <p v-for="g in guard" :key="g.team" class="bt-summary__line ba-guard" data-test-build-account-guard>{{ g.line }}</p>
         <p class="bt-summary__line" data-test-build-account-search>{{ searchLine(result) }}</p>
         <p class="bt-summary__line">
           {{ buildCountText(result.members, toSave.length, storedCount) }}, {{ result.moves.length }} echo{{ result.moves.length === 1 ? "" : "es" }} change hands, {{ secondsText(result.ms) }}. Numbers are this app's calculator: average damage per rotation on each team's rotation (enemy level 100, 20 % resistance, for every team, so a saved team with its own enemy reads differently on Teams). The split of echoes between members is a best effort (a heuristic), each member's build within it is the optimizer's exact best.
@@ -178,8 +180,9 @@
             <span class="bt-delta" :class="`bt-delta--${deltaTone(t.before, t.after)}`" data-test-build-account-team-delta>{{ deltaText(t.before, t.after) || "±0 %" }}</span>
           </span>
         </header>
+        <p v-if="guardOf(t.index)" class="ba-team__kept" data-test-build-account-team-kept>{{ guardOf(t.index)!.card }}</p>
         <ul class="ba-members">
-          <li v-for="s in t.slots" :key="s.slot" class="ba-member" :data-test-build-account-member="s.characterId" :data-status="result.members[s.member]!.status" :data-shared="s.sharedFrom != null ? 'yes' : 'no'">
+          <li v-for="s in t.slots" :key="s.slot" class="ba-member" :data-test-build-account-member="s.characterId" :data-status="result.members[s.member]!.status" :data-shared="s.sharedFrom != null ? 'yes' : 'no'" :data-kept="memberOf(s).keptFor != null ? 'yes' : 'no'">
             <template v-if="s.sharedFrom == null">
               <div class="ba-member__top">
                 <CharacterAvatar :id="s.characterId" :size="28" />
@@ -203,7 +206,8 @@
             <div v-else class="ba-member__top ba-member--shared">
               <CharacterAvatar :id="s.characterId" :size="28" />
               <span class="ba-member__name">{{ shortName(s.characterId) }}</span>
-              <span class="ba-member__line">wears the build planned in team {{ s.sharedFrom + 1 }}</span>
+              <!-- a build was planned for them in the earlier team, or none was (set back by the guard, or nothing to build from): then they wear today's here too -->
+              <span class="ba-member__line">{{ memberOf(s).draft ? "wears the build planned in team " + (s.sharedFrom + 1) : "keeps today's build, as in team " + (s.sharedFrom + 1) }}</span>
             </div>
           </li>
         </ul>
@@ -267,7 +271,7 @@ import { memberAfter } from "../buildTeam";
 import { compactNum, deltaText, deltaTone, fmtInt, pctText, undoConfirm, undoDoneText } from "../buildTeamView";
 import { WEIGHT_CHOICES, type AccountTeamChoice } from "./accountTeams";
 import { accountBuildName } from "./accountApply";
-import { accountRatio, buildCountText, confirmItems, erNeedsMet, memberNote, moveText, ratioText, searchLine, secondsText, STAGE_TEXT, whyLower } from "./accountView";
+import { accountRatio, AGAIN_TEXT, buildCountText, confirmItems, erNeedsMet, guardNotes, memberNote, moveText, ratioText, searchLine, secondsText, STAGE_TEXT, whyLower } from "./accountView";
 import { MAX_TEAMS, useBuildAccount, type AccountMemberProgress } from "./useBuildAccount";
 import "./buildAccount.css";
 
@@ -296,6 +300,9 @@ const stepIndex = computed(() => (phase.value === "planning" || phase.value === 
 const others = computed(() => choices.value.filter((c) => !selected.value.includes(c.id)));
 const runIds = computed(() => [...new Set(chosen.value.flatMap((c) => c.characterIds))]);
 const er = computed(() => erNeedsMet(result.value?.members ?? []));
+// the teams the plan would have lowered: they keep today's builds, and the review says so (accountView.ts guardNotes)
+const guard = computed(() => (result.value ? guardNotes(result.value) : []));
+const guardOf = (team: number) => guard.value.find((g) => g.team === team) ?? null;
 const estimate = computed(() => {
   const n = chosen.value.length;
   return n <= 1 ? "half a minute" : n <= 4 ? "one to two minutes" : "two minutes or more";

@@ -16,6 +16,7 @@ import { accountApplyRequest, alreadyStored, sameEchoesSave, storedBuildOf, type
 import { accountTeamChoices, defaultSelection, defaultWeight, type AccountTeamChoice } from "./accountTeams";
 import { buildCountText } from "./accountView";
 import { buildAccount, type AccountTeamInput, type BuildAccountResult } from "./buildAccount";
+import { guardNotes } from "./accountView";
 
 export interface BuildAccountCliOptions extends Partial<Pick<BuildOptions, "useSets" | "useMainStats" | "keepMainEcho">> {
   /** comma-separated: a row number of `--list`, a team name, or three names joined by "+" */
@@ -27,6 +28,9 @@ export interface BuildAccountCliOptions extends Partial<Pick<BuildOptions, "useS
   autoBuffs?: boolean;
   /** only list the teams the account can field */
   list?: boolean;
+  /** false (`--no-guard`): the plan as the solve leaves it, also where a team reads lower than today — to see what the
+   *  guard changed. "strict" (`--strict-guard`): without the Energy Regen exception. The page always runs the default */
+  guard?: boolean | "strict";
   /** progress lines on stderr */
   log?: (line: string) => void;
 }
@@ -89,7 +93,7 @@ export async function runBuildAccount(exp: ExportFile, opts: BuildAccountCliOpti
   const options: BuildOptions = { ...DEFAULT_OPTIONS, ...Object.fromEntries(Object.entries({ useSets: opts.useSets, useMainStats: opts.useMainStats, keepMainEcho: opts.keepMainEcho }).filter(([, v]) => v !== undefined)) };
   let last = "";
   const result = await buildAccount(
-    { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, teams, options, autoTeamBuffs: opts.autoBuffs ?? true, budgetMs: (opts.budget ?? 60) * 1000 },
+    { characters: exp.characters, inventory: { echoes: exp.inventory.echoes, equipped: exp.inventory.equipped }, teams, options, autoTeamBuffs: opts.autoBuffs ?? true, budgetMs: (opts.budget ?? 60) * 1000, guard: opts.guard },
     inlineBackend(),
     {
       onStage: (s) => {
@@ -127,9 +131,13 @@ export function printBuildAccount(out: BuildAccountCliOut): string {
   const teamRows = [["#", "Team", "Weight", "Today", "Plan", "Δ", "Greedy alone"]];
   for (const t of r.teams) teamRows.push([String(t.index + 1), t.spec.name, String(t.weight), int(t.before), int(t.after), pct((t.after / Math.max(1, t.before) - 1) * 100), t.greedyAfter != null ? pct((t.greedyAfter / Math.max(1, t.before) - 1) * 100) : "same"]);
   lines.push(table(teamRows));
+  // the teams the plan would have lowered, kept as they are (buildAccount.ts step 3c), in the page's words
+  for (const g of guardNotes(r)) lines.push(`Kept as today: ${g.line} ${g.card}`);
   lines.push("");
   const rows = [["Member", "Scored in", "Before", "After", "Δ", "ER after", "Need", "Echoes (source)"]];
-  for (const [index, m] of r.members.entries()) {
+  // a member the guard set back: a few words in the table, the sentence is in the "Kept as today" lines above
+  const shown = r.members.map((m) => (m.keptFor != null ? { ...m, message: `today's build (the plan lowered team ${m.keptFor + 1})` } : m));
+  for (const [index, m] of shown.entries()) {
     const before = m.before?.value ?? 0;
     const after = memberAfter(m) ?? 0;
     rows.push([

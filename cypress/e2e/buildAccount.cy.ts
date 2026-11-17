@@ -16,12 +16,21 @@ const TEAMS = [
   { id: "bacy2", name: "Account test: Cartethyia + Shorekeeper + Ciaccona", preset: presetOf(["Cartethyia", "Shorekeeper", "Ciaccona"]) },
 ];
 
-function seed(options: { fontScale?: number; names?: Record<string, string> } = {}) {
+/** A team that matters more than Cartethyia's and has no echoes of its own: its main DPS takes hers when the plans' sets
+ *  are off, which is how the plan comes to lower her teams (the guard's test). */
+const TAKER = { id: "bacy0", name: "Account test: Aemeath + Mornye + Lynae", preset: presetOf(["Aemeath", "Mornye", "Lynae"]) };
+
+function seed(options: { fontScale?: number; names?: Record<string, string>; taker?: boolean } = {}) {
   const character = JSON.parse(configOptimizer.data.character);
   character.characters.Ciaccona = { weapon: "WoodlandAria" };
   character.characters.Chisa = { weapon: "Kumokiri", weapons: { Kumokiri: { refinement: "5" } } };
   character.characters.Shorekeeper = { weapon: "StellarSymphony" };
-  const teams = TEAMS.map((t) => ({
+  if (options.taker) {
+    character.characters.Aemeath = { weapon: "EverbrightPolestar" };
+    character.characters.Mornye = { weapon: "StarfieldCalibrator" };
+    character.characters.Lynae = { weapon: "SpectrumBlaster" };
+  }
+  const teams = (options.taker ? [TAKER, ...TEAMS] : TEAMS).map((t) => ({
     id: t.id,
     name: options.names?.[t.id] ?? t.name,
     characterIds: t.preset.data.characterIds,
@@ -106,6 +115,93 @@ describe("build my whole account", () => {
       });
       cy.get(`[data-test-build-account-pick="${firstId}"]`).check();
       cy.get("[data-test-build-account-team]").should("have.length", 2).last().should("have.attr", "data-test-build-account-team", firstId);
+    });
+  });
+
+  it("keeps a team the plan would lower as it is, says so in words, and saves nothing for it", () => {
+    cy.viewport(412, 915);
+    cy.visit("/build-team?mode=account", seed({ fontScale: 1.3, taker: true }));
+    cy.get('[data-test-build-account][data-phase="choose"]', RUN).should("exist");
+    // the three saved teams are ticked strongest first: the one with no echoes is last. It is made the one that matters most
+    cy.get("[data-test-build-account-team]").should("have.length", 3);
+    cy.get('[data-test-build-account-team="bacy0"] [data-test-build-account-up]').click();
+    cy.get('[data-test-build-account-team="bacy0"] [data-test-build-account-up]').click();
+    cy.get("[data-test-build-account-team]").first().should("have.attr", "data-test-build-account-team", "bacy0");
+    // any set, any main stat: the first team's main DPS, who wears nothing, may now take Cartethyia's echoes
+    cy.get("[data-test-build-account-options] input[type=checkbox]").eq(0).uncheck({ force: true });
+    cy.get("[data-test-build-account-options] input[type=checkbox]").eq(1).uncheck({ force: true });
+    cy.get("[data-test-build-account-run]").click();
+    // with every echo open to every member the improvement pass runs to its 60 s limit, and it is not what this test
+    // is about: it is stopped as soon as it starts (the first pass alone already hands her echoes to the first team)
+    cy.get('[data-test-build-account-stop], [data-test-build-account][data-phase="result"]', RUN).then(($el) => {
+      if ($el.is("[data-test-build-account-stop]")) $el.trigger("click");
+    });
+    cy.get('[data-test-build-account][data-phase="result"]', RUN).should("exist");
+
+    // both of Cartethyia's teams would have read lower: each stays as it is, and the review says which and by how much
+    cy.get("[data-test-build-account-guard]").should("have.length", 2);
+    cy.get("[data-test-build-account-guard]").first().should("contain.text", "Team 2 (Cartethyia · Ciaccona + Chisa) stays as it is").invoke("text").should("match", /read (\d+\.\d|less than 0\.1) % lower there/);
+    cy.get("[data-test-build-account-guard]").last().should("contain.text", "Team 3 (Cartethyia · Shorekeeper + Ciaccona) stays as it is");
+    for (const team of [1, 2]) {
+      cy.get(`[data-test-build-account-result-team="${team}"] [data-test-build-account-team-kept]`)
+        .should("contain.text", "Stays as it is")
+        .and("contain.text", "Cartethyia keeps today's build")
+        .invoke("text")
+        .should("match", /it read [\d,]+ damage per rotation, .* below today's [\d,]+/);
+      // the card's own figures: today and the plan are the same number
+      cy.get(`[data-test-build-account-result-team="${team}"] [data-test-build-account-team-delta]`).should("have.text", "±0 %");
+      cy.get(`[data-test-build-account-result-team="${team}"] .ba-team__nums .tabular-nums`).invoke("text").then((text) => {
+        const [today, plan] = text.split("→").map((x) => x.trim());
+        expect(plan, `team ${team + 1} plan`).to.eq(today);
+      });
+    }
+    // no team on the page reads lower than today
+    cy.get("[data-test-build-account-team-delta]").each(($d) => expect($d.text()).not.to.match(/^−/));
+    cy.get('[data-test-build-account-result-team="0"] [data-test-build-account-team-delta]').invoke("text").should("match", /^\+/);
+    // her row says what happens to her, in the colour of an ordinary note and not of a failure
+    cy.get('[data-test-build-account-member="Cartethyia"][data-shared="no"]').should("have.attr", "data-kept", "yes").find("[data-test-build-account-member-note]").should("contain.text", "Keeps today's build").as("keptNote");
+    cy.get('[data-test-build-account-member="Aemeath"] [data-test-build-account-member-note]').then(($ordinary) => cy.get("@keptNote").should("have.css", "color", $ordinary.css("color")));
+    cy.get('[data-test-build-account-member="Cartethyia"][data-shared="yes"]').should("contain.text", "keeps today's build, as in team 2");
+    // the headline, the cards and the Save count the same builds: "N new builds" is the number on the Save button and
+    // the number of cards with a new build that is saved; she is the one card set back, and the headline does not count
+    // her as a build or as "keeps today's echoes"
+    cy.get('[data-test-build-account-member][data-shared="no"][data-kept="yes"]').should("have.length", 1);
+    cy.get("[data-test-build-account-summary]")
+      .invoke("text")
+      .then((summary) => {
+        const builds = Number(/(\d+) new builds?/.exec(summary)?.[1] ?? 0);
+        const keeping = Number(/(\d+) keeps? today's echoes/.exec(summary)?.[1] ?? 0);
+        expect(builds, "builds the headline counts").to.be.at.least(1);
+        cy.get('[data-test-build-account-member][data-shared="no"][data-status="ok"]').should("have.length", builds + keeping);
+        cy.get("[data-test-build-account-save]").invoke("text").should("match", new RegExp(`Save ${builds} build`));
+        cy.wrap(builds).as("builds");
+      });
+    // every member of a team that stays as it is keeps today's build: no card of teams 2 and 3 shows a new one
+    for (const team of [1, 2]) cy.get(`[data-test-build-account-result-team="${team}"] [data-test-build-account-member][data-shared="no"][data-status="ok"]`).should("not.exist");
+    // none of her echoes is in the plan
+    cy.window().then((win) => {
+      const hers = Object.values(readChar(win, "Cartethyia").echoes as Record<string, { echoId: string }>).map((s) => s.echoId);
+      cy.get('[data-test-build-account-member="Aemeath"] [data-test-build-team-echo]').then(($tiles) => {
+        const taken = [...$tiles].map((t) => t.getAttribute("data-echo-id"));
+        expect(taken).to.have.length(5);
+        expect(taken.filter((id) => hers.includes(id!)), "her echoes in the plan").to.deep.eq([]);
+      });
+    });
+    expectNoHorizontalScroll("the review with kept teams", 412);
+    cy.get("[data-test-build-account-team-kept]").each(($p) => expect($p[0].getBoundingClientRect().right, "kept note's right edge").to.be.at.most(412));
+
+    // the Save writes what the review counted: a build for Aemeath, nothing for Cartethyia, her teams' pins untouched
+    cy.get("[data-test-build-account-save]").click();
+    cy.get(".confirm-dialog .modal-box").should("contain.text", "Aemeath").and("not.contain.text", "Cartethyia");
+    cy.get(".confirm-dialog .modal-action .btn-primary").click();
+    cy.get<number>("@builds").then((builds) => cy.get("[data-test-build-account-saved]").should("contain.text", `Saved ${builds} `));
+    cy.window().then((win) => {
+      for (const id of ["Cartethyia", "Ciaccona", "Chisa", "Shorekeeper"]) expect((readChar(win, id).builds ?? []).filter((b) => b.name.startsWith("Account plan")), `no Account plan build for ${id}`).to.have.length(0);
+      const plan = (readChar(win, "Aemeath").builds ?? []).find((b) => b.name === "Account plan");
+      expect(plan, "Aemeath's Account plan build").to.exist;
+      const teams = readTeams(win);
+      expect(teams.find((t) => t.id === "bacy0")!.buildIds).to.include(plan!.id);
+      for (const id of ["bacy1", "bacy2"]) expect(teams.find((t) => t.id === id)!.buildIds, id).to.deep.eq([null, null, null]);
     });
   });
 

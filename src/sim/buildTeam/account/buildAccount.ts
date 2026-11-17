@@ -9,12 +9,13 @@
 // builds: each member's damage on their rotation, each team's total with every new build pinned (a character shared by
 // two teams wears the one build in both). The optimizer and the local search only rank.
 import { resolveCharactersForBuild } from "../../../calculator/buildOverride";
+import { applyBuildFields } from "../../../characters/buildFields";
 import type { TeamEnemyConfig } from "../../../calculator/buildCharacterContext";
 import { RANKING_ENEMY } from "../../myRankings/rankRoster";
 import { resolveTeamCharacters } from "../../teamContext/resolveTeam";
 import { showNeed } from "../../energy/energyNeed";
 import type { AllocationApi, Candidate } from "../allocate";
-import { draftBuildFields, filterPoolIds, finishMember, memberSearchApi, prepareMember, teamTotalOf, teamTotalWithDrafts, wornByMap, type ActiveMember, type BuildTeamHooks, type MemberOutcome, type SearchContext, type TeamSpec } from "../buildTeam";
+import { draftBuildFields, filterPoolIds, finishMember, memberSearchApi, menuErPercent, prepareMember, teamTotalOf, teamTotalWithDrafts, wornByMap, type ActiveMember, type BuildTeamHooks, type MemberOutcome, type SearchContext, type TeamSpec } from "../buildTeam";
 import { teamBuffNeedsFor, type TeamBuffNeed } from "../teamBuffNeeds";
 import type { BuildOptions } from "../constraints";
 import type { OptimizerBackend } from "../headlessOptimizer";
@@ -46,6 +47,11 @@ export interface BuildAccountInput {
   autoTeamBuffs?: boolean;
   /** the local search's time budget (ms); default 60 s */
   budgetMs?: number;
+  /** false: the plan as the solve leaves it, also where a team reads lower than today. "strict": no Energy Regen
+   *  exception, so a team that reads lower because a build now meets its Energy Regen need is kept as it is too. Only
+   *  the tests and the CLI (`--no-guard`, `--strict-guard`) ask for either, to show what the guard (step 3c) changes and
+   *  what the exception is worth; the page always runs the default */
+  guard?: boolean | "strict";
 }
 
 /** "searched": the member's first-pass search is over (the run list stops saying "Searching" for them) */
@@ -57,8 +63,10 @@ export interface BuildAccountHooks {
   shouldStop?: () => boolean;
   /** per member (by character): what is running and the loadouts scored so far */
   onProgress?: (p: { characterId: string; phase: AccountPhase; processed: number; generated: number }) => void;
-  /** the run's stage and, in the local search, the moves accepted so far */
-  onStage?: (s: { stage: "prepare" | "greedy" | "improve" | "verify"; accepted?: number; round?: number }) => void;
+  /** the run's stage and, in the local search, the moves accepted so far. `again`: this solve is a second one, and
+   *  why: "locked" (step 3b: a member left without a build keeps their echoes) or "guard" (step 3c: a team the plan
+   *  would have lowered keeps today's builds), so the page can say why it is planning again */
+  onStage?: (s: { stage: "prepare" | "greedy" | "improve" | "verify"; accepted?: number; round?: number; again?: "locked" | "guard" }) => void;
 }
 
 export interface AccountMember extends MemberOutcome {
@@ -66,6 +74,20 @@ export interface AccountMember extends MemberOutcome {
   team: number;
   /** the lower-priority chosen teams this character also plays in, wearing the same build */
   alsoIn: number[];
+  /** set back to today's build by the guard (step 3c): the team (index into `teams`) the plan would have lowered */
+  keptFor?: number;
+}
+
+/** A team the plan's builds would have lowered: it keeps today's builds instead (the guard, step 3c). */
+export interface KeptTeam {
+  /** index into `teams` */
+  team: number;
+  /** the calculator's total today, and with the plan's builds when the guard stepped in (lower than `before`) */
+  before: number;
+  planned: number;
+  /** who keeps today's build because of it, in the order they were set back: the members planned in this team, then
+   *  (only when it still read lower) the ones whose build was planned in an earlier team */
+  kept: string[];
 }
 
 export interface AccountTeamOutcome {
@@ -119,6 +141,8 @@ export interface BuildAccountResult {
      *  so those were locked and the account solved again without them (characters, in the order found) */
     locked: string[];
   };
+  /** the teams the plan would have lowered and that keep today's builds instead, in team order (empty: none did) */
+  guard: KeptTeam[];
   enemy: TeamEnemyConfig;
   ms: number;
 }
@@ -245,10 +269,12 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   const searched = (ms: Iterable<number>): void => {
     for (const m of ms) hooks.onProgress?.({ characterId: active[m]!.job.characterId, phase: "searched", processed: combos.get(m) ?? 0, generated: 0 });
   };
+  /** why the next solve is not the first one (steps 3b and 3c), for the page's stage line */
+  let again: "locked" | "guard" | undefined;
   const runSolve = async (budgetMs: number): Promise<AccountSolveResult> => {
     // the pools are read again each time: a dropped member's echoes are out of everyone's
     const pools = active.map((a, i) => (dropped.has(i) ? new Set<string>() : filterPoolIds(echoes, a.levels[a.levels.length - 1]!.c, wornOutside)));
-    hooks.onStage?.({ stage: "greedy" });
+    hooks.onStage?.({ stage: "greedy", ...(again ? { again } : {}) });
     let lastGreedy: number | null = null;
     let lastPair: readonly number[] = [];
     const out = await solveAccount(solveApi, {
@@ -308,6 +334,38 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   const scoreOf = (totals: ReadonlyArray<{ avg: number }>): number => teams.reduce((n, t, i) => n + t.weight * rel(totals[i]!.avg, t.before), 0);
   const solveStart = Date.now();
   const locked: string[] = [];
+  /** a member out of the solve from here on: no build, and what they wear in every chosen team is out of everyone's
+   *  search. `wornNow`: also the echoes of the build they wear now, where a team pins another one — the guard's promise
+   *  is that nothing changes for them, and with "Also make active" a plan build holding one would take it off them */
+  const lock = (i: number, wornNow = false): void => {
+    dropped.add(i);
+    const who = active[i]!.job.characterId;
+    for (const id of [...(wornInTeams.get(who) ?? []), ...(wornNow ? echoIdsOf(characters[who]) : [])]) {
+      keptInTeam.add(id);
+      wornOutside.add(id);
+    }
+  };
+  const guard: KeptTeam[] = [];
+  const keptFor = new Map<number, number>(); // active index → the team whose guard set them back
+  /** the character-screen Energy Regen of a member's plan build, read as `finishMember` reads it */
+  const planErOf = (a: number, pick: Candidate): Promise<number | null> => {
+    const { job, resolved } = active[a]!;
+    const record = applyBuildFields(resolved[job.characterId], { ...draftOf(a, pick)!, teamBuffs: resolved[job.characterId]?.teamBuffs });
+    return menuErPercent(job.characterId, { ...resolved, [job.characterId]: record }, echoes);
+  };
+  /** Energy Regen first: do the team's new builds meet more Energy Regen needs than the builds it runs today? */
+  const meetsMoreNeeds = async (t: AccountTeamOutcome, with_: ReadonlyArray<Candidate | null>): Promise<boolean> => {
+    let net = 0;
+    for (const s of t.slots) {
+      const a = activeOf.get(s.member);
+      const floor = a == null ? null : active[a]!.c.erFloor;
+      if (a == null || floor == null || !with_[a]) continue;
+      const today = members[s.member]!.before?.menuEr;
+      const plan = await planErOf(a, with_[a]!);
+      net += Number(plan != null && plan + 1e-6 >= floor) - Number(today != null && today + 1e-6 >= floor);
+    }
+    return net > 0;
+  };
   let solved: AccountSolveResult;
   let changed: boolean;
   let searchTotals: Totals[];
@@ -328,16 +386,51 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
     //     (as for a member who never starts) and solve again without them. Each pass drops one member at least.
     const held = new Set(picks.flatMap((p) => p?.ids ?? []));
     const clash = active.map((_, i) => i).filter((i) => !dropped.has(i) && !picks[i] && [...(wornInTeams.get(active[i]!.job.characterId) ?? [])].some((id) => held.has(id)));
-    if (!clash.length) break;
-    for (const i of clash) {
-      dropped.add(i);
-      locked.push(active[i]!.job.characterId);
-      for (const id of wornInTeams.get(active[i]!.job.characterId) ?? []) {
-        keptInTeam.add(id);
-        wornOutside.add(id);
+    if (clash.length) {
+      for (const i of clash) {
+        lock(i);
+        locked.push(active[i]!.job.characterId);
+      }
+      again = "locked";
+      continue;
+    }
+    if (input.guard === false) break;
+    // 3c. never save a losing set. The solver weighs the account as a whole, so it may take a low-priority team's
+    //     echoes for a team that matters more; nothing above stops a team from reading lower than it does today. A team
+    //     whose total with these builds is below today's (by a whole point of damage: the figure the page can show)
+    //     keeps today's builds: the members planned in it get no build, their echoes are locked as in 3b, and the
+    //     account is solved again without them. A character has one build in the plan, so a team that still reads
+    //     lower after that (a build planned in an earlier team lowers it) sets those members back too, and then reads
+    //     today's figure exactly. Each pass sets back one member at least, so it ends. One exception, the search's own
+    //     and Build my team's (`bestSaveTicks`): Energy Regen comes first, so a team that reads lower because its new
+    //     builds meet more Energy Regen needs than today's stays in the plan, and the review says why it is lower.
+    const totals = keptGreedy ? greedyTotals : searchTotals;
+    const back: number[] = [];
+    for (const t of teams) {
+      const planned = totals[t.index]!.avg;
+      if (!(Math.round(planned) < Math.round(t.before))) continue;
+      const carrying = (shared: boolean): number[] =>
+        t.slots.filter((s) => (s.sharedFrom != null) === shared).flatMap((s) => {
+          const a = activeOf.get(s.member);
+          return a != null && !dropped.has(a) && picks[a] ? [a] : [];
+        });
+      const own = carrying(false);
+      const drop = own.length ? own : carrying(true);
+      if (!drop.length || (input.guard !== "strict" && (await meetsMoreNeeds(t, picks)))) continue;
+      let entry = guard.find((g) => g.team === t.index);
+      if (!entry) guard.push((entry = { team: t.index, before: t.before, planned, kept: [] }));
+      for (const a of drop) {
+        const who = active[a]!.job.characterId;
+        if (!entry.kept.includes(who)) entry.kept.push(who);
+        if (!back.includes(a)) back.push(a);
+        if (!keptFor.has(a)) keptFor.set(a, t.index);
       }
     }
+    if (!back.length) break;
+    for (const a of back) lock(a, true);
+    again = "guard";
   }
+  guard.sort((a, b) => a.team - b.team);
   const finalTotals = keptGreedy ? greedyTotals : searchTotals;
   teams.forEach((t, i) => {
     t.after = finalTotals[i]!.avg;
@@ -354,8 +447,15 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
   for (let m = 0; m < active.length; m++) {
     check();
     await finishMember(m, active, picks, memberOfActive(m), finish);
+    const keptTeam = keptFor.get(m);
+    if (keptTeam != null) {
+      // the guard set them back (3c): not a failure, so the words say what happens to them
+      const out = memberOfActive(m);
+      out.keptFor = keptTeam;
+      out.message = `Keeps today's build: with the plan's builds team ${keptTeam + 1} read lower than it does today. Nothing is saved for them, and no other build in the plan takes their echoes.`;
+    }
     // the first pass left them nothing after the members before them took the echoes they need
-    if (dropped.has(m)) memberOfActive(m).message = "No new build is left for them once the members before them take the echoes they need, so they keep the echoes they wear today and no other build in the plan takes those.";
+    else if (dropped.has(m)) memberOfActive(m).message = "No new build is left for them once the members before them take the echoes they need, so they keep the echoes they wear today and no other build in the plan takes those.";
   }
   // each member's part of the team they are scored in, with every new build worn: what the team's total adds up from
   teams.forEach((t, i) => {
@@ -394,6 +494,7 @@ export async function buildAccount(input: BuildAccountInput, backend: OptimizerB
       ms: Date.now() - solveStart,
       locked,
     },
+    guard,
     enemy,
     ms: Date.now() - t0,
   };

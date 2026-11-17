@@ -402,9 +402,11 @@ export function registerPlusCommands(program: Command): void {
       .option("--any-set", "ignore the plans' sets")
       .option("--any-main-stat", "ignore the plans' main stats per cost")
       .option("--keep-main-echo", "keep each member's current main echo")
+      .option("--no-guard", "show the plan as the solve leaves it, also where a team reads lower than today (the page never saves that: such a team keeps today's builds)")
+      .option("--strict-guard", "keep a team as it is whenever the plan reads lower there, also when it reads lower because a build now meets its Energy Regen need (the page lets that one case through: Energy Regen comes first)")
       .option("--no-auto-buffs", "team buffs from each character's own Team Buffs panel (upstream's behaviour)"),
   ).action(
-    guarded(async (options: CommonOptions & { teams?: string; weights?: string; budget?: string; list?: boolean; anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; autoBuffs?: boolean }) => {
+    guarded(async (options: CommonOptions & { teams?: string; weights?: string; budget?: string; list?: boolean; anySet?: boolean; anyMainStat?: boolean; keepMainEcho?: boolean; autoBuffs?: boolean; guard?: boolean; strictGuard?: boolean }) => {
       // "--budget abc" read as NaN, and a NaN budget never ends the local search
       const budget = options.budget != null ? Number(options.budget) : undefined;
       if (budget !== undefined && !(Number.isFinite(budget) && budget >= 0)) throw new Error("--budget must be a number of seconds, 0 or more");
@@ -420,6 +422,7 @@ export function registerPlusCommands(program: Command): void {
           useMainStats: !options.anyMainStat,
           keepMainEcho: !!options.keepMainEcho,
           autoBuffs: options.autoBuffs !== false,
+          guard: options.guard === false ? false : options.strictGuard ? "strict" : true,
           log: (line) => process.stderr.write(`${line}\n`),
         }),
       );

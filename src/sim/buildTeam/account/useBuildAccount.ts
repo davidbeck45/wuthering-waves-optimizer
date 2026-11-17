@@ -123,7 +123,8 @@ export function useBuildAccount() {
   const weightsTouched = ref(false);
   const options = reactive<BuildOptions>(readOptions());
   const stage = ref<AccountStage>("plans");
-  const stageInfo = ref({ done: 0, total: 0, accepted: 0, round: 0 });
+  /** `again`: the account is being planned a second time, and why (buildAccount.ts steps 3b and 3c) */
+  const stageInfo = ref<{ done: number; total: number; accepted: number; round: number; again?: "locked" | "guard" }>({ done: 0, total: 0, accepted: 0, round: 0 });
   const progress = ref<Record<string, AccountMemberProgress>>({});
   const result = shallowRef<BuildAccountResult | null>(null);
   const applied = shallowRef<AccountApplyOutcome | null>(null);
@@ -358,6 +359,7 @@ export function useBuildAccount() {
           onStage: (s) => {
             stage.value = s.stage;
             if (s.stage === "improve") stageInfo.value = { ...stageInfo.value, accepted: s.accepted ?? 0, round: s.round ?? 0 };
+            if (s.again) stageInfo.value = { ...stageInfo.value, again: s.again };
           },
           onProgress: (p) => {
             const prev = progress.value[p.characterId];

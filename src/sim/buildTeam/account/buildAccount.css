@@ -242,6 +242,25 @@ html[data-theme-style="light"] .ba-member__note--fail {
 .ba-member--shared {
   color: oklch(var(--bc) / 0.75);
 }
+/* a team the plan would have lowered: it stays as it is, said on its card (buildAccount.ts step 3c) */
+.ba-team__kept {
+  margin: 0.15rem 0 0.35rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid oklch(var(--in));
+  border-radius: 0.25rem;
+  background: oklch(var(--in) / 0.1);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ba-guard {
+  font-weight: 600;
+}
+/* a member the guard set back is told so in the note every member without a build gets; theirs is no failure */
+.ba-member[data-kept="yes"] .ba-member__note--fail,
+html[data-theme-style="light"] .ba-member[data-kept="yes"] .ba-member__note--fail {
+  color: oklch(var(--bc) / 0.85);
+}
 .ba-echoes > summary {
   min-height: 2rem;
   display: flex;
