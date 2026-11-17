@@ -123,7 +123,7 @@
         :character-key="card.id"
         :name="shortName"
         :rank="rank"
-        :ranking-teams="rankingTeams ?? []"
+        :ranking-teams="rankingTeams ?? NO_TEAMS"
         :scoring="scoring"
         :owned="owned"
         @calculator="emit('calculator', card.id)" />
@@ -215,6 +215,8 @@ const props = defineProps<{
   /** the finished roster ranking's teams, for What each level is worth */
   rankingTeams?: TeamRank[];
 }>();
+/** one array for "no teams yet": a fresh [] on every render would read as a new ranking to the section and score it again */
+const NO_TEAMS: TeamRank[] = [];
 /** the drawer sections a link can open on */
 const SECTION_TARGETS: Record<string, string> = { cost: "[data-test-cost-to-max]", levels: "[data-test-levels-worth]" };
 const enemyNote = useOwnEnemyNotes();

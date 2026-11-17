@@ -113,7 +113,7 @@
       :owned="ownedKeys"
       :own="drawerOwn"
       :section="drawerSection"
-      :ranking-teams="ranking?.teams ?? []"
+      :ranking-teams="ranking?.teams"
       @close="closeDrawer"
       @calculator="toCalculator" />
   </div>
