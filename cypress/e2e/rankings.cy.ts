@@ -592,14 +592,29 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should("be.visible");
     cy.get(".skittle-root #topbar [data-test-rankings-import-team] .wt-import__short").should("be.visible").and("have.text", "Import team");
     cy.get(".skittle-root #topbar [data-test-rankings-import-team] .wt-import__long").should("not.be.visible");
-    // Back and the short Import share the first line; the strip takes its own under them
+    // Back first, then Rotation, "+ rotations", Import and Build from my echoes together on one line of their own, whole
+    // on the screen, and the strip under both. Until Ryan's 3.8 (#685) this test read "Back and Import on one line":
+    // the top row's team had Lily, a kit the app lacked, so the build link was hidden and the three controls left fit
+    // beside Back. Every other team already had the four of them on the next line (production, 2026-11-16); with Lily
+    // released the top row is like the rest
     cy.get("#backLink").then(($back) => {
       const back = $back[0]!.getBoundingClientRect();
-      cy.get(".skittle-root #topbar [data-test-rankings-import-team]").should(($b) => {
-        const b = $b[0]!.getBoundingClientRect();
-        expect(Math.abs((b.top + b.bottom) / 2 - (back.top + back.bottom) / 2), "Back and Import on one line").to.be.lessThan(16);
+      cy.get(".skittle-root #topbar .wt-import").should(($box) => {
+        const box = $box[0]!;
+        const group = box.getBoundingClientRect();
+        const controls = [...box.children].map((c) => c.getBoundingClientRect()).filter((r) => r.width > 0);
+        expect(controls, "Rotation, + rotations, Import, Build from my echoes").to.have.length(4);
+        const mid = (r: DOMRect) => (r.top + r.bottom) / 2;
+        for (const r of controls) expect(Math.abs(mid(r) - mid(controls[0]!)), "the import controls on one line").to.be.lessThan(16);
+        expect(group.left, "whole on the screen").to.be.at.least(0);
+        expect(group.right, "whole on the screen").to.be.at.most(box.ownerDocument.documentElement.clientWidth);
+        expect(group.left >= back.right || group.top >= back.bottom - 1, "clear of Back").to.eq(true);
       });
-      cy.get("[data-test-rankings-strip]").should(($s) => expect($s[0]!.getBoundingClientRect().top).to.be.greaterThan(back.bottom));
+      cy.get("[data-test-rankings-strip]").should(($s) => {
+        const top = $s[0]!.getBoundingClientRect().top;
+        expect(top).to.be.greaterThan(back.bottom);
+        expect(top, "the strip under the import controls").to.be.at.least($s[0]!.ownerDocument.querySelector(".skittle-root #topbar .wt-import")!.getBoundingClientRect().bottom - 1);
+      });
     });
     cy.document().then((doc) => {
       expect(doc.documentElement.scrollWidth, "no sideways scroll on the detail").to.be.at.most(doc.documentElement.clientWidth);
