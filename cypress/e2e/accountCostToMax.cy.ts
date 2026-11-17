@@ -120,7 +120,10 @@ describe("cost to max in the account drawer", () => {
     cy.get("[data-test-cost-total]").should("contain.text", "122 × Premium Resonance Potion").and("contain.text", "135 × Premium Energy Core");
     cy.get('[data-test-cost-part="extras"] summary').should("contain.text", "630,000 Shell Credits").and("not.contain.text", "not in the total");
     cy.get("[data-test-cost-total-materials] li").should("have.length", fromScratch.total.materials.length);
-    cy.get("[data-test-cost-to-max]").should("contain.text", "the game's own upgrade tables, version 3.7").and("not.contain.text", "encore");
+    // the footnote names the table's own version, whatever patch it was generated for (3.8 since 2026-11-16; the unit
+    // test holds the number), and never the source
+    expect(data.gameVersion).to.match(/^\d+\.\d+$/);
+    cy.get("[data-test-cost-to-max]").should("contain.text", `the game's own upgrade tables, version ${data.gameVersion}`).and("not.contain.text", "encore");
   });
 
   it("with nothing saved it opens from level 1, and the saved view says the calculator counts it as maxed", () => {
