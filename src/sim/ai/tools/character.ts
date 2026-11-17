@@ -3,6 +3,7 @@
 import type { TeamEnemyConfig } from "../../../calculator/buildCharacterContext";
 import { calcCharacter, calcTeam, findTeam } from "../../cli/engine";
 import { RANKING_ENEMY, refinementOf, rotationCandidates, scoreRotation, sequenceOf, weaponOptionsFor, whatIf, withSequence, withWeapon } from "../../myRankings/rankRoster";
+import { resolveTeamBuilds } from "../../teamContext/resolveTeam";
 import { bestRotationFor } from "./memo";
 import { characterName, compactJson, defineTool, int, investmentLabel, pct, resolveOwnCharacter, topN, weaponName } from "./shared";
 
@@ -164,17 +165,27 @@ export const whatIfTool = defineTool<{ character: string; sequence?: number; wea
     if (input.team) {
       const team = findTeam(input.team, ctx.exp.teams);
       if (!(team.characterIds ?? []).includes(id)) throw new Error(`${characterName(id)} is not in team "${team.name}"`);
-      let hypo = data;
-      if (input.sequence !== undefined && input.sequence !== sequenceOf(data)) hypo = await withSequence(id, hypo, input.sequence);
-      if (weaponKey !== undefined || refinement !== undefined) hypo = withWeapon(hypo, weaponKey ?? null, refinement);
       const autoBuffs = ctx.autoBuffs ?? true;
+      // The build this team runs for the character (a slot's pin, with team buffs on also a build named after both
+      // teammates), baked into the record and stamped as its active one: the hypothetical is laid over THAT record, so
+      // resolving the team again leaves it alone. Laid over the active build, a pinned build was put back on top of it
+      // and every hypothetical read +0 % (R5 → R1 on a pinned plan: 0 %, where the same builds made active read −23 %).
+      const built = resolveTeamBuilds({ characterIds: team.characterIds ?? [], buildIds: team.buildIds ?? [] }, ctx.exp.characters, { auto: autoBuffs });
+      const worn = built.characters[id] ?? data;
+      const wornBuild = built.slots.find((s) => s.characterId === id);
+      const pinnedBuild = wornBuild?.buildId && wornBuild.buildId !== (data.activeBuildId ?? null) ? (wornBuild.buildName ?? "a saved build") : null;
+      const rank = input.refinement ?? (weaponKey !== undefined && weaponKey !== worn.weapon ? 1 : undefined);
+      let hypo = worn;
+      if (input.sequence !== undefined && input.sequence !== sequenceOf(worn)) hypo = await withSequence(id, hypo, input.sequence);
+      if (weaponKey !== undefined || rank !== undefined) hypo = withWeapon(hypo, weaponKey ?? null, rank);
       const base = await calcTeam(team, ctx.exp, { autoBuffs });
       const after = await calcTeam(team, { ...ctx.exp, characters: { ...ctx.exp.characters, [id]: hypo } }, { autoBuffs });
       const members = (team.characterIds ?? []).filter(Boolean) as string[];
       return compactJson({
         character: characterName(id),
-        current,
+        current: investmentLabel(sequenceOf(worn), worn.weapon ?? null, refinementOf(worn)),
         hypothetical: investmentLabel(sequenceOf(hypo), hypo.weapon ?? null, refinementOf(hypo)),
+        ...(pinnedBuild ? { build: `“${pinnedBuild}”, the build this team pins for ${characterName(id)}: current and hypothetical are that build's, not the active build's (${current})` } : {}),
         scoredOn: { team: team.name, members: members.map((m) => characterName(m)), enemy: enemyLabel(base.enemy), buffs: base.buffMode === "auto" ? "derived from the real members" : "each character's own panel" },
         teamAvg: { before: int(base.avg), after: int(after.avg), gainPct: pct(base.avg > 0 ? after.avg / base.avg - 1 : 0) },
         teamDps: base.dps != null && after.dps != null ? { before: int(base.dps), after: int(after.dps) } : null,

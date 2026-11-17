@@ -21,7 +21,7 @@ import {
   type EchoSubstatWorth,
   type SubstatWeight,
 } from "../substats/substatWeights";
-import { resolveTeamCharacters, type SlotResolution } from "../teamContext/resolveTeam";
+import { resolveTeamBuilds, resolveTeamCharacters, type SlotResolution } from "../teamContext/resolveTeam";
 import type { ExportFile } from "./exportShape";
 
 /** The stat cards of the calculator page, in its order; `selector` = the Cypress class the golden fixtures assert on. */
@@ -356,11 +356,10 @@ function findRotation(input: string, candidates: RotationCandidate[]): RotationC
 }
 
 export async function calcSubstatWeights(id: string, exp: ExportFile, options: WeightsOptions = {}): Promise<WeightsCalc> {
-  const data = exp.characters[id];
-  if (!data) throw new Error(`Character ${id} is not set up in this export`);
+  if (!exp.characters[id]) throw new Error(`Character ${id} is not set up in this export`);
   const name = ((await getCharByName(id)) as any)?.basic?.name ?? id;
-  const weapon: string | null = data.weapon ?? null;
-  const head = { id, name, sequence: sequenceOf(data), weapon, refinement: weapon ? Number(data.weapons?.[weapon]?.refinement ?? 1) : null };
+  /** the records the extra roll is laid on: the account's, or on a team the builds that team runs (below) */
+  let characters: Record<string, any> = exp.characters;
 
   let score: BuildScorer;
   let target: WeightsCalc["target"];
@@ -370,14 +369,19 @@ export async function calcSubstatWeights(id: string, exp: ExportFile, options: W
     if (!(team.characterIds ?? []).includes(id)) throw new Error(`${id} is not in team "${team.name}" (${(team.characterIds ?? []).filter(Boolean).join(" + ")})`);
     enemy = resolveTeamEnemyConfig(team.enemyConfig ?? {});
     const autoBuffs = options.autoBuffs ?? true;
-    score = async (characters, inventoryEchoes) => {
-      const r = await calcTeam(team, { ...exp, characters, inventory: { ...exp.inventory, echoes: inventoryEchoes } }, { autoBuffs });
+    // The builds this team runs (a slot's pin, with team buffs on also a build named after both teammates), baked into
+    // the records and stamped active, so the extra roll lands on an echo of the build the team really wears and
+    // resolving the team again leaves it there. Laid on the active build's echoes, a pinned build that wears other
+    // echoes scored every substat +0 %.
+    characters = resolveTeamBuilds({ characterIds: team.characterIds ?? [], buildIds: team.buildIds ?? [] }, exp.characters, { auto: autoBuffs }).characters;
+    score = async (chars, inventoryEchoes) => {
+      const r = await calcTeam(team, { ...exp, characters: chars, inventory: { ...exp.inventory, echoes: inventoryEchoes } }, { autoBuffs });
       return { avg: r.perCharacter[id]?.avg ?? 0, extra: { team: r.avg } };
     };
     target = { kind: "team", name: team.name ?? "(unnamed team)", members: team.characterIds ?? [], buffMode: autoBuffs ? "auto" : "off" };
   } else {
     enemy = RANKING_ENEMY;
-    const candidates = await rotationCandidates(id, data);
+    const candidates = await rotationCandidates(id, exp.characters[id]);
     if (!candidates.length) throw new Error(`${id} has no rotation to score: save one in the calculator, or import a wuwa_calc loop`);
     let pick: RotationCandidate;
     if (options.rotation) {
@@ -398,9 +402,12 @@ export async function calcSubstatWeights(id: string, exp: ExportFile, options: W
     score = rotationScorer(id, pick.rotation, enemy);
     target = { kind: "rotation", name: pick.name, source: pick.source };
   }
-  const baseline = await score(exp.characters, exp.inventory.echoes);
-  const result = await substatWeights(id, exp.characters, exp.inventory.echoes, score, { baseline });
-  const echoes = options.echoes ? await equippedSubstatWorth(id, exp.characters, exp.inventory.echoes, score, { baseline }) : null;
+  const data = characters[id];
+  const weapon: string | null = data.weapon ?? null;
+  const head = { id, name, sequence: sequenceOf(data), weapon, refinement: weapon ? Number(data.weapons?.[weapon]?.refinement ?? 1) : null };
+  const baseline = await score(characters, exp.inventory.echoes);
+  const result = await substatWeights(id, characters, exp.inventory.echoes, score, { baseline });
+  const echoes = options.echoes ? await equippedSubstatWorth(id, characters, exp.inventory.echoes, score, { baseline }) : null;
   return { ...head, target, enemy, baseline: baseline.avg, baselineTeam: baseline.extra?.team ?? null, weights: result.weights, echoes };
 }
 
