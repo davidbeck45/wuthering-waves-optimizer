@@ -244,14 +244,42 @@ describe("the shipped seed", () => {
     const cache = decodeBannerCache(JSON.stringify(seed))!;
     expect(cache).not.toBeNull();
     expect(cache.fetchedAt).toBe(0);
-    expect(Object.keys(cache.releases ?? {}).length).toBeGreaterThanOrEqual(21); // 1.1 … 3.7
+    expect(Object.keys(cache.releases ?? {}).length).toBeGreaterThanOrEqual(22); // 1.1 … 3.8
     expect(cache.releases!["3.7"]).toBe("2026-09-30 10:00:00");
+    expect(cache.releases!["3.8"]).toBe("2026-11-12 10:00:00"); // "Patch Notes for Version 3.8: Lilies in a Dying Dream"
     const all = buildBannerList(Object.values(cache.articles), { now: Number.POSITIVE_INFINITY, releases: cache.releases });
     const released = buildBannerList(Object.values(cache.articles), { now: Date.now(), releases: cache.releases });
     expect(all.length).toBeGreaterThan(150);
     expect(released).toHaveLength(all.length);
     const unresolved = all.flatMap((b) => [...b.fiveStars, ...b.fourStars]).filter((f) => !f.key);
     expect(unresolved).toEqual([]);
+  });
+
+  it("holds version 3.8's first phase as Kuro's notice 5754 states it: four banners, from the update to 2026-12-03 09:59 server time", () => {
+    const cache = decodeBannerCache(JSON.stringify(seed))!;
+    const at = Date.UTC(2026, 10, 17, 3, 0); // 2026-11-16 21:00 US Central
+    const listAt = (now: number, serverOffsetHours: number) => buildBannerList(Object.values(cache.articles), { now, releases: cache.releases, serverOffsetHours });
+    // the end is 09:59 on each server's own clock; the start is one moment everywhere (the patch notes, 10:00 CST)
+    const ends: Array<[number, number]> = [
+      [8, Date.UTC(2026, 11, 3, 1, 59, 59, 999)],
+      [-5, Date.UTC(2026, 11, 3, 14, 59, 59, 999)],
+      [1, Date.UTC(2026, 11, 3, 8, 59, 59, 999)],
+    ];
+    for (const [offset, endMs] of ends) {
+      const live = liveBanners(listAt(at, offset), at);
+      expect(live.map((b) => [b.label, b.type, b.title, b.fiveStars.map((f) => f.key), b.fourStars.map((f) => f.key)])).toEqual([
+        ["3.8 Phase I", "resonator", "When the Runes Glitter", ["Sigrika"], ["Youhu", "Aalto", "Yangyang"]],
+        ["3.8 Phase I", "resonator", "Wanderer Knows No Far and Near", ["Qiuyuan"], ["Youhu", "Aalto", "Yangyang"]],
+        ["3.8 Phase I", "weapon", "Solsworn Ciphers", ["SolswornCiphers"], ["Cadenza", "CelestialSpiral", "CometFlare"]],
+        ["3.8 Phase I", "weapon", "Emerald Sentence", ["EmeraldSentence"], ["Cadenza", "CelestialSpiral", "CometFlare"]],
+      ]);
+      for (const b of live) expect([b.articleId, b.startApprox, b.startMs, b.endMs, b.poolTypes]).toEqual([5754, true, Date.UTC(2026, 10, 12, 2, 0), endMs, b.type === "weapon" ? [2] : [1]]);
+    }
+    // released only: a minute before the patch notes nothing of 3.8 is listed, and 3.7's second phase is over
+    const before = listAt(Date.UTC(2026, 10, 12, 1, 59), 8);
+    expect(before.some((b) => b.version === "3.8")).toBe(false);
+    expect(liveBanners(before, Date.UTC(2026, 10, 12, 1, 59))).toEqual([]);
+    expect(before[0]).toMatchObject({ label: "3.7 Phase II", endMs: Date.UTC(2026, 10, 11, 3, 59, 59, 999) });
   });
 });
 

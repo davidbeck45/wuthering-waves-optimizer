@@ -257,4 +257,31 @@ describe("released content only", () => {
     cy.get('[data-test-convene-live-banner="Chisa"]').should("contain.text", "(version update)");
     cy.get("[data-test-convene-live-chip]").should("contain.text", "3.7 Phase I");
   });
+
+  // The shipped seed alone (the menu answers empty): Kuro's notice 5754 and 3.8's patch notes entry, 2026-11-12 10:00 CST.
+  const IN_3_8 = Date.UTC(2026, 10, 17, 3, 0); // 2026-11-16 21:00 US Central, five days into 3.8
+
+  it("lists version 3.8's first phase as Kuro's notice states it", () => {
+    cy.clock(IN_3_8, ["Date"]);
+    interceptNews([]);
+    cy.visit("/convene?tab=banners", asia);
+    cy.get("[data-test-convene-live-banner]").should("have.length", 4);
+    for (const name of ["Sigrika", "Qiuyuan", "Solsworn Ciphers", "Emerald Sentence"]) {
+      cy.get(`[data-test-convene-live-banner="${name}"]`).should("contain.text", "Nov 12, 10:00 (version update) – Dec 3, 09:59");
+      cy.get(`[data-test-convene-live-banner="${name}"] [data-test-convene-countdown]`).should("have.text", "15d 22h left");
+    }
+    cy.get("[data-test-convene-live-chip]").should("contain.text", "3.8 Phase I");
+    cy.get("[data-test-convene-version='3.8']").should("exist");
+    // 3.7's second phase ended on Nov 11
+    cy.get('[data-test-convene-live-banner="Lucilla"]').should("not.exist");
+  });
+
+  it("shows nothing running between 3.7's last banner and the 3.8 update, and no 3.8 banner before its patch notes", () => {
+    cy.clock(Date.UTC(2026, 10, 11, 12, 0), ["Date"]); // 2026-11-11 20:00 CST: 3.7 Phase II ended at 11:59, 3.8's notice is up
+    interceptNews([]);
+    cy.visit("/convene?tab=banners", asia);
+    cy.get("[data-test-convene-none-live]").should("be.visible");
+    cy.get("[data-test-convene-version='3.7']").should("exist");
+    cy.get("[data-test-convene-version='3.8']").should("not.exist");
+  });
 });
