@@ -1962,6 +1962,62 @@ html.wt-ai-docked #wt-app .contain {
     padding-block: 0.1rem;
     text-align: center;
   }
+  /* e) An echo tile being edited (CalculatorEchoTile.vue): Reset, Saved and "Changes save automatically" are one row
+        that does not wrap, and at 360 px the note ran 27 px off the screen. */
+  [data-test-echo-item] .border-t.border-base-300:has(> .btn-xs) {
+    flex-wrap: wrap;
+  }
+}
+/* f) The optimizer's Top 5 loadouts (OptimizerWorkspaceResults.vue, whose change column #703 reprinted). A row is rank,
+      five echo pictures, the target's name, the damage and the change against the build, on one line: 401 px of it
+      at 130 % in a row 277 px wide at 360 px (329 at 412). The name shrank to nothing, the damage was cut at the
+      card's edge at 360 px, and the change, the one figure that tells the rows apart, was off the screen at both
+      widths. Two lines: rank and pictures, then name, damage and change. */
+@media (max-width: 639px) {
+  [data-test-optimizer-workspace-leaderboard-row] {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "rank echoes echoes echoes"
+      "name name damage change";
+    align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0.35rem;
+  }
+  [data-test-optimizer-workspace-leaderboard-row] > :nth-child(1) {
+    grid-area: rank;
+  }
+  [data-test-optimizer-workspace-leaderboard-row] > :nth-child(2) {
+    grid-area: echoes;
+    justify-self: start;
+  }
+  [data-test-optimizer-workspace-leaderboard-row] > :nth-child(3) {
+    grid-area: name;
+    min-width: 0;
+  }
+  [data-test-optimizer-workspace-leaderboard-row] > :nth-child(4) {
+    grid-area: damage;
+  }
+  [data-test-optimizer-workspace-leaderboard-row] > :nth-child(5) {
+    grid-area: change;
+    width: auto;
+  }
+}
+/* g) Team Buffs (CalculatorTeamBuffsWorkspace.vue, where #701 turns Hide impossible on). A teammate's header is the
+      picture, the name, the count of buffs on, Clear and the chevron on one line: at 360 px the name had 30 px and
+      read "M…" for Mornye. The name takes the line it needs and the controls go under it, at the right. */
+@media (max-width: 767px) {
+  div:has(> [data-test-team-buffs-slot-name]) {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 0.25rem;
+  }
+  [data-test-team-buffs-slot-name] {
+    flex: 1 1 6rem;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------

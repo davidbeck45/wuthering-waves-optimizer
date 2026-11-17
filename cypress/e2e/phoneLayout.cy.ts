@@ -1052,6 +1052,40 @@ describe("phone layout", () => {
     }
   });
 
+  // phone.css § 39 e and f. An echo tile's edit footer ran its "Changes save automatically" note 27 px off a 360 px
+  // screen. The optimizer's Top 5 rows are rank, five pictures, the target's name, the damage and the change on one
+  // line, 401 px of it in a 277 px row: the name shrank to nothing, the damage was cut and the change was off screen.
+  it("keeps an echo tile's edit footer and the optimizer's Top 5 rows inside a 360 px phone at 130 % text", () => {
+    cy.viewport(360, 780);
+    cy.visit("/", v3Phone(1.3));
+    cy.get("[data-test-live-result-bar]").should("be.visible");
+    cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
+    cy.get(".screen--echoes").should("be.visible");
+    cy.get("[data-test-echo-item-edit]").first().click({ force: true });
+    cy.contains(".screen--echoes span", "Changes save automatically").should(($note) => {
+      expect($note[0]!.getBoundingClientRect().right, "the note under an echo being edited: on the screen").to.be.at.most(360);
+    });
+
+    cy.get('[data-test-calculator-mobile-nav="optimizer"]').click({ force: true });
+    cy.get(".screen--optimizer").should("be.visible");
+    cy.get("[data-test-optimizer-workspace-optimize-btn]").filter(":visible").first().click({ force: true });
+    cy.get("[data-test-optimizer-workspace-leaderboard-row]", { timeout: 120000 })
+      .should("have.length.greaterThan", 1)
+      .then(($rows) => {
+        for (const row of $rows) {
+          const edge = row.getBoundingClientRect().right;
+          const [rank, pictures, name, damage, change] = [...row.children].map((part) => part.getBoundingClientRect());
+          for (const [what, part] of [["rank", rank], ["pictures", pictures], ["name", name], ["damage", damage], ["change", change]] as const) {
+            if (part) expect(part.right, `Top 5 row: ${what} ends inside the row`).to.be.at.most(edge + 1);
+          }
+          expect(name!.width, "Top 5 row: the target's name has room").to.be.greaterThan(40);
+          expect(damage!.right, "Top 5 row: the damage is on the screen").to.be.at.most(360);
+          if (change) expect(change.right, "Top 5 row: the change is on the screen").to.be.at.most(360);
+        }
+      });
+    expectNothingCutOff("optimizer results at 360");
+  });
+
   // 2026-11-02 core audit M1 (phone.css § 30): at the end of a calculator section Ryan's result bar compacted, the page
   // got shorter, scroll anchoring moved the page by more than his 8 px threshold, the bar expanded again, and so on
   // about five times a second, with the bottom bar and Ask sliding in and out. Scrolled to the end, the bottom bar must
