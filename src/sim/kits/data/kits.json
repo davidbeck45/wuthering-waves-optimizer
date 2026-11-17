@@ -3,7 +3,7 @@
  "generatedBy": "wuwa-tools/rotation-port/export_kits.mjs — regenerate, do not edit",
  "generated": "2026-11-17",
  "wuwaCalcCommit": "e95d4e6",
- "appCommit": "5669f81b",
+ "appCommit": "7daf3564",
  "basis": "enemy Lv100 at 20% RES, resonators Lv90, skills Lv10, ChemX32 substats (5/5/2/2/2 rolls at the median)",
  "unit": "DPS: team damage per second, the four rotations' damage over the time they took",
  "costs": [
