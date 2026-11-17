@@ -205,7 +205,12 @@ describe("resonator briefs", () => {
     cy.get('[data-test-kit-link="cost"]', { timeout: 20000 }).click();
     cy.location("pathname").should("eq", "/account");
     cy.get("[data-test-account-drawer]", { timeout: 60000 }).should("have.attr", "open");
-    cy.get("[data-test-account-drawer] [data-test-account-open-kit]").should("have.attr", "href", "/kit/cartethyia").click();
+    // on its own line under the meta line, a tap target of a finger's height
+    cy.get("[data-test-account-drawer] [data-test-account-open-kit]").should("have.attr", "href", "/kit/cartethyia").and(($a) => {
+      expect($a[0]!.getBoundingClientRect().height, "the link's height").to.be.at.least(30);
+      expect($a[0]!.getBoundingClientRect().top, "below the meta line").to.be.at.least($a.prev()[0]!.getBoundingClientRect().bottom - 6);
+    });
+    cy.get("[data-test-account-drawer] [data-test-account-open-kit]").click();
     cy.location("pathname").should("eq", "/kit/cartethyia");
     cy.get("[data-test-kit-title]").should("have.text", "Cartethyia");
 

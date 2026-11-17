@@ -167,7 +167,7 @@
                   Weapons
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </RouterLink>
-                <RouterLink v-if="kitTo(c.id)" :to="kitTo(c.id)!" class="mr-tab mr-tab--link" title="how they are played, their builds, best teams and what each sequence is worth, from wuwa_calc" :data-test-my-rankings-kit-link="c.id">Kit brief</RouterLink>
+                <RouterLink v-if="kitTo(c.id)" :to="kitTo(c.id)!" class="mr-tab mr-tab--link" title="how they are played, their builds, best teams and what each sequence is worth, from wuwa_calc" :data-test-my-rankings-kit-link="c.id">Kit brief <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg></RouterLink>
               </div>
               <div class="mr-panel__body" role="tabpanel">
                 <MyRankingsWhatIf v-if="open[c.id] === 'whatif'" :rank="c" />

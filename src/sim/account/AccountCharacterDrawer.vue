@@ -5,7 +5,8 @@
         <CharacterAvatar :id="card.id" :size="64" dot :ring="rarityColor(card.rarity)" title="" />
         <div class="dr__who">
           <h2 class="dr__name">{{ card.name }}</h2>
-          <div class="dr__meta">{{ card.element ?? "—" }}<template v-if="card.weaponType"> · {{ card.weaponType }}</template> · {{ card.rarity }}★<template v-if="kitTo"> · <RouterLink :to="kitTo" class="link dr__kit" :title="`How ${shortName} is played, builds, best teams and what each sequence is worth`" data-test-account-open-kit @click="close">Kit brief</RouterLink></template></div>
+          <div class="dr__meta">{{ card.element ?? "—" }}<template v-if="card.weaponType"> · {{ card.weaponType }}</template> · {{ card.rarity }}★</div>
+          <RouterLink v-if="kitTo" :to="kitTo" class="link dr__kit" :title="`How ${shortName} is played, builds, best teams and what each sequence is worth`" data-test-account-open-kit @click="close">Kit brief</RouterLink>
           <div class="dr__pills">
             <span class="dr-pill" :class="{ 'dr-pill--max': card.sequence >= 6 }">S{{ card.sequence }}</span>
             <template v-if="card.weapon">
@@ -409,11 +410,15 @@ function onBackdrop(event: MouseEvent): void {
   font-size: 0.65rem;
   color: oklch(var(--bc) / 0.5);
 }
-/* the brief link in the meta line: a taller tap target than its text */
+/* the brief link, on its own line under the meta line (beside it, a phone wrapped it and left the separator behind):
+   a taller tap target than its text, and the theme's AA-safe primary (a11y/vitePlugin.ts rewrites this declaration) */
 .dr__kit {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding-block: 0.3rem;
-  margin-block: -0.3rem;
+  margin-block: -0.15rem;
+  font-size: 0.8rem;
+  color: oklch(var(--p));
 }
 .dr__section {
   display: flex;
