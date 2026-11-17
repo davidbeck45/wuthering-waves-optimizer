@@ -175,13 +175,22 @@ const COUNTS_BOON_RE = /each stack of Unison Boon/i;
  *  in. Lily's Dream Aroma (game text: "1 stack per Intro Skill cast by a Resonator in the team other than Lily … Removed
  *  when Lily is the incoming Resonator"; her S1 makes it 2 per Intro; her S2 pays crit per stack of it). So the member
  *  who follows her fights on one Intro's worth and the next on two: the cap of 4 is reached at S1 only. */
-const INTRO_STACKED: Record<string, { keys: string[]; doubledBy: string; doubledAtSequence: number }> = {
+const INTRO_STACKED: Record<string, { keys: string[]; doubledBy: string; doubledAtSequence: number; effect: string }> = {
   Lily: {
     keys: ["DreamAroma", "SequenceNode2ListenARequiemFromTheDreamCradle"],
     doubledBy: "SequenceNode1LookWhiteFlowersFromTheRuinsOfDreams",
     doubledAtSequence: 1,
+    effect: "team numbers only: each teammate's Intro gives two stacks of Dream Aroma instead of one",
   },
 };
+
+/** The sequence nodes this resolver reads although their own definition carries no number: the node that doubles an
+ *  Intro-stacked buff (Lily's S1). For whoever tells a player which nodes a damage figure reflects: such a node moves
+ *  the team's number and nothing on the character's own page. */
+export function teamCountedNodes(characterId: string): Array<{ key: string; sequence: number; effect: string }> {
+  const rule = INTRO_STACKED[characterId];
+  return rule ? [{ key: rule.doubledBy, sequence: rule.doubledAtSequence, effect: rule.effect }] : [];
+}
 
 /** Who each member hands off to: the character whose actions follow the end of that member's block in the
  *  loop (cyclic) — the rotation order itself, which is what an Outro's "incoming Resonator" means. Read off the

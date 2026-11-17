@@ -249,6 +249,20 @@ describe("tools on the fixture account", () => {
     expect(one.sequences[0].level).toBe("S2");
   });
 
+  it("get_kit says a node is modelled when only the team numbers read it: Lily's S1", async () => {
+    // her S1 has no number of its own (each teammate's Intro gives two Dream Aroma stacks, not one), so the calculator's
+    // definition carries no modifier and the tool called it text only. The team buffs derived from the real team count
+    // it (teamContext/resolveTeam.ts), and /account prices her S1 from that
+    const kit = await call("get_kit", { character: "Lily" });
+    expect(kit.sequences[0]).toMatchObject({ level: "S1", modelled: true });
+    expect(kit.sequences[0].modelledIn).toBe("team numbers only: each teammate's Intro gives two stacks of Dream Aroma instead of one");
+    // S2 pays crit per stack through the calculator itself; S3 and S5 change no damage number anywhere
+    expect(kit.sequences[1]).toMatchObject({ level: "S2", modelled: true });
+    expect(kit.sequences[1].modelledIn).toBeUndefined();
+    expect(kit.sequences[2]).toMatchObject({ level: "S3", modelled: false });
+    expect(kit.sequences[4]).toMatchObject({ level: "S5", modelled: false });
+  });
+
   it("search_inventory filters and sorts echo rows", async () => {
     const all = await call("search_inventory", {});
     expect(all.matching).toBe(exp.inventory.echoes.length);

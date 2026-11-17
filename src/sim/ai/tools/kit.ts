@@ -3,6 +3,7 @@
 import { getCharByName } from "../../../characters/characters";
 import { nodeOf, sequenceOf, isSetUp } from "../../myRankings/rankRoster";
 import { describeBreakpoints, loadSequenceBreakpoints } from "../../presets";
+import { teamCountedNodes } from "../../teamContext/resolveTeam";
 import { characterName, compactJson, defineTool, resolveAnyCharacter } from "./shared";
 
 /** In-game rich text → plain text (tags out, entities decoded, whitespace collapsed). */
@@ -68,6 +69,8 @@ export const getKitTool = defineTool<{ character: string; sequence?: number }>({
     const current = own && isSetUp(own) ? sequenceOf(own) : null;
     const levels = input.sequence ? [input.sequence] : [1, 2, 3, 4, 5, 6];
     const full = Boolean(input.sequence);
+    const teamNodes = teamCountedNodes(id);
+    const counted = (defs: Array<Record<string, any>>) => teamNodes.find((node) => defs.some((d) => d.key === node.key)) ?? null;
     const sequences = levels
       .filter((n) => nodes.has(n))
       .map((n) => {
@@ -77,7 +80,10 @@ export const getKitTool = defineTool<{ character: string; sequence?: number }>({
           level: `S${n}`,
           name: String(first.name ?? "").replace(/^Sequence Node \d+:\s*/i, ""),
           text: clip(plainText(first.details ?? ""), full ? 2400 : 320),
-          modelled: defs.some((d) => Array.isArray(d.modifiers) && d.modifiers.length > 0),
+          modelled: defs.some((d) => Array.isArray(d.modifiers) && d.modifiers.length > 0) || Boolean(counted(defs)),
+          // a node the calculator's own definition has no number for, read by the team buffs derived from the real team.
+          // Said in the result, not in the tool's description: the first twelve definitions are a cached prompt prefix
+          ...(counted(defs) && !defs.some((d) => Array.isArray(d.modifiers) && d.modifiers.length > 0) ? { modelledIn: counted(defs)!.effect } : {}),
           ...(variants.length
             ? { variants: variants.map((v) => ({ mode: v.stance ?? null, text: clip(plainText(v.details ?? ""), full ? 1200 : 160) })) }
             : {}),
