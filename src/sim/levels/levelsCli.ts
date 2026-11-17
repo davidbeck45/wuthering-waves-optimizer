@@ -8,9 +8,9 @@ import { count } from "../materials/costToMax";
 import { loadMaterials } from "../materials/materialsData";
 import { rankRoster } from "../myRankings/rankRoster";
 import { levelPlan } from "./levelPlan";
-import { TRACKS, type TrackKey } from "./levelSteps";
+import { parseLevels } from "./levelSteps";
 import { assumedWords, BASIS_WORDS, inertText, type LevelPlan, type LevelRow } from "./levelWorth";
-import { basisLine, costText, everythingText, headlineText, inertLine, materialsText, NOT_MODELLED, pathHow, smallTeamLine } from "./levelsView";
+import { basisLine, costText, everythingText, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "./levelsView";
 
 export interface LevelsCliOptions {
   /** "saved" (default) or "1" / "scratch": level 1 across the board */
@@ -24,23 +24,11 @@ export interface LevelsCliOptions {
   autoBuffs?: boolean;
 }
 
-/** "level=80,weapon=70+,basic=6" → the levels to start from. Throws on a key it does not know. */
-export function parseLevels(text: string): Partial<Record<TrackKey, string>> {
-  const out: Partial<Record<TrackKey, string>> = {};
-  for (const part of text.split(",").map((s) => s.trim()).filter(Boolean)) {
-    const [key, value] = part.split("=").map((s) => s.trim());
-    if (!key || !value || !TRACKS.some((t) => t.key === key)) throw new Error(`--at takes ${TRACKS.map((t) => `${t.key}=…`).join(",")} (got "${part}")`);
-    out[key as TrackKey] = value;
-  }
-  if (!Object.keys(out).length) throw new Error("--at needs at least one level, e.g. --at level=80,liberation=6");
-  return out;
-}
-
 export async function levelsReport(exp: ExportFile, character: string, options: LevelsCliOptions = {}): Promise<LevelPlan> {
   const id = resolveCharacterKey(character, exp.characters);
   if (options.from && !["saved", "1", "scratch"].includes(options.from)) throw new Error('--from must be "saved" or "1"');
   if (options.by && !["value", "gain"].includes(options.by)) throw new Error('--by must be "value" or "gain"');
-  const from = options.at ? parseLevels(options.at) : options.from === "1" || options.from === "scratch" ? "scratch" : "saved";
+  const from = options.at ? parseLevels(options.at, "--at") : options.from === "1" || options.from === "scratch" ? "scratch" : "saved";
   const auto = options.autoBuffs ?? true;
   const teamId = options.team ? String(findTeam(options.team, exp.teams).id) : undefined;
   const materials = await loadMaterials();
@@ -101,6 +89,7 @@ export function printLevels(plan: LevelPlan): string {
     );
     const head = headlineText(plan);
     if (head) out.push(`  ${head}`);
+    out.push(`  ${ORDER_BLIND}`);
     if (plan.pathState !== "complete") out.push(`  (the order is ${plan.pathState})`);
   }
   const left = inertLine(plan, plan.rotation?.name ?? null);

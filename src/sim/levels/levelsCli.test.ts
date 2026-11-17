@@ -4,16 +4,17 @@ import { describe, expect, it } from "vitest";
 import fixture from "../ai/__fixtures__/aiAccount.json";
 import { parseExport, type ExportFile } from "../cli/exportShape";
 import { RANKING_ENEMY, rankRoster, scoreRotation } from "../myRankings/rankRoster";
-import { levelsJson, levelsReport, parseLevels, printLevels } from "./levelsCli";
-import { withLevels } from "./levelSteps";
+import { levelsJson, levelsReport, printLevels } from "./levelsCli";
+import { parseLevels, withLevels } from "./levelSteps";
 
 const exp: ExportFile = parseExport(fixture, "aiAccount.json");
 
 describe("cli levels", () => {
-  it("reads --at as levels by track and refuses what it does not know", () => {
+  it("reads --at as levels by track and refuses what it does not know", async () => {
     expect(parseLevels("level=80, weapon=70+,basic=6")).toEqual({ level: "80", weapon: "70+", basic: "6" });
-    expect(() => parseLevels("echo=5")).toThrow(/--at takes level=…,weapon=…,basic=…/);
-    expect(() => parseLevels(" , ")).toThrow(/needs at least one level/);
+    expect(() => parseLevels("echo=5", "--at")).toThrow(/--at takes level=…,weapon=…,basic=…/);
+    expect(() => parseLevels(" , ")).toThrow(/levels needs at least one level/);
+    await expect(levelsReport(exp, "aemeath", { at: "tune=3" })).rejects.toThrow(/--at takes level=…/);
   });
 
   it("from the saved levels of an account that never set any: nothing left, and it says what was not saved", async () => {

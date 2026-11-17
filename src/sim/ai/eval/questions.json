@@ -220,6 +220,13 @@
       "grounding": "weapon_value for Lynae: each step to R5 with own and team gain %; says the numbers are % of rotation damage on her best rotation and the team it was measured on."
     },
     {
+      "id": "level-priority",
+      "question": "Which skill should I level first on Lynae? She's level 80 with her Liberation at 6.",
+      "expect": ["weapon_value"],
+      "acceptable": ["what_if", "calc_character"],
+      "grounding": "weapon_value with show levels for Lynae and the levels the player gave (level=80,liberation=6): the first steps of the order with their team and own gain % and Shell Credits, the cost of each track; says the gains are on her best rotation and strongest team, and that inherent skills and stat bonuses are not in the list. If no levels were given and none are saved, it asks where she stands instead of answering 'nothing left'."
+    },
+    {
       "id": "today-reset",
       "question": "When's the reset and what's ending soon?",
       "expect": ["today"],

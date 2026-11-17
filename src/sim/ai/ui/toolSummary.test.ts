@@ -96,6 +96,14 @@ describe("the batch-2 page tools in the timeline", () => {
     expect(row("weapon_value", { signature: { steps: [{ weapon: "Spectrum Blaster R2", ownGainPct: 2.1 }] } }, { character: "Lynae" }).headline).toBe("Spectrum Blaster R2 · +2.1 % damage");
     expect(row("weapon_value", { characters: [{ next: "Azure Oath R4", ownGainPct: 7.07, teamGainPct: 6.38 }] }, { character: null }).headline).toBe("#1 Azure Oath R4 · +6.38 % team damage");
     expect(row("weapon_value", { characters: [{ next: "Blazing Justice R2", ownGainPct: 5.78, teamGainPct: null }] }, { character: null }).headline).toBe("#1 Blazing Justice R2 · +5.78 % own damage");
+    // weapon_value's second mode: the row says what was asked, where it counted from, and the top line
+    expect(row("weapon_value", { character: "Camellya", question: "what each level-up left is worth, and what it costs", start: "Level 80", countedFrom: "the levels given", eachOnItsOwn: [{ step: "Resonance Skill 6 → 10", teamGainPct: 15.13, ownGainPct: 18.17 }] }, { character: "camellya", show: "levels", levels: "level=80" })).toEqual({
+      label: "What to level first",
+      chips: ["Camellya", "levels given"],
+      headline: "Resonance Skill 6 → 10 · +15.13 % team damage",
+    });
+    expect(row("weapon_value", { character: "Zani", question: "q", start: "Level 90", countedFrom: "the levels saved in the calculator", nothingLeftToLevel: true }, { character: "Zani", show: "levels", levels: null })).toMatchObject({ label: "What to level first", chips: ["Zani", "saved levels"], headline: "nothing left to level" });
+    expect(row("weapon_value", { character: "Jiyan", question: "q", start: "Level 40", countedFrom: "level 1 (a new copy with a level-1 weapon)", eachOnItsOwn: [{ step: "Level 1 → 90", ownGainPct: 310.2 }] }, { character: "Jiyan", show: "levels", levels: "1" })).toMatchObject({ chips: ["Jiyan", "from level 1"], headline: "Level 1 → 90 · +310.2 % own damage" });
     expect(row("today", { nextDailyReset: "04:00 tomorrow (in 3h 10m)" }).headline).toBe("daily reset 04:00 tomorrow (in 3h 10m)");
   });
 

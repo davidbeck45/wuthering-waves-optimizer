@@ -101,7 +101,7 @@
           </button>
           <p v-if="plan.pathState === 'capped'" class="lw__note">The order stops here; the steps after it were not worked out.</p>
           <p v-if="leftOut" class="lw__note" data-test-levels-path-inert>Left out of the order: {{ leftOut }}.</p>
-          <p v-if="!running && plan.path.length" class="lw__note">Which materials each track needs is under "Each on its own".</p>
+          <p v-if="!running && plan.path.length" class="lw__note" data-test-levels-path-blind>{{ ORDER_BLIND }} Which materials each track needs is under "Each on its own".</p>
         </template>
       </template>
 
@@ -135,7 +135,7 @@ import { loadMaterials } from "../materials/materialsData";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { assumedWords, BASIS_WORDS, inertText, levelPlan, type LevelPlan } from "./levelPlan";
 import { stateText } from "./levelSteps";
-import { basisLine, costText, everythingText, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
+import { basisLine, costText, everythingText, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const props = defineProps<{
   characterKey: string;

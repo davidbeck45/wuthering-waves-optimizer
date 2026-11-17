@@ -130,6 +130,10 @@ export function inertLine(plan: Pick<LevelPlan, "inert">, rotation: string | nul
   return [forte.length ? `${list(forte)}: ${inertText(forte[0]!, rotation)}` : "", levels.length ? `${list(levels)}: ${inertText(levels[0]!, rotation)}` : ""].filter(Boolean).join(". ");
 }
 
+/** What the order does not know: said under it, so a locked step is no surprise. A statement about this tool only;
+ *  the game's own unlock rules are in no table the app reads. */
+export const ORDER_BLIND = "The order looks only at damage and Shell Credits. It does not know what the game unlocks when, so a step may still be locked for you: take the next one that is open.";
+
 /** The one line on what is not a step here. */
 export const NOT_MODELLED =
   "Not in this list: the two inherent skills and the eight stat bonuses. The calculator holds them as switches, not levels (Cost to max prices them). Outro Skill, Tune Break and echo skills have no level to raise.";

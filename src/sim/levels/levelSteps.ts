@@ -132,6 +132,19 @@ export function stateFrom(today: LevelsToday, levels: Partial<Record<TrackKey, s
   return next;
 }
 
+/** "level=80,weapon=70+,basic=6" → levels by track, for `stateFrom` (the CLI's --at, the assistant's `levels`). Throws
+ *  on a track it does not know; `what` names the input in the message. */
+export function parseLevels(text: string, what = "levels"): Partial<Record<TrackKey, string>> {
+  const out: Partial<Record<TrackKey, string>> = {};
+  for (const part of text.split(",").map((s) => s.trim()).filter(Boolean)) {
+    const [key, value] = part.split("=").map((s) => s.trim());
+    if (!key || !value || !TRACKS.some((t) => t.key === key)) throw new Error(`${what} takes ${TRACKS.map((t) => `${t.key}=…`).join(",")} (got "${part}")`);
+    out[key as TrackKey] = value;
+  }
+  if (!Object.keys(out).length) throw new Error(`${what} needs at least one level, e.g. level=80,liberation=6`);
+  return out;
+}
+
 /** The character's record as the engine would read it at `state`: the three fields the calculator's pickers write. */
 export function withLevels(characterData: Record<string, any>, state: LevelState, weaponTop: number | null = TOP_LEVEL): Record<string, any> {
   const next: Record<string, any> = {

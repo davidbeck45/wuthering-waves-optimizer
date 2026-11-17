@@ -106,20 +106,72 @@ describe("echo_lab", () => {
 
 describe("weapon_value", () => {
   it("every set-up character's signature, and one character's full detail", async () => {
-    const all = await call("weapon_value", { character: null }, ctxWith());
+    const all = await call("weapon_value", { character: null, show: null, levels: null }, ctxWith());
     expect(all.enemy).toBe("Lv 100 / 20 % RES");
     expect(all.characters.map((c: any) => c.character).sort()).toEqual(["Aemeath", "Lynae", "Mornye"]);
     const lynae = all.characters.find((c: any) => c.character === "Lynae");
     expect(lynae.signature).toBe("Spectrum Blaster");
     expect(lynae.next).toBe("Spectrum Blaster R2");
     expect(all.notSetUp).toEqual(["Augusta"]);
-    const one = await call("weapon_value", { character: "Lynae" }, ctxWith());
+    const one = await call("weapon_value", { character: "Lynae", show: "weapons", levels: null }, ctxWith());
     expect(one.now).toBe("Spectrum Blaster R1");
     expect(one.signature.steps.map((s: any) => s.weapon)).toEqual(["Spectrum Blaster R2", "Spectrum Blaster R3", "Spectrum Blaster R4", "Spectrum Blaster R5"]);
     const gains = one.signature.steps.map((s: any) => s.ownGainPct);
     expect([...gains].sort((a, b) => a - b)).toEqual(gains); // each refinement at least as good
     expect(one.path).toBe("/weapons?focus=Lynae");
   });
+
+  it('show "levels": nothing saved below the top says so, and what to ask the player', async () => {
+    const r = await call("weapon_value", { character: "lynae", show: "levels", levels: null }, ctxWith());
+    expect(r).toMatchObject({ character: "Lynae", countedFrom: "the levels saved in the calculator", nothingLeftToLevel: true, start: "Level 90 · weapon level 90 · all five Forte skills at 10" });
+    expect(r.notSavedInTheCalculator).toMatch(/^level, weapon level or Forte levels: the calculator counts these at the top\. Ask the player where Lynae stands/);
+    expect(r.path).toBe("/account?focus=Lynae&section=levels");
+    expect(r.eachOnItsOwn).toBeUndefined();
+  });
+
+  it('show "levels" with the levels the player gives: each track with gains and costs, then the order', async () => {
+    const r = await call("weapon_value", { character: "Lynae", show: "levels", levels: "level=80,weapon=80,liberation=6,intro=1" }, ctxWith());
+    expect(r).toMatchObject({ character: "Lynae", countedFrom: "the levels given", start: "Level 80 · weapon level 80 · Forte skills 10 / 10 / 10 / 6 / 1", enemy: "Lv 100 / 20 % RES", orderedBy: "team damage" });
+    expect(r.notSavedInTheCalculator).toBeUndefined();
+    expect(r.eachOnItsOwn.map((x: any) => x.step).sort()).toEqual(["Intro Skill 1 → 10", "Level 80 → 90", "Resonance Liberation 6 → 10", "Weapon level 80 → 90"]);
+    const level = r.eachOnItsOwn.find((x: any) => x.step === "Level 80 → 90");
+    expect(level).toMatchObject({ shellCredits: 349_115, expItems: "39 × Premium Resonance Potion", ascensions: 1 });
+    expect(level.ownGainPct).toBeGreaterThan(0);
+    expect(level.teamGainPct).toBeGreaterThan(0);
+    expect(level.materials).toMatch(/^\d+ × /);
+    // the biggest team gain first, and all of it together beats any one line
+    const team = r.eachOnItsOwn.filter((x: any) => x.teamGainPct != null).map((x: any) => x.teamGainPct);
+    expect(team).toEqual([...team].sort((a: number, b: number) => b - a));
+    expect(r.allTogether.teamGainPct).toBeGreaterThan(team[0]);
+    // 1 level cap + 1 weapon cap + 4 Liberation levels + 9 Intro levels, the first twelve sent
+    expect(r.levelInThisOrder.steps).toHaveLength(12);
+    expect(r.levelInThisOrder.stepsOmitted).toBe(3);
+    expect(r.levelInThisOrder.steps[0]).toMatchObject({ n: 1, soFar: { shellCredits: r.levelInThisOrder.steps[0].shellCredits } });
+    expect(r.levelInThisOrder.how).toMatch(/adds the most team damage for its Shell Credits/);
+    expect(r.levelInThisOrder.headline).toMatch(/^The first 3 steps give \+[\d.]+% team damage for [\d,]+ Shell Credits\.$/);
+    expect(r.notes.join(" ")).toMatch(/Not in this list: the two inherent skills and the eight stat bonuses/);
+    expect(r.notes.join(" ")).toMatch(/It does not know what the game unlocks when/);
+    expect(r.path).toBe("/account?focus=Lynae&section=levels");
+    expect(deepLinksOf([{ name: "weapon_value", input: {}, result: JSON.stringify(r), status: "ok" }])[0]).toMatchObject({ kind: "route", label: "What each level is worth", path: "/account?focus=Lynae&section=levels" });
+    expect(summarizeTool({ name: "weapon_value", input: { character: "Lynae", show: "levels", levels: "level=80" }, result: JSON.stringify(r), status: "ok" })).toMatchObject({ label: "What to level first", chips: ["Lynae", "levels given"] });
+  }, 60_000);
+
+  it('show "levels": a new copy with "1", and clear errors for a missing character or a level the calculator cannot hold', async () => {
+    const r = await call("weapon_value", { character: "Mornye", show: "levels", levels: "1" }, ctxWith());
+    expect(r.countedFrom).toBe("level 1 (a new copy with a level-1 weapon)");
+    expect(r.eachOnItsOwn).toHaveLength(7);
+    expect(r.levelInThisOrder.stepsOmitted).toBe(59 - 12);
+    const none = await runTool("weapon_value", { character: null, show: "levels", levels: null }, ctxWith());
+    expect(JSON.parse(none.content).error).toMatch(/show = "levels" needs a character/);
+    const bad = await runTool("weapon_value", { character: "Mornye", show: "levels", levels: "level=85" }, ctxWith());
+    expect(JSON.parse(bad.content).error).toMatch(/Level must be one of 1, 20, 20\+/);
+    const odd = await runTool("weapon_value", { character: "Mornye", show: "levels", levels: "echo=3" }, ctxWith());
+    expect(JSON.parse(odd.content).error).toMatch(/levels takes level=…,weapon=…/);
+    const mode = await runTool("weapon_value", { character: "Mornye", show: "sequences", levels: null }, ctxWith());
+    expect(JSON.parse(mode.content).error).toMatch(/show must be "weapons" or "levels"/);
+    const missing = await runTool("weapon_value", { character: "Mornye" }, ctxWith());
+    expect(JSON.parse(missing.content).error).toMatch(/Invalid input for weapon_value/);
+  }, 60_000);
 });
 
 describe("pull_advice", () => {

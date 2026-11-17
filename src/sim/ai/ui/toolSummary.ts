@@ -86,7 +86,8 @@ const asInput = (input: unknown): Json => (input && typeof input === "object" &&
 export function summarizeTool(call: Pick<ToolCallView, "name" | "input" | "result" | "status">): ToolRowSummary {
   const input = asInput(call.input);
   const r = parse(call.result);
-  const label = TOOL_LABELS[call.name] ?? call.name;
+  // weapon_value's second mode answers another question: the row says which
+  const label = call.name === "weapon_value" && input.show === "levels" ? "What to level first" : (TOOL_LABELS[call.name] ?? call.name);
   if (call.status === "error") {
     return { label, chips: inputChips(call.name, input, null), headline: clip(str(r?.error) ?? str(call.result) ?? "Failed", 90) };
   }
@@ -149,7 +150,8 @@ function inputChips(name: string, input: Json, r: Json | null): string[] {
       add(input.character);
       break;
     case "weapon_value":
-      add(input.character ?? "every character");
+      add(r?.character ?? input.character ?? "every character");
+      if (input.show === "levels") add(r?.countedFrom === "the levels saved in the calculator" ? "saved levels" : r?.countedFrom === "the levels given" ? "levels given" : r?.countedFrom ? "from level 1" : null);
       break;
     case "pull_advice":
       add(input.item ?? "running banners");
@@ -240,6 +242,15 @@ function headlineOf(name: string, r: Json): string | null {
       return c ? `${c.keep} keep · ${c.spare} spare · ${c.feed} feed` : null;
     }
     case "weapon_value": {
+      if (r.question && r.start) {
+        // show = "levels": the top line of the list, or that nothing is left
+        if (r.nothingLeftToLevel) return "nothing left to level";
+        const top = Array.isArray(r.eachOnItsOwn) ? r.eachOnItsOwn[0] : null;
+        if (!top) return null;
+        const team = top.teamGainPct != null;
+        const gain = signedPct(team ? top.teamGainPct : top.ownGainPct);
+        return gain ? `${top.step} · ${gain} ${team ? "team" : "own"} damage` : str(top.step);
+      }
       const step = r.signature?.steps?.[0];
       if (step) return `${step.weapon} · ${signedPct(step.ownGainPct) ?? "?"} damage`;
       const top = Array.isArray(r.characters) ? r.characters[0] : null;

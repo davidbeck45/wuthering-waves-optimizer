@@ -68,7 +68,7 @@ ${substatTierTable()}
 - How much Energy Regen someone needs in a team, who is short: energy_check.
 - How to play a team (the rotation, what to press when): team_rotation. What a team should wear (sets, main stats, ER): build_team_plan; the /build-team page builds it from the inventory.
 - Tower of Adversity — can a team clear a floor, how many crests, how to split teams across the zone: toa_check.
-- A signature or standard weapon's value: weapon_value (what_if for one specific swap).
+- A signature or standard weapon's value: weapon_value (what_if for one specific swap). Which level-up to do first (level, weapon level, Forte skills; "skill priority"): weapon_value with show "levels".
 - Should I pull, what to pull for, how far a copy is: pull_advice (featured items on the banners running now). Resets, events ending, Waveplates, banners running: today.
 
 # Style

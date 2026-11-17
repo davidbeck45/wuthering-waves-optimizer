@@ -4,6 +4,7 @@
 import type { CharacterWeaponValue, ValueOption } from "../../weaponValue/weaponValue";
 import { weaponValue } from "../../weaponValue/weaponValue";
 import { enemyLabel } from "./character";
+import { levelsAnswer } from "./levels";
 import { rankingFor } from "./memo";
 import { characterName, compactJson, defineTool, nullableString, pct, resolveOwnCharacter, weaponName } from "./shared";
 
@@ -27,7 +28,7 @@ function optionRow(o: ValueOption): Record<string, unknown> {
   };
 }
 
-export const weaponValueTool = defineTool<{ character?: string }>({
+export const weaponValueTool = defineTool<{ character?: string | null; show?: string | null; levels?: string | null }>({
   name: "weapon_value",
   description:
     "The /weapons page: what weapons add on the player's own builds, scored by the app's engine on each character's best " +
@@ -35,17 +36,34 @@ export const weaponValueTool = defineTool<{ character?: string }>({
     "weapon (status, then every step from the next copy to R5 — own damage gain %, the stats-only floor for a weapon they " +
     "don't hold (its passives off; the headline has them at full stacks), team gain %), each Standard Weapon Convene 5★ of " +
     "their type at R1, the best 4★ at R5 and their held weapon one refinement up. character = null gives every set-up " +
-    "character's signature next copy (own and team gain), best first. Gains are % of rotation damage, not DPS.",
+    "character's signature next copy (own and team gain), best first. Gains are % of rotation damage, not DPS. " +
+    'show = "levels" answers another question on the same basis, for one character: which level-up to do first (skill ' +
+    "priority). Every level-up left — character level and weapon level by the game's caps, each Forte skill (Normal Attack, " +
+    "Resonance Skill, Forte Circuit, Resonance Liberation, Intro Skill) — with its own and team damage gain %, its Shell " +
+    "Credits, EXP items and materials, then the order to take them in with a running gain and bill. It counts from the " +
+    "levels saved in the calculator; most accounts have none saved (the calculator then runs level 90, Forte 10), so the " +
+    "result says what is not saved: ask the player where the character stands and pass `levels`.",
   input_schema: {
     type: "object",
     properties: {
       character: nullableString("A set-up character (loose name) for the full detail. null = every set-up character's signature, best first."),
+      show: nullableString('null or "weapons" = the weapon figures. "levels" = what each level-up left is worth (needs a character).'),
+      levels: nullableString(
+        'Only with show = "levels": where the character stands in game, as the player says it, e.g. "level=80,weapon=80,basic=6,skill=6,forte=8,liberation=6,intro=1" ' +
+          '(any subset; levels are 1, 20, 20+, 40 … 90 with + = ascended; skills 1–10). "1" = a new copy at level 1. null = the levels saved in the calculator.',
+      ),
     },
-    required: ["character"],
+    required: ["character", "show", "levels"],
     additionalProperties: false,
   },
-  provenance: "App engine · /weapons (your builds and best team)",
+  provenance: "App engine · /weapons and /account (your builds and best team)",
   async run(input, ctx) {
+    const show = (input.show ?? "weapons").trim().toLowerCase() || "weapons";
+    if (show !== "weapons" && show !== "levels") throw new Error('show must be "weapons" or "levels"');
+    if (show === "levels") {
+      if (!input.character) throw new Error('show = "levels" needs a character');
+      return levelsAnswer(resolveOwnCharacter(input.character, ctx.exp), input.levels, ctx);
+    }
     const who = input.character ? resolveOwnCharacter(input.character, ctx.exp) : null;
     const auto = ctx.autoBuffs ?? true;
     const ranking = await rankingFor(ctx.exp, auto);
