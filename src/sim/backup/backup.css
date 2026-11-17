@@ -1,0 +1,196 @@
+/* Wuthering Tools+ automatic backups (/backups, and the status card in Settings and on My account) — every rule
+   under .bk; DaisyUI tokens only, so it follows every app theme. One column; the budget is 360–412 px at a 130 %
+   font size, so every row of buttons wraps and no text is on one line by force. Muted text is the body colour at
+   80 %: over 4.5 : 1 on the light and the dark themes. */
+
+.bk {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 3rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.bk-h1 {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+.bk-h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.bk-intro {
+  max-width: 44rem;
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.8);
+}
+.bk-muted {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.8);
+}
+.bk-card {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  background: oklch(var(--b2) / 0.55);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.08);
+}
+.bk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+/* a link in running text: the text's own colour, told apart by its underline and weight (the app's global link
+   colour is under 4.5 : 1 on both card backgrounds) */
+.bk-link {
+  color: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.bk-link:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+  border-radius: 0.2rem;
+}
+
+/* ---- the status card: when a copy last left this browser */
+.bk-status {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.bk-status__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.bk-status__line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.bk-status__dot {
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background: oklch(var(--su));
+  transform: translateY(-0.05rem);
+}
+.bk-status--stale .bk-status__dot {
+  background: oklch(var(--wa));
+}
+/* My account: one quiet block under the page head, no card of its own colour */
+.bk-status--account {
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.75rem;
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.1);
+}
+.bk-status--settings {
+  max-width: 48rem;
+  margin-top: 1rem;
+}
+
+/* ---- the list */
+.bk-list__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.bk-rows {
+  display: grid;
+  gap: 0.6rem;
+}
+.bk-row {
+  min-width: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: oklch(var(--b1));
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.1);
+  display: grid;
+  gap: 0.3rem;
+}
+.bk-row__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+}
+.bk-row__when {
+  font-weight: 700;
+}
+.bk-row__inside {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.bk-row .bk-actions {
+  margin-top: 0.3rem;
+}
+.bk-chip {
+  padding: 0.05rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  white-space: nowrap;
+  color: oklch(var(--bc) / 0.85);
+  background: oklch(var(--bc) / 0.09);
+}
+.bk-chip--before {
+  color: oklch(var(--bc));
+  box-shadow: inset 0 0 0 1px oklch(var(--wa) / 0.9);
+  background: oklch(var(--wa) / 0.14);
+}
+.bk-chip--manual {
+  color: oklch(var(--bc));
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.8);
+  background: oklch(var(--p) / 0.12);
+}
+.bk-file {
+  display: grid;
+  gap: 0.5rem;
+}
+.bk-file .file-input {
+  width: 100%;
+  max-width: 26rem;
+}
+.bk-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.bk-details summary:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 3px;
+  border-radius: 0.3rem;
+}
+.bk-details p {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 639px) {
+  .bk {
+    padding: 1rem 1rem 3rem;
+  }
+  .bk-card {
+    padding: 0.75rem 0.8rem;
+  }
+  /* four buttons to a row do not fit 360 px at 130 %: two to a row, each as wide as its half */
+  .bk-row .bk-actions .btn {
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+}

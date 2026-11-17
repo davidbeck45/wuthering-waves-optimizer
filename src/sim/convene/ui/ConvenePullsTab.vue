@@ -150,7 +150,7 @@
         <h3 class="text-lg font-semibold">{{ confirmReset ? "Reset the saved history?" : "Delete this Convene history?" }}</h3>
         <p class="py-3 text-sm text-base-content/75">
           <template v-if="confirmReset">The saved copy can't be read by this version of the app. Download it first if you might want it back; resetting starts an empty history.</template>
-          <template v-else>Every stored pull for UID {{ player ? maskPlayerId(player.playerId) : "" }} is removed from this browser. Kuro still has the last six months; anything older is gone unless you exported a backup.</template>
+          <template v-else>Every stored pull for UID {{ player ? maskPlayerId(player.playerId) : "" }} is removed from this browser. Kuro still has the last six months; anything older is gone unless you exported a backup. The automatic backups this browser made before now still hold these pulls: delete those on the Backups page if they should go too.</template>
         </p>
         <div class="modal-action">
           <button type="button" class="btn btn-ghost" @click="closeConfirm">Cancel</button>

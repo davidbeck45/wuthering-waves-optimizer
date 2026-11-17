@@ -8,6 +8,7 @@
         Danger Zone
       </span>
       <p :class="{ 'text-sm opacity-70': variant === 'v3' }" data-test-delete-what>{{ DELETE_CARD_TEXT }}</p>
+      <BackupCopyFirst /><!-- Wuthering Tools+: "Download a copy first" (src/sim/backup/BackupCopyFirst.vue) -->
       <button @click="confirmDelete" class="btn btn-error" :class="{ 'btn-sm self-start': variant === 'v3' }">
         Delete
       </button>
@@ -20,6 +21,7 @@ import { useToast } from "../composables/useToast";
 import { useConfirm } from "../composables/useConfirm";
 import { clearAllUserData } from "../utils/settingsBackup";
 import { DELETE_CARD_TEXT, DELETE_CONFIRM_ITEMS, DELETE_CONFIRM_TEXT } from "../sim/storage/deleteAccount"; // Wuthering Tools+: says what goes and what stays
+import BackupCopyFirst from "../sim/backup/BackupCopyFirst.vue"; // Wuthering Tools+
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",

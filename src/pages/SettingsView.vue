@@ -10,6 +10,7 @@
     <Settings v-if="!isLiveResultBarEnabled"></Settings>
     <!-- Labs flag on: the sections are in the nav's tab row (ADR 0045). -->
     <SettingsWorkspace v-else :section="activeSection"></SettingsWorkspace>
+    <BackupStatus v-if="!isLiveResultBarEnabled || activeSection === 'backup-restore'" variant="settings" />
     <SavedResultsCard v-if="!isLiveResultBarEnabled || activeSection === 'preferences'" />
   </div>
 </template>
@@ -25,6 +26,7 @@ import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
 import { useDocumentTitle } from "../composables/useDocumentTitle";
 import SavedResultsCard from "../sim/persist/SavedResultsCard.vue"; // Wuthering Tools+: Settings › Saved results
+import BackupStatus from "../sim/backup/BackupStatus.vue"; // Wuthering Tools+: automatic backups, and a copy outside the browser
 
 useDocumentTitle(
   "Settings — Wuthering Waves Calculator & Optimizer",

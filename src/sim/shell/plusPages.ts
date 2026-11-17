@@ -106,4 +106,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["history", "versions", "undo", "restore", "compare", "diff", "before", "snapshot", "backup", "changes"],
     icon: "M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8M3 3v5h5M12 7v5l4 2",
   },
+  {
+    path: "/backups",
+    title: "Backups",
+    description: "Automatic copies of your whole account, kept in this browser: restore one, download it, or share a copy to your own storage",
+    keywords: ["backup", "backups", "restore", "export", "save", "copy", "drive", "share", "download", "lost", "recover", "wipe"],
+    icon: "M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zm0 0v5c0 1.7 3.6 3 8 3s8-1.3 8-3V7M4 12v5c0 1.7 3.6 3 8 3s8-1.3 8-3v-5",
+  },
 ];

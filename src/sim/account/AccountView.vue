@@ -44,6 +44,7 @@
     </header>
 
     <TodayCard class="mb-4" />
+    <BackupStatus variant="account" class="mb-4" />
 
     <section v-if="!setUpCount" data-test-account-empty>
       <MyRankingsEmpty
@@ -123,7 +124,7 @@
 // rotation, the headline investment, the teams each one is in), "What to invest in next" (investPlan.ts: engine
 // gains on each character's best rotation and their strongest fieldable team) and the teams the roster can field.
 // Data and runs: useAccountData.ts; the view model: accountView.ts.
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
@@ -143,6 +144,8 @@ import { useOwnUpgrades } from "./useOwnUpgrades";
 import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
+// when a copy of the account last left this browser, with Share and Download; loaded after the page (src/sim/backup/)
+const BackupStatus = defineAsyncComponent(() => import("../backup/BackupStatus.vue"));
 import { useSavedNote } from "../persist/useSavedNote";
 import { onAccountAdopted } from "../storage/crossTabSync";
 

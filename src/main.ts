@@ -91,6 +91,8 @@ const routes = [
   { path: "/build-team", component: () => import("./sim/buildTeam/BuildTeamView.vue"), name: "BuildTeamView" },
   // Wuthering Tools+: build history — versions of each character's build, compare and restore (src/sim/buildHistory/)
   { path: "/build-history", component: () => import("./sim/buildHistory/BuildHistoryView.vue"), name: "BuildHistoryView" },
+  // Wuthering Tools+: automatic backups of the whole account, kept in this browser, with restore and a share-sheet copy (src/sim/backup/)
+  { path: "/backups", component: () => import("./sim/backup/BackupsView.vue"), name: "BackupsView" },
   { path: "/scanners", component: ScannersView, name: "ScannersView" },
   // Wuthering Tools+: any other address gets a "page not found" page with the nav, not a blank screen (src/sim/shell/)
   { path: "/:pathMatch(.*)*", component: () => import("./sim/shell/NotFoundView.vue"), name: "NotFoundView" },

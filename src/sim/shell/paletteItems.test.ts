@@ -75,7 +75,11 @@ describe("rankPalette", () => {
     expect(first("pity")).toEqual({ kind: "route", path: "/convene?tab=pulls" });
     expect(first("banners")).toEqual({ kind: "route", path: "/convene?tab=banners" });
     expect(first("wavescan")).toEqual({ kind: "route", path: "/settings?section=wavescan" });
-    expect(first("backup")).toEqual({ kind: "route", path: "/settings?section=backup-restore" });
+    // "backup" opens the Backups page (the automatic ones, restore, a copy outside); Ryan's Settings section, where a
+    // file is exported and imported by hand, is the next row and still first under its own name
+    expect(first("backup")).toEqual({ kind: "route", path: "/backups" });
+    expect(rankPalette("backup", items).filter((i) => i.group === "page").map((i) => i.run.kind === "route" && i.run.path).slice(0, 2)).toEqual(["/backups", "/settings?section=backup-restore"]);
+    expect(first("backup & restore")).toEqual({ kind: "route", path: "/settings?section=backup-restore" });
     expect(first("import echoes")).toEqual({ kind: "route", path: "/settings?section=wavescan" });
     expect(rankPalette("", items).some((i) => i.run.kind === "route" && i.run.path.includes("?"))).toBe(false);
     expect(pageTitleOf("/convene?tab=advisor")).toBe("Convene odds");
