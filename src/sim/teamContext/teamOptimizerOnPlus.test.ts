@@ -283,6 +283,28 @@ describe("Optimize team when the page is left", () => {
     expect(own.optimizer.phase.value).toBe("results");
   }, 180_000);
 
+  it("files a result under the team it was searched for, also when the page's team changes before it is left", async () => {
+    const teams = useTeamRotationsStore() as any;
+    teams.$patch({ teams: [...teams.teams, { ...JSON.parse(JSON.stringify(teams.getTeamById("team-plus"))), id: "team-two", name: "Two" }] });
+    const scope = effectScope();
+    const teamId = ref("team-plus");
+    const optimizer = scope.run(() => useTeamOptimizer(teamId))!;
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "keep");
+    await optimizer.run();
+    expect(optimizer.phase.value).toBe("results");
+    teamId.value = "team-two"; // the Teams page moved to another team, which closes the view
+    scope.stop();
+    const other = page("team-two");
+    await other.optimizer.initialize();
+    expect([other.optimizer.phase.value, other.optimizer.keptNote.value]).toEqual(["setup", null]);
+    other.leave();
+    const own = page();
+    await own.optimizer.initialize();
+    expect(own.optimizer.phase.value).toBe("results");
+  }, 120_000);
+
   it("says once that leaving stopped a search, and a new search takes the line away", async () => {
     const first = page();
     await first.optimizer.initialize();

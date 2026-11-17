@@ -77,13 +77,15 @@ export function optimizerMemory(state: OptimizerState) {
   // the stores of this app instance, taken while its Pinia is the active one
   const stores = { character: useCharacterStore(), team: useTeamRotationsStore(), inventory: useInventoryStore() } as unknown as BuildTeamStores;
   const fingerprint = (): string => accountFingerprint(stores);
-  /** what the result on screen was scored on: set when a search starts, or when a kept result is shown */
-  let ran: { on: string; auto: boolean; at: number } | null = null;
+  /** what the result on screen was scored on, and for which team: set when a search starts, or when a kept result is
+   *  shown. The team is taken here, not when the page is left: the page's team can change first (its team deleted in
+   *  another tab), and the rows would be filed under a team they are not of */
+  let ran: { teamId: string; on: string; auto: boolean; at: number } | null = null;
 
   watch(state.phase, (phase) => {
     if (phase === "running") {
       note.value = null; // a new search: the line about the last one has been read
-      ran = { on: fingerprint(), auto: autoTeamBuffs.value, at: 0 };
+      ran = { teamId: state.teamId.value, on: fingerprint(), auto: autoTeamBuffs.value, at: 0 };
     } else if (phase === "results" && ran && !ran.at) {
       ran.at = Date.now();
     } else if (phase === "setup" && note.value?.kind === "kept") {
@@ -114,14 +116,14 @@ export function optimizerMemory(state: OptimizerState) {
     state.plansCompared.value = k.plansCompared;
     state.plansSearched.value = k.plansSearched;
     state.results.value = k.results;
-    ran = { on: k.on, auto: k.auto, at: k.at };
+    ran = { teamId, on: k.on, auto: k.auto, at: k.at };
     note.value = { kind: "kept", at: k.at };
     return true;
   }
 
   /** The page is left (another page, Back, "Back to team"). */
   function leave(): void {
-    const teamId = state.teamId.value;
+    const teamId = ran?.teamId ?? state.teamId.value;
     if (state.phase.value === "running") {
       stopped = { teamId, at: Date.now() };
       if (kept?.teamId === teamId) kept = null;

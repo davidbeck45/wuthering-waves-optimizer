@@ -278,7 +278,9 @@ describe("Optimize team when you leave the page", () => {
     cy.get("[data-test-team-optimizer-total]")
       .invoke("text")
       .then((total) => {
-        // another page from the bottom bar, then Back
+        // another page from the bottom bar, then Back. His bar slides away on a scroll down and returns on a scroll up
+        cy.scrollTo("top");
+        cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
         cy.contains("[data-test-nav-bottom-bar] a", "Inventory").click();
         cy.location("pathname").should("eq", "/inventory");
         cy.go("back");
