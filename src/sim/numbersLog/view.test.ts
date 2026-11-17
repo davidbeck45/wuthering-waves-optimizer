@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import { appendEntry, emptyLog, entryFromRanking, type LogEntry, type NumbersLog } from "./log";
 import { DAY, HOUR, T0, account, ranking } from "./testAccount";
-import { EMPTY_TEXT, NO_ACCOUNT_TEXT, agoText, firstRecordText, numbersState, staleness, staleText, summaryText } from "./view";
+import { EMPTY_TEXT, NO_ACCOUNT_TEXT, agoText, firstRecordText, numbersState, pickedBase, staleness, staleText, summaryText } from "./view";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";
 const entry = (over: Parameters<typeof ranking>[0] = {}, at = T0, build = BUILD): LogEntry => entryFromRanking(ranking(over), account(), { at, build, autoTeamBuffs: true }) as LogEntry;
@@ -54,6 +54,16 @@ describe("what the page shows", () => {
     // a pick that is no longer in the log (it was capped away) falls back to the one before
     const gone = numbersState(log, true, 12345);
     expect(gone.kind === "compared" && gone.comparison.before.at).toBe(T0 + DAY);
+  });
+
+  it("shows his pick in the picker only while that record is still in the log", () => {
+    const log = logOf(entry(), entry({ Aaa: 1_100_000 }, T0 + DAY), entry({ Aaa: 1_210_000 }, T0 + 2 * DAY));
+    const state = numbersState(log, true, T0);
+    expect(pickedBase(state, T0)).toBe(T0);
+    expect(pickedBase(state, null)).toBeNull();
+    expect(pickedBase(state, T0 + DAY)).toBeNull(); // the one before the newest: the default, not a pick
+    expect(pickedBase(state, 12345)).toBeNull(); // capped away: the picker falls back with the list
+    expect(pickedBase(numbersState(logOf(entry()), true), T0)).toBeNull(); // nothing to pick from
   });
 
   it("sees an import anywhere in the stretch he picked", () => {

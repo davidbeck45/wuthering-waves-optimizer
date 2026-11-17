@@ -36,6 +36,8 @@ export interface RecordEnv {
   /** resolves when the page is idle */
   idle: () => Promise<void>;
   importedAt: () => number | null;
+  /** how long a run's record waits for an earlier ranking still on its way into the log (ms) */
+  earlierWaitMs: number;
 }
 
 function storesAccount(): RankedAccount {
@@ -62,7 +64,8 @@ export async function recordScoredRanking(fingerprint: string, ranking: RosterRa
   try {
     if (!fingerprint || !ranking || ranking.incomplete) return "skipped";
     await (env.idle ?? whenIdle)();
-    await earlier;
+    // the last build's ranking goes in first; one that never settles must not hold every later record up
+    await Promise.race([earlier, new Promise((resolve) => setTimeout(resolve, env.earlierWaitMs ?? 5000))]);
     const storage = "storage" in env ? (env.storage ?? null) : localArea();
     if (!storage) return "skipped";
     const account = (env.account ?? storesAccount)();

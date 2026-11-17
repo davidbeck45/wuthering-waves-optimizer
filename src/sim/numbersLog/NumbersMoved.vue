@@ -50,7 +50,7 @@
         </p>
         <label class="nm-pick">
           <span class="nm-pick__label">Compared with</span>
-          <select v-model="baseAt" class="select select-bordered select-sm nm-pick__select" data-test-numbers-since>
+          <select v-model="picked" class="select select-bordered select-sm nm-pick__select" data-test-numbers-since>
             <option v-for="(e, i) in state.choices" :key="e.at" :value="i === 0 ? null : e.at">{{ i === 0 ? "the one before · " : "since " }}{{ whenText(e.at, now) }}</option>
           </select>
         </label>
@@ -125,10 +125,15 @@ import { whenText, type Comparison, type Listed } from "./compare";
 import { MAX_ENTRIES } from "./log";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
 import { NAMES, useNumbersLog } from "./useNumbersLog";
-import { BASIS_TEXT, EMPTY_TEXT, NO_ACCOUNT_TEXT, RUNNING_TEXT, firstRecordText, staleText, summaryText } from "./view";
+import { BASIS_TEXT, EMPTY_TEXT, NO_ACCOUNT_TEXT, RUNNING_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
 
 const SHOWN = 8;
 const { state, baseAt, running, stale, now } = useNumbersLog();
+/** what the picker shows: his pick while that record is still in the log, else "the one before" */
+const picked = computed<number | null>({
+  get: () => pickedBase(state.value, baseAt.value),
+  set: (at) => (baseAt.value = at),
+});
 
 // only read while the state is "compared" (the template's last branch)
 const c = computed(() => (state.value as { comparison: Comparison }).comparison);

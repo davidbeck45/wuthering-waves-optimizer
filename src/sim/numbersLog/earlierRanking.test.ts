@@ -170,6 +170,18 @@ describe("the last build's ranking as a record", () => {
   });
 });
 
+describe("an earlier ranking that never settles", () => {
+  it("does not hold the run's own record up for ever", async () => {
+    const storage = area();
+    const acc = account();
+    void recordEarlierRanking(fpOf(acc), ranking({ at: T0 - HOUR }), { build: OLD, at: T0 - HOUR }, env(storage, acc, { idle: () => new Promise<void>(() => undefined) }));
+    expect(await recordScoredRanking(fpOf(acc), ranking({ at: T0 + DAY - 1 }), env(storage, acc, { earlierWaitMs: 40 }))).toBe("stored");
+    expect(readLog(storage).entries.map((e) => e.build)).toEqual([NEW]);
+    // and the next earlier ranking is its own: the stuck one is forgotten
+    expect(await recordEarlierRanking(fpOf(acc), ranking({ at: T0 - HOUR }), { build: OLD, at: T0 - HOUR }, env(storage, acc))).toBe("skipped"); // behind the run's record now
+  });
+});
+
 describe("the wiring: the ranking cache hands the log what the Saved results are about to drop", () => {
   beforeEach(() => {
     localStorage.clear();

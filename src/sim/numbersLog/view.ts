@@ -29,6 +29,14 @@ export function numbersState(log: NumbersLog, hasAccount: boolean, baseAt: numbe
   return { kind: "compared", comparison: compareEntries(base, newest, entries.filter((e) => e.at > base.at)), choices: [...older].reverse() };
 }
 
+/** The pick as the list can honour it: an older record that is no longer among the choices (the cap took it) is no
+ *  pick, so the picker shows "the one before", which is what `numbersState` then compares with. */
+export function pickedBase(state: NumbersState, baseAt: number | null): number | null {
+  if (state.kind !== "compared" || baseAt === null) return null;
+  // the first choice is the default: picking it is the same as picking nothing
+  return state.choices.slice(1).some((e) => e.at === baseAt) ? baseAt : null;
+}
+
 /** "just now", "4 min ago", "2 h ago", else the day and time. */
 export function agoText(at: number, now = Date.now()): string {
   const s = Math.max(0, Math.round((now - at) / 1000));
