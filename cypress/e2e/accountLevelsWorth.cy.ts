@@ -96,7 +96,7 @@ describe("what each level is worth, in the account drawer", () => {
     cy.get('[data-test-levels-row="level"] summary').click();
     cy.get('[data-test-levels-row="level"] details').should("have.attr", "open");
     cy.get('[data-test-levels-row="level"] .lw-chip').should("have.length", whole("level").cost.materials.length);
-    cy.get("[data-test-levels-source]").should("contain.text", "the two inherent skills and the eight stat bonuses").and("contain.text", "version 3.7").and("not.contain.text", "encore");
+    cy.get("[data-test-levels-source]").should("contain.text", "the two inherent skills and the eight stat bonuses").and("contain.text", `version ${data.gameVersion}`).and("not.contain.text", "encore");
 
     // the other view: the order, one step at a time, with a running gain and bill
     cy.get('[data-test-levels-view="path"]').click();
