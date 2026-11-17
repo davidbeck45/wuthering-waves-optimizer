@@ -5351,3 +5351,77 @@ judged on her own rotation like every build), `/echo-plan`, `/rotation`.
   the result, not under it.
 - **A cached prompt prefix is a contract.** `get_kit`'s description could not take a new sentence (a test holds the
   first twelve tool definitions byte for byte), so the new fact went into the result, where a field name explains it.
+
+## Ryan's #693 to #725 on a phone, and one answer to "one more roll" (track "sync-polish", 2026-11-16)
+
+The sync above got the gates green and left two things that only show in a browser: his new roll table beside plus's
+own "One more roll is worth" lines on one panel, and his new and changed screens on a phone at 130 % text. Report:
+`wto-wt/b4/reports/sync-polish.md`.
+
+**One more roll, once.** On the calculator's Echo Insights panel his table is the answer (#693). Plus's Engine view
+there (`echoLab/EchoLabEngineView.vue`) no longer lists the three "One more roll is worth" lines. It keeps what he does
+not have: the benchmark, the Energy Regen line, Re-roll first, the Echo Lab link and Why this number. Plus's own list
+stays where it was: `/my-rankings` › Substats and `cli weights`.
+
+**Where the hook is.** `<EchoLabEngineHook>` moved one line inside `CalculatorEchoInsightsPanel.vue`: from the last
+child of the open panel (under his footnote, 1,236 px down a sticky sidebar at 1440 px) to the line above his
+`data-test-echo-insights-roll-note` block, so the order is Build Score, Echo Insights' two summary lines, the Engine
+view, then "Priority substats" and his table. Nothing else in his file changed.
+
+**A bar, not a card.** Open, the view is 420 px tall in the desktop sidebar and 963 px on a phone at 412 px and 130 %
+text (1,061 px at 360). Above his table that put the table's first row at 1,017 px on a 900 px screen, in a sidebar
+that is sticky and already taller than the screen, and a full phone screen before it. So the view is a native
+`<details>`: closed it is a bar, 60 px on a desktop and 120 to 141 px on a phone, that says its two findings on one
+wrapping line (`echoLab/engineSummary.ts`, pure and tested): "Benchmark 132% (100 % = a realistic spread) · Re-roll
+first: Reminiscence: Kronaclaw", plus "Energy Regen short" as a warning when the build is under its teams' need. It
+opens to the rest. His table starts at 657 px at 1440 x 900 (573 with no view above it), 978 px on a phone at 412 px
+(827) and 1,025 px at 360 (853). `OPEN_BY_DEFAULT` in the component is the one word that makes it arrive open instead. While it is closed the jobs still run, since the
+bar prints their result. Open, the rotation line and the echo's name wrap where they were cut ("On Basic Rotation
+(Tu…", "Reminiscenc…").
+
+**The line on Substat weights.** `/my-rankings` › Substats says under its intro how its figures differ from his: his
+panel measures the attack or rotation in the Live Result Bar on the calculator's enemy; plus's list places the roll on
+an echo you wear and scores the best rotation on the ranking enemy, level 100 and 20 % RES (read from `RANKING_ENEMY`,
+so the line cannot drift from the constant). Its link is `/?screen=echoes` and makes the row's character the
+calculator's active one on the way. On David's Xuanling the two read 4.33 % (his, +235,982 on 5,444,225) and 4.37 %
+(plus, on 5,009,966) for a typical Crit DMG roll.
+
+**`phone.css` § 39, his components.**
+- a) The roll table. He folds Top roll under Typical roll in a narrow panel; at 130 % that left "top +403K · 3 in 100"
+  on four lines under every figure, and at 360 px the table was 331 px in a 275 px box. Each row is a card: the substat
+  on its own line, then Per 1%, Typical roll and Top roll side by side under their own captions (`::before`, since his
+  one header row cannot sit over cells that no longer line up). A flat stat's "per 10" is its caption.
+- b) Try a change: the select took the width of its longest option.
+- c) His chooser dialogs. The filter panel is open until someone closes it and sits in a toolbar that does not scroll.
+  The echo browser's open panel is 1,400 px tall at 130 %, the dialog 915: the list under it was 21 px tall. The
+  toolbar takes 45 % of the screen at most and scrolls inside that.
+- d) In those dialogs: the weapon browser's rarity buttons wrap, a weapon row's badges and Equip take their own line
+  instead of sitting on the stars, an impact badge that wraps grows with its text.
+- e) An echo tile's edit footer wraps. f) The optimizer's Top 5 rows are two lines (the change column was off the
+  screen at 412 px and 360). g) A teammate's name in the Team Buffs header takes the line it needs ("M…" for Mornye).
+
+**`phone.css` § 40, plus's own rules out of place.** § 3's echo card grid caught his v3 echo card in the echo browser,
+a plain column: the main stats sat in a second column 0 px wide, off the screen. Back to his column inside his
+dialogs. It is the second card § 3 caught by accident (§ 37 a was the first), and both times the selector was "every
+`.echo__content` that is not compact".
+
+Everything in c, d, e, f, g and § 40 was so before this sync as well (checked against a lane still on the pre-merge
+code): the sync did not cause it, the look after the sync found it.
+
+**Things learned.**
+- **A panel that is open by default in a toolbar that does not scroll can leave the list no room at all.** At 100 %
+  text it leaves a third of the screen; at 130 % it left 21 px. And what is behind a list nobody can see goes
+  unnoticed: the broken card under it had been there for weeks.
+- **A page-level overflow probe misses a box an ancestor clips.** Probe for elements past the edge *and* for boxes
+  whose content is wider than they are, then read the picture: the 21 px list had no overflow at all.
+- **To tell an old problem from a new one after a sync, shoot the same screen on a server still on the old code.**
+  Same probe, two ports, one minute.
+- **`:nth-child(n)` is a specificity lift that matches every cell.** His scoped `.row td:first-child[data-v]` is
+  (0,3,1); a reset keyed on a test id and tag names loses to it without one more class or pseudo-class.
+- **A flex item with `flex: 1` has a zero basis and never asks for a line of its own**, so `flex-wrap` alone changes
+  nothing: its neighbours stay beside it and sit on its content. Give it a basis.
+- **A grid item is as wide as its longest unbreakable word unless it has `min-width: 0`.** `grid-cols-1` is
+  `minmax(0, 1fr)`, and the card still grew past the dialog on "Resonance Liberation DMG Bonus".
+- **His pinned Echo Insights bar is keyed by the build and comes back closed when it remounts.** A spec that opens it
+  with one tap and then reads the table fails on a slow load: tap until it is open with its figures in. And do not save
+  a file under a running spec: the page reloads and the bar closes.
