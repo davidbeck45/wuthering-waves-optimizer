@@ -439,6 +439,15 @@ const list = (items: readonly string[], last = "and"): string =>
   items.length <= 1 ? (items[0] ?? "") : items.length === 2 ? `${items[0]} ${last} ${items[1]}` : `${items.slice(0, -1).join(", ")} ${last} ${items.at(-1)}`;
 const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`;
 
+/** A build's line on the brief: how many of Riley's teams field it, and in which role ("a support in all 114", not "main DPS in 0"). */
+export function buildTeamsText(teams: number, main: number, support: number): string {
+  const head = `${plural(teams, "team")} on Riley's table`;
+  const all = teams === 1 ? "in it" : "in all of them";
+  if (teams > 0 && main === 0 && support === teams) return `${head}, a support ${all}`;
+  if (teams > 0 && support === 0 && main === teams) return `${head}, the main DPS ${all}`;
+  return `${head}: main DPS in ${main}, support in ${support}`;
+}
+
 /** What they do in a team, from how his table fields them. */
 export function roleText(kit: Pick<Kit, "teams" | "sustain">, name: string, sustain: readonly string[] = []): string[] {
   const { main, support } = kit.teams;

@@ -47,6 +47,7 @@ import {
   type KitIndexFile,
   type KitsFile,
   type KitTeamFact,
+  buildTeamsText,
 } from "./kits";
 
 const file = kitsFile as unknown as KitsFile;
@@ -426,5 +427,14 @@ describe("the model's readings", () => {
     expect(loopAt(camellya, 5)!.level).toBe(0);
     expect(loopAt(camellya, 6)!.level).toBe(6);
     expect(loopAt(camellya, 6)!.casts).not.toEqual(loopAt(camellya, 0)!.casts);
+  });
+});
+
+describe("buildTeamsText", () => {
+  it("says a support in all of them, not main DPS in 0 (Lily's 114 teams)", () => {
+    expect(buildTeamsText(114, 0, 114)).toBe("114 teams on Riley's table, a support in all of them");
+    expect(buildTeamsText(12, 12, 0)).toBe("12 teams on Riley's table, the main DPS in all of them");
+    expect(buildTeamsText(1, 0, 1)).toBe("1 team on Riley's table, a support in it");
+    expect(buildTeamsText(30, 10, 20)).toBe("30 teams on Riley's table: main DPS in 10, support in 20");
   });
 });

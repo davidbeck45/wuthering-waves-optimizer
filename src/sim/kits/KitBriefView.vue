@@ -65,7 +65,7 @@
             Riley's table (Team rankings) opens on each team's average damage per rotation: tap the “Avg damage / rotation” heading there for team DPS, the figure on this page.
           </p>
           <details class="kit-more">
-            <summary>What his standard builds are, and why other pages show other numbers</summary>
+            <summary>What Riley's standard builds are, and why other pages show other numbers</summary>
             <p class="kit-muted">{{ basisText(file._meta) }}</p>
             <p class="kit-muted mt-1">{{ WHY_ENGINES_DIFFER }}</p>
           </details>
@@ -209,8 +209,8 @@
           <div class="kit-list">
             <details v-for="(l, n) in builds" :key="l.id" class="kit-card kit-cost" :open="n === 0" :data-test-kit-build="l.id">
               <summary class="kit-cost__head">
-                <h3 class="kit-cost__label">{{ l.title }}</h3>
-                <span class="kit-cost__best">{{ l.teams }} {{ l.teams === 1 ? "team" : "teams" }} on Riley's table: main DPS in {{ l.main }}, support in {{ l.support }}</span>
+                <h3 class="kit-cost__label">{{ l.title }}<span class="sr-only">: </span></h3>
+                <span class="kit-cost__best" data-test-kit-build-teams>{{ buildTeamsText(l.teams, l.main, l.support) }}</span>
               </summary>
               <p v-if="l.mode" class="kit-muted mb-2">{{ l.mode }}.</p>
               <dl class="kit-dl">
@@ -407,6 +407,7 @@ import {
   type KitMember,
   type KitTeam,
   type KitsFile,
+  buildTeamsText,
 } from "./kits";
 import briefsUrl from "./data/kits.json?url"; // the file's address, not its contents: fetched below, with this page
 import { BriefsError, KIT_INDEX_ENTRIES, loadKits } from "./load";
