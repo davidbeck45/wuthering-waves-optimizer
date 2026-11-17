@@ -291,6 +291,7 @@ describe("resonator briefs", () => {
       const account = Cypress.$("[data-test-kit-account]")[0]!;
       expect($d[0]!.compareDocumentPosition(account) & Node.DOCUMENT_POSITION_FOLLOWING, "the note comes first").to.be.greaterThan(0);
     });
+    cy.get("[data-test-kit-unmet]").should("contain.text", "Forte Heavy - Woven Fairytale: needs 300 Forte gauge");
     // where her figures can be found on his table, and in which column
     cy.get("[data-test-kit-table-hint]").should("contain.text", "“Avg damage / rotation” heading there for team DPS");
     // a support's Team Costs raise the main DPS, not her: said, since her own S2 reads another figure in the ladder
@@ -300,6 +301,7 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
     cy.get("[data-test-kit-differs]").should("not.exist");
     cy.get("[data-test-kit-support-costs]").should("not.exist"); // she is a main DPS
+    cy.get("[data-test-kit-unmet]").should("not.exist");
     // a 4★ support is S6 at every Team Cost on his table: the line would be wrong there
     cy.visit("/kit/sanhua", seed());
     cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");

@@ -14,6 +14,7 @@ import { appKeyOf, rileyNameOf } from "../rankings/rileyNames";
 import { loadSequenceBreakpoints } from "../presets";
 import {
   differsText,
+  unmetText,
   COST_CODE,
   changeScope,
   costLabel,
@@ -298,6 +299,23 @@ describe("who the app shows (the registry rule)", () => {
 });
 
 describe("the model's readings", () => {
+  it("a press the engine lets through short of its gauge is said in a player's words (Lily's Woven heavies); none, nothing", () => {
+    expect(unmetText({}, "Aemeath")).toBeNull();
+    const lily = file.kits.Lily!;
+    expect(lily.unmet?.map((u) => u.cast)).toEqual(expect.arrayContaining(["Forte Heavy - Woven Fairytale", "Forte Heavy - Woven Phantasm"]));
+    for (const u of lily.unmet!) {
+      expect(u.gauge, u.cast).toMatch(/^(concerto|forte\d)$/);
+      expect(u.need, u.cast).toBeGreaterThan(0);
+      expect(u.teams, u.cast).toBeGreaterThan(0);
+    }
+    const t = unmetText(lily, "Lily")!;
+    expect(t.head).toBe("Riley's engine lets Lily press some attacks without the gauge they need, and counts their damage.");
+    expect(t.rows.find((r) => r.startsWith("Forte Heavy - Woven Fairytale"))).toMatch(/^Forte Heavy - Woven Fairytale: needs 300 Forte gauge, pressed short of it in \d+ teams? run for this page$/);
+    expect(t.tail).toContain("can be higher than the game allows");
+    // the only resonator the engine warns about tonight; a new one shows up here and gets its note by itself
+    expect(kits.filter((k) => k.unmet?.length).map((k) => k.name)).toEqual(["Lily"]);
+  });
+
   it("a brief whose engine kit is not the released game's opens with a plain warning; one that is says nothing", () => {
     expect(differsText({}, "Aemeath")).toBeNull();
     expect(differsText({ differs: { why: "x", rows: [] } }, "Aemeath")).toBeNull();

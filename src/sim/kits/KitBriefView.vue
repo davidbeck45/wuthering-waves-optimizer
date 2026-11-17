@@ -48,6 +48,14 @@
           <p class="kit-muted mt-1">{{ differs.tail }}</p>
         </div>
 
+        <div v-if="unmet" class="kit-card kit-card--warn" role="note" data-test-kit-unmet>
+          <p class="kit-text"><b>{{ unmet.head }}</b></p>
+          <ul class="kit-list mt-1">
+            <li v-for="(row, n) in unmet.rows" :key="n" class="kit-muted">{{ row }}</li>
+          </ul>
+          <p class="kit-muted mt-1">{{ unmet.tail }}</p>
+        </div>
+
         <div data-test-kit-basis>
           <p class="kit-muted">
             Every figure on this page is <b>wuwa_calc's team DPS</b> (Riley31415's engine, damage per second) on <b>his standard builds</b>, not your account's.
@@ -393,6 +401,7 @@ import {
   teamOf,
   teamsByCost,
   tierLabel,
+  unmetText,
   weaponKindLabel,
   weaponSteps,
   type KitMember,
@@ -513,6 +522,7 @@ function jump(id: string): void {
 const roleLines = computed(() => (kit.value && file.value ? roleText(kit.value, name.value, file.value._meta.sustain.filter((n) => shownIndex.value.some((k) => k.name === n))) : []));
 const mixLines = computed(() => (kit.value ? mixText(kit.value, name.value) : []));
 const differs = computed(() => (kit.value ? differsText(kit.value, name.value) : null));
+const unmet = computed(() => (kit.value ? unmetText(kit.value, name.value) : null));
 
 // ---- how they are played
 const titles = computed(() => (kit.value ? loadoutTitles(kit.value.loadouts) : []));

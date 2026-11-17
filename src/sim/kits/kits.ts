@@ -133,6 +133,11 @@ export interface Kit extends Omit<KitIndexEntry, "main" | "support"> {
    * regenerated.
    */
   differs?: KitDiffers;
+  /**
+   * Presses his engine made while the generator ran it although their gauge was short (it lets them through and counts
+   * their damage). Absent once his kit fills the gauge and the data is regenerated.
+   */
+  unmet?: Array<{ cast: string; gauge: string; need: number; teams: number }>;
 }
 
 export interface KitDiffers {
@@ -158,6 +163,19 @@ export function differsText(kit: Pick<Kit, "differs">, name: string): null | { h
       `Every team DPS, ranking and investment step on this page comes from his engine, so it uses ${d.source ? `the ${d.source}` : "his"} numbers for these hits. ` +
       `This app's own figures (the calculator, My account, the stock loops) use the released game's. ` +
       `This note goes away by itself once his engine has the released kit.`,
+  };
+}
+
+const GAUGE_WORDS: Record<string, string> = { concerto: "Concerto Energy", forte1: "Forte gauge", forte2: "second Forte gauge", forte3: "third Forte gauge" };
+
+/** The warning on presses his engine makes without the gauge they need, in a player's words; null when there are none. */
+export function unmetText(kit: Pick<Kit, "unmet">, name: string): null | { head: string; rows: string[]; tail: string } {
+  const u = (kit.unmet ?? []).filter((x) => x.teams > 0);
+  if (!u.length) return null;
+  return {
+    head: `Riley's engine lets ${name} press some attacks without the gauge they need, and counts their damage.`,
+    rows: u.map((x) => `${x.cast}: needs ${x.need} ${GAUGE_WORDS[x.gauge] ?? x.gauge}, pressed short of it in ${x.teams} ${x.teams === 1 ? "team" : "teams"} run for this page`),
+    tail: `In the game those presses would have to wait, so team figures with ${name} can be higher than the game allows. This note goes away by itself once his engine fills the gauge.`,
   };
 }
 
