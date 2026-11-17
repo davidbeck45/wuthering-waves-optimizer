@@ -5182,3 +5182,98 @@ the first solve lowers the second team by 4.7 %, the guard leaves it at today's 
 a third team sharing the main DPS; the Energy Regen case stays in the plan; the Save's builds worn read each card's
 figure; the review's words); `cypress/e2e/rotation.cy.ts` (a male Rover's picker and opened team) and
 `buildAccount.cy.ts` (a team kept as it is, at 412 px and 130 % text, through the Save).
+
+## Buffs that cannot be on together, and three loose ends of Optimize team (batch 4, track "post-merge", 2026-11-16)
+
+### A build with two buffs on that the game does not allow together — `src/sim/buffConflicts/`
+
+Ryan marks buffs that cannot both be active with `mutuallyExclusiveWith` (his ADR 0031) and enforces it where a switch
+is flipped. Nothing re-reads a build saved before he marked a pair, so such a build keeps both on and every page counts
+both. His #700 marked Sigrika's Schemata of Runes and Soliskin Vitality; David's Sigrika was saved with both.
+
+| Piece | Role |
+|---|---|
+| `buffConflicts.ts` | pure. `conflictsIn(defs, record)`: the pairs both on in one build that his definitions mark exclusive, read from his field on character buffs, chain entries and the passives of the weapon that build holds; a pair only one side declares counts. "On" is the engine's rule: the switch is on (an always-on weapon passive needs none) and a stacked buff has at least one step of stacks. `buildRecordsOf`: the live record is the build in use (its own `builds[]` entry is stale by design), each other entry is laid over it. `findBuffConflicts(characters)`: the whole account. `withOnly`: a copy with one side off, for a figure. `keepOnlyUpdate`: his own `buildBuffToggleUpdate` for the kept side, plus the other side off for a pair only the other declares |
+| `conflictFigures.ts` | the best rotation (the roster ranking's candidates and enemy) and the strongest team the account can field (`createTeamScorer`, exact or absent with the reason), scored as saved, with only the one, with only the other. Copies only: the account handed in is never changed |
+| `conflictText.ts` | the wording, and `overcountOf`: what the pair does, read off the figures |
+| `useBuffConflicts.ts` | one state for the app: a check per visit and again when a switch it reads changes or another tab writes; figures in slices; `keepOnly` |
+| `BuffConflictNotices.vue` | the notice: `/account` (top, with the quiet list), the character drawer, the opened `/my-rankings` row; the row carries a "Reads too high" pill |
+| CLI and assistant | `cli conflicts` (every pair, the figures, what each does), a warning on `cli calc`, the same line in `calc_character`'s notes |
+
+Rules:
+- **Hard-code no buff.** The check reads his field; a pair he marks later is found with no change here. A test walks
+  every kit he ships and expects each marked pair to be found when a build has both on.
+- **Marked exclusive and both on is not always a double count, so the notice claims only what it measured.** For some
+  pairs the engine already takes one alone: Lupa's Sequence 3 over her inherent skill (`stats.ts` drops the inherent's
+  RES ignore), Brant's two Moments. On David's account three of four pairs are of that kind. `overcountOf` reads it off
+  the three figures: `twice` when the saved figure is above both single ones (the warning, the pill, the CLI warning),
+  `stronger` when it equals one of them (one quiet line on `/account`, folded: "The engine already counts only … so no
+  figure reads too high"), `neither`, `unknown` (nothing to score: said as "if").
+- **Never change his data to compute a figure.** Every figure runs on `withOnly`'s copy; tests compare the account
+  before and after.
+- **Nothing is switched off for the player.** Which one is right depends on how the character is played, so the notice
+  shows his own description of each and three buttons: the calculator on the section that holds the switches
+  (`/?screen=character`, or `weapon` for two weapon passives), and Keep only for each side. Keep only takes a Build
+  history version first (label "Before keeping one of two buffs"), then writes his toggle update through
+  `setCharacterData`, to the build in use only. It writes nothing, and looks again, when the pair is no longer both on
+  in that build or the build in use was switched since the check. A saved build that is not in use has no such button.
+- The figures are the roster ranking's: "as saved" for the build in use is the `/my-rankings` row's own number.
+
+Figures (9-16 export): Sigrika's best rotation 6,758,150 as saved, 6,380,883 with only Schemata of Runes (5.6 % lower),
+6,094,439 with only Soliskin Vitality (9.8 % lower); her team Sigrika · Mornye + Lucilla 7,187,788 / 6,800,878 /
+6,492,783. Two copies of the export with one buff off each, run through `cli team`, gave the same two team figures.
+
+Not covered: a per-action override (`advancedConfig`) that switches a buff on for one action. The check reads the
+build's switches.
+
+Gates: `buffConflicts/buffConflicts.test.ts`, `useBuffConflicts.test.ts` (four mutants red: a stacked buff at 0 counted
+as on, the active build read from its stale entry, Keep only without the "still on" check, a figure worked out on the
+record itself), `cypress/e2e/buffConflicts.cy.ts` (the notice and figures, nothing written by working them out, Keep
+only, the row pill, the calculator link, the drawer at 412 and 360 px at 130 %).
+
+### Optimize team keeps its last result — `teamContext/teamOptimizerKept.ts` (hunt 2, phone flows L2)
+
+Optimize team is a view inside `/teams` with no history entry, and its state lives in the component: Back, another
+page or "Back to team" dropped the result and stopped a search, with no word. The rule is Build my team's `keptReview`:
+the result stays in page memory, tied to the team, to `accountFingerprint` as the search read it and to the team-buff
+switch it was scored under. Opening Optimize team on that team again shows it, with the setup it ran with and a line
+that says so. Anything it read having changed, a Save, "Edit & run again", a new search or Settings › Clear saved
+results puts it down. A search that leaving stopped says so once on the way back, as the echo check on `/account` does;
+its workers belong to the component, so it cannot go on without the page. Memory only: a reload costs a re-run.
+Leaving is seen through `onScopeDispose`, so the hook in his composable is the memory, `restore()` at the end of
+`initialize()` and the note in what it returns. No confirm on leaving: no plus page has one, and a phone's Back cannot
+be held reliably.
+
+### What the search cannot read — `teamContext/teamOptimizerOverrides.ts` (hunt 2, solver L1)
+
+An action that switches a weapon effect for that action alone is worked into the stats by his scorer
+(`scoreOptimizerRotation`), but the attack is handed the build's own weapon data, so an effect an attack reads itself
+(a DMG Amplification for one damage type, a DEF ignore) stays as the build has it. The search then ranks on a score the
+Team page does not calculate, and his page asked the player to report the team in the Discord. Rows were the Team
+page's figures all along. Now, on a mismatch on a team with such a switch, the Team page's calculation runs once more
+with those switches taken out: when that is exactly the search's score, the gap is this and nothing else and the page
+says so (`TeamOptimizerOverrideNote.vue`); any other mismatch keeps his alert word for word.
+
+The cause is one line in his shared scorer and is not changed here: `buildOptimizerCalculationContext({ ...context,
+weaponData: { ...context.weaponData, weaponPassiveStats: variant.weaponPassiveStats }, ...variant.effectiveEnemyStacks },
+…)` in `src/calculator/optimizer.ts`. Tried on a scratch copy: the mismatch test flips (the search then reads the
+switch), type-check clean, his calculator tests and plus's optimizer and Build my team suites green (65 files, 843
+tests). A rotation with per-action overrides is scored by his function alone and is never pruned (`rotationScore.ts`,
+`loadoutBound.ts` return early for one), so the load bound's argument is not touched by it.
+
+### The drawer on a build read by its name (verify-a, 2026-11-16)
+
+`TeamOptimizerSetup.vue` told the Edit drawer the team's pin and nothing else. With no pin and team buffs following the
+team's members, the Team page reads a build named for the teammates, and the drawer said "Default build" and wrote the
+calculator's settings. It now asks `drawerScopeOf` (`optimizerDrawerScope.ts`) for the build `resolveTeamBuilds` gives
+the slot. A Cypress case can cover it after all: team buffs are off under Cypress only until the spec ticks the switch.
+
+Gates: `teamContext/teamOptimizerOnPlus.test.ts` ("when the page is left", "with a per-action weapon switch"),
+`optimizerDrawerScope.test.ts`, `cypress/e2e/teamOptimizerPhone.cy.ts` (10 tests), his `teamRotations/teamOptimizer.cy.ts`.
+
+Things learned:
+- **A marker in his data is a claim about the game, not about his engine.** Three of four marked pairs on one account
+  were already counted once. Measure before you warn.
+- **A harness that calls a composable outside a component never unmounts it.** `effectScope()` and `scope.stop()` give
+  a leave to test, and `onScopeDispose` in the plus module needs no line in his unmount hook.
+- **His cancelled run's promise never settles.** A test that awaits it hangs.
