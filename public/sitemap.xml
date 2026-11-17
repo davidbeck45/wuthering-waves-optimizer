@@ -10,7 +10,11 @@
   </url>
   <url>
     <loc>https://wuthering-tools-plus.vercel.app/convene</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://wuthering-tools-plus.vercel.app/scanners</loc>
+    <lastmod>2026-10-27</lastmod>
   </url>
   <url>
     <loc>https://wuthering-tools-plus.vercel.app/info</loc>
@@ -73,11 +77,27 @@
     <lastmod>2026-11-07</lastmod>
   </url>
   <url>
+    <loc>https://wuthering-tools-plus.vercel.app/info/cv-echo-rating</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://wuthering-tools-plus.vercel.app/info/tuning-odds</loc>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://wuthering-tools-plus.vercel.app/info/formulas</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://wuthering-tools-plus.vercel.app/info/credits</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
     <loc>https://wuthering-tools-plus.vercel.app/privacy</loc>
-    <lastmod>2024-11-12</lastmod>
+    <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://wuthering-tools-plus.vercel.app/legal</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2026-11-06</lastmod>
   </url>
 </urlset>
