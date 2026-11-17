@@ -516,3 +516,50 @@ html[data-theme-style="light"] .el-score-text--good {
   flex: 1 1 14rem;
   min-width: 0;
 }
+
+/* The calculator's Engine view (EchoLabEngineView.vue): a bar that says its two findings and opens to the rest.
+   A native <details>, so Enter and Space open it; its marker is the chevron at the right. 44 px tall at least. */
+.el-engine__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  list-style: none;
+}
+.el-engine__bar::-webkit-details-marker {
+  display: none;
+}
+.el-engine__bar:focus-visible {
+  outline: 2px solid var(--wt-focus, oklch(var(--p)));
+  outline-offset: 2px;
+}
+.el-engine__summary {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: oklch(var(--bc) / 0.75);
+}
+.el-engine__part + .el-engine__part::before {
+  content: " · ";
+  color: oklch(var(--bc) / 0.6);
+  font-weight: 400;
+}
+.el-engine__chevron {
+  transition: transform 0.15s ease;
+}
+.el-engine[open] > .el-engine__bar .el-engine__chevron {
+  transform: rotate(180deg);
+}
+/* open, the cards below say all of it: the bar keeps its title */
+.el-engine[open] > .el-engine__bar .el-engine__summary {
+  display: none;
+}
+/* the echo to re-roll is named whole: on a phone "Reminiscence: Kronaclaw" was cut to "Reminiscenc…" */
+.el-engine .echo-lab-echo .truncate {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

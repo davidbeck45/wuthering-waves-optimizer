@@ -1,93 +1,96 @@
 <template>
-  <section ref="root" class="echo-lab-engine mt-4 rounded-lg border border-base-300 bg-base-200/50 p-3" data-test-echo-lab-engine>
-    <div class="flex items-start justify-between gap-2">
-      <div class="min-w-0">
-        <h3 class="flex items-center gap-1.5 text-sm font-semibold">
-          <span class="max-sm:hidden">Engine view for this build</span><span class="sm:hidden">Engine view</span>
+  <details ref="root" class="echo-lab-engine el-engine mb-4 rounded-lg border border-base-300 bg-base-200/50" :open="OPEN_BY_DEFAULT" data-test-echo-lab-engine>
+    <summary class="el-engine__bar" data-test-echo-lab-engine-toggle>
+      <span class="min-w-0 flex-1">
+        <span class="flex items-center gap-1.5">
+          <h3 class="text-sm font-semibold"><span class="max-sm:hidden">Engine view for this build</span><span class="sm:hidden">Engine view</span></h3>
           <span class="badge badge-primary badge-outline badge-xs">Tools+</span>
           <span v-if="loading" class="loading loading-spinner loading-xs opacity-60" data-test-echo-lab-engine-loading></span>
-        </h3>
-        <p class="truncate text-xs opacity-60" :title="view?.rotationName">
+        </span>
+        <span class="el-engine__summary" data-test-echo-lab-engine-summary>
+          <span v-for="part in summary" :key="part.key" class="el-engine__part" :class="{ 'el-er-short': part.warn }" :data-test-echo-lab-engine-summary-part="part.key">
+            {{ part.label }}<b v-if="part.value" class="font-semibold" :class="part.key === 'benchmark' && score !== null ? `el-score-text--${scoreBand(score)}` : ''">{{ " " + part.value }}</b>{{ part.note ? " " + part.note : "" }}
+          </span>
+        </span>
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="el-engine__chevron size-4 shrink-0 opacity-60" fill="none" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6" />
+      </svg>
+    </summary>
+
+    <div class="px-3 pb-3">
+      <div class="flex items-start justify-between gap-3">
+        <p class="min-w-0 text-xs opacity-60" data-test-echo-lab-engine-rotation>
           <template v-if="view">On {{ view.rotationName }} · level 100, 20 % RES</template>
           <template v-else>Best rotation · level 100, 20 % RES</template>
         </p>
-      </div>
-      <RouterLink :to="labLink" class="link link-primary shrink-0 text-xs no-underline hover:underline" data-test-echo-lab-engine-link>Echo Lab ›</RouterLink>
-    </div>
-
-    <p v-if="error" class="mt-2 text-xs opacity-70" data-test-echo-lab-engine-error>{{ error }}</p>
-
-    <div v-else-if="!view" class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2" aria-hidden="true">
-      <div class="skeleton h-16 rounded-lg"></div>
-      <div class="skeleton h-16 rounded-lg"></div>
-      <div class="skeleton h-12 rounded-lg sm:col-span-2"></div>
-    </div>
-
-    <div v-else class="mt-3 grid grid-cols-1 gap-3 transition-opacity sm:grid-cols-2" :class="{ 'opacity-60': loading }">
-      <!-- benchmark -->
-      <div class="rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-benchmark>
-        <div class="flex items-baseline justify-between gap-2">
-          <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Benchmark</span>
-          <span v-if="score !== null" class="font-mono text-2xl font-extrabold tabular-nums leading-none" :class="`el-score-text--${scoreBand(score)}`" data-test-echo-lab-engine-score>{{ pct(score, 0) }}</span>
-          <span v-else class="text-xs opacity-60">—</span>
-        </div>
-        <div v-if="score !== null" class="el-score-track mt-2" role="meter" :aria-valuenow="Math.round(score * 100)" aria-valuemin="0" aria-valuemax="200" aria-label="Benchmark score">
-          <div class="el-score-fill" :class="`el-score-fill--${scoreBand(score)}`" :style="{ width: `${(score / 2) * 100}%` }"></div>
-          <div class="el-score-mark" style="left: 50%"></div>
-        </div>
-        <p class="mt-1 text-[0.7rem] leading-snug opacity-60">{{ score !== null ? "100 % = a realistic spread, 200 % = perfect rolls" : view.benchmarkNote }}</p>
-        <p v-if="erLine" class="mt-1 text-[0.7rem] leading-snug" :class="erLine.short ? 'el-er-short' : 'opacity-70'" data-test-echo-lab-engine-er>{{ erLine.text }}</p>
-        <p v-if="score !== null" class="mt-1 text-[0.7rem] leading-snug opacity-60" data-test-echo-lab-engine-vs-build-score>Not the Build Score above: that rates substats against a weight table, this runs the damage engine on your best rotation.</p>
+        <RouterLink :to="labLink" class="link link-primary shrink-0 text-xs no-underline hover:underline" data-test-echo-lab-engine-link>Echo Lab ›</RouterLink>
       </div>
 
-      <!-- substats by worth -->
-      <div class="rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-substats>
-        <div class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">One more roll is worth</div>
-        <ol class="mt-1 space-y-1">
-          <li v-for="(s, i) in topSubstats" :key="s.key" class="flex items-center gap-2 text-xs" :data-test-echo-lab-engine-substat="s.key">
-            <span class="w-3 font-mono opacity-50">{{ i + 1 }}</span>
-            <img v-if="substatIcon(s.key)" :src="substatIcon(s.key) ?? undefined" alt="" class="el-icon" loading="lazy" />
-            <span class="min-w-0 flex-1 truncate">{{ s.label }}</span>
-            <span class="font-mono font-semibold tabular-nums el-up">{{ signedPct(s.gain, 2) }}</span>
-          </li>
-        </ol>
+      <p v-if="error" class="mt-2 text-xs opacity-70" data-test-echo-lab-engine-error>{{ error }}</p>
+
+      <div v-else-if="!view" class="mt-3 grid grid-cols-1 gap-3" aria-hidden="true">
+        <div class="skeleton h-24 rounded-lg"></div>
+        <div class="skeleton h-24 rounded-lg"></div>
+        <div class="skeleton h-12 rounded-lg"></div>
       </div>
 
-      <!-- re-roll first: the same pick as the Echo Lab's re-roll tab -->
-      <div class="rounded-lg bg-base-100 px-3 py-2 sm:col-span-2" data-test-echo-lab-engine-reroll>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Re-roll first</span>
-          <span v-if="reroll.running" class="flex items-center gap-1.5 text-[0.7rem] tabular-nums opacity-60" data-test-echo-lab-engine-reroll-loading>
-            <span class="loading loading-spinner loading-xs"></span>Simulating echo {{ Math.min(reroll.done + 1, reroll.total) }} of {{ reroll.total }}
-          </span>
+      <div v-else class="mt-3 grid grid-cols-1 gap-3 transition-opacity" :class="{ 'opacity-60': loading }">
+        <!-- benchmark -->
+        <div class="rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-benchmark>
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Benchmark</span>
+            <span v-if="score !== null" class="font-mono text-2xl font-extrabold tabular-nums leading-none" :class="`el-score-text--${scoreBand(score)}`" data-test-echo-lab-engine-score>{{ pct(score, 0) }}</span>
+            <span v-else class="text-xs opacity-60">—</span>
+          </div>
+          <div v-if="score !== null" class="el-score-track mt-2" role="meter" :aria-valuenow="Math.round(score * 100)" aria-valuemin="0" aria-valuemax="200" aria-label="Benchmark score">
+            <div class="el-score-fill" :class="`el-score-fill--${scoreBand(score)}`" :style="{ width: `${(score / 2) * 100}%` }"></div>
+            <div class="el-score-mark" style="left: 50%"></div>
+          </div>
+          <p class="mt-1 text-[0.7rem] leading-snug opacity-60">{{ score !== null ? "100 % = a realistic spread, 200 % = perfect rolls" : view.benchmarkNote }}</p>
+          <p v-if="erLine" class="mt-1 text-[0.7rem] leading-snug" :class="erLine.short ? 'el-er-short' : 'opacity-70'" data-test-echo-lab-engine-er>{{ erLine.text }}</p>
+          <p v-if="score !== null" class="mt-1 text-[0.7rem] leading-snug opacity-60" data-test-echo-lab-engine-vs-build-score>Not the Build Score above: that rates substats against a weight table, this runs the damage engine on your best rotation.</p>
         </div>
-        <div v-if="first" class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <EchoLabEcho :echo="first.echo" :subtitle="false" :lines="null" />
-          <span class="text-xs opacity-60">{{ slotLabel(first.slot) }}<template v-if="first.worth !== null"> · substats add {{ signedPct(first.worth, 1) }}</template></span>
-          <span v-for="l in first.lines" :key="l.field" class="el-chip el-chip--reroll" data-test-echo-lab-engine-reroll-line>Re-roll {{ lineText(l.key, l.value) }}</span>
-          <span v-if="first.plan" class="w-full text-xs tabular-nums opacity-80">
-            {{ first.plan.locks ? `Lock ${first.plan.locks}, re-roll ${first.plan.rerolledFields.length}` : `Re-roll all ${first.plan.rerolledFields.length}` }}:
-            {{ pct(first.plan.pImprove, 0) }} to improve, <span class="el-up">{{ signedPct(first.plan.expectedGain, 2) }}</span> expected,
-            {{ first.plan.cost }} Transducer{{ first.plan.cost === 1 ? "" : "s" }} a try <span class="opacity-60">(verify in game)</span>
-          </span>
-        </div>
-        <p v-else-if="!reroll.running" class="mt-1 text-xs opacity-70" data-test-echo-lab-engine-reroll-none>{{ rerollNote }}</p>
-        <div v-else class="skeleton mt-1 h-10 rounded-lg" aria-hidden="true"></div>
-      </div>
 
-      <!-- Why this number: the damage this panel's figures stand on, opened up (src/sim/anatomy/) -->
-      <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg bg-base-100 px-3 py-2 sm:col-span-2" data-test-echo-lab-engine-why>
-        <span class="text-xs tabular-nums opacity-80"><b class="font-mono font-semibold">{{ compact(view.base) }}</b> average damage on this rotation, level 100, 20 % RES</span>
-        <WhyNumberButton :character-id="character" :rotation-name="view.rotationName" size="sm" />
+        <!-- re-roll first: the same pick as the Echo Lab's re-roll tab -->
+        <div class="rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-reroll>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Re-roll first</span>
+            <span v-if="reroll.running" class="flex items-center gap-1.5 text-[0.7rem] tabular-nums opacity-60" data-test-echo-lab-engine-reroll-loading>
+              <span class="loading loading-spinner loading-xs"></span>Simulating echo {{ Math.min(reroll.done + 1, reroll.total) }} of {{ reroll.total }}
+            </span>
+          </div>
+          <div v-if="first" class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <EchoLabEcho :echo="first.echo" :subtitle="false" :lines="null" />
+            <span class="text-xs opacity-60">{{ slotLabel(first.slot) }}<template v-if="first.worth !== null"> · substats add {{ signedPct(first.worth, 1) }}</template></span>
+            <span v-for="l in first.lines" :key="l.field" class="el-chip el-chip--reroll" data-test-echo-lab-engine-reroll-line>Re-roll {{ lineText(l.key, l.value) }}</span>
+            <span v-if="first.plan" class="w-full text-xs tabular-nums opacity-80">
+              {{ first.plan.locks ? `Lock ${first.plan.locks}, re-roll ${first.plan.rerolledFields.length}` : `Re-roll all ${first.plan.rerolledFields.length}` }}:
+              {{ pct(first.plan.pImprove, 0) }} to improve, <span class="el-up">{{ signedPct(first.plan.expectedGain, 2) }}</span> expected,
+              {{ first.plan.cost }} Transducer{{ first.plan.cost === 1 ? "" : "s" }} a try <span class="opacity-60">(verify in game)</span>
+            </span>
+          </div>
+          <p v-else-if="!reroll.running" class="mt-1 text-xs opacity-70" data-test-echo-lab-engine-reroll-none>{{ rerollNote }}</p>
+          <div v-else class="skeleton mt-1 h-10 rounded-lg" aria-hidden="true"></div>
+        </div>
+
+        <!-- Why this number: the damage this panel's figures stand on, opened up (src/sim/anatomy/) -->
+        <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg bg-base-100 px-3 py-2" data-test-echo-lab-engine-why>
+          <span class="text-xs tabular-nums opacity-80"><b class="font-mono font-semibold">{{ compact(view.base) }}</b> average damage on this rotation, level 100, 20 % RES</span>
+          <WhyNumberButton :character-id="character" :rotation-name="view.rotationName" size="sm" />
+        </div>
       </div>
     </div>
-  </section>
+  </details>
 </template>
 
 <script setup lang="ts">
 // Wuthering Tools+ Echo Lab — "Engine view for this build" inside the v3 calculator's Echo Insights: the benchmark
-// score, the three substats one more roll of is worth most on the best rotation, and the echo (and line) to re-roll
-// first. Two steps in the worker: one `engineView` job (engineView.ts, without its re-roll part) for the first
+// score and the echo (and line) to re-roll first. What one more roll of a substat adds is Ryan's table on that panel
+// since his #693, so the view no longer lists it (plus's own list is /my-rankings › Substats and `cli weights`). The
+// view sits above his table as a bar that says its two findings (engineSummary.ts) and opens to the rest: open, it is
+// 400 px tall on a desktop and 900 px on a phone at 130 % text, which put his table off the first screen.
+// Two steps in the worker: one `engineView` job (engineView.ts, without its re-roll part) for the first
 // numbers, then one `reroll` job per full echo — the very jobs the /echo-lab re-roll tab runs, so the worker's cache
 // answers the tab at once — picked with `pickRerollFirst`, the tab's rule. Re-run a moment after the build changes,
 // and only in the displayed panel (upstream renders a hidden twin of Echo Insights for the other breakpoint).
@@ -102,13 +105,18 @@ import EchoLabEcho from "./EchoLabEcho.vue";
 import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
 import { compact } from "../myRankings/format";
 import { getEchoLabClient, labAccountOf } from "./echoLabClient";
-import { erFloorLine, lineText, pct, scoreBand, signedPct, slotLabel, substatIcon } from "./echoLabView";
+import { echoName, erFloorLine, lineText, pct, scoreBand, signedPct, slotLabel } from "./echoLabView";
+import { engineSummary } from "./engineSummary";
 import type { EngineViewResult } from "./engineView";
 import type { LineAdvice, LockPlan, RerollAdviceResult } from "./rerollAdvice";
 import { pickRerollFirst, rerolledLines, rerollOptionsFor } from "./rerollPick";
 import "./echoLab.css";
 
 const props = defineProps<{ character: string }>();
+
+/** The view starts closed, as a bar with its two findings. `true` opens it on arrival instead (it then stands about
+ *  400 px tall above Ryan's roll table on a desktop, 900 px on a phone at 130 % text). */
+const OPEN_BY_DEFAULT = false;
 
 interface PanelResult {
   view: EngineViewResult;
@@ -134,7 +142,6 @@ const reroll = reactive({ running: false, done: 0, total: 0 });
 const score = computed(() => view.value?.benchmark?.score ?? null);
 /** the build's ER against the need the score respects (the Echo Lab benchmark tab's need, same numbers) */
 const erLine = computed(() => erFloorLine(view.value?.benchmark?.erNeed, view.value?.benchmark?.erHave));
-const topSubstats = computed(() => (view.value?.substats ?? []).filter((s) => s.gain > 0).slice(0, 3));
 const labLink = computed(() => ({ path: "/echo-lab", query: { tab: "reroll", character: props.character } }));
 
 /** the echo to re-roll first, once every full echo has its advice (never a half-done pick) */
@@ -153,6 +160,18 @@ const first = computed<{ slot: number; echo: string | null; worth: number | null
   };
 });
 const fullEchoes = computed(() => (view.value?.echoes ?? []).filter((e) => e.lines >= 5));
+/** the closed bar's line: the benchmark, an Energy Regen shortfall, the echo to re-roll first */
+const summary = computed(() =>
+  engineSummary({
+    error: error.value,
+    ready: !!view.value,
+    score: score.value,
+    erShort: !!erLine.value?.short,
+    reroll,
+    pick: first.value ? echoName(first.value.echo) : null,
+    fullEchoes: fullEchoes.value.length,
+  }),
+);
 const rerollNote = computed(() => {
   const v = view.value;
   if (!v) return "";

@@ -202,17 +202,10 @@ describe("Why this number", () => {
     cy.viewport(WIDE, 1200);
     cy.visit("/", seed());
     cy.get('[data-test-calculator-nav="echoes"]').filter(":visible").click();
-    // the engine view sits under Ryan's roll table (#693) in a sticky sidebar now taller than the screen: it comes up
-    // near the end of the Echoes screen's scroll, so scroll until it is on screen (see echoLab.cy.ts)
-    cy.get("[data-test-echo-insights-panel]")
-      .filter(":visible")
-      .find("[data-test-echo-lab-engine]")
-      .should(($engine) => {
-        $engine[0]!.scrollIntoView({ block: "center" });
-        expect($engine).to.be.visible;
-      })
-      .find('[data-test-echo-lab-engine-why] [data-test-why-number="Cartethyia"]', RUN)
-      .click();
+    // the engine view is a bar above Ryan's roll table (#693), on the first screen: open it for Why this number
+    cy.get("[data-test-echo-lab-engine]").filter(":visible").as("engine");
+    cy.get("@engine").find("[data-test-echo-lab-engine-toggle]").click();
+    cy.get("@engine").find('[data-test-echo-lab-engine-why] [data-test-why-number="Cartethyia"]', RUN).click();
     sheet().should("have.attr", "open");
     settled();
     cy.get("[data-test-anatomy-total]").invoke("text").as("panel");

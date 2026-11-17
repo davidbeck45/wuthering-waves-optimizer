@@ -254,22 +254,42 @@ describe("Echo Lab", () => {
   });
 
   it("shows the engine view for the build in the v3 calculator's Echo Insights, linked to the re-roll tab", () => {
-    cy.viewport(1440, 1200);
+    // 900 px tall: the bar and Ryan's roll table under it are both on the first screen, with no scroll
+    cy.viewport(1440, 900);
     cy.visit("/", seed());
     cy.get('[data-test-calculator-nav="echoes"]').filter(":visible").click();
-    // The insights sidebar is sticky, and with Ryan's roll table (#693) above the engine view it is taller than the
-    // screen: the view comes up only near the end of the Echoes screen's scroll, and one scrollIntoView stops short of
-    // that (the sidebar sticks under it). Scroll until it is on screen; Cypress counts what the scroll area clips as hidden
+    cy.get("[data-test-echo-lab-engine]").filter(":visible").as("engine");
+    // closed, it is a bar that says its two findings: the benchmark with its scale, and the echo to re-roll first
+    cy.get("@engine").should("not.have.attr", "open");
+    cy.get("@engine")
+      .find('[data-test-echo-lab-engine-summary-part="benchmark"]', RUN)
+      .should("be.visible")
+      .invoke("text")
+      .should("match", /Benchmark \d+% \(100 % = a realistic spread\)/);
+    cy.get("@engine").find('[data-test-echo-lab-engine-summary-part="reroll"]', RUN).should("not.contain.text", "simulating").and("contain.text", "Re-roll first:");
+    // what one more roll adds is Ryan's table on this panel (#693): the view no longer lists it, and sits above his
+    cy.get("@engine").find("[data-test-echo-lab-engine-substats], [data-test-echo-lab-engine-substat]").should("not.exist");
+    cy.get("@engine").should("not.contain.text", "One more roll");
     cy.get("[data-test-echo-insights-panel]")
       .filter(":visible")
-      .find("[data-test-echo-lab-engine]")
-      .should(($engine) => {
-        $engine[0]!.scrollIntoView({ block: "center" });
-        expect($engine).to.be.visible;
-      })
-      .as("engine");
-    cy.get("@engine").find("[data-test-echo-lab-engine-benchmark]", RUN).invoke("text").should("match", /\d+%/);
-    cy.get("@engine").find("[data-test-echo-lab-engine-substat]").should("have.length", 3);
+      .find("[data-test-echo-insights-substat-table]")
+      .should("be.visible")
+      .then(($table) => {
+        cy.get("@engine").then(($engine) => {
+          const bar = $engine[0]!.getBoundingClientRect();
+          const table = $table[0]!.getBoundingClientRect();
+          expect(bar.bottom, "the bar is above his table").to.be.lessThan(table.top);
+          expect(bar.bottom, "the bar is on the first screen").to.be.lessThan(900);
+          expect(table.top, "his table starts on the first screen").to.be.lessThan(900);
+          expect(bar.height, "closed, the bar is a few lines").to.be.lessThan(120);
+        });
+      });
+    // it opens to the rest: the benchmark card, re-roll first, Why this number
+    cy.get("@engine").find("[data-test-echo-lab-engine-benchmark]").should("not.be.visible");
+    cy.get("@engine").find("[data-test-echo-lab-engine-toggle]").click();
+    cy.get("@engine").should("have.attr", "open");
+    cy.get("@engine").find("[data-test-echo-lab-engine-benchmark]", RUN).should("be.visible").invoke("text").should("match", /\d+%/);
+    cy.get("@engine").find("[data-test-echo-lab-engine-why]").should("be.visible");
     cy.get("@engine").find("[data-test-echo-lab-engine-reroll-loading]", RUN).should("not.exist");
     cy.get("@engine")
       .find("[data-test-echo-lab-engine-link]")

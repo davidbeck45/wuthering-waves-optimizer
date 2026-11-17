@@ -84,6 +84,7 @@
           {{ rollValues ? "substats are ordered by damage." : "this shows raw totals only." }}
         </p>
 
+        <EchoLabEngineHook :character="character" /><!-- Wuthering Tools+: Echo Lab's engine view for this build (src/sim/echoLab/) -->
         <div v-if="tableGroups.length" class="flex flex-col gap-0.5 mb-1" data-test-echo-insights-roll-note>
           <span class="text-xs font-semibold uppercase tracking-wide opacity-60">
             {{ insights.isCurated ? "Priority substats" : "Your substats" }}
@@ -133,7 +134,6 @@
           data-test-echo-insights-roll-unavailable>
           Pick an attack or rotation in the Live Result Bar to see what each substat adds.
         </p>
-        <EchoLabEngineHook :character="character" /><!-- Wuthering Tools+: Echo Lab's engine view for this build (src/sim/echoLab/) -->
       </template>
     </div>
   </div>
