@@ -1,23 +1,21 @@
 // Wuthering Tools+ numbers log — "What moved in your numbers": a small log of the account's own figures, one entry per
 // roster ranking that finished with something different from the entry before it. Pure: the shapes, what counts as
-// "the same record", the caps, and the stored form. recordRanking.ts writes it, compare.ts reads two entries against
-// each other, logStore.ts is the localStorage around it.
+// "the same record", the caps, and the stored form. entry.ts makes an entry from a ranking, recordRanking.ts writes it,
+// compare.ts reads two entries against each other, logStore.ts is the localStorage around it.
 //
 // One entry = when, which app build, whether the team-aware buffs switch was on, and
 //   per character   the best rotation's name and its average damage per rotation, with the signature of the build scored
 //   per team        (every team the roster can field: all three members armed) its damage, its members and, for a saved
 //                   team, a hash of the team as defined
-// A ranking that did not fully score is never an entry (recordRanking.ts refuses it: a half-scored ranking shown as whole
-// was a batch 3 bug). An entry equal to the last one is not stored. The log keeps the last MAX_ENTRIES entries and stays
+// A ranking that did not fully score is never an entry (entry.ts and recordRanking.ts refuse it: a half-scored ranking
+// shown as whole was a batch 3 bug). An entry equal to the last one is not stored. The log keeps the last MAX_ENTRIES entries and stays
 // under MAX_BYTES of JSON, oldest dropped first.
 //
 // Stored form (`{ v, s, e, seen }`): every string (ids, rotation and team names, hashes) sits once in the table `s` and
 // the entries hold indexes into it, because the same 24 characters and 96 team names repeat in every entry. On David's
 // account that is about 3 KB an entry instead of 12.
-import type { RosterRanking, RotationSource } from "../myRankings/rankRoster";
-import { buildSignature, echoIndex, teamDefinitionHash, type BuildSig } from "./signature";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { RotationSource } from "../myRankings/rankRoster";
+import type { BuildSig } from "./signature";
 
 export const NUMBERS_LOG_KEY = "wtplus:numbers:log:v1";
 export const MAX_ENTRIES = 30;
@@ -72,36 +70,6 @@ export interface NumbersLog {
 }
 
 export const emptyLog = (): NumbersLog => ({ entries: [], seen: null });
-
-export interface RankedAccount {
-  characters: Record<string, any>;
-  echoes: readonly any[];
-  teams: readonly any[];
-}
-
-/** One entry from a finished ranking and the account it scored. Null for a ranking that did not fully score. */
-export function entryFromRanking(ranking: RosterRanking, account: RankedAccount, meta: { at: number; build: string; autoTeamBuffs: boolean }): LogEntry | null {
-  if (!ranking || ranking.incomplete || !Array.isArray(ranking.characters) || !Array.isArray(ranking.teams)) return null;
-  const index = echoIndex(account.echoes);
-  const savedTeams = new Map((account.teams ?? []).map((t) => [String(t?.id), t]));
-  const characters: CharacterFigure[] = ranking.characters.map((c) => ({
-    id: c.id,
-    rotation: c.best?.name ?? null,
-    damage: Math.round(c.best?.avgDamage ?? 0),
-    sig: buildSignature(account.characters?.[c.id], index),
-  }));
-  const teams: TeamFigure[] = ranking.teams
-    .filter((t) => !t.unarmed.length) // "fieldable", as /account lists them
-    .map((t) => ({
-      id: t.id,
-      name: t.name,
-      source: t.source,
-      members: [...t.characterIds],
-      damage: Math.round(t.avgDamage),
-      def: t.source === "yours" ? teamDefinitionHash(savedTeams.get(t.id)) : "",
-    }));
-  return { at: meta.at, build: meta.build, autoTeamBuffs: meta.autoTeamBuffs, characters, teams };
-}
 
 const sigKey = (s: BuildSig): string => [s.weapon ?? "", s.refinement, s.sequence, s.hw, s.hs, s.hl, s.he, s.ho, s.rec].join("|");
 const characterKey = (c: CharacterFigure): string => [c.id, c.rotation ?? "", c.damage, sigKey(c.sig)].join("|");

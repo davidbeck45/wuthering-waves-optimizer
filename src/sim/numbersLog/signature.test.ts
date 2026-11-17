@@ -1,7 +1,11 @@
 // Wuthering Tools+ numbers log — the build signature: each part moves with the fields the engine reads for it and
 // with nothing else. Synthetic account (testAccount.ts).
 import { describe, expect, it } from "vitest";
-import { buildSignature, changedParts, echoIndex, onlyASavedBuildChanged, teamDefinitionHash, type BuildSig } from "./signature";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { buildSignature, echoIndex, teamDefinitionHash } from "./entry";
+import { changedParts, onlyASavedBuildChanged, type BuildSig } from "./signature";
 import { account } from "./testAccount";
 
 const sigOf = (acc: ReturnType<typeof account>, id = "Aaa"): BuildSig => buildSignature(acc.characters[id], echoIndex(acc.echoes));
@@ -98,5 +102,22 @@ describe("a saved team as defined", () => {
     const hash = teamDefinitionHash(team());
     expect(teamDefinitionHash({ ...team(), name: "Renamed", description: "words", enemyConfig: { enemyLevel: 120 } })).toBe(hash);
     expect(teamDefinitionHash(null)).toBe("");
+  });
+});
+
+describe("the pages that show the log", () => {
+  // /whats-new and /account's card load these. One static import of the ranking engine (or of the recorder, which
+  // reads it) from any of them would put the whole calculator behind a page that only reads a small log.
+  const PAGE_SIDE = ["signature.ts", "log.ts", "compare.ts", "view.ts", "logStore.ts", "importStamp.ts", "useNumbersLog.ts", "NumbersMoved.vue", "NumbersMoveRow.vue", "NumbersMovedCard.vue"];
+  const HEAVY = /from "(\.\.\/myRankings\/rankRoster|\.\/entry|\.\/recordRanking)"/;
+  const here = dirname(fileURLToPath(import.meta.url));
+
+  it("import the engine and the recorder as types only", () => {
+    for (const file of PAGE_SIDE) {
+      const imports = readFileSync(resolve(here, file), "utf8").split("\n").filter((line) => /^\s*import\b/.test(line) && HEAVY.test(line));
+      expect(imports.filter((line) => !/^\s*import type\b/.test(line)), file).toEqual([]);
+    }
+    // and the guard can see one: the recorder's side does import it
+    expect(readFileSync(resolve(here, "entry.ts"), "utf8")).toMatch(/import \{[^}]*\} from "\.\.\/myRankings\/rankRoster"/);
   });
 });

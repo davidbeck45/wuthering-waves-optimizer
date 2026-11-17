@@ -1,7 +1,8 @@
 // Wuthering Tools+ numbers log — what the page shows for a log as it stands: the four states and their sentences, the
 // older records to pick from, and when the log is behind the account or the app. Synthetic account, pinned clock.
 import { describe, expect, it } from "vitest";
-import { appendEntry, emptyLog, entryFromRanking, type LogEntry, type NumbersLog } from "./log";
+import { entryFromRanking } from "./entry";
+import { appendEntry, emptyLog, type LogEntry, type NumbersLog } from "./log";
 import { DAY, HOUR, T0, account, ranking } from "./testAccount";
 import { EMPTY_TEXT, NO_ACCOUNT_TEXT, agoText, firstRecordText, numbersState, pickedBase, staleness, staleText, summaryText } from "./view";
 

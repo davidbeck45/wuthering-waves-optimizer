@@ -1,6 +1,6 @@
 // Wuthering Tools+ numbers log — a small synthetic account and ranking for the tests (no real export in a commit).
 import type { CharacterRank, RosterRanking, TeamRank } from "../myRankings/rankRoster";
-import type { RankedAccount } from "./log";
+import type { RankedAccount } from "./entry";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

@@ -2,7 +2,8 @@
 // only. Synthetic account (testAccount.ts).
 import { describe, expect, it } from "vitest";
 import { ALSO_UPDATED_TEXT, biggestMoves, causeText, changeText, compareEntries, dayText, whenText, type Move, type Namer } from "./compare";
-import { entryFromRanking, type LogEntry, type RankedAccount } from "./log";
+import { entryFromRanking, type RankedAccount } from "./entry";
+import type { LogEntry } from "./log";
 import { DAY, T0, account, charRank, ranking, teamRank } from "./testAccount";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";

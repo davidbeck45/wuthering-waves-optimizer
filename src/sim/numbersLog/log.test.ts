@@ -1,7 +1,8 @@
 // Wuthering Tools+ numbers log — the log itself: what an entry holds, what "the same record" is, the caps, the stored
 // form and what a damaged one reads as. Synthetic account (testAccount.ts).
 import { describe, expect, it } from "vitest";
-import { MAX_BYTES, MAX_ENTRIES, appendEntry, decodeLog, emptyLog, encodeLog, entryFromRanking, halved, recordKey, sameRecord, type LastSeen, type LogEntry, type NumbersLog } from "./log";
+import { entryFromRanking } from "./entry";
+import { MAX_BYTES, MAX_ENTRIES, appendEntry, decodeLog, emptyLog, encodeLog, halved, recordKey, sameRecord, type LastSeen, type LogEntry, type NumbersLog } from "./log";
 import { DAY, T0, account, charRank, ranking, teamRank } from "./testAccount";
 
 const meta = (at = T0, build = "0.0.1+abc+dev", autoTeamBuffs = true) => ({ at, build, autoTeamBuffs });

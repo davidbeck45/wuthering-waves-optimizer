@@ -16,7 +16,8 @@ import { fingerprintOptions, rankingFingerprint } from "../myRankings/rankingCac
 import type { RosterRanking } from "../myRankings/rankRoster";
 import { appBuildId } from "../persist/savedResults";
 import { readImportStamp } from "./importStamp";
-import { appendEntry, entryFromRanking, type RankedAccount } from "./log";
+import { entryFromRanking, type RankedAccount } from "./entry";
+import { appendEntry } from "./log";
 import { localArea, readLog, withLogLock, writeLog, type LogArea } from "./logStore";
 
 export type RecordOutcome =

@@ -10,7 +10,8 @@ import { RANKING_CACHE_VERSION, rankingFingerprint } from "../myRankings/ranking
 import { memoryResultStore } from "../persist/resultStore";
 import { createSavedResults, onOtherBuildRecord, type OtherBuildRecord } from "../persist/savedResults";
 import { causeText, compareEntries } from "./compare";
-import { NUMBERS_LOG_KEY, decodeLog, type RankedAccount } from "./log";
+import type { RankedAccount } from "./entry";
+import { NUMBERS_LOG_KEY, decodeLog } from "./log";
 import { readLog, type LogArea } from "./logStore";
 import { recordEarlierRanking, recordScoredRanking, type RecordEnv } from "./recordRanking";
 import { DAY, HOUR, T0, account, ranking } from "./testAccount";
