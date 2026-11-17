@@ -15,6 +15,7 @@ import { keptPanelMembers, panelsFollowWeapon, weaponTeamBuffKeys } from "./team
 import { investPlan } from "../account/investPlan";
 import { followedPanelMembers, panelFiguresNote, panelKeptNote, panelKeptTag } from "./weaponValueView";
 import { POOLS, releasedItems, standardWeaponKeys } from "./pools";
+import bannerSeed from "../convene/data/bannerSeed.json";
 import { rankWeaponPool } from "./selector";
 import { createValueCache } from "./valueCache";
 import { savedResults } from "../persist/savedResults";
@@ -254,6 +255,17 @@ describe("weapon selector pools", () => {
     const characterKeys = new Set(allCharactersList.map((c) => c.key));
     expect(POOLS.v).toBe(1);
     expect(POOLS.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    // The lists are hand-entered per game version: they are stamped for the newest version the app's own data knows
+    // as released (the banner seed's release times), and the pools read from Kuro's text carry that version. When a
+    // seed regeneration brings a new version in, this goes red until the pools are read again against its patch notes
+    // (3.8's, news 5783, change neither standard pool). A players' report keeps the version it was reported for.
+    const newest = Object.keys(bannerSeed.releases).reduce((m, v) => (v.localeCompare(m, "en", { numeric: true }) > 0 ? v : m));
+    expect(POOLS.gameVersion).toBe(newest);
+    expect(POOLS.pools.filter((p) => p.verified).map((p) => [p.id, p.version])).toEqual([
+      ["standard-resonator", newest],
+      ["standard-weapon", newest],
+    ]);
+    expect(POOLS.checked >= bannerSeed.releases[newest as keyof typeof bannerSeed.releases].slice(0, 10)).toBe(true);
     expect(new Set(POOLS.pools.map((p) => p.id)).size).toBe(POOLS.pools.length);
     for (const pool of POOLS.pools) {
       expect(pool.source.length, pool.id).toBeGreaterThan(20);

@@ -146,7 +146,12 @@ describe("weapon value", () => {
     cy.visit("/weapons?tab=selector", seed());
     cy.title().should("contain", "Weapon value");
     cy.get('[data-test-weapons-pool="standard-weapon"]').click();
-    cy.get("[data-test-weapons-pool-source]").should("contain.text", "3.7").and("contain.text", "last checked");
+    // the version and the date are the data file's own (hand-entered per game version; the unit test ties them to the
+    // newest released version), so a refresh of the file never has to touch this line
+    cy.readFile("src/sim/weaponValue/data/pools.json").then((file: { checked: string; pools: Array<{ id: string; version: string }> }) => {
+      const pool = file.pools.find((p) => p.id === "standard-weapon")!;
+      cy.get("[data-test-weapons-pool-source]").should("contain.text", `Selector list for ${pool.version}, last checked ${file.checked}`);
+    });
     cy.get("[data-test-weapons-pool-item]").should("have.length", 10);
     cy.get("[data-test-weapons-pick]", { timeout: 120000 }).should("have.length", 10);
     // Emerald of Genesis: a sword — Cartethyia is the only sword user here

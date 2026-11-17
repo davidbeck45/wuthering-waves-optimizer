@@ -6,6 +6,7 @@
 import { describe, expect, it, vi } from "vitest";
 import patch37 from "./__fixtures__/patch37.json";
 import patch38 from "./__fixtures__/patch38.json";
+import bannerSeed from "../convene/data/bannerSeed.json";
 import eventNotices from "./__fixtures__/eventNotices.json";
 import kuroMenu from "./__fixtures__/kuroMenu.json";
 import { NEWS_BASE, versionReleases, type KeyValueStorage } from "../convene/banners";
@@ -330,6 +331,17 @@ describe("version 3.8: the patch notes (5783, __fixtures__/patch38.json, cut aft
       expect(m.start.slice(0, 10) > m.published.slice(0, 10), m.name).toBe(true);
     }
     expect(RULES.checked).toBe("2026-11-16");
+  });
+
+  it("has the stated end of the newest version the app's banner data knows as released, and was checked since its release", () => {
+    // Kuro states a version's end in its update-content post, before the version goes live. When a regeneration of the
+    // banner seed brings a new version in, this goes red until rules.json has that version's end and has been read
+    // again (caps, cycles, double drops) against its patch notes.
+    const newest = Object.keys(bannerSeed.releases).reduce((m, v) => (v.localeCompare(m, "en", { numeric: true }) > 0 ? v : m));
+    expect(RULES.versionEnds[newest], `rules.json versionEnds["${newest}"]`).toBeDefined();
+    const released = bannerSeed.releases[newest as keyof typeof bannerSeed.releases];
+    expect(RULES.versionEnds[newest]!.date > released.slice(0, 10)).toBe(true);
+    expect(RULES.checked >= released.slice(0, 10)).toBe(true);
   });
 });
 

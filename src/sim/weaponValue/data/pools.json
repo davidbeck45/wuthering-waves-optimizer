@@ -1,7 +1,7 @@
 {
   "v": 1,
-  "gameVersion": "3.7",
-  "checked": "2026-10-26",
+  "gameVersion": "3.8",
+  "checked": "2026-11-16",
   "pools": [
     {
       "id": "standard-resonator",
@@ -9,9 +9,9 @@
       "title": "Standard 5★ resonator",
       "subtitle": "Beginner's Choice, the Voyage Goals pick and other standard selectors",
       "items": ["Verina", "Encore", "Calcharo", "Lingyang", "Jianxin"],
-      "version": "3.7",
+      "version": "3.8",
       "verified": true,
-      "source": "Kuro, Convene Details (news 758): the Beginner's Choice targets. Patch notes 1.1–3.7 add no 5★ to the Standard Resonator Convene.",
+      "source": "Kuro, Convene Details (news 758): the Beginner's Choice targets. Patch notes 1.1–3.8 add no 5★ to the Standard Resonator Convene.",
       "sourceUrl": "https://wutheringwaves.kurogames.com/en/main/news/detail/758"
     },
     {
@@ -31,9 +31,9 @@
         "PulsationBracer",
         "BosonAstrolabe"
       ],
-      "version": "3.7",
+      "version": "3.8",
       "verified": true,
-      "source": "Kuro, Convene Details (news 758): the Standard Weapon Convene's 5★ list. Version 3.0 patch notes (news 3920): the Synth Armament series joined the Standard Weapon Convene.",
+      "source": "Kuro, Convene Details (news 758): the Standard Weapon Convene's 5★ list. Version 3.0 patch notes (news 3920): the Synth Armament series joined the Standard Weapon Convene. The 3.8 patch notes (news 5783) change nothing in it.",
       "sourceUrl": "https://wutheringwaves.kurogames.com/en/main/news/detail/3920"
     },
     {
