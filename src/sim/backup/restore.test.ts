@@ -19,7 +19,7 @@ import { memoryBackupStore } from "./backupStore";
 import { pullCount } from "./counts";
 import { hookEnv, settledPlusRestore } from "./importHook";
 import { mergedPulls, plusFailureText, restorePlusKeys } from "./plusRestore";
-import { DAMAGED_BACKUP_TEXT, inspectBackupText, NEWER_BACKUP_TEXT, NOT_A_BACKUP_TEXT, NOT_SAVED_FIRST_TEXT, restoreBackupText, RestoreRefused, type RestoreEnv } from "./restore";
+import { DAMAGED_BACKUP_TEXT, inspectBackupText, NEWER_BACKUP_TEXT, NO_ACCOUNT_BACKUP_TEXT, NOT_A_BACKUP_TEXT, NOT_SAVED_FIRST_TEXT, restoreBackupText, RestoreRefused, type RestoreEnv } from "./restore";
 import { pull, pullsRaw, testCapture, testStores, THREE_PULLS } from "./__fixtures__/testAccount";
 
 // Ryan's own version 3 export of a Jinhsi build (his calculator spec's data). Loaded by a path TypeScript does not
@@ -285,6 +285,25 @@ describe("what is not a readable backup changes nothing", () => {
     }
     untouched(before);
     expect(localStorage.getItem("dataVersion")).toBe(String(CURRENT_DATA_VERSION));
+  });
+
+  it("the backup taken after Delete your data (blank stores, the pulls Delete keeps) is refused as what it is, not as damaged", async () => {
+    seedAccount(today());
+    await nextTick();
+    const before = snapshot();
+    // what Ryan's export reads right after a Delete: his two stores blanked to "", the teams emptied, the pulls kept
+    const afterDelete: Capture = {
+      meta: { version: String(CURRENT_DATA_VERSION), source: "WutheringTools" },
+      data: { character: "", inventory: "", teamRotations: JSON.stringify({ teams: [], favoriteTeamIds: [], favoritePresetNames: [] }) },
+      keys: { [PULLS]: pullsRaw(THREE_PULLS), [CLEARS]: null, [PLAN]: null, [ALBUMS]: null },
+    };
+    const text = fileOf(afterDelete);
+    expect(() => inspectBackupText(text)).toThrow(NO_ACCOUNT_BACKUP_TEXT);
+    const e = env();
+    await expect(restoreBackupText(text, e)).rejects.toThrow(NO_ACCOUNT_BACKUP_TEXT);
+    expect(e.saveFirst).not.toHaveBeenCalled();
+    expect(e.apply).not.toHaveBeenCalled();
+    untouched(before);
   });
 
   it("a backup whose stores cannot be read is damaged: refused before the save, account and plus records untouched", async () => {

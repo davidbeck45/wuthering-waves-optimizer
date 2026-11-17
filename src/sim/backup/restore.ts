@@ -25,6 +25,7 @@ export class RestoreRefused extends Error {
 export const NOT_A_BACKUP_TEXT = "That is not a backup this page can read, so nothing was changed. A very old export goes under Settings › Backup & Restore.";
 export const NEWER_BACKUP_TEXT = "That backup was made by a newer version of this site, so nothing was changed. Reload the page to update, then restore it again.";
 export const DAMAGED_BACKUP_TEXT = "That backup is damaged and can't be read, so nothing was changed. Your account is as it was.";
+export const NO_ACCOUNT_BACKUP_TEXT = "That backup was made after your data was deleted: it holds no characters, echoes or teams, only a pull history, so there is nothing to restore from it and nothing was changed.";
 export const GONE_BACKUP_TEXT = "That backup is no longer in this browser (another tab may have deleted it). Nothing was changed.";
 export const UNAVAILABLE_TEXT = "This browser isn't keeping backups (a private window, or storage turned off).";
 export const NOT_SAVED_FIRST_TEXT = "Today's account could not be saved as a backup first, so nothing was changed. Download a copy, then try again.";
@@ -53,6 +54,9 @@ export function inspectBackupText(text: string): InspectedBackup {
   // A data version ahead of this build's (a tab opened before a deploy, a rollback): his migrations would run none
   // and his import would stamp the stores as this build's version, so the next deploy migrates them a second time.
   if (read.dataVersion > CURRENT_DATA_VERSION) throw new RestoreRefused(NEWER_BACKUP_TEXT);
+  // Right after Delete your data his export reads the character list as "" (blanked), and the day's backup still
+  // keeps the pulls Delete leaves. His import cannot take a backup with no character list; that is not damage.
+  if (read.character === "" || read.character == null) throw new RestoreRefused(NO_ACCOUNT_BACKUP_TEXT);
   let counts: BackupCounts;
   try {
     counts = countsOf(
