@@ -5448,3 +5448,25 @@ An independent check of the section above, by using it on copies of the 9-16 exp
   (both orders) and the assistant's tool on the same start.
 
 Gates: `levels/levelGate.test.ts`, `levels/levelPlanFlat.test.ts`, `cypress/e2e/accountLevelsWorth.cy.ts`.
+
+## What moved in your numbers: the second check (batch 4, lane `check-after-update`, 2026-11-17)
+
+Tried with two real production builds on one origin and one kept browser profile (production's 80a4d09b, then this
+branch), the way David's phone meets the deploy, and by making each cause happen for real on the dev server.
+
+- **A stock team is filed under its rotation's name.** An app update that regenerates the presets renames some, drops
+  twins and takes trios off the list, so the first visit after tonight's update read "1 new · 8 gone" with nothing of
+  his gone. `compareEntries` reads a stock rotation that is in only one of the two records by its three members: the
+  best renamed rotation against the best of its new names is one row (`Move.renamed`), a dropped twin of a trio still
+  listed is neither gone nor new, and a trio the list no longer has (or has for the first time) is listed once, marked
+  `stockByUpdate` when the app build changed, under its own heading with a line that says it is the app's list.
+- **A ranking painted from the saved results is recorded when it is not the one the log saw last**
+  (`recordSavedRanking`, called from `readSavedRanking`). An account put back to a state scored before has its ranking
+  in the saved results, no run follows, and without this the log never caught up: the page asked him to open My
+  account for ever. Painted again, it only moves "last seen".
+- **The import note names a restored backup too.** A restore on /backups goes through Ryan's import and stamps the same
+  mark (`importText`, `IMPORT_CARD_TEXT`).
+- Held when tried: an app update's moves and cause (Sigrika −0.7 %, her teams −0.5 to −0.65 %, "An app update"); a
+  renamed loop with the same figure is steady; an echo, a weapon refinement, a teammate's sequence, two at once, an
+  undo, a restore, Delete your data (both log keys go); a reload mid-run records nothing; two tabs ranking at once give
+  one record; 40 distinct records at David's size keep the newest 30 in about 87,000 characters.
