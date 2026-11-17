@@ -5324,6 +5324,14 @@ best team today. Under the row a button runs it on demand in the app's one solve
 here) and prints a sentence with both teams and both figures. Nothing is stored. DPS is named as wuwa_calc's on every
 figure.
 
+**The Echo Lab's feed list says who was not counted** (`echoLab/echoLabView.ts` `feedCaution`). A resonator pulled
+today has a weapon and fewer than five echoes; the lab scores a swap against the echo it replaces, so it leaves that
+build out, and an echo only that resonator wants reads Feed (Lily at four echoes: her HP% Flower of Tinged Yearning
+1-cost). The page said "Left out: Lily (needs five echoes to compare against)" in small print under the verdict table.
+The feed list now carries it where the echoes are: "Not counted: Lily, who wears fewer than five echoes. An echo only
+Lily could use can be on this list, so check before you feed it." No verdict changes; the reason is one constant
+(`NEEDS_FIVE_ECHOES`) the engine and the page share.
+
 **Looked at and right as it was:** the release guard and everything behind it (rankings chips and portraits, Sync my
 teams, the import, Build my team, the Tower check, the energy scan), `/account` and `/my-rankings` (her card says "own"
 beside her own damage and "no team figure" until a team is saved), `/weapons` (Lullaby as her signature; the page offers
@@ -5338,5 +5346,8 @@ judged on her own rotation like every build), `/echo-plan`, `/rotation`.
 - **Two engines can both be right and disagree on what "need" means.** Riley's kit pays Dream Aroma in full whatever
   her Energy Regen is, the app scales it with what she has. The page shows his need and says the app's ceiling beside
   it, and neither figure is changed to match the other.
+- **The newest resonator is the one a page built on "characters you have built" forgets.** A pull lands with a weapon
+  and no echoes. Whatever a page leaves out for being unbuilt, it should say so at the point where the player acts on
+  the result, not under it.
 - **A cached prompt prefix is a contract.** `get_kit`'s description could not take a new sentence (a test holds the
   first twelve tool definitions byte for byte), so the new fact went into the result, where a field name explains it.
