@@ -54,7 +54,9 @@
         Your current builds score higher than anything these settings allow, so you may want to keep them. This usually means
         teammates' buffs are being protected, or your current builds use the same echo twice.
       </div>
-      <div v-if="!selected.matchesTeamPage" role="alert" class="alert alert-error text-sm" data-test-team-optimizer-mismatch>
+      <!-- Wuthering Tools+: a gap the search is known not to read says what it is; his alert stays for any other mismatch -->
+      <TeamOptimizerOverrideNote v-if="!selected.matchesTeamPage && selected.overrideGap" :gap="selected.overrideGap" :search="displayTotal(selected.combinerTotal)" :page="displayTotal(selected.total)" />
+      <div v-else-if="!selected.matchesTeamPage" role="alert" class="alert alert-error text-sm" data-test-team-optimizer-mismatch>
         The search scored this build {{ displayTotal(selected.combinerTotal) }}, but the Team page calculates
         {{ displayTotal(selected.total) }}. The Team page's number is shown here. Please report this team in the Discord.
       </div>
@@ -193,6 +195,7 @@ import { teamBuffSource } from "../../calculator/teamBuffPlans";
 import { getEchoSetLabelByType } from "../../echoes/stats";
 import { deltaToneTextClass, signedPercent } from "../../utils/signedDelta";
 import { NOTHING_TO_SAVE } from "../../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
+import TeamOptimizerOverrideNote from "../../sim/teamContext/TeamOptimizerOverrideNote.vue"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerResults" });
 

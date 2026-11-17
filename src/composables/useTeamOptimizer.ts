@@ -23,6 +23,7 @@ import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { slotsAlreadyWorn } from "../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
 import { workerFailureMessage } from "../sim/perf/chunkReload"; // Wuthering Tools+
 import { optimizerMemory } from "../sim/teamContext/teamOptimizerKept"; // Wuthering Tools+
+import { weaponOverrideGap, type OverrideGap } from "../sim/teamContext/teamOptimizerOverrides"; // Wuthering Tools+
 import { calcTeamRotationDamage, type TeamRotationInput } from "../calculator/teamRotation";
 import {
   TEAM_OPTIMIZER_LIST_DEPTH,
@@ -153,6 +154,8 @@ export interface TeamOptimizerResultRow {
   buffChanges: TeamBuffChange[];
   teamBuffsBySlot: Record<number, TeamBuffConfig>;
   echoBuffsBySlot: Array<TeamOptimizerEchoBuffs | null>;
+  /** Wuthering Tools+: set when a mismatch is all down to a per-action weapon switch, which the search cannot read */
+  overrideGap?: OverrideGap | null;
 }
 
 type SearchRow = TeamOptimizerRow & { loadout: any[] | null; finalStats: Record<string, any> };
@@ -897,6 +900,8 @@ export function useTeamOptimizer(teamId: Ref<string>) {
             expectedTotal: combination.total,
             resolveForTeamPage: autoTeamBuffs.value ? teamPage?.withBuilds : undefined, // Wuthering Tools+
           });
+          // Wuthering Tools+: a mismatch the search's one known blind spot explains is named on the page, not sent to his Discord
+          const overrideGap = verification.matches ? null : await weaponOverrideGap({ team: flatTeamInput.value, characters: flat, loadoutBySlot, echoBuffsBySlot, enemyConfig: enemyConfig.value, inventoryEchoes: inventoryEchoes.value, damageType: damageType.value, expectedTotal: combination.total });
           if (isCancelled) return;
           candidates.push({
             rank,
@@ -906,6 +911,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
               total: verification.total,
               combinerTotal: combination.total,
               matchesTeamPage: verification.matches,
+              overrideGap, // Wuthering Tools+
               characterResults: verification.characterResults,
               planId: plan.id,
               provisions,

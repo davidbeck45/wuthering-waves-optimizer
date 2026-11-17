@@ -2,6 +2,7 @@
 // (teamRotations/teamOptimizer.cy.ts) drives it on a desktop viewport.
 import { rotations as suomingRotations } from "../../src/characters/Suoming/presets";
 import { rotations as hsinRotations } from "../../src/characters/Hsin/presets";
+import { rotations as sigrikaRotations } from "../../src/characters/Sigrika/presets";
 
 const TEAM_NAME = "Optimizer Phone Team";
 const MAIN_ECHO = "ReminiscenceSuhsintheInevitable";
@@ -301,5 +302,57 @@ describe("Optimize team when you leave the page", () => {
     cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
     cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
     cy.get("[data-test-team-optimizer-kept-note]").should("not.exist");
+  });
+});
+
+// Hunt 2, solver L1: an action that switches a weapon effect for that action alone is not read by his search for an
+// effect an attack reads itself (here Solsworn Ciphers' Echo Skill DMG Amplification, switched off on every action of
+// Sigrika's). The rows are the Team page's figures either way; his page then asked for a report in the Discord.
+describe("Optimize team on a team with a per-action weapon switch", () => {
+  it("says what the search cannot read, where his alert asked the player to report the team", () => {
+    const sigrika = actionsFor(sigrikaRotations as any[], 0, 1).map((action: any) => ({ ...action, advancedConfig: { weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: false } } } }));
+    const hsin = actionsFor(hsinRotations as any[], 1, sigrika.length + 1);
+    cy.viewport(412, 915);
+    cy.visit("/teams", {
+      onBeforeLoad(win) {
+        seed("dark")(win);
+        const stored = JSON.parse(win.localStorage.getItem("character")!);
+        stored.characters = {
+          Sigrika: { ...stored.characters.Suoming, weapon: "SolswornCiphers", weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: true } } },
+          Hsin: stored.characters.Hsin,
+        };
+        stored.activeCharacter = "Sigrika";
+        win.localStorage.setItem("character", JSON.stringify(stored));
+        const teams = JSON.parse(win.localStorage.getItem("teamRotations")!);
+        teams.teams[0] = { ...teams.teams[0], characterIds: ["Sigrika", "Hsin", null], actions: [...sigrika, ...hsin] };
+        win.localStorage.setItem("teamRotations", JSON.stringify(teams));
+      },
+      onLoad(win) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.get(`[data-test-team-rotations-item="${TEAM_NAME}"]`).contains(TEAM_NAME).click();
+    cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+    cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-override-note]")
+      .should("be.visible")
+      .and("contain.text", "Sigrika has an action that switches a weapon effect for that action alone")
+      .and("contain.text", "the search cannot read such a switch")
+      .and("contain.text", "nothing shown is wrong")
+      .then(($note) => {
+        const r = $note[0].getBoundingClientRect();
+        expect(r.left, "note left").to.be.at.least(0);
+        expect(r.right, "note right").to.be.at.most(412);
+        // the two figures it names are the search's and the page's, and the page's is the headline
+        const [search, page] = ($note.text().match(/\d[\d,]*\d/g) ?? []).map((n) => Number(n.replace(/,/g, "")));
+        expect(search, "the search's score").to.be.greaterThan(page);
+        cy.get("[data-test-team-optimizer-total]").should(($total) => expect(Number($total.text().replace(/[^0-9]/g, ""))).to.equal(page));
+      });
+    cy.get("[data-test-team-optimizer-mismatch]").should("not.exist");
+    cy.get("[data-test-team-optimizer-results]").should("not.contain.text", "Discord");
+    cy.document().then((doc) => expect(doc.documentElement.scrollWidth, "no sideways page scroll").to.be.at.most(412));
   });
 });

@@ -320,6 +320,95 @@ describe("Optimize team when the page is left", () => {
   });
 });
 
+// Hunt 2, solver L1: an action that switches a weapon effect for that action alone (the Team page's per-action buffs) is
+// not read by his search for an effect an attack reads itself, here Solsworn Ciphers' Echo Skill DMG Amplification. The
+// rows are the Team page's figures either way; his page then asked the player to report the team in the Discord.
+describe("Optimize team on a team with a per-action weapon switch", () => {
+  const SWITCH = { weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: false } } };
+  let weaponOverrideMembers: typeof import("./teamOptimizerOverrides").weaponOverrideMembers;
+  let withoutWeaponOverrides: typeof import("./teamOptimizerOverrides").withoutWeaponOverrides;
+
+  /** Sigrika (searched) with the amplification on in her build, and Shorekeeper kept. `advancedConfig` goes on every
+   *  action of Sigrika's. */
+  async function seedSigrika(advancedConfig: Record<string, unknown> | null): Promise<void> {
+    setActivePinia(createPinia());
+    const pool = scalingPool(5, MAIN, SETS, { main: 2, four: 2, three: 4, one: 4 });
+    const dps = await statScaledKit("Sigrika");
+    const support = await statScaledKit("Shorekeeper");
+    const record = (kit: { data: any }, extra: Record<string, unknown> = {}) => ({ ...kit.data, mainEcho: { echo: MAIN, rank: 5, buffs: {} }, optimizer: { echoSets: SETS, mainEchoes: [MAIN] }, ...extra });
+    useInventoryStore().$patch({ echoes: pool, equipped: {} } as any);
+    useCharacterStore().$patch({ characters: { Sigrika: record(dps, { weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: true } } }), Shorekeeper: record(support) }, activeCharacter: "Sigrika" } as any);
+    const actions = [
+      ...dps.actions.map((a, i) => ({ ...a, id: `d${i}`, slot: 0, ...(advancedConfig ? { advancedConfig } : {}) })),
+      ...support.actions.map((a, i) => ({ ...a, id: `s${i}`, slot: 1, order: 100 + i })),
+    ];
+    useTeamRotationsStore().$patch({ teams: [{ id: "team-plus", name: "On plus", characterIds: ["Sigrika", "Shorekeeper", null], buildIds: [null, null, null], actions, duration: 25, mode: "basic", enemyConfig }] } as any);
+  }
+  async function searchSigrika() {
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "keep");
+    for (const slot of optimizer.slots.value) for (const offer of slot.offers) optimizer.setOfferTicked(slot.slot, offer.defKey, false);
+    await optimizer.run();
+    expect(optimizer.errorMessage.value).toBeNull();
+    expect(optimizer.phase.value).toBe("results");
+    return optimizer.results.value;
+  }
+
+  beforeAll(async () => {
+    ({ weaponOverrideMembers, withoutWeaponOverrides } = await import("./teamOptimizerOverrides"));
+  });
+  beforeEach(() => {
+    clearKeptOptimizer();
+    autoTeamBuffs.value = false; // his own path: the stored panels, so the search and the page read the same records
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("names the gap when the switch is all of it, where his alert asked for a report", async () => {
+    await seedSigrika(SWITCH);
+    const rows = await searchSigrika();
+    // the search does not read the switch: it scores the amplification on every action, the Team page on none
+    expect(rows[0]!.matchesTeamPage).toBe(false);
+    expect(rows[0]!.combinerTotal).toBeGreaterThan(rows[0]!.total);
+    expect(rows.every((row) => row.matchesTeamPage || row.overrideGap)).toBe(true);
+    expect(rows[0]!.overrideGap).toEqual({ characterIds: ["Sigrika"] });
+  }, 120_000);
+
+  it("has nothing to name on the same team without the switch, or with a per-action switch the search does read", async () => {
+    await seedSigrika(null);
+    let rows = await searchSigrika();
+    expect(rows.every((row) => row.matchesTeamPage && !row.overrideGap)).toBe(true);
+    // a character buff switched for one action: the search reads it, so no mismatch and no note
+    await seedSigrika({ buffs: { InnateGift: { isEnabled: false } } });
+    rows = await searchSigrika();
+    expect(rows.every((row) => row.matchesTeamPage && !row.overrideGap)).toBe(true);
+  }, 180_000);
+
+  it("finds the members with such an action and takes only that switch out", () => {
+    const team = {
+      characterIds: ["Sigrika", "Shorekeeper", null],
+      actions: [
+        { id: "a", slot: 0, advancedConfig: { weaponPassives: { X: { isEnabled: false } }, buffs: { Y: { isEnabled: true } } } },
+        { id: "b", slot: 0, advancedConfig: { buffs: { Y: { isEnabled: true } } } },
+        { id: "c", slot: 1, advancedConfig: { weaponPassives: {} } }, // opened, nothing switched
+        { id: "d", slot: 1, isDisabled: true, advancedConfig: { weaponPassives: { Z: { isEnabled: true } } } },
+        { id: "e", slot: 1 },
+      ],
+    };
+    expect(weaponOverrideMembers(team)).toEqual(["Sigrika"]);
+    const before = JSON.stringify(team);
+    const without = withoutWeaponOverrides(team);
+    expect(without.actions.map((a: any) => a.advancedConfig)).toEqual([{ buffs: { Y: { isEnabled: true } } }, { buffs: { Y: { isEnabled: true } } }, { weaponPassives: {} }, { weaponPassives: { Z: { isEnabled: true } } }, undefined]);
+    expect(JSON.stringify(team)).toBe(before);
+    expect(weaponOverrideMembers(without)).toEqual([]);
+    expect(weaponOverrideMembers({ characterIds: ["Sigrika", null, null] })).toEqual([]);
+  });
+});
+
 describe("Optimize team in a tab older than the site", () => {
   const STALE = "This tab is older than the site, so the optimizer cannot start here. Reload the page, then run it again.";
   let reloads = 0;
