@@ -92,6 +92,50 @@ describe("the automatic backup: at most one a day, and only when something chang
   });
 });
 
+describe("two tabs see the same list", () => {
+  /** two ends of one channel, as two tabs have */
+  function channelPair() {
+    const ends = [0, 1].map(() => ({ listeners: [] as Array<() => void>, other: null as unknown as { listeners: Array<() => void> } }));
+    ends[0]!.other = ends[1]!;
+    ends[1]!.other = ends[0]!;
+    return ends.map((end) => ({
+      postMessage: () => void end.other.listeners.forEach((fn) => fn()),
+      addEventListener: (_: "message", fn: () => void) => void end.listeners.push(fn),
+    }));
+  }
+
+  it("a tab is told when another tab makes, deletes or clears a backup", async () => {
+    const store = memoryBackupStore();
+    const [mine, theirs] = channelPair();
+    const heard = vi.fn();
+    mine!.addEventListener("message", heard);
+    createBackups({ store, now: () => T0, channel: mine });
+    const other = createBackups({ store, now: () => T0, channel: theirs });
+    const before = backupsChanged.value;
+    await other.take("daily", testCapture());
+    expect(heard).toHaveBeenCalledTimes(1);
+    expect(backupsChanged.value).toBeGreaterThan(before);
+    await other.remove("auto-2026-11-16");
+    await other.clear();
+    expect(heard).toHaveBeenCalledTimes(3);
+    // a backup that was not taken is no news
+    await other.take("daily", testCapture({ echoes: 0, teams: 0, pulls: null, weapon: "" }));
+    expect(heard).toHaveBeenCalledTimes(3);
+  });
+
+  it("a channel that is closed, or a browser without one, changes nothing for this tab", async () => {
+    const closed = {
+      postMessage: () => {
+        throw new DOMException("closed", "InvalidStateError");
+      },
+      addEventListener: () => undefined,
+    };
+    const layer = createBackups({ store: memoryBackupStore(), now: () => T0, channel: closed });
+    expect((await layer.take("daily", testCapture())).saved).toBe(true);
+    expect((await createBackups({ store: memoryBackupStore(), now: () => T0, channel: null }).take("daily", testCapture())).saved).toBe(true);
+  });
+});
+
 describe("a backup before something is replaced", () => {
   it("is kept beside the day's automatic one when the account changed since", async () => {
     const { layer, clock } = setup();

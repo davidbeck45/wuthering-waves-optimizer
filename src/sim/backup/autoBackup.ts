@@ -10,7 +10,7 @@
 // Nothing here throws into the app: a failed backup is a result, never an error on the page.
 import { shallowRef } from "vue";
 import { backupFile, contentHash, localDay, parseBackupText, type Capture } from "./backupFile";
-import { browserIndexedDb, idbBackupStore, type BackupMeta, type BackupReason, type BackupStore } from "./backupStore";
+import { BACKUP_DB_NAME, browserIndexedDb, idbBackupStore, type BackupMeta, type BackupReason, type BackupStore } from "./backupStore";
 import { pack, unpack } from "./codec";
 import { captureCounts, isEmptyAccount } from "./counts";
 import { BACKUP_BYTE_CAP, newestFirst, retention } from "./retention";
@@ -34,18 +34,50 @@ export interface BackupsEnv {
   store: BackupStore | null;
   now?: () => number;
   cap?: number;
+  /** how the other tabs are told (and heard); none in the unit tests unless one is given */
+  channel?: TabChannel | null;
 }
 
 /** The browser has no room left (IndexedDB aborts the transaction with this name). */
 const isQuotaError = (e: unknown): boolean => (e as { name?: string } | null)?.name === "QuotaExceededError";
 
-/** Counts every change to the stored backups in this tab: a list on screen reads it to know when to look again. */
+/** Counts every change to the stored backups, in this tab or another: a list on screen reads it to know when to look
+ *  again. */
 export const backupsChanged = shallowRef(0);
+
+/* eslint-disable no-unused-vars -- the parameters of interface methods */
+export interface TabChannel {
+  postMessage(message: unknown): void;
+  addEventListener(type: "message", listener: () => void): void;
+}
+/* eslint-enable no-unused-vars */
+
+/** The other tabs of this browser. Without it a tab that lost the race for the day's backup went on showing "No
+ *  backups yet", and a backup deleted or restored elsewhere stayed on screen until the tab was looked at again. */
+function tabChannel(): TabChannel | null {
+  try {
+    if (typeof BroadcastChannel === "undefined") return null;
+    const channel = new BroadcastChannel(BACKUP_DB_NAME);
+    (channel as unknown as { unref?: () => void }).unref?.(); // Node (the tests): an open channel must not hold the process
+    return channel;
+  } catch {
+    return null;
+  }
+}
 
 export function createBackups(env: BackupsEnv) {
   const now = env.now ?? Date.now;
   const store = env.store;
-  const touched = (): void => void (backupsChanged.value += 1);
+  const channel = env.channel ?? null;
+  channel?.addEventListener("message", () => void (backupsChanged.value += 1));
+  const touched = (): void => {
+    backupsChanged.value += 1;
+    try {
+      channel?.postMessage("changed");
+    } catch {
+      /* a closed channel: the other tabs look again when they are looked at */
+    }
+  };
 
   /** Newest first. Empty when the browser keeps none or the read fails. */
   async function list(): Promise<BackupMeta[]> {
@@ -189,4 +221,4 @@ function browserStore(): BackupStore | null {
 }
 
 /** This browser's backups. */
-export const backups: Backups = createBackups({ store: browserStore() });
+export const backups: Backups = createBackups({ store: browserStore(), channel: tabChannel() });
