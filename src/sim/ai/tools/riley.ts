@@ -13,7 +13,8 @@ import { characterName, resolveAnyCharacter, type ToolContext } from "./shared";
 import { accountKeyOf } from "../../rankings/rileyNames";
 
 /* eslint-disable no-unused-vars -- the parameters of an interface's method types */
-/** Riley's engine at one account. Every call is the seam's: the release guard (Lily) rides on it. */
+/** Riley's engine at one account. Every call is the seam's: the release guard rides on it (it held Lily back until the
+ *  app shipped her with 3.8; it holds nobody today). */
 export interface RileyToolEngine {
   readonly commit: string;
   /** the account the engine runs at (null: nothing set up) */

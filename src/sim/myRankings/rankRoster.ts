@@ -132,8 +132,8 @@ export interface RotationCandidate {
   rotation: CharacterRotationInput;
 }
 
-/** A wuwa_calc loop whose name lists a teammate the app has no character for (Lily: a kit in Riley's engine with no
- *  folder here). Its swaps follow a team nobody can field in this app, and as a best rotation it would put her name on
+/** A wuwa_calc loop whose name lists a teammate the app has no character for (Lily, until the app shipped her with
+ *  3.8: a kit in Riley's engine with no folder here). Its swaps follow a team nobody can field in this app, and as a best rotation it would put her name on
  *  /account, /my-rankings and /weapons — the rankings skip it. Since 2026-11-02 the generator ships no such loop (it
  *  renames one after a team the app can field, or leaves it out; wuwaCalcPresets.test.ts holds it to that), so this is
  *  the guard for a data set made by an older generator. */

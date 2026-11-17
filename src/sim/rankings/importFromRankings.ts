@@ -234,7 +234,7 @@ export async function prepareTeamImport(mods: EngineMods, traced: any): Promise<
   const keys = names.map(appKeyOf);
 
   // a character the app has not released (Suoming until Ryan's #655, 2026-10-24: her folder loaded, her registry entry was
-  // commented out; Lily, whose kit Riley added in 7bcbb24) would land in a team the app cannot pick her for
+  // commented out; Lily, whose kit Riley added in 7bcbb24, until Ryan's 3.8) would land in a team the app cannot pick her for
   const hidden = notInApp(keys);
   if (hidden.length) {
     throw new Error(`${hidden.map((k) => names[keys.indexOf(k)]).join(" and ")} ${hidden.length > 1 ? "are" : "is"} not released in this app yet, so this team can't be imported.`);

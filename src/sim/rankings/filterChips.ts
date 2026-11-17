@@ -150,7 +150,7 @@ export const RILEY_TIERS: ReadonlyArray<{ code: string; label: string; title: st
 ];
 
 /** "Only teams I can import": his roster's resonators the app has no character for (`isInApp` answers by his
- *  name), sorted. Lily, today — a kit in Riley's engine with no folder in this app. */
+ *  name), sorted. Lily until the app shipped her with 3.8; empty today, and the option hides while it is. */
 export function namesNotInApp(roster: RosterEntry[], isInApp: (rileyName: string) => boolean): string[] {
   return roster.filter((r) => !isInApp(r.name)).map((r) => r.name);
 }
@@ -164,7 +164,7 @@ export function importableOnly(params: URLSearchParams, roster: RosterEntry[], m
 
 /** Whether "Only teams I can import" can change the list. At My account with "Teams I can field" on, his
  *  `teamWanted()` already drops every team with a resonator the account lacks, and the app can't hold one it has no
- *  character for, so their teams never show there and the option does nothing (it still wrote x=Lily into the link)
+ *  character for, so their teams never show there and the option does nothing (it still wrote x=Lily into the link, while she was the one)
  *  — unless one of them is free (a 4★ or a Rover form: everyone owns them, at S6). */
 export function importableMatters(missing: string[], roster: RosterEntry[], at: { mine: boolean; ownedOnly: boolean }): boolean {
   if (!missing.length) return false;

@@ -218,8 +218,8 @@ export function useBuildTeam() {
     rileyAfter.value = null;
     rankedFigure.value = null;
     error.value = null;
-    // released content only: a composition with a kit the app does not list yet (a wuwa_calc team with Lily) never
-    // reaches the page
+    // released content only: a composition with a kit the app does not list yet (a wuwa_calc team with Lily, until
+    // the app shipped her with 3.8; none today) never reaches the page
     const hidden = notInApp((request.members ?? []).filter(Boolean));
     if (hidden.length) {
       team.value = null;

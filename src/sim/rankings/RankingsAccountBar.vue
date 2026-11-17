@@ -494,7 +494,7 @@ function pick(group: ChipGroup, name: string): void {
   setName(name, inGroup(group, name) ? null : group);
 }
 const removeName = (name: string): void => setName(name, null);
-// ---- "Only teams I can import" (opt-in, default off): every resonator this app has no character for (Lily) goes into
+// ---- "Only teams I can import" (opt-in, default off): every resonator this app has no character for (Lily before 3.8; none today, so the option is hidden) goes into
 // his own Without list, so the table drops their teams; a saved view and a shared link carry it as x=
 const missingNames = computed(() => namesNotInApp(roster.value, (name) => !notInApp([appKeyOf(name)]).length));
 const importable = computed(() => importableOnly(params.value, roster.value, missingNames.value));

@@ -8,7 +8,7 @@
 <script setup lang="ts">
 // Wuthering Tools+: a resonator's portrait for the /rankings cards and member strip — the app's asset host
 // (`characterPortraitUrl`) by this app's key, ringed in Riley's kit colour; initials if it fails to load, and straight
-// away for a kit the app has no character for (Lily: her portrait request failed on every visit).
+// away for a kit the app has no character for (Lily before 3.8: her portrait request failed on every visit).
 import { computed, ref, watch } from "vue";
 import { characterPortraitUrl } from "../../characters/characters";
 import { isRosterCharacter } from "../display/names";

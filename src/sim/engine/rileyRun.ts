@@ -327,7 +327,7 @@ export function listTeams(E: RileyEngine): RileyTeamInfo[] {
 
 /** The app keys among his resonators that the app has not released — `notInApp` is importFromRankings.ts's
  *  guard, handed in so this module never imports the app's character registry (that would drag every kit
- *  into the worker). Lily, as of 7bcbb24. */
+ *  into the worker). Lily from 7bcbb24 until the app shipped her with 3.8 (2026-11-16); empty today. */
 export function blockedKeysOf(teams: RileyTeamInfo[], notInApp: (keys: string[]) => string[]): string[] {
   return notInApp([...new Set(teams.flatMap((t) => t.members.map((m) => m.appKey)))]).sort();
 }

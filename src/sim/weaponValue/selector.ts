@@ -21,7 +21,7 @@
 //              with their best DPS.
 //   dupe       an owned, set-up candidate's next sequence on this app's engine — the same S+1 /account's plan scores
 //              (withNextSequence on the best rotation + the plan's team scorer).
-// Released content only: a candidate or team member the app does not list (`notInApp`, Lily) is never registered or
+// Released content only: a candidate or team member the app does not list (`notInApp`; Lily before 3.8) is never registered or
 // solved. Pure / async: the engine arrives through `SelectorRiley`.
 import { accountKeyOf, type RileyAccountEntry } from "../account/accountState";
 import { createTeamScorer, slicer } from "../account/investPlan";

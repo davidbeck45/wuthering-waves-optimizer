@@ -3,7 +3,7 @@
 // every candidate's best row against each timed floor's enemy profile and read its kill time and crests.
 //
 // Pure orchestration: no Vue, no stores. The release guard rides on the runner (`solveMine` skips a team with a
-// member the app hasn't released — Lily — and `curves` refuses one), and `fieldableKeys` only offers teams whose
+// member the app hasn't released (Lily until 3.8, nobody today) and `curves` refuses one), and `fieldableKeys` only offers teams whose
 // every member the account owns.
 import type { FightCurve, MineSolve, RileyAccount, RileyPick, RileyTeamInfo, RunMember } from "../engine/rileyRun";
 import { rampAt, type FloorProfileSpec } from "./effects";
