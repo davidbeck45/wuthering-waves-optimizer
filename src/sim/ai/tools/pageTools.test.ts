@@ -127,7 +127,7 @@ describe("weapon_value", () => {
     expect(r.notSavedInTheCalculator).toMatch(/^level, weapon level or Forte levels: the calculator counts these at the top\. Ask the player where Lynae stands/);
     expect(r.path).toBe("/account?focus=Lynae&section=levels");
     expect(r.eachOnItsOwn).toBeUndefined();
-  });
+  }, 60_000); // it ranks the roster first when it runs alone: seconds on CI's 2-core runner
 
   it('show "levels" with the levels the player gives: each track with gains and costs, then the order', async () => {
     const r = await call("weapon_value", { character: "Lynae", show: "levels", levels: "level=80,weapon=80,liberation=6,intro=1" }, ctxWith());
