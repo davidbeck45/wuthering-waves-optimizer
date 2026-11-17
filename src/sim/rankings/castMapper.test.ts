@@ -108,6 +108,43 @@ describe("cast mapper: primitives", () => {
     expect(landedRepeats({ ...cast, mv: 17.23 }, rows)).toBeNull();
     expect(landedRepeats({ ...cast, mv: 11.15 }, rows)).toBeNull();
   });
+  it("presses Lily's Basic Attack stages by their number, at the app's own motion values", async () => {
+    // Riley's Lily is the 3.8 beta's kit: 74.28 / 100.68 / 106.09 / 159.08 for the four stages, where the released
+    // game (the app's rows) has 63.62 / 116.60 / 95.43 / 153.80. No value matches, so the overrides name the rows.
+    const rows = appRowsOf((await getCharByName("Lily")) as Record<string, unknown>);
+    expect(rows.filter((r) => /^BasicAttackStage\dDMG$/.test(r.key)).map((r) => r.mv)).toEqual([63.62, 116.6, 95.43, 153.8]);
+    const stage = (n: number, mv: number): Cast => ({ name: `Basic - Mend and Cleanse ${n}`, mv, count: 1, cast: "Basic", node: "Normal" });
+    const loop: Cast[] = [stage(3, 106.09), stage(4, 159.08), stage(1, 74.28), stage(2, 100.68), { name: "Skill - Reverie Blend", mv: 159.05, count: 1, cast: "Skill", node: "Skill" }];
+    const report = emptyReport();
+    const acts = toActions(loop, rows, {}, OVERRIDES.Lily, report, new Set());
+    expect(acts.map((a) => [a.key, a.type, a.count, a.buffs])).toEqual([
+      ["BasicAttackStage3DMG", "basic", 1, []],
+      ["BasicAttackStage4DMG", "basic", 1, []],
+      ["BasicAttackStage1DMG", "basic", 1, []],
+      ["BasicAttackStage2DMG", "basic", 1, []],
+      ["ResonanceSkillReverieBlendDMG", "skill", 1, []],
+    ]);
+    expect(report.unmatched).toEqual([]);
+    // said as two values that differ, never as a multiplier the kit's buffs would have to supply
+    expect(report.multipliers).toEqual([]);
+    expect(report.differs).toEqual([
+      "Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%",
+      "Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%",
+      "Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%",
+      "Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%",
+    ]);
+    // left to the cascade: Stage 4's 159.08 sits 0.03 from her Resonance Skill's 159.05 and lands on a Blend row,
+    // Stage 2 finds no row at all, and Stages 1 and 3 pass as kit multipliers (× 1.17, × 1.11)
+    const bare = emptyReport();
+    const wrong = toActions(loop, rows, {}, {}, bare, new Set());
+    expect(wrong.map((a) => a.key)).toEqual(["BasicAttackStage3DMG", "ResonanceSkillNightmareBlendDMG", "BasicAttackStage1DMG", "ResonanceSkillReverieBlendDMG"]);
+    expect(bare.unmatched).toEqual(["Basic - Mend and Cleanse 2 (mv 100.68, Basic/Normal, unmatched)"]);
+    // an override whose value is the kit's own multiplier still reads as one (Qingxiao's Heaven's Reckoning × 2.75)
+    const kit = emptyReport();
+    toActions([{ name: "Skill - X", mv: 200, count: 1, cast: "Skill", node: "Skill" }], [{ group: "skill", key: "XDMG", label: "X DMG", mv: 100 }], {}, { "Skill - X": "XDMG" }, kit, new Set());
+    expect(kit.multipliers).toEqual(["Skill - X = XDMG × 2.00"]);
+    expect(kit.differs).toBeUndefined();
+  });
   it("maps Riley's resonator names to app keys and back", () => {
     expect(appKeyOf("Xuanling")).toBe("YangyangXuanling");
     expect(appKeyOf("Aero Rover")).toBe("RoverAeroFemale");

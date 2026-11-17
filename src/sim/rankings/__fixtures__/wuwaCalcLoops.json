@@ -26482,5 +26482,695 @@
   },
   "ratiosPooled": [],
   "ratiosTop3": []
+ },
+ {
+  "resonator": "Lily",
+  "appKey": "Lily",
+  "casts": [
+   {
+    "name": "Basic - Mend and Cleanse 3",
+    "count": 1,
+    "mv": 106.09,
+    "mvFull": null,
+    "avg": 997,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 4",
+    "count": 1,
+    "mv": 159.08,
+    "mvFull": null,
+    "avg": 1492,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 1",
+    "count": 1,
+    "mv": 74.28,
+    "mvFull": null,
+    "avg": 698,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 2",
+    "count": 1,
+    "mv": 100.68,
+    "mvFull": null,
+    "avg": 944,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Reverie Blend",
+    "count": 1,
+    "mv": 159.05,
+    "mvFull": null,
+    "avg": 1495,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Heavy - Woven Fairytale",
+    "count": 1,
+    "mv": 497.2,
+    "mvFull": null,
+    "avg": 4540,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Heavy - Fairytale's Finale",
+    "count": 1,
+    "mv": 35.79,
+    "mvFull": null,
+    "avg": 261027,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Into the Dream Cradle",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Fallacy of No Return",
+    "count": 1,
+    "mv": 15.85,
+    "mvFull": null,
+    "avg": 4499,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Outro - Blooming Fragrance",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Intro - Eternal Bloom",
+    "count": 1,
+    "mv": 36.09,
+    "mvFull": null,
+    "avg": 255838,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   }
+  ],
+  "expected": [
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage4DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillReverieBlendDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackWovenFairytaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackFairytaleSFinaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "FallacyOfNoReturnDiffraction",
+    "echoAttacks",
+    1,
+    "FallacyOfNoReturn",
+    null,
+    null
+   ],
+   [
+    "IntroSkillEternalBloomDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [],
+  "ratiosTop3": []
+ },
+ {
+  "resonator": "Lily",
+  "appKey": "Lily",
+  "casts": [
+   {
+    "name": "Intro - Eternal Bloom",
+    "count": 1,
+    "mv": 36.09,
+    "mvFull": null,
+    "avg": 277752,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 3",
+    "count": 1,
+    "mv": 106.09,
+    "mvFull": null,
+    "avg": 1095,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 4",
+    "count": 1,
+    "mv": 159.08,
+    "mvFull": null,
+    "avg": 1640,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 1",
+    "count": 1,
+    "mv": 74.28,
+    "mvFull": null,
+    "avg": 767,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 2",
+    "count": 1,
+    "mv": 100.68,
+    "mvFull": null,
+    "avg": 1040,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Reverie Blend",
+    "count": 1,
+    "mv": 159.05,
+    "mvFull": null,
+    "avg": 1643,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Heavy - Woven Fairytale",
+    "count": 1,
+    "mv": 497.2,
+    "mvFull": null,
+    "avg": 6560,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Heavy - Fairytale's Finale",
+    "count": 1,
+    "mv": 35.79,
+    "mvFull": null,
+    "avg": 339754,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Into the Dream Cradle",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Fallacy of No Return",
+    "count": 1,
+    "mv": 15.85,
+    "mvFull": null,
+    "avg": 12052,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Outro - Blooming Fragrance",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   }
+  ],
+  "expected": [
+   [
+    "IntroSkillEternalBloomDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage4DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillReverieBlendDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackWovenFairytaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackFairytaleSFinaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "FallacyOfNoReturnDiffraction",
+    "echoAttacks",
+    1,
+    "FallacyOfNoReturn",
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [],
+  "ratiosTop3": []
+ },
+ {
+  "resonator": "Lily",
+  "appKey": "Lily",
+  "casts": [
+   {
+    "name": "Basic - Mend and Cleanse 3",
+    "count": 1,
+    "mv": 106.09,
+    "mvFull": null,
+    "avg": 1511,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 4",
+    "count": 1,
+    "mv": 159.08,
+    "mvFull": null,
+    "avg": 2264,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 1",
+    "count": 1,
+    "mv": 74.28,
+    "mvFull": null,
+    "avg": 1058,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Basic - Mend and Cleanse 2",
+    "count": 1,
+    "mv": 100.68,
+    "mvFull": null,
+    "avg": 1432,
+    "cast": "Basic",
+    "node": "Normal",
+    "type": "Basic",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Skill - Reverie Blend",
+    "count": 1,
+    "mv": 159.05,
+    "mvFull": null,
+    "avg": 2266,
+    "cast": "Skill",
+    "node": "Skill",
+    "type": "Skill",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Forte Heavy - Woven Fairytale",
+    "count": 1,
+    "mv": 497.2,
+    "mvFull": null,
+    "avg": 7560,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Heavy - Fairytale's Finale",
+    "count": 1,
+    "mv": 35.79,
+    "mvFull": null,
+    "avg": 283129,
+    "cast": "Heavy",
+    "node": "Forte",
+    "type": "Heavy",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Liberation - Into the Dream Cradle",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Liberation",
+    "node": "Liberation",
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Echo - Fallacy of No Return",
+    "count": 1,
+    "mv": 15.85,
+    "mvFull": null,
+    "avg": 21511,
+    "cast": "Echo",
+    "node": null,
+    "type": "Echo",
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Wait 0.98s for Liberation - Party 'til Dawn!'s cooldown",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": null,
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Outro - Blooming Fragrance",
+    "count": 1,
+    "mv": 0,
+    "mvFull": null,
+    "avg": 0,
+    "cast": "Outro",
+    "node": null,
+    "type": null,
+    "queued": false,
+    "by": null
+   },
+   {
+    "name": "Intro - Eternal Bloom",
+    "count": 1,
+    "mv": 36.09,
+    "mvFull": null,
+    "avg": 277752,
+    "cast": "Intro",
+    "node": "Intro",
+    "type": "Intro",
+    "queued": false,
+    "by": null
+   }
+  ],
+  "expected": [
+   [
+    "BasicAttackStage3DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage4DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage1DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "BasicAttackStage2DMG",
+    "basic",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "ResonanceSkillReverieBlendDMG",
+    "skill",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackWovenFairytaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "HeavyAttackFairytaleSFinaleDMG",
+    "forteCircuit",
+    1,
+    null,
+    null,
+    null
+   ],
+   [
+    "FallacyOfNoReturnDiffraction",
+    "echoAttacks",
+    1,
+    "FallacyOfNoReturn",
+    null,
+    null
+   ],
+   [
+    "IntroSkillEternalBloomDMG",
+    "intro",
+    1,
+    null,
+    null,
+    null
+   ]
+  ],
+  "unmatched": [],
+  "status": [],
+  "enemy": {
+   "spectroFrazzleStacks": 0,
+   "aeroErosionStacks": 0,
+   "havocBaneStacks": 0,
+   "fusionBurstStacks": 0,
+   "electroFlareStacks": 0,
+   "electroRageStacks": 0,
+   "glacioChafeStacks": 0,
+   "strainStacks": 0
+  },
+  "ratiosPooled": [],
+  "ratiosTop3": []
  }
 ]

@@ -82,9 +82,16 @@ export interface MapReport {
   skipped: string[];
   status: string[];
   multipliers: string[];
+  /** hand-mapped casts whose motion value is other data on the two sides (see `DIFFERS`), "cast 74.28% → key 63.62%" */
+  differs?: string[];
 }
 
 export type Overrides = Record<string, string | null>;
+
+/** A resonator's reason why its hand-mapped casts carry other motion values than the app's rows: the two sides hold
+ *  different data for the same press (a beta kit against the released one). Such a cast is pressed at the app's own
+ *  value and reported under `differs`, never as a kit multiplier. No cast has this name. Mirrors map_rotations.DIFFERS. */
+export const DIFFERS = "_differs";
 
 // Riley-name ⇄ app-key aliases live in rileyNames.ts (dependency-free) so the presets / account code that only needs
 // rileyNameOf does not pull this whole mapper into the entry chunk; re-exported here for the existing importers.
@@ -114,6 +121,15 @@ export const OVERRIDES: Record<string, Overrides> = {
   // × 3.49: her S3 Confession Starflash, which the app applies through the chain (+249%); the Ring's extra Starflash
   // is too far from the row's name for the ratio rule
   Phoebe: { "Forte Heavy - Starflash (Ring of Mirrors, S3 Confession)": "HeavyAttackStarflashDMG" },
+  // Riley's kit is the 3.8 beta's: her four Basic Attack stages read 74.28 / 100.68 / 106.09 / 159.08 there and
+  // 63.62 / 116.60 / 95.43 / 153.80 in the released game (the app's rows), so no motion value matches and the stage
+  // number names the row. Left to the cascade, Stage 4's beta value sat 0.03 from her Resonance Skill's 159.05 and
+  // mapped onto Nightmare Blend, Stage 2 stayed unmatched and Stages 1 and 3 passed as kit multipliers.
+  Lily: {
+    [DIFFERS]: "wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's",
+    "Basic - Mend and Cleanse 1": "BasicAttackStage1DMG", "Basic - Mend and Cleanse 2": "BasicAttackStage2DMG",
+    "Basic - Mend and Cleanse 3": "BasicAttackStage3DMG", "Basic - Mend and Cleanse 4": "BasicAttackStage4DMG",
+  },
 };
 
 /** a set's own damage, pressed in the app as an echo-set attack (Midnight Veil 5pc: 480% Havoc DMG on the Outro) */
@@ -642,8 +658,12 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
     if (hit === null) { report.unmatched.push(`${nm} (mv ${c.mv}, ${c.cast}/${c.node}, ${how})`); continue; }
     if (how === "name-only" || how === "mv-ambiguous" || (how.startsWith("mv×") && sim(nm, hit) < 0.75)) report.review.push(`${nm} -> ${hit.key} [${how}]`);
     if (how.startsWith("mv×")) report.multipliers.push(`${nm} = ${hit.key} × ${how.slice(3)}`);
-    // a hand-mapped cast whose MV the kit multiplies
-    if (how === "override" && hit.mv && c.mv && Math.abs(c.mv / hit.mv - 1) > 0.01) report.multipliers.push(`${nm} = ${hit.key} × ${(c.mv / hit.mv).toFixed(2)}`);
+    if (how === "override" && hit.mv && c.mv && Math.abs(c.mv / hit.mv - 1) > 0.01) {
+      // the two sides hold other data for this press: the app's row as it is, no multiplier …
+      if (overrides[DIFFERS]) (report.differs ??= []).push(`${nm} ${c.mv.toFixed(2)}% → ${hit.key} ${hit.mv.toFixed(2)}%`);
+      // … or a hand-mapped cast whose MV the kit multiplies
+      else report.multipliers.push(`${nm} = ${hit.key} × ${(c.mv / hit.mv).toFixed(2)}`);
+    }
     if (how.startsWith("tick/")) {
       const n = Number(how.split("/")[1]);
       const slot = ticks.get(hit.key);
