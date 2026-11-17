@@ -58,18 +58,24 @@ describe("wuwa_calc stock presets (generated data)", () => {
     }
     expect(presetCount).toBe(manifest.rotationPresets);
     expect(actionCount).toBeGreaterThan(1000);
-  }, 60_000); // loads all 151 presets and resolves every action: 1.4 s on two pinned cores here, near vitest's 5 s default on CI's 2-core runner
+  }, 60_000); // loads all 155 presets and resolves every action: 1.4 s on two pinned cores here, near vitest's 5 s default on CI's 2-core runner
 
-  // 2026-11-02: Riley's loops beside Lily (a kit the app has no character for) are renamed after a team of their own
-  // the app can field, or left out (wuwa-tools rotation-port/map_rotations.py as_fieldable) — none may name her
+  // 2026-11-02: Riley's loops beside a kit the app has no character for are renamed after a team of their own the app
+  // can field, or left out (wuwa-tools rotation-port/map_rotations.py as_fieldable) — none may name it. That kit was
+  // Lily until Ryan's 3.8 (2026-11-16); with her released the generator leaves nobody out, and the rule waits for the
+  // next kit Riley has first
   it("no generated preset names a resonator the app has no character for", async () => {
     expect(manifest.notInApp, "the generator records who it left out").toEqual(expect.any(Array));
     for (const name of manifest.notInApp) expect(isRosterCharacter(name), name).toBe(false);
     const word = (name: string) => new RegExp(`\\b${name}\\b`);
+    // the check below on a made-up resonator: it has to be able to fail
+    expect(parsePresetName("Galbrena S6 Lux & Umbra R5 · Nobody + Qiuyuan · S6R5 (wuwa_calc)").teammateKeys.map((key) => isRosterCharacter(key))).toEqual([false, true]);
     const texts: Array<[string, string]> = [];
     for (const key of manifest.characters) {
       for (const preset of await loadWuwaCalcRotationPresets(key)) {
-        for (const teammate of parsePresetName(preset.name).teammateKeys) expect(isRosterCharacter(teammate), `${preset.name}: ${teammate}`).toBe(true);
+        const mates = parsePresetName(preset.name).teammateKeys;
+        expect(mates, `${preset.name}: two teammates`).toHaveLength(2);
+        for (const teammate of mates) expect(isRosterCharacter(teammate), `${preset.name}: ${teammate}`).toBe(true);
         texts.push([preset.name, `${preset.name} ${preset.description}`]);
       }
     }
@@ -77,6 +83,26 @@ describe("wuwa_calc stock presets (generated data)", () => {
     for (const [label, text] of texts) {
       for (const name of manifest.notInApp) expect(word(name).test(text), `${label} names ${name}`).toBe(false);
     }
+  });
+
+  // Ryan's 3.8 (2026-11-16): Lily is a character of the app, so her loops and the teams she is in ship
+  it("ships Lily's own loops and the teams she is in, under her name", async () => {
+    expect(manifest.characters).toContain("Lily");
+    const own = await loadWuwaCalcRotationPresets("Lily");
+    expect(own.length).toBeGreaterThan(0);
+    for (const preset of own) {
+      expect(parsePresetName(preset.name).mainKey, preset.name).toBe("Lily");
+      // her four Basic Attack stages are pressed by their number: wuwa_calc holds the 3.8 beta's motion values for
+      // them, and Stage 4's sat 0.03 from her Resonance Skill's, so the cascade pressed a second Blend instead
+      const keys = (preset.data.actions as Action[]).map((a) => String(a.key));
+      for (const n of [1, 2, 3, 4]) expect(keys.filter((k) => k === `BasicAttackStage${n}DMG`), `${preset.name}: stage ${n}`).toHaveLength(1);
+      expect(keys.filter((k) => /^ResonanceSkill/.test(k)), preset.name).toEqual(["ResonanceSkillReverieBlendDMG"]);
+      expect(preset.description).toContain("Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%");
+      expect(preset.description).not.toContain("MV multipliers");
+    }
+    const teams = (await loadWuwaCalcTeamPresets()).filter((t) => (t.data.characterIds as string[]).includes("Lily"));
+    expect(teams.length).toBeGreaterThan(0);
+    for (const team of teams) expect(parsePresetName(team.name).teammateKeys.concat(parsePresetName(team.name).mainKey ?? ""), team.name).toContain("Lily");
   });
 
   // Ryan's Teams page shows a name as stored, and a saved team keeps the name it was imported under: a stock team reads

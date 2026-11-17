@@ -1,5 +1,16 @@
 // Wuthering Tools+: Riley31415/wuwa_calc's S6R5 loops and full-team rotations
 // ship as stock presets (src/sim/presets/) next to the curated ones.
+import * as manifestModule from "../../src/sim/presets/data/manifest.json";
+import { parsePresetName } from "../../src/sim/presets/presetName";
+
+const manifest = ((manifestModule as { default?: unknown }).default ?? manifestModule) as { characters: string[] };
+/** Every teammate a generated name lists is a character this app has stock loops for: the generator files a loop only
+ *  under a character the app registers, and each of Riley's resonators has loops of its own. */
+const namesOnlyAppCharacters = (name: string): boolean => {
+  const mates = parsePresetName(name).teammateKeys;
+  return mates.length === 2 && mates.every((key) => manifest.characters.includes(key));
+};
+
 describe("wuwa_calc stock presets", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -27,31 +38,58 @@ describe("wuwa_calc stock presets", () => {
     cy.get('[data-test-rotation-item-by-name*="(wuwa_calc)"]').should("exist");
   });
 
-  // 2026-11-02: Riley's loops beside Lily (no character in this app) are renamed after a team of their own the app can
-  // field, or left out — Galbrena's best S6R5 loop reads "Lupa + Qiuyuan" with that team's numbers
-  it("offers only loops the app can field: Galbrena's Lily loop reads Lupa + Qiuyuan, no preset names Lily", () => {
-    cy.richSelect("[data-test-character-select]", "Galbrena", { search: "Galbrena" });
+  const openPresetsOf = (key: string, search: string): void => {
+    cy.richSelect("[data-test-character-select]", key, { search });
     cy.get(".character__self-buffs").should("be.visible");
     cy.get('[data-test-calculator-nav="rotations"]').click();
     cy.get('[data-test="rotations-overflow-menu"]').click();
     cy.get('[data-test-rotations-action="presets"]').click();
     cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
-    cy.contains("[data-test-rotations-presets] .card", "Lupa + Qiuyuan · S6R5 (wuwa_calc)").invoke("text").should("match", /Team: Lupa \+ Qiuyuan \(main DPS\): [\d,]+ DPS for Galbrena/);
+  };
+  /** every wuwa_calc card in the open modal names two teammates the app has */
+  const everyCardIsFieldable = (): void => {
+    cy.get("[data-test-rotations-presets] .card-title").then(($titles) => {
+      const names = [...$titles].map((el) => el.textContent ?? "").filter((name) => name.includes("(wuwa_calc)"));
+      expect(names.length, "wuwa_calc cards").to.be.greaterThan(0);
+      for (const name of names) expect(namesOnlyAppCharacters(name), name).to.equal(true);
+    });
+  };
+
+  // 2026-11-02 to 11-16 the app had no Lily, and Riley's loops beside her were renamed after a team of their own the
+  // app could field, or left out (Galbrena's best S6R5 loop read "Lupa + Qiuyuan"). Ryan's 3.8 released her: the loops
+  // ship under their real names with that team's numbers. The rule itself stays, for the next kit Riley has first.
+  it("offers Riley's loops beside Lily under her name, and none beside a resonator the app has no character for", () => {
+    // the check, on a made-up resonator and on a real one: it has to be able to say no
+    expect(namesOnlyAppCharacters("Galbrena S6 Lux & Umbra R5 · Nobody + Qiuyuan · S6R5 (wuwa_calc)")).to.equal(false);
+    expect(namesOnlyAppCharacters("Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)")).to.equal(true);
+    openPresetsOf("Galbrena", "Galbrena");
+    cy.contains("[data-test-rotations-presets] .card", "Lily + Qiuyuan · S6R5 (wuwa_calc)").invoke("text").should("match", /Team: Lily \+ Qiuyuan \(main DPS\): [\d,]+ DPS for Galbrena/);
     cy.get("[data-test-rotations-presets] .card").should("have.length.greaterThan", 1);
-    cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
+    everyCardIsFieldable();
   });
 
-  // 2026-11-04: each state keeps three loops the app can play, whatever its best ran beside: Hiyuki's third S6R1 loop
-  // takes the place of the one with Lily and brings back the only stock build on a 4-cost ATK%
-  it("keeps three playable loops per state: Hiyuki's Shorekeeper + Lucilla loop, on 43311 ATK", () => {
-    cy.richSelect("[data-test-character-select]", "Hiyuki", { search: "Hiyuki" });
-    cy.get(".character__self-buffs").should("be.visible");
-    cy.get('[data-test-calculator-nav="rotations"]').click();
-    cy.get('[data-test="rotations-overflow-menu"]').click();
-    cy.get('[data-test-rotations-action="presets"]').click();
-    cy.get("[data-test-rotations-presets-modal]").should("have.attr", "open");
-    cy.contains("[data-test-rotations-presets] .card", "Shorekeeper + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)").should("contain.text", "main stats 43311 ATK");
-    cy.get("[data-test-rotations-presets]").invoke("text").should("not.match", /\bLily\b/);
+  it("lists Lily's own loops: her four Basic Attack stages, the Blend, the Woven heavy and its Finale", () => {
+    openPresetsOf("Lily", "Lily");
+    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)")
+      .invoke("text")
+      .should("match", /Team: Lynae \+ Aemeath: [\d,]+ DPS for Lily of [\d,]+ team DPS/)
+      // wuwa_calc's kit is the 3.8 beta's: the card says which motion values differ from the released ones the app scores
+      .and("match", /Basic - Mend and Cleanse 1 74\.28% → BasicAttackStage1DMG 63\.62%/);
+    everyCardIsFieldable();
+    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)").within(() => {
+      cy.contains("button", "Import").click({ force: true });
+    });
+    cy.get("[data-test-rotations-presets-modal]").should("not.have.attr", "open");
+    cy.get('[data-test-rotation-item-by-name*="Lynae + Aemeath"]').should("exist");
+  });
+
+  // 2026-11-04: each state keeps three loops the app can play, whatever its best ran beside. Hiyuki's only stock build
+  // on a 4-cost ATK% is her S6R1 loop beside Lily and Lucilla; while the app lacked Lily it shipped under Shorekeeper +
+  // Lucilla, the third loop of that state
+  it("keeps Hiyuki's stock build on 43311 ATK: her S6R1 loop beside Lily and Lucilla", () => {
+    openPresetsOf("Hiyuki", "Hiyuki");
+    cy.contains("[data-test-rotations-presets] .card", "Lily + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)").should("contain.text", "main stats 43311 ATK");
+    everyCardIsFieldable();
   });
 
   it("a stock team starred before the 2026-11-04 rename keeps its star: Favorites still lists it", () => {

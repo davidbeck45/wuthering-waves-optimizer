@@ -1,0 +1,174 @@
+[
+ {
+  "name": "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lullaby R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 24,300 DPS for Lily of 345,333 team DPS. Sequence procs in the loop: none. Motion values that differ between the two (wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's; each press is scored at the app's): Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%; Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%; Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%; Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lullaby R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 24,300 DPS for Lily of 345,333 team DPS. Sequence procs in the loop: none. Motion values that differ between the two (wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's; each press is scored at the app's): Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%; Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%; Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%; Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceSkillReverieBlendDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavyAttackWovenFairytaleDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HeavyAttackFairytaleSFinaleDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 9,
+     "key": "IntroSkillEternalBloomDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lily S6 Lullaby R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lullaby R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 22,991 DPS for Lily of 277,859 team DPS. Sequence procs in the loop: none. Motion values that differ between the two (wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's; each press is scored at the app's): Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%; Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%; Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%; Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lily S6 Lullaby R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lullaby R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 22,991 DPS for Lily of 277,859 team DPS. Sequence procs in the loop: none. Motion values that differ between the two (wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's; each press is scored at the app's): Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%; Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%; Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%; Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "IntroSkillEternalBloomDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ResonanceSkillReverieBlendDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "HeavyAttackWovenFairytaleDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackFairytaleSFinaleDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FallacyOfNoReturnDiffraction",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "FallacyOfNoReturn",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ }
+]
