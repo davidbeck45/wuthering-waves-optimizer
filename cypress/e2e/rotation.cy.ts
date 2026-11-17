@@ -177,9 +177,11 @@ describe("rotation view", () => {
 
   it("says why a team cannot run, and lists teams to pick from", () => {
     cy.viewport(1280, 900);
-    // Lily: in wuwa_calc, not released in the app
+    // Lily's team: "not released in this app" until Ryan's 3.8 (#685) brought her in; it runs now, with no problem line
     cy.visit("/rotation#team=t4", seed());
-    cy.get('[data-test-rotation-problem="notInApp"]', { timeout: 90000 }).should("contain.text", "Lily");
+    cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
+    cy.get("[data-test-rotation-title]").should("contain.text", "Lily");
+    cy.get("[data-test-rotation-problem]").should("not.exist");
     // a /rankings team code it cannot read
     cy.visit("/rotation#team=AbCdEf", seed());
     cy.get('[data-test-rotation-problem="code"]', { timeout: 90000 }).should("contain.text", "Team rankings");
