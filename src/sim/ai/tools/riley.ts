@@ -51,6 +51,16 @@ export async function rileyForTeam(ctx: ToolContext, target: { saved: Record<str
   return built.characters === ctx.exp.characters ? base : ctx.riley({ ...ctx.exp, characters: built.characters });
 }
 
+/** The builds a saved team runs that are not their member's active one, as an answer names them ("Aemeath on “Account
+ *  plan”"): the builds `rileyForTeam` asks at. Empty for three nobody saved and for a team on the active builds. */
+export function pinnedBuildsOf(ctx: ToolContext, target: { saved: Record<string, any> | null }): string[] {
+  const team = target.saved;
+  if (!team) return [];
+  return resolveTeamBuilds({ characterIds: team.characterIds ?? [], buildIds: team.buildIds ?? [] }, ctx.exp.characters, { auto: ctx.autoBuffs ?? true })
+    .slots.filter((s) => s.buildId && s.buildId !== (ctx.exp.characters[s.characterId]?.activeBuildId ?? null))
+    .map((s) => `${characterName(s.characterId)} on “${s.buildName ?? "a saved build"}”`);
+}
+
 export interface TeamTarget {
   /** the saved team's name, or the members joined with " · " */
   name: string;
@@ -58,6 +68,14 @@ export interface TeamTarget {
   /** the saved team, when the argument named one */
   saved: Record<string, any> | null;
 }
+
+/** A target's members under the saved team's own keys and in its own order, else as the argument gave them. A wuwa_calc
+ *  team key lists them in his order and names a Rover by his one form; the saved team is what the player set up, so a
+ *  link or a build lookup made from it reads the same wherever the team was named from. */
+export const memberKeysOf = (target: Pick<TeamTarget, "characterIds" | "saved">): string[] => {
+  const own = ((target.saved?.characterIds ?? []) as Array<string | null>).filter((id): id is string => !!id);
+  return own.length === target.characterIds.length ? own : target.characterIds;
+};
 
 const SEPARATORS = /\s*(?:,|\+|·|\/|&|\band\b)\s*/i;
 

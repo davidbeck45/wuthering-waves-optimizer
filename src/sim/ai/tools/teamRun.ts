@@ -11,7 +11,7 @@ import { constraintsOf, DEFAULT_OPTIONS, filterPool, shortfallOf } from "../../b
 import { LAYOUT_COSTS, type MemberPlan } from "../../buildTeam/rileyPlan";
 import { showNeed } from "../../energy/energyNeed";
 import { characterName, compactJson, defineTool, echoName, int, round, setName, statLabel, type ToolContext } from "./shared";
-import { rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine, type TeamTarget } from "./riley";
+import { memberKeysOf, pinnedBuildsOf, rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine, type TeamTarget } from "./riley";
 
 /** The composition's best `mine` row, or a sentence saying why there is none. */
 async function bestRow(riley: RileyToolEngine, target: TeamTarget): Promise<{ solve: MineSolve | null; why: string | null }> {
@@ -67,6 +67,8 @@ export const teamRotationTool = defineTool<{ team: string }>({
       wuwaCalcTeam: solve.teamKey,
       teamDps: int(run.total),
       fightSeconds: round(plan.fightSeconds, 1),
+      // which builds the card is of, when they are not the ones the characters wear now
+      ...(riley !== base ? { builds: `This saved team runs on the builds it pins (${pinnedBuildsOf(ctx, target).join(", ")}), not on those characters' active builds: the card and its DPS are those builds', as on /rotation and Teams.` } : {}),
       members: run.members.map((m, i) => ({
         character: names[i],
         gear: `S${m.sequence} · ${m.weapon} R${m.refinement} · ${m.echo}`,
@@ -81,7 +83,11 @@ export const teamRotationTool = defineTool<{ team: string }>({
       })),
       ...(plan.wrap ? { then: `${names[plan.wrap.member]} again: the loop starts over` } : {}),
       notes: ["Seconds are frame-tight (every cancel on its earliest frame). teamDps is wuwa_calc's DPS: compare only with another DPS."],
-      path: rotationPath({ kind: "team", teamKey: solve.teamKey, rowKey: solve.best.rowKey, picks: solve.best.picks }),
+      // A row's link carries its own picks, and /rotation runs such a row at the active builds (a Team rankings row as
+      // /rankings showed it). A team asked at its own account is linked by its three members instead, which the page
+      // reads at the saved team's account (useRotationRun `ofComposition`), so the link opens on the figure given here:
+      // the row link opened a pinned team on the active builds' DPS, or on "this row no longer fits"
+      path: riley === base ? rotationPath({ kind: "team", teamKey: solve.teamKey, rowKey: solve.best.rowKey, picks: solve.best.picks }) : rotationPath({ kind: "chars", chars: memberKeysOf(target) }),
       label: "Rotation cue card",
     });
   },
