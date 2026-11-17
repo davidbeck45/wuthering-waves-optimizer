@@ -4341,3 +4341,74 @@ calculator's Optimizer reads them when that build is active), and the drawer say
 a pinned build, which is why `run()` reads the records again. The light-theme stat tile icons are a rule at the end of
 `a11y/a11y.css`. Not done: leaving Optimize team still drops a run without a word, and the search's scorer still drops
 a per-action weapon passive override (his Discord alert is untouched).
+
+## Ryan's #693 to #725 on plus (sync of 2026-11-16)
+
+Merge 8ea567f0 (upstream 3792a442, 16 commits, 139 files). Version 3.8 is in: the resonator Lily and the pistol Lullaby,
+with her frame data, rotation presets and substat weights. With it came his substat roll values on the Echo Insights
+panel (#693), picker filters remembered per character (#709), a delta that did not move printed as a plain "0.0%"
+(#703), "Already equipped" on a loadout you wear (#705), the set icon on echo rows (#708), Hide impossible on by default
+for team buffs (#701), and two calculator fixes (#699, #700). He changed no dependency, build or CI file. Report:
+`wto-wt/b4/reports/sync.md`.
+
+**Hooks.** Ten of his files had changed on both sides. Five merged on their own, five conflicted, four of those where
+his new import and a plus import landed on the same line. Every plus line in the ten is the line it was: the changed
+lines of `git diff 186c54f6 80a4d09b -- <file>` and of `git diff upstream/master 8ea567f0 -- <file>` are the same set
+in each. The other 77 files of his that plus edits were not touched by this merge.
+
+| His file | Plus hook | Now |
+|---|---|---|
+| `cli/index.ts` | the import and the `registerPlusCommands(program)` call | kept, under his new `parseIdOption` |
+| `public/sitemap.xml` | plus's address on its 20 pages | kept, with his two new dates (home 2026-11-11, `/updates` 2026-11-16). He added no page |
+| `src/calculator/attacks.ts` | the Glacio Chafe `console.log` taken out | kept out |
+| `src/calculator/stats.ts` | `mergedSelfBuffsForBreakdown` is the sums the final pass used | kept; his `countStatSteps` fix is higher in the file |
+| `CalculatorCommandBar.vue` | `:data-damage-type` on the Live Result Bar's hero (`phone.css` reads it) | kept |
+| `CalculatorEchoInsightsPanel.vue` | `<EchoLabEngineHook>` and its import | kept as the last child of the open panel, now under his roll table, "Try a change" and footnote instead of under his old two lists |
+| `WorkspaceWeaponPanel.vue` | the Baseline badge on the equipped row, the footnote's last sentence, `ownedWeaponCandidate` for the scored rows | kept; his rows now print through `signedImpact` |
+| `TeamOptimizerResults.vue` | Save only when there are names to save, `NOTHING_TO_SAVE` | kept; his "vs current" now prints through `signedPercent` |
+| `TeamOptimizerSetup.vue` | `floorCount`, the drawer's scope line and `provide`, `:initial-choice` | kept |
+| `src/stores/settings.js` | `lodash/merge` instead of the whole of lodash | kept; his `setCharacterFilters` and `setGlobalFilters` use no lodash |
+
+**Lily.** Plus code never named her. A kit Riley's engine has and the app lacks is found by `notInApp()` against the
+app's own character list, so the rankings, Sync my teams, Build my team, the Tower check, the energy check and the
+weapon page started to take her teams the moment her folder arrived. Thirteen tests did name her, as the one absent
+kit. They now hold a kit back themselves: `rileyHeadless(source, guard)` and `createRileyClient({ notInApp })` take the
+release guard as an option, the app's list by default, and the plain-data tests name a made-up resonator. The stock
+presets, breakpoints and materials leave her out until they are regenerated: `manifest.notInApp` says `["Lily"]`, and
+two tests stay red on that until then (`costToMax.test.ts`, `wuwaCalcPresets.test.ts`).
+
+**Numbers.** Only Sigrika moved, and only through #699. Sound of True Name's 5-piece bonus is +20 % Crit Rate for Echo
+Skill damage, and he had it on every attack. She wears five pieces, so her Crit Rate reads 76.9 % where it read 96.9 %,
+and her rotations and teams are 0.2 % to 0.8 % lower. Shorekeeper's Build Score went from 22.71 % to 22.69 % (#718, her
+Energy Regen weight). #700 moved nothing, because it makes Schemata of Runes and Soliskin Vitality exclusive when a
+switch is flipped, not when a saved build is read. A build saved with both on keeps both, and reads about 6 % to 10 %
+higher than with one.
+
+**One more roll, twice on one panel.** His table and plus's Engine view both say what a roll of a substat adds, a few
+lines apart, with slightly different figures. On one rotation the two methods agree to the hundredth of a percent
+(Xuanling: Crit DMG +4.37 %, Heavy Attack DMG +2.66 %, Crit Rate +2.46 %, ATK % +2.36 % from both). On a page they
+differ because they measure different things: his reads the Live Result Bar's target on the character's own enemy and
+prints damage, plus reads the best rotation on the ranking enemy and prints a percent. Nothing was removed in this sync.
+
+**Five plus specs went red, none of them in his CI**, from three causes. Two quoted his "+0.0%" (`optimizerExact`,
+`teamOptimizerPhone`). One checked a layout only the Lily team had (`rankings`, under "Things learned"). Two looked for
+the Engine view on the first screen (`echoLab`, `damageAnatomy`): his table put about 500 px above it, and the sidebar
+that holds the panel is sticky. On a desktop 900 px tall the view, and his own "Try a change", now come up only in the
+last quarter of the Echoes screen's scroll. The specs scroll to it; where the view should sit is an open question.
+
+**Things learned.**
+- **A test on "the top row" inherits what is special about the top row.** The phone detail's "Back and Import on one
+  line" held only because the top team had Lily, which hid the build link. Every other team had its four controls on a
+  line of their own, on production too. The spec now checks the layout every team has.
+- **A plus spec that quotes his text breaks when he rewords it.** #703 dropped the sign from an unchanged delta in 30
+  files. After a sync, grep the root-level specs for the strings his diff removed.
+- **`cy.contains(selector, text)` reads the selector's own element.** A container's text runs sibling spans together
+  ("12,3450.00% vs current"), so a pattern that must not follow a digit never matches there. Read the one span.
+- **To list what his diff adds, diff from the merge base.** `git diff 80a4d09b upstream/master` also counts every line
+  plus changed as one of his additions. `git diff 186c54f6 upstream/master` does not.
+- **A sticky column taller than the screen hides its lower end until the page is nearly scrolled out**, and one
+  `scrollIntoView` stops short of it, because the column sticks under the scroll. A hook at the end of one of his
+  panels moves every time he adds to the panel: after a sync, look at where each hook ended up, not only whether it
+  renders.
+- **A candidate that moves nothing still needs a look.** #700 was on the list of commits that could move a number. It
+  moved none, and the reason was a saved build the rule never reads.
