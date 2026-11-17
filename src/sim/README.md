@@ -4648,3 +4648,107 @@ Left out: Build history and every Undo (copies of builds: a restore would write 
 versions the import has just made, and the backups are now the whole-account history), this device's settings (as in
 his export), an "after" backup of a bulk delete, scrubbing a deleted Convene history out of older backups, encryption
 of a file (it holds the in-game UID the pull history is filed under, and no token).
+
+## What each level is worth — which level-up to do first, in the `/account` drawer (batch 4, track "level-priority", 2026-11-16) — `src/sim/levels/`
+
+The drawer's section under Cost to max. Cost to max says what it takes to raise a character; this says **which level-up
+to do first**: every level-up left, what it adds to damage on the player's own build, and what it costs. Guides call it
+skill priority; here it is computed on the build, the rotation and the team.
+
+**What a step is.** Found before anything was designed: which levels the calculator stores, and which of them the
+damage engine reads (`calculator/buildCharacterContext.ts`).
+
+| Step | Stored (`characters[id]`) | Unset means | The engine reads it as | A step here |
+|---|---|---|---|---|
+| Character level | `characterLevel`, one of "1", "20", "20+", … "90" ("+" = ascended at that cap); shared by every build | "90" | base HP / ATK / DEF, and the level term of every hit's defence factor | yes, by the game's caps |
+| Weapon level | `weapons[<weapon>].weaponLevel`, the same strings; part of a build | the weapon's last level (90; 70 for a 1★ / 2★) | the weapon's ATK and its second stat | yes, by the game's caps |
+| Forte skills | `talents.basic / skill / forte / liberation / intro`, 1–10; shared by every build | 10 | each attack's multiplier at the level of its own skill | yes, one level at a time |
+| Stat bonuses, inherent skills | switches in the build's `buffs` (`StatBonus…`, `InherentSkill…`), not levels | off | self-buffs | no: one line under the list says so (Cost to max prices them) |
+| Outro Skill, Tune Break, echo skills | nothing | — | one fixed multiplier | no: nothing to level |
+
+A level or weapon step runs to the next cap and carries the ascension it stands before ("70 → 80" pays the ascension at
+70, then ten levels of EXP; "70+ → 80" is EXP alone), so every step ends on a value the calculator's own picker writes.
+From level 1 that is 59 steps: 7 + 7 + 45 (a weapon that stops at 70 has 5).
+
+| Piece | Role |
+|---|---|
+| `levelSteps.ts` | pure: `levelsToday` (what the calculator saved, each gap filled as the calculator fills it and flagged in `assumed`; or level 1 across the board), `nextStep` / `trackToTop`, `withLevels` (the record the engine reads: the three fields the pickers write), `stateFrom` / `parseLevels` (levels given by hand), `sumCosts`. **No cost is tabled here:** a step costs Cost to max before it minus Cost to max after it (`costToMax` twice), so a track's steps add up to its figure there to the credit, and every step from level 1 adds up to Cost to max from level 1 less the inherent skills and stat bonuses (4,460,260 − 630,000 for Camellya and Red Spring). EXP items are rounded up once over the summed EXP |
+| `levelPlan.ts` | async, time-sliced (`slicer`), cancellable: the gains. Own = the roster ranking's best rotation through `calcCharacterRotationDamage` at the ranking enemy, as `scoreRotation` does, on `withLevels`' copy. Team = the invest plan's `createTeamScorer` (`teamFor` / `buildBlock` / `impact`), so a team figure is exact or absent with its reason. `rows` = each track to its top alone; `path` = the order; `everything` = all of it; `inert` = tracks that move nothing |
+| `levelWorth.ts` | pure, free of the engine: the plan's shape, `basisOf` / `compareWorth` (the ordering), `inertText`, `assumedWords`, `pathHeadline`. Split out so the view model, the CLI's printer and a Cypress spec can read a plan without bundling the calculator |
+| `levelsView.ts` | pure: the words and figures (`gainText`, `costText`, `gainChips`, `basisLine`, `pathHow`, `headlineText`, `everythingText`, `inertLine`, `smallTeamLine`, `NOT_MODELLED`, `ORDER_BLIND`), shared by the drawer, the CLI and the assistant |
+| `LevelsWorth.vue` | the section. Loads the cost table (`materials/materialsData.ts`), scores once the section has been on screen (`IntersectionObserver`: a drawer opened and closed above it scores nothing), the order only when its view is opened |
+| `levelsCli.ts` | `npm run cli -- levels <character> [--from 1] [--at level=80,liberation=6] [--team <t>] [--by gain]`: two tables, or JSON without the engine's working states |
+| `ai/tools/levels.ts` | the assistant's answer: a mode of `weapon_value` (`show: "levels"`, `levels` = where the character stands) |
+| `account/AccountCharacterDrawer.vue` | mounts it under Cost to max; `SECTION_TARGETS` lets a link open the drawer at `cost` or `levels` |
+| `shell/paletteCommands.ts` | "What to level first: <name>" (`/account?focus=<key>&section=levels`), found by "skill priority", "which skill", "level up" |
+
+**Two views of the same steps.** *Each on its own*: one line per track taken from the starting levels to its top
+("Resonance Liberation 6 → 10"), the biggest gain first, each with its Shell Credits, EXP items, ascensions and a fold of
+materials; then all of it together, which is more than the lines add up to because level-ups multiply. *Level in this
+order*: a path that takes the best next step, scores the build again at the new levels, and so on to the top, with a
+running gain and bill and a headline ("The first 3 steps give +7.6% team damage for 81,500 Shell Credits."). The first
+twelve steps are on show; the rest sit behind "Show all".
+
+**Rules, and the calls behind them:**
+- **The order takes the step with the most gain per Shell Credit, not the biggest gain.** Steps are not the same size.
+  By the biggest gain a ten-level weapon step (+6.2 % team for 496,480 Shell Credits) goes before one Resonance Skill
+  level (+3.7 % for 30,000), and the order contradicts the list, whose top line is that skill taken to 10. Per Shell
+  Credit they compare, and the order reads like the advice players give: cheap Forte levels first, the last level of a
+  skill late. The line above the order says how it is built. `pathOrder: "gain"` (`--by gain`) is the other order; the
+  drawer has no switch for it. Shell Credits are the one cost every step shares; with no drop rates in the table,
+  materials cannot be weighed against each other.
+- **What the steps are ordered by** (`basisOf`): the team's damage where the character has a team figure (a support's own
+  damage says little), their own without one, and healing or shield strength for a rotation that heals or shields for
+  more than it hits at the starting levels (Verina's Healer Rotation). Every row still carries the other figures, each
+  with what it is a percent of ("team", "own", "healing").
+- **Level and Forte levels are shared by every build; a weapon level belongs to one.** When the strongest team pins a
+  build other than the active one, level and Forte steps keep an exact team figure (the pinned build reads the same
+  `characterLevel` and `talents`) and the weapon step has none, with the invest plan's own reason ("the team runs
+  Camellya's "Team build" build"). "All of it" for that team leaves the weapon step out.
+- **A step that moves nothing** (no damage, healing, shield or team change, to the last bit) is not shown as "+0.0%":
+  "not used in this rotation (<rotation>)" for a Forte skill, "changes nothing on this rotation" for a level. It keeps
+  its cost, goes last in the list and is left out of the order, which names it.
+- **Nothing saved is most accounts.** The calculator saves a level only when its picker is touched, and runs level 90,
+  Forte 10 and the weapon's last level otherwise: on David's account all 39 characters read as fully levelled. So the
+  section opens on *From level 1* for a character with nothing saved below the top (as Cost to max does), the saved view
+  says what is not saved and where levels are set, and a third start, **Other levels**, is a what-if on where the
+  character stands in game: seven pickers that open on what the calculator counts, so an endgame account only lowers
+  what is not there yet. It writes nothing and adds no storage key; the levels tried are kept per character for the
+  page visit. Setting levels for good stays the calculator's job: a write from this drawer would be a new write path
+  (two tabs, undo, build history) on a page that only reads.
+- **A support's levels hardly move a team**, and the section says it when everything together is under 1 %.
+- **The order does not know the game's unlock rules** (which Forte level opens at which ascension): no table the app
+  reads carries them, and none is stated. `ORDER_BLIND` says so under the order, in the drawer, the CLI and the tool.
+- **The assistant has no new tool.** The registry is at the 20 strict tools one request may carry, and its first twelve
+  are pinned byte for byte (the prompt-cache prefix). `weapon_value` got a second mode instead; its two new inputs are
+  required and nullable, so they count against the 16 union-typed parameters (7 used), not the 24 optional (21 used).
+  With nothing saved the result tells Claude to ask where the character stands rather than answer "nothing left".
+- **"What to invest in next" has no level row.** Every kind there is wired in six places (the filter chips, the row's
+  title and link, the card's headline, the drawer row, the persisted plan), the list sorts by one bare gain while a level
+  step is only honest beside its cost, and the plan would load the cost table on every `/account` visit.
+
+Things learned:
+- `savedProgressOf` keeps any level string that parses ("55"), and the engine has stats only for the fourteen the
+  pickers write: any other reads as no base stats at all. `levelsToday` counts such a value as not saved.
+- A team's rotation need not use what the character's own best rotation uses: Camellya's Normal Attack levels read
+  +12.2 % own and +0.0 % team from level 1, because the team preset never plays them.
+- A gain under 0.005 % printed "+0.00%" beside rows that are exactly zero; it prints "+<0.01%".
+- A spec that imports a view helper bundles everything that helper imports: `levelsView.ts` importing the plan's types
+  from `levelPlan.ts` pulled the damage engine (and its `node:` imports) into Cypress's webpack. Hence `levelWorth.ts`.
+- `:ranking-teams="x ?? []"` hands a child a new array on every render, which a watcher reads as new data.
+
+Gates: `levels/levelSteps.test.ts`, `levelPlan.test.ts` (a row equals `scoreRotation` / `scoreTeamCandidate` at the new
+level and today's figure is the ranking's own; the running total at every step equals the build with those steps
+applied; the first steps are the best per Shell Credit by brute force; nothing left, level 1, levels by hand, no weapon,
+no rotation, an unused skill, a healer, no team, a pinned build, a table without the character, cancel and cap),
+`levelsView.test.ts`, `levelsCli.test.ts`, the `weapon_value` cases in `ai/tools/pageTools.test.ts` and
+`ai/ui/toolSummary.test.ts`, the palette case in `shell/paletteItems.test.ts`, and `cypress/e2e/accountLevelsWorth.cy.ts`
+(saved levels read against the cost functions, the order, From level 1, nothing saved, Other levels with the
+calculator's data unchanged, no weapon, the table failing to load, the palette's link, 412 px at 130 % text). Checked by
+hand against `cli calc`: Lynae at level 80 and 90 reads 1,362,236 and 1,536,724 on her saved loop, and the row's own
+gain is that ratio (+12.81 %).
+
+Left for later: the stat bonuses as steps (their keys map to the table's two tiers; a rotation action with its own buff
+override freezes them, which needs handling first); the game's unlock order, once a source for it is in the materials
+generator; a level row in the invest list, if the list ever shows a cost beside a gain; materials per step of the order
+(the list has them per track).
