@@ -139,7 +139,9 @@ describe("Optimize team's Save", () => {
       cy.get("[data-test-team-optimizer-edit-setup]").click();
       cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
       cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
-      cy.contains("[data-test-team-optimizer-results]", "+0.00% vs current");
+      // the headline's own text, whole: a figure that did not move has no sign since Ryan's #703 ("+0.00% vs current"
+      // until then), and the total's digits sit right before it in the container's text
+      cy.contains("[data-test-team-optimizer-results] span", "vs current").should(($delta) => expect($delta.text().replace(/\s+/g, " ").trim()).to.eq("0.00% vs current"));
       cy.get("[data-test-team-optimizer-nothing-to-save]").should("be.visible");
       cy.get("[data-test-team-optimizer-save]").should("not.exist");
       cy.window().should((after) => expect(builds(after)).to.deep.equal(saved));
