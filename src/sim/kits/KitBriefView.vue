@@ -236,7 +236,13 @@
               </summary>
               <p class="kit-muted">{{ c.label }} means: {{ c.means }}.</p>
               <div v-if="c.teams.length" class="kit-list">
-                <KitTeamRow v-for="(t, n) in c.teams" :key="n" :team="t" :subject="kit.name" :cost="c.cost" :characters="characters" />
+                <KitTeamRow :team="c.teams[0]!" :subject="kit.name" :cost="c.cost" :characters="characters" />
+                <details v-if="c.teams.length > 1" class="kit-more" :data-test-kit-more-teams="c.cost">
+                  <summary>{{ c.teams.length - 1 }} more {{ c.teams.length === 2 ? "team" : "teams" }} at {{ c.label }}</summary>
+                  <div class="kit-list">
+                    <KitTeamRow v-for="(t, n) in c.teams.slice(1)" :key="n" :team="t" :subject="kit.name" :cost="c.cost" :characters="characters" />
+                  </div>
+                </details>
               </div>
             </details>
           </div>

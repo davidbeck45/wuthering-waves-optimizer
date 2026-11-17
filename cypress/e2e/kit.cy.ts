@@ -180,10 +180,18 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-signature]").should("contain.text", "the signature");
     expectNoHorizontalScroll("the brief");
 
-    // a collapsed Team Cost opens on a tap and shows its team
+    // a collapsed Team Cost opens on a tap and shows its best team; the others open on a second tap
     cy.get('[data-test-kit-cost="s6r5"] > summary').click();
     cy.get('[data-test-kit-cost="s6r5"] [data-test-kit-team]').first().should("be.visible").and("contain.text", "S6");
-    expectNoHorizontalScroll("the brief with a Team Cost open");
+    // (a closed <details> keeps its content laid out but unpainted, which Cypress calls visible and which still has a
+    // height: the fold's own `open` and the browser's checkVisibility() are what say it is shut)
+    cy.get('[data-test-kit-more-teams="s6r5"]').should("not.have.attr", "open");
+    cy.get('[data-test-kit-cost="s6r5"] [data-test-kit-team]').eq(1).should(($t) => expect($t[0]!.checkVisibility(), "a folded team is painted").to.eq(false));
+    cy.get('[data-test-kit-more-teams="s6r5"] > summary').invoke("text").should("match", /^\d more teams? at S6R5 all$/);
+    cy.get('[data-test-kit-more-teams="s6r5"] > summary').click();
+    cy.get('[data-test-kit-more-teams="s6r5"]').should("have.attr", "open");
+    cy.get('[data-test-kit-cost="s6r5"] [data-test-kit-team]').eq(1).should(($t) => expect($t[0]!.checkVisibility(), "an unfolded team is painted").to.eq(true));
+    expectNoHorizontalScroll("the brief with a Team Cost and its other teams open");
 
     // every link inside the brief goes to a page of the app
     cy.get("[data-test-kit-brief] a[href]").each(($a) => {
