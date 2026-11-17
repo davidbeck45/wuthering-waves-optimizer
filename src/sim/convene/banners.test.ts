@@ -281,6 +281,25 @@ describe("the shipped seed", () => {
     expect(liveBanners(before, Date.UTC(2026, 10, 12, 1, 59))).toEqual([]);
     expect(before[0]).toMatchObject({ label: "3.7 Phase II", endMs: Date.UTC(2026, 10, 11, 3, 59, 59, 999) });
   });
+
+  it("has holes where Kuro's news has none of a banner's notices, so a single run in it is no first run", () => {
+    // Version 3.2's patch notes introduce Sigrika through "[When the Runes Glitter]" (2026-03-19), but the feed has no
+    // Convene notice for 3.2's first phase: her only banner in it is 3.8's rerun under the same title. The own banners
+    // of Jingran (3.6), Hsin and Suoming (3.7) and Lily (3.8), each named by its version's patch notes, are not in the
+    // feed at all. The Banners tab therefore never says "First run" off this list.
+    const cache = decodeBannerCache(JSON.stringify(seed))!;
+    const all = buildBannerList(Object.values(cache.articles), { now: Number.POSITIVE_INFINITY, releases: cache.releases });
+    const runs = featuredRuns(all);
+    // (each check is about the feed up to this seed, so a later rerun of any of them leaves it standing)
+    expect(runs.get("Sigrika")![0]!.label).toBe("3.8 Phase I");
+    expect(runs.get("SolswornCiphers")![0]!.label).toBe("3.8 Phase I");
+    expect(all.filter((b) => b.label === "3.2 Phase I")).toEqual([]);
+    expect(all.filter((b) => b.label === "3.2 Phase II").length).toBeGreaterThan(0);
+    expect(runs.get("Qiuyuan")!.filter((r) => r.startMs <= Date.UTC(2026, 10, 12, 2, 0)).map((r) => r.label)).toEqual(["2.7 Phase II", "3.8 Phase I"]);
+    // resonators the app has whose banners up to 3.8's first phase have no notice: absent from the feed, not "never featured"
+    const seededUpTo = Date.UTC(2026, 10, 17);
+    for (const key of ["Jingran", "Hsin", "Suoming"]) expect((runs.get(key) ?? []).filter((r) => r.startMs < seededUpTo), key).toEqual([]);
+  });
 });
 
 describe("loadBanners (stale-while-revalidate)", () => {

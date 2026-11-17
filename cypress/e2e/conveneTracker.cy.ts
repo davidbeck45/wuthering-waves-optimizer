@@ -276,6 +276,28 @@ describe("released content only", () => {
     cy.get('[data-test-convene-live-banner="Lucilla"]').should("not.exist");
   });
 
+  it("calls no rerun a first run, and says the list is what Kuro's news holds", () => {
+    cy.clock(IN_3_8, ["Date"]);
+    interceptNews([]);
+    cy.visit("/convene?tab=banners", asia);
+    cy.get("[data-test-convene-live-banner]").should("have.length", 4);
+    // Sigrika first ran in 3.2's first phase (that version's patch notes), a phase Kuro's news has no notice for: with
+    // no earlier banner in the feed her rerun read "First run". The card says what the feed holds instead
+    cy.get("[data-test-convene-live]").should("not.contain.text", "First run");
+    cy.get('[data-test-convene-live-banner="Sigrika"] [data-test-convene-run-badge]').should("not.exist");
+    cy.get('[data-test-convene-live-banner="Sigrika"] [data-test-convene-run-detail]').should("have.text", "No earlier run in Kuro's news, which misses some banners.");
+    cy.get('[data-test-convene-live-banner="Solsworn Ciphers"] [data-test-convene-run-badge]').should("not.exist");
+    // a rerun the feed does hold keeps its badge, and says where the earlier run comes from
+    cy.get('[data-test-convene-live-banner="Qiuyuan"] [data-test-convene-run-badge]').should("have.text", "Rerun");
+    cy.get('[data-test-convene-live-banner="Qiuyuan"] [data-test-convene-run-detail]').should("contain.text", "Last run in Kuro's news:");
+    // 3.8's new resonator and weapon have no notice of their own, so the list is shorter than the game's: say so
+    cy.get("[data-test-convene-live-note]").should("be.visible").and("contain.text", "the game's Convene page may show more");
+    cy.get("[data-test-convene-history]").should("contain.text", "Kuro's news feed does not carry every banner");
+    // the advisor scores those same banners, and says a banner without a notice is not among them
+    cy.get("[data-test-convene-tab='advisor']").click();
+    cy.get("[data-test-convene-advisor-source]").should("be.visible").and("contain.text", "is then not scored here");
+  });
+
   it("shows nothing running between 3.7's last banner and the 3.8 update, and no 3.8 banner before its patch notes", () => {
     cy.clock(Date.UTC(2026, 10, 11, 12, 0), ["Date"]); // 2026-11-11 20:00 CST: 3.7 Phase II ended at 11:59, 3.8's notice is up
     interceptNews([]);
