@@ -25,6 +25,8 @@
           </button>
         </div>
       </div>
+      <!-- a set-up character the lab could not compare (fewer than five echoes): their echoes may be on this list -->
+      <p v-if="caution" class="el-feed-caution border-t border-base-300 px-4 py-2 text-sm" role="note" data-test-echo-lab-feed-caution>{{ caution }}</p>
       <!-- one group per game filter: the Sonata on the first line, COST and main stat under it (they told groups apart
       and were cut off on a phone) -->
       <ul v-if="feedOpen" class="grid grid-cols-1 gap-x-4 border-t border-base-300 px-4 py-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -264,6 +266,7 @@ import {
   characterName,
   compact,
   echoName,
+  feedCaution,
   feedGroups,
   feedListText,
   holdersLabel,
@@ -302,6 +305,7 @@ const rows = computed(() => props.result.echoes);
 const filtered = computed(() => sortRows(applyFilters(rows.value, filters.value), sortKey.value, sortDesc.value));
 const visible = computed(() => filtered.value.slice(0, limit.value));
 const groups = computed(() => feedGroups(rows.value));
+const caution = computed(() => feedCaution(props.result.skipped));
 const feedCount = computed(() => groups.value.reduce((n, g) => n + g.count, 0));
 const activeCount = computed(() => activeFilterCount(filters.value));
 const extraActive = computed(() => activeFilterCount({ ...filters.value, verdict: "all", search: "" }));

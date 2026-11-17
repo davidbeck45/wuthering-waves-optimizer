@@ -9,7 +9,7 @@ import { SUBSTAT_ABBR, SUBSTAT_KEYS, expectedRoll, isFlatSubstat, type SubstatKe
 import { IN_GAME_SET_NAME } from "../echoPlan/catalog";
 import { checkOf, showHave, showNeed } from "../energy/energyNeed";
 import type { EchoVerdict, EchoVerdictKind, LabCharacterSummary, VerdictReason } from "./bestOwner";
-import { wearsNow } from "./core";
+import { NEEDS_FIVE_ECHOES, wearsNow } from "./core";
 import type { LockPlan } from "./rerollAdvice";
 import { MIN_PLAN_GAIN, rerolledLines } from "./rerollPick";
 
@@ -38,6 +38,17 @@ export const rankColor = (rank: number | null | undefined): string | null => (ra
 export function leftOutNote(asked: string, shown: string | null, skipped: ReadonlyArray<{ id: string; reason: string }>): string {
   const why = skipped.find((s) => s.id === asked)?.reason ?? "no build with a weapon and five echoes";
   return `${characterName(asked)} can't be shown here (${why}).${shown ? ` Showing ${characterName(shown)} instead.` : ""}`;
+}
+
+/** Said on the feed list when a set-up character was not compared for want of five echoes. "Feed" means no build the
+ *  lab judged gains from the echo, and a resonator pulled today, armed and still short of echoes, is the one whose
+ *  pieces land there (Lily at four echoes: her HP% Flower of Tinged Yearning 1-cost read Feed). The line under the
+ *  tabs ("Left out: …") says who; this says it where the echoes are, and what to do. Null when nobody is. */
+export function feedCaution(skipped: ReadonlyArray<{ id: string; reason: string }>): string | null {
+  const names = skipped.filter((s) => s.reason === NEEDS_FIVE_ECHOES).map((s) => characterName(s.id));
+  if (!names.length) return null;
+  const who = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return `Not counted: ${who}, who ${names.length === 1 ? "wears" : "wear"} fewer than five echoes. An echo only ${names.length === 1 ? names[0] : "one of them"} could use can be on this list, so check before you feed it.`;
 }
 
 /** Main stats in a table cell's width. */

@@ -2,7 +2,7 @@
 // result of the public test account, and the "re-roll first" rule the re-roll tab and the calculator panel share.
 import { describe, expect, it } from "vitest";
 import fixture from "./__fixtures__/echoLabAccount.json";
-import { createLabSession, type LabAccount } from "./core";
+import { createLabSession, NEEDS_FIVE_ECHOES, type LabAccount } from "./core";
 import { bestOwners, type BestOwnerResult } from "./bestOwner";
 import { engineView } from "./engineView";
 import { rerollAdvice, type LockPlan } from "./rerollAdvice";
@@ -13,6 +13,7 @@ import {
   DEFAULT_FILTERS,
   activeFilterCount,
   leftOutNote,
+  feedCaution,
   erFloorLine,
   applyFilters,
   feedGroups,
@@ -202,4 +203,33 @@ describe("a link to a character the tab can't show", () => {
     expect(leftOutNote("Chisa", "Zani", [])).toBe("Chisa can't be shown here (no build with a weapon and five echoes). Showing Zani instead.");
     expect(leftOutNote("Chisa", null, [])).toBe("Chisa can't be shown here (no build with a weapon and five echoes).");
   });
+});
+
+describe("the feed list says who was not counted (feedCaution)", () => {
+  // A resonator pulled today has a weapon and fewer than five echoes. The lab cannot compare against that build, so it
+  // leaves it out, and an echo only that resonator could use reads Feed: seen with Lily at four echoes, where an HP%
+  // Flower of Tinged Yearning 1-cost with Energy Regen, Crit and Heavy Attack lines went on the feed list.
+  it("names a set-up character with fewer than five echoes on the list their echoes land on", () => {
+    expect(feedCaution([{ id: "Lily", reason: NEEDS_FIVE_ECHOES }])).toBe(
+      "Not counted: Lily, who wears fewer than five echoes. An echo only Lily could use can be on this list, so check before you feed it.",
+    );
+    expect(feedCaution([{ id: "Lily", reason: NEEDS_FIVE_ECHOES }, { id: "Zhezhi", reason: NEEDS_FIVE_ECHOES }])).toBe(
+      "Not counted: Lily and Zhezhi, who wear fewer than five echoes. An echo only one of them could use can be on this list, so check before you feed it.",
+    );
+  });
+
+  it("says nothing when every set-up character was compared, or was left out for another reason", () => {
+    expect(feedCaution([])).toBeNull();
+    // no rotation scores, a kit that did not load: no echo is being held back from such a build by the lab's rule
+    expect(feedCaution([{ id: "Lily", reason: "no rotation scores on this build" }])).toBeNull();
+  });
+
+  it("is the reason the engine itself gives a build with an empty slot", async () => {
+    const account = JSON.parse(JSON.stringify(fixture)) as LabAccount;
+    const id = Object.keys(account.characters).find((key) => Object.values((account.characters[key] as { echoes?: Record<string, { echoId?: string; echo?: string }> }).echoes ?? {}).filter((e) => e?.echoId || e?.echo).length === 5)!;
+    (account.characters[id] as { echoes: Record<string, unknown> }).echoes["4"] = {};
+    const result = await bestOwners(createLabSession(account));
+    expect(result.skipped).toContainEqual({ id, reason: NEEDS_FIVE_ECHOES });
+    expect(feedCaution(result.skipped)).toContain("fewer than five echoes");
+  }, 60_000);
 });

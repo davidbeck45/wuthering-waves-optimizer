@@ -175,6 +175,9 @@ export const relGain = (base: number, value: number): number => (base > 0 ? valu
 
 /** Why a character whose kit will not load is skipped: an id the app lacks, or a roster kit lost to a network failure. */
 export const NOT_IN_APP = "not a character this app knows";
+/** Why a set-up character with an empty slot is left out: a swap is scored against the echo it replaces, and an empty
+ *  slot has none. The feed list reads this reason to say whose echoes may be on it (echoLabView.ts `feedCaution`). */
+export const NEEDS_FIVE_ECHOES = "needs five echoes to compare against";
 
 /**
  * Prepares one character: their best rotation (every saved, curated and wuwa_calc rotation scored on the

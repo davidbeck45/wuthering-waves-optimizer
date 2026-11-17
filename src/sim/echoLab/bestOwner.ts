@@ -13,6 +13,7 @@ import {
   builtCharacterIds,
   echoLines,
   makePacer,
+  NEEDS_FIVE_ECHOES,
   perPointOf,
   prepareCharacter,
   relGain,
@@ -160,7 +161,7 @@ export async function bestOwners(session: LabSession, options: BestOwnerOptions 
   for (let i = 0; i < ids.length; i++) {
     const lab = await prepareCharacter(session, ids[i], pace);
     if (lab && !lab.complete) {
-      session.skipped.set(lab.id, "needs five echoes to compare against");
+      session.skipped.set(lab.id, NEEDS_FIVE_ECHOES);
     } else if (lab) {
       labs.push(lab);
     }
