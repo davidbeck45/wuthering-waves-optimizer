@@ -4694,9 +4694,10 @@ twelve steps are on show; the rest sit behind "Show all".
   By the biggest gain a ten-level weapon step (+6.2 % team for 496,480 Shell Credits) goes before one Resonance Skill
   level (+3.7 % for 30,000), and the order contradicts the list, whose top line is that skill taken to 10. Per Shell
   Credit they compare, and the order reads like the advice players give: cheap Forte levels first, the last level of a
-  skill late. The line above the order says how it is built. `pathOrder: "gain"` (`--by gain`) is the other order; the
-  drawer has no switch for it. Shell Credits are the one cost every step shares; with no drop rates in the table,
-  materials cannot be weighed against each other.
+  skill late. The line above the order says how it is built. `pathOrder: "gain"` (`--by gain`) is the other order, one
+  tap away in the drawer ("Order by the biggest gain instead"): the same steps to the same end, the biggest jumps
+  first. Shell Credits are the one cost every step shares; with no drop rates in the table, materials cannot be
+  weighed against each other.
 - **What the steps are ordered by** (`basisOf`): the team's damage where the character has a team figure (a support's own
   damage says little), their own without one, and healing or shield strength for a rotation that heals or shields for
   more than it hits at the starting levels (Verina's Healer Rotation). Every row still carries the other figures, each
@@ -4741,10 +4742,13 @@ Gates: `levels/levelSteps.test.ts`, `levelPlan.test.ts` (a row equals `scoreRota
 level and today's figure is the ranking's own; the running total at every step equals the build with those steps
 applied; the first steps are the best per Shell Credit by brute force; nothing left, level 1, levels by hand, no weapon,
 no rotation, an unused skill, a healer, no team, a pinned build, a table without the character, cancel and cap),
-`levelsView.test.ts`, `levelsCli.test.ts`, the `weapon_value` cases in `ai/tools/pageTools.test.ts` and
+`levelsView.test.ts`, `levelsCli.test.ts`, `LevelsWorth.test.ts` (the section on a store of synthetic characters: it
+waits for the roster, costs alone without a weapon, the what-if pickers), the `weapon_value` cases in `ai/tools/pageTools.test.ts` and
 `ai/ui/toolSummary.test.ts`, the palette case in `shell/paletteItems.test.ts`, and `cypress/e2e/accountLevelsWorth.cy.ts`
-(saved levels read against the cost functions, the order, From level 1, nothing saved, Other levels with the
-calculator's data unchanged, no weapon, the table failing to load, the palette's link, 412 px at 130 % text). Checked by
+(saved levels read against the cost functions, the order both ways, From level 1, nothing saved, Other levels with the
+calculator's data unchanged, no weapon, the table failing to load, the palette's link, 412 px at 130 % text). Three
+mutations were run against the unit tests and each went red: the weapon step keeping a team figure under a pinned build,
+the order ignoring cost, a path step scored from the start instead of from the step before it. Checked by
 hand against `cli calc`: Lynae at level 80 and 90 reads 1,362,236 and 1,536,724 on her saved loop, and the row's own
 gain is that ratio (+12.81 %).
 
