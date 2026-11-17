@@ -1,6 +1,7 @@
 // Wuthering Tools+ AI tools — the /energy page headless: how much Energy Regen each member needs in a team, measured by
 // Riley's engine at the player's account (src/sim/energy/energyCheck.ts), beside the ER their build has in this app.
 import { characterFloors, energySummary, measureComposition, memberChecks, NOT_MEASURED_TEXT, teamHaves, type EnergyEngine, type MemberCheck, type TeamMeasure } from "../../energy/energyCheck";
+import { buffCeilingNote, erBuffCeiling } from "../../energy/buffCeiling";
 import { showHave, showNeed, TIGHT_MARGIN } from "../../energy/energyNeed";
 import { characterName, compactJson, defineTool, int, nullableString, round } from "./shared";
 import { memberKeysOf, rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine } from "./riley";
@@ -34,6 +35,9 @@ function memberRow(c: MemberCheck, teamKey: string): Record<string, unknown> {
   if (!m.owned) row.notOnAccount = `not on your account: wuwa_calc ran them at S${m.sequence} with ${m.weapon} R${m.refinement}`;
   if (m.overcap && m.overcap.share > 0.005) row.damageAtFullCritRatePct = round(m.overcap.share * 100, 1);
   row.teamDpsSharePct = round(m.share * 100, 1);
+  // their own team buffs grow with Energy Regen past the need (Lily, Suisui, Shorekeeper): "enough" is about the Liberation
+  const ceiling = buffCeilingNote(characterName(c.characterId), erBuffCeiling(c.characterId), c.need, c.have);
+  if (ceiling) row.teamBuffsAndEnergyRegen = ceiling.text;
   return row;
 }
 

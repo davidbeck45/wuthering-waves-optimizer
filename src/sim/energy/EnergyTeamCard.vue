@@ -64,6 +64,8 @@
           <EnergyChip :check="c" class="en-row__chip" />
           <svg class="en-row__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>
+        <!-- a kit whose own team buffs grow with Energy Regen past the need: "ok" on the Liberation is not the whole story -->
+        <p v-if="ceilings.get(c.characterId)?.below" class="en-member__ceiling" :data-test-energy-buff-ceiling="c.characterId">{{ ceilings.get(c.characterId)!.text }}</p>
         <div v-if="open === c.characterId" :id="`en-bd-${uid}-${c.characterId}`" class="en-member__detail">
           <EnergyBreakdown :view="view" :character-id="c.characterId" inline />
         </div>
@@ -89,6 +91,7 @@ import EnergyMeter from "./EnergyMeter.vue";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
 import { explainEnergyTeam } from "../ai/explain/explainPayloads";
 import { teamTitle } from "../display/teamName";
+import { buffCeilingNote, erBuffCeiling, type BuffCeilingNote } from "./buffCeiling";
 import { gearText, intText, measureNote, nameOf, needLabel, stockSpreadNote } from "./energyFormat";
 import type { TeamView } from "./useEnergyNeeds";
 import "./energy.css";
@@ -104,6 +107,10 @@ const stateKind = computed(() => {
   return s.status;
 });
 const shortCount = computed(() => props.view.checks?.filter((c) => c.status === "short").length ?? 0);
+/** per member: what their own team buffs still gain from Energy Regen above the need (Lily, Suisui, Shorekeeper) */
+const ceilings = computed(
+  () => new Map<string, BuffCeilingNote | null>((props.view.checks ?? []).map((c) => [c.characterId, buffCeilingNote(nameOf(c.characterId), erBuffCeiling(c.characterId), c.need, c.have)])),
+);
 </script>
 
 <style scoped>
@@ -284,6 +291,15 @@ button.en-row:focus-visible {
   padding: 0.25rem 1rem 1rem 4rem;
   background: oklch(var(--bc) / 0.025);
 }
+/* under the row, in line with the name: the page's secondary ink, which holds AA on every theme */
+.en-member__ceiling {
+  margin: 0;
+  padding: 0 1rem 0.7rem 4rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--en-ink-2);
+  overflow-wrap: anywhere;
+}
 :deep(.en-meter__need-label) {
   background: transparent;
 }
@@ -312,6 +328,9 @@ button.en-row:focus-visible {
   .en-row__chip { justify-self: start; }
   .en-member__detail {
     padding: 0.25rem 1rem 1rem;
+  }
+  .en-member__ceiling {
+    padding: 0 1rem 0.7rem;
   }
 }
 </style>

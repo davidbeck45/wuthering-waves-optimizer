@@ -8,6 +8,7 @@ import { int, pct, table } from "../cli/format";
 import { rileyAccountForTeam } from "../engine/rileyAccount";
 import { accountKeyOf } from "../rankings/rileyNames";
 import { rileyHeadless, type HeadlessRiley } from "../engine/rileyNode";
+import { buffCeilingNote, erBuffCeiling } from "./buffCeiling";
 import {
   characterFloors,
   energySummary,
@@ -139,6 +140,18 @@ export function printEnergy(r: EnergyReport): void {
   if (r.floors.length) {
     console.log("\nER floor per character (the highest need among your saved teams — what substat weights count ER up to)");
     console.log(table([["  Character", "Need", "Team"], ...r.floors.map((f) => [`  ${nameOf(f.characterId)}`, pct(showNeed(f.need)), f.team.name])]));
+  }
+  // a kit whose own team buffs grow with Energy Regen past its need (Lily, Suisui, Shorekeeper): once per character
+  const ceilings = new Map<string, string>();
+  for (const t of r.teams) {
+    for (const c of t.checks ?? []) {
+      const note = buffCeilingNote(nameOf(c.characterId), erBuffCeiling(c.characterId), c.need, c.have);
+      if (note && !ceilings.has(c.characterId)) ceilings.set(c.characterId, note.text);
+    }
+  }
+  if (ceilings.size) {
+    console.log("\nTeam buffs that grow with Energy Regen (the game's text, from the app's buff data; the need above is the Liberation's)");
+    for (const text of ceilings.values()) console.log(`  ${text}`);
   }
   const s = r.summary;
   console.log(`\n${s.shortCharacters.length} character${s.shortCharacters.length === 1 ? "" : "s"} short on ER${s.shortCharacters.length ? ` (${s.shortCharacters.map(nameOf).join(", ")})` : ""} · ${s.overcapCharacters.length} overcapping crit${s.overcapCharacters.length ? ` (${s.overcapCharacters.map(nameOf).join(", ")})` : ""}`);

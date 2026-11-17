@@ -25,6 +25,8 @@
       <template v-if="check.status === 'short'"> {{ check.short.toFixed(1) }}% short: about {{ check.rolls }} Energy Regen roll{{ check.rolls === 1 ? "" : "s" }} ({{ erRollText }} each).</template>
       <template v-else-if="check.status === 'unknown'"> {{ who }} is not set up in the calculator (no weapon), so there is no build to compare.</template>
     </p>
+    <!-- the member's own team buffs grow with Energy Regen past this need (Lily, Suisui, Shorekeeper): said here in full -->
+    <p v-if="ceiling" class="en-bd__lead" data-test-energy-breakdown-ceiling>{{ ceiling.text }} The need above is what the Liberation costs, not what the buffs ask.</p>
 
     <!-- where the energy comes from -->
     <section v-if="breakdown" class="en-bd__section" aria-labelledby="en-bd-sources">
@@ -92,6 +94,7 @@
 // run, and what being short costs a score. Used in the /energy cards and in the sheet the chips open.
 import { computed } from "vue";
 import EnergyChip from "./EnergyChip.vue";
+import { buffCeilingNote, erBuffCeiling } from "./buffCeiling";
 import { actionText, energyText, gearText, haveText, nameOf, needText, pctText } from "./energyFormat";
 import { erRoll, erWeight, memberBreakdown, type BreakdownPart } from "./energyNeed";
 import type { TeamView } from "./useEnergyNeeds";
@@ -102,6 +105,7 @@ const props = withDefaults(defineProps<{ view: TeamView; characterId: string; /*
 const check = computed(() => props.view.checks?.find((c) => c.characterId === props.characterId) ?? null);
 const m = computed(() => check.value!.member);
 const who = computed(() => nameOf(props.characterId));
+const ceiling = computed(() => (check.value ? buffCeilingNote(who.value, erBuffCeiling(props.characterId), check.value.need, check.value.have) : null));
 const breakdown = computed(() => (check.value ? memberBreakdown(m.value) : null));
 const hasBuffs = computed(() => breakdown.value?.parts.some((p) => p.kind === "buffs") ?? false);
 const erRollText = computed(() => pctText(erRoll()));
