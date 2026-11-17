@@ -5470,3 +5470,10 @@ branch), the way David's phone meets the deploy, and by making each cause happen
   renamed loop with the same figure is steady; an echo, a weapon refinement, a teammate's sequence, two at once, an
   undo, a restore, Delete your data (both log keys go); a reload mid-run records nothing; two tabs ranking at once give
   one record; 40 distinct records at David's size keep the newest 30 in about 87,000 characters.
+
+### Resonator briefs: the second check (batch 4, 2026-11-17)
+
+- **Figures.** Nine teams of four briefs (Lily, Aemeath, Lynae, Shorekeeper; S0R0 all to S6R5 all) read the brief's DPS on Team rankings to the digit, once its "Avg damage / rotation" heading is tapped (his page floors, the brief rounds). The table opens on damage per rotation, so the brief says where its figure is. A main DPS's ladder steps at S2 / S3 / S6 are his S2R1 / S3R1 / S6R1 figures; a support's are the generator's own runs (his Team Costs raise the main DPS only), and a limited or standard support's brief says its higher Team Costs leave it at S0.
+- **When Riley's kit is not the game's, the brief says so, from data.** `kits.json` carries two optional fields per resonator, both written by `export_kits.mjs` and gone by themselves on the regeneration after his kit is fixed: `differs` (read from the stock loops' "Motion values that differ" report, so `emit_app_presets.py` runs first; Lily: the 3.8 beta's four Basic Attack stages) and `unmet` (the engine's own "cast without forte1 … (needs >= 300)" warnings while the script runs it; Lily: her Woven heavies without the 300 of her Forte gauge). `differsText` and `unmetText` put each in a card above the account block.
+- **Not owned:** under Riley's best team the brief names the team a pull would open (`ifPulled`: the best of his teams with them whose teammates the account has), unless that is the best team itself.
+- **A loop lists each possible main echo's Echo Skill** behind its own condition; `loopSentence(casts, mainEchoes)` reads them as one step.
