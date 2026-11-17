@@ -13,6 +13,8 @@ const STATE = "wtplus:backup:state";
 const API_KEY = "sk-ant-api03-NOT-A-REAL-KEY";
 const TEAM = "Cartethyia · Ciaccona · Chisa";
 const S26 = { width: 412, height: 915 };
+/** a backup taken a moment ago reads "Today …"; a run that crosses midnight reads "Yesterday …" and is no failure */
+const DAY = /^(Today|Yesterday) /;
 
 type Pull = [string, number, number, string];
 const pulls = (rows: Pull[]): string => JSON.stringify({ v: 1, active: "800000001", players: { "800000001": { region: "global", updatedAt: 1, pools: { "1": rows }, imports: [] } } });
@@ -157,7 +159,7 @@ describe("automatic backups", () => {
     rows().should("have.length", 1).first().as("row");
     cy.get("@row").should("have.attr", "data-reason", "daily");
     cy.get("@row").find("[data-test-backup-reason]").should("have.text", "Daily");
-    cy.get("@row").find("[data-test-backup-when]").invoke("text").should("match", /^Today /);
+    cy.get("@row").find("[data-test-backup-when]").invoke("text").should("match", DAY);
     cy.get("@row")
       .find("[data-test-backup-inside]")
       .invoke("text")
@@ -187,7 +189,7 @@ describe("automatic backups", () => {
     rows().should("have.length", 1);
     // by hand with nothing changed: none either, and it says why
     cy.get("[data-test-backups-now]").click();
-    cy.contains("Nothing has changed since the backup of Today").should("be.visible");
+    cy.contains(/Nothing has changed since the backup of (Today|Yesterday) /).should("be.visible");
     rows().should("have.length", 1);
   });
 
@@ -248,13 +250,13 @@ describe("automatic backups", () => {
     cy.get("[data-test-backup-restore]").click();
     confirmBox()
       .should("contain.text", "Restore this backup?")
-      .and("contain.text", "This replaces your characters and their saved builds, your echoes and your teams with the backup of Today")
+      .and("contain.text", "This replaces your characters and their saved builds, your echoes and your teams with the backup of ")
       .and("contain.text", "Today's account is saved first as a backup of its own")
       .and("contain.text", "Pull history: merged");
     // the dialog fits the phone: its buttons are on screen
     cy.get(".confirm-dialog .modal-action .btn-warning").then(($b) => expect($b[0]!.getBoundingClientRect().bottom).to.be.at.most(S26.height));
     cy.get(".confirm-dialog .modal-action .btn-warning").click();
-    cy.contains(/Restored the backup of Today .* Reloading/).should("be.visible");
+    cy.contains(/Restored the backup of (Today|Yesterday) .* Reloading/).should("be.visible");
 
     // after the reload: today's account was kept first, and the backup's is the account
     rows().should("have.length", 2);
@@ -280,7 +282,7 @@ describe("automatic backups", () => {
     rows().should("have.length", 2);
     cy.get('[data-test-backup-row][data-reason="before-restore"] [data-test-backup-restore]').click();
     cy.get(".confirm-dialog .modal-action .btn-warning").click();
-    cy.contains(/Restored the backup of Today/).should("be.visible");
+    cy.contains(/Restored the backup of (Today|Yesterday) /).should("be.visible");
     cy.window().its("localStorage").should((ls) => expect(JSON.parse(ls.getItem("teamRotations")!).teams).to.have.length(0));
     cy.window().then((win) => expect(weaponRank(win)).to.eq("5"));
   });
