@@ -293,10 +293,17 @@ describe("resonator briefs", () => {
     });
     // where her figures can be found on his table, and in which column
     cy.get("[data-test-kit-table-hint]").should("contain.text", "“Avg damage / rotation” heading there for team DPS");
+    // a support's Team Costs raise the main DPS, not her: said, since her own S2 reads another figure in the ladder
+    cy.get("[data-test-kit-support-costs]").should("contain.text", "raise the main DPS of each team, not Lily");
     // a brief whose engine kit is the released game's says nothing of the kind
     cy.visit("/kit/cartethyia", seed());
     cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
     cy.get("[data-test-kit-differs]").should("not.exist");
+    cy.get("[data-test-kit-support-costs]").should("not.exist"); // she is a main DPS
+    // a 4★ support is S6 at every Team Cost on his table: the line would be wrong there
+    cy.visit("/kit/sanhua", seed());
+    cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+    cy.get("[data-test-kit-support-costs]").should("not.exist");
     // the loop names the main echoes a build may carry as one step
     cy.visit("/kit/lily", seed());
     cy.get("[data-test-kit-loop]", { timeout: 20000 }).first().should("contain.text", "the Echo Skill of the main echo you carry (");

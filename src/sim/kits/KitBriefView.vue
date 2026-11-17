@@ -244,6 +244,10 @@
             A Team Cost is how invested the team is, from everyone at S0 to everyone at S6 with an R5 weapon. Riley solves his whole table at each; these are
             {{ name }}'s best there. Tap one for its members, {{ name }}'s part and more teams.
           </p>
+          <p v-if="kit.teams.main === 0 && (kit.tier === 'Limited' || kit.tier === 'Standard')" class="kit-muted mb-2" data-test-kit-support-costs>
+            {{ name }} is never the main DPS on his table, so the Team Costs that raise one resonator (S2R1 DPS and up) raise the main DPS of each team, not {{ name }}:
+            {{ name }} is at S0 in those, but at S2 in “S6R1 DPS · S2R1 supports” and S6 in “S6R5 all”. What {{ name }}'s own sequences add is under “What each step of investment is worth”.
+          </p>
           <div class="kit-list">
             <details v-for="c in costs" :key="c.cost" class="kit-card kit-cost" :open="c.cost === openCost" :data-test-kit-cost="c.cost">
               <summary class="kit-cost__head">
