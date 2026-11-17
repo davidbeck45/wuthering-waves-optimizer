@@ -257,7 +257,17 @@ describe("Echo Lab", () => {
     cy.viewport(1440, 1200);
     cy.visit("/", seed());
     cy.get('[data-test-calculator-nav="echoes"]').filter(":visible").click();
-    cy.get("[data-test-echo-lab-engine]").filter(":visible").as("engine");
+    // The insights sidebar is sticky, and with Ryan's roll table (#693) above the engine view it is taller than the
+    // screen: the view comes up only near the end of the Echoes screen's scroll, and one scrollIntoView stops short of
+    // that (the sidebar sticks under it). Scroll until it is on screen; Cypress counts what the scroll area clips as hidden
+    cy.get("[data-test-echo-insights-panel]")
+      .filter(":visible")
+      .find("[data-test-echo-lab-engine]")
+      .should(($engine) => {
+        $engine[0]!.scrollIntoView({ block: "center" });
+        expect($engine).to.be.visible;
+      })
+      .as("engine");
     cy.get("@engine").find("[data-test-echo-lab-engine-benchmark]", RUN).invoke("text").should("match", /\d+%/);
     cy.get("@engine").find("[data-test-echo-lab-engine-substat]").should("have.length", 3);
     cy.get("@engine").find("[data-test-echo-lab-engine-reroll-loading]", RUN).should("not.exist");
