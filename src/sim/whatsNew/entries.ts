@@ -90,7 +90,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
     title: "Lily and Lullaby",
     text: "Version 3.8's Lily and her pistol Lullaby are in everywhere on Tools+: her stock rotations and teams in the rankings, her brief, and her Cost to max.",
     where: "Tools+ menu › Resonator briefs › Lily",
-    link: "/kit/Lily",
+    link: "/kit/lily",
     tag: "data",
   },
   {

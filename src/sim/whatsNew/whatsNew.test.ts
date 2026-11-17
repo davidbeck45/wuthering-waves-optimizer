@@ -114,8 +114,8 @@ describe("the entries as shipped", () => {
   it("links every entry to a route this app has", () => {
     expect(routes.has("/account")).toBe(true); // the reader found main.ts's routes
     expect(routes.has(WHATS_NEW_PATH)).toBe(true);
-    expect(routes.has("/kit/Lily"), "a route with a parameter").toBe(true);
-    expect(routes.has("/kit/Lily/extra"), "a parameter is one segment").toBe(false);
+    expect(routes.has("/kit/lily"), "a route with a parameter").toBe(true);
+    expect(routes.has("/kit/lily/extra"), "a parameter is one segment").toBe(false);
     for (const e of WHATS_NEW) {
       expect(e.link.startsWith("/"), e.id).toBe(true);
       const path = entryLink(e.link, "Someone").split(/[?#]/)[0];

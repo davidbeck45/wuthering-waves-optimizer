@@ -158,7 +158,8 @@ describe("what's new on Tools+", () => {
         // a page's chunk loads on its first visit, and the dev server builds it on demand: Teams alone can take seconds
         cy.location({ timeout: 30000 }).should((loc) => expect(loc.pathname + loc.search, `Open → ${href}`).to.contain(href.split("?")[0]));
         cy.get("[data-test-not-found]").should("not.exist");
-        cy.get("[data-test-whats-new]").should("not.exist");
+        // an entry about this page itself (or its Your numbers tab) stays on it; every other link leaves it
+        if (href.split("?")[0] !== "/whats-new") cy.get("[data-test-whats-new]").should("not.exist");
         cy.visit("/whats-new", seed({ account: true }));
         cy.get("[data-test-whats-new]").should("exist");
       }
