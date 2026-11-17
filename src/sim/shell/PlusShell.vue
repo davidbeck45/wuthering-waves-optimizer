@@ -38,6 +38,7 @@ import { installImportGuard } from "../buildHistory/importGuard";
 import { installCrossTabSync, type SyncedStore } from "../storage/crossTabSync";
 import { installStarTwins, type StarStore } from "../presets/starredPresets";
 import { noticeRefusedWrites } from "../storage/persistGuard";
+import { installDeleteWatch } from "../storage/deleteAccount";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { setAssistantPageProvider, useAssistant } from "../ai/useAssistant";
 import { pageTitleOf } from "./paletteItems";
@@ -63,6 +64,8 @@ const WelcomeCard = defineAsyncComponent(() => import("./WelcomeCard.vue"));
 
 const SPARKLE = "M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5zm6.5 11.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z";
 
+// a Delete your data pressed in another tab reaches this one: its own copies go before any page reads them
+installDeleteWatch();
 const assistant = useAssistant();
 const route = useRoute();
 const characterStore = useCharacterStore();

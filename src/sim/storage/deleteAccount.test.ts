@@ -7,7 +7,18 @@ import { describe, expect, it, vi } from "vitest";
 import { RESULT_DB_NAME } from "../persist/resultStore";
 import { TAB_COPY_KEYS } from "../persist/savedResults";
 import { ACCOUNT_STORE_KEYS } from "./persistGuard";
-import { DELETE_CARD_TEXT, DELETE_CONFIRM_ITEMS, DELETE_CONFIRM_TEXT, deleteAccountData, STORAGE_RULES, type StorageRule } from "./deleteAccount";
+import {
+  ACCOUNT_DELETED_KEY,
+  DELETE_CARD_TEXT,
+  DELETE_CONFIRM_ITEMS,
+  DELETE_CONFIRM_TEXT,
+  DELETE_SEEN_KEY,
+  deleteAccountData,
+  honourDeleteElsewhere,
+  installDeleteWatch,
+  STORAGE_RULES,
+  type StorageRule,
+} from "./deleteAccount";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 
@@ -99,7 +110,7 @@ describe("Delete your data takes everything kept from the account", () => {
     const teams = { hardSetState: vi.fn() };
     const results = { clear: vi.fn(async () => true) };
     const before = { local: new Map(local.data), session: new Map(session.data) };
-    deleteAccountData({ local, session, teams, results });
+    deleteAccountData({ local, session, teams, results, onLeave: () => undefined });
     return { local, session, teams, results, before };
   }
 
@@ -123,6 +134,7 @@ describe("Delete your data takes everything kept from the account", () => {
     const { local, session, before } = run();
     for (const rule of STORAGE_RULES) {
       if (rule.area === "indexedDB" || rule.by || rule.keep) continue; // upstream's two stores, the teams, savedResults.clear(), a pared record: their own tests
+      if (rule.key === ACCOUNT_DELETED_KEY || rule.key === DELETE_SEEN_KEY) continue; // Delete's own stamp: "a Delete reaches the other tabs" below
       for (const [area, store] of [["local", local], ["session", session]] as const) {
         if (!inArea(rule, area)) continue;
         const key = seedKey(rule);
@@ -163,8 +175,9 @@ describe("Delete your data takes everything kept from the account", () => {
     deleteAccountData({ local, session: null, teams: null, results: { clear: async () => true } });
     expect(local.getItem("wtplus:echoPlan:v1")).toBeNull();
     const empty = memoryArea();
-    deleteAccountData({ local: empty, session: null, teams: null, results: { clear: async () => true } });
-    expect([...empty.data.keys()]).toEqual(["teamRotations"]);
+    deleteAccountData({ local: empty, session: null, teams: null, results: { clear: async () => true }, onLeave: () => undefined });
+    // the blank teams record and the stamp the other tabs watch for: nothing else is made
+    expect([...empty.data.keys()]).toEqual(["teamRotations", ACCOUNT_DELETED_KEY]);
   });
 
   it("a storage that refuses, or none at all, stops nothing: the saved results still go", () => {
@@ -181,6 +194,118 @@ describe("Delete your data takes everything kept from the account", () => {
     expect(teams.hardSetState).toHaveBeenCalled();
     expect(results.clear).toHaveBeenCalled();
     expect(() => deleteAccountData({ local: null, session: null, teams: null, results })).not.toThrow();
+  });
+});
+
+// 2026-11-16, second check. With two tabs open, the tab that did not delete kept its Ask chat (shown again after a
+// reload of that tab), its copies of the ranking and the investment plan, and an Energy check still running there
+// wrote the deleted teams' measurements back into localStorage when it finished.
+describe("a Delete reaches the other tabs, and a check that ends after it", () => {
+  const CHAT = JSON.stringify({ version: 1, id: "c1", snapshot: "Aemeath S2, Mornye, Lynae" });
+  /** another tab of the same browser: its own sessionStorage, the same localStorage */
+  const otherTab = (): Storage & { data: Map<string, string> } =>
+    memoryArea({ "wtplus:ai:chat": CHAT, "wtplus:myRankings:last": "{}", "wtplus:account:invest": "{}", teamRotationsActiveTeamId: "t1", "wtplus:ai:key": "sk-test", "wt-classic-ui-session-reported": "1" });
+  const results = { clear: async () => true };
+
+  function deleted() {
+    const local = memoryArea({ "wtplus:ai:key": "sk-test", "wtplus:convene:history": "{}" });
+    const session = memoryArea({ "wtplus:ai:chat": CHAT });
+    let leave: () => void = () => undefined;
+    deleteAccountData({ local, session, teams: null, results, onLeave: (again) => (leave = again), now: () => 1_794_000_000_000 });
+    return { local, session, leave: () => leave() };
+  }
+
+  it("Delete leaves a stamp, and the tab that deleted has already acted on it", () => {
+    const { local, session } = deleted();
+    const stamp = local.getItem(ACCOUNT_DELETED_KEY);
+    expect(stamp).toMatch(/^1794000000000:[a-z0-9]+$/);
+    expect(session.getItem(DELETE_SEEN_KEY)).toBe(stamp);
+    // so a chat started on a new account in that tab is not taken on its next load
+    session.setItem("wtplus:ai:chat", CHAT);
+    expect(honourDeleteElsewhere({ local, session })).toBe(false);
+    expect(session.getItem("wtplus:ai:chat")).toBe(CHAT);
+  });
+
+  it("another tab drops its own Ask chat, its tab copies and its open team, once, and keeps its key", () => {
+    const { local } = deleted();
+    const tab = otherTab();
+    expect(honourDeleteElsewhere({ local, session: tab })).toBe(true);
+    for (const key of ["wtplus:ai:chat", "wtplus:myRankings:last", "wtplus:account:invest", "teamRotationsActiveTeamId"]) expect(tab.getItem(key), key).toBeNull();
+    expect(tab.getItem("wtplus:ai:key")).toBe("sk-test");
+    expect(tab.getItem("wt-classic-ui-session-reported")).toBe("1");
+    // acted on: a chat started afterwards in that tab stays
+    tab.setItem("wtplus:ai:chat", CHAT);
+    expect(honourDeleteElsewhere({ local, session: tab })).toBe(false);
+    expect(tab.getItem("wtplus:ai:chat")).toBe(CHAT);
+  });
+
+  it("every session key that goes is one another tab drops, the saved results' tab copies among them", () => {
+    const { local } = deleted();
+    const tab = seeded("session");
+    honourDeleteElsewhere({ local, session: tab });
+    for (const rule of STORAGE_RULES) {
+      if (!inArea(rule, "session") || rule.key === DELETE_SEEN_KEY) continue;
+      if (rule.fate === "goes") expect(tab.getItem(seedKey(rule)), `${rule.key} goes`).toBeNull();
+      else expect(tab.getItem(seedKey(rule)), `${rule.key} stays`).not.toBeNull();
+    }
+    for (const key of TAB_COPY_KEYS) expect(tab.getItem(key), key).toBeNull();
+  });
+
+  it("no Delete, no stamp: a tab keeps its chat", () => {
+    const tab = otherTab();
+    expect(honourDeleteElsewhere({ local: memoryArea(), session: tab })).toBe(false);
+    expect(tab.getItem("wtplus:ai:chat")).toBe(CHAT);
+    expect(tab.getItem(DELETE_SEEN_KEY)).toBeNull();
+  });
+
+  it("a tab that is open when it happens drops its copies and reloads; a tab that slept through it drops them as it loads", () => {
+    const { local } = deleted();
+    const stamp = local.getItem(ACCOUNT_DELETED_KEY)!;
+    // open: the storage event of the stamp
+    const open = otherTab();
+    const listeners: Array<(e: StorageEvent) => void> = [];
+    const host = { addEventListener: (_: "storage", l: (e: StorageEvent) => void) => void listeners.push(l), removeEventListener: (_: "storage", l: (e: StorageEvent) => void) => void listeners.splice(listeners.indexOf(l), 1) };
+    const reload = vi.fn();
+    const local0 = memoryArea(); // before the Delete: nothing to act on at load
+    const stop = installDeleteWatch(host, reload, { local: local0, session: open });
+    expect(open.getItem("wtplus:ai:chat")).toBe(CHAT);
+    // another key changing, or the stamp being removed, is not a Delete
+    listeners[0]!({ key: "settings", newValue: "{}" } as StorageEvent);
+    listeners[0]!({ key: ACCOUNT_DELETED_KEY, newValue: null } as StorageEvent);
+    expect(reload).not.toHaveBeenCalled();
+    local0.setItem(ACCOUNT_DELETED_KEY, stamp);
+    listeners[0]!({ key: ACCOUNT_DELETED_KEY, newValue: stamp } as StorageEvent);
+    expect(open.getItem("wtplus:ai:chat")).toBeNull();
+    expect(reload).toHaveBeenCalledTimes(1);
+    // the same event again (a browser may repeat it): acted on already, no second reload
+    listeners[0]!({ key: ACCOUNT_DELETED_KEY, newValue: stamp } as StorageEvent);
+    expect(reload).toHaveBeenCalledTimes(1);
+    stop();
+    expect(listeners).toHaveLength(0);
+
+    // asleep (a phone's background tab, restored with its sessionStorage): no event ever comes, the load does it
+    const asleep = otherTab();
+    const reloadAsleep = vi.fn();
+    installDeleteWatch(host, reloadAsleep, { local, session: asleep });
+    expect(asleep.getItem("wtplus:ai:chat")).toBeNull();
+    expect(asleep.getItem("wtplus:myRankings:last")).toBeNull();
+    expect(reloadAsleep).not.toHaveBeenCalled(); // it is loading now: nothing in memory to drop
+  });
+
+  it("a check that ends between the Delete and the reload does not bring its result back", () => {
+    const { local, session, leave } = deleted();
+    // the Energy check and a Tower check finishing inside the 1.5 s the toast is up, and the chat's last answer landing
+    local.setItem("wtplus:energy:v1", '{"v":1,"entries":{"energy|e95d4e6|8vmmx4|1xqxkuc|Lucilla+Mornye+Sigrika":{}}}');
+    local.setItem("wtplus:endgame:check", "{}");
+    local.setItem("wtplus:buildHistory:v1:Mornye", "{}");
+    session.setItem("wtplus:ai:chat", CHAT);
+    leave(); // the page goes away
+    for (const key of ["wtplus:energy:v1", "wtplus:endgame:check", "wtplus:buildHistory:v1:Mornye"]) expect(local.getItem(key), key).toBeNull();
+    expect(session.getItem("wtplus:ai:chat")).toBeNull();
+    // what stays, stays; the stamp too
+    expect(local.getItem("wtplus:ai:key")).toBe("sk-test");
+    expect(local.getItem("wtplus:convene:history")).toBe("{}");
+    expect(local.getItem(ACCOUNT_DELETED_KEY)).not.toBeNull();
   });
 });
 

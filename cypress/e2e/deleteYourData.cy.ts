@@ -84,6 +84,9 @@ describe("Settings › Delete your data", () => {
       expect(win.sessionStorage.getItem("wtplus:ai:chat"), "this tab's Ask chat").to.eq(null);
       for (const [key, value] of Object.entries(KEPT)) expect(ls.getItem(key), key).to.eq(value);
       expect(JSON.parse(ls.getItem("settings")!).config, "settings").to.include({ useClassicUi: false, theme: "dark" });
+      // the stamp the other tabs act on, already acted on in this one
+      expect(ls.getItem("wtplus:account:deletedAt"), "the Delete's stamp").to.match(/^\d+:[a-z0-9]+$/);
+      expect(win.sessionStorage.getItem("wtplus:account:deleteSeen"), "acted on here").to.eq(ls.getItem("wtplus:account:deletedAt"));
     });
 
     // and each page reads as empty
@@ -97,5 +100,81 @@ describe("Settings › Delete your data", () => {
     cy.get("[data-test-energy-empty]").should("be.visible");
     cy.get("[data-test-energy-summary]").should("not.exist");
     cy.get("[data-test-energy-page]").should("not.contain.text", "every Liberation paid");
+  });
+
+  // 2026-11-16, second check: sessionStorage is per tab, so a Delete in one tab never reached what another tab kept.
+  // Its Ask sheet still showed the conversation about the deleted account after a reload of that tab, its copies of the
+  // ranking and the investment plan stayed, and a check still running there wrote its result back. The other tab is
+  // played here by this one: what it holds, then the stamp a Delete leaves, as the `storage` event another tab gets.
+  const CHAT = JSON.stringify({
+    version: 1,
+    id: "c1",
+    model: "claude-opus-5-5",
+    startedAt: "2026-11-16T00:00:00Z",
+    snapshot: "Cartethyia S0, Ciaccona, Chisa",
+    accountKey: "k",
+    pageContext: null,
+    messages: [
+      { role: "user", content: "which team is my best?" },
+      { role: "assistant", content: [{ type: "text", text: "Your best team is Cartethyia · Ciaccona · Chisa." }] },
+    ],
+    usage: { requests: 1, inputTokens: 10, outputTokens: 10, cacheReadTokens: 0, cacheWriteTokens: 0, costUsd: 0.01 },
+    budgetUsd: 1,
+    budgetStepUsd: 1,
+  });
+  const STAMP = "1794000000000:abc123";
+  const TAB_COPIES = ["wtplus:myRankings:last", "wtplus:account:invest", "wtplus:echoLab:cache"];
+
+  function otherTab(deletedAlready: boolean) {
+    return {
+      onBeforeLoad(win: Window) {
+        win.sessionStorage.clear();
+        win.localStorage.clear();
+        win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: false, theme: "dark" }, labs: {} }));
+        win.localStorage.setItem("wtplus:ai:key", "sk-test");
+        win.sessionStorage.setItem("wtplus:ai:chat", CHAT);
+        for (const key of TAB_COPIES) win.sessionStorage.setItem(key, "{}");
+        if (deletedAlready) win.localStorage.setItem("wtplus:account:deletedAt", STAMP);
+      },
+      onLoad: large,
+    };
+  }
+
+  it("a tab that is open when another tab deletes drops its Ask chat and its copies, and reloads", () => {
+    cy.visit("/teams", otherTab(false));
+    cy.get("[data-test-team-rotations-empty]").should("be.visible");
+    cy.window().then((win) => {
+      expect(win.sessionStorage.getItem("wtplus:ai:chat"), "the chat before the Delete").to.eq(CHAT);
+      (win as unknown as { __beforeDelete: boolean }).__beforeDelete = true;
+      // the other tab's Delete: the stamp lands in the shared localStorage, and this tab hears of it
+      win.localStorage.setItem("wtplus:account:deletedAt", STAMP);
+      win.dispatchEvent(new win.StorageEvent("storage", { key: "wtplus:account:deletedAt", newValue: STAMP, oldValue: null, storageArea: win.localStorage }));
+    });
+    cy.window({ timeout: 15000 }).should((win) => expect((win as unknown as { __beforeDelete?: boolean }).__beforeDelete, "reloaded").to.eq(undefined));
+    cy.window().then((win) => {
+      expect(win.sessionStorage.getItem("wtplus:ai:chat"), "this tab's Ask chat").to.eq(null);
+      for (const key of TAB_COPIES) expect(win.sessionStorage.getItem(key), key).to.eq(null);
+      expect(win.sessionStorage.getItem("wtplus:account:deleteSeen"), "acted on").to.eq(STAMP);
+      expect(win.localStorage.getItem("wtplus:ai:key"), "the assistant's key stays").to.eq("sk-test");
+    });
+    // the sheet opens on a new chat, not on the answers about the account that is gone
+    cy.get("[data-test-ai-open]").click();
+    cy.get("[data-test-ai-panel]").should("be.visible").and("not.contain.text", "Your best team is Cartethyia");
+    cy.get("[data-test-ai-question]").should("not.exist");
+  });
+
+  it("a tab that slept through a Delete drops them as it loads, once: a chat started afterwards stays", () => {
+    cy.visit("/teams", otherTab(true));
+    cy.get("[data-test-team-rotations-empty]").should("be.visible");
+    cy.window().then((win) => {
+      expect(win.sessionStorage.getItem("wtplus:ai:chat"), "this tab's Ask chat").to.eq(null);
+      for (const key of TAB_COPIES) expect(win.sessionStorage.getItem(key), key).to.eq(null);
+      expect(win.sessionStorage.getItem("wtplus:account:deleteSeen"), "acted on").to.eq(STAMP);
+      // a new chat in this tab, after it acted on the Delete
+      win.sessionStorage.setItem("wtplus:ai:chat", CHAT);
+    });
+    cy.reload();
+    cy.get("[data-test-team-rotations-empty]").should("be.visible");
+    cy.window().then((win) => expect(win.sessionStorage.getItem("wtplus:ai:chat"), "the later chat").to.eq(CHAT));
   });
 });

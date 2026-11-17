@@ -35,6 +35,17 @@ export interface StorageRule {
 
 const TEAMS_KEY = "teamRotations";
 
+// A second tab (2026-11-16, second check). sessionStorage is per tab, so the tab that deletes cannot reach what another
+// tab keeps there, and that tab's pages hold the account in memory: after a Delete its Ask sheet still showed the
+// conversation about the deleted account (and would have sent its snapshot again), its copies of the ranking and the
+// investment plan stayed (190 KB), and an Energy check still running there wrote the deleted teams' measurements back
+// into localStorage when it finished. Delete now leaves a stamp; a tab that sees a stamp it has not acted on drops its
+// own copies, and one that is open while it happens reloads, as the deleting tab does (`installDeleteWatch`).
+/** localStorage: the last Delete your data, in any tab ("<ms since epoch>:<random>"). */
+export const ACCOUNT_DELETED_KEY = "wtplus:account:deletedAt";
+/** sessionStorage: the Delete this tab has acted on (the value of `ACCOUNT_DELETED_KEY` then). */
+export const DELETE_SEEN_KEY = "wtplus:account:deleteSeen";
+
 export const STORAGE_RULES: readonly StorageRule[] = [
   // ---- the account: what a backup holds
   { key: "character", area: "local", fate: "goes", by: "upstream", why: "your characters and their builds" },
@@ -107,6 +118,8 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:convene:banners", area: "local", fate: "stays", why: "a copy of the public banner notices" },
   { key: "wtplus:today:news:v1", area: "local", fate: "stays", why: "a copy of the public news" },
   { key: "wtplus:savedResults:clearedAt", area: "local", fate: "stays", why: "when saved results were last cleared: Delete sets it" },
+  { key: "wtplus:account:deletedAt", area: "local", fate: "stays", why: "when Delete your data last ran, in any tab: the other tabs drop their own copies when they see it" },
+  { key: "wtplus:account:deleteSeen", area: "session", fate: "stays", why: "the last Delete this tab has acted on" },
   { key: "wtplus:chunkReloadAt", area: "session", fate: "stays", why: "when this tab last reloaded for a new deploy" },
   { key: "wtplus:storage:probe", area: "local", fate: "stays", why: "a scratch key, never left behind" },
 ];
@@ -129,6 +142,9 @@ export interface DeleteEnv {
   session: Storage | null;
   teams: { hardSetState(data?: unknown): void } | null;
   results: Pick<SavedResults, "clear">;
+  /** runs `again` once as this page goes away (the reload 1.5 s after a Delete); none = `pagehide` on window */
+  onLeave(again: () => void): void;
+  now(): number;
 }
 /* eslint-enable no-unused-vars */
 
@@ -198,13 +214,90 @@ export function deleteAccountData(env: Partial<DeleteEnv> = {}): void {
     /* no Pinia here (a script): the stored record is blank */
   }
 
-  for (const rule of STORAGE_RULES) {
-    if (rule.fate !== "goes" || rule.by) continue;
-    if (rule.area === "local" || rule.area === "local+session") drop(local, rule);
-    if (rule.area === "session" || rule.area === "local+session") drop(session, rule);
-  }
+  const sweep = (): void => {
+    for (const rule of STORAGE_RULES) {
+      if (rule.fate !== "goes" || rule.by) continue;
+      if (rule.area === "local" || rule.area === "local+session") drop(local, rule);
+      if (rule.area === "session" || rule.area === "local+session") drop(session, rule);
+    }
+  };
+  sweep();
 
   // the saved results (IndexedDB), each tab copy, and what a loaded page cache holds in memory: they are figures
   // from the account just deleted
   void (env.results ?? savedResults).clear();
+
+  // a check still running on this page (the Energy check, a Tower check) writes its result when it ends, which can be
+  // inside the 1.5 s before the reload: the same keys go once more as the page leaves
+  try {
+    (env.onLeave ?? leaveOnce)(sweep);
+  } catch {
+    /* no window (a script): nothing runs on */
+  }
+
+  // last, so another tab acts on a finished Delete: the stamp it watches for, already acted on here
+  const stamp = `${(env.now ?? Date.now)()}:${Math.random().toString(36).slice(2, 8)}`;
+  try {
+    local?.setItem(ACCOUNT_DELETED_KEY, stamp);
+    session?.setItem(DELETE_SEEN_KEY, stamp);
+  } catch {
+    /* refused: the other tabs still empty their stores (crossTabSync), they just keep their own copies */
+  }
+}
+
+function leaveOnce(again: () => void): void {
+  if (typeof window === "undefined") return;
+  window.addEventListener("pagehide", () => again(), { once: true });
+}
+
+/**
+ * What a tab does about a Delete it has not acted on (pressed in another tab, now or while this one was asleep): its
+ * own copies of the account go: the Ask chat, the tab copies of the scored pages, the team it had open. True when
+ * there was such a Delete. The localStorage side was the deleting tab's work.
+ */
+export function honourDeleteElsewhere(env: Partial<Pick<DeleteEnv, "local" | "session">> = {}): boolean {
+  const local = "local" in env ? (env.local ?? null) : browserArea("localStorage");
+  const session = "session" in env ? (env.session ?? null) : browserArea("sessionStorage");
+  if (!local || !session) return false;
+  let stamp: string | null = null;
+  try {
+    stamp = local.getItem(ACCOUNT_DELETED_KEY);
+    if (!stamp || session.getItem(DELETE_SEEN_KEY) === stamp) return false;
+  } catch {
+    return false;
+  }
+  for (const rule of STORAGE_RULES) {
+    if (rule.fate === "goes" && (rule.area === "session" || rule.area === "local+session")) drop(session, rule);
+  }
+  try {
+    session.setItem(DELETE_SEEN_KEY, stamp);
+  } catch {
+    /* refused: the copies are gone all the same */
+  }
+  return true;
+}
+
+/* eslint-disable no-unused-vars -- the parameters of function types */
+type StorageEventHost = { addEventListener(type: "storage", listener: (e: StorageEvent) => void): void; removeEventListener(type: "storage", listener: (e: StorageEvent) => void): void };
+/* eslint-enable no-unused-vars */
+
+/**
+ * Started once with the app (PlusShell). On load: a tab that slept through a Delete (a phone restores a background tab
+ * with its sessionStorage) drops its copies before any page reads them. While open: a Delete in another tab drops them
+ * and reloads this tab, which ends whatever it was scoring on the deleted account and empties what its pages hold in
+ * memory. Returns the unsubscribe.
+ */
+export function installDeleteWatch(
+  target: StorageEventHost | null = typeof window === "undefined" ? null : (window as unknown as StorageEventHost),
+  reload: () => void = () => window.location.reload(),
+  env: Partial<Pick<DeleteEnv, "local" | "session">> = {},
+): () => void {
+  honourDeleteElsewhere(env);
+  if (!target) return () => undefined;
+  const onStorage = (e: StorageEvent): void => {
+    if (e.key !== ACCOUNT_DELETED_KEY || !e.newValue) return;
+    if (honourDeleteElsewhere(env)) reload();
+  };
+  target.addEventListener("storage", onStorage);
+  return () => target.removeEventListener("storage", onStorage);
 }
