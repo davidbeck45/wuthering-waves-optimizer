@@ -218,7 +218,7 @@ describe("what each level is worth, in the account drawer", () => {
     cy.get("[data-test-levels-row] .lw-gain").should("not.exist");
     cy.get("[data-test-levels-view]").should("not.exist"); // no order without figures
     cy.get("[data-test-levels-no-weapon]").should("contain.text", "No weapon equipped, so there is no weapon level here.");
-    cy.get("[data-test-levels-assumed]").should("contain.text", "has not saved Jiyan's Resonance Skill, Forte Circuit, Resonance Liberation, Intro Skill");
+    cy.get("[data-test-levels-assumed]").should("contain.text", "has not saved Jiyan's Resonance Skill, Forte Circuit, Resonance Liberation and Intro Skill levels");
   });
 
   it("says to reload the page when the cost table cannot load, and scores nothing", () => {

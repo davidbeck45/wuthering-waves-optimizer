@@ -139,14 +139,16 @@ export function inertText(row: Pick<LevelRow, "track">, rotation: string | null)
   return isForteTrack(row.track) ? `not used in this rotation${where}` : `changes nothing on this rotation${where}`;
 }
 
-/** Which values the calculator has not saved, for the note under the head: "level, weapon level or Forte levels". */
+/** Which values the calculator has not saved, for the note under the head: "level, weapon level or Forte levels",
+ *  "Intro Skill level", "weapon level or Resonance Skill and Intro Skill levels". */
 export function assumedWords(today: LevelsToday): string {
   const words: string[] = [];
   if (today.assumed.includes("level")) words.push("level");
   if (today.assumed.includes("weapon")) words.push("weapon level");
-  const forte = today.assumed.filter(isForteTrack);
+  const forte = today.assumed.filter(isForteTrack).map((k) => trackLabel(k));
   if (forte.length === 5) words.push("Forte levels");
-  else if (forte.length) words.push(forte.map((k) => trackLabel(k)).join(", "));
+  else if (forte.length === 1) words.push(`${forte[0]} level`);
+  else if (forte.length) words.push(`${forte.slice(0, -1).join(", ")} and ${forte.at(-1)} levels`);
   return words.length > 1 ? `${words.slice(0, -1).join(", ")} or ${words.at(-1)}` : (words[0] ?? "");
 }
 

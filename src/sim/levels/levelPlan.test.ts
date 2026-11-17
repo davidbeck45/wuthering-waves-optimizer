@@ -49,7 +49,9 @@ describe("each track on its own", () => {
     expect(row(camellya, "skill").cost.credits).toBe(70_000 + 100_000);
     expect(row(camellya, "level").cost.ascensions).toBe(1);
     expect(camellya.rotation!.name).toBe(rankOf("Camellya")!.best!.name);
-    expect(assumedWords(camellya.today!)).toBe("Intro Skill"); // the one value the calculator has not saved
+    expect(assumedWords(camellya.today!)).toBe("Intro Skill level"); // the one value the calculator has not saved
+    const some = levelsToday(materials, savedProgressOf({ weapon: "RedSpring", characterLevel: "80", talents: { basic: 6, forte: 6, liberation: 6 } }));
+    expect(assumedWords(some)).toBe("weapon level or Resonance Skill and Intro Skill levels");
   });
 
   it("a row's own gain is the engine's damage at the new level against today's, on the ranking's best rotation", async () => {

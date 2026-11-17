@@ -56,7 +56,7 @@ describe("What each level is worth, the section", () => {
     expect(w.find("[data-test-levels-everything]").text()).toContain("Shell Credits");
     expect(w.find("[data-test-levels-source]").text()).toContain("Not in this list: the two inherent skills and the eight stat bonuses.");
     // what the calculator has not saved is named, with the way to where levels are set
-    expect(w.find("[data-test-levels-assumed]").text()).toContain("has not saved Jiyan's Resonance Skill, Forte Circuit, Resonance Liberation, Intro Skill, so it counts them at the top");
+    expect(w.find("[data-test-levels-assumed]").text()).toContain("has not saved Jiyan's Resonance Skill, Forte Circuit, Resonance Liberation and Intro Skill levels, so it counts them at the top");
     await w.find("[data-test-levels-set]").trigger("click");
     expect(w.emitted("calculator")).toHaveLength(1);
   }, 30_000);
