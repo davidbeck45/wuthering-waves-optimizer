@@ -121,4 +121,11 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["kit", "brief", "guide", "how to play", "playstyle", "resonator", "best teams", "loadout", "investment ladder", "what sequences change"],
     icon: "M5 4h10l4 4v12H5zM15 4v4h4M8 12h8M8 16h5",
   },
+  {
+    path: "/whats-new",
+    title: "What's new",
+    description: "What was added to Tools+ and where to find it, and which of your damage figures moved since last time and why",
+    keywords: ["new", "news", "changelog", "changes", "features", "release", "update", "what changed", "moved", "numbers", "why did my damage change", "since last time"],
+    icon: "M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z",
+  },
 ];

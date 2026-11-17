@@ -126,6 +126,7 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:weapons:prefs", area: "local", fate: "stays", backup: "preference", why: "Weapon value's scope, sort and filter" },
   { key: "wtplus:weapons:custom", area: "local", fate: "stays", backup: "preference", why: "the resonators added to the custom selector pool" },
   { key: "wtplus:welcome:dismissed", area: "local", fate: "stays", backup: "preference", why: "the welcome card was closed" },
+  { key: "wtplus:whatsNew:seen", area: "local", fate: "stays", backup: "preference", why: "which What's new entries this browser has seen: about the site, not about builds" },
   { key: "wtplus:welcome:e2e", area: "local", fate: "stays", backup: "marker", why: "a test switch" },
   { key: "wuwa.tutorialDone", area: "local", fate: "stays", backup: "preference", why: "the rankings page's tutorial was done" },
   { key: "wuwa.tutorialStage", area: "local", fate: "stays", backup: "preference", why: "where its tutorial stopped" },

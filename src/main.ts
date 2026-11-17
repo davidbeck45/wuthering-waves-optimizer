@@ -96,6 +96,8 @@ const routes = [
   // Wuthering Tools+: resonator briefs from wuwa_calc's kits and solves, read against the account (src/sim/kits/)
   { path: "/kit", component: () => import("./sim/kits/KitListView.vue"), name: "KitListView" },
   { path: "/kit/:name", component: () => import("./sim/kits/KitBriefView.vue"), name: "KitBriefView" },
+  // Wuthering Tools+: What's new on Tools+ — the plus features by date, and what moved in your numbers (src/sim/whatsNew/)
+  { path: "/whats-new", component: () => import("./sim/whatsNew/WhatsNewView.vue"), name: "WhatsNewView" },
   { path: "/scanners", component: ScannersView, name: "ScannersView" },
   // Wuthering Tools+: any other address gets a "page not found" page with the nav, not a blank screen (src/sim/shell/)
   { path: "/:pathMatch(.*)*", component: () => import("./sim/shell/NotFoundView.vue"), name: "NotFoundView" },

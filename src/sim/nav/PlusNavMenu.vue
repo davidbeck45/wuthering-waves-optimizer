@@ -15,7 +15,9 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
       </svg>
       <svg class="plus-nav__caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-      <span class="sr-only">Tools+ pages</span>
+      <!-- What's new: something on /whats-new this browser has not seen (src/sim/whatsNew/useWhatsNew.ts) -->
+      <span v-if="unseen" class="plus-nav__dot" aria-hidden="true" data-test-nav-plus-dot></span>
+      <span class="sr-only">Tools+ pages{{ unseen ? `, ${unseen} new on What's new` : "" }}</span>
     </summary>
     <!-- v3 desktop (Ryan's ADR 0045): a rail item styled like his; on phones the icon above sits in his header -->
     <summary
@@ -29,8 +31,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 20h16M6 20V10M12 20V4M18 20v-7" />
         </svg>
+        <span v-if="unseen" class="plus-nav__dot plus-nav__dot--rail" aria-hidden="true" data-test-nav-plus-dot></span>
       </span>
-      <span class="truncate max-w-full">Tools+</span>
+      <span class="truncate max-w-full">Tools+<span v-if="unseen" class="sr-only">, {{ unseen }} new on What's new</span></span>
     </summary>
     <!-- a list of links, not role="menu": it is navigation, and a menu role promised arrow keys it never had (a11y L3) -->
     <ul class="plus-nav__menu" data-test-nav-plus-menu>
@@ -42,6 +45,14 @@
           <span class="plus-nav__search-text">Search pages, characters, teams…</span>
           <kbd class="plus-nav__kbd">{{ modKey }} K</kbd>
         </button>
+      </li>
+      <!-- What's new sits last in the list: while it holds something unseen, one line up here says what the dot is for -->
+      <li v-if="unseen" class="plus-nav__news-row">
+        <RouterLink :to="WHATS_NEW_PATH" class="plus-nav__news" data-test-nav-plus-news @click="close">
+          <span class="plus-nav__news-dot" aria-hidden="true"></span>
+          <span class="plus-nav__news-text">{{ unseenText(unseen, hasMarker) }}</span>
+          <span class="plus-nav__news-go" aria-hidden="true">›</span>
+        </RouterLink>
       </li>
       <li v-for="page in PLUS_PAGES" :key="page.path">
         <RouterLink
@@ -55,7 +66,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="page.icon" /></svg>
           </span>
           <span class="plus-nav__text">
-            <span class="plus-nav__title">{{ page.title }}</span>
+            <span class="plus-nav__title">
+              {{ page.title }}
+              <span v-if="unseen && page.path === WHATS_NEW_PATH" class="plus-nav__new" data-test-nav-plus-new>{{ unseen }} new</span>
+            </span>
             <span class="plus-nav__desc">{{ page.description }}</span>
           </span>
         </RouterLink>
@@ -80,12 +94,16 @@ import { railMenuTop } from "./railMenu";
 import PlusRailAsk from "./PlusRailAsk.vue";
 import { useMediaQuery } from "../../composables/useMediaQuery";
 import { RAIL_ASK_MIN_HEIGHT } from "../shell/askDock";
+import { useWhatsNew } from "../whatsNew/useWhatsNew";
+import { WHATS_NEW_PATH, unseenText } from "../whatsNew/whatsNew";
 
 // "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
 const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
 const route = useRoute();
 const root = ref<HTMLDetailsElement | null>(null);
 const railHasRoom = useMediaQuery(`(min-height: ${RAIL_ASK_MIN_HEIGHT}px)`);
+/** how many What's new entries this browser has not seen: the dot on the icon and the count on its row */
+const { count: unseen, hasMarker } = useWhatsNew();
 
 /** the plus page this is: the Nav's curPage ("my-rankings" → "/my-rankings"), else the route */
 const activePath = computed(() => {
@@ -161,6 +179,67 @@ onBeforeUnmount(() => {
   width: 7px;
   height: 5px;
   opacity: 0.55;
+}
+/* What's new: unseen entries. The ring is the bar's own colour, so the dot reads on the icon in every theme */
+.plus-nav__dot {
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: oklch(var(--p));
+  box-shadow: 0 0 0 2px oklch(var(--b1));
+  pointer-events: none;
+}
+.plus-nav__dot--rail {
+  top: 2px;
+  right: 9px;
+}
+.plus-nav__new {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 9999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: oklch(var(--pc));
+  background: oklch(var(--p));
+}
+.plus-nav__news {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.5rem;
+  margin: 0 0 0.3rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-align: left;
+  color: inherit;
+  background: oklch(var(--p) / 0.12);
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.3);
+}
+.plus-nav__news:hover,
+.plus-nav__news:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.7);
+}
+.plus-nav__news-dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: oklch(var(--p));
+}
+.plus-nav__news-text {
+  flex: 1;
+  min-width: 0;
+}
+.plus-nav__news-go {
+  flex-shrink: 0;
+  font-weight: 700;
 }
 .plus-nav__menu {
   position: absolute;
@@ -293,7 +372,8 @@ onBeforeUnmount(() => {
     width: 42rem;
   }
   .plus-nav__eyebrow,
-  .plus-nav__search-row {
+  .plus-nav__search-row,
+  .plus-nav__news-row {
     grid-column: 1 / -1;
   }
 }
@@ -332,6 +412,7 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 .plus-nav__pill {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;

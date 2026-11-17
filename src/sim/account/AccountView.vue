@@ -45,6 +45,8 @@
 
     <TodayCard class="mb-4" />
     <BackupStatus variant="account" class="mb-4" />
+    <!-- Wuthering Tools+ What's new: one line while /whats-new holds something this browser has not seen -->
+    <WhatsNewCard class="mb-4" />
 
     <section v-if="!setUpCount" data-test-account-empty>
       <MyRankingsEmpty
@@ -145,10 +147,12 @@ import { useOwnUpgrades } from "./useOwnUpgrades";
 import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
-// when a copy of the account last left this browser, with Share and Download; loaded after the page (src/sim/backup/)
-const BackupStatus = defineAsyncComponent(() => import("../backup/BackupStatus.vue"));
+import WhatsNewCard from "../whatsNew/WhatsNewCard.vue";
 import { useSavedNote } from "../persist/useSavedNote";
 import { onAccountAdopted } from "../storage/crossTabSync";
+
+// when a copy of the account last left this browser, with Share and Download; loaded after the page (src/sim/backup/)
+const BackupStatus = defineAsyncComponent(() => import("../backup/BackupStatus.vue"));
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",
