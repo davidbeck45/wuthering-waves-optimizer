@@ -86,7 +86,8 @@ describe("buffs that cannot be on together", () => {
     // keep one: a Build history version first, then exactly his switch's update on the build in use
     figures("rotation").then(([, onlySchemata]) => {
       cy.get(`${NOTICE} [data-test-buff-conflict-keep="0"]`).should("have.text", "Keep only Schemata of Runes").click();
-      cy.get("[data-test-buff-conflict-kept]").should("contain.text", "Kept only Schemata of Runes on Sigrika; Soliskin Vitality is now off.").and("contain.text", "Build history");
+      // the pressed button goes with its notice: focus lands on the line that says what happened
+      cy.get("[data-test-buff-conflict-kept]").should("contain.text", "Kept only Schemata of Runes on Sigrika; Soliskin Vitality is now off.").and("contain.text", "Build history").and("have.focus");
       cy.get(NOTICE).should("not.exist");
       cy.window().then((win) => {
         const s = stored(win).Sigrika;

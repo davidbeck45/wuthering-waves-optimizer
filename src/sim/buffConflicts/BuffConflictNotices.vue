@@ -1,6 +1,6 @@
 <template>
   <section v-if="shown.length || keptNote || failed || quietShown.length" class="bcn" :aria-label="HEADING" data-test-buff-conflicts>
-    <p v-if="keptNote" class="bcn-status" role="status" data-test-buff-conflict-kept>
+    <p v-if="keptNote" ref="keptEl" class="bcn-status" role="status" tabindex="-1" data-test-buff-conflict-kept>
       Kept only {{ keptNote.kept }} on {{ nameOf(keptNote.characterId) }}; {{ keptNote.off }} is now off.
       <template v-if="keptNote.versionSaved">
         The build as it was is saved in
@@ -85,7 +85,7 @@
 // the way to fix it. On /account's top it lists every such build; with `characterId` (the drawer, a /my-rankings row)
 // only that character's. It shows the pairs the engine really counts twice; the pairs that are on together and move no
 // figure fold under one quiet line (`quiet`). Nothing is written unless the player taps Keep only.
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCharacterStore } from "../../stores/character";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
@@ -138,14 +138,19 @@ function open(c: BuffConflict): void {
 
 const busy = ref(false);
 const failed = ref(false);
+const keptEl = ref<HTMLElement | null>(null);
 async function keep(c: BuffConflict, side: 0 | 1): Promise<void> {
   if (busy.value) return;
   busy.value = true;
   failed.value = false;
   try {
     const ok = await state.keepOnly(c, side);
-    if (ok) emit("changed");
-    else failed.value = true;
+    if (ok) {
+      emit("changed");
+      // the button that was pressed goes with its notice: focus lands on the line that says what happened, not nowhere
+      await nextTick();
+      keptEl.value?.focus({ preventScroll: true });
+    } else failed.value = true;
   } finally {
     busy.value = false;
   }
@@ -246,6 +251,10 @@ async function keep(c: BuffConflict, side: 0 | 1): Promise<void> {
   line-height: 1.45;
   color: oklch(var(--bc) / 0.72);
   overflow-wrap: anywhere;
+}
+.bcn-status:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
 }
 .bcn-status {
   padding: 0.6rem 0.8rem;
