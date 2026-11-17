@@ -323,22 +323,25 @@ describe("the edges", () => {
   it("the team pins another build: level and Forte keep an exact team figure, the weapon step has none and says why", async () => {
     const preset = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === bestFieldableTeam(ranking.teams, "Camellya")!.id)!;
     const slot = preset.team.characterIds.indexOf("Camellya");
-    // her active build, and a second saved build the team is pinned to: same weapon, one level lower
+    // her active build, and a second saved build the team is pinned to: the same weapon at its last level, so the
+    // saved team outscores the preset and is the strongest team she can field (the one the drawer measures on)
     const built = {
       ...characters.Camellya,
       activeBuildId: "active",
       builds: [
         { id: "active", name: "Default build", weapon: "RedSpring", weapons: { RedSpring: { weaponLevel: "80", refinement: "1" } } },
-        { id: "other", name: "Team build", weapon: "RedSpring", weapons: { RedSpring: { weaponLevel: "70", refinement: "1" } } },
+        { id: "other", name: "Team build", weapon: "RedSpring", weapons: { RedSpring: { weaponLevel: "90", refinement: "1" } } },
       ],
     };
     const data = { ...characters, Camellya: built };
     const team = { id: "mine", name: "My Camellya team", characterIds: preset.team.characterIds, buildIds: preset.team.characterIds.map((_, i) => (i === slot ? "other" : null)), actions: preset.team.actions, duration: preset.team.duration, handoffs: preset.team.handoffs ?? null };
     const pinnedRanking = await rankRoster(data, echoes, [team], { yieldToUi: false });
-    const plan = await levelPlan(
-      { characterId: "Camellya", characters: data, inventoryEchoes: echoes, teams: [team], rank: pinnedRanking.characters.find((c) => c.id === "Camellya")!, rankingTeams: pinnedRanking.teams, materials },
-      { yieldToUi: false, teamId: "mine" },
-    );
+    expect(bestFieldableTeam(pinnedRanking.teams, "Camellya")!.id).toBe("mine");
+    const input = { characterId: "Camellya", characters: data, inventoryEchoes: echoes, teams: [team], rank: pinnedRanking.characters.find((c) => c.id === "Camellya")!, rankingTeams: pinnedRanking.teams, materials };
+    const plan = await levelPlan(input, { yieldToUi: false });
+    // asked for by name, the same team gives the same plan
+    const named = await levelPlan(input, { yieldToUi: false, teamId: "mine", path: false });
+    expect(named.rows.map((r) => [r.label, r.team?.gain ?? null])).toEqual(plan.rows.map((r) => [r.label, r.team?.gain ?? null]));
     expect(plan.team).toMatchObject({ id: "mine", name: "My Camellya team" });
     expect(plan.buildNote).toMatch(/^the team runs Camellya's "Team build" build\. Level and Forte levels are shared by every build/);
     const weapon = row(plan, "weapon");
