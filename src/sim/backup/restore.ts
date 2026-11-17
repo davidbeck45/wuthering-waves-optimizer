@@ -5,6 +5,7 @@
 // backups but could not store this one stops here too; (3) the file goes through Ryan's own import
 // (`applyImportedDatabase`: his migrations, and plus's checks before its first write, which keep a version of every
 // build it replaces in Build history); (4) the plus records the backup carries are put back (plusRestore.ts).
+import { CURRENT_DATA_VERSION } from "../../migrations";
 import { getImportData, parseStorePayload } from "../../utils/settingsBackup";
 import type { TakeResult } from "./autoBackup";
 import { parseBackupText, type Capture } from "./backupFile";
@@ -43,9 +44,17 @@ export interface InspectedBackup {
 export function inspectBackupText(text: string): InspectedBackup {
   const parsed = parseBackupText(text);
   if (!parsed.ok) throw new RestoreRefused(parsed.why === "newer" ? NEWER_BACKUP_TEXT : NOT_A_BACKUP_TEXT);
+  let read: ReturnType<typeof getImportData>;
+  try {
+    read = getImportData(text, true);
+  } catch {
+    throw new RestoreRefused(DAMAGED_BACKUP_TEXT);
+  }
+  // A data version ahead of this build's (a tab opened before a deploy, a rollback): his migrations would run none
+  // and his import would stamp the stores as this build's version, so the next deploy migrates them a second time.
+  if (read.dataVersion > CURRENT_DATA_VERSION) throw new RestoreRefused(NEWER_BACKUP_TEXT);
   let counts: BackupCounts;
   try {
-    const read = getImportData(text, true);
     counts = countsOf(
       {
         character: parseStorePayload(read.character, read.dataVersion),

@@ -270,6 +270,23 @@ describe("what is not a readable backup changes nothing", () => {
     untouched(before);
   });
 
+  it("a backup in a data version newer than this build's (a tab older than a deploy, a rollback) is refused, ours or a plain export", async () => {
+    seedAccount(today());
+    await nextTick();
+    const before = snapshot();
+    const ahead = String(CURRENT_DATA_VERSION + 1);
+    const ours = backupFile(monday(), "daily", 1);
+    for (const file of [{ ...ours, meta: { ...ours.meta, version: ahead } }, { meta: { ...ours.meta, version: ahead }, data: ours.data }]) {
+      expect(() => inspectBackupText(JSON.stringify(file))).toThrow(NEWER_BACKUP_TEXT);
+      const e = env();
+      await expect(restoreBackupText(JSON.stringify(file), e)).rejects.toThrow(NEWER_BACKUP_TEXT);
+      expect(e.saveFirst).not.toHaveBeenCalled();
+      expect(e.apply).not.toHaveBeenCalled();
+    }
+    untouched(before);
+    expect(localStorage.getItem("dataVersion")).toBe(String(CURRENT_DATA_VERSION));
+  });
+
   it("a backup whose stores cannot be read is damaged: refused before the save, account and plus records untouched", async () => {
     seedAccount(today());
     await nextTick();
