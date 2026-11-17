@@ -4476,3 +4476,9 @@ Matrix cycle 2: `rules.json` `matrix` needs the next cycle from Kuro's post.
 Tests that keep a state alive after the data moved on: `toa.cy.ts` takes the HP out of the shipped season file on the
 way to the page (`seasonBeforeItsHp`, a `cy.intercept` on the dev server's module) for "HP not published yet", so the
 test does not flip when a block arrives or a new season ships without one.
+
+Contrast on the Convene tabs: the lines this lane wrote or rewrote (the note under "Running now", a card's run line,
+the History footnote, the advisor's source sentence) are `text-base-content/80`, 5.0 to 1 or better on light, dark,
+nord and pastel; `conveneTracker.cy.ts` measures them on three themes. `/70` gave 4.2 on dark, `/55` 3.0 to 4.0 on a
+card. The tabs' other muted text is still at `/50` to `/60` and below AA on dark and nord: the plus text floor
+(`a11y/a11y.css`) is scoped to plus pages and `/convene` is Ryan's page with plus tabs on it.
