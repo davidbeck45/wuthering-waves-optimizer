@@ -181,7 +181,9 @@ describe("weapon value", () => {
     cy.get("[data-test-weapons-custom-input]").type("Shore{enter}");
     cy.get('[data-test-weapons-pool-item="Shorekeeper"]').should("exist");
     cy.get("[data-test-weapons-custom-input]").type("Lily");
-    cy.get("[data-test-weapons-custom-suggestion]").should("not.exist"); // not released here
+    cy.get('[data-test-weapons-custom-suggestion="Lily"]').should("exist"); // released with 3.8
+    cy.get("[data-test-weapons-custom-input]").clear().type("Nobody");
+    cy.get("[data-test-weapons-custom-suggestion]").should("not.exist");
     cy.get(".sc-suggest__none").should("contain.text", "No released resonator");
   });
 
