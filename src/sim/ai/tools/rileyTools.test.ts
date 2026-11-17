@@ -12,6 +12,9 @@ import { teamTarget, type RileyToolEngine } from "./riley";
 import { floorIdOf, hpNotPublished, seasonCheck, TOA_CHECK_KEY } from "./endgame";
 import { memberPlanSummary } from "./teamRun";
 import { emptyPlan, parseMainStats } from "../../buildTeam/rileyPlan";
+import { rileyAccountForTeam } from "../../engine/rileyAccount";
+import { teamSignature } from "../../endgame/crests";
+import { checkKey } from "../../endgame/toaRun";
 
 // `season.noHp`: the season file as the generator ships it before the HP sheet has its block
 const season = vi.hoisted(() => ({ noHp: false }));
@@ -33,6 +36,25 @@ async function call(name: string, input: unknown, c: ToolContext = ctx): Promise
   expect(r.content.length).toBeLessThanOrEqual(MAX_RESULT_CHARS);
   if (!r.ok) throw new Error(`${name} failed: ${r.content}`);
   return JSON.parse(r.content);
+}
+
+/** The fixture with the saved team pinned to a second build of its main DPS ("Account plan": the weapon at another
+ *  refinement) while the active build stays, and the same build made the active one with nothing pinned: what the pinned
+ *  team must read like, wherever it is asked. */
+function pinnedAndActive(): { pinned: ExportFile; active: ExportFile } {
+  const dps = "Aemeath";
+  const weapon: string = exp.characters[dps].weapon;
+  const liveRank = Number(exp.characters[dps].weapons?.[weapon]?.refinement ?? 1);
+  const planRank = liveRank > 3 ? liveRank - 4 : liveRank + 4;
+  const atRank = (data: any) => ({ ...data, weapons: { ...data.weapons, [weapon]: { ...data.weapons?.[weapon], refinement: String(planRank) } } });
+  const { builds: _b, activeBuildId: _a, ...fields } = JSON.parse(JSON.stringify(exp.characters[dps]));
+  const data = exp.characters[dps];
+  const pinned: ExportFile = {
+    ...exp,
+    characters: { ...exp.characters, [dps]: { ...data, activeBuildId: data.activeBuildId ?? "live", builds: [...(data.builds ?? []), { ...atRank(fields), id: "plan", name: "Account plan" }] } },
+    teams: exp.teams.map((t: any, i: number) => (i === 0 ? { ...t, buildIds: ["plan", null, null] } : t)),
+  };
+  return { pinned, active: { ...exp, characters: { ...exp.characters, [dps]: atRank(data) } } };
 }
 
 describe("team arguments", () => {
@@ -77,21 +99,7 @@ describe("tools on Riley's engine", () => {
     // Build my team and Whole account leave a saved team pinned to builds that are not the active ones. /energy has read
     // the pins since 2026-11-09; the tools still asked at the active builds, so "Explain these needs" answered 367,567
     // DPS beside the page's 353,983 and the pinned build's own Energy Regen (2026-11-16, second check of 8802ecc0).
-    const dps = "Aemeath";
-    const weapon: string = exp.characters[dps].weapon;
-    const liveRank = Number(exp.characters[dps].weapons?.[weapon]?.refinement ?? 1);
-    const planRank = liveRank > 3 ? liveRank - 4 : liveRank + 4;
-    const atRank = (data: any) => ({ ...data, weapons: { ...data.weapons, [weapon]: { ...data.weapons?.[weapon], refinement: String(planRank) } } });
-    const { builds: _b, activeBuildId: _a, ...fields } = JSON.parse(JSON.stringify(exp.characters[dps]));
-    const data = exp.characters[dps];
-    // "Account plan": the weapon at another refinement, pinned by the team; the active build is left as it was
-    const pinned: ExportFile = {
-      ...exp,
-      characters: { ...exp.characters, [dps]: { ...data, activeBuildId: data.activeBuildId ?? "live", builds: [...(data.builds ?? []), { ...atRank(fields), id: "plan", name: "Account plan" }] } },
-      teams: exp.teams.map((t: any, i: number) => (i === 0 ? { ...t, buildIds: ["plan", null, null] } : t)),
-    };
-    // the same build made the active one, nothing pinned: what the pinned team must read like
-    const active: ExportFile = { ...exp, characters: { ...exp.characters, [dps]: atRank(data) } };
+    const { pinned, active } = pinnedAndActive();
     const ask = (account: ExportFile, name: string, input: unknown) => call(name, input, { ...ctx, exp: account });
 
     const live = await ask(exp, "energy_check", { team: "1" });
@@ -157,6 +165,20 @@ describe("tools on Riley's engine", () => {
     expect(planned.fittingEchoes).toBeGreaterThanOrEqual(0);
     expect(planned.fittingEchoes).toBeLessThan(echoes.length);
   });
+
+  it("toa_check: a saved team that pins another build is timed at that build, under the key the /endgame page keeps its check by", async () => {
+    const { pinned, active } = pinnedAndActive();
+    const savedDps = async (account: ExportFile): Promise<number> => (await seasonCheck({ ...ctx, exp: account }, null))!.check.candidates.find((c) => c.saved)!.dps;
+    const onPins = await savedDps(pinned);
+    expect(onPins).toBeCloseTo(await savedDps(active), 3);
+    expect(Math.abs(onPins - (await savedDps(exp)))).toBeGreaterThan(1); // it timed the active builds
+    // the page keys its check with each pinned team's own account (useToa.ts): the same key here, so its check is reused
+    const found = (await seasonCheck({ ...ctx, exp: pinned }, null))!;
+    const base = (await headlessRiley(pinned)).account;
+    const own = rileyAccountForTeam(pinned.teams[0], pinned.characters, pinned.inventory, pinned.teams, { base });
+    const signature = teamSignature(pinned.teams[0].characterIds.filter(Boolean));
+    expect(found.check.key).toBe(checkKey((await headlessRiley(pinned)).commit, base, found.season, [signature], 30, new Map([[signature, own]])));
+  }, 240_000);
 
   it("toa_check: a season in the build before its floor HP is published says so, times nobody and gives no plan", async () => {
     // Season 41 as the generator ships a season before the HP sheet has its block (Season 42 on its first day)

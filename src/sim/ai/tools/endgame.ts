@@ -5,11 +5,11 @@
 import { appKeyOf } from "../../rankings/castMapper";
 import { clockText, teamSignature } from "../../endgame/crests";
 import { countdown, floorChips, floorLabel, guessRegion, hpPending, loadSeason, offsetOf, seasonStatus, SERVER_REGIONS, timedFloors, toaIndex, type ServerRegionId, type ToaFloor, type ToaSeason } from "../../endgame/toaData";
-import { checkKey, planInputOf, rankFloor, runToaCheck, type ToaCheck, type ToaRunner } from "../../endgame/toaRun";
+import { checkKey, pinnedAccounts, planInputOf, rankFloor, runToaCheck, type SavedToaTeam, type ToaCheck, type ToaRunner } from "../../endgame/toaRun";
 import { planVigor } from "../../endgame/vigorPlan";
 import { floorOdds } from "../../critLuck/floorOdds";
 import { characterName, compactJson, defineTool, int, nullableString, type ToolContext, type ToolStorage } from "./shared";
-import { rileyOf } from "./riley";
+import { rileyForTeam, rileyOf, type RileyToolEngine } from "./riley";
 
 /** The page's own keys and breadth (useToa.ts), so a check either side computed serves the other. */
 export const TOA_CHECK_KEY = "wtplus:endgame:check";
@@ -111,16 +111,27 @@ export async function seasonCheck(ctx: ToolContext, floor: string | null) {
   if (floor && !wanted) throw new Error(`"${floor}" is not a timed floor this season: ${timedFloors(season).map((f) => floorLabel(f.id)).join(", ")}`);
   const riley = await rileyOf(ctx);
   const account = riley.account;
-  const savedTeams = (ctx.exp.teams ?? []).map((t: any) => ({ name: String(t.name ?? ""), characterIds: ((t.characterIds ?? []) as Array<string | null>).map((x) => (x ? String(x) : null)) }));
+  // A saved team is solved and timed at the builds it runs (its pins), as the /endgame page does (useToa.ts): it gets
+  // the engine at its own account, and the check's key names that account, so the page's stored check still serves here.
+  // Timed at the active builds, a pinned team read another DPS than /endgame and the stored check was never reused.
+  const accountSig = (a: { key?: string; buildsKey?: string } | null | undefined): string => `${a?.key ?? "-"}.${a?.buildsKey ?? "-"}`;
+  const engines = new Map<string, RileyToolEngine>();
+  const savedTeams: SavedToaTeam[] = [];
+  for (const t of (ctx.exp.teams ?? []) as any[]) {
+    const own = await rileyForTeam(ctx, { saved: t }, riley);
+    if (own !== riley) engines.set(accountSig(own.account), own);
+    savedTeams.push({ name: String(t.name ?? ""), characterIds: ((t.characterIds ?? []) as Array<string | null>).map((x) => (x ? String(x) : null)), account: own.account });
+  }
+  const engineAt = (a: { key?: string; buildsKey?: string } | null | undefined): RileyToolEngine => engines.get(accountSig(a)) ?? riley;
   const signatures = savedTeams.map((t) => t.characterIds.filter((x): x is string => !!x)).filter((ids) => ids.length === 3).map(teamSignature);
-  const key = checkKey(riley.commit, account, season, [...new Set(signatures)], CANDIDATES);
+  const key = checkKey(riley.commit, account, season, [...new Set(signatures)], CANDIDATES, pinnedAccounts(savedTeams, account));
   const stored = storedCheck(ctx.storage);
   if (stored?.key === key) return { season, status, region, check: stored, reused: true, account, wanted };
   const runner: ToaRunner = {
     commit: riley.commit,
     teams: () => riley.teams(),
-    solveMine: (keys) => riley.solveMine(keys),
-    curves: (teamKey, picks, profiles, o) => riley.curves(teamKey, picks, profiles, { spread: o?.spread }),
+    solveMine: (keys, o) => engineAt(o?.account).solveMine(keys),
+    curves: (teamKey, picks, profiles, o) => engineAt(o?.account).curves(teamKey, picks, profiles, { spread: o?.spread }),
   };
   const check = await runToaCheck(runner, season, { account, savedTeams, limit: CANDIDATES });
   return { season, status, region, check, reused: false, account, wanted };
