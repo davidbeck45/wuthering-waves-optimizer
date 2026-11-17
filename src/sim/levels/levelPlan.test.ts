@@ -249,6 +249,19 @@ describe("the edges", () => {
     expect(plan.rotation).toBeNull();
   });
 
+  it("a rotation that scores no damage on the build: says so, and keeps the costs", async () => {
+    // actions the kit does not have (a rotation written for another version of the character): nothing resolves
+    const rank = rankOf("Camellya")!;
+    const empty = { ...rank.bestRotation!, actions: [{ id: "x1", key: "NoSuchAttackDMG", type: "basic", count: 1, buffs: [] }] };
+    const plan = await levelPlan({ characterId: "Camellya", characters, inventoryEchoes: echoes, teams: [], rank: { best: { ...rank.best!, name: "Old loop" }, bestRotation: empty }, rankingTeams: ranking.teams, materials }, { yieldToUi: false });
+    expect(plan.noGain).toBe("Camellya's best rotation scores no damage on this build");
+    expect(plan.base).toBeNull();
+    expect(plan.rows).toHaveLength(5);
+    expect(plan.rows.every((r) => r.own === null && r.cost.credits > 0)).toBe(true);
+    expect(plan.path).toEqual([]);
+    expect(plan.team).toBeNull();
+  });
+
   it("a skill the rotation never uses is called that, with the rotation's name, and is left out of the path", async () => {
     const rank = rankOf("Camellya")!;
     // the same rotation without its Forte Circuit actions

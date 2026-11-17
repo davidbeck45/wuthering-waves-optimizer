@@ -149,6 +149,8 @@ describe("rankPalette", () => {
     expect(rankPalette("what to level first", items)[0]?.title).toMatch(/^What to level first: /);
     expect(rankPalette("what to level first aemeath", items)[0]).toMatchObject({ title: "What to level first: Aemeath", group: "command", run: { kind: "route", path: "/account?focus=Aemeath&section=levels" } });
     expect(rankPalette("skill priority", items).some((i) => i.title === "What to level first: Mornye")).toBe(true);
+    // by the section's own name, too
+    expect(rankPalette("what each level is worth", items).find((i) => i.group === "command")?.title).toMatch(/^What to level first: /);
     // Cost to max keeps its own line
     expect(rankPalette("cost to max", items)[0]?.title).toMatch(/^Cost to max: /);
   });

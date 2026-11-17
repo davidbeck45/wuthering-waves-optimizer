@@ -120,7 +120,7 @@ function costCommand(key: string, name: string): Built {
 /** What each level is worth sits under Cost to max in the same drawer. */
 function levelsCommand(key: string, name: string): Built {
   const path = `/account?focus=${encodeURIComponent(key)}&section=levels`;
-  return { key: `command:character:${key}:levels`, group: "command", order: 1, title: `What to level first: ${name}`, subtitle: "What each level-up left adds to damage on their build, what it costs, and the order to take them in", keywords: ["level", "level up", "levels", "skill priority", "forte", "talent", "weapon level", "ascension", "which skill", "what to level", "worth", name, key], icon: ICON.substats, opens: path, run: { kind: "route", path } };
+  return { key: `command:character:${key}:levels`, group: "command", order: 1, title: `What to level first: ${name}`, subtitle: "What each level-up left adds to damage on their build, what it costs, and the order to take them in", keywords: ["what each level is worth", "level", "level up", "levels", "skill priority", "forte", "talent", "weapon level", "ascension", "which skill", "what to level", "worth", name, key], icon: ICON.substats, opens: path, run: { kind: "route", path } };
 }
 
 function teamCommands(t: TeamTarget, displayName: NameOf, group: Group): Built[] {
