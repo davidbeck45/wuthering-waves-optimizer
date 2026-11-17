@@ -5,7 +5,7 @@ import { entryFromRanking } from "./entry";
 import { appendEntry, emptyLog, type LogEntry, type NumbersLog } from "./log";
 import { DAY, HOUR, T0, account, ranking } from "./testAccount";
 import { compareEntries } from "./compare";
-import { EMPTY_TEXT, NO_ACCOUNT_TEXT, agoText, firstRecordText, numbersState, pickedBase, staleness, staleText, summaryText } from "./view";
+import { EMPTY_TEXT, IMPORT_CARD_TEXT, NO_ACCOUNT_TEXT, importText, agoText, firstRecordText, numbersState, pickedBase, staleness, staleText, summaryText } from "./view";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";
 const entry = (over: Parameters<typeof ranking>[0] = {}, at = T0, build = BUILD): LogEntry => entryFromRanking(ranking(over), account(), { at, build, autoTeamBuffs: true }) as LogEntry;
@@ -97,6 +97,15 @@ describe("what the page shows", () => {
     const stockTeam = (id: string) => ({ kind: "team" as const, id, members: ["Aaa", "Bbb", "Ddd"], teamName: id, damage: 900_000 });
     const c = { ...base, appeared: [{ ...stockTeam("wuwa_calc:new"), stockByUpdate: true }, stockTeam("t-x")], gone: [1, 2, 3, 4, 5].map((i) => ({ ...stockTeam(`wuwa_calc:old${i}`), stockByUpdate: true })) };
     expect(summaryText(c)).toBe("No figure moved (5 compared) · 1 new · the update added 1 stock team · the update took 5 stock teams off the list.");
+  });
+});
+
+describe("an account replaced between two records", () => {
+  // A restore on /backups goes through Ryan's import and stamps the same mark; the page said "A Settings import
+  // replaced your account" after a restore he made from Backups (2026-11-17, in a real browser).
+  it("names a restored backup as well as an import", () => {
+    expect(importText(T0, T0 + HOUR)).toMatch(/^An import or a restored backup replaced your account on 9 Nov, \d\d:20, between these two records\./);
+    expect(IMPORT_CARD_TEXT).toBe("An import or a restored backup replaced your account between the two.");
   });
 });
 

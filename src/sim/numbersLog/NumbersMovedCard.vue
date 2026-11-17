@@ -21,7 +21,7 @@
         {{ summaryText(state.comparison) }}
         <span class="nmc__muted">Record of {{ whenText(state.comparison.after.at, now) }} against the one of {{ whenText(state.comparison.before.at, now) }}.</span>
       </p>
-      <p v-if="state.comparison.importedAt" class="nmc__fact" data-test-numbers-card-import>A Settings import replaced your account between the two.</p>
+      <p v-if="state.comparison.importedAt" class="nmc__fact" data-test-numbers-card-import>{{ IMPORT_CARD_TEXT }}</p>
       <p v-else-if="state.comparison.appUpdated" class="nmc__fact" data-test-numbers-card-app-update>The app was updated between the two.</p>
       <ul v-if="top.length" class="nmc__rows">
         <NumbersMoveRow v-for="m in top" :key="`${m.kind}:${m.id}`" :move="m" :imported="!!state.comparison.importedAt" compact />
@@ -37,7 +37,7 @@ import { RouterLink } from "vue-router";
 import { biggestMoves, whenText } from "./compare";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
 import { useNumbersLog } from "./useNumbersLog";
-import { firstRecordText, summaryText } from "./view";
+import { IMPORT_CARD_TEXT, firstRecordText, summaryText } from "./view";
 
 /** `scoring`: the page's own ranking is running (useAccountData's status) */
 withDefaults(defineProps<{ scoring?: boolean }>(), { scoring: false });

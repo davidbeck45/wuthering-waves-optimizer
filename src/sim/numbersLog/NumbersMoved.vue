@@ -57,8 +57,7 @@
       </div>
 
       <p v-if="c.importedAt" class="nm-note nm-note--info" data-test-numbers-import>
-        A Settings import replaced your account on {{ whenText(c.importedAt, now) }}, between these two records. The builds and teams that
-        differ below came with it.
+        {{ importText(c.importedAt, now) }}
       </p>
       <p v-if="c.appUpdated" class="nm-note nm-note--info" data-test-numbers-app-update>
         The app was updated between these two records.
@@ -118,7 +117,7 @@ import { whenText, type Comparison, type Listed } from "./compare";
 import { MAX_ENTRIES } from "./log";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
 import { NAMES, useNumbersLog } from "./useNumbersLog";
-import { BASIS_TEXT, EMPTY_TEXT, NO_ACCOUNT_TEXT, RUNNING_TEXT, STOCK_BY_UPDATE_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
+import { BASIS_TEXT, EMPTY_TEXT, importText, NO_ACCOUNT_TEXT, RUNNING_TEXT, STOCK_BY_UPDATE_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
 
 const SHOWN = 8;
 const { state, baseAt, running, stale, now } = useNumbersLog();

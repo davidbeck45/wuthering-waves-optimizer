@@ -57,6 +57,13 @@ export function firstRecordText(entry: LogEntry, now = Date.now()): string {
   return `Nothing to compare yet. This is the first record, taken ${agoText(entry.at, now)}.`;
 }
 
+/** The note when the account was replaced between the two records. Ryan's Settings import and a restore on /backups
+ *  (which goes through that import) both stamp it, so it names both: a restore must not read as an import he never made. */
+export function importText(at: number, now = Date.now()): string {
+  return `An import or a restored backup replaced your account on ${whenText(at, now)}, between these two records. The builds and teams that differ below came with it.`;
+}
+export const IMPORT_CARD_TEXT = "An import or a restored backup replaced your account between the two.";
+
 /** "3 figures moved, 21 did not · 2 new." — the count line over the list. */
 export function summaryText(c: Comparison): string {
   const n = c.moves.length;

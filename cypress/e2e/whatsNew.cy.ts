@@ -341,7 +341,7 @@ describe("what moved in your numbers", () => {
     cy.get("[data-test-numbers-since] option").eq(1).invoke("text").should("match", /since\s+9 Nov/);
     cy.get("[data-test-numbers-since]").select(1);
     cy.get("[data-test-numbers-summary]").should("have.text", "3 figures moved, 2 did not.");
-    cy.get("[data-test-numbers-import]").should("have.length", 1).and("contain.text", "A Settings import replaced your account on 12 Nov");
+    cy.get("[data-test-numbers-import]").should("have.length", 1).and("contain.text", "An import or a restored backup replaced your account on 12 Nov");
     cy.get("[data-test-numbers-app-update]").should("have.length", 1);
     // her build differs AND the app was updated in the stretch: the row says both, it cannot split the move between them
     const TOO = " The app was updated between the two records too, so part of this may be the update.";
