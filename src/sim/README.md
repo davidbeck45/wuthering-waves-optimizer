@@ -4510,7 +4510,7 @@ the sweep. Both names are in `STORAGE_RULES` as bookkeeping that stays.
 
 **One Rover, two keys, at every bridge from wuwa_calc.** Riley has one Rover per element; everything read off his run
 names her by the female key (`appKeyOf`), and an account holds one form. The first fix (52cdb575) covered the loops and
-the stock teams. Three bridges still wrote or matched the female key:
+the stock teams. Five bridges still wrote or matched the female key:
 
 - `reslotActions` (Sync my teams, both the page's and the CLI's writer) matched a saved team's members by exact key, so
   the team List Presets had just saved under the male key was refused: "does not hold the same three characters as the
@@ -4522,6 +4522,12 @@ the stock teams. Three bridges still wrote or matched the female key:
   now, and the plan carries the member's own key;
 - `teamSpecOf` reads a Rover named in a `?members=` link as the form the account plays. Team rankings' "Build from my
   echoes" names the female key, and the page opened on a character the account does not have.
+
+- `scanCandidates` (the Energy check's scan of every composition the account can field) filed a male Rover's nine
+  compositions under the female key: "not set up" for a Rover who is, and a team row of his never found its measurement.
+  It takes the account's key for each member now (`memberKey`, passed by the page and by `cli er`);
+- `rileyTeamTarget` (the assistant's team argument given as a wuwa_calc team key) names the account's form too, so the
+  player's saved team of the same three is found.
 
 `sameKit(a, b)` is the question to ask whenever a key that came from a wuwa_calc name meets a key from the account.
 Left as they are, display only: `/rotation`'s stock tiles and the cue card's portraits show the female form.
@@ -4539,7 +4545,23 @@ browser, on its last day, in `cli toa` and `toa_check`; stars under the old name
 on three characters, through the palette too; Back on Options and Play along after an in-app move; the stat tile icons
 on light, pastel and nord; the member card's name; the three "numbers" labels.
 
-**Not fixed, known.** Back with the Ask sheet, Options or Play along open leaves the site when the page is the first
-one of the visit (a bookmark, a shared `/rotation#chars=` link): the guard cancels a router move, and there is none to
-cancel when the entry behind is another document. A fix needs a history entry of the app's own behind the sheet, made
-on the tap that opens it; it was left out of this run because the real Back button cannot be driven from a test here.
+**Back on the first page of a visit** (`shell/sheetHistory.ts`). The Back guard cancels a router move, and a page
+opened from a bookmark or a shared `/rotation#chars=` link has none behind it: Back with the Ask sheet, Options or
+Play along open left the site. A browser hands Back to a page only when an entry of that page's own is behind the
+current one, so one is made on the tap that opens the sheet (a `watch` with `flush: "sync"`, so it is still that tap),
+and only where the router's state says nothing of the app is behind (`history.state.back == null`). The page then has
+two entries with one address and one router state: B, marked as a base, and P, the pad the player is on.
+
+- Back from P lands on B. With a sheet open it is closed and the page goes forward to P; with none open the Back is
+  passed on (`history.back()`), so leaving the site still takes one press.
+- vue-router is never told of a move between P and B: to it they are one route at one position. The listener that
+  keeps the event from it is put on the window when `askBackGuard.ts` loads, not when a guard is installed. A window's
+  popstate listeners run in the order they were added, and `main.ts` imports the app before it creates the router.
+  Added later, the router heard of the move first and finished it in a microtask before this listener ran, which then
+  no longer knew where the page had been: Back stayed on the page with the sheet still open (seen in the browser, and
+  the reason for the module-level `createSheetHistory`). `cypress/e2e/sheetBackFirstPage.cy.ts` goes red if that order
+  is ever lost.
+- A second opening adds nothing (the entry is a pad already). Where an entry of the app is behind, nothing is added and
+  the router guard does the work, as before. In a tab with nothing at all behind the page, the passed-on Back has
+  nowhere to go and the page stays: leaving then takes one more press. Not checked: a phone's real Back button, which
+  a test here cannot press (Chrome skips entries a page adds without a tap; this one is added on a tap).
