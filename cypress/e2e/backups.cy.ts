@@ -1,8 +1,8 @@
 // Wuthering Tools+ automatic backups (/backups, src/sim/backup/) in the v3 UI at the S26's 412 px and 130 % text, on a
 // real IndexedDB: the day's backup taken on its own, the list, Download, Share, Restore through the confirm, the
-// backup a Settings import takes first, a damaged record, a browser without IndexedDB, Delete your data. Backups stand
-// aside under Cypress unless a spec sets the switch below. Seeded through onBeforeLoad with public data only:
-// upstream's Cartethyia fixture, one saved team, and three made-up pulls.
+// backup a Settings import or a bulk delete takes first, a damaged record, a browser without IndexedDB, Delete your
+// data. Backups stand aside under Cypress unless a spec sets the switch below. Seeded through onBeforeLoad with
+// public data only: upstream's Cartethyia fixture, one saved team, and three made-up pulls.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 
 const DB = "wtplus-backups";
@@ -450,6 +450,37 @@ describe("automatic backups", () => {
     cy.get(".confirm-dialog .modal-action .btn-error").click();
     cy.contains("Backup deleted.").should("be.visible");
     rows().should("have.length", 1).first().should("have.attr", "data-reason", "daily");
+  });
+
+  it("deleting several echoes at once keeps the account from just before, as 'Before a bulk delete'", () => {
+    cy.visit("/backups", seed());
+    rows().should("have.length", 1); // the day's backup is there: the backup code is loaded, and the guard with it
+    const total = JSON.parse(configOptimizer.data.inventory).echoes.length;
+    const deleteThroughStore = (win: Cypress.AUTWindow, count: number) =>
+      cy.wrap(
+        (async () => {
+          // the running app's own inventory store, the one Ryan's Delete selected and Wavescan Replace call
+          const mod = (await win.eval('import("/src/stores/inventory.js")')) as { useInventoryStore: () => { echoes: Array<{ echoId: string }>; deleteEcho: (id: string) => void } };
+          const store = mod.useInventoryStore();
+          for (const id of store.echoes.slice(0, count).map((e) => e.echoId)) {
+            store.deleteEcho(id);
+            await new Promise((r) => setTimeout(r, 30));
+          }
+          return store.echoes.length;
+        })(),
+        { timeout: 20000 },
+      );
+    // one echo by hand: no backup for that
+    cy.window().then((win) => deleteThroughStore(win, 1).should("eq", total - 1));
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- past the guard's quiet time, which rightly ends in nothing
+    cy.wait(2500);
+    rows().should("have.length", 1);
+    // six at once: the inventory as it was before the first of them is kept
+    cy.window().then((win) => deleteThroughStore(win, 6).should("eq", total - 7));
+    cy.get('[data-test-backup-row][data-reason="before-delete"]', { timeout: 20000 }).should("have.length", 1).as("kept");
+    cy.get("@kept").find("[data-test-backup-reason]").should("have.text", "Before a bulk delete");
+    cy.get("@kept").find("[data-test-backup-inside]").invoke("text").should("match", new RegExp(`${total - 1}\u00a0echoes`));
+    rows().should("have.length", 2);
   });
 
   it("Delete your data offers a copy first and takes the backups with the account", () => {

@@ -2,7 +2,8 @@
 // a timer, a visibility listener and one lazy import; the backup code itself loads a few seconds after the page.
 //
 // The day's automatic backup is looked at once after the page has settled, and again whenever the tab comes back into
-// view after an hour or more: a site added to the home screen can stay open for days.
+// view after an hour or more: a site added to the home screen can stay open for days. The same first look starts the
+// backup before a bulk delete.
 
 /** Under Cypress the backups stand aside (as the welcome card and the team-aware buffs do), so a hundred specs do not
  *  each write to IndexedDB behind their own assertions; backups.cy.ts sets the switch. */
@@ -35,7 +36,10 @@ export interface InstallEnv {
 
 const lazyDaily = (): Promise<unknown> =>
   import("./liveCapture").then(
-    (m) => m.takeNow("daily"),
+    (m) => {
+      m.startBulkGuard(); // from here on, a bulk delete of echoes or teams takes a backup first (bulkGuard.ts)
+      return m.takeNow("daily");
+    },
     () => undefined, // a stale tab that cannot load the chunk: perf/chunkReload.ts deals with that, not this
   );
 

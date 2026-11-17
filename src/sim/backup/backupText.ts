@@ -16,7 +16,7 @@ export const REASON_TITLE: Record<BackupReason, string> = {
   manual: "Taken when you pressed Back up now",
   "before-import": "Taken just before a Settings import replaced the account",
   "before-restore": "Taken just before a backup was restored over the account",
-  "before-delete": "Taken just before several echoes or teams were deleted at once",
+  "before-delete": "Taken just before several echoes or teams were deleted at once (Delete selected, Delete all trash, or a Wavescan import that replaced the inventory)",
 };
 
 const sameDay = (a: Date, b: Date): boolean => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
