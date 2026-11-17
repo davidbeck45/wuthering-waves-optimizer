@@ -4412,3 +4412,67 @@ last quarter of the Echoes screen's scroll. The specs scroll to it; where the vi
   renders.
 - **A candidate that moves nothing still needs a look.** #700 was on the list of commits that could move a number. It
   moved none, and the reason was a saved build the rule never reads.
+
+## Version 3.8 data — Season 42's HP, the banners, Today, and what to re-read at each version (batch 4, lane "data-38", 2026-11-16)
+
+Nothing here is a new page: it is the dated data behind `/endgame`, `/convene`, `/today` and `/weapons`, brought to
+game version 3.8 (live since 2026-11-12), and what that showed about each source.
+
+| Page | What was stale | Now | Source (read 2026-11-16) |
+|---|---|---|---|
+| `/endgame` | Season 42 shipped on its first day without floor HP | `data/toa/s42.json` has the sheet's cycle 42 block (re-run of `toa_sync.mjs --season 42`); teams are timed, the plan is back | ChemX32's sheet, tab "ToA HP Charts" |
+| `/convene` Banners, advisor | the seed ended with 3.7's second phase (Nov 11): nothing running | 3.8 Phase I: Sigrika, Qiuyuan, Solsworn Ciphers, Emerald Sentence (`emitBannerSeed.ts --update`: notice 5754, release 5783), plus Lily's banner and Lullaby's, hand-entered | Kuro 5754 (text), 5736 (image) |
+| `/today` | missed the running 7-day login event, did not know the Nov 26 double drop, no end date for 3.8 | reads "✦Duration✦ <dates>" on one line; `rules.json`: `versionEnds["3.8"]`, two `manualEvents`, `checked` | Kuro 5783 (text), 5736 (image) |
+| `/weapons` Selector | "Selector list for 3.7, last checked 2026-10-26" | both standard lists re-read for 3.8: unchanged, stamped 3.8 | Kuro 5783 |
+
+**Kuro's news feed has holes, and the calendar now says so.** The Convene notices in the feed (text) are all the
+generator can read. Missing from it, each named by its version's patch notes: version 3.2's first phase (Sigrika's
+first run: there is no Convene notice for that phase at all) and, since version 3.6, the own banner of most new
+resonators and their weapons (Jingran, Hsin, Suoming, Lily; Qingxiao's still had one). Kuro announces those in the
+"Update Content | Version N" image post instead. Consequences:
+
+- **A banner with no earlier run in the feed is not a first run.** The Banners tab used to badge it "First run", which
+  made Sigrika's 3.8 rerun one. `runInfo` (ConveneBannersTab.vue) gives such a card no badge and the line "No earlier
+  run in Kuro's news, which misses some banners."; a rerun the feed holds reads "Last run in Kuro's news: …". One line
+  under "Running now", one sentence in the pull advisor's intro and the History footnote say the list is what Kuro's
+  news holds.
+- **Hand-entered banners: `convene/data/bannerManual.json` + `data/shippedBanners.ts`.** One record per image post,
+  keyed by that post's article id (the card's "Kuro's notice" link opens it), holding what the image states: banner
+  title, 5-star, 4-stars, the Duration line. `SHIPPED_BANNERS` = generated seed ∪ hand-entered records, and the four
+  readers that used the seed alone take it (`convene/ui/useConvene.ts`, `today/useToday.ts`, `ai/tools/convene.ts`,
+  `ai/tools/today.ts`). `bannerSeed.json` stays generated: never add to it by hand (a full regeneration would drop
+  the row without a word). Same rule as Today's `manualEvents`: Kuro's text wins (a text notice of the same banner
+  folds into the same card), released content only (enter a banner once it has started; 3.8's second phase and the
+  Reverb banners on the same image are not entered). A hand-entered 5-star the app does not carry yet has no key
+  (initials on the card, "The calculator doesn't have this item yet." in the advisor) until the app's own sync adds
+  it; `banners.test.ts` takes the expected key from `allCharactersList` / the weapon lists, so it holds on both sides
+  of that sync. The strict test on the generated seed (every featured name resolves) stays strict.
+
+**Today.** `durations.ts` reads three Duration forms now: "✦Duration: <dates>", a lone "✦Duration✦" with the dates on
+the next line, and "✦Duration✦ <dates>" on one line (3.8's "Gifts of Bygone Dreams"). The Endstate Matrix row never
+names a version Kuro has not: inside a cycle the next update is the live version + 0.1 ("Resets with the 3.8 update"),
+in the cycle's last version it reads "Ends with version 3.8, ≈ Dec 22" and its overdue state says "A new version is
+out" (2.8 was followed by 3.0). `__fixtures__/patch38.json` is article 5783 cut after its events.
+
+**What to re-read when a version goes live** (each has a test that goes red until it is done, tied to the newest
+release time in `bannerSeed.json`):
+
+1. `npx tsx src/sim/convene/tools/emitBannerSeed.ts --update` after the first phase starts (and again after the second).
+2. Open that version's "Update Content" image post and its patch notes. Banners in the image with no Convene notice →
+   `bannerManual.json`. Double drops in the image only → `today/data/rules.json` `manualEvents`. "…, before
+   maintenance" → `versionEnds`. Then `checked` (`today.test.ts`: the newest version has a stated end and `checked` is
+   on or after its release).
+3. `weaponValue/data/pools.json`: read the patch notes for the Standard Convene lists, stamp `gameVersion`, each
+   Kuro-sourced pool's `version` and `checked` (`weaponValue.test.ts`).
+4. A new Tower of Adversity season: `toa_sync.mjs` (wuwa-tools `endgame/README.md`), and again once the HP sheet has
+   its block. Season 42's arrived a week in. Per-slot HP has repeated since cycle 40: Seasons 41 and 42 have the same
+   six totals, and Hazard 4's two bosses are one fight this season because both resist Spectro.
+
+Falls due: 2026-12-03 10:00 server time, 3.8's second phase (seed `--update`; its three reruns should come as a text
+notice, the Reverb banners may not). 2026-12-07 04:00, Season 43 (`toa.test.ts` pins `[41, 42]`, and `toa.cy.ts`'s
+ended-season tests expect "S43" to be the season still due). 2026-12-22 04:00 UTC+8, 3.8 ends and with it Endstate
+Matrix cycle 2: `rules.json` `matrix` needs the next cycle from Kuro's post.
+
+Tests that keep a state alive after the data moved on: `toa.cy.ts` takes the HP out of the shipped season file on the
+way to the page (`seasonBeforeItsHp`, a `cy.intercept` on the dev server's module) for "HP not published yet", so the
+test does not flip when a block arrives or a new season ships without one.
