@@ -43,7 +43,34 @@ export function accountKeyOf(key: string, characters: Record<string, any> | null
   if (!twin || !characters) return key;
   const own = characters[key];
   const other = characters[twin];
+  // An element the account holds in neither gender takes the gender of the Rover it does play (`roverGenderOf`): Rover
+  // is one resonator who changes element, so a male Aero Rover's account reads the Electro and Spectro Rover of a stock
+  // team as the male ones, on /rotation's picker and wherever a team is listed for someone who does not own all of it
+  // (2026-11-16)
+  if (!own && !other) {
+    const gender = roverGenderOf(characters);
+    return gender && (gender === "male") !== isMaleForm(key) ? twin : key;
+  }
   if (!other) return key;
   if (!own) return twin;
   return other.weapon && !own.weapon ? twin : key;
+}
+
+function isMaleForm(key: string): boolean {
+  return /male$/i.test(key) && !/female$/i.test(key);
+}
+
+/**
+ * The gender an account plays Rover in, read off the Rover forms it holds: "male" when every form it has set up (a
+ * weapon; any record when none carries one) is male, "female" when every one is female. null when it holds no Rover,
+ * or holds both genders across elements.
+ */
+export function roverGenderOf(characters: Record<string, any> | null | undefined): "male" | "female" | null {
+  if (!characters) return null;
+  const held = Object.keys(ROVER_TWIN).filter((key) => characters[key]);
+  if (!held.length) return null;
+  const setUp = held.filter((key) => characters[key]?.weapon);
+  const forms = setUp.length ? setUp : held;
+  if (forms.every(isMaleForm)) return "male";
+  return forms.some(isMaleForm) ? null : "female";
 }

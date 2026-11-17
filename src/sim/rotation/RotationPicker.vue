@@ -56,23 +56,18 @@
 import { computed, defineComponent, h, onMounted, ref, shallowRef, type PropType } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
-import { getCharacterRosterDisplayName } from "../../characters/characters";
+import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { characterDisplayName, teamLabel } from "../display/names";
 import { teamTierLine, teamTitle } from "../display/teamName";
 import type { RileyTeamInfo } from "../engine/rileyRun";
 import { loadWuwaCalcTeamPresets } from "../presets";
 import { isGeneratedTeamName } from "../rankings/importFromRankings";
+import { rileyNameOf } from "../rankings/rileyNames";
 import { rileyTeamKeysFor } from "../rankings/syncTeams";
 import { rotationPath } from "./hash";
 import MemberAvatar from "./MemberAvatar.vue";
-
-interface Entry {
-  id: string;
-  title: string;
-  subtitle: string;
-  chars: string[];
-  badge?: string;
-}
+import { stockEntries, type PickerEntry as Entry } from "./pickerTeams";
 
 const props = defineProps<{ teams: RileyTeamInfo[]; blocked: string[]; loading: boolean; error: string | null; hues: Map<string, string>; last: { path: string; title: string } | null }>();
 const emit = defineEmits<{ retry: [] }>();
@@ -85,8 +80,9 @@ const rileyName = computed(() => {
 });
 const runnable = (chars: Array<string | null>): boolean =>
   chars.length === 3 && chars.every((c): c is string => !!c && !props.blocked.includes(c)) && rileyTeamKeysFor(chars, byKey.value).length > 0;
-const nameOf = (key: string): string => getCharacterRosterDisplayName(key);
-const titleOf = (chars: string[]): string => `${nameOf(chars[0]!)} · ${chars.slice(1).map(nameOf).join(" + ")}`;
+// names as every plus page writes them: "Rover Electro (Male)", never the roster's own "RoverElectroMale"
+const nameOf = (key: string): string => characterDisplayName(key);
+const titleOf = (chars: string[]): string => teamLabel(chars, chars[0]);
 
 const teamStore = useTeamRotationsStore();
 const { teams: saved } = storeToRefs(teamStore) as unknown as { teams: { value: Array<{ id: string; name: string; characterIds: Array<string | null> }> } };
@@ -97,23 +93,16 @@ const mine = computed<Entry[]>(() =>
     .map((t) => ({ id: t.id, title: teamTitle(t.name, t.characterIds), subtitle: teamTierLine(t.name) ?? titleOf(t.characterIds as string[]), chars: t.characterIds as string[], ...(isGeneratedTeamName(t.name) ? { badge: "synced" } : {}) })),
 );
 
-const stock = shallowRef<Entry[]>([]);
+// the stock compositions under the keys this account plays: a male Rover for the female key the presets carry
+// (pickerTeams.ts). Read again when the account changes, so a Rover set up in another tab is his from the next visit on
+const { characters } = storeToRefs(useCharacterStore()) as unknown as { characters: { value: Record<string, any> } };
+const presets = shallowRef<Awaited<ReturnType<typeof loadWuwaCalcTeamPresets>>>([]);
+const stock = computed<Entry[]>(() => stockEntries(presets.value, characters.value));
 onMounted(async () => {
   try {
-    const presets = await loadWuwaCalcTeamPresets();
-    const seen = new Set<string>();
-    const out: Entry[] = [];
-    for (const p of presets) {
-      const chars = (p.data?.characterIds ?? []) as Array<string | null>;
-      if (chars.length !== 3 || chars.some((c) => !c)) continue;
-      const id = [...chars].sort().join("+");
-      if (seen.has(id)) continue;
-      seen.add(id);
-      out.push({ id, title: titleOf(chars as string[]), subtitle: "", chars: chars as string[] });
-    }
-    stock.value = out;
+    presets.value = await loadWuwaCalcTeamPresets();
   } catch {
-    stock.value = [];
+    presets.value = [];
   }
 });
 const query = ref("");
@@ -128,7 +117,8 @@ const shownStock = computed(() => (showAll.value || query.value ? filteredStock.
 const TeamTile = defineComponent({
   props: { entry: { type: Object as PropType<Entry>, required: true } },
   setup(p) {
-    const hue = (c: string): string => props.hues.get(rileyName.value.get(c) ?? c) ?? "";
+    // the hues are keyed by wuwa_calc's names, and a male Rover's key is not in his list: `rileyNameOf` reads both genders
+    const hue = (c: string): string => props.hues.get(rileyName.value.get(c) ?? rileyNameOf(c)) ?? "";
     return () =>
       h("div", { class: "flex flex-col gap-2 rounded-box border border-base-300 bg-base-100 px-3 py-2.5 min-w-0" }, [
         h("div", { class: "flex items-center gap-3 min-w-0" }, [

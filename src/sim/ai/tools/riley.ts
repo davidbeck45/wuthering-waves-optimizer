@@ -5,6 +5,7 @@
 // Also the one reading of a team argument the Riley tools share: a saved team, or three characters by name.
 import type { ExportFile } from "../../cli/exportShape";
 import { findTeam } from "../../cli/engine";
+import { savedTeamOf as savedCompositionOf } from "../../engine/rileyAccount";
 import type { FightCurve, MineSolve, RileyAccount, RileyPick, RileyTeamInfo, RunLite, SubsMode } from "../../engine/rileyRun";
 import type { FloorProfileSpec } from "../../endgame/effects";
 import { resolveTeamBuilds } from "../../teamContext/resolveTeam";
@@ -79,14 +80,11 @@ export const memberKeysOf = (target: Pick<TeamTarget, "characterIds" | "saved">)
 
 const SEPARATORS = /\s*(?:,|\+|·|\/|&|\band\b)\s*/i;
 
-/** The saved team of exactly these three, if the player has one (its name, builds and pins then apply). */
+/** The saved team of exactly these three, if the player has one (its name, builds and pins then apply). A Rover in
+ *  either gender (engine/rileyAccount.ts `savedTeamOf` compares by wuwa_calc's names): a saved team may list the
+ *  other gender than the one a key or a name resolves to, and it is still that team. */
 function savedTeamOf(ids: string[], exp: ExportFile): Record<string, any> | null {
-  return (
-    (exp.teams ?? []).find((t: any) => {
-      const theirs = ((t.characterIds ?? []) as Array<string | null>).filter(Boolean);
-      return theirs.length === 3 && ids.every((id) => theirs.includes(id));
-    }) ?? null
-  );
+  return ids.length === 3 ? (savedCompositionOf(exp.teams as Array<Record<string, any>>, ids) ?? null) : null;
 }
 
 /** A team argument: a saved team (loose name, id or 1-based index) or three characters ("Aemeath, Mornye, Lynae"). */

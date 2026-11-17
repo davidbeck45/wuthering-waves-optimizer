@@ -10,8 +10,13 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { storeToRefs } from "pinia";
 import { characterPortraitUrl } from "../../characters/characters";
+import { useCharacterStore } from "../../stores/character";
+import { accountKeyOf } from "../rankings/rileyNames";
 
 const props = withDefaults(defineProps<{ appKey: string; name: string; hue?: string; size?: number }>(), { hue: "", size: 24 });
-const url = computed(() => characterPortraitUrl(props.appKey));
+// wuwa_calc's run names a Rover by the female key (his one form per element): the portrait is the Rover this account plays
+const { characters } = storeToRefs(useCharacterStore()) as unknown as { characters: { value: Record<string, any> } };
+const url = computed(() => characterPortraitUrl(accountKeyOf(props.appKey, characters.value)));
 </script>

@@ -5,6 +5,7 @@
 // Main thread / Node only: myBuilds resolves echoes through the calculator, which the worker never loads.
 import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../account/accountState";
 import { buildRollsOf, rollsKey } from "../rankings/myBuilds";
+import { rileyNameOf } from "../rankings/rileyNames";
 import { resolveTeamBuilds } from "../teamContext/resolveTeam";
 import type { RileyAccount } from "./rileyRun";
 
@@ -44,10 +45,16 @@ export function rileyAccountForTeam(
   return rileyAccountOf(resolved, inventory, teams);
 }
 
-/** The saved team a composition names (any order, a Rover form as the player has it): the first with those three. A
- *  composition nobody saved has none, and keeps the active builds. */
+/** A composition whoever sits where, a Rover in either gender: both are wuwa_calc's one form (`rileyNameOf`). */
+const compositionOf = (characterIds: ReadonlyArray<string | null | undefined> | null | undefined): string =>
+  (characterIds ?? []).filter((id): id is string => Boolean(id)).map((id) => rileyNameOf(id)).sort().join("+");
+
+/** The saved team a composition names (any order): the first with those three. A Rover counts in either gender: a
+ *  wuwa_calc team key names the female form, and the saved team of a male Rover's account is still that team
+ *  (2026-11-16: /rotation#team=t… and the assistant read his pinned team at the active builds). A composition nobody
+ *  saved has none, and keeps the active builds. */
 export function savedTeamOf<T extends PinnedTeam>(teams: ReadonlyArray<T> | null | undefined, characterIds: ReadonlyArray<string | null | undefined>): T | null {
-  const want = characterIds.filter((id): id is string => Boolean(id)).slice().sort().join("+");
+  const want = compositionOf(characterIds);
   if (!want) return null;
-  return (teams ?? []).find((t) => (t?.characterIds ?? []).filter((id): id is string => Boolean(id)).slice().sort().join("+") === want) ?? null;
+  return (teams ?? []).find((t) => compositionOf(t?.characterIds) === want) ?? null;
 }

@@ -3,7 +3,7 @@
 import { characterFloors, energySummary, measureComposition, memberChecks, NOT_MEASURED_TEXT, teamHaves, type EnergyEngine, type MemberCheck, type TeamMeasure } from "../../energy/energyCheck";
 import { showHave, showNeed, TIGHT_MARGIN } from "../../energy/energyNeed";
 import { characterName, compactJson, defineTool, int, nullableString, round } from "./shared";
-import { rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine } from "./riley";
+import { memberKeysOf, rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine } from "./riley";
 
 const engineOf = (riley: RileyToolEngine): EnergyEngine => ({
   commit: riley.commit,
@@ -74,7 +74,8 @@ export const energyCheckTool = defineTool<{ team?: string }>({
         return compactJson({ team: target.name, members: target.characterIds.map(characterName), measured: false, why, path: "/energy", label: "Energy check" });
       }
       const haves = await teamHaves((target.saved as { characterIds: Array<string | null>; buildIds?: Array<string | null> } | null) ?? { characterIds: target.characterIds }, ctx.exp.characters, ctx.exp.inventory.echoes, { auto });
-      const checks = memberChecks(measure.energy, haves, target.characterIds);
+      // under the saved team's own member keys: the haves above are filed under them (a Rover in the gender the team lists)
+      const checks = memberChecks(measure.energy, haves, memberKeysOf(target));
       return compactJson({
         team: target.name,
         saved: !!target.saved,

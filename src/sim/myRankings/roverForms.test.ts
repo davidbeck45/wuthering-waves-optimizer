@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest";
 import { teamRotationPresets } from "../../teamRotations/presets";
 import { hasWuwaCalcRotationPresets, loadWuwaCalcRotationPresets, loadWuwaCalcTeamPresets, teamPresetForAccount } from "../presets";
-import { accountKeyOf, roverTwinOf } from "../rankings/rileyNames";
+import { accountKeyOf, roverGenderOf, roverTwinOf } from "../rankings/rileyNames";
 import { rankRoster, rotationCandidates, teamCandidatesOf } from "./rankRoster";
 
 /** element, the key the generated presets carry, the male key, wuwa_calc loops and stock teams at the time of writing */
@@ -53,6 +53,28 @@ describe("the two keys of a Rover", () => {
       expect(accountKeyOf(f.female, {})).toBe(f.female);
     }
     expect(accountKeyOf("Cartethyia", { Cartethyia: built })).toBe("Cartethyia");
+  });
+
+  it("reads an element the account has not set up in the gender of the Rover it plays", () => {
+    // Rover is one resonator who changes element: a male Aero Rover's account plays the Electro Rover as the male one
+    for (const has of FORMS) {
+      for (const f of FORMS) {
+        if (f === has) continue;
+        expect(accountKeyOf(f.female, { [has.male]: built }), `${has.element} male → ${f.element}`).toBe(f.male);
+        expect(accountKeyOf(f.male, { [has.male]: built })).toBe(f.male);
+        expect(accountKeyOf(f.female, { [has.female]: built })).toBe(f.female);
+        expect(accountKeyOf(f.male, { [has.female]: built }), `${has.element} female → ${f.element}`).toBe(f.female);
+        // an empty female record beside a set-up male one: the set-up one says who is played
+        expect(accountKeyOf(f.female, { [has.male]: built, [has.female]: {} })).toBe(f.male);
+      }
+    }
+    expect(roverGenderOf({ RoverAeroMale: built })).toBe("male");
+    expect(roverGenderOf({ RoverAeroFemale: built, Cartethyia: built })).toBe("female");
+    // both genders set up across elements, or no Rover at all: nothing to go on, the key as it came
+    expect(roverGenderOf({ RoverAeroMale: built, RoverHavocFemale: built })).toBeNull();
+    expect(accountKeyOf("Roverelectrofemale", { RoverAeroMale: built, RoverHavocFemale: built })).toBe("Roverelectrofemale");
+    expect(roverGenderOf({ Cartethyia: built })).toBeNull();
+    expect(roverGenderOf(null)).toBeNull();
   });
 });
 
