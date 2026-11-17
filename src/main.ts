@@ -93,6 +93,9 @@ const routes = [
   { path: "/build-history", component: () => import("./sim/buildHistory/BuildHistoryView.vue"), name: "BuildHistoryView" },
   // Wuthering Tools+: automatic backups of the whole account, kept in this browser, with restore and a share-sheet copy (src/sim/backup/)
   { path: "/backups", component: () => import("./sim/backup/BackupsView.vue"), name: "BackupsView" },
+  // Wuthering Tools+: resonator briefs from wuwa_calc's kits and solves, read against the account (src/sim/kits/)
+  { path: "/kit", component: () => import("./sim/kits/KitListView.vue"), name: "KitListView" },
+  { path: "/kit/:name", component: () => import("./sim/kits/KitBriefView.vue"), name: "KitBriefView" },
   { path: "/scanners", component: ScannersView, name: "ScannersView" },
   // Wuthering Tools+: any other address gets a "page not found" page with the nav, not a blank screen (src/sim/shell/)
   { path: "/:pathMatch(.*)*", component: () => import("./sim/shell/NotFoundView.vue"), name: "NotFoundView" },

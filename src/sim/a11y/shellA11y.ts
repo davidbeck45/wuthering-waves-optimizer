@@ -4,7 +4,8 @@
 /** The page is a plus page (or the 404): a11y.css's muted-text floor and status-text tokens apply to the whole
  *  document there (html[data-wt-plus]). Ryan's pages keep his look; the plus shell's own surfaces carry it anywhere. */
 export function isPlusPath(path: string, plusPaths: readonly string[], notFound: boolean): boolean {
-  return notFound || plusPaths.includes(path);
+  // a page under a plus page is one too (/kit/aemeath under /kit)
+  return notFound || plusPaths.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
 export function setPlusScope(doc: Document, on: boolean): void {

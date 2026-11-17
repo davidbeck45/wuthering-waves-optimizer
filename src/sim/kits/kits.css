@@ -1,0 +1,411 @@
+/* Wuthering Tools+ resonator briefs (/kit and /kit/<name>) — every rule under .kit; DaisyUI tokens only, so it follows
+   every app theme. One column on a phone (the budget: 360–412 px at a 130 % font size): nothing here has a fixed
+   width, every row wraps, and a table is a grid of at most four narrow columns that shrink (min-width: 0). */
+
+.kit {
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 4rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 639px) {
+  .kit {
+    padding: 0.9rem 0.75rem 4rem;
+  }
+}
+.kit-h1 {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.kit-h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  overflow-wrap: anywhere;
+}
+.kit-h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  overflow-wrap: anywhere;
+}
+.kit-intro {
+  max-width: 46rem;
+  margin-top: 0.3rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.72);
+}
+.kit-muted {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.66);
+}
+.kit-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.kit-text + .kit-text {
+  margin-top: 0.35rem;
+}
+.kit-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: oklch(var(--bc) / 0.6);
+}
+.kit-card {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  background: oklch(var(--b2) / 0.55);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.08);
+}
+.kit-card--mine {
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.45);
+}
+.kit-link {
+  display: inline-block;
+  padding-block: 0.2rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.kit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: oklch(var(--bc) / 0.09);
+}
+.kit-chip--own {
+  background: oklch(var(--p) / 0.16);
+}
+.kit-chip--change {
+  background: oklch(var(--wa) / 0.2);
+}
+
+/* ---- the list page */
+.kit-filters {
+  display: grid;
+  gap: 0.6rem;
+}
+.kit-search {
+  width: 100%;
+  max-width: 24rem;
+}
+.kit-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+.kit-pills__name {
+  flex: 0 0 auto;
+  min-width: 4.2rem;
+}
+.kit-pill {
+  min-height: 2rem;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: oklch(var(--bc) / 0.08);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.1);
+}
+.kit-pill[aria-pressed="true"] {
+  background: oklch(var(--p));
+  color: oklch(var(--pc));
+  box-shadow: none;
+}
+.kit-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+.kit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.8rem;
+  background: oklch(var(--b2) / 0.55);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.08);
+}
+.kit-row:hover,
+.kit-row:focus-visible {
+  box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.6);
+}
+.kit-row__body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kit-row__name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.kit-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+}
+
+/* ---- the brief */
+.kit-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+}
+.kit-head__body {
+  min-width: 0;
+}
+.kit-back {
+  font-size: 0.8rem;
+}
+.kit-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.kit-section {
+  scroll-margin-top: calc(var(--nav-h, 80px) + 0.75rem);
+}
+.kit-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.kit-dl {
+  display: grid;
+  gap: 0.45rem 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 640px) {
+  .kit-dl {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+}
+.kit-dl dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: oklch(var(--bc) / 0.6);
+}
+.kit-dl dd {
+  min-width: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 639px) {
+  .kit-dl dd {
+    margin-top: -0.3rem;
+  }
+}
+.kit-sub {
+  display: block;
+  font-size: 0.78rem;
+  color: oklch(var(--bc) / 0.66);
+}
+
+/* a team: three members, then the figure and its links */
+.kit-team {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  border-radius: 0.7rem;
+  background: oklch(var(--b1) / 0.6);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);
+}
+.kit-team__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 0.75rem;
+}
+.kit-team__name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.kit-team__dps {
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.kit-team__unit {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: oklch(var(--bc) / 0.66);
+}
+.kit-members {
+  display: grid;
+  gap: 0.3rem;
+}
+@media (min-width: 640px) {
+  .kit-members {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.kit-member {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.kit-member__text {
+  min-width: 0;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.kit-member__name {
+  font-weight: 650;
+}
+.kit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+/* a long label ("Riley's table at S6R1 DPS · R1 supports") wraps inside its button instead of pushing the page wide:
+   DaisyUI's .btn does not shrink on its own */
+.kit-actions .btn {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  min-height: 2.25rem;
+  padding-block: 0.3rem;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.25;
+}
+.kit-cost[open] > summary {
+  margin-bottom: 0.5rem;
+}
+.kit-cost > .kit-list {
+  margin-top: 0.5rem;
+}
+.kit-cost__head > * {
+  display: block;
+}
+.kit-cost__label {
+  font-weight: 700;
+}
+.kit-cost > summary {
+  cursor: pointer;
+  list-style-position: outside;
+  margin-left: 1rem;
+}
+.kit-cost__best {
+  flex: 1 1 100%;
+  min-width: 0;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.kit-more > summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem 0;
+}
+.kit-more[open] > summary {
+  margin-bottom: 0.4rem;
+}
+
+/* a table of figures: at most four narrow columns that share the row and shrink */
+.kit-table {
+  display: grid;
+  gap: 0.1rem 0.6rem;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.kit-table--3 {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+.kit-table--4 {
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+.kit-table > * {
+  min-width: 0;
+  padding: 0.3rem 0;
+  overflow-wrap: anywhere;
+  border-top: 1px solid oklch(var(--bc) / 0.08);
+}
+.kit-table > .kit-th {
+  border-top: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  color: oklch(var(--bc) / 0.6);
+}
+.kit-num {
+  text-align: right;
+}
+.kit-up {
+  color: oklch(var(--su));
+}
+.kit-down {
+  color: oklch(var(--er));
+}
+.kit-you {
+  font-weight: 750;
+}
+.kit-seq {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid oklch(var(--bc) / 0.08);
+}
+.kit-seq:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.kit-seq__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+}
+.kit-seq__name {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.kit-note {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: oklch(var(--bc) / 0.72);
+  overflow-wrap: anywhere;
+}
+.kit-skeleton {
+  height: 5rem;
+  border-radius: 0.9rem;
+  background: oklch(var(--bc) / 0.07);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kit-skeleton {
+    animation: kit-pulse 1.4s ease-in-out infinite;
+  }
+}
+@keyframes kit-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

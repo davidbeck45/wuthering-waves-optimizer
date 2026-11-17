@@ -19,6 +19,12 @@ describe("plus scope", () => {
     expect(isPlusPath("/teams", paths, false)).toBe(false);
     expect(isPlusPath("/nope", paths, true)).toBe(true);
   });
+  it("covers a page under a plus page (a brief under /kit), not a path that only starts the same", () => {
+    const paths = ["/account", "/kit"];
+    expect(isPlusPath("/kit/aemeath", paths, false)).toBe(true);
+    expect(isPlusPath("/kitchen", paths, false)).toBe(false);
+    expect(isPlusPath("/accounts", paths, false)).toBe(false);
+  });
   it("toggles html[data-wt-plus]", () => {
     setPlusScope(document, true);
     expect(document.documentElement.hasAttribute("data-wt-plus")).toBe(true);

@@ -113,4 +113,12 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["backup", "backups", "restore", "export", "save", "copy", "drive", "share", "download", "lost", "recover", "wipe"],
     icon: "M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zm0 0v5c0 1.7 3.6 3 8 3s8-1.3 8-3V7M4 12v5c0 1.7 3.6 3 8 3s8-1.3 8-3v-5",
   },
+  {
+    path: "/kit",
+    title: "Resonator briefs",
+    description: "How each resonator is played, their builds, which sequences change the rotation, best teams and what each step of investment is worth",
+    // none of the bare words another page answers to ("build", "rotation", "weapon"): the palette lists few pages per word
+    keywords: ["kit", "brief", "guide", "how to play", "playstyle", "resonator", "best teams", "loadout", "investment ladder", "what sequences change"],
+    icon: "M5 4h10l4 4v12H5zM15 4v4h4M8 12h8M8 16h5",
+  },
 ];
