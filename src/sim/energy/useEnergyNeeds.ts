@@ -304,7 +304,13 @@ function createEnergyNeeds(scope: EffectScope): EnergyNeeds {
     }
     return out.sort((a, b) => (b.energy?.total ?? 0) - (a.energy?.total ?? 0));
   });
-  const floors = computed(() => characterFloors(savedTeams.value.map((t) => ({ id: t.id, name: t.name, characterIds: t.characterIds, energy: t.energy }))));
+  const floors = computed(() =>
+    characterFloors(
+      savedTeams.value.map((t) => ({ id: t.id, name: t.name, characterIds: t.characterIds, energy: t.energy })),
+      // each team's own build of the member (its pin): where two teams tie on the need, the floor's row is the build with less
+      (teamId, characterId) => savedTeams.value.find((t) => t.id === teamId)?.checks?.find((c) => c.characterId === characterId)?.have ?? null,
+    ),
+  );
   const summary = computed(() => energySummary(savedTeams.value.map((t) => ({ checks: t.checks }))));
   const busy = computed(() => havesRunning.value || savedTeams.value.some((t) => t.state?.status === "loading"));
 

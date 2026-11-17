@@ -169,6 +169,30 @@ describe("the synthetic run (engine fixture)", () => {
     expect(s.built).toBe(3);
   });
 
+  it("two teams with the same need that run different builds: the floor speaks for the build with less, whatever the order", () => {
+    // Mornye's kit floor is 260 % in each of her teams. One pins a build with 250.6 %, the other runs her active 287.0 %.
+    // The row read the first team in the list: with the unpinned one first it said "has 287.0 % · ok · 2 teams" over a
+    // team where she is 9.4 points short (2026-11-16, second check of 8802ecc0)
+    const kit: TeamEnergy = { ...energy, members: energy.members.map((m) => (m.name === "Shorekeeper" ? { ...m, need: 240, setBy: "kit" as const } : m)) };
+    const teams = [
+      { id: "active", name: "Runs the active build", characterIds: ["Shorekeeper", "Lynae", "Iuno"], energy: kit },
+      { id: "pinned", name: "Pins a build with less", characterIds: ["Shorekeeper", "Lynae", "Iuno"], energy: kit },
+    ];
+    const have = (teamId: string, id: string): number | null => (id !== "Shorekeeper" ? 150 : teamId === "pinned" ? 231 : 262);
+    expect(characterFloors(teams).get("Shorekeeper")!.team.id).toBe("active"); // no build known: the first, as it was
+    expect(characterFloors(teams, have).get("Shorekeeper")!.team.id).toBe("pinned");
+    expect(characterFloors([...teams].reverse(), have).get("Shorekeeper")!.team.id).toBe("pinned");
+    // members who have the same in both keep the first team, and the list of every team's need is untouched
+    expect(characterFloors(teams, have).get("Lynae")!.team.id).toBe("active");
+    expect(characterFloors(teams, have).get("Shorekeeper")!.all.map((a) => a.id)).toEqual(["active", "pinned"]);
+    // a higher need still sets the floor, whatever each build has
+    const higher: TeamEnergy = { ...kit, members: kit.members.map((m) => (m.name === "Shorekeeper" ? { ...m, need: 250 } : m)) };
+    const withHigher = [{ ...teams[0]!, energy: higher }, teams[1]!];
+    expect(characterFloors(withHigher, have).get("Shorekeeper")).toMatchObject({ need: 250, team: { id: "active" } });
+    // a team whose build is not read yet does not take the row from one that is
+    expect(characterFloors(teams, (teamId, id) => (teamId === "pinned" ? null : have(teamId, id))).get("Shorekeeper")!.team.id).toBe("active");
+  });
+
   it("a team whose members have no build counts none as built, and names nobody for crit: the run wore a stand-in", () => {
     const overcapping: TeamEnergy = { ...energy, members: energy.members.map((m) => ({ ...m, share: 0.5, overcap: { share: 0.4, over: 1, damage: 2, top: [], rest: null } })) };
     expect(overcapping.members.every((m) => overcapWeight(m) >= 0.02)).toBe(true);

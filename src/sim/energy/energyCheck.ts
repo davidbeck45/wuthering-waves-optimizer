@@ -143,9 +143,21 @@ export interface CharacterFloor {
   all: Array<{ id: string; name: string; need: number | null }>;
 }
 
+/** Two needs that print the same (one decimal): the same floor. */
+const SAME_NEED = 0.05;
+
 /** Per character, the worst need across the measured teams — the ER floor their weights respect. Characters with no
- *  energy gate in any of their teams get none. */
-export function characterFloors(teams: Array<{ id: string; name: string; characterIds: Array<string | null>; energy: TeamEnergy | null }>): Map<string, CharacterFloor> {
+ *  energy gate in any of their teams get none.
+ *
+ *  `haveIn(teamId, characterId)`: the Energy Regen that member's build has in that team (%), null when not read yet. A
+ *  saved team runs the builds it pins, so one character can have two figures, and several teams can share the highest
+ *  need (a kit's own floor is the same in each). The floor then names the team whose build has the least: its row is
+ *  that team's check, and read off whichever team came first it said "ok" over a team that was short (2026-11-16). */
+export function characterFloors(
+  teams: Array<{ id: string; name: string; characterIds: Array<string | null>; energy: TeamEnergy | null }>,
+  // eslint-disable-next-line no-unused-vars -- the parameters of a function type
+  haveIn: (teamId: string, characterId: string) => number | null | undefined = () => null,
+): Map<string, CharacterFloor> {
   const all = new Map<string, CharacterFloor["all"]>();
   const best = new Map<string, Omit<CharacterFloor, "all">>();
   for (const t of teams) {
@@ -155,9 +167,18 @@ export function characterFloors(teams: Array<{ id: string; name: string; charact
       list.push({ id: t.id, name: t.name, need: m.need });
       all.set(id, list);
       const held = best.get(id);
-      if (m.need != null && (!held || m.need > held.need)) {
-        best.set(id, { characterId: id, need: m.need, setBy: m.setBy, team: { id: t.id, name: t.name, characterIds: t.characterIds.filter((id): id is string => Boolean(id)) } });
+      if (m.need == null) continue;
+      // the highest need sets the floor, the first team on a tie: as it always was
+      let takes = !held || m.need > held.need;
+      if (held && Math.abs(m.need - held.need) <= SAME_NEED) {
+        // the same floor in both: where the two teams' builds differ, the one with less
+        const mine = haveIn(t.id, id);
+        const theirs = haveIn(held.team.id, id);
+        if (mine != null && theirs != null && Math.abs(mine - theirs) > 1e-9) takes = mine < theirs;
       }
+      const need = Math.max(m.need, held?.need ?? m.need);
+      if (takes) best.set(id, { characterId: id, need, setBy: m.setBy, team: { id: t.id, name: t.name, characterIds: t.characterIds.filter((id): id is string => Boolean(id)) } });
+      else if (held && need > held.need) best.set(id, { ...held, need });
     }
   }
   const out = new Map<string, CharacterFloor>();
