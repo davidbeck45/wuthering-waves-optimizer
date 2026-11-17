@@ -82,7 +82,12 @@ describe("the list's shape", () => {
 describe("the entries as shipped", () => {
   // every route path main.ts registers, read from its source (main.ts mounts the app, so it cannot be imported here)
   const mainTs = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../../main.ts"), "utf8");
-  const routes = new Set([...mainTs.matchAll(/\{\s*path:\s*"(\/[^":*]*)"/g)].map((m) => m[1]));
+  const literal = new Set([...mainTs.matchAll(/\{\s*path:\s*"(\/[^":*]*)"/g)].map((m) => m[1]));
+  // routes with a parameter (/kit/:name): a link fills it with one path segment
+  const withParams = [...mainTs.matchAll(/\{\s*path:\s*"(\/[^"*]*:[^"*]*)"/g)].map(
+    (m) => new RegExp(`^${m[1].replace(/:[A-Za-z]+/g, "[^/]+")}$`),
+  );
+  const routes = { has: (path: string) => literal.has(path) || withParams.some((re) => re.test(path)) };
 
   it("has ids that are unique and plain, and dates that are real days, newest block first", () => {
     const ids = WHATS_NEW.map((e) => e.id);
@@ -109,6 +114,8 @@ describe("the entries as shipped", () => {
   it("links every entry to a route this app has", () => {
     expect(routes.has("/account")).toBe(true); // the reader found main.ts's routes
     expect(routes.has(WHATS_NEW_PATH)).toBe(true);
+    expect(routes.has("/kit/Lily"), "a route with a parameter").toBe(true);
+    expect(routes.has("/kit/Lily/extra"), "a parameter is one segment").toBe(false);
     for (const e of WHATS_NEW) {
       expect(e.link.startsWith("/"), e.id).toBe(true);
       const path = entryLink(e.link, "Someone").split(/[?#]/)[0];
