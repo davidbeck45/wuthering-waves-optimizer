@@ -5425,3 +5425,26 @@ code): the sync did not cause it, the look after the sync found it.
 - **His pinned Echo Insights bar is keyed by the build and comes back closed when it remounts.** A spec that opens it
   with one tap and then reads the table fails on a slow load: tap until it is open with its figures in. And do not save
   a file under a running spec: the page reloads and the bar closes.
+
+## What each level is worth — second check (batch 4, lane "check-levels", 2026-11-16 / 11-17) — `src/sim/levels/`
+
+An independent check of the section above, by using it on copies of the 9-16 export. Two findings, one commit each.
+
+- **A level that adds nothing by itself no longer ends a skill's track** (84cdf0ef). The calculator's tables hold a few
+  levels equal to the one before (Galbrena's Resonance Skill 9 reads like 8); the order took that +0 step for a skill
+  the rotation never uses and dropped the rest of it. Such a level is now one step with the next one that moves
+  something ("Resonance Skill 8 → 10"), with `flatNote` under it.
+- **The order says what its price leaves out** (ba502108). It ranks by gain per Shell Credit, and every Forte level from
+  7 up also takes one of a material no Shell Credits buy (a weekly boss's). `forteGateMaterial` reads it from the
+  table (the one material new at Forte 6 → 7, one per level up to 10; true for all 65 characters of the 3.8 table, and
+  the test fails if a later table breaks it); `plan.gate` holds it; `gateText` says it beside a step's cost
+  ("3 materials, among them 1 × Curse of the Abyss"), `gateLine` once under the headline with how many steps take it.
+  The CLI prints an "Also takes" column (`alsoTakes`, `pathNote` in JSON); the assistant gets `alsoTakes` and
+  `priceNote`. The order is unchanged: the table has no drop rates or weekly limits to weigh the material with.
+- Held, by hand: own and team gains against `cli rank` on copies (Galbrena, Zhezhi, Verina; three rows each), one whole
+  path applied step by step (Galbrena, 34 steps, every running figure), every step's cost against Cost to max and an
+  independent reading of `materials.json` (Galbrena, Suisui, Danjin with a 2★ sword, Lily and Lullaby; from level 1 and
+  from mid-way starts with ascended and unascended caps: each ascension on exactly one step), and the page, the CLI
+  (both orders) and the assistant's tool on the same start.
+
+Gates: `levels/levelGate.test.ts`, `levels/levelPlanFlat.test.ts`, `cypress/e2e/accountLevelsWorth.cy.ts`.
