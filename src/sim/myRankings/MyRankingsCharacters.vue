@@ -167,6 +167,7 @@
                   Weapons
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </RouterLink>
+                <RouterLink v-if="kitTo(c.id)" :to="kitTo(c.id)!" class="mr-tab mr-tab--link" title="how they are played, their builds, best teams and what each sequence is worth, from wuwa_calc" :data-test-my-rankings-kit-link="c.id">Kit brief</RouterLink>
               </div>
               <div class="mr-panel__body" role="tabpanel">
                 <MyRankingsWhatIf v-if="open[c.id] === 'whatif'" :rank="c" />
@@ -223,6 +224,12 @@ import { damageRanks, DEFAULT_DIR, sortCharacters, upgradeOf, type SortDir, type
 import type { CharacterRank } from "./rankRoster";
 import { fmt, gainClass, pct } from "./format";
 import { scrollBehavior } from "../a11y/shellA11y"; // smooth unless the system asks for less motion
+import { isRosterCharacter } from "../display/names";
+import { kitPathOfCharacter } from "../kits/kits";
+import { KIT_INDEX_ENTRIES } from "../kits/load";
+
+/** a character's resonator brief (/kit/<name>), where wuwa_calc has a kit for them */
+const kitTo = (id: string): string | null => kitPathOfCharacter(id, KIT_INDEX_ENTRIES, isRosterCharacter);
 
 type Tab = "whatif" | "substats" | "rotations";
 

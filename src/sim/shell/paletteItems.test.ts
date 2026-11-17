@@ -351,3 +351,29 @@ describe("palette theme rows", () => {
     expect(rows("gru")).toEqual(["theme:gruvbox"]);
   });
 });
+
+describe("kit brief commands", () => {
+  it("offers a brief for a character wuwa_calc has a kit for, set up or not, and none for one it lacks", () => {
+    const items = paletteWithCommands(
+      sources({
+        characters: [
+          { key: "Aemeath", name: "Aemeath", rarity: 5, element: "Fusion", weapon: "Sword", setUp: true, sequence: 6 },
+          { key: "Jiyan", name: "Jiyan", rarity: 5, element: "Aero", weapon: "Broadblade", setUp: false },
+          { key: "RoverAeroMale", name: "Rover Aero (Male)", rarity: 5, element: "Aero", weapon: "Sword", setUp: false },
+          { key: "Yangyang", name: "Yangyang", rarity: 4, element: "Aero", weapon: "Sword", setUp: false }, // no kit in Riley's engine
+        ],
+      }),
+    );
+    const kit = (key: string) => items.find((i) => i.key === `command:character:${key}:kit`);
+    expect(kit("Aemeath")).toMatchObject({ title: "Kit brief: Aemeath", run: { kind: "route", path: "/kit/aemeath" } });
+    expect(kit("Jiyan")).toMatchObject({ title: "Kit brief: Jiyan", run: { kind: "route", path: "/kit/jiyan" } }); // not set up: still offered
+    expect(kit("RoverAeroMale")).toMatchObject({ run: { kind: "route", path: "/kit/aero-rover" } }); // either Rover form is his one kit
+    expect(kit("Yangyang")).toBeUndefined();
+    // "kit jiyan" finds it, and the briefs page answers to "kit" and to "briefs"
+    expect(rankPalette("kit jiyan", items)[0]?.key).toBe("command:character:Jiyan:kit");
+    expect(rankPalette("kit", items).find((i) => i.group === "page")?.run).toEqual({ kind: "route", path: "/kit" });
+    expect(rankPalette("resonator briefs", items)[0]?.run).toEqual({ kind: "route", path: "/kit" });
+    // nothing typed: the list is not flooded with a row per character
+    expect(rankPalette("", items).some((i) => i.key.endsWith(":kit"))).toBe(false);
+  });
+});

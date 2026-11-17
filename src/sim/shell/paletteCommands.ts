@@ -7,6 +7,8 @@
 import { parseRotationHash, rotationPath } from "../rotation/hash";
 import { paletteItems, type PaletteItem, type PaletteSources } from "./paletteItems";
 import { isGeneratedName, teamTierLine, teamTitle } from "../display/teamName";
+import { kitPathOfCharacter } from "../kits/kits";
+import { KIT_INDEX_ENTRIES } from "../kits/load";
 
 /** Where the player is (CommandPalette reads the route, the calculator's character and the Teams editor's team). */
 export interface PaletteContext {
@@ -33,6 +35,7 @@ export interface ContextTarget {
 
 const ICON = {
   share: "M12 3v12m0-12L8 7m4-4l4 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7",
+  kit: "M5 4h10l4 4v12H5zM15 4v4h4M8 12h8M8 16h5",
   weapon: "M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2",
   substats: "M4 20h16M6 20V10M12 20V4M18 20v-7",
   rotation: "M12 22a10 10 0 100-20 10 10 0 000 20zm0-15v5l3 2",
@@ -111,6 +114,14 @@ function characterCommands(key: string, name: string, group: Group): Built[] {
   ];
 }
 
+/** A character's resonator brief (/kit/<name>), for every character wuwa_calc has a kit for, set up or not ("kit lily").
+ *  The characters handed in are the app's own list already, so the index alone decides who has one. */
+function kitCommand(key: string, name: string, group: Group): Built | null {
+  const path = kitPathOfCharacter(key, KIT_INDEX_ENTRIES, () => true);
+  if (!path) return null;
+  return { key: `${group}:character:${key}:kit`, group, order: 1, title: `Kit brief: ${name}`, subtitle: "How they are played, their builds, the sequences that change the rotation, best teams, what each step is worth", keywords: ["kit", "brief", "guide", "how to play", "rotation", "loop", "sequences", "best teams", "investment", name, key], icon: ICON.kit, opens: path, run: { kind: "route", path } };
+}
+
 /** Cost to max sits in the /account drawer: the link opens it on the character, at that section. */
 function costCommand(key: string, name: string): Built {
   const path = `/account?focus=${encodeURIComponent(key)}&section=cost`;
@@ -171,6 +182,11 @@ export function commandItems(s: PaletteSources, displayName: NameOf): PaletteIte
   const fresh = (b: Built): boolean => !seen.has(JSON.stringify(b.run));
   const commands: Built[] = [];
   for (const c of s.characters) if (c.setUp) commands.push(...characterCommands(c.key, c.name, "command").filter(fresh), costCommand(c.key, c.name), levelsCommand(c.key, c.name));
+  // a brief does not need the character set up: "kit lily" before you pull her
+  for (const c of s.characters) {
+    const kit = kitCommand(c.key, c.name, "command");
+    if (kit && fresh(kit)) commands.push(kit);
+  }
   for (const t of s.teams) if (t.memberKeys?.length === 3) commands.push(...teamCommands({ id: t.id, name: t.name, members: t.memberKeys }, displayName, "command").filter(fresh));
   commands.push(
     { key: "command:toa", group: "command", order: 2, title: "ToA clear check for my teams", subtitle: "This Tower of Adversity season's floors against the teams you can field: kill time and crests", keywords: ["toa", "tower of adversity", "clear check", "crests", "hazard zone", "endgame", "abyss"], icon: ICON.toa, run: { kind: "route", path: "/endgame" } },

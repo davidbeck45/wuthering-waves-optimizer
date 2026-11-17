@@ -5,7 +5,7 @@
         <CharacterAvatar :id="card.id" :size="64" dot :ring="rarityColor(card.rarity)" title="" />
         <div class="dr__who">
           <h2 class="dr__name">{{ card.name }}</h2>
-          <div class="dr__meta">{{ card.element ?? "—" }}<template v-if="card.weaponType"> · {{ card.weaponType }}</template> · {{ card.rarity }}★</div>
+          <div class="dr__meta">{{ card.element ?? "—" }}<template v-if="card.weaponType"> · {{ card.weaponType }}</template> · {{ card.rarity }}★<template v-if="kitTo"> · <RouterLink :to="kitTo" class="link dr__kit" :title="`How ${shortName} is played, builds, best teams and what each sequence is worth`" data-test-account-open-kit @click="close">Kit brief</RouterLink></template></div>
           <div class="dr__pills">
             <span class="dr-pill" :class="{ 'dr-pill--max': card.sequence >= 6 }">S{{ card.sequence }}</span>
             <template v-if="card.weapon">
@@ -200,6 +200,9 @@ import { labelText, whenText } from "../buildHistory/view";
 import type { RosterCard } from "./accountView";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { pinSection } from "./pinSection";
+import { isRosterCharacter } from "../display/names";
+import { kitPathOfCharacter } from "../kits/kits";
+import { KIT_INDEX_ENTRIES } from "../kits/load";
 
 const erNote = (item: InvestItem): string | null => erGainNote(item);
 const props = defineProps<{
@@ -233,6 +236,8 @@ const emit = defineEmits<{ close: []; calculator: [id: string] }>();
 const dialog = ref<HTMLDialogElement | null>(null);
 
 const shortName = computed(() => characterShortName(props.card?.id));
+/** their resonator brief (/kit/<name>), where wuwa_calc has a kit for them */
+const kitTo = computed(() => (props.card ? kitPathOfCharacter(props.card.id, KIT_INDEX_ENTRIES, isRosterCharacter) : null));
 // build history (src/sim/buildHistory/): read each time the drawer opens on a character
 const history = computed(() => (props.card ? readHistory(props.card.id) : []));
 const teamTitle = (name: string): string => parsePresetName(name, { owned: props.owned }).title || name;
@@ -403,6 +408,12 @@ function onBackdrop(event: MouseEvent): void {
 .dr-stat__sub {
   font-size: 0.65rem;
   color: oklch(var(--bc) / 0.5);
+}
+/* the brief link in the meta line: a taller tap target than its text */
+.dr__kit {
+  display: inline-block;
+  padding-block: 0.3rem;
+  margin-block: -0.3rem;
 }
 .dr__section {
   display: flex;
