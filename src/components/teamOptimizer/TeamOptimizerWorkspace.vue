@@ -7,6 +7,7 @@
       <span class="badge badge-sm badge-primary badge-outline">Labs</span>
     </div>
     <h2 class="text-xl font-semibold">Optimize team: {{ optimizer.team.value?.name }}</h2>
+    <TeamOptimizerKeptNote :note="optimizer.keptNote.value" /><!-- Wuthering Tools+: the last result kept, or a search that leaving stopped -->
 
     <div v-if="optimizer.phase.value === 'loading'" class="flex justify-center py-12">
       <span class="loading loading-spinner"></span>
@@ -23,6 +24,7 @@ import { useTeamOptimizer } from "../../composables/useTeamOptimizer";
 import TeamOptimizerSetup from "./TeamOptimizerSetup.vue";
 import TeamOptimizerRunning from "./TeamOptimizerRunning.vue";
 import TeamOptimizerResults from "./TeamOptimizerResults.vue";
+import TeamOptimizerKeptNote from "../../sim/teamContext/TeamOptimizerKeptNote.vue"; // Wuthering Tools+
 
 defineOptions({ name: "TeamOptimizerWorkspace" });
 

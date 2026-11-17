@@ -22,6 +22,7 @@ import {
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { slotsAlreadyWorn } from "../sim/teamContext/teamOptimizerSave"; // Wuthering Tools+
 import { workerFailureMessage } from "../sim/perf/chunkReload"; // Wuthering Tools+
+import { optimizerMemory } from "../sim/teamContext/teamOptimizerKept"; // Wuthering Tools+
 import { calcTeamRotationDamage, type TeamRotationInput } from "../calculator/teamRotation";
 import {
   TEAM_OPTIMIZER_LIST_DEPTH,
@@ -559,7 +560,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
         }),
       };
     }
-    phase.value = "setup";
+    phase.value = memory.restore() ? "results" : "setup"; // Wuthering Tools+: the result from before the page was left
   }
 
   function setGoal(slot: number, goal: TeamOptimizerGoal) {
@@ -1068,6 +1069,9 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     activeRun?.cancel();
   });
 
+  // Wuthering Tools+: a result outlives leaving the page, and a search that leaving stopped says so (teamOptimizerKept.ts)
+  const memory = optimizerMemory({ teamId, phase, damageType, results, isProven, totalEvaluated, elapsedMs, plansCompared, plansSearched, linkTeamBuffs, searchAllPlans, choices, tickedOffers });
+
   return {
     phase,
     team,
@@ -1108,5 +1112,6 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     outsideWearers,
     saveAsBuilds,
     readCurrentTotal: () => readTeamDamage(baseline.value?.total, damageType.value),
+    keptNote: memory.note, // Wuthering Tools+
   };
 }

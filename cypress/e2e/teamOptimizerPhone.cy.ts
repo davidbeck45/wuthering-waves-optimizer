@@ -221,3 +221,85 @@ describe("Optimize team on a phone at 130 % text", () => {
     });
   });
 });
+
+// Hunt 2, phone flows L2: Optimize team is a view inside /teams with no history entry, so Back, a tap on another page
+// or "Back to team" dropped its result, and stopped a search in flight, with no word. The last result is now kept for
+// the visit and shown again; a search that leaving stopped says so (src/sim/teamContext/teamOptimizerKept.ts).
+describe("Optimize team when you leave the page", () => {
+  const openOptimizer = () => cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+
+  it("shows the last result again after another page and Back, and after Back to team, until it is put down", () => {
+    results(412, 915, "dark");
+    cy.get("[data-test-team-optimizer-kept-note]").should("not.exist"); // a search made on this visit needs no line
+    cy.get("[data-test-team-optimizer-total]")
+      .invoke("text")
+      .then((total) => {
+        // another page from the bottom bar, then Back
+        cy.contains("[data-test-nav-bottom-bar] a", "Inventory").click();
+        cy.location("pathname").should("eq", "/inventory");
+        cy.go("back");
+        cy.location("pathname").should("eq", "/teams");
+        openOptimizer();
+        cy.get("[data-test-team-optimizer-results]").should("be.visible");
+        cy.get("[data-test-team-optimizer-total]").should("have.text", total);
+        cy.get('[data-test-team-optimizer-kept-note="kept"]')
+          .should("be.visible")
+          .and("contain.text", "This is the result of your last search here")
+          .and("contain.text", "Nothing it read has changed since")
+          .then(($note) => {
+            const r = $note[0].getBoundingClientRect();
+            expect(r.left, "note left").to.be.at.least(0);
+            expect(r.right, "note right").to.be.at.most(412);
+          });
+        // the kept result still saves: its Save button is the result's own
+        cy.get("[data-test-team-optimizer-save], [data-test-team-optimizer-nothing-to-save]").should("be.visible");
+        // "Back to team" and in again: still there
+        cy.get("[data-test-team-optimizer-back]").click();
+        cy.get("[data-test-team-rotation-editor]").should("be.visible");
+        openOptimizer();
+        cy.get("[data-test-team-optimizer-total]").should("have.text", total);
+        // "Edit & run again" puts it down: no line, and the next visit opens on the setup
+        cy.get("[data-test-team-optimizer-edit-setup]").click();
+        cy.get("[data-test-team-optimizer-kept-note]").should("not.exist");
+        cy.get("[data-test-team-optimizer-back]").click();
+        openOptimizer();
+        cy.get("[data-test-team-optimizer-run]").should("be.visible");
+        cy.get("[data-test-team-optimizer-results]").should("not.exist");
+        cy.get("[data-test-team-optimizer-kept-note]").should("not.exist");
+      });
+  });
+
+  it("says that leaving stopped a search, until the next search", () => {
+    cy.viewport(412, 915);
+    cy.visit("/teams", { onBeforeLoad: seed("dark") });
+    cy.get(`[data-test-team-rotations-item="${TEAM_NAME}"]`).contains(TEAM_NAME).click();
+    openOptimizer();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled");
+    // a search that does not end: its workers never answer
+    let RealWorker: typeof Worker;
+    cy.window().then((win) => {
+      RealWorker = win.Worker;
+      (win as any).Worker = class {
+        onmessage = null;
+        onerror = null;
+        postMessage() {}
+        terminate() {}
+        addEventListener() {}
+        removeEventListener() {}
+      };
+    });
+    cy.get("[data-test-team-optimizer-run]").click();
+    cy.get("[data-test-team-optimizer-running]").should("be.visible");
+    cy.get("[data-test-team-optimizer-back]").click();
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.window().then((win) => {
+      (win as any).Worker = RealWorker;
+    });
+    openOptimizer();
+    cy.get('[data-test-team-optimizer-kept-note="stopped"]').should("be.visible").and("have.text", "Your last search here stopped when you left this page: it runs only while this page is open. Run it again for its result.");
+    cy.get("[data-test-team-optimizer-results]").should("not.exist");
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+    cy.get("[data-test-team-optimizer-results]", { timeout: 60000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-kept-note]").should("not.exist");
+  });
+});
