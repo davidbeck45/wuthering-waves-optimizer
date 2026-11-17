@@ -6,7 +6,7 @@
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 import * as tableModule from "../../src/sim/materials/data/materials.json";
 import { count, savedProgressOf, type MaterialsData } from "../../src/sim/materials/costToMax";
-import { levelsToday, stepsLeft, sumCosts, trackToTop, TRACKS } from "../../src/sim/levels/levelSteps";
+import { forteGateMaterial, levelsToday, stepsLeft, sumCosts, trackToTop, TRACKS } from "../../src/sim/levels/levelSteps";
 import { costText } from "../../src/sim/levels/levelsView";
 
 // (webpack hands a JSON module over as the namespace; vite as `default`)
@@ -117,6 +117,15 @@ describe("what each level is worth, in the account drawer", () => {
       if (!left) expect(running.at(-1), "the last running bill is everything's").to.eq(everything.credits);
       expect($steps[0]!.querySelector(".lw-step__n")!.textContent, "numbered from 1").to.eq("1");
       expect($steps[0]!.querySelector(".lw-gain")!.textContent, "each step says what its percent is of").to.match(/^\+[\d.,<]+%\s*team$/);
+    });
+    // the price is Shell Credits only: the Forte steps from level 7 up say they also take the material those levels need
+    // (Normal Attack 7 to 10 and Resonance Liberation 9 and 10 here), and one line under the order says it is not weighed
+    cy.get("[data-test-levels-step-gate]").each(($g) => expect($g.text()).to.eq(`1 × ${forteGateMaterial(data, "Cartethyia")!.name}`));
+    cy.get("[data-test-levels-step-gate]").then(($g) => {
+      cy.get("[data-test-levels-path-gate]")
+        .should("contain.text", "The order prices each step in Shell Credits only.")
+        .and("contain.text", `${$g.length} of its`)
+        .and("contain.text", `also take ${forteGateMaterial(data, "Cartethyia")!.name} (${$g.length} in all, said beside each), which it does not weigh`);
     });
     // one tap for the other order: the biggest gain first. The same steps, the same end
     cy.get("[data-test-levels-step]").then(($steps) => {

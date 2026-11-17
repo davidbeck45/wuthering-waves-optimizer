@@ -77,6 +77,8 @@ export interface LevelPlan {
   inert: LevelRow[];
   /** every step taken: all that is left */
   everything: { cost: LevelCost; own: Figure | null; healing: Figure | null; shield: Figure | null; team: TeamImpact | null } | null;
+  /** the material Forte levels 7 to 10 take one of each (`forteGateMaterial`), which a price in Shell Credits leaves out */
+  gate: { id: number; name: string } | null;
   errors: string[];
 }
 

@@ -113,6 +113,30 @@ export function flatNote(step: Pick<PathStep, "flat" | "from">): string | null {
   return `Counted as one step: ${levels} nothing here (the calculator's table gives ${flat.length > 1 ? "them" : "it"} level ${step.from}'s figures).`;
 }
 
+/** How many of the Forte 7-10 material (`plan.gate`) a step takes; 0 for a step without it. */
+export function gateCount(cost: Pick<LevelCost, "materials">, gate: LevelPlan["gate"]): number {
+  return gate ? (cost.materials.find((m) => m.id === gate.id)?.count ?? 0) : 0;
+}
+
+/** "1 × Curse of the Abyss", said beside a step of the order that takes it; null for a step that does not. */
+export function gateText(step: Pick<PathStep, "cost">, gate: LevelPlan["gate"]): string | null {
+  const n = gateCount(step.cost, gate);
+  return n && gate ? `${count(n)} × ${gate.name}` : null;
+}
+
+/** The order prices a step in Shell Credits, so a Forte step from level 7 up looks cheap: it also takes the material
+ *  those levels need, which no Shell Credits stand in for. Said once under the order, with how many steps take it
+ *  (each says so beside its cost); null when no step does. */
+export function gateLine(plan: Pick<LevelPlan, "path" | "gate">): string | null {
+  const gate = plan.gate;
+  if (!gate) return null;
+  const steps = plan.path.filter((s) => gateCount(s.cost, gate) > 0);
+  if (!steps.length) return null;
+  const total = steps.reduce((n, s) => n + gateCount(s.cost, gate), 0);
+  const which = steps.length === 1 ? "One step also takes" : `${count(steps.length)} of its ${count(plan.path.length)} steps also take`;
+  return `The order prices each step in Shell Credits only. ${which} ${gate.name} (${count(total)} in all, said beside each), which it does not weigh: if you are short of it, take the next step without it.`;
+}
+
 /** Everything left, in one sentence: "+40.1% team · +59.2% own for 2,125,595 Shell Credits". */
 export function everythingText(plan: Pick<LevelPlan, "everything" | "basis">): string | null {
   const e = plan.everything;

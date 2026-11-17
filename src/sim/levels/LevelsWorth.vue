@@ -105,6 +105,7 @@
           </button>
           <p v-if="running" class="lw__note" role="status" data-test-levels-path-working>Working out the order<template v-if="progress.total">: {{ progress.done }} of {{ progress.total }} steps</template>…</p>
           <p v-else-if="headline" class="lw-headline" data-test-levels-path-headline>{{ headline }}</p>
+          <p v-if="!running && gateLine(plan)" class="lw__note" data-test-levels-path-gate>{{ gateLine(plan) }}</p>
           <ol class="lw-path" data-test-levels-path>
             <li v-for="s in shownPath" :key="s.index" class="lw-step" :data-test-levels-step="s.index">
               <span class="lw-step__n" aria-hidden="true">{{ s.index }}</span>
@@ -113,7 +114,7 @@
                 <b :class="stepChip(s, plan.basis).gain >= 0 ? 'acc-gain-up' : 'acc-gain-down'">{{ stepChip(s, plan.basis).text }}</b>
                 <span class="lw-gain__scope">{{ stepChip(s, plan.basis).scope }}</span>
               </span>
-              <span class="lw-step__cost">{{ costText(s.cost) }}<template v-if="s.cost.materials.length"> · {{ materialsText(s.cost) }}</template></span>
+              <span class="lw-step__cost">{{ costText(s.cost) }}<template v-if="s.cost.materials.length"> · {{ materialsText(s.cost) }}</template><template v-if="gateText(s, plan.gate)">, among them <b class="lw-step__gate" data-test-levels-step-gate>{{ gateText(s, plan.gate) }}</b></template></span>
               <span class="lw-step__run">{{ runningText(s, plan.basis) }}</span>
               <span v-if="flatNote(s)" class="lw-row__note" data-test-levels-step-flat>{{ flatNote(s) }}</span>
             </li>
@@ -163,7 +164,7 @@ import { loadMaterials } from "../materials/materialsData";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { assumedWords, BASIS_WORDS, inertText, levelPlan, type LevelPlan } from "./levelPlan";
 import { FORTE_KEYS, levelOptions, levelsToday, stateLevels, stateText, TOP_LEVEL, trackLabel, type TrackKey } from "./levelSteps";
-import { basisLine, costText, everythingText, flatNote, gainChips, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
+import { basisLine, costText, everythingText, flatNote, gainChips, gateLine, gateText, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const props = defineProps<{
   characterKey: string;
@@ -544,6 +545,9 @@ const smallTeam = computed(() => (plan.value ? smallTeamLine(plan.value, props.n
   font-size: 0.65rem;
   font-weight: 600;
   color: oklch(var(--bc) / 0.8);
+}
+.lw-step__gate {
+  white-space: nowrap;
 }
 .lw-row__inert {
   flex-basis: 100%;

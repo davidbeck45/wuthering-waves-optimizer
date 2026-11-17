@@ -6,7 +6,7 @@ import { loadMaterials } from "../../materials/materialsData";
 import { levelPlan } from "../../levels/levelPlan";
 import { parseLevels } from "../../levels/levelSteps";
 import { assumedWords, BASIS_WORDS, inertText, type LevelRow } from "../../levels/levelWorth";
-import { flatNote, headlineText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "../../levels/levelsView";
+import { flatNote, gateLine, gateText, headlineText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "../../levels/levelsView";
 import { enemyLabel } from "./character";
 import { rankingFor } from "./memo";
 import { characterName, compactJson, pct, type ToolContext } from "./shared";
@@ -69,12 +69,14 @@ export async function levelsAnswer(id: string, levels: string | null | undefined
           levelInThisOrder: {
             how: pathHow(plan),
             headline: headlineText(plan),
+            ...(gateLine(plan) ? { priceNote: gateLine(plan) } : {}),
             steps: steps.map((s) => ({
               n: s.index,
               step: s.label,
               ...gainsOf(s),
               ...(flatNote(s) ? { note: flatNote(s) } : {}),
               shellCredits: s.cost.credits,
+              ...(gateText(s, plan.gate) ? { alsoTakes: gateText(s, plan.gate) } : {}),
               soFar: { ...(s.running.teamGain != null ? { teamGainPct: pct(s.running.teamGain) } : {}), ...(s.running.gain != null ? { ownGainPct: pct(s.running.gain) } : {}), shellCredits: s.running.cost.credits },
             })),
             stepsOmitted: plan.path.length - steps.length,

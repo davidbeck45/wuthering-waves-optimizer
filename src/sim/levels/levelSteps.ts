@@ -263,6 +263,20 @@ export function sumCosts(data: MaterialsData, costs: readonly LevelCost[]): Leve
   };
 }
 
+/** The one material a character's Forte table first asks for at Forte 6 → 7 and then once per level up to 10 (Curse
+ *  of the Abyss for Galbrena): every Forte step from 7 up takes one, and no Shell Credits stand in for it, so the
+ *  order, which prices a step in Shell Credits, cannot weigh it. Read from the table, never named here; null when the
+ *  table has no such material for the character. */
+export function forteGateMaterial(data: MaterialsData, key: string): { id: number; name: string } | null {
+  const forte = data.characters[key]?.forte;
+  if (!forte || forte.length < 6) return null;
+  const before = new Set(forte.slice(0, 5).flatMap((s) => s.map(([id]) => id)));
+  const fresh = forte[5]!.filter(([id]) => id !== data.credit && !before.has(id)).map(([id]) => id);
+  if (fresh.length !== 1) return null;
+  const id = fresh[0]!;
+  return { id, name: data.items[String(id)]?.[0] ?? `Item ${id}` };
+}
+
 /* ---------------------------------------------------------------------------------------------- steps */
 
 export interface LevelStepDef {

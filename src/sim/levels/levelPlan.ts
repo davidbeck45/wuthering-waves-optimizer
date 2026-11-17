@@ -19,7 +19,7 @@ import { createTeamScorer, slicer, type TeamContext, type TeamImpact } from "../
 import { characterDisplayName, characterShortName } from "../display/names";
 import { savedProgressOf, type MaterialsData } from "../materials/costToMax";
 import { RANKING_ENEMY, scoreTeamCandidate, teamCandidatesOf, type CharacterRank, type TeamRank } from "../myRankings/rankRoster";
-import { joinSteps, levelsToday, nextStep, stateFrom, stateText, stepsLeft, sumCosts, topState, trackToTop, TRACKS, withLevels, type LevelCost, type LevelState, type LevelStepDef, type TrackKey } from "./levelSteps";
+import { forteGateMaterial, joinSteps, levelsToday, nextStep, stateFrom, stateText, stepsLeft, sumCosts, topState, trackToTop, TRACKS, withLevels, type LevelCost, type LevelState, type LevelStepDef, type TrackKey } from "./levelSteps";
 import { basisOf, compareWorth, type Figure, type LevelPlan, type LevelRow, type Score, type StepWorth } from "./levelWorth";
 
 export * from "./levelWorth";
@@ -93,9 +93,11 @@ export async function levelPlan(input: LevelPlanInput, options: LevelPlanOptions
     pathState: "none",
     inert: [],
     everything: null,
+    gate: null,
     errors,
   };
   if (!materials.characters[id]) return plan;
+  plan.gate = forteGateMaterial(materials, id);
 
   const today = levelsToday(materials, savedProgressOf(data), mode === "scratch" ? "scratch" : "saved");
   const start: LevelState = mode === "custom" ? stateFrom(today, options.from as Partial<Record<TrackKey, string | number>>) : today.state;
