@@ -5099,3 +5099,86 @@ by the level it names, and stops when the rows are not exactly levels 1 to 10.
   7bcbb24, through a fallback.
 - **A check that passes for an empty list checks nothing.** With `notInApp` empty, the loop over it in
   `wuwaCalcPresets.test.ts` ran zero times. The test now tries its rule on a made-up resonator first.
+
+## Open items from batch 3d — the assistant's rotation link and what-if on pinned builds, a male Rover on /rotation, Whole account's guard (batch 4, lane "open-items", 2026-11-16)
+
+Three things written down as open on 2026-11-09, and what was found on the way. Report: `wto-wt/b4/reports/open-items.md`.
+
+**The assistant on a team's pinned builds.** The three wuwa_calc tools were sent to a saved team's own account by the
+verify-a lane the same evening (`rileyForTeam`, see its section above). What this lane adds to that:
+- **The /rotation link.** `team_rotation` linked the page by the row it had solved, and a row link carries its own
+  picks: `useRotationRun` runs such a row at the active builds (a Team rankings row as /rankings showed it). On a team
+  saved with a plan that was not made active the answer read 362,854 DPS and its link opened on 367,567. A team asked
+  at its own account (`riley !== base`) is linked as `#chars=A,B,C`, which the page reads at the saved team's account
+  (`ofComposition`); a team on the active builds keeps its row link. The members are the saved team's own keys in its
+  own order (`ai/tools/riley.ts` `memberKeysOf`), and the answer names the pinned builds (`pinnedBuildsOf`).
+- **`what_if` with a team and `substat_weights` with a team** (and `cli weights --team`) laid their change over the
+  ACTIVE build and then scored the team, whose resolver put the pinned build back on top: every hypothetical read +0 %
+  on a team that pins a build for the character (R5 to R1: 0 % for −23.11 %), and a pinned build wearing other echoes
+  weighed every substat at nothing. Both now lay the change over `resolveTeamBuilds(...).characters`, the record the
+  team runs, stamped as its active build so resolving the team again leaves it alone.
+- Which resolver every tool that takes or scores a team goes through. The app engine's `resolveTeamCharacters`, so a
+  saved team on its pins: `calc_team`, `what_if` and `substat_weights` (`cli/engine.ts` `calcTeam`), `rank_roster`
+  (`rankRoster` `scoreTeamCandidate`), `weapon_value` (`investPlan.ts` `createTeamScorer`; where the team pins another
+  build than the active one it gives no team gain and says "the team runs X's “Account plan” build"). wuwa_calc through
+  `rileyForTeam`, the builds the team runs: `energy_check`, `team_rotation`, `toa_check`, `build_team_plan`. No build
+  read: `list_team_presets`, `rankings_link`.
+- Not done: the assistant in the browser never passes `autoBuffs`, so it reads teams with team buffs on while the
+  pages follow the switch (`teamContext/autoTeamBuffs.ts`). With the switch off the two can differ. And
+  `team_rotation` reads the team it was given by name, where /rotation reads the first saved team of those three: two
+  saved teams of the same three with different pins can disagree.
+
+**A male Rover on /rotation.** The stock teams are filed under the female key and the picker listed them as they came
+("RoverElectroFemale · Mornye + Rebecca", her portrait, `#chars=Roverelectrofemale,…`). `rotation/pickerTeams.ts`
+`stockEntries` puts each one through `teamPresetForAccount`, as the rankings, Teams › List Presets and the assistant do
+since 2026-11-09, and titles it with `teamLabel` like every other plus page.
+- **For every Rover element:** `accountKeyOf` (rankings/rileyNames.ts) now reads an element the account holds in
+  neither gender in the gender of the Rover it does play (`roverGenderOf`: male when every Rover form it has set up is
+  male, female when every one is female, null when it has none or both). Rover is one resonator who changes element,
+  and the picker lists teams whether or not the account owns them. A male Aero Rover's account gets the Electro and
+  Spectro teams as his. Every reader of `accountKeyOf` gets this; `cli rank` on the 9-16 export does not move.
+- `rotation/MemberAvatar.vue` draws the portrait of `accountKeyOf(appKey)`: wuwa_calc's run names his one Rover by the
+  female key, so the opened team drew hers.
+- `engine/rileyAccount.ts` `savedTeamOf` compares compositions by wuwa_calc's names, so a Rover counts in either gender:
+  `#team=t…` names the female form, and a male Rover's saved team was not found from it, which left its pinned builds
+  unread. The assistant's own lookup (`ai/tools/riley.ts` `savedTeamOf`) goes through it, and `energy_check` reads the
+  team's Energy Regen under the keys the saved team lists.
+
+**Whole account never saves a set that makes a team worse** (`buildTeam/account/buildAccount.ts`, step 3c). The solver
+maximises the account's weighted damage, so the team that matters most may take another team's echoes and leave it
+reading lower than today; the plan was saved whole.
+- After the solve and step 3b, every team whose calculator total with the plan's builds is below today's, by a whole
+  point of damage, keeps today's builds: the members planned in it are taken out of the solve (`lock`), what they wear in
+  every chosen team and what they wear now goes to nobody, and the account is solved again on what the improvement pass
+  has left of its budget. A character has one build in the plan, so a team that still reads lower after that, because of
+  a build planned in an earlier team, sets those members back as well and then reads today's figure exactly. Each pass
+  sets back one member at least.
+- **Energy Regen still comes first**, as in the search and in Build my team's `bestSaveTicks`: a team that reads lower
+  because its new builds meet more Energy Regen needs than today's builds do (the character-screen figure, read as
+  `finishMember` reads it) stays in the plan, and `whyLower` already says why. On the 9-16 export that is both lower
+  teams (Aemeath −1.2 % to reach 115.2 %, Cartethyia −3.7 % to reach 116.7 %), so the guard keeps nothing there.
+  Whether that case should be kept as it is too is David's call: `guard: "strict"` is the switch, and
+  `cli build-account --strict-guard` shows it (teams 1 and 3 at ±0 %, weighted +0.7 % against −0.5 %, 5 builds for 9).
+- `result.guard` lists each such team with today's total, the total the plan read, and who was set back; a member set
+  back carries `keptFor`. `accountView.ts` `guardNotes` says it: a line on the summary, a sentence on the team's card
+  with both whole figures and the names, and "stays as it is" only for a team none of whose members gets a build. The
+  headline's count of builds is unchanged: a member set back is neither a new build nor one who "keeps today's
+  echoes", like any member without a build, and their row and the team's card say what happens to them (in an
+  ordinary note's colour: `buildAccount.css` on `data-kept`). The Save was already "every member with a draft", so it
+  writes nothing for them and leaves their pins alone.
+- While the account is planned a second time the running view says why under the stage line (`onStage`'s `again`:
+  "guard" here, "locked" for step 3b, which repeated its stages without a word; `AGAIN_TEXT`).
+- A member planned in an earlier team who has no build there reads "keeps today's build, as in team N" in the later
+  team; it read "wears the build planned in team N" for anyone.
+- `guard: false` and `cli build-account --no-guard` give the plan as the solve leaves it. The page never asks for that.
+- Not done: a team that gains damage but loses an Energy Regen need it meets today is not caught (the search is
+  ER-first, so it should not happen; nothing checks it). The members of a kept team who had no build anyway keep their
+  own "Not enough echoes" row. A real phone was not used.
+
+Gates: `ai/tools/teamPins.test.ts` (real engine, synthetic account: the link of a pinned team and of a team on the
+active builds), `ai/tools/teamPinsWhatIf.test.ts`, `rotation/pickerTeams.test.ts` and `myRankings/roverForms.test.ts`
+(every Rover element, both genders, the saved team from his key), `buildTeam/account/accountGuard.test.ts` (real engine:
+the first solve lowers the second team by 4.7 %, the guard leaves it at today's figure and the first team still gains;
+a third team sharing the main DPS; the Energy Regen case stays in the plan; the Save's builds worn read each card's
+figure; the review's words); `cypress/e2e/rotation.cy.ts` (a male Rover's picker and opened team) and
+`buildAccount.cy.ts` (a team kept as it is, at 412 px and 130 % text, through the Save).
