@@ -209,6 +209,11 @@
             <template v-else-if="r.status === 'not-in-app'">The calculator doesn't have this item yet.</template>
             <template v-else>Couldn't score this one{{ r.note ? `: ${r.note}` : "" }}.</template>
           </p>
+          <!-- a featured resonator the account lacks: wuwa_calc can say what one copy would add (newResonator.ts) -->
+          <ConveneNewResonator
+            v-if="r.status === 'not-owned' && r.target.kind === 'resonator' && r.characterKey"
+            :character-key="r.characterKey"
+            :name="r.characterName ?? r.target.item.name" />
         </li>
       </ol>
     </template>
@@ -219,7 +224,7 @@
         <li><b>Damage</b> is the calculator's own engine on your saved build (weapon, echoes, chains, buffs), on the character's best rotation among your saved ones, the curated presets and the wuwa_calc loops — the same scoring as My roster rankings. Enemy: level 100, 20% resistance. It's that one character's rotation damage, not a whole team's.</li>
         <li><b>A sequence</b> switches on that node's chains and re-scores the same rotation. <b>A signature weapon</b> you don't use yet is shown with its passive at full stacks; "stats only" is the same weapon with the passive off. A refinement of the weapon you already use keeps your own passive settings.</li>
         <li><b>Cost</b> comes from the odds simulator's pity curve (about 54.1 pulls to any 5★, 81.15 to a featured one from zero), with your current pity and guarantee carried in and a 50/50 on every later resonator copy. 160 Astrite per pull. The average is exact, not sampled.</li>
-        <li><b>Not counted:</b> 4★s, Afterglow Coral and the Wavebands it buys, team-wide effects, and anything that isn't damage — comfort, survivability, energy. A resonator you don't own isn't scored.</li>
+        <li><b>Not counted:</b> 4★s, Afterglow Coral and the Wavebands it buys, team-wide effects, and anything that isn't damage — comfort, survivability, energy. A resonator you don't own isn't scored by the calculator: under one, <b>Check … on my account</b> asks wuwa_calc what a single copy would add to your teams, in its own DPS.</li>
         <li>Numbers move with your builds: re-score after you change gear in the calculator.</li>
       </ul>
     </details>
@@ -238,6 +243,7 @@ import { adviceSummary, advisorTargets, damageText, gainDamageText, priceAdvice,
 import { poolOf } from "../pools";
 import type { ConveneTab, ManualPity } from "../prefs";
 import ConveneItemIcon from "./ConveneItemIcon.vue";
+import ConveneNewResonator from "./ConveneNewResonator.vue";
 import { useBannerFeed, useConveneHistory, useConvenePrefs, useNow } from "./useConvene";
 import { fmtGain, fmtInt, fmtK, fmtPct } from "./format";
 import type { ConvenePrefillRequest } from "./types";
