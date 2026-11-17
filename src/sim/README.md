@@ -5269,7 +5269,7 @@ calculator's settings. It now asks `drawerScopeOf` (`optimizerDrawerScope.ts`) f
 the slot. A Cypress case can cover it after all: team buffs are off under Cypress only until the spec ticks the switch.
 
 Gates: `teamContext/teamOptimizerOnPlus.test.ts` ("when the page is left", "with a per-action weapon switch"),
-`optimizerDrawerScope.test.ts`, `cypress/e2e/teamOptimizerPhone.cy.ts` (10 tests), his `teamRotations/teamOptimizer.cy.ts`.
+`optimizerDrawerScope.test.ts`, `cypress/e2e/teamOptimizerPhone.cy.ts` (9 tests), his `teamRotations/teamOptimizer.cy.ts`.
 
 Things learned:
 - **A marker in his data is a claim about the game, not about his engine.** Three of four marked pairs on one account
