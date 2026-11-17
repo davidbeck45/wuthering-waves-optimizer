@@ -5,6 +5,7 @@
 // live network).
 import { describe, expect, it, vi } from "vitest";
 import patch37 from "./__fixtures__/patch37.json";
+import patch38 from "./__fixtures__/patch38.json";
 import eventNotices from "./__fixtures__/eventNotices.json";
 import kuroMenu from "./__fixtures__/kuroMenu.json";
 import { NEWS_BASE, versionReleases, type KeyValueStorage } from "../convene/banners";
@@ -235,6 +236,100 @@ describe("buildEventList and the buckets", () => {
     // below a day's regeneration: banking Waveplates for it gains nothing
     expect(doubleDropMath(live[0]!.rule, 1).waveplatesPerDay).toBeLessThan(dailyRegen());
     expect(doubleDropsAt(list, NOW)).toEqual([]);
+  });
+});
+
+describe("version 3.8: the patch notes (5783, __fixtures__/patch38.json, cut after the events) and the image post 5736", () => {
+  const notes38 = parseNewsArticle(patch38);
+  // the menu as it stood on 2026-11-16: 3.8's patch notes went up 2026-11-12 10:00 UTC+8
+  const releases38 = versionReleases([...kuroMenu, { articleId: patch38.articleId, articleTitle: patch38.articleTitle, articleType: 58, startTime: patch38.startTime }]);
+  /** 2026-11-16 21:00 US Central = 22:00 on the America server clock (UTC−5) */
+  const NOV16 = at(2026, 11, 16, 22, 0, -5);
+  const listAt = (now: number, offsetHours = -5) => buildEventList([notes, notes38], { offsetHours, releases: releases38, now });
+
+  it("reads the six dated events, the 7-day login event's '✦Duration✦ <dates>' on one line among them", () => {
+    expect(notes38).toMatchObject({ kind: "patch-notes", version: "3.8", published: "2026-11-12 10:00:00" });
+    expect(notes38.events.map((e) => [e.name, e.type, e.start, e.end, e.tz, e.version])).toEqual([
+      ["Second Coming of Solaris: Unwritten Dreams", "Leisure Event", null, "2026-12-21 11:59", "server", "3.8"],
+      ["Lahai-Roi Blocks: Turnabout", "Leisure Event", "2026-11-19 04:00", "2026-12-03 03:59", "server", null],
+      ["Lollo Campaign: Groundwork", "Featured Commission Event", "2026-12-03 10:00", "2026-12-17 03:59", "server", null],
+      ["Dreamfield Odyssey", "Combat Event", "2026-12-03 10:00", "2026-12-21 03:59", "server", null],
+      // "✦Duration✦ Version 3.8 Update - 2026-12-21 03:59 (server time)": no colon, the dates on the heading's line
+      ["Gifts of Bygone Dreams", "7-Day Login Event", null, "2026-12-21 03:59", "server", "3.8"],
+      ["Whither the Wind", "Limited-Time Login Event", "2026-12-07 04:00", "2026-12-21 03:59", "server", null],
+    ]);
+    expect(notes38.events.find((e) => e.name === "Gifts of Bygone Dreams")!.kind).toBe("login");
+    // the main quest is permanent, and the Endstate Matrix reminder ("ends at: …") is no Duration line
+    expect(notes38.events.some((e) => /main quest|matrix|bouquet/i.test(e.name))).toBe(false);
+  });
+
+  it("still reads a lone '✦Duration✦' heading with the dates on the next line, and '✦Duration:'", () => {
+    const one = (html: string) => parseNewsArticle({ articleId: 1, articleTitle: "[Somewhere] Leisure Event", startTime: "2026-11-01 10:00:00", articleContent: html }).events.map((e) => [e.start, e.end]);
+    expect(one("<div>✦Duration✦</div><div>2026-11-02 04:00 - 2026-11-09 03:59 (server time)</div>")).toEqual([["2026-11-02 04:00", "2026-11-09 03:59"]]);
+    expect(one("<div>✦Duration: 2026-11-02 04:00 - 2026-11-09 03:59 (server time)</div>")).toEqual([["2026-11-02 04:00", "2026-11-09 03:59"]]);
+    expect(one("<div>✦Duration✦ 2026-11-02 04:00 - 2026-11-09 03:59 (server time)</div>")).toEqual([["2026-11-02 04:00", "2026-11-09 03:59"]]);
+    expect(one("<div>✦Duration✦: 2026-11-02 04:00 - 2026-11-09 03:59 (server time)</div>")).toEqual([["2026-11-02 04:00", "2026-11-09 03:59"]]);
+  });
+
+  it("lists this week as the game has it: two events running, two starting within 14 days, nothing ending", () => {
+    const b = bucketEvents(listAt(NOV16), NOV16);
+    expect(b.endingSoon).toEqual([]);
+    expect(b.live.map((e) => [e.name, e.startApprox])).toEqual([
+      ["Gifts of Bygone Dreams", true],
+      ["Second Coming of Solaris: Unwritten Dreams", true],
+    ]);
+    // both opened with the update: the patch notes' moment, 2026-11-12 10:00 UTC+8; each ends on the server's own clock
+    expect(b.live.map((e) => [e.startMs, e.endMs])).toEqual([
+      [at(2026, 11, 12, 10, 0, 8), at(2026, 12, 21, 3, 59, -5) + MIN - 1],
+      [at(2026, 11, 12, 10, 0, 8), at(2026, 12, 21, 11, 59, -5) + MIN - 1],
+    ]);
+    // Lahai-Roi Blocks on Thursday, then the material double drop Kuro announced in an image only (5736)
+    expect(b.upcoming.map((e) => [e.name, e.source, e.articleId, e.startMs, e.endMs])).toEqual([
+      ["Lahai-Roi Blocks: Turnabout", "kuro", 5783, at(2026, 11, 19, 4, 0, -5), at(2026, 12, 3, 3, 59, -5) + MIN - 1],
+      ["Bountiful Crescendo", "manual", 5736, at(2026, 11, 26, 4, 0, -5), at(2026, 12, 3, 3, 59, -5) + MIN - 1],
+    ]);
+    // the Dec 3 events, the second login event and December's echo double drop are more than 14 days off, but known
+    const later = listAt(NOV16).filter((e) => e.startMs - NOV16 > 14 * 24 * H).map((e) => e.name);
+    expect(later.sort()).toEqual(["Chord Cleansing", "Dreamfield Odyssey", "Lollo Campaign: Groundwork", "Whither the Wind"]);
+    // nothing of 3.7 is left: its last event ended on Nov 11
+    expect(listAt(NOV16).filter((e) => e.endMs >= NOV16 && e.articleId === 5571)).toEqual([]);
+  });
+
+  it("ends 3.8 on 2026-12-22 (Kuro's 5736: 'before maintenance'), and shows no 3.8 row before the version is out", () => {
+    expect(versionEndMs("3.8", releases38)).toBe(at(2026, 12, 22, 4, 0, 8));
+    expect(RULES.versionEnds["3.8"]).toMatchObject({ date: "2026-12-22", articleId: 5736 });
+    // 2026-11-10: the image post is up (Nov 9 18:30 UTC+8) and 3.7 still runs. The double drop of Nov 26 lies past
+    // 3.7's end and 3.8 is not out, so neither it nor any 3.8 event is listed
+    const eve = at(2026, 11, 10, 12, 0, 8);
+    const before = buildEventList([notes, notes38], { offsetHours: 8, releases, now: eve });
+    expect(before.filter((e) => e.articleId === 5736 || e.articleId === 5783)).toEqual([]);
+    // an hour after the update both double drops are known (upcoming rows inside the live version), and both carry their rule
+    const after = buildEventList([notes, notes38], { offsetHours: 8, releases: releases38, now: at(2026, 11, 12, 11, 0, 8) });
+    expect(after.filter((e) => e.articleId === 5736).map((e) => [e.name, e.kind])).toEqual([
+      ["Bountiful Crescendo", "double-drop"],
+      ["Chord Cleansing", "double-drop"],
+    ]);
+  });
+
+  it("states November's material double drop as numbers while it runs: 3 claims a day, 40 Waveplates each", () => {
+    const during = at(2026, 11, 27, 12, 0, -5);
+    const live = doubleDropsAt(listAt(during), during);
+    expect(live.map((d) => [d.event.name, d.rule.id, d.rule.activity, d.rule.claimsPerDay, d.rule.costPerClaim])).toEqual([["Bountiful Crescendo", "bountiful-crescendo", "Simulation & Forgery", 3, 40]]);
+    expect(doubleDropMath(live[0]!.rule, 7)).toEqual({ extraRunsPerDay: 3, extraRuns: 21, waveplatesPerDay: 120 });
+    // and December's echo one on its own dates, a different row from November 2026's Chord Cleansing of 3.7
+    const dec = at(2026, 12, 15, 12, 0, -5);
+    expect(doubleDropsAt(listAt(dec), dec).map((d) => [d.event.id, d.rule.id])).toEqual([["5736:Chord Cleansing@2026-12-21 03:59", "chord-cleansing"]]);
+    expect(doubleDropsAt(listAt(NOV16), NOV16)).toEqual([]);
+  });
+
+  it("every hand-entered row names the Kuro post it was read from and when that post went up", () => {
+    for (const m of RULES.manualEvents) {
+      expect(m.articleId, m.name).toBeGreaterThan(0);
+      expect(m.published, m.name).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+      expect(m.end > m.start, m.name).toBe(true);
+      expect(m.start.slice(0, 10) > m.published.slice(0, 10), m.name).toBe(true);
+    }
+    expect(RULES.checked).toBe("2026-11-16");
   });
 });
 

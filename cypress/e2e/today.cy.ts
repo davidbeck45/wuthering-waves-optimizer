@@ -36,6 +36,23 @@ function interceptNews(menu: "fixture" | "down" = "fixture") {
   });
 }
 
+/** Kuro's feed as it stood five days into 3.8: the trimmed menu plus 3.8's patch notes entry (5783, 2026-11-12 10:00
+ *  UTC+8), the 3.7 and 3.8 patch notes from the unit-test fixtures, every other notice a 404. */
+function interceptNews38() {
+  cy.readFile("src/sim/today/__fixtures__/patch38.json").then((patch38: { articleId: number; articleTitle: string; startTime: string }) => {
+    cy.readFile("src/sim/today/__fixtures__/kuroMenu.json").then((menu: unknown[]) =>
+      cy.intercept("GET", `${NEWS}/ArticleMenu.json`, { body: [...menu, { articleId: patch38.articleId, articleTitle: patch38.articleTitle, articleType: 58, startTime: patch38.startTime }] }).as("menu"),
+    );
+    cy.readFile("src/sim/today/__fixtures__/patch37.json").then((patch37) => {
+      cy.intercept("GET", `${NEWS}/article/*.json`, (req) => {
+        if (req.url.endsWith("/article/5783.json")) req.reply({ body: patch38 });
+        else if (req.url.endsWith("/article/5571.json")) req.reply({ body: patch37 });
+        else req.reply({ statusCode: 404, body: "" });
+      }).as("article");
+    });
+  });
+}
+
 function expectNoHorizontalScroll(what: string): void {
   cy.document().then((doc) => {
     expect(doc.documentElement.scrollWidth, `${what} page width`).to.be.at.most(doc.documentElement.clientWidth);
@@ -189,6 +206,47 @@ describe("Today", () => {
     cy.visit("/today", seed({ today: { timeMode: "server" } }));
     cy.get("[data-test-today-matrix-overdue]").should("contain.text", "3.8 is out").and("contain.text", "check in game");
     cy.get('[data-test-today-cycle="matrix"]').should("contain.text", "3.8 update was due").and("not.contain.text", "to reset");
+  });
+
+  // Version 3.8, five days in (2026-11-17 11:00 UTC+8). Its patch notes write the 7-day login event's dates on the
+  // "✦Duration✦" line itself, which the page skipped; the material double drop of Nov 26 is in Kuro's image post only
+  // (5736, a hand-entered row); 3.8 is the Endstate Matrix cycle's last version, and nothing names the one after it.
+  it("lists version 3.8's week: the login event running, the double drop coming, the Matrix cycle ending with 3.8", () => {
+    cy.clock(Date.UTC(2026, 10, 17, 3, 0), ["Date"]);
+    interceptNews38();
+    cy.visit("/today", seed({ today: { timeMode: "server" } }));
+    cy.wait("@menu");
+    cy.get("[data-test-today-live-list]").should("contain.text", "Gifts of Bygone Dreams").and("contain.text", "Second Coming of Solaris: Unwritten Dreams");
+    cy.get('[data-test-today-event="Gifts of Bygone Dreams"]').should("contain.text", "7-Day Login Event").and("contain.text", "Dec 21, 03:59");
+    cy.get('[data-test-today-event="Second Coming of Solaris: Unwritten Dreams"]').should("contain.text", "Dec 21, 11:59");
+    cy.get("[data-test-today-ending]").should("contain.text", "Nothing ends in the next 3 days").and("contain.text", "Gifts of Bygone Dreams");
+    cy.get("[data-test-today-upcoming-list]").should("contain.text", "Lahai-Roi Blocks: Turnabout").and("contain.text", "Bountiful Crescendo");
+    cy.get('[data-test-today-event="Bountiful Crescendo"]').should("contain.text", "Limited-Time Material Double Drop Event").and("contain.text", "Nov 26, 04:00");
+    // more than 14 days off: December's events and the echo double drop of Dec 14 are not listed yet
+    cy.get("[data-test-today-upcoming-list]").should("not.contain.text", "Chord Cleansing").and("not.contain.text", "Dreamfield Odyssey");
+    // nothing of 3.7 is left on the page
+    cy.get("[data-test-today-live-list]").should("not.contain.text", "Cubie Wars").and("not.contain.text", "Back to Solaris");
+    cy.get('[data-test-today-cycle="toa"]').should("contain.text", "Season 42");
+    cy.get('[data-test-today-cycle="matrix"]')
+      .should("contain.text", "Phase 4 of 4")
+      .and("contain.text", "Ends with version 3.8, ≈ Dec 22")
+      .and("contain.text", "the cycle's last phase")
+      .and("not.contain.text", "3.9");
+    cy.get("[data-test-today-banners]").should("contain.text", "3.8 Phase I").and("contain.text", "Sigrika").and("contain.text", "Qiuyuan");
+  });
+
+  // the double drop while it runs: the banner states it as numbers (3 doubled claims a day, 40 Waveplates each)
+  it("shows November's material double drop as numbers while it runs", () => {
+    cy.clock(Date.UTC(2026, 10, 27, 4, 0), ["Date"]); // 2026-11-27 12:00 UTC+8
+    interceptNews38();
+    cy.visit("/today", seed({ today: { timeMode: "server" } }));
+    cy.wait("@menu");
+    cy.get('[data-test-today-double-drop="bountiful-crescendo"]')
+      .should("be.visible")
+      .and("contain.text", "Bountiful Crescendo is on")
+      .and("contain.text", "3 doubled claims a day")
+      .and("contain.text", "120 Waveplates");
+    cy.get('[data-test-today-check="double-claims"]').should("exist");
   });
 
   it("fits a phone at 130 % text, and the account page carries the Today strip", () => {

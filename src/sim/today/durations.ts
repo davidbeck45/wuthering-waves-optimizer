@@ -1,6 +1,7 @@
 // Wuthering Tools+ — limited-time events from Kuro's own text: every event in a version's patch notes carries a
 // `✦Duration:` line under its heading, and the stand-alone event notices (double drops, "Event Preview | …") a
-// `✦Duration✦` line with the dates on the next line. Formats handled (all seen in the feed, 2024–2026):
+// `✦Duration✦` line with the dates on the next line; 3.8's patch notes also wrote one as "✦Duration✦ <dates>" on a
+// single line (its 7-day login event). Formats handled (all seen in the feed, 2024–2026):
 //   - "2026-10-08 04:00 - 2026-10-26 03:59 (server time)" (slashed dates and "~" too) and "… (UTC+8)" for web events;
 //   - "Version 3.7 Update - 2026-11-11 03:59 (server time)": starts with the version update (its patch notes' publish
 //     time — the same release moment convene's banner calendar uses);
@@ -69,7 +70,8 @@ export type DurationParse =
 const DATE = String.raw`(\d{4})[-/](\d{1,2})[-/](\d{1,2})\s+(\d{1,2}):(\d{2})`;
 const RANGE_RE = new RegExp(`${DATE}\\s*[-–~]\\s*${DATE}`);
 const VERSION_RE = new RegExp(String.raw`version\s+(\d+\.\d+)\s+update\s*[-–~]\s*${DATE}`, "i");
-const DURATION_INLINE_RE = /^✦\s*duration\s*[:：]\s*(.+)$/i;
+/** "✦Duration: <dates>", and "✦Duration✦ <dates>" with the dates on the same line */
+const DURATION_INLINE_RE = /^✦\s*duration\s*(?:✦\s*[:：]?|[:：])\s*(\S.*)$/i;
 const DURATION_HEAD_RE = /^✦\s*duration\s*✦?\s*$/i;
 /** "[Special Events] [Cubie Wars] Leisure Event" → name "Cubie Wars", type "Leisure Event" */
 const HEADING_RE = /^(?:\[[^\]]+\]\s*)*\[([^\]]+)\]\s*(.*)$/;

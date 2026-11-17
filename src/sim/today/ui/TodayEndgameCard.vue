@@ -48,13 +48,13 @@
           </div>
           <!-- past the stated version end and the app doesn't know the next one yet: never a stuck "≈ 0m" -->
           <div v-else-if="m.overdue" class="td-row__when" data-test-today-matrix-overdue>
-            {{ nextVersion }} is out
+            {{ nextVersion ? `${nextVersion} is out` : "A new version is out" }}
             <small>check in game</small>
           </div>
         </div>
         <div v-if="m.progress != null && !m.overdue" class="td-bar td-bar--accent"><span :style="{ width: pct(m.progress) }"></span></div>
         <div class="td-eg__foot">
-          <span v-if="m.overdue">The {{ nextVersion }} update was due ≈ {{ fmtDate(m.endMs!, mode, offset) }}, so a new phase has most likely started — check in game</span>
+          <span v-if="m.overdue">{{ nextVersion ? `The ${nextVersion} update` : `The update after ${m.version}` }} was due ≈ {{ fmtDate(m.endMs!, mode, offset) }}, so a new {{ m.lastPhase ? "cycle" : "phase" }} has most likely started — check in game</span>
           <span v-else-if="m.inCycle">{{ matrixLine }}</span>
           <template v-else-if="m.version">
             <span>A new cycle — check in game</span>
@@ -83,15 +83,19 @@ const router = useRouter();
 const mode = computed(() => t.timeMode.value);
 const offset = computed(() => t.offsetHours.value);
 const m = computed(() => t.matrix.value);
-const nextVersion = computed(() => {
+/** The version after the live one, where the app can name it: inside a Matrix cycle the versions count up by 0.1 (Kuro:
+ *  the cycle "lasts from Version 3.5 to Version 3.8"). After the cycle's last version nothing says what the next one is
+ *  called (2.8 was followed by 3.0), so none is named: null. */
+const nextVersion = computed<string | null>(() => {
   const v = m.value.version;
-  if (!v) return "next";
+  if (!v || !m.value.inCycle || m.value.lastPhase) return null;
   const [a = 0, b = 0] = v.split(".").map(Number);
   return `${a}.${b + 1}`;
 });
 const matrixLine = computed(() => {
   const v = m.value;
-  const when = v.endMs ? `Resets with the ${nextVersion.value} update, ≈ ${fmtDate(v.endMs, mode.value, offset.value)}` : "Resets with the next version update";
+  const date = v.endMs ? fmtDate(v.endMs, mode.value, offset.value) : null;
+  const when = !date ? "Resets with the next version update" : nextVersion.value ? `Resets with the ${nextVersion.value} update, ≈ ${date}` : `Ends with version ${v.version}, ≈ ${date}`;
   return `${when} · ${v.lastPhase ? "the cycle's last phase" : `the cycle runs through ${v.rule.toVersion}`}`;
 });
 const pct = (x: number) => `${Math.round(x * 1000) / 10}%`;
