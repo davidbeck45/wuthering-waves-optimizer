@@ -299,3 +299,147 @@ describe("resolveTeamCharacters: a mode's add-on tier needs the receiver to infl
     expect((res.characters.Mornye.teamBuffs.buffs as Buffs).SilentProtectionTuneRuptureShifting).toBeUndefined();
   });
 });
+
+describe("resolveTeamCharacters: a team with Lily (3.8)", { timeout: 30_000 }, () => {
+  // Lily's kit is the first built on Unison conditions and on a stack count the team's own loop decides. Riley's kit
+  // (vendor/wuwa_calc lily.ts): Dream Aroma is one stack per teammate's Intro between her visits, two from S1, and her
+  // own Intro ends it; Silvered Dream's ATK is paid to "a Boon reactor, the only ones holding it".
+  const blank = { selectedCharacter1: null, selectedCharacter2: null, buffs: {} };
+  type Entry = { isEnabled: boolean; stacks?: number; baseAttrValue?: number; refinement?: unknown };
+  const NODES = [
+    "SequenceNode1LookWhiteFlowersFromTheRuinsOfDreams",
+    "SequenceNode2ListenARequiemFromTheDreamCradle",
+    "SequenceNode3MayYourSoulWanderNoMore",
+    "SequenceNode4MayYourPastSinkIntoSilence",
+    "SequenceNode5MayYouFindPeaceInEndlessLight",
+    "SequenceNode6MayMyReverieNeverEnd",
+  ];
+  // Energy Regen past the 260 % her buffs ask for in full: two ER 3-costs and an ER line on every echo
+  const erEcho = (set: string, i: number) => ({
+    echoId: `${set}-${i}`,
+    echo: "Hurriclaw",
+    echoSet: set,
+    type: i === 0 ? 4 : i < 3 ? 3 : 1,
+    rank: 5,
+    stat: i === 1 || i === 2 ? "EnergyRegen" : "HP",
+    echoSubStatsType1: "EnergyRegen",
+    echoSubStatsValue1: 12.4,
+  });
+  const lily = (sequence: number, weapon: string, set = "FlowerofTingedYearning") => ({
+    weapon,
+    weapons: { [weapon]: { refinement: "1" } },
+    resonanceChains: Object.fromEntries(NODES.map((key, i) => [key, { isEnabled: i < sequence }])),
+    echoes: Object.fromEntries([0, 1, 2, 3, 4].map((i) => [i, erEcho(set, i)])),
+    teamBuffs: blank,
+  });
+  const buffsOf = (res: Awaited<ReturnType<typeof resolveTeamCharacters>>, id: string) => res.characters[id].teamBuffs.buffs as Record<string, Entry>;
+  const skippedOf = (res: Awaited<ReturnType<typeof resolveTeamCharacters>>, id: string, key: string) =>
+    res.slots.find((s) => s.characterId === id)!.skipped.find((x) => x.key === key)?.reason;
+
+  it("keeps a buff for a Resonator who can use Unison away from one who can't", async () => {
+    const characters = { Galbrena: { weapon: "LuxUmbra", teamBuffs: blank }, Lily: lily(2, "Lullaby"), Qiuyuan: { weapon: "EmeraldSentence", teamBuffs: blank } } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Galbrena", "Lily", "Qiuyuan"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    for (const id of ["Galbrena", "Qiuyuan"]) {
+      const buffs = buffsOf(res, id);
+      // +7 % ATK per Unison Boon stack, +16 % ATK from her weapon, +15 % ATK from her set: all three are worded for a
+      // Resonator who gains Unison or answers it, and neither of these two has it in their kit
+      expect(buffs.SilveredDreamATK, id).toBeUndefined();
+      expect(buffs.LullabyATK, id).toBeUndefined();
+      expect(buffs.FlowerofTingedYearningUnison, id).toBeUndefined();
+      // what she gives anybody stays: the Outro's 25 %, the Echo Skill crit, the weapon's Echo Skill bonus, the set's 10 %
+      expect(buffs.OutroSkillBloomingFragrance?.isEnabled, id).toBe(true);
+      expect(buffs.SilveredDreamEchoCrit?.isEnabled, id).toBe(true);
+      expect(buffs.LullabyEchoDMG, id).toMatchObject({ isEnabled: true, refinement: "1" });
+      expect(buffs.FlowerofTingedYearning?.isEnabled, id).toBe(true);
+    }
+    expect(skippedOf(res, "Galbrena", "SilveredDreamATK")).toBe("only for a Resonator who can trigger Unison Response; Galbrena can't");
+    expect(skippedOf(res, "Galbrena", "LullabyATK")).toBe("only for a Resonator who gains Unison or triggers Unison Response; Galbrena doesn't");
+    expect(skippedOf(res, "Qiuyuan", "FlowerofTingedYearningUnison")).toBe("only for a Resonator who gains Unison or triggers Unison Response; Qiuyuan doesn't");
+    // the engine reads what is left the way the calculator does: her Echo Skill crit as a Crit Rate for one attack type
+    const galbrena = await buildCharacterCalculationContext("Galbrena", res.characters, enemy, []);
+    expect(galbrena.teamBuffsData["CritRate:Echo"]).toBeCloseTo(0.1, 6);
+    expect(galbrena.teamBuffsData["CritDMG:Echo"]).toBeCloseTo(0.2, 6);
+  });
+
+  it("gives those buffs to the kits that have Unison: a responder gets all three, Jinhsi the two worded for gaining it", async () => {
+    const characters = { Hsin: { teamBuffs: blank }, Lily: lily(2, "Lullaby"), Suoming: { teamBuffs: blank }, Jinhsi: { teamBuffs: blank } } as Record<string, any>;
+    const boon = await resolveTeamCharacters({ characterIds: ["Hsin", "Lily", "Suoming"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    for (const id of ["Hsin", "Suoming"]) {
+      const buffs = buffsOf(boon, id);
+      expect(buffs.SilveredDreamATK?.isEnabled, id).toBe(true);
+      expect(buffs.LullabyATK, id).toMatchObject({ isEnabled: true, refinement: "1" });
+      expect(buffs.FlowerofTingedYearningUnison?.isEnabled, id).toBe(true);
+    }
+    // "each stack of Unison Boon on the team … counting up to 4": the stacks the receiver can hold, not the buff's own cap.
+    // Two by the kit; Hsin in Unison mode raises a teammate's to three (her own +1 is a switch on her build)
+    expect(buffsOf(boon, "Hsin").SilveredDreamATK.stacks).toBe(2);
+    expect(buffsOf(boon, "Suoming").SilveredDreamATK.stacks).toBe(3);
+    // Lily holds no Unison herself: Hsin's Shared Light (for those who gain Unison) and Suoming's Unison Boon rider pass her by
+    expect(buffsOf(boon, "Lily").OutroSkillHerselfaThousandLanterns).toBeUndefined();
+    expect(buffsOf(boon, "Lily").OutroSkillCanopyRumbleUnison).toBeUndefined();
+    expect(buffsOf(boon, "Lily").OutroSkillCanopyRumble?.isEnabled).toBe(true);
+
+    const jinhsi = await resolveTeamCharacters({ characterIds: ["Jinhsi", "Lily", "Suoming"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    expect(buffsOf(jinhsi, "Jinhsi").LullabyATK?.isEnabled).toBe(true);
+    expect(buffsOf(jinhsi, "Jinhsi").FlowerofTingedYearningUnison?.isEnabled).toBe(true);
+    expect(buffsOf(jinhsi, "Jinhsi").SilveredDreamATK).toBeUndefined();
+
+    // Hsin outside her Unison mode has none of it
+    const flare = await resolveTeamCharacters(
+      { characterIds: ["Hsin", "Lily", "Suoming"], enemyConfig: {} },
+      { ...characters, Hsin: { activeStance: "Electro Flare", teamBuffs: blank } }, [], { enemyConfig: enemy },
+    );
+    expect(buffsOf(flare, "Hsin").SilveredDreamATK).toBeUndefined();
+    expect(buffsOf(flare, "Hsin").LullabyATK).toBeUndefined();
+  });
+
+  it("counts Dream Aroma by the Intros her teammates cast between her visits: one each, two each from S1", async () => {
+    const roster = (sequence: number) => ({ Galbrena: { weapon: "LuxUmbra", teamBuffs: blank }, Lily: lily(sequence, "Cadenza", "CelestialLight"), Qiuyuan: { weapon: "EmeraldSentence", teamBuffs: blank } }) as Record<string, any>;
+    const ids = ["Galbrena", "Lily", "Qiuyuan"];
+    // the loop Lily → Galbrena → Qiuyuan → Lily: Galbrena fights on her own Intro's stack, Qiuyuan on both
+    const handoffs = { Lily: ["Galbrena"], Galbrena: ["Qiuyuan"], Qiuyuan: ["Lily"] };
+
+    const s0 = await resolveTeamCharacters({ characterIds: ids, enemyConfig: {}, handoffs }, roster(0), [], { enemyConfig: enemy });
+    expect(buffsOf(s0, "Galbrena").DreamAroma.stacks).toBe(1);
+    expect(buffsOf(s0, "Qiuyuan").DreamAroma.stacks).toBe(2);
+    // fed from her real Energy Regen, as every stat-scaled buff is
+    const lilyStats = await buildCharacterCalculationContext("Lily", s0.characters, enemy, []);
+    const er = Math.round((lilyStats.finalStats.energyRegen as number) * 1000) / 10;
+    expect(er).toBeGreaterThanOrEqual(260);
+    expect(buffsOf(s0, "Galbrena").DreamAroma.baseAttrValue).toBe(er);
+    // one stack is 7 % ATK at that Energy Regen: the second in line has exactly 7 points more than the first
+    const first = await buildCharacterCalculationContext("Galbrena", s0.characters, enemy, []);
+    const swapped = await resolveTeamCharacters({ characterIds: ids, enemyConfig: {}, handoffs: { Lily: ["Qiuyuan"], Qiuyuan: ["Galbrena"], Galbrena: ["Lily"] } }, roster(0), [], { enemyConfig: enemy });
+    const second = await buildCharacterCalculationContext("Galbrena", swapped.characters, enemy, []);
+    expect(buffsOf(swapped, "Galbrena").DreamAroma.stacks).toBe(2);
+    expect((second.teamBuffsData.ATK as number) - (first.teamBuffsData.ATK as number)).toBeCloseTo(0.07, 6);
+
+    // a team with no recorded order: the count the loop reaches, never the buff's own cap of 4 at S0
+    const unordered = await resolveTeamCharacters({ characterIds: ids, enemyConfig: {} }, roster(0), [], { enemyConfig: enemy });
+    expect(buffsOf(unordered, "Galbrena").DreamAroma.stacks).toBe(2);
+    expect(buffsOf(unordered, "Qiuyuan").DreamAroma.stacks).toBe(2);
+
+    // S1 doubles each Intro; S2's crit rides on the same stacks
+    const s2 = await resolveTeamCharacters({ characterIds: ids, enemyConfig: {}, handoffs }, roster(2), [], { enemyConfig: enemy });
+    expect(buffsOf(s2, "Galbrena").DreamAroma.stacks).toBe(2);
+    expect(buffsOf(s2, "Qiuyuan").DreamAroma.stacks).toBe(4);
+    expect(buffsOf(s2, "Galbrena").SequenceNode2ListenARequiemFromTheDreamCradle.stacks).toBe(2);
+    expect(buffsOf(s2, "Qiuyuan").SequenceNode2ListenARequiemFromTheDreamCradle.stacks).toBe(4);
+    expect(buffsOf(s0, "Qiuyuan").SequenceNode2ListenARequiemFromTheDreamCradle).toBeUndefined();
+
+    // two members: one teammate, one Intro
+    const duo = await resolveTeamCharacters({ characterIds: ["Galbrena", "Lily", null], enemyConfig: {} }, roster(0), [], { enemyConfig: enemy });
+    expect(buffsOf(duo, "Galbrena").DreamAroma.stacks).toBe(1);
+  });
+
+  it("counts a Lily with no build as S0 with the Energy Regen her kit is built for", async () => {
+    const characters = { Galbrena: { weapon: "LuxUmbra", teamBuffs: blank }, Qiuyuan: { weapon: "EmeraldSentence", teamBuffs: blank } } as Record<string, any>;
+    const res = await resolveTeamCharacters({ characterIds: ["Galbrena", "Lily", "Qiuyuan"], enemyConfig: {} }, characters, [], { enemyConfig: enemy });
+    const buffs = buffsOf(res, "Galbrena");
+    expect(buffs.DreamAroma).toMatchObject({ isEnabled: true, stacks: 2, baseAttrValue: 260 });
+    expect(buffs.OutroSkillBloomingFragrance?.isEnabled).toBe(true);
+    expect(buffs.SilveredDreamATK).toBeUndefined();
+    expect(buffs.SequenceNode2ListenARequiemFromTheDreamCradle).toBeUndefined();
+    expect(buffs.LullabyEchoDMG).toBeUndefined();
+  });
+});

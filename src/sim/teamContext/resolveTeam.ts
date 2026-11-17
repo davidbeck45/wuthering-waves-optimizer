@@ -28,6 +28,15 @@
 // (Aemeath's Silent Protection …TuneRuptureShifting / …FusionBurstAppliers) — reaches only a member who inflicts that
 // status, i.e. who is in the same status mode themselves (Lynae in Tune Rupture lays Tune Rupture - Shifting, Denia in
 // Fusion Burst lays Fusion Burst); everyone else keeps the base tier.
+// Two more with version 3.8 (2026-11-16), when Lily's kit, her pistol and her set brought the first of each:
+//   • a buff worded for a Resonator who "can trigger Unison Response", "gains Unison or triggers Unison Response",
+//     gains it "when they gain Unison" or holds it "while having Unison Boon" reaches only a member whose own kit has
+//     that (Hsin in Unison mode, Suoming; Jinhsi gains Unison and answers none). Lily's Silvered Dream ATK, Lullaby's
+//     ATK and Flower of Tinged Yearning's Unison rider went to every teammate: up to +59 % ATK nobody could have;
+//   • a stack count the team's loop decides is read off the team, not off the buff's cap: Dream Aroma is one stack for
+//     each teammate's Intro between Lily's visits (two from her S1, and her own Intro clears them), and Silvered Dream
+//     counts the Unison Boon the receiver can hold. Dream Aroma's "Removed when Lily is the incoming Resonator" says
+//     when it ends, so it is no Outro handoff: it reaches both teammates.
 // Pure/async; no Vue. Consumers: Team Rotations pages, /my-rankings, the CLI.
 import { allEchoBuffs, allWeaponTeamBuffs, buffsByCharacter } from "../../buffs/index";
 import {
@@ -113,8 +122,66 @@ export interface TeamLike {
  *  Resonator" of whoever entered (a two-hop pass the whole team ends up holding) — so it stays team-wide. */
 const INCOMING_RE = /incoming resonator(?!s)|next character|next resonator(?!s)|resonator switched onto/i;
 const WINDOW_RE = /incoming resonators/i;
-const isHandoff = (details: string | undefined): boolean => Boolean(details) && !WINDOW_RE.test(details!) && INCOMING_RE.test(details!);
+/** When a buff ends is not who gets it: Dream Aroma is "Removed when Lily is the incoming Resonator" and is the whole
+ *  team's until then. Read as a handoff it reached only the member who follows Lily, in every imported team. */
+const REMOVAL_RE = /\bremoved when [^.]*\./gi;
+const isHandoff = (details: string | undefined): boolean => {
+  if (!details) return false;
+  const text = details.replace(REMOVAL_RE, "");
+  return !WINDOW_RE.test(text) && INCOMING_RE.test(text);
+};
 const SEQUENCE_RE = /^(?:Sequence Node|S)\s?(\d+):/;
+
+/** What a member's own kit can do with Unison. `gains`: a skill of theirs grants it (Jinhsi's Illuminous Epiphany,
+ *  Suoming's Liberation, Hsin's Formshift). `boon`: they answer one (Unison Response) and so hold Unison Boon, which the
+ *  app marks with a `UnisonBoon` buff on the kit (the marker `effectiveBuffStacks.ts` reads too). Riley's engine draws
+ *  the same line: "Only a Unison Boon reactor can gain Unison Boon at all, so a Jinhsi beside Suoming never holds it". */
+interface UnisonKit {
+  gains: boolean;
+  boon: boolean;
+  /** the Unison Boon stacks the kit holds before anything raises the cap */
+  boonStacks: number;
+}
+const NO_UNISON: UnisonKit = { gains: false, boon: false, boonStacks: 0 };
+const plain = (html: string | undefined): string => (html ?? "").replace(/<[^>]+>/g, "");
+/** "Jinhsi gains Unison", "grants Hsin Unison", "When Suoming has Unison": the effect itself, not Unison Boon / Response. */
+const GAINS_UNISON_RE = /\b(?:gains?|grants? \S+|has) Unison\b(?! Boon| Response)/i;
+const KIT_TEXT_GROUPS = ["basicAttacks", "skillAttacks", "liberationAttacks", "forteCircuitAttacks", "introAttacks", "outroAttacks"] as const;
+function unisonKitOf(chosen: any, active: string | null): UnisonKit {
+  if (!chosen) return NO_UNISON;
+  // a kit with a Resonance Mode named Unison (Hsin) has all of it in that mode only
+  const stances: string[] = chosen.basic?.stances ?? [];
+  if (stances.includes("Unison") && active !== "Unison") return NO_UNISON;
+  const boonDef = ((chosen.buffs ?? []) as BuffDef[]).find((d) => d.key === "UnisonBoon");
+  const text = [
+    ...KIT_TEXT_GROUPS.map((group) => chosen[group]?.description),
+    ...((chosen.buffs ?? []) as BuffDef[]).map((d) => d.details),
+  ].map(plain).join(" ");
+  return { gains: Boolean(boonDef) || GAINS_UNISON_RE.test(text), boon: Boolean(boonDef), boonStacks: boonDef?.maxStacks ?? 0 };
+}
+/** The Unison a team buff asks of its receiver, by the game's wording; null for a buff anybody can hold. Only wordings
+ *  whose subject is the receiver: Unspoken Rue's "Upon obtaining Unison … Resonators in the team gain" is the wielder's. */
+const NEEDS_BOON_RE = /can trigger Unison Response|while having Unison Boon/i;
+const NEEDS_UNISON_RE = /gains Unison or triggers Unison Response|when they gain Unison/i;
+function unisonNeed(def: BuffDef): "boon" | "unison" | null {
+  const text = plain(def.details);
+  if (NEEDS_BOON_RE.test(text)) return "boon";
+  return NEEDS_UNISON_RE.test(text) ? "unison" : null;
+}
+/** A buff that counts "each stack of Unison Boon": its stacks are the receiver's, whatever its own cap says. */
+const COUNTS_BOON_RE = /each stack of Unison Boon/i;
+
+/** Team buffs that stack once per Intro a teammate of the provider casts, and are cleared when the provider comes back
+ *  in. Lily's Dream Aroma (game text: "1 stack per Intro Skill cast by a Resonator in the team other than Lily … Removed
+ *  when Lily is the incoming Resonator"; her S1 makes it 2 per Intro; her S2 pays crit per stack of it). So the member
+ *  who follows her fights on one Intro's worth and the next on two: the cap of 4 is reached at S1 only. */
+const INTRO_STACKED: Record<string, { keys: string[]; doubledBy: string; doubledAtSequence: number }> = {
+  Lily: {
+    keys: ["DreamAroma", "SequenceNode2ListenARequiemFromTheDreamCradle"],
+    doubledBy: "SequenceNode1LookWhiteFlowersFromTheRuinsOfDreams",
+    doubledAtSequence: 1,
+  },
+};
 
 /** Who each member hands off to: the character whose actions follow the end of that member's block in the
  *  loop (cyclic) — the rotation order itself, which is what an Outro's "incoming Resonator" means. Read off the
@@ -266,12 +333,39 @@ function providedBy(
   receiver: string,
   /** the receiver's own mode: a mode's add-on tier needs the receiver to inflict that mode's status */
   receiverMode: ProviderMode,
+  /** what the receiver's kit can do with Unison: a buff worded for it reaches nobody else */
+  receiverUnison: UnisonKit,
+  /** the provider's teammates, the receiver among them: each one's Intro is a stack of an Intro-stacked buff */
+  teammateCount: number,
+  /** out: the keys handed over whose stacks count the receiver's Unison Boon (settled once every provider is in) */
+  boonCounted: Set<string>,
 ): Record<string, TeamBuffEntry> {
   const entries: Record<string, TeamBuffEntry> = {};
   const isSetUp = providerData !== undefined;
   providerData ??= {};
   const chains: Record<string, { isEnabled?: boolean }> = providerData.resonanceChains ?? {};
   const chainCount = Object.values(chains).filter((node) => node?.isEnabled).length;
+
+  const withoutUnison = (def: BuffDef): boolean => {
+    const need = unisonNeed(def);
+    if (!need || (need === "boon" ? receiverUnison.boon : receiverUnison.gains || receiverUnison.boon)) return false;
+    skipped.push({
+      key: def.key,
+      from: provider,
+      reason: need === "boon"
+        ? `only for a Resonator who can trigger Unison Response; ${receiver} can't`
+        : `only for a Resonator who gains Unison or triggers Unison Response; ${receiver} doesn't`,
+    });
+    return true;
+  };
+  const introStacked = INTRO_STACKED[provider];
+  /** the Intros the receiver has heard since the provider left: their own when they are next in line, every
+   *  teammate's when they are not, or when the team's order is not known (the most the loop reaches) */
+  const introStacks = (): number => {
+    const doubled = isSetUp ? Boolean(chains[introStacked.doubledBy]?.isEnabled) : (assumedSequence ?? 0) >= introStacked.doubledAtSequence;
+    const intros = outroTo?.has(receiver) ? 1 : Math.max(1, teammateCount);
+    return intros * (doubled ? 2 : 1);
+  };
 
   for (const def of ((buffsByCharacter as Record<string, BuffDef[]>)[provider] ?? []) as BuffDef[]) {
     const other = boundToAnotherMode(def, mode);
@@ -284,6 +378,7 @@ function providedBy(
       skipped.push({ key: def.key, from: provider, reason: `only for a member who inflicts ${status}; ${receiver} doesn't` });
       continue;
     }
+    if (withoutUnison(def)) continue;
     if (outroTo && isHandoff(def.details) && !outroTo.has(receiver)) {
       skipped.push({ key: def.key, from: provider, reason: `outro handoff goes to ${[...outroTo].join(" / ")}` });
       continue;
@@ -301,7 +396,10 @@ function providedBy(
         continue;
       }
     }
-    entries[def.key] = entryFor(provider, def, providerData, providerStats);
+    const entry = entryFor(provider, def, providerData, providerStats);
+    if (entry.stacks != null && introStacked?.keys.includes(def.key)) entry.stacks = Math.min(entry.stacks, introStacks());
+    if (entry.stacks != null && COUNTS_BOON_RE.test(plain(def.details)) && unisonNeed(def) === "boon") boonCounted.add(def.key);
+    entries[def.key] = entry;
   }
 
   const handoffElsewhere = (def: BuffDef): boolean => {
@@ -313,7 +411,7 @@ function providedBy(
   for (const def of allWeaponTeamBuffs as BuffDef[]) {
     const weaponKey = basename(def.imageUrl) ?? compact(def.name ?? "");
     if (weapon && (weaponKey === weapon || compact(weaponKey) === compact(weapon))) {
-      if (handoffElsewhere(def)) continue;
+      if (handoffElsewhere(def) || withoutUnison(def)) continue;
       entries[def.key] = {
         ...entryFor(provider, def, providerData, providerStats),
         refinement: providerData.weapons?.[weapon]?.refinement ?? 1,
@@ -330,9 +428,9 @@ function providedBy(
     const name = basename(url);
     if (!name) continue;
     if (url.includes("/echoes/sets/")) {
-      if ((setCounts[name] ?? 0) >= 5 && !handoffElsewhere(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
+      if ((setCounts[name] ?? 0) >= 5 && !handoffElsewhere(def) && !withoutUnison(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
     } else if (mainEcho && (name === mainEcho || compact(name) === compact(mainEcho))) {
-      if (!handoffElsewhere(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
+      if (!handoffElsewhere(def) && !withoutUnison(def)) entries[def.key] = entryFor(provider, def, providerData, providerStats);
     }
   }
   return entries;
@@ -439,21 +537,22 @@ export async function resolveTeamCharacters(
   };
 
   // the mode each provider is in (their stored stance, else the app's default for the kit) and their Outro handoffs
-  const modeCache = new Map<string, Promise<ProviderMode>>();
-  const modeOf = (id: string): Promise<ProviderMode> => {
-    let cached = modeCache.get(id);
+  const kitCache = new Map<string, Promise<{ mode: ProviderMode; unison: UnisonKit }>>();
+  const kitOf = (id: string): Promise<{ mode: ProviderMode; unison: UnisonKit }> => {
+    let cached = kitCache.get(id);
     if (!cached) {
       cached = getCharByName(id)
         .then((chosen: any) => {
           const stances: string[] | undefined = chosen?.basic?.stances;
           const active = resolveActiveStance(stances, resolved[id]?.activeStance, resolved[id]?.buffs ?? null);
-          return { active, others: (stances ?? []).filter((st) => st !== active) };
+          return { mode: { active, others: (stances ?? []).filter((st) => st !== active) }, unison: unisonKitOf(chosen, active) };
         })
-        .catch(() => ({ active: null, others: [] }));
-      modeCache.set(id, cached);
+        .catch(() => ({ mode: { active: null, others: [] }, unison: NO_UNISON }));
+      kitCache.set(id, cached);
     }
     return cached;
   };
+  const modeOf = (id: string): Promise<ProviderMode> => kitOf(id).then((kit) => kit.mode);
   const handoffs = outroRecipients(team);
 
   const out: Record<string, any> = { ...resolved };
@@ -469,14 +568,23 @@ export async function resolveTeamCharacters(
       continue;
     }
     const buffs: Record<string, TeamBuffEntry> = {};
+    const unison = (await kitOf(slotInfo.characterId)).unison;
+    const boonCounted = new Set<string>();
     for (const teammate of slotInfo.teammates) {
       Object.assign(
         buffs,
         providedBy(
           teammate, resolved[teammate], await statsOf(teammate), inventoryEchoes, slotInfo.skipped, await assumedSequenceOf(teammate),
           await modeOf(teammate), handoffs.get(teammate) ?? null, slotInfo.characterId, await modeOf(slotInfo.characterId),
+          unison, present.length - 1, boonCounted,
         ),
       );
+    }
+    // "each stack of Unison Boon on the team": the stacks this member can hold, with what the team just handed them
+    // raising the cap (Hsin's Gleaning Simple Joys, her S6) the way the calculator's own panel counts it
+    if (boonCounted.size) {
+      const held = getEffectiveMaxStacks(slotInfo.characterId, "UnisonBoon", unison.boonStacks, data.resonanceChains, data.buffs, buffs);
+      for (const key of boonCounted) if (buffs[key]?.stacks != null) buffs[key].stacks = Math.min(buffs[key].stacks!, held);
     }
     slotInfo.enabled = Object.keys(buffs);
     out[slotInfo.characterId] = {
