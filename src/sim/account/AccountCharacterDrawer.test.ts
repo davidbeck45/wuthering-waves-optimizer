@@ -13,7 +13,7 @@ function rankOf(props: { rosterSize: number; scoring?: boolean; damageRank?: num
   const { damageRank = 2, ...rest } = props;
   const w = mount(AccountCharacterDrawer, {
     props: { card: { ...card, damageRank }, items: [], rank: null, owned: [], ...rest },
-    global: { stubs: { RouterLink: true, CharacterAvatar: true, WeaponIcon: true, PresetNameLabel: true, MaterialsCostToMax: true, LevelsWorth: true } },
+    global: { stubs: { RouterLink: true, CharacterAvatar: true, WeaponIcon: true, PresetNameLabel: true, MaterialsCostToMax: true, LevelsWorth: true, BuffConflictNotices: true } },
   });
   return [w.find("[data-test-account-drawer-rank]").text(), w.find("[data-test-account-drawer-rank-sub]").text()];
 }
@@ -43,7 +43,7 @@ describe("AccountCharacterDrawer's teams beside Teams' figures", () => {
     useTeamRotationsStore().teams = [{ id: "mine", name: "Xuanling", characterIds: ["YangyangXuanling", "Suisui", "Chisa"], enemyConfig: { enemyLevel: 100, enemyResist: 0.2, havocBaneStacks: 9, glacioChafeStacks: 13 } }] as never;
     return mount(AccountCharacterDrawer, {
       props: { card: { ...card, id: "Chisa", name: "Chisa", teams: [team("mine", "yours"), team("wuwa_calc:Xuanling", "wuwa_calc")] } as unknown as RosterCard, items: [], rank: null, owned: [], rosterSize: 24 },
-      global: { stubs: { RouterLink: true, CharacterAvatar: true, WeaponIcon: true, PresetNameLabel: true, MaterialsCostToMax: true, LevelsWorth: true } },
+      global: { stubs: { RouterLink: true, CharacterAvatar: true, WeaponIcon: true, PresetNameLabel: true, MaterialsCostToMax: true, LevelsWorth: true, BuffConflictNotices: true } },
     });
   }
 

@@ -53,7 +53,8 @@
           :investment="shownInvestment"
           :pending="pendingCharacters"
           :owned="ownedKeys"
-          :focus="focus" />
+          :focus="focus"
+          @changed="refresh()" />
         <p v-if="errorCount" class="text-xs text-warning mt-2">
           {{ errorCount }} rotation{{ errorCount === 1 ? "" : "s" }} could not be scored (unknown actions on this build) and
           {{ errorCount === 1 ? "was" : "were" }} skipped — open a row's Rotations tab for which.

@@ -32,7 +32,7 @@ export const calcCharacterTool = defineTool<{ character: string; include_attacks
   provenance: "App engine · calculator page (your build, your enemy settings)",
   async run(input, ctx) {
     const id = resolveOwnCharacter(input.character, ctx.exp);
-    const calc = await calcCharacter(id, ctx.exp, { attacks: true, rotations: true });
+    const calc = await calcCharacter(id, ctx.exp, { attacks: true, rotations: true, warnings: true });
     const stats: Record<string, string> = {};
     for (const s of calc.stats) if (s.value !== 0 || ["stat-hp", "stat-atk", "stat-def", "stat-cr", "stat-cd", "stat-er"].includes(s.selector)) stats[s.label] = s.display;
     const attacks = calc.attacks
@@ -69,6 +69,7 @@ export const calcCharacterTool = defineTool<{ character: string; include_attacks
       notes: [
         "Damage per hit / per rotation, average = crit rate folded in.",
         calc.rotations.length ? null : "No saved rotations: list_rotations scores curated presets and wuwa_calc loops on this build.",
+        ...calc.warnings, // two buffs on that the game does not allow together, and what that does to these figures
       ].filter(Boolean),
     });
   },

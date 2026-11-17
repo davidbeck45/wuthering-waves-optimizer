@@ -22,6 +22,9 @@
         </button>
       </header>
 
+      <!-- two buffs on that the game does not allow together: this character's figures below count both (src/sim/buffConflicts/) -->
+      <BuffConflictNotices :character-id="card.id" :level="3" @changed="emit('changed')" @go="close" />
+
       <div class="dr__stats">
         <div class="dr-stat">
           <span class="dr-stat__label">Best DMG</span>
@@ -186,6 +189,7 @@ import PresetNameLabel from "../display/PresetNameLabel.vue";
 import MaterialsCostToMax from "../materials/MaterialsCostToMax.vue";
 import LevelsWorth from "../levels/LevelsWorth.vue";
 import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
+import BuffConflictNotices from "../buffConflicts/BuffConflictNotices.vue";
 import { characterShortName, elementColor, rarityColor, weaponDisplayName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { compact, pct } from "../myRankings/format";
@@ -233,7 +237,7 @@ const rankSub = computed(() =>
       ? `of ${props.rosterSize} scored`
       : "not scored yet",
 );
-const emit = defineEmits<{ close: []; calculator: [id: string] }>();
+const emit = defineEmits<{ close: []; calculator: [id: string]; /** a notice changed the build: the page scores again */ changed: [] }>();
 const dialog = ref<HTMLDialogElement | null>(null);
 
 const shortName = computed(() => characterShortName(props.card?.id));

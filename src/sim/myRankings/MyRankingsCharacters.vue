@@ -47,6 +47,10 @@
                   <span class="mr-pill" :class="{ 'mr-pill--max': c.sequence >= 6 }" :title="`Sequence ${c.sequence}`">S{{ c.sequence }}</span>
                   <span class="mr-pill" :class="{ 'mr-pill--max': c.refinement >= 5 }" :title="`Weapon refinement ${c.refinement}`">R{{ c.refinement }}</span>
                   <EnergyCharacterFloor :character-id="c.id" inline />
+                  <!-- two buffs on that the game does not allow together, counted twice: this row's figure is too high (the notice is in the row's details) -->
+                  <span v-if="readsHigh.has(c.id)" class="mr-pill mr-pill--warn" :title="readsHigh.get(c.id)" :data-test-my-rankings-reads-high="c.id">
+                    <span aria-hidden="true">!</span> Reads too high<span class="sr-only">: {{ readsHigh.get(c.id) }}</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -104,6 +108,8 @@
         <tr v-if="open[c.id]" class="row--panel" :data-test-my-rankings-details="c.id">
           <td :colspan="colspan" class="cell--panel">
             <div class="mr-panel">
+              <!-- two buffs on that the game does not allow together: the figures three ways, and the way to fix it (src/sim/buffConflicts/) -->
+              <BuffConflictNotices :character-id="c.id" :level="3" class="mr-panel__conflicts" @changed="emit('changed')" />
               <!-- Wuthering Tools+: ask Claude about this row, or share the build as a card / link -->
               <div class="mr-panel__actions" :data-test-my-rankings-actions="c.id">
                 <ExplainButton
@@ -215,6 +221,9 @@ import MyRankingsWhatIf from "./MyRankingsWhatIf.vue";
 import MyRankingsSubstats from "./MyRankingsSubstats.vue";
 import MyRankingsRotations from "./MyRankingsRotations.vue";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
+import BuffConflictNotices from "../buffConflicts/BuffConflictNotices.vue";
+import { useBuffConflicts } from "../buffConflicts/useBuffConflicts";
+import { conflictHeadline } from "../buffConflicts/conflictText";
 import { explainCharacterRank } from "../ai/explain/explainPayloads";
 import ShareButton from "../share/ShareButton.vue";
 import WhyNumberButton from "../anatomy/WhyNumberButton.vue";
@@ -246,7 +255,11 @@ const props = withDefaults(
   }>(),
   { pending: 0, owned: () => [], focus: null },
 );
-const emit = defineEmits<{ "update:sort": [value: { key: SortKey; dir: SortDir }] }>();
+const emit = defineEmits<{ "update:sort": [value: { key: SortKey; dir: SortDir }]; /** a notice changed a build: the page scores again */ changed: [] }>();
+
+// the characters whose build in use has two exclusive buffs on that the engine counts twice, with the sentence that says so
+const buffConflicts = useBuffConflicts();
+const readsHigh = computed(() => new Map(buffConflicts.counted.value.filter((v) => v.conflict.active).map((v) => [v.conflict.characterId, conflictHeadline(v.conflict)])));
 
 const sorted = computed(() => sortCharacters(props.ranks, props.sort.key, props.sort.dir));
 const rankById = computed(() => damageRanks(props.ranks));
@@ -491,6 +504,16 @@ function onRowClick(event: MouseEvent, c: CharacterRank): void {
 }
 :root[data-theme-style="dark"] .mr-pill--max {
   color: #f0c46a;
+}
+.mr-pill--warn {
+  gap: 0.25rem;
+  font-family: inherit;
+  color: oklch(var(--bc));
+  background: color-mix(in oklab, oklch(var(--wa)) 30%, oklch(var(--b1)));
+  box-shadow: inset 0 0 0 1px oklch(var(--wa) / 0.7);
+}
+.mr-panel__conflicts {
+  margin-bottom: 0.75rem;
 }
 .mr-weapon {
   display: flex;

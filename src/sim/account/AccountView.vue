@@ -60,6 +60,8 @@
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
       <div v-if="partial" role="status" class="alert alert-warning text-left text-sm mb-3" data-test-account-partial>{{ PARTIAL_RANKING_TEXT }}</div>
+      <!-- Wuthering Tools+: builds with two buffs on that the game does not allow together, and what that does to the figures (src/sim/buffConflicts/) -->
+      <BuffConflictNotices class="mb-3" quiet :level="2" @changed="refresh()" />
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
       <!-- Wuthering Tools+ energy check: "2 characters short on ER · 1 overcapping crit" (src/sim/energy/) -->
       <EnergySummaryTile class="acc-energy" data-test-account-energy />
@@ -119,7 +121,8 @@
       :section="drawerSection"
       :ranking-teams="ranking?.teams"
       @close="closeDrawer"
-      @calculator="toCalculator" />
+      @calculator="toCalculator"
+      @changed="refresh()" />
   </div>
 </template>
 
@@ -151,6 +154,7 @@ import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
 import WhatsNewCard from "../whatsNew/WhatsNewCard.vue";
 import NumbersMovedCard from "../numbersLog/NumbersMovedCard.vue";
+import BuffConflictNotices from "../buffConflicts/BuffConflictNotices.vue";
 import { useSavedNote } from "../persist/useSavedNote";
 import { onAccountAdopted } from "../storage/crossTabSync";
 

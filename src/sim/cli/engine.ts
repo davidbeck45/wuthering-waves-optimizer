@@ -23,6 +23,9 @@ import {
 } from "../substats/substatWeights";
 import { resolveTeamBuilds, resolveTeamCharacters, type SlotResolution } from "../teamContext/resolveTeam";
 import type { ExportFile } from "./exportShape";
+import { conflictsOfCharacter } from "../buffConflicts/buffConflicts";
+import { conflictFigures } from "../buffConflicts/conflictFigures";
+import { conflictWarning, overcountOf } from "../buffConflicts/conflictText";
 
 /** The stat cards of the calculator page, in its order; `selector` = the Cypress class the golden fixtures assert on. */
 export const STAT_ROWS: ReadonlyArray<{ selector: string; key: string; label: string; kind: "int" | "pct100" | "pct" }> = [
@@ -94,6 +97,9 @@ export interface CharacterCalc {
   stats: StatRow[];
   attacks: AttackRow[];
   rotations: RotationRow[];
+  /** plain sentences about the build these numbers ran on: two buffs on that the game does not allow together, and what
+   *  that does to the figures (src/sim/buffConflicts/). Filled when asked for (`warnings: true`), else empty */
+  warnings: string[];
 }
 export interface TeamCalc {
   id: string | null;
@@ -181,7 +187,7 @@ export function resolveCharacterKey(input: string, characters: Record<string, an
 export async function calcCharacter(
   id: string,
   exp: ExportFile,
-  options: { attacks?: boolean; rotations?: boolean } = {},
+  options: { attacks?: boolean; rotations?: boolean; warnings?: boolean } = {},
 ): Promise<CharacterCalc> {
   const characters = exp.characters;
   const data = characters[id];
@@ -201,7 +207,16 @@ export async function calcCharacter(
     stats: statRows(built.finalStats),
     attacks: [],
     rotations: [],
+    warnings: [],
   };
+  if (options.warnings) {
+    // what each pair does to the figures is measured (three scores of the best rotation and the team), so only on request.
+    // A pair the engine already counts once (it takes the stronger one alone) moves no figure and is no warning
+    for (const c of await conflictsOfCharacter(id, data)) {
+      const figures = await conflictFigures(c, characters, echoes, exp.teams);
+      if (["twice", "unknown"].includes(overcountOf(figures).kind)) result.warnings.push(conflictWarning(c, figures));
+    }
+  }
   if (options.attacks !== false) result.attacks = flattenAttacks(calcDamages(built.context));
   if (options.rotations !== false) {
     for (const rotation of (data.rotations ?? []) as any[]) {

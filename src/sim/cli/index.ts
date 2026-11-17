@@ -23,6 +23,9 @@ import { buildRollsOf } from "../rankings/myBuilds";
 import { SUBSTAT_ABBR } from "../substats/substatWeights";
 import { dmg, int, pct, printJson, table, wantsPretty, type OutputOptions } from "./format";
 import { anatomyCheck, anatomyReport, type AnatomyReport } from "../anatomy/anatomyCli";
+import { findBuffConflicts } from "../buffConflicts/buffConflicts";
+import { conflictFigures } from "../buffConflicts/conflictFigures";
+import { FIGURE_BASIS, conflictWarning, figureRows, overcountOf } from "../buffConflicts/conflictText";
 
 interface CommonOptions extends OutputOptions {
   export?: string;
@@ -94,6 +97,7 @@ function printCharacter(calc: CharacterCalc, options: { attacks: boolean; rotati
   console.log(
     `${calc.name} (${calc.id})  Lv ${calc.level}  S${calc.sequence}  ${calc.weapon ?? "no weapon"}${calc.refinement ? ` R${calc.refinement}` : ""}  enemy Lv ${calc.enemy.enemyLevel} / ${pct(calc.enemy.enemyResist * 100, 0)} RES`,
   );
+  for (const w of calc.warnings) console.log(`\nWarning: ${w} \`conflicts\` prints the figures with only the one and only the other.`);
   console.log("\nStats");
   console.log(table(calc.stats.map((s) => [`  ${s.label}`, s.display])));
   if (options.rotations) {
@@ -441,9 +445,38 @@ export function registerPlusCommands(program: Command): void {
     guarded(async (character: string, options: CommonOptions & { attacks: boolean; rotations: boolean }) => {
       const exp = load(options);
       const id = resolveCharacterKey(character, exp.characters);
-      const calc = await quiet(() => calcCharacter(id, exp, { attacks: options.attacks, rotations: options.rotations }));
+      const calc = await quiet(() => calcCharacter(id, exp, { attacks: options.attacks, rotations: options.rotations, warnings: true }));
       if (!wantsPretty(options)) return printJson({ export: exp.path, ...calc });
       printCharacter(calc, options);
+    }),
+  );
+
+  withCommon(
+    program
+      .command("conflicts")
+      .description("Builds with two buffs on that the game does not allow together (Ryan's mutuallyExclusiveWith), on every character and saved build, with the best rotation and the team as saved, with only the one and with only the other — reads, never writes (Wuthering Tools+)")
+      .option("--no-figures", "list the builds only, without running the engine")
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (options: CommonOptions & { figures: boolean; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const found = await findBuffConflicts(exp.characters);
+      const out = [];
+      for (const c of found) {
+        const figures = options.figures ? await quiet(() => conflictFigures(c, exp.characters, exp.inventory.echoes, exp.teams, { autoTeamBuffs: options.autoBuffs })) : null;
+        out.push({ ...c, warning: conflictWarning(c, figures), counted: options.figures ? overcountOf(figures).kind : null, figures });
+      }
+      if (!wantsPretty(options)) return printJson({ export: exp.path, conflicts: out });
+      if (!out.length) return console.log("No build on this export has two buffs on that cannot be active together.");
+      for (const c of out) {
+        console.log(`${c.warning}`);
+        if (!c.figures) continue;
+        const rows = figureRows(c, c.figures);
+        if (rows.rotation) console.log(table([["  Best rotation", "Average", "Against saved"], ...rows.rotation.map((r) => [`  ${r.label}`, r.text, r.change || "-"])]));
+        if (rows.team) console.log(table([[`  Team ${c.figures.team!.name}`, "Average", "Against saved"], ...rows.team.map((r) => [`  ${r.label}`, r.text, r.change || "-"])]));
+        else console.log(`  No team figure: ${c.figures.teamNote ?? "none"}`);
+        console.log(`  ${FIGURE_BASIS}\n`);
+      }
     }),
   );
 
