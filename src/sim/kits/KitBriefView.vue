@@ -53,6 +53,9 @@
             Every figure on this page is <b>wuwa_calc's team DPS</b> (Riley31415's engine, damage per second) on <b>his standard builds</b>, not your account's.
             Each team has a link to the same team at your account.
           </p>
+          <p class="kit-muted mt-1" data-test-kit-table-hint>
+            Riley's table (Team rankings) opens on each team's average damage per rotation: tap the “Avg damage / rotation” heading there for team DPS, the figure on this page.
+          </p>
           <details class="kit-more">
             <summary>What his standard builds are, and why other pages show other numbers</summary>
             <p class="kit-muted">{{ basisText(file._meta) }}</p>

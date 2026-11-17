@@ -281,6 +281,47 @@ describe("resonator briefs", () => {
     }
   });
 
+  it("Lily: says before any figure that Riley's engine has her 3.8 beta kit, where her figures are on his table, and one main echo per loop", () => {
+    cy.visit("/kit/lily", seed());
+    cy.get("[data-test-kit-differs]", { timeout: 20000 })
+      .should("contain.text", "Riley's engine still has Lily's kit from the 3.8 beta, not the released game's.")
+      .and("contain.text", "Basic - Mend and Cleanse 1: hits for 74.28 % in his engine, 63.62 % in the released game");
+    // above the account block and every figure
+    cy.get("[data-test-kit-differs]").then(($d) => {
+      const account = Cypress.$("[data-test-kit-account]")[0]!;
+      expect($d[0]!.compareDocumentPosition(account) & Node.DOCUMENT_POSITION_FOLLOWING, "the note comes first").to.be.greaterThan(0);
+    });
+    // where her figures can be found on his table, and in which column
+    cy.get("[data-test-kit-table-hint]").should("contain.text", "“Avg damage / rotation” heading there for team DPS");
+    // a brief whose engine kit is the released game's says nothing of the kind
+    cy.visit("/kit/cartethyia", seed());
+    cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+    cy.get("[data-test-kit-differs]").should("not.exist");
+    // the loop names the main echoes a build may carry as one step
+    cy.visit("/kit/lily", seed());
+    cy.get("[data-test-kit-loop]", { timeout: 20000 }).first().should("contain.text", "the Echo Skill of the main echo you carry (");
+    expectNoHorizontalScroll("Lily's brief");
+  });
+
+  it("a damaged briefs file: says so, and Try again loads it once the file is whole; the list never fetches it", () => {
+    let damaged = true;
+    cy.intercept("GET", /\/src\/sim\/kits\/data\/kits\.json(?!.*import)/, (req) => {
+      if (damaged) req.reply({ statusCode: 200, headers: { "content-type": "application/json" }, body: '{"_meta": {"generatedBy": "export_kits.mjs"}, "builds": [' });
+      else req.continue();
+    }).as("briefs");
+    cy.visit("/kit", seed());
+    cy.get("[data-test-kit-row]", { timeout: 20000 }).should("have.length.greaterThan", 40);
+    cy.get("@briefs.all").should("have.length", 0); // the list reads the small index only
+    cy.visit("/kit/cartethyia", seed());
+    cy.get("[data-test-kit-failed]", { timeout: 30000 }).should("contain.text", "Cartethyia's brief did not load");
+    cy.then(() => {
+      damaged = false;
+    });
+    cy.get("[data-test-kit-retry]").click();
+    cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+    cy.get("[data-test-kit-failed]").should("not.exist");
+  });
+
   it("says so when the brief does not load, and Try again loads it", () => {
     // the briefs are a file of their own, fetched by the page; under the dev server (what CI runs) it is this address
     let fail = true;
