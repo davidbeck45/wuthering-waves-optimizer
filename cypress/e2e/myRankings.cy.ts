@@ -72,6 +72,14 @@ describe("my roster rankings", () => {
       });
     cy.get("[data-test-my-rankings-substats-help] summary").should("contain.text", "How to read");
     cy.get("[data-test-my-rankings-substats-echoes] .badge").should("have.length", 5);
+    // the calculator's Echo Insights table (Ryan's #693) answers the same question with other figures: one line says
+    // what this list measures instead, and links to that panel
+    cy.get("[data-test-my-rankings-substats-vs-insights]")
+      .should("contain.text", "Echo Insights")
+      .and("contain.text", "Live Result Bar")
+      .and("contain.text", "on an echo you wear")
+      .and("contain.text", "the best rotation on the ranking enemy (level 100, 20 % RES)");
+    cy.get("[data-test-my-rankings-substats-insights-link]").should("have.attr", "href", "/?screen=echoes");
 
     // every rotation tried, best first; the what-if result is still there when its tab comes back
     cy.get('[data-test-my-rankings-rotations="Cartethyia"]').click();

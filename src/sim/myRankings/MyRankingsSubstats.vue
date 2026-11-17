@@ -5,6 +5,13 @@
       <template v-if="state.result">{{ fmt(state.result.baselineExtra.raw ?? state.result.baseline) }} average damage</template><template v-else>damage</template>
       on {{ rotationTitle }}. Left of each arrow is the size of the roll, right of it the damage it adds. The top of the list is what to look for.
     </div>
+    <!-- Ryan's Echo Insights table (#693) answers the same question on the calculator, with other figures: say why -->
+    <p class="subs__help text-xs opacity-70 mb-1" data-test-my-rankings-substats-vs-insights>
+      The calculator's Echo Insights panel shows other figures for the same roll: it measures the attack or rotation in its Live Result Bar, on the
+      calculator's enemy. This list places the roll on an echo you wear and scores the best rotation on the ranking enemy (level
+      {{ RANKING_ENEMY.enemyLevel }}, {{ Math.round(RANKING_ENEMY.enemyResist * 100) }} % RES).
+      <RouterLink :to="{ path: '/', query: { screen: 'echoes' } }" class="link link-primary whitespace-nowrap" data-test-my-rankings-substats-insights-link @click="openInsights">Open Echo Insights ›</RouterLink>
+    </p>
     <details class="subs__help text-xs mb-2" data-test-my-rankings-substats-help>
       <summary class="cursor-pointer opacity-70 hover:opacity-100">How to read these numbers</summary>
       <ul class="subs__help-list opacity-80">
@@ -77,6 +84,10 @@ const { characters } = storeToRefs(characterStore) as unknown as { characters: {
 
 const state = computed(() => substatsStateOf(props.rank));
 const rotationTitle = computed(() => parsePresetName(props.rank.best?.name).title || "its best rotation");
+
+/** The link's target is the calculator's Echoes screen (`/?screen=echoes`), which shows its active character: make
+ *  this row's character that one on the way. */
+const openInsights = (): void => (characterStore as unknown as { setActiveCharacter: (id: string) => void }).setActiveCharacter(props.rank.id); // eslint-disable-line no-unused-vars -- the parameter of a method type
 
 const rollLabel = (value: number, flat: boolean): string => (flat ? `+${Math.round(value)}` : `+${value.toFixed(1)}%`);
 const echoLabel = (key: string | null): string => (key ? ((mainEchoesData as Record<string, { name?: string }>)[key]?.name ?? key) : "echo");
