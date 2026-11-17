@@ -71,6 +71,10 @@
 .kit-card--mine {
   box-shadow: inset 0 0 0 1px oklch(var(--p) / 0.45);
 }
+/* the engine's kit is not the released game's: a border only, the text keeps the card's AA colours */
+.kit-card--warn {
+  box-shadow: inset 0 0 0 2px oklch(var(--wa) / 0.8);
+}
 /* a link's colour is set here, not inherited: the build turns this exact declaration into each theme's AA-safe
    primary (a11y/vitePlugin.ts), where the inherited link colour reads 3.5 to 4.1 : 1 on a card */
 .kit-link {

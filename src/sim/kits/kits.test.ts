@@ -1,6 +1,9 @@
 // Wuthering Tools+: gates the GENERATED kit tables under ./data (wuwa-tools rotation-port/export_kits.mjs) the way
 // presets/wuwaCalcPresets.test.ts gates the stock presets: every kit resolves to an app character or is left out by
 // the registry rule, and every team, weapon-less member and breakpoint it names resolves. Then the model's readings.
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import kitsFile from "./data/kits.json";
 import indexFile from "./data/kitIndex.json";
@@ -10,6 +13,7 @@ import { RILEY_TIERS } from "../rankings/filterChips";
 import { appKeyOf, rileyNameOf } from "../rankings/rileyNames";
 import { loadSequenceBreakpoints } from "../presets";
 import {
+  differsText,
   COST_CODE,
   changeScope,
   costLabel,
@@ -57,6 +61,24 @@ describe("kit briefs (generated data)", () => {
     expect(file._meta.basis).toContain("Lv100");
     expect(file._meta.unit).toContain("per second");
     expect(indexFile._meta.wuwaCalcCommit).toBe(file._meta.wuwaCalcCommit);
+  });
+
+  it("a kit whose stock loops list motion values that differ from the game carries them, and no other kit does (Lily: the 3.8 beta)", () => {
+    const dir = resolve(dirname(fileURLToPath(import.meta.url)), "../presets/data/rotations") + "/";
+    const differsIn = (key: string): Set<string> => {
+      const f = `${dir}${key}.json`;
+      if (!existsSync(f)) return new Set();
+      const text = JSON.stringify(JSON.parse(readFileSync(f, "utf8")));
+      return new Set([...text.matchAll(/(?:: |; )([^;:]+?) [\d.]+% \u2192 (\w+) [\d.]+%/g)].map((m) => m[1]!));
+    };
+    for (const kit of kits) {
+      const casts = differsIn(kit.appKey);
+      expect(new Set(kit.differs?.rows.map((r) => r.cast) ?? []), kit.name).toEqual(casts);
+    }
+    const lily = file.kits.Lily!;
+    expect(lily.differs?.source).toBe("3.8 beta");
+    expect(lily.differs?.rows.map((r) => r.row)).toEqual(["BasicAttackStage1DMG", "BasicAttackStage2DMG", "BasicAttackStage3DMG", "BasicAttackStage4DMG"]);
+    for (const r of lily.differs!.rows) expect(Math.abs(r.calc / r.app - 1), r.cast).toBeGreaterThan(0.01);
   });
 
   it("the index and the briefs name the same resonators, with the same facts", () => {
@@ -276,6 +298,16 @@ describe("who the app shows (the registry rule)", () => {
 });
 
 describe("the model's readings", () => {
+  it("a brief whose engine kit is not the released game's opens with a plain warning; one that is says nothing", () => {
+    expect(differsText({}, "Aemeath")).toBeNull();
+    expect(differsText({ differs: { why: "x", rows: [] } }, "Aemeath")).toBeNull();
+    const t = differsText(file.kits.Lily!, "Lily")!;
+    expect(t.head).toBe("Riley's engine still has Lily's kit from the 3.8 beta, not the released game's.");
+    expect(t.rows[0]).toBe("Basic - Mend and Cleanse 1: hits for 74.28 % in his engine, 63.62 % in the released game");
+    expect(t.tail).toContain("uses the 3.8 beta numbers");
+    expect(differsText({ differs: { why: "other data", rows: [{ cast: "A", calc: 10, row: "R", app: 12 }] } }, "X")!.head).toBe("Riley's engine holds other numbers for X than the released game.");
+  });
+
   it("finds a brief by slug, by Riley's name and by either Rover key", () => {
     expect(kitSlug("Luuk Herssen")).toBe("luuk-herssen");
     expect(kitPath("Aero Rover")).toBe("/kit/aero-rover");

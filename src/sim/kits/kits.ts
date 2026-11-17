@@ -127,6 +127,38 @@ export interface Kit extends Omit<KitIndexEntry, "main" | "support"> {
   /** per Team Cost, the best teams, best first */
   best: Record<string, KitTeamFact[]>;
   ladder: KitLadder | null;
+  /**
+   * Where Riley's kit and the released game hold other numbers for one press (Lily: his kit is the 3.8 beta's). Read by
+   * the generator from the stock loops' own report, so it is absent once his kit matches the game and the data is
+   * regenerated.
+   */
+  differs?: KitDiffers;
+}
+
+export interface KitDiffers {
+  /** the mapper's reason, as `overrides.json` words it */
+  why: string;
+  /** where his kit comes from, when the reason names it ("3.8 beta") */
+  source?: string;
+  /** each press, his engine's motion value against the app's (the released game's), in percent */
+  rows: Array<{ cast: string; calc: number; row: string; app: number }>;
+}
+
+/** The warning a brief opens with when the engine's kit is not the released game's, in a player's words; null when it is. */
+export function differsText(kit: Pick<Kit, "differs">, name: string): null | { head: string; rows: string[]; tail: string } {
+  const d = kit.differs;
+  if (!d || !d.rows.length) return null;
+  const pct = (n: number) => `${n.toFixed(2)} %`;
+  return {
+    head: d.source
+      ? `Riley's engine still has ${name}'s kit from the ${d.source}, not the released game's.`
+      : `Riley's engine holds other numbers for ${name} than the released game.`,
+    rows: d.rows.map((r) => `${r.cast}: hits for ${pct(r.calc)} in his engine, ${pct(r.app)} in the released game`),
+    tail:
+      `Every team DPS, ranking and investment step on this page comes from his engine, so it uses ${d.source ? `the ${d.source}` : "his"} numbers for these hits. ` +
+      `This app's own figures (the calculator, My account, the stock loops) use the released game's. ` +
+      `This note goes away by itself once his engine has the released kit.`,
+  };
 }
 
 export interface KitsFile {

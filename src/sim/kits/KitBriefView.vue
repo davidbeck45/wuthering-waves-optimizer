@@ -39,6 +39,15 @@
           <a v-for="s in sections" :key="s.id" :href="`#${s.id}`" class="kit-pill" :data-test-kit-jump="s.id" @click.prevent="jump(s.id)">{{ s.label }}</a>
         </nav>
 
+        <!-- the engine's kit is not the released game's (Lily: the 3.8 beta's): said before any figure, fed by the generator -->
+        <div v-if="differs" class="kit-card kit-card--warn" role="note" data-test-kit-differs>
+          <p class="kit-text"><b>{{ differs.head }}</b></p>
+          <ul class="kit-list mt-1">
+            <li v-for="(row, n) in differs.rows" :key="n" class="kit-muted">{{ row }}</li>
+          </ul>
+          <p class="kit-muted mt-1">{{ differs.tail }}</p>
+        </div>
+
         <div data-test-kit-basis>
           <p class="kit-muted">
             Every figure on this page is <b>wuwa_calc's team DPS</b> (Riley31415's engine, damage per second) on <b>his standard builds</b>, not your account's.
@@ -348,6 +357,7 @@ import {
   ROLE_LABEL,
   basisText,
   costLabel,
+  differsText,
   dpsText,
   echoText,
   energyText,
@@ -490,6 +500,7 @@ function jump(id: string): void {
 // ---- role
 const roleLines = computed(() => (kit.value && file.value ? roleText(kit.value, name.value, file.value._meta.sustain.filter((n) => shownIndex.value.some((k) => k.name === n))) : []));
 const mixLines = computed(() => (kit.value ? mixText(kit.value, name.value) : []));
+const differs = computed(() => (kit.value ? differsText(kit.value, name.value) : null));
 
 // ---- how they are played
 const titles = computed(() => (kit.value ? loadoutTitles(kit.value.loadouts) : []));
