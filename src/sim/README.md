@@ -4756,3 +4756,60 @@ Left for later: the stat bonuses as steps (their keys map to the table's two tie
 override freezes them, which needs handling first); the game's unlock order, once a source for it is in the materials
 generator; a level row in the invest list, if the list ever shows a cost beside a gain; materials per step of the order
 (the list has them per track).
+
+## The 11-10 fixes, checked a second time — teams, pins, solvers (batch 4, lane "verify-a", 2026-11-16)
+
+The pins fix (8802ecc0), the Energy Regen floor in Build my team and Whole account (4ede02b1, cc91e850, c8214d55) and the
+four Optimize team hooks (ad5aa25b, ae06beb7, b17f20bf, 2b4a6007) each had one check, by the lane that wrote it. This
+pass used the site: four accounts built from one export (a team that pins weaker builds than the active ones, the same
+builds made active, a team that pins the stronger builds, the export as it is), every page read against Teams, a pin
+moved in the tab and from a second tab, the pinned build deleted, a pinned build with an empty slot, each run saved,
+reloaded and undone. All nine held on the pages they named. Five things next to them did not:
+
+- **Build my team asked wuwa_calc at the active builds** (`buildTeam/buildTeamAccount.ts`). The pins fix covered
+  /energy, /rotation, /endgame and `cli er`; Build my team's Plan step, the review's "wuwa_calc DPS … → …" and
+  `cli build-team` still used `rileyAccountOf`. A team whose pins run 353,983 read "wuwa_calc · your echoes · 367,567
+  DPS" there, the plan's 3-cost main stats came out for the other builds, and the figure after a Save counted a member
+  whose box is not ticked on the active build. One rule now, `buildTeamAccount(team, …, { auto, drafts })`: a saved team
+  at the builds it runs (`rileyAccountForTeam`), a ticked new build pinned in its slot's place (what apply.ts writes);
+  three nobody saved at the active builds. Whole account's plans still ask at the active builds: it prints no wuwa_calc
+  figure, so nothing disagrees on screen, but a pinned build with another weapon gets the active weapon's need.
+- **Optimize team's drawer and a build read by name** (`teamContext/optimizerDrawerScope.ts`). The drawer's scope came
+  from `team.buildIds[slot]` alone. A slot with no pin whose build the resolver finds by name ("Moonlit (Lupa +
+  Galbrena)", David's own habit) is read by the Team page and the search, and the drawer wrote the active build instead:
+  the 11-09 finding again, for the second way a team picks a build. `drawerScopeOf(team, characters, { slot,
+  characterId }, auto)` is the build `resolveTeamBuilds` gives the slot. **It has one caller to gain:** the `drawerScope`
+  computed in `TeamOptimizerSetup.vue`, a file the 2026-11-16 merge rewrote, so that line goes in after the merge.
+- **Whole account stacked copies of a plan** (`buildTeam/account/accountApply.ts` `alreadyStored`, `storedBuildOf`). A
+  chosen team nobody saved gets builds no team pins; with "Also make active" off nothing wears them either, so the next
+  run planned the same builds and Save wrote "Account plan (2)", "(3)" … beside them, each an exact copy. A member no
+  chosen saved team would pin, whose plan equals one of their stored builds (every build field, the worn build left
+  out: that one is `sameEchoes`' question), is left out of a Save that would not make it active. The review counts them
+  apart ("No new builds, 9 keep today's echoes, 2 already saved"), their card says which build holds the plan, and the
+  count is not asked again once this review's own Save is in. With "Also make active" the build is still written.
+- **Energy check's floor per character was read off the first team in the list** (`energy/energyCheck.ts`
+  `characterFloors`, its `haveIn`). Since the pins fix a character has an Energy Regen per team. Two teams that share
+  the need (a kit's own floor always does) and run different builds of her gave "has 287.0 % · ok · 2 teams" or "has
+  250.6 % · short" depending on which was saved first. On a tie in the need the floor names the team whose build has
+  less; /my-rankings' ER pill reads the same floor. The need, and every team's entry in `all`, are unchanged.
+- **The assistant's wuwa_calc tools asked at the active builds** (`ai/tools/riley.ts` `rileyForTeam`). The 11-09 report
+  named this seam and left it: `energy_check`, `team_rotation`, `build_team_plan` and `toa_check` ran on an engine bound
+  to the export's active builds, so "Explain these needs" on a pinned team answered 367,567 DPS beside "build: Team
+  plan" and the page's 353,983. A provider takes its account as an export, so a saved team's question hands it the
+  export as that team reads it (`resolveTeamBuilds`), which is `rileyAccountForTeam`'s account and shares the page's
+  memo; three nobody saved, and a team on its active builds, keep the one engine. `toa_check` (`ai/tools/endgame.ts`
+  `seasonCheck`) gives each pinned team that engine through the runner's per-call `account`, and keys its check with
+  `pinnedAccounts` as `useToa.ts` does, so the page's stored check is reused on an account with pins too.
+
+Held, and how it was tried, is in `wto-wt/b4/reports/verify-a.md`. Open, from 11-09, both outside tonight's merge:
+- **Leaving Optimize team drops the run and its results.** It is a mode of the Teams page (`showOptimizer` in
+  `TeamRotations.vue`), not an address: Back from the results or mid-run goes to the page before /teams, Forward comes
+  back to the team with the optimizer closed. Back alone is `installSheetBackGuard` on `showOptimizer` (five lines in
+  `TeamRotations.vue`); keeping the result for Forward or a reload means holding the last rows per team and account in
+  `useTeamOptimizer.ts`, as Build my team's `keptReview` does (about forty lines and a test).
+- **A per-action weapon passive override is ignored by the search.** `scoreOptimizerRotation` (`calculator/optimizer.ts`)
+  rebuilds an override action's final stats from `variant.weaponPassiveStats`, then hands `buildOptimizerCalculationContext`
+  the un-overridden `context.weaponData`, which is where an attack reads per-attack passives (DMG Deepen, DEF ignore).
+  One line: pass `weaponData: { ...context.weaponData, weaponPassiveStats: variant.weaponPassiveStats }` in that call. It
+  is upstream's scorer and the load bound scores through it, so it wants the `statScaledBound` and `optimizerPool` suites
+  and a scorer-against-`calcTeamRotationDamage` test with it. No rotation on David's export uses such an override.
