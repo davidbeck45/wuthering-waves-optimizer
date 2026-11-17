@@ -58,6 +58,16 @@ function whenIdle(): Promise<void> {
   });
 }
 
+/** For the last build's ranking: idle time too, but soon. It is found as the page loads, when the run that follows is
+ *  starting; it has to be in the log before that run's record, and that record waits for it (`earlierWaitMs`). */
+function soon(): Promise<void> {
+  return new Promise((resolve) => {
+    const ric = (globalThis as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => unknown }).requestIdleCallback;
+    if (typeof ric === "function") ric(() => resolve(), { timeout: 1500 });
+    else setTimeout(resolve, 60);
+  });
+}
+
 /** an earlier ranking on its way into the log (`recordEarlierRanking`): the run's own record goes in after it */
 let earlier: Promise<unknown> = Promise.resolve();
 
@@ -110,7 +120,7 @@ export function recordEarlierRanking(fingerprint: string, ranking: RosterRanking
   const job = (async (): Promise<RecordOutcome> => {
     try {
       if (!fingerprint || !ranking || ranking.incomplete || !meta?.build || !Number.isFinite(meta.at)) return "skipped";
-      if (env.idle) await env.idle(); // no wait of its own: it has to be in before the run ends
+      await (env.idle ?? soon)();
       const storage = "storage" in env ? (env.storage ?? null) : localArea();
       if (!storage) return "skipped";
       if (meta.build === (env.build ?? appBuildId())) return "skipped";
