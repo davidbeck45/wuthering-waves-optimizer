@@ -95,6 +95,8 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:weapons:value", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of the weapon values" },
   { key: "wtplus:weapons:selector", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of the selector picks" },
   { key: "wtplus:ai:chat", area: "session", fate: "goes", backup: "session", why: "this tab's Ask chat: it opens with a snapshot of the account" },
+  { key: "wtplus:numbers:log:v1", area: "local", fate: "goes", backup: "cache", why: "What moved in your numbers: the log of your characters' and teams' damage figures" },
+  { key: "wtplus:numbers:importedAt", area: "local", fate: "goes", backup: "marker", why: "when a Settings import last replaced the account: the log's note about it" },
 
   // ---- choices that point at the account's teams and echoes
   { key: "wtplus:buildAccount:choice:v1", area: "local", fate: "goes", backup: "preference", why: "the teams picked for Whole account, by team id" },
@@ -158,7 +160,7 @@ export const DELETE_CARD_TEXT = "Deletes your characters, builds, echoes and tea
 /** The confirm. The paragraph says what goes and that it is final; the list is what stays. The list sits in a box that
  *  scrolls past 12rem, so it is kept to two lines that fit a 360 px phone at 130 % text without scrolling. */
 export const DELETE_CONFIRM_TEXT =
-  "This deletes your characters and their builds, your echoes and your teams. Build history, every Undo, the automatic backups in this browser, saved results, the Energy and Tower checks, your logged clears, Echo plan progress and this tab's Ask chat go with them. It cannot be undone: download a copy first if you may want them back.";
+  "This deletes your characters and their builds, your echoes and your teams. Build history, every Undo, the automatic backups in this browser, saved results, the Energy and Tower checks, your logged clears, the log of your damage figures, Echo plan progress and this tab's Ask chat go with them. It cannot be undone: download a copy first if you may want them back.";
 export const DELETE_CONFIRM_ITEMS: readonly string[] = [
   "Kept: your settings (theme, UI version, Labs switches, page options) and the assistant's API key.",
   "Kept: your Convene pull history (My pulls has its own Forget) and Today's checklist.",

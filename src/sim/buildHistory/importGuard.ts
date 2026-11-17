@@ -7,6 +7,7 @@
 // so the share codec and the engine stay in the lazy chunk.
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { stampImport } from "../numbersLog/importStamp";
 
 export const PENDING_KEY = "wtplus:buildHistory:pendingImport";
 
@@ -73,6 +74,7 @@ export function installImportGuard(stores: Stores): () => void {
   void flushPendingImport().catch(() => undefined);
   return stores.character.$onAction(({ name, args }) => {
     if (name !== "hardSetState") return;
+    stampImport(); // "What moved in your numbers" says once that an import sits between two records
     try {
       const pending = pendingFrom(stores.character.characters, args?.[0]?.characters, stores.inventory.echoes);
       if (!pending) return;

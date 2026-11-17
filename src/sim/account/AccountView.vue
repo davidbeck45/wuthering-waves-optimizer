@@ -63,6 +63,8 @@
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
       <!-- Wuthering Tools+ energy check: "2 characters short on ER · 1 overcapping crit" (src/sim/energy/) -->
       <EnergySummaryTile class="acc-energy" data-test-account-energy />
+      <!-- Wuthering Tools+ "What moved in your numbers": the three biggest moves since the last record (src/sim/numbersLog/) -->
+      <NumbersMovedCard class="acc-energy" :scoring="rankingStatus.state === 'running'" />
 
       <div class="acc-grid">
         <AccountInvest
@@ -148,6 +150,7 @@ import { drawerOwnOf } from "./ownUpgrades";
 import EnergySummaryTile from "../energy/EnergySummaryTile.vue";
 import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a glance
 import WhatsNewCard from "../whatsNew/WhatsNewCard.vue";
+import NumbersMovedCard from "../numbersLog/NumbersMovedCard.vue";
 import { useSavedNote } from "../persist/useSavedNote";
 import { onAccountAdopted } from "../storage/crossTabSync";
 

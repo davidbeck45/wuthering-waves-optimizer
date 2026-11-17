@@ -63,6 +63,13 @@ export function rankingFingerprint(inputs: RankingInputs): string {
   return `v${RANKING_CACHE_VERSION}:${cyrb53(data)}:${data.length.toString(36)}:${inputs.investment ? "i" : "-"}${inputs.autoTeamBuffs ? "a" : "-"}`;
 }
 
+/** The two options a fingerprint was made with (its last two characters): the numbers log scores neither again, it
+ *  reads them back. */
+export function fingerprintOptions(fingerprint: string): { investment: boolean; autoTeamBuffs: boolean } {
+  const flags = fingerprint.slice(-2);
+  return { investment: flags[0] === "i", autoTeamBuffs: flags[1] === "a" };
+}
+
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
 const sessionStore = (): StorageLike | null => {
@@ -218,7 +225,10 @@ export function sharedRanking(
       // the engine's loaders swallow a lost chunk: a weapon reads as no weapon, with nothing in the ranking to tell
       const ranking = lostChunk() ? { ...scored, incomplete: true } : scored;
       // Clear was pressed during the run: the pages were told they score again on the next visit
-      if (tabCopyStamp() === stamp) writeCachedRanking(fingerprint, ranking, storage);
+      if (tabCopyStamp() === stamp) {
+        writeCachedRanking(fingerprint, ranking, storage);
+        noteScored(fingerprint, ranking);
+      }
       return ranking;
     })
     .finally(() => {
@@ -230,6 +240,20 @@ export function sharedRanking(
 /** Whether a run for `fingerprint` is in flight (tests, and a page deciding what to say). */
 export function rankingInFlight(fingerprint: string): boolean {
   return runs.has(fingerprint);
+}
+
+/** How many runs are in flight in this tab, whatever they score ("What moved in your numbers" says one is running). */
+export function rankingsInFlight(): number {
+  return runs.size;
+}
+
+/** A ranking scored on this visit that came out whole is one point in the numbers log (src/sim/numbersLog/, "What moved
+ *  in your numbers"). Its module loads here, after the run, and writes in idle time; nothing it does reaches the page
+ *  that ranked. Only a run comes through here: a ranking painted from a tab copy or the saved results was logged when it
+ *  was scored, and is not logged again as if new. */
+function noteScored(fingerprint: string, ranking: RosterRanking): void {
+  if (ranking.incomplete || typeof window === "undefined") return;
+  void import("../numbersLog/recordRanking").then((m) => m.recordScoredRanking(fingerprint, ranking)).catch(() => undefined);
 }
 
 // Settings › Clear saved results: this tab's copies go too
