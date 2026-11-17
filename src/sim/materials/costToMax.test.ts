@@ -1,7 +1,10 @@
-// "Cost to max" on the generated table (the game's own upgrade tables, version 3.7). The from-level-1 totals below were
+// "Cost to max" on the generated table (the game's own upgrade tables, version 3.8). The from-level-1 totals below were
 // checked step by step on 2026-11-02 against Kuro's own community wiki (ascension per rank, Forte per level, both inherent
 // skills, the stat bonuses, weapon ascension per step) and the Fandom wiki's levelling pages (EXP per level, 0.35 / 0.4
-// Shell Credits per EXP): spike ~/Projects/wto-wt/b3/materials-spike/scripts/kuro_check.py, curves_check.py.
+// Shell Credits per EXP): spike ~/Projects/wto-wt/b3/materials-spike/scripts/kuro_check.py, curves_check.py. Lily and
+// Lullaby (3.8) were checked the same way on 2026-11-16: 20 comparisons, all equal (her six ranks, five Forte ladders,
+// both inherent skills, the eight stat bonuses; the weapon's six steps and their sum, materials only, since its wiki
+// page lists no Shell Credits per step).
 import { describe, expect, it } from "vitest";
 import table from "./data/materials.json";
 import { costToMax, hasSavedProgress, parseLevel, savedProgressOf, unsavedWords, type CostToMax, type MaterialsData } from "./costToMax";
@@ -24,9 +27,11 @@ describe("the table", () => {
     const { characters, weapons } = appEntries();
     expect(characters.filter((k) => !data.characters[k])).toEqual([]);
     expect(weapons.filter((k) => !data.weapons[k])).toEqual([]);
-    expect(data.gameVersion).toBe("3.7");
+    expect(data.gameVersion).toBe("3.8");
     expect(data.fetched).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(data.characters.Lily).toBeUndefined(); // 3.8, not released
+    // 3.8's resonator and her signature weapon, released 2026-11: in the table since the app lists them
+    expect(data.characters.Lily).toMatchObject({ id: 1512, rarity: 5 });
+    expect(data.weapons.Lullaby).toMatchObject({ rarity: 5, max: 90 });
   });
   it("has one resonator EXP curve to 90 and 0.35 / 0.4 Shell Credits per EXP", () => {
     expect(data.resonatorExp.perLevel).toHaveLength(89);
@@ -98,6 +103,60 @@ describe("from level 1 — the cross-checked totals", () => {
     expect(c.total.credits).toBe(1_023_300 + 1_400_000 + 630_000 + 1_406_960);
     expect(mats(c.total.expItems)).toEqual({ "Premium Resonance Potion": 122, "Premium Energy Core": 135 });
     expect(mats(c.total.materials)["Melodic String"]).toBe(55 + 12 + 20);
+  });
+
+  it("Lily (3.8 5★) with Lullaby (3.8 5★ weapon)", () => {
+    const c = scratch("Lily", "Lullaby");
+    const level = part(c, "level");
+    expect(level.exp).toBe(2_438_000);
+    expect(level.credits).toBe(1_023_300); // 853,300 for the EXP + 170,000 for the six ascensions
+    expect(level.ascensions).toBe(6);
+    expect(mats(level.materials)).toEqual({
+      "LF Exoswarm Core": 4,
+      "MF Exoswarm Core": 12,
+      "HF Exoswarm Core": 12,
+      "FF Exoswarm Core": 4,
+      "Suncoveter's Reach": 46,
+      "Reverie Lily": 60,
+    });
+    const forte = part(c, "forte");
+    expect(forte.credits).toBe(1_400_000); // 5 × 280,000
+    expect(mats(forte.materials)).toEqual({
+      "LF Exoswarm Core": 25,
+      "MF Exoswarm Core": 25,
+      "HF Exoswarm Core": 25,
+      "FF Exoswarm Core": 45,
+      "Incomplete Combustor": 25,
+      "Aftertune Combustor": 25,
+      "Remnant Combustor": 40,
+      "Reverb Combustor": 55,
+      "Gold in Memory": 20,
+    });
+    const extras = part(c, "extras");
+    expect(extras.credits).toBe(630_000); // inherents 10,000 + 20,000, stat bonuses 4 × (50,000 + 100,000)
+    expect(mats(extras.materials)).toEqual({
+      "MF Exoswarm Core": 3,
+      "HF Exoswarm Core": 15,
+      "FF Exoswarm Core": 12,
+      "Aftertune Combustor": 3,
+      "Remnant Combustor": 15,
+      "Reverb Combustor": 12,
+      "Gold in Memory": 6,
+    });
+    const weapon = part(c, "weapon");
+    expect(weapon.exp).toBe(2_692_400);
+    expect(weapon.credits).toBe(1_406_960); // 1,076,960 for the EXP + 330,000 for the six ascensions (the game's table)
+    expect(mats(weapon.materials)).toEqual({
+      "Fractured Exoswarm Pendant": 6,
+      "Worn Exoswarm Pendant": 6,
+      "Chipped Exoswarm Pendant": 10,
+      "Intact Exoswarm Pendant": 12,
+      "Incomplete Combustor": 6,
+      "Aftertune Combustor": 8,
+      "Remnant Combustor": 6,
+      "Reverb Combustor": 20,
+    });
+    expect(c.total.credits).toBe(1_023_300 + 1_400_000 + 630_000 + 1_406_960);
   });
 
   it("Changli (1.1 5★): ascension and Forte as Kuro's wiki lists them", () => {
