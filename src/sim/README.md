@@ -4879,6 +4879,14 @@ Things learned:
   Mornye's block first read 71.1K at S0R0 and called it the cost nearest to the account.
 - Many kits declare several loadouts under one label (Brant and his main-DPS build, Phrolova's three rotations):
   `loadoutTitles` tells them apart by role, then echo set, then a number, the most fielded first.
+- A brief is long on a phone (about 10,000 px at 412 px and 130 % text, down from 15,200), so everything that is not
+  the first of its kind is a native `<details>`: eight of the nine Team Costs (one line each: label, best team, DPS;
+  the cost nearest to the account stands open), the teams after the best inside an open cost, the second and third
+  builds and their loops, and what the standard builds are. A closed `<details>` keeps its content laid out and only
+  stops painting it, so Cypress calls that content visible and `getBoundingClientRect()` gives it a height: a test
+  reads the fold's `open` attribute and `checkVisibility()`. The contrast probe opens every fold first.
+- The `/account` drawer's link sits on its own line under "Fusion · Sword · 5★": beside it, a 360 px phone wrapped the
+  link and left the separator behind on the line above.
 
 Regenerate (after `export_breakpoints.mjs`, on the app clone the tables are for):
 `WUWA_APP=<app> WUWA_CALC=<app>/vendor/wuwa_calc node <wuwa-tools>/rotation-port/export_kits.mjs`, then
