@@ -464,6 +464,25 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("levels <character>")
+      .description("What each level is worth: every level-up the character has left (level, weapon level, the five Forte skills), what each adds on their best rotation and their strongest team, what it costs, and the order to take them in (Wuthering Tools+)")
+      .option("--from <start>", 'where to count from: "saved" (the calculator\'s saved levels, the default) or "1" (a new copy at level 1)')
+      .option("--at <levels>", 'start from these levels instead, e.g. "level=80,weapon=80,basic=6,skill=6,forte=8,liberation=6,intro=1" (what is left out stays as saved)')
+      .option("--team <team>", "measure the team figure on this saved team (name, id or 1-based index) instead of the strongest one the character can field")
+      .option("--by <order>", 'how the order picks its next step: "value" (the most gain per Shell Credit, the default) or "gain" (the biggest gain)')
+      .option("--no-auto-buffs", AUTO_BUFFS_HELP),
+  ).action(
+    guarded(async (character: string, options: CommonOptions & { from?: string; at?: string; team?: string; by?: string; autoBuffs: boolean }) => {
+      const exp = load(options);
+      const { levelsReport, levelsJson, printLevels } = await import("../levels/levelsCli");
+      const plan = await quiet(() => levelsReport(exp, character, { from: options.from, at: options.at, team: options.team, by: options.by, autoBuffs: options.autoBuffs }));
+      if (!wantsPretty(options)) return printJson({ export: exp.path, ...levelsJson(plan) });
+      console.log(printLevels(plan));
+    }),
+  );
+
+  withCommon(
+    program
       .command("anatomy [character]")
       .description("Why this number: a rotation by attack and skill type, one hit as the factors of the formula, and what moves it most (Wuthering Tools+). Without a character, with --check: every hit of every rotation on the export, and what reconciles")
       .option("--rotation <name>", "this rotation (by name) instead of the best-scoring one")
