@@ -11,7 +11,7 @@ import { constraintsOf, DEFAULT_OPTIONS, filterPool, shortfallOf } from "../../b
 import { LAYOUT_COSTS, type MemberPlan } from "../../buildTeam/rileyPlan";
 import { showNeed } from "../../energy/energyNeed";
 import { characterName, compactJson, defineTool, echoName, int, round, setName, statLabel, type ToolContext } from "./shared";
-import { rileyOf, rileyTeamTarget, type RileyToolEngine, type TeamTarget } from "./riley";
+import { rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine, type TeamTarget } from "./riley";
 
 /** The composition's best `mine` row, or a sentence saying why there is none. */
 async function bestRow(riley: RileyToolEngine, target: TeamTarget): Promise<{ solve: MineSolve | null; why: string | null }> {
@@ -49,8 +49,9 @@ export const teamRotationTool = defineTool<{ team: string }>({
   provenance: "wuwa_calc engine at your account · rotation cue card",
   riley: true,
   async run(input, ctx: ToolContext) {
-    const riley = await rileyOf(ctx);
-    const target = await rileyTeamTarget(input.team, ctx.exp, riley);
+    const base = await rileyOf(ctx);
+    const target = await rileyTeamTarget(input.team, ctx.exp, base);
+    const riley = await rileyForTeam(ctx, target, base); // a saved team at the builds it runs, as /rotation shows it
     const { solve, why } = await bestRow(riley, target);
     if (!solve?.best) return compactJson({ team: target.name, members: target.characterIds.map(characterName), rotation: null, why, path: "/rotation", label: "Rotations" });
     const run = await riley.tracedRun(solve.teamKey, solve.best.picks);
@@ -138,8 +139,9 @@ export const buildTeamPlanTool = defineTool<{ team: string }>({
   provenance: "wuwa_calc engine at your account · build plan (dry run)",
   riley: true,
   async run(input, ctx: ToolContext) {
-    const riley = await rileyOf(ctx);
-    const target = await rileyTeamTarget(input.team, ctx.exp, riley);
+    const base = await rileyOf(ctx);
+    const target = await rileyTeamTarget(input.team, ctx.exp, base);
+    const riley = await rileyForTeam(ctx, target, base); // the builds the team runs, as Build my team's page asks
     const source: RileySource = {
       teamKeysFor: (ids) => riley.teamKeysFor(ids),
       solveMine: (keys, subs) => riley.solveMine(keys, { subs: subs ?? "mine" }),

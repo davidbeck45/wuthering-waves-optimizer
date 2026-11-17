@@ -73,6 +73,44 @@ describe("tools on Riley's engine", () => {
     expect(all.teams[0].members).toHaveLength(3);
   }, 60_000);
 
+  it("a saved team that pins another build is asked at that build: the DPS /energy shows, not the active builds'", async () => {
+    // Build my team and Whole account leave a saved team pinned to builds that are not the active ones. /energy has read
+    // the pins since 2026-11-09; the tools still asked at the active builds, so "Explain these needs" answered 367,567
+    // DPS beside the page's 353,983 and the pinned build's own Energy Regen (2026-11-16, second check of 8802ecc0).
+    const dps = "Aemeath";
+    const weapon: string = exp.characters[dps].weapon;
+    const liveRank = Number(exp.characters[dps].weapons?.[weapon]?.refinement ?? 1);
+    const planRank = liveRank > 3 ? liveRank - 4 : liveRank + 4;
+    const atRank = (data: any) => ({ ...data, weapons: { ...data.weapons, [weapon]: { ...data.weapons?.[weapon], refinement: String(planRank) } } });
+    const { builds: _b, activeBuildId: _a, ...fields } = JSON.parse(JSON.stringify(exp.characters[dps]));
+    const data = exp.characters[dps];
+    // "Account plan": the weapon at another refinement, pinned by the team; the active build is left as it was
+    const pinned: ExportFile = {
+      ...exp,
+      characters: { ...exp.characters, [dps]: { ...data, activeBuildId: data.activeBuildId ?? "live", builds: [...(data.builds ?? []), { ...atRank(fields), id: "plan", name: "Account plan" }] } },
+      teams: exp.teams.map((t: any, i: number) => (i === 0 ? { ...t, buildIds: ["plan", null, null] } : t)),
+    };
+    // the same build made the active one, nothing pinned: what the pinned team must read like
+    const active: ExportFile = { ...exp, characters: { ...exp.characters, [dps]: atRank(data) } };
+    const ask = (account: ExportFile, name: string, input: unknown) => call(name, input, { ...ctx, exp: account });
+
+    const live = await ask(exp, "energy_check", { team: "1" });
+    const onPins = await ask(pinned, "energy_check", { team: "1" });
+    const onActive = await ask(active, "energy_check", { team: "1" });
+    expect(onPins.teamDps).toBe(onActive.teamDps);
+    expect(onPins.teamDps).not.toBe(live.teamDps); // it read the active builds' figure
+    expect(onPins.members.find((m: any) => m.character === "Aemeath").build).toBe("Account plan");
+    // three characters by name are the same saved team, and every saved team's list reads the pins too
+    expect((await ask(pinned, "energy_check", { team: "Lynae, Aemeath, Mornye" })).teamDps).toBe(onActive.teamDps);
+    const rotation = await ask(pinned, "team_rotation", { team: "1" });
+    expect(rotation.teamDps).toBe((await ask(active, "team_rotation", { team: "1" })).teamDps);
+    expect(rotation.teamDps).toBe(onPins.teamDps);
+    // the plan Build my team would follow is asked at the same builds as its page (buildTeamAccount.ts)
+    const plan = await ask(pinned, "build_team_plan", { team: "1" });
+    expect(plan.teamDpsToday).toBe((await ask(active, "build_team_plan", { team: "1" })).teamDpsToday);
+    expect(plan.teamDpsToday).toBe(onPins.teamDps);
+  }, 240_000);
+
   it("team_rotation: the cue card as swap lines, opener then the loop, and the page link", async () => {
     const r = await call("team_rotation", { team: "Aemeath, Mornye, Lynae" });
     expect(r.blocks[0].block).toBe("Opener");

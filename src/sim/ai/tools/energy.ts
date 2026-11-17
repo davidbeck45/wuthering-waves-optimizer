@@ -3,7 +3,7 @@
 import { characterFloors, energySummary, measureComposition, memberChecks, NOT_MEASURED_TEXT, teamHaves, type EnergyEngine, type MemberCheck, type TeamMeasure } from "../../energy/energyCheck";
 import { showHave, showNeed, TIGHT_MARGIN } from "../../energy/energyNeed";
 import { characterName, compactJson, defineTool, int, nullableString, round } from "./shared";
-import { rileyOf, rileyTeamTarget, type RileyToolEngine } from "./riley";
+import { rileyForTeam, rileyOf, rileyTeamTarget, type RileyToolEngine } from "./riley";
 
 const engineOf = (riley: RileyToolEngine): EnergyEngine => ({
   commit: riley.commit,
@@ -64,11 +64,11 @@ export const energyCheckTool = defineTool<{ team?: string }>({
   riley: true,
   async run(input, ctx) {
     const riley = await rileyOf(ctx);
-    const engine = engineOf(riley);
     const auto = ctx.autoBuffs ?? true;
     if (input.team) {
       const target = await rileyTeamTarget(input.team, ctx.exp, riley);
-      const measure = await measureComposition(engine, target.characterIds);
+      // a saved team is measured on the builds it runs, the ones its ER column reads
+      const measure = await measureComposition(engineOf(await rileyForTeam(ctx, target, riley)), target.characterIds);
       const why = measured(measure);
       if (why || measure.status !== "ok") {
         return compactJson({ team: target.name, members: target.characterIds.map(characterName), measured: false, why, path: "/energy", label: "Energy check" });
@@ -94,7 +94,7 @@ export const energyCheckTool = defineTool<{ team?: string }>({
     const teams: Array<{ id: string; name: string; characterIds: string[]; measure: TeamMeasure; checks: MemberCheck[] | null }> = [];
     for (const t of saved) {
       const ids = ((t.characterIds ?? []) as Array<string | null>).filter((id): id is string => !!id);
-      const measure = await measureComposition(engine, ids);
+      const measure = await measureComposition(engineOf(await rileyForTeam(ctx, { saved: t }, riley)), ids);
       const checks = measure.status === "ok" ? memberChecks(measure.energy, await teamHaves(t, ctx.exp.characters, ctx.exp.inventory.echoes, { auto }), ids) : null;
       teams.push({ id: String(t.id), name: String(t.name ?? ids.map(characterName).join(" · ")), characterIds: ids, measure, checks });
     }

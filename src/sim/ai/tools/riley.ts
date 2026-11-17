@@ -7,6 +7,7 @@ import type { ExportFile } from "../../cli/exportShape";
 import { findTeam } from "../../cli/engine";
 import type { FightCurve, MineSolve, RileyAccount, RileyPick, RileyTeamInfo, RunLite, SubsMode } from "../../engine/rileyRun";
 import type { FloorProfileSpec } from "../../endgame/effects";
+import { resolveTeamBuilds } from "../../teamContext/resolveTeam";
 import { characterName, resolveAnyCharacter, type ToolContext } from "./shared";
 import { accountKeyOf } from "../../rankings/rileyNames";
 
@@ -35,6 +36,19 @@ export type RileyProvider = (exp: ExportFile) => Promise<RileyToolEngine>;
 export async function rileyOf(ctx: ToolContext): Promise<RileyToolEngine> {
   if (!ctx.riley) throw new Error("wuwa_calc's engine is not available here, so this tool can't run");
   return ctx.riley(ctx.exp);
+}
+
+/** The engine a team is asked at. A saved team runs the builds it pins (with team buffs on, also a build named after
+ *  both teammates), and /energy, /rotation and /endgame ask wuwa_calc at that team's own account
+ *  (engine/rileyAccount.ts `rileyAccountForTeam`). These tools asked at every character's active build: "Explain these
+ *  needs" on a team whose pins run 353,983 DPS answered 367,567 beside the pinned build's own Energy Regen. A provider
+ *  takes its account as an export, so it is handed the export as that team reads it; `base` (the engine at the active
+ *  builds) for three nobody saved and for a team that runs the active builds anyway. */
+export async function rileyForTeam(ctx: ToolContext, target: { saved: Record<string, any> | null }, base: RileyToolEngine): Promise<RileyToolEngine> {
+  const team = target.saved;
+  if (!team || !ctx.riley) return base;
+  const built = resolveTeamBuilds({ characterIds: team.characterIds ?? [], buildIds: team.buildIds ?? [] }, ctx.exp.characters, { auto: ctx.autoBuffs ?? true });
+  return built.characters === ctx.exp.characters ? base : ctx.riley({ ...ctx.exp, characters: built.characters });
 }
 
 export interface TeamTarget {
