@@ -17,6 +17,7 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { randomString } from "./strings";
 import { checkImport } from "../sim/buildHistory/importCheck"; // Wuthering Tools+
 import { deleteAccountData } from "../sim/storage/deleteAccount"; // Wuthering Tools+
+import { beforeAccountReplaced } from "../sim/backup/importHook"; // Wuthering Tools+
 import {
   applyMigrationTransforms,
   CURRENT_DATA_VERSION,
@@ -151,6 +152,7 @@ export function applyImportedDatabase(raw: string) {
     characters: characterStore.characters,
     echoes: inventoryStore.echoes,
   });
+  const plus = beforeAccountReplaced(raw, getExportData); // Wuthering Tools+: an automatic backup of the account as it is, first
   characterStore.hardSetState(checked.character as never);
   inventoryStore.hardSetState(checked.inventory as never);
   // Older exports (pre-version-5) never had team data — hardSetState
@@ -158,6 +160,7 @@ export function applyImportedDatabase(raw: string) {
   teamRotationsStore.hardSetState(checked.teamRotations as never);
   // Transforms above bring data to the latest schema
   setStoredDataVersion(CURRENT_DATA_VERSION);
+  plus.restore(); // Wuthering Tools+: what a Tools+ backup carries beyond this export (the pull history is merged)
 }
 
 /**

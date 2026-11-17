@@ -7,8 +7,10 @@ import { describe, expect, it, vi } from "vitest";
 import { RESULT_DB_NAME } from "../persist/resultStore";
 import { TAB_COPY_KEYS } from "../persist/savedResults";
 import { ACCOUNT_STORE_KEYS } from "./persistGuard";
+import { BACKUP_DB_NAME } from "../backup/backupStore";
 import {
   ACCOUNT_DELETED_KEY,
+  BACKUP_CLASS_TEXT,
   DELETE_CARD_TEXT,
   DELETE_CONFIRM_ITEMS,
   DELETE_CONFIRM_TEXT,
@@ -94,6 +96,28 @@ describe("every place the app keeps something has a decision", () => {
     for (const key of TAB_COPY_KEYS) expect(ruleOf(key), key).toMatchObject({ area: "session", by: "savedResults" });
   });
 
+  it("each rule says whether a backup holds it: his export, the four records only plus keeps, and never the API key", () => {
+    const classes = Object.keys(BACKUP_CLASS_TEXT);
+    for (const r of STORAGE_RULES) expect(classes, r.key).toContain(r.backup);
+    // every wtplus: name in the code has that decision (a rule without one does not compile; a name without a rule fails above)
+    const names = quotedNames(join(ROOT, "src"), /["'](wtplus:[^"'`$\s]*)["']/g);
+    for (const [name] of names) if (!NOT_STORAGE.has(name)) expect(ruleOf(name)?.backup, name).toBeTruthy();
+
+    const keysOf = (backup: StorageRule["backup"]): string[] => STORAGE_RULES.filter((r) => r.backup === backup).map((r) => r.key).sort();
+    expect(keysOf("export")).toEqual(["character", "dataVersion", "inventory", "teamRotations"]);
+    // adding a record to the backups is a decision: it is made here, by name
+    expect(keysOf("account")).toEqual(["wtplus:convene:history", "wtplus:echoPlan:v1", "wtplus:endgame:clears", "wuthering-tools-plus.echoScan.albums"]);
+    expect(keysOf("secret")).toEqual(["wtplus:ai:key"]);
+    // what a backup carries is one whole localStorage record each: capture and restore read and write it as text
+    for (const r of STORAGE_RULES.filter((x) => x.backup === "account")) expect(r, r.key).toMatchObject({ area: "local" });
+    for (const r of STORAGE_RULES.filter((x) => x.backup === "account")) expect(r.prefix, r.key).toBeUndefined();
+    // saved results, each tab copy and the backups themselves are never inside a backup
+    for (const key of [RESULT_DB_NAME, ...TAB_COPY_KEYS]) expect(ruleOf(key)?.backup, key).toBe("cache");
+    expect(ruleOf(BACKUP_DB_NAME)).toMatchObject({ area: "indexedDB", fate: "goes", by: "backups", backup: "copy" });
+    // nothing that sounds like a credential is in one
+    for (const r of STORAGE_RULES) if (/key$|token|secret|password/i.test(r.key)) expect(["export", "account"], r.key).not.toContain(r.backup);
+  }, 30_000);
+
   it("no key is listed twice, and each says why", () => {
     const keys = STORAGE_RULES.map((r) => r.key);
     expect(new Set(keys).size).toBe(keys.length);
@@ -109,9 +133,10 @@ describe("Delete your data takes everything kept from the account", () => {
     local.setItem("wtplus:buildHistory:v1:Mornye", "{}");
     const teams = { hardSetState: vi.fn() };
     const results = { clear: vi.fn(async () => true) };
+    const dropBackups = vi.fn();
     const before = { local: new Map(local.data), session: new Map(session.data) };
-    deleteAccountData({ local, session, teams, results, onLeave: () => undefined });
-    return { local, session, teams, results, before };
+    deleteAccountData({ local, session, teams, results, dropBackups, onLeave: () => undefined });
+    return { local, session, teams, results, dropBackups, before };
   }
 
   it("the teams go: the stored record is blank, as upstream leaves its two stores, and this tab's store is emptied", () => {
@@ -154,6 +179,23 @@ describe("Delete your data takes everything kept from the account", () => {
 
   it("the saved results are cleared with it (the database, the tab copies, what a page cache holds)", () => {
     expect(run().results.clear).toHaveBeenCalledTimes(1);
+  });
+
+  it("the automatic backups go with it: whole copies of the account, and when a copy last left the browser", () => {
+    const { local, dropBackups } = run();
+    expect(dropBackups).toHaveBeenCalledTimes(1);
+    expect(local.getItem("wtplus:backup:state")).toBeNull();
+  });
+
+  it("a browser whose backups cannot be deleted still loses everything else", () => {
+    const local = seeded("local");
+    const results = { clear: vi.fn(async () => true) };
+    const dropBackups = vi.fn(() => {
+      throw new Error("blocked");
+    });
+    expect(() => deleteAccountData({ local, session: null, teams: null, results, dropBackups })).not.toThrow();
+    expect(local.getItem("wtplus:energy:v1")).toBeNull();
+    expect(results.clear).toHaveBeenCalled();
   });
 
   it("upstream's two stores are left to upstream: it blanks them itself, before this runs", () => {
@@ -313,9 +355,10 @@ describe("the words say what the rules do", () => {
   const all = [DELETE_CARD_TEXT, DELETE_CONFIRM_TEXT, ...DELETE_CONFIRM_ITEMS].join(" ");
 
   it("names what goes: characters, builds, echoes, teams, Build history, Undo, the checks", () => {
-    for (const word of ["characters", "builds", "echoes", "teams", "Build history", "Undo", "saved results", "Energy", "Tower", "Ask chat"]) expect(all).toContain(word);
+    for (const word of ["characters", "builds", "echoes", "teams", "Build history", "Undo", "automatic backups", "saved results", "Energy", "Tower", "Ask chat"]) expect(all).toContain(word);
+    expect(DELETE_CARD_TEXT).toContain("automatic backups");
     expect(DELETE_CONFIRM_TEXT).toMatch(/cannot be undone/);
-    expect(DELETE_CONFIRM_TEXT).toMatch(/backup/);
+    expect(DELETE_CONFIRM_TEXT).toMatch(/download a copy first/);
   });
 
   it("names what stays, the pull history among it, as the rules have it", () => {

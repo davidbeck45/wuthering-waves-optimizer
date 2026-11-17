@@ -35,6 +35,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { useInventoryStore } from "../../stores/inventory";
 import { useToast } from "../../composables/useToast";
 import { installImportGuard } from "../buildHistory/importGuard";
+import { installAutoBackup } from "../backup/install";
 import { installCrossTabSync, type SyncedStore } from "../storage/crossTabSync";
 import { installStarTwins, type StarStore } from "../presets/starredPresets";
 import { noticeRefusedWrites } from "../storage/persistGuard";
@@ -73,6 +74,8 @@ const teamStore = useTeamRotationsStore();
 const inventoryStore = useInventoryStore();
 // build history: a version of every build a Settings import is about to replace (src/sim/buildHistory/importGuard.ts)
 installImportGuard({ character: characterStore as never, inventory: inventoryStore as never });
+// automatic backups: one a day when something changed, kept in this browser (src/sim/backup/); the code loads later
+const stopAutoBackup = installAutoBackup();
 // two tabs on one account stay one account, and a write the browser refused is said out loud (src/sim/storage/)
 installCrossTabSync([characterStore, inventoryStore, teamStore] as unknown as SyncedStore[]);
 // a starred stock team is kept under its old and new name, and both move together (src/sim/presets/starredPresets.ts)
@@ -252,6 +255,7 @@ onBeforeUnmount(() => {
   observer?.disconnect();
   stopBodyObserver?.();
   removeSkipLink?.();
+  stopAutoBackup();
   if (pendingSync) clearTimeout(pendingSync);
 });
 </script>
