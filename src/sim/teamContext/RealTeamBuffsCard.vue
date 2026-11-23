@@ -145,8 +145,8 @@ const inputs = computed(() => {
 });
 
 let run = 0;
-async function derive(mates: [string, string]): Promise<RealPanel> {
-  return deriveRealPanel(props.character, mates, characterStore.characters as Record<string, any>, inventoryStore.echoes as any[]);
+async function derive(mates: [string, string], characterId = props.character): Promise<RealPanel> {
+  return deriveRealPanel(characterId, mates, characterStore.characters as Record<string, any>, inventoryStore.echoes as any[]);
 }
 let timer: ReturnType<typeof setTimeout> | null = null;
 watch(
@@ -158,6 +158,13 @@ watch(
       return;
     }
     const mates = pair.value;
+    // an answer still on its way is for the inputs before this change: it must not land (another character's reading
+    // would show here); a reading of another character or pair is no answer for this one, so it goes now
+    run++;
+    if (real.value && (real.value.characterId !== props.character || [...real.value.teammates].sort().join() !== [...mates].sort().join())) {
+      real.value = null;
+      busy.value = true;
+    }
     // the panel on screen is read off the store; this only waits for a burst of edits to settle
     timer = setTimeout(async () => {
       const mine = ++run;
@@ -192,23 +199,28 @@ const driftLine = computed(() => {
   return `${who} changed since these buffs were filled from your builds.`;
 });
 
+/** Writes the fill to the character it was tapped for (`next.characterId`): the derivation is async, and the player
+ *  may have switched character before it answered. */
 function write(next: RealPanel) {
+  const target = next.characterId;
+  const chars = characterStore.characters as Record<string, any>;
   // one tap can change twenty switches: the panel as it was goes into build history first, where Restore puts it back
-  snapshotCharacters([props.character], "before-real-buffs", {
-    characters: characterStore.characters as Record<string, any>,
+  snapshotCharacters([target], "before-real-buffs", {
+    characters: chars,
     echoes: (inventoryStore.echoes ?? []) as any[],
   });
-  characterStore.setCharacterData(props.character, { teamBuffs: realPanelWrite(next, panel.value) });
-  markTypicalPanel((characterStore.characters as Record<string, any>)[props.character], "builds");
-  real.value = next;
+  characterStore.setCharacterData(target, { teamBuffs: realPanelWrite(next, chars[target]?.teamBuffs) });
+  markTypicalPanel(chars[target], "builds");
+  if (target === props.character) real.value = next;
 }
 
 async function useReal() {
   if (!pair.value) return;
   busy.value = true;
   error.value = null;
+  const characterId = props.character;
   try {
-    write(await derive(pair.value));
+    write(await derive(pair.value, characterId));
   } catch {
     error.value = "Your builds could not be read just now. Nothing was changed.";
   } finally {
@@ -227,8 +239,9 @@ const shownTeams = computed(() => (showAll.value ? savedTeams.value : savedTeams
 async function useSavedTeam(team: SavedPair) {
   busy.value = true;
   error.value = null;
+  const characterId = props.character;
   try {
-    write(await derive(team.mates));
+    write(await derive(team.mates, characterId));
   } catch {
     error.value = "Your builds could not be read just now. Nothing was changed.";
   } finally {
