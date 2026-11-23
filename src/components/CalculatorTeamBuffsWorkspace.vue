@@ -12,6 +12,7 @@
         Reset all
       </button>
     </div>
+    <RealTeamBuffsCard :character="character" /><!-- Wuthering Tools+: the panel from your own builds (src/sim/teamContext/realPanel.ts) -->
 
     <div class="bg-base-200 rounded-xl p-3 flex flex-col gap-3 mb-3">
       <div class="flex flex-wrap items-center gap-2">
@@ -414,6 +415,7 @@ import { getRecommendedTeams, type SuggestedTeam } from "../characters/recommend
 import { useSettingsStore } from "../stores/settings";
 import { isRecommendedTeamsEnabled } from "../utils/labs";
 import { markTypicalPanel } from "../sim/teamContext/typicalPanel"; // Wuthering Tools+
+import RealTeamBuffsCard from "../sim/teamContext/RealTeamBuffsCard.vue"; // Wuthering Tools+
 
 export interface PartyBuffDef {
   key: string;
