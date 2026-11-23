@@ -57,11 +57,17 @@
 
     <template v-else>
       <template v-if="savedTeams.length">
-        <p class="wtp-real-panel__title">Team buffs from your own builds: pick a saved team, and its two teammates go in with what your builds of them give.</p>
+        <p class="wtp-real-panel__title">Team buffs from your own builds: tap one of your saved teams to fill them in.</p>
         <ul class="wtp-real-panel__teams">
           <li v-for="team in shownTeams" :key="team.id">
-            <button type="button" class="btn btn-sm btn-outline wtp-real-panel__team" :disabled="busy" data-test-real-panel-team @click="useSavedTeam(team)">
-              {{ nameOf(team.mates[0]) }} + {{ nameOf(team.mates[1]) }}<span v-if="team.name" class="wtp-real-panel__team-name"> · {{ team.name }}</span>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline wtp-real-panel__team"
+              :disabled="busy"
+              :title="team.name ? `From your saved team ${team.name}` : undefined"
+              data-test-real-panel-team
+              @click="useSavedTeam(team)">
+              {{ nameOf(team.mates[0]) }} + {{ nameOf(team.mates[1]) }}
             </button>
           </li>
         </ul>
@@ -99,7 +105,8 @@ const panel = computed<Record<string, any>>(() => record.value.teamBuffs ?? {});
 const pair = computed<[string, string] | null>(() => {
   const a = panel.value.selectedCharacter1;
   const b = panel.value.selectedCharacter2;
-  return a && b && a !== b ? [a, b] : null;
+  // the character as their own teammate is no trio the resolver can read
+  return a && b && a !== b && a !== props.character && b !== props.character ? [a, b] : null;
 });
 const source = computed(() => typicalPanelSource(panel.value));
 const pairNames = computed(() => (pair.value ? `${nameOf(pair.value[0])} and ${nameOf(pair.value[1])}` : ""));
@@ -294,9 +301,5 @@ async function useSavedTeam(team: SavedPair) {
   text-align: left;
   line-height: 1.25;
   padding-block: 0.3rem;
-}
-.wtp-real-panel__team-name {
-  font-weight: 400;
-  opacity: 0.8;
 }
 </style>
