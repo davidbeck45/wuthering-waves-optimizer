@@ -92,13 +92,13 @@ describe("the notice", () => {
 
   it("says how many, since when", () => {
     const three = behindTeams([gen("a"), gen("b"), gen("c")], "821f8db");
-    expect(noticeHeadline(three, NOW)).toBe("All 3 of your saved teams from Team rankings were read before its update of 22 November.");
+    expect(noticeHeadline(three, NOW)).toBe("All 3 of your saved teams from Team rankings were read before its update of 22\u00a0November.");
     const some = behindTeams([gen("a"), gen("b"), gen("c", "821f8db")], "821f8db");
-    expect(noticeHeadline(some, NOW)).toBe("2 of your saved teams from Team rankings were read before its update of 22 November.");
-    expect(noticeHeadline(behindTeams([gen("a")], "821f8db"), NOW)).toBe("Your saved team from Team rankings was read before its update of 22 November.");
-    expect(noticeHeadline(behindTeams([gen("a"), gen("b")], "821f8db"), NOW)).toBe("Both of your saved teams from Team rankings were read before its update of 22 November.");
+    expect(noticeHeadline(some, NOW)).toBe("2 of your saved teams from Team rankings were read before its update of 22\u00a0November.");
+    expect(noticeHeadline(behindTeams([gen("a")], "821f8db"), NOW)).toBe("Your saved team from Team rankings was read before its update of 22\u00a0November.");
+    expect(noticeHeadline(behindTeams([gen("a"), gen("b")], "821f8db"), NOW)).toBe("Both of your saved teams from Team rankings were read before its update of 22\u00a0November.");
     expect(noticeHeadline(behindTeams([gen("a")], "0000000"), NOW)).toBe("Your saved team from Team rankings was read before its latest update.");
-    expect(noticeHeadline(three, Date.parse("2027-02-01T00:00:00Z"))).toContain("22 November 2026");
+    expect(noticeHeadline(three, Date.parse("2027-02-01T00:00:00Z"))).toContain("22\u00a0November 2026");
   });
 
   it("remembers the engine it was handled at; a refusing or missing storage never throws", () => {

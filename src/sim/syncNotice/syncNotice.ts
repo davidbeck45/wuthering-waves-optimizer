@@ -68,7 +68,7 @@ export const showSyncNotice = (behind: BehindTeams, handled: string | null): boo
 export function updateDayText(iso: string, now = Date.now()): string {
   const d = new Date(`${iso}T12:00:00Z`);
   const sameYear = d.getUTCFullYear() === new Date(now).getUTCFullYear();
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC", ...(sameYear ? {} : { year: "numeric" }) });
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC", ...(sameYear ? {} : { year: "numeric" }) }).replace(" ", "\u00a0"); // "22 November" never breaks
 }
 
 /** The notice's first sentence. */
