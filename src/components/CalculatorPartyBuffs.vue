@@ -26,6 +26,7 @@
         </button>
       </div>
     </div>
+    <RealTeamBuffsCard :character="character" /><!-- Wuthering Tools+: the panel from your own builds (src/sim/teamContext/realPanel.ts) -->
     <div class="party-buffs__filters flex flex-wrap items-center gap-2 mb-4">
       <input
         v-model="searchQuery"
@@ -318,6 +319,7 @@
 </template>
 
 <script setup lang="ts">
+import RealTeamBuffsCard from "../sim/teamContext/RealTeamBuffsCard.vue"; // Wuthering Tools+
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import {

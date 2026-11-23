@@ -88,6 +88,26 @@ describe("Team buffs from your own builds", () => {
     cy.get("[data-test-real-panel-use]").should("contain.text", "Use their real buffs");
   });
 
+  it("is on the classic Team Buffs screen too, and fills the same panel", () => {
+    cy.visit("/"); // no settings of its own: the support file seeds the classic UI
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__selection.Carlotta").should("be.visible");
+    seedTeammates(false);
+    cy.window().then((win) => {
+      store(win, "character").setCharacterData("Carlotta", { teamBuffs: { selectedCharacter1: "Iuno", selectedCharacter2: "Shorekeeper" } });
+    });
+    cy.get('[data-test-calculator-nav="team"]').click();
+    cy.get("[data-test-party-member-1-name]").should("contain.text", "Iuno");
+    cy.get("[data-test-real-panel-use]").filter(":visible").should("contain.text", "Use their real buffs").click();
+    cy.get('[data-test-real-panel-status="match"]').should("contain.text", "what your own builds of Iuno and Shorekeeper give");
+    cy.window().should((win) => {
+      const panel = store(win, "character").characters.Carlotta.teamBuffs;
+      expect(panel.buffs[IUNO_OUTRO]?.isEnabled, "Iuno's Outro").to.eq(true);
+      expect(panel.buffs[S2_BUFF]?.isEnabled ?? false, "her S2 buff at S0").to.eq(false);
+      expect(panel.plusTypicalSource).to.eq("builds");
+    });
+  });
+
   it("flags optimizer results that ran on the old panel (Ryan's #706 alert)", () => {
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
