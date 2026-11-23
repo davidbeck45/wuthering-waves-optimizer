@@ -68,27 +68,27 @@ describe("wuwa_calc stock presets", () => {
     everyCardIsFieldable();
   });
 
-  it("lists Lily's own loops: her four Basic Attack stages, the Blend, the Woven heavy and its Finale", () => {
+  it("lists Lily's own loop on her released kit: no motion value differs from the game's", () => {
     openPresetsOf("Lily", "Lily");
-    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)")
+    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)")
       .invoke("text")
-      .should("match", /Team: Lynae \+ Aemeath: [\d,]+ DPS for Lily of [\d,]+ team DPS/)
-      // wuwa_calc's kit is the 3.8 beta's: the card says which motion values differ from the released ones the app scores
-      .and("match", /Basic - Mend and Cleanse 1 74\.28% → BasicAttackStage1DMG 63\.62%/);
+      .should("match", /Team: Phrolova \+ Qiuyuan: [\d,]+ DPS for Lily of [\d,]+ team DPS/)
+      // her kit was the 3.8 beta's until Riley's 2026-11-21 update, and the card listed the values that differed
+      .and("not.match", /differ/);
     everyCardIsFieldable();
-    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Lynae + Aemeath · S6R5 (wuwa_calc)").within(() => {
+    cy.contains("[data-test-rotations-presets] .card", "Lily S6 Lullaby R5 · Phrolova + Qiuyuan · S6R5 (wuwa_calc)").within(() => {
       cy.contains("button", "Import").click({ force: true });
     });
     cy.get("[data-test-rotations-presets-modal]").should("not.have.attr", "open");
-    cy.get('[data-test-rotation-item-by-name*="Lynae + Aemeath"]').should("exist");
+    cy.get('[data-test-rotation-item-by-name*="Phrolova + Qiuyuan"]').should("exist");
   });
 
   // 2026-11-04: each state keeps three loops the app can play, whatever its best ran beside. Hiyuki's only stock build
-  // on a 4-cost ATK% is her S6R1 loop beside Lily and Lucilla; while the app lacked Lily it shipped under Shorekeeper +
-  // Lucilla, the third loop of that state
-  it("keeps Hiyuki's stock build on 43311 ATK: her S6R1 loop beside Lily and Lucilla", () => {
+  // on a 4-cost ATK% was her S6R1 loop beside Lily and Lucilla; on Riley's 2026-11-22 table it is Chisa + Lucilla, a loop
+  // that presses what one of her 4-cost Crit DMG loops presses, kept since the emitter dedupes by echo build too
+  it("keeps Hiyuki's stock build on 43311 ATK: her loop beside Chisa and Lucilla", () => {
     openPresetsOf("Hiyuki", "Hiyuki");
-    cy.contains("[data-test-rotations-presets] .card", "Lily + Lucilla · S6R1 DPS · S0R1 team (wuwa_calc)").should("contain.text", "main stats 43311 ATK");
+    cy.contains("[data-test-rotations-presets] .card", "Chisa + Lucilla · S6R5 DPS · S0R1 team (wuwa_calc)").should("contain.text", "main stats 43311 ATK");
     everyCardIsFieldable();
   });
 
