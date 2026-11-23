@@ -96,7 +96,7 @@ describe("every place the app keeps something has a decision", () => {
     for (const key of TAB_COPY_KEYS) expect(ruleOf(key), key).toMatchObject({ area: "session", by: "savedResults" });
   });
 
-  it("each rule says whether a backup holds it: his export, the four records only plus keeps, and never the API key", () => {
+  it("each rule says whether a backup holds it: his export, the five records only plus keeps (Riley's Value roster among them), and never the API key", () => {
     const classes = Object.keys(BACKUP_CLASS_TEXT);
     for (const r of STORAGE_RULES) expect(classes, r.key).toContain(r.backup);
     // every wtplus: name in the code has that decision (a rule without one does not compile; a name without a rule fails above)
@@ -106,7 +106,7 @@ describe("every place the app keeps something has a decision", () => {
     const keysOf = (backup: StorageRule["backup"]): string[] => STORAGE_RULES.filter((r) => r.backup === backup).map((r) => r.key).sort();
     expect(keysOf("export")).toEqual(["character", "dataVersion", "inventory", "teamRotations"]);
     // adding a record to the backups is a decision: it is made here, by name
-    expect(keysOf("account")).toEqual(["wtplus:convene:history", "wtplus:echoPlan:v1", "wtplus:endgame:clears", "wuthering-tools-plus.echoScan.albums"]);
+    expect(keysOf("account")).toEqual(["wtplus:convene:history", "wtplus:echoPlan:v1", "wtplus:endgame:clears", "wuthering-tools-plus.echoScan.albums", "wuwa.owned.v1"]);
     expect(keysOf("secret")).toEqual(["wtplus:ai:key"]);
     // what a backup carries is one whole localStorage record each: capture and restore read and write it as text
     for (const r of STORAGE_RULES.filter((x) => x.backup === "account")) expect(r, r.key).toMatchObject({ area: "local" });

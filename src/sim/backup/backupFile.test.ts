@@ -25,7 +25,7 @@ describe("what a backup holds", () => {
     expect(capture.meta).toEqual({ version: "10", source: "WutheringTools" });
     expect(capture.data).toEqual(testStores());
     expect(Object.keys(capture.keys).sort()).toEqual([...BACKUP_PLUS_KEYS].sort());
-    expect(BACKUP_PLUS_KEYS).toHaveLength(4);
+    expect(BACKUP_PLUS_KEYS).toHaveLength(5); // + wuwa.owned.v1 (Riley's Value page: the resonators you own), batch 5
     expect(capture.keys["wtplus:convene:history"]).toBe(JSON.stringify({ was: "wtplus:convene:history" }));
   });
 
@@ -41,7 +41,7 @@ describe("what a backup holds", () => {
 
   it("a record that is not there, or stored blank, is written as none; a blocked storage still gives his export", () => {
     const capture = captureAccount(ryanExport, { getItem: (k) => (k === "wtplus:endgame:clears" ? "" : null) });
-    expect(capture.keys).toEqual({ "wtplus:convene:history": null, "wtplus:endgame:clears": null, "wtplus:echoPlan:v1": null, "wuthering-tools-plus.echoScan.albums": null });
+    expect(capture.keys).toEqual({ "wtplus:convene:history": null, "wtplus:endgame:clears": null, "wtplus:echoPlan:v1": null, "wuthering-tools-plus.echoScan.albums": null, "wuwa.owned.v1": null });
     const blocked = captureAccount(ryanExport, {
       getItem: () => {
         throw new Error("blocked");

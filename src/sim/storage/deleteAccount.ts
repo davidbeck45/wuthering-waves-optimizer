@@ -87,6 +87,7 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:endgame:check", area: "local", fate: "goes", backup: "cache", why: "the last Tower of Adversity check: your teams' kill times" },
   { key: "wtplus:endgame:clears", area: "local", fate: "goes", backup: "account", why: "the clears you logged, each beside what the check gave that team" },
   { key: "wuwa.solves.v1", area: "local", fate: "goes", backup: "cache", why: "the rankings page's solves, the ones at your account among them" },
+  { key: "wuwa.owned.v1", area: "local", fate: "goes", backup: "account", why: "the rankings' Value page: the resonators you said you own" },
   { key: "wtplus-results", area: "indexedDB", fate: "goes", by: "savedResults", backup: "cache", why: "saved results (stores meta and data): rankings, the investment plan, echo checks, Echo Lab, weapon value" },
   { key: "wtplus:myRankings:last", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of My rankings" },
   { key: "wtplus:account:invest", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of the investment plan" },
@@ -134,6 +135,7 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wuwa.tutorialStage", area: "local", fate: "stays", backup: "preference", why: "where its tutorial stopped" },
   { key: "wuwa.logColumns", area: "local", fate: "stays", backup: "preference", why: "its log's column order" },
   { key: "wuwa.copyMode", area: "local", fate: "stays", backup: "preference", why: "its copy format" },
+  { key: "wuwa.teamViews", area: "local", fate: "stays", backup: "preference", why: "the tabs its team page last showed" },
 
   // ---- records about the game, not about builds
   { key: "wtplus:convene:history", area: "local", fate: "stays", backup: "account", why: "your Convene pull history: the game drops pulls after six months, so it cannot be fetched again; My pulls has its own Forget" },
