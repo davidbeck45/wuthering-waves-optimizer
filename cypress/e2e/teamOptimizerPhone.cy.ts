@@ -218,7 +218,7 @@ describe("Optimize team on a phone at 130 % text", () => {
         expect(delta, "the first row's change").to.exist;
         expect(delta.getBoundingClientRect().right, "\"vs current\" whole, with no scrolling").to.be.at.most(right);
       });
-      // his per-slot echo cards (#745): one to a row on a phone, every substat row inside the page (phone.css § 44)
+      // his per-slot echo cards (#745): one to a row on a phone, every substat row inside the page (phone.css § 41 c)
       cy.get("[data-test-team-optimizer-slots] [data-test-team-optimizer-slot-change]").should("have.length.at.least", 2).then(($cards) => {
         expect($cards[0]!.getBoundingClientRect().top, "one card to a row").to.be.lessThan($cards[1]!.getBoundingClientRect().top);
         for (const card of $cards) for (const el of card.querySelectorAll("*")) expect(el.getBoundingClientRect().right, `${el.textContent?.slice(0, 30)} inside the page`).to.be.at.most(width);

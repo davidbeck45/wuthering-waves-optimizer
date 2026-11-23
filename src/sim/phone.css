@@ -2048,22 +2048,6 @@ html.wt-ai-docked #wt-app .contain {
 }
 
 
-/* § 44 Optimize team's per-slot echo cards (Ryan's #745, ADR 0061) on a phone (batch 5, lane post-merge). His grid sets
-          the five cards of a pick two to a row below 640 px, and a card's substat rows ("Resonance Liberation DMG
-          Bonus 9.9 %") are wider than half a phone at 130 % text: they ran out of their cards and the page scrolled
-          sideways, 549 px wide at 412. One card to a row, held to it, its long names wrapping as § 37 a does. */
-@media (max-width: 639px) {
-  [data-test-team-optimizer-slots] {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  [data-test-team-optimizer-slots] > * {
-    min-width: 0;
-  }
-  [data-test-team-optimizer-slots] .truncate {
-    min-width: 0;
-    white-space: normal;
-    overflow-wrap: anywhere;
-
 /* ---------------------------------------------------------------------------------------------
    41. Ryan's #726 to #747 on a phone (sync of 2026-11-23; 412 and 360 px at 130 % text).
        a) The Attacks tab of the Full breakdown (#730: CalculatorLiveResultAttacks.vue, CalculatorLiveResultAttackGroup.vue,
@@ -2176,6 +2160,9 @@ html.wt-ai-docked #wt-app .contain {
   [data-test-team-optimizer-slots].grid.grid-cols-2 {
     grid-template-columns: minmax(0, 1fr);
   }
+  [data-test-team-optimizer-slots] > * {
+    min-width: 0;
+  }
   /* and the card's substat list was as wide as its longest row: his card column is `align-items: start`, so the list
      took "Resonance Liberation DMG Bonus 8.6%" whole (310 px) in a card 239 px wide at 360 px, and every value sat
      past the card's right edge. The list takes the card's width, and a long name wraps rather than losing its end
@@ -2184,8 +2171,10 @@ html.wt-ai-docked #wt-app .contain {
     align-self: stretch;
     min-width: 0;
   }
-  [data-test-team-optimizer-slots] [data-test-echo-card-substat] .truncate {
+  [data-test-team-optimizer-slots] .truncate {
+    min-width: 0;
     white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
 /* d) Optimize team's Top 5 (#745's "how this plan differs" line under a row's change, TeamOptimizerResults.vue). The line
