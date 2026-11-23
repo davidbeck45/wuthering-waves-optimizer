@@ -109,6 +109,29 @@ describe("rows outlive a change to what they were scored on, flagged", { default
     });
   });
 
+  it("a run left going when a build with other echoes and the same weapon is picked lands unflagged, compared with the build now worn", () => {
+    const cleared = account((record) => {
+      record.builds[1].echoes = record.builds[1].echoes.map((slot: any) => ({ ...slot, echoId: null, echo: null }));
+    });
+    // what a run on build two reads, started on two
+    visit(cleared);
+    cy.window().then((win) => storeOf(win).equipBuild("Zani", "two"));
+    cy.wait(1500);
+    finishedRun();
+    cy.get(firstRow).invoke("text").then((onTwo) => {
+      visit(cleared);
+      cy.window().then((win) => {
+        cy.get(RUN).then(($button) => {
+          $button[0]!.click();
+          storeOf(win).equipBuild("Zani", "two");
+        });
+      });
+      cy.get(ROW, { timeout: 60000 }).should("have.length", 5);
+      cy.get(STALE).should("not.exist");
+      cy.get(firstRow).invoke("text").should("eq", onTwo);
+    });
+  });
+
   it("the rows stay through Equip loadout, which changes only the echoes", () => {
     visit(account());
     finishedRun();

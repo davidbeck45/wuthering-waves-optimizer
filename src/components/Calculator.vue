@@ -1840,6 +1840,7 @@ export default defineComponent({
             optimizerResults.value = results;
             optimizerSnapshot.value = results.length ? pendingOptimizerSnapshot : null;
             pendingOptimizerSnapshot = null;
+            followOptimizerBaseline(); // Wuthering Tools+: the build may have changed echoes while it ran; still matching, the rows compare with it
             if (results.length === 0) {
               optimizerEmptyReason.value = resolveOptimizerEmptyReason({
                 inventoryCount: emptyReasonContext.inventoryCount,
@@ -1972,6 +1973,18 @@ export default defineComponent({
       },
       { deep: true },
     );
+    // Wuthering Tools+: the watch above moves the baseline when the build's stats change, so a run that lands after the
+    // build changed only its echoes (another build picked mid-run, same weapon and buffs) compared its rows with the
+    // build it started on, unflagged. Landing moves it too.
+    function followOptimizerBaseline() {
+      if (!optimizerSnapshot.value || optimizerResultsStale.value) return;
+      optimizerSnapshot.value = refreshOptimizerSnapshotBaseline(
+        optimizerSnapshot.value,
+        { totalAtk: totalAtk.value, totalHp: totalHp.value, totalDef: totalDef.value, totalCritRate: totalCritRate.value, totalCritDMG: totalCritDMG.value, energyRegen: energyRegen.value, hpPercent: totalHpPercent.value, hpFlat: totalHpFlat.value, attackPercent: totalAtkPercent.value, attackFlat: totalAtkFlat.value, defPercent: totalDefPercent.value, defFlat: totalDefFlat.value },
+        allDamages,
+      );
+    }
+
     // Comparisons for the shown results: the run's baseline, or live values
     // before any run has finished.
     const optimizerCompareStats = computed(
