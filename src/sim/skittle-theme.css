@@ -313,3 +313,7 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
 /* a team opened from the rows so far: the box is about the list, and on his detail page it sat over the Equipment and
    Damage Contribution grids until the solve ended (verify1) */
 .skittle-root.wt-sofar.wt-detail #loading { display: none; }
+/* one team, one number (2026-11-02): "25.0s" beside a team's DPR is its loop, as the phone cards say. Lived in the
+   generated skittle.css until the Nov 2026 regeneration dropped it; it belongs here (scripts/skittle-sync.mjs rewrites
+   that file whole) */
+.skittle-root .c.teamdpr .looptime::after, .pop .c.teamdpr .looptime::after, .ctxmenu .c.teamdpr .looptime::after { content: " loop"; }
