@@ -77,10 +77,11 @@
     <WorkStatus :busy="running" busy-text="Working out your Tower of Adversity plan" :done-text="error ? '' : failedCount ? `Tower of Adversity plan finished without ${failedCount} ${failedCount === 1 ? 'team' : 'teams'} it could not time` : 'Tower of Adversity plan finished'" />
     <div v-if="running" class="card bg-base-100 border border-base-300 shadow-sm mb-4" data-test-toa-progress>
       <div class="card-body p-3 gap-1.5">
-        <div class="flex items-center gap-2 text-sm">
+        <!-- on a phone the step's label takes the line and the count and Cancel wrap under it, right-aligned -->
+        <div class="flex max-sm:flex-wrap items-center gap-x-2 gap-y-1 text-sm">
           <span class="loading loading-spinner loading-xs text-primary"></span>
-          <span class="min-w-0 flex-1 max-sm:break-words sm:truncate">{{ progress?.label ?? "Working" }}</span>
-          <span class="tabular-nums opacity-70 shrink-0">{{ progress?.done ?? 0 }} / {{ progress?.total ?? 0 }}</span>
+          <span class="min-w-0 flex-1 max-sm:basis-[calc(100%-1.5rem)] max-sm:break-words sm:truncate" data-test-toa-progress-label>{{ progress?.label ?? "Working" }}</span>
+          <span class="tabular-nums opacity-70 shrink-0 max-sm:ml-auto">{{ progress?.done ?? 0 }} / {{ progress?.total ?? 0 }}</span>
           <button type="button" class="btn btn-ghost btn-xs" data-test-toa-cancel @click="cancel">Cancel</button>
         </div>
         <progress class="progress progress-primary w-full" :value="progressValue" max="100"></progress>
