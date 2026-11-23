@@ -1131,7 +1131,7 @@ let fetchPatched = false;
  *  skips the shipped solves. Vite dev and Vercel's SPA rewrite both answer every path with
  *  index.html, so the probe must be answered with a 404 here or the page would re-solve all
  *  625 teams in the browser on first load. Scoped to that one URL. */
-function patchFetch(): void {
+export function patchFetch(): void {
   if (fetchPatched) return;
   fetchPatched = true;
   const real = globalThis.fetch.bind(globalThis);

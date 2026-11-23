@@ -98,6 +98,9 @@ const routes = [
   { path: "/kit/:name", component: () => import("./sim/kits/KitBriefView.vue"), name: "KitBriefView" },
   // Wuthering Tools+: What's new on Tools+ — the plus features by date, and what moved in your numbers (src/sim/whatsNew/)
   { path: "/whats-new", component: () => import("./sim/whatsNew/WhatsNewView.vue"), name: "WhatsNewView" },
+  // Wuthering Tools+: Riley31415's Tier List and Value pages inside the app, read against the account (src/sim/rileyPages/)
+  { path: "/tier-list", component: () => import("./sim/rileyPages/TierListView.vue"), name: "TierListView" },
+  { path: "/roster-value", component: () => import("./sim/rileyPages/RosterValueView.vue"), name: "RosterValueView" },
   { path: "/scanners", component: ScannersView, name: "ScannersView" },
   // Wuthering Tools+: any other address gets a "page not found" page with the nav, not a blank screen (src/sim/shell/)
   { path: "/:pathMatch(.*)*", component: () => import("./sim/shell/NotFoundView.vue"), name: "NotFoundView" },

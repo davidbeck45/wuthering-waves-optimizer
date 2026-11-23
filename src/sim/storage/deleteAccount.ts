@@ -88,6 +88,7 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:endgame:clears", area: "local", fate: "goes", backup: "account", why: "the clears you logged, each beside what the check gave that team" },
   { key: "wuwa.solves.v1", area: "local", fate: "goes", backup: "cache", why: "the rankings page's solves, the ones at your account among them" },
   { key: "wuwa.owned.v1", area: "local", fate: "goes", backup: "account", why: "the rankings' Value page: the resonators you said you own" },
+  { key: "wtplus:rosterValue.applied", area: "local", fate: "goes", backup: "marker", why: "Roster value: the resonators Tools+ last ticked from your account, so ticks you changed by hand are told apart and kept" },
   { key: "wtplus-results", area: "indexedDB", fate: "goes", by: "savedResults", backup: "cache", why: "saved results (stores meta and data): rankings, the investment plan, echo checks, Echo Lab, weapon value" },
   { key: "wtplus:myRankings:last", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of My rankings" },
   { key: "wtplus:account:invest", area: "session", fate: "goes", by: "savedResults", backup: "cache", why: "this tab's copy of the investment plan" },

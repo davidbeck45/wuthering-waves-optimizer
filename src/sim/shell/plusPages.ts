@@ -128,4 +128,18 @@ export const PLUS_PAGES: PlusPage[] = [
     keywords: ["new", "news", "changelog", "changes", "features", "release", "update", "what changed", "moved", "numbers", "why did my damage change", "since last time"],
     icon: "M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z",
   },
+  {
+    path: "/tier-list",
+    title: "Tier list",
+    description: "Riley31415's tier list: every resonator at the best team damage they reach, T0 to T4, at any Team Cost or your account",
+    keywords: ["tier list", "tiers", "t0", "best characters", "meta", "who is best", "riley", "wuwa_calc", "main dps", "support", "matrix"],
+    icon: "M4 5h4v4H4zM4 15h4v4H4zM11 7h9M11 17h6",
+  },
+  {
+    path: "/roster-value",
+    title: "Roster value",
+    description: "Riley31415's value page on your roster: what each resonator you lack would add, and what each you own adds, in Neutral Matrix Score",
+    keywords: ["roster value", "who to pull", "pull", "value", "matrix", "endstate matrix", "account dpr", "owned", "worth", "riley", "wuwa_calc"],
+    icon: "M12 3v18M7 8h7.5a2.5 2.5 0 010 5H9.5a2.5 2.5 0 000 5H17",
+  },
 ];

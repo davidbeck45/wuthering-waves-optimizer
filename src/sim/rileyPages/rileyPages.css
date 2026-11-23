@@ -1,0 +1,8 @@
+/* Wuthering Tools+ — Riley's Tier List and Value pages inside the app (src/sim/rileyPages/). His own rules come
+   through the scoped skittle.css (`.skittle-root .valuepage …`); skittle-theme.css is /rankings' theme on top. This
+   sheet undoes the /rankings-only parts of that theme for these two pages and lays them out on a phone. */
+
+/* /rankings hides his Team Cost box (its bar has a tier control); these pages have no bar, so his box stays. His
+   README box names a frame-data site and repeats the line over the page: hidden, as on /rankings. */
+.skittle-root.wt-riley-pages .tcopt:has(#cost) { display: block !important; }
+.skittle-root.wt-riley-pages .tcopt.note[data-note="readme"] { display: none !important; }
