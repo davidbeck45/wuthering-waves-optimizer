@@ -126,6 +126,8 @@ describe("tools on Riley's engine", () => {
     for (const b of r.blocks) for (const line of b.swaps) expect(line).toMatch(/^(Aemeath|Mornye|Lynae): .+ · \d+\.\d s/);
     expect(r.fightSeconds).toBeGreaterThan(60);
     expect(r.path).toMatch(/^\/rotation#team=t\d+-/);
+    // who the loop starts over with, also where the fight closes on the last Outro (Riley's 211d7d0)
+    expect(r.then).toMatch(/^(Aemeath|Mornye|Lynae) again: the loop starts over$/);
     // the page's own address names a row of his list: the tools read it as that composition
     const byKey = await call("team_rotation", { team: r.path.replace(/^\/rotation#team=/, "") });
     expect(byKey.wuwaCalcTeam).toBe(r.wuwaCalcTeam);

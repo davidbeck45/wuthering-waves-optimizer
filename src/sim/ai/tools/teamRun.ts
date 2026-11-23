@@ -81,7 +81,7 @@ export const teamRotationTool = defineTool<{ team: string }>({
         seconds: round(b.seconds, 1),
         swaps: b.visits.map(line),
       })),
-      ...(plan.wrap ? { then: `${names[plan.wrap.member]} again: the loop starts over` } : {}),
+      ...((plan.wrap?.member ?? plan.startsOver) != null ? { then: `${names[(plan.wrap?.member ?? plan.startsOver)!]} again: the loop starts over` } : {}),
       notes: ["Seconds are frame-tight (every cancel on its earliest frame). teamDps is wuwa_calc's DPS: compare only with another DPS."],
       // A row's link carries its own picks, and /rotation runs such a row at the active builds (a Team rankings row as
       // /rankings showed it). A team asked at its own account is linked by its three members instead, which the page
