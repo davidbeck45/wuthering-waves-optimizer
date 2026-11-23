@@ -106,6 +106,7 @@ import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
+import { resolveCharacterEchoes } from "../../calculator/buildCharacterContext";
 import { deriveRealPanel, panelDifferences, realPanelWrite, type RealPanel } from "./realPanel";
 import { markTypicalPanel, typicalPanelSource } from "./typicalPanel";
 import { snapshotCharacters } from "../buildHistory/history";
@@ -141,7 +142,11 @@ const inputs = computed(() => {
   if (!pair.value) return null;
   const chars = characterStore.characters as Record<string, any>;
   const { teamBuffs: _panel, ...own } = record.value;
-  return JSON.stringify([props.character, pair.value, own, chars[pair.value[0]] ?? null, chars[pair.value[1]] ?? null, inventoryStore.echoes.length]);
+  // the echoes the three wear, as the derivation reads them: an edit in the inventory (a substat, a set) changes a
+  // teammate's Energy Regen or set without touching her record
+  const inventory = (inventoryStore.echoes ?? []) as any[];
+  const worn = [props.character, ...pair.value].map((id) => resolveCharacterEchoes(chars[id]?.echoes, inventory));
+  return JSON.stringify([props.character, pair.value, own, chars[pair.value[0]] ?? null, chars[pair.value[1]] ?? null, worn]);
 });
 
 let run = 0;

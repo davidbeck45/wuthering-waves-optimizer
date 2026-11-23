@@ -5,6 +5,7 @@ import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
+import { useInventoryStore } from "../../stores/inventory";
 import type { RealPanel } from "./realPanel";
 
 const pending: Array<{ args: unknown[]; resolve: (p: RealPanel) => void }> = [];
@@ -88,6 +89,32 @@ describe("RealTeamBuffsCard", () => {
     // Augusta's reading has not answered yet: the card says it is reading, not Carlotta's answer
     expect(w.find("[data-test-real-panel-status]").attributes("data-test-real-panel-status")).toBe("reading");
     expect(w.text()).not.toContain("Iuno");
+    vi.useRealTimers();
+  });
+
+  it("reads again when an echo a teammate wears is edited in the inventory (her Energy Regen moves a buff), not only when her record changes", async () => {
+    const { default: Card } = await import("./RealTeamBuffsCard.vue");
+    const store = useCharacterStore() as any;
+    const inventory = useInventoryStore() as any;
+    inventory.echoes = [{ echoId: "sk-0", echo: "Hurriclaw", echoSubStatsType1: "EnergyRegen", echoSubStatsValue1: 6.8 }];
+    store.characters = {
+      Carlotta: { teamBuffs: { selectedCharacter1: "Iuno", selectedCharacter2: "Shorekeeper", buffs: {} } },
+      Iuno: {},
+      Shorekeeper: { echoes: { 0: { echoId: "sk-0" } } },
+    };
+    useTeamRotationsStore().teams = [] as never;
+    mount(Card, { props: { character: "Carlotta" } });
+    vi.advanceTimersByTime(300);
+    await flushPromises();
+    pending.shift()!.resolve(realFor("Carlotta", ["Iuno", "Shorekeeper"], "IunoOutro"));
+    await flushPromises();
+    expect(pending).toHaveLength(0);
+
+    inventory.echoes[0].echoSubStatsValue1 = 12.4;
+    await flushPromises();
+    vi.advanceTimersByTime(300);
+    await flushPromises();
+    expect(pending).toHaveLength(1);
     vi.useRealTimers();
   });
 });
