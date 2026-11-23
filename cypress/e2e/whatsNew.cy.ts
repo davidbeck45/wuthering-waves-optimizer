@@ -241,6 +241,7 @@ describe("what's new on Tools+", () => {
   it("fits a phone", () => {
     for (const [width, height, fontScale] of [
       [412, 915, 1.3],
+      [360, 800, 1.3], // David's S26 at 130 % text, at the narrowest width the phone layout budgets for
       [360, 800, 1],
     ] as const) {
       cy.viewport(width, height);
@@ -520,6 +521,7 @@ describe("what moved in your numbers", () => {
     const log = storedLog([logEntry(NOV_12, BUILD_A), logEntry(NOV_15, BUILD_B, { chisa: 1_100_000, chisaSig: sig({ he: "he000002", rec: "rec00002" }), mine: 5_150_000, stock: 5_610_000, importedAt: NOV_15 - 1000 })]);
     for (const [width, height, fontScale] of [
       [412, 915, 1.3],
+      [360, 800, 1.3], // David's S26 at 130 % text, at the narrowest width the phone layout budgets for
       [360, 800, 1],
     ] as const) {
       cy.viewport(width, height);
