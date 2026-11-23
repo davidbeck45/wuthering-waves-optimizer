@@ -1,6 +1,8 @@
 // Wuthering Tools+ on a phone: no page-wide horizontal scroll on any route, the nav's plus icon
 // inside the viewport (classic: clear of the utility menu), and the plus tables reflowed into cards below 768 px.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
+import { rotations as suomingRotations } from "../../src/characters/Suoming/presets";
+import { rotations as hsinRotations } from "../../src/characters/Hsin/presets";
 
 const PHONE = { width: 360, height: 800 }; // the narrowest common Android viewport
 
@@ -110,6 +112,51 @@ function interceptKuroNews(): void {
   cy.readFile("src/sim/today/__fixtures__/patch37.json").then((patch) =>
     cy.intercept("GET", `${news}/article/*.json`, (req) => req.reply(req.url.endsWith("/5571.json") ? { body: patch } : { statusCode: 404, body: "" })),
   );
+}
+
+// Ryan's Optimize team (the teamOptimizer lab) on a phone at 130 % text: two members, nine synthetic echoes whose
+// substats include the longest names ("Resonance Liberation DMG Bonus"), one run.
+function optimizeTeamOnAPhone(width: number, height: number): void {
+  const MAIN_ECHO = "ReminiscenceSuhsintheInevitable";
+  const echo = (echoId: string, name: string, type: number, stat: string, subType: string, subValue: number) => ({
+    echoId, echo: name, type, rank: 5, stat, echoSet: "HeartofSwornVigil",
+    echoSubStatsType1: subType, echoSubStatsValue1: subValue,
+    echoSubStatsType2: "ResonanceLiberationDMGBonus", echoSubStatsValue2: 8.6,
+    echoSubStatsType3: "HeavyAttackDMGBonus", echoSubStatsValue3: 8.6,
+  });
+  const echoes = [
+    echo("main-1", MAIN_ECHO, 4, "CritDMG", "ATK", 80), echo("main-2", MAIN_ECHO, 4, "CritDMG", "CritRate", 6),
+    echo("four-a", "SentryConstruct", 4, "CritRate", "CritDMG", 15), echo("three-a", "FrostbiteColeoid", 3, "Electro", "ATK", 60),
+    echo("three-b", "IceglintDancer", 3, "Electro", "CritRate", 9), echo("three-c", "Ironhoof", 3, "ATK", "CritDMG", 12),
+    echo("one-a", "ShadowStepper", 1, "ATK", "CritRate", 10), echo("one-b", "Hoochief", 1, "ATK", "CritDMG", 20),
+    echo("one-c", "SnipSnap", 1, "ATK", "CritRate", 7),
+  ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const actions = (presets: any[], slot: number, start: number) => presets[0].data.actions.map((action: any, i: number) => ({ ...action, id: `s${slot}-${i}`, slot, order: start + i }));
+  const suoming = actions(suomingRotations as unknown[], 0, 1);
+  const hsin = actions(hsinRotations as unknown[], 1, suoming.length + 1);
+  const character = (weapon: string) => ({ weapon, mainEcho: { echo: MAIN_ECHO, rank: 5, buffs: {} }, optimizer: { echoSets: ["HeartofSwornVigil"], mainEchoes: [MAIN_ECHO] } });
+  cy.viewport(width, height);
+  cy.visit("/teams", {
+    onBeforeLoad(win: Window) {
+      win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: false }, labs: { teamOptimizer: { isEnabled: true } } }));
+      win.localStorage.setItem("character", JSON.stringify({ characters: { Suoming: character("EmeraldOfGenesis"), Hsin: character("BloomingJadehaven") }, activeCharacter: "Suoming", favoriteCharacters: [] }));
+      win.localStorage.setItem("inventory", JSON.stringify({ echoes, equipped: {}, echoPresets: [], equippedPresets: {} }));
+      win.localStorage.setItem("teamRotations", JSON.stringify({
+        teams: [{ id: "phone-slots", name: "Phone Slots Team", characterIds: ["Suoming", "Hsin", null], buildIds: [null, null, null], actions: [...suoming, ...hsin], duration: 25, mode: "basic", enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" } }],
+        favoriteTeamIds: [], favoritePresetNames: [],
+      }));
+    },
+    onLoad(win: Window) {
+      const style = win.document.createElement("style");
+      style.textContent = "html { font-size: 130%; }";
+      win.document.head.appendChild(style);
+    },
+  });
+  cy.get('[data-test-team-rotations-item="Phone Slots Team"]').contains("Phone Slots Team").click();
+  cy.get("[data-test-team-rotation-summary-optimize]:visible").first().click();
+  cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+  cy.get("[data-test-team-optimizer-slots]", { timeout: 60000 }).should("have.length.at.least", 1);
 }
 
 describe("phone layout", () => {
@@ -1261,6 +1308,25 @@ describe("phone layout", () => {
     });
     cy.get("[data-test-recommended-teams-filter]").each(($filter) => {
       expect($filter[0].getBoundingClientRect().height, `the "${$filter.text().trim()}" filter is 44 px tall`).to.be.at.least(44);
+    });
+  });
+
+  // Ryan's #745 on a phone (phone.css § 41 c): Optimize team's per-slot echo cards sat two to a row, 133 px tiles for a
+  // card whose substat rows need about 310 px at 130 % text; the Teams page scrolled sideways (523 px at 360). One to a
+  // row, the substat list held to the card, a long substat name wrapping rather than cut.
+  it("keeps Optimize team's echo cards inside a 360 px phone at 130 % text, every substat named whole", () => {
+    optimizeTeamOnAPhone(360, 800);
+    expectNoHorizontalScroll("/teams › Optimize team results");
+    cy.get("[data-test-team-optimizer-slots] [data-test-optimizer-result-echo-id]").should("have.length.at.least", 5).each(($card) => {
+      const card = $card[0].getBoundingClientRect();
+      expect(card.right, "the echo card ends on the screen").to.be.at.most(360);
+      expect(card.width, "one card to a row").to.be.greaterThan(220);
+      for (const row of $card[0].querySelectorAll("[data-test-echo-card-substat]")) {
+        const [name, value] = [...row.children];
+        expect(value.getBoundingClientRect().right, `"${row.textContent!.trim()}": its value inside the card`).to.be.at.most(card.right);
+        const label = name.querySelector(".truncate") as HTMLElement;
+        expect(label.scrollWidth, `"${label.textContent!.trim()}" is not cut`).to.be.at.most(label.clientWidth + 1);
+      }
     });
   });
 });

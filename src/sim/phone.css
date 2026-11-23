@@ -2167,3 +2167,24 @@ html.wt-ai-docked #wt-app .contain {
     grid-column: 2 / -1;
   }
 }
+/* c) Optimize team's per-slot echo cards (#745, TeamOptimizerResults.vue, the teamOptimizer lab). Each member's five
+      echoes are his optimizer loadout card (CalculatorOptimizerResultLoadoutEcho.vue) in a grid two to a row below
+      640 px: 133 px tiles at 360 px for a card whose substat rows need about 310 at 130 %, so every substat and value
+      ran under the next card and the whole Teams page scrolled sideways (523 px wide at 360). One card to a row, as
+      § 37 a does for the same card in the calculator's Spotlight. */
+@media (max-width: 639px) {
+  [data-test-team-optimizer-slots].grid.grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* and the card's substat list was as wide as its longest row: his card column is `align-items: start`, so the list
+     took "Resonance Liberation DMG Bonus 8.6%" whole (310 px) in a card 239 px wide at 360 px, and every value sat
+     past the card's right edge. The list takes the card's width, and a long name wraps rather than losing its end
+     ("Resonance Liberation D…" says nothing about which bonus it is). */
+  [data-test-team-optimizer-slots] .echo__content > div:has(> [data-test-echo-card-substat]) {
+    align-self: stretch;
+    min-width: 0;
+  }
+  [data-test-team-optimizer-slots] [data-test-echo-card-substat] .truncate {
+    white-space: normal;
+  }
+}
