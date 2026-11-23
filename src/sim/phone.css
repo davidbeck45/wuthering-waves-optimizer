@@ -2063,5 +2063,35 @@ html.wt-ai-docked #wt-app .contain {
     min-width: 0;
     white-space: normal;
     overflow-wrap: anywhere;
+
+/* ---------------------------------------------------------------------------------------------
+   41. Ryan's #726 to #747 on a phone (sync of 2026-11-23; 412 and 360 px at 130 % text).
+       a) The Attacks tab of the Full breakdown (#730: CalculatorLiveResultAttacks.vue, CalculatorLiveResultAttackGroup.vue,
+          CalculatorLiveResultAttackPin.vue). His Normal, Average and Crit columns are `w-20`, 104 px each at 130 % for a
+          five-digit figure that needs about 55, and his new pin sits in the name's cell: the name had 105 px at both
+          widths and "Basic Attack - Aemeath Stage 1 DMG" took five lines, so ten pinned attacks were a 1,100 px table.
+          The figures take the width they need and the name the rest. His pin is an 18 px circle and the Left / Right
+          switch and Expand all / Collapse all are 31 px and 17 px tall: each gets a 44 px target, the pin through an
+          invisible ring around it so the rows keep their size. The pin on the Overview tab's stat rows is the same
+          button (CalculatorLiveResultStatRow.vue) and gets the same ring. */
+@media (max-width: 767px) {
+  .live-result-attacks .live-dmg-table.table thead th.w-20 {
+    width: auto;
+    padding-inline: 0.3rem;
+  }
+  [data-test-live-result-detail] .pin-toggle.pin-toggle {
+    position: relative;
+  }
+  [data-test-live-result-detail] .pin-toggle.pin-toggle::after {
+    content: "";
+    position: absolute;
+    inset: -13px;
+  }
+  .live-result-attacks .toolbar .join > .btn.btn-xs {
+    min-height: 44px;
+    height: 44px;
+  }
+  .live-result-attacks .toolbar .toolbar__link.toolbar__link {
+    min-height: 44px;
   }
 }

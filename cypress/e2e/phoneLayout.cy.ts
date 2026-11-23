@@ -1173,4 +1173,46 @@ describe("phone layout", () => {
     cy.get("[data-test-phone-echo-batch-how] summary").should("contain.text", "How to take them").click();
     cy.get("[data-test-phone-echo-batch-set-tip]").should("be.visible").and("contain.text", "No Sonata filter needed");
   });
+
+  // Ryan's #730 on a phone (phone.css § 41 a): the Attacks tab's number columns were 104 px each at 130 % text, so an
+  // attack's name had 105 px and took five lines beside his new pin; the pin is an 18 px circle and the Pins switch
+  // and Expand all / Collapse all are 31 and 17 px tall.
+  it("gives the Attacks tab's names room and its pins and switches a finger's target at 360 px / 130 % text", () => {
+    cy.viewport(360, 800);
+    cy.visit("/", v3Phone(1.3));
+    cy.get(".command-bar__sheet-open").should("be.visible").click();
+    cy.get("[data-test-command-sheet-breakdown]").click();
+    cy.get("[data-test-live-result-detail-tab-attacks]").filter(":visible").click();
+    cy.get("[data-test-live-result-attacks-expand-all]").filter(":visible").click();
+    for (let i = 0; i < 3; i++) {
+      cy.get('[data-test-live-result-attack-group]:not([data-test-live-result-attack-group-key="pinnedAttacks"]) [data-test-live-result-attack-pin][aria-pressed="false"]')
+        .filter(":visible")
+        .first()
+        .click();
+    }
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"] [data-test-live-result-attack-row]').should("have.length", 3);
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"] table').should(($table) => {
+      const table = $table[0];
+      expect(table.getBoundingClientRect().right, "the table ends on the screen").to.be.at.most(360);
+      const [name, ...figures] = [...table.querySelectorAll("thead th")].map((th) => th.getBoundingClientRect().width);
+      for (const width of figures.slice(0, 3)) expect(width, "Normal, Average and Crit: as wide as their figures").to.be.at.most(85);
+      expect(name, "the attack's name has the rest").to.be.greaterThan(110);
+    });
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"] [data-test-live-result-attack-pin]').each(($pin) => {
+      const pin = $pin[0];
+      pin.scrollIntoView({ block: "center" });
+      const r = pin.getBoundingClientRect();
+      for (const [dx, dy] of [[0, -18], [0, 18], [-18, 0], [18, 0]]) {
+        const hit = pin.ownerDocument.elementFromPoint(r.left + r.width / 2 + dx, r.top + r.height / 2 + dy);
+        expect(hit?.closest("[data-test-live-result-attack-pin]"), `a tap ${dx},${dy} px from the pin's centre pins`).to.equal(pin);
+      }
+    });
+    cy.get("[data-test-live-result-attacks-expand-all]").scrollIntoView();
+    cy.get(".live-result-attacks .toolbar button").filter(":visible").should("have.length", 4).each(($button) => {
+      expect($button[0].getBoundingClientRect().height, `"${$button.text().trim()}" is 44 px tall`).to.be.at.least(44);
+    });
+    cy.get(".live-result-attacks .toolbar").should(($bar) => {
+      expect($bar[0].getBoundingClientRect().height, "Pins, Expand all and Collapse all share one line").to.be.below(60);
+    });
+  });
 });
