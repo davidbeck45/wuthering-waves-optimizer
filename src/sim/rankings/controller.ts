@@ -1042,6 +1042,9 @@ function goBack(): void {
 function applyHashSettled(): boolean {
   const M = mods!.model;
   const changed: boolean = M.applyHash();
+  // a team page reads its team off `t=`, whatever the filters say; settling under it rewrote its address (an account
+  // changed on another page took the team away). The table settles once it is back on screen.
+  if (M.hashTeam()) return changed;
   const before = [...(M.resonatorFilters as Map<string, string>)].join();
   M.settleLevels();
   if ([...(M.resonatorFilters as Map<string, string>)].join() === before) return changed;
