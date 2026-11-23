@@ -10,7 +10,7 @@ import { rankRoster } from "../myRankings/rankRoster";
 import { levelPlan } from "./levelPlan";
 import { parseLevels } from "./levelSteps";
 import { assumedWords, BASIS_WORDS, inertText, type LevelPlan, type LevelRow } from "./levelWorth";
-import { basisLine, costText, everythingText, flatNote, gateLine, gateText, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "./levelsView";
+import { basisLine, costText, everythingText, flatNote, gateLine, gateText, headlineText, inertLine, materialsText, NOT_MODELLED, orderBlindText, pathHow, smallTeamLine } from "./levelsView";
 
 export interface LevelsCliOptions {
   /** "saved" (default) or "1" / "scratch": level 1 across the board */
@@ -105,7 +105,7 @@ export function printLevels(plan: LevelPlan): string {
     if (head) out.push(`  ${head}`);
     const gate = gateLine(plan);
     if (gate) out.push(`  ${gate}`);
-    out.push(`  ${ORDER_BLIND}`);
+    out.push(`  ${orderBlindText(plan.basis)}`);
     if (plan.pathState !== "complete") out.push(`  (the order is ${plan.pathState})`);
   }
   const left = inertLine(plan, plan.rotation?.name ?? null);

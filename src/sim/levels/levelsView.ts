@@ -165,7 +165,16 @@ export function inertLine(plan: Pick<LevelPlan, "inert">, rotation: string | nul
 
 /** What the order does not know: said under it, so a locked step is no surprise. A statement about this tool only;
  *  the game's own unlock rules are in no table the app reads. */
-export const ORDER_BLIND = "The order looks only at damage and Shell Credits. It does not know what the game unlocks when, so a step may still be locked for you: take the next one that is open.";
+export function orderBlindText(basis: Basis = "team"): string {
+  return `The order looks only at ${measureWord(basis)} and Shell Credits. It does not know what the game unlocks when, so a step may still be locked for you: take the next one that is open.`;
+}
+export const ORDER_BLIND = orderBlindText();
+
+/** What a level-up is measured in: a healer's levels buy healing, a shielder's shield strength, everyone else's damage.
+ *  The section's first line and the line under the order say it (they said "damage" for Verina's healing order). */
+export function measureWord(basis: Basis): string {
+  return basis === "healing" ? "healing" : basis === "shield" ? "shield strength" : "damage";
+}
 
 /** The one line on what is not a step here. */
 export const NOT_MODELLED =

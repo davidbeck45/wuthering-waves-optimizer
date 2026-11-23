@@ -15,7 +15,7 @@
       </div>
     </div>
     <p class="lw__intro" data-test-levels-intro>
-      What each level-up still open adds to damage on {{ name }}'s build, and what it costs<template v-if="from === 'scratch'">: counted from a new {{ name }} at level 1<template v-if="weaponName"> with {{ weaponName }} at level 1</template>, wearing this build's echoes</template><template v-else-if="from === 'custom'">: counted from the levels you set here</template>.
+      What each level-up still open adds to {{ plan ? measureWord(plan.basis) : "damage" }} on {{ name }}'s build, and what it costs<template v-if="from === 'scratch'">: counted from a new {{ name }} at level 1<template v-if="weaponName"> with {{ weaponName }} at level 1</template>, wearing this build's echoes</template><template v-else-if="from === 'custom'">: counted from the levels you set here</template>.
     </p>
 
     <!-- a what-if: where the character stands in game, for an account whose calculator has no levels saved -->
@@ -124,7 +124,7 @@
           </button>
           <p v-if="plan.pathState === 'capped'" class="lw__note">The order stops here; the steps after it were not worked out.</p>
           <p v-if="leftOut" class="lw__note" data-test-levels-path-inert>Left out of the order: {{ leftOut }}.</p>
-          <p v-if="!running && plan.path.length" class="lw__note" data-test-levels-path-blind>{{ ORDER_BLIND }} Which materials each track needs is under "Each on its own".</p>
+          <p v-if="!running && plan.path.length" class="lw__note" data-test-levels-path-blind>{{ orderBlindText(plan.basis) }} Which materials each track needs is under "Each on its own".</p>
         </template>
       </template>
 
@@ -164,7 +164,7 @@ import { loadMaterials } from "../materials/materialsData";
 import type { CharacterRank, TeamRank } from "../myRankings/rankRoster";
 import { assumedWords, BASIS_WORDS, inertText, levelPlan, type LevelPlan } from "./levelPlan";
 import { FORTE_KEYS, levelOptions, levelsToday, stateLevels, stateText, TOP_LEVEL, trackLabel, type TrackKey } from "./levelSteps";
-import { basisLine, costText, everythingText, flatNote, gainChips, gateLine, gateText, headlineText, inertLine, materialsText, NOT_MODELLED, ORDER_BLIND, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
+import { basisLine, costText, everythingText, flatNote, gainChips, gateLine, gateText, headlineText, inertLine, materialsText, measureWord, NOT_MODELLED, orderBlindText, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const props = defineProps<{
   characterKey: string;

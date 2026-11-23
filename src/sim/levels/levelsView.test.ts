@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import type { LevelPlan, LevelRow, PathStep } from "./levelPlan";
 import type { LevelCost } from "./levelSteps";
-import { basisLine, costText, everythingText, gainChips, gainText, headlineText, inertLine, materialsText, NOT_MODELLED, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
+import { basisLine, costText, everythingText, gainChips, gainText, headlineText, inertLine, materialsText, measureWord, NOT_MODELLED, ORDER_BLIND, orderBlindText, pathHow, runningText, smallTeamLine, stepChip } from "./levelsView";
 
 const cost = (credits: number, extra: Partial<LevelCost> = {}): LevelCost => ({ credits, resonatorExp: 0, weaponExp: 0, expItems: [], ascensions: 0, materials: [], ...extra });
 const fig = (gain: number) => ({ base: 100, after: 100 * (1 + gain), gain });
@@ -39,6 +39,15 @@ describe("figures", () => {
 });
 
 describe("sentences", () => {
+  it("says what a level-up is measured in: healing for a healer, shield strength for a shielder, else damage", () => {
+    expect(measureWord("healing")).toBe("healing");
+    expect(measureWord("shield")).toBe("shield strength");
+    expect(measureWord("team")).toBe("damage");
+    expect(measureWord("own")).toBe("damage");
+    expect(orderBlindText("healing")).toMatch(/^The order looks only at healing and Shell Credits\./);
+    expect(ORDER_BLIND).toMatch(/^The order looks only at damage and Shell Credits\./);
+  });
+
   const plan = {
     noGain: null,
     base: { damage: 1000, healing: 0, shield: 0 },
