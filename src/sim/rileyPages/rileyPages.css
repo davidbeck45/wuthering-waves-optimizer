@@ -6,3 +6,54 @@
    README box names a frame-data site and repeats the line over the page: hidden, as on /rankings. */
 .skittle-root.wt-riley-pages .tcopt:has(#cost) { display: block !important; }
 .skittle-root.wt-riley-pages .tcopt.note[data-note="readme"] { display: none !important; }
+
+/* ------------------------------------------------------------------------------------ phones
+   His tables are wide grids (the tier list 10 tracks, three blocks side by side; the value table 6, two sides).
+   On a phone one block (one side) shows at a time, picked by the buttons over the page (RileyPageHost.vue sets
+   `data-wt-view` on the host). His rows are `display: contents` and each block of a row is one `.sec`, so a block
+   is `.sec:nth-child(n of .sec)` in every row. */
+@media (max-width: 767px) {
+  /* Tier list: tier · resonator · figure */
+  .wt-riley-host > .skittle-root.wt-riley-tierlist .tgrid { grid-template-columns: max-content minmax(0, 1fr) max-content !important; }
+  .wt-riley-host > .skittle-root.wt-riley-tierlist .trow > .c.tiergap { display: none; }
+  .wt-riley-host[data-wt-view="0"] > .skittle-root.wt-riley-tierlist .thead > .c:is(:nth-child(6), :nth-child(7), :nth-child(9), :nth-child(10)),
+  .wt-riley-host[data-wt-view="1"] > .skittle-root.wt-riley-tierlist .thead > .c:is(:nth-child(3), :nth-child(4), :nth-child(9), :nth-child(10)),
+  .wt-riley-host[data-wt-view="2"] > .skittle-root.wt-riley-tierlist .thead > .c:is(:nth-child(3), :nth-child(4), :nth-child(6), :nth-child(7)),
+  .wt-riley-host[data-wt-view="0"] > .skittle-root.wt-riley-tierlist .trow:not(.thead) > .sec:not(:nth-child(1 of .sec)),
+  .wt-riley-host[data-wt-view="1"] > .skittle-root.wt-riley-tierlist .trow:not(.thead) > .sec:not(:nth-child(2 of .sec)),
+  .wt-riley-host[data-wt-view="2"] > .skittle-root.wt-riley-tierlist .trow:not(.thead) > .sec:not(:nth-child(3 of .sec)) { display: none; }
+  .wt-riley-host > .skittle-root.wt-riley-tierlist .trow .c.name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Roster value: tick · resonator · figure, one side at a time; a row with nothing on the side shown goes */
+  .wt-riley-host > .skittle-root.wt-riley-value .tgrid { grid-template-columns: max-content minmax(0, 1fr) max-content !important; }
+  .wt-riley-host[data-wt-view="0"] > .skittle-root.wt-riley-value .thead > .c:nth-child(n + 4),
+  .wt-riley-host[data-wt-view="1"] > .skittle-root.wt-riley-value .thead > .c:nth-child(-n + 3),
+  .wt-riley-host[data-wt-view="0"] > .skittle-root.wt-riley-value .trow:not(.thead) > .sec:not(:nth-child(1 of .sec)),
+  .wt-riley-host[data-wt-view="1"] > .skittle-root.wt-riley-value .trow:not(.thead) > .sec:not(:nth-child(2 of .sec)),
+  .wt-riley-host[data-wt-view="0"] > .skittle-root.wt-riley-value .trow:not(.thead):not(:has(> .sec:nth-child(1 of .sec) .name)),
+  .wt-riley-host[data-wt-view="1"] > .skittle-root.wt-riley-value .trow:not(.thead):not(:has(> .sec:nth-child(2 of .sec) .name)) { display: none; }
+  .wt-riley-host > .skittle-root.wt-riley-value .trow .c.blockstart { border-left: 0; padding-left: 4px; }
+  .wt-riley-host > .skittle-root.wt-riley-value .trow .c.name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  /* the table is the screen's width at most: the name column gives, the headings wrap */
+  .wt-riley-host > .skittle-root.wt-riley-pages .tcbody,
+  .wt-riley-host > .skittle-root.wt-riley-pages .tcwrap { max-width: 100%; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .tcwrap { width: 100%; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .tgrid { width: 100%; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .trow.thead .c { white-space: normal; overflow-wrap: anywhere; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .trow.thead .c.modehead { max-width: 7.5em; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .trow .c.name .res-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* his summary line (Reset Account, the score) wraps instead of pushing the page wide */
+  .wt-riley-host > .skittle-root.wt-riley-pages .tcbody > .summary-label { flex-wrap: wrap; white-space: normal; }
+}
+
+/* The ticks: a 44 px target, the whole cell a label for the box (his markup) */
+.skittle-root.wt-riley-value .trow:not(.thead) .c.check {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.skittle-root.wt-riley-value .trow .c.check input { width: 20px; height: 20px; }
+.skittle-root.wt-riley-value .trow .c.check input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.skittle-root.wt-riley-pages .resetlink { min-height: 44px; display: inline-flex; align-items: center; }

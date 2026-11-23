@@ -1,18 +1,36 @@
 <template>
-  <Nav cur-page="rankings" :disable-mobile-nav="true"></Nav>
+  <Nav :cur-page="kind === 'tierlist' ? 'tier-list' : 'roster-value'" :disable-mobile-nav="true"></Nav>
   <div class="wt-riley-page" :data-test-riley-page="kind">
     <header class="wt-riley-head px-3 pt-2">
       <h1 class="text-lg font-semibold leading-tight">{{ title }}</h1>
-      <p class="text-sm opacity-80" data-test-riley-about><slot name="about" /></p>
+      <p class="text-sm" data-test-riley-lead><slot name="lead" /></p>
+      <details class="wt-riley-about text-sm" data-test-riley-about>
+        <summary class="wt-riley-about__sum link">What the numbers are</summary>
+        <div class="opacity-90 pb-1"><slot name="about" /></div>
+        <p class="text-xs opacity-80 pb-1">
+          Page, engine and solves by
+          <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a> (ISC), running in-page.
+        </p>
+      </details>
       <slot name="extra" />
+      <div v-if="views.length" class="wt-riley-views" role="group" :aria-label="viewsLabel" data-test-riley-views>
+        <button
+          v-for="(v, i) in views"
+          :key="v"
+          type="button"
+          class="btn btn-sm"
+          :class="view === i ? 'btn-primary' : 'btn-ghost'"
+          :aria-pressed="view === i"
+          :data-test-riley-view="i"
+          @click="view = i">{{ v }}</button>
+      </div>
     </header>
-    <div ref="host" class="wt-riley-host"></div>
+    <div ref="host" class="wt-riley-host" :data-wt-view="view"></div>
     <p ref="credit" class="wt-riley-credit text-xs opacity-70 px-3 py-1">
-      Page, engine and solves by
-      <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a> (ISC), running in-page.
-      <RouterLink to="/rankings" class="link link-primary ml-1" data-test-riley-to-rankings>Team rankings</RouterLink> ·
+      <RouterLink to="/rankings" class="link link-primary" data-test-riley-to-rankings>Team rankings</RouterLink> ·
       <RouterLink v-if="kind !== 'tierlist'" to="/tier-list" class="link link-primary" data-test-riley-to-tierlist>Tier list</RouterLink>
       <RouterLink v-else to="/roster-value" class="link link-primary" data-test-riley-to-value>Roster value</RouterLink>
+      <slot name="links" />
     </p>
   </div>
 </template>
@@ -32,8 +50,10 @@ import "../skittle.css";
 import "../skittle-theme.css";
 import "./rileyPages.css";
 
-const props = defineProps<{ kind: RileyPageKind; title: string }>();
+const props = withDefaults(defineProps<{ kind: RileyPageKind; title: string; views?: string[]; viewsLabel?: string }>(), { views: () => [], viewsLabel: "" });
 const host = ref<HTMLElement | null>(null);
+/** phones: which of his side-by-side blocks shows (rileyPages.css); a desktop shows them all */
+const view = ref(0);
 const credit = ref<HTMLElement | null>(null);
 usePlusBar(credit, { pinned: true });
 const router = useRouter();
@@ -71,6 +91,27 @@ onBeforeUnmount(() => unmountRileyPage(props.kind));
   min-height: 0;
   background: oklch(var(--b1));
 }
+.wt-riley-about__sum {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  cursor: pointer;
+}
+.wt-riley-views {
+  display: none;
+  gap: 0.25rem;
+  padding: 0.25rem 0 0.5rem;
+}
+.wt-riley-views .btn {
+  min-height: 44px;
+  flex: 1 1 0;
+}
+@media (max-width: 767px) {
+  .wt-riley-views {
+    display: flex;
+  }
+}
 .wt-riley-host {
   flex: 1;
   min-height: 0;
@@ -91,5 +132,24 @@ onBeforeUnmount(() => unmountRileyPage(props.kind));
 }
 .wt-riley-host > .skittle-root #app {
   overflow: auto !important;
+}
+/* phones: the whole page scrolls (the header, his option boxes, then the table), so the table is not a window under
+   a tall header; his column headings stick to the screen's top instead of his own scroll box */
+@media (max-width: 767px) {
+  .wt-riley-page {
+    height: auto;
+    min-height: calc(100dvh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
+  }
+  .wt-riley-host {
+    overflow: visible;
+  }
+  .wt-riley-host > .skittle-root,
+  .wt-riley-host > .skittle-root > .wt-riley-body,
+  .wt-riley-host > .skittle-root #app,
+  .wt-riley-host > .skittle-root main {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
 }
 </style>
