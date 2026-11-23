@@ -82,11 +82,23 @@ describe("cost to max in the account drawer", () => {
     cy.get("[data-test-cost-to-max]").should(($section) => {
       expect($section[0]!.getBoundingClientRect().top, "Cost to max still at the top of the drawer").to.be.within(0, 915 * 0.5);
     });
-    // a swipe, the wheel, a key: from here where the drawer scrolls is the player's
+    // a swipe, the wheel, a key: from here where the drawer scrolls is the player's, and a section that still arrives
+    // above Cost to max must not move it under their thumb (it is not put back at the top either: it stays put)
+    let before = 0;
+    cy.get("[data-test-cost-to-max]").then(($section) => {
+      before = $section[0]!.getBoundingClientRect().top;
+    });
     cy.get("[data-test-account-drawer]").trigger("wheel", { deltaY: -40, force: true });
     arrives(1900);
     cy.get("[data-test-cost-to-max]").should(($section) => {
-      expect($section[0]!.getBoundingClientRect().top, "left where the player has it").to.be.greaterThan(915);
+      expect(Math.abs($section[0]!.getBoundingClientRect().top - before), "left where the player has it").to.be.lessThan(2);
+    });
+    // the player scrolls on: the drawer goes where they take it
+    cy.get("[data-test-account-drawer]").then(($d) => {
+      $d[0]!.scrollTop -= 300;
+    });
+    cy.get("[data-test-cost-to-max]").should(($section) => {
+      expect($section[0]!.getBoundingClientRect().top, "scrolled 300 px up by the player").to.be.within(before + 290, before + 310);
     });
   });
 
