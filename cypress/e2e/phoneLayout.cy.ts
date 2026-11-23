@@ -1329,4 +1329,23 @@ describe("phone layout", () => {
       }
     });
   });
+
+  // Ryan's #745 on a phone (phone.css § 41 d): a Top 5 row's "how this plan differs" line is up to 16rem (333 px at
+  // 130 %) in a table § 36 b sizes to its content: at 360 px it ran past the edge of the table's scroller.
+  it("wraps Optimize team's plan lines inside the Top 5 table at 360 px / 130 % text", () => {
+    optimizeTeamOnAPhone(360, 800);
+    // this small team's run has no plan that differs, so the row gets his line as his template writes it (classes and
+    // all), with the longest text David's account showed
+    cy.get('[data-test-team-optimizer-row="0"] td:nth-child(2)').then(($cell) => {
+      const line = $cell[0].ownerDocument.createElement("div");
+      line.className = "text-xs opacity-70 max-w-[16rem] whitespace-normal";
+      line.setAttribute("data-test-team-optimizer-plan-name", "0");
+      line.textContent = "Different buff sets: Lynae wears Pact of Neonlight Leap instead of Pact of Neonlight Leap and Hyvatia";
+      $cell[0].appendChild(line);
+    });
+    cy.get("[data-test-team-optimizer-plan-name]").should("have.length.at.least", 1).each(($line) => {
+      const scroller = $line[0].closest(".overflow-x-auto")!.getBoundingClientRect();
+      expect($line[0].getBoundingClientRect().right, `"${$line.text().trim().slice(0, 40)}" ends inside the table's view`).to.be.at.most(scroller.right);
+    });
+  });
 });

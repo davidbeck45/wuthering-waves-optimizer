@@ -2188,3 +2188,13 @@ html.wt-ai-docked #wt-app .contain {
     white-space: normal;
   }
 }
+/* d) Optimize team's Top 5 (#745's "how this plan differs" line under a row's change, TeamOptimizerResults.vue). The line
+      is up to 16rem wide, 333 px at 130 %, in a table § 36 b sizes to its content inside a sideways scroller: at 360 px
+      "Different buff sets: Lynae wears Pact of Neonlight Leap instead of …" ran on past the screen's edge, and it can
+      only be read by scrolling the table. It wraps within what the screen leaves beside the rank, less a desktop
+      browser's scrollbar where there is one. */
+@media (max-width: 767px) {
+  [data-test-team-optimizer-results] .table [data-test-team-optimizer-plan-name] {
+    max-width: min(16rem, calc(100vw - 160px));
+  }
+}
