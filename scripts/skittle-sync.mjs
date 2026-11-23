@@ -29,7 +29,8 @@ function scope(sel) {
 // Riley moved his stylesheet and loading sticker from resources/ to the repo root in Sept 2026
 const pick = (...paths) => paths.find((f) => existsSync(f)) ?? paths[0];
 const CSS_PATH = pick(`${SUB}/index.css`, `${SUB}/resources/index.css`);
-const GIF_PATH = pick(`${SUB}/loading.gif`, `${SUB}/resources/loading.gif`);
+// ...and the sticker again, into images/, with his "ui update" of Nov 2026 (e7a10a9)
+const GIF_PATH = pick(`${SUB}/images/loading.gif`, `${SUB}/loading.gif`, `${SUB}/resources/loading.gif`);
 // ...and his shipped solves from tests/solves/ to dist/solves/ (d5a147e), which his page now fetches
 const SOLVES = pick(`${SUB}/dist/solves`, `${SUB}/tests/solves`);
 const SOLVES_OUT = SOLVES.endsWith("dist/solves") ? "public/dist/solves" : "public/tests/solves";
