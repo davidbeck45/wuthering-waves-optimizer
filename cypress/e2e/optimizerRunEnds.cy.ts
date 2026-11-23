@@ -109,6 +109,24 @@ describe("rows outlive a change to what they were scored on, flagged", { default
     });
   });
 
+  it("Run again after a build switch opens this build's own setup instead of replaying the other build's settings", () => {
+    // his Run again replays the sets, main echoes and minimum stats the run was pressed with, and those are per build:
+    // after a switch it scored build Two with build One's settings while the setup screen showed Two's (batch 5, check-merge)
+    visit(account(otherRefinement));
+    finishedRun();
+    cy.window().then((win) => storeOf(win).equipBuild("Zani", "two"));
+    cy.get(STALE).should("contain.text", "Your setup changed");
+    cy.get("[data-test-optimizer-rerun]").click();
+    cy.get(WHY).should("contain.text", "You switched builds since that run");
+    cy.get(ROW).should("not.exist");
+    cy.get(STALE).should("not.exist");
+    cy.get(RUN).should("be.visible");
+    // and the next press, made on this build's settings, runs as any other
+    finishedRun();
+    cy.get(STALE).should("not.exist");
+    cy.get(WHY).should("not.exist");
+  });
+
   it("a run left going when a build with other echoes and the same weapon is picked lands unflagged, compared with the build now worn", () => {
     const cleared = account((record) => {
       record.builds[1].echoes = record.builds[1].echoes.map((slot: any) => ({ ...slot, echoId: null, echo: null }));

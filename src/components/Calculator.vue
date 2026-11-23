@@ -883,6 +883,7 @@ export default defineComponent({
     const optimizerSnapshot = ref<OptimizerRunSnapshot | null>(null);
     let pendingOptimizerSnapshot: OptimizerRunSnapshot | null = null;
     let lastOptimizeArgs: unknown[] | null = null;
+    let lastOptimizeBuildKey: string | null = null; // Wuthering Tools+: the build those arguments were set up on (rerunOptimizer)
     let optimizerTimerStartMs = 0;
     let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -1530,6 +1531,7 @@ export default defineComponent({
     ) => {
       currentOptimizerCleanup?.(); // Wuthering Tools+: one run at a time, or the last to finish wins
 
+      lastOptimizeBuildKey = characterBuildKey.value; // Wuthering Tools+
       lastOptimizeArgs = [
         setFilters,
         mainEchoes,
@@ -2013,6 +2015,13 @@ export default defineComponent({
 
     const rerunOptimizer = () => {
       if (!lastOptimizeArgs || isOptimizerRunning.value) return;
+      // Wuthering Tools+: his Run again replays the settings the run was pressed with, and optimizer settings are per
+      // build. After a build switch it would score this build with the other build's sets, main echoes and minimum
+      // stats while the setup screen shows this build's own. So it opens that screen instead, saying why.
+      if (lastOptimizeBuildKey !== characterBuildKey.value) {
+        endOptimizerRunWith("build-switched");
+        return;
+      }
       (handleOptimize as (...args: unknown[]) => void)(...lastOptimizeArgs);
     };
 

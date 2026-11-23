@@ -122,6 +122,7 @@ export type OptimizerEmptyReason =
   | "none-found"
   // Wuthering Tools+: reasons a run ends without rows that are not about the echoes
   | "no-target"
+  | "build-switched"
   | "worker-failed";
 
 export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
@@ -134,6 +135,7 @@ export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
     "There are no loadouts based on your filtering, such as minimum stat requirements",
   "none-found": "No loadouts were found",
   "no-target": "The target you chose no longer exists. Pick another one and run again",
+  "build-switched": "You switched builds since that run. These are this build's own optimizer settings: check them, then run the optimizer",
   "worker-failed": "The optimizer could not start, usually because this tab is older than the site. Reload the page and run it again",
 };
 
