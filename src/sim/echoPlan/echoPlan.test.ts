@@ -174,16 +174,18 @@ describe("wants", () => {
       "HavocEclipse 4:CritRate",
       "HavocEclipse 4:DEF",
     ]);
-    const result = collectWants({ characters: { Baizhi: { weapon: "x" } }, echoes: [], curated, engine, kits: { Baizhi: { scaling: "HP", healer: true } } });
-    expect(result.roster[0]).toMatchObject({ key: "Baizhi", usesDefault: true, sets: ["RejuvenatingGlow"] });
+    // a character with no stock loop and no loadout in Riley's engine (Baizhi has both since his 2026-11-22 table)
+    const result = collectWants({ characters: { Youhu: { weapon: "x" } }, echoes: [], curated, engine, kits: { Youhu: { scaling: "HP", healer: true } } });
+    expect(result.roster[0]).toMatchObject({ key: "Youhu", usesDefault: true, sets: ["RejuvenatingGlow"] });
     expect(result.wants[0]!.detail).toBe("healer · heals on HP");
   });
 
   it("loads the role only for characters with no preset and no loadout", async () => {
-    const got = await loadSources(["Baizhi", "Chisa"]);
+    // Baizhi has a stock loop and a loadout since Riley's 2026-11-22 table: her role is no longer loaded, Youhu's is
+    const got = await loadSources(["Baizhi", "Youhu", "Chisa"]);
     expect(got.failed).toEqual([]);
     expect(got.curated.Chisa!.length).toBeGreaterThan(0);
-    expect(got.kits).toEqual({ Baizhi: { scaling: "HP", healer: true } });
+    expect(got.kits).toEqual({ Youhu: { scaling: "ATK", healer: true } });
   });
 
   it("gives a Rover form without its own loadouts its wuwa_calc twin's", () => {
