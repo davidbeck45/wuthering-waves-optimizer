@@ -7,7 +7,9 @@ import { describe, expect, it } from "vitest";
 import fixture from "../ai/__fixtures__/aiAccount.json";
 import { parseExport } from "../cli/exportShape";
 import { energyReport } from "../energy/energyCli";
-import { teamHaves } from "../energy/energyCheck";
+import { isFreeCharacter, teamHaves } from "../energy/energyCheck";
+import { candidateAccount } from "../weaponValue/selector";
+import { rileyHeadless } from "./rileyNode";
 import { rileyNameOf } from "../rankings/castMapper";
 import { resolveTeamBuilds } from "../teamContext/resolveTeam";
 import { rileyAccountForTeam, rileyAccountOf, savedTeamOf } from "./rileyAccount";
@@ -118,5 +120,24 @@ describe("the energy check of a saved team", () => {
       expect(haves[0]).toMatchObject({ characterId: dps, buildName: "Account plan" });
       expect(haves[1]!.buildName).toBeNull();
     }
+  }, 60_000);
+});
+
+describe("who counts as owned without being set up: the app's copies of his account rule", () => {
+  // his solver.ts `accountOf` owns a `Rarity.FreeS6` member (the 4★s and the Rover forms) at S6 for every account; his
+  // e7a10a9 added `FreeS0` (Encore, Lingyang, Verina: "an account starts with them") and `FreeS2` (Jianxin), which his
+  // rule does NOT own by default, and neither does plus (the scan's candidates, Weapon value's selector)
+  it("agrees with the engine's free flag for every member of his team list", async () => {
+    const h = await rileyHeadless(null);
+    const members = new Map(h.teams.flatMap((t) => t.members.map((m) => [m.appKey, !!m.free] as const)));
+    expect(members.size).toBeGreaterThan(50);
+    for (const [appKey, free] of members) {
+      expect(isFreeCharacter(appKey), appKey).toBe(free);
+      const empty = { key: "none", entries: {}, builds: [], buildsKey: "" };
+      // free: maxed already (S6), nothing to add; anyone else is a new resonator to the empty account
+      expect(candidateAccount(empty, appKey)?.kind ?? "maxed", appKey).toBe(free ? "maxed" : "new");
+    }
+    for (const appKey of ["Encore", "Lingyang", "Verina", "Jianxin"]) expect(members.get(appKey), appKey).toBe(false);
+    expect(members.get("Baizhi")).toBe(true);
   }, 60_000);
 });

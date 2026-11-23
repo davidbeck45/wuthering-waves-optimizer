@@ -228,7 +228,7 @@ export function energySummary(teams: Array<{ checks: MemberCheck[] | null }>): E
 
 /* ------------------------------------------------------------------------------------------------ scan */
 
-/** A 4-star or a Rover form: free for every account (the fork's `Tier.Free` runs them S6 throughout). */
+/** A 4-star or a Rover form: free for every account (his `Rarity.FreeS6`, `Tier.Free` before his e7a10a9: run at S6 throughout). */
 export const isFreeCharacter = (appKey: string): boolean =>
   appKey.startsWith("Rover") || allCharactersList.some((c) => c.key === appKey && Number(c.rarity) === 4);
 

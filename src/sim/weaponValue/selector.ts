@@ -178,7 +178,7 @@ export interface ResonatorPoolOptions {
 }
 
 const isCancelled = (s: ResonatorPoolOptions["signal"]): boolean => (!s ? false : "aborted" in s ? s.aborted : s.cancelled);
-/** a 4★ or a Rover form: wuwa_calc runs them at S6 for everyone (`accountOf`'s `Tier.Free` rule) */
+/** a 4★ or a Rover form: wuwa_calc runs them at S6 for everyone (`accountOf`'s `Rarity.FreeS6` rule) */
 const isFree = (appKey: string): boolean => /^rover/i.test(appKey) || characterMeta(appKey)?.rarity === 4;
 const compositionOf = (t: RileyTeamInfo): string => t.members.map((m) => m.appKey).sort().join("+");
 
