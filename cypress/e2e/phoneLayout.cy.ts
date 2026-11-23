@@ -1215,4 +1215,52 @@ describe("phone layout", () => {
       expect($bar[0].getBoundingClientRect().height, "Pins, Expand all and Collapse all share one line").to.be.below(60);
     });
   });
+
+  // Ryan's #663 on a phone (phone.css § 41 b): Recommended teams sat in the Team Buffs summary column, which a phone folds
+  // behind "Team Contribution & Active Buffs · Show", so the lab showed nothing; a team's card cut the names ("De…"),
+  // its tag pills ran out of their outlines, and a teammate's sequence and Sig ran past the card at 360 px.
+  it("shows Recommended teams on a 360 px phone at 130 % text with every card inside its box", () => {
+    cy.viewport(360, 800);
+    const phone = v3Phone(1.3);
+    cy.visit("/", {
+      ...phone,
+      onBeforeLoad(win: Window) {
+        phone.onBeforeLoad(win);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.labs = { ...settings.labs, recommendedTeams: { isEnabled: true } };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
+    cy.selectWorkspaceCharacter("Camellya");
+    cy.get('[data-test-calculator-mobile-nav="team"]').click({ force: true });
+    cy.get("[data-test-workspace-split-toggle]").filter(":visible").should("have.attr", "aria-expanded", "false");
+    cy.get("[data-test-recommended-teams]").should("be.visible").and("contain.text", "Recommended teams for Camellya");
+    cy.get("[data-test-team-buffs-summary]").should("not.be.visible");
+    cy.get("[data-test-recommended-teams-with-buffs]").check({ force: true });
+    cy.get("[data-test-recommended-teams-row]").should("have.length.at.least", 2).each(($row) => {
+      const row = $row[0];
+      const box = row.getBoundingClientRect();
+      expect(box.right, "the card ends on the screen").to.be.at.most(360);
+      for (const el of row.querySelectorAll("span, button, select, label")) {
+        const r = el.getBoundingClientRect();
+        if (!r.width) continue;
+        expect(r.right, `"${(el.textContent ?? "").trim().slice(0, 30)}" inside its card`).to.be.at.most(box.right + 1);
+        if (el.matches(".truncate, .badge")) {
+          expect(el.scrollWidth, `"${(el.textContent ?? "").trim().slice(0, 30)}" is not cut`).to.be.at.most(el.clientWidth + 1);
+        }
+      }
+      for (const badge of row.querySelectorAll(".badge")) {
+        const range = row.ownerDocument.createRange();
+        range.selectNodeContents(badge);
+        const lines = new Set([...range.getClientRects()].map((rect) => Math.round(rect.top)));
+        expect(lines.size, `the "${badge.textContent!.trim()}" pill is one line`).to.equal(1);
+        expect(range.getBoundingClientRect().bottom, `"${badge.textContent!.trim()}" inside its pill`).to.be.at.most(badge.getBoundingClientRect().bottom + 1);
+      }
+      const use = row.querySelector("[data-test-recommended-teams-use]");
+      if (use) expect(use.getBoundingClientRect().height, "Use team is 44 px tall").to.be.at.least(44);
+    });
+    cy.get("[data-test-recommended-teams-filter]").each(($filter) => {
+      expect($filter[0].getBoundingClientRect().height, `the "${$filter.text().trim()}" filter is 44 px tall`).to.be.at.least(44);
+    });
+  });
 });

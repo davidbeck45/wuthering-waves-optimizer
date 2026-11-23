@@ -2095,3 +2095,75 @@ html.wt-ai-docked #wt-app .contain {
     min-height: 44px;
   }
 }
+/* b) Recommended teams on Team Buffs (#663, TeamBuffsRecommendedTeams.vue, the recommendedTeams lab). He put the list in
+      the workspace's summary column, beside the teammates on a desktop. Below 768 px that column is folded behind the
+      "Team Contribution & Active Buffs · Show" button and stays folded, so on a phone the lab turned on nothing anyone
+      could see, under a label that says nothing about teams. The list now shows under that button whether it is open
+      or not, above the teammates it fills; the button still opens and closes the active-buffs summary itself. */
+@media (max-width: 767px) {
+  [data-test-workspace-split-summary] > div.hidden:has(> [data-test-recommended-teams]) {
+    display: block;
+    margin-top: 0.5rem;
+  }
+  [data-test-workspace-split-summary] > div.hidden > [data-test-team-buffs-summary] {
+    display: none;
+  }
+  [data-test-workspace-split-summary] > div.hidden > [data-test-recommended-teams] {
+    margin-top: 0;
+  }
+  /* A team's card. Its head is two pictures, the names, the tags and Use team on one line: at 360 px the names had 49 px
+     ("De…"), and his tag pills are one line tall at a fixed height, so "Fusion Burst" broke onto a second line outside
+     its pill and under Use team. The names and tags take the line; Use team goes under them when they need it. */
+  [data-test-recommended-teams-row] .card-body > .flex.items-center:first-child {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  [data-test-recommended-teams-row] .card-body > .flex.items-center:first-child > .flex-1 {
+    flex-basis: 7rem;
+  }
+  [data-test-recommended-teams-row] .card-body > .flex.items-center:first-child .font-semibold.truncate {
+    white-space: normal;
+  }
+  [data-test-recommended-teams-row] .badge.badge-xs.badge-outline {
+    height: auto;
+    white-space: nowrap;
+    padding-block: 0.1rem;
+  }
+  [data-test-recommended-teams-row] .card-body > .flex.items-center:first-child > :is(.btn, .badge):last-child {
+    margin-left: auto;
+  }
+  /* the type filters and the "Also turn on their buffs" switch were 31 and 21 px tall */
+  [data-test-recommended-teams] [data-test-recommended-teams-filter].btn.btn-xs {
+    min-height: 44px;
+    height: 44px;
+  }
+  [data-test-recommended-teams] label:has(> [data-test-recommended-teams-with-buffs]) {
+    min-height: 44px;
+  }
+  [data-test-recommended-teams-row] [data-test-recommended-teams-use].btn.btn-xs {
+    min-height: 44px;
+    height: 44px;
+    padding-inline: 1rem;
+  }
+  /* A teammate's line: picture, name, sequence and Sig in four columns. At 360 px the name was cut ("Morn…") and, for
+     Shorekeeper, the sequence select and Sig ran past the card. The picture and the name take the first line, the
+     sequence and Sig (or "No sig buff") the second, the echoes the third. */
+  [data-test-recommended-teams-mate].grid {
+    grid-template-columns: 1.25rem auto minmax(0, 1fr);
+    row-gap: 0.3rem;
+  }
+  [data-test-recommended-teams-mate] > .truncate {
+    grid-column: 2 / -1;
+    white-space: normal;
+  }
+  [data-test-recommended-teams-mate] > select {
+    grid-column: 2;
+  }
+  [data-test-recommended-teams-mate] > select + * {
+    grid-column: 3;
+  }
+  [data-test-recommended-teams-mate] > .col-start-2,
+  [data-test-recommended-teams-mate] > .col-span-2 {
+    grid-column: 2 / -1;
+  }
+}
