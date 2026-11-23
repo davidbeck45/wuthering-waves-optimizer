@@ -20,6 +20,23 @@
           {{ differences.length }} {{ differences.length === 1 ? "buff here is" : "buffs here are" }} not what your own builds of
           {{ pairNames }} give.
         </p>
+        <template v-if="otherSaved.length">
+          <p class="wtp-real-panel__line" data-test-real-panel-saved-line>{{ otherSavedLine }}</p>
+          <ul class="wtp-real-panel__teams">
+            <li v-for="team in otherSaved.slice(0, 3)" :key="team.id">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline wtp-real-panel__team"
+                :disabled="busy"
+                :title="team.name ? `From your saved team ${team.name}` : undefined"
+                :aria-label="`Use the real buffs of ${nameOf(team.mates[0])} and ${nameOf(team.mates[1])}, your saved team`"
+                data-test-real-panel-saved-team
+                @click="useSavedTeam(team)">
+                {{ nameOf(team.mates[0]) }} + {{ nameOf(team.mates[1]) }}
+              </button>
+            </li>
+          </ul>
+        </template>
         <div class="wtp-real-panel__actions">
           <button v-if="differences.length" type="button" class="btn btn-sm btn-primary" :disabled="busy" data-test-real-panel-use @click="useReal">
             {{ source === "builds" ? "Refresh" : "Use their real buffs" }}
@@ -92,6 +109,7 @@ import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { deriveRealPanel, panelDifferences, realPanelWrite, type RealPanel } from "./realPanel";
 import { markTypicalPanel, typicalPanelSource } from "./typicalPanel";
 import { snapshotCharacters } from "../buildHistory/history";
+import { otherSavedPairs, savedPairsLine, savedTeamPairs, type SavedPair } from "./savedTeamPairs";
 
 const props = defineProps<{ character: string }>();
 
@@ -198,27 +216,11 @@ async function useReal() {
   }
 }
 
-// --- the player's saved teams with this character, when no teammates are picked ---
-interface SavedPair {
-  id: string;
-  name: string;
-  mates: [string, string];
-}
-const savedTeams = computed<SavedPair[]>(() => {
-  const seen = new Set<string>();
-  const out: SavedPair[] = [];
-  for (const team of (teamStore.teams ?? []) as Array<{ id: string; name?: string; characterIds?: Array<string | null> }>) {
-    const ids = team.characterIds ?? [];
-    if (!ids.includes(props.character)) continue;
-    const mates = ids.filter((id): id is string => Boolean(id) && id !== props.character);
-    if (mates.length !== 2) continue;
-    const key = [...mates].sort().join("+");
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push({ id: team.id, name: team.name ?? "", mates: [mates[0], mates[1]] });
-  }
-  return out;
-});
+// --- the player's saved teams with this character: the choices when no teammates are picked, and the line under the
+// first one when the picked pair is none of them (savedTeamPairs.ts) ---
+const savedTeams = computed<SavedPair[]>(() => savedTeamPairs(teamStore.teams as any[], props.character));
+const otherSaved = computed<SavedPair[]>(() => (pair.value ? otherSavedPairs(teamStore.teams as any[], props.character, pair.value) : []));
+const otherSavedLine = computed(() => savedPairsLine(otherSaved.value, nameOf(props.character), nameOf));
 const showAll = ref(false);
 const shownTeams = computed(() => (showAll.value ? savedTeams.value : savedTeams.value.slice(0, 3)));
 

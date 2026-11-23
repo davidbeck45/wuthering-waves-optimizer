@@ -88,6 +88,32 @@ describe("Team buffs from your own builds", () => {
     cy.get("[data-test-real-panel-use]").should("contain.text", "Use their real buffs");
   });
 
+  it("names the saved team when the panel picks another pair, and fills it in one tap (lane check-panel)", () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("settings", JSON.stringify({ config: {}, labs: {} }));
+      },
+    });
+    cy.selectWorkspaceCharacter("Carlotta");
+    seedTeammates(false);
+    cy.window().then((win) => {
+      const characters = store(win, "character");
+      characters.setCharacterData("Carlotta", { weapon: "TheLastDance" });
+      // the panel names Iuno and Verina by hand; the team saved for her is Iuno and Shorekeeper
+      characters.setCharacterData("Carlotta", { teamBuffs: { selectedCharacter1: "Iuno", selectedCharacter2: "Verina" } });
+      store(win, "teamRotations").teams.push({ id: "wtp-test-team", name: "Carlotta core", characterIds: ["Carlotta", "Iuno", "Shorekeeper"], buildIds: [null, null, null], actions: [] });
+    });
+    cy.get('[data-test-calculator-nav="team"]').click();
+    cy.get("[data-test-real-panel-saved-line]").should("have.text", "You saved a team of Carlotta with Iuno and Shorekeeper: tap it to use their real buffs instead.");
+    cy.get("[data-test-real-panel-saved-team]").should("have.length", 1).and("contain.text", "Iuno + Shorekeeper").click();
+    cy.get('[data-test-team-buffs-slot-name="1"]').should("contain.text", "Iuno");
+    cy.get('[data-test-team-buffs-slot-name="2"]').should("contain.text", "Shorekeeper");
+    cy.get('[data-test-real-panel-status="match"]').should("contain.text", "what your own builds of Iuno and Shorekeeper give");
+    // the panel is now the saved team's pair: nothing more to say
+    cy.get("[data-test-real-panel-saved-line]").should("not.exist");
+    cy.window().its("localStorage").invoke("getItem", "wtplus:buildHistory:v1:Carlotta").should("contain", '"label":"before-real-buffs"');
+  });
+
   it("is on the classic Team Buffs screen too, and fills the same panel", () => {
     cy.visit("/"); // no settings of its own: the support file seeds the classic UI
     cy.richSelect("[data-test-character-select]", "Carlotta");
