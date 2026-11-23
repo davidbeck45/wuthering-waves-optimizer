@@ -173,7 +173,7 @@ describe("Optimize team's Save", () => {
     cy.get("[data-test-team-optimizer-nothing-to-save]").should("not.exist");
     cy.get("[data-test-team-optimizer-save]").click();
     cy.get("[data-test-team-optimizer-confirm-save]").click();
-    cy.get("[data-test-team-optimizer-saved]").should("contain", "Saved.");
+    cy.get("[data-test-team-optimizer-saved]").should("contain", "new build").and("contain", "now calculates"); // his ADR 0061 wording
     // the result is now what the team wears: no second Save to stack a copy with the same name
     cy.get("[data-test-team-optimizer-nothing-to-save]").should("be.visible").and("contain", "Nothing to save: these are the builds this team already wears.");
     cy.get("[data-test-team-optimizer-save]").should("not.exist");
@@ -211,10 +211,12 @@ describe("Optimize team on a phone at 130 % text", () => {
           expect($value[0].getBoundingClientRect().right, `${$value.text()} inside its tile`).to.be.at.most(tile.right);
         });
       });
+      // since #745 "vs current" sits under each row's team damage, not in a column of its own
       cy.get("[data-test-team-optimizer-results] .overflow-x-auto").then(($scroller) => {
         const right = $scroller[0].getBoundingClientRect().right;
-        const head = [...$scroller[0].querySelectorAll("th")].find((th) => th.textContent?.trim() === "vs current")!;
-        expect(head.getBoundingClientRect().right, "\"vs current\" whole, with no scrolling").to.be.at.most(right);
+        const delta = [...$scroller[0].querySelectorAll('[data-test-team-optimizer-row="0"] div')].find((el) => /vs current$/.test(el.textContent?.trim() ?? ""))!;
+        expect(delta, "the first row's change").to.exist;
+        expect(delta.getBoundingClientRect().right, "\"vs current\" whole, with no scrolling").to.be.at.most(right);
       });
       cy.document().then((doc) => {
         expect(doc.documentElement.scrollWidth, "no sideways page scroll").to.be.at.most(width);
@@ -355,7 +357,9 @@ describe("Optimize team when you leave the page", () => {
 // Sigrika's). The rows are the Team page's figures either way; his page then asked for a report in the Discord.
 describe("Optimize team on a team with a per-action weapon switch", () => {
   it("says what the search cannot read, where his alert asked the player to report the team", () => {
-    const sigrika = actionsFor(sigrikaRotations as any[], 0, 1).map((action: any) => ({ ...action, advancedConfig: { weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: false } } } }));
+    // her stock rotation's echo attack locks the main echo (Ryan's ADR 0061) to one this inventory has none of, and a slot
+    // that cannot wear it cannot run: the switch is what this test is about, so that one attack is left out
+    const sigrika = actionsFor(sigrikaRotations as any[], 0, 1).filter((action: any) => action.type !== "echoAttacks").map((action: any) => ({ ...action, advancedConfig: { weaponPassives: { SolswornCiphersDmgDeepen: { isEnabled: false } } } }));
     const hsin = actionsFor(hsinRotations as any[], 1, sigrika.length + 1);
     cy.viewport(412, 915);
     cy.visit("/teams", {
