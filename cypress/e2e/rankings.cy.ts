@@ -653,8 +653,9 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
   });
 
   it("says why the table is empty on a desktop: nothing set up at My account, or no match", () => {
-    // no account imported: My account with Teams I can field lists nothing
-    cy.visit("/rankings#tc=mine");
+    // no account imported: My account with Teams I can field lists nothing that needs a limited resonator. Since Riley
+    // added Baizhi (a 4★, Nov 2026) three all-4★ / Rover teams are fieldable by everyone, so the filter asks for Phrolova
+    cy.visit("/rankings#tc=mine&r=Phrolova");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get("[data-test-rankings-cards-empty]", { timeout: 60000 }).should("be.visible").and("contain.text", "No team you can field yet");
     cy.get("[data-test-rankings-cards-setup]").should("have.attr", "href", "/");
