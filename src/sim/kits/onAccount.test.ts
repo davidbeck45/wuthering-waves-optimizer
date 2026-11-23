@@ -57,8 +57,10 @@ describe("On your account", () => {
   });
 
   it("not owned, with the teammates of one of her teams but not of her best: names the team a pull would open", () => {
-    // nobody on the account: nothing a pull would open
-    expect(block("Lily", {}).ifPulled).toBeNull();
+    // nobody on the account: a pull opens only a team whose other two are free for every account (4★ and Rovers):
+    // Riley's 2026-11-22 table has Lily with Yangyang and Havoc Rover
+    const bare = block("Lily", {}).ifPulled;
+    for (const m of bare?.team.members ?? []) if (m.name !== "Lily") expect(index.find((k) => k.name === m.name)?.tier, m.name).toBe("Free");
     // the account holds both teammates of a Lily team further down Riley's default view, not those of her best
     const rows = teamsWith(file, "s0r1", "Lily", isRosterCharacter);
     const best = block("Lily", {}).wanted!;
@@ -127,8 +129,10 @@ describe("On your account", () => {
     expect(b.team!.team.dps).toBe(aemeathRow.dps);
     expect(b.team!.team.share).toBeNull(); // the row is Aemeath's: Mornye's part of it is not in the table
     expect(teamBasisText(b, "89.3K")).toBe("89.3K is his figure on his standard builds at S0R1 all, not on yours.");
-    // nobody to play with at his default view or anywhere else: no team, and her own best row says who is missing
-    expect(block("Mornye", { Mornye: record("StarfieldCalibrator") }).team).toBeNull();
+    // nobody else on the account: only a team whose other two every account has (4★ and Rovers; Riley's 2026-11-22
+    // table has Mornye with Yangyang and Havoc Rover)
+    const alone = block("Mornye", { Mornye: record("StarfieldCalibrator") }).team;
+    for (const m of alone?.team.members ?? []) if (m.name !== "Mornye") expect(index.find((k) => k.name === m.name)?.tier, m.name).toBe("Free");
   });
 
   it("says why a team is read at the Team Cost it is", () => {

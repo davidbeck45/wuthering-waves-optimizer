@@ -65,7 +65,7 @@ describe("kit briefs (generated data)", () => {
     expect(indexFile._meta.wuwaCalcCommit).toBe(file._meta.wuwaCalcCommit);
   });
 
-  it("a kit whose stock loops list motion values that differ from the game carries them, and no other kit does (Lily: the 3.8 beta)", () => {
+  it("a kit whose stock loops list motion values that differ from the game carries them, and no other kit does (none since Lily's released kit)", () => {
     const dir = resolve(dirname(fileURLToPath(import.meta.url)), "../presets/data/rotations") + "/";
     const differsIn = (key: string): Set<string> => {
       const f = `${dir}${key}.json`;
@@ -77,10 +77,9 @@ describe("kit briefs (generated data)", () => {
       const casts = differsIn(kit.appKey);
       expect(new Set(kit.differs?.rows.map((r) => r.cast) ?? []), kit.name).toEqual(casts);
     }
-    const lily = file.kits.Lily!;
-    expect(lily.differs?.source).toBe("3.8 beta");
-    expect(lily.differs?.rows.map((r) => r.row)).toEqual(["BasicAttackStage1DMG", "BasicAttackStage2DMG", "BasicAttackStage3DMG", "BasicAttackStage4DMG"]);
-    for (const r of lily.differs!.rows) expect(Math.abs(r.calc / r.app - 1), r.cast).toBeGreaterThan(0.01);
+    // Lily's four Basic Attack stages were the 3.8 beta's until Riley's 7b4acd0 (2026-11-21); his kit is the released
+    // game's now, so no stock loop lists a value that differs and no brief carries the warning
+    expect(kits.filter((k) => k.differs?.rows.length).map((k) => k.name)).toEqual([]);
   });
 
   it("the index and the briefs name the same resonators, with the same facts", () => {
@@ -300,10 +299,12 @@ describe("who the app shows (the registry rule)", () => {
 });
 
 describe("the model's readings", () => {
-  it("a press the engine lets through short of its gauge is said in a player's words (Lily's Woven heavies); none, nothing", () => {
+  it("a press the engine lets through short of its gauge is said in a player's words (Lily's Outro); none, nothing", () => {
     expect(unmetText({}, "Aemeath")).toBeNull();
     const lily = file.kits.Lily!;
-    expect(lily.unmet?.map((u) => u.cast)).toEqual(expect.arrayContaining(["Forte Heavy - Woven Fairytale", "Forte Heavy - Woven Phantasm"]));
+    // her Woven heavies ran without their 300 Forte gauge on the 3.8 beta's kit (17 teams each); her released kit fills
+    // it (Riley's 7b4acd0), so what is left is her Outro short of Concerto in one team
+    expect(lily.unmet?.map((u) => u.cast)).toEqual(["Outro - Blooming Fragrance"]);
     for (const u of lily.unmet!) {
       expect(u.gauge, u.cast).toMatch(/^(concerto|forte\d)$/);
       expect(u.need, u.cast).toBeGreaterThan(0);
@@ -311,7 +312,10 @@ describe("the model's readings", () => {
     }
     const t = unmetText(lily, "Lily")!;
     expect(t.head).toBe("Riley's engine lets Lily press some attacks without the gauge they need, and counts their damage.");
-    expect(t.rows.find((r) => r.startsWith("Forte Heavy - Woven Fairytale"))).toMatch(/^Forte Heavy - Woven Fairytale: needs 300 Forte gauge, pressed short of it in \d+ teams? run for this page$/);
+    expect(t.rows[0]).toMatch(/^Outro - Blooming Fragrance: needs 100 Concerto Energy, pressed short of it in \d+ teams? run for this page$/);
+    expect(unmetText({ unmet: [{ cast: "Forte Heavy - Woven Fairytale", gauge: "forte1", need: 300, teams: 17 }] }, "Lily")!.rows).toEqual([
+      "Forte Heavy - Woven Fairytale: needs 300 Forte gauge, pressed short of it in 17 teams run for this page",
+    ]);
     expect(t.tail).toContain("can be higher than the game allows");
     // the only resonator the engine warns about tonight; a new one shows up here and gets its note by itself
     expect(kits.filter((k) => k.unmet?.length).map((k) => k.name)).toEqual(["Lily"]);
@@ -320,7 +324,10 @@ describe("the model's readings", () => {
   it("a brief whose engine kit is not the released game's opens with a plain warning; one that is says nothing", () => {
     expect(differsText({}, "Aemeath")).toBeNull();
     expect(differsText({ differs: { why: "x", rows: [] } }, "Aemeath")).toBeNull();
-    const t = differsText(file.kits.Lily!, "Lily")!;
+    // Lily's brief as it was on the 3.8 beta's kit (batch 4's data): no kit carries one since her released kit
+    const beta = { differs: { why: "wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's", source: "3.8 beta", rows: [{ cast: "Basic - Mend and Cleanse 1", calc: 74.28, row: "BasicAttackStage1DMG", app: 63.62 }] } };
+    expect(differsText(file.kits.Lily!, "Lily")).toBeNull();
+    const t = differsText(beta, "Lily")!;
     expect(t.head).toBe("Riley's engine still has Lily's kit from the 3.8 beta, not the released game's.");
     expect(t.rows[0]).toBe("Basic - Mend and Cleanse 1: hits for 74.28 % in his engine, 63.62 % in the released game");
     expect(t.tail).toContain("uses the 3.8 beta numbers");
@@ -374,7 +381,7 @@ describe("the model's readings", () => {
     );
     expect(loopSentence(["Echo - X ×1", "Basic - A ×1"], ["X", "Q"])).toBe("Echo - X, then Basic - A");
     const lily = file.kits.Lily!.loadouts[0]!;
-    expect(loopSentence(lily.loops["0"]!, lily.echoes.map((e) => e.main))).toMatch(/then the Echo Skill of the main echo you carry \(Fallacy of No Return, Formrender or Spacetrek Explorer\)$/);
+    expect(loopSentence(lily.loops["0"]!, lily.echoes.map((e) => e.main))).toMatch(/then the Echo Skill of the main echo you carry \(Fallacy of No Return, Formrender or Spacetrek Explorer\), then Liberation - Into the Dream Cradle$/);
     const steps = ladderSteps(aemeath.ladder);
     expect(steps[0]).toMatchObject({ level: 0, step: null, total: null });
     expect(steps.at(-1)!.level).toBe(6);
@@ -412,11 +419,13 @@ describe("the model's readings", () => {
     expect(changeScope(aemeath[0]!)).toBe("");
     expect(aemeath[0]!.text).toMatch(/S1 changes only the opener/);
     expect(loopChanges(file.kits.Jiyan!)).toEqual([]);
-    // Camellya: two of her three rotations switch at S6, each its own way: one entry, two details, each named
-    const camellya6 = loopChanges(file.kits.Camellya!);
-    expect(camellya6).toHaveLength(1);
-    expect(camellya6[0]!.details).toHaveLength(2);
-    expect(changeScope(camellya6[0]!)).toMatch(/rotation 1.*rotation 3/);
+    // Denia: both of her loadouts switch at S3, each its own way: one entry, two details, each named (Camellya's two
+    // rotations did until Riley's 2026-11-22 table, where her S6 change is the same for every loadout)
+    const denia3 = loopChanges(file.kits.Denia!);
+    expect(denia3).toHaveLength(1);
+    expect(denia3[0]).toMatchObject({ level: 3, kind: "loop" });
+    expect(denia3[0]!.details).toHaveLength(2);
+    expect(changeScope(denia3[0]!)).toBe("Denia (Burst); Denia (Strain)");
     // every loadout of every kit has a title of its own
     for (const kit of kits) expect(new Set(loadoutTitles(kit.loadouts)).size, kit.name).toBe(kit.loadouts.length);
     expect(loadoutTitles(file.kits.Aemeath!.loadouts)).toEqual(["Aemeath (Burst)", "Aemeath (Rupture)"]);
