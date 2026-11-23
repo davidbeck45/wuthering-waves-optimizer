@@ -1120,7 +1120,7 @@ function patchFetch(): void {
 function solvesAhead(): boolean {
   if (pool.poolStarted() || !account?.key) return false;
   const p = new URLSearchParams(location.hash.replace(/^#/, ""));
-  if (p.get("tc") !== "mine" || p.has("team")) return false;
+  if (p.get("tc") !== "mine" || p.has("team") || p.has("t")) return false;
   try {
     return !(localStorage.getItem("wuwa.solves.v1") ?? "").includes(`|mine.${account.key}|`);
   } catch {
