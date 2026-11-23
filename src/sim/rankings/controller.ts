@@ -1033,11 +1033,28 @@ function goBack(): void {
   void router!.replace({ hash: hash ? `#${hash}` : "" }).then(() => route());
 }
 
+/** His `applyHash()`, then his `settleLevels()`. Since his e7a10a9 a resonator filter names a chain level ("Cartethyia" is
+ *  her at S0, "Cartethyia S6" at S6), and only his own Team Cost select settles it to the level a new cost runs her at.
+ *  The account bar changes the cost through the hash, and plus's links (kits, the account page, the assistant) write
+ *  `r=<name>` with no level: unsettled, `#tc=mine&r=Cartethyia` on an S2 account, or a switch to S6R5, listed no team.
+ *  A filter only moves where its level is out of reach under the new cost (no row could match it); the next
+ *  `syncHash()` writes the settled name. True where the filters changed. */
+function applyHashSettled(): boolean {
+  const M = mods!.model;
+  const changed: boolean = M.applyHash();
+  const before = [...(M.resonatorFilters as Map<string, string>)].join();
+  M.settleLevels();
+  if ([...(M.resonatorFilters as Map<string, string>)].join() === before) return changed;
+  // written back at once: a hash still reading the old level would read as a change on every later visit to it
+  M.syncHash();
+  return true;
+}
+
 /** The location changed under us (browser back/forward, a nav click): re-read the hash. */
 export function onLocationChange(): void {
   if (!mods || !booted || routerSyncing) return;
   const M = mods.model;
-  if (M.applyHash()) { void refresh(); return; }
+  if (applyHashSettled()) { void refresh(); return; }
   const key = M.hashTeam();
   if (key && !M.results.has(key) && (M.rowFromKey(key) || M.tagTeam(key))) {
     // a code that still names no row once its team is solved comes back off the URL, and one that
@@ -1060,7 +1077,7 @@ async function boot(): Promise<void> {
   mods!.table.onRefresh(refresh);
   mods!.pickmenu.onSwitch(switchTo);
   mods!.pickmenu.onSolve(solveQuiet);
-  M.applyHash();
+  applyHashSettled();
   await M.loadSolves();
   // wired before the first pass, not after it as in his index.ts: the rows solved so far are on screen while that
   // pass solves (paintSoFar), so "view rotation" must open a team and the detail's Back link must go back — unwired,

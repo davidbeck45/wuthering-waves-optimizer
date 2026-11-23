@@ -2,8 +2,10 @@
 //   src/sim/skittle.css        Riley's stylesheet, every selector scoped under .skittle-root
 //   public/dist/solves/*.json  his precomputed solves (the page fetches ./dist/solves/… relative to /rankings)
 //   public/sim/loading.gif     the loading overlay sticker
+//   public/images/<kind>/*.webp  his icons before names (page/icons.ts: ./images/<kind>/<id>.webp, ./images/unknown.webp),
+//                              relative to the page: /rankings (comparison and team page alike) reads /images/…
 // Run after `git -C vendor/wuwa_calc pull`:   node scripts/skittle-sync.mjs
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 import postcss from "postcss";
 
@@ -55,6 +57,21 @@ for (const f of readdirSync(SOLVES)) {
 }
 mkdirSync("public/sim", { recursive: true });
 copyFileSync(GIF_PATH, "public/sim/loading.gif");
+// his icons (Nov 2026, e7a10a9): the four kinds icons.ts names and its question mark; not his favicon or other stickers.
+// Rebuilt whole each time, so a picture he drops goes too.
+const ICON_KINDS = ["resonators", "weapons", "echoes", "sonatas"];
+let icons = 0;
+if (existsSync(`${SUB}/images/resonators`)) {
+  rmSync("public/images", { recursive: true, force: true });
+  for (const kind of ICON_KINDS) {
+    mkdirSync(`public/images/${kind}`, { recursive: true });
+    for (const f of readdirSync(`${SUB}/images/${kind}`)) {
+      if (f.endsWith(".webp")) { copyFileSync(`${SUB}/images/${kind}/${f}`, `public/images/${kind}/${f}`); icons++; }
+    }
+  }
+  copyFileSync(`${SUB}/images/unknown.webp`, "public/images/unknown.webp");
+  icons++;
+}
 // the Riley run seam (src/sim/engine/rileyRun.ts) stamps this commit on every RunLite and memo key in the browser,
 // where there is no git to ask; rileyRun.test.ts fails while it lags the submodule
 writeFileSync(
@@ -65,4 +82,4 @@ writeFileSync(
 export const WUWA_CALC_COMMIT = "${commit}";
 `,
 );
-console.log(`skittle-sync: wuwa_calc@${commit}: ${rules} CSS rules scoped -> src/sim/skittle.css, ${files} solve files -> ${SOLVES_OUT}/, loading.gif -> public/sim/`);
+console.log(`skittle-sync: wuwa_calc@${commit}: ${rules} CSS rules scoped -> src/sim/skittle.css, ${files} solve files -> ${SOLVES_OUT}/, loading.gif -> public/sim/, ${icons} icons -> public/images/`);
