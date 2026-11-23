@@ -211,6 +211,14 @@ describe("kit briefs (generated data)", () => {
     const text = JSON.stringify(file);
     expect(/nanoka|hakush|encore\.moe/i.test(text)).toBe(false);
   });
+
+  // Riley's lingyang.ts carries three U+FFFD replacement characters where a dash was (a mis-encoded save), and two of them
+  // sit in his sequence notes, which the brief prints: "S1: Anti-Interruption under Lion's Vigor � no stat." (2026-11-23)
+  it("no text on the pages carries a replacement character", () => {
+    expect(JSON.stringify(file).includes("\uFFFD")).toBe(false);
+    const ly = (file as unknown as { kits: Record<string, { sequences: Array<{ level: number; note: string }> }> }).kits.Lingyang;
+    expect(ly.sequences.find((s) => s.level === 1)?.note).toBe("S1: Anti-Interruption under Lion's Vigor — no stat.");
+  });
 });
 
 describe("who the app shows (the registry rule)", () => {

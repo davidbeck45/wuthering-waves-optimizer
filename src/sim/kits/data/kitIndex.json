@@ -1,5 +1,5 @@
 {
-"_meta": {"generatedBy":"wuwa-tools/rotation-port/export_kits.mjs — regenerate, do not edit","generated":"2026-11-23","wuwaCalcCommit":"821f8db","appCommit":"50909958"},
+"_meta": {"generatedBy":"wuwa-tools/rotation-port/export_kits.mjs — regenerate, do not edit","generated":"2026-11-23","wuwaCalcCommit":"821f8db","appCommit":"a611b8c5"},
 "kits": [
 {"name":"Aemeath","appKey":"Aemeath","element":"Fusion","weapon":"Sword","tier":"Limited","main":45,"support":0},
 {"name":"Aero Rover","appKey":"RoverAeroFemale","element":"Aero","weapon":"Sword","tier":"Free","main":0,"support":12},

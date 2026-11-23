@@ -183,6 +183,8 @@ describe("wuwa_calc sequence breakpoints (generated data)", () => {
     const notes = Object.values(file.resonators).flatMap((r) => r.sequences.map((s) => s.note));
     expect(notes.filter(Boolean).length).toBeGreaterThan(150);
     expect(file.resonators.Camellya.sequences.find((s) => s.level === 2)?.note).toContain("Ephemeral at x2.2 of its multiplier");
+    // nor a U+FFFD replacement character from a mis-encoded dash in his source (Lingyang's S1 and S5, 2026-11-23)
+    expect(notes.filter((n) => n.includes("\uFFFD"))).toEqual([]);
   });
 
   it("describes a loadout's loop map in one line", () => {

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-23T22:57:16.226Z",
+ "generated": "2026-11-23T22:58:29.935Z",
  "wuwaCalcCommit": "821f8db",
  "resonators": {
   "Aemeath": {
@@ -1360,7 +1360,7 @@
     {
      "level": 1,
      "name": "Lingyang S1: Lion of Light, Blessings Abound",
-     "note": "S1: Anti-Interruption under Lion's Vigor � no stat."
+     "note": "S1: Anti-Interruption under Lion's Vigor — no stat."
     },
     {
      "level": 2,
@@ -1380,7 +1380,7 @@
     {
      "level": 5,
      "name": "Lingyang S5: Seven Stars Shine, Stepped upon High",
-     "note": "S5: the Liberation's extra strike � queued by the Liberation itself."
+     "note": "S5: the Liberation's extra strike — queued by the Liberation itself."
     },
     {
      "level": 6,
