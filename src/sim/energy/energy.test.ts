@@ -97,10 +97,10 @@ describe("the synthetic run (engine fixture)", () => {
 
   it("reads Shorekeeper's kit floor over her loop, Lynae's and Iuno's loops", () => {
     expect(byName.Shorekeeper).toMatchObject({ need: 240, minEr: 240, setBy: "kit", cost: 175 });
-    expect(byName.Shorekeeper.bar).toBeCloseTo(187.47, 1);
+    expect(byName.Shorekeeper.bar).toBeCloseTo(169.18, 1); // 187.47 on e95d4e6: her reworked kit (Flare Star Butterflies)
     expect(byName.Lynae).toMatchObject({ setBy: "loop", minEr: 0, cost: 125 });
-    expect(byName.Lynae.need).toBeCloseTo(113.85, 1);
-    expect(byName.Iuno.need).toBeCloseTo(99.1, 1);
+    expect(byName.Lynae.need).toBeCloseTo(113.67, 1); // 113.85 on e95d4e6
+    expect(byName.Iuno.need).toBeCloseTo(98.96, 1); // 99.1 on e95d4e6
     expect(byName.Lynae.worn).toBe(118.4);
   });
 
