@@ -469,8 +469,10 @@ export function echoStage(cast: Cast, rows: AppRow[]): [AppRow, number] | null {
   for (const r of rows) {
     if (!r.mv) continue;
     const terms = [...String(r.expr ?? "").replace(/\s/g, "").matchAll(/([\d.]+)%(?:\*(\d+))?/g)];
-    const hits = terms.reduce((n, t) => n + Number(t[2] ?? 1), 0);
-    if (hits >= 2 && terms.some((t) => Math.abs(Number(t[1]) - want) <= 0.06)) return [r, hits];
+    // the row's hits in order; a stage is one hit or a run of them (Crownless 3 = 100.56 × 2, Thundering Mephis 6 = 189.44 + 31.57)
+    const each = terms.flatMap((t) => Array<number>(Number(t[2] ?? 1)).fill(Number(t[1])));
+    const runs = each.flatMap((_, i) => each.slice(i).map((__, j) => each.slice(i, i + j + 1).reduce((a, b) => a + b, 0)));
+    if (each.length >= 2 && runs.some((v) => Math.abs(v - want) <= 0.06)) return [r, each.length];
   }
   return null;
 }
@@ -643,7 +645,8 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
           [hit, how, count, cut] = [lr[0], `repeats${lr[1]}/${lr[2]}`, c.count, c.mv / lr[0].mv!];
           why = `${lr[1]} of its ${lr[2]} repeat hits landed`;
         }
-        const es = (hit === null || how === "name-only") && !cut ? echoStage(c, echoRows[ekey].rows) : null;
+        // a stage that is a whole fraction of the row (Crownless 1 = 1/5, Thundering Mephis 6 = 1/4) reads as a tick first
+        const es = (hit === null || how === "name-only" || String(how).startsWith("tick/")) && !cut ? echoStage(c, echoRows[ekey].rows) : null;
         if (es) {
           [hit, how, count, cut] = [es[0], "echo-stage", c.count, c.mv / es[0].mv!];
           why = `one stage of its ${es[1]}-hit transform`;

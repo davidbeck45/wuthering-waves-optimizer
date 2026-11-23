@@ -162,6 +162,25 @@ describe("cast mapper: primitives", () => {
     expect(report.unmatched).toEqual([]);
     expect(report.review).toEqual([]);
   });
+  it("presses a stage of several hits, or one that is a whole fraction of the row, at its share (Crownless)", () => {
+    // Riley's other staged echoes (jinzhou.ts): Crownless 134.08 / 134.08 / 100.56 × 2 / 67.04 × 3 against the app's one row
+    // 134.08%*2 + 100.56%*2 + 67.04%*3 (670.40). Stages 3 and 4 are runs of hits, not one term, and stages 1 and 2 are a
+    // fifth of the row, so before 2026-11-23 they read as ticks and as the name: 2 presses where Riley makes 1. No loop
+    // of tonight's table presses them (his loops use the Nightmare forms); a live import of another loadout can
+    const echoRows = echoRowsOf(mainEchoesData as never);
+    const pressed = (echo: string, mvs: number[]) => {
+      const report = emptyReport();
+      const acts = toActions(mvs.map((mv, i) => ({ name: `Echo - ${echo} ${i + 1}`, mv, count: 1, cast: "Echo", node: null })), [], echoRows, {}, report, new Set());
+      expect(report.unmatched).toEqual([]);
+      return acts.reduce((t, a) => t + a.count * (1 + ((a.buffs[0]?.modifierValue as number | undefined) ?? 0) / 100), 0);
+    };
+    expect(pressed("Crownless", [134.08, 134.08, 201.12, 201.12])).toBeCloseTo(1, 2);
+    expect(pressed("Stonewall Bracer", [168.96, 112.64])).toBeCloseTo(1, 2);
+    expect(pressed("Lampylumen Myriad", [200.16, 200.16, 266.88])).toBeCloseTo(1, 2);
+    // Thundering Mephis' five strikes are 0.15 of the row each; his sixth (189.44 + three thunders of 31.56) is not the
+    // app's last two hits (189.44 + one of 31.57), so it still goes by its name, flagged for review
+    expect(pressed("Thundering Mephis", [132.61, 132.61, 132.61, 132.61, 132.61])).toBeCloseTo(0.75, 2);
+  });
   it("presses Lingyang's Mech Abomination as the Strike, which the app writes without a percent sign", () => {
     const echoRows = echoRowsOf(mainEchoesData as never);
     const strike = echoRows.MechAbomination.rows.find((r) => r.key === "MechAbominationStrike")!;
