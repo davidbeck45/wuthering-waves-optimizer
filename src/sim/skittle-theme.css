@@ -317,3 +317,9 @@ html[data-theme-style="light"] .skittle-root .tgrid.hued .trow .c.baseline:not(.
    generated skittle.css until the Nov 2026 regeneration dropped it; it belongs here (scripts/skittle-sync.mjs rewrites
    that file whole) */
 .skittle-root .c.teamdpr .looptime::after, .pop .c.teamdpr .looptime::after, .ctxmenu .c.teamdpr .looptime::after { content: " loop"; }
+/* His resource and damage bars (detail.ts `barHtml`, Nov 2026) write each figure in its bar's own hue over a 9 % wash of
+   it: fine on his dark page, about 1.6 : 1 for Energy's yellow on a light theme. Darkened there the way --mem is above. */
+html[data-theme-style="light"] .skittle-root .rtext:not(.negative),
+html[data-theme-style="light"] .pop .rtext:not(.negative) {
+  color: color-mix(in srgb, var(--bar, var(--ink)) 45%, #000);
+}
