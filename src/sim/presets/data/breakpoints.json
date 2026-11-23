@@ -1,6 +1,6 @@
 {
- "generated": "2026-11-17T20:19:02.996Z",
- "wuwaCalcCommit": "e95d4e6",
+ "generated": "2026-11-23T22:10:39.788Z",
+ "wuwaCalcCommit": "821f8db",
  "resonators": {
   "Aemeath": {
    "appKey": "Aemeath",
@@ -19,7 +19,7 @@
        "note": "start of combat (position 3): adds Basic - Aemeath 1 ×1, Heavy - Aemeath: Charged II ×1"
       }
      },
-     "intendedTeams": 15
+     "intendedTeams": 17
     },
     {
      "label": "Everbright Polestar R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Trailblazing Star 5pc · Resonance Mode - Tune Rupture",
@@ -123,7 +123,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 4
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -159,6 +159,50 @@
     }
    ]
   },
+  "Baizhi": {
+   "appKey": "Baizhi",
+   "loadouts": [
+    {
+     "label": "Variation R1 / Stellar Symphony R1 · Rejuvenating Glow 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 1
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Baizhi S1: Complex Simplicity",
+     "note": "S1 Complex Simplicity: Emergency Plan's +2.5 Energy a Concentration spent (on its hit)."
+    },
+    {
+     "level": 2,
+     "name": "Baizhi S2: Silent Tundra",
+     "note": "S2 Silent Tundra: Emergency Plan cast on 4 Concentration — +15% Glacio DMG Bonus (and Healing) for 12s."
+    },
+    {
+     "level": 3,
+     "name": "Baizhi S3: Veritas Lux Mea",
+     "note": "S3 Veritas Lux Mea: Overflowing Frost — +12% Max HP for 10s."
+    },
+    {
+     "level": 4,
+     "name": "Baizhi S4: Eternal Verity",
+     "note": "S4 Eternal Verity: two more Remnant Entities (`REMNANTS`), and each deals 1.20% of her Max HP more."
+    },
+    {
+     "level": 5,
+     "name": "Baizhi S5: A Wish Answered",
+     "note": "S5 A Wish Answered: a revive — nothing to model."
+    },
+    {
+     "level": 6,
+     "name": "Baizhi S6: Seeker's Devotion",
+     "note": "S6 Seeker's Devotion: each Euphonia picked up — +12% Glacio DMG Bonus to the team for 20s (`EUPHONIA_FIELD`)."
+    }
+   ]
+  },
   "Brant": {
    "appKey": "Brant",
    "loadouts": [
@@ -167,7 +211,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 11
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -251,7 +295,7 @@
    "appKey": "Camellya",
    "loadouts": [
     {
-     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 1",
+     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc",
      "minSequence": 0,
      "loopChangesAt": [
       6
@@ -260,45 +304,14 @@
       "6": {
        "kind": "loop",
        "added": [
-        "Basic - Vining Waltz 1 ×2",
-        "Basic - Vining Waltz 2 ×1",
-        "Basic - Vining Waltz 3 ×1",
-        "Basic - Blazing Waltz ×1",
-        "Basic - Vining Waltz 4 ×1",
-        "Forte Skill - Perennial (S6) ×1"
-       ],
-       "removed": [],
-       "note": "double intro: drops Double Intro ×1, Skill - Crimson Blossom ×1, Echo - Nightmare: Crownless ×1, Heavy - Pruning ×1, Basic - Burgeoning 4 (Hold) ×1, Skill - Floral Ravage ×1"
-      }
-     },
-     "intendedTeams": 2
-    },
-    {
-     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 2",
-     "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
-     "intendedTeams": 2
-    },
-    {
-     "label": "Red Spring R1 / Emerald of Genesis R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc · variant 3",
-     "minSequence": 0,
-     "loopChangesAt": [
-      6
-     ],
-     "changes": {
-      "6": {
-       "kind": "loop",
-       "added": [
-        "Basic - Vining Waltz 1 ×1",
         "Forte Skill - Perennial (S6) ×1"
        ],
        "removed": [
-        "Echo - Nightmare: Crownless ×1"
+        "Dodge Placeholder ×1"
        ]
       }
      },
-     "intendedTeams": 1
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -342,11 +355,11 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 12
+     "intendedTeams": 13
     },
     {
      "label": "Whispers of Sirens R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Lethean Elegy R1 / Rime-Draped Sprouts R1 / Augment R1 / Radiant Dawn R1 · Havoc Eclipse 5pc",
-     "minSequence": 0,
+     "minSequence": 1,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 6
@@ -393,7 +406,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 7
+     "intendedTeams": 8
     }
    ],
    "sequences": [
@@ -525,7 +538,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 26
+     "intendedTeams": 27
     }
    ],
    "sequences": [
@@ -569,7 +582,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 42
+     "intendedTeams": 43
     }
    ],
    "sequences": [
@@ -609,11 +622,11 @@
    "appKey": "Danjin",
    "loadouts": [
     {
-     "label": "Emerald Sentence R1 / Emerald of Genesis R1 / Blazing Brilliance R1 / Lumingloss R1 / Feather Edge R1 · Midnight Veil 5pc",
+     "label": "Emerald of Genesis R1 / Emerald Sentence R1 / Blazing Brilliance R1 / Lumingloss R1 / Feather Edge R1 · Midnight Veil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 12
+     "intendedTeams": 13
     }
    ],
    "sequences": [
@@ -669,7 +682,7 @@
        "note": "opener: adds Basic - Breakdown Form 3 ×1, Basic - Breakdown Form 4 ×1, drops Skill - Phantom Bubble ×1, Jump Placeholder ×1, Mid-air - Breakdown Form 1 ×1, Mid-air - Breakdown Form 2 ×1, Mid-air - Breakdown Form 3 ×1, Mid-air - Breakdown Form 4 ×1"
       }
      },
-     "intendedTeams": 14
+     "intendedTeams": 18
     },
     {
      "label": "Forged Dwarf Star R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Stringmaster R1 / Augment R1 / Radiant Dawn R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -775,6 +788,50 @@
     }
    ]
   },
+  "Encore": {
+   "appKey": "Encore",
+   "loadouts": [
+    {
+     "label": "Stringmaster R1 / Cosmic Ripples R1 / Boson Astrolabe R1 / Lethean Elegy R1 / Whispers of Sirens R1 / Rime-Draped Sprouts R1 / Augment R1 / Radiant Dawn R1 · Molten Rift 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 9
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Encore S1",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Encore S2",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Encore S3",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Encore S4",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Encore S5",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Encore S6",
+     "note": ""
+    }
+   ]
+  },
   "Galbrena": {
    "appKey": "Galbrena",
    "loadouts": [
@@ -816,6 +873,50 @@
      "level": 6,
      "name": "Galbrena S6: I Remain Who I am, Eternal My Flame",
      "note": "S6: Eternal Hypostasis keeps everything Demon Hypostasis had and puts every enhanced form (Ravage aside) at x1.6. Multipliers sum in one bracket here, so the share this contributes is 60% of whatever already stands. Its Afterflame…"
+    }
+   ]
+  },
+  "Havoc Rover": {
+   "appKey": "RoverHavocFemale",
+   "loadouts": [
+    {
+     "label": "Red Spring R1 / Emerald of Genesis R1 / Blazing Brilliance R1 / Lumingloss R1 / Feather Edge R1 · Havoc Eclipse 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 8
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Havoc Rover S1: Cryptic Insight",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Havoc Rover S2: Waning Crescent",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Havoc Rover S3: Surging Resonance",
+     "note": ""
+    },
+    {
+     "level": 4,
+     "name": "Havoc Rover S4: Annihilated Silence",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Havoc Rover S5: Aeon Symphony",
+     "note": ""
+    },
+    {
+     "level": 6,
+     "name": "Havoc Rover S6: Ebbing Undercurrent",
+     "note": ""
     }
    ]
   },
@@ -886,10 +987,10 @@
        "kind": "chain",
        "added": [],
        "removed": [],
-       "note": "first visit: adds Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Liberation - Formshift ×1, Echo - Reminiscence: Suhsin (Hsin) ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1, Forte Skill - Illumining Form: Pillars Aligned ×1, Basic - Illumining Form: Pillars Aligned 1 ×2, Basic - Illumining Form: Pillars Aligned 2 ×2, Dodge Placeholder ×1, Basic - Illumining Form: Pillars Aligned 3 ×1, Forte Heavy - Illumining Form: Stilling All Horizons ×1, Liberation - Pillars Across Heaven ×1, Basic - Answering Form 1 ×1"
+       "note": "first visit: adds Intro ×1, Forte Heavy - Answering Form: Realm Protector ×1, Echo - Reminiscence: Suhsin (Hsin) ×1, Liberation - Formshift ×1, Basic - Illumining Form 1 ×1, Skill - Illumining Form ×1, Forte Skill - Illumining Form: Pillars Aligned ×1, Basic - Illumining Form: Pillars Aligned 1 ×2, Basic - Illumining Form: Pillars Aligned 2 ×2, Dodge Placeholder ×1, Basic - Illumining Form: Pillars Aligned 3 ×1, Forte Heavy - Illumining Form: Stilling All Horizons ×1, Liberation - Pillars Across Heaven ×1, Basic - Answering Form 1 ×1"
       }
      },
-     "intendedTeams": 9
+     "intendedTeams": 10
     },
     {
      "label": "Blooming Jadehaven R1 / Cosmic Ripples R1 / Stringmaster R1 / Lethean Elegy R1 / Freeze Frame R1 / Augment R1 / Radiant Dawn R1 · Heart of Sworn Vigil 5pc · Resonance Mode - Unison",
@@ -1015,7 +1116,7 @@
      "minSequence": 2,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 14
+     "intendedTeams": 15
     }
    ],
    "sequences": [
@@ -1164,7 +1265,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 10
+     "intendedTeams": 12
     }
    ],
    "sequences": [
@@ -1208,7 +1309,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 48
+     "intendedTeams": 50
     }
    ],
    "sequences": [
@@ -1225,22 +1326,66 @@
     {
      "level": 3,
      "name": "Lily S3: May Your Soul Wander No More",
-     "note": "S3: Eternal Bloom's cast adds 25 Concerto and 170 Dream Perfume. Its faster Dreambell Chime and +50% healing reach no formula here."
+     "note": ""
     },
     {
      "level": 4,
      "name": "Lily S4: May Your Past Sink into Silence",
-     "note": ""
+     "note": "S4: Slumberland's +30% healing reaches no formula."
     },
     {
      "level": 5,
      "name": "Lily S5: May You Find Peace in Endless Light",
-     "note": ""
+     "note": "S5: a wider pull, nothing this calculator reads."
     },
     {
      "level": 6,
      "name": "Lily S6: May My Reverie Never End",
-     "note": "S6: those three deal 500% more Spectro DMG, read as Mornye's S6 \"deals 400% more DMG\" is."
+     "note": "S6: the Finales deal 100% more Spectro DMG and Eternal Bloom 700% more, read as Mornye's S6 \"deals 400% more DMG\" is."
+    }
+   ]
+  },
+  "Lingyang": {
+   "appKey": "Lingyang",
+   "loadouts": [
+    {
+     "label": "Blazing Justice R1 / Pulsation Bracer R1 / Abyss Surges R1 · Freezing Frost 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 5
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Lingyang S1: Lion of Light, Blessings Abound",
+     "note": "S1: Anti-Interruption under Lion's Vigor � no stat."
+    },
+    {
+     "level": 2,
+     "name": "Lingyang S2: Dominant and Fierce, Power Unbound",
+     "note": ""
+    },
+    {
+     "level": 3,
+     "name": "Lingyang S3: Jaw-Dropping Feats, Loud and Wide",
+     "note": "S3: under Lion's Vigor, +20% Basic Attack and +10% Resonance Skill DMG Bonus."
+    },
+    {
+     "level": 4,
+     "name": "Lingyang S4: Immortals Bow, in Reverence Flawed",
+     "note": ""
+    },
+    {
+     "level": 5,
+     "name": "Lingyang S5: Seven Stars Shine, Stepped upon High",
+     "note": "S5: the Liberation's extra strike � queued by the Liberation itself."
+    },
+    {
+     "level": 6,
+     "name": "Lingyang S6: Demons Tremble, Divine Power Nigh",
+     "note": ""
     }
    ]
   },
@@ -1347,7 +1492,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 28
+     "intendedTeams": 34
     }
    ],
    "sequences": [
@@ -1435,7 +1580,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 44
+     "intendedTeams": 46
     },
     {
      "label": "Spectrum Blaster R1 / Phasic Homogenizer R1 / Static Mist R1 / Thunderbolt R1 / Solar Flame R1 · Reel of Spliced Memories 5pc · Resonance Mode - Tune Strain",
@@ -1486,7 +1631,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 49
+     "intendedTeams": 54
     }
    ],
    "sequences": [
@@ -1625,7 +1770,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 53
+     "intendedTeams": 54
     }
    ],
    "sequences": [
@@ -1764,7 +1909,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 31
+     "intendedTeams": 34
     }
    ],
    "sequences": [
@@ -1819,7 +1964,7 @@
        "note": "opener: drops Basic - Pero, Easy 4 ×1"
       }
      },
-     "intendedTeams": 10
+     "intendedTeams": 11
     },
     {
      "label": "Tragicomedy R1 / Pulsation Bracer R1 / Abyss Surges R1 / Stonard R1 / Aether Strike R1 · Havoc Eclipse 5pc",
@@ -1866,7 +2011,7 @@
    "appKey": "Sanhua",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Overture R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Overture R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc + Impermanence Heron",
      "minSequence": 0,
      "loopChangesAt": [
       5
@@ -1881,7 +2026,7 @@
        "note": "opener: drops Basic - Frigid Light 4 ×1"
       }
      },
-     "intendedTeams": 15
+     "intendedTeams": 20
     }
    ],
    "sequences": [
@@ -1925,7 +2070,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 57
+     "intendedTeams": 74
     }
    ],
    "sequences": [
@@ -2009,7 +2154,7 @@
    "appKey": "RoverSpectroFemale",
    "loadouts": [
     {
-     "label": "Blazing Brilliance R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Rejuvenating Glow 5pc",
+     "label": "Emerald of Genesis R1 / Blazing Brilliance R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Rejuvenating Glow 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
@@ -2055,8 +2200,23 @@
     {
      "label": "Firstlight's Herald R1 / Variation R1 · Song of Feathered Trace 5pc",
      "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
+     "loopChangesAt": [
+      3
+     ],
+     "changes": {
+      "3": {
+       "kind": "loop",
+       "added": [
+        "Basic - Drizzle Stance 4 ×1",
+        "Basic - Drizzle Stance 3 ×1"
+       ],
+       "removed": [
+        "Heavy - Drizzle Stance ×2",
+        "Basic - Swallow's Cut ×1"
+       ],
+       "note": "opener: adds Basic - Drizzle Stance 4 ×1, Basic - Drizzle Stance 3 ×1, drops Heavy - Drizzle Stance ×2"
+      }
+     },
      "intendedTeams": 25
     }
    ],
@@ -2097,18 +2257,18 @@
    "appKey": "Suoming",
    "loadouts": [
     {
-     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
-     "minSequence": 0,
-     "loopChangesAt": [],
-     "changes": {},
-     "intendedTeams": 6
-    },
-    {
      "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Heart of Sworn Vigil 5pc",
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
      "intendedTeams": 8
+    },
+    {
+     "label": "Unspoken Rue R1 / Emerald of Genesis R1 / Red Spring R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 6
     }
    ],
    "sequences": [
@@ -2196,7 +2356,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 5
     }
    ],
    "sequences": [
@@ -2285,6 +2445,50 @@
     }
    ]
   },
+  "Yangyang": {
+   "appKey": "Yangyang",
+   "loadouts": [
+    {
+     "label": "Emerald of Genesis R1 / Overture R1 / Lumingloss R1 / Feather Edge R1 · Moonlit Clouds 5pc",
+     "minSequence": 0,
+     "loopChangesAt": [],
+     "changes": {},
+     "intendedTeams": 7
+    }
+   ],
+   "sequences": [
+    {
+     "level": 1,
+     "name": "Yangyang S1: Sapphire Skies, Soaring Sparrows",
+     "note": ""
+    },
+    {
+     "level": 2,
+     "name": "Yangyang S2: Nesting Twigs, in Beaks They Harrow",
+     "note": "S2: a Heavy Attack hit restores 10 more Energy, once every 20s."
+    },
+    {
+     "level": 3,
+     "name": "Yangyang S3: Nature Sings in Symphony",
+     "note": "S3: +40% Resonance Skill DMG Bonus; the wider pull is no stat."
+    },
+    {
+     "level": 4,
+     "name": "Yangyang S4: Close Your Eyes and Listen in",
+     "note": "S4: Feather Release deals 95% more DMG."
+    },
+    {
+     "level": 5,
+     "name": "Yangyang S5: Winds Whisper in Harmony",
+     "note": "S5: Wind Spirals deals 85% more DMG."
+    },
+    {
+     "level": 6,
+     "name": "Yangyang S6: A Tribute to Life's Sweet Hymn",
+     "note": ""
+    }
+   ]
+  },
   "Yinlin": {
    "appKey": "Yinlin",
    "loadouts": [
@@ -2293,7 +2497,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 4
     }
    ],
    "sequences": [
@@ -2393,7 +2597,7 @@
      "minSequence": 0,
      "loopChangesAt": [],
      "changes": {},
-     "intendedTeams": 3
+     "intendedTeams": 4
     }
    ],
    "sequences": [
