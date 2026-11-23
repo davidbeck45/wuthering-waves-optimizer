@@ -1348,4 +1348,41 @@ describe("phone layout", () => {
       expect($line[0].getBoundingClientRect().right, `"${$line.text().trim().slice(0, 40)}" ends inside the table's view`).to.be.at.most(scroller.right);
     });
   });
+
+  // Ryan's #747 in the classic optimizer (phone.css § 41 e): the optimized-for stat's change ran as one line of inline
+  // text in a right-aligned cell, breaking inside its parts ("·" at a line's end, "ATK%" on the next) and widening the
+  // cell enough to put "Crit Rate" on two lines at 360 px / 130 % text.
+  it("puts each part of the classic optimizer's stat change on a line of its own at 360 px / 130 % text", () => {
+    cy.viewport(360, 800);
+    const stored = JSON.parse(configOptimizer.data.character as string);
+    stored.characters[stored.activeCharacter].optimizer = { ...stored.characters[stored.activeCharacter].optimizer, optimizationTarget: "Stat:totalAtk" };
+    cy.visit("/", {
+      onBeforeLoad(win: Window) {
+        win.localStorage.setItem("character", JSON.stringify(stored));
+        win.localStorage.setItem("inventory", configOptimizer.data.inventory as string);
+        win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: true }, labs: {} }));
+      },
+      onLoad(win: Window) {
+        const style = win.document.createElement("style");
+        style.textContent = "html { font-size: 130%; }";
+        win.document.head.appendChild(style);
+      },
+    });
+    cy.get('[data-test-calculator-nav="optimizer"]').click({ force: true });
+    cy.get("[data-test-optimizer-optimize-btn]").filter(":visible").first().click({ force: true });
+    cy.get("[data-test-optimizer-result-target-delta]", { timeout: 120000 }).should("have.length.at.least", 1);
+    cy.get("[data-test-optimizer-result-target-delta]").first().should(($delta) => {
+      const doc = $delta[0].ownerDocument;
+      const linesOf = (el: Element) => {
+        const range = doc.createRange();
+        range.selectNodeContents(el);
+        return new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+      };
+      for (const part of $delta[0].children) expect(linesOf(part), `"${part.textContent!.trim()}" is one line`).to.equal(1);
+      const table = $delta[0].closest("table")!;
+      for (const cell of table.querySelectorAll("td:nth-child(2)")) {
+        if (/^Crit (Rate|DMG)$/.test(cell.textContent!.trim())) expect(linesOf(cell), `"${cell.textContent!.trim()}" is one line`).to.equal(1);
+      }
+    });
+  });
 });

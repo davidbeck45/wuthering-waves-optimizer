@@ -2198,3 +2198,23 @@ html.wt-ai-docked #wt-app .contain {
     max-width: min(16rem, calc(100vw - 160px));
   }
 }
+/* e) The optimizer's stat change in the classic Basic Stats table (#747, OptimizerTargetStatDelta.vue, on the stat the run
+      optimized for). The total's change and each part ("· ATK% +10.9%", "· Flat 0") are one run of inline text in a
+      right-aligned cell: at 130 % it broke wherever it ran out of room, with a "·" left at the end of each line, and the
+      wider cell pushed "Crit Rate" and "Crit DMG" onto two lines. Each part has a line of its own under the total's change. */
+@media (max-width: 767px) {
+  [data-test-optimizer-result-stats] [data-test-optimizer-result-target-delta] {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: end;
+    column-gap: 0.25rem;
+  }
+  [data-test-optimizer-result-stats] [data-test-optimizer-result-target-delta] > :first-child {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+  [data-test-optimizer-result-stats] [data-test-optimizer-result-target-delta] > span {
+    margin-left: 0;
+    white-space: nowrap;
+  }
+}
