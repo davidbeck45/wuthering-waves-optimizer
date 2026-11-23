@@ -318,7 +318,7 @@
 // Wuthering Tools+: the account-first controls above Riley's comparison page. Everything here is a
 // URL-hash edit — his page owns the filter state and re-reads the hash (controller.ts
 // onLocationChange) — so a saved view is just a named hash, and the chips are his own r= / x= filter.
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import type { AccountState } from "../account/accountState";
@@ -332,6 +332,7 @@ import { characterShortName } from "../display/names";
 import { parsePresetName } from "../presets/presetName";
 import { rankingsMineNote, spreadLabel, spreadOf, spreadSentence } from "../display/numberBasis";
 import { rankingsRoster, syncMyTeams, toggleRankingsSearch } from "./controller";
+import { markHandled, takeSyncRequest } from "../syncNotice/syncNotice";
 import { notInApp } from "./importFromRankings";
 import { appKeyOf } from "./rileyNames";
 import { humanKey, isWuwaCalcTeam, type SyncReport, type SyncStatus, type TeamLike } from "./syncTeams";
@@ -602,6 +603,7 @@ const onKeydown = (e: KeyboardEvent): void => {
   if (e.key === "Escape" && open.value) open.value = null;
 };
 onMounted(() => {
+  askedToSync(); // Wuthering Tools+ sync notice
   media = window.matchMedia("(max-width: 767px)");
   compact.value = media.matches;
   media.addEventListener("change", onMedia);
@@ -669,6 +671,7 @@ async function sync(): Promise<void> {
     const snapshot: TeamLike[] = JSON.parse(JSON.stringify(teams.value ?? []));
     const run = await syncWithUndo(snapshot, () => syncMyTeams(snapshot), () => JSON.parse(JSON.stringify(teams.value ?? [])));
     report.value = run.report;
+    markHandled(); // the sync notice (src/sim/syncNotice) is handled at this engine
     let rec = run.undo;
     let kept = !rec || run.stored;
     // a sync that rewrote no team keeps the last one's Undo, with the times that one filled (a cut one's are not known)
@@ -692,6 +695,19 @@ async function sync(): Promise<void> {
   } finally {
     syncing.value = false;
   }
+}
+/** The sync notice's button (src/sim/syncNotice) lands here with ?sync=1: ask the Sync question once Riley's modules are
+ *  in (the roster fills then), and take the request off the address so a reload or Back does not ask again. */
+function askedToSync(): void {
+  const rest = takeSyncRequest(route.query);
+  if (!rest) return;
+  void router.replace({ path: route.path, query: rest, hash: route.hash });
+  if (rankingsRoster.value.length) return void sync();
+  const stop = watch(rankingsRoster, (list) => {
+    if (!list.length) return;
+    stop();
+    void sync();
+  });
 }
 async function undoSync(): Promise<void> {
   const rec = undoRecord.value;

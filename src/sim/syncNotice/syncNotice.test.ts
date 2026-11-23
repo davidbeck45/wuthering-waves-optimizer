@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { isGeneratedTeamName } from "../rankings/importFromRankings";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
+import { rankingsMineHash } from "../account/accountState";
 import {
+  SYNC_HASH,
+  takeSyncRequest,
   ENGINE_UPDATES,
   SYNC_NOTICE_KEY,
   behindTeams,
@@ -108,5 +111,18 @@ describe("the notice", () => {
     expect(() => markHandled("821f8db", refusing)).not.toThrow();
     expect(readHandled(refusing)).toBeNull();
     expect(readHandled(null)).toBeNull();
+  });
+});
+
+describe("the way to Sync my teams", () => {
+  it("is /rankings at the account's own state, as /account links it", () => {
+    expect(SYNC_HASH).toBe(rankingsMineHash());
+  });
+
+  it("is asked once: the request comes off the address, other query keys stay", () => {
+    expect(takeSyncRequest({ sync: "1", x: "y" })).toEqual({ x: "y" });
+    expect(takeSyncRequest({ x: "y" })).toBeNull();
+    expect(takeSyncRequest({ sync: "0" })).toBeNull();
+    expect(takeSyncRequest({})).toBeNull();
   });
 });

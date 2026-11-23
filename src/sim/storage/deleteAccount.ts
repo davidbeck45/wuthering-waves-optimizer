@@ -98,6 +98,7 @@ export const STORAGE_RULES: readonly StorageRule[] = [
   { key: "wtplus:ai:chat", area: "session", fate: "goes", backup: "session", why: "this tab's Ask chat: it opens with a snapshot of the account" },
   { key: "wtplus:numbers:log:v1", area: "local", fate: "goes", backup: "cache", why: "What moved in your numbers: the log of your characters' and teams' damage figures" },
   { key: "wtplus:numbers:importedAt", area: "local", fate: "goes", backup: "marker", why: "when a Settings import last replaced the account: the log's note about it" },
+  { key: "wtplus:syncNotice:handled", area: "local", fate: "goes", backup: "marker", why: "the engine at which the saved-teams sync notice was hidden or a Sync ran: the account's teams go, so the notice may come back for the next account" },
 
   // ---- choices that point at the account's teams and echoes
   { key: "wtplus:buildAccount:choice:v1", area: "local", fate: "goes", backup: "preference", why: "the teams picked for Whole account, by team id" },

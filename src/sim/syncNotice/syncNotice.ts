@@ -113,5 +113,16 @@ export function markHandled(commit: string = WUWA_CALC_COMMIT, storage: Area | n
 /** The stamp a team read off today's engine carries. */
 export const engineStamp = (): { wuwaCalcCommit: string } => ({ wuwaCalcCommit: WUWA_CALC_COMMIT });
 
-/** The address of the existing Sync my teams flow: /rankings opens its question once Riley's modules are in. */
+/** The address of the existing Sync my teams flow: /rankings?sync=1 opens its question once Riley's modules are in
+ *  (RankingsAccountBar.vue, `takeSyncRequest`), at the account's own state as /account's link has it
+ *  (accountState.ts `rankingsMineHash()`, not imported: it pulls the ranking code onto /teams). */
 export const SYNC_QUERY = "sync";
+export const SYNC_HASH = "#tc=mine";
+
+/** Was the existing Sync asked for by this address? Then the query to go on with, without it (so a reload or Back does
+ *  not ask again). Null when not asked. */
+export function takeSyncRequest<T>(query: Record<string, T>): Record<string, T> | null {
+  if ((query?.[SYNC_QUERY] as unknown) !== "1") return null;
+  const { [SYNC_QUERY]: _asked, ...rest } = query;
+  return rest;
+}
