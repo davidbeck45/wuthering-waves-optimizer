@@ -106,20 +106,22 @@ describe("ToA clear check (/endgame)", () => {
     cy.get("[data-test-toa-progress]").should("not.exist");
   });
 
-  it("puts no crest count on the Plan tab while there is no team to plan with", () => {
+  it("times the teams of free 4★s and Rovers for an account with one 5★ and no team of its own", () => {
+    // Riley's 211d7d0 lists teams with no 5★ at all (Buling · Yangyang · Havoc Rover, Baizhi · Sanhua · Havoc Rover…),
+    // and his account rule owns every 4★ and Rover form at S6: an imported account always fields those. Until then
+    // Aemeath alone fielded nothing and this test asserted "No fieldable team" and a Plan tab with no crest count.
     cy.clock(Date.UTC(2026, 9, 26, 12), ["Date"]);
     const alone = v3(true);
     cy.visit("/endgame", {
       onBeforeLoad(win: Window) {
         alone.onBeforeLoad(win);
-        // one 5★ with no 4★ team to borrow (Cartethyia alone still fields one, with the 4★s wuwa_calc counts as owned)
         win.localStorage.setItem("character", JSON.stringify({ characters: { Aemeath: { weapon: "EverbrightPolestar" } }, activeCharacter: "Aemeath" }));
       },
     });
-    cy.contains("No fieldable team", { timeout: 60000 }).should("be.visible");
-    // the low floors are assumed clear by any spare team, so the plan counted 12★ for an account with no team at all
-    cy.get('[data-test-toa-tab="plan"]').should("have.text", "Plan").click();
-    cy.get("[data-test-toa-plan-empty]").should("contain.text", "Check your teams first");
+    cy.get('[data-test-toa-floor="hazard-1"] [data-test-toa-team]', { timeout: 120000 }).should("have.length.at.least", 1);
+    cy.get("[data-test-toa-no-team]").should("not.exist");
+    cy.get('[data-test-toa-floor="hazard-1"]').should("contain.text", "Rover").and("not.contain.text", "Aemeath");
+    cy.get('[data-test-toa-tab="plan"]').invoke("text").should("match", /Plan\s*\d+★/);
   });
 
   it("shows Season 42 from its first day with its own floor HP, times the team on every floor and plans all 12 stages", () => {
