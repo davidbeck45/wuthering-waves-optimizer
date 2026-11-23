@@ -276,6 +276,14 @@ function buildNameMentions(buildName: string, characterId: string): boolean {
   return nameTokens(characterId).some((token) => haystack.includes(token));
 }
 
+/** Ryan's Optimize team names its Save "<team name> optimizer" (", 2", … after it) and pins it to that team's slot
+ *  (ADR 0061: saving touches that team only). A generated team is named after its members, so that name mentions both
+ *  teammates, and the by-name rule handed the build to every other unpinned team of the same three: one Save moved
+ *  another team's figure 573K → 1.5M (teamOptimizerOnPlus.test.ts). Such a build is read through its pin, never by
+ *  name. Build my team's "Built for …" names are made for this rule and stay in it; Whole account's "Account plan"
+ *  never named teammates. A name the player gives it later is theirs and counts. */
+const OPTIMIZE_TEAM_BUILD = /\soptimizer(?: \d+)?$/;
+
 function pickBuild(
   data: Record<string, any>,
   pinned: string | null | undefined,
@@ -285,7 +293,7 @@ function pickBuild(
   const nameOf = (id: string | null) => builds.find((b) => b.id === id)?.name ?? null;
   if (pinned && builds.some((b) => b.id === pinned)) return { buildId: pinned, buildName: nameOf(pinned), buildSource: "pinned" };
   if (builds.length > 1 && teammates.length) {
-    const named = builds.find((b) => b.name && teammates.every((t) => buildNameMentions(b.name as string, t)));
+    const named = builds.find((b) => b.name && !OPTIMIZE_TEAM_BUILD.test(b.name) && teammates.every((t) => buildNameMentions(b.name as string, t)));
     if (named) return { buildId: named.id, buildName: named.name ?? null, buildSource: "named" };
   }
   const activeId: string | null = data?.activeBuildId ?? null;

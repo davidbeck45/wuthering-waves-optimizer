@@ -70,8 +70,8 @@ async function seedAccount(): Promise<void> {
 }
 
 /** What the Team page reads for this team now (`TeamRotations.vue` `computeStatsForTeam`). */
-async function teamPageTotal(): Promise<number> {
-  const team = useTeamRotationsStore().getTeamById("team-plus") as any;
+async function teamPageTotal(teamId = "team-plus"): Promise<number> {
+  const team = useTeamRotationsStore().getTeamById(teamId) as any;
   const echoes = useInventoryStore().echoes as any[];
   const characters = useCharacterStore().characters as any;
   const resolved = await resolveTeamCharacters(team, characters, echoes, { auto: autoTeamBuffs.value });
@@ -123,7 +123,10 @@ describe("Optimize team on plus", () => {
     // his buff plans (#689) ran: more than one plan, and a row says who provides what
     expect(optimizer.planCount.value).toBeGreaterThan(1);
     expect(rows[0]!.provisions.length).toBeGreaterThan(0);
-    const { total, matches } = await optimizer.saveAsBuilds(rows[0]!);
+    const store = useCharacterStore() as any;
+    const storedBefore = Object.fromEntries(["Shorekeeper", "Galbrena"].map((id) => [id, JSON.parse(JSON.stringify(store.characters[id].teamBuffs ?? null))]));
+    const activeBefore = Object.fromEntries(["Shorekeeper", "Galbrena"].map((id) => [id, store.characters[id].activeBuildId]));
+    const { total, matches, saved } = await optimizer.saveAsBuilds(rows[0]!);
     expect(matches).toBe(true);
     expect(total).toBeCloseTo(rows[0]!.total, 3);
     expect(await teamPageTotal()).toBeCloseTo(rows[0]!.total, 3);
@@ -131,6 +134,16 @@ describe("Optimize team on plus", () => {
     const team = useTeamRotationsStore().getTeamById("team-plus") as any;
     const after = await resolveTeamCharacters(team, useCharacterStore().characters as any, useInventoryStore().echoes as any[], { auto: true });
     expect(after.slots.map((slot) => slot.buffSource)).toEqual(["derived", "derived"]);
+    // ADR 0061 on plus: each new build is pinned to its slot, not worn, and holds the panel the player stored
+    expect(saved.length).toBeGreaterThan(0);
+    for (const id of saved) {
+      const slot = team.characterIds.indexOf(id);
+      const pinned = store.characters[id].builds.find((b: any) => b.id === team.buildIds[slot]);
+      expect(pinned, `${id}'s new build is pinned`).toBeTruthy();
+      if (activeBefore[id]) expect(store.characters[id].activeBuildId).toBe(activeBefore[id]); // a record with no builds yet gets its first from today's fields
+      expect(store.characters[id].activeBuildId).not.toBe(pinned.id);
+      expect(pinned.teamBuffs ?? null).toEqual(storedBefore[id]);
+    }
   }, 120_000);
 
   it("with auto team buffs off it is upstream's: the stored panels, and a proof when there is one", async () => {
@@ -165,9 +178,59 @@ describe("Optimize team on plus", () => {
     optimizer.setGoal(1, "damage");
     await optimizer.run();
     const row = optimizer.results.value[0]!;
-    const { matches } = await optimizer.saveAsBuilds(row);
+    const { matches, saved } = await optimizer.saveAsBuilds(row);
     expect(matches).toBe(true);
     expect(await teamPageTotal()).toBeCloseTo(row.total, 3);
+    // the new build starts from the named one: her chains and buffs, which the active "Plain" has not
+    expect(saved).toContain("Galbrena");
+    const named = store.characters.Galbrena.builds.find((b: any) => b.name === "Team with Shorekeeper");
+    const pin = (useTeamRotationsStore().getTeamById("team-plus") as any).buildIds[1];
+    const made = store.characters.Galbrena.builds.find((b: any) => b.id === pin);
+    expect(made.name).not.toBe("Team with Shorekeeper");
+    expect(made.resonanceChains).toEqual(named.resonanceChains);
+    expect(made.buffs).toEqual(named.buffs);
+    expect(Object.keys(named.buffs ?? {}).length).toBeGreaterThan(0);
+  }, 120_000);
+
+  it("with auto team buffs off, Save is his: the plan's panel goes into the new build", async () => {
+    autoTeamBuffs.value = false;
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "damage");
+    for (const slot of optimizer.slots.value) for (const offer of slot.offers) optimizer.setOfferTicked(slot.slot, offer.defKey, false);
+    await optimizer.run();
+    const row = optimizer.results.value[0]!;
+    const { saved, matches } = await optimizer.saveAsBuilds(row);
+    expect(matches).toBe(true);
+    const team = useTeamRotationsStore().getTeamById("team-plus") as any;
+    for (const id of saved) {
+      const slot = team.characterIds.indexOf(id);
+      const pinned = (useCharacterStore() as any).characters[id].builds.find((b: any) => b.id === team.buildIds[slot]);
+      if (row.teamBuffsBySlot[slot]) expect(pinned.teamBuffs).toEqual(row.teamBuffsBySlot[slot]);
+    }
+  }, 120_000);
+
+  it("saving touches this team only: another unpinned team of the same members reads what it read before", async () => {
+    autoTeamBuffs.value = true;
+    // a generated team is named after its members, so "<team> optimizer" mentions both teammates (resolveTeam's by-name rule)
+    const teams = useTeamRotationsStore() as any;
+    const own = teams.getTeamById("team-plus");
+    own.name = "Shorekeeper · Galbrena · S6R5 (wuwa_calc)";
+    teams.$patch({ teams: [own, { ...JSON.parse(JSON.stringify(own)), id: "team-other", name: "My Galbrena team" }] });
+    const before = await teamPageTotal("team-other");
+    const optimizer = useTeamOptimizer(ref("team-plus"));
+    await optimizer.initialize();
+    optimizer.setGoal(0, "damage");
+    optimizer.setGoal(1, "damage");
+    await optimizer.run();
+    const row = optimizer.results.value[0]!;
+    const { saved } = await optimizer.saveAsBuilds(row);
+    expect(saved.length).toBeGreaterThan(0);
+    expect(await teamPageTotal()).toBeCloseTo(row.total, 3);
+    expect(await teamPageTotal("team-other")).toBeCloseTo(before, 6);
+    const other = await resolveTeamCharacters(teams.getTeamById("team-other"), useCharacterStore().characters as any, useInventoryStore().echoes as any[], { auto: true });
+    expect(other.slots.map((slot) => slot.buildSource)).toEqual(["active", "active"]);
   }, 120_000);
 });
 
