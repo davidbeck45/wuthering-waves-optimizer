@@ -126,7 +126,7 @@ const WINDOW_RE = /incoming resonators/i;
 /** When a buff ends is not who gets it: Dream Aroma is "Removed when Lily is the incoming Resonator" and is the whole
  *  team's until then. Read as a handoff it reached only the member who follows Lily, in every imported team. */
 const REMOVAL_RE = /\bremoved when [^.]*\./gi;
-const isHandoff = (details: string | undefined): boolean => {
+export const isHandoff = (details: string | undefined): boolean => {
   if (!details) return false;
   const text = details.replace(REMOVAL_RE, "");
   return !WINDOW_RE.test(text) && INCOMING_RE.test(text);

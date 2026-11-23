@@ -1,5 +1,6 @@
 // Wuthering Tools+ — a Team Buffs panel that Ryan's Recommended teams wrote is a default, not the player's choice
-// (batch 5, lane post-merge).
+// (batch 5, lane post-merge). Plus's "Use their real buffs" on the same screen stamps its panel the same way (lane
+// real-panel): the resolver's own derivation, written down, is no curation either.
 //
 // The resolver keeps a panel that names exactly a team's teammates as the player's own and stops deriving that member's
 // team buffs from the real builds (resolveTeam.ts). His "Use team" (lab `recommendedTeams`, #663) names the two
@@ -21,10 +22,22 @@ function panelPrint(panel: Record<string, any> | null | undefined): string {
   return JSON.stringify([picks, on]);
 }
 
-/** Stamp a character's panel as Recommended teams just wrote it. Call right after his "Use team" with buffs. */
-export function markTypicalPanel(record: Record<string, any> | null | undefined): void {
+/** Who wrote a stamped panel: Recommended teams' typical buffs, or plus's "Use their real buffs" (realPanel.ts), whose
+ *  panel is the resolver's own derivation and so no curation either. */
+export type TypicalSource = "recommended" | "builds";
+
+/** Stamp a character's panel as it was just written by a default. Call right after the write (his "Use team" with buffs,
+ *  plus's "Use their real buffs"). */
+export function markTypicalPanel(record: Record<string, any> | null | undefined, source: TypicalSource = "recommended"): void {
   if (!record?.teamBuffs) return;
   record.teamBuffs.plusTypical = panelPrint(record.teamBuffs);
+  record.teamBuffs.plusTypicalSource = source;
+}
+
+/** The writer of a panel that still reads exactly as it was stamped; null for the player's own panel. */
+export function typicalPanelSource(panel: Record<string, any> | null | undefined): TypicalSource | null {
+  if (!isTypicalPanel(panel)) return null;
+  return panel?.plusTypicalSource === "builds" ? "builds" : "recommended";
 }
 
 /** True while the panel still reads exactly as Recommended teams wrote it: a default, so the resolver derives. */
