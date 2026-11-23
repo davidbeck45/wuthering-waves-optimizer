@@ -281,17 +281,13 @@ describe("resonator briefs", () => {
     }
   });
 
-  it("Lily: says before any figure that Riley's engine has her 3.8 beta kit, where her figures are on his table, and one main echo per loop", () => {
+  it("Lily: her released kit with no 3.8 beta note, the one press short of its gauge, where her figures are on his table, and one main echo per loop", () => {
     cy.visit("/kit/lily", seed());
-    cy.get("[data-test-kit-differs]", { timeout: 20000 })
-      .should("contain.text", "Riley's engine still has Lily's kit from the 3.8 beta, not the released game's.")
-      .and("contain.text", "Basic - Mend and Cleanse 1: hits for 74.28 % in his engine, 63.62 % in the released game");
-    // above the account block and every figure
-    cy.get("[data-test-kit-differs]").then(($d) => {
-      const account = Cypress.$("[data-test-kit-account]")[0]!;
-      expect($d[0]!.compareDocumentPosition(account) & Node.DOCUMENT_POSITION_FOLLOWING, "the note comes first").to.be.greaterThan(0);
-    });
-    cy.get("[data-test-kit-unmet]").should("contain.text", "Forte Heavy - Woven Fairytale: needs 300 Forte gauge");
+    cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
+    // Riley's engine had her 3.8 beta kit until his 2026-11-21 update, and the brief opened with a note saying so
+    cy.get("[data-test-kit-differs]").should("not.exist");
+    // her Woven heavies get their 300 Forte gauge on the released kit; her Outro short of Concerto in one team is left
+    cy.get("[data-test-kit-unmet]").should("contain.text", "Outro - Blooming Fragrance: needs 100 Concerto Energy").and("not.contain.text", "Woven");
     // where her figures can be found on his table, and in which column
     cy.get("[data-test-kit-table-hint]").should("contain.text", "“Avg damage / rotation” heading there for team DPS");
     // a support's Team Costs raise the main DPS, not her: said, since her own S2 reads another figure in the ladder
