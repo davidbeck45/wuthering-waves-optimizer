@@ -517,12 +517,12 @@ describe("Optimize team's Save", () => {
     optimizer.setGoal(1, "damage");
     await optimizer.run();
     const row = optimizer.results.value[0]!;
-    await vi.waitFor(() => expect(optimizer.changedCharacters(row).length).toBeGreaterThan(0));
+    await vi.waitFor(() => expect(optimizer.savePlan(row).saving.length).toBeGreaterThan(0));
     const first = await optimizer.saveAsBuilds(row);
     expect(first.matches).toBe(true);
     const after = buildCounts();
     // the row is now what the team wears: nothing to save, so the page shows no Save for it
-    await vi.waitFor(() => expect(optimizer.changedCharacters(row)).toEqual([]));
+    await vi.waitFor(() => expect(optimizer.savePlan(row).saving).toEqual([]));
     const second = await optimizer.saveAsBuilds(row);
     expect(buildCounts()).toEqual(after);
     expect(second.total).toBeCloseTo(first.total, 6);
@@ -545,7 +545,7 @@ describe("Optimize team's Save", () => {
     const again = optimizer.results.value.find((r) => Math.abs(r.total / row.total - 1) < 1e-9);
     if (!again) return; // the second search found better: nothing to check here
     const before = buildCounts();
-    await vi.waitFor(() => expect(optimizer.changedCharacters(again)).toEqual([]));
+    await vi.waitFor(() => expect(optimizer.savePlan(again).saving).toEqual([]));
     await optimizer.saveAsBuilds(again);
     expect(buildCounts()).toEqual(before);
   }, 120_000);

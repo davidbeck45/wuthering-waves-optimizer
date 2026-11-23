@@ -368,6 +368,17 @@
           </div>
         </template>
       </div>
+      <TeamBuffsRecommendedTeams
+        v-if="showRecommendedTeams"
+        class="mt-3"
+        :teams="recommendedTeams"
+        :character-name="mainCharacterName"
+        :slot1="selectedCharacter1"
+        :slot2="selectedCharacter2"
+        :copies="teammateCopies"
+        :has-active-buffs="activeTrayEntries.length > 0"
+        @set-copy="setTeammateCopy"
+        @use="useRecommendedTeam" />
     </template>
     </WorkspaceSplitLayout>
   </div>
@@ -393,6 +404,15 @@ import {
 import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch, resolveHideImpossible } from "../buffs/buffFilters";
 import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import TeamBuffsRecommendedTeams, { type UseTeamRequest } from "./teamBuffsWorkspace/TeamBuffsRecommendedTeams.vue";
+import {
+  buildRecommendedTeamBuffs,
+  parseTeammateCopy,
+  type TeammateCopy,
+} from "../buffs/recommendedTeamBuffs";
+import { getRecommendedTeams, type SuggestedTeam } from "../characters/recommendedTeams";
+import { useSettingsStore } from "../stores/settings";
+import { isRecommendedTeamsEnabled } from "../utils/labs";
 
 export interface PartyBuffDef {
   key: string;
@@ -414,6 +434,8 @@ export interface PartyBuffDef {
 
 interface Props {
   character: string;
+  /** The character's curated `suggestedTeams` from `basic.ts` (issue #663). */
+  suggestedTeams?: SuggestedTeam[];
 }
 const props = defineProps<Props>();
 
@@ -795,6 +817,42 @@ function openPartyMember1Browser() {
 function openPartyMember2Browser() {
   partyMemberBrowser2Ref.value?.triggerOpenModal();
 }
+// --- Recommended teams (Labs "recommendedTeams", issue #663) ---
+const settingsStore = useSettingsStore();
+const showRecommendedTeams = computed(() => isRecommendedTeamsEnabled(settingsStore));
+const recommendedTeams = computed(() => getRecommendedTeams(props.character, props.suggestedTeams));
+const mainCharacterName = computed(() => getCharacterRosterDisplayName(props.character));
+// Each teammate's sequence and signature weapon, remembered across characters.
+const teammateCopies = computed(() => {
+  const saved = (settingsStore.config as { teammateCopies?: unknown })?.teammateCopies;
+  return (saved && typeof saved === "object" ? saved : {}) as Record<string, unknown>;
+});
+// Replaced whole per teammate (ADR 0058's reason for not merging).
+function setTeammateCopy(teammate: string, copy: TeammateCopy) {
+  const config = settingsStore.config as { teammateCopies?: Record<string, TeammateCopy> };
+  config.teammateCopies = { ...(teammateCopies.value as Record<string, TeammateCopy>), [teammate]: copy };
+}
+function elementOf(key: string): string {
+  return allCharactersList.find((c) => c.key === key)?.element ?? "";
+}
+// Without buffs, the same as picking each teammate by hand: fills the slots,
+// leaves buffs alone. With buffs, also saves their typical buffs (ADR 0059).
+function useRecommendedTeam({ members: [first, second], withBuffs, mode }: UseTeamRequest) {
+  selectedCharacter1.value = first;
+  selectedCharacter2.value = second;
+  if (!withBuffs) return;
+  const buffs = buildRecommendedTeamBuffs({
+    teammates: [first, second].map((key) => ({
+      key,
+      copy: parseTeammateCopy(teammateCopies.value[key]),
+    })),
+    teamElements: [props.character, first, second].map(elementOf),
+    existing: storedBuffsMap.value,
+    mode,
+  });
+  void setCharacterData(props.character, { teamBuffs: { buffs } });
+}
+
 function handlePartyMember1Chosen(nextCharacter: string) {
   selectedCharacter1.value = nextCharacter;
 }

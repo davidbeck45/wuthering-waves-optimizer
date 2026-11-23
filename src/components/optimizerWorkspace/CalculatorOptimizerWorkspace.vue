@@ -21,8 +21,11 @@
         :total-crit-rate="totalCritRate"
         :total-crit-dmg="totalCritDmg"
         :energy-regen="energyRegen"
+        :current-stat-parts="currentStatParts"
         :total-combos="totalCombos"
         :optimizer-elapsed-ms="optimizerElapsedMs"
+        :results-stale="resultsStale"
+        @rerun="emit('optimizer:rerun')"
         @edit-setup="emit('optimizer:edit-setup')"></OptimizerWorkspaceResults>
     </template>
 
@@ -55,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../../utils/statDeltas";
 import { computed } from "vue";
 import { useGuideDrawer } from "../../composables/useGuideDrawer";
 import OptimizerWorkspaceSetup from "./OptimizerWorkspaceSetup.vue";
@@ -85,9 +89,11 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStatParts?: CurrentStatParts | null;
     optimizationTargetType: string;
     optimizationTargetObject: string;
     isOptimizerRunning?: boolean;
+    resultsStale?: boolean;
     optimizerSearchComplete?: boolean;
     liveBestResult?: any;
   }>(),
@@ -118,6 +124,7 @@ const emit = defineEmits<{
     loadoutFormat: OptimizerLoadoutFormat,
   ];
   "optimizer:cancel": [];
+  "optimizer:rerun": [];
   "optimizer:edit-setup": [];
 }>();
 

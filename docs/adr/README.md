@@ -71,7 +71,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0049](./0049-rotation-timeline-strip.md) (damage strip, with frame data) | calculator, components, composables, stores |
 | [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`) | calculator, components, weapons, characters |
 | [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
-| [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width) | calculator, components, stores |
+| [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width), 0060 (Attacks tab peek and expand state) | calculator, components, stores |
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | 0046 (phones: one row plus a sheet) | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) (Scanners "New" pill) | components, navigation |
@@ -96,14 +96,16 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | [0050](./0050-swapped-out-hits-still-land.md) (swap limit) | calculator, components, labs |
 | [0050](./0050-swapped-out-hits-still-land.md) | A swapped-out character's hits all land | accepted | | calculator |
 | [0051](./0051-build-vs-live-stats.md) | v3 stats show build vs live (buffs) | accepted | | calculator, components |
-| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | | calculator, components, workers, labs, team-rotations |
-| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | [0053](./0053-team-optimizer-buff-plans.md) (partly) | calculator, components, workers, labs, team-rotations |
-| [0053](./0053-team-optimizer-buff-plans.md) | Team optimizer: compare who provides which team buff | accepted | | calculator, components, labs, team-rotations |
+| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | [0053](./0053-team-optimizer-buff-plans.md) (partly), [0061](./0061-team-optimizer-rotation-as-written.md) (saving) | calculator, components, workers, labs, team-rotations |
+| [0053](./0053-team-optimizer-buff-plans.md) | Team optimizer: compare who provides which team buff | accepted | [0061](./0061-team-optimizer-rotation-as-written.md) (empty-slot teams, saving) | calculator, components, labs, team-rotations |
 | [0054](./0054-visual-info-pages-and-guides.md) | Visual Info pages and guides as shared data | accepted | | components, content |
 | [0055](./0055-in-app-guides-drawer.md) | In-app help opens guides in a drawer | accepted | | components, content |
 | [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
 | [0057](./0057-substat-roll-value.md) | Show what each substat is worth | accepted | | components, calculator |
 | [0058](./0058-per-character-filter-memory.md) | Remember picker filters per character (and the inventory's globally) | accepted | | components, composables, persistence |
+| [0059](./0059-recommended-team-typical-buffs.md) | Recommended teams turn on hand-written typical buffs | accepted | | buffs, components, labs, persistence |
+| [0060](./0060-attacks-tab-pins-and-remembered-groups.md) | Attacks tab: pinned attacks and remembered groups | accepted | | components, composables, persistence |
+| [0061](./0061-team-optimizer-rotation-as-written.md) | Team optimizer: the rotation as written, and saving only touches the team | accepted | | calculator, components, labs, team-rotations |
 
 ## When to write a new ADR
 

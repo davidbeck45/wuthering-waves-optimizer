@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col gap-4" data-test-optimizer-workspace-results>
+    <OptimizerStaleResultsAlert v-if="resultsStale" @rerun="emit('rerun')" />
     <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="text-xs font-bold uppercase tracking-wider opacity-50">
@@ -64,13 +65,16 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDmg"
       :energy-regen="energyRegen"
+      :current-stat-parts="currentStatParts"
       :target-type="targetType"
       :target-value="targetValue"></OptimizerWorkspaceSpotlight>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../../utils/statDeltas";
 import AppDeltaPercent from "../AppDeltaPercent.vue";
+import OptimizerStaleResultsAlert from "../OptimizerStaleResultsAlert.vue";
 import { computed, ref, watch } from "vue";
 import OptimizerWorkspaceSpotlight from "./OptimizerWorkspaceSpotlight.vue";
 import OptimizerWorkspaceEchoAvatarStack from "./OptimizerWorkspaceEchoAvatarStack.vue";
@@ -95,13 +99,15 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStatParts?: CurrentStatParts | null;
     totalCombos: number;
     optimizerElapsedMs: number;
+    resultsStale?: boolean;
   }>(),
   { results: () => [] },
 );
 
-const emit = defineEmits<{ "edit-setup": [] }>();
+const emit = defineEmits<{ "edit-setup": []; rerun: [] }>();
 
 type OptimizerResultRow = {
   id: string;

@@ -7,6 +7,7 @@ import { runImportFrames } from "./commands/importFrames.js";
 import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
 import { runGenerateEnemies, type EnemyGeneratorMode } from "./commands/generateEnemies.js";
 import { runBackfillIcons } from "./commands/backfillIcons.js";
+import { runEditTeamData } from "./commands/editTeamData.js";
 import { registerPlusCommands } from "../src/sim/cli/index.js"; // Wuthering Tools+
 
 function parseIdOption(value: string): number {
@@ -166,6 +167,25 @@ backfill
     try {
       await runBackfillIcons({ character: commandOptions.character });
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+const edit = program.command("edit").description("Edit hand-written data through prompts");
+
+edit
+  .command("team-data")
+  .description(
+    "Report missing Recommended teams data, then fill in teammates' typical buffs and characters' suggested teams",
+  )
+  .action(async () => {
+    try {
+      await runEditTeamData();
+    } catch (error) {
+      // Ctrl-C at a prompt: nothing unsaved is written, so just leave.
+      if (error instanceof Error && error.name === "ExitPromptError") return;
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);
       process.exit(1);

@@ -12,7 +12,10 @@
     <div v-if="optimizer.phase.value === 'loading'" class="flex justify-center py-12">
       <span class="loading loading-spinner"></span>
     </div>
-    <TeamOptimizerSetup v-else-if="optimizer.phase.value === 'setup'" :optimizer="optimizer" />
+    <TeamOptimizerSetup
+      v-else-if="optimizer.phase.value === 'setup'"
+      :optimizer="optimizer"
+      @open-team="(id) => emit('open-team', id)" />
     <TeamOptimizerRunning v-else-if="optimizer.phase.value === 'running'" :optimizer="optimizer" />
     <TeamOptimizerResults v-else :optimizer="optimizer" />
   </div>
@@ -29,7 +32,7 @@ import TeamOptimizerKeptNote from "../../sim/teamContext/TeamOptimizerKeptNote.v
 defineOptions({ name: "TeamOptimizerWorkspace" });
 
 const props = defineProps<{ teamId: string }>();
-const emit = defineEmits<{ back: [] }>();
+const emit = defineEmits<{ back: []; "open-team": [teamId: string] }>();
 
 const optimizer = useTeamOptimizer(toRef(props, "teamId"));
 

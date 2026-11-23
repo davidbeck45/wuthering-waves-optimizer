@@ -3,6 +3,7 @@
 // Upstream's team page is each character's stored Team Buffs panel. Here it is `resolveTeamCharacters`: builds by name,
 // team buffs from the real members. Everything else on plus goes through it (src/sim/README.md, "Ryan's Optimize team
 // on plus"), and his composable did not, so this is the one seam between the two.
+import { resolveCharactersForBuild } from "../../calculator/buildOverride";
 import { resolveTeamCharacters, type TeamResolution } from "./resolveTeam";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -16,6 +17,9 @@ export interface TeamPageRead {
   derived: string[];
   /** the records it would read with these builds worn (records from `characters`, with the new echoes on them) */
   withBuilds: (records: Record<string, any>) => Promise<Record<string, any>>;
+  /** the Team Buffs panel as it is stored on the build the page read for a member. His Save (ADR 0061) writes a new
+   *  build from the record the page read; for a `derived` member that record's panel is plus's, so the build takes this */
+  storedPanel: (characterId: string) => Record<string, any> | undefined;
 }
 
 export async function readTeamPage(team: any, stored: Record<string, any>, inventoryEchoes: any[], options: { auto: boolean; enemyConfig: any }): Promise<TeamPageRead> {
@@ -30,6 +34,10 @@ export async function readTeamPage(team: any, stored: Record<string, any>, inven
       const unread = { ...records };
       for (const id of derived) unread[id] = { ...records[id], teamBuffs: { ...records[id]?.teamBuffs, selectedCharacter1: null, selectedCharacter2: null } };
       return (await resolveTeamCharacters(team, unread, inventoryEchoes, options)).characters;
+    },
+    storedPanel: (characterId) => {
+      const buildId = resolution.slots.find((slot) => slot.characterId === characterId)?.buildId ?? null;
+      return resolveCharactersForBuild(stored, characterId, buildId)[characterId]?.teamBuffs;
     },
   };
 }

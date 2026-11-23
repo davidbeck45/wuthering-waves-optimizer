@@ -23,6 +23,7 @@ npm run cypress:run   # E2E headless
 npm run cli -- generate character   # or: make generate-character
 npm run cli -- generate weapon
 npm run cli -- generate echo-preset
+npm run cli -- edit team-data       # fill in Recommended teams + teammates' typical buffs (#732)
 npm run cli -- generate enemies         # --mode fill|overwrite to skip the prompt
 npm run cli -- import echoes
 npm run cli -- import frames          # per-attack frame data from wuwalab (ADR 0047); --character <Name>
@@ -54,6 +55,7 @@ npm run guides:screenshots           # recapture the guide images into guide-ima
 ## Hard rules
 
 - **Accuracy first.** Prefer correct formulas over clever shortcuts. When changing calculator math, add/update unit tests under `tests/calculator/`.
+- **Rotations are calculated as written.** Don't add rotation validation; optimizers only avoid contradicting the rotation through their own choices, and never change user data silently (see Accuracy notes in `docs/context.md`).
 - **Calculator stays pure.** No Vue, DOM, or Pinia inside `src/calculator/` or workers. Workers receive plain objects only.
 - **Stores = user input.** Character lists, echo tables, formula constants live in code modules — never in Pinia.
 - **No classes** for domain logic. Plain objects, factories, modules.

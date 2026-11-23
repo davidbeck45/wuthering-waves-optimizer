@@ -15,5 +15,9 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     signatureWeapon: "BlazingBrilliance",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    suggestedTeams: [
+      { members: ["Brant", "Lupa"], tags: ["Mono Fusion", "No healer"] },
+      { members: ["Lupa", "Shorekeeper"], tags: ["Dual DPS"] },
+    ],
   };
 }

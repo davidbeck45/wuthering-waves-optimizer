@@ -58,13 +58,62 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-22",
+    dateLabel: "November 22, 2026",
+    items: [
+      "Optimizer results now show how much each stat itself goes up or down (like -8.1% Crit Rate), plus the % and flat split for HP, ATK and DEF, next to the total change",
+      "The optimizer's stat table showed your ATK change on the stat you optimized for (HP, DEF, Crit or Energy Regen) instead of that stat's own change",
+    ],
+    itemDetails: { 0: { tag: "improvement" }, 1: { tag: "fix" } },
+  },
+  {
+    date: "2026-11-20",
+    dateLabel: "November 20, 2026",
+    items: [
+      "Recommended teams (Labs) now covers Aemeath, Brant and Calcharo, and more teammates turn on their usual buffs. New tags such as Mono Fusion, Fusion Burst and Tune Break show what kind of team you're picking",
+      "Team optimizer (Labs): saving a result now adds new builds pinned to that team only. Your active builds and other teams no longer change, and saving a second result no longer mixes in the first",
+      "Team optimizer (Labs): results now compare each character with their current build, showing every echo slot as the same or swapped (with what it replaces), the set bonuses, and why each team buff is gained or lost",
+      "Team optimizer (Labs): the main echo stays the one your rotation uses for its echo attack, and buffs you set by hand on rotation actions are left as written. You can also optimize a copy of the team without them",
+      "Team optimizer (Labs): fixed saved builds sometimes calculating a little lower on the Team page than the result showed, more reliable results for teams with an empty slot or a healer, and the page no longer freezes during long runs",
+    ],
+    itemDetails: { 0: { tag: "labs" }, 1: { tag: "labs" }, 2: { tag: "labs" }, 3: { tag: "labs" }, 4: { tag: "labs" } },
+  },
+  {
+    date: "2026-11-19",
+    dateLabel: "November 19, 2026",
+    items: [
+      "Pin attacks in the Full breakdown's Attacks tab to keep them in a Pinned list at the top, so you can watch just the attacks your character uses. Pins are saved for each resonator, and you can put the pin buttons on the left or right",
+      "The Attacks tab now remembers which categories you opened for each resonator, tags the exact attack the optimizer is targeting, and no longer shows a misleading average on closed categories",
+    ],
+    itemDetails: { 0: { tag: "feature" }, 1: { tag: "improvement" } },
+  },
+  {
+    date: "2026-11-18",
+    dateLabel: "November 18, 2026",
+    items: [
+      "New in Labs: Recommended teams on the Team Buffs tab. Pick a suggested team for your character to fill both teammate slots in one click. Only a few characters have teams so far, with more to come",
+      "Recommended teams (Labs) can now also turn on your teammates' buffs. Set each teammate's sequence and whether they have their signature weapon, and their usual echo buffs come on too",
+    ],
+    itemDetails: { 0: { tag: "labs" }, 1: { tag: "labs" } },
+  },
+  {
+    date: "2026-11-17",
+    dateLabel: "November 17, 2026",
+    items: [
+      "Optimizer results now tell you when you've changed your weapon, resonance chains, buffs or other settings since the run, keep their comparisons from before that change, and let you run it again in one click. Equipping a result still updates the comparisons",
+    ],
+    itemDetails: { 0: { tag: "improvement" } },
+  },
+  {
     date: "2026-11-16",
     dateLabel: "November 16, 2026",
     items: [
       "Dragging to reorder echoes, rotations, actions and the Wavescan loadout now shows just the item you're moving, instead of the whole screen in Chrome",
       "Sigrika's Schemata of Runes and Soliskin Vitality buffs can no longer both be on, matching the game, where each Rune consumption gets one or the other",
+      "Fixed Lily's echo preset using HP instead of Healing Bonus on its 4-cost echo, and corrected its description",
+      "Lily has a second echo preset with Energy Regen on both 3-cost echoes, by lavasnake",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" }, 2: { tag: "fix" }, 3: { tag: "content" } },
   },
   {
     date: "2026-11-15",
