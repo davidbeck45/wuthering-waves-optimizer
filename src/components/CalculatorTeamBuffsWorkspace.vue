@@ -413,6 +413,7 @@ import {
 import { getRecommendedTeams, type SuggestedTeam } from "../characters/recommendedTeams";
 import { useSettingsStore } from "../stores/settings";
 import { isRecommendedTeamsEnabled } from "../utils/labs";
+import { markTypicalPanel } from "../sim/teamContext/typicalPanel"; // Wuthering Tools+
 
 export interface PartyBuffDef {
   key: string;
@@ -851,6 +852,7 @@ function useRecommendedTeam({ members: [first, second], withBuffs, mode }: UseTe
     mode,
   });
   void setCharacterData(props.character, { teamBuffs: { buffs } });
+  markTypicalPanel(characterStore.characters[props.character]); // Wuthering Tools+: a default, so plus's teams keep deriving (src/sim/teamContext/typicalPanel.ts)
 }
 
 function handlePartyMember1Chosen(nextCharacter: string) {

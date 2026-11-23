@@ -38,6 +38,7 @@
 //     counts the Unison Boon the receiver can hold. Dream Aroma's "Removed when Lily is the incoming Resonator" says
 //     when it ends, so it is no Outro handoff: it reaches both teammates.
 // Pure/async; no Vue. Consumers: Team Rotations pages, /my-rankings, the CLI.
+import { isTypicalPanel } from "./typicalPanel";
 import { allEchoBuffs, allWeaponTeamBuffs, buffsByCharacter } from "../../buffs/index";
 import {
   buildCharacterCalculationContext,
@@ -577,7 +578,8 @@ export async function resolveTeamCharacters(
     const data = resolved[slotInfo.characterId];
     const panel = data.teamBuffs ?? {};
     const panelPicks = [panel.selectedCharacter1, panel.selectedCharacter2].filter((x): x is string => Boolean(x));
-    if (slotInfo.teammates.length && sameSet(panelPicks, slotInfo.teammates)) {
+    // a panel Recommended teams' "Use team" wrote, untouched since, is a default, not the player's (typicalPanel.ts)
+    if (slotInfo.teammates.length && sameSet(panelPicks, slotInfo.teammates) && !isTypicalPanel(panel)) {
       slotInfo.buffSource = "panel";
       slotInfo.enabled = Object.entries(panel.buffs ?? {})
         .filter(([, v]) => (v as { isEnabled?: boolean })?.isEnabled)
