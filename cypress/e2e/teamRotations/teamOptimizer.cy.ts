@@ -339,10 +339,9 @@ describe("Team optimizer", () => {
         cy.get("[data-test-team-optimizer-confirm-save]").click();
         cy.get("[data-test-team-optimizer-saved]").should("contain.text", `now calculates ${total}`);
         // Saving the same result again would add nothing: every character already matches it.
-        cy.get("[data-test-team-optimizer-save]").click();
-        cy.get("[data-test-team-optimizer-confirm-nothing]").should("be.visible");
-        cy.get("[data-test-team-optimizer-confirm-save]").should("be.disabled");
-        cy.get("[data-test-team-optimizer-confirm] .btn-ghost").click();
+        // Wuthering Tools+: plus offers no Save then and says so on the page (teamOptimizerSave.ts NOTHING_TO_SAVE)
+        cy.get("[data-test-team-optimizer-nothing-to-save]").should("be.visible");
+        cy.get("[data-test-team-optimizer-save]").should("not.exist");
 
         // The saved builds are what the team now uses.
         cy.get("[data-test-team-optimizer-back]").click();
