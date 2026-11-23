@@ -146,12 +146,19 @@ const inputs = computed(() => {
   // teammate's Energy Regen or set without touching her record
   const inventory = (inventoryStore.echoes ?? []) as any[];
   const worn = [props.character, ...pair.value].map((id) => resolveCharacterEchoes(chars[id]?.echoes, inventory));
-  return JSON.stringify([props.character, pair.value, own, chars[pair.value[0]] ?? null, chars[pair.value[1]] ?? null, worn]);
+  const team = savedTeamOf(props.character, pair.value);
+  const rotation = team ? [team.characterIds, team.buildIds ?? null, team.handoffs ?? null, team.actions ?? null] : null;
+  return JSON.stringify([props.character, pair.value, own, chars[pair.value[0]] ?? null, chars[pair.value[1]] ?? null, worn, rotation]);
 });
 
 let run = 0;
+/** The first saved team of exactly these three: its rotation and pins are how the Teams page reads them. */
+function savedTeamOf(characterId: string, mates: readonly [string, string]): any | null {
+  const trio = [characterId, ...mates].sort().join("+");
+  return ((teamStore.teams ?? []) as any[]).find((t) => (t.characterIds ?? []).filter(Boolean).sort().join("+") === trio) ?? null;
+}
 async function derive(mates: [string, string], characterId = props.character): Promise<RealPanel> {
-  return deriveRealPanel(characterId, mates, characterStore.characters as Record<string, any>, inventoryStore.echoes as any[]);
+  return deriveRealPanel(characterId, mates, characterStore.characters as Record<string, any>, inventoryStore.echoes as any[], undefined, savedTeamOf(characterId, mates));
 }
 let timer: ReturnType<typeof setTimeout> | null = null;
 watch(

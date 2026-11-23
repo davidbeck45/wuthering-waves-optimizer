@@ -112,6 +112,26 @@ describe("deriveRealPanel", { timeout: 30_000 }, () => {
     );
     expect(real.buffs).toEqual(asTeam.characters.Augusta.teamBuffs.buffs);
   });
+
+  it("reads a saved team of the three through its rotation, as the Teams page does: an Outro the rotation hands to someone else stays off (lane check-panel)", async () => {
+    const characters = roster(true);
+    // in this team's rotation Iuno hands off to Augusta, so Shorekeeper never gets Iuno's "incoming Resonator" Outro
+    const team = { characterIds: ["Augusta", "Iuno", "Shorekeeper"], buildIds: [null, null, null], handoffs: { Iuno: ["Augusta"], Augusta: ["Shorekeeper"], Shorekeeper: ["Iuno"] } };
+    const cleared = { ...characters, Shorekeeper: { ...characters.Shorekeeper, teamBuffs: { buffs: {} } } };
+    const asTeam = await resolveTeamCharacters({ ...team, enemyConfig: {} }, cleared, [], { enemyConfig: enemy });
+    expect(asTeam.characters.Shorekeeper.teamBuffs.buffs.OutroSkillFromGloomtoGleam).toBeUndefined();
+
+    const real = await deriveRealPanel("Shorekeeper", ["Iuno", "Augusta"], characters, [], enemy, team);
+    expect(real.buffs).toEqual(asTeam.characters.Shorekeeper.teamBuffs.buffs);
+    expect(real.off.find((l) => l.key === "OutroSkillFromGloomtoGleam")?.reason).toBe("Off: in your saved team's rotation, Iuno's Outro goes to Augusta.");
+    expect(real.notes.some((n) => n.includes("incoming Resonator"))).toBe(false);
+    // without a saved team of the three: the no-rotation rule, and the note that says so
+    const loose = await deriveRealPanel("Shorekeeper", ["Iuno", "Augusta"], characters, [], enemy);
+    expect(loose.buffs.OutroSkillFromGloomtoGleam?.isEnabled).toBe(true);
+    // a team of other members is no rotation for this trio
+    const other = await deriveRealPanel("Shorekeeper", ["Iuno", "Augusta"], characters, [], enemy, { ...team, characterIds: ["Carlotta", "Iuno", "Shorekeeper"] });
+    expect(other.buffs.OutroSkillFromGloomtoGleam?.isEnabled).toBe(true);
+  });
 });
 
 describe("realPanelWrite and the stamp", { timeout: 30_000 }, () => {

@@ -16,7 +16,7 @@ import { allEchoBuffs, allWeaponTeamBuffs, buffsByCharacter } from "../../buffs/
 import { getExclusiveTeamBuffKeys } from "../../buffs/teamBuffs";
 import { resolveCharacterEchoes, resolveTeamEnemyConfig, type TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { allCharactersList, getCharacterRosterDisplayName } from "../../characters/characters";
-import { isHandoff, resolveTeamCharacters, type TeamBuffEntry } from "./resolveTeam";
+import { isHandoff, resolveTeamCharacters, type TeamBuffEntry, type TeamLike } from "./resolveTeam";
 
 interface Def {
   key: string;
@@ -144,6 +144,8 @@ function offReason(raw: string, from: string, receiver: string, characters: Reco
       ? `Off: you have no build of ${name}, so ${name} is counted as S${needs[3]}; it needs S${needs[1]}.`
       : `Off: your ${name} is S${sequenceOf(characters[from])}; it needs S${needs[1]}.`;
   }
+  const handoff = /^outro handoff goes to (.+)$/.exec(raw);
+  if (handoff) return `Off: in your saved team's rotation, ${name}'s Outro goes to ${handoff[1].split(" / ").map(nameOf).join(" or ")}.`;
   const mode = /^(.+) mode; .+ is in (.+)$/.exec(raw);
   if (mode) return `Off: it belongs to ${name}'s ${mode[1]} mode, and your ${name} is in ${mode[2]}.`;
   // the Unison and add-on-tier reasons already name the receiver in plain words
@@ -160,6 +162,9 @@ export async function deriveRealPanel(
   characters: Record<string, any>,
   inventoryEchoes: any[],
   enemyConfig?: TeamEnemyConfig,
+  /** a saved team of exactly these three: its rotation says whose Outro reaches whom and its pins say which build of
+   *  each teammate plays, as the Teams page reads it ("One team, one number"); without one, the no-rotation rule */
+  savedTeam?: Pick<TeamLike, "characterIds" | "buildIds" | "actions" | "handoffs"> | null,
 ): Promise<RealPanel> {
   const own = characters[characterId] ?? {};
   // ask for a derivation: a panel that already names these two would be kept as the player's (resolveTeam.ts)
@@ -167,8 +172,20 @@ export async function deriveRealPanel(
     ...characters,
     [characterId]: { ...own, teamBuffs: { ...(own.teamBuffs ?? {}), selectedCharacter1: null, selectedCharacter2: null, buffs: {} } },
   };
+  const trio = [characterId, ...teammates].sort().join("+");
+  const team =
+    savedTeam && (savedTeam.characterIds ?? []).filter(Boolean).sort().join("+") === trio
+      ? {
+          characterIds: savedTeam.characterIds,
+          // the character's own build is the one the calculator shows, whatever the team pins for it
+          buildIds: (savedTeam.characterIds ?? []).map((id, slot) => (id === characterId ? null : (savedTeam.buildIds?.[slot] ?? null))),
+          actions: savedTeam.actions ?? null,
+          handoffs: savedTeam.handoffs ?? null,
+          enemyConfig: {},
+        }
+      : null;
   const resolution = await resolveTeamCharacters(
-    { characterIds: [characterId, ...teammates], enemyConfig: {} },
+    team ?? { characterIds: [characterId, ...teammates], enemyConfig: {} },
     asked,
     inventoryEchoes,
     { enemyConfig: enemyConfig ?? resolveTeamEnemyConfig({}) },
@@ -199,7 +216,7 @@ export async function deriveRealPanel(
     const seq = rarityOf(id) === 4 ? 6 : 0;
     notes.push(`You have no build of ${nameOf(id)}: counted as S${seq} (${rarityOf(id) === 4 ? "a 4-star" : "a 5-star"}), with the buffs of their kit and nothing from a weapon or echoes.`);
   }
-  if (handoffs.length) {
+  if (handoffs.length && !team?.actions?.length && !team?.handoffs) {
     notes.push(
       `${handoffs.join(", ")} ${handoffs.length === 1 ? "is" : "are"} worded for "the incoming Resonator": teammates picked here have no rotation that says who comes in after an Outro, so ${nameOf(characterId)} gets ${handoffs.length === 1 ? "it" : "them"}, as in a saved team with no rotation.`,
     );
