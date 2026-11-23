@@ -49,6 +49,8 @@ describe("Team buffs from your own builds", () => {
     seedTeammates(false);
     cy.window().then((win) => {
       store(win, "character").clearAllTeamBuffs("Carlotta");
+      // a weapon makes her record a build, which build history keeps versions of
+      store(win, "character").setCharacterData("Carlotta", { weapon: "TheLastDance" });
       store(win, "teamRotations").teams.push({ id: "wtp-test-team", name: "Carlotta core", characterIds: ["Carlotta", "Iuno", "Shorekeeper"], buildIds: [null, null, null], actions: [] });
     });
     cy.get('[data-test-calculator-nav="team"]').click();
@@ -75,6 +77,8 @@ describe("Team buffs from your own builds", () => {
     cy.get(`[data-test-team-buffs-buff-enabled="${S2_BUFF}"]`).should("be.checked");
     cy.get('[data-test-real-panel-status="match"]').should("exist");
     cy.window().its("localStorage").invoke("getItem", "character").should("contain", '"plusTypicalSource":"builds"');
+    // the panel before each fill is a version in build history 
+    cy.window().its("localStorage").invoke("getItem", "wtplus:buildHistory:v1:Carlotta").should("contain", '"label":"before-real-buffs"');
 
     // a change by hand is the player's: kept, and named
     cy.get(`[data-test-team-buffs-buff-enabled="${IUNO_OUTRO}"]`).uncheck({ force: true });

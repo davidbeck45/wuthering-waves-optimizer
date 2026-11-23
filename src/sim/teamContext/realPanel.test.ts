@@ -6,6 +6,8 @@ import { buildCharacterCalculationContext } from "../../calculator/buildCharacte
 import { deriveRealPanel, panelDifferences, panelNames, realPanelWrite } from "./realPanel";
 import { resolveTeamCharacters } from "./resolveTeam";
 import { isTypicalPanel, markTypicalPanel, typicalPanelSource } from "./typicalPanel";
+import { versionOf } from "../buildHistory/history";
+import { restoredRecord } from "../buildHistory/restore";
 
 const enemy = resolveTeamEnemyConfig({});
 const echo = (set: string, i: number) => ({
@@ -140,6 +142,19 @@ describe("realPanelWrite and the stamp", { timeout: 30_000 }, () => {
     expect(kept.slots[0].buffSource).toBe("panel");
     const diff = panelDifferences(fresh, characters.Augusta.teamBuffs);
     expect(diff.find((d) => d.key === "MoonlitClouds")?.says).toBe("here: on · your builds: off");
+  });
+
+  it("the version build history takes before a fill puts the old panel back on Restore", async () => {
+    const characters = roster(false);
+    const before = structuredClone(characters.Augusta.teamBuffs);
+    const version = versionOf("Augusta", characters.Augusta, [], "before-real-buffs");
+    const real = await deriveRealPanel("Augusta", ["Iuno", "Shorekeeper"], characters, [], enemy);
+    merge(characters.Augusta, { teamBuffs: realPanelWrite(real, characters.Augusta.teamBuffs) });
+    markTypicalPanel(characters.Augusta, "builds");
+    const restored = restoredRecord(characters.Augusta, version, []);
+    expect(restored.teamBuffs.buffs.MoonlitClouds).toEqual(before.buffs.MoonlitClouds);
+    expect(restored.teamBuffs.buffs.StellarSymphonyATK).toBeUndefined();
+    expect(typicalPanelSource(restored.teamBuffs)).toBeNull();
   });
 
   it("Recommended teams' stamp still reads as theirs", () => {

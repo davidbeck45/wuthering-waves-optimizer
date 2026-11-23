@@ -85,6 +85,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { deriveRealPanel, panelDifferences, realPanelWrite, type RealPanel } from "./realPanel";
 import { markTypicalPanel, typicalPanelSource } from "./typicalPanel";
+import { snapshotCharacters } from "../buildHistory/history";
 
 const props = defineProps<{ character: string }>();
 
@@ -167,6 +168,11 @@ const driftLine = computed(() => {
 });
 
 function write(next: RealPanel) {
+  // one tap can change twenty switches: the panel as it was goes into build history first, where Restore puts it back
+  snapshotCharacters([props.character], "before-real-buffs", {
+    characters: characterStore.characters as Record<string, any>,
+    echoes: (inventoryStore.echoes ?? []) as any[],
+  });
   characterStore.setCharacterData(props.character, { teamBuffs: realPanelWrite(next, panel.value) });
   markTypicalPanel((characterStore.characters as Record<string, any>)[props.character], "builds");
   real.value = next;
