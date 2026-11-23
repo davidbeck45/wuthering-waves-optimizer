@@ -211,7 +211,8 @@ describe("on Ryan's own data", () => {
   });
 
   it("names Sigrika's pair from his data and scores her three ways without touching the account", async () => {
-    const characters: Record<string, any> = { Sigrika: sigrika(), Mornye: { weapon: "StarfieldCalibrator" }, Lucilla: { weapon: "Stringmaster" } };
+    // Sigrika · Qiuyuan + Lucilla is a stock team (Mornye + Lucilla was, until Riley's 2026-11-22 table)
+    const characters: Record<string, any> = { Sigrika: sigrika(), Qiuyuan: { weapon: "EmeraldSentence" }, Lucilla: { weapon: "Stringmaster" } };
     const before = JSON.stringify(characters);
     const found = await findBuffConflicts(characters);
     expect(found).toHaveLength(1);

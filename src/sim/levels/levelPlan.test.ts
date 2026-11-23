@@ -14,7 +14,9 @@ const materials = table as unknown as MaterialsData;
 
 const characters: Record<string, any> = {
   // a main DPS partway up: level 70 ascended, weapon at 80, skills mixed, one at the top, one not saved
-  Camellya: { weapon: "RedSpring", characterLevel: "70+", talents: { basic: 6, skill: 8, forte: 6, liberation: 10 }, weapons: { RedSpring: { weaponLevel: "80", refinement: "1" } } },
+  // (Aemeath since Riley's 2026-11-22 table: Camellya's stock loops there press nothing her Normal Attack level scales,
+  // so that track read "changes nothing"; Aemeath's best loop uses all five, on the same team)
+  Aemeath: { weapon: "EverbrightPolestar", characterLevel: "70+", talents: { basic: 6, skill: 8, forte: 6, liberation: 10 }, weapons: { EverbrightPolestar: { weaponLevel: "80", refinement: "1" } } },
   // her two teammates, at the calculator's defaults (nothing saved)
   Mornye: { weapon: "StarfieldCalibrator" },
   Lynae: { weapon: "SpectrumBlaster" },
@@ -31,121 +33,121 @@ const run = (id: string, options: LevelPlanOptions = {}, data: Record<string, an
   levelPlan({ characterId: id, characters: data, inventoryEchoes: echoes, teams, rank: rankOf(id), rankingTeams: ranking.teams, materials }, { yieldToUi: false, ...options });
 const row = (plan: LevelPlan, track: string): LevelRow => plan.rows.find((r) => r.track === track)!;
 
-let camellya: LevelPlan;
+let aemeath: LevelPlan;
 
 beforeAll(async () => {
   ranking = await rankRoster(characters, echoes, [], { yieldToUi: false });
-  camellya = await run("Camellya");
+  aemeath = await run("Aemeath");
 }, 120_000);
 
 describe("each track on its own", () => {
   it("lists the tracks with something left, from the saved levels, with what each costs", () => {
-    expect(camellya.from).toBe("saved");
-    expect(camellya.startText).toBe("Level 70+ · weapon level 80 · Forte skills 6 / 8 / 6 / 10 / 10");
-    expect(camellya.done).toBe(false);
-    expect(camellya.noGain).toBeNull();
-    expect(camellya.errors).toEqual([]);
-    expect(camellya.rows.map((r) => r.label).sort()).toEqual(["Forte Circuit 6 → 10", "Level 70+ → 90", "Normal Attack 6 → 10", "Resonance Skill 8 → 10", "Weapon level 80 → 90"]);
-    expect(row(camellya, "skill").cost.credits).toBe(70_000 + 100_000);
-    expect(row(camellya, "level").cost.ascensions).toBe(1);
-    expect(camellya.rotation!.name).toBe(rankOf("Camellya")!.best!.name);
-    expect(assumedWords(camellya.today!)).toBe("Intro Skill level"); // the one value the calculator has not saved
-    const some = levelsToday(materials, savedProgressOf({ weapon: "RedSpring", characterLevel: "80", talents: { basic: 6, forte: 6, liberation: 6 } }));
+    expect(aemeath.from).toBe("saved");
+    expect(aemeath.startText).toBe("Level 70+ · weapon level 80 · Forte skills 6 / 8 / 6 / 10 / 10");
+    expect(aemeath.done).toBe(false);
+    expect(aemeath.noGain).toBeNull();
+    expect(aemeath.errors).toEqual([]);
+    expect(aemeath.rows.map((r) => r.label).sort()).toEqual(["Forte Circuit 6 → 10", "Level 70+ → 90", "Normal Attack 6 → 10", "Resonance Skill 8 → 10", "Weapon level 80 → 90"]);
+    expect(row(aemeath, "skill").cost.credits).toBe(70_000 + 100_000);
+    expect(row(aemeath, "level").cost.ascensions).toBe(1);
+    expect(aemeath.rotation!.name).toBe(rankOf("Aemeath")!.best!.name);
+    expect(assumedWords(aemeath.today!)).toBe("Intro Skill level"); // the one value the calculator has not saved
+    const some = levelsToday(materials, savedProgressOf({ weapon: "EverbrightPolestar", characterLevel: "80", talents: { basic: 6, forte: 6, liberation: 6 } }));
     expect(assumedWords(some)).toBe("weapon level or Resonance Skill and Intro Skill levels");
   });
 
   it("a row's own gain is the engine's damage at the new level against today's, on the ranking's best rotation", async () => {
-    const rank = rankOf("Camellya")!;
+    const rank = rankOf("Aemeath")!;
     // today's figure is the ranking's own
-    expect(camellya.base!.damage).toBe(rank.best!.avgDamage);
-    for (const r of camellya.rows) {
-      const hypo = { ...characters, Camellya: withLevels(characters.Camellya, r.next, 90) };
-      const after = (await scoreRotation(rank.bestRotation!, "Camellya", hypo, RANKING_ENEMY, echoes)).avgDamage;
+    expect(aemeath.base!.damage).toBe(rank.best!.avgDamage);
+    for (const r of aemeath.rows) {
+      const hypo = { ...characters, Aemeath: withLevels(characters.Aemeath, r.next, 90) };
+      const after = (await scoreRotation(rank.bestRotation!, "Aemeath", hypo, RANKING_ENEMY, echoes)).avgDamage;
       expect(r.own, r.label).toEqual({ base: rank.best!.avgDamage, after, gain: after / rank.best!.avgDamage - 1 });
       expect(r.own!.gain, r.label).toBeGreaterThan(0);
     }
     // and one by hand: the weapon's last ten levels are the record with only `weaponLevel` changed
-    const byHand = { ...characters, Camellya: { ...characters.Camellya, weapons: { RedSpring: { weaponLevel: "90", refinement: "1" } } } };
-    expect(row(camellya, "weapon").own!.after).toBe((await scoreRotation(rank.bestRotation!, "Camellya", byHand, RANKING_ENEMY, echoes)).avgDamage);
+    const byHand = { ...characters, Aemeath: { ...characters.Aemeath, weapons: { EverbrightPolestar: { weaponLevel: "90", refinement: "1" } } } };
+    expect(row(aemeath, "weapon").own!.after).toBe((await scoreRotation(rank.bestRotation!, "Aemeath", byHand, RANKING_ENEMY, echoes)).avgDamage);
   }, 60_000);
 
   it("a row's team gain is the ranking's team scorer on the strongest team she can field, with her levelled", async () => {
-    const best = bestFieldableTeam(ranking.teams, "Camellya")!;
-    expect(camellya.team).toMatchObject({ id: best.id, name: best.name, base: best.avgDamage });
-    expect(camellya.team!.characterIds).toContain("Camellya");
+    const best = bestFieldableTeam(ranking.teams, "Aemeath")!;
+    expect(aemeath.team).toMatchObject({ id: best.id, name: best.name, base: best.avgDamage });
+    expect(aemeath.team!.characterIds).toContain("Aemeath");
     const candidate = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === best.id)!;
-    for (const r of camellya.rows) {
-      const hypo = { ...characters, Camellya: withLevels(characters.Camellya, r.next, 90) };
+    for (const r of aemeath.rows) {
+      const hypo = { ...characters, Aemeath: withLevels(characters.Aemeath, r.next, 90) };
       const after = (await scoreTeamCandidate(candidate, hypo, echoes)).avgDamage;
       expect(r.team, r.label).toMatchObject({ teamId: best.id, base: best.avgDamage, avgDamage: after, gain: after / best.avgDamage - 1 });
       expect(r.teamNote).toBeNull();
     }
-    expect(camellya.basis).toBe("team");
+    expect(aemeath.basis).toBe("team");
     // the biggest team gain first
-    const gains = camellya.rows.filter((r) => !r.inert).map((r) => r.team!.gain);
+    const gains = aemeath.rows.filter((r) => !r.inert).map((r) => r.team!.gain);
     expect(gains).toEqual([...gains].sort((a, b) => b - a));
   }, 60_000);
 
   it("everything together is the build at the top, and costs what the rows cost", async () => {
-    const rank = rankOf("Camellya")!;
-    const today = levelsToday(materials, savedProgressOf(characters.Camellya));
-    const top = { ...characters, Camellya: withLevels(characters.Camellya, topState(today, today.state), 90) };
-    const after = (await scoreRotation(rank.bestRotation!, "Camellya", top, RANKING_ENEMY, echoes)).avgDamage;
-    expect(camellya.everything!.own!.after).toBe(after);
-    expect(camellya.everything!.cost.credits).toBe(camellya.rows.reduce((n, r) => n + r.cost.credits, 0));
+    const rank = rankOf("Aemeath")!;
+    const today = levelsToday(materials, savedProgressOf(characters.Aemeath));
+    const top = { ...characters, Aemeath: withLevels(characters.Aemeath, topState(today, today.state), 90) };
+    const after = (await scoreRotation(rank.bestRotation!, "Aemeath", top, RANKING_ENEMY, echoes)).avgDamage;
+    expect(aemeath.everything!.own!.after).toBe(after);
+    expect(aemeath.everything!.cost.credits).toBe(aemeath.rows.reduce((n, r) => n + r.cost.credits, 0));
     // level-ups multiply: together they are worth more than the sum of each alone
-    expect(camellya.everything!.own!.gain).toBeGreaterThan(camellya.rows.reduce((n, r) => n + r.own!.gain, 0));
+    expect(aemeath.everything!.own!.gain).toBeGreaterThan(aemeath.rows.reduce((n, r) => n + r.own!.gain, 0));
   });
 });
 
 describe("level in this order", () => {
   it("walks every step to the top, each scored from the one before it", () => {
-    expect(camellya.pathState).toBe("complete");
-    expect(camellya.pathOrder).toBe("value");
+    expect(aemeath.pathState).toBe("complete");
+    expect(aemeath.pathOrder).toBe("value");
     // 2 level caps (70+ → 80 → 90) + 1 weapon cap + Normal Attack 4 + Resonance Skill 2 + Forte Circuit 4
-    expect(camellya.path).toHaveLength(13);
-    expect(camellya.path.map((s) => s.index)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
-    expect(camellya.path.filter((s) => s.track === "level").map((s) => s.label)).toEqual(["Level 70+ → 80", "Level 80 → 90"]);
-    expect(camellya.path[0]!.own!.base).toBe(camellya.base!.damage);
-    for (let i = 1; i < camellya.path.length; i++) {
-      expect(camellya.path[i]!.own!.base).toBe(camellya.path[i - 1]!.own!.after);
-      expect(camellya.path[i]!.team!.base).toBe(camellya.path[i - 1]!.team!.avgDamage);
+    expect(aemeath.path).toHaveLength(13);
+    expect(aemeath.path.map((s) => s.index)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    expect(aemeath.path.filter((s) => s.track === "level").map((s) => s.label)).toEqual(["Level 70+ → 80", "Level 80 → 90"]);
+    expect(aemeath.path[0]!.own!.base).toBe(aemeath.base!.damage);
+    for (let i = 1; i < aemeath.path.length; i++) {
+      expect(aemeath.path[i]!.own!.base).toBe(aemeath.path[i - 1]!.own!.after);
+      expect(aemeath.path[i]!.team!.base).toBe(aemeath.path[i - 1]!.team!.avgDamage);
     }
-    const today = levelsToday(materials, savedProgressOf(characters.Camellya));
-    expect(camellya.path.at(-1)!.next).toEqual(topState(today, today.state));
+    const today = levelsToday(materials, savedProgressOf(characters.Aemeath));
+    expect(aemeath.path.at(-1)!.next).toEqual(topState(today, today.state));
   });
 
   it("the running total is the damage with all the steps so far applied, and the cost of those steps", async () => {
-    const rank = rankOf("Camellya")!;
-    const best = bestFieldableTeam(ranking.teams, "Camellya")!;
+    const rank = rankOf("Aemeath")!;
+    const best = bestFieldableTeam(ranking.teams, "Aemeath")!;
     const candidate = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === best.id)!;
-    for (const step of camellya.path) {
-      const hypo = { ...characters, Camellya: withLevels(characters.Camellya, step.next, 90) };
-      const own = (await scoreRotation(rank.bestRotation!, "Camellya", hypo, RANKING_ENEMY, echoes)).avgDamage;
+    for (const step of aemeath.path) {
+      const hypo = { ...characters, Aemeath: withLevels(characters.Aemeath, step.next, 90) };
+      const own = (await scoreRotation(rank.bestRotation!, "Aemeath", hypo, RANKING_ENEMY, echoes)).avgDamage;
       const team = (await scoreTeamCandidate(candidate, hypo, echoes)).avgDamage;
-      expect(step.running.gain, step.label).toBe(own / camellya.base!.damage - 1);
+      expect(step.running.gain, step.label).toBe(own / aemeath.base!.damage - 1);
       expect(step.running.teamGain, step.label).toBe(team / best.avgDamage - 1);
-      expect(step.running.cost).toEqual(sumCosts(materials, camellya.path.slice(0, step.index).map((s) => s.cost)));
+      expect(step.running.cost).toEqual(sumCosts(materials, aemeath.path.slice(0, step.index).map((s) => s.cost)));
     }
     // the last running total is "everything"
-    const last = camellya.path.at(-1)!;
-    expect(last.running.gain).toBe(camellya.everything!.own!.gain);
-    expect(last.running.teamGain).toBe(camellya.everything!.team!.gain);
-    expect(last.running.cost.credits).toBe(camellya.everything!.cost.credits);
+    const last = aemeath.path.at(-1)!;
+    expect(last.running.gain).toBe(aemeath.everything!.own!.gain);
+    expect(last.running.teamGain).toBe(aemeath.everything!.team!.gain);
+    expect(last.running.cost.credits).toBe(aemeath.everything!.cost.credits);
   }, 60_000);
 
   it("takes at each point the step that adds the most team damage per Shell Credit", async () => {
-    const today = levelsToday(materials, savedProgressOf(characters.Camellya));
-    const best = bestFieldableTeam(ranking.teams, "Camellya")!;
+    const today = levelsToday(materials, savedProgressOf(characters.Aemeath));
+    const best = bestFieldableTeam(ranking.teams, "Aemeath")!;
     const candidate = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === best.id)!;
     let state = today.state;
     let teamBase = best.avgDamage;
-    for (const taken of camellya.path.slice(0, 4)) {
+    for (const taken of aemeath.path.slice(0, 4)) {
       const values: Array<{ label: string; value: number }> = [];
       for (const { key } of TRACKS) {
-        const step = nextStep(materials, "Camellya", today, state, key);
+        const step = nextStep(materials, "Aemeath", today, state, key);
         if (!step) continue;
-        const after = (await scoreTeamCandidate(candidate, { ...characters, Camellya: withLevels(characters.Camellya, step.next, 90) }, echoes)).avgDamage;
+        const after = (await scoreTeamCandidate(candidate, { ...characters, Aemeath: withLevels(characters.Aemeath, step.next, 90) }, echoes)).avgDamage;
         values.push({ label: step.label, value: (after / teamBase - 1) / step.cost.credits });
       }
       values.sort((a, b) => b.value - a.value);
@@ -154,49 +156,49 @@ describe("level in this order", () => {
       teamBase = taken.team!.avgDamage;
     }
     // a cheap Forte level comes before the ten-level weapon step that adds more in one go
-    expect(camellya.path[0]!.track).not.toBe("weapon");
-    expect(camellya.path[0]!.cost.credits).toBeLessThan(row(camellya, "weapon").cost.credits);
+    expect(aemeath.path[0]!.track).not.toBe("weapon");
+    expect(aemeath.path[0]!.cost.credits).toBeLessThan(row(aemeath, "weapon").cost.credits);
   }, 60_000);
 
   it("ordered by the biggest gain instead, the first step is the row with the most to give at its next step", async () => {
-    const byGain = await run("Camellya", { pathOrder: "gain" });
+    const byGain = await run("Aemeath", { pathOrder: "gain" });
     expect(byGain.pathOrder).toBe("gain");
     expect(byGain.path).toHaveLength(13);
     const first = byGain.path[0]!;
     // whatever the order, the end is the same build and the same bill
-    expect(byGain.path.at(-1)!.running.gain).toBeCloseTo(camellya.path.at(-1)!.running.gain!, 12);
-    expect(byGain.path.at(-1)!.running.cost.credits).toBe(camellya.path.at(-1)!.running.cost.credits);
+    expect(byGain.path.at(-1)!.running.gain).toBeCloseTo(aemeath.path.at(-1)!.running.gain!, 12);
+    expect(byGain.path.at(-1)!.running.cost.credits).toBe(aemeath.path.at(-1)!.running.cost.credits);
     // the biggest single team gain among the seven tracks' next steps
-    const today = levelsToday(materials, savedProgressOf(characters.Camellya));
-    const best = bestFieldableTeam(ranking.teams, "Camellya")!;
+    const today = levelsToday(materials, savedProgressOf(characters.Aemeath));
+    const best = bestFieldableTeam(ranking.teams, "Aemeath")!;
     const candidate = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === best.id)!;
     let top = { label: "", gain: -1 };
     for (const { key } of TRACKS) {
-      const step = nextStep(materials, "Camellya", today, today.state, key);
+      const step = nextStep(materials, "Aemeath", today, today.state, key);
       if (!step) continue;
-      const after = (await scoreTeamCandidate(candidate, { ...characters, Camellya: withLevels(characters.Camellya, step.next, 90) }, echoes)).avgDamage;
+      const after = (await scoreTeamCandidate(candidate, { ...characters, Aemeath: withLevels(characters.Aemeath, step.next, 90) }, echoes)).avgDamage;
       if (after / best.avgDamage - 1 > top.gain) top = { label: step.label, gain: after / best.avgDamage - 1 };
     }
     expect(first.label).toBe(top.label);
   }, 60_000);
 
   it("headlines the first steps on the basis the list is ordered by", () => {
-    const head = pathHeadline(camellya)!;
-    expect(head).toEqual({ steps: 3, gain: camellya.path[2]!.running.teamGain, basis: "team", credits: camellya.path[2]!.running.cost.credits });
+    const head = pathHeadline(aemeath)!;
+    expect(head).toEqual({ steps: 3, gain: aemeath.path[2]!.running.teamGain, basis: "team", credits: aemeath.path[2]!.running.cost.credits });
     expect(pathHeadline({ path: [], basis: "team" })).toBeNull();
-    expect(pathHeadline({ path: camellya.path.slice(0, 2), basis: "own" })).toMatchObject({ steps: 2, gain: camellya.path[1]!.running.gain });
+    expect(pathHeadline({ path: aemeath.path.slice(0, 2), basis: "own" })).toMatchObject({ steps: 2, gain: aemeath.path[1]!.running.gain });
   });
 
   it("stops when told to, and says so", async () => {
     const signal = { cancelled: false };
-    const plan = await run("Camellya", { signal, onProgress: (p) => (signal.cancelled = p.path.length >= 2) });
+    const plan = await run("Aemeath", { signal, onProgress: (p) => (signal.cancelled = p.path.length >= 2) });
     expect(plan.pathState).toBe("cancelled");
     expect(plan.path).toHaveLength(2);
     expect(plan.rows).toHaveLength(5); // the list was already in
-    const capped = await run("Camellya", { maxPathSteps: 3 });
+    const capped = await run("Aemeath", { maxPathSteps: 3 });
     expect(capped.pathState).toBe("capped");
     expect(capped.path).toHaveLength(3);
-    const none = await run("Camellya", { path: false });
+    const none = await run("Aemeath", { path: false });
     expect(none.pathState).toBe("none");
     expect(none.rows).toHaveLength(5);
   }, 60_000);
@@ -244,8 +246,8 @@ describe("the edges", () => {
   });
 
   it("no rotation to score on: says so and keeps the costs", async () => {
-    const plan = await levelPlan({ characterId: "Camellya", characters, inventoryEchoes: echoes, teams: [], rank: { best: null, bestRotation: null }, rankingTeams: ranking.teams, materials }, { yieldToUi: false });
-    expect(plan.noGain).toMatch(/^there is no rotation to score Camellya on/);
+    const plan = await levelPlan({ characterId: "Aemeath", characters, inventoryEchoes: echoes, teams: [], rank: { best: null, bestRotation: null }, rankingTeams: ranking.teams, materials }, { yieldToUi: false });
+    expect(plan.noGain).toMatch(/^there is no rotation to score Aemeath on/);
     expect(plan.rows).toHaveLength(5);
     expect(plan.rows.every((r) => r.own === null)).toBe(true);
     expect(plan.rotation).toBeNull();
@@ -253,10 +255,10 @@ describe("the edges", () => {
 
   it("a rotation that scores no damage on the build: says so, and keeps the costs", async () => {
     // actions the kit does not have (a rotation written for another version of the character): nothing resolves
-    const rank = rankOf("Camellya")!;
+    const rank = rankOf("Aemeath")!;
     const empty = { ...rank.bestRotation!, actions: [{ id: "x1", key: "NoSuchAttackDMG", type: "basic", count: 1, buffs: [] }] };
-    const plan = await levelPlan({ characterId: "Camellya", characters, inventoryEchoes: echoes, teams: [], rank: { best: { ...rank.best!, name: "Old loop" }, bestRotation: empty }, rankingTeams: ranking.teams, materials }, { yieldToUi: false });
-    expect(plan.noGain).toBe("Camellya's best rotation scores no damage on this build");
+    const plan = await levelPlan({ characterId: "Aemeath", characters, inventoryEchoes: echoes, teams: [], rank: { best: { ...rank.best!, name: "Old loop" }, bestRotation: empty }, rankingTeams: ranking.teams, materials }, { yieldToUi: false });
+    expect(plan.noGain).toBe("Aemeath's best rotation scores no damage on this build");
     expect(plan.base).toBeNull();
     expect(plan.rows).toHaveLength(5);
     expect(plan.rows.every((r) => r.own === null && r.cost.credits > 0)).toBe(true);
@@ -265,12 +267,12 @@ describe("the edges", () => {
   });
 
   it("a skill the rotation never uses is called that, with the rotation's name, and is left out of the path", async () => {
-    const rank = rankOf("Camellya")!;
+    const rank = rankOf("Aemeath")!;
     // the same rotation without its Forte Circuit actions
     const trimmed = { ...rank.bestRotation!, actions: rank.bestRotation!.actions.filter((a) => a.type !== "forteCircuit") };
     expect(trimmed.actions.length).toBeLessThan(rank.bestRotation!.actions.length);
     const plan = await levelPlan(
-      { characterId: "Camellya", characters, inventoryEchoes: echoes, teams: [], rank: { best: { ...rank.best!, name: "No Forte loop" }, bestRotation: trimmed }, rankingTeams: [], materials },
+      { characterId: "Aemeath", characters, inventoryEchoes: echoes, teams: [], rank: { best: { ...rank.best!, name: "No Forte loop" }, bestRotation: trimmed }, rankingTeams: [], materials },
       { yieldToUi: false },
     );
     const forte = row(plan, "forte");
@@ -323,39 +325,39 @@ describe("the edges", () => {
   });
 
   it("the team pins another build: level and Forte keep an exact team figure, the weapon step has none and says why", async () => {
-    const preset = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === bestFieldableTeam(ranking.teams, "Camellya")!.id)!;
-    const slot = preset.team.characterIds.indexOf("Camellya");
+    const preset = (await teamCandidatesOf(characters, [])).candidates.find((c) => c.id === bestFieldableTeam(ranking.teams, "Aemeath")!.id)!;
+    const slot = preset.team.characterIds.indexOf("Aemeath");
     // her active build, and a second saved build the team is pinned to: the same weapon at its last level, so the
     // saved team outscores the preset and is the strongest team she can field (the one the drawer measures on)
     const built = {
-      ...characters.Camellya,
+      ...characters.Aemeath,
       activeBuildId: "active",
       builds: [
-        { id: "active", name: "Default build", weapon: "RedSpring", weapons: { RedSpring: { weaponLevel: "80", refinement: "1" } } },
-        { id: "other", name: "Team build", weapon: "RedSpring", weapons: { RedSpring: { weaponLevel: "90", refinement: "1" } } },
+        { id: "active", name: "Default build", weapon: "EverbrightPolestar", weapons: { EverbrightPolestar: { weaponLevel: "80", refinement: "1" } } },
+        { id: "other", name: "Team build", weapon: "EverbrightPolestar", weapons: { EverbrightPolestar: { weaponLevel: "90", refinement: "1" } } },
       ],
     };
-    const data = { ...characters, Camellya: built };
-    const team = { id: "mine", name: "My Camellya team", characterIds: preset.team.characterIds, buildIds: preset.team.characterIds.map((_, i) => (i === slot ? "other" : null)), actions: preset.team.actions, duration: preset.team.duration, handoffs: preset.team.handoffs ?? null };
+    const data = { ...characters, Aemeath: built };
+    const team = { id: "mine", name: "My Aemeath team", characterIds: preset.team.characterIds, buildIds: preset.team.characterIds.map((_, i) => (i === slot ? "other" : null)), actions: preset.team.actions, duration: preset.team.duration, handoffs: preset.team.handoffs ?? null };
     const pinnedRanking = await rankRoster(data, echoes, [team], { yieldToUi: false });
-    expect(bestFieldableTeam(pinnedRanking.teams, "Camellya")!.id).toBe("mine");
-    const input = { characterId: "Camellya", characters: data, inventoryEchoes: echoes, teams: [team], rank: pinnedRanking.characters.find((c) => c.id === "Camellya")!, rankingTeams: pinnedRanking.teams, materials };
+    expect(bestFieldableTeam(pinnedRanking.teams, "Aemeath")!.id).toBe("mine");
+    const input = { characterId: "Aemeath", characters: data, inventoryEchoes: echoes, teams: [team], rank: pinnedRanking.characters.find((c) => c.id === "Aemeath")!, rankingTeams: pinnedRanking.teams, materials };
     const plan = await levelPlan(input, { yieldToUi: false });
     // asked for by name, the same team gives the same plan
     const named = await levelPlan(input, { yieldToUi: false, teamId: "mine", path: false });
     expect(named.rows.map((r) => [r.label, r.team?.gain ?? null])).toEqual(plan.rows.map((r) => [r.label, r.team?.gain ?? null]));
-    expect(plan.team).toMatchObject({ id: "mine", name: "My Camellya team" });
-    expect(plan.buildNote).toMatch(/^the team runs Camellya's "Team build" build\. Level and Forte levels are shared by every build/);
+    expect(plan.team).toMatchObject({ id: "mine", name: "My Aemeath team" });
+    expect(plan.buildNote).toMatch(/^the team runs Aemeath's "Team build" build\. Level and Forte levels are shared by every build/);
     const weapon = row(plan, "weapon");
     expect(weapon.team).toBeNull();
-    expect(weapon.teamNote).toBe('the team runs Camellya\'s "Team build" build');
+    expect(weapon.teamNote).toBe('the team runs Aemeath\'s "Team build" build');
     expect(weapon.own!.gain).toBeGreaterThan(0); // her own figure is the active build's
     // level and Forte: the team figure is the pinned team re-scored with the shared fields changed
     const mine = (await teamCandidatesOf(data, [team])).candidates.find((c) => c.id === "mine")!;
     const base = (await scoreTeamCandidate(mine, data, echoes)).avgDamage;
     expect(plan.team!.base).toBe(base);
     for (const r of plan.rows.filter((x) => x.track !== "weapon")) {
-      const after = (await scoreTeamCandidate(mine, { ...data, Camellya: withLevels(built, r.next, 90) }, echoes)).avgDamage;
+      const after = (await scoreTeamCandidate(mine, { ...data, Aemeath: withLevels(built, r.next, 90) }, echoes)).avgDamage;
       expect(r.team, r.label).toMatchObject({ teamId: "mine", base, avgDamage: after });
       expect(after).toBeGreaterThanOrEqual(base); // a skill the team's rotation never uses moves the team by nothing
     }
@@ -365,21 +367,21 @@ describe("the edges", () => {
     // "everything" for the team leaves the weapon step out, since the team's build does not carry it
     const today = levelsToday(materials, savedProgressOf(built));
     const top = topState(today, today.state);
-    const everything = (await scoreTeamCandidate(mine, { ...data, Camellya: withLevels(built, { ...top, weapon: today.state.weapon }, 90) }, echoes)).avgDamage;
+    const everything = (await scoreTeamCandidate(mine, { ...data, Aemeath: withLevels(built, { ...top, weapon: today.state.weapon }, 90) }, echoes)).avgDamage;
     expect(plan.everything!.team!.avgDamage).toBe(everything);
   }, 120_000);
 
   it("a team the character is not in, or one that cannot be fielded, gives no team figure and the reason", async () => {
-    const plan = await run("Camellya", { teamId: "curated:nope", path: false });
+    const plan = await run("Aemeath", { teamId: "curated:nope", path: false });
     expect(plan.team).toBeNull();
-    expect(plan.teamNote).toBe("Camellya is not in that team");
+    expect(plan.teamNote).toBe("Aemeath is not in that team");
     expect(plan.rows.every((r) => r.own !== null && r.team === null)).toBe(true);
   });
 
   it("a character the cost table has no entry for is left unfilled", async () => {
     const without = { ...materials, characters: { ...materials.characters } };
-    delete (without.characters as Record<string, unknown>).Camellya;
-    const plan = await levelPlan({ characterId: "Camellya", characters, inventoryEchoes: echoes, teams: [], rank: rankOf("Camellya"), rankingTeams: ranking.teams, materials: without }, { yieldToUi: false });
+    delete (without.characters as Record<string, unknown>).Aemeath;
+    const plan = await levelPlan({ characterId: "Aemeath", characters, inventoryEchoes: echoes, teams: [], rank: rankOf("Aemeath"), rankingTeams: ranking.teams, materials: without }, { yieldToUi: false });
     expect(plan.today).toBeNull();
     expect(plan.rows).toEqual([]);
     expect(plan.table.gameVersion).toBe(materials.gameVersion);
