@@ -14,6 +14,7 @@ import { appKeyOf, rileyNameOf } from "../rankings/rileyNames";
 import { loadSequenceBreakpoints } from "../presets";
 import {
   differsText,
+  weaponKindLabel,
   unmetText,
   COST_CODE,
   changeScope,
@@ -80,6 +81,19 @@ describe("kit briefs (generated data)", () => {
     // Lily's four Basic Attack stages were the 3.8 beta's until Riley's 7b4acd0 (2026-11-21); his kit is the released
     // game's now, so no stock loop lists a value that differs and no brief carries the warning
     expect(kits.filter((k) => k.differs?.rows.length).map((k) => k.name)).toEqual([]);
+  });
+
+  it("names a weapon's kind by its rarity: signature, standard 5★ or 4★", () => {
+    // Riley's table tags every non-signature weapon alike since his e7a10a9 (2026-11-22), the craftable 4★ too; the
+    // export reads the star rarity off the weapon's Lv90 base ATK, so Cadenza reads 4★ and Static Mist standard 5★
+    expect(file.kits.Lily!.loadouts[0]!.weapons.map((w) => [w.name, w.kind, weaponKindLabel(w.kind)])).toEqual([
+      ["Lullaby", "Limited", "signature"],
+      ["Cadenza", "Free", "4★"],
+      ["Static Mist", "Standard", "standard 5★"],
+    ]);
+    const kinds = new Map(kits.flatMap((k) => k.loadouts.flatMap((l) => l.weapons.map((w) => [w.name, w.kind] as const))));
+    for (const name of ["Variation", "Lumingloss", "Augment", "Marcato", "Overture", "Discord"]) expect(kinds.get(name), name).toBe("Free");
+    for (const name of ["Emerald of Genesis", "Cosmic Ripples", "Abyss Surges"]) expect(kinds.get(name), name).toBe("Standard");
   });
 
   it("the index and the briefs name the same resonators, with the same facts", () => {
