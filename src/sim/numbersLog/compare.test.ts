@@ -252,6 +252,15 @@ describe("the cause", () => {
     expect(say(move(c, "t-mine"))).toBe("An app update: no build in it changed.");
   });
 
+  it("never blames a renamed build: its name is not part of what is scored", () => {
+    const acc = account();
+    acc.characters.Aaa.builds[0].name = "Main DPS";
+    acc.characters.Aaa.builds[1].name = "Sub DPS for the Lupa team";
+    const c = compareEntries(entry(), entry({ Aaa: 1_010_000, mine: 2_010_000 }, acc, T0 + DAY, NEXT_BUILD));
+    expect(say(move(c, "Aaa"))).toBe("An app update: no build in it changed.");
+    expect(say(move(c, "t-mine"))).toBe("An app update: no build in it changed.");
+  });
+
   it("a Settings import between the two is one fact for the whole comparison, and no row says 'you'", () => {
     const acc = account();
     acc.characters.Aaa.echoes[1] = { echoId: "e9" };

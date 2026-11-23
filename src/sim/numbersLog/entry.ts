@@ -57,6 +57,8 @@ const pick = (record: Record<string, any>, fields: readonly string[]): Record<st
 export function buildSignature(characterData: Record<string, any> | null | undefined, index: ReadonlyMap<string, unknown>): BuildSig {
   const scored = (scoredCharacters({ c: characterData ?? {} }) as { c: Record<string, any> }).c ?? {};
   const record = withoutBookkeeping(scored) as Record<string, any>;
+  // a saved build's name is what the player calls it, never scored: a rename is not a change of the build (2026-11-23)
+  if (Array.isArray(record.builds)) record.builds = (record.builds as Array<Record<string, any>>).map((b) => (b && typeof b === "object" ? Object.fromEntries(Object.entries(b).filter(([k]) => k !== "name")) : b));
   const weapon: string | null = record.weapon ? String(record.weapon) : null;
   const rest = Object.fromEntries(Object.entries(record).filter(([k]) => !OTHER_SKIPS.has(k)));
   const builds = Array.isArray(record.builds) ? (record.builds as Array<Record<string, any>>) : [];
