@@ -14,7 +14,8 @@ const FORMS = [
   { element: "Aero", female: "RoverAeroFemale", male: "RoverAeroMale", loops: true, teams: false },
   { element: "Electro", female: "Roverelectrofemale", male: "Roverelectromale", loops: true, teams: true },
   { element: "Spectro", female: "RoverSpectroFemale", male: "RoverSpectroMale", loops: true, teams: true },
-  { element: "Havoc", female: "RoverHavocFemale", male: "RoverHavocMale", loops: false, teams: false },
+  // Havoc: none until Riley's 2026-11-22 table, which fields her (Red Spring, Mornye + Lynae; six stock teams)
+  { element: "Havoc", female: "RoverHavocFemale", male: "RoverHavocMale", loops: true, teams: true },
 ] as const;
 
 const SWORD = "BloodpactsPledge";

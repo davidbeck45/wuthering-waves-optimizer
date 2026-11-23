@@ -208,8 +208,9 @@ describe("commands (paletteCommands.ts)", () => {
     expect(items.some((i) => i.group === "context")).toBe(false);
     const titles = commands.map((c) => c.title);
     expect(titles).toEqual(expect.arrayContaining(["Share Aemeath's build", "Weapon value: Aemeath", "Substats & what-if: Mornye", "Rotation cue card: Aemeath + Mornye + Lynae", "Build from my echoes: Aemeath + Mornye + Lynae", "Energy check: Aemeath + Mornye + Lynae", "Share team: Aemeath + Mornye + Lynae", "ToA clear check for my teams", "Which selector pick is best for me?", "Turn team-aware buffs off"]));
-    // not set up (Rover, Yangyang) and a two-member team get none
-    expect(titles.some((t) => /Rover|Yangyang|Two only/.test(t))).toBe(false);
+    // not set up (Rover, Yangyang) and a two-member team get none; a kit brief is offered set up or not (below), and
+    // Yangyang has one since Riley's 2026-11-21 kits
+    expect(titles.filter((t) => !t.startsWith("Kit brief: ")).some((t) => /Rover|Yangyang|Two only/.test(t))).toBe(false);
     expect(commands.find((c) => c.title === "Weapon value: Aemeath")?.run).toEqual({ kind: "route", path: "/weapons?focus=Aemeath" });
     expect(commands.find((c) => c.title === "Substats & what-if: Aemeath")?.run).toEqual({ kind: "route", path: "/my-rankings?focus=Aemeath&tab=substats" });
     expect(commands.find((c) => c.title.startsWith("Rotation cue card"))?.run).toEqual({ kind: "route", path: "/rotation#chars=Aemeath,Mornye,Lynae" });
@@ -360,7 +361,8 @@ describe("kit brief commands", () => {
           { key: "Aemeath", name: "Aemeath", rarity: 5, element: "Fusion", weapon: "Sword", setUp: true, sequence: 6 },
           { key: "Jiyan", name: "Jiyan", rarity: 5, element: "Aero", weapon: "Broadblade", setUp: false },
           { key: "RoverAeroMale", name: "Rover Aero (Male)", rarity: 5, element: "Aero", weapon: "Sword", setUp: false },
-          { key: "Yangyang", name: "Yangyang", rarity: 4, element: "Aero", weapon: "Sword", setUp: false }, // no kit in Riley's engine
+          { key: "Yangyang", name: "Yangyang", rarity: 4, element: "Aero", weapon: "Sword", setUp: false }, // a kit since his 2026-11-21 update
+          { key: "Chixia", name: "Chixia", rarity: 4, element: "Fusion", weapon: "Pistols", setUp: false }, // no kit in Riley's engine
         ],
       }),
     );
@@ -368,7 +370,8 @@ describe("kit brief commands", () => {
     expect(kit("Aemeath")).toMatchObject({ title: "Kit brief: Aemeath", run: { kind: "route", path: "/kit/aemeath" } });
     expect(kit("Jiyan")).toMatchObject({ title: "Kit brief: Jiyan", run: { kind: "route", path: "/kit/jiyan" } }); // not set up: still offered
     expect(kit("RoverAeroMale")).toMatchObject({ run: { kind: "route", path: "/kit/aero-rover" } }); // either Rover form is his one kit
-    expect(kit("Yangyang")).toBeUndefined();
+    expect(kit("Yangyang")).toMatchObject({ run: { kind: "route", path: "/kit/yangyang" } });
+    expect(kit("Chixia")).toBeUndefined();
     // "kit jiyan" finds it, and the briefs page answers to "kit" and to "briefs"
     expect(rankPalette("kit jiyan", items)[0]?.key).toBe("command:character:Jiyan:kit");
     expect(rankPalette("kit", items).find((i) => i.group === "page")?.run).toEqual({ kind: "route", path: "/kit" });
