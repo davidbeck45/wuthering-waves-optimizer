@@ -26,7 +26,8 @@ export type Cause =
   /** `withUpdate`: the app build changed between the two records as well, so the update may be part of the move */
   | { kind: "own-build"; parts: SigPart[]; before: CharacterFigure; after: CharacterFigure; withUpdate: boolean }
   | { kind: "members"; who: string[]; withUpdate: boolean }
-  | { kind: "team-edited"; withUpdate: boolean }
+  /** `members`: who is in the team changed (a member swapped in or out; the same members in other slots is an edit) */
+  | { kind: "team-edited"; withUpdate: boolean; members?: boolean }
   | { kind: "buffs-switch"; on: boolean; withUpdate: boolean }
   | { kind: "app-update" }
   | { kind: "unknown" };
@@ -81,12 +82,16 @@ export interface Comparison {
 const share = (before: number, after: number): number | null => (before > 0 ? (after - before) / before : null);
 
 function teamCause(before: TeamFigure, after: TeamFigure, chars: { before: Map<string, CharacterFigure>; after: Map<string, CharacterFigure> }, from: LogEntry, to: LogEntry): Cause {
+  const withUpdate = from.build !== to.build;
+  // another set of members is a change of the team itself: a member swapped in was not in the old figure at all, so
+  // their build cannot be what moved it (2026-11-23)
+  const wasIn = new Set(before.members);
+  if (before.members.length !== after.members.length || after.members.some((id) => !wasIn.has(id))) return { kind: "team-edited", withUpdate, members: true };
   const who = after.members.filter((id) => {
     const a = chars.before.get(id);
     const b = chars.after.get(id);
     return !!a && !!b && a.sig.rec !== b.sig.rec;
   });
-  const withUpdate = from.build !== to.build;
   if (who.length) return { kind: "members", who, withUpdate };
   if (before.def !== after.def || before.members.join("+") !== after.members.join("+")) return { kind: "team-edited", withUpdate };
   if (from.autoTeamBuffs !== to.autoTeamBuffs) return { kind: "buffs-switch", on: to.autoTeamBuffs, withUpdate };
@@ -262,6 +267,7 @@ export function causeText(cause: Cause, names: Namer, imported = false, kind: Mo
       return also(who.length === 1 ? `${who[0]}'s build changed.` : `The builds of ${list(who)} changed.`, cause.withUpdate);
     }
     case "team-edited":
+      if (cause.members) return also(imported ? "This team has other members." : "You changed who is in this team.", cause.withUpdate);
       return also(imported ? "This team is different: its rotation, its timing or the builds it pins." : "You changed this team: its rotation, its timing or the builds it pins.", cause.withUpdate);
     case "buffs-switch":
       return also(`The team-aware buffs switch was turned ${cause.on ? "on" : "off"}.`, cause.withUpdate);

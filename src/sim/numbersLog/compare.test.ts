@@ -182,6 +182,26 @@ describe("the cause", () => {
     expect(say(move(compareEntries(entry(), entry({ mine: 1_800_000 }, pinned, T0 + DAY)), "t-mine"))).toMatch(/^You changed this team/);
   });
 
+  it("a team: a member swapped in is a change of the team, not of that member's build, even when their build changed too", () => {
+    // before: his team was Aaa + Bbb; after: he added Ccc, whose own build he had also changed in between
+    const was = account();
+    was.teams[0].characterIds = ["Aaa", "Bbb"];
+    const before = entryFromRanking(ranking({}, { teams: [teamRank("t-mine", 1_500_000, ["Aaa", "Bbb"])] }), was, { at: T0, build: BUILD, autoTeamBuffs: true }) as LogEntry;
+    const now = account();
+    now.characters.Ccc.buffs = { New: { isEnabled: true } };
+    const after = entryFromRanking(ranking({ Ccc: 130_000 }, { teams: [teamRank("t-mine", 2_100_000)] }), now, { at: T0 + DAY, build: BUILD, autoTeamBuffs: true }) as LogEntry;
+    const c = compareEntries(before, after);
+    expect(say(move(c, "t-mine"))).toBe("You changed who is in this team.");
+    expect(say(move(c, "Ccc"))).toBe("You changed this build: buffs, rotations or other settings.");
+    expect(causeText(move(c, "t-mine").cause, names, true)).toBe("This team has other members.");
+    // the same three: a member's build is still named
+    const same = account();
+    same.characters.Ccc.buffs = { New: { isEnabled: true } };
+    const later = entryFromRanking(ranking({ Ccc: 130_000 }, { teams: [teamRank("t-mine", 2_150_000)] }), same, { at: T0 + 2 * DAY, build: BUILD, autoTeamBuffs: true }) as LogEntry;
+    const base = entry({}, account(), T0 + DAY);
+    expect(say(move(compareEntries(base, later), "t-mine"))).toBe("<Ccc>'s build changed.");
+  });
+
   it("a team: the team-aware buffs switch", () => {
     const off = entry({ mine: 1_700_000, stock: 2_000_000 }, account(), T0 + DAY, BUILD, false);
     const c = compareEntries(entry(), off);
