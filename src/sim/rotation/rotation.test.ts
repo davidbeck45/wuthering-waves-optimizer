@@ -243,9 +243,13 @@ describe("the cue plan", () => {
     const loop = plan.blocks[1]!;
     expect(RUN.members[loop.visits[0]!.member]!.name).toBe("Shorekeeper");
     expect(loop.visits[0]!.chips[0]!.text).toBe("Intro");
-    expect(loop.seconds).toBeCloseTo(26.55, 2);
+    expect(loop.seconds).toBeCloseTo(25.1333, 3); // 26.55 on wuwa_calc e95d4e6
     expect(plan.loopTarget).toBe(loop.seconds);
-    expect(plan.wrap && RUN.members[plan.wrap.member]!.name).toBe("Shorekeeper");
+    // since his 211d7d0 the fight closes on the last loop's Outro (Iuno's, frame 6145): no cut-off swap-in follows it,
+    // so nothing is dropped as a wrap (on e95d4e6 Shorekeeper's Intro at 6430 was, cut off by the end at 6511)
+    expect(plan.wrap).toBeNull();
+    // the footnote still names who the loop starts over with: the loop's first swap-in
+    expect(RUN.members[plan.startsOver!]!.name).toBe("Shorekeeper");
     expect(loop.varies).toBe(false);
   });
 
@@ -321,9 +325,10 @@ describe("the Discord export", () => {
     const text = discordText(pinned, cuePlan(pinned), { url: "https://example.test/rotation#team=t404", spreadLabel: "my echoes" });
     expect(text).toMatchSnapshot();
     expect(text.split("\n").filter((l) => l.startsWith("> "))).toHaveLength(6);
-    expect(text).toContain("__Loop ×3__ (26.6 s)");
-    expect(text).toContain("> **Lynae** Intro › E › Echo › R › BA › BA×3 › BA › Outro · 7.1 s");
+    expect(text).toContain("__Loop ×3__ (25.1 s)");
+    expect(text).toContain("> **Lynae** Intro › E › Echo › R › BA › BA×3 › BA › Outro · 6.7 s"); // 7.1 s on e95d4e6
     expect(text.length).toBeLessThan(DISCORD_LIMIT);
+    expect(text).toContain("…then Shorekeeper again: the loop starts over.");
   });
 
   it("drops the cancel marks when the message would not fit", () => {
@@ -336,11 +341,11 @@ describe("the Discord export", () => {
 
 describe("the /rotation hash", () => {
   it("reads team keys, row keys, compositions and codes", () => {
-    expect(parseRotationHash("#team=t404")).toEqual({ target: { kind: "team", teamKey: "t404", rowKey: null, picks: null }, subs: "mine", tab: "cue" });
+    expect(parseRotationHash(`#team=${RUN.teamKey}`)).toEqual({ target: { kind: "team", teamKey: RUN.teamKey, rowKey: null, picks: null }, subs: "mine", tab: "cue" });
     const row = parseRotationHash(`#team=${RUN.rowKey}&subs=high&tab=timeline`);
     expect(row.subs).toBe("high");
     expect(row.tab).toBe("timeline");
-    expect(row.target).toMatchObject({ kind: "team", teamKey: "t404", rowKey: RUN.rowKey });
+    expect(row.target).toMatchObject({ kind: "team", teamKey: RUN.teamKey, rowKey: RUN.rowKey });
     expect(row.target?.kind === "team" && row.target.picks).toEqual(RUN.members.map((m) => m.pick));
     expect(parseRotationHash("#chars=Shorekeeper,Lynae,Iuno").target).toEqual({ kind: "chars", chars: ["Shorekeeper", "Lynae", "Iuno"] });
     expect(parseRotationHash("#chars=Shorekeeper,Lynae").target).toBeNull();
@@ -397,7 +402,7 @@ describe("the play-mode clock", () => {
     s = advancePlayer(s, plan, 29000);
     expect(s.step).toBe(plan.loopStart);
     expect(s.laps).toEqual([{ section: 0, seconds: 28, target: plan.passSeconds[0] }]);
-    expect(gapText(28, plan.passSeconds[0]!)).toMatch(/^\+0\.5 s$/);
+    expect(gapText(28, plan.passSeconds[0]!)).toMatch(/^\+1\.0 s$/); // the opener is 27.0 s on 821f8db (27.5 on e95d4e6)
     // to the last swap of loop 3, then round to loop 1 again
     let t = 29000;
     while (s.step < plan.steps.length - 1) s = advancePlayer(s, plan, (t += 9000));

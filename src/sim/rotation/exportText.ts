@@ -41,7 +41,8 @@ export function discordText(model: RotationModel, plan: CuePlan, opts: ExportOpt
       lines.push(`> **${names[v.member]}** ${v.chips.map((c) => chipText(c, opts.cancels ?? true)).join(" › ")} · ${v.seconds.toFixed(1)} s`);
     }
   }
-  if (plan.wrap) lines.push(`…then ${names[plan.wrap.member]} again: the loop starts over.`);
+  const over = plan.wrap?.member ?? plan.startsOver;
+  if (over != null) lines.push(`…then ${names[over]} again: the loop starts over.`);
   if (opts.url) lines.push("", `<${opts.url}>`);
   return lines.join("\n");
 }

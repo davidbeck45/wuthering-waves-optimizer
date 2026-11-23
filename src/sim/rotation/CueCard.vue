@@ -69,6 +69,7 @@
       <p v-if="plan.wrap" data-test-rotation-wrap>
         …then {{ members[plan.wrap.member]!.name }} again for the fight's last {{ plan.wrap.seconds.toFixed(1) }} s<template v-if="plan.wrap.damage >= 1"> ({{ compact(plan.wrap.damage) }} dmg)</template>: the loop starts over.
       </p>
+      <p v-else-if="plan.startsOver != null" data-test-rotation-wrap>…then {{ members[plan.startsOver]!.name }} again: the loop starts over.</p>
       <p>
         <span class="rv-cp rv-cp--energy mr-1">R ready</span>
         <span class="rv-cp rv-cp--concerto mr-1">Outro ready</span>

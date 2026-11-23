@@ -51,6 +51,9 @@ export interface CuePlan {
   loopStart: number;
   /** the swap-in the fight ends on (not played), for the footnote */
   wrap: Visit | null;
+  /** the member the loop starts over with (the loop's first swap-in), null without a loop — the footnote's name. Since
+   *  Riley's 211d7d0 most fights close on the last loop's Outro, with no cut-off swap-in (`wrap`) to name them by. */
+  startsOver: number | null;
 }
 
 /** A visit as the buttons it presses (cancels and wait lengths left out): what folds loops into one block. */
@@ -125,6 +128,7 @@ export function cuePlan(model: RotationModel): CuePlan {
     steps,
     loopStart,
     wrap: model.visits.find((v) => v.wrap) ?? null,
+    startsOver: loops.length && steps[loopStart] ? steps[loopStart]!.visit.member : null,
   };
 }
 
