@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import loops from "./__fixtures__/wuwaCalcLoops.json";
 import { getCharByName } from "../../characters/characters";
 import { mainEchoesData } from "../../echoes/index";
-import { OVERRIDES, appKeyOf, appRowsOf, duetBurstOf, echoRowsOf, fusionBurstCapOf, emptyReport, enemyConfigOf, enemyStacksOf, finishTicks, knownRatios, landedRepeats, mvOf, ratio, rileyNameOf, toActions, type AppRow, type Cast, type TickState } from "./castMapper";
+import { DIFFERS, OVERRIDES, appKeyOf, appRowsOf, duetBurstOf, echoRowsOf, echoStage, fusionBurstCapOf, emptyReport, enemyConfigOf, enemyStacksOf, finishTicks, knownRatios, landedRepeats, mvOf, ratio, rileyNameOf, toActions, type AppRow, type Cast, type TickState } from "./castMapper";
 // Riley's tables grew (Sept 2026): this replay takes more than vitest's 5 s default under a full-suite run
 vi.setConfig({ testTimeout: 60_000 });
 
@@ -108,15 +108,16 @@ describe("cast mapper: primitives", () => {
     expect(landedRepeats({ ...cast, mv: 17.23 }, rows)).toBeNull();
     expect(landedRepeats({ ...cast, mv: 11.15 }, rows)).toBeNull();
   });
-  it("presses Lily's Basic Attack stages by their number, at the app's own motion values", async () => {
-    // Riley's Lily is the 3.8 beta's kit: 74.28 / 100.68 / 106.09 / 159.08 for the four stages, where the released
-    // game (the app's rows) has 63.62 / 116.60 / 95.43 / 153.80. No value matches, so the overrides name the rows.
+  it("presses Lily's released Basic Attack stages by their motion values, with no override", async () => {
+    // Riley's 7b4acd0 (2026-11-21) moved her kit from the 3.8 beta's to the released game's: his four stages now read
+    // the app's own 63.62 / 116.60 / 95.43 / 153.80, so the four overrides that named her rows are gone
     const rows = appRowsOf((await getCharByName("Lily")) as Record<string, unknown>);
     expect(rows.filter((r) => /^BasicAttackStage\dDMG$/.test(r.key)).map((r) => r.mv)).toEqual([63.62, 116.6, 95.43, 153.8]);
+    expect(OVERRIDES.Lily).toBeUndefined();
     const stage = (n: number, mv: number): Cast => ({ name: `Basic - Mend and Cleanse ${n}`, mv, count: 1, cast: "Basic", node: "Normal" });
-    const loop: Cast[] = [stage(3, 106.09), stage(4, 159.08), stage(1, 74.28), stage(2, 100.68), { name: "Skill - Reverie Blend", mv: 159.05, count: 1, cast: "Skill", node: "Skill" }];
+    const loop: Cast[] = [stage(3, 95.43), stage(4, 153.8), stage(1, 63.62), stage(2, 116.6), { name: "Skill - Reverie Blend", mv: 159.05, count: 1, cast: "Skill", node: "Skill" }];
     const report = emptyReport();
-    const acts = toActions(loop, rows, {}, OVERRIDES.Lily, report, new Set());
+    const acts = toActions(loop, rows, {}, {}, report, new Set());
     expect(acts.map((a) => [a.key, a.type, a.count, a.buffs])).toEqual([
       ["BasicAttackStage3DMG", "basic", 1, []],
       ["BasicAttackStage4DMG", "basic", 1, []],
@@ -125,25 +126,53 @@ describe("cast mapper: primitives", () => {
       ["ResonanceSkillReverieBlendDMG", "skill", 1, []],
     ]);
     expect(report.unmatched).toEqual([]);
-    // said as two values that differ, never as a multiplier the kit's buffs would have to supply
     expect(report.multipliers).toEqual([]);
-    expect(report.differs).toEqual([
-      "Basic - Mend and Cleanse 3 106.09% → BasicAttackStage3DMG 95.43%",
-      "Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%",
-      "Basic - Mend and Cleanse 1 74.28% → BasicAttackStage1DMG 63.62%",
-      "Basic - Mend and Cleanse 2 100.68% → BasicAttackStage2DMG 116.60%",
-    ]);
-    // left to the cascade: Stage 4's 159.08 sits 0.03 from her Resonance Skill's 159.05 and lands on a Blend row,
-    // Stage 2 finds no row at all, and Stages 1 and 3 pass as kit multipliers (× 1.17, × 1.11)
-    const bare = emptyReport();
-    const wrong = toActions(loop, rows, {}, {}, bare, new Set());
-    expect(wrong.map((a) => a.key)).toEqual(["BasicAttackStage3DMG", "ResonanceSkillNightmareBlendDMG", "BasicAttackStage1DMG", "ResonanceSkillReverieBlendDMG"]);
-    expect(bare.unmatched).toEqual(["Basic - Mend and Cleanse 2 (mv 100.68, Basic/Normal, unmatched)"]);
+    expect(report.differs).toBeUndefined();
+  });
+  it("says a hand-mapped cast under `_differs` is other data on the two sides, never a kit multiplier", () => {
+    const rows: AppRow[] = [{ group: "basic", key: "BasicAttackStage1DMG", label: "Stage 1 DMG", mv: 63.62 }];
+    const cast: Cast = { name: "Basic - Stage 1", mv: 74.28, count: 1, cast: "Basic", node: "Normal" };
+    const report = emptyReport();
+    const acts = toActions([cast], rows, {}, { [DIFFERS]: "two kits", "Basic - Stage 1": "BasicAttackStage1DMG" }, report, new Set());
+    expect(acts.map((a) => [a.key, a.buffs])).toEqual([["BasicAttackStage1DMG", []]]);
+    expect(report.multipliers).toEqual([]);
+    expect(report.differs).toEqual(["Basic - Stage 1 74.28% → BasicAttackStage1DMG 63.62%"]);
     // an override whose value is the kit's own multiplier still reads as one (Qingxiao's Heaven's Reckoning × 2.75)
     const kit = emptyReport();
     toActions([{ name: "Skill - X", mv: 200, count: 1, cast: "Skill", node: "Skill" }], [{ group: "skill", key: "XDMG", label: "X DMG", mv: 100 }], {}, { "Skill - X": "XDMG" }, kit, new Set());
     expect(kit.multipliers).toEqual(["Skill - X = XDMG × 2.00"]);
     expect(kit.differs).toBeUndefined();
+  });
+  it("presses each stage of a staged echo as the app's one row at its share (Lampylumen Myriad)", () => {
+    // the app's row is the whole transform, 200.16%*2 + 266.88% = 667.20; Riley presses it as three casts
+    const echoRows = echoRowsOf(mainEchoesData as never);
+    expect(echoRows.LampylumenMyriad.rows.map((r) => [r.key, r.mv])).toEqual([["LampylumenMyriadAttacks", 667.2]]);
+    const st = (n: number, mv: number): Cast => ({ name: `Echo - Lampylumen Myriad ${n}`, mv, count: 1, cast: "Echo", node: null });
+    expect(echoStage(st(3, 266.88), echoRows.LampylumenMyriad.rows)?.[1]).toBe(3);
+    expect(echoStage({ ...st(1, 200.16), name: "Echo - Lampylumen Myriad" }, echoRows.LampylumenMyriad.rows)).toBeNull();
+    const report = emptyReport();
+    const acts = toActions([st(1, 200.16), st(2, 200.16), st(3, 266.88)], [], echoRows, {}, report, new Set());
+    expect(acts.map((a) => [a.key, a.mainEcho, a.buffs])).toEqual([
+      ["LampylumenMyriadAttacks", "LampylumenMyriad", [{ modifier: "talentModifierMultiply", modifierValue: -70 }]],
+      ["LampylumenMyriadAttacks", "LampylumenMyriad", [{ modifier: "talentModifierMultiply", modifierValue: -70 }]],
+      ["LampylumenMyriadAttacks", "LampylumenMyriad", [{ modifier: "talentModifierMultiply", modifierValue: -60 }]],
+    ]);
+    // the three shares add up to one press of the row, not three
+    expect(acts.reduce((t, a) => t + 1 + (a.buffs[0]!.modifierValue as number) / 100, 0)).toBeCloseTo(1, 2);
+    expect(report.unmatched).toEqual([]);
+    expect(report.review).toEqual([]);
+  });
+  it("presses Lingyang's Mech Abomination as the Strike, which the app writes without a percent sign", () => {
+    const echoRows = echoRowsOf(mainEchoesData as never);
+    const strike = echoRows.MechAbomination.rows.find((r) => r.key === "MechAbominationStrike")!;
+    expect([strike.expr, strike.mv]).toEqual(["48.64", null]);
+    const cast: Cast = { name: "Echo - Mech Abomination", mv: 48.64, count: 1, cast: "Echo", node: null };
+    const bare = toActions([cast], [], echoRows, {}, emptyReport(), new Set());
+    expect(bare.map((a) => a.key)).toEqual(["MechAbominationMechWaste"]); // by its name alone: the 320 % summon
+    const report = emptyReport();
+    const acts = toActions([cast], [], echoRows, OVERRIDES.Lingyang, report, new Set());
+    expect(acts.map((a) => [a.key, a.mainEcho, a.buffs])).toEqual([["MechAbominationStrike", "MechAbomination", []]]);
+    expect(report.review).toEqual([]);
   });
   it("maps Riley's resonator names to app keys and back", () => {
     expect(appKeyOf("Xuanling")).toBe("YangyangXuanling");

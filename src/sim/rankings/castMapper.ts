@@ -121,15 +121,9 @@ export const OVERRIDES: Record<string, Overrides> = {
   // × 3.49: her S3 Confession Starflash, which the app applies through the chain (+249%); the Ring's extra Starflash
   // is too far from the row's name for the ratio rule
   Phoebe: { "Forte Heavy - Starflash (Ring of Mirrors, S3 Confession)": "HeavyAttackStarflashDMG" },
-  // Riley's kit is the 3.8 beta's: her four Basic Attack stages read 74.28 / 100.68 / 106.09 / 159.08 there and
-  // 63.62 / 116.60 / 95.43 / 153.80 in the released game (the app's rows), so no motion value matches and the stage
-  // number names the row. Left to the cascade, Stage 4's beta value sat 0.03 from her Resonance Skill's 159.05 and
-  // mapped onto Nightmare Blend, Stage 2 stayed unmatched and Stages 1 and 3 passed as kit multipliers.
-  Lily: {
-    [DIFFERS]: "wuwa_calc's Lily is the 3.8 beta's kit, the app's rows are the released game's",
-    "Basic - Mend and Cleanse 1": "BasicAttackStage1DMG", "Basic - Mend and Cleanse 2": "BasicAttackStage2DMG",
-    "Basic - Mend and Cleanse 3": "BasicAttackStage3DMG", "Basic - Mend and Cleanse 4": "BasicAttackStage4DMG",
-  },
+  // his "Echo - Mech Abomination" is the Strike alone (48.64 %; Mech Waste is a cast of its own), and the app writes the
+  // Strike's rank-5 value without its percent sign ("48.64"), so no motion value matches it and the name alone picked Mech Waste
+  Lingyang: { "Echo - Mech Abomination": "MechAbominationStrike" },
 };
 
 /** a set's own damage, pressed in the app as an echo-set attack (Midnight Veil 5pc: 480% Havoc DMG on the Outro) */
@@ -458,6 +452,22 @@ export function landedRepeats(cast: Cast, rows: AppRow[]): [AppRow, number, numb
   return null;
 }
 
+/** One stage of an echo Riley presses in stages, "X 1" .. "X N", where the app has one row for the whole transform
+ *  written as its stages' hits ("200.16%*2 + 266.88%": Lampylumen Myriad, his 2026-11-22 kits). -> [row, hits] or null:
+ *  the stage is pressed as that row at its share (its MV over the row's), so the N stages add up to one press.
+ *  Mirrors map_rotations.py's `echo_stage`. */
+export function echoStage(cast: Cast, rows: AppRow[]): [AppRow, number] | null {
+  const want = cast.mv;
+  if (!want || !/\s\d$/.test(cast.name)) return null;
+  for (const r of rows) {
+    if (!r.mv) continue;
+    const terms = [...String(r.expr ?? "").replace(/\s/g, "").matchAll(/([\d.]+)%(?:\*(\d+))?/g)];
+    const hits = terms.reduce((n, t) => n + Number(t[2] ?? 1), 0);
+    if (hits >= 2 && terms.some((t) => Math.abs(Number(t[1]) - want) <= 0.06)) return [r, hits];
+  }
+  return null;
+}
+
 function matchWithRatios(cast: Cast, rows: AppRow[], ratios: Set<number>): [AppRow | null, string | null] {
   const want = cast.mv as number;
   const cands: Array<[AppRow, number]> = [];
@@ -475,7 +485,9 @@ function matchWithRatios(cast: Cast, rows: AppRow[], ratios: Set<number>): [AppR
 export function findEcho(name: string, by: string | null | undefined, echoRows: Record<string, EchoRows>): string | null {
   const base = stripPrefix(name);
   // "Reminiscence: Suhsin (Hsin)", "False Sovereign (Intro)": a form of the one echo
-  const cands = [by ?? "", (by ?? "").split(":")[0], base, base.split(":")[0], base.replace(/\s*(Outro|Swap)$/, ""), base.replace(/\s*\([^)]*\)$/, "")];
+  const cands = [by ?? "", (by ?? "").split(":")[0], base, base.split(":")[0], base.replace(/\s*(Outro|Swap)$/, ""), base.replace(/\s*\([^)]*\)$/, ""),
+    // "Lampylumen Myriad 1" .. "3" (2026-11-22): the stages of one transform echo, one app row
+    base.replace(/\s*Stage\d$/, "")];
   const keys = new Map<string, string>();
   for (const [k, v] of Object.entries(echoRows)) keys.set(norm(v.name), k);
   for (const k of Object.keys(echoRows)) keys.set(norm(k), k);
@@ -623,6 +635,11 @@ export function toActions(casts: Cast[], rows: AppRow[], echoRows: Record<string
         if (lr) {
           [hit, how, count, cut] = [lr[0], `repeats${lr[1]}/${lr[2]}`, c.count, c.mv / lr[0].mv!];
           why = `${lr[1]} of its ${lr[2]} repeat hits landed`;
+        }
+        const es = (hit === null || how === "name-only") && !cut ? echoStage(c, echoRows[ekey].rows) : null;
+        if (es) {
+          [hit, how, count, cut] = [es[0], "echo-stage", c.count, c.mv / es[0].mv!];
+          why = `one stage of its ${es[1]}-hit transform`;
         }
         if (Array.isArray(hit)) hit = hit.map((r) => ({ ...r, echoKey: ekey }));
         else if (hit) hit = { ...hit, echoKey: ekey };
