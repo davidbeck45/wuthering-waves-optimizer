@@ -374,15 +374,17 @@ describe("on the engine", () => {
     synth = await rileyHeadless(SYNTHETIC_ACCOUNT);
   }, LOAD);
 
-  it("t0 at S0 R1: Shorekeeper reads her 240 % kit floor over a ~212 % loop", async () => {
+  it("Shorekeeper + Jinhsi + Suoming at S0 R1: Shorekeeper reads her 240 % kit floor over a ~190 % loop", async () => {
+    // ~212 % on Riley's 7bcbb24; his e7a10a9 reworked her kit: Collapsed Cores fire off-field Flare Star Butterflies
+    // (59 energy each), so the loop pays her Liberation with less ER. The floor still sets her need.
     const m = await measureComposition(engineOfHeadless(none), ["Shorekeeper", "Jinhsi", "Suoming"]);
     expect(m.status).toBe("ok");
     const e = (m as Extract<TeamMeasure, { status: "ok" }>).energy;
     const sk = e.members.find((x) => x.name === "Shorekeeper")!;
     expect(sk.need).toBe(240);
     expect(sk.setBy).toBe("kit");
-    expect(sk.bar).toBeGreaterThan(200);
-    expect(sk.bar).toBeLessThan(225);
+    expect(sk.bar).toBeGreaterThan(180);
+    expect(sk.bar).toBeLessThan(200);
     expect(e.members.every((x) => !x.owned && x.sequence === 0 && x.refinement === 1)).toBe(true);
   }, LOAD);
 
