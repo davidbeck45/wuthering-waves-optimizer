@@ -10,12 +10,13 @@
 // investment — and, against the player's own account, whether they could field it that way.
 import { appKeyOf } from "./castMapper";
 import { shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type RunLike, type TeamMode } from "./compareColumn";
+import { RARITY } from "./rileyNames";
 
 /* ---------------------------------------------------------------- the shapes read off his model */
 
-/** His `Tier` is a `const enum` (erased at build): Limited 0, Standard 1, Free 2, FreeS2 3. */
-const TIER_LIMITED = 0;
-const TIER_FREE = 2;
+/** His `Rarity` numbers (rileyNames.ts `RARITY`): a limited weapon, and a 4★ / Rover form counted at S6. */
+const TIER_LIMITED = RARITY.Limited;
+const TIER_FREE = RARITY.FreeS6;
 
 /** The part of his `Member` (solver.ts) the cards read. */
 export interface MemberLike {

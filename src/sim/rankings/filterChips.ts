@@ -6,6 +6,8 @@
 // added support as "teams fielding them" — so the split between the two chip groups is a display
 // choice: where the player put the name, else whether that resonator leads any team.
 
+import { RARITY } from "./rileyNames";
+
 export type ChipGroup = "main" | "with" | "without";
 export type ResonatorMode = "include" | "exclude";
 
@@ -48,9 +50,9 @@ interface TeamMemberLike {
   loadout?: { resonator?: { tier?: number } };
 }
 
-/** His `Tier` is a `const enum` (erased at build): Limited 0, Standard 1, Free 2, FreeS2 3. `accountOf()`
- *  treats only `Free` as owned-by-everyone, so this does too. */
-const TIER_FREE = 2;
+/** His `Rarity.FreeS6` (rileyNames.ts `RARITY`): his `accountOf()` treats only that kind as owned-by-everyone, so this
+ *  does too. */
+const TIER_FREE = RARITY.FreeS6;
 
 /** Every resonator his teams field, sorted by name. */
 export function rosterOf(teams: Record<string, TeamMemberLike[]>): RosterEntry[] {
@@ -70,13 +72,25 @@ export function rosterOf(teams: Record<string, TeamMemberLike[]>): RosterEntry[]
 
 /** The hash's `r=` / `x=` lists as real names. A name in both reads as included (his `applyHash()` sets
  *  the excludes first and lets the includes overwrite). A name the roster does not know is kept as
- *  written, so a chip never silently drops a filter. */
+ *  written, so a chip never silently drops a filter. Since his e7a10a9 an entry may carry a chain level
+ *  ("CartethyiaS2": her at S2, model.ts `resonatorKey`); the chip is the resonator, so the level is read off. */
 export function readResonatorFilters(params: URLSearchParams, roster: RosterEntry[]): { include: string[]; exclude: string[] } {
-  const byCompact = new Map(roster.map((r) => [compactName(r.name), r.name]));
-  const names = (key: string): string[] => (params.get(key) ?? "").split(",").filter(Boolean).map((n) => byCompact.get(n) ?? n);
-  const include = [...new Set(names("r"))];
-  const exclude = [...new Set(names("x"))].filter((n) => !include.includes(n));
+  const read = tokensOf(params, roster);
+  const include = [...new Set(read("r").map(([name]) => name))];
+  const exclude = [...new Set(read("x").map(([name]) => name))].filter((n) => !include.includes(n));
   return { include, exclude };
+}
+
+/** Each entry of `r=` / `x=` as [its resonator's name, the entry as written]. */
+function tokensOf(params: URLSearchParams, roster: RosterEntry[]): (key: string) => [string, string][] {
+  const byCompact = new Map(roster.map((r) => [compactName(r.name), r.name]));
+  const nameOf = (token: string): string => {
+    const known = byCompact.get(token);
+    if (known) return known;
+    const level = /^(.+?)S\d+$/.exec(token);
+    return (level && byCompact.get(level[1]!)) ?? token;
+  };
+  return (key) => (params.get(key) ?? "").split(",").filter(Boolean).map((t) => [nameOf(t), t]);
 }
 
 /** The three chip groups. `intents` remembers which group the player added a name from this session. */
@@ -105,8 +119,12 @@ export function withResonatorFilter(params: URLSearchParams, name: string, mode:
   const exc = exclude.filter((n) => n !== name);
   if (mode === "include") inc.push(name);
   if (mode === "exclude") exc.push(name);
+  // the others keep their entries as written (a chain level his own chips set stays); the one changed goes in bare,
+  // and the page settles it to the level the cost runs it at (controller.ts `applyHashSettled`)
+  const read = tokensOf(params, roster);
+  const written = new Map([...read("x"), ...read("r")].filter(([n]) => n !== name).map(([n, t]) => [n, t]));
   const write = (key: string, list: string[]): void => {
-    if (list.length) p.set(key, list.map(compactName).join(","));
+    if (list.length) p.set(key, list.map((n) => written.get(n) ?? compactName(n)).join(","));
     else p.delete(key);
   };
   write("r", inc);

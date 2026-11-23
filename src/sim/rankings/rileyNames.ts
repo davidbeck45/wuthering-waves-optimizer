@@ -74,3 +74,8 @@ export function roverGenderOf(characters: Record<string, any> | null | undefined
   if (forms.every(isMaleForm)) return "male";
   return forms.some(isMaleForm) ? null : "female";
 }
+
+/** His `Rarity` (engine/stats.ts, `Tier` until his e7a10a9) is a `const enum`, erased at build, so the page reads its
+ *  numbers: Limited 0, FreeS6 1 (a 4★ or Rover form: everyone's, S6), FreeS2 2 (a free standard 5★ run from S2),
+ *  FreeS0 3. Until Nov 2026 the everyone's-at-S6 kind was `Free` = 2. rileyNames.test.ts reads the order off his source. */
+export const RARITY = { Limited: 0, FreeS6: 1, FreeS2: 2, FreeS0: 3 } as const;

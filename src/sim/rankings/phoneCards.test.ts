@@ -16,10 +16,11 @@ import {
   type MemberLike,
   type RunRowLike,
 } from "./phoneCards";
+import { RARITY } from "./rileyNames";
 
-const LIMITED = 0;
-const STANDARD = 1;
-const FREE = 2;
+const LIMITED: number = RARITY.Limited;
+const STANDARD: number = RARITY.FreeS0;
+const FREE: number = RARITY.FreeS6;
 const member = (name: string, mainDps = false, tier = LIMITED, mode?: string): MemberLike => ({
   name,
   color: "#888888",

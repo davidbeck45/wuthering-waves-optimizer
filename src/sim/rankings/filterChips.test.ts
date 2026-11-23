@@ -3,12 +3,13 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { chipGroups, hashText, importableMatters, importableOnly, namesNotInApp, pickerOptions, withImportableOnly, readResonatorFilters, RILEY_TIERS, rosterOf, withResonatorFilter, type OwnedInfo } from "./filterChips";
+import { RARITY } from "./rileyNames";
 
 const member = (name: string, mainDps: boolean, tier = 0) => ({ name, color: "#888888", mainDps, loadout: { resonator: { tier } } });
 // a miniature of his TEAMS: Suoming leads her own team and supports Hsin; Electro Rover is a free form
 const TEAMS = {
   t0: [member("Shorekeeper", false), member("Suoming", false), member("Hsin", true)],
-  t1: [member("Shorekeeper", false), member("Electro Rover", false, 2), member("Suoming", true)],
+  t1: [member("Shorekeeper", false), member("Electro Rover", false, RARITY.FreeS6), member("Suoming", true)],
   t2: [member("Mornye", false), member("Lynae", false), member("Aemeath", true)],
 };
 const roster = rosterOf(TEAMS);
@@ -26,6 +27,15 @@ describe("rankings filter chips", () => {
     expect(readResonatorFilters(p, roster)).toEqual({ include: ["Electro Rover", "Aemeath"], exclude: ["Lynae"] });
     // a name the roster does not know is kept as written
     expect(readResonatorFilters(new URLSearchParams("r=Nobody"), roster).include).toEqual(["Nobody"]);
+  });
+
+  it("reads an entry carrying a chain level (his e7a10a9: r=HsinS2) as its resonator, and keeps the level on a write", () => {
+    const p = new URLSearchParams("r=HsinS2&x=ElectroRoverS6");
+    expect(readResonatorFilters(p, roster)).toEqual({ include: ["Hsin"], exclude: ["Electro Rover"] });
+    expect(chipGroups(p, roster).main).toEqual(["Hsin"]);
+    // adding a name leaves the others as written; the page settles the new one's level
+    expect(hashText(withResonatorFilter(p, "Shorekeeper", "include", roster))).toBe("r=HsinS2,Shorekeeper&x=ElectroRoverS6");
+    expect(hashText(withResonatorFilter(p, "Hsin", null, roster))).toBe("x=ElectroRoverS6");
   });
 
   it("splits includes into Main DPS and With by who leads, unless the player said otherwise", () => {
