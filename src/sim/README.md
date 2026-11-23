@@ -5515,3 +5515,33 @@ What the Riley run seam (`src/sim/engine/`) had to follow when `vendor/wuwa_calc
   `wuwa.teamViews` (his team page's tabs: a preference that stays).
 - The Wave 0 fixture was regenerated on 821f8db; its reference totals for the enemy profile came from the fork without
   the profile patch (5227416) and from Riley's own 211d7d0, equal to the cent.
+
+## Ryan's #726 to #747 on a phone (batch 5, lane "sync-polish", 2026-11-23)
+
+His eight PRs of the 2026-11-23 merge, looked at on a phone at 412 and 360 px with 130 % text, on David's account and
+on small synthetic ones. Report: `wto-wt/b5/reports/sync-polish.md`. Five rules in `phone.css` § 41, each with a check
+in `cypress/e2e/phoneLayout.cy.ts` that fails without it; § 42 (plus's own rules his changes moved) was not needed.
+
+- **a) The Attacks tab (#730).** His Normal, Average and Crit columns were `w-20`, 104 px each at 130 %, so an attack's
+  name had 105 px beside his new pin and took five lines. The figures take their width, the name the rest (two or
+  three lines at 360). The pin (18 px), the Pins Left / Right switch and Expand all / Collapse all get 44 px targets;
+  the pin through an invisible ring, so rows keep their size. The Overview tab's stat pin is the same button and has
+  the same ring.
+- **b) Recommended teams (#663, a lab).** He put the list in Team Buffs' summary column, which a phone folds behind
+  "Team Contribution & Active Buffs · Show": on a phone the lab showed nothing. The list shows under that button, open
+  or not. A team's card keeps its names whole, its tag pills hold their text, Use team drops under them, each
+  teammate's sequence and Sig get their own line, and the filters, the buffs switch and Use team are 44 px tall.
+- **c) Optimize team's per-slot echo cards (#745).** Two to a row below 640 px, 133 px tiles for a card that needs about
+  310: the Teams page was 523 px wide at 360. One card to a row (as § 37 a for the Spotlight), the substat list held to
+  the card (his column is `align-items: start`, so the list was as wide as its longest row), long substat names wrap.
+- **d) Optimize team's "how this plan differs" line (#745).** Up to 333 px in the Top 5 table § 36 b sizes to its
+  content: it ran past the table's scroller. It wraps within what the screen leaves beside the rank.
+- **e) The classic optimizer's stat change (#747).** "(+3.1%) · ATK% +10.9% · Flat 0" was one run of inline text in a
+  right-aligned cell: it broke inside its parts and pushed "Crit Rate" to two lines. One part per line.
+
+Fits as he built it: the v3 optimizer's stat changes in Highlights, "Your setup changed since this run" with Run again,
+Optimize team's setup with his new notes and its Save sheet, `/updates`. The test ids his diff adds and the ids in
+`src/sim/**/*.vue` have nothing in common. One question answered twice: whether optimizer results still match the
+setup. Plus's run basis (`optimizer/optimizerRunBasis.ts`) drops the rows when the build or weapon changes and says why
+on the setup screen; his #706 keeps them with an alert for any other change. Which one owns a weapon change is the
+`post-merge` lane's call (see its report).
