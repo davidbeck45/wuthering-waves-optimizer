@@ -27,38 +27,50 @@ export interface PinOptions {
 
 const browserObserver = (): PinOptions["observer"] => (typeof ResizeObserver === "undefined" ? null : (onResize) => new ResizeObserver(() => onResize()));
 
-/** how close to the drawer's top edge the section must start for the player to be reading it or below it */
-const READING_EDGE_PX = 24;
-
 /**
  * Scrolls `target()` to the top of `scroller` now and again whenever `content` (what the scroller scrolls) changes
- * size. Once the player touches the drawer the section is no longer put back at the top: it is kept where the player
- * has it on screen (content that arrives above it scrolls the drawer by its own height, so nothing moves under the
- * reader's thumb), and only while nothing above it is on screen, since that is content the player could be opening.
- * Browsers that anchor the scroll themselves already did that: the correction is then 0. Returns the release; it is
- * safe to call twice.
+ * size. Once the player touches the drawer the section is no longer put back at the top; instead the first block of
+ * `content` the player can see is kept where it is on screen: a block that arrives or grows above it scrolls the drawer
+ * by as much, so nothing moves under the reader's thumb, and a fold the player opens inside what they see grows below
+ * that block's top and moves nothing. Browsers that anchor the scroll themselves already did it: the correction is then
+ * 0. Returns the release; it is safe to call twice.
  */
 export function pinSection(scroller: HTMLElement, content: Element | null, target: () => Element | null, options: PinOptions = {}): () => void {
-  const place = (): void => target()?.scrollIntoView({ block: "start" });
+  /** an element's top, from the drawer's top edge */
+  const offsetOf = (el: Element): number => el.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+  /** where placing the section puts it: the first line the player sees (the phone drawer is a sheet whose first
+   *  visible line is 110 px below its own top edge, so it is measured, not 0) */
+  let home = 0;
+  const place = (): void => {
+    const el = target();
+    if (!el) return;
+    el.scrollIntoView({ block: "start" });
+    home = offsetOf(el);
+  };
   place();
   const make = options.observer === undefined ? browserObserver() : options.observer;
   if (!make || !content) return () => undefined;
 
-  /** the section's top, from the drawer's top edge */
-  const offsetOf = (el: Element): number => el.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
   let mode: "held" | "kept" | "off" = "held";
-  /** where the section was on screen when the player last scrolled (kept mode) */
-  let lastOffset: number | null = null;
+  /** the first block the player sees, where it was on screen, and the content's height when that was read (kept mode) */
+  let anchor: { el: Element; offset: number } | null = null;
+  let height = 0;
+  const heightNow = (): number => content.getBoundingClientRect().height;
   const note = (): void => {
-    const el = target();
-    lastOffset = el ? offsetOf(el) : null;
+    const top = scroller.getBoundingClientRect().top + home;
+    const el = Array.from(content.children).find((c) => c.getBoundingClientRect().bottom > top + 1) ?? null;
+    anchor = el ? { el, offset: offsetOf(el) } : null;
+    height = heightNow();
+  };
+  // A scroll event is dispatched before the resize observer in the same frame: one that lands after a block arrived
+  // and before its resize is handled (the pin's last placement, the browser's own anchoring) would read the anchor
+  // after the jump, and the jump would stand. The resize goes first; it reads the anchor again after its correction.
+  const onScroll = (): void => {
+    if (heightNow() === height) note();
   };
   const keep = (): void => {
-    const el = target();
-    if (!el) return;
-    const now = offsetOf(el);
-    if (lastOffset !== null && lastOffset <= READING_EDGE_PX) {
-      const moved = now - lastOffset;
+    if (anchor && content.contains(anchor.el)) {
+      const moved = offsetOf(anchor.el) - anchor.offset;
       if (Math.abs(moved) >= 1) scroller.scrollTop += moved;
     }
     note();
@@ -73,7 +85,7 @@ export function pinSection(scroller: HTMLElement, content: Element | null, targe
     mode = "kept";
     for (const type of TAKEOVER) scroller.removeEventListener(type, takeOver);
     note();
-    scroller.addEventListener("scroll", note, { passive: true });
+    scroller.addEventListener("scroll", onScroll, { passive: true });
   };
   const release = (): void => {
     if (mode === "off") return;
@@ -81,7 +93,7 @@ export function pinSection(scroller: HTMLElement, content: Element | null, targe
     observer.disconnect();
     if (timer) clearTimeout(timer);
     for (const type of TAKEOVER) scroller.removeEventListener(type, takeOver);
-    scroller.removeEventListener("scroll", note);
+    scroller.removeEventListener("scroll", onScroll);
   };
   observer.observe(content);
   for (const type of TAKEOVER) scroller.addEventListener(type, takeOver, { passive: true });
