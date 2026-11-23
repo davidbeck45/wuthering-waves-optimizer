@@ -219,6 +219,23 @@ describe("countedHits", () => {
     expect(countedHits(runOf(hits, 100))).toEqual(hits.slice(0, 1));
   });
 
+  it("reads whose hit he dropped off his per-slot sums: equal hits of two members on the last frame, and a frame of many", () => {
+    const by = (kept: ReturnType<typeof hit>[]) => kept.reduce<Record<string, number>>((o, x) => ({ ...o, [x.slot]: (o[x.slot] ?? 0) + x.avg }), {});
+    // A's Outro and B's closing hit both deal 30 on frame 120: he drops A's (fightBySlot A 100, B 80)
+    const tie = [hit(10, 100), hit(20, 50, "B"), hit(120, 30, "A"), hit(120, 30, "B")];
+    const tied = { ...runOf(tie, 180), fightBySlot: new Map([["A", 100], ["B", 80]]) };
+    expect(by(countedHits(tied))).toEqual({ A: 100, B: 80 });
+    // the same as his score keeps it (pairs, not a Map)
+    expect(by(countedHits({ ...tied, fightBySlot: [["A", 100], ["B", 80]] }))).toEqual({ A: 100, B: 80 });
+    // thirteen hits on the last frame, one of them A's Outro: still only the Outro is out
+    const many = [hit(10, 100), ...Array.from({ length: 12 }, (_, i) => hit(120, 1 + i, "B")), hit(120, 500, "A")];
+    const kept = countedHits({ ...runOf(many, 178), fightBySlot: new Map([["A", 100], ["B", 78]]) });
+    expect(kept).toEqual(many.slice(0, 13));
+    // an Outro of two hits (4 + 6) against another member's single 10: the subset is found in the right slot
+    const split = [hit(10, 100), hit(120, 4), hit(120, 6), hit(120, 10, "B")];
+    expect(by(countedHits({ ...runOf(split, 110), fightBySlot: new Map([["A", 100], ["B", 10]]) }))).toEqual({ A: 100, B: 10 });
+  });
+
   it("keeps the old rule where the run can't say: no fightTotal, or no subset adds up", () => {
     const hits = [hit(10, 100), hit(120, 30)];
     expect(countedHits(runOf(hits))).toEqual(hits);

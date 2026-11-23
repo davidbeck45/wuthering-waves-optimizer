@@ -411,16 +411,31 @@ export function countedHits(run: any): any[] {
   const frames = Math.round(Number(run.seconds) * FPS);
   const all = (run.state.hits as any[]).filter((h) => !(h.at > frames));
   const last = all.filter((h) => h.at === frames);
-  const fight = Number(run.fightTotal);
-  if (!last.length || !Number.isFinite(fight) || last.length > 12) return all;
-  const before = all.reduce((sum, h) => (h.at === frames ? sum : sum + (Number(h.avg) || 0)), 0);
-  const want = fight - before;
-  // the largest subset first: an Outro is the exception on that frame, a closing handoff's own hits the rule
-  const masks = Array.from({ length: 1 << last.length }, (_, m) => m).sort((a, b) => popcount(b) - popcount(a) || a - b);
-  const keep = masks.find((m) => Math.abs(last.reduce((sum, h, i) => (m & (1 << i) ? sum + (Number(h.avg) || 0) : sum), 0) - want) < 0.5);
-  if (keep === undefined) return all;
-  const dropped = new Set(last.filter((_, i) => !(keep & (1 << i))));
-  return all.filter((h) => !dropped.has(h));
+  if (!last.length) return all;
+  const avg = (h: any): number => Number(h.avg) || 0;
+  const dropped = new Set<any>();
+  // the subset of `on` (one group's last-frame hits) that makes up `want`: the rest were an Outro's
+  const settle = (on: any[], want: number): void => {
+    if (!on.length || !Number.isFinite(want) || on.length > 16) return;
+    // the largest subset first: an Outro is the exception on that frame, a closing handoff's own hits the rule
+    const masks = Array.from({ length: 1 << on.length }, (_, m) => m).sort((a, b) => popcount(b) - popcount(a) || a - b);
+    const keep = masks.find((m) => Math.abs(on.reduce((sum, h, i) => (m & (1 << i) ? sum + avg(h) : sum), 0) - want) < 0.5);
+    if (keep !== undefined) on.forEach((h, i) => !(keep & (1 << i)) && dropped.add(h));
+  };
+  // his per-slot fight sums say whose hit he dropped — equal hits of two members on that frame, or a frame of many
+  // hits, read right only slot by slot; a run without them is read off the whole fight's total
+  const bySlot: Map<string, number> | null =
+    run.fightBySlot instanceof Map ? run.fightBySlot : Array.isArray(run.fightBySlot) ? new Map(run.fightBySlot) : null;
+  if (bySlot) {
+    for (const slot of new Set(last.map((h) => String(h.slot)))) {
+      const before = all.reduce((sum, h) => (String(h.slot) === slot && h.at !== frames ? sum + avg(h) : sum), 0);
+      settle(last.filter((h) => String(h.slot) === slot), Number(bySlot.get(slot) ?? 0) - before);
+    }
+  } else {
+    const before = all.reduce((sum, h) => (h.at === frames ? sum : sum + avg(h)), 0);
+    settle(last, Number(run.fightTotal) - before);
+  }
+  return dropped.size ? all.filter((h) => !dropped.has(h)) : all;
 }
 const popcount = (m: number): number => {
   let n = 0;
