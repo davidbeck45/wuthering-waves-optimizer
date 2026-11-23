@@ -5588,3 +5588,15 @@ hand afterwards makes the panel the player's own again, and the resolver keeps i
 Each fill first saves the character's build to build history as "Before Use their real buffs"; that version's Restore
 puts the old panel back. Ryan's "Your setup changed since this run" alert (#706) fires after a fill through his own
 watch on the panel. Spec: `cypress/e2e/teamBuffsFromBuilds.cy.ts`.
+
+## The seam on Riley's 211d7d0: the second check (batch 5, lane `check-engine`, 2026-11-23)
+
+- **`countedHits` reads his per-member sums.** The last frame's hits are settled slot by slot against the run's own
+  `fightBySlot`, so the dropped Outro is taken from the member who cast it. Matched to the whole `fightTotal`, a frame
+  where the Outro and another member's hit dealt the same damage lost the other member's hit (the per-member split
+  wrong, the total right), and a frame of more than 12 hits counted the Outro. A run without `fightBySlot` keeps the
+  whole-total search. Checked against the hits his engine itself counts (`runTeam(…, variants)` hands back
+  `base.hits`): equal on all 911 S6R5 and 833 S0R1 teams and on 25 `mine` runs of a real account.
+- **The enemy profile unset is a no-op on every team:** the fork's totals equal Riley's unpatched build on all 1,744.
+- /endgame's progress card wraps on a phone: the step's label takes the line, the count and Cancel go under it
+  (`toaPhoneProgress.cy.ts`, 360 px at 130 % text).
