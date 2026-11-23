@@ -217,23 +217,24 @@ describe("rotation view", () => {
     cy.get("[data-test-rotation-picker-stock]")
       .should("have.length.greaterThan", 3)
       .each(($tile) => {
-        expect($tile.text()).to.match(/Rover (Electro|Spectro)/);
-        expect($tile.text()).not.to.match(/Female|RoverElectro/);
-        expect($tile.find("[data-test-rotation-open-cue]").attr("href")).to.match(/Rover(electro|Spectro)male/i);
+        expect($tile.text()).to.match(/Rover (Aero|Electro|Fusion|Glacio|Havoc|Spectro)/); // Havoc since Riley's 211d7d0
+        expect($tile.text()).not.to.match(/Female|Rover(Aero|Electro|Havoc|Spectro)/);
+        expect($tile.find("[data-test-rotation-open-cue]").attr("href")).to.match(/Rover(aero|electro|havoc|spectro)male/i);
         expect($tile.find("[data-test-rotation-open-cue]").attr("href")).not.to.match(/female/i);
       });
-    cy.get("[data-test-rotation-picker-stock]").first().find('[role="img"]').first().should("have.attr", "aria-label", "Rover Electro (Male)").and("have.attr", "style").and("match", /Roverelectromale/);
+    cy.get("[data-test-rotation-picker-stock]").first().find('[role="img"]').first().should("have.attr", "aria-label").and("match", /^Rover (Aero|Electro|Havoc|Spectro) \(Male\)$/);
+    cy.get("[data-test-rotation-picker-stock]").first().find('[role="img"]').first().should("have.attr", "style").and("match", /Rover(aero|electro|havoc|spectro)male/i);
     // no tile wider than the phone
     cy.get("[data-test-rotation-picker-stock]").each(($tile) => expect($tile[0].getBoundingClientRect().right).to.be.at.most(412));
     cy.get("[data-test-rotation-picker-stock]").first().find("[data-test-rotation-open-cue]").click();
-    cy.location("hash").should("match", /^#chars=Roverelectromale,/);
+    cy.location("hash").should("match", /^#chars=Rover(aero|electro|havoc|spectro)male,/);
     cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
-    cy.get("[data-test-rotation-title]").should("contain.text", "Rover Electro");
+    cy.get("[data-test-rotation-title]").should("contain.text", "Rover");
     // wuwa_calc's run names his one Rover by the female key: the page draws the Rover this account plays
     cy.get('[data-test-rotation-member] [role="img"]').then(($imgs) => {
       const styles = [...$imgs].map((el) => el.getAttribute("style") ?? "").join(" ");
-      expect(styles).to.match(/Roverelectromale/);
-      expect(styles).not.to.match(/Roverelectrofemale/);
+      expect(styles).to.match(/Rover(aero|electro|havoc|spectro)male/i);
+      expect(styles).not.to.match(/female/i);
     });
   });
 
