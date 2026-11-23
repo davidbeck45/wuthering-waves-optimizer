@@ -126,6 +126,132 @@
   }
  },
  {
+  "name": "Suoming S6 Unspoken Rue R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 263,790 DPS for Suoming of 329,517 team DPS. Sequence procs in the loop: none. Rotation time 25.38 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suoming S6 Unspoken Rue R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 263,790 DPS for Suoming of 329,517 team DPS. Sequence procs in the loop: none. Rotation time 25.38 s (the team's loop).",
+   "duration": 25.38,
+   "actions": [
+    {
+     "order": 1,
+     "key": "IntroSkillFurledCanopyFlashRiftDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ResonanceLiberationUmbralCanopyMiasmaLockDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ResonanceSkillFurledCanopyRiftCleaverDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ResonanceSkillUnfurledCanopyUnforsakenMindDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackUmbralCanopyEngravedHeartDMGHold",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "CastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceSuhsintheInevitable",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
   "name": "Suoming S6 Unspoken Rue R5 · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Sanhua (main DPS): 217,125 DPS for Suoming of 225,665 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
@@ -133,6 +259,306 @@
    "name": "Suoming S6 Unspoken Rue R5 · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
    "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CD ATK Electro atk atk. Team: Shorekeeper + Sanhua (main DPS): 217,125 DPS for Suoming of 225,665 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "IntroSkillFurledCanopyFlashRiftDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "IntroSkillUnfurledCanopyThunderRendingDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceLiberationUmbralCanopyMiasmaLockDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ResonanceSkillFurledCanopyRiftCleaverDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ResonanceSkillUnfurledCanopyUnforsakenMindDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackUmbralCanopyEngravedHeartDMGHold",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "CastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceSuhsintheInevitable",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suoming S6 Unspoken Rue R5 · Lily + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK Electro atk atk. Team: Lily + Sanhua (main DPS): 206,155 DPS for Suoming of 215,943 team DPS. Sequence procs in the loop: none. Rotation time 25.65 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suoming S6 Unspoken Rue R5 · Lily + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK Electro atk atk. Team: Lily + Sanhua (main DPS): 206,155 DPS for Suoming of 215,943 team DPS. Sequence procs in the loop: none. Rotation time 25.65 s (the team's loop).",
+   "duration": 25.65,
+   "actions": [
+    {
+     "order": 1,
+     "key": "IntroSkillFurledCanopyFlashRiftDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "IntroSkillUnfurledCanopyThunderRendingDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ResonanceLiberationUmbralCanopyMiasmaLockDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "ResonanceSkillFurledCanopyRiftCleaverDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackUnfurledCanopyStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackUnfurledCanopyStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ResonanceSkillUnfurledCanopyUnforsakenMindDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "BasicAttackUmbralCanopyEngravedHeartDMGHold",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "CastDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceSuhsintheInevitable",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suoming S6 Unspoken Rue R1 · Lily + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R1, Heart of Sworn Vigil 5pc, main stats 43311 CR Electro Electro atk atk. Team: Lily + Sanhua (main DPS): 166,730 DPS for Suoming of 176,518 team DPS. Sequence procs in the loop: none. Rotation time 25.65 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Suoming S6 Unspoken Rue R1 · Lily + Sanhua · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unspoken Rue R1, Heart of Sworn Vigil 5pc, main stats 43311 CR Electro Electro atk atk. Team: Lily + Sanhua (main DPS): 166,730 DPS for Suoming of 176,518 team DPS. Sequence procs in the loop: none. Rotation time 25.65 s (the team's loop).",
+   "duration": 25.65,
    "actions": [
     {
      "order": 1,
