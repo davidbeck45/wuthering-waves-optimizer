@@ -573,7 +573,6 @@ import {
   type OptimizerEmptyReason,
 } from "../calculator/optimizer";
 import { optimizerPress } from "../sim/optimizer/optimizerPress"; // Wuthering Tools+: a run never starts on a half-loaded character
-import { runBasisOf, runOutlived, type OptimizerRunBasis } from "../sim/optimizer/optimizerRunBasis"; // Wuthering Tools+: rows go with the build and weapon they were scored on
 import { reloadOnce, workerWouldNotLoad } from "../sim/perf/chunkReload"; // Wuthering Tools+: a tab older than the site reloads, as for a lost chunk
 import { getWeaponByName } from "../weapons/weapons";
 import { useCalculatorScreenLink } from "../sim/shell/calculatorScreen"; // Wuthering Tools+: /?screen=optimizer
@@ -1530,7 +1529,6 @@ export default defineComponent({
       loadoutFormat = "Any",
     ) => {
       currentOptimizerCleanup?.(); // Wuthering Tools+: one run at a time, or the last to finish wins
-      optimizerScoredOn = optimizerBasisNow.value; // Wuthering Tools+: see the watch below
 
       lastOptimizeArgs = [
         setFilters,
@@ -1753,18 +1751,12 @@ export default defineComponent({
       stopOptimizerTimer();
       isOptimizerRunning.value = false;
       optimizerResults.value = [];
+      optimizerSnapshot.value = null; // Wuthering Tools+: his #706 state goes with the rows
+      pendingOptimizerSnapshot = null;
       liveBestResult.value = null;
       optimizerNoPossibleLoadouts.value = true;
       optimizerEmptyReason.value = reason;
     };
-    // Wuthering Tools+: a run's rows belong to the build and weapon they were scored on (src/sim/optimizer/optimizerRunBasis.ts)
-    const optimizerBasisNow = computed(() => runBasisOf(character.value, characters.value?.[character.value]));
-    let optimizerScoredOn: OptimizerRunBasis | null = null;
-    watch(optimizerBasisNow, (now) => {
-      if (!runOutlived(optimizerScoredOn, now)) return;
-      optimizerScoredOn = null;
-      if (isOptimizerRunning.value || optimizerResults.value.length) endOptimizerRunWith("run-outdated");
-    });
 
     // Web worker-based optimization (the workers themselves are driven by
     // src/workers/optimizerRun.ts; this maps its progress onto this page's refs).
@@ -1980,7 +1972,6 @@ export default defineComponent({
       },
       { deep: true },
     );
-
     // Comparisons for the shown results: the run's baseline, or live values
     // before any run has finished.
     const optimizerCompareStats = computed(

@@ -1,5 +1,5 @@
 // Wuthering Tools+ — how a calculator run ends when it cannot give rows, and how rows end when what they were scored on
-// goes (hunt round 1, 2026-11-06). Upstream's golden Zani account, on the v3 screens unless a test says classic.
+// goes (hunt round 1, 2026-11-06; batch 5: they stay, flagged). Upstream's golden Zani account, on the v3 screens unless a test says classic.
 import { configOptimizer as zani } from "./calculator/data/Zani/data";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -46,47 +46,66 @@ function finishedRun(): void {
   cy.get(ROW, { timeout: 60000 }).should("have.length", 5);
 }
 
-describe("rows go with the build and weapon they were scored on", { defaultCommandTimeout: 30000 }, () => {
-  it("a run left going when another build is picked stops, says so, and lands nothing", () => {
-    visit(account());
+// Ryan's #706 and plus's rule answered one question twice: plus threw the rows away on a build or weapon change, his flags
+// them on any non-echo change and keeps comparing against the build they ran on. Plus keeps his answer (batch 5).
+const STALE = "[data-test-optimizer-stale-alert]";
+const firstRow = `${ROW}[data-test-optimizer-workspace-leaderboard-row="0"]`;
+
+/** Build "two" holds the weapon at the other refinement: picking it changes a non-echo input. */
+function otherRefinement(record: any): void {
+  const weapon = record.weapon;
+  const now = String(record.weapons?.[weapon]?.refinement ?? "1");
+  record.builds[1].weapons = { ...record.builds[1].weapons, [weapon]: { ...record.builds[1].weapons?.[weapon], refinement: now === "1" ? "5" : "1" } };
+}
+
+function setRefinementInStore(win: Cypress.AUTWindow): void {
+  const store = storeOf(win);
+  const weapon = store.characters.Zani.weapon;
+  const refinement = String(store.characters.Zani.weapons?.[weapon]?.refinement ?? "1") === "1" ? "5" : "1";
+  store.characters.Zani.weapons = { ...store.characters.Zani.weapons, [weapon]: { ...store.characters.Zani.weapons?.[weapon], refinement } };
+}
+
+describe("rows outlive a change to what they were scored on, flagged", { defaultCommandTimeout: 30000 }, () => {
+  it("a run left going when a build with another weapon is picked lands its rows, flagged", () => {
+    visit(account(otherRefinement));
     cy.window().then((win) => {
-      cy.spy(win.Worker.prototype, "terminate").as("terminate");
       cy.get(RUN).then(($button) => {
         $button[0]!.click();
         storeOf(win).equipBuild("Zani", "two");
       });
     });
-    cy.get<sinon.SinonSpy>("@terminate").should("have.been.called");
-    cy.get(WHY).should("contain.text", "build or weapon changed");
-    cy.wait(3000);
-    cy.get(ROW).should("not.exist");
+    cy.get(ROW, { timeout: 60000 }).should("have.length", 5);
+    cy.get(STALE).should("contain.text", "Your setup changed");
+    cy.get(WHY).should("not.exist");
   });
 
-  it("a finished run's rows go when another build is picked", () => {
-    visit(account());
+  it("a finished run's rows stay, flagged, when a build with another weapon is picked; Equip loadout still works", () => {
+    visit(account(otherRefinement));
     finishedRun();
+    cy.get(STALE).should("not.exist");
     cy.window().then((win) => storeOf(win).equipBuild("Zani", "two"));
-    cy.get(ROW).should("not.exist");
-    cy.get(WHY).should("contain.text", "build or weapon changed");
-    cy.get(RUN).should("exist");
+    cy.get(STALE).should("contain.text", "Your setup changed");
+    cy.get(ROW).should("have.length", 5);
+    cy.get(WHY).should("not.exist");
+    cy.get(firstRow).click();
+    cy.get("[data-test-optimizer-workspace-equip-btn]").click();
+    cy.wait(800);
+    cy.get(ROW).should("have.length", 5);
+    cy.get(STALE).should("exist");
   });
 
-  it("a finished run's rows go when the weapon's refinement changes, then a new run reads the new weapon", () => {
+  it("the weapon's refinement changes after a run: the rows and their comparison stay as run, flagged; Run again reads the new weapon", () => {
     visit(account());
     finishedRun();
-    cy.get(`${ROW} .font-mono`).first().invoke("text").then((before) => {
-      cy.window().then((win) => {
-        const store = storeOf(win);
-        const weapon = store.characters.Zani.weapon;
-        const refinement = String(store.characters.Zani.weapons?.[weapon]?.refinement ?? "1") === "1" ? "5" : "1";
-        store.characters.Zani.weapons = { ...store.characters.Zani.weapons, [weapon]: { ...store.characters.Zani.weapons?.[weapon], refinement } };
-      });
-      cy.get(ROW).should("not.exist");
-      cy.get(WHY).should("contain.text", "build or weapon changed");
+    cy.get(firstRow).invoke("text").then((before) => {
+      cy.window().then(setRefinementInStore);
+      cy.get(STALE).should("contain.text", "Your setup changed");
       cy.wait(800);
-      finishedRun();
-      cy.get(WHY).should("not.exist");
-      cy.get(`${ROW} .font-mono`).first().invoke("text").should("not.eq", before);
+      cy.get(firstRow).invoke("text").should("eq", before);
+      cy.get("[data-test-optimizer-rerun]").click();
+      cy.get(STALE).should("not.exist");
+      cy.get(ROW, { timeout: 60000 }).should("have.length", 5);
+      cy.get(firstRow).invoke("text").should("not.eq", before);
     });
   });
 
@@ -98,6 +117,37 @@ describe("rows go with the build and weapon they were scored on", { defaultComma
     cy.wait(1000);
     cy.get(ROW).should("have.length", 5);
     cy.get(WHY).should("not.exist");
+    cy.get(STALE).should("not.exist");
+  });
+
+  it("a press the moment the page opens, on a slow start: the run lands unflagged and stays so", () => {
+    // the character's module and her weapon's held back, as on a slow phone (optimizerExact.cy.ts holds them the same way)
+    const gates = ["/src/characters/Zani/index.ts", "/src/weapons/Gauntlets/BlazingJustice.ts"].map((pathname) => {
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => (release = resolve));
+      cy.intercept({ method: "GET", pathname }, async (req) => {
+        await gate;
+        req.continue();
+      });
+      return () => release();
+    });
+    const data = account();
+    cy.visit("/?screen=optimizer", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("character", JSON.stringify(data));
+        win.localStorage.setItem("inventory", zani.data.inventory);
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
+    cy.get(RUN).click({ force: true });
+    cy.wait(1000);
+    cy.get(ROW).should("not.exist");
+    cy.then(() => gates.forEach((release) => release()));
+    cy.get(ROW, { timeout: 60000 }).should("have.length", 5);
+    cy.wait(2500);
+    cy.get(STALE).should("not.exist");
   });
 });
 
