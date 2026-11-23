@@ -14,6 +14,8 @@ import { clearToolMemo, readOnlyStorage, runTool } from "./index";
 import { echoLabFor } from "./memo";
 import { MAX_RESULT_CHARS, type ToolContext } from "./shared";
 import { deepLinksOf, summarizeTool } from "../ui/toolSummary";
+import { gainsNote } from "./levels";
+import { orderBlindText } from "../../levels/levelsView";
 
 const exp: ExportFile = parseExport(fixture, "aiAccount.json");
 /** 3.7 Phase II is running (Lucilla, Lynae, Freeze Frame, Spectrum Blaster), on the Asia server's clock */
@@ -161,6 +163,14 @@ describe("weapon_value", () => {
     expect(r.countedFrom).toBe("level 1 (a new copy with a level-1 weapon)");
     expect(r.eachOnItsOwn).toHaveLength(7);
     expect(r.levelInThisOrder.stepsOmitted).toBe(59 - 12);
+    // the notes name what the order is measured in: damage for Mornye, healing or shield strength for a healer or a
+    // shielder, as the page does (they said "damage" for every character)
+    expect(r.orderedBy).toBe("team damage");
+    expect(r.notes).toContain(gainsNote("team"));
+    expect(r.notes).toContain(orderBlindText("team"));
+    expect(gainsNote("healing")).toMatch(/^Gains are % of healing on the character's best rotation: their levels buy healing, not damage\./);
+    expect(gainsNote("shield")).toMatch(/^Gains are % of shield strength /);
+    expect(gainsNote("own")).toBe(gainsNote("team"));
     const none = await runTool("weapon_value", { character: null, show: "levels", levels: null }, ctxWith());
     expect(JSON.parse(none.content).error).toMatch(/show = "levels" needs a character/);
     const bad = await runTool("weapon_value", { character: "Mornye", show: "levels", levels: "level=85" }, ctxWith());

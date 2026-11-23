@@ -5,11 +5,20 @@ import { count } from "../../materials/costToMax";
 import { loadMaterials } from "../../materials/materialsData";
 import { levelPlan } from "../../levels/levelPlan";
 import { parseLevels } from "../../levels/levelSteps";
-import { assumedWords, BASIS_WORDS, inertText, type LevelRow } from "../../levels/levelWorth";
-import { flatNote, gateLine, gateText, headlineText, NOT_MODELLED, ORDER_BLIND, pathHow, smallTeamLine } from "../../levels/levelsView";
+import { assumedWords, BASIS_WORDS, inertText, type Basis, type LevelRow } from "../../levels/levelWorth";
+import { flatNote, gateLine, gateText, headlineText, measureWord, NOT_MODELLED, orderBlindText, pathHow, smallTeamLine } from "../../levels/levelsView";
 import { enemyLabel } from "./character";
 import { rankingFor } from "./memo";
 import { characterName, compactJson, pct, type ToolContext } from "./shared";
+
+/** What the gains are a percent of. A healer's or a shielder's levels buy healing or shield strength, as the page says
+ *  (levelsView.ts `measureWord`); the answer said "damage" for Verina's healing order. */
+export function gainsNote(basis: Basis): string {
+  const rest = "eachOnItsOwn takes one track to its top alone; level-ups multiply, so the order re-scores after every step.";
+  return basis === "healing" || basis === "shield"
+    ? `Gains are % of ${measureWord(basis)} on the character's best rotation: their levels buy ${measureWord(basis)}, not damage. ${rest}`
+    : `Gains are % of average damage per rotation: own = the character's best rotation, team = the strongest team they can field. ${rest}`;
+}
 
 /** how many steps of the order go to the model (the rest are counted) */
 const PATH_STEPS = 12;
@@ -84,11 +93,11 @@ export async function levelsAnswer(id: string, levels: string | null | undefined
         }
       : {}),
     notes: [
-      "Gains are % of average damage per rotation: own = the character's best rotation, team = the strongest team they can field. eachOnItsOwn takes one track to its top alone; level-ups multiply, so the order re-scores after every step.",
+      gainsNote(plan.basis),
       plan.buildNote,
       small,
       NOT_MODELLED,
-      plan.path.length ? ORDER_BLIND : null,
+      plan.path.length ? orderBlindText(plan.basis) : null,
     ].filter(Boolean),
     ...link,
   });
