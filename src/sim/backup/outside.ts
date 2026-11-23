@@ -99,11 +99,12 @@ export function noteAutomatic(result: { saved: boolean; why?: string }, at = Dat
   });
 }
 
-/** The words for it, on the Backups page and in Settings. */
-export function missedText(missed: MissedBackup, when: string): string {
-  return missed.why === "full"
-    ? `The automatic backup of ${when} could not be stored: this browser has no room left. The backups it has are kept. Download or share a copy instead.`
-    : `The automatic backup of ${when} could not be stored. The backups this browser has are kept. Download or share a copy instead.`;
+/** The words for it, on the Backups page and in Settings. `held`: how many backups this browser has (the note must
+ *  not promise to keep backups that are not there: a full browser on the first day has none). */
+export function missedText(missed: MissedBackup, when: string, held?: number): string {
+  const head = missed.why === "full" ? `The automatic backup of ${when} could not be stored: this browser has no room left.` : `The automatic backup of ${when} could not be stored.`;
+  if (held === 0) return `${head} There is no backup here yet, so download or share a copy now.`;
+  return missed.why === "full" ? `${head} The backups it has are kept. Download or share a copy instead.` : `${head} The backups this browser has are kept. Download or share a copy instead.`;
 }
 
 /** "today", "yesterday", "34 days ago": whole days on the player's own calendar. */

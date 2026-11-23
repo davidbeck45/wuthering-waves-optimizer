@@ -28,10 +28,11 @@
         <button type="button" class="btn btn-sm btn-outline" :disabled="busy || state === 'loading' || empty" data-test-backups-now @click="backUpNow()">Back up now</button>
       </div>
 
-      <p v-if="missed" class="bk-missed" role="status" data-test-backups-missed>{{ missedText(missed, whenText(missed.at, now)) }}</p>
+      <p v-if="missed" class="bk-missed" role="status" data-test-backups-missed>{{ missedText(missed, whenText(missed.at, now), state === "ready" ? list.length : undefined) }}</p>
       <p v-if="state === 'loading'" class="bk-muted" role="status">Reading this browser's backups…</p>
       <p v-else-if="!list.length" class="bk-muted" data-test-backups-empty>
         <template v-if="empty">Nothing to back up yet: no character set up, no echoes, no teams and no pulls.</template>
+        <template v-else-if="missed">No backups yet.</template>
         <template v-else>No backups yet. The first is made on its own a few seconds after you open the site, or press Back up now.</template>
       </p>
 

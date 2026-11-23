@@ -172,6 +172,12 @@ describe("a copy outside this browser", () => {
     expect(missedText({ at: NOW, why: "failed" }, "Today 09:00")).toMatch(/could not be stored\. The backups this browser has are kept/);
   });
 
+  it("with no backup in this browser yet, the note does not say there are backups to keep", () => {
+    expect(missedText({ at: NOW, why: "full" }, "Today 09:00", 0)).toBe("The automatic backup of Today 09:00 could not be stored: this browser has no room left. There is no backup here yet, so download or share a copy now.");
+    expect(missedText({ at: NOW, why: "failed" }, "Today 09:00", 0)).toBe("The automatic backup of Today 09:00 could not be stored. There is no backup here yet, so download or share a copy now.");
+    expect(missedText({ at: NOW, why: "failed" }, "Today 09:00", 2)).toMatch(/The backups this browser has are kept/);
+  });
+
   it("Download saves a .json under the backup's own day and time, and counts as a copy outside", () => {
     const saved: Array<[string, string]> = [];
     const taken = at(12, 14, 2);

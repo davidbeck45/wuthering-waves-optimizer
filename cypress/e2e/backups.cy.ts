@@ -398,6 +398,29 @@ describe("automatic backups", () => {
     cy.get(".confirm-dialog[open]").should("not.exist");
   });
 
+  it("a browser that is full on the first day says there is no backup here yet, and promises none on its own", () => {
+    // every write to IndexedDB refused as a full browser refuses it
+    cy.on("window:before:load", (win) => {
+      const full = (): never => {
+        throw new (win as unknown as { DOMException: typeof DOMException }).DOMException("full", "QuotaExceededError");
+      };
+      const proto = (win as unknown as { IDBObjectStore: typeof IDBObjectStore }).IDBObjectStore.prototype;
+      proto.add = full;
+      proto.put = full;
+    });
+    // the fake throws where a real full browser aborts the transaction: other stores' writes (saved results) see it as
+    // a throw, which a real browser never makes, so only that error is let through here
+    cy.on("uncaught:exception", (e) => (e.name === "QuotaExceededError" || /QuotaExceededError/.test(String(e.message)) ? false : undefined));
+    cy.viewport(360, S26.height);
+    cy.visit("/backups", seed());
+    cy.get("[data-test-backups-missed]", { timeout: 20000 })
+      .should("contain.text", "could not be stored")
+      .and("contain.text", "There is no backup here yet, so download or share a copy now.")
+      .and("not.contain.text", "are kept");
+    cy.get("[data-test-backups-empty]").should("have.text", "No backups yet.");
+    expectNoHorizontalScroll("/backups, full browser, 360 px");
+  });
+
   it("offers Share only where the browser shares files, and hands the share sheet the backup as a .txt", () => {
     const withShare = (win: Window): void => {
       const w = win as TestWindow;

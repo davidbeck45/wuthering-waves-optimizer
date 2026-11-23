@@ -37,7 +37,7 @@
       </template>
       <RouterLink to="/backups" class="bk-link" data-test-backup-all>See and restore backups</RouterLink>
     </p>
-    <p v-if="variant === 'settings' && missed" class="bk-missed" role="status" data-test-backup-missed>{{ missedText(missed, whenText(missed.at, now)) }}</p>
+    <p v-if="variant === 'settings' && missed" class="bk-missed" role="status" data-test-backup-missed>{{ missedText(missed, whenText(missed.at, now), state === "ready" ? list.length : undefined) }}</p>
   </section>
 </template>
 
