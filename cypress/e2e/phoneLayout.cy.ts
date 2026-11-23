@@ -1256,7 +1256,7 @@ describe("phone layout", () => {
     });
     cy.get("[data-test-live-result-attacks-expand-all]").scrollIntoView();
     cy.get(".live-result-attacks .toolbar button").filter(":visible").should("have.length", 4).each(($button) => {
-      expect($button[0].getBoundingClientRect().height, `"${$button.text().trim()}" is 44 px tall`).to.be.at.least(44);
+      expect($button[0].offsetHeight, `"${$button.text().trim()}" is 44 px tall (its box: DaisyUI pops a new button in from 95 %)`).to.be.at.least(44);
     });
     cy.get(".live-result-attacks .toolbar").should(($bar) => {
       expect($bar[0].getBoundingClientRect().height, "Pins, Expand all and Collapse all share one line").to.be.below(60);
@@ -1304,10 +1304,10 @@ describe("phone layout", () => {
         expect(range.getBoundingClientRect().bottom, `"${badge.textContent!.trim()}" inside its pill`).to.be.at.most(badge.getBoundingClientRect().bottom + 1);
       }
       const use = row.querySelector("[data-test-recommended-teams-use]");
-      if (use) expect(use.getBoundingClientRect().height, "Use team is 44 px tall").to.be.at.least(44);
+      if (use) expect((use as HTMLElement).offsetHeight, "Use team is 44 px tall (its box: DaisyUI pops a new button in from 95 %)").to.be.at.least(44);
     });
     cy.get("[data-test-recommended-teams-filter]").each(($filter) => {
-      expect($filter[0].getBoundingClientRect().height, `the "${$filter.text().trim()}" filter is 44 px tall`).to.be.at.least(44);
+      expect($filter[0].offsetHeight, `the "${$filter.text().trim()}" filter is 44 px tall`).to.be.at.least(44);
     });
   });
 
