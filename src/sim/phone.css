@@ -2047,3 +2047,21 @@ html.wt-ai-docked #wt-app .contain {
   }
 }
 
+
+/* § 44 Optimize team's per-slot echo cards (Ryan's #745, ADR 0061) on a phone (batch 5, lane post-merge). His grid sets
+          the five cards of a pick two to a row below 640 px, and a card's substat rows ("Resonance Liberation DMG
+          Bonus 9.9 %") are wider than half a phone at 130 % text: they ran out of their cards and the page scrolled
+          sideways, 549 px wide at 412. One card to a row, held to it, its long names wrapping as § 37 a does. */
+@media (max-width: 639px) {
+  [data-test-team-optimizer-slots] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  [data-test-team-optimizer-slots] > * {
+    min-width: 0;
+  }
+  [data-test-team-optimizer-slots] .truncate {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
