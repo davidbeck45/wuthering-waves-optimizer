@@ -402,6 +402,32 @@ function loggedCrit(e: { avg: number; crit: number; noCrit: number }, crit: [num
   return [rate, dmg];
 }
 
+/** The hits runTeam counted, in landing order: none past the fight's last frame, and since his 211d7d0 no Outro hit ON
+ *  that frame either (its handoff would open a rotation the fight doesn't have; teamrun.ts `runTeamInner`). His run
+ *  drops each hit's `res` once it is filed, so which hits on the last frame were an Outro's is read back from the run's
+ *  own `fightTotal` (the whole numbers of every counted hit): the last frame's hits that make it up are the ones kept.
+ *  An engine without `fightTotal`, or a last frame whose hits no subset of adds up, keeps them all (the rule before). */
+export function countedHits(run: any): any[] {
+  const frames = Math.round(Number(run.seconds) * FPS);
+  const all = (run.state.hits as any[]).filter((h) => !(h.at > frames));
+  const last = all.filter((h) => h.at === frames);
+  const fight = Number(run.fightTotal);
+  if (!last.length || !Number.isFinite(fight) || last.length > 12) return all;
+  const before = all.reduce((sum, h) => (h.at === frames ? sum : sum + (Number(h.avg) || 0)), 0);
+  const want = fight - before;
+  // the largest subset first: an Outro is the exception on that frame, a closing handoff's own hits the rule
+  const masks = Array.from({ length: 1 << last.length }, (_, m) => m).sort((a, b) => popcount(b) - popcount(a) || a - b);
+  const keep = masks.find((m) => Math.abs(last.reduce((sum, h, i) => (m & (1 << i) ? sum + (Number(h.avg) || 0) : sum), 0) - want) < 0.5);
+  if (keep === undefined) return all;
+  const dropped = new Set(last.filter((_, i) => !(keep & (1 << i))));
+  return all.filter((h) => !dropped.has(h));
+}
+const popcount = (m: number): number => {
+  let n = 0;
+  for (; m; m &= m - 1) n++;
+  return n;
+};
+
 /** Each hit `run.state.hits` counted (the same end-of-fight cut as `toRunLite`), with its crit as the damage formula
  *  read it: [Crit Rate %, Crit DMG %], null where it cannot crit. A traced run only — an untraced one keeps no
  *  snapshot, and teamrun.ts drops each hit's `res` once the fight is over — so the hits are matched back to the
@@ -442,10 +468,8 @@ export function hitCritsOf(E: RileyEngine, run: any): Array<[number, number] | n
       }
     }
   }
-  const frames = Math.round(Number(run.seconds) * FPS);
   const out: Crit[] = [];
-  for (const h of run.state.hits as any[]) {
-    if (h.at > frames) continue;
+  for (const h of countedHits(run)) {
     const who = `${h.slot ?? h.member}|${h.member}`;
     const a = framed.get(`${who}|${h.at}|${h.avg}`);
     if (a?.length) {
@@ -545,10 +569,8 @@ export function toRunLite(E: RileyEngine, run: any, meta: { picks: RileyPick[]; 
   }
 
   // every hit runTeam counted: it files hits by rotation and drops what lands after the fight's last frame
-  const frames = Math.round(Number(run.seconds) * FPS);
   const hits: RunLite["hits"] = [];
-  for (const h of run.state.hits as any[]) {
-    if (h.at > frames) continue;
+  for (const h of countedHits(run)) {
     hits.push([Number(h.at), slotOf(String(h.slot)), names.indexOf(h.member), Math.round(Number(h.avg) || 0)]);
   }
 
@@ -606,10 +628,8 @@ export interface FightCurve {
  *  runTeam counted, dropped past the fight's last frame — and nothing else. */
 export function toFightCurve(E: RileyEngine, run: any): FightCurve {
   if (!run?.state) throw new Error("toFightCurve: the run kept no fight state");
-  const frames = Math.round(Number(run.seconds) * FPS);
   const byFrame = new Map<number, number>();
-  for (const h of run.state.hits as any[]) {
-    if (h.at > frames) continue;
+  for (const h of countedHits(run)) {
     const at = Number(h.at);
     byFrame.set(at, (byFrame.get(at) ?? 0) + (Number(h.avg) || 0));
   }
@@ -758,7 +778,7 @@ export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], 
   if (spread !== "trace") {
     // borrow the crits of a traced run of the same picks: the same hits, frame for frame and member for member
     const run = E.teamrun.runTeam(teamKey, members, combos, false);
-    const kept = keptHits(run);
+    const kept = countedHits(run);
     const ref = spread.critHits ?? [];
     const names: string[] = run.members.map((m: any) => String(m.name));
     if (kept.length === ref.length && kept.every((h, i) => Number(h.at) === ref[i]![0] && names.indexOf(h.member) === ref[i]![1])) {
@@ -771,7 +791,7 @@ export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], 
   const crits = hitCritsOf(E, run);
   return {
     ...toFightCurve(E, run),
-    critHits: keptHits(run).map((h, i) => [Number(h.at), names.indexOf(h.member), Math.round(Number(h.avg) || 0), crits[i] ? r2(crits[i]![0]) : 0, crits[i] ? r2(crits[i]![1]) : 100]),
+    critHits: countedHits(run).map((h, i) => [Number(h.at), names.indexOf(h.member), Math.round(Number(h.avg) || 0), crits[i] ? r2(crits[i]![0]) : 0, crits[i] ? r2(crits[i]![1]) : 100]),
   };
 }
 
@@ -779,12 +799,6 @@ export function fightCurve(E: RileyEngine, teamKey: string, picks: RileyPick[], 
  *  ("trace", ~5× the cost), or borrowed from a curve that has them — a traced run of the same picks under an enemy
  *  that leaves crit alone (RES, level, DMG Bonus and DMG-taken change a hit's size, never its Crit Rate / Crit DMG). */
 export type CurveSpread = null | "trace" | Pick<FightCurve, "critHits">;
-
-/** The hits a run counted, past the same end-of-fight cut `toRunLite` and `toFightCurve` make. */
-function keptHits(run: any): any[] {
-  const frames = Math.round(Number(run.seconds) * FPS);
-  return (run.state.hits as any[]).filter((h) => !(h.at > frames));
-}
 
 /** `runTeam(…, true)` on these picks (null: the best `mine` row) as a RunLite. Throws a `RunError` for a team
  *  with an unreleased member (released content only), a stale key or stale picks. */

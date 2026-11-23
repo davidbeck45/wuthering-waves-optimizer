@@ -7,7 +7,7 @@ import { SYNTHETIC_ACCOUNT, SYNTHETIC_TEAM } from "./__fixtures__/syntheticAccou
 import { WUWA_CALC_COMMIT } from "./engineCommit";
 import { createRileyClient, type WorkerLike } from "./rileyClient";
 import { engineCommitFromGit, rileyHeadless, type HeadlessRiley } from "./rileyNode";
-import { heldOf, memoKey, registerAccount, toRunLite, traceLive, type MineSolve, type RileyEngine, type RunError, type RunLite } from "./rileyRun";
+import { countedHits, heldOf, memoKey, registerAccount, toRunLite, traceLive, type MineSolve, type RileyEngine, type RunError, type RunLite } from "./rileyRun";
 import { createRileyHandler, RILEY_CANCEL, RILEY_MESSAGE, RILEY_PROGRESS, type RileyResponse } from "./rileyWorker";
 import { critHit, damageRange } from "../critLuck/spread";
 
@@ -204,6 +204,34 @@ describe("tracedRun → RunLite", () => {
     expect(f.engine.account).toBe(SYNTHETIC_ACCOUNT.key);
     if (f.engine.commit === E.commit) expect(run).toEqual(f);
   });
+});
+
+describe("countedHits", () => {
+  // his 211d7d0: a hit past the last frame never counts, and an Outro ON it no longer does (its handoff opens nothing);
+  // the run drops each hit's `res`, so the last frame is read back from `fightTotal`, the sum of the counted hits
+  const hit = (at: number, avg: number, member = "A") => ({ at, avg, member, slot: member });
+  const runOf = (hits: ReturnType<typeof hit>[], fightTotal?: number) => ({ seconds: 2, state: { hits }, ...(fightTotal === undefined ? {} : { fightTotal }) });
+
+  it("drops the last frame's Outro and keeps its other hits, never one past it", () => {
+    const hits = [hit(10, 100), hit(120, 30, "B"), hit(120, 7, "A"), hit(121, 50)];
+    expect(countedHits(runOf(hits, 137))).toEqual(hits.slice(0, 3)); // everything on the last frame counted
+    expect(countedHits(runOf(hits, 130))).toEqual(hits.slice(0, 2)); // A's 7 on it was an Outro
+    expect(countedHits(runOf(hits, 100))).toEqual(hits.slice(0, 1));
+  });
+
+  it("keeps the old rule where the run can't say: no fightTotal, or no subset adds up", () => {
+    const hits = [hit(10, 100), hit(120, 30)];
+    expect(countedHits(runOf(hits))).toEqual(hits);
+    expect(countedHits(runOf(hits, 115))).toEqual(hits);
+  });
+
+  it("on the real engine: the counted hits are the run's fightTotal to the point, and the fixture team's last Outro is out", () => {
+    const { run: live } = traceLive(E, best.teamKey, best.best!.picks, { account: SYNTHETIC_ACCOUNT });
+    const kept = countedHits(live);
+    expect(kept.reduce((s, x) => s + x.avg, 0)).toBe(live.fightTotal);
+    const frames = Math.round(live.seconds * 60);
+    expect((live.state.hits as any[]).filter((x) => x.at <= frames).length - kept.length).toBe(1);
+  }, 60_000);
 });
 
 describe("registerAccount", () => {
