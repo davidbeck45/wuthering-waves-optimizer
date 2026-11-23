@@ -790,6 +790,9 @@ async function refreshRows(): Promise<void> {
   const gen = ++generation;
   const stale = (): boolean => gen !== generation;
   cancelQueued();
+  // the level filters fit the cost and account this pass runs on: an account changed on another page moves the level
+  // a resonator runs at (her S2 dropped: "Cartethyia S2" matched no row), with no hash read to settle it
+  settleLevelsNow();
   const f = structuredClone(M.filters);
   // rows another pass drew so far belong to other filters: the overlay covers them again until this pass has its own
   if (soFar && soFar.gen !== gen) endSoFar();
@@ -1045,10 +1048,16 @@ function applyHashSettled(): boolean {
   // a team page reads its team off `t=`, whatever the filters say; settling under it rewrote its address (an account
   // changed on another page took the team away). The table settles once it is back on screen.
   if (M.hashTeam()) return changed;
+  return settleLevelsNow() || changed;
+}
+/** His `settleLevels()`, the hash written back at once where it moved a filter (a hash still reading the old level would
+ *  read as a change on every later visit to it). Leaves a team page's address alone. True where a filter moved. */
+function settleLevelsNow(): boolean {
+  const M = mods!.model;
+  if (M.hashTeam()) return false;
   const before = [...(M.resonatorFilters as Map<string, string>)].join();
   M.settleLevels();
-  if ([...(M.resonatorFilters as Map<string, string>)].join() === before) return changed;
-  // written back at once: a hash still reading the old level would read as a change on every later visit to it
+  if ([...(M.resonatorFilters as Map<string, string>)].join() === before) return false;
   M.syncHash();
   return true;
 }
