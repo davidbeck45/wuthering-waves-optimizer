@@ -1,4 +1,8 @@
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
+
+/** The team page's name in the /rankings hash: his `t=` (a team code, or a row key written plain), or a plus link's older
+ *  `team=` (Riley's e7a10a9 moved the detail view to its own address and renamed it; the app keeps it on /rankings). */
+const TEAM_HASH = /(^#|&)(t|team)=/;
 // Wuthering Tools+: Riley31415/wuwa_calc's comparison table hosted at /rankings (src/sim/rankings/).
 describe("Team Rankings (wuwa_calc)", () => {
   it("boots the comparison table from the shipped solves inside the app shell", () => {
@@ -15,11 +19,11 @@ describe("Team Rankings (wuwa_calc)", () => {
     cy.visit("/rankings");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root #app .gotodetail[data-team]", { timeout: 60000 }).first().click();
-    cy.location("hash").should("contain", "team=");
+    cy.location("hash").should("match", TEAM_HASH);
     cy.get(".skittle-root #topbar").should("not.have.attr", "hidden");
     cy.get(".skittle-root #app table, .skittle-root #app .log, .skittle-root #app .detail", { timeout: 60000 }).should("exist");
     cy.get("#backLink").click();
-    cy.location("hash").should("not.contain", "team=");
+    cy.location("hash").should("not.match", TEAM_HASH);
     cy.get(".skittle-root #app .tclayout", { timeout: 60000 }).should("exist");
   });
 
@@ -91,9 +95,9 @@ describe("wuwa_calc rankings: filters survive a rotation detail", () => {
     cy.get(".tcchips .rchip", { timeout: 60000 }).should("contain.text", "Mornye");
     cy.location("hash").should("include", "r=Mornye");
     cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 120000 }).first().click();
-    cy.location("hash", { timeout: 60000 }).should("include", "team=").and("include", "r=Mornye");
+    cy.location("hash", { timeout: 60000 }).should("match", TEAM_HASH).and("include", "r=Mornye");
     cy.get("#backLink").click();
-    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "r=Mornye");
+    cy.location("hash", { timeout: 60000 }).should("not.match", TEAM_HASH).and("include", "r=Mornye");
     cy.get(".tcchips .rchip", { timeout: 60000 }).should("contain.text", "Mornye");
   });
 });
@@ -144,10 +148,10 @@ describe("wuwa_calc rankings: My build substat row", () => {
       .and("contain.text", "ChemX32");
     // a My build row opens its rotation on the same spread, and Back keeps the compare
     cy.contains(".skittle-root .trow:not(.thead):not(.tghost)", "My build").find(".gotodetail[data-team]").click();
-    cy.location("hash", { timeout: 60000 }).should("include", "team=").and("match", /\.u[0-9a-z]+/);
+    cy.location("hash", { timeout: 60000 }).should("match", TEAM_HASH).and("match", /\.u[0-9a-z]+/);
     cy.get(".skittle-root #app", { timeout: 60000 }).should("contain.text", "My build");
     cy.get("#backLink").click();
-    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "cb=Cartethyia");
+    cy.location("hash", { timeout: 60000 }).should("not.match", TEAM_HASH).and("include", "cb=Cartethyia");
     cy.get(".skittle-root .tgrid", { timeout: 180000 }).should("contain.text", "My build");
   });
 
@@ -253,7 +257,7 @@ describe("wuwa_calc rankings: one substat spread for every row (Wuthering Tools+
     cy.get(".skittle-root .trow:not(.thead):not(.tghost) .gotodetail[data-team]", { timeout: 60000 }).first().click();
     cy.get(".skittle-root #app", { timeout: 60000 }).should("contain.text", "High Invest").and("not.contain.text", "ChemX32");
     cy.get("#backLink").click();
-    cy.location("hash", { timeout: 60000 }).should("not.include", "team=").and("include", "sb=h");
+    cy.location("hash", { timeout: 60000 }).should("not.match", TEAM_HASH).and("include", "sb=h");
     // the player's own builds: Cartethyia's equipped echoes, ChemX32 for a teammate without any
     cy.get("[data-test-rankings-subs]").select("m");
     cy.location("hash", { timeout: 60000 }).should("include", "sb=m");
@@ -584,7 +588,9 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     // a tap opens the team's rotation through the router, the member strip on top
     cy.get(cards).first().invoke("attr", "data-team").then((team) => {
       cy.get(cards).first().click();
-      cy.location("hash", { timeout: 60000 }).should("include", `team=${team}`);
+      // his team page names the row by its team code (t=), so the team on screen is read off the Import box
+      cy.location("hash", { timeout: 60000 }).should("match", TEAM_HASH);
+      cy.get(".skittle-root #topbar .wt-import", { timeout: 60000 }).should("have.attr", "data-team", team);
     });
     cy.get(".skittle-root").should("have.class", "wt-detail");
     cy.get("[data-test-rankings-strip-member]", { timeout: 60000 }).should("have.length", 3).first().should("have.attr", "data-main", "1");
@@ -621,7 +627,7 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     });
     // and Back lands on the cards again
     cy.get("#backLink").click();
-    cy.location("hash").should("not.include", "team=");
+    cy.location("hash").should("not.match", TEAM_HASH);
     cy.get(cards, { timeout: 60000 }).should("have.length.greaterThan", 0);
     cy.get("[data-test-rankings-strip]").should("not.exist");
   });
@@ -669,7 +675,7 @@ describe("wuwa_calc rankings: phone cards and the detail's member strip (Wutheri
     cy.get(".skittle-root .tcwrap").should("be.visible");
     cy.get(cards).should("not.exist");
     cy.get(".skittle-root .trow:not(.thead) .gotodetail[data-team]", { timeout: 60000 }).first().click();
-    cy.location("hash", { timeout: 60000 }).should("include", "team=");
+    cy.location("hash", { timeout: 60000 }).should("match", TEAM_HASH);
     // My account: Cartethyia runs the account's own S2 on Defier's Thorn, with five echoes on her build
     cy.get("[data-test-rankings-strip-member][data-name='Cartethyia']", { timeout: 60000 })
       .should("have.attr", "data-own", "same")

@@ -1,4 +1,8 @@
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
+
+/** The team page's name in the /rankings hash: his `t=` (a team code, or a row key written plain), or a plus link's older
+ *  `team=` (Riley's e7a10a9 moved the detail view to its own address and renamed it; the app keeps it on /rankings). */
+const TEAM_HASH = /(^#|&)(t|team)=/;
 // Wuthering Tools+ speed pass (2026-11-02): at My account /rankings solves the roster in its own workers (nothing is
 // shipped for an account). The rows solved so far are drawn while the rest are solved (src/sim/rankings/controller.ts
 // `paintSoFar`, timing in soFar.ts), instead of the table waiting for the last team under the full-screen overlay.
@@ -60,11 +64,11 @@ describe("wuwa_calc rankings: rows so far at My account (Wuthering Tools+)", () 
     // second followed its "#" and landed on his S0R1 tier (verify1)
     cy.get(".skittle-root.wt-sofar .gotodetail[data-team]", { timeout: 90000 }).first().click();
     cy.get(".skittle-root.wt-detail", { timeout: 30000 }).should("exist");
-    cy.location("hash").should("include", "team=").and("include", "tc=mine");
+    cy.location("hash").should("match", TEAM_HASH).and("include", "tc=mine");
     // the docked box is about the list: it does not sit over his detail page
     cy.get(".skittle-root #loading").should("not.be.visible");
     cy.get(".skittle-root #backLink").click();
-    cy.location("hash").should("include", "tc=mine").and("not.include", "team=");
+    cy.location("hash").should("include", "tc=mine").and("not.match", TEAM_HASH);
     cy.get(".skittle-root").should("not.have.class", "wt-detail");
     cy.get(".skittle-root #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root .tgrid .trow:not(.thead):not(.tghost)").should("have.length", 10);
