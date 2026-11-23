@@ -845,6 +845,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
   async function initialize() {
     phase.value = "loading";
     touchedGoals.clear();
+    memory.prepare(); // Wuthering Tools+: a kept result's damage type, before the offers and goals are scored under it
     await loadBaseline();
     await loadOffers();
     applyDefaultGoals();

@@ -412,6 +412,33 @@ describe("Optimize team when the page is left", () => {
     expect(third.optimizer.keptNote.value?.kind).toBe("kept");
   }, 180_000);
 
+  // batch 5 second check: the page scored its buff offers and default goals under its opening damage type ("Average")
+  // and only then put back the kept result's, so after "Edit & run again" the setup said "Normal damage" beside offers
+  // and figures of Average (each offer about 19 % high on this team)
+  it("a kept result searched under another damage type shows its setup scored under that type", async () => {
+    const offersOf = (o: ReturnType<typeof page>["optimizer"]) => o.slots.value.map((slot) => slot.offers.map((offer) => [offer.defKey, Number(offer.effect.toFixed(6))]));
+    const first = page();
+    await first.optimizer.initialize();
+    const onAverage = offersOf(first.optimizer);
+    first.optimizer.damageType.value = "Normal";
+    for (let i = 0; i < 2000 && !first.optimizer.isRefreshing.value; i += 1) await new Promise((r) => setTimeout(r, 1));
+    for (let i = 0; i < 4000 && first.optimizer.isRefreshing.value; i += 1) await new Promise((r) => setTimeout(r, 5));
+    const onNormal = offersOf(first.optimizer);
+    expect(onNormal, "the fixture's offers differ between the two types").not.toEqual(onAverage);
+    first.optimizer.setGoal(0, "damage");
+    first.optimizer.setGoal(1, "keep");
+    await first.optimizer.run();
+    expect(first.optimizer.phase.value).toBe("results");
+    first.leave();
+
+    const back = page();
+    await back.optimizer.initialize();
+    expect(back.optimizer.phase.value).toBe("results");
+    expect(back.optimizer.damageType.value).toBe("Normal");
+    back.optimizer.editSetup();
+    expect(offersOf(back.optimizer)).toEqual(onNormal);
+  }, 180_000);
+
   it("words the kept line by how long ago the search ended", () => {
     const at = new Date(2026, 10, 16, 21, 5).getTime();
     expect(keptNoteText({ kind: "kept", at }, at + 20_000)).toContain("from a moment ago");

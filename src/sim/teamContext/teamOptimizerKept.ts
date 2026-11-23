@@ -71,7 +71,7 @@ export function clearKeptOptimizer(): void {
 }
 onSavedResultsCleared(clearKeptOptimizer);
 
-/** Called once in his composable's setup. `restore()` goes at the end of his `initialize()`; leaving is seen here. */
+/** Called once in his composable's setup. `prepare()` goes at the start of his `initialize()`, `restore()` at its end; leaving is seen here. */
 export function optimizerMemory(state: OptimizerState) {
   const note = ref<OptimizerKeptNote | null>(null);
   // the stores of this app instance, taken while its Pinia is the active one
@@ -92,6 +92,14 @@ export function optimizerMemory(state: OptimizerState) {
       note.value = null; // "Edit & run again": the kept result is put down
     }
   }, { flush: "sync" });
+
+  /** Called at the start of his `initialize()`: a result that will be shown again takes its damage type now, before the
+   *  page scores its buff offers and default goals. Set at the end, the setup behind "Edit & run again" named the kept
+   *  type over offers scored under the page's opening one. */
+  function prepare(): void {
+    const k = kept;
+    if (k && k.teamId === state.teamId.value && k.on === fingerprint() && k.auto === autoTeamBuffs.value) state.damageType.value = k.damageType;
+  }
 
   /** Shows the kept result of this team again when everything it read is as it was. True when it did: the caller then
    *  goes to the results instead of the setup screen. Also raises the "stopped when you left" line, once. */
@@ -154,7 +162,7 @@ export function optimizerMemory(state: OptimizerState) {
   }
   onScopeDispose(leave);
 
-  return { note, restore, leave };
+  return { note, prepare, restore, leave };
 }
 
 /** The line for the note, said in the page's own words. */
