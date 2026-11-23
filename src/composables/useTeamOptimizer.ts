@@ -31,6 +31,7 @@ import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { workerFailureMessage } from "../sim/perf/chunkReload"; // Wuthering Tools+
 import { optimizerMemory } from "../sim/teamContext/teamOptimizerKept"; // Wuthering Tools+
 import { weaponOverrideGap, type OverrideGap } from "../sim/teamContext/teamOptimizerOverrides"; // Wuthering Tools+
+import { optimizerCopyName } from "../sim/teamContext/optimizerCopyName"; // Wuthering Tools+
 import {
   calcTeamRotationDamage,
   type TeamRotationInput,
@@ -1656,7 +1657,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     if (!source) return null;
     const copy = teamStore.importTeam({
       ...source,
-      name: `${source.name ?? "Team"} (optimizer)`,
+      name: optimizerCopyName(source.name), // Wuthering Tools+: a copy of a generated team is the player's own (optimizerCopyName.ts)
       actions: withoutHandSetTeamBuffs(source.actions ?? []),
     });
     trackEvent("team-optimizer-copy-team", {

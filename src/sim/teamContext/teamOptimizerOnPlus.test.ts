@@ -211,6 +211,22 @@ describe("Optimize team on plus", () => {
     }
   }, 120_000);
 
+  it("Optimize a copy without them: the copy of a generated team is the player's own, so Sync my teams leaves it alone", async () => {
+    const { isWuwaCalcTeam } = await import("../rankings/syncTeams");
+    autoTeamBuffs.value = true;
+    const teams = useTeamRotationsStore() as any;
+    for (const name of ["Shorekeeper · Galbrena (wuwa_calc t307)", "Shorekeeper · Galbrena · S6R5 (wuwa_calc)"]) {
+      teams.getTeamById("team-plus").name = name;
+      expect(isWuwaCalcTeam({ name })).toBe(true);
+      const optimizer = useTeamOptimizer(ref("team-plus"));
+      await optimizer.initialize();
+      const id = optimizer.copyTeamWithoutHandSetBuffs()!;
+      const copy = teams.getTeamById(id);
+      expect(copy.name.endsWith("(optimizer)")).toBe(true);
+      expect(isWuwaCalcTeam(copy), copy.name).toBe(false);
+    }
+  }, 60_000);
+
   it("saving touches this team only: another unpinned team of the same members reads what it read before", async () => {
     autoTeamBuffs.value = true;
     // a generated team is named after its members, so "<team> optimizer" mentions both teammates (resolveTeam's by-name rule)
