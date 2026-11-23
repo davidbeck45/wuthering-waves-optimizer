@@ -62,6 +62,16 @@ describe("the engine it runs", () => {
     expect(held.blocked).toEqual([HELD_BACK]);
     expect(held.teams).toEqual(h.teams);
   });
+
+  it("marks the members his account rule owns at S6 as free: the 4★s and the Rover forms, nobody else", () => {
+    // his e7a10a9 renamed `Tier` to `Rarity`: `Tier.Free` (2) became `Rarity.FreeS6` (1), and 2 is `FreeS2` (Jianxin)
+    const free = new Set(h.teams.flatMap((t) => t.members.filter((m) => m.free).map((m) => m.name)));
+    for (const name of ["Sanhua", "Mortefi", "Yangyang", "Danjin", "Baizhi", "Havoc Rover", "Spectro Rover"]) expect(free, name).toContain(name);
+    for (const name of ["Jianxin", "Encore", "Lingyang", "Verina", "Shorekeeper"]) expect(free, name).not.toContain(name);
+    // and the flag is exactly his rule's test, member by member
+    const teams = E.model.TEAMS as Record<string, any[]>;
+    for (const t of h.teams) t.members.forEach((m, i) => expect(!!m.free, m.name).toBe(teams[t.key]![i].loadout.resonator.tier === E.stats.Rarity.FreeS6));
+  });
 });
 
 describe("solveMine", () => {

@@ -310,8 +310,9 @@ export function registerAccount(E: RileyEngine, account: RileyAccount | null): v
 
 /** His team list as plain data (the client's map from a saved team to his keys). */
 export function listTeams(E: RileyEngine): RileyTeamInfo[] {
-  // his `Tier` is a const enum: the runtime object where the build kept it, else Free = 2
-  const FREE = E.stats.Tier?.Free ?? 2;
+  // the 4★s and Rover forms his account rule owns at S6 (solver.ts accountOf): `Rarity.FreeS6` since his e7a10a9
+  // (`Tier.Free` = 2 before it; 2 is `FreeS2`, Jianxin, now). A const enum: the runtime object where the build kept it.
+  const FREE = E.stats.Rarity?.FreeS6 ?? 1;
   return Object.entries(E.model.TEAMS as Record<string, any[]>).map(([key, members]) => ({
     key,
     members: members.map((m) => ({
