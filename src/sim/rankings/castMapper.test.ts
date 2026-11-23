@@ -173,6 +173,22 @@ describe("cast mapper: primitives", () => {
     const acts = toActions([cast], [], echoRows, OVERRIDES.Lingyang, report, new Set());
     expect(acts.map((a) => [a.key, a.mainEcho, a.buffs])).toEqual([["MechAbominationStrike", "MechAbomination", []]]);
     expect(report.review).toEqual([]);
+    expect(report.differs).toBeUndefined();
+  });
+  it("presses Lingyang's Lion Awakens at the game's 99.41 % per hit and says Riley's kit holds two thirds of it", async () => {
+    // the game's own Lv 10 table (and the community wiki's) holds Lion Awakens at 99.41 % × 2, before Lion's Pride's +50 %;
+    // Riley's kit holds 66.27 % × 2 and adds Lion's Pride on top, so his run reads the Intro at 198.81 %, the app at
+    // 198.82 % with the inherent still to come. By name alone it passed as a "name-only" review match, saying nothing
+    const rows = appRowsOf((await getCharByName("Lingyang")) as Record<string, unknown>);
+    expect(rows.find((r) => r.key === "LionAwakensDMG")?.mv).toBeCloseTo(198.82, 2);
+    const cast: Cast = { name: "Intro - Lion Awakens", mv: 132.54, count: 1, cast: "Intro", node: "Intro" };
+    const report = emptyReport();
+    const acts = toActions([cast], rows, {}, OVERRIDES.Lingyang, report, new Set());
+    expect(acts.map((a) => [a.key, a.count, a.buffs])).toEqual([["LionAwakensDMG", 1, []]]);
+    expect(report.review).toEqual([]);
+    expect(report.multipliers).toEqual([]);
+    expect(report.differs).toEqual(["Intro - Lion Awakens 132.54% → LionAwakensDMG 198.82%"]);
+    expect(OVERRIDES.Lingyang[DIFFERS]).toMatch(/Lion's Pride/);
   });
   it("maps Riley's resonator names to app keys and back", () => {
     expect(appKeyOf("Xuanling")).toBe("YangyangXuanling");

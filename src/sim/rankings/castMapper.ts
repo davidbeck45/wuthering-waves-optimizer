@@ -123,7 +123,14 @@ export const OVERRIDES: Record<string, Overrides> = {
   Phoebe: { "Forte Heavy - Starflash (Ring of Mirrors, S3 Confession)": "HeavyAttackStarflashDMG" },
   // his "Echo - Mech Abomination" is the Strike alone (48.64 %; Mech Waste is a cast of its own), and the app writes the
   // Strike's rank-5 value without its percent sign ("48.64"), so no motion value matches it and the name alone picked Mech Waste
-  Lingyang: { "Echo - Mech Abomination": "MechAbominationStrike" },
+  // Lion Awakens: the game's level-10 table holds 99.41 % per hit (99.41%*2) before Lion's Pride's +50 %; Riley's kit holds
+  // 66.27 % and adds the inherent on top (198.81 % in his run), so his figure for the Intro is two thirds of the game's.
+  // Pressed at the app's row, with Lion's Pride left to the kit's buff; the description and the brief say so (2026-11-23)
+  Lingyang: {
+    [DIFFERS]: "the game's level-10 skill table holds Lion Awakens at 99.41 % per hit before Lion's Pride, his kit 66.27 % with Lion's Pride's +50 % on top, so his engine counts this hit at two thirds of the game's; in the app keep Lion's Pride on, it adds the 50 %",
+    "Echo - Mech Abomination": "MechAbominationStrike",
+    "Intro - Lion Awakens": "LionAwakensDMG",
+  },
 };
 
 /** a set's own damage, pressed in the app as an echo-set attack (Midnight Veil 5pc: 480% Havoc DMG on the Outro) */

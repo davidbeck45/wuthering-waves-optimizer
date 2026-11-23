@@ -79,8 +79,10 @@ describe("kit briefs (generated data)", () => {
       expect(new Set(kit.differs?.rows.map((r) => r.cast) ?? []), kit.name).toEqual(casts);
     }
     // Lily's four Basic Attack stages were the 3.8 beta's until Riley's 7b4acd0 (2026-11-21); his kit is the released
-    // game's now, so no stock loop lists a value that differs and no brief carries the warning
-    expect(kits.filter((k) => k.differs?.rows.length).map((k) => k.name)).toEqual([]);
+    // game's now. Lingyang's Lion Awakens is the one press left (2026-11-23): the game's table holds 99.41 % per hit
+    // before Lion's Pride, his kit 66.27 % with the inherent on top
+    expect(kits.filter((k) => k.differs?.rows.length).map((k) => k.name)).toEqual(["Lingyang"]);
+    expect(kits.find((k) => k.name === "Lingyang")!.differs!.rows).toEqual([{ cast: "Intro - Lion Awakens", calc: 132.54, row: "LionAwakensDMG", app: 198.82 }]);
   });
 
   it("names a weapon's kind by its rarity: signature, standard 5★ or 4★", () => {
