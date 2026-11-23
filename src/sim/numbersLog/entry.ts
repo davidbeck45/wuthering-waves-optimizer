@@ -83,6 +83,12 @@ export function teamDefinitionHash(team: Record<string, any> | null | undefined)
   return short(withoutBookkeeping({ characterIds: team.characterIds ?? [], buildIds: team.buildIds ?? [], actions: team.actions ?? [], duration: team.duration ?? null, handoffs: team.handoffs ?? null }));
 }
 
+/** A saved team's last Sync my teams rewrite (importFromRankings.ts writes `syncedAt`), for "What moved". */
+const syncedAt = (team: Record<string, any> | null | undefined): { synced?: number } => {
+  const at = Number(team?.syncedAt);
+  return Number.isFinite(at) && at > 0 ? { synced: at } : {};
+};
+
 export interface RankedAccount {
   characters: Record<string, any>;
   echoes: readonly any[];
@@ -109,6 +115,7 @@ export function entryFromRanking(ranking: RosterRanking, account: RankedAccount,
       members: [...t.characterIds],
       damage: Math.round(t.avgDamage),
       def: t.source === "yours" ? teamDefinitionHash(savedTeams.get(t.id)) : "",
+      ...syncedAt(t.source === "yours" ? savedTeams.get(t.id) : null),
     }));
   return { at: meta.at, build: meta.build, autoTeamBuffs: meta.autoTeamBuffs, characters, teams };
 }

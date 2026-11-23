@@ -4,6 +4,7 @@
 // The cause of a move is the first of these that is true:
 //   a character's own figure   their build signature changed            → "You changed this build: echoes, weapon"
 //   a team's figure            a member's record changed                → "Chisa's build changed"
+//                              Sync my teams rewrote the saved team     → "You synced this team with Team rankings"
 //                              the saved team itself changed            → "You changed this team"
 //                              the team-aware buffs switch was flipped  → says so
 //   either                     the app build changed and no build did   → "An app update" (never a named upstream change:
@@ -29,6 +30,8 @@ export type Cause =
   /** `members`: who is in the team changed (a member swapped in or out; the same members in other slots is an edit) */
   | { kind: "team-edited"; withUpdate: boolean; members?: boolean }
   | { kind: "buffs-switch"; on: boolean; withUpdate: boolean }
+  /** Sync my teams rewrote this saved team between the two records (its `syncedAt` moved with its definition) */
+  | { kind: "synced"; withUpdate: boolean }
   | { kind: "app-update" }
   | { kind: "unknown" };
 
@@ -93,6 +96,7 @@ function teamCause(before: TeamFigure, after: TeamFigure, chars: { before: Map<s
     return !!a && !!b && a.sig.rec !== b.sig.rec;
   });
   if (who.length) return { kind: "members", who, withUpdate };
+  if (before.def !== after.def && after.synced && after.synced !== before.synced) return { kind: "synced", withUpdate };
   if (before.def !== after.def || before.members.join("+") !== after.members.join("+")) return { kind: "team-edited", withUpdate };
   if (from.autoTeamBuffs !== to.autoTeamBuffs) return { kind: "buffs-switch", on: to.autoTeamBuffs, withUpdate };
   if (withUpdate) return { kind: "app-update" };
@@ -250,6 +254,9 @@ function partText(part: SigPart, before: CharacterFigure, after: CharacterFigure
   }
 }
 
+/** a saved team Sync my teams rewrote: its rotation was read again from Team rankings (src/sim/syncNotice) */
+export const SYNCED_TEXT = "You synced this team with Team rankings: its rotation was read again from Riley's engine.";
+
 /** said after a cause that is not the update, when the app was updated between the two records too */
 export const ALSO_UPDATED_TEXT = "The app was updated between the two records too, so part of this may be the update.";
 
@@ -271,6 +278,8 @@ export function causeText(cause: Cause, names: Namer, imported = false, kind: Mo
       return also(imported ? "This team is different: its rotation, its timing or the builds it pins." : "You changed this team: its rotation, its timing or the builds it pins.", cause.withUpdate);
     case "buffs-switch":
       return also(`The team-aware buffs switch was turned ${cause.on ? "on" : "off"}.`, cause.withUpdate);
+    case "synced":
+      return also(SYNCED_TEXT, cause.withUpdate);
     case "app-update":
       return "An app update: no build in it changed.";
     default:

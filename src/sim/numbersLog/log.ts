@@ -40,6 +40,8 @@ export interface TeamFigure {
   damage: number;
   /** a saved team as defined (signature.ts `teamDefinitionHash`); "" for a stock team, which only an app update changes */
   def: string;
+  /** a saved team Sync my teams last rewrote: when (ms, the team's `syncedAt`) */
+  synced?: number;
 }
 
 export interface LogEntry {
@@ -116,8 +118,18 @@ const SOURCES: RotationSource[] = ["yours", "curated", "wuwa_calc"];
 interface Stored {
   v: 1;
   s: string[];
-  e: Array<{ t: number; b: number; o: 0 | 1; i?: number; c: number[][]; m: number[][] }>;
+  /** `y`: per team row (its index in `m`), when Sync my teams last rewrote that team */
+  e: Array<{ t: number; b: number; o: 0 | 1; i?: number; c: number[][]; m: number[][]; y?: Record<string, number> }>;
   seen: [number, number, number] | null;
+}
+
+/** The stored entry's `y`: only when some team carries a sync time, so a log without one stores as it did. */
+function syncedRows(teams: readonly TeamFigure[]): { y?: Record<string, number> } {
+  const y: Record<string, number> = {};
+  teams.forEach((t, i) => {
+    if (isNum(t.synced)) y[String(i)] = t.synced;
+  });
+  return Object.keys(y).length ? { y } : {};
 }
 
 export function encodeLog(log: NumbersLog): string {
@@ -143,6 +155,7 @@ export function encodeLog(log: NumbersLog): string {
       ...(entry.importedAt ? { i: entry.importedAt } : {}),
       c: entry.characters.map((c) => [idx(c.id), idx(c.rotation), c.damage, idx(c.sig.weapon), c.sig.refinement, c.sig.sequence, idx(c.sig.hw), idx(c.sig.hs), idx(c.sig.hl), idx(c.sig.he), idx(c.sig.ho), idx(c.sig.rec)]),
       m: entry.teams.map((t) => [idx(t.id), idx(t.name), SOURCES.indexOf(t.source), t.damage, idx(t.def), ...t.members.map((id) => idx(id))]),
+      ...syncedRows(entry.teams),
     })),
     seen: log.seen ? [idx(log.seen.fp), idx(log.seen.build), log.seen.at] : null,
   };
@@ -193,6 +206,9 @@ export function decodeLog(raw: string | null | undefined): NumbersLog {
         }),
       };
       if (isNum(e.i)) entry.importedAt = e.i;
+      if (e.y && typeof e.y === "object") {
+        for (const [i, at] of Object.entries(e.y)) if (isNum(at) && entry.teams[Number(i)]) entry.teams[Number(i)]!.synced = at;
+      }
       entries.push(entry);
     } catch {
       /* a torn entry: the others still read */
