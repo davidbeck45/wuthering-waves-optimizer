@@ -15,6 +15,7 @@
 import { allWeaponTeamBuffs } from "../../buffs/index";
 import type { TeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { resolveTeamCharacters } from "../teamContext/resolveTeam";
+import { isTypicalPanel } from "../teamContext/typicalPanel";
 
 interface TeamLike {
   characterIds: Array<string | null>;
@@ -49,7 +50,8 @@ export function keptPanelMembers(team: TeamLike, characters: Record<string, any>
     const panel = characters[id]?.teamBuffs ?? {};
     const picks = [panel.selectedCharacter1, panel.selectedCharacter2].filter((x: unknown): x is string => typeof x === "string" && !!x);
     const mates = present.filter((m) => m !== id);
-    return mates.length > 0 && sameSet(picks, mates);
+    // a panel Recommended teams' "Use team" wrote, untouched since, is derived over by resolveTeam, as there
+    return mates.length > 0 && sameSet(picks, mates) && !isTypicalPanel(panel);
   });
 }
 
