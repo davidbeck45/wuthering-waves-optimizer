@@ -5545,3 +5545,13 @@ Optimize team's setup with his new notes and its Save sheet, `/updates`. The tes
 setup. Plus's run basis (`optimizer/optimizerRunBasis.ts`) drops the rows when the build or weapon changes and says why
 on the setup screen; his #706 keeps them with an alert for any other change. Which one owns a weapon change is the
 `post-merge` lane's call (see its report).
+
+## The regenerated data, checked a second time (batch 5, 2026-11-23)
+
+A second check of what Riley's 211d7d0 regenerated: the stock loops, the two new mapper rules, the briefs, the breakpoints. Three fixes, all in the generators and the in-app mapper (wuwa-tools `rotation-port/` mirrors each):
+
+- **Lingyang's Lion Awakens is pressed at the game's value and says so.** The game's level-10 table holds 99.41 % per hit *before* Lion's Pride (+50 %); Riley's kit holds 66.27 % with the inherent on top, so his run counts the Intro one third low. The press was a name-only review match; it is now an override under `_differs` in `OVERRIDES.Lingyang` (`castMapper.ts`, `overrides.json`), so each Lingyang stock loop's description lists both values and asks to keep Lion's Pride on, and `/kit/lingyang` opens with the "Riley's engine holds other numbers" note (`kits.json` `differs`). Goes by itself once his kit holds 99.41.
+- **No replacement character reaches a page.** His `lingyang.ts` was saved with U+FFFD where a dash was; `plain_note.mjs` reads it as " — ". `kits.test` and `wuwaCalcPresets.test` fail on any U+FFFD in `kits.json` or `breakpoints.json`.
+- **A staged echo's stage may be a run of the row's hits** (`echoStage`): Crownless 3 (100.56 × 2) and 4 (67.04 × 3) matched no single term, and Crownless 1 and 2 (a fifth of the row) read as ticks first, so four stages made two presses. Now matched on runs, before the tick rule. No stock loop presses a plain Crownless today; a /rankings import of another loadout can. Thundering Mephis' sixth stage (his three thunders against the app's one) still goes by its name, flagged for review.
+
+Checked and left: both mappers agree on every loop of every state (3,520); every new kit maps at 1.00 of Riley's motion value, and the loops outside 0.85–1.15 are the batch-4 ones (kit multipliers the app applies through buffs, Tune responses the app's loop does not press); every best-team figure in `kits.json` (711) equals a fresh run of his engine. `/my-rankings` picks a character's best loop by damage per rotation, not per second, across stock loops of 25 to 34 s: the length of a loop can decide which one leads (Camellya's batch-4 best was the 34.3 s one).
