@@ -5493,3 +5493,25 @@ His #706, #745 (ADR 0061) and #663 landed on top of plus's own rules. Where both
 | specs | his `teamOptimizer.cy.ts` reads plus's "Nothing to save" line after a Save (his confirm dialog's nothing-to-save branch is not reached on plus); `teamOptimizerPhone.cy.ts` follows his new Save wording and the "vs current" now under each row |
 
 Held already, now pinned in `teamOptimizerOnPlus.test.ts`: after Save the new builds are pinned and not worn, a derived member's build keeps the stored panel and the next read still derives, a second Save adds nothing, a by-name build is what Save starts from, and with auto team buffs off the plan's panel is saved as his. On David's three saved teams (auto on and off) none of 30 rows asked for a Discord report and all five Saves matched.
+
+## The seam on Riley's 211d7d0 (batch 5, 2026-11-23)
+
+What the Riley run seam (`src/sim/engine/`) had to follow when `vendor/wuwa_calc` moved from his 7bcbb24 to 211d7d0
+(fork 821f8db), beyond the moved import paths:
+
+- **`Tier` is `Rarity`.** `listTeams` marks a member `free` (owned at S6 by every account, his `accountOf`) on
+  `Rarity.FreeS6`: the 4★s and the Rover forms. His new `FreeS0` (Encore, Lingyang, Verina) and `FreeS2` (Jianxin)
+  are not owned by default, by him or by plus. `teamAccount.test.ts` checks plus's two copies of the rule
+  (`energyCheck.isFreeCharacter`, Weapon value's selector) against the engine's flag on every member of his list.
+- **The fight ends on the last Outro.** His `runTeamInner` now drops an Outro hit that lands on the fight's last frame,
+  and plays no cut-off swap-in after it. `countedHits` (rileyRun.ts) is the one reader of `state.hits`: his run nulls
+  each hit's `res` once filed, so the last frame's hits are matched back to the run's `fightTotal`. The cue plan names
+  the loop's first swap-in (`startsOver`) where there is no `wrap` visit, so the cue card, the Discord text and the
+  assistant's `team_rotation` still say who the loop starts over with.
+- **Keys moved.** His team list is 911 teams; a key is a position in it. Tests find a team by its three members
+  (`profile.test.ts` `keyOf`); the Cypress spec of /rotation pins t425 (Shorekeeper · Lynae · Iuno) and t5 (Lily ·
+  Sanhua · Suoming) and says so.
+- **Two new keys of his page** in `STORAGE_RULES`: `wuwa.owned.v1` (the Value page's roster: goes, in a backup) and
+  `wuwa.teamViews` (his team page's tabs: a preference that stays).
+- The Wave 0 fixture was regenerated on 821f8db; its reference totals for the enemy profile came from the fork without
+  the profile patch (5227416) and from Riley's own 211d7d0, equal to the cent.
