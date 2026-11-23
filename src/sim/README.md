@@ -5555,3 +5555,36 @@ A second check of what Riley's 211d7d0 regenerated: the stock loops, the two new
 - **A staged echo's stage may be a run of the row's hits** (`echoStage`): Crownless 3 (100.56 × 2) and 4 (67.04 × 3) matched no single term, and Crownless 1 and 2 (a fifth of the row) read as ticks first, so four stages made two presses. Now matched on runs, before the tick rule. No stock loop presses a plain Crownless today; a /rankings import of another loadout can. Thundering Mephis' sixth stage (his three thunders against the app's one) still goes by its name, flagged for review.
 
 Checked and left: both mappers agree on every loop of every state (3,520); every new kit maps at 1.00 of Riley's motion value, and the loops outside 0.85–1.15 are the batch-4 ones (kit multipliers the app applies through buffs, Tune responses the app's loop does not press); every best-team figure in `kits.json` (711) equals a fresh run of his engine. `/my-rankings` picks a character's best loop by damage per rotation, not per second, across stock loops of 25 to 34 s: the length of a loop can decide which one leads (Camellya's batch-4 best was the 34.3 s one).
+
+## Team buffs from your own builds on the calculator (batch 5, lane "real-panel", 2026-11-23)
+
+Ryan's calculator reads one character's Team Buffs panel: two teammates picked by hand and a switch for each buff they
+could give. The damage figures, the rotation totals and the echo optimizer's target all read it, and it is filled by
+hand. Plus's team resolver (§ "Team-aware buffs and builds") already derives the same panel for saved teams from what
+each teammate's build really provides; the calculator's own panel never got it. Now a plus card above his buff list
+(`teamContext/RealTeamBuffsCard.vue`, on the v3 screen `CalculatorTeamBuffsWorkspace.vue` and the classic
+`CalculatorPartyBuffs.vue`, one tag and one import each) does:
+
+- **Two teammates picked:** one sentence says whether the panel is what the player's own builds of them give ("3 buffs
+  here are not what your own builds of Shorekeeper and Qiuyuan give"); **Use their real buffs** writes the derived panel;
+  **Why** opens what differs, what the builds turn on and leave off, with a reason for each ("Off: your Mornye is S1;
+  it needs S2", "On: Lynae holds Spectrum Blaster at Rank 1", "reads Shorekeeper's real 255 % Energy Regen"), and the
+  notes (a teammate with no build, counted as the resolver counts them; buffs worded for "the incoming Resonator", which
+  a pair with no rotation hands to this character).
+- **No teammates picked:** the player's saved teams with this character are one-tap choices.
+- **A teammate's build changed since a fill:** "Your Iuno changed since these buffs were filled from your builds" with
+  Refresh. Nothing is rewritten on its own.
+
+`teamContext/realPanel.ts` is the pure part: `deriveRealPanel` runs `resolveTeamCharacters` on the trio (with the
+character's own panel cleared, so the resolver derives instead of keeping it) and explains its result; it copies none of
+the resolver's rules. `realPanelWrite` is the write (`setCharacterData` merges, so every other buff that is on is turned
+off in it). `panelDifferences` compares a stored panel with the builds and counts only what the calculator reads: a
+kit buff of someone no longer picked stays stored and counts for nothing, and a weapon's missing Rank reads 1.
+
+**The stamp rule.** A panel this button wrote is stamped like Recommended teams' "Use team" (`typicalPanel.ts`,
+`markTypicalPanel(record, "builds")`), so a saved team of those three keeps deriving live from the builds. Any change by
+hand afterwards makes the panel the player's own again, and the resolver keeps it.
+
+Each fill first saves the character's build to build history as "Before Use their real buffs"; that version's Restore
+puts the old panel back. Ryan's "Your setup changed since this run" alert (#706) fires after a fill through his own
+watch on the panel. Spec: `cypress/e2e/teamBuffsFromBuilds.cy.ts`.
