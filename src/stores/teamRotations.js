@@ -71,6 +71,7 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
       // Wuthering Tools+: a wuwa_calc import carries its provenance and who hands off to whom (src/sim/rankings)
       if (teamData.description) team.description = teamData.description;
       if (teamData.handoffs) team.handoffs = teamData.handoffs;
+      if (teamData.wuwaCalcCommit) team.wuwaCalcCommit = teamData.wuwaCalcCommit; // the engine it was read from (src/sim/syncNotice)
       this.teams.push(team);
       return team;
     },

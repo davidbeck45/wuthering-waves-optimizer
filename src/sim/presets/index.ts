@@ -70,12 +70,19 @@ export async function loadWuwaCalcRotationPresets(
 
 let teamPresetsPromise: Promise<TeamRotationPreset[]> | null = null;
 
-/** The generated S6R5 full-team rotations, loaded once on first use. */
+/** The generated S6R5 full-team rotations, loaded once on first use. Each carries the engine commit it was generated
+ *  from (the manifest's `wuwaCalcCommit`), so a team added from one is stamped with it (src/sim/syncNotice). */
 export function loadWuwaCalcTeamPresets(): Promise<TeamRotationPreset[]> {
-  teamPresetsPromise ??= import("./data/teams.json").then(
-    (m) => m.default as unknown as TeamRotationPreset[],
+  teamPresetsPromise ??= Promise.all([import("./data/teams.json"), import("./data/manifest.json")]).then(([m, manifest]) =>
+    stampTeamPresets(m.default as unknown as TeamRotationPreset[], (manifest.default as { wuwaCalcCommit?: string | null }).wuwaCalcCommit ?? null),
   );
   return teamPresetsPromise;
+}
+
+/** Stock team presets with the engine commit they were generated from on each one's data. */
+export function stampTeamPresets(presets: TeamRotationPreset[], commit: string | null): TeamRotationPreset[] {
+  if (!commit) return presets;
+  return presets.map((p) => ({ ...p, data: { ...p.data, wuwaCalcCommit: commit } as TeamRotationPreset["data"] }));
 }
 
 /**

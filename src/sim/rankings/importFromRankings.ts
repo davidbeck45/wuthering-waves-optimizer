@@ -15,6 +15,7 @@ import { randomString } from "../../utils/strings";
 import { wuwaCalcTeamName } from "../presets/presetName";
 import { spreadLabel } from "../display/numberBasis";
 import { accountKeyOf, sameKit } from "./rileyNames";
+import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 import {
   OVERRIDES,
   appKeyOf,
@@ -475,6 +476,14 @@ export const toCharacterRotation = (r: PreparedTeam["rotations"][number], order:
   actions: r.actions.map((a) => ({ ...cleanAction(a), id: randomString() })),
 });
 
+/** What a Sync rewrites of a saved team, as one string: its actions (without their ids, fresh on every import), enemy
+ *  settings, rotation time and handoffs. */
+export const syncedContent = (team: any): string =>
+  JSON.stringify([(team?.actions ?? []).map(({ id: _id, ...a }: any) => a), team?.enemyConfig ?? null, team?.duration ?? null, team?.handoffs ?? null]);
+
+/** Did a Sync move what the team scores? (`before` = `syncedContent` ahead of the write) */
+const syncMoved = (before: string, team: any): boolean => before !== syncedContent(team);
+
 /** The browser path: resolve the run from the page model, prepare it, write the stores. */
 export async function importTeamFromRankings(mods: RankingsMods, key: string, options: ImportOptions = {}): Promise<ImportResult> {
   let run = mods.model.results.get(key);
@@ -498,6 +507,7 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
   if (options.replaceTeamId) {
     const existing = (teamStore.teams as any[]).find((t) => t.id === options.replaceTeamId);
     if (!existing) throw new Error("The team to update no longer exists.");
+    const before = syncedContent(existing);
     // the saved team keeps its members' keys (a male Rover's is his own) and its slot order: re-point every action at
     // the slot that character holds there
     const forTeam = preparedForTeam(prepared, existing.characterIds as Array<string | null>);
@@ -512,6 +522,9 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
     // the store has no setters for these; the record is the store's own reactive object
     existing.description = prepared.description;
     existing.handoffs = prepared.handoffs;
+    // the engine it was read from (src/sim/syncNotice), and when a Sync last moved it ("What moved" says so)
+    if (syncMoved(before, existing)) existing.syncedAt = Date.now();
+    existing.wuwaCalcCommit = WUWA_CALC_COMMIT;
     team = existing;
   } else {
     // a new team is made of the characters this account has: a Rover in the form it plays
@@ -525,6 +538,7 @@ export async function importTeamFromRankings(mods: RankingsMods, key: string, op
       enemyConfig: { ...prepared.enemyConfig },
       description: prepared.description,
       handoffs: prepared.handoffs,
+      wuwaCalcCommit: WUWA_CALC_COMMIT,
     });
   }
 

@@ -18,6 +18,7 @@ import { useCharacterStore } from "../../stores/character";
 import { writePreparedTeam } from "./syncTeamsHeadless";
 import { readExport, writeSyncedExport } from "../cli/exportFile";
 import { enemyConfigOf, type Cast } from "./castMapper";
+import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 
 vi.setConfig({ testTimeout: 30_000 });
 
@@ -434,6 +435,17 @@ describe("Sync my teams in the browser: the saved teams, the report and Undo", (
     // is the same team; Undo leaves it)
     expect(out.teams.map((t) => t.id)).toEqual(snapshot.map((t) => t.id));
     expect(out.teams.map(content)).toEqual(snapshot.map(content));
+  });
+  it("stamps the engine each team was read from (src/sim/syncNotice): an import and every team the sync re-read; the sync's time only on a team it moved", async () => {
+    const { ids, before, now } = await setUp();
+    expect((before[ids.changed] as any).wuwaCalcCommit).toBeUndefined(); // saved before stamps
+    expect((before[ids.same] as any).wuwaCalcCommit).toBe(WUWA_CALC_COMMIT); // a fresh import
+    for (const id of [ids.changed, ids.same, ids.levelled]) expect((now[id] as any).wuwaCalcCommit).toBe(WUWA_CALC_COMMIT);
+    expect((now[ids.changed] as any).syncedAt).toBeGreaterThan(0); // its loop moved
+    expect((now[ids.levelled] as any).syncedAt).toBeGreaterThan(0); // its enemy moved
+    expect((now[ids.same] as any).syncedAt).toBeUndefined(); // nothing it scores moved
+    expect((now[ids.mine] as any).wuwaCalcCommit).toBeUndefined(); // the player's own team: untouched
+    expect((now[ids.lacks] as any).wuwaCalcCommit).toBeUndefined(); // failed: never written
   });
 });
 
