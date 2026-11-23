@@ -26,7 +26,7 @@ export interface RileyEngine {
   stats: any;
   /** page/model.ts (TEAMS, rowFromKey, detailFor) */
   model: any;
-  /** shared/substats.ts (customSubstats) */
+  /** echoes/substats.ts (customSubstats; shared/ before Riley's e7a10a9) */
   substats: any;
   /** the wuwa_calc commit these modules came from (engineCommit.ts in the browser, git on Node) */
   commit: string;
@@ -36,7 +36,7 @@ export interface RileyEngine {
   floor?: RileyFloorModules;
 }
 
-/** engine/gear.ts, engine/context.ts, shared/status.ts, shared/unison.ts and the fork's shared/profile.ts */
+/** engine/gear.ts, engine/context.ts, resonators/status.ts, resonators/unison.ts and the fork's shared/profile.ts */
 export interface RileyFloorModules {
   gear: any;
   context: any;

@@ -49,12 +49,12 @@ export function loadRileyEngine(): Promise<RileyEngine> {
       load("solve/teamrun.ts"),
       load("engine/stats.ts"),
       load("page/model.ts"),
-      load("shared/substats.ts"),
+      load("echoes/substats.ts"),
       // the enemy profile's modules (the ToA clear check, src/sim/endgame/effects.ts)
       load("engine/gear.ts"),
       load("engine/context.ts"),
-      load("shared/status.ts"),
-      load("shared/unison.ts"),
+      load("resonators/status.ts"),
+      load("resonators/unison.ts"),
       load("shared/profile.ts").catch(() => null),
     ]);
     if (typeof solver.setAccountState !== "function") throw new Error("this engine has no `mine` Team Cost — vendor/wuwa_calc must be the fork's plus branch");

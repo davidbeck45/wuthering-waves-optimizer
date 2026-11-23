@@ -9,15 +9,15 @@ import * as solver from "@skittle/solve/solver";
 import * as teamrun from "@skittle/solve/teamrun";
 import * as stats from "@skittle/engine/stats";
 import * as model from "@skittle/page/model";
-import * as substats from "@skittle/shared/substats";
+import * as substats from "@skittle/echoes/substats";
 // the enemy profile's modules (the ToA clear check — src/sim/endgame/effects.ts)
 import * as gear from "@skittle/engine/gear";
 import * as context from "@skittle/engine/context";
-import * as status from "@skittle/shared/status";
-import * as unison from "@skittle/shared/unison";
+import * as status from "@skittle/resonators/status";
+import * as unison from "@skittle/resonators/unison";
 import * as profile from "@skittle/shared/profile";
 import { setAccountState, setMySubstat } from "@skittle/solve/solver";
-import { customSubstats } from "@skittle/shared/substats";
+import { customSubstats } from "@skittle/echoes/substats";
 import { createRileyHandler } from "../engine/rileyWorker";
 import { WUWA_CALC_COMMIT } from "../engine/engineCommit";
 

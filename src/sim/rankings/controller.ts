@@ -123,7 +123,7 @@ async function loadModules(): Promise<Mods> {
   const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar] = await Promise.all([
     import("@skittle/page/display"), import("@skittle/solve/solver"), import("@skittle/solve/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
-    import("@skittle/page/pickmenu"), import("@skittle/engine/stats"), import("@skittle/shared/substats"),
+    import("@skittle/page/pickmenu"), import("@skittle/engine/stats"), import("@skittle/echoes/substats"),
     import("@skittle/page/filterbar"), // table.ts imports it already; read here for searchHits() (onTabEscape)
   ]);
   return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar };
