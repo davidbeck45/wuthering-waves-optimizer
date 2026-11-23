@@ -1,11 +1,28 @@
 /**
- * Hosts Riley31415/wuwa_calc's comparison table + detail pages inside this app.
+ * Hosts Riley31415/wuwa_calc's comparison page and his team page inside this app, both on `/rankings`.
  *
- * A port of his `src/page/index.ts` (the page controller) with three changes: the DOM his page modules
- * look up at import time (`#app`, `#topbar`, `#backLink`, `#loading`) is built here inside a
- * persistent `.skittle-root` element that survives route changes; his modules are imported lazily
- * after that DOM exists; and detail navigation goes through vue-router so its history state is not
- * clobbered. Everything else — the solve/run passes, the overlay, the worker pool — is his logic.
+ * A port of his page entry points — `src/page/index.ts` (the comparison page) and `src/page/team.ts` (the team page,
+ * `team.html`) — with three changes: the DOM his page modules look up at import time (`#app`, `#topbar`, `#backLink`,
+ * `#loading`) is built here inside a persistent `.skittle-root` element that survives route changes; his modules are
+ * imported lazily after that DOM exists; and the team page is a state of `/rankings` (his hash with `t=`, or a plus
+ * link's `team=`) reached through vue-router, not a page load, so the solved table survives the trip. Everything
+ * else is his logic, called where he exports it: his `loading.ts` (overlay, bar, errors, `solveQuiet`) as is, his
+ * `pool.ts` as rileyPool.ts (vitePlugin.ts points his import there: the app's worker, the same queue).
+ *
+ * Map of the port (his function → here), so the next sync is a diff:
+ *   index.ts  refresh()          → refresh() / refreshRows() (+ rows so far, router sync, the stale-table flag)
+ *             runMissing()       → runMissing()
+ *             route()            → route() (+ the team page, his `maybeShowTutorial()` left out: plus never shows it)
+ *             boot()             → boot() (+ his team.ts boot), mountRankings()
+ *             hashchange         → onLocationChange() (RankingsView.vue watches route.fullPath)
+ *             leaveForTeam()     → nothing to leave for: `t=` / `team=` on /rankings is the team page
+ *             .gotodetail click  → goToDetail() (router.push of `pageUrl(key)`'s hash)
+ *   team.ts   bootDetail()       → bootDetail()
+ *             switchTo()         → switchTo() (his `reopenDetail()` → reopenDetail(): a router push over the table)
+ *             backLink click     → goBack() (router.back() when we pushed the team page, else the table's hash)
+ *             `came` / `moved`   → detailPushed / tableStale
+ *   loading.ts ensureBestPicks() → ensureBestPicks() (+ a sync's `keep`, the rows-so-far `onTeam`); the rest called as is
+ *   pool.ts   (all of it)        → rileyPool.ts
  * The engine, kits and page modules themselves come straight from the submodule via `@skittle/*`.
  */
 import { shallowRef } from "vue";
@@ -20,10 +37,9 @@ import { spreadOf } from "../display/numberBasis";
 import { rosterOf, type RosterEntry } from "./filterChips";
 import { compareScale, shareText, shareWidth, strengthOf, teamFigureOf, type CompareScale, type TeamMode } from "./compareColumn";
 import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type RunRowLike, type TeamCard } from "./phoneCards";
-import { reloadOnce, workerWouldNotLoad } from "../perf/chunkReload";
+import * as pool from "./rileyPool";
 import { appKeyOf } from "./rileyNames";
 import { soFarScheduler, type SoFarScheduler } from "./soFar";
-import { dropUnkept, keepInLine } from "./solveQueue";
 import { leavesTabRing } from "./tabEscape";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -32,7 +48,7 @@ type TeamRow = { key: string; teamKey: string; members: Member[]; combo: any[] }
 type Solved = { picks: any; rows: any[]; scores: any; hidden: any[]; hiddenScores: any[] };
 interface Mods {
   display: any; solver: any; teamrun: any; model: any; panels: any; table: any; detail: any; pickmenu: any; stats: any; substats: any;
-  filterbar: any;
+  filterbar: any; loading: any;
 }
 
 const TEMPLATE = `
@@ -68,7 +84,6 @@ let backLink!: HTMLElement;
 let overlay!: HTMLElement;
 let overlayStatus!: HTMLElement;
 let overlayCount!: HTMLElement;
-let overlayFill!: HTMLElement;
 
 /** phones: Riley's aside (his search and its gear / compare bubbles) is a sheet docked right under the toolbar, which
  *  shows only while it is open, as the sheet's header with ✕ (skittle-theme.css); the account bar's Search button opens
@@ -114,62 +129,34 @@ function buildDom(): HTMLElement {
   overlay = el.querySelector<HTMLElement>("#loading")!;
   overlayStatus = overlay.querySelector<HTMLElement>(".status-text")!;
   overlayCount = overlay.querySelector<HTMLElement>(".progress-count")!;
-  overlayFill = overlay.querySelector<HTMLElement>(".progress-fill")!;
   return el;
 }
 
 async function loadModules(): Promise<Mods> {
   // Riley moved the solver and team run into solve/, display.ts into page/, teams.ts into resonators/ (Oct 2026)
-  const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar] = await Promise.all([
+  const [display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar, loading] = await Promise.all([
     import("@skittle/page/display"), import("@skittle/solve/solver"), import("@skittle/solve/teamrun"),
     import("@skittle/page/model"), import("@skittle/page/panels"), import("@skittle/page/table"), import("@skittle/page/detail"),
     import("@skittle/page/pickmenu"), import("@skittle/engine/stats"), import("@skittle/echoes/substats"),
     import("@skittle/page/filterbar"), // table.ts imports it already; read here for searchHits() (onTabEscape)
+    import("@skittle/page/loading"), // his overlay, ensureBestPicks and solveQuiet, on rileyPool.ts (vitePlugin.ts)
   ]);
-  return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar };
+  pool.bindEngine({ ...solver, picksCache: model.picksCache, storeSolved: model.storeSolved, solveFits: model.solveFits });
+  return { display, solver, teamrun, model, panels, table, detail, pickmenu, stats, substats, filterbar, loading };
 }
 
 /* ---------------------------------------------------------------------------------- overlay */
-
-/** Two frames, not one: the first rAF callback runs before the frame is committed. Races a short
- *  timeout because rAF never fires in a background tab (or a headless runner), and every phase
- *  below awaits this — Riley's original would sit on "Rendering Table…" until the tab came back. */
-const paint = (): Promise<void> =>
-  new Promise((resolve) => {
-    const done = (): void => { clearTimeout(timer); resolve(); };
-    const timer = setTimeout(done, 80);
-    requestAnimationFrame(() => requestAnimationFrame(done));
-  });
-let overlayTimer: ReturnType<typeof setTimeout> | undefined;
-function overlayPhase(text: string, now = false): void {
-  overlayStatus.textContent = text;
-  if (!overlay.hidden) return;
-  if (now) { clearTimeout(overlayTimer); overlayTimer = undefined; overlay.hidden = false; return; }
-  if (overlayTimer === undefined) overlayTimer = setTimeout(() => { overlayTimer = undefined; overlay.hidden = false; }, 100);
-}
-const OVERLAY_ROWS = 1_000;
-async function overlayNow(text: string, rows = Infinity): Promise<void> {
-  overlayPhase(text, rows >= OVERLAY_ROWS);
-  await paint();
-}
-function overlayHide(): void {
-  clearTimeout(overlayTimer);
-  overlayTimer = undefined;
-  overlay.hidden = true;
-}
-function barReset(): void { overlayFill.style.width = "0%"; overlayCount.textContent = ""; }
+// His loading.ts (overlayPhase, overlayNow, overlayHide, barReset, barProgress, showError) on the `#loading` built above;
+// its `paint()` is rileyPool.ts's (raced against a timeout). One plus change: while the docked "so far" box is up, the
+// count is that box's ("37 of 104" teams, showSoFar), and only the fill follows the rows.
+const { paint, breathe } = pool;
+const overlayPhase = (text: string, now = false): void => mods!.loading.overlayPhase(text, now);
+const overlayNow = (text: string, rows = Infinity): Promise<void> => mods!.loading.overlayNow(text, rows);
+const overlayHide = (): void => mods!.loading.overlayHide();
+const barReset = (): void => mods!.loading.barReset();
 function barProgress(done: number, total: number): void {
-  const { fmt } = mods!.display;
-  overlayFill.style.width = `${total ? (done / total) * 100 : 100}%`;
-  // the docked "so far" box counts teams (showSoFar), the list's own unit; the fill still follows the rows
-  if (soFar?.drawn) return;
-  overlayCount.textContent = `${fmt(done)} / ${fmt(total)}`;
-}
-let lastPaint = performance.now();
-async function breathe(): Promise<void> {
-  if (performance.now() - lastPaint <= 50) return;
-  await paint();
-  lastPaint = performance.now();
+  mods!.loading.barProgress(done, total);
+  if (soFar?.drawn) showSoFar();
 }
 
 /* ------------------------------------------------------------------------------ the passes */
@@ -204,7 +191,7 @@ function applyMyBuilds(): void {
   for (const name of clear) mods.solver.setMySubstat(name, null);
   for (const b of myBuilds) mods.solver.setMySubstat(b.name, mods.substats.customSubstats("My build", b.rolls), b.key);
   registered = next;
-  for (const w of pool ?? []) w.postMessage({ type: "mySubstats", builds: myBuilds, clear });
+  pool.broadcast({ type: "mySubstats", builds: myBuilds, clear });
 }
 const buildsStamp = (builds: BuildRolls[]): string => builds.map((b) => `${b.name}:${b.key}`).join(",");
 /** The builds changed in the app (a character's echoes were edited): re-register and redraw. */
@@ -222,8 +209,11 @@ let account: AccountRegistration | null = null;
 function applyAccountState(): void {
   if (!mods) return;
   mods.solver.setAccountState(account?.entries ?? null, account?.key ?? "");
-  for (const w of pool ?? []) w.postMessage({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
+  pool.broadcast(accountMessage());
 }
+const accountMessage = (): unknown => ({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
+// every worker hears the spreads and the account before its first team
+pool.onWorkerStart(() => [{ type: "mySubstats", builds: myBuilds, clear: [] }, accountMessage()]);
 /** The account changed in the app (a weapon equipped, a chain toggled): re-register and redraw. */
 export function updateAccountState(next: AccountRegistration | null): void {
   if ((next?.key ?? "") === (account?.key ?? "")) return;
@@ -233,158 +223,10 @@ export function updateAccountState(next: AccountRegistration | null): void {
 }
 
 /* ------------------------------------------------------------------- the solver worker pool */
-// Riley's job queue (his `src/page/index.ts`, Oct 2026), ported: one team per message, every job carrying the filters
-// of the pass that asked for it (never whatever they are by the time it comes back), a newer pass dropping the older
-// one's teams still in line (`cancelQueued`), and a pass that wants a team already out waiting on that answer
-// (`inFlight`). The earlier port re-pointed each worker's `onmessage` per pass: two passes at once (a tier picked in
-// the account bar mid-solve, which the overlay never blocked) stole each other's answers, and a reply was filed under
-// the filters of the moment — a `mine` solve could land as a Riley-tier solve and be saved to localStorage.
-
-const WORKER_LIMIT = 8;
-let pool: Worker[] | null = null;
-let poolTried = false;
-function workerPool(): Worker[] | null {
-  if (poolTried) return pool;
-  poolTried = true;
-  const want = Math.max(1, Math.min(WORKER_LIMIT, (navigator.hardwareConcurrency || 4) - 1));
-  try {
-    pool = Array.from({ length: want }, () =>
-      new Worker(new URL("./solver.worker.ts", import.meta.url), { type: "module" }));
-    for (const w of pool) {
-      w.postMessage({ type: "mySubstats", builds: myBuilds, clear: [] });
-      w.postMessage({ type: "accountState", entries: account?.entries ?? null, key: account?.key ?? "" });
-      listen(w);
-    }
-  } catch (err) {
-    console.warn("Workers unavailable, optimizing on the main thread instead:", err);
-    pool = null;
-  }
-  return pool;
-}
-
-/** A team to solve: the filters it was asked under, the `bestKey()` it was asked for (the account key is part of a
- *  `mine` key: an answer that comes back after the account changed is not filed under the new one), and who waits. */
-interface Job {
-  id: number; key: string; members: Member[]; f: any; bk: string; known: any;
-  /** a sync's own teams: a table pass starting behind it never drops them */
-  keep: boolean;
-  onShare: (share: number) => void; done: () => void;
-}
-const queue: Job[] = [];
-const busy = new Map<Worker, Job>();
-const inFlight = new Map<string, Promise<void>>();
-let jobId = 0;
-
-/** A worker's answers, routed by request id to the team it is on. One that throws or answers with a solve that does
- *  not fit this build is solved here instead, so the table is always complete. */
-function listen(w: Worker): void {
-  w.onmessage = ({ data }: MessageEvent<any>) => {
-    const job = busy.get(w);
-    if (!job || !mods || data?.id !== job.id) return;
-    const S = mods.solver;
-    if (S.isProgress(data)) { job.onShare(data.share); return; }
-    const solved: Solved = { picks: data.picks, rows: data.rows, scores: data.scores, hidden: data.hidden ?? [], hiddenScores: data.hiddenScores ?? [] };
-    if (mods.model.solveFits(job.bk, solved)) { settle(w, job, solved); return; }
-    console.warn(`worker's solve for ${job.key} does not fit this build; solving it here`);
-    settle(w, job, S.solveTeam(job.key, job.members, job.f, job.known));
-  };
-  w.onerror = (e) => {
-    const job = busy.get(w);
-    e.preventDefault();
-    if (workerWouldNotLoad(e)) {
-      if (!reloadOnce()) retire(w);
-      return;
-    }
-    if (!job || !mods) return;
-    console.warn(`worker failed on ${job.key}, solving it here:`, e.message);
-    settle(w, job, mods.solver.solveTeam(job.key, job.members, job.f, job.known));
-  };
-}
-
-/** A worker whose script would not load never answers, and a load failure can land before it holds a team, so nothing
- *  would ever ask again: it leaves the pool, its team goes back in line, and with no worker left the line is solved here. */
-function retire(w: Worker): void {
-  console.warn("a solver worker would not load");
-  w.terminate();
-  const job = busy.get(w);
-  busy.delete(w);
-  if (job) queue.unshift(job);
-  pool = pool?.filter((other) => other !== w) ?? null;
-  if (pool?.length) {
-    for (const other of pool) if (!busy.has(other)) handOut(other);
-    return;
-  }
-  pool = null;
-  void drainHere();
-}
-
-function file(job: Job, solved: Solved): void {
-  // filed only under the key it was asked for: the account (or a "My build" spread) moved while it was out otherwise
-  if (mods!.solver.bestKey(job.key, job.members, job.f) === job.bk) mods!.model.storeSolved(job.key, solved, job.f);
-}
-function settle(w: Worker, job: Job, solved: Solved): void {
-  file(job, solved);
-  busy.delete(w);
-  // the worker gets its next team before anything hears of this one: a rows-so-far paint may run on this landing
-  handOut(w);
-  job.done();
-}
-function handOut(w: Worker): void {
-  const job = queue.shift();
-  if (!job) return;
-  busy.set(w, job);
-  w.postMessage({ id: job.id, teamKey: job.key, filters: job.f, picks: job.known });
-}
-
-/** With no pool, the line is solved here, one team at a time, yielding so the bar still moves. */
-let draining = false;
-async function drainHere(): Promise<void> {
-  if (draining) return;
-  draining = true;
-  for (let job = queue.shift(); job; job = queue.shift()) {
-    file(job, mods!.solver.solveTeam(job.key, job.members, job.f, job.known, job.onShare));
-    job.done();
-    await breathe();
-  }
-  draining = false;
-}
-
-/** A new pass has started: the old one's teams still in line are dropped, unsolved (a sync's are kept). */
-function cancelQueued(): void {
-  for (const job of dropUnkept(queue)) job.done();
-}
-
-/** Solve `teams` under `f` — on the pool when there is one — waiting on any already out. `onTeam` hears each team
- *  that lands (the table's rows-so-far paint). */
-function solveAll(teams: [string, Member[]][], f: any, share: (members: Member[], part: number) => void, keep = false, onTeam?: () => void): Promise<void> {
-  const { picksCache } = mods!.model;
-  const { bestKey, picksKey } = mods!.solver;
-  const waits = teams.map(([key, members]) => {
-    const bk = bestKey(key, members, f);
-    const out = inFlight.get(bk);
-    if (out) {
-      if (keep) keepInLine(queue, bk);
-      return out.then(() => { share(members, 1); onTeam?.(); });
-    }
-    const solved = new Promise<void>((resolve) => queue.push({
-      id: jobId++, key, members, f, bk, keep, known: picksCache.get(picksKey(key, members, f)) ?? null,
-      onShare: (part) => share(members, part),
-      done: () => {
-        inFlight.delete(bk);
-        share(members, 1);
-        onTeam?.();
-        resolve();
-      },
-    }));
-    inFlight.set(bk, solved);
-    return solved;
-  });
-  const workers = workerPool();
-  if (workers) {
-    for (const w of workers) if (!busy.has(w)) handOut(w);
-  } else void drainHere();
-  return Promise.all(waits).then(() => undefined);
-}
+// His page/pool.ts is rileyPool.ts in the app (vitePlugin.ts resolves his `./pool.js` there): the same queue, on the
+// app's solver.worker.ts. `ensureBestPicks` below is his loading.ts one with two plus options (a sync's `keep`, the
+// rows-so-far `onTeam`); his own still serves his detail page's pick menus (`solveQuiet`).
+const { workerPool, cancelQueued, solveAll } = pool;
 
 /** Solve every team in play whose answer isn't in hand under `f`; the bar counts the rows this phase opens. Stops
  *  where a newer pass has started. `onTeam(done, total)` counts teams as they land. @returns whether anything was solved. */
@@ -1037,7 +879,7 @@ const passOf = new WeakMap<object, number>();
 function soFarPainter(gen: number, stale: () => boolean, mine: boolean): SoFarScheduler {
   return soFarScheduler({
     stale,
-    wave: () => pool?.length ?? 1,
+    wave: () => pool.poolSize() || 1,
     paint: (done, total) => paintSoFar(gen, done, total, mine),
     update: (done, total) => {
       if (soFar?.gen !== gen || !soFar.drawn) return;
@@ -1100,13 +942,14 @@ function endSoFar(): void {
  *  teamcode.ts) leaving gear to the solver reads back once that one team is solved with its gear
  *  compares shut. */
 async function bootDetail(): Promise<boolean> {
-  const { hashTeam, results, rowFromKey, tagTeam, gearShut, filters } = mods!.model;
+  const { hashTeam, results, rowFromKey, tagTeam, gearShut, tagFilters } = mods!.model;
   let key: string | null = hashTeam();
   const pending = key && !rowFromKey(key) ? tagTeam(key) : null;
   if (pending) {
     overlayPhase("Solving Team…", true);
     await paint();
-    await solveQuiet(pending, gearShut(filters));
+    // a code carrying its own Matrix flag is solved with every Matrix on (his team.ts)
+    await solveQuiet(pending, gearShut(tagFilters(key!)));
     key = hashTeam();
     if (key && !rowFromKey(key)) overlayHide();
   }
@@ -1159,16 +1002,9 @@ async function switchTo(teamKey: string, attempts: { setUp: () => boolean; choos
   overlayHide();
 }
 
-/** One team solved under `f` with no overlay and no redraw — what an open pick menu reads its
- *  Compare figures off (pickmenu.ts), and what a team code's gear is read back from. */
-async function solveQuiet(teamKey: string, f: any): Promise<void> {
-  const M = mods!.model, S = mods!.solver;
-  const members = M.TEAMS[teamKey] as Member[];
-  await M.loadShipped(f);
-  if (M.bestPicks.has(S.bestKey(teamKey, members, f)) || !members.every((m) => S.hasBuild(m, f))) return;
-  await solveAll([[teamKey, members]], f, () => {});
-  M.saveSolves();
-}
+/** One team solved under `f` with no overlay and no redraw — his loading.ts `solveQuiet` (pick menus' Compare figures,
+ *  a team code's gear read back). */
+const solveQuiet = (teamKey: string, f: any): Promise<void> => mods!.loading.solveQuiet(teamKey, f);
 
 /** Riley's `reopenDetail()` through vue-router: the entry under the detail page becomes the table on
  *  the new filters, so Back lands on a table that can show the new row, and the new row goes on top. */
@@ -1181,10 +1017,10 @@ async function reopenDetail(key: string): Promise<void> {
 /** Navigate to a team's detail page through vue-router (a real history entry, its state kept). */
 async function goToDetail(teamKey: string): Promise<void> {
   await syncRouter();
-  const p = mods!.model.hashParams() as URLSearchParams;
-  p.set("team", teamKey);
+  // his team page's address (`./team#…&t=<team code>`, model.ts `pageUrl`) as a state of /rankings: the same hash
+  const url: string = mods!.model.pageUrl(teamKey);
   detailPushed = true;
-  await router!.push({ hash: `#${p.toString()}` });
+  await router!.push({ hash: url.slice(url.indexOf("#")) });
   route();
 }
 
@@ -1192,6 +1028,7 @@ function goBack(): void {
   if (detailPushed) { detailPushed = false; router!.back(); return; }
   const p = mods!.model.hashParams() as URLSearchParams;
   p.delete("team");
+  p.delete("t");
   const hash = p.toString();
   void router!.replace({ hash: hash ? `#${hash}` : "" }).then(() => route());
 }
@@ -1246,10 +1083,10 @@ async function boot(): Promise<void> {
   idle(() => { workerPool(); });
 }
 
+/** His loading.ts `showError` (the overlay's error box); before his modules load, the same box by hand. */
 function showBootError(err: unknown): void {
+  if (mods) { mods.loading.showError(err); return; }
   console.error(err);
-  // Riley dropped his error page in Sept 2026: the error lives in the overlay box below and the page
-  // underneath is left as it was (his index.ts `showError`)
   const box = overlay.querySelector<HTMLElement>(".loading-error");
   if (box) {
     box.hidden = false;
@@ -1281,7 +1118,7 @@ function patchFetch(): void {
  *  page modules load, instead of after them: each worker parses the whole engine graph, which took ~0.75 s before its
  *  first answer on a desktop dev server. A team link (`team=`) or one of his tiers (shipped solves) waits for idle. */
 function solvesAhead(): boolean {
-  if (poolTried || !account?.key) return false;
+  if (pool.poolStarted() || !account?.key) return false;
   const p = new URLSearchParams(location.hash.replace(/^#/, ""));
   if (p.get("tc") !== "mine" || p.has("team")) return false;
   try {
