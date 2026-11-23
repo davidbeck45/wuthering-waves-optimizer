@@ -4,7 +4,7 @@
 // pop-out window are stubbed — headless Electron has neither a user gesture nor a Picture-in-Picture window.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
 
-const STOCK = "/rotation#team=t404"; // Shorekeeper · Lynae · Iuno, a stock wuwa_calc team
+const STOCK = "/rotation#team=t425"; // Shorekeeper · Lynae · Iuno, a stock wuwa_calc team (t404 before his 211d7d0: his keys are positions in his list and move with it)
 
 function seed(extra: (win: Window) => void = () => undefined) {
   return {
@@ -179,14 +179,14 @@ describe("rotation view", () => {
   it("says why a team cannot run, and lists teams to pick from", () => {
     cy.viewport(1280, 900);
     // Lily's team: "not released in this app" until Ryan's 3.8 (#685) brought her in; it runs now, with no problem line
-    cy.visit("/rotation#team=t4", seed());
+    cy.visit("/rotation#team=t5", seed()); // Lily · Sanhua · Suoming on his 211d7d0 (t4 before)
     cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
     cy.get("[data-test-rotation-title]").should("contain.text", "Lily");
     cy.get("[data-test-rotation-problem]").should("not.exist");
     // a /rankings team code it cannot read
     cy.visit("/rotation#team=AbCdEf", seed());
     cy.get('[data-test-rotation-problem="code"]', { timeout: 90000 }).should("contain.text", "Team rankings");
-    // a real one (t404, every pick his first): its team, run at the account instead, with a notice saying so
+    // a real one (Shorekeeper · Lynae · Iuno, every pick his first): its team, run at the account instead, with a notice saying so
     cy.visit("/rotation#team=bP6aLXA_3VxwKm0bfqMmeZJhKvqx-kZ2", seed());
     cy.get("[data-test-rotation-notice]", { timeout: 90000 }).should("contain.text", "at your account");
     cy.get("[data-test-rotation-title]").should("contain.text", "Shorekeeper").and("contain.text", "Iuno");
@@ -245,7 +245,7 @@ describe("rotation view", () => {
     // first page is in: a push during the router's first navigation replaces the entry instead of adding one
     cy.document().should((doc) => expect(routerOf(doc).currentRoute.value.path).to.eq("/today"));
     cy.document().then((doc) => void routerOf(doc).push(STOCK));
-    cy.location("hash").should("eq", "#team=t404");
+    cy.location("hash").should("eq", "#team=t425");
     cy.get("[data-test-rotation-play-open]", { timeout: 90000 }).click();
     cy.get("[data-test-rotation-play]").should("be.visible");
     cy.get("body").trigger("keydown", { key: " " }); // the clock is running: this is the lap Back used to throw away
@@ -253,7 +253,7 @@ describe("rotation view", () => {
     cy.go("back");
     cy.get("[data-test-rotation-play]").should("not.exist");
     cy.location("pathname").should("eq", "/rotation");
-    cy.location("hash").should("eq", "#team=t404");
+    cy.location("hash").should("eq", "#team=t425");
     cy.get("[data-test-rotation-cue]").should("be.visible");
     cy.go("back");
     cy.location("pathname").should("eq", "/today");
