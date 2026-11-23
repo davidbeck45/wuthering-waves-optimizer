@@ -1,11 +1,11 @@
 [
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 75,927 DPS for Rebecca of 315,018 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 76,958 DPS for Rebecca of 311,994 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Shorekeeper + Lucy · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 75,927 DPS for Rebecca of 315,018 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Shorekeeper + Lucy: 76,958 DPS for Rebecca of 311,994 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -29,12 +29,7 @@
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
+     "buffs": [],
      "isDisabled": false
     },
     {
@@ -132,34 +127,34 @@
  },
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 74,600 DPS for Rebecca of 177,659 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 75,821 DPS for Rebecca of 180,657 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Jinhsi · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 74,600 DPS for Rebecca of 177,659 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Lingering Tunes 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Jinhsi: 75,821 DPS for Rebecca of 180,657 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 40,
+     "count": 35,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 5,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 3,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
@@ -184,12 +179,7 @@
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
+     "buffs": [],
      "isDisabled": false
     },
     {
@@ -278,7 +268,15 @@
      "order": 17,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 40,
+     "count": 45,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     }
@@ -287,11 +285,11 @@
  },
  {
   "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Qiuyuan: 74,540 DPS for Rebecca of 208,624 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Qiuyuan: 75,733 DPS for Rebecca of 207,563 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S6 Skull Thrasher R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Qiuyuan: 74,540 DPS for Rebecca of 208,624 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Skull Thrasher R5, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR ATK Electro atk atk. Team: Mornye + Qiuyuan: 75,733 DPS for Rebecca of 207,563 team DPS. Sequence procs in the loop: 1x Forte Heavy - Bang-bang-bang!: Guts (S6 Strike). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -323,12 +321,7 @@
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
+     "buffs": [],
      "isDisabled": false
     },
     {
@@ -417,7 +410,7 @@
      "order": 15,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 105,
+     "count": 95,
      "buffs": [],
      "isDisabled": false
     },
@@ -425,7 +418,7 @@
      "order": 16,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 5,
+     "count": 15,
      "buffs": [],
      "isDisabled": false
     }
@@ -434,18 +427,18 @@
  },
  {
   "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Jinhsi: 23,987 DPS for Rebecca of 89,003 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Jinhsi: 24,424 DPS for Rebecca of 90,734 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Jinhsi: 23,987 DPS for Rebecca of 89,003 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Jinhsi: 24,424 DPS for Rebecca of 90,734 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 45,
+     "count": 35,
      "buffs": [],
      "isDisabled": false
     },
@@ -467,6 +460,14 @@
     },
     {
      "order": 4,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
      "key": "MidairAttackHuntressDMG",
      "type": "basic",
      "count": 1,
@@ -474,20 +475,15 @@
      "isDisabled": false
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
+     "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "TacticalDodgeGutsDMG",
      "type": "basic",
      "count": 1,
@@ -495,7 +491,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "BasicAttackGutsStage1DMG",
      "type": "basic",
      "count": 1,
@@ -503,7 +499,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "BangbangbangGutsDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -511,7 +507,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "HeavyAttackGutsDMG",
      "type": "basic",
      "count": 1,
@@ -519,7 +515,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 11,
      "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -529,7 +525,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 11,
+     "order": 12,
      "key": "Mk31HMGDMG",
      "type": "liberation",
      "count": 5,
@@ -537,7 +533,7 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "Mk31HMG1stEnhancementDMG",
      "type": "liberation",
      "count": 5,
@@ -545,7 +541,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "Mk31HMG2ndEnhancementDMG",
      "type": "liberation",
      "count": 10,
@@ -553,7 +549,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "BOOMFireworksDMG",
      "type": "liberation",
      "count": 1,
@@ -561,10 +557,144 @@
      "isDisabled": false
     },
     {
+     "order": 16,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 50,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Havoc Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Havoc Rover: 24,124 DPS for Rebecca of 63,591 team DPS. Sequence procs in the loop: none. Rotation time 23.37 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Rebecca S0 Skull Thrasher R1 · Mornye + Havoc Rover · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Mornye + Havoc Rover: 24,124 DPS for Rebecca of 63,591 team DPS. Sequence procs in the loop: none. Rotation time 23.37 s (the team's loop).",
+   "duration": 23.37,
+   "actions": [
+    {
+     "order": 1,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 25,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "HeyLeadheadComenGetMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidairAttackHuntressDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "ItsBigBoominTimeDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "TacticalDodgeGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackGutsStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BangbangbangGutsDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackGutsDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReminiscenceNightmareAdamSmasher",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "Mk31HMGDMG",
+     "type": "liberation",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "Mk31HMG1stEnhancementDMG",
+     "type": "liberation",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "Mk31HMG2ndEnhancementDMG",
+     "type": "liberation",
+     "count": 10,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BOOMFireworksDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 45,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 15,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 40,
+     "count": 35,
      "buffs": [],
      "isDisabled": false
     }
@@ -573,157 +703,18 @@
  },
  {
   "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 23,437 DPS for Rebecca of 90,427 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 24,026 DPS for Rebecca of 91,898 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Rebecca S0 Skull Thrasher R1 · Suisui + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 23,437 DPS for Rebecca of 90,427 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Suisui + Jinhsi: 24,026 DPS for Rebecca of 91,898 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 25,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 25,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "HeyLeadheadComenGetMeDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "MidairAttackHuntressDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "ItsBigBoominTimeDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "TacticalDodgeGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackGutsStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BangbangbangGutsDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "HeavyAttackGutsDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ReminiscenceNightmareAdamSmasherHoldDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceNightmareAdamSmasher",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 11,
-     "key": "Mk31HMGDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "Mk31HMG1stEnhancementDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "Mk31HMG2ndEnhancementDMG",
-     "type": "liberation",
-     "count": 10,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "BOOMFireworksDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 40,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Rebecca S0 Skull Thrasher R1 · Lily + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Lily + Jinhsi: 23,187 DPS for Rebecca of 89,822 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Rebecca S0 Skull Thrasher R1 · Lily + Jinhsi · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Skull Thrasher R1, Shadow of Shattered Dreams 1pc + Heart of Sworn Vigil 2pc + Void Thunder 2pc, main stats 43311 CR Electro Electro atk atk. Team: Lily + Jinhsi: 23,187 DPS for Rebecca of 89,822 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Skill - It's Big Boomin' Time! = ItsBigBoominTimeDMG × 0.85 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
-   "duration": 25,
-   "actions": [
-    {
-     "order": 1,
-     "key": "PreemChoomDMG",
-     "type": "outro",
-     "count": 30,
+     "count": 20,
      "buffs": [],
      "isDisabled": false
     },
@@ -756,12 +747,7 @@
      "key": "ItsBigBoominTimeDMG",
      "type": "skill",
      "count": 1,
-     "buffs": [
-      {
-       "modifier": "talentModifierMultiply",
-       "modifierValue": -15.0
-      }
-     ],
+     "buffs": [],
      "isDisabled": false
     },
     {
@@ -842,7 +828,15 @@
      "order": 15,
      "key": "PreemChoomDMG",
      "type": "outro",
-     "count": 40,
+     "count": 50,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "PreemChoomDMG",
+     "type": "outro",
+     "count": 10,
      "buffs": [],
      "isDisabled": false
     }

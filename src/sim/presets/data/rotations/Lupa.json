@@ -1,12 +1,12 @@
 [
  {
   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Galbrena · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 47,799 DPS for Lupa of 255,630 team DPS. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Galbrena: 49,751 DPS for Lupa of 265,828 team DPS. Sequence procs in the loop: none. Rotation time 25.93 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Mornye + Galbrena · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Mornye + Galbrena: 47,799 DPS for Lupa of 255,630 team DPS. Sequence procs in the loop: none. Rotation time 26.65 s (the team's loop).",
-   "duration": 26.65,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Galbrena: 49,751 DPS for Lupa of 265,828 team DPS. Sequence procs in the loop: none. Rotation time 25.93 s (the team's loop).",
+   "duration": 25.93,
    "actions": [
     {
      "order": 1,
@@ -18,14 +18,6 @@
     },
     {
      "order": 2,
-     "key": "FireKissedGloryDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
      "key": "LionessofGloryBlastDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -35,7 +27,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 4,
+     "order": 3,
      "key": "LionessofGloryCrashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -43,6 +35,14 @@
      "isDisabled": false,
      "mainEcho": "LionessofGlory",
      "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "FireKissedGloryDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 5,
@@ -105,12 +105,12 @@
  },
  {
   "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 45,176 DPS for Lupa of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 44,462 DPS for Lupa of 365,311 team DPS. Sequence procs in the loop: none. Rotation time 26.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Lupa S6 Wildfire Mark R5 · Mornye + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 45,176 DPS for Lupa of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
-   "duration": 25.22,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Moonlit Clouds 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Aemeath: 44,462 DPS for Lupa of 365,311 team DPS. Sequence procs in the loop: none. Rotation time 26.00 s (the team's loop).",
+   "duration": 26,
    "actions": [
     {
      "order": 1,
@@ -188,18 +188,18 @@
   }
  },
  {
-  "name": "Lupa S6 Wildfire Mark R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 34,060 DPS for Lupa of 371,455 team DPS. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
+  "name": "Lupa S0 Wildfire Mark R1 · Shorekeeper + Galbrena · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Galbrena: 12,127 DPS for Lupa of 143,997 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Lupa S6 Wildfire Mark R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Wildfire Mark R5, Flaming Clawprint 5pc, main stats 43311 CR ATK ATK atk atk. Team: Lynae + Aemeath: 34,060 DPS for Lupa of 371,455 team DPS. Sequence procs in the loop: none. Rotation time 26.08 s (the team's loop).",
-   "duration": 26.08,
+   "name": "Lupa S0 Wildfire Mark R1 · Shorekeeper + Galbrena · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Wildfire Mark R1, Flaming Clawprint 5pc, main stats 43311 CR Fusion Fusion atk atk. Team: Shorekeeper + Galbrena: 12,127 DPS for Lupa of 143,997 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
-     "key": "FireKissedGloryDMG",
-     "type": "liberation",
+     "key": "NowheretoRunDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -226,7 +226,7 @@
     },
     {
      "order": 4,
-     "key": "FoebreakerDMG",
+     "key": "FireKissedGloryDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -234,6 +234,14 @@
     },
     {
      "order": 5,
+     "key": "FoebreakerDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
      "key": "MidairAttackStage1DMG",
      "type": "basic",
      "count": 1,
@@ -241,7 +249,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "MidairAttackStage2DMG",
      "type": "basic",
      "count": 1,
@@ -249,7 +257,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "MidairAttackFirestrikeDMG",
      "type": "basic",
      "count": 1,
@@ -257,7 +265,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 9,
      "key": "HeavyAttackWolfsClawDMG",
      "type": "basic",
      "count": 1,
@@ -265,25 +273,9 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "DanceWiththeWolfClimaxDMG",
      "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SettheArenaAblazeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "NowheretoRunDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

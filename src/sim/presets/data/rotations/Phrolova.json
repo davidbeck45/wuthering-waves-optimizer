@@ -1,37 +1,37 @@
 [
  {
   "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 248,318 DPS for Phrolova of 357,821 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.50 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 251,861 DPS for Phrolova of 363,663 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 248,318 DPS for Phrolova of 357,821 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.50 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Lucilla (main DPS): 251,861 DPS for Phrolova of 363,663 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
     },
     {
-     "order": 2,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 3,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -39,30 +39,6 @@
     },
     {
      "order": 4,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -70,7 +46,39 @@
      "isDisabled": false
     },
     {
+     "order": 5,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 8,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
      "key": "NightmareHecateSmashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -80,7 +88,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 9,
+     "order": 10,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -88,7 +96,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 11,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -96,16 +104,8 @@
      "isDisabled": false
     },
     {
-     "order": 11,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 12,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -113,22 +113,6 @@
     },
     {
      "order": 13,
-     "key": "WhispersinaFleetingDreamDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -136,7 +120,31 @@
      "isDisabled": false
     },
     {
+     "order": 14,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 16,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
      "key": "ScarletCodaDMG",
      "type": "basic",
      "count": 1,
@@ -144,7 +152,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 18,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 10,
@@ -152,7 +160,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 19,
      "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -160,17 +168,9 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 20,
      "key": "BasicAttackHecateStage2DMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
-     "key": "SuiteofImmortalityDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -180,28 +180,36 @@
  },
  {
   "name": "Phrolova S6 Lethean Elegy R5 · Lucilla + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Qiuyuan (main DPS): 238,829 DPS for Phrolova of 325,572 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.50 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Qiuyuan (main DPS): 247,049 DPS for Phrolova of 332,209 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phrolova S6 Lethean Elegy R5 · Lucilla + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Qiuyuan (main DPS): 238,829 DPS for Phrolova of 325,572 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.50 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Qiuyuan (main DPS): 247,049 DPS for Phrolova of 332,209 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
     },
     {
-     "order": 2,
+     "order": 3,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -209,7 +217,7 @@
      "isDisabled": false
     },
     {
-     "order": 3,
+     "order": 4,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -217,7 +225,7 @@
      "isDisabled": false
     },
     {
-     "order": 4,
+     "order": 5,
      "key": "NightmareHecateSmashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -227,7 +235,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 5,
+     "order": 6,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -235,7 +243,7 @@
      "isDisabled": false
     },
     {
-     "order": 6,
+     "order": 7,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -243,29 +251,21 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 8,
      "key": "Stage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
     },
     {
-     "order": 8,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 9,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -273,22 +273,6 @@
     },
     {
      "order": 10,
-     "key": "WhispersinaFleetingDreamDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -296,7 +280,31 @@
      "isDisabled": false
     },
     {
+     "order": 11,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 13,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "ScarletCodaDMG",
      "type": "basic",
      "count": 1,
@@ -304,7 +312,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 2,
@@ -312,16 +320,8 @@
      "isDisabled": false
     },
     {
-     "order": 15,
-     "key": "BasicAttackHecateStage1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 16,
-     "key": "BasicAttackHecateStage2DMG",
+     "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -353,8 +353,8 @@
     },
     {
      "order": 20,
-     "key": "SuiteofImmortalityDMG",
-     "type": "intro",
+     "key": "BasicAttackHecateStage1DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -363,25 +363,25 @@
   }
  },
  {
-  "name": "Phrolova S6 Lethean Elegy R5 · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Lucilla (main DPS): 237,416 DPS for Phrolova of 298,116 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+  "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD ATK Havoc atk atk. Team: Mornye + Qiuyuan (main DPS): 239,608 DPS for Phrolova of 289,637 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Phrolova S6 Lethean Elegy R5 · Shorekeeper + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Shorekeeper + Lucilla (main DPS): 237,416 DPS for Phrolova of 298,116 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+   "name": "Phrolova S6 Lethean Elegy R5 · Mornye + Qiuyuan · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD ATK Havoc atk atk. Team: Mornye + Qiuyuan (main DPS): 239,608 DPS for Phrolova of 289,637 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -389,15 +389,15 @@
     },
     {
      "order": 3,
-     "key": "Stage1DMG",
-     "type": "basic",
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 4,
-     "key": "Stage2DMG",
+     "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -405,30 +405,6 @@
     },
     {
      "order": 5,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ApparitionofBeyondHecate",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -436,7 +412,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 6,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -444,7 +420,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 7,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -452,7 +428,39 @@
      "isDisabled": false
     },
     {
+     "order": 8,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 11,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "NightmareHecateSmashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -462,7 +470,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -470,7 +478,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -478,16 +486,8 @@
      "isDisabled": false
     },
     {
-     "order": 14,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 15,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -495,22 +495,6 @@
     },
     {
      "order": 16,
-     "key": "WhispersinaFleetingDreamDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -518,7 +502,31 @@
      "isDisabled": false
     },
     {
+     "order": 17,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 19,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
      "key": "ScarletCodaDMG",
      "type": "basic",
      "count": 1,
@@ -526,7 +534,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 21,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 2,
@@ -534,16 +542,8 @@
      "isDisabled": false
     },
     {
-     "order": 21,
-     "key": "BasicAttackHecateStage1DMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 22,
-     "key": "BasicAttackHecateStage2DMG",
+     "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -551,7 +551,7 @@
     },
     {
      "order": 23,
-     "key": "BasicAttackHecateStage1DMG",
+     "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -559,14 +559,6 @@
     },
     {
      "order": 24,
-     "key": "EnhancedAttackHecateCadenzaDMG",
-     "type": "liberation",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 25,
      "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -574,8 +566,16 @@
      "isDisabled": false
     },
     {
+     "order": 25,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 26,
-     "key": "BasicAttackHecateStage2DMG",
+     "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
@@ -583,16 +583,8 @@
     },
     {
      "order": 27,
-     "key": "BasicAttackHecateStage1DMG",
+     "key": "BasicAttackHecateStage2DMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 28,
-     "key": "SuiteofImmortalityDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -602,24 +594,24 @@
  },
  {
   "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Cantarella (main DPS): 201,236 DPS for Phrolova of 220,517 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Cantarella (main DPS): 204,113 DPS for Phrolova of 224,617 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Phrolova S6 Lethean Elegy R5 · Qiuyuan + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Cantarella (main DPS): 201,236 DPS for Phrolova of 220,517 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Qiuyuan + Cantarella (main DPS): 204,113 DPS for Phrolova of 224,617 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -627,15 +619,15 @@
     },
     {
      "order": 3,
-     "key": "Stage1DMG",
-     "type": "basic",
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 4,
-     "key": "Stage2DMG",
+     "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -643,30 +635,6 @@
     },
     {
      "order": 5,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ApparitionofBeyondHecate",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "Stage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -674,7 +642,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 6,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -682,7 +650,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 7,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -690,7 +658,39 @@
      "isDisabled": false
     },
     {
+     "order": 8,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 11,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
      "key": "NightmareHecateSmashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -700,7 +700,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 12,
+     "order": 13,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -708,7 +708,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 14,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -716,16 +716,8 @@
      "isDisabled": false
     },
     {
-     "order": 14,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
      "order": 15,
-     "key": "ApparitionofBeyondHecate",
+     "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
@@ -733,22 +725,6 @@
     },
     {
      "order": 16,
-     "key": "WhispersinaFleetingDreamDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -756,7 +732,31 @@
      "isDisabled": false
     },
     {
+     "order": 17,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 19,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
      "key": "ScarletCodaDMG",
      "type": "basic",
      "count": 1,
@@ -764,7 +764,7 @@
      "isDisabled": false
     },
     {
-     "order": 20,
+     "order": 21,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 10,
@@ -772,17 +772,9 @@
      "isDisabled": false
     },
     {
-     "order": 21,
+     "order": 22,
      "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 22,
-     "key": "SuiteofImmortalityDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -791,56 +783,45 @@
   }
  },
  {
-  "name": "Phrolova S6 Lethean Elegy R5 · Suisui + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Qiuyuan (main DPS): 189,587 DPS for Phrolova of 203,590 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+  "name": "Phrolova S6 Lethean Elegy R5 · Lucilla + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Cantarella (main DPS): 192,287 DPS for Phrolova of 211,941 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Phrolova S6 Lethean Elegy R5 · Suisui + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Qiuyuan (main DPS): 189,587 DPS for Phrolova of 203,590 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+   "name": "Phrolova S6 Lethean Elegy R5 · Lucilla + Cantarella · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R5, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Lucilla + Cantarella (main DPS): 192,287 DPS for Phrolova of 211,941 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Basic - Movement of Life and Death 3 = Stage3DMG × 0.33 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
      "order": 1,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "ApparitionofBeyondHecate",
-     "type": "forteCircuit",
+     "key": "Stage3DMG",
+     "type": "basic",
      "count": 1,
-     "buffs": [],
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -66.67
+      }
+     ],
      "isDisabled": false
     },
     {
      "order": 3,
-     "key": "Stage1DMG",
-     "type": "basic",
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 4,
-     "key": "Stage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "MovementOfFateAndFinalityDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -848,7 +829,7 @@
      "isDisabled": false
     },
     {
-     "order": 7,
+     "order": 5,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -856,7 +837,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 6,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -864,7 +845,7 @@
      "isDisabled": false
     },
     {
-     "order": 9,
+     "order": 7,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -872,7 +853,7 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 8,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -880,7 +861,7 @@
      "isDisabled": false
     },
     {
-     "order": 11,
+     "order": 9,
      "key": "NightmareHecateSmashDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -890,7 +871,7 @@
      "mainEchoRank": 5
     },
     {
-     "order": 12,
+     "order": 10,
      "key": "Stage1DMG",
      "type": "basic",
      "count": 1,
@@ -898,7 +879,7 @@
      "isDisabled": false
     },
     {
-     "order": 13,
+     "order": 11,
      "key": "Stage2DMG",
      "type": "basic",
      "count": 1,
@@ -906,7 +887,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 12,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -914,7 +895,7 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 13,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -922,7 +903,7 @@
      "isDisabled": false
     },
     {
-     "order": 16,
+     "order": 14,
      "key": "WhispersinaFleetingDreamDMG",
      "type": "skill",
      "count": 1,
@@ -930,7 +911,7 @@
      "isDisabled": false
     },
     {
-     "order": 17,
+     "order": 15,
      "key": "MovementOfFateAndFinalityDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -938,7 +919,7 @@
      "isDisabled": false
     },
     {
-     "order": 18,
+     "order": 16,
      "key": "ApparitionofBeyondHecate",
      "type": "forteCircuit",
      "count": 1,
@@ -946,9 +927,25 @@
      "isDisabled": false
     },
     {
-     "order": 19,
+     "order": 17,
      "key": "ScarletCodaDMG",
      "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackHecateStage1DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -957,7 +954,7 @@
      "order": 20,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
-     "count": 2,
+     "count": 3,
      "buffs": [],
      "isDisabled": false
     },
@@ -971,9 +968,9 @@
     },
     {
      "order": 22,
-     "key": "BasicAttackHecateStage2DMG",
+     "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
-     "count": 1,
+     "count": 5,
      "buffs": [],
      "isDisabled": false
     },
@@ -992,25 +989,183 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    },
+    }
+   ]
+  }
+ },
+ {
+  "name": "Phrolova S6 Lethean Elegy R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R1, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Qiuyuan (main DPS): 155,848 DPS for Phrolova of 172,204 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Phrolova S6 Lethean Elegy R1 · Suisui + Qiuyuan · S6R1 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R1 DPS · S0R1 team steady-state loop (the main DPS S6 with an R1 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Lethean Elegy R1, Dream of the Lost 3pc + Havoc Eclipse 2pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Qiuyuan (main DPS): 155,848 DPS for Phrolova of 172,204 team DPS. Sequence procs in the loop: 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond, 1x Hecate - Apparition of Beyond. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
     {
-     "order": 25,
-     "key": "EnhancedAttackHecateCadenzaDMG",
-     "type": "liberation",
-     "count": 3,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 26,
-     "key": "BasicAttackHecateStage1DMG",
-     "type": "liberation",
+     "order": 1,
+     "key": "SuiteofImmortalityDMG",
+     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
-     "order": 27,
+     "order": 2,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "NightmareHecateSmashDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "NightmareHecate",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 13,
+     "key": "Stage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "Stage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "WhispersinaFleetingDreamDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MovementOfFateAndFinalityDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "ApparitionofBeyondHecate",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "ScarletCodaDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
      "key": "EnhancedAttackHecateCadenzaDMG",
      "type": "liberation",
      "count": 2,
@@ -1018,7 +1173,7 @@
      "isDisabled": false
     },
     {
-     "order": 28,
+     "order": 22,
      "key": "BasicAttackHecateStage1DMG",
      "type": "liberation",
      "count": 1,
@@ -1026,7 +1181,7 @@
      "isDisabled": false
     },
     {
-     "order": 29,
+     "order": 23,
      "key": "BasicAttackHecateStage2DMG",
      "type": "liberation",
      "count": 1,
@@ -1034,9 +1189,41 @@
      "isDisabled": false
     },
     {
-     "order": 30,
-     "key": "SuiteofImmortalityDMG",
-     "type": "intro",
+     "order": 24,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "BasicAttackHecateStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "EnhancedAttackHecateCadenzaDMG",
+     "type": "liberation",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "BasicAttackHecateStage1DMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "BasicAttackHecateStage2DMG",
+     "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false

@@ -1,12 +1,12 @@
 [
  {
   "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 135,421 DPS for Brant of 180,422 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 138,425 DPS for Brant of 184,668 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 32.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 135,421 DPS for Brant of 180,422 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
-   "duration": 32.33,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 138,425 DPS for Brant of 184,668 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 32.00 s (the team's loop).",
+   "duration": 32,
    "actions": [
     {
      "order": 1,
@@ -64,7 +64,7 @@
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
@@ -209,26 +209,26 @@
   }
  },
  {
-  "name": "Brant S6 Unflickering Valor R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 114,679 DPS for Brant of 145,296 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
+  "name": "Brant S6 Unflickering Valor R5 · Shorekeeper + Lupa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Lupa (main DPS): 131,982 DPS for Brant of 163,699 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 30.47 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Brant S6 Unflickering Valor R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Suisui + Lupa (main DPS): 114,679 DPS for Brant of 145,296 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 33.40 s (the team's loop).",
-   "duration": 33.4,
+   "name": "Brant S6 Unflickering Valor R5 · Shorekeeper + Lupa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Lupa (main DPS): 131,982 DPS for Brant of 163,699 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 30.47 s (the team's loop).",
+   "duration": 30.47,
    "actions": [
     {
      "order": 1,
-     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
-     "type": "outro",
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
-     "type": "forteCircuit",
+     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -273,7 +273,7 @@
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
@@ -405,39 +405,31 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    },
-    {
-     "order": 24,
-     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
     }
    ]
   }
  },
  {
-  "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 90,322 DPS for Brant of 104,855 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
+  "name": "Brant S6 Unflickering Valor R5 · Lily + Lupa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lily + Lupa (main DPS): 119,774 DPS for Brant of 152,860 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 31.77 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Brant S6 Unflickering Valor R5 · Mornye + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Mornye + Lupa (main DPS): 90,322 DPS for Brant of 104,855 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.33 s (the team's loop).",
-   "duration": 32.33,
+   "name": "Brant S6 Unflickering Valor R5 · Lily + Lupa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Lily + Lupa (main DPS): 119,774 DPS for Brant of 152,860 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 31.77 s (the team's loop).",
+   "duration": 31.77,
    "actions": [
     {
      "order": 1,
-     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
-     "type": "forteCircuit",
+     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
     },
     {
      "order": 2,
-     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
-     "type": "outro",
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -482,7 +474,7 @@
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
@@ -620,12 +612,12 @@
  },
  {
   "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 89,509 DPS for Brant of 111,858 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 90,840 DPS for Brant of 113,261 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 32.43 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Brant S6 Unflickering Valor R5 · Denia + Lupa · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 89,509 DPS for Brant of 111,858 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.50 (cut at its cancel frame). Rotation time 32.73 s (the team's loop).",
-   "duration": 32.73,
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Denia + Lupa (main DPS): 90,840 DPS for Brant of 113,261 team DPS. Sequence procs in the loop: 2x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 32.43 s (the team's loop).",
+   "duration": 32.43,
    "actions": [
     {
      "order": 1,
@@ -675,7 +667,7 @@
      "buffs": [
       {
        "modifier": "talentModifierMultiply",
-       "modifierValue": -50.0
+       "modifierValue": -66.67
       }
      ],
      "isDisabled": false
@@ -803,6 +795,207 @@
     {
      "order": 22,
      "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Brant S6 Unflickering Valor R5 · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Sanhua (main DPS): 87,489 DPS for Brant of 95,537 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 27.28 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Brant S6 Unflickering Valor R5 · Shorekeeper + Sanhua · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Unflickering Valor R5, Tidebreaking Courage 5pc, main stats 43311 CD ER ER atk atk. Team: Shorekeeper + Sanhua (main DPS): 87,489 DPS for Brant of 95,537 team DPS. Sequence procs in the loop: 1x Outro - The Course is Set! (S2 Blast). MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Captain's Rhapsody 3 = MidairAttackStage3DMG × 0.33 (cut at its cancel frame). Rotation time 27.28 s (the team's loop).",
+   "duration": 27.28,
+   "actions": [
+    {
+     "order": 1,
+     "key": "SequenceNode2ForSmilesandCheersBlastDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "MidairAttackStage2FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -66.67
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MidairAttackStage3FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MidairAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "ApplaudforMeDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "TotheHorizonDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MidairAttackStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MidAirAttackStage1FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "MidAirAttackStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "MidairAttackStage2ChargedAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MidairAttackStage2FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "MidairAttackStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "MidairAttackStage3FlipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "MidairAttackStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "ReturnedfromAshesDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],

@@ -1,167 +1,11 @@
 [
  {
   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 11,788 DPS for Shorekeeper of 358,606 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 9,254 DPS for Shorekeeper of 363,849 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 11,788 DPS for Shorekeeper of 358,606 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.00 s (the team's loop).",
-   "duration": 25,
-   "actions": [
-    {
-     "order": 1,
-     "key": "OriginCalculusStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "OriginCalculusStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "OriginCalculusStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "OriginCalculusPlungingAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "DeductionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnlightenmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "FallacyOfNoReturnDiffraction",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "FallacyOfNoReturn",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "DiscernmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Suoming · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Flower of Tinged Yearning 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Suoming: 9,805 DPS for Shorekeeper of 325,957 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.05 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Shorekeeper S6 Stellar Symphony R5 · Lynae + Suoming · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Flower of Tinged Yearning 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Suoming: 9,805 DPS for Shorekeeper of 325,957 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.05 s (the team's loop).",
-   "duration": 25.05,
-   "actions": [
-    {
-     "order": 1,
-     "key": "OriginCalculusStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "OriginCalculusStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "OriginCalculusStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "OriginCalculusPlungingAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "DeductionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "EnlightenmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "FormrenderDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Formrender",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "DiscernmentDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Shorekeeper S0 Stellar Symphony R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stellar Symphony R1, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 2,276 DPS for Shorekeeper of 183,557 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.00 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Shorekeeper S0 Stellar Symphony R1 · Phrolova + Qiuyuan · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Stellar Symphony R1, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Phrolova + Qiuyuan: 2,276 DPS for Shorekeeper of 183,557 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Heavy - Illation = DeductionDMG × 2.97. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Stellar Symphony R5, Rejuvenating Glow 5pc, main stats 43311 HP ER ER hp hp. Team: Lynae + Aemeath: 9,254 DPS for Shorekeeper of 363,849 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -190,30 +34,6 @@
     },
     {
      "order": 4,
-     "key": "OriginCalculusStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "OriginCalculusPlungingAttackDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "DeductionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
      "key": "EnlightenmentDMG",
      "type": "intro",
      "count": 1,
@@ -221,7 +41,7 @@
      "isDisabled": false
     },
     {
-     "order": 8,
+     "order": 5,
      "key": "FallacyOfNoReturnDiffraction",
      "type": "echoAttacks",
      "count": 1,
@@ -229,6 +49,86 @@
      "isDisabled": false,
      "mainEcho": "FallacyOfNoReturn",
      "mainEchoRank": 5
+    },
+    {
+     "order": 6,
+     "key": "OriginCalculusStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "OriginCalculusStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "DeductionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "OriginCalculusPlungingAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "FlareStarButterflyDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

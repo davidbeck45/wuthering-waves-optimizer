@@ -1,12 +1,12 @@
 [
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 73,502 DPS for Electro Rover of 119,814 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 74,842 DPS for Electro Rover of 120,552 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 73,502 DPS for Electro Rover of 119,814 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.67 s (the team's loop).",
-   "duration": 25.67,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Shorekeeper + Lynae (main DPS): 74,842 DPS for Electro Rover of 120,552 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 5 Stacks, 1x Electro Flare - 2 Stacks, 1x Electro Flare - 10 Stacks, 1x Electro Rage - 5 Stacks. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -213,12 +213,12 @@
  },
  {
   "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 71,933 DPS for Electro Rover of 116,345 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 73,048 DPS for Electro Rover of 116,480 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Electro Rover S6 Blazing Brilliance R5 · Suisui + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 71,933 DPS for Electro Rover of 116,345 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.55 s (the team's loop).",
-   "duration": 27.55,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Suisui + Lynae (main DPS): 73,048 DPS for Electro Rover of 116,480 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Electro Flare - 6 Stacks, 1x Electro Flare - 3 Stacks, 1x Electro Flare - 13 Stacks, 1x Electro Rage - 2 Stacks. Rotation time 27.00 s (the team's loop).",
+   "duration": 27,
    "actions": [
     {
      "order": 1,
@@ -412,180 +412,6 @@
     },
     {
      "order": 24,
-     "key": "CastDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceSuhsintheInevitable",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 50,704 DPS for Electro Rover of 80,679 team DPS. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Electro Rover S6 Blazing Brilliance R5 · Buling + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Brilliance R5, Heart of Sworn Vigil 5pc, main stats 43311 CR ATK ATK atk atk. Team: Buling + Lynae (main DPS): 50,704 DPS for Electro Rover of 80,679 team DPS. Sequence procs in the loop: none. Rotation time 27.78 s (the team's loop).",
-   "duration": 27.78,
-   "actions": [
-    {
-     "order": 1,
-     "key": "ThunderousFuryDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "BasicAttackStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "ThunderclapDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackRepelDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "OvershockDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "UltimateTacticsDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "ThrumOfAllSoundsSpectroStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "ThrumOfAllSoundsSpectroStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ThrumOfAllSoundsSpectroStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 6,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ThrumOfAllSoundsHavocStage1DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ThrumOfAllSoundsHavocStage2DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "ThrumOfAllSoundsHavocStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 12,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 18,
-     "key": "ThrumOfAllSoundsSilencingBladeDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 19,
-     "key": "ThunderBaneDMG",
-     "type": "forteCircuit",
-     "count": 9,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 20,
      "key": "CastDMG",
      "type": "echoAttacks",
      "count": 1,

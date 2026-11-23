@@ -1,12 +1,12 @@
 [
  {
   "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 425,627 DPS for Xuanling of 490,717 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.62 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 435,551 DPS for Xuanling of 499,937 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.27 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 425,627 DPS for Xuanling of 490,717 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.62 s (the team's loop).",
-   "duration": 26.62,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Suisui + Chisa (main DPS): 435,551 DPS for Xuanling of 499,937 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.27 s (the team's loop).",
+   "duration": 26.27,
    "actions": [
     {
      "order": 1,
@@ -209,11 +209,11 @@
  },
  {
   "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 325,249 DPS for Xuanling of 385,478 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 329,145 DPS for Xuanling of 388,688 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 325,249 DPS for Xuanling of 385,478 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 329,145 DPS for Xuanling of 388,688 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -395,11 +395,211 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Xuanling S6 Azure Oath R5 · Lily + Chisa · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Lily + Chisa (main DPS): 306,336 DPS for Xuanling of 371,933 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.02 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Xuanling S6 Azure Oath R5 · Lily + Chisa · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD ATK ATK atk atk. Team: Lily + Chisa (main DPS): 306,336 DPS for Xuanling of 371,933 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.02 s (the team's loop).",
+   "duration": 25.02,
+   "actions": [
+    {
+     "order": 1,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SkyboundFeatherDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackFeatherSwordStanceStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackFeatherSwordStanceStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackFeatherSwordStanceStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackFeatherSwordStanceStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ResonanceSkillSwordStanceFlowAzureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SequenceNode1AtTheWindSBreathTheBlossomsWake",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "HeavyAttackAzureSwordStanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "HushOfAThousandVoicesDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "ResonanceSkillSwordStanceFlowFeatherDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "ShadowOfXuanlingDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "SequenceNode1AtTheWindSBreathTheBlossomsWake",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ThousandPuppetPavilionEchoSkillDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ThousandPuppetPavilion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 15,
+     "key": "BladeofThousandMemoriesDMG",
+     "type": "echoAttacks",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ThousandPuppetPavilion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackFeatherSwordStanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MidAirAttackFeatherSwordStanceFeatherFallDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackHavocInBloomStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackHavocInBloomStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackHavocInBloomStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 23,
      "key": "SequenceNode6LetTheAzureKeepItsLight",
      "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "AsTheWindWillsDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false
@@ -409,18 +609,18 @@
  },
  {
   "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Chisa (main DPS): 284,080 DPS for Xuanling of 304,097 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.62 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Chisa (main DPS): 296,820 DPS for Xuanling of 317,324 team DPS. Sequence procs in the loop: 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.17 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Xuanling S6 Azure Oath R5 · Suisui + Chisa · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Chisa (main DPS): 284,080 DPS for Xuanling of 304,097 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 26.62 s (the team's loop).",
-   "duration": 26.62,
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Chisa (main DPS): 296,820 DPS for Xuanling of 317,324 team DPS. Sequence procs in the loop: 2x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6). Rotation time 25.17 s (the team's loop).",
+   "duration": 25.17,
    "actions": [
     {
      "order": 1,
      "key": "SequenceNode6LetTheAzureKeepItsLight",
      "type": "forteCircuit",
-     "count": 1,
+     "count": 2,
      "buffs": [],
      "isDisabled": false
     },
@@ -600,7 +800,7 @@
      "order": 23,
      "key": "SequenceNode6LetTheAzureKeepItsLight",
      "type": "forteCircuit",
-     "count": 2,
+     "count": 1,
      "buffs": [],
      "isDisabled": false
     },
@@ -611,11 +811,211 @@
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    },
+    }
+   ]
+  }
+ },
+ {
+  "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 248,004 DPS for Xuanling of 270,984 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1). Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Xuanling S6 Azure Oath R5 · Suisui + Rebecca · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Azure Oath R5, Song of Feathered Trace 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Suisui + Rebecca (main DPS): 248,004 DPS for Xuanling of 270,984 team DPS. Sequence procs in the loop: 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1), 1x Liberation - Shadow of Xuanling: Still as Withered Wood (S6), 1x Liberation - Shadow of Xuanling: Unfaltering (S1). Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
     {
-     "order": 25,
+     "order": 1,
      "key": "SequenceNode6LetTheAzureKeepItsLight",
      "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SkyboundFeatherDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackFeatherSwordStanceStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackFeatherSwordStanceStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackFeatherSwordStanceStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackFeatherSwordStanceStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ResonanceSkillSwordStanceFlowAzureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SequenceNode1AtTheWindSBreathTheBlossomsWake",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "HeavyAttackAzureSwordStanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SequenceNode6LetTheAzureKeepItsLight",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "HushOfAThousandVoicesDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ResonanceSkillSwordStanceFlowFeatherDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "ShadowOfXuanlingDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "SequenceNode1AtTheWindSBreathTheBlossomsWake",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "ThousandPuppetPavilionEchoSkillDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ThousandPuppetPavilion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 18,
+     "key": "BladeofThousandMemoriesDMG",
+     "type": "echoAttacks",
+     "count": 4,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ThousandPuppetPavilion",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 19,
+     "key": "HeavyAttackFeatherSwordStanceDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "MidAirAttackFeatherSwordStanceFeatherFallDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "BasicAttackHavocInBloomStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "BasicAttackHavocInBloomStage2DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "BasicAttackHavocInBloomStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "AsTheWindWillsDMG",
+     "type": "outro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

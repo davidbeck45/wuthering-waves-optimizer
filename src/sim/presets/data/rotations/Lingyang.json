@@ -1,0 +1,806 @@
+[
+ {
+  "name": "Lingyang S6 Blazing Justice R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Freezing Frost 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Lynae (main DPS): 58,565 DPS for Lingyang of 106,332 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lampylumen Myriad 1 = LampylumenMyriadAttacks × 0.30 (one stage of its 3-hit transform); Echo - Lampylumen Myriad 2 = LampylumenMyriadAttacks × 0.30 (one stage of its 3-hit transform); Echo - Lampylumen Myriad 3 = LampylumenMyriadAttacks × 0.40 (one stage of its 3-hit transform); Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.40 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lingyang S6 Blazing Justice R5 · Shorekeeper + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Freezing Frost 5pc, main stats 43311 CR Glacio Glacio atk atk. Team: Shorekeeper + Lynae (main DPS): 58,565 DPS for Lingyang of 106,332 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Echo - Lampylumen Myriad 1 = LampylumenMyriadAttacks × 0.30 (one stage of its 3-hit transform); Echo - Lampylumen Myriad 2 = LampylumenMyriadAttacks × 0.30 (one stage of its 3-hit transform); Echo - Lampylumen Myriad 3 = LampylumenMyriadAttacks × 0.40 (one stage of its 3-hit transform); Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.40 s (the team's loop).",
+   "duration": 25.4,
+   "actions": [
+    {
+     "order": 1,
+     "key": "LionAwakensDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "LampylumenMyriadAttacks",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false,
+     "mainEcho": "LampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "LampylumenMyriadAttacks",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false,
+     "mainEcho": "LampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "LampylumenMyriadAttacks",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -60.0
+      }
+     ],
+     "isDisabled": false,
+     "mainEcho": "LampylumenMyriad",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 5,
+     "key": "LionsVigorDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "SequenceNode5SevenStarsShineSteppeduponHigh",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "GloriousPlungeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "StormyKicksDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 30,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lingyang S6 Blazing Justice R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Lingering Tunes 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 55,704 DPS for Lingyang of 119,269 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.17 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lingyang S6 Blazing Justice R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Lingering Tunes 5pc, main stats 43311 CR ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 55,704 DPS for Lingyang of 119,269 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.17 s (the team's loop).",
+   "duration": 25.17,
+   "actions": [
+    {
+     "order": 1,
+     "key": "LionAwakensDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "MechAbominationStrike",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "MechAbomination",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "MechAbominationMechWasteExplosion",
+     "type": "echoAttacks",
+     "count": 3,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "MechAbomination",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "LionsVigorDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "SequenceNode5SevenStarsShineSteppeduponHigh",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "GloriousPlungeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "StormyKicksDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 29,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lingyang S6 Blazing Justice R5 · Lily + Lynae · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Frosty Resolve 5pc, main stats 43311 CR Glacio ATK atk atk. Team: Lily + Lynae (main DPS): 53,154 DPS for Lingyang of 99,975 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.77 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Lingyang S6 Blazing Justice R5 · Lily + Lynae · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Blazing Justice R5, Frosty Resolve 5pc, main stats 43311 CR Glacio ATK atk atk. Team: Lily + Lynae (main DPS): 53,154 DPS for Lingyang of 99,975 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Mid-air - Feral Gyrate 1 = FeralGyrateStage1DMG × 0.30 (cut at its cancel frame). Rotation time 25.77 s (the team's loop).",
+   "duration": 25.77,
+   "actions": [
+    {
+     "order": 1,
+     "key": "LionAwakensDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "SentryConstructAttack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "SentryConstruct",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "LionsVigorDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "SequenceNode5SevenStarsShineSteppeduponHigh",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "GloriousPlungeDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 21,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 22,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 23,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 24,
+     "key": "FeralGyrateStage1DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [
+      {
+       "modifier": "talentModifierMultiply",
+       "modifierValue": -70.0
+      }
+     ],
+     "isDisabled": false
+    },
+    {
+     "order": 25,
+     "key": "MountainRoamerDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 26,
+     "key": "InherentSkillDiligentPractice",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 27,
+     "key": "StormyKicksDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 28,
+     "key": "OutroSkillDMG",
+     "type": "outro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ }
+]

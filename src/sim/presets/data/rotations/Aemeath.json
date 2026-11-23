@@ -1,11 +1,11 @@
 [
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 319,664 DPS for Aemeath of 390,084 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 325,815 DPS for Aemeath of 397,147 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Mornye + Lynae · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 319,664 DPS for Aemeath of 390,084 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Mornye + Lynae (main DPS): 325,815 DPS for Aemeath of 397,147 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -18,126 +18,6 @@
     },
     {
      "order": 2,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "HeavenfallEdictOverdriveDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackMechStage2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackMechStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackMechStage4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "SeraphicDuetEncoreDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SeraphicDuetBonusDMGPerInstance",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackAemeathStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "SeraphicDuetOvertureDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "SeraphicDuetBonusDMGPerInstance",
-     "type": "forteCircuit",
-     "count": 5,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "HeavyAttackMechChargedIIDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "HeavenfallEdictFinaleDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -145,18 +25,162 @@
      "isDisabled": false,
      "mainEcho": "Sigillum",
      "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SeraphicDuetBonusDMGPerInstance",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "SeraphicDuetBonusDMGPerInstance",
+     "type": "forteCircuit",
+     "count": 5,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 18,
+     "key": "BasicAttackAemeathStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 19,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 20,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Lupa (main DPS): 312,668 DPS for Aemeath of 367,244 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 26.20 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 323,899 DPS for Aemeath of 378,478 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 25.70 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Lupa · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Lupa (main DPS): 312,668 DPS for Aemeath of 367,244 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 26.20 s (the team's loop).",
-   "duration": 26.2,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Suisui + Lupa (main DPS): 323,899 DPS for Aemeath of 378,478 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks. Rotation time 25.70 s (the team's loop).",
+   "duration": 25.7,
    "actions": [
     {
      "order": 1,
@@ -168,15 +192,17 @@
     },
     {
      "order": 2,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
      "count": 1,
      "buffs": [],
-     "isDisabled": false
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
     },
     {
      "order": 3,
-     "key": "BasicAttackAemeathStage4DMG",
+     "key": "BasicAttackAemeathStage3DMG",
      "type": "basic",
      "count": 1,
      "buffs": [],
@@ -184,62 +210,6 @@
     },
     {
      "order": 4,
-     "key": "HeavenfallEdictOverdriveDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackMechStage2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackMechStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackMechStage4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "SeraphicDuetEncoreDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "BasicAttackAemeathStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
      "key": "BasicAttackAemeathStage4DMG",
      "type": "basic",
      "count": 1,
@@ -247,7 +217,39 @@
      "isDisabled": false
     },
     {
-     "order": 12,
+     "order": 5,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
      "key": "ElementalEffectFusionBurst",
      "type": "negativeStatus",
      "count": 1,
@@ -266,7 +268,39 @@
      }
     },
     {
+     "order": 10,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
      "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
      "key": "SeraphicDuetOvertureDMG",
      "type": "forteCircuit",
      "count": 1,
@@ -274,7 +308,7 @@
      "isDisabled": false
     },
     {
-     "order": 14,
+     "order": 15,
      "key": "HeavyAttackMechChargedIIDMG",
      "type": "skill",
      "count": 1,
@@ -282,34 +316,24 @@
      "isDisabled": false
     },
     {
-     "order": 15,
+     "order": 16,
      "key": "HeavenfallEdictFinaleDMG",
      "type": "liberation",
      "count": 1,
      "buffs": [],
      "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "SigillumAttacksDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "Sigillum",
-     "mainEchoRank": 5
     }
    ]
   }
  },
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 308,469 DPS for Aemeath of 552,155 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.65 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 314,361 DPS for Aemeath of 554,162 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.37 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 308,469 DPS for Aemeath of 552,155 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.65 s (the team's loop).",
-   "duration": 25.65,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 314,361 DPS for Aemeath of 554,162 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.37 s (the team's loop).",
+   "duration": 25.37,
    "actions": [
     {
      "order": 1,
@@ -321,148 +345,6 @@
     },
     {
      "order": 2,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ElementalEffectFusionBurst",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "advancedConfig": {
-      "buffs": {
-       "SeraphicDuetFusionBurst": {
-        "isEnabled": false
-       },
-       "StardustResonance": {
-        "isEnabled": false
-       }
-      }
-     }
-    },
-    {
-     "order": 5,
-     "key": "HeavenfallEdictOverdriveDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackMechStage2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackMechStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackMechStage4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SeraphicDuetEncoreDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackAemeathStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "SeraphicDuetOvertureDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "HeavyAttackMechChargedIIDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "ElementalEffectFusionBurst",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "advancedConfig": {
-      "buffs": {
-       "SeraphicDuetFusionBurst": {
-        "isEnabled": false
-       },
-       "StardustResonance": {
-        "isEnabled": false
-       }
-      }
-     }
-    },
-    {
-     "order": 16,
-     "key": "HeavenfallEdictFinaleDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -470,18 +352,332 @@
      "isDisabled": false,
      "mainEcho": "Sigillum",
      "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 6,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 15,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 233,391 DPS for Aemeath of 264,109 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Aemeath S6 Everbright Polestar R5 · Suisui + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK Fusion atk atk. Team: Suisui + Denia (main DPS): 233,391 DPS for Aemeath of 264,109 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "SongsAcrosstheUniverseDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 3,
+     "key": "SigillumAttacksDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "Sigillum",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 15,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }
  },
  {
   "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 225,576 DPS for Aemeath of 265,772 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.85 s (the team's loop).",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 230,359 DPS for Aemeath of 268,701 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.57 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Aemeath S6 Everbright Polestar R5 · Chisa + Denia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 225,576 DPS for Aemeath of 265,772 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.85 s (the team's loop).",
-   "duration": 25.85,
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Everbright Polestar R5, Trailblazing Star 5pc, main stats 43311 CD ATK ATK atk atk. Team: Chisa + Denia (main DPS): 230,359 DPS for Aemeath of 268,701 team DPS. Sequence procs in the loop: none. Negative-status ticks in the loop (pressed as the app's negative-status actions at the tick's stack count): 1x Fusion Burst - 13 Stacks, 1x Fusion Burst - 13 Stacks. Rotation time 25.57 s (the team's loop).",
+   "duration": 25.57,
    "actions": [
     {
      "order": 1,
@@ -493,148 +689,6 @@
     },
     {
      "order": 2,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "ElementalEffectFusionBurst",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "advancedConfig": {
-      "buffs": {
-       "SeraphicDuetFusionBurst": {
-        "isEnabled": false
-       },
-       "StardustResonance": {
-        "isEnabled": false
-       }
-      }
-     }
-    },
-    {
-     "order": 5,
-     "key": "HeavenfallEdictOverdriveDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "BasicAttackMechStage2DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "BasicAttackMechStage3DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "BasicAttackMechStage4DMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SeraphicDuetEncoreDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "BasicAttackAemeathStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "BasicAttackAemeathStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "BasicAttackAemeathStage4DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ElementalEffectFusionBurst",
-     "type": "negativeStatus",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "negativeStatusStacks": 13,
-     "advancedConfig": {
-      "buffs": {
-       "SeraphicDuetFusionBurst": {
-        "isEnabled": false
-       },
-       "StardustResonance": {
-        "isEnabled": false
-       }
-      }
-     }
-    },
-    {
-     "order": 14,
-     "key": "SeraphicDuetOvertureDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 15,
-     "key": "HeavyAttackMechChargedIIDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 16,
-     "key": "HeavenfallEdictFinaleDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 17,
      "key": "SigillumAttacksDMG",
      "type": "echoAttacks",
      "count": 1,
@@ -642,6 +696,148 @@
      "isDisabled": false,
      "mainEcho": "Sigillum",
      "mainEchoRank": 5
+    },
+    {
+     "order": 3,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 6,
+     "key": "HeavenfallEdictOverdriveDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "BasicAttackMechStage2DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "BasicAttackMechStage3DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "BasicAttackMechStage4DMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SeraphicDuetEncoreDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "BasicAttackAemeathStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "BasicAttackAemeathStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 13,
+     "key": "BasicAttackAemeathStage4DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 14,
+     "key": "ElementalEffectFusionBurst",
+     "type": "negativeStatus",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "negativeStatusStacks": 13,
+     "advancedConfig": {
+      "buffs": {
+       "SeraphicDuetFusionBurst": {
+        "isEnabled": false
+       },
+       "StardustResonance": {
+        "isEnabled": false
+       }
+      }
+     }
+    },
+    {
+     "order": 15,
+     "key": "SeraphicDuetOvertureDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 16,
+     "key": "HeavyAttackMechChargedIIDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 17,
+     "key": "HeavenfallEdictFinaleDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     }
    ]
   }

@@ -10,12 +10,13 @@
   "s6r5mdps": "S6R5 DPS \u00b7 S0R1 team",
   "s6r1mdps": "S6R1 DPS \u00b7 S0R1 team"
  },
- "generatedAt": "2026-11-17T20:18:56+00:00",
- "wuwaCalcCommit": "7bcbb24",
- "appCommit": "7daf3564",
+ "generatedAt": "2026-11-23T22:09:00+00:00",
+ "wuwaCalcCommit": "821f8db",
+ "appCommit": "e2b6a157",
  "characters": [
   "Aemeath",
   "Augusta",
+  "Baizhi",
   "Brant",
   "Buling",
   "Camellya",
@@ -37,6 +38,7 @@
   "Jinhsi",
   "Jiyan",
   "Lily",
+  "Lingyang",
   "Lucilla",
   "Lucy",
   "Lupa",
@@ -51,6 +53,7 @@
   "Rebecca",
   "Roccia",
   "RoverAeroFemale",
+  "RoverHavocFemale",
   "RoverSpectroFemale",
   "Roverelectrofemale",
   "Sanhua",
@@ -60,29 +63,30 @@
   "Suoming",
   "Verina",
   "XiangliYao",
+  "Yangyang",
   "YangyangXuanling",
   "Yinlin",
   "Zani",
   "Zhezhi"
  ],
- "rotationPresets": 155,
- "teamPresets": 149,
+ "rotationPresets": 158,
+ "teamPresets": 167,
  "notInApp": [],
  "mapping": {
   "rotations": {
    "unmatched": 0,
-   "rotations:s6r5": 110,
-   "deduped": 277,
-   "rotations:s6r5mdps": 38,
-   "rotations:s6r1mdps": 7
+   "rotations:s6r5": 108,
+   "deduped": 310,
+   "rotations:s6r5mdps": 47,
+   "rotations:s6r1mdps": 3
   },
   "teams": {
    "skippedNotInApp": 0,
    "unmatched": 0,
-   "teams:s6r5": 83,
-   "teams:s6r5mdps": 83,
-   "teams:s6r1mdps": 83,
-   "deduped": 100
+   "teams:s6r5": 92,
+   "teams:s6r5mdps": 92,
+   "teams:s6r1mdps": 92,
+   "deduped": 109
   }
  }
 }

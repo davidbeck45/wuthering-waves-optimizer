@@ -1,81 +1,15 @@
 [
  {
   "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 21,004 DPS for Mornye of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 20,572 DPS for Mornye of 365,311 team DPS. Sequence procs in the loop: none. Rotation time 26.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Mornye S6 Starfield Calibrator R5 · Lupa + Aemeath · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 21,004 DPS for Mornye of 367,992 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
-   "duration": 25.22,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Starfield Calibrator R5, Halo of Starry Radiance 5pc + Reactor Husk, main stats 43311 DEF ER ER def def. Team: Lupa + Aemeath: 20,572 DPS for Mornye of 365,311 team DPS. Sequence procs in the loop: none. Rotation time 26.00 s (the team's loop).",
+   "duration": 26,
    "actions": [
     {
      "order": 1,
-     "key": "SyntonyFieldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "CriticalProtocolDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "BasicAttackWideFieldObservationModeStage1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "BasicAttackWideFieldObservationModeStage2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "BasicAttackWideFieldObservationModeStage3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "DistributedArrayDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "HeavyAttackInversionDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "HyvatiaLasersDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReactorHusk",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 9,
      "key": "ConvergenceDMG",
      "type": "intro",
      "count": 1,
@@ -83,12 +17,70 @@
      "isDisabled": false
     },
     {
-     "order": 10,
+     "order": 2,
      "key": "SyntonyFieldDMG",
      "type": "forteCircuit",
      "count": 1,
      "buffs": [],
      "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "CriticalProtocolDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "BasicAttackWideFieldObservationModeStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "BasicAttackWideFieldObservationModeStage2DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BasicAttackWideFieldObservationModeStage3DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "DistributedArrayDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "HeavyAttackInversionDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "HyvatiaLasersDMG",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ReactorHusk",
+     "mainEchoRank": 5
     }
    ]
   }

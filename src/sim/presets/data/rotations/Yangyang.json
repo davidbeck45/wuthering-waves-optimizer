@@ -1,0 +1,88 @@
+[
+ {
+  "name": "Yangyang S6 Emerald of Genesis R5 · Mornye + Havoc Rover · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Havoc Rover: 8,333 DPS for Yangyang of 68,490 team DPS. Sequence procs in the loop: none. Rotation time 20.53 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Yangyang S6 Emerald of Genesis R5 · Mornye + Havoc Rover · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Moonlit Clouds 5pc, main stats 43311 CD Aero Aero atk atk. Team: Mornye + Havoc Rover: 8,333 DPS for Yangyang of 68,490 team DPS. Sequence procs in the loop: none. Rotation time 20.53 s (the team's loop).",
+   "duration": 20.53,
+   "actions": [
+    {
+     "order": 1,
+     "key": "CeruleanSongSkillDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "FeatherasBladeMidAirAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "WindSpiralsSkillDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "FeatherasBladeStage1DMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "FeatherasBladeHeavyAttackDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "FeatherasBladeZephyrSongDamage",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 7,
+     "key": "ZephyrDomainSkillDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "FeatherReleaseDamage",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "ImpermanenceHeronFlySmack",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "ImpermanenceHeron",
+     "mainEchoRank": 5
+    }
+   ]
+  }
+ }
+]

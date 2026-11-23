@@ -1,12 +1,12 @@
 [
  {
   "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 63,870 DPS for Chisa of 298,827 team DPS. Sequence procs in the loop: none. Rotation time 27.75 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ER ATK atk atk. Team: Mornye + Cartethyia: 65,945 DPS for Chisa of 299,226 team DPS. Sequence procs in the loop: none. Rotation time 27.22 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S6 Kumokiri R5 · Mornye + Cartethyia · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 44111 CD CD atk atk atk. Team: Mornye + Cartethyia: 63,870 DPS for Chisa of 298,827 team DPS. Sequence procs in the loop: none. Rotation time 27.75 s (the team's loop).",
-   "duration": 27.75,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ER ATK atk atk. Team: Mornye + Cartethyia: 65,945 DPS for Chisa of 299,226 team DPS. Sequence procs in the loop: none. Rotation time 27.22 s (the team's loop).",
+   "duration": 27.22,
    "actions": [
     {
      "order": 1,
@@ -120,12 +120,122 @@
   }
  },
  {
+  "name": "Chisa S6 Kumokiri R5 · Lily + Hsin · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 44111 CD CD atk atk atk. Team: Lily + Hsin: 57,493 DPS for Chisa of 351,083 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "author": "Riley31415 (wuwa_calc)",
+  "data": {
+   "name": "Chisa S6 Kumokiri R5 · Lily + Hsin · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Thread of Severed Fate 3pc + Moonlit Clouds 2pc + Bell-Borne Geochelone, main stats 44111 CD CD atk atk atk. Team: Lily + Hsin: 57,493 DPS for Chisa of 351,083 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
+   "actions": [
+    {
+     "order": 1,
+     "key": "ReverberanceReturnDMG",
+     "type": "intro",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 2,
+     "key": "EyeofUnravelingDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 3,
+     "key": "RendingLungeDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 4,
+     "key": "DeathSnipDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 5,
+     "key": "DeathSnipAdditionalDMG",
+     "type": "basic",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 6,
+     "key": "BellBorneGeocheloneActivation",
+     "type": "echoAttacks",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false,
+     "mainEcho": "BellBorneGeochelone",
+     "mainEchoRank": 5
+    },
+    {
+     "order": 7,
+     "key": "MomentofNihilityDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 8,
+     "key": "SerratedLoopDMG",
+     "type": "skill",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 9,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 2,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 10,
+     "key": "SawringBlitzStage3DMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 11,
+     "key": "SawringBlitzStage3HoldDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    },
+    {
+     "order": 12,
+     "key": "SawringEradicationDMG",
+     "type": "forteCircuit",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
+    }
+   ]
+  }
+ },
+ {
   "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 55,707 DPS for Chisa of 381,673 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 56,655 DPS for Chisa of 384,298 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Chisa S6 Kumokiri R5 · Shorekeeper + Xuanling · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 55,707 DPS for Chisa of 381,673 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Kumokiri R5, Moonlit Clouds 5pc, main stats 44111 CD CD atk atk atk. Team: Shorekeeper + Xuanling: 56,655 DPS for Chisa of 384,298 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
    "duration": 25,
    "actions": [
     {
@@ -212,126 +322,6 @@
      "order": 11,
      "key": "SawringEradicationDMG",
      "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    }
-   ]
-  }
- },
- {
-  "name": "Chisa S0 Kumokiri R1 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK Havoc atk atk. Team: Sanhua + Cartethyia: 12,803 DPS for Chisa of 155,785 team DPS. Sequence procs in the loop: none. Rotation time 25.93 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Chisa S0 Kumokiri R1 · Sanhua + Cartethyia · S6R5 DPS · S0R1 team (wuwa_calc)",
-   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S0, Kumokiri R1, Thread of Severed Fate 3pc + Havoc Eclipse 2pc + Reminiscence: Threnodian - Leviathan, main stats 43311 CD ATK Havoc atk atk. Team: Sanhua + Cartethyia: 12,803 DPS for Chisa of 155,785 team DPS. Sequence procs in the loop: none. Rotation time 25.93 s (the team's loop).",
-   "duration": 25.93,
-   "actions": [
-    {
-     "order": 1,
-     "key": "EyeofUnravelingDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "RendingLungeDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "DeathSnipDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "DeathSnipAdditionalDMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "CollapsingHorizonDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceThrenodianLeviathan",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 6,
-     "key": "MomentofNihilityDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "CoreofCollapseDMG",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ReminiscenceThrenodianLeviathan",
-     "mainEchoRank": 5
-    },
-    {
-     "order": 8,
-     "key": "SerratedLoopDMG",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SawringBlitzStage3HoldDMG",
-     "type": "forteCircuit",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SawringBlitzStage3DMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SawringBlitzStage3HoldDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "SawringEradicationDMG",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ReverberanceReturnDMG",
-     "type": "intro",
      "count": 1,
      "buffs": [],
      "isDisabled": false

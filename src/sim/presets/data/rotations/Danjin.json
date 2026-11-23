@@ -1,12 +1,12 @@
 [
  {
-  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 16,525 DPS for Danjin of 163,316 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
+  "name": "Danjin S6 Emerald of Genesis R5 · Mornye + Havoc Rover · S6R5 (wuwa_calc)",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Havoc Rover: 16,725 DPS for Danjin of 78,832 team DPS. Sequence procs in the loop: none. Rotation time 24.20 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Shorekeeper · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Shorekeeper: 16,525 DPS for Danjin of 163,316 team DPS. Sequence procs in the loop: none. Rotation time 25.22 s (the team's loop).",
-   "duration": 25.22,
+   "name": "Danjin S6 Emerald of Genesis R5 · Mornye + Havoc Rover · S6R5 (wuwa_calc)",
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R5, Midnight Veil 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Mornye + Havoc Rover: 16,725 DPS for Danjin of 78,832 team DPS. Sequence procs in the loop: none. Rotation time 24.20 s (the team's loop).",
+   "duration": 24.2,
    "actions": [
     {
      "order": 1,
@@ -134,139 +134,13 @@
   }
  },
  {
-  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 12,353 DPS for Danjin of 184,558 team DPS. Sequence procs in the loop: none. Rotation time 26.02 s (the team's loop).",
+  "name": "Danjin S6 Emerald of Genesis R1 · Phrolova + Suisui · S6R5 DPS · S0R1 team (wuwa_calc)",
+  "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R1, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Suisui: 10,027 DPS for Danjin of 135,793 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
-   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Moonlit Clouds 5pc, main stats 43311 CD Havoc Havoc atk atk. Team: Phrolova + Mornye: 12,353 DPS for Danjin of 184,558 team DPS. Sequence procs in the loop: none. Rotation time 26.02 s (the team's loop).",
-   "duration": 26.02,
-   "actions": [
-    {
-     "order": 1,
-     "key": "SkillDMG",
-     "type": "intro",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 2,
-     "key": "CrimsonErosion1",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 3,
-     "key": "CrimsonErosion2",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 4,
-     "key": "CrimsonBloomScarletBurstDMG",
-     "type": "liberation",
-     "count": 2,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 5,
-     "key": "CarmineGleam",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 6,
-     "key": "Part1DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 7,
-     "key": "Part2DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 8,
-     "key": "Part3DMG",
-     "type": "basic",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 9,
-     "key": "SanguinePulse1",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
-     "key": "SanguinePulse2",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 11,
-     "key": "SanguinePulse3",
-     "type": "skill",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 12,
-     "key": "ChaoscleaveDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 13,
-     "key": "ScatterbloomDamage",
-     "type": "forteCircuit",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 14,
-     "key": "ImpermanenceHeronFlySmack",
-     "type": "echoAttacks",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false,
-     "mainEcho": "ImpermanenceHeron",
-     "mainEchoRank": 5
-    }
-   ]
-  }
- },
- {
-  "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 · Rejuvenating Glow 5pc (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Mornye: 11,983 DPS for Danjin of 180,249 team DPS. Sequence procs in the loop: none. Rotation time 27.62 s (the team's loop).",
-  "author": "Riley31415 (wuwa_calc)",
-  "data": {
-   "name": "Danjin S6 Emerald Sentence R5 · Phrolova + Mornye · S6R5 · Rejuvenating Glow 5pc (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Emerald Sentence R5, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Mornye: 11,983 DPS for Danjin of 180,249 team DPS. Sequence procs in the loop: none. Rotation time 27.62 s (the team's loop).",
-   "duration": 27.62,
+   "name": "Danjin S6 Emerald of Genesis R1 · Phrolova + Suisui · S6R5 DPS · S0R1 team (wuwa_calc)",
+   "description": "S6R5 DPS · S0R1 team steady-state loop (the main DPS S6 with an R5 signature, everyone else S0 with R1 weapons) executed by Riley's wuwa_calc engine: S6, Emerald of Genesis R1, Rejuvenating Glow 5pc, main stats 43311 CD ATK Havoc atk atk. Team: Phrolova + Suisui: 10,027 DPS for Danjin of 135,793 team DPS. Sequence procs in the loop: none. Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,

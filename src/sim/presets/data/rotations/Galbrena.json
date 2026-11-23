@@ -1,12 +1,12 @@
 [
  {
   "name": "Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 263,087 DPS for Galbrena of 310,150 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 27.05 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 288,750 DPS for Galbrena of 328,345 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Galbrena S6 Lux & Umbra R5 · Lily + Qiuyuan · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 263,087 DPS for Galbrena of 310,150 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 27.05 s (the team's loop).",
-   "duration": 27.05,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Lily + Qiuyuan (main DPS): 288,750 DPS for Galbrena of 328,345 team DPS. Sequence procs in the loop: none. MV multipliers wuwa_calc folds in (the app applies these through the kit's buffs — keep them enabled): Forte Basic - Seraphic Execution 2 = BasicAttackSeraphicExecutionStage2DMG × 0.40 (cut at its cancel frame); Forte Basic - Seraphic Execution 3 = BasicAttackSeraphicExecutionStage3DMG × 0.30 (cut at its cancel frame). Rotation time 25.00 s (the team's loop).",
+   "duration": 25,
    "actions": [
     {
      "order": 1,
@@ -74,14 +74,6 @@
     },
     {
      "order": 9,
-     "key": "HellfireAbsolutionDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
      "key": "CorrosaurusAttack",
      "type": "echoAttacks",
      "count": 1,
@@ -89,6 +81,14 @@
      "isDisabled": false,
      "mainEcho": "Corrosaurus",
      "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "HellfireAbsolutionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 11,
@@ -225,12 +225,12 @@
  },
  {
   "name": "Galbrena S6 Lux & Umbra R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 205,125 DPS for Galbrena of 294,702 team DPS. Sequence procs in the loop: none. Rotation time 26.92 s (the team's loop).",
+  "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 218,813 DPS for Galbrena of 314,668 team DPS. Sequence procs in the loop: none. Rotation time 25.67 s (the team's loop).",
   "author": "Riley31415 (wuwa_calc)",
   "data": {
    "name": "Galbrena S6 Lux & Umbra R5 · Qiuyuan + Lucilla · S6R5 (wuwa_calc)",
-   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 205,125 DPS for Galbrena of 294,702 team DPS. Sequence procs in the loop: none. Rotation time 26.92 s (the team's loop).",
-   "duration": 26.92,
+   "description": "S6R5 steady-state loop (everyone S6 with R5 signature weapons) executed by Riley's wuwa_calc engine: S6, Lux & Umbra R5, Flamewing's Shadow 3pc + Flaming Clawprint 2pc, main stats 43311 CR Fusion Fusion atk atk. Team: Qiuyuan + Lucilla (main DPS): 218,813 DPS for Galbrena of 314,668 team DPS. Sequence procs in the loop: none. Rotation time 25.67 s (the team's loop).",
+   "duration": 25.67,
    "actions": [
     {
      "order": 1,
@@ -298,14 +298,6 @@
     },
     {
      "order": 9,
-     "key": "HellfireAbsolutionDMG",
-     "type": "liberation",
-     "count": 1,
-     "buffs": [],
-     "isDisabled": false
-    },
-    {
-     "order": 10,
      "key": "CorrosaurusAttack",
      "type": "echoAttacks",
      "count": 1,
@@ -313,6 +305,14 @@
      "isDisabled": false,
      "mainEcho": "Corrosaurus",
      "mainEchoRank": 5
+    },
+    {
+     "order": 10,
+     "key": "HellfireAbsolutionDMG",
+     "type": "liberation",
+     "count": 1,
+     "buffs": [],
+     "isDisabled": false
     },
     {
      "order": 11,

@@ -92,12 +92,13 @@ describe("wuwa_calc stock presets (generated data)", () => {
     expect(own.length).toBeGreaterThan(0);
     for (const preset of own) {
       expect(parsePresetName(preset.name).mainKey, preset.name).toBe("Lily");
-      // her four Basic Attack stages are pressed by their number: wuwa_calc holds the 3.8 beta's motion values for
-      // them, and Stage 4's sat 0.03 from her Resonance Skill's, so the cascade pressed a second Blend instead
+      // her kit is the released game's since Riley's 7b4acd0 (2026-11-21): every press matches the app's row by its
+      // motion value, so the loop names no value that differs between the two (the beta's four Basic Attack stages
+      // did) and no multiplier; and her Woven heavy attack is pressed, which needs the 300 of her Forte gauge
       const keys = (preset.data.actions as Action[]).map((a) => String(a.key));
-      for (const n of [1, 2, 3, 4]) expect(keys.filter((k) => k === `BasicAttackStage${n}DMG`), `${preset.name}: stage ${n}`).toHaveLength(1);
+      expect(keys, preset.name).toContain("HeavyAttackWovenFairytaleDMG");
       expect(keys.filter((k) => /^ResonanceSkill/.test(k)), preset.name).toEqual(["ResonanceSkillReverieBlendDMG"]);
-      expect(preset.description).toContain("Basic - Mend and Cleanse 4 159.08% → BasicAttackStage4DMG 153.80%");
+      expect(preset.description).not.toContain("differ");
       expect(preset.description).not.toContain("MV multipliers");
     }
     const teams = (await loadWuwaCalcTeamPresets()).filter((t) => (t.data.characterIds as string[]).includes("Lily"));
