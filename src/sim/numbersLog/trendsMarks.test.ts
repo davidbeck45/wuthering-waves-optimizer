@@ -4,7 +4,7 @@ import { SYNCED_TEXT, type Namer } from "./compare";
 import { entryFromRanking, type RankedAccount } from "./entry";
 import type { LogEntry, NumbersLog } from "./log";
 import { DAY, T0, account, ranking } from "./testAccount";
-import { buildTrends, trendSteps } from "./trends";
+import { buildTrends, trendList, trendSteps } from "./trends";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";
 const names: Namer = { character: (id) => `<${id}>`, weapon: (key) => (key ? `[${key}]` : "no weapon") };
@@ -43,5 +43,20 @@ describe("over time: a team whose members changed", () => {
     const [step] = trendSteps(log, t, names);
     expect(step!.text).toBe("You changed who is in this team.");
     expect(step!.marks).toEqual(["team"]);
+  });
+});
+
+describe("over time: the fold of unmoved figures", () => {
+  it("a figure in one record only (a character or team new to the log) is not counted as one that did not move", () => {
+    const first = entryFromRanking(ranking({}), account(), { at: T0, build: BUILD, autoTeamBuffs: true }) as LogEntry;
+    const acc = account();
+    acc.characters.Ddd = { weapon: "GunTwo", echoes: { 0: { echoId: "e9" } }, buffs: {} };
+    const r = ranking({ Aaa: 1_100_000 });
+    r.characters.push({ ...r.characters[2]!, id: "Ddd", name: "Ddd" });
+    const second = entryFromRanking(r, acc, { at: T0 + DAY, build: BUILD, autoTeamBuffs: true }) as LogEntry;
+    const l = trendList(buildTrends(logOf(first, second)));
+    // Bbb and Ccc did not move; Ddd is new: one value, no line
+    expect(l.unmoved.characters).toBe(2);
+    expect(l.single.characters).toBe(1);
   });
 });

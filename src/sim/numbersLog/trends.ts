@@ -122,18 +122,23 @@ export interface TrendList {
   saved: Trend[];
   characters: Trend[];
   stock: Trend[];
-  /** figures whose every recorded value is the same, per group (they fold into one line) */
+  /** figures recorded at least twice with every value the same, per group (they fold into one line) */
   unmoved: { saved: number; characters: number; stock: number };
+  /** figures in one record only so far (a character or team new in the log): no line yet, never "did not move" */
+  single: { saved: number; characters: number; stock: number };
 }
+
+const recorded = (t: Trend): number => t.points.filter((p) => p.value !== null).length;
 
 export function trendList(trends: readonly Trend[]): TrendList {
   const of = (g: TrendGroup): Trend[] => trends.filter((t) => t.group === g);
   const moved = (list: Trend[]): Trend[] => list.filter((t) => t.moved).sort(byChange);
-  const still = (list: Trend[]): number => list.filter((t) => !t.moved).length;
+  const still = (list: Trend[]): number => list.filter((t) => !t.moved && recorded(t) > 1).length;
+  const once = (list: Trend[]): number => list.filter((t) => recorded(t) === 1).length;
   const saved = of("saved");
   const characters = of("character");
   const stock = of("stock");
-  return { saved: moved(saved), characters: moved(characters), stock: moved(stock), unmoved: { saved: still(saved), characters: still(characters), stock: still(stock) } };
+  return { saved: moved(saved), characters: moved(characters), stock: moved(stock), unmoved: { saved: still(saved), characters: still(characters), stock: still(stock) }, single: { saved: once(saved), characters: once(characters), stock: once(stock) } };
 }
 
 /** The runs of a line to draw joined: consecutive points with a value and the same stretch. Indexes into `points`. */

@@ -39,6 +39,9 @@
           </li>
         </ul>
         <p v-if="g.unmoved" class="ntr__still" :data-test-trends-unmoved="g.key">{{ g.unmoved }} {{ g.noun }}{{ g.unmoved === 1 ? "" : "s" }} did not move in any record.</p>
+        <p v-if="g.single" class="ntr__still" :data-test-trends-single="g.key">
+          {{ g.single }} {{ g.noun }}{{ g.single === 1 ? " is" : "s are" }} in one record only, so there is no line to draw yet.
+        </p>
       </template>
     </template>
 
@@ -70,11 +73,11 @@ const router = useRouter();
 const trends = computed(() => buildTrends(props.log));
 const list = computed(() => trendList(trends.value));
 const showStock = ref(false);
-const stockTotal = computed(() => list.value.stock.length + list.value.unmoved.stock);
+const stockTotal = computed(() => list.value.stock.length + list.value.unmoved.stock + list.value.single.stock);
 const groups = computed(() => [
-  { key: "saved", title: "Your teams", rows: list.value.saved, unmoved: list.value.unmoved.saved, noun: "saved team", show: true },
-  { key: "characters", title: "Characters", rows: list.value.characters, unmoved: list.value.unmoved.characters, noun: "character", show: true },
-  { key: "stock", title: "Stock teams", rows: list.value.stock, unmoved: list.value.unmoved.stock, noun: "stock team", show: showStock.value },
+  { key: "saved", title: "Your teams", rows: list.value.saved, unmoved: list.value.unmoved.saved, single: list.value.single.saved, noun: "saved team", show: true },
+  { key: "characters", title: "Characters", rows: list.value.characters, unmoved: list.value.unmoved.characters, single: list.value.single.characters, noun: "character", show: true },
+  { key: "stock", title: "Stock teams", rows: list.value.stock, unmoved: list.value.unmoved.stock, single: list.value.single.stock, noun: "stock team", show: showStock.value },
 ]);
 
 const open = computed(() => {
