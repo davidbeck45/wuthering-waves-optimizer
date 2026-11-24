@@ -235,12 +235,17 @@ export function bestSavedTeam(trends: readonly Trend[]): Trend | null {
 /* eslint-disable-next-line no-unused-vars -- the parameters of function types */
 export function trendChangeText(t: Trend, fmt: (n: number) => string, day: (at: number) => string): string {
   if (t.switched && t.first.index === t.last.index) return "nothing to compare with since the team-aware buffs switch was flipped";
+  // one recorded value: nothing to compare it with yet, which is not "no change"
+  if (t.first.index === t.last.index) return `first recorded ${day(t.first.at)}, nothing to compare with yet`;
   if (!t.delta) return `no change since ${day(t.first.at)}`;
   const p = t.change === null ? null : Math.abs(t.change * 100);
   const pct = p === null ? "" : `${p < 0.05 ? "under 0.1" : p.toFixed(1)} % of the first figure, `;
   const abs = `${t.delta > 0 ? "+" : "−"}${fmt(Math.abs(t.delta))} damage`;
   return `${t.delta > 0 ? "up" : "down"} ${pct}${abs} since ${day(t.first.at)}`;
 }
+
+/** how many of the log's records hold the figure (a gap is a record without it) */
+export const recordedCount = (t: Trend): number => t.points.filter((p) => p.value !== null).length;
 
 /** What a row says under its change, when the line is not one plain stretch. */
 export function trendNote(t: Trend): string | null {

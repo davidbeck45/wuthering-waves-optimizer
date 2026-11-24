@@ -38,7 +38,7 @@
           <span class="nmc__trendname">{{ bestName }}</span>
         </span>
         <TrendSpark :points="best.points" :width="88" :height="26" />
-        <span class="nmc__trendchange" data-test-numbers-card-trend-change>{{ compactNumber(best.last.value) }} team damage per rotation, {{ bestChange }} ({{ best.points.length }} records; the small line is scaled to its own range) ›</span>
+        <span class="nmc__trendchange" data-test-numbers-card-trend-change>{{ compactNumber(best.last.value) }} team damage per rotation, {{ bestChange }} (in {{ recordedCount(best) }} of {{ best.points.length }} records; the small line is scaled to its own range) ›</span>
       </RouterLink>
     </template>
   </section>
@@ -50,7 +50,7 @@ import { RouterLink } from "vue-router";
 import { characterShortName } from "../display/names";
 import { compact as compactNumber, fmt } from "../myRankings/format";
 import { biggestMoves, dayText, whenText } from "./compare";
-import { bestSavedTeam, buildTrends, trendChangeText } from "./trends";
+import { bestSavedTeam, buildTrends, recordedCount, trendChangeText } from "./trends";
 import TrendSpark from "./TrendSpark.vue";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
 import { useNumbersLog } from "./useNumbersLog";

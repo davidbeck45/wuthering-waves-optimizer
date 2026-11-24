@@ -36,6 +36,22 @@ describe("/account's numbers card: the best team over time", () => {
     expect(w.find("[data-test-trend-spark]").findAll("polyline")).toHaveLength(1);
   });
 
+  it("counts the records that hold the team, and does not call a team new to the log unchanged", () => {
+    const without = (at: number): LogEntry => {
+      const e = entry({}, at);
+      return { ...e, teams: e.teams.filter((t) => t.id !== "t-mine") };
+    };
+    // the saved team was made after two records: it is in the newest only
+    const w = card([without(T0), without(T0 + DAY), entry({ mine: 2_300_000 }, T0 + 2 * DAY)]);
+    const text = w.find("[data-test-numbers-card-trend-change]").text();
+    expect(text).not.toContain("no change");
+    expect(text).not.toMatch(/\(3 records/);
+    expect(text).toContain("in 1 of 3 records");
+    // a team in two of three records: the count says so
+    const w2 = card([without(T0), entry({ mine: 2_000_000 }, T0 + DAY), entry({ mine: 2_300_000 }, T0 + 2 * DAY)]);
+    expect(w2.find("[data-test-numbers-card-trend-change]").text()).toContain("in 2 of 3 records");
+  });
+
   it("draws no line from a single record", () => {
     const w = card([entry({}, T0)]);
     expect(w.find("[data-test-numbers-card-first]").exists()).toBe(true);
