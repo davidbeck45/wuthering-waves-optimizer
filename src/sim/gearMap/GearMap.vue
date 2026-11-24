@@ -113,7 +113,7 @@
       </p>
     </template>
 
-    <dialog ref="sheet" class="gm-sheet" aria-labelledby="gm-sheet-title" data-test-gear-map-sheet @close="onSheetClose" @click="onBackdrop">
+    <dialog ref="sheet" class="gm-sheet" aria-labelledby="gm-sheet-title" data-test-gear-map-sheet @close="onSheetClose" @click="onBackdrop" @keydown.esc.prevent="closeSheet">
       <div v-if="open" class="gm-sheet__body">
         <header class="gm-sheet__head">
           <span class="gm-swatch" :class="`gm-step--${open.cell.step}`" aria-hidden="true">{{ open.cell.letter }}</span>
