@@ -90,7 +90,7 @@ describe("roster card model", () => {
     expect(m.title).toBe("Main");
   });
 
-  it("takes the top three fieldable teams from the ranking, strongest first, duplicates folded", () => {
+  it("takes the top three fieldable teams from the ranking, strongest first, one row per trio", () => {
     const r = ranking([
       team(["A", "B", "C"], 1_000_000),
       team(["A", "B", "D"], 3_000_000),
@@ -98,6 +98,7 @@ describe("roster card model", () => {
       team(["E", "F", "G"], 9_000_000, { unarmed: ["G"] }), // not fieldable
       team(["B", "C", "D"], 2_000_000),
       team(["C", "D", "E"], 500_000),
+      team(["D", "B", "A"], 2_500_000, { name: "another rotation" }), // the same trio as the strongest: left out
     ]);
     const { state, teams } = rosterTeams(r);
     expect(state).toBe("teams");

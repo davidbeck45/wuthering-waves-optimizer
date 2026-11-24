@@ -97,11 +97,19 @@ export function rosterTiles(cards: RosterCard[], characters: Record<string, Reco
   });
 }
 
-/** The top three teams, read from the same ranking result My account reads. A ranking that did not fully score
+/** The top three teams (three different trios), read from the same ranking result My account reads. A ranking that did not fully score
  *  (`incomplete`) is treated as none: the card never shows a half-scored figure. */
 export function rosterTeams(ranking: RosterRanking | null): { state: "teams" | "none" | "no-ranking"; teams: RosterTeam[] } {
   if (!ranking || ranking.incomplete) return { state: "no-ranking", teams: [] };
+  // one row per trio: the same three on another rotation is the same team to a reader (the strongest row stays)
+  const seen = new Set<string>();
   const teams = fieldableTeams(ranking)
+    .filter((t) => {
+      const key = [...t.characterIds].sort().join("+");
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
     .slice(0, 3)
     .map((t) => ({ name: teamTitle(t.name, t.characterIds) || "Team", characterIds: [...t.characterIds], avgDamage: t.avgDamage, dps: t.dps }));
   return { state: teams.length ? "teams" : "none", teams };
