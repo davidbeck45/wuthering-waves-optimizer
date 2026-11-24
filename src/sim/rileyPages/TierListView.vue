@@ -10,12 +10,16 @@
       resonators that may stand in two teams in the Endstate Matrix (2 vigor). Tiers are cut on the figures without Matrix
       Buffs, so turning them on shows who they lift. Damage only: no healing, shields or ease of play.
     </template>
+    <template #board="{ view }">
+      <TierBoard :view="view" />
+    </template>
   </RileyPageHost>
 </template>
 
 <script setup lang="ts">
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import RileyPageHost from "./RileyPageHost.vue";
+import TierBoard from "./TierBoard.vue";
 
 useDocumentTitle(
   "Tier list — Wuthering Waves Calculator & Optimizer",

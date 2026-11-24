@@ -27,6 +27,7 @@ import { patchFetch, updateAccountState, type AccountRegistration } from "../ran
 import { accountOwnedSet, decideOwned, ownedLine, rosterOf, type OwnedSource } from "./ownedSet";
 import { rankingsTargetOf } from "./links";
 import { RARITY } from "../rankings/rileyNames";
+import { parseTierTable, type TierBoardModel } from "./tierBoard";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type RileyPageKind = "tierlist" | "value";
@@ -325,6 +326,7 @@ export async function mountRileyPage(kind: RileyPageKind, host: HTMLElement, r: 
   await loadShared(page);
   if (current !== kind) return;
   adoptOverlay(page);
+  if (kind === "tierlist") watchBoardRoot();
   registerAccount(lastAccount);
   if (kind === "value") applyOwned();
   if (!page.booted) {
@@ -350,6 +352,7 @@ export function updateRileyPageAccount(acct: AccountRegistration | null): void {
   registerAccount(lastAccount);
   if (current === "value") applyOwned();
   rerun(current);
+  queueBoard();
 }
 
 /** The address changed while the page is open (a link to the same page with another Team Cost). */
@@ -369,4 +372,68 @@ export function unmountRileyPage(kind: RileyPageKind): void {
   returnOverlay();
   page?.root.remove();
   if (current === kind) current = null;
+}
+
+/* ------------------------------------------------ the Tier list's Board view (TierBoard.vue, tierBoard.ts) */
+/** What the board draws from: his drawn table, read after each of his redraws, and whether a solve is under way. */
+export interface TierBoardState {
+  model: TierBoardModel | null;
+  /** his overlay is up: a solve (a Team Cost or Matrix change, "At my own sequences") is running */
+  solving: boolean;
+  cost: string;
+  matrix: boolean;
+  /** the account's set over his roster (the rule Roster value uses, ownedSet.ts); null with no account */
+  owned: string[] | null;
+}
+let boardListener: ((s: TierBoardState) => void) | null = null;
+let boardWatch: MutationObserver | null = null;
+let boardQueued = false;
+function publishBoard(): void {
+  boardQueued = false;
+  const page = pages.get("tierlist");
+  if (!boardListener || !page || !shared) return;
+  const overlay: HTMLElement | undefined = shared.loading.overlay;
+  const solving = !!overlay && !overlay.hidden && overlay.isConnected;
+  const grid = page.app.querySelector(".tgrid");
+  boardListener({
+    model: grid ? parseTierTable(grid) : null,
+    solving,
+    cost: shared.model.filters.cost,
+    matrix: shared.model.filters.matrix.length > 0,
+    owned: accountSet(),
+  });
+}
+const queueBoard = (): void => {
+  if (boardQueued) return;
+  boardQueued = true;
+  queueMicrotask(publishBoard);
+};
+/** The board's feed: called now and after every redraw of his table, overlay show or hide, and account change. */
+export function onTierBoard(fn: ((s: TierBoardState) => void) | null): void {
+  boardListener = fn;
+  boardWatch?.disconnect();
+  boardWatch = null;
+  if (!fn) return;
+  boardWatch = new MutationObserver(queueBoard);
+  const page = pages.get("tierlist");
+  if (page) boardWatch.observe(page.root, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+  queueBoard();
+}
+/** Called by mountRileyPage once the tier list's root exists (the board may subscribe before it does). */
+function watchBoardRoot(): void {
+  if (boardListener) onTierBoard(boardListener);
+}
+
+/** The three members of the team his link names (`./team#…&t=<tag>`), his names; [] where it reads as none. */
+export function teamMembersOf(href: string): string[] {
+  if (!shared) return [];
+  const tag = new URLSearchParams(href.split("#")[1] ?? "").get("t");
+  if (!tag) return [];
+  let key: string | null = null;
+  try {
+    key = shared.model.tagTeam(tag);
+  } catch { /* a tag his roster no longer reads */ }
+  const teamKey = (key ?? tag).split("-")[0] ?? "";
+  const members: Array<{ name: string }> | undefined = shared.model.TEAMS[teamKey];
+  return members ? members.map((m) => m.name) : [];
 }

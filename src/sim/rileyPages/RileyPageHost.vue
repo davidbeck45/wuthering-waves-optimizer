@@ -1,6 +1,6 @@
 <template>
   <Nav :cur-page="kind === 'tierlist' ? 'tier-list' : 'roster-value'" :disable-mobile-nav="true"></Nav>
-  <div class="wt-riley-page" :data-test-riley-page="kind">
+  <div class="wt-riley-page" :class="{ 'wt-riley-page--board': boardOn }" :data-test-riley-page="kind">
     <header class="wt-riley-head px-3 pt-2">
       <h1 class="wt-riley-title text-lg font-semibold leading-tight">{{ title }}</h1>
       <p class="text-sm" data-test-riley-lead><slot name="lead" /></p>
@@ -28,6 +28,10 @@
           <span class="wt-riley-mine__hint wt-riley-mine__hint--phone opacity-80">Takes a while the first time; saved after.</span>
         </template>
       </p>
+      <div v-if="$slots.board" class="wt-riley-switch" role="group" aria-label="Show the tier list as" data-test-riley-switch>
+        <button type="button" class="btn btn-sm" :class="boardOn ? 'btn-primary' : 'btn-ghost'" :aria-pressed="boardOn" data-test-riley-switch-to="board" @click="showAs('board')">Board</button>
+        <button type="button" class="btn btn-sm" :class="boardOn ? 'btn-ghost' : 'btn-primary'" :aria-pressed="!boardOn" data-test-riley-switch-to="table" @click="showAs('table')">Table</button>
+      </div>
       <div v-if="views.length" class="wt-riley-views" role="group" :aria-label="viewsLabel" data-test-riley-views>
         <button
           v-for="(v, i) in views"
@@ -41,6 +45,7 @@
       </div>
     </header>
     <div ref="host" class="wt-riley-host" :data-wt-view="view"></div>
+    <slot v-if="boardOn" name="board" :view="view" />
     <p ref="credit" class="wt-riley-credit text-xs opacity-70 px-3 py-1">
       <RouterLink to="/rankings" class="link link-primary" data-test-riley-to-rankings>Team rankings</RouterLink> ·
       <RouterLink v-if="kind !== 'tierlist'" to="/tier-list" class="link link-primary" data-test-riley-to-tierlist>Tier list</RouterLink>
@@ -51,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import Nav from "../../components/navigation/Nav.vue";
@@ -68,6 +73,7 @@ import "../skittle-theme.css";
 import "./rileyPages.css";
 
 const props = withDefaults(defineProps<{ kind: RileyPageKind; title: string; views?: string[]; viewsLabel?: string }>(), { views: () => [], viewsLabel: "" });
+const slots = useSlots();
 const host = ref<HTMLElement | null>(null);
 /** phones: which of his side-by-side blocks shows (rileyPages.css); a desktop shows them all */
 const view = ref(0);
@@ -78,6 +84,13 @@ const credit = ref<HTMLElement | null>(null);
 usePlusBar(credit, { pinned: true });
 const router = useRouter();
 const route = useRoute();
+/** a page with a board (the Tier list) opens on it; `?view=table` in the address shows his table instead */
+const boardOn = computed(() => !!slots.board && route.query.view !== "table");
+function showAs(v: "board" | "table"): void {
+  if ((v === "board") === boardOn.value) return;
+  const { view: _v, who: _w, in: _i, ...rest } = route.query;
+  void router.push({ query: v === "table" ? { ...rest, view: "table" } : rest, hash: location.hash });
+}
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const teamStore = useTeamRotationsStore();
@@ -159,6 +172,40 @@ onBeforeUnmount(() => {
   .wt-riley-head .wt-riley-views {
     padding-bottom: 0.25rem;
   }
+}
+.wt-riley-switch {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem 0;
+  max-width: 20rem;
+}
+.wt-riley-switch .btn {
+  min-height: 44px;
+  flex: 1 1 0;
+}
+/* the Board view: his option boxes stay (the board follows them), his table is hidden, the whole page scrolls */
+.wt-riley-page--board .wt-riley-host > .skittle-root .tcbody {
+  display: none !important;
+}
+.wt-riley-page--board {
+  height: auto;
+  min-height: calc(100dvh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
+}
+.wt-riley-page--board .wt-riley-host {
+  flex: none;
+  overflow: visible;
+}
+.wt-riley-page--board .wt-riley-host > .skittle-root,
+.wt-riley-page--board .wt-riley-host > .skittle-root > .wt-riley-body,
+.wt-riley-page--board .wt-riley-host > .skittle-root #app,
+.wt-riley-page--board .wt-riley-host > .skittle-root main {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+/* his main keeps 420 px of room under a phone's table (skittle.css); with the table hidden it is a gap */
+.wt-riley-page--board .wt-riley-host > .skittle-root main {
+  padding-bottom: 0.5rem !important;
 }
 .wt-riley-views {
   display: none;
