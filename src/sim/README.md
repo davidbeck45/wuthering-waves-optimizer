@@ -5647,3 +5647,45 @@ made the detail view a page of its own (`team.html`, `src/page/team.ts`, `./team
   `public/images/` (about 5 MB). Plus rules that patch his look live in `skittle-theme.css`, never in the generated
   `skittle.css` (the "25.0s loop" rule was lost there once); on light themes his bar figures are darkened like `--mem`.
 - **Not hosted:** his Tier List and Value pages (`tierlist.ts`, `value.ts`, `roster.ts`) and his first-run tutorial.
+
+## Tier list and Roster value: Riley's two roster pages inside the app (batch 5, lane `riley-pages`, 2026-11-23) — `src/sim/rileyPages/`
+
+Riley's "ui update" (e7a10a9) added two pages to his site: **Tier List** (`tierlist.html`, `src/page/tierlist.ts`) and
+**Value** (`value.html`, `src/page/value.ts`, `src/solve/packing.ts`). The app hosts both at `/tier-list` ("Tier list")
+and `/roster-value` ("Roster value"), his modules straight from the submodule, the way `/rankings` hosts his comparison
+and team pages (`rankings/controller.ts`).
+
+| Piece | Role |
+|---|---|
+| `controller.ts` | one persistent `.skittle-root.wt-riley-pages` per page (`<div class="valuepage"><div id="app">`: his body class becomes a scoped ancestor), his module imported once after it exists; later visits drive his own controls (`rerun`: his hash read with `applyHash()`, his `#cost` set and its `change` dispatched, so his handler re-solves and redraws). Holds back his boots' `hashchange → location.reload()` while his module evaluates (`withoutHashReload`), moves his `loading.ts`'s one `#loading` into the page shown (`adoptOverlay` / `returnOverlay`; when these pages imported it first, `/rankings`' own box is swapped for it as that page mounts), routes his relative links (`links.ts`: `./team#…` and `./#…` open `/rankings`), registers the account like `/rankings` (main thread, workers, `rankings/controller.ts` `updateAccountState`), sets his `roster.ts` build filters per page (one module serves both), and applies the owned-set rule before his `prepare()` reads `wuwa.owned.v1` |
+| `ownedSet.ts` | the owned-set rule (below), DOM-free; `ownedSet.test.ts` |
+| `RileyPageHost.vue` | the shell: title, one lead line, "What the numbers are" (the explanation and the credit), the "At my own sequences and weapons" button, the phone block buttons (`data-wt-view`), the links line |
+| `TierListView.vue`, `RosterValueView.vue` | the two routes: their text, Roster value's owned line and "Tick my account's resonators" |
+| `rileyPages.css` | undoes `/rankings`' theme where it hides his Team Cost box; hides his README (it names a frame-data site); the phone layout |
+
+**The owned set (Roster value).** The account's set is every resonator of his roster that the account owns, plus the
+ones his engine counts as everyone's (`Rarity.FreeS6`: 4-stars and Rover forms, solver.ts `accountOf`); his free
+5-stars (Jianxin, Encore, Lingyang) and Verina are ticked only when the account has them. No account (nothing owned) →
+his default stands. His page keeps the ticks in `wuwa.owned.v1`; plus remembers what it last wrote there
+(`wtplus:rosterValue.applied`, a `marker` row in `STORAGE_RULES`). While the ticks equal that, they follow the account
+(the line names who was added or removed); once they differ, they are the player's own ("Your own ticks: N resonators,
+M different from your account" with **Tick my account's resonators**). Ticks found before plus wrote any (a backup,
+his own site's) count as the player's unless they already are the account's set. His **Reset Account** does what he
+wrote; the next open is the account's set again.
+
+**My account.** Both pages open on the Team Cost in the address (his s0r1 without one), never on a long solve unasked.
+With an account, **At my own sequences and weapons** sets his select to `mine`: the first time every team is solved in
+the worker pool (7.9 s to rows for a 33-resonator account on a 32-core desktop; the overlay is up within 0.9 s showing
+"Running Calculations… 0 / 833"), then saved in his `wuwa.solves.v1`; Roster value after the Tier list needed 1.5 s
+more (its every-Matrix-on teams).
+
+**Phones.** His tables are one grid each (`display: contents` rows, one `.sec` per block). Under 768 px one block shows
+at a time, chosen by the 44 px buttons over the page: `.sec:nth-child(n of .sec)` per row, his heading cells by
+position, three tracks (`max-content minmax(0, 1fr) max-content`), long names cut with an ellipsis, a Roster value row
+with nothing on the shown side hidden. The whole page scrolls (his headings stick to the screen). Ticks are 44 px.
+
+**Not the same thing twice.** Convene › Pull advisor (one resonator at a time, the app's engine, real builds) and My
+account › What to invest in next each carry one line linking Roster value; Roster value's "What the numbers are" says
+how they differ. `/rankings`' credit line links both pages.
+
+Spec: `cypress/e2e/rileyPages.cy.ts`.
