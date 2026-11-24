@@ -141,6 +141,10 @@ describe("resonator briefs", () => {
     cy.location("pathname").should("eq", "/kit/cartethyia");
     cy.title().should("eq", `Cartethyia: resonator brief${TITLE}`);
     cy.get("[data-test-kit-title]").should("have.text", "Cartethyia");
+    // the header: her portrait, and what the account holds in short (known before the briefs load)
+    cy.get("[data-test-kit-head] img").should("have.attr", "alt", "Cartethyia");
+    cy.get("[data-test-kit-head-own]").invoke("text").invoke("trim").should("eq", "Yours: S2 · Defier's Thorn R1");
+    cy.get("[data-test-kit-head]").should(($h) => expect($h[0]!.getBoundingClientRect().height, "the header's height on a phone").to.be.lessThan(220));
     cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
 
     // whose figures these are, and in which unit
@@ -248,6 +252,8 @@ describe("resonator briefs", () => {
   it("a resonator who is not on the account, an address under another name, and a name nobody has", () => {
     cy.visit("/kit/aemeath", seed());
     cy.get("[data-test-kit-owned]", { timeout: 20000 }).should("have.text", "Aemeath is not on your account in this app: no weapon is equipped on them.");
+    cy.get("[data-test-kit-head-own]").should("not.exist");
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-marks~="you"]').should("not.exist");
     cy.get('[data-test-kit-link="cost"]').should("not.exist");
     cy.get('[data-test-kit-link="rank"]').should("exist");
     cy.get("[data-test-kit-changes] [data-test-kit-change]").should("have.length", 1).first().should("contain.text", "S1 changes only the opener");

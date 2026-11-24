@@ -11,12 +11,15 @@
     </div>
 
     <template v-else>
-      <header class="kit-head">
-        <CharacterAvatar :id="key" :size="60" dot />
+      <header class="kit-head kit-head--hero" :style="{ '--kit-el': elementColor(entry.element) }" data-test-kit-head>
+        <CharacterAvatar :id="key" :size="76" dot :ring="elementColor(entry.element)" title="" />
         <div class="kit-head__body">
           <h1 class="kit-h1" data-test-kit-title>{{ name }}</h1>
-          <p class="kit-muted">{{ entry.element }} · {{ entry.weapon }} · {{ tierLabel(entry.tier) }}</p>
+          <p class="kit-muted"><span class="kit-head__el" aria-hidden="true"></span>{{ entry.element }} · {{ entry.weapon }} · {{ tierLabel(entry.tier) }}</p>
           <div class="kit-row__meta">
+            <span v-if="headSide?.owned" class="kit-chip kit-chip--own" data-test-kit-head-own :title="`On your account: sequence ${headSide.sequence}, ${weaponDisplayName(headSide.weapon)} at refinement rank ${headSide.refinement}`">
+              Yours: S{{ headSide.sequence }} · {{ weaponDisplayName(headSide.weapon) }} R{{ headSide.refinement }}
+            </span>
             <span v-for="r in rolesOf(entry)" :key="r" class="kit-chip">{{ ROLE_LABEL[r] }}</span>
           </div>
         </div>
@@ -393,7 +396,7 @@ import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { scrollBehavior } from "../a11y/shellA11y";
 import { accountCharacterOf } from "../account/accountState";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
-import { characterShortName, isRosterCharacter, teamLabel, weaponDisplayName } from "../display/names";
+import { characterShortName, elementColor, isRosterCharacter, teamLabel, weaponDisplayName } from "../display/names";
 import { WHY_ENGINES_DIFFER } from "../display/numberBasis";
 import { teamTitle } from "../display/teamName";
 import { compact } from "../myRankings/format";
@@ -530,6 +533,9 @@ const account = computed(() =>
     ? onAccountOf({ file: file.value, kit: kit.value, index: KIT_INDEX_ENTRIES, inApp: isRosterCharacter, characters: characters.value ?? {}, side, rankedTeams: rankedTeams.value })
     : null,
 );
+
+/** the account's own reading of them, for the header: known before the briefs load (the list's chip, in short) */
+const headSide = computed(() => (key.value ? side(key.value) : null));
 
 const memberKey = (m: KitMember): string => accountKeyOf(m.appKey, characters.value ?? {});
 const labelOfTeam = (team: KitTeam): string => {
