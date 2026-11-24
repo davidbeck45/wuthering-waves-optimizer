@@ -52,7 +52,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
     id: "gear-map",
     date: "2026-11-24",
     title: "Gear map: every equipped echo at a glance",
-    text: "My account has a Gear map: every set-up character's five echoes in one grid, coloured and lettered by how lucky each roll is. It is Echo Lab's rating, the same one the inventory's chips show. Tap a cell for the echo's substats and a link into Echo Lab.",
+    text: "My account has a Gear map: every set-up character's five echoes in one grid, coloured and lettered by how lucky each roll is. It is Echo Lab's rating, the same one the inventory's chips show, and the weakest echoes on your damage dealers are named on top. Tap a cell for the echo's substats and a link into Echo Lab.",
     where: "My account › Gear map",
     link: "/account",
     tag: "tool",
