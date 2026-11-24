@@ -31,6 +31,12 @@ function expectNavFits(route: string): void {
 // Electron drawing frames (CI under Xvfb) a single read could land mid-slide.
 function expectAskClearOf(selector: string, what: string): void {
   cy.get("[data-test-ai-open]").should(($ask) => {
+    // on a v3 phone Ask is a button in Ryan's header (src/sim/nav/PlusHeaderAsk.vue, batch 6): the page scrolls under
+    // the header, not under Ask, and there is no floating button to sit on anything
+    if ($ask[0].closest(".nav-phone-header")) {
+      expect(Cypress.$(".wt-ask-button"), `${what}: no floating Ask`).to.have.length(0);
+      return;
+    }
     const a = $ask[0].getBoundingClientRect();
     Cypress.$(selector).each((_, el) => {
       const r = el.getBoundingClientRect();
