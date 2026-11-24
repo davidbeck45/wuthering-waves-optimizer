@@ -62,7 +62,8 @@ describe("Gear map on My account", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed());
     openMap();
-    cy.get("[data-test-gear-map-count]").invoke("text").should("match", /^\d+ of your \d+ equipped echoes (is|are) in the lowest two bands/);
+    cy.get("[data-test-gear-map-count]").invoke("text").should("match", /^\d+ of the \d+ echoes your \d+ damage dealers wear (is|are) in the lowest two bands/);
+    cy.get("[data-test-gear-map-left-out]").should("not.exist");
     // the sort: the character wearing the weakest echo comes first
     cy.get("[data-test-gear-map-weak]").first().invoke("attr", "data-test-gear-map-weak").then((weakId) => {
       cy.get(`[data-test-gear-map-cell="${weakId}"]`).closest("[data-test-gear-map-row]").invoke("attr", "data-test-gear-map-row").then((who) => {

@@ -50,7 +50,7 @@
           <template v-for="(b, i) in GEAR_BANDS" :key="b.step"><template v-if="i"> · </template>{{ summary.counts[b.step] }} {{ b.short }}</template>
         </p>
         <template v-if="summary.weakest.length">
-          <p class="gm-summary__sub">Your {{ summary.weakest.length === 1 ? "weakest equipped echo" : `${summary.weakest.length} weakest equipped echoes` }}:</p>
+          <p class="gm-summary__sub">The {{ summary.weakest.length === 1 ? "weakest echo" : `${summary.weakest.length} weakest echoes` }} on your damage dealers:</p>
           <ol class="gm-weakest" data-test-gear-map-weakest>
             <li v-for="w in summary.weakest" :key="w.cell.echoId!">
               <RouterLink :to="echoLink(w.cell.echoId!)" class="gm-weakest__link" :data-test-gear-map-weak="w.cell.echoId">
@@ -64,6 +64,7 @@
             </li>
           </ol>
         </template>
+        <p v-if="leftOutLine(summary)" class="gm-muted gm-small gm-summary__left" data-test-gear-map-left-out>{{ leftOutLine(summary) }}</p>
       </div>
 
       <div class="gm-sort" role="group" aria-label="Order of the rows">
@@ -85,6 +86,7 @@
             <th scope="row" class="gm-who">
               <CharacterAvatar :id="row.id" :size="28" title="" />
               <span class="gm-who__name">{{ row.name }}</span>
+              <span v-if="row.role === 'support'" class="gm-who__note" data-test-gear-map-support-note>Support: rated on own damage, low letters expected</span>
             </th>
             <td v-for="c in row.cells" :key="c.slot" class="gm-td">
               <span v-if="c.step === 'empty'" class="gm-cell gm-step--empty" :aria-label="cellLabel(row.name, c)" role="img" data-test-gear-map-cell="empty"></span>
@@ -141,6 +143,9 @@
           <template v-else-if="open.cell.chip.verdictLabel"> · {{ open.cell.words }}</template>
         </p>
         <p v-if="open.cell.chip.title" class="gm-muted gm-small">{{ open.cell.chip.title.replace(/ Tap for the details in Echo Lab\.$/, "") }}</p>
+        <p v-if="open.role === 'support'" class="gm-small" data-test-gear-map-sheet-support>
+          {{ open.name }} is a support: Echo Lab rates this roll on {{ open.name }}'s own damage, and a support's echoes are built for the team, so a low letter here is not a fault. The summary above does not count it.
+        </p>
         <p v-if="open.cell.ratedOn && open.cell.ratedOn.characterId !== open.id" class="gm-muted gm-small" data-test-gear-map-sheet-elsewhere>
           {{ open.name }} is not a five-echo build Echo Lab can score, so it rates this echo in {{ characterName(open.cell.ratedOn.characterId) }}'s slot {{ open.cell.ratedOn.slot + 1 }}, as the inventory does.
         </p>
@@ -162,7 +167,8 @@ import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WorkStatus from "../display/WorkStatus.vue";
 import { characterName, echoName, lineText, mainLabel, setLabel } from "../echoLab/echoLabView";
 import { useInventoryQuality } from "../inventoryQuality/useInventoryQuality";
-import { GEAR_BANDS, cellLabel, gearProgress, gearRows, gearSummary, sortGearRows, summaryLine, type GearCell, type GearRow, type GearSort } from "./gearMap";
+import { KIT_INDEX_ENTRIES } from "../kits/load";
+import { GEAR_BANDS, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearCell, type GearRole, type GearRow, type GearSort } from "./gearMap";
 
 const props = defineProps<{
   /** the account's roster cards (rosterCards): the set-up ones are the rows, in the roster's order */
@@ -196,7 +202,9 @@ onBeforeUnmount(() => {
   stop?.();
 });
 
-const characters = computed(() => props.cards.filter((c) => c.owned).map((c) => ({ id: c.id, name: c.name })));
+// the role the kit index (the /kit briefs' table, already shipped with /account's brief links) gives each character:
+// the summary counts damage dealers only (gearMap.ts, GearRole)
+const characters = computed(() => props.cards.filter((c) => c.owned).map((c) => ({ id: c.id, name: c.name, role: gearRoleOf(c.id, KIT_INDEX_ENTRIES) })));
 
 const rows = computed<GearRow[]>(() =>
   q.unavailable.value
@@ -237,12 +245,12 @@ const echoLink = (echoId: string) => ({ path: "/echo-lab", query: { echo: echoId
 
 // ── the sheet (a phone) / popover (desktop): a modal <dialog>, so Escape and a phone's Back close it ──
 const sheet = ref<HTMLDialogElement | null>(null);
-const open = shallowRef<{ id: string; name: string; cell: GearCell } | null>(null);
+const open = shallowRef<{ id: string; name: string; role: GearRole; cell: GearCell } | null>(null);
 let opener: HTMLElement | null = null;
 
 function openCell(row: GearRow, cell: GearCell, e: MouseEvent): void {
   opener = e.currentTarget as HTMLElement;
-  open.value = { id: row.id, name: row.name, cell };
+  open.value = { id: row.id, name: row.name, role: row.role, cell };
   if (sheet.value && !sheet.value.open) sheet.value.showModal();
 }
 function closeSheet(): void {
@@ -370,6 +378,17 @@ function onBackdrop(e: MouseEvent): void {
 .gm-who__name {
   margin-left: 6px;
   font-size: 0.85rem;
+}
+.gm-who__note {
+  display: block;
+  white-space: normal;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: oklch(var(--bc) / 0.78);
+}
+.gm-summary__left {
+  margin-top: 0.4rem;
+  max-width: 46rem;
 }
 .gm-td {
   padding: 0 2px;

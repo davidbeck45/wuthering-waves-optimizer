@@ -6,6 +6,23 @@ import type { EchoVerdict, LabCharacterSummary } from "../echoLab/bestOwner";
 import { wearsNow } from "../echoLab/core";
 import { echoName, mainLabel, ratingOf } from "../echoLab/echoLabView";
 import { chipFor, type ChipRating, type QualityChip, type RollTone } from "../inventoryQuality/inventoryQuality";
+import { findKit, rolesOf, type KitIndexEntry } from "../kits/kits";
+
+/**
+ * Whom the summary may judge. Echo Lab rates a roll by its wearer's own best-rotation damage, so a healer's or a
+ * buffer's echoes (built for the team: Energy Regen, healing, a buff set) read as poor luck. A cell still says what the
+ * inventory's chip says; the summary's count, its weakest five and "Weakest gear first" count only damage dealers.
+ * `dealer`: the kit index fields it as a main DPS in at least one team (rolesOf includes "main");
+ * `support`: a support (or sustain) only; `unknown`: no brief for this resonator, so the app cannot say.
+ */
+export type GearRole = "dealer" | "support" | "unknown";
+
+/** The role the app's kit index (the /kit briefs' table, kitIndex.json) already gives this character. */
+export function gearRoleOf(appKey: string, index: readonly KitIndexEntry[]): GearRole {
+  const kit = findKit(index, appKey);
+  if (!kit) return "unknown";
+  return rolesOf(kit).includes("main") ? "dealer" : "support";
+}
 
 /** a cell's step: Echo Lab's five rating bands, then the cells with no roll to rate */
 export type GearStep = RollTone | "unrated" | "none" | "empty";
@@ -47,6 +64,8 @@ export interface GearCell {
 export interface GearRow {
   id: string;
   name: string;
+  /** whom the summary counts: only "dealer" rows (gearRoleOf) */
+  role: GearRole;
   cells: GearCell[];
   /** echoes worn (0-5) */
   worn: number;
@@ -56,7 +75,7 @@ export interface GearRow {
 
 export interface GearInput {
   /** the set-up characters, in the roster's order */
-  characters: ReadonlyArray<{ id: string; name: string }>;
+  characters: ReadonlyArray<{ id: string; name: string; role?: GearRole }>;
   /** the Echo Lab verdicts the inventory's chips read (useInventoryQuality().verdicts) */
   verdicts: ReadonlyMap<string, EchoVerdict>;
   /** the pass's five-echo builds (what they wear, slot by slot) */
@@ -123,7 +142,7 @@ function wornIndex(verdicts: ReadonlyMap<string, EchoVerdict>): Map<string, Map<
 /** The grid: one row per set-up character, five cells in the order they are worn. */
 export function gearRows(input: GearInput): GearRow[] {
   const worn = wornIndex(input.verdicts);
-  return input.characters.map(({ id, name }) => {
+  return input.characters.map(({ id, name, role = "unknown" }) => {
     const lab = input.labCharacters.get(id);
     const cells: GearCell[] = [];
     for (let slot = 0; slot < 5; slot++) {
@@ -132,24 +151,35 @@ export function gearRows(input: GearInput): GearRow[] {
       else cells.push(cellOf(slot, worn.get(id)?.get(slot) ?? null, input));
     }
     const rated = cells.map((c) => c.percentile).filter((p): p is number => p !== null);
-    return { id, name, cells, worn: cells.filter((c) => c.step !== "empty").length, weakest: rated.length ? Math.min(...rated) : null };
+    return { id, name, role, cells, worn: cells.filter((c) => c.step !== "empty").length, weakest: rated.length ? Math.min(...rated) : null };
   });
 }
 
 export type GearSort = "roster" | "weakest";
 
-/** Roster order, or the character with the weakest echo first (rows with nothing rated last; ties keep roster order). */
+/**
+ * Roster order, or the damage dealer with the weakest echo first. Supports and characters the app has no role for
+ * come after every damage dealer, in roster order (their letters are rated on their own damage: see GearRole), as do
+ * rows with nothing rated; ties keep roster order.
+ */
 export function sortGearRows(rows: readonly GearRow[], sort: GearSort): GearRow[] {
   if (sort === "roster") return [...rows];
   const pos = new Map(rows.map((r, i) => [r.id, i]));
+  const key = (r: GearRow) => (r.role === "dealer" ? r.weakest : null);
   return [...rows].sort((a, b) => {
-    if (a.weakest === null || b.weakest === null) return a.weakest === b.weakest ? pos.get(a.id)! - pos.get(b.id)! : a.weakest === null ? 1 : -1;
-    return a.weakest - b.weakest || pos.get(a.id)! - pos.get(b.id)!;
+    const ka = key(a);
+    const kb = key(b);
+    if (ka === null || kb === null) return ka === kb ? pos.get(a.id)! - pos.get(b.id)! : ka === null ? 1 : -1;
+    return ka - kb || pos.get(a.id)! - pos.get(b.id)!;
   });
 }
 
 export interface GearSummary {
-  /** equipped echoes (cells that are not empty) */
+  /** the damage dealers counted (rows with role "dealer") */
+  dealers: number;
+  /** the rows left out of the count, in roster order: supports, and characters with no role in the kit index */
+  leftOut: Array<{ id: string; name: string; role: GearRole }>;
+  /** equipped echoes on the damage dealers (cells that are not empty) */
   equipped: number;
   rated: number;
   /** echoes in each band */
@@ -165,7 +195,14 @@ export function gearSummary(rows: readonly GearRow[], n = 5): GearSummary {
   const all: Array<{ characterId: string; name: string; cell: GearCell; order: number }> = [];
   let equipped = 0;
   let order = 0;
+  let dealers = 0;
+  const leftOut: GearSummary["leftOut"] = [];
   for (const r of rows) {
+    if (r.role !== "dealer") {
+      leftOut.push({ id: r.id, name: r.name, role: r.role });
+      continue;
+    }
+    dealers += 1;
     for (const c of r.cells) {
       if (c.step === "empty") continue;
       equipped += 1;
@@ -176,6 +213,8 @@ export function gearSummary(rows: readonly GearRow[], n = 5): GearSummary {
   }
   all.sort((a, b) => a.cell.percentile! - b.cell.percentile! || a.order - b.order);
   return {
+    dealers,
+    leftOut,
     equipped,
     rated: all.length,
     counts,
@@ -184,13 +223,26 @@ export function gearSummary(rows: readonly GearRow[], n = 5): GearSummary {
   };
 }
 
-/** "9 of your 118 equipped echoes are in the lowest two bands (Poor roll or Below average)." */
+/** "2 of the 80 echoes your 16 damage dealers wear are in the lowest two bands (Poor roll or Below average)." */
 export function summaryLine(s: GearSummary): string {
-  if (!s.equipped) return "None of your set-up characters wears an echo yet.";
-  const of = `${s.low} of your ${s.equipped} equipped echo${s.equipped === 1 ? "" : "es"}`;
+  if (!s.dealers) return s.leftOut.length ? "None of your set-up characters is a damage dealer the app knows, so there is no count of weak rolls: see the note below." : "None of your set-up characters wears an echo yet.";
+  const who = `your ${s.dealers} damage dealer${s.dealers === 1 ? "" : "s"}`;
+  if (!s.equipped) return `None of ${who} wears an echo yet.`;
+  const of = `${s.low} of the ${s.equipped} echo${s.equipped === 1 ? "" : "es"} ${who} wear${s.dealers === 1 ? "s" : ""}`;
   const verb = s.low === 1 ? "is" : "are";
   const unrated = s.equipped - s.rated;
   return `${of} ${verb} in the lowest two bands (Poor roll or Below average).${unrated ? ` ${unrated} could not be rated (no substat lines yet, or no build to rate them on).` : ""}`;
+}
+
+/** "Not counted: Verina, Shorekeeper (supports) and Foo (no role on file)." — whom the count leaves out, and why. */
+export function leftOutLine(s: GearSummary): string {
+  if (!s.leftOut.length) return "";
+  const names = (role: GearRole) => s.leftOut.filter((r) => r.role === role).map((r) => r.name);
+  const parts = [
+    names("support").length ? `${names("support").join(", ")} (support${names("support").length === 1 ? "" : "s"})` : "",
+    names("unknown").length ? `${names("unknown").join(", ")} (no role on file)` : "",
+  ].filter(Boolean);
+  return `Not counted: ${parts.join(" and ")}. Echo Lab rates a roll by its wearer's own damage, and a support's echoes are built for the team, so a low letter there is not a fault.`;
 }
 
 /**
