@@ -5698,6 +5698,17 @@ how they differ. `/rankings`' credit line links both pages.
 
 Spec: `cypress/e2e/rileyPages.cy.ts`.
 
+## Tier list and Roster value: the second check (batch 5, 2026-11-23)
+
+A fresh check of the two pages above, by using them; tests in `cypress/e2e/rileyPagesCheck.cy.ts`. The figures are his: every Tier list block at s0r1, s6r5 and s6r1 mdps with Matrix off and on, and Roster value's score and top rows at three Team Costs and after hand ticks, equal his rules run headless on the shipped solves. What changed in `rileyPages/`:
+
+- **A `change` stops at the page's root.** Once /rankings has been opened, his `table.ts` listens for `#cost` and `#matrixToggle` changes on the whole document and would run a /rankings pass off-screen on the same workers for every Team Cost or Matrix change here.
+- **The router is told after his hash writes.** His pages write the hash with `history.replaceState`; the router's next push saved the address it last knew over that entry, so Back lost the reader's Team Cost. `syncRouter()` (as /rankings does), and a location the page already stands on is not re-run.
+- **/rankings' "so far" box when these pages came first:** his `loading.ts` then holds our box; `rankings/controller.ts` `showSoFar` writes into whichever box his `loading.ts` holds, and our box carries the "so far" note.
+- **Tick lists are read as his page reads them:** a name his roster dropped is neither counted nor named.
+- **His mode headings** (Best Team DPR, Neutral Score Gain) are buttons for the keyboard; **tier names** are mixed toward the theme's text colour (4.5:1 or more on light and dark); **the My account line** names his free 5-stars run from S2 (Jianxin), read from his rarities; **on a phone** the heading is for screen readers only and the one-time hint is one line, so the first row is above the fold at 360 × 800 with 130 % text.
+- **Still open:** a My account solve left mid-way keeps running after the page is left; its count shows in /rankings' box and it holds the workers. Stopping it needs his `tierlist.ts` / `value.ts` to make their `load()` stale on a signal (a fork patch).
+
 ## Ryan's #726 to #747 and Riley's 211d7d0 on plus (sync of 2026-11-23)
 
 Merge 700a862a (upstream af622fe2, 8 commits, 79 files). In it: optimizer results that say when the setup changed
@@ -5717,7 +5728,7 @@ line it was (the changed lines of `git diff 3792a442 6186d62d -- <file>` and of 
 | `cli/index.ts` | the import and the `registerPlusCommands(program)` call | kept, after his new `edit team-data` command |
 | `public/sitemap.xml` | plus's address on its 25 pages | kept, with his new date on `/updates` |
 | `src/calculator/teamOptimizer.ts` | `resolveForTeamPage` in `verifyTeamCombination`, `matches` read off the records the search scored | kept, in his new formatting |
-| `Calculator.vue` | the press gate, one run at a time, the run-basis rule, `/?screen=`, 61 lines in all | kept beside his run snapshot (#706) in the merge; the run-basis rule was then retired for his flag (the section "Ryan's batch-5 merge on plus" below), and his Run again got one plus guard (next paragraph) |
+| `Calculator.vue` | the press gate, one run at a time, the run-basis rule, `/?screen=`, 61 lines in all | kept beside his run snapshot (#706) in the merge; the run-basis rule was then retired for his flag (the section "Ryan's batch-5 merge on plus" above), and his Run again got one plus guard (next paragraph) |
 | `TeamOptimizerResults.vue` | Save only when there is someone to save, `NOTHING_TO_SAVE`, the override note before his mismatch alert | kept; "someone to save" is his `savePlan(row).saving` now |
 | `TeamOptimizerSetup.vue` | `floorCount`, the drawer's scope line and `provide`, `:initial-choice` | kept beside his main echo lock badge, copy dialog and buff helpers |
 | `useTeamOptimizer.ts` | the Team page's records (`readTeamPage`), stat rounding on guards, the kept result, the worker failure message, the override gap, "never proven with auto team buffs" | kept in his rewrite. **Retired:** plus's `slotsAlreadyWorn` call and its "start from the build the page read" lines: his `savedFieldsFor` skips a character whose build already matches and builds from the slot's own record. **New:** a panel plus derived stays out of the saved build (`teamOptimizerPage.ts` `storedPanel`) |
@@ -5746,7 +5757,7 @@ teams, run from the shipped picks on his own build and on the fork, gives the sa
 
 **Numbers.** The app's own engine moved nothing: the snapshot of both exports reads 0 changes across the merge and on
 the batch's last head. Riley's figures moved for most of the roster (his kits and rotations changed): the sections
-below on the seam, the regenerated data and its second check say which and why. On David's account nine characters'
+above on the seam, the regenerated data and its second check say which and why. On David's account nine characters'
 best stock loop is another loop now (Camellya −25.7 % per rotation, −12 % per second: her 34.3 s loop is 25.8 s in his
 new table), and Sync my teams would move all three of his saved teams (Aemeath +2.7 %, Xuanling +3.8 % per second,
 Sigrika −7.2 % per second).
