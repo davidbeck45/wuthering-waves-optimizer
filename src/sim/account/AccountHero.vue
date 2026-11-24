@@ -72,6 +72,8 @@
         <span class="acc-hero__none-text">A team needs three characters with a weapon equipped.</span>
         <RouterLink to="/teams" class="acc-hero__link">Open Team Rotations</RouterLink>
       </div>
+      <!-- Wuthering Tools+ share cards: the whole roster as one picture (src/sim/share/RosterShareButton.vue) -->
+      <RosterShareButton v-if="kpis.owned" class="self-start" />
     </div>
 
     <div class="acc-hero__kpis">
@@ -138,6 +140,7 @@ import { memberShares } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
 import { getGradeForSubstatScorePercent } from "../../echoes/rating";
 import ExplainButton from "../ai/explain/ExplainButton.vue";
+import RosterShareButton from "../share/RosterShareButton.vue";
 import { explainTeamRank } from "../ai/explain/explainPayloads";
 import type { AccountKpis } from "./accountView";
 import type { RunStatus } from "./useAccountData";

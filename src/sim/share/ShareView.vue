@@ -185,6 +185,13 @@
             </div>
             <p v-else class="text-sm text-base-content/60">No saved team has a member set up yet.</p>
           </div>
+          <div class="flex flex-col gap-1.5" data-test-share-roster-choice>
+            <span class="text-xs font-semibold uppercase tracking-wide text-base-content/60">Your whole roster</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <RosterShareButton label="Share my roster…" />
+              <span class="text-xs text-base-content/60">A picture only: every set-up resonator and your top teams.</span>
+            </div>
+          </div>
         </template>
       </section>
     </div>
@@ -223,6 +230,7 @@ import { getThemeStyle } from "../../composables/useTheme";
 import { sequenceOf } from "../myRankings/rankRoster";
 import CardPreview from "./CardPreview.vue";
 import ShareSheet from "./ShareSheet.vue";
+import RosterShareButton from "./RosterShareButton.vue";
 import { isKnownCharacter, type SharePayload } from "./buildCodec";
 import { cardView, type CardView } from "./cardView";
 import { compactNumber, verifyBuildHeadline } from "./headline";
