@@ -4169,6 +4169,14 @@ moves the pair together when this build stars or unstars, or the old name left b
 next load. A lone name gets its twin on load and nothing is unstarred on a guess, so an unstar made on the old build
 during a rollback comes back on return. Checked on the production build: 2 of 220 starred with both names, 0 with one.
 
+**A team key from Team rankings is stored with its three members** (`rotation/useRotationRun.ts`, `rotation/rankingsLink.ts`,
+2026-11-23). Riley's key (`tNNN-…`) is a place in his team list and moves with his updates: after the one of 2026-11-22
+production's "Continue: Aemeath · Lupa + Lynae" card on `/rotation` opened Aemeath · Verina + Lupa. `/rotation` now reads
+`&chars=A,B,C` beside the key and opens those three when the key names another team, with a note; a stored card without
+members is not offered again; and every link the app writes (the Rotation button on a team's page, the assistant's
+rotation tool) carries them. A bare-key bookmark made before that day still opens whatever team holds the key now: the
+link has nothing else to go by.
+
 ## The optimizer and the solvers at their edges — a figure stands for what it says (hunt round 1, track "solver", 2026-11-06)
 
 1,544 random configs never moved a top five through the bound; every wrong number below was elsewhere: a stat read from today's
@@ -5751,3 +5759,29 @@ a fresh second check of each (`check-merge`, `check-data`, `check-engine`, `chec
 § 44 that is gone): a brief has to name what the neighbouring lane owns on a shared screen. Joining two appended CSS
 sections with keep-both left the first one's block unclosed and nested the second inside it: parse the stylesheet
 after a join (`postcss.parse`), not only the conflict markers.
+
+**Found when the gates ran on the joined head.** Two reds in Ryan's own Cypress shards, which only GitHub's E2E runs
+against plus. (1) His Lynae and Zani optimizer specs died on "Maximum recursive updates exceeded in component
+<Calculator>" after the merge (both pass on his code alone and on batch 4). An Equip recalculates about sixty times
+(each echo's stats, then each buff panel), and his #706 watch replaced its comparison baseline on every one,
+re-rendering the page and every result row; with plus's hooks in the same component that reached Vue's limit of 100
+re-queues of one job in a flush. Vue checks that limit only in development builds, so no player would have seen an
+error, but every Equip did the work sixty times. The watch now queues one move for a burst of changes
+(`baselineMoveQueued` in `Calculator.vue`, calling `followOptimizerBaseline()`), and the row an Equip was pressed on
+reads the same as before. (2) His `resonanceChains.cy.ts` asserted that no checkbox on the page is checked, and his
+#720 turned "Hide impossible buffs" on by default; that toggle sits in the page on every calculator screen (Team Buffs
+is `v-show`), so the test is red on his own master. Scoped to `.character__resonance-chains`, with a count so it
+cannot pass on nothing. His CI runs no Cypress: a red in one of his specs after a merge may be his.
+
+**Not in this sync: his #749.** Three hours after the merge Ryan took the team optimizer out of his master ("parked on
+the labs/team-optimizer branch … while it's reworked. Builds it already saved stay as they are": 39 files, 7,430 lines
+out, the Labs flag `teamOptimizer` gone). Plus still has it behind that flag, with what plus built on it (the kept
+result, the phone layout, the override note, the saved-build rules above). Following him is a decision, not a merge:
+either the feature leaves plus until his rework lands, or plus keeps `useTeamOptimizer.ts`, `teamOptimizer.ts`,
+`teamBuffPlans.ts`, the four `TeamOptimizer*.vue` and the store and worker lines they need as its own code. The
+`master` mirror carries his ef0f1455; `plus` is merged up to af622fe2.
+
+**One thing of Riley's the second check of `/rankings` measured.** With the Substats box on High Invest, 11 of 296
+rows show a score that differs from a fresh `runTeam()` on the same picks by up to 1.2 % (the solver keeps the score
+of the substat spread it searched with). The same 11 rows differ the same way on his own build with nothing of the
+fork's in it (`wto-wt/b5/tmp/sync/e1.mjs`), so the fork changes nothing there and plus shows his figure as it is.
