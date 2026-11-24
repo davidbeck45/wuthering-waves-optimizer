@@ -9,7 +9,7 @@ import { qualityTarget, ratingOf } from "../echoLab/echoLabView";
 import { rollRatings, type RollRating } from "../echoLab/rollRatings";
 import { chipFor, rollTone, type ChipRating } from "../inventoryQuality/inventoryQuality";
 import { KIT_INDEX_ENTRIES } from "../kits/load";
-import { GEAR_BANDS, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearInput, type GearRow } from "./gearMap";
+import { GEAR_BANDS, bandsLine, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearInput, type GearRow } from "./gearMap";
 
 const account = fixture as unknown as LabAccount;
 const quiet = { yieldMs: 0 };
@@ -169,6 +169,9 @@ describe("Gear map summary, sort and the half-computed guard", () => {
     expect(none.weakest).toEqual([]);
     expect(summaryLine(none)).toMatch(/is a damage dealer the app knows/);
     expect(leftOutLine(none)).toMatch(/\(no role on file\)/);
+    // and no row of zero band counts under it
+    expect(bandsLine(none)).toBe("");
+    expect(bandsLine(whole)).toBe(GEAR_BANDS.map((b) => `${whole.counts[b.step]} ${b.short}`).join(" · "));
   });
 
   it("sorts supports after every damage dealer", () => {

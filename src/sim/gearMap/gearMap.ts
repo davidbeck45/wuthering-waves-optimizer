@@ -234,6 +234,13 @@ export function summaryLine(s: GearSummary): string {
   return `${of} ${verb} in the lowest two bands (Poor roll or Below average).${unrated ? ` ${unrated} could not be rated (no substat lines yet, or no build to rate them on).` : ""}`;
 }
 
+/** "50 excellent · 8 good · 2 average · 0 below average · 0 poor" over the damage dealers; "" when nobody is counted (a row
+ *  of zeros under "None of your set-up characters is a damage dealer…" would read as five empty bands) */
+export function bandsLine(s: GearSummary): string {
+  if (!s.dealers || !s.rated) return "";
+  return GEAR_BANDS.map((b) => `${s.counts[b.step]} ${b.short}`).join(" · ");
+}
+
 /** "Not counted: Verina, Shorekeeper (supports) and Foo (no role on file)." — whom the count leaves out, and why. */
 export function leftOutLine(s: GearSummary): string {
   if (!s.leftOut.length) return "";

@@ -46,9 +46,7 @@
 
       <div class="gm-summary" data-test-gear-map-summary>
         <p class="gm-summary__line" data-test-gear-map-count>{{ summaryLine(summary) }}</p>
-        <p class="gm-muted gm-summary__bands">
-          <template v-for="(b, i) in GEAR_BANDS" :key="b.step"><template v-if="i"> · </template>{{ summary.counts[b.step] }} {{ b.short }}</template>
-        </p>
+        <p v-if="bandsLine(summary)" class="gm-muted gm-summary__bands" data-test-gear-map-bands>{{ bandsLine(summary) }}</p>
         <template v-if="summary.weakest.length">
           <p class="gm-summary__sub">The {{ summary.weakest.length === 1 ? "weakest echo" : `${summary.weakest.length} weakest echoes` }} on your damage dealers:</p>
           <ol class="gm-weakest" data-test-gear-map-weakest>
@@ -170,7 +168,7 @@ import { characterName, echoName, lineText, mainLabel, setLabel } from "../echoL
 import { useInventoryQuality } from "../inventoryQuality/useInventoryQuality";
 import { installSheetBackGuard } from "../shell/askBackGuard";
 import { KIT_INDEX_ENTRIES } from "../kits/load";
-import { GEAR_BANDS, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearCell, type GearRole, type GearRow, type GearSort } from "./gearMap";
+import { GEAR_BANDS, bandsLine, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearCell, type GearRole, type GearRow, type GearSort } from "./gearMap";
 
 const props = defineProps<{
   /** the account's roster cards (rosterCards): the set-up ones are the rows, in the roster's order */
