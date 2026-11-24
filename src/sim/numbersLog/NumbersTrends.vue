@@ -54,7 +54,7 @@
 <script setup lang="ts">
 // Wuthering Tools+ — "Over time" (src/sim/numbersLog/trends.ts reads the log; this draws it). The open row is in the
 // address (`?trend=<key>`, a replace), so Back leaves the page and a link from /account can open one.
-import { computed, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import { characterShortName } from "../display/names";
@@ -86,6 +86,18 @@ const open = computed(() => {
 });
 // an opened stock team stays reachable when the page is opened on its link
 if (open.value?.startsWith("t:") && trends.value.find((t) => t.key === open.value)?.group === "stock") showStock.value = true;
+// opened from a link (My account's card, a reload): bring the open row into view, or the page opens at its top with the
+// chart far below the comparison. No smooth scroll (motion rule); the router's own scroll runs first, hence the frame.
+onMounted(() => {
+  if (!open.value) return;
+  const key = open.value;
+  void nextTick(() =>
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-test-trend-row][data-key="${CSS.escape(key)}"]`);
+      if (el && open.value === key) el.scrollIntoView({ block: "start" });
+    }),
+  );
+});
 function toggle(key: string): void {
   const query = { ...route.query };
   if (open.value === key) delete query.trend;
@@ -141,6 +153,8 @@ const slug = (key: string): string => key.replace(/[^A-Za-z0-9_-]/g, "_");
   gap: 0.4rem;
 }
 .ntr__row {
+  /* clear the page's sticky header when a link opens the row (scrollIntoView) */
+  scroll-margin-top: 5.5rem;
   border-radius: 0.8rem;
   background: oklch(var(--b2));
   box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.07);

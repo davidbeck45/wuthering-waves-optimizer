@@ -139,6 +139,20 @@ describe("your numbers over time", () => {
     cy.get("[data-test-trend-step-text]").last().should("have.text", "The team-aware buffs switch was turned off.");
   });
 
+  it("opened from a link (My account's card), brings the open row into view", () => {
+    cy.viewport(412, 915);
+    cy.visit("/whats-new?tab=numbers&trend=t:team-mine", seed(LOG));
+    cy.get("[data-test-trend-chart]").should("exist");
+    cy.get(row("t:team-mine")).should(($r) => {
+      const top = $r[0].getBoundingClientRect().top;
+      expect(top, "the open row's top is on screen").to.be.within(0, Cypress.config("viewportHeight") - 100);
+      // and not under the page's sticky header: what is drawn at the row's top edge is the row itself
+      const r = $r[0].getBoundingClientRect();
+      const hit = $r[0].ownerDocument.elementFromPoint(r.left + r.width / 2, top + 6);
+      expect($r[0].contains(hit), "the row's top edge is not covered").to.equal(true);
+    });
+  });
+
   it("fits a 360 px phone with the chart open", () => {
     cy.viewport(360, 740);
     cy.visit("/whats-new?tab=numbers&trend=t:team-mine", seed(LOG));
