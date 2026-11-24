@@ -8,7 +8,7 @@ const sigrika = { weapon: "SolswornCiphers", weapons: { SolswornCiphers: { refin
 
 function account(): Record<string, unknown> {
   return {
-    activeCharacter: "Mornye",
+    activeCharacter: "Qiuyuan",
     favoriteCharacters: [],
     characters: {
       Sigrika: {
@@ -19,7 +19,8 @@ function account(): Record<string, unknown> {
           { id: "b2", name: "Old save", createdAt: 2, updatedAt: 2, ...sigrika },
         ],
       },
-      Mornye: { weapon: "StarfieldCalibrator" },
+      // Sigrika · Qiuyuan + Lucilla is a stock team (Mornye + Lucilla was, until Riley's table of 2026-11-22)
+      Qiuyuan: { weapon: "EmeraldSentence" },
       Lucilla: { weapon: "Stringmaster" },
       Brant: { weapon: "UnflickeringValor", buffs: { MyMoment: { isEnabled: true }, TheatricalMoment: { isEnabled: true } } },
     },
@@ -64,7 +65,7 @@ describe("buffs that cannot be on together", () => {
       });
     }
     cy.get(`${NOTICE} [data-test-buff-conflict-rotation] dt`).then(($dt) => expect([...$dt].map((el) => el.textContent)).to.deep.equal(["Both on, as saved", "Only Schemata of Runes", "Only Soliskin Vitality"]));
-    cy.get(`${NOTICE} [data-test-buff-conflict-team]`).should("contain.text", "Team Sigrika · Mornye + Lucilla");
+    cy.get(`${NOTICE} [data-test-buff-conflict-team]`).should("contain.text", "Team Sigrika · Qiuyuan + Lucilla");
     cy.get(`${NOTICE}`).should("contain.text", "Average damage per rotation").and("contain.text", "enemy level 100 at 20 % RES");
     // his own description of each, for choosing
     cy.get(`${NOTICE} details summary`).click();
