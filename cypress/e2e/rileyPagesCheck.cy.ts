@@ -61,3 +61,33 @@ describe("Roster value: ticks naming a resonator his roster no longer has (secon
     cy.get("[data-test-riley-owned-line]").should("contain.text", "Ticked from your account").and("not.contain.text", "Nobody");
   });
 });
+
+describe("Tier list and Roster value controls stay on their page (second check)", () => {
+  it("after /rankings, a Team Cost or Matrix change here reaches no listener of /rankings' table, and the page still follows it", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/rankings#tc=s6r5");
+    cy.get(".skittle-root:not(.wt-riley-pages) #loading", { timeout: 180000 }).should("have.attr", "hidden");
+    push("/tier-list");
+    rileyLoaded();
+    // his table.ts listens for `change` on the whole document (#cost, #matrixToggle) and runs a /rankings pass under
+    // the new Team Cost: off-screen, on the same workers, as this page solves
+    const seen: string[] = [];
+    cy.document().then((doc) => doc.addEventListener("change", (e) => seen.push((e.target as Element).id || (e.target as Element).tagName)));
+    cy.get(".wt-riley-tierlist #cost").select("s6r5");
+    rileyLoaded();
+    cy.location("hash").should("include", "tc=s6r5");
+    cy.get(".wt-riley-tierlist #matrixToggle").check();
+    rileyLoaded();
+    cy.location("hash").should("include", "mx=true");
+    push("/roster-value#tc=s3m");
+    rileyLoaded();
+    cy.get(".wt-riley-value #cost").should("have.value", "s3r1mdps");
+    cy.get(".wt-riley-value #cost").select("s6r5");
+    rileyLoaded();
+    cy.get(".wt-riley-value input[data-name='Cartethyia']").uncheck();
+    cy.get(".wt-riley-value .summary-label .hint").should("contain.text", "Neutral Matrix Score");
+    cy.then(() => expect(seen, "change events that reached the document").to.deep.eq([]));
+  });
+});

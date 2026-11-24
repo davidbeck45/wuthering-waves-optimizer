@@ -57,6 +57,9 @@ function buildRoot(kind: RileyPageKind): Page {
   root.className = `skittle-root wt-riley-pages wt-riley-${kind}`;
   // his pages' body class is `valuepage` (both of them); the scoped sheet reads it as `.skittle-root .valuepage`
   root.innerHTML = `<div class="valuepage wt-riley-body"><div id="app"></div></div>`;
+  // his handlers sit on `#app` and ours on the root; a `change` going further reaches his table.ts, which listens on the
+  // whole document for `#cost` and `#matrixToggle` once /rankings has loaded it and would run a /rankings pass off-screen
+  root.addEventListener("change", (e) => e.stopPropagation());
   return { root, app: root.querySelector<HTMLElement>("#app")!, booted: false };
 }
 
