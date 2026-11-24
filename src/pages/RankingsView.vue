@@ -13,6 +13,8 @@
       <a href="https://github.com/Riley31415/wuwa_calc" target="_blank" rel="noopener" class="link">Riley31415/wuwa_calc</a>
       <span class="max-sm:hidden"> (ISC), running in-page from the pinned submodule.</span><span class="sm:hidden"> (ISC).</span>
       <RouterLink to="/my-rankings" class="link link-primary ml-2" data-test-rankings-switch-mine>My roster rankings ▸</RouterLink>
+      <RouterLink to="/tier-list" class="link link-primary ml-2" data-test-rankings-to-tierlist>Tier list ▸</RouterLink>
+      <RouterLink to="/roster-value" class="link link-primary ml-2" data-test-rankings-to-value>Roster value ▸</RouterLink>
     </p>
   </div>
 </template>

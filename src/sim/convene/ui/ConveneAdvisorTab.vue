@@ -10,6 +10,8 @@
           For each featured 5★ on the banners running now: what the next copy adds to <b>your</b> build, scored by the
           calculator's engine on that character's best rotation, and what it costs in Astrite from your current pity.
           Ranked by damage gained per 1,000 Astrite.
+          <span class="block mt-1" data-test-convene-advisor-roster-value>For everyone at once on Riley's engine (what each
+          resonator would add to the best account your roster can field), see <RouterLink to="/roster-value" class="link link-primary">Roster value</RouterLink>.</span>
           <span class="text-base-content/80" data-test-convene-advisor-source>The banners are the ones Kuro's news lists: a new resonator's or weapon's own banner is often not posted there, and is then not scored here.</span>
         </p>
       </div>

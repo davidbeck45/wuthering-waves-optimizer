@@ -30,6 +30,8 @@
     </div>
     <p class="inv__sub">
       Engine gains for one more step of each — on the character's best rotation and on their strongest team you can field.
+      <span class="block" data-test-account-invest-roster-value>Who to pull next, for everyone at once on Riley's engine:
+      <RouterLink to="/roster-value" class="link link-primary">Roster value</RouterLink>.</span>
     </p>
     <!-- Wuthering Tools+ "With what you own": the free upgrades first (AccountOwnUpgrades.vue) -->
     <slot name="own" />

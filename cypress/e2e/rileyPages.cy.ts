@@ -143,6 +143,9 @@ describe("Riley's Tier List and Value pages inside the app", () => {
     cy.location("hash").should("include", "tc=s6r5");
     cy.get(".skittle-root:not(.wt-riley-pages) #loading", { timeout: 180000 }).should("have.attr", "hidden");
     cy.get(".skittle-root:not(.wt-riley-pages) .trow:not(.thead)").should("have.length.greaterThan", 5);
+    // /rankings' own line has both pages
+    cy.get("[data-test-rankings-to-tierlist]").should("be.visible");
+    cy.get("[data-test-rankings-to-value]").should("be.visible");
     cy.go("forward");
     cy.location("pathname").should("eq", "/roster-value");
     loaded();
