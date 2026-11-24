@@ -39,7 +39,7 @@
               </label>
               <label class="label cursor-pointer justify-start gap-3 py-1 min-h-11">
                 <input v-model="options.showTeams" type="checkbox" role="switch" class="toggle toggle-sm toggle-primary" data-test-roster-toggle-teams />
-                <span class="label-text">Top three teams and their damage</span>
+                <span class="label-text">Best team of your three strongest main DPS, with its damage</span>
               </label>
               <label class="label cursor-pointer justify-start gap-3 py-1 min-h-11">
                 <input v-model="options.includeFourStars" type="checkbox" role="switch" class="toggle toggle-sm toggle-primary" data-test-roster-toggle-four />

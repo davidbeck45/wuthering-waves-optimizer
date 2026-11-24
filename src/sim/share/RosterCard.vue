@@ -1,5 +1,5 @@
 <template>
-  <!-- Wuthering Tools+ share cards: "My roster" — every set-up resonator as a tile and the account's top three teams.
+  <!-- Wuthering Tools+ share cards: "My roster" — every set-up resonator as a tile and the best team of the account's three strongest main DPS.
        Fixed px and its own data-theme (like PostCard / TeamCard), so the picture is the same from every screen and
        app theme. Width ROSTER_CARD_WIDTH; the height follows the tile count. A picture only: no data inside. -->
   <div class="share-roster" data-theme="dark" :style="{ width: `${ROSTER_CARD_WIDTH}px` }" data-test-roster-card :data-test-roster-columns="model.grid.columns">
@@ -48,7 +48,7 @@
     <p v-if="!model.tiles.length" class="share-roster__empty">No resonator matches: switch 4-stars back on, or set one up (a weapon equipped).</p>
 
     <section v-if="model.teamsState !== 'hidden'" class="share-roster__teams" data-test-roster-card-teams>
-      <div class="share-roster__teams-head">Top teams · average damage per rotation</div>
+      <div class="share-roster__teams-head">Best team of your three strongest main DPS · average damage per rotation</div>
       <ol v-if="model.teamsState === 'teams'" class="share-roster__team-list">
         <li v-for="(team, i) in model.teams" :key="i" class="share-roster__team" data-test-roster-team>
           <span class="share-roster__team-rank">#{{ i + 1 }}</span>

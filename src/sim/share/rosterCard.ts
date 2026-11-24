@@ -1,7 +1,8 @@
 // Wuthering Tools+ share cards — "My roster": what the third card shows, built from what My account already reads
 // (accountView.ts rosterCards + fieldableTeams over the roster ranking). Pure: no stores, no DOM, so the tests and the
 // sheet read the same model. The card carries no data to load back (it is a picture only).
-import type { RosterRanking } from "../myRankings/rankRoster";
+import type { RosterRanking, TeamRank } from "../myRankings/rankRoster";
+import { parsePresetName } from "../presets/presetName";
 import { fieldableTeams, sortCards, type RosterCard } from "../account/accountView";
 import { characterMeta, weaponDisplayName, weaponMeta } from "../display/names";
 import { teamTitle } from "../display/teamName";
@@ -97,17 +98,29 @@ export function rosterTiles(cards: RosterCard[], characters: Record<string, Reco
   });
 }
 
-/** The top three teams (three different trios), read from the same ranking result My account reads. A ranking that did not fully score
- *  (`incomplete`) is treated as none: the card never shows a half-scored figure. */
+/** The main DPS a team's name leads with ("Aemeath · Mornye + Lynae" → Aemeath), the way `teamTitle` / `teamLabel`
+ *  read it; null for a name that does not say (a team the player named, an old stock team). */
+export function teamMainDps(team: Pick<TeamRank, "name" | "characterIds">): string | null {
+  const key = parsePresetName(team.name, { owned: team.characterIds }).mainKey;
+  return key && team.characterIds.includes(key) ? key : null;
+}
+
+/** The best team of each of the account's three strongest main DPS, read from the same ranking result My account reads
+ *  (its figures to the digit): one main DPS three times says little about a roster, and those three could never be
+ *  fielded together. A team whose name names no main DPS falls back to "no trio twice". A ranking that did not fully
+ *  score (`incomplete`) is treated as none: the card never shows a half-scored figure. */
 export function rosterTeams(ranking: RosterRanking | null): { state: "teams" | "none" | "no-ranking"; teams: RosterTeam[] } {
   if (!ranking || ranking.incomplete) return { state: "no-ranking", teams: [] };
-  // one row per trio: the same three on another rotation is the same team to a reader (the strongest row stays)
-  const seen = new Set<string>();
+  const mains = new Set<string>();
+  const trios = new Set<string>();
   const teams = fieldableTeams(ranking)
     .filter((t) => {
-      const key = [...t.characterIds].sort().join("+");
-      if (seen.has(key)) return false;
-      seen.add(key);
+      const trio = [...t.characterIds].sort().join("+");
+      if (trios.has(trio)) return false;
+      const main = teamMainDps(t);
+      if (main && mains.has(main)) return false;
+      trios.add(trio);
+      if (main) mains.add(main);
       return true;
     })
     .slice(0, 3)
@@ -145,7 +158,7 @@ export function rosterAltText(model: RosterCardModel, names: (id: string) => str
     parts.push(`${model.tiles.length > 5 ? "starting with" : "namely"} ${first.join(", ")}`);
   }
   if (model.teamsState === "teams") {
-    parts.push(`top teams: ${model.teams.map((t) => `${t.characterIds.map(names).join(", ")} at ${compactDamage(t.avgDamage)} damage per rotation`).join("; ")}`);
+    parts.push(`best team of the three strongest main DPS: ${model.teams.map((t) => `${t.characterIds.map(names).join(", ")} at ${compactDamage(t.avgDamage)} damage per rotation`).join("; ")}`);
   }
   return `${parts.join(", ")}.`;
 }

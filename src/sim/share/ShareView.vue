@@ -189,7 +189,7 @@
             <span class="text-xs font-semibold uppercase tracking-wide text-base-content/60">Your whole roster</span>
             <div class="flex flex-wrap items-center gap-2">
               <RosterShareButton label="Share my roster…" />
-              <span class="text-xs text-base-content/60">A picture only: every set-up resonator and your top teams.</span>
+              <span class="text-xs text-base-content/60">A picture only: every set-up resonator and the best team of your three strongest main DPS.</span>
             </div>
           </div>
         </template>

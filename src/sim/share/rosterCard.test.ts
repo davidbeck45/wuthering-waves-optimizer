@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import type { RosterCard } from "../account/accountView";
 import type { RosterRanking, TeamRank } from "../myRankings/rankRoster";
-import { DEFAULT_ROSTER_OPTIONS, rosterAltText, rosterCardModel, rosterFilename, rosterGrid, rosterTeams } from "./rosterCard";
+import { DEFAULT_ROSTER_OPTIONS, rosterAltText, rosterCardModel, rosterFilename, rosterGrid, rosterTeams, teamMainDps } from "./rosterCard";
 
 function card(id: string, over: Partial<RosterCard> = {}): RosterCard {
   return {
@@ -105,6 +105,36 @@ describe("roster card model", () => {
     expect(teams.map((t) => t.avgDamage)).toEqual([3_000_000, 2_000_000, 1_000_000]);
     expect(teams[0].characterIds).toEqual(["A", "B", "D"]);
     expect(teams[0].name.length).toBeGreaterThan(0);
+  });
+
+  it("takes the best team of each of the three strongest main DPS (the member the name leads with), figures as ranked", () => {
+    const named = (main: string, rest: [string, string], dmg: number, tail = " · S6R5 (wuwa_calc)") =>
+      team([main, ...rest], dmg, { id: `${main}-${rest.join("-")}-${dmg}`, name: `${main} · ${rest[0]} + ${rest[1]}${tail}` });
+    const r = ranking([
+      team(["Aemeath", "Mornye", "Lynae"], 9_458_277, { name: "wuwa_calc Aemeath S6R5 DPS · S1R1/S6R1 team · Mornye + Lynae" }),
+      named("Aemeath", ["Mornye", "Lynae"], 9_291_155, " · S6R5 DPS · S0R1 team (wuwa_calc)"),
+      named("Aemeath", ["Suisui", "Denia"], 7_862_628),
+      named("Aemeath", ["Denia", "Lynae"], 7_284_845),
+      named("Sigrika", ["Mornye", "Lucilla"], 7_187_788),
+      named("Aemeath", ["Chisa", "Denia"], 7_004_051),
+      named("Galbrena", ["Phrolova", "Qiuyuan"], 6_984_146),
+      named("Cartethyia", ["Ciaccona", "Chisa"], 6_952_808),
+    ]);
+    const { teams } = rosterTeams(r);
+    expect(teams.map((t) => t.name)).toEqual(["Aemeath · Mornye + Lynae", "Sigrika · Mornye + Lucilla", "Galbrena · Phrolova + Qiuyuan"]);
+    expect(teams.map((t) => t.avgDamage)).toEqual([9_458_277, 7_187_788, 6_984_146]); // the ranking's own figures, untouched
+    expect(teamMainDps(r.teams[0])).toBe("Aemeath");
+    expect(teamMainDps(team(["A", "B", "C"], 1, { name: "My team" }))).toBeNull();
+  });
+
+  it("falls back to one row per trio where a team's name names no main DPS", () => {
+    const r = ranking([
+      team(["A", "B", "C"], 3e6, { name: "My team" }),
+      team(["C", "B", "A"], 2.9e6, { name: "My team, other rotation" }),
+      team(["A", "B", "D"], 2e6, { name: "Another" }), // same lead member, but no name says so: kept
+      team(["Aemeath", "Mornye", "Lynae"], 1.5e6, { name: "Aemeath · Mornye + Lynae · S6R5 (wuwa_calc)" }),
+    ]);
+    expect(rosterTeams(r).teams.map((t) => t.avgDamage)).toEqual([3e6, 2e6, 1.5e6]);
   });
 
   it("shows no team figure without a complete ranking result", () => {
