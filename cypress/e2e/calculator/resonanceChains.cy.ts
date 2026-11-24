@@ -13,7 +13,11 @@ describe("Calculator Resonance Chains", () => {
   it("should verify that by default no resonance chains are chosen", () => {
     cy.get('[data-test-calculator-nav="resonanceChains"]').click();
     cy.get(".character__resonance-chains").should("be.visible");
-    cy.get('[type="checkbox"]').should("not.be.checked");
+    // Wuthering Tools+: this screen's boxes only. His "Hide impossible buffs" toggle on Team Buffs is on by
+    // default since #720 and sits in the page (hidden) on every screen, so "no box on the page is checked"
+    // went red on his own code; his CI runs no Cypress.
+    cy.get('.character__resonance-chains [type="checkbox"]').should("have.length.greaterThan", 0);
+    cy.get('.character__resonance-chains [type="checkbox"]').should("not.be.checked");
   });
 
   it("should ensure all resonance chains are able to be chosen and affect your results", () => {
