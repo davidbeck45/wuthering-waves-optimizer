@@ -177,6 +177,23 @@ describe("resonator briefs", () => {
     cy.get('[data-test-kit-cost="s0r1"] > summary').invoke("text").should("match", /S0R1 all.+ · .+team DPS/);
     cy.get('[data-test-kit-cost="s6r5"]').should("not.have.attr", "open");
     cy.get("[data-test-kit-ladder-seq]").should("contain.text", "Team DPS").and("contain.text", "S6");
+    // the ladder's charts: a bar per row of each table, labelled with the table's own figure; her S2 marked, the biggest step said
+    cy.get("[data-test-kit-ladder-seq] > span").then(($cells) => {
+      const figures = [...$cells].slice(4).filter((_, i) => i % 4 === 1).map((c) => c.textContent!.trim());
+      cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar]').should("have.length", figures.length);
+      cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-value]').then(($v) => expect([...$v].map((v) => v.textContent!.trim())).to.deep.eq(figures));
+    });
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S2"]').should("have.attr", "data-test-kit-chart-marks").and("contain", "you");
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S2"]').should("contain.text", "you are here");
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-marks~="you"]').should("have.length", 1);
+    cy.get("[data-test-kit-ladder-biggest]").invoke("text").should("match", /^The biggest step is S\d to S\d: \+\d+\.\d% team DPS over S\d\.$/);
+    cy.get('[data-test-kit-ladder-figures="seq"]').should("not.have.attr", "open");
+    cy.get("[data-test-kit-ladder-weapons] > span").then(($cells) => {
+      cy.get('[data-test-kit-chart="weapons"] [data-test-kit-chart-bar]').should("have.length", ($cells.length - 3) / 3);
+    });
+    cy.get('[data-test-kit-chart="weapons"] [data-test-kit-chart-marks~="held"]').should("have.length", 1).and("contain.text", "Defier's Thorn");
+    cy.get('[data-test-kit-chart="weapons"] [data-test-kit-chart-bar="Defier\'s Thorn"]').should("have.attr", "data-test-kit-chart-marks", "held you");
+    cy.get("[data-test-kit-cost-bar]").should("have.length", 9);
     cy.get("[data-test-kit-signature]").should("contain.text", "the signature");
     expectNoHorizontalScroll("the brief");
 

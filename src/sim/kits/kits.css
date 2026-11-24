@@ -419,3 +419,15 @@
     opacity: 0.5;
   }
 }
+
+/* the best team's DPS at each Team Cost as a bar under its line (KitBriefView, costWidths): zero-based, against the highest */
+.kit-cost__bar {
+  display: block;
+  height: 0.4rem;
+  margin-top: 0.3rem;
+  border-radius: 2px;
+  background: oklch(var(--bc) / 0.09);
+}
+.kit-cost__bar rect {
+  fill: oklch(var(--p));
+}

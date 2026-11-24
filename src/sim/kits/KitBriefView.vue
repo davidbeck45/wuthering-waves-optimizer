@@ -250,7 +250,8 @@
           <h2 id="kit-teams-h" class="kit-h2">Best teams at each Team Cost</h2>
           <p class="kit-muted mb-2">
             A Team Cost is how invested the team is, from everyone at S0 to everyone at S6 with an R5 weapon. Riley solves his whole table at each; these are
-            {{ name }}'s best there. Tap one for its members, {{ name }}'s part and more teams.
+            {{ name }}'s best there. Tap one for its members, {{ name }}'s part and more teams. The bar under each is its best team's DPS against the highest of
+            the nine, from zero.
           </p>
           <p v-if="kit.teams.main === 0 && (kit.tier === 'Limited' || kit.tier === 'Standard')" class="kit-muted mb-2" data-test-kit-support-costs>
             {{ name }} is never the main DPS on his table, so the Team Costs that raise one resonator (S2R1 DPS and up) raise the main DPS of each team, not {{ name }}:
@@ -262,6 +263,9 @@
                 <h3 class="kit-cost__label">{{ c.label }}<span v-if="c.cost === openCost && account.owned" class="kit-chip kit-chip--own ml-2">nearest to yours</span></h3>
                 <span v-if="c.teams[0]" class="kit-cost__best" :data-test-kit-cost-best="c.cost">{{ labelOfTeam(c.teams[0]) }} · <b>{{ dpsText(c.teams[0].dps) }}</b> team DPS</span>
                 <span v-else class="kit-cost__best">No team this app can field</span>
+                <svg v-if="c.teams[0]" class="kit-cost__bar" aria-hidden="true" focusable="false" width="100%" height="100%" :data-test-kit-cost-bar="c.cost">
+                  <rect x="0" y="0" :width="`${((costBar[c.cost] ?? 0) * 100).toFixed(2)}%`" height="100%" rx="2" />
+                </svg>
               </summary>
               <p class="kit-muted">{{ c.label }} means: {{ c.means }}.</p>
               <div v-if="c.teams.length" class="kit-list">
@@ -286,6 +290,16 @@
           </p>
 
           <h3 class="kit-h3 mt-3">Sequences, on {{ kit.ladder.held.weapon }} R{{ kit.ladder.held.rank }}</h3>
+          <KitBarChart
+            name="seq"
+            :caption="`Team DPS at each sequence of ${name}: a bar per level from zero, each with what it adds over the level below.`"
+            :bars="seqChart.bars" />
+          <p class="kit-text mt-1" data-test-kit-ladder-biggest>{{ seqChart.biggestText }}</p>
+          <p v-if="seqChart.lower.length" class="kit-muted" data-test-kit-ladder-lower>
+            {{ seqChart.lower.map((l) => `S${l}`).join(", ") }} {{ seqChart.lower.length === 1 ? "reads" : "read" }} lower than the level below in Riley's run: that is his engine's figure, shown as it is.
+          </p>
+          <details class="kit-more mt-1" data-test-kit-ladder-figures="seq">
+          <summary>Show the figures</summary>
           <div class="kit-table kit-table--4" role="table" aria-label="Team DPS at each sequence" data-test-kit-ladder-seq>
             <span class="kit-th" role="columnheader">Level</span>
             <span class="kit-th kit-num" role="columnheader">Team DPS</span>
@@ -298,10 +312,18 @@
               <span class="kit-num">{{ s.total == null ? "start" : signedPercent(s.total) }}</span>
             </template>
           </div>
+          </details>
           <p v-if="shortLevels" class="kit-muted mt-1">At {{ shortLevels }} the standard substats fall short of the Energy Regen the loop asks for.</p>
 
           <template v-if="weapons.length > 1">
             <h3 class="kit-h3 mt-4">Weapons, at S{{ kit.ladder.held.sequence }}</h3>
+            <KitBarChart
+              name="weapons"
+              wide
+              :caption="`Team DPS on each weapon, best first, from zero: each against ${kit.ladder.held.weapon}, the weapon the rest of this section holds.`"
+              :bars="weaponBars" />
+            <details class="kit-more mt-1" data-test-kit-ladder-figures="weapons">
+            <summary>Show the figures</summary>
             <div class="kit-table kit-table--3" role="table" aria-label="Team DPS on each weapon" data-test-kit-ladder-weapons>
               <span class="kit-th" role="columnheader">Weapon</span>
               <span class="kit-th kit-num" role="columnheader">Team DPS</span>
@@ -312,11 +334,18 @@
                 <span class="kit-num" :class="{ 'kit-down': w.vsBest < -0.0005 }">{{ w.vsBest ? signedPercent(w.vsBest) : "best" }}</span>
               </template>
             </div>
+            </details>
             <p v-if="signatureLine" class="kit-text mt-2" data-test-kit-signature>{{ signatureLine }}</p>
           </template>
 
           <template v-if="ranks.length > 1">
             <h3 class="kit-h3 mt-4">{{ kit.ladder.held.weapon }} from R{{ ranks[0]!.rank }} to R{{ ranks.at(-1)!.rank }}, at S{{ kit.ladder.held.sequence }}</h3>
+            <KitBarChart
+              name="ranks"
+              :caption="`Team DPS at each refinement rank of ${kit.ladder.held.weapon}, from zero: each with what it adds over the rank below.`"
+              :bars="rankBars" />
+            <details class="kit-more mt-1" data-test-kit-ladder-figures="ranks">
+            <summary>Show the figures</summary>
             <div class="kit-table kit-table--3" role="table" aria-label="Team DPS at each refinement rank" data-test-kit-ladder-ranks>
               <span class="kit-th" role="columnheader">Rank</span>
               <span class="kit-th kit-num" role="columnheader">Team DPS</span>
@@ -327,6 +356,7 @@
                 <span class="kit-num" :class="{ 'kit-up': (r.total ?? 0) > 0.0005 }">{{ r.total == null ? "start" : signedPercent(r.total) }}</span>
               </template>
             </div>
+            </details>
           </template>
           <p class="kit-muted mt-3">
             His solver would pick weapon, echoes and main stats again at every row; these rows hold them, so each reads as the worth of that step alone. For your own
@@ -371,7 +401,9 @@ import { rankingFingerprint, readCachedRanking, readSavedRanking } from "../myRa
 import { accountKeyOf } from "../rankings/rileyNames";
 import { rotationPath } from "../rotation/hash";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
+import KitBarChart from "./KitBarChart.vue";
 import KitTeamRow from "./KitTeamRow.vue";
+import { costWidths, rankChart, sameWeaponName, sequenceChart, weaponChart } from "./ladderChart";
 import {
   CHANGE_WORDS,
   ROLE_LABEL,
@@ -614,6 +646,14 @@ const ladderTeam = computed(() => {
 });
 const weapons = computed(() => weaponSteps(kit.value?.ladder ?? null));
 const ranks = computed(() => rankSteps(kit.value?.ladder ?? null));
+// the charts: the same rows as the tables, scaled and worded (ladderChart.ts)
+const seqChart = computed(() => sequenceChart(steps.value, account.value?.owned ? account.value.sequence : null));
+const ownWeaponName = computed(() => (account.value?.owned && account.value.weapon ? weaponDisplayName(account.value.weapon) : null));
+const weaponBars = computed(() => (kit.value?.ladder ? weaponChart(weapons.value, kit.value.ladder.held, ownWeaponName.value) : []));
+const rankBars = computed(() =>
+  rankChart(ranks.value, kit.value?.ladder && account.value?.owned && sameWeaponName(ownWeaponName.value, kit.value.ladder.held.weapon) ? account.value.refinement : null),
+);
+const costBar = computed(() => costWidths(costs.value));
 const shortLevels = computed(() => list(steps.value.filter((s) => s.short).map((s) => `S${s.level}`)));
 /** "The signature is worth +13.5 % team DPS over the best other weapon here." */
 const signatureLine = computed(() => {
