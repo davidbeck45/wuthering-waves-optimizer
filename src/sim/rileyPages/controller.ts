@@ -41,6 +41,7 @@ const OVERLAY = `
       <span class="progress-count"></span>
     </p>
     <div class="progress-track"><div class="progress-fill"></div></div>
+    <p class="wt-sofar-note">The list shows the teams solved so far.</p>
     <img class="loading-gif" src="/sim/loading.gif" alt="" width="110" height="79">
     <pre class="loading-error" hidden></pre>
   </div>`;

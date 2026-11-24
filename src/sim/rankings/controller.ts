@@ -934,6 +934,8 @@ function paintSoFar(gen: number, done: number, total: number, mine: boolean): bo
 /** The docked overlay's line and the cards' heading, from `soFar`. */
 function showSoFar(): void {
   if (!soFar) return;
+  // Wuthering Tools+ rileyPages: Tier list or Roster value opened first, his loading.ts holds their box, swapped in for ours
+  if (mods && mods.loading.overlay !== overlay) { overlay = mods.loading.overlay; overlayStatus = overlay.querySelector<HTMLElement>(".status-text")!; overlayCount = overlay.querySelector<HTMLElement>(".progress-count")!; }
   overlayStatus.textContent = soFar.mine ? "Solving teams at your account" : "Solving teams";
   overlayCount.textContent = `${soFar.done} of ${soFar.total}`;
   rankingsSolving.value = { done: soFar.done, total: soFar.total, mine: soFar.mine };
