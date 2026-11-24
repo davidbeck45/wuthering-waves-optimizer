@@ -7,7 +7,7 @@ import type { RunLite, RunRow } from "../engine/rileyRun";
 import { cuePlan, durationText, loopsIn, nextStep, prevStep, visitPresses } from "./cueModel";
 import { DISCORD_LIMIT, discordMessage, discordText } from "./exportText";
 import { clockOf, covered, damageCovered, extractRotation, isPress, splitBuffName, union, uptime } from "./extract";
-import { buildRotationHash, parseRotationHash, picksOfRowKey, rotationPath, targetId } from "./hash";
+import { buildRotationHash, parseRotationHash, picksOfRowKey, rotationPath, targetId, unguardedKey } from "./hash";
 import { advancePlayer, backPlayer, elapsedOf, expectedOf, gapText, initPlayer, isDue, pausePlayer, resumePlayer } from "./player";
 import { DEFAULT_PREFS, readPrefs, ROTATION_PREFS_KEY, writePrefs } from "./prefs";
 import { BASE_HP, hpLines, hpText, onFieldAt, parseHp, rangesOf, rulerStep, valueAt } from "./timelineScale";
@@ -352,6 +352,13 @@ describe("the /rotation hash", () => {
     expect(parseRotationHash("#team=AbC-_9").target).toEqual({ kind: "code", code: "AbC-_9" });
     expect(parseRotationHash("#team=bP6aLXA_DWxAO6j7N3SU3NoDaOgx-kZ2").target).toEqual({ kind: "code", code: "bP6aLXA_DWxAO6j7N3SU3NoDaOgx-kZ2" });
     expect(parseRotationHash("#tier=standard").subs).toBe("standard");
+    // a key with its members beside it (the guard against his list moving under an old link) round-trips
+    const guarded = "#team=t279&chars=Aemeath,Lupa,Lynae";
+    expect(parseRotationHash(guarded).target).toEqual({ kind: "team", teamKey: "t279", rowKey: null, picks: null, members: ["Aemeath", "Lupa", "Lynae"] });
+    expect(buildRotationHash(parseRotationHash(guarded))).toBe(guarded);
+    expect(unguardedKey(parseRotationHash("#team=t279").target)).toBe(true);
+    expect(unguardedKey(parseRotationHash(guarded).target)).toBe(false);
+    expect(unguardedKey(parseRotationHash("#chars=Aemeath,Lupa,Lynae").target)).toBe(false);
     expect(parseRotationHash("").target).toBeNull();
   });
 

@@ -115,7 +115,7 @@ import { rileyClient } from "../engine/rileyClient";
 import type { RileyTeamInfo, SubsMode } from "../engine/rileyRun";
 import { useRileyTeamAccounts } from "../engine/useRileyAccount";
 import CueCard from "./CueCard.vue";
-import { buildRotationHash, parseRotationHash, type RotationTab, type RotationTarget } from "./hash";
+import { buildRotationHash, guardedTarget, parseRotationHash, unguardedKey, type RotationTab, type RotationTarget } from "./hash";
 import { readPrefs, writePrefs } from "./prefs";
 import RotationHeader from "./RotationHeader.vue";
 import RotationPicker from "./RotationPicker.vue";
@@ -241,12 +241,18 @@ watch(
   () => [phase.value, route.fullPath],
   () => {
     if (phase.value === "ready" && names.value) {
-      prefs.last = route.hash;
+      // a team key goes in with its three members beside it: his keys move with his updates, the members do not
+      const t = guardedTarget(parsed.value.target, run.value?.members.map((m) => m.appKey) ?? []);
+      prefs.last = t?.kind === "team" ? buildRotationHash({ target: t, subs: parsed.value.subs, tab: parsed.value.tab }) : route.hash;
       prefs.lastTitle = names.value;
     }
   },
 );
-const last = computed(() => (prefs.last && prefs.lastTitle ? { path: `/rotation${prefs.last}`, title: prefs.lastTitle } : null));
+// a key stored with no members (production's build wrote them so) may name another team since his last update: not
+// offered under the old team's name
+const last = computed(() =>
+  prefs.last && prefs.lastTitle && !unguardedKey(parseRotationHash(prefs.last).target) ? { path: `/rotation${prefs.last}`, title: prefs.lastTitle } : null,
+);
 
 /* the picker: his team list (the hues too) */
 const teamList = shallowRef<RileyTeamInfo[]>([]);

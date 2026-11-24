@@ -29,6 +29,11 @@ export interface Variant {
   reason?: MineSolve["reason"];
 }
 
+/** Two compositions with the same three characters, in any slot order (a Rover in either gender is one character). */
+export const sameMembers = (a: readonly string[], b: readonly string[]): boolean => {
+  const norm = (xs: readonly string[]): string => xs.map((x) => x.toLowerCase().replace(/(fe)?male$/, "")).sort().join("|");
+  return a.length === b.length && norm(a) === norm(b);
+};
 const isAbort = (e: unknown): boolean => (e as { name?: string })?.name === "AbortError";
 
 /** Labels for a composition's variants: the first member whose echo or weapon differs between them. */
@@ -136,6 +141,16 @@ export function useRotationRun(target: Ref<RotationTarget | null>, subs: Ref<Sub
       let chars: string[];
       let key: string | null = null;
       let picks: RileyPick[] | null = null;
+      // a key with its members beside it whose team is not those three any more (his list moved under an old link,
+      // the "Continue" card): the three, at their best row, never the team the key names now
+      if (t2.kind === "team" && t2.members) {
+        const { teamKey: was, members: want } = t2;
+        const held = teams.value.find((x) => x.key === was);
+        if (!(held && sameMembers(held.members.map((m) => m.appKey), want))) {
+          notice.value = `wuwa_calc was updated since this link was made and its team ${was} is another team now: this is ${want.join(" + ")} at their best row.`;
+          t2 = { kind: "chars", chars: want };
+        }
+      }
       if (t2.kind === "chars") chars = t2.chars;
       else {
         key = t2.teamKey;

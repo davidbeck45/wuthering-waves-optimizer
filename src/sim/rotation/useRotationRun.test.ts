@@ -83,3 +83,35 @@ describe("/rotation on a team the player saved", () => {
     expect(asked).toEqual([["solve", "pins"], ["trace", "pins"]]);
   });
 });
+
+describe("/rotation on a link from before one of Riley's updates", () => {
+  // his team keys are positions in his list: after his 2026-11-22 update the old t279 (Aemeath · Lupa + Lynae, the
+  // "Continue" card production had written) named Aemeath · Verina + Lupa, and the card opened that team
+  it("reads a key with its members beside it as those members when the key names another team now", async () => {
+    const { client } = fakeClient();
+    const traced: string[] = [];
+    const moved = {
+      ...client,
+      teams: async () => [
+        { key: "t269", members: members.map((n) => ({ name: n, appKey: n, mainDps: n === "Aemeath" })) },
+        { key: "t279", members: ["Aemeath", "Verina", "Lupa"].map((n) => ({ name: n, appKey: n, mainDps: n === "Aemeath" })) },
+      ],
+      tracedRun: async (teamKey: string) => (traced.push(teamKey), { teamKey, total: 1, members: [] } as unknown as RunLite),
+    } as unknown as RileyClient;
+    let run!: ReturnType<typeof useRotationRun>;
+    const target: RotationTarget = { kind: "team", teamKey: "t279", rowKey: null, picks: null, members: ["Lynae", "Aemeath", "Mornye"] };
+    mount(defineComponent({ setup: () => ((run = useRotationRun(ref(target), ref("mine" as const), ref(base), moved)), () => h("div")) }));
+    for (let i = 0; i < 50 && run.phase.value !== "ready" && run.phase.value !== "error"; i++) await new Promise((r) => setTimeout(r, 2));
+    expect(run.phase.value).toBe("ready");
+    expect(traced).toEqual(["t269"]);
+    expect(run.notice.value).toContain("is another team now");
+    // the same key with the members it still holds runs as before, with no notice
+    traced.length = 0;
+    const same: RotationTarget = { kind: "team", teamKey: "t279", rowKey: null, picks: null, members: ["Lupa", "Verina", "Aemeath"] };
+    let run2!: ReturnType<typeof useRotationRun>;
+    mount(defineComponent({ setup: () => ((run2 = useRotationRun(ref(same), ref("mine" as const), ref(base), moved)), () => h("div")) }));
+    for (let i = 0; i < 50 && run2.phase.value !== "ready" && run2.phase.value !== "error"; i++) await new Promise((r) => setTimeout(r, 2));
+    expect(traced).toEqual(["t279"]);
+    expect(run2.notice.value).toBeNull();
+  });
+});

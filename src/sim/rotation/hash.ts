@@ -6,6 +6,10 @@
 //   &subs=mine|standard|high            the substat spread (default: the account's own echoes)
 //   &tab=cue|timeline
 //
+//   #team=t404…&chars=A,B,C             a key with its members beside it (the guard): his keys are positions in his list
+//                                       and move with his updates, so a key whose team is not these three is read as
+//                                       the three (useRotationRun), never as whoever holds the key now
+//
 //   #team=<team code>                   a /rankings team code (his teamcode.ts): its team, at the player's account
 //                                       (teamCode.ts reads the team part; the code's own sequences / weapons are not used)
 //
@@ -13,7 +17,7 @@
 import type { RileyPick, SubsMode } from "../engine/rileyRun";
 
 export type RotationTarget =
-  | { kind: "team"; teamKey: string; rowKey: string | null; picks: RileyPick[] | null }
+  | { kind: "team"; teamKey: string; rowKey: string | null; picks: RileyPick[] | null; members?: string[] }
   | { kind: "chars"; chars: string[] }
   | { kind: "code"; code: string };
 
@@ -58,6 +62,8 @@ export function parseRotationHash(hash: string): RotationHash {
       const picks = picksOfRowKey(team);
       target = picks ? { kind: "team", teamKey: team.split("-")[0]!, rowKey: team, picks } : { kind: "code", code: team };
     }
+    const guard = chars?.split(",").map((c) => c.trim()).filter(Boolean);
+    if (target.kind === "team" && guard?.length === 3) target.members = guard;
   } else if (chars) {
     const list = chars.split(",").map((c) => c.trim()).filter(Boolean);
     if (list.length === 3) target = { kind: "chars", chars: list };
@@ -68,7 +74,10 @@ export function parseRotationHash(hash: string): RotationHash {
 export function buildRotationHash(h: Partial<RotationHash> & { target: RotationTarget | null }): string {
   const parts: string[] = [];
   const t = h.target;
-  if (t?.kind === "team") parts.push(`team=${t.rowKey ?? t.teamKey}`);
+  if (t?.kind === "team") {
+    parts.push(`team=${t.rowKey ?? t.teamKey}`);
+    if (t.members?.length === 3) parts.push(`chars=${t.members.map(encodeURIComponent).join(",")}`);
+  }
   else if (t?.kind === "chars") parts.push(`chars=${t.chars.map(encodeURIComponent).join(",")}`);
   else if (t?.kind === "code") parts.push(`team=${encodeURIComponent(t.code)}`);
   if (h.subs && h.subs !== "mine") parts.push(`subs=${h.subs}`);
@@ -79,6 +88,14 @@ export function buildRotationHash(h: Partial<RotationHash> & { target: RotationT
 /** The page for one of his rows / teams / compositions (what the /rankings button and the pickers link to). */
 export const rotationPath = (target: RotationTarget, opts: { subs?: SubsMode; tab?: RotationTab } = {}): string =>
   `/rotation${buildRotationHash({ target, ...opts })}`;
+
+/** The same target with its members as the guard (`#team=…&chars=…`), for a link that outlives his list's order. */
+export const guardedTarget = (t: RotationTarget | null, members: readonly string[]): RotationTarget | null =>
+  t?.kind === "team" && members.length === 3 ? { ...t, members: [...members] } : t;
+
+/** A team key with no members beside it: written before the guard, so after one of his updates it may name another
+ *  team. Nothing tells which, so a stored one (the "Continue" card) is not offered again. */
+export const unguardedKey = (t: RotationTarget | null): boolean => t?.kind === "team" && !t.members?.length;
 
 /** A stable id for "the same rotation" (the last-team preference, a memo). */
 export const targetId = (t: RotationTarget | null): string =>
