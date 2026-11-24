@@ -90,13 +90,19 @@ function teamCause(before: TeamFigure, after: TeamFigure, chars: { before: Map<s
   // their build cannot be what moved it (2026-11-23)
   const wasIn = new Set(before.members);
   if (before.members.length !== after.members.length || after.members.some((id) => !wasIn.has(id))) return { kind: "team-edited", withUpdate, members: true };
+  // Sync my teams rewrote this team between the two records. It also writes the team's loop time into the members'
+  // own saved loops that had none (the "other" part of their record), so a member counts as changed only where a build
+  // part the sync never touches moved: weapon, sequence, levels, echoes (2026-11-23: a Sync read "The builds of
+  // Sigrika, Mornye and Lucilla changed.")
+  const synced = before.def !== after.def && !!after.synced && after.synced !== before.synced;
   const who = after.members.filter((id) => {
     const a = chars.before.get(id);
     const b = chars.after.get(id);
-    return !!a && !!b && a.sig.rec !== b.sig.rec;
+    if (!a || !b || a.sig.rec === b.sig.rec) return false;
+    return !synced || changedParts(a.sig, b.sig).some((part) => part !== "other");
   });
   if (who.length) return { kind: "members", who, withUpdate };
-  if (before.def !== after.def && after.synced && after.synced !== before.synced) return { kind: "synced", withUpdate };
+  if (synced) return { kind: "synced", withUpdate };
   if (before.def !== after.def || before.members.join("+") !== after.members.join("+")) return { kind: "team-edited", withUpdate };
   if (from.autoTeamBuffs !== to.autoTeamBuffs) return { kind: "buffs-switch", on: to.autoTeamBuffs, withUpdate };
   if (withUpdate) return { kind: "app-update" };

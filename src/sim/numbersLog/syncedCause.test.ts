@@ -57,3 +57,24 @@ describe("a team Sync my teams rewrote", () => {
     expect(decodeLog(encodeLog(plain))).toEqual(plain);
   });
 });
+
+describe("a Sync that also gave the members' saved loops the team's loop time", () => {
+  // what production's account met tonight: Sync my teams writes the team's rotation time into each member's saved loop
+  // that had none, which moves those members' records, and every synced team read "The builds of … changed."
+  const withLoopTimes = (acc: ReturnType<typeof synced>): ReturnType<typeof synced> => {
+    for (const c of Object.values(acc.characters)) (c as { rotations?: unknown[] }).rotations = [{ name: "loop", duration: 25 }];
+    return acc;
+  };
+
+  it("reads as synced, not as the members' builds", () => {
+    const c = compareEntries(entry({}, account(), T0), entry({ mine: 2_100_000 }, withLoopTimes(synced(T0 + 1000)), T0 + DAY, NEXT_BUILD));
+    expect(say(c)).toBe(`${SYNCED_TEXT} ${ALSO_UPDATED_TEXT}`);
+  });
+
+  it("still names a member whose echoes changed too", () => {
+    const acc = withLoopTimes(synced(T0 + 1000));
+    acc.characters.Aaa.echoes = { 0: { echoId: "e3" }, 1: { echoId: "e2" } };
+    const c = compareEntries(entry({}, account(), T0), entry({ mine: 2_100_000 }, acc, T0 + DAY));
+    expect(say(c)).toBe("<Aaa>'s build changed.");
+  });
+});
