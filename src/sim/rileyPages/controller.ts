@@ -60,6 +60,25 @@ function buildRoot(kind: RileyPageKind): Page {
   // his handlers sit on `#app` and ours on the root; a `change` going further reaches his table.ts, which listens on the
   // whole document for `#cost` and `#matrixToggle` once /rankings has loaded it and would run a /rankings pass off-screen
   root.addEventListener("change", (e) => e.stopPropagation());
+  // his "Best Team DPR" / "Neutral Score Gain" headings switch what the figures read on a click, but are divs: each one
+  // he draws becomes a button for the keyboard (Enter or Space), focus kept on it across his redraw
+  const app = root.querySelector<HTMLElement>("#app")!;
+  const asButtons = (): void => {
+    for (const h of app.querySelectorAll<HTMLElement>(".modehead:not([tabindex])")) {
+      h.tabIndex = 0;
+      h.setAttribute("role", "button");
+    }
+  };
+  new MutationObserver(asButtons).observe(app, { childList: true, subtree: true });
+  root.addEventListener("keydown", (e) => {
+    const h = (e.target as Element).closest?.<HTMLElement>(".modehead");
+    if (!h || (e.key !== "Enter" && e.key !== " ")) return;
+    e.preventDefault();
+    const at = [...app.querySelectorAll(".modehead")].indexOf(h);
+    h.click();
+    asButtons();
+    app.querySelectorAll<HTMLElement>(".modehead")[at]?.focus();
+  });
   return { root, app: root.querySelector<HTMLElement>("#app")!, booted: false };
 }
 

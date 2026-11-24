@@ -124,3 +124,25 @@ describe("Tier list and Roster value on a 360 x 800 phone at 130 % text (second 
     });
   }
 });
+
+describe("His mode headings from the keyboard (second check)", () => {
+  it("Tier list's 'Best Team DPR' and Roster value's 'Neutral Score Gain' switch with Enter or Space and keep the focus", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/tier-list");
+    rileyLoaded();
+    cy.get(".wt-riley-tierlist .modehead").first().should("have.attr", "tabindex", "0").and("have.attr", "role", "button").and("contain.text", "DPR");
+    cy.get(".wt-riley-tierlist .modehead").first().focus().trigger("keydown", { key: "Enter" });
+    cy.get(".wt-riley-tierlist .modehead").first().should("contain.text", "DPS").and("have.attr", "tabindex", "0");
+    cy.focused().should("have.class", "modehead");
+    cy.focused().trigger("keydown", { key: " " });
+    cy.get(".wt-riley-tierlist .modehead").first().should("contain.text", "DPR");
+    cy.visit("/roster-value");
+    rileyLoaded();
+    cy.get(".wt-riley-value .modehead").first().should("have.attr", "role", "button").and("contain.text", "Neutral Score");
+    cy.get(".wt-riley-value .modehead").first().focus().trigger("keydown", { key: "Enter" });
+    cy.get(".wt-riley-value .modehead").first().should("contain.text", "Account DPR");
+    cy.focused().should("have.class", "modehead");
+  });
+});
