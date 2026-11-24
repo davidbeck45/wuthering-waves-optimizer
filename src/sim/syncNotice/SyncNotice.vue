@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-// Wuthering Tools+ — "Your saved teams from Team rankings are behind" (syncNotice.ts): one notice, mounted on /account's
-// teams section (AccountTeams.vue) and on /teams' summary (TeamListEngineNote.vue). Its button opens the existing
+// Wuthering Tools+ — "Your saved teams from Team rankings are behind" (syncNotice.ts): one notice, mounted at the top of
+// /account with its other notices (AccountView.vue) and on /teams' summary (TeamListEngineNote.vue). Its button opens the existing
 // Sync my teams on /rankings (?sync=1, read by RankingsAccountBar.vue); Hide keeps it away until the next engine update.
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";

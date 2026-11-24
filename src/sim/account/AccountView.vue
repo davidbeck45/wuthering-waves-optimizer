@@ -60,6 +60,9 @@
         <button type="button" class="btn btn-sm" @click="refresh(true)">Try again</button>
       </div>
       <div v-if="partial" role="status" class="alert alert-warning text-left text-sm mb-3" data-test-account-partial>{{ PARTIAL_RANKING_TEXT }}</div>
+      <!-- Wuthering Tools+: saved teams from Team rankings read off an older engine (src/sim/syncNotice). Up here, above the
+           taller notices: in the teams section it sat about 10,800 px down a phone, where nobody would meet it -->
+      <SyncNotice class="mb-3" />
       <!-- Wuthering Tools+: builds with two buffs on that the game does not allow together, and what that does to the figures (src/sim/buffConflicts/) -->
       <BuffConflictNotices class="mb-3" quiet :level="2" @changed="refresh()" />
       <AccountHero :kpis="kpis" :status="rankingStatus" :owned="ownedKeys" />
@@ -155,6 +158,7 @@ import TodayCard from "../today/TodayCard.vue"; // Wuthering Tools+ /today at a 
 import WhatsNewCard from "../whatsNew/WhatsNewCard.vue";
 import NumbersMovedCard from "../numbersLog/NumbersMovedCard.vue";
 import BuffConflictNotices from "../buffConflicts/BuffConflictNotices.vue";
+import SyncNotice from "../syncNotice/SyncNotice.vue";
 import { useSavedNote } from "../persist/useSavedNote";
 import { onAccountAdopted } from "../storage/crossTabSync";
 

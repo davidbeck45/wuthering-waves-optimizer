@@ -8,8 +8,6 @@
       </h2>
       <RouterLink to="/teams" class="tm__link" data-test-account-teams-editor>Team Rotations</RouterLink>
     </div>
-    <!-- Wuthering Tools+: saved teams from Team rankings read off an older engine (src/sim/syncNotice) -->
-    <SyncNotice />
     <!-- one enemy for every team here; Teams uses each saved team's own (README "One enemy, said on the page") -->
     <p v-if="teams.length" class="tm__basis" data-test-account-teams-basis>Average damage per rotation, every team at one enemy: {{ ONE_ENEMY_TEXT.replace(/^enemy /, "") }}.</p>
 
@@ -64,7 +62,6 @@ import { characterShortName } from "../display/names";
 import { memberShares, type TeamRow } from "../myRankings/rows";
 import { compact } from "../myRankings/format";
 import { rankingsMineHash } from "./accountState";
-import SyncNotice from "../syncNotice/SyncNotice.vue";
 import { ONE_ENEMY_TEXT } from "../display/ownEnemy";
 import { useOwnEnemyNotes } from "./useOwnEnemyNotes";
 
