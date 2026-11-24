@@ -38,10 +38,73 @@ export const TAG_LABELS: Record<WhatsNewTag, string> = {
 export const WHATS_NEW: readonly WhatsNewEntry[] = [
   // ==== ADD NEW ENTRIES HERE, newest first (one block per release day, format in the header above) ====
 
-  // ---- on the site since 2026-11-17
+  // ---- on the site since 2026-11-23 (batch 5, then batch 4, which was built 2026-11-17 and first reached the site with it)
+  {
+    id: "tier-list",
+    date: "2026-11-23",
+    title: "Tier list",
+    text: "Riley's tier list is inside Tools+ now: every resonator at the best team they reach, T0 to T4, as main DPS, sub DPS or support, at any Team Cost or at your own sequences and weapons. Tap a figure to open that team.",
+    where: "Tools+ menu › Tier list",
+    link: "/tier-list",
+    tag: "page",
+  },
+  {
+    id: "roster-value",
+    date: "2026-11-23",
+    title: "Roster value: who would add most to your account",
+    text: "Riley's value page opens with your own resonators already ticked. It shows what each one you lack would add to your account's Neutral Matrix Score, and what each one you own is adding. Tick or untick someone to try a pull.",
+    where: "Tools+ menu › Roster value",
+    link: "/roster-value",
+    tag: "page",
+  },
+  {
+    id: "team-buffs-from-builds",
+    date: "2026-11-23",
+    title: "Team buffs from your own builds",
+    text: "The calculator's Team Buffs can fill themselves from your own builds of the two teammates: their sequences, the weapons they hold, their echo sets and their real Energy Regen. If you saved a team with other teammates than the two picked there, it says so and one tap switches. Tap Why to see what is on, what is off and the reason for each.",
+    where: "Calculator › Team Buffs › Use their real buffs",
+    link: "/?screen=party",
+    tag: "tool",
+  },
+  {
+    id: "sync-notice",
+    date: "2026-11-23",
+    title: "Your saved teams know when Team rankings changed",
+    text: "A team you saved from Team rankings is a copy of its rotation on the day you saved it. When Team rankings moves to a newer version of Riley's engine, My account and Teams now say how many of your saved teams were read before it, and one tap opens Sync my teams to re-read them. You can undo it.",
+    where: "My account › Sync my teams",
+    link: "/account",
+    tag: "tool",
+  },
+  {
+    id: "rankings-engine-nov-22",
+    date: "2026-11-23",
+    title: "Team rankings on Riley's update of 22 November",
+    text: "Team rankings runs his newest engine: 911 teams, Lily on her released kit, Baizhi new, Lingyang and Yangyang reworked, and a picture before every name. A team's page has a new Substat Value panel that says what one more roll of each substat adds. Many of his figures moved with his rotations.",
+    where: "Tools+ menu › Team rankings",
+    link: "/rankings",
+    tag: "data",
+  },
+  {
+    id: "briefs-baizhi-lingyang",
+    date: "2026-11-23",
+    title: "Briefs and ready-made loops for Baizhi, Lingyang, Yangyang, Encore and Havoc Rover",
+    text: "Five more resonators have a brief: how they are played, their builds and their best teams. The calculator's Rotation presets hold ready-made loops for them too. Lily's brief and loop now use her kit as released, so the note about beta numbers is gone.",
+    where: "Tools+ menu › Resonator briefs",
+    link: "/kit",
+    tag: "data",
+  },
+  {
+    id: "optimizer-results-stay",
+    date: "2026-11-23",
+    title: "Optimizer results stay after a change",
+    text: "When you change the weapon, the build or a buff after a run, the results now stay on screen, marked as from before your change, with Run again. They used to vanish when the weapon or the build changed.",
+    where: "Calculator › Optimizer",
+    link: "/?screen=optimizer",
+    tag: "better",
+  },
   {
     id: "whats-new-page",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "What's new on Tools+",
     text: "This page: what was added to Tools+ and where to find it, newest first, with a button that takes you there. A dot on the Tools+ menu tells you when something new is in.",
     where: "Tools+ menu › What's new",
@@ -50,7 +113,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "numbers-moved",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "What moved in your numbers",
     text: "Each time My account scores your roster, this browser keeps a record of every character's and team's damage. The Your numbers tab shows what went up or down since last time, by how much, and why: a build you changed, a teammate's build, or an app update.",
     where: "Tools+ menu › What's new › Your numbers, or My account › What moved in your numbers",
@@ -59,7 +122,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "auto-backups",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Automatic backups",
     text: "Your whole account is copied in this browser once a day when something changed, and just before an import or a big delete replaces it. Restore one in a tap, or save a copy to your phone's own storage with Share.",
     where: "Tools+ menu › Backups",
@@ -68,7 +131,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "level-worth",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "What each level is worth",
     text: "For a character you set up: how much damage each next level, Forte level or weapon level adds, next to what it costs, so you can see which upgrade gives the most for your materials.",
     where: "Tools+ menu › My account › tap a character › What each level is worth, under Cost to max",
@@ -77,7 +140,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "resonator-briefs",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Resonator briefs",
     text: "One page per resonator: how they are played, their builds, which sequences change the rotation, their best teams and what each step of investment is worth, read against your own account.",
     where: "Tools+ menu › Resonator briefs, or My account › tap a character › Kit brief",
@@ -86,7 +149,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "lily-lullaby",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Lily and Lullaby",
     text: "Version 3.8's Lily and her pistol Lullaby are in everywhere on Tools+: her stock rotations and teams in the rankings, her brief, and her Cost to max.",
     where: "Tools+ menu › Resonator briefs › Lily",
@@ -95,7 +158,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "toa-42-hp",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Tower of Adversity Season 42: floor HP",
     text: "Season 42's floors now have their HP, so the clear check times your teams on every floor and makes a plan for all 12 stages again.",
     where: "Tools+ menu › Tower of Adversity",
@@ -104,7 +167,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "banners-38",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Version 3.8 banners",
     text: "The banner calendar and the pull advisor have version 3.8's first phase, Lily's banner and Lullaby's included, with how long each one has left.",
     where: "Convene, in the bottom bar › Banners",
@@ -113,7 +176,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "whole-account-guard",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Whole account keeps a team that would get worse",
     text: "If gearing all your teams at once would leave one of them doing less damage than today, that team keeps the builds it has, and the review says which team and by how much.",
     where: "Tools+ menu › Build my team › Whole account",
@@ -122,7 +185,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "male-rover-teams",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "A male Rover in every team tool",
     text: "If you play the male Rover, he now gets his stock teams in Sync my teams, Build my team, the Energy check and Rotation cue cards, under his own name and portrait.",
     where: "Tools+ menu › Rotation cue cards, Build my team or Energy check",
@@ -131,7 +194,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "pull-advisor-not-owned",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "The pull advisor on a resonator you don't have",
     text: "For a featured resonator not on your account, a Check button asks the rankings engine what one copy would add: which of your teams it would raise, by how much, and how many more teams you could field.",
     where: "Convene, in the bottom bar › Pull advisor › Check Lily on my account",
@@ -140,7 +203,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "energy-buff-ceiling",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Energy check: buffs that keep growing with Energy Regen",
     text: "When a character's own team buffs grow with Energy Regen past what their Liberation needs (Lily's up to 260 %), the Energy check says so beside the need, so extra Energy Regen no longer reads as spare.",
     where: "Tools+ menu › Energy check",
@@ -149,7 +212,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "buff-conflicts",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Two buffs that cannot be on together",
     text: "If a saved build has two buffs on that the game never runs at the same time, My account says who and which two, how much higher it reads because of it, and has a button to keep only one (the build as it was goes to Build history first).",
     where: "Tools+ menu › My account, at the top, or tap the character",
@@ -158,7 +221,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "optimize-team-keeps-result",
-    date: "2026-11-17",
+    date: "2026-11-23",
     title: "Optimize team keeps its last result",
     text: "Leave Teams while Optimize team has a result and it is still there when you come back, for the team it was searched for. If leaving stopped a search, the page says so.",
     where: "Teams › open a team › Optimize team",
