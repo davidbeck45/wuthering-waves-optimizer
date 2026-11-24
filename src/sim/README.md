@@ -5689,3 +5689,65 @@ account › What to invest in next each carry one line linking Roster value; Ros
 how they differ. `/rankings`' credit line links both pages.
 
 Spec: `cypress/e2e/rileyPages.cy.ts`.
+
+## Ryan's #726 to #747 and Riley's 211d7d0 on plus (sync of 2026-11-23)
+
+Merge 700a862a (upstream af622fe2, 8 commits, 79 files). In it: optimizer results that say when the setup changed
+since the run and keep comparing against the build they ran on (#706), Recommended teams on the Team Buffs tab behind
+a labs flag, with teammates' typical buffs and a CLI to fill the data in (#663), pinned attacks and remembered groups
+on the Attacks tab (#730), the team optimizer's alpha pass (#745, his ADR 0061), stat changes beside the total in
+optimizer results (#747), and Lily's echo preset with a 2x ER one (#726). He changed no dependency, build or CI file.
+The same day the engine moved: `vendor/wuwa_calc` e95d4e6 → 821f8db, Riley's 7bcbb24 → 211d7d0 with the fork's five
+patches rebased (fc0c5b1c). Reports: `wto-wt/b5/reports/`.
+
+**Hooks.** Thirteen of his files had changed on both sides; seven conflicted. Every plus line in the thirteen is the
+line it was (the changed lines of `git diff 3792a442 6186d62d -- <file>` and of `git diff upstream/master 700a862a --
+<file>` are the same set), but for the three places below where his new code does the plus rule's job.
+
+| His file | Plus hook | Now |
+|---|---|---|
+| `cli/index.ts` | the import and the `registerPlusCommands(program)` call | kept, after his new `edit team-data` command |
+| `public/sitemap.xml` | plus's address on its 25 pages | kept, with his new date on `/updates` |
+| `src/calculator/teamOptimizer.ts` | `resolveForTeamPage` in `verifyTeamCombination`, `matches` read off the records the search scored | kept, in his new formatting |
+| `Calculator.vue` | the press gate, one run at a time, the run-basis rule, `/?screen=`, 61 lines in all | kept beside his run snapshot (#706) in the merge; the run-basis rule was then retired for his flag (the section "Ryan's batch-5 merge on plus" below), and his Run again got one plus guard (next paragraph) |
+| `TeamOptimizerResults.vue` | Save only when there is someone to save, `NOTHING_TO_SAVE`, the override note before his mismatch alert | kept; "someone to save" is his `savePlan(row).saving` now |
+| `TeamOptimizerSetup.vue` | `floorCount`, the drawer's scope line and `provide`, `:initial-choice` | kept beside his main echo lock badge, copy dialog and buff helpers |
+| `useTeamOptimizer.ts` | the Team page's records (`readTeamPage`), stat rounding on guards, the kept result, the worker failure message, the override gap, "never proven with auto team buffs" | kept in his rewrite. **Retired:** plus's `slotsAlreadyWorn` call and its "start from the build the page read" lines: his `savedFieldsFor` skips a character whose build already matches and builds from the slot's own record. **New:** a panel plus derived stays out of the saved build (`teamOptimizerPage.ts` `storedPanel`) |
+| `CalculatorOptimizer.vue`, `CalculatorOptimizerWorkspace.vue`, `TeamOptimizerWorkspace.vue`, `TeamRotations.vue`, `src/stores/character.js`, his `teamOptimizer.cy.ts` | one or two lines each | merged on their own, unchanged |
+
+**Run again after a build switch.** His Run again (#706) replays the arguments the run was pressed with: the sets, main
+echoes, minimum stats and target. Those settings are kept per build, so after a switch to another build it scored the
+new build with the other build's settings while the setup screen showed its own. On production plus's wipe hid that;
+with the rows kept and flagged it was reachable. `rerunOptimizer` now ends on the setup screen with the reason
+`build-switched` ("You switched builds since that run…") when the build is not the one the run was pressed on, and the
+next press runs on what the screen shows (`optimizerRunEnds.cy.ts`). His two other gaps there are his and are left:
+the #706 inputs key has no Havoc Bane switch and no Electro Rage switch, so turning those on or off flags nothing.
+
+**The engine.** Riley's seven commits rewrote his page side and moved modules: `shared/` is gone (`substats`,
+`mainstats`, `echoes` under `echoes/`; `status`, `tunebreak`, `unison` under `resonators/`), `Tier` is `Rarity`
+(`Limited`, `FreeS6`, `FreeS2`, `FreeS0`), the Team Cost box lives in `page/options.ts`, the detail view is its own
+page (`page/team.ts`), and his team list is 911 teams (a team key is a place in that list: every `tNNN` in an older
+note names another team now). The fork's five patches were rebased by hand, one conflict set each: the "My build"
+spread also names itself in his new pick menu, "My account" is an option of his `costBox()`, `fieldablePrimaries()`
+sits in his reworked `teamWanted`, the enemy profile's team gear is equipped beside his new per-member `extra` gear,
+and `accountOf` reads `Rarity.FreeS6` (4-stars and Rover forms: owned at S6 unless set up; his new `FreeS0` and
+`FreeS2` are not owned by default). `shared/profile.ts` stays where it was: the folder is the fork's own now, so it
+cannot conflict. Proof that the fork is his engine with nothing registered: every one of his 911 S6R5 and 833 S0R1
+teams, run from the shipped picks on his own build and on the fork, gives the same total to the last digit
+(`wto-wt/b5/tmp/sync/totals.mjs`).
+
+**Numbers.** The app's own engine moved nothing: the snapshot of both exports reads 0 changes across the merge and on
+the batch's last head. Riley's figures moved for most of the roster (his kits and rotations changed): the sections
+below on the seam, the regenerated data and its second check say which and why. On David's account nine characters'
+best stock loop is another loop now (Camellya −25.7 % per rotation, −12 % per second: her 34.3 s loop is 25.8 s in his
+new table), and Sync my teams would move all three of his saved teams (Aemeath +2.7 %, Xuanling +3.8 % per second,
+Sigrika −7.2 % per second).
+
+**How the batch ran.** One coordinator and Opus children through T3 `delegate_task`, each in its own worktree
+(`wto-wt/b5-*`), briefs and reports in `wto-wt/b5/`. Six lanes on the merged head (`riley-engine`, `riley-page`,
+`regen`, `post-merge`, `sync-polish`, `b4-phone`), three new features (`real-panel`, `sync-notice`, `riley-pages`), and
+a fresh second check of each (`check-merge`, `check-data`, `check-engine`, `check-panel`, `check-rankings`,
+`check-pages`, `check-upgrade`). Two lanes fixed the same screen (Optimize team's echo cards on a phone, § 41 c and a
+§ 44 that is gone): a brief has to name what the neighbouring lane owns on a shared screen. Joining two appended CSS
+sections with keep-both left the first one's block unclosed and nested the second inside it: parse the stylesheet
+after a join (`postcss.parse`), not only the conflict markers.
