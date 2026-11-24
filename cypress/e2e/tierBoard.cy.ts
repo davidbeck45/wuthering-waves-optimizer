@@ -56,6 +56,16 @@ describe("Tier list: the Board view", () => {
     loaded();
     sameAsTable();
     cy.location("hash").should("contain", "tc=s6r5");
+    // check-tier-board: an mdps Team Cost and Matrix Buffs on, the board still his table
+    cy.get(".wt-riley-tierlist #cost").select("s6r5mdps");
+    loaded();
+    sameAsTable();
+    cy.get(".wt-riley-tierlist #matrixToggle").check();
+    loaded();
+    sameAsTable();
+    cy.get(".wt-riley-tierlist #matrixToggle").uncheck();
+    cy.get(".wt-riley-tierlist #cost").select("s6r5");
+    loaded();
     // Board | Table: the address follows, his table shows, Back returns to the board at the same Team Cost
     cy.get('[data-test-riley-switch-to="table"]').click();
     cy.location("search").should("eq", "?view=table");
