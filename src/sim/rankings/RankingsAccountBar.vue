@@ -315,6 +315,7 @@
 </template>
 
 <script setup lang="ts">
+import { viewMatches } from "./savedViews";
 // Wuthering Tools+: the account-first controls above Riley's comparison page. Everything here is a
 // URL-hash edit — his page owns the filter state and re-reads the hash (controller.ts
 // onLocationChange) — so a saved view is just a named hash, and the chips are his own r= / x= filter.
@@ -431,15 +432,11 @@ function currentHash(): string {
   const text = hashText(p);
   return text ? `#${text}` : "";
 }
-/** a hash's parameters in a fixed order: Riley's `syncHash()` writes them in his own order, so a view
- *  saved from the bar still reads as the current one once his page has rewritten the URL */
-const canonHash = (h: string): string => {
-  const p = [...new URLSearchParams(h.replace(/^#/, ""))].filter(([k]) => k !== "team");
-  return p.sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${k}=${v}`).join("&");
-};
+/** the saved view on screen (savedViews.ts: parameter order, a team page's own, and a view saved before Riley's level
+ *  filters, which the page settles as it opens it) */
 const selectedView = computed(() => {
-  const now = canonHash(currentHash());
-  return views.value.find((v) => canonHash(v.hash) === now)?.name ?? "";
+  const now = currentHash();
+  return views.value.find((v) => viewMatches(v.hash, now))?.name ?? "";
 });
 
 async function go(p: URLSearchParams): Promise<void> {
