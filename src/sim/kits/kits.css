@@ -451,3 +451,49 @@
   background: var(--kit-el);
   vertical-align: 0.05em;
 }
+
+/* ---- the list as a portrait grid (KitListView): two tiles a row on a phone, more on a wider screen */
+.kit-grid--tiles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 640px) {
+  .kit-grid--tiles {
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  }
+}
+.kit-grid--tiles > li {
+  display: flex;
+  min-width: 0;
+}
+.kit-tile {
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  padding: 0.75rem 0.5rem 0.65rem;
+  text-align: center;
+  border-top: 3px solid var(--kit-el);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--kit-el) 14%, transparent), transparent 4.5rem),
+    oklch(var(--b2));
+}
+.kit-tile .kit-row__body {
+  flex: 0 1 auto;
+  width: 100%;
+}
+.kit-tile .kit-row__meta {
+  justify-content: center;
+}
+/* a narrow tile wraps a long weapon name inside its chip ("S1 · Starfield Calibrator R1" passed a 360 px screen) */
+.kit-tile .kit-chip {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  justify-content: center;
+}
+.kit-tile__el {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.78rem;
+}

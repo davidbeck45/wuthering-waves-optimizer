@@ -84,6 +84,14 @@ describe("resonator briefs", () => {
     cy.get("[data-test-kit-mine] [data-test-kit-row]").should("have.length", 1);
     cy.get('[data-test-kit-mine] [data-test-kit-row="cartethyia"]').should("contain.text", "Cartethyia").and("contain.text", "S2 · Defier's Thorn R1");
     cy.get("[data-test-kit-others] [data-test-kit-row]").its("length").should("be.gte", 40);
+    // a portrait grid: two tiles a row on the phone, each with the portrait and the element in words
+    cy.get("[data-test-kit-others] [data-test-kit-row]").then(($t) => {
+      const [a, b, c] = [...$t].map((t) => t.getBoundingClientRect());
+      expect(Math.round(a!.top), "the first two tiles share a row").to.eq(Math.round(b!.top));
+      expect(c!.top, "the third starts the next row").to.be.greaterThan(a!.bottom - 1);
+    });
+    cy.get('[data-test-kit-mine] [data-test-kit-row="cartethyia"] img').should("have.attr", "alt", "Cartethyia");
+    cy.get('[data-test-kit-mine] [data-test-kit-row="cartethyia"]').should("contain.text", "Aero · Sword");
     expectNoHorizontalScroll("the list");
 
     // element: only that element is left, and her own row stays (she is Aero)

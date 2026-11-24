@@ -38,12 +38,13 @@
 
     <section v-if="mine.length" aria-labelledby="kit-mine-h">
       <h2 id="kit-mine-h" class="kit-h2">On your account</h2>
-      <ul class="kit-grid" data-test-kit-mine>
+      <ul class="kit-grid kit-grid--tiles" data-test-kit-mine>
         <li v-for="k in mine" :key="k.name">
-          <RouterLink :to="k.path" class="kit-row" :data-test-kit-row="k.slug">
-            <CharacterAvatar :id="k.key" :size="44" dot />
+          <RouterLink :to="k.path" class="kit-row kit-tile" :style="{ '--kit-el': elementColor(k.element) }" :data-test-kit-row="k.slug">
+            <CharacterAvatar :id="k.key" :size="64" dot :ring="elementColor(k.element)" title="" />
             <span class="kit-row__body">
               <span class="kit-row__name">{{ k.label }}</span>
+              <span class="kit-muted kit-tile__el">{{ k.element }} · {{ k.weapon }}</span>
               <span class="kit-row__meta">
                 <span class="kit-chip kit-chip--own" :title="`Sequence ${k.sequence}, ${k.weaponName} at refinement rank ${k.refinement}`">S{{ k.sequence }} · {{ k.weaponName }} R{{ k.refinement }}</span>
                 <span v-for="r in k.roles" :key="r" class="kit-chip">{{ ROLE_LABEL[r] }}</span>
@@ -56,10 +57,10 @@
 
     <section v-if="others.length" aria-labelledby="kit-others-h">
       <h2 id="kit-others-h" class="kit-h2">{{ mine.length ? "Not set up on your account" : "Every resonator with a brief" }}</h2>
-      <ul class="kit-grid" data-test-kit-others>
+      <ul class="kit-grid kit-grid--tiles" data-test-kit-others>
         <li v-for="k in others" :key="k.name">
-          <RouterLink :to="k.path" class="kit-row" :data-test-kit-row="k.slug">
-            <CharacterAvatar :id="k.key" :size="44" dot />
+          <RouterLink :to="k.path" class="kit-row kit-tile" :style="{ '--kit-el': elementColor(k.element) }" :data-test-kit-row="k.slug">
+            <CharacterAvatar :id="k.key" :size="64" dot title="" />
             <span class="kit-row__body">
               <span class="kit-row__name">{{ k.label }}</span>
               <span class="kit-row__meta">
@@ -91,7 +92,7 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { useCharacterStore } from "../../stores/character";
 import { accountCharacterOf } from "../account/accountState";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
-import { characterShortName, isRosterCharacter, weaponDisplayName } from "../display/names";
+import { characterShortName, elementColor, isRosterCharacter, weaponDisplayName } from "../display/names";
 import { accountKeyOf } from "../rankings/rileyNames";
 import { ROLE_LABEL, filterKits, kitPath, kitSlug, kitsInApp, rolesOf, type KitIndexEntry, type KitRole } from "./kits";
 import { KIT_INDEX, KIT_INDEX_ENTRIES } from "./load";
