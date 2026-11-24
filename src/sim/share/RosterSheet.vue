@@ -33,15 +33,15 @@
                 <span class="label-text">Title (optional)</span>
                 <input v-model="options.title" type="text" maxlength="60" class="input input-bordered input-sm w-full" placeholder="e.g. My account, November" data-test-roster-title />
               </label>
-              <label class="label cursor-pointer justify-start gap-3 py-1">
+              <label class="label cursor-pointer justify-start gap-3 py-1 min-h-11">
                 <input v-model="options.showScores" type="checkbox" role="switch" class="toggle toggle-sm toggle-primary" data-test-roster-toggle-scores />
                 <span class="label-text">Build Scores</span>
               </label>
-              <label class="label cursor-pointer justify-start gap-3 py-1">
+              <label class="label cursor-pointer justify-start gap-3 py-1 min-h-11">
                 <input v-model="options.showTeams" type="checkbox" role="switch" class="toggle toggle-sm toggle-primary" data-test-roster-toggle-teams />
                 <span class="label-text">Top three teams and their damage</span>
               </label>
-              <label class="label cursor-pointer justify-start gap-3 py-1">
+              <label class="label cursor-pointer justify-start gap-3 py-1 min-h-11">
                 <input v-model="options.includeFourStars" type="checkbox" role="switch" class="toggle toggle-sm toggle-primary" data-test-roster-toggle-four />
                 <span class="label-text">4-star resonators</span>
               </label>
