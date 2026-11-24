@@ -208,3 +208,39 @@ describe("Tier names readable on every theme (second check)", () => {
     });
   }
 });
+
+describe("Back returns to the Team Cost and Matrix the reader picked (second check)", () => {
+  it("Tier list: pick s6r5 and Matrix, open Roster value, Back: s6r5 with Matrix, not the Team Cost the page opened on", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/tier-list#tc=r1m");
+    rileyLoaded();
+    cy.window().then((win) => { (win as unknown as { wtMarker: number }).wtMarker = 21; });
+    cy.get(".wt-riley-tierlist #cost").select("s6r5");
+    rileyLoaded();
+    cy.get(".wt-riley-tierlist #matrixToggle").check();
+    rileyLoaded();
+    cy.location("hash").should("include", "tc=s6r5").and("include", "mx=true");
+    cy.get("[data-test-riley-to-value]").click();
+    cy.location("pathname").should("eq", "/roster-value");
+    rileyLoaded();
+    cy.get(".wt-riley-value #cost").select("s3r1mdps");
+    rileyLoaded();
+    cy.get("[data-test-riley-to-tierlist]").click();
+    cy.location("pathname").should("eq", "/tier-list");
+    rileyLoaded();
+    cy.go("back");
+    cy.location("pathname").should("eq", "/roster-value");
+    cy.location("hash").should("eq", "#tc=s3m");
+    rileyLoaded();
+    cy.get(".wt-riley-value #cost").should("have.value", "s3r1mdps");
+    cy.go("back");
+    cy.location("pathname").should("eq", "/tier-list");
+    cy.location("hash").should("include", "tc=s6r5").and("include", "mx=true");
+    rileyLoaded();
+    cy.get(".wt-riley-tierlist #cost").should("have.value", "s6r5");
+    cy.get(".wt-riley-tierlist #matrixToggle").should("be.checked");
+    cy.window().its("wtMarker").should("eq", 21);
+  });
+});

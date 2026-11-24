@@ -278,7 +278,17 @@ function publishCost(): void {
   costListener({ cost: shared.model.filters.cost, hasAccount: shared.solver.hasAccountState(), freeS2 });
 }
 function onCostChange(e: Event): void {
-  if ((e.target as Element).id === "cost") publishCost();
+  const id = (e.target as Element).id;
+  if (id === "cost") publishCost();
+  if (id === "cost" || id === "matrixToggle") void syncRouter();
+}
+/** His handlers write the hash with `history.replaceState`, which the router does not see: its next push saves the URL it
+ *  last knew over that entry, and Back came to the Team Cost the page opened on. As /rankings does (controller.ts). */
+async function syncRouter(): Promise<void> {
+  if (!router || router.currentRoute.value.hash === location.hash) return;
+  try {
+    await router.replace({ hash: location.hash });
+  } catch { /* a cancelled navigation leaves the url as it is */ }
 }
 /** "At my own sequences and weapons": his select set to `mine` and his own change handler run. */
 export function chooseMine(): void {
@@ -325,10 +335,12 @@ export async function mountRileyPage(kind: RileyPageKind, host: HTMLElement, r: 
       await withoutHashReload(() => import("@skittle/page/tierlist"));
     }
     publishCost();
+    void syncRouter();
     return;
   }
   await setBuildFiltersFor(kind);
   rerun(kind);
+  void syncRouter();
 }
 
 /** The account changed while the page is open. */
@@ -342,7 +354,9 @@ export function updateRileyPageAccount(acct: AccountRegistration | null): void {
 
 /** The address changed while the page is open (a link to the same page with another Team Cost). */
 export function onRileyPageLocation(kind: RileyPageKind): void {
-  if (current !== kind || !pages.get(kind)) return;
+  if (current !== kind || !pages.get(kind) || !shared) return;
+  // the hash his own handler wrote, now in the router too (syncRouter): the page already stands on it
+  if (!shared.model.applyHash()) return;
   rerun(kind);
 }
 
