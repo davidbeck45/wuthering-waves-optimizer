@@ -5796,3 +5796,186 @@ either the feature leaves plus until his rework lands, or plus keeps `useTeamOpt
 rows show a score that differs from a fresh `runTeam()` on the same picks by up to 1.2 % (the solver keeps the score
 of the substat spread it searched with). The same 11 rows differ the same way on his own build with nothing of the
 fork's in it (`wto-wt/b5/tmp/sync/e1.mjs`), so the fork changes nothing there and plus shows his figure as it is.
+
+## The Tools+ menu in sections, and Ask in the phone header (batch 6, lane `menu`, 2026-11-23)
+
+Eighteen pages in one column, each with a description, made the Tools+ menu 853 px tall: beside the v3 rail at
+1440 × 900 `railMenu.ts` had to move it up to y 35 (its button sits at y 376), at 1280 × 720 it scrolled inside
+itself, and on a phone it was a 2,100 px scroll with the newest pages (Tier list, Roster value) at the bottom.
+
+| where | what |
+|---|---|
+| `shell/plusPages.ts` `PLUS_GROUPS`, `PlusPage.group`, `plusPagesIn()` | five sections, three or four pages each: **My account** (My account, My roster rankings, Build history, Backups) · **Rankings** (Team rankings, Tier list, Roster value) · **Teams** (Build my team, Rotation cue cards, Energy check, Tower of Adversity) · **Echoes and weapons** (Echo Lab, Echo plan, Weapon value) · **More** (Resonator briefs, Today, Share & import builds, What's new). `PLUS_PAGES` is kept in that order, What's new last. A new page names its `group`; `plusPages.test.ts` fails if a page is in no section or a section passes four |
+| `nav/PlusNavMenu.vue` | each section is a `role="group"` named by its heading (a small icon square in a theme tone: `--p`, `--s`, `--a`, `--in`, `--bc`; the words carry the meaning). **Titles only**: each description is the row's tooltip and stays the palette's subtitle and search words. From 1024 px: one column per section, the search row and the What's new line side by side above them: 290 px tall, so the rail's menu opens beside its button at 1280 × 720 and up (`railMenu.ts` still moves it on a shorter window). Under 1024 px: sections stacked, two pages to a line, 44 px rows (px, not rem, so 130 % text doesn't swell the icons): at 412 × 915 every heading is on screen, at 360 × 740 the last one is a short scroll down. The classic bar's menu opens under the bar, centred (anchored to its icon it ran past a 1024 px window). Tab runs down a column, then the next. Opening the menu focuses the current page's row (a selector list used to pick the first row in the document) |
+| `nav/PlusHeaderAsk.vue` + `shell/askDock.ts` `dockAskInNav` | on Ryan's v3 phone header (under 1024 px) Ask is a 44 px sparkle button beside Tools+, in the floating button's colour, `aria-expanded`, `data-test-ai-open` + `data-test-ai-open-header`. It counts with the rail's Ask item, so the floating button isn't drawn while it is up: at rest it sat on the right-hand figures of every list (the Tier list's Best team DPR, Roster value's gains, at 412 and 360 px). The classic UI keeps the floating button |
+
+Tests: `plusPages.test.ts`, `askDock.test.ts`; `plusMenu.cy.ts` (sections named and in column order, every heading at
+360 × 740 / 130 %, 44 px rows, a row navigates and closes, Escape gives focus back, the classic bar inside 1024 px,
+nothing of the page under Ask on /tier-list and /roster-value, the header Ask opens and closes the panel);
+`corePages.cy.ts` (the rail's menu top is its button's top at 1280 × 720 and 1440 × 900).
+
+Open: on a classic-UI phone the floating Ask still covers right-hand figures at rest (My roster rankings' damage,
+/rankings' first card, the Tier list's DPR, Backups' Download). § 16's room at every page's end for Ask stays on a v3
+phone, where there is no floating button now.
+
+## Tier list: the Board view (batch 6, 2026-11-23, lane `tier-board`) — `src/sim/rileyPages/TierBoard.vue`, `tierBoard.ts`
+
+`/tier-list` opens on a **Board**: Riley's tiers as portraits in five bands, T0 (best) to T4, for Main DPS, Sub DPS and
+Support (all three side by side from 1280 px, stacked below that, one at a time on a phone through the block buttons
+that already sat over his table). **Board | Table** switches to his table, which is as batch 5 left it; the choice is
+in the address (`?view=table`; no parameter is the Board), so a link opens the same view and Back returns to it. His
+Team Cost and Matrix boxes stay above the board in both views.
+
+**One source of truth.** His `tierlist.ts` exports nothing; its tiers exist only in the table it draws. The board is
+that table read back (`parseTierTable`: his `.trow`s, the tier name on the first row of each band, one `.sec` per
+block), after every one of his redraws (`controller.ts` `onTierBoard`, a MutationObserver on the page's root, which
+also sees his overlay's `hidden` flip). It cannot drift from his table at any Team Cost, Matrix setting, DPR/DPS
+mode or "My account" state: there is no second computation. While his solve runs the board fades under "Solving the
+teams for this setting". `tierBoard.cy.ts` holds every resonator's block and tier on the board equal to his table at
+s0r1 and s6r5.
+
+**Portraits** are his own icons (`./images/resonators/<id>.webp`, the `src` his table draws), so the board and the
+table show the same picture and an unknown resonator falls back the way his does; initials where he drew none.
+Rover forms carry their names (Havoc Rover, Aero Rover…). Tier names keep his colours as the band's edge and are mixed
+toward the theme's text colour as in the table (batch 5's AA fix).
+
+**Your own.** With an account, the resonators of the Roster value set (`ownedSet.ts` `accountOwnedSet`: owned, plus
+his 4-stars and Rover forms) get a green ring and a tick and "owned" in their name; the others are faded. One line per
+block: "You own 3 of the 9 main DPS in T0 and T1." No account, no marks and no line.
+
+**A tap** opens a sheet (a bottom sheet on a phone, a centred card wider): the block and tier, the best team's three
+portraits and names (his team tag read with his `tagTeam`), the figure with its label in words, **Open this team on
+Team rankings** (his link through `links.ts`) and the brief (`/kit/<name>`, only where one exists). The sheet is in
+the address (`?who=<name>&in=<block>`): Back and Escape close it, focus returns to the portrait.
+
+**Save as image** draws a fixed 1080 px card (2160 px PNG) with fixed colours, all three blocks, and a footer: the Team
+Cost in words, Matrix on or off, the day, "Tiers by Riley31415's wuwa_calc · made with Wuthering Tools+". Through
+`share/capture.ts`; **Share image** where the browser has a share sheet. The owned rings are in the picture only with
+"Show my resonators in the picture" ticked (off by default). html-to-image draws nothing of a `position: fixed` node:
+the card sits in the flow inside an off-screen stage.
+
+## Resonator briefs with pictures — portraits, the ladder as bars, the sequence strip (batch 6, lane "kit-visuals", 2026-11-23)
+
+`/kit` was a list of names and `/kit/<name>` a long page of tables. The question a player brings to the ladder is
+visual ("how big is the step from S0 to S2, and where is the cliff?"), and a page about a resonator that never shows
+the resonator reads like a spreadsheet.
+
+| Piece | Role |
+|---|---|
+| `kits/ladderChart.ts` | pure: `barWidth` (zero-based, 0..1 of the chart's largest), `sequenceChart` (a bar per row of `ladderSteps`, "+26.6% over S1", the biggest step and the levels that read lower than the one below), `weaponChart` (best first, each against the held weapon, or against the best when Riley's list does not carry it), `rankChart` (gain per rank over the rank below), `costWidths` (the best team of each Team Cost), `sequenceStrip` (S1–S6: which change the loop, which the account has, the step that opens), `MARK_WORDS`, `barSpeech` |
+| `kits/KitBarChart.vue` | one chart: a caption line, then a row per figure: label, the figure as text, an inline-SVG bar in theme colours, the change in words and its marks as words ("you are here", "biggest step", "lower than the one below"). Each row also reads as one sentence for a screen reader (`barSpeech`, `sr-only`) |
+| `KitBriefView.vue` | the header (portrait in an element ring, the element's wash, chips, "Yours: S2 · Defier's Thorn R1" read straight from the character store so it shows before the briefs load); the three ladder charts, each table under its chart behind **Show the figures**; a bar under each Team Cost's line; the S1–S6 strip above the list of changes |
+| `KitListView.vue` | the portrait grid: two tiles a row on a phone, `auto-fill` from 640 px; the element and weapon type in words on every tile (the ring and wash are never the only cue) |
+
+Rules:
+- **A chart draws the table's rows, never a figure of its own.** The test reads the chart's labels against the table's
+  cells (`kit.cy.ts`), and `ladderChart.test.ts` draws every shipped ladder.
+- Colours: `--p` bars, `--su` for the account's own (with "you are here" beside it and a ring), `--er` for a level
+  that lowers team DPS (with words), `--wa` for a sequence that changes the loop (with ↻). The element colours are
+  `display/names.ts` `ELEMENT_COLORS`, used for the ring, the header's edge and wash and the tile's top edge only.
+- No transition anywhere: nothing moves when a fold opens.
+- A narrow tile or header wraps a long weapon name inside its chip (`white-space: normal` on `.kit-tile .kit-chip` and
+  `.kit-head--hero .kit-chip`): "S1 · Starfield Calibrator R1" and "Yours: S6 · Everbright Polestar R1" passed a 360 px
+  screen before it.
+
+Data the charts made visible (not changed: the tables are generated): Suisui's S3 reads 3.2 % lower than her S2 in
+Riley's run (marked "lower than the one below" and said under the chart); Jianxin's ladder starts at S2; Buling,
+Verina and Jianxin carry no weapon list, so they have no weapon chart. No kit has `ladder: null` today; the section
+stays absent for one, as before.
+
+## Your numbers over time — `/whats-new?tab=numbers` › Over time, and My account's card (batch 6, lane `trends`, 2026-11-23)
+
+The numbers log keeps up to 30 records of every character's and team's damage, and "What moved" read only two of them.
+"Over time" draws every record as a line: is my team going up as I farm, and what was that drop two weeks ago?
+
+| Piece | Role |
+|---|---|
+| `numbersLog/trends.ts` | pure, engine-free (like `compare.ts` and `view.ts`): `buildTrends(log)` (one `Trend` per character and per team id, a point per record), `trendList` (three groups, the ones that moved sorted by the size of their change, the rest counted), `lineRuns` (what is drawn joined), `trendSteps(log, trend, names)` (each step with its marks and words), `bestSavedTeam`, `trendChangeText`, `trendNote` |
+| `numbersLog/compare.ts` `figureCause` | the cause of one figure's step, through the very `characterCause` / `teamCause` a comparison uses. The words are `causeText`'s. There is no second cause engine: a step on the line and the same pair in "What moved" say the same thing |
+| `numbersLog/NumbersTrends.vue` | the list under the comparison: Your teams, Characters, Stock teams (behind "Show stock teams (N)"). A row: portraits, name, a small line, first and newest value with their dates, the change in percent of the first figure and in damage, with ▲ / ▼ / = beside the colour. The open row is `?trend=<key>` (`c:<id>` / `t:<id>`, a `replace`), so Back leaves the page and /account can link to one |
+| `numbersLog/TrendChart.vue` | the opened chart: y from zero, a point per record (tap, hover, ←/→/Home/End on the focused chart; a readout line under it), dashed lines with letters where something known sits between two records, the steps newest first in words, and every record as a list |
+| `numbersLog/TrendSpark.vue` | the small line, scaled to its own range (the list says so once) |
+| `numbersLog/NumbersMovedCard.vue` | /account's card: the best saved team now (`bestSavedTeam`: the highest saved-team figure in the newest record) as a small line with its change in words, linking to its opened chart |
+
+**Rules of the line.**
+- **x is record order, not time.** Records come in bursts (three in an evening, then nothing for a week); on a time axis a burst is one dot. Every point carries its date (the readout, the list, the first and last dates under the axis), and the chart says "one step to the right is one record, however long it was between them".
+- **A gap, never a zero.** A team missing from a record (it could not be fielded) is a gap: the line is not joined across it, the point list says "not in this record". A step across a gap is read from the record before it.
+- **The buffs switch breaks a team's line.** A team figure taken with the team-aware buffs switch the other way is another measurement: a new stretch (`seg`), never joined, and the row's change is read inside the newest stretch only ("the change is read from the switch on"). A newest record alone on its side says "nothing to compare with since the team-aware buffs switch was flipped", never "no change". A character's figure is scored solo, so the switch does not break it (compare.ts reads it the same way).
+- **Marks** (letters, never colour alone): U app update · I import or restore (an `importedAt` anywhere in the step) · S Sync my teams (`synced` moved with the definition) · T team changed (`def` or members) · B build changed (the character's signature, or a member's `rec` for a team) · X buffs switch. A step with a mark and no move says "This figure did not move."; a move with nothing recorded says "No recorded cause.".
+- **Sorting and the fold.** Biggest change as a share of the first figure first, then the bigger absolute change. A line whose every value is equal folds into "N characters did not move in any record."; a line that went down and came back counts as moved (its change reads "no change since …").
+- **Scales.** The small line is scaled to its own range and says so once; the change is always in words. The opened chart starts at zero.
+
+**States.** No account, no record, a ranking running: "What moved"'s own texts (Over time is drawn only in the `compared` state). One record: "The line over time starts with the next record", no chart. The card draws its line only from two records and when a saved team is in the newest one.
+
+**Storage.** None. The stored form, the caps and what makes an entry are unchanged; the open row lives in the address and the stock switch in component state.
+
+**Cost.** At the caps (30 records, 24 characters, 100 teams, 122 KB stored): decode 1–3 ms, every line built and sorted 1–10 ms, one row's steps under 2 ms (tsx). The steps are built only for the open row. Browser render time at the caps: see the lane report.
+
+Gates: `numbersLog/trends.test.ts` (13), `NumbersMovedCard.test.ts` (2), `cypress/e2e/numbersTrends.cy.ts` (5: the rows, the fold, the stock switch, an opened chart with its marks' words and point list, the keyboard, a reload, one record, the switch break, 360 px).
+
+## Gear map — every equipped echo on one screen, coloured by its roll, on `/account` (batch 6, lane "gear-map", 2026-11-23) — `src/sim/gearMap/`
+
+My account gave each character a build score and Echo Lab judged one echo at a time, but "which of the echoes I wear
+are the weak ones, across the whole roster" had no screen. The **Gear map** section (under the roster and teams) has
+one row per set-up character (portrait, name) and five cells, the echoes in the order they are worn. Each cell is
+coloured and lettered by Echo Lab's roll rating: **E** Excellent roll, **G** Good roll, **A** Average roll, **B** Below
+average, **P** Poor roll, **–** no roll to rate (no substat lines yet, an echo not in the inventory, no build to rate it
+on), a dashed cell for an empty slot. Above the grid: a legend in words, one line on what a roll is compared with, the
+count in the lowest two bands ("7 of your 115 equipped echoes are in the lowest two bands (Poor roll or Below
+average)") with the count per band, the five weakest equipped echoes (each a link to `/echo-lab?echo=<id>`), and a
+**Rows: Roster order · Weakest gear first** switch (per visit). A tap on a cell opens a modal `<dialog>` (a bottom
+sheet under 640 px, a centred panel above): cost, set, main stat, the substat lines, Echo Lab's verdict and roll in its
+own words, and **Open this echo in Echo Lab ›** / **Farm next: the best farm for every slot ›**. Escape, a phone's
+Back (the dialog's close watcher) and the backdrop close it; focus returns to the cell. Nothing in it writes.
+
+| Piece | Role |
+|---|---|
+| `gearMap.ts` | pure: `gearRows` (the pass's `LabCharacterSummary.slots` for five-echo builds; for a set-up character the pass leaves out, the echoes whose `wornBy` says it wears them now), each cell's chip = `chipFor` with exactly the inputs `InventoryQualityChip.vue` passes, its step = the chip's `roll.tone`, its words = `ratingOf(percentile).band`; `sortGearRows` (weakest first = the row's lowest percentile; unrated rows last, ties in roster order), `gearSummary` / `summaryLine` (band counts, the five lowest), `gearProgress` (whole only when judged and every rateable equipped echo has its rating), `cellLabel` ("Verina, slot 4, Cruisewing, ATK% 1-cost, Poor roll, Bottom 5% roll, Echo Lab: Keep") |
+| `GearMap.vue` | the section: `useInventoryQuality()` (the inventory's Echo Lab layer: one pass, one worker, one sessionStorage cache, one set of quick ratings shared with the inventory and `/echo-lab`), `activate()` when the section comes within 300 px of the screen (IntersectionObserver), released on unmount; WorkStatus for screen readers; a real `<table>` (caption, column and row headers); a phone turns each row into a name line over five cells; 12 rows, then "Show all N characters" |
+| `AccountView.vue` | one async component (loaded after the page, like BackupStatus) and one mount line after the roster / teams grid |
+
+Decisions (made without David, 2026-11-23):
+- **One source.** The map never rates anything: every figure is the inventory chip's, so the cell, the chip and Echo
+  Lab's detail say the same thing (the quick rating until Echo Lab's detail has run the exact one this visit, as the
+  chip). An echo worn by a character that is not a five-echo build is rated where the inventory rates it (its best
+  owner's slot), and the sheet says so.
+- **Never half shown.** While the pass runs or ratings are still coming in, the section says "Rating rolls: n of m
+  equipped echoes… The map shows when every one is in." If the rating run gives up, the map shows with an alert naming
+  how many are unrated and Try again; the counts leave them out.
+- **"The lowest bands" = Poor roll + Below average** (below 40 in 100 is Average's floor in Echo Lab's words).
+- **Colours:** the theme's state colours (success, info, neutral, warning, error) with their own content colour for
+  the letter (text 4.77 : 1 or more in light, dark, Gruvbox dark); the fills alone missed 3 : 1 against the page in
+  places, so every cell and swatch has an outline in the text colour (4.6 : 1 or more) and a letter.
+- **Farm next** links to the Farm next tab as it is: it cannot be focused on one character's slot from an address
+  (`farmFocus` is page state in `EchoLabView.vue`); a `?character=` for the farm tab would let the link land on the slot.
+- **The sort is per visit** (no storage key).
+
+Measured on David's seeds (24 set-up characters, 115 equipped echoes): from the section scrolled into view to the map
+3.5–3.6 s on a cold session (dev server, headless Chromium, 412 px). `/account` opening (time to the roster grid,
+412 px at 130 %, dev server): 931 / 1,106 / 1,019 ms without the section, 1,050 / 928 / 978 ms with it; the same two
+long tasks (117–155 ms and 253–290 ms) either way; the map stays idle until scrolled to.
+
+Gates: `gearMap.test.ts` (8, on the public Echo Lab fixture: rows, the agreement with `chipFor` / `rollTone` /
+`ratingOf` for every rated cell, empty / left-out / no-line cells, the summary, the sort, the half-computed guard,
+the screen-reader label); `cypress/e2e/gearMap.cy.ts` (3: every rated chip on the inventory's first page equals the
+map's cell for that echo, the sheet and its Echo Lab link, Escape and focus, Weakest gear first, 360 px at 130 % text
+with 44 px cells and whole names).
+
+## Share my roster — the whole roster as one picture, `src/sim/share/` (batch 6, lane "roster-card", 2026-11-23)
+
+The third share card beside the build card and the team card: every set-up resonator (a weapon equipped) as a tile,
+with the account's top three teams. Opened from **Share my roster** in the My account hero (`AccountHero.vue`, one
+button) and from **Your whole roster** on `/share`. A picture only: unlike the other two cards it embeds no data
+(the sheet says so), so nothing here touches the share format or `pngMeta.ts`.
+
+| Piece | Role |
+|---|---|
+| `rosterCard.ts` | the model, pure: `rosterTiles` from My account's own `rosterCards` (accountView.ts), sorted by its default `sortCards(…, "damage")` (best rotation damage first; unscored ones by name), owned only; each tile = name, element, 5★ / 4★, sequence, weapon (`weaponDisplayName`) and refinement, the calculator's `characterLevel` when the record holds one, upstream's Build Score (`buildScoreOf`, as the account card prints it). `rosterTeams` = `fieldableTeams(ranking)`, one row per trio (the same three on another rotation is left out), top three, named with `teamTitle`; a ranking marked `incomplete` counts as none. `rosterGrid`: 1–4 tiles → 2 columns (112 px portraits), 5–12 → 3 (96), 13–24 → 4 (80), 25+ → 5 (68); the type never shrinks, the card grows taller. `rosterAltText` (the preview's `aria-label`), `rosterFilename` (`my-roster-YYYY-MM-DD-wtplus.png`, local date) |
+| `RosterCard.vue` | the template: 1080 px wide, fixed px and fixed dark colours (the picture is the same from every screen and app theme), element accent from `cardView.ts`'s `ELEMENT_COLOR` (the cards' palette), 5★ gold / 4★ violet border **and** a "5★" / "4★" label, the name on its own line wrapping at words to two lines (five Rovers stay told apart at 40), weapon and score lines truncate with an ellipsis. Footer: "Wuthering Tools+" and what the figures are (this app's engine, each team's own rotation, enemy level 100 with 20 % resistance; Build Score; S and R) |
+| `RosterSheet.vue` | its own `<dialog>` (ShareSheet.vue is built around a build / team payload): the card scaled to the box (height measured with a ResizeObserver), switches for Build Scores, the teams strip, 4-stars, a title; all reset on every open, nothing stored. Download / Share… / Copy picture through `capture.ts` (`captureCard` at the measured height, `downloadBlob`, `shareFile` with the "needs one more tap" toast, `copyImage` with the blob as a promise); the last picture is kept until the card changes. The team figures come from `readCachedRanking` / `readSavedRanking` under My account's fingerprint (investment on, the auto team-buffs switch): **never scored here**, so with no ranking in this tab or browser the card says to open My account and shows no figure. Back closes it through `installSheetBackGuard`; Escape is the dialog's own |
+| `RosterShareButton.vue` | the button; the sheet is an async component mounted on the first tap |
+| `rosterCard.test.ts`, `cypress/e2e/rosterCard.cy.ts` | the model (sort, steps at 1 / 4 / 8 / 12 / 13 / 24 / 40, hidden fields, teams with / without / incomplete ranking, one row per trio, alt text); the hero button → sheet, the strip's figure is the hero's text, toggles and title change the preview, Download hands over a PNG 2160 px wide (stubbed `createObjectURL`), choices gone on the next open; `/share` at 360 px with no ranking |
+
+Measured on this box (Chromium, dev server): David's 24 resonators capture in about 0.9–1.1 s (2160 × 3432 px, 3.1 MB);
+40 synthetic ones in 1.5–2.6 s (2160 × 3500, 3.1 MB; the upper figure with a Cypress run beside it). The buttons wait
+and the sheet says "Drawing the picture…" meanwhile.
