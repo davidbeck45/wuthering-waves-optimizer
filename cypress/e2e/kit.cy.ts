@@ -359,6 +359,16 @@ describe("resonator briefs", () => {
     }
   });
 
+  it("a ladder that starts above S0 (Jianxin's, at S2) draws no S0 or S1 and says so; one that starts at S0 says nothing", () => {
+    cy.visit("/kit/jianxin", seed());
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar]', { timeout: 20000 }).first().should("have.attr", "data-test-kit-chart-bar", "S2");
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S0"], [data-test-kit-chart="seq"] [data-test-kit-chart-bar="S1"]').should("not.exist");
+    cy.get("[data-test-kit-ladder-from]").should("contain.text", "starts at S2").and("contain.text", "S0 to S1 are not in it");
+    cy.visit("/kit/cartethyia", seed());
+    cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S0"]', { timeout: 20000 }).should("exist");
+    cy.get("[data-test-kit-ladder-from]").should("not.exist");
+  });
+
   it("Lily: her released kit with no 3.8 beta note, the one press short of its gauge, where her figures are on his table, and one main echo per loop", () => {
     cy.visit("/kit/lily", seed());
     cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");

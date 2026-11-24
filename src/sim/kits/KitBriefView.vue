@@ -331,6 +331,11 @@
             :caption="`Team DPS at each sequence of ${name}: a bar per level from zero, each with what it adds over the level below.`"
             :bars="seqChart.bars" />
           <p class="kit-text mt-1" data-test-kit-ladder-biggest>{{ seqChart.biggestText }}</p>
+          <p v-if="steps.length && steps[0]!.level > 0" class="kit-muted" data-test-kit-ladder-from>
+            Riley's run starts at S{{ steps[0]!.level }}: {{ steps[0]!.level > 1 ? `S0 to S${steps[0]!.level - 1} are` : "S0 is" }} not in it{{
+              account.owned && account.sequence < steps[0]!.level ? `, so your S${account.sequence} has no bar here` : ""
+            }}.
+          </p>
           <p v-if="seqChart.lower.length" class="kit-muted" data-test-kit-ladder-lower>
             {{ seqChart.lower.map((l) => `S${l}`).join(", ") }} {{ seqChart.lower.length === 1 ? "reads" : "read" }} lower than the level below in Riley's run: that is his engine's figure, shown as it is.
           </p>
