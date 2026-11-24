@@ -175,9 +175,15 @@ describe("Echo Lab in the inventory", () => {
     // a chip a few tiles down: the router's own scroll to the top of a new page must not win over the echo's
     cy.get("[data-test-inventory-quality-chip][data-roll]").eq(5).click();
     cy.location("pathname").should("eq", "/echo-lab");
+    // under the nav bar, or as far up as the page goes: one echo's page is short, and since batch 6 a v3 phone page no
+    // longer ends in room for a floating Ask (phone.css § 16), so it can stop a little lower. Left at the top of Echo Lab
+    // (the bug this guards) the page is not at its end and the notice is far down
     cy.get("[data-test-echo-lab-one-echo]", RUN).should(($notice) => {
+      const win = $notice[0].ownerDocument.defaultView!;
       const top = $notice[0].getBoundingClientRect().top;
-      expect(top, "notice under the nav bar, in view").to.be.within(0, 300);
+      const atEnd = Math.ceil(win.scrollY + win.innerHeight) >= win.document.documentElement.scrollHeight - 2;
+      expect(top, "notice in the upper half of the screen").to.be.within(0, win.innerHeight / 2);
+      expect(top <= 300 || atEnd, `notice under the nav bar (top ${Math.round(top)}) or the page scrolled to its end`).to.eq(true);
     });
   });
 
