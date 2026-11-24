@@ -64,6 +64,38 @@ html[data-theme-style="light"] .skittle-root .mem {
      Suisui's yellow) darkens as far as a saturated one and every name clears the white cells */
   color: oklch(from var(--mem, var(--ink)) min(l, 0.47) c h) !important;
 }
+/* His team page's tables write a hue inline (`style="--mem:…;color:…"`: a weapon in its own hue, a column head in its
+   resonator's over a wash of it), and his log marks each loop in a neon green and each action tag in its tag colour, all
+   tuned for his dark page: on light themes Lynae's Spectrum Blaster read 1.18 : 1, LOOP n 1.36, MASH CANCEL 1.42, the
+   column heads 3.9, the Energy Regen a build needs (met, green) 1.6. The same darkening as the names above, a little deeper for the tinted heads. */
+html[data-theme-style="light"] .skittle-root .rtable .c[style*="--mem"] {
+  color: color-mix(in srgb, var(--mem, var(--ink)) 50%, #000) !important;
+  color: oklch(from var(--mem, var(--ink)) min(l, 0.42) c h) !important;
+}
+html[data-theme-style="light"] .skittle-root .rtable .c.mem[style*="--mem"] {
+  color: color-mix(in srgb, var(--mem, var(--ink)) 40%, #000) !important;
+  color: oklch(from var(--mem, var(--ink)) min(l, 0.36) c h) !important;
+}
+html[data-theme-style="light"] .skittle-root .loopbar .r.short .c.action {
+  color: color-mix(in srgb, #39ff14 40%, #000);
+  color: oklch(from #39ff14 min(l, 0.45) c h);
+}
+html[data-theme-style="light"] .skittle-root .rtrow .erreq.er-met {
+  color: color-mix(in srgb, #3ddc7a 45%, #000);
+  color: oklch(from #3ddc7a min(l, 0.45) c h);
+}
+html[data-theme-style="light"] .skittle-root .rtrow .erreq.er-under {
+  color: color-mix(in srgb, #e5484d 70%, #000);
+  color: oklch(from #e5484d min(l, 0.5) c h);
+}
+html[data-theme-style="light"] .skittle-root .ctag {
+  color: color-mix(in srgb, var(--tag) 50%, #000);
+  color: oklch(from var(--tag) min(l, 0.45) c h);
+}
+/* ...and on dark themes his red INSTANT tags read 3.4 : 1 on their own wash: lifted the way the dark kits are */
+html:not([data-theme-style="light"]) .skittle-root .ctag {
+  color: oklch(from var(--tag) max(l, 0.74) c h);
+}
 /* ...and on dark themes the dark kits (Chisa's and Phrolova's crimson, Lupa's red, Xuanling's indigo)
    sank below a readable contrast on their own tinted cells: their lightness is clamped up and their
    chroma down, so every name reads while keeping its hue. Browsers without relative colour syntax drop

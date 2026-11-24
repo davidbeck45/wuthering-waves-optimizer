@@ -100,6 +100,29 @@ describe("contrast, focus and keyboard", () => {
     cy.focused().should("be.visible");
   });
 
+  it("reads Riley's team page at AA on light themes: weapon names in their hue, LOOP marks, action tags, the Energy Regen needed", () => {
+    // his colours are tuned for his dark page: Lynae's Spectrum Blaster read 1.18 : 1 on white, LOOP n 1.36, MASH CANCEL 1.42
+    cy.viewport(1440, 900);
+    cy.visit("/rankings#tc=s6r5&r=LynaeS6", seed());
+    cy.get(".skittle-root #app .gotodetail[data-team]", ENGINE).first().click();
+    cy.get(".skittle-root .rtable .c[style*='--mem']", ENGINE).should("have.length.greaterThan", 2);
+    cy.get(".skittle-root .loopbar .c.action", ENGINE).should("exist");
+    cy.get(".skittle-root .ctag", ENGINE).should("exist");
+    cy.get(".skittle-root .rtrow .erreq", ENGINE).should("exist");
+    for (const [theme, style] of [["light", "light"], ["pastel", "light"], ["nord", "light"], ["dark", "dark"]] as const) {
+      setTheme(theme, style);
+      cy.document().then((doc) => {
+        const weapons = Array.from(doc.querySelectorAll(".skittle-root .rtable .c[style*='--mem']")).filter((el) => (el.textContent ?? "").trim());
+        const loops = Array.from(doc.querySelectorAll(".skittle-root .loopbar .c.action")).filter((el) => (el.textContent ?? "").trim()).slice(0, 3);
+        const tags = Array.from(new Map(Array.from(doc.querySelectorAll(".skittle-root .ctag")).map((el) => [el.className, el])).values());
+        const energy = Array.from(doc.querySelectorAll(".skittle-root .rtrow .erreq"));
+        for (const el of [...weapons, ...loops, ...tags, ...energy]) {
+          expect(contrastOf(el), `${theme}: ${el.className} "${(el.textContent ?? "").trim().slice(0, 24)}"`).to.be.at.least(4.5);
+        }
+      });
+    }
+  });
+
   it("keeps closed dialogs out of the Tab order, offers a skip link and marks the main landmark", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed());
