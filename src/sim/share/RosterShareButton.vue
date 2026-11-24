@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, nextTick, ref } from "vue";
+import { defineAsyncComponent, nextTick, ref, watch } from "vue";
 
 const RosterSheet = defineAsyncComponent(() => import("./RosterSheet.vue"));
 
@@ -24,8 +24,16 @@ const sheet = ref<{ open: () => Promise<void> } | null>(null);
 
 async function open() {
   mounted.value = true;
-  // the async component resolves on a later tick: wait for its instance
-  for (let i = 0; i < 100 && !sheet.value; i++) await new Promise((r) => setTimeout(r, 20));
+  // the async component resolves once its chunk has loaded (a slow phone can take seconds): wait for its instance
+  if (!sheet.value) {
+    await new Promise<void>((resolve) => {
+      const stop = watch(sheet, (s) => {
+        if (!s) return;
+        stop();
+        resolve();
+      });
+    });
+  }
   await nextTick();
   await sheet.value?.open();
 }
