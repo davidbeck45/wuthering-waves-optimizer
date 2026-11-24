@@ -38,9 +38,7 @@
             </div>
           </li>
         </ul>
-        <p v-if="g.unmoved" class="ntr__still" :data-test-trends-unmoved="g.key">
-          {{ g.unmoved }} {{ g.noun }}{{ g.unmoved === 1 ? "" : "s" }} did not move in any record.
-        </p>
+        <p v-if="g.unmoved" class="ntr__still" :data-test-trends-unmoved="g.key">{{ g.unmoved }} {{ g.noun }}{{ g.unmoved === 1 ? "" : "s" }} did not move in any record.</p>
       </template>
     </template>
 
