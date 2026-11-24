@@ -144,7 +144,7 @@ const pointText = (p: TrendPoint): string =>
   max-height: 16rem;
 }
 .tch__axis {
-  stroke: oklch(var(--bc) / 0.5);
+  stroke: oklch(var(--bc) / 0.6);
   stroke-width: 1;
 }
 .tch__grid {
