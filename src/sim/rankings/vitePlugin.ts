@@ -1,5 +1,5 @@
 // Wuthering Tools+ — Riley's page modules (vendor/wuwa_calc/src/page) import their solver pool as `./pool.js`. His
-// pool.ts starts its workers with `new Worker(new URL(\`./solver.js?v=${Date.now()}\`, import.meta.url))`: a template
+// pool.ts starts its workers from a URL built from a template string (`./solver.js?v=${Date.now()}` against import.meta.url): a template
 // string Vite refuses to transform ("not supported in dynamic template string"), so any module that reaches it (his
 // loading.ts, and through it detail.ts and pickmenu.ts) fails to load — and it would be a ninth worker entry. This
 // resolves that one import, from his page folder only, to the app's own pool (rileyPool.ts: the same exports on the

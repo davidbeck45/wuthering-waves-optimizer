@@ -6,7 +6,7 @@
  * dropping the older one's teams still in line, a pass wanting a team already out waiting on that answer). Four
  * differences, all the app's:
  *  - the worker is `solver.worker.ts` (his solver plus the app's "My build" spreads, account state and the run seam),
- *    and each new worker is sent `onWorkerStart()`'s messages first. His `new Worker(new URL(\`./solver.js?v=…\`))`
+ *    and each new worker is sent `onWorkerStart()`'s messages first. His worker URL (`./solver.js?v=…`)
  *    is a template string Vite cannot bundle, and would be a ninth worker entry;
  *  - a job's answer is filed only under the `bestKey()` it was asked for (an account changed while it was out);
  *  - a sync's teams are `keep`: a table pass starting behind it never drops them (solveQueue.ts);
