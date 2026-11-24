@@ -38,6 +38,62 @@ export const TAG_LABELS: Record<WhatsNewTag, string> = {
 export const WHATS_NEW: readonly WhatsNewEntry[] = [
   // ==== ADD NEW ENTRIES HERE, newest first (one block per release day, format in the header above) ====
 
+  // ---- on the site since 2026-11-24 (batch 6: pictures and charts; built 2026-11-23 night. If it reaches the site on another day, set these six dates to that day)
+  {
+    id: "tier-board",
+    date: "2026-11-24",
+    title: "The Tier list as a picture board",
+    text: "The Tier list now opens as a board: every resonator's portrait in tiers T0 to T4, with your own resonators ringed and a count of how many of the top two tiers you own. Tap a face for its best team, or save the whole board as an image to post. Riley's table with the figures is one tap away.",
+    where: "Tools+ menu › Tier list",
+    link: "/tier-list",
+    tag: "tool",
+  },
+  {
+    id: "gear-map",
+    date: "2026-11-24",
+    title: "Gear map: every equipped echo at a glance",
+    text: "My account has a Gear map: every set-up character's five echoes in one grid, coloured and lettered by how lucky each roll is. It is Echo Lab's rating, the same one the inventory's chips show. Tap a cell for the echo's substats and a link into Echo Lab.",
+    where: "My account › Gear map",
+    link: "/account",
+    tag: "tool",
+  },
+  {
+    id: "roster-card",
+    date: "2026-11-24",
+    title: "Share your whole roster as one picture",
+    text: "One picture of every resonator you have set up, with sequence, weapon and refinement and Build Score, and the best team of your three strongest main DPS with its damage per rotation. Pick what is on it, then download it or send it from the share sheet.",
+    where: "My account › Share my roster",
+    link: "/account",
+    tag: "tool",
+  },
+  {
+    id: "briefs-with-pictures",
+    date: "2026-11-24",
+    title: "Resonator briefs, with pictures",
+    text: "Every brief opens with the resonator's portrait, and \"What each step of investment is worth\" is drawn as bars: you see at a glance where the big sequence jump is, what each weapon is worth and where you are. The list of briefs is a portrait grid.",
+    where: "Tools+ menu › Resonator briefs › pick a resonator › Investment",
+    link: "/kit",
+    tag: "better",
+  },
+  {
+    id: "numbers-over-time",
+    date: "2026-11-24",
+    title: "Your numbers over time",
+    text: "Every record of your figures is a line now: see whether a team is climbing as you farm, and tap it for the full chart with what happened between records (an app update, a Sync, an import, a build you changed). The lines start with your second record.",
+    where: "Tools+ menu › What's new › Your numbers › Over time",
+    link: "/whats-new?tab=numbers",
+    tag: "tool",
+  },
+  {
+    id: "menu-in-sections",
+    date: "2026-11-24",
+    title: "The Tools+ menu, in sections",
+    text: "The Tools+ menu groups its pages under five headings: My account, Rankings, Teams, Echoes and weapons, More. It fits beside its button on a computer and shows every section on a phone. On a phone, Ask moved to the top bar beside Tools+, so it no longer sits on the numbers of a list.",
+    where: "The Tools+ button: top right on a phone, in the side rail on a computer",
+    link: "/account",
+    tag: "better",
+  },
+
   // ---- on the site since 2026-11-23 (batch 5, then batch 4, which was built 2026-11-17 and first reached the site with it)
   {
     id: "tier-list",
