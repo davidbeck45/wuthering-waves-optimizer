@@ -163,10 +163,12 @@
 // inventory's Echo Lab layer (useInventoryQuality: the same pass, ratings and cache the inventory's chips and
 // /echo-lab read), started when the section scrolls into view, never before: the page opens as fast as it did.
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { useRouter } from "vue-router";
 import CharacterAvatar from "../display/CharacterAvatar.vue";
 import WorkStatus from "../display/WorkStatus.vue";
 import { characterName, echoName, lineText, mainLabel, setLabel } from "../echoLab/echoLabView";
 import { useInventoryQuality } from "../inventoryQuality/useInventoryQuality";
+import { installSheetBackGuard } from "../shell/askBackGuard";
 import { KIT_INDEX_ENTRIES } from "../kits/load";
 import { GEAR_BANDS, cellLabel, gearProgress, gearRoleOf, gearRows, gearSummary, leftOutLine, sortGearRows, summaryLine, type GearCell, type GearRole, type GearRow, type GearSort } from "./gearMap";
 
@@ -243,7 +245,9 @@ const shownRows = computed(() => {
 
 const echoLink = (echoId: string) => ({ path: "/echo-lab", query: { echo: echoId } });
 
-// ── the sheet (a phone) / popover (desktop): a modal <dialog>, so Escape and a phone's Back close it ──
+// ── the sheet (a phone) / popover (desktop): a modal <dialog>; Escape closes it, and so does Back through the app's
+// sheet guard (askBackGuard.ts / sheetHistory.ts), as every other plus sheet: a history Back with it open left
+// /account, from the first page of a visit too (second check, batch 6) ──
 const sheet = ref<HTMLDialogElement | null>(null);
 const open = shallowRef<{ id: string; name: string; role: GearRole; cell: GearCell } | null>(null);
 let opener: HTMLElement | null = null;
@@ -264,6 +268,8 @@ function onSheetClose(): void {
 function onBackdrop(e: MouseEvent): void {
   if (e.target === sheet.value) closeSheet();
 }
+const router = useRouter();
+if (router) onBeforeUnmount(installSheetBackGuard(router, { sheetOpen: () => open.value !== null, close: closeSheet }));
 </script>
 
 <style scoped>

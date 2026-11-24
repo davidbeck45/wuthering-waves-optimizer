@@ -104,4 +104,29 @@ describe("Gear map on My account", () => {
     cy.get(".gm-who__name").each(($el) => expect($el[0].scrollWidth, "name not cut").to.be.at.most($el[0].clientWidth + 1));
     cy.document().then((doc) => expect(doc.documentElement.scrollWidth, "page width").to.be.at.most(doc.documentElement.clientWidth));
   });
+
+  it("Back with a cell's sheet open closes the sheet and stays on My account, on the first page of a visit, and again on a second opening", () => {
+    cy.viewport(412, 915);
+    cy.visit("/account", {
+      ...seed({ fontScale: 1.3 }),
+      onLoad(win: Window) {
+        (win as unknown as { __firstPage: boolean }).__firstPage = true;
+      },
+    });
+    openMap();
+    const stillHere = () => {
+      cy.get("[data-test-gear-map-sheet]").should("not.have.attr", "open");
+      cy.location("pathname").should("eq", "/account");
+      cy.window().should((win) => expect((win as unknown as { __firstPage?: boolean }).__firstPage, "the page was not left").to.eq(true));
+    };
+    cy.get("button[data-test-gear-map-cell]").first().click();
+    cy.get("[data-test-gear-map-sheet]").should("have.attr", "open");
+    cy.go("back");
+    stillHere();
+    // a second opening, after the first Back: the same
+    cy.get("button[data-test-gear-map-cell]").first().click();
+    cy.get("[data-test-gear-map-sheet]").should("have.attr", "open");
+    cy.go("back");
+    stillHere();
+  });
 });
