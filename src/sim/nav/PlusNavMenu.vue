@@ -91,6 +91,8 @@
   <!-- v3 desktop rail: Ask under Tools+, so the floating button no longer covers the page (src/sim/shell/askDock.ts);
        on a short screen the rail has no room for one more item and the floating button stays -->
   <PlusRailAsk v-if="variant === 'rail' && railHasRoom" />
+  <!-- v3 phone / tablet header: Ask beside Tools+, so the floating button no longer sits on a list's figures (askDock.ts) -->
+  <PlusHeaderAsk v-if="variant === 'header'" />
 </template>
 
 <script setup lang="ts">
@@ -104,6 +106,7 @@ import { useAssistant } from "../ai/useAssistant";
 import { modKeyLabel } from "../shell/shellDom";
 import { railMenuTop } from "./railMenu";
 import PlusRailAsk from "./PlusRailAsk.vue";
+import PlusHeaderAsk from "./PlusHeaderAsk.vue";
 import { useMediaQuery } from "../../composables/useMediaQuery";
 import { RAIL_ASK_MIN_HEIGHT } from "../shell/askDock";
 import { useWhatsNew } from "../whatsNew/useWhatsNew";

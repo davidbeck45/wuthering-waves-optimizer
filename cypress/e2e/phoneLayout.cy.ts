@@ -820,10 +820,11 @@ describe("phone layout", () => {
       const top = $formula[0].ownerDocument.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
       expect(top?.closest("[data-test-stat-split]"), "the formula is on top, not under the Full breakdown sheet").to.not.equal(null);
     });
-    cy.get("[data-test-ai-open]").should("not.be.visible");
+    // on a v3 phone Ask is a button in the header (src/sim/nav/PlusHeaderAsk.vue): no floating button over the drawer
+    cy.get(".wt-ask-button").should("not.exist");
     cy.get(".calculator-breakdown > button").first().click();
     cy.get("[data-test-live-result-detail]").should("be.visible");
-    cy.get("[data-test-ai-open]").should("be.visible");
+    cy.get("[data-test-ai-open-header]").should("be.visible");
   });
 
   // 2026-11-02 audit M2: while /my-rankings scored, its team placeholder rows (an 11 rem grey bar beside three avatars,
@@ -1199,16 +1200,23 @@ describe("phone layout", () => {
   it("keeps Ask off Ryan's phone menus and opens the echo importer on the phone screenshots at 412 px / 130 % text", () => {
     cy.viewport(412, 915);
     cy.visit("/inventory", v3Phone(1.3));
-    cy.get("[data-test-ai-open]").should("be.visible");
+    // Ask is in the header now (src/sim/nav/PlusHeaderAsk.vue, batch 6): no floating button, and the header's never
+    // overlaps either menu's rows
+    cy.get("[data-test-ai-open-header]").should("be.visible");
+    cy.get(".wt-ask-button").should("not.exist");
+    const askClearOf = (menu: string) =>
+      cy.get(menu).should(($menu) => {
+        const a = Cypress.$("[data-test-ai-open-header]")[0]!.getBoundingClientRect();
+        const m = $menu[0].getBoundingClientRect();
+        const overlap = m.left < a.right && m.right > a.left && m.top < a.bottom && m.bottom > a.top;
+        expect(overlap, `Ask over ${menu}`).to.equal(false);
+      });
     cy.get("[data-test-nav-bottom-more]").focus();
     cy.get("[data-test-options-menu-v3]").should("be.visible");
-    cy.get("[data-test-ai-open]").should("not.be.visible");
+    askClearOf("[data-test-options-menu-v3]");
     cy.get("[data-test-nav-bottom-more]").blur();
-    cy.get("[data-test-ai-open]").should("be.visible");
     cy.get("[data-test-nav-section-switcher]").focus();
-    cy.get("[data-test-ai-open]").should("not.be.visible");
-    cy.get("[data-test-nav-section-switcher]").blur();
-    cy.get("[data-test-ai-open]").should("be.visible");
+    askClearOf("[data-test-nav-section-switcher] + ul");
 
     cy.contains("button", "Import echoes").click({ force: true });
     cy.get("[data-test-phone-echo-batch-picker]").should("be.visible").then(($picker) => {

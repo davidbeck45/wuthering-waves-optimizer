@@ -1,7 +1,9 @@
 // Wuthering Tools+ — where the Ask button lives. On Ryan's v3 desktop rail (from 1024 px) Ask is a rail item under
 // Tools+ (nav/PlusRailAsk.vue), so the floating button that covered right-column figures there (/account's rail, the
-// Echo Lab Verdict column, /weapons' "Next copy") steps aside (2026-11-02 desktop audit, D12). Phones, tablets under the
-// phone header and the classic UI keep the floating button. A count, not a flag: the rail can remount mid-navigation.
+// Echo Lab Verdict column, /weapons' "Next copy") steps aside (2026-11-02 desktop audit, D12). On Ryan's v3 phone header
+// (under 1024 px) Ask is a button beside Tools+ (nav/PlusHeaderAsk.vue), for the same reason: the floating button sat
+// on the right-hand figures of every list at rest (the Tier list's team damage, Roster value's gains; batch 6). The
+// classic UI keeps the floating button. A count, not a flag: the rail and the header can remount mid-navigation.
 import { computed, ref } from "vue";
 
 const railAsks = ref(0);
@@ -10,7 +12,7 @@ const railAsks = ref(0);
  *  the … menu) would run off the screen, so a short window (a 1366 × 768 laptop's ~657 px) keeps the floating button */
 export const RAIL_ASK_MIN_HEIGHT = 720;
 
-/** true while an Ask item sits in the v3 rail */
+/** true while an Ask item sits in the v3 rail or the v3 phone header: the floating button isn't drawn */
 export const askInRail = computed(() => railAsks.value > 0);
 
 /** called by the rail item on mount; returns its unmount */
@@ -37,3 +39,6 @@ export const DOCKED_CLASS = "wt-ai-docked";
 export function shouldDock(panel: { open: boolean; collapsed: boolean }, viewportWidth: number): boolean {
   return panel.open && !panel.collapsed && viewportWidth >= DOCK_MIN_WIDTH;
 }
+
+/** the v3 phone header's Ask (nav/PlusHeaderAsk.vue): counted with the rail's, so the floating button steps aside */
+export const dockAskInNav = dockAskInRail;

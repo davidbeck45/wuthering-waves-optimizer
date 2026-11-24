@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { askInRail, dockAskInRail } from "./askDock";
+import { askInRail, dockAskInNav, dockAskInRail } from "./askDock";
 
 describe("the Ask button's place (askDock)", () => {
   it("is in the rail while any rail item is mounted, and floats again once the last one goes", () => {
@@ -21,6 +21,17 @@ describe("the Ask button's place (askDock)", () => {
     a();
     expect(askInRail.value).toBe(true);
     b();
+    expect(askInRail.value).toBe(false);
+  });
+
+  it("counts the v3 phone header's Ask with the rail's: the floating button stays away while either is up", () => {
+    const header = dockAskInNav();
+    expect(askInRail.value).toBe(true);
+    // a window widened past 1024 px: the rail's item mounts as the header's goes
+    const rail = dockAskInRail();
+    header();
+    expect(askInRail.value).toBe(true);
+    rail();
     expect(askInRail.value).toBe(false);
   });
 });

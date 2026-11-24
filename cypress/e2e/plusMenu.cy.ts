@@ -98,4 +98,42 @@ describe("the Tools+ menu in sections", () => {
       expect(new Set(tops).size, "the five headings on one line").to.eq(1);
     });
   });
+
+  // the floating Ask sat on the right-hand figures of the Tier list and Roster value at rest (412 and 360 px): on a v3
+  // phone it is a button in the header beside Tools+ (src/sim/nav/PlusHeaderAsk.vue, src/sim/shell/askDock.ts)
+  for (const path of ["/tier-list", "/roster-value"]) {
+    it(`keeps Ask off ${path}'s figures on a 412 px phone: Ask is in the header, nothing of the page under it`, () => {
+      cy.viewport(412, 915);
+      cy.visit(path, v3({ fontScale: 1.3 }));
+      cy.get("[data-test-ai-open-header]").should("be.visible");
+      cy.get(".wt-ask-button").should("not.exist");
+      cy.get("[data-test-ai-open]:visible").should("have.length", 1).and(($ask) => {
+        const r = $ask[0].getBoundingClientRect();
+        expect(r.width, "a 44 px tap target").to.be.at.least(43.5);
+        expect(r.height, "a 44 px tap target").to.be.at.least(43.5);
+        const doc = $ask[0].ownerDocument;
+        for (let x = r.left + 2; x < r.right; x += 6) {
+          for (let y = r.top + 2; y < r.bottom; y += 6) {
+            const under = doc.elementsFromPoint(x, y).find((e) => !$ask[0].contains(e) && e.closest(".content"));
+            expect(under, `nothing of the page under Ask at ${Math.round(x)}, ${Math.round(y)}`).to.eq(undefined);
+          }
+        }
+      });
+    });
+  }
+
+  it("opens and closes the assistant from the header's Ask, focus back on it; the classic UI keeps the floating button", () => {
+    cy.viewport(360, 740);
+    cy.visit("/account", v3({ fontScale: 1.3 }));
+    cy.get("[data-test-ai-open-header]").should("have.attr", "aria-expanded", "false").click();
+    cy.get("[data-test-ai-panel]").should("be.visible");
+    cy.get("[data-test-ai-open-header]").should("have.attr", "aria-expanded", "true");
+    cy.get("[data-test-ai-close]:visible").click();
+    cy.get("[data-test-ai-panel]").should("not.be.visible");
+    cy.get("[data-test-ai-open-header]").should("have.focus");
+    // the classic UI (the support file's default) has no v3 header: the floating button is still there
+    cy.visit("/account");
+    cy.get(".wt-ask-button").should("be.visible");
+    cy.get("[data-test-ai-open-header]").should("not.exist");
+  });
 });
