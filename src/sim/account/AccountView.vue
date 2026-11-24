@@ -105,6 +105,8 @@
           @open="openCharacter" />
         <AccountTeams class="acc-grid__teams" :teams="teamRows" :scoring="rankingStatus.state === 'running'" :owned="ownedKeys" />
       </div>
+      <!-- Wuthering Tools+ Gear map: every equipped echo coloured by Echo Lab's roll rating (src/sim/gearMap/) -->
+      <GearMap :cards="cards" />
 
       <p v-if="ranking" class="acc-foot">
         Scored {{ new Date(ranking.computedAt).toLocaleString() }}{{ rankingStatus.savedAt ? " (saved in this browser)" : rankingStatus.restored ? " (kept for this tab)" : "" }} · average damage
@@ -164,6 +166,8 @@ import { onAccountAdopted } from "../storage/crossTabSync";
 
 // when a copy of the account last left this browser, with Share and Download; loaded after the page (src/sim/backup/)
 const BackupStatus = defineAsyncComponent(() => import("../backup/BackupStatus.vue"));
+// every equipped echo coloured by Echo Lab's roll rating, loaded after the page (src/sim/gearMap/)
+const GearMap = defineAsyncComponent(() => import("../gearMap/GearMap.vue"));
 
 useDocumentTitle(
   "My account — Wuthering Waves Calculator & Optimizer",
