@@ -13,6 +13,18 @@
         </p>
       </details>
       <slot name="extra" />
+      <p v-if="cost && cost.hasAccount" class="wt-riley-mine text-sm" data-test-riley-mine>
+        <template v-if="cost.cost === 'mine'">
+          <span data-test-riley-mine-on>At your own sequences, weapons and refinements (Team Cost "My account").</span>
+        </template>
+        <template v-else>
+          <button type="button" class="btn btn-sm btn-outline" data-test-riley-mine-button @click="chooseMine()">
+            At my own sequences and weapons
+          </button>
+          <span class="opacity-80">The first time it solves every team here: about 8 s on a fast desktop, longer on a
+            phone; saved after.</span>
+        </template>
+      </p>
       <div v-if="views.length" class="wt-riley-views" role="group" :aria-label="viewsLabel" data-test-riley-views>
         <button
           v-for="(v, i) in views"
@@ -45,7 +57,9 @@ import { useInventoryStore } from "../../stores/inventory";
 import { useTeamRotationsStore } from "../../stores/teamRotations";
 import { accountKeyOf, accountStateOf, rileyAccountEntries } from "../account/accountState";
 import { usePlusBar } from "../shell/plusBar";
-import { mountRileyPage, onRileyPageLocation, unmountRileyPage, updateRileyPageAccount, type RileyPageKind } from "./controller";
+import {
+  chooseMine, mountRileyPage, onCostState, onRileyPageLocation, unmountRileyPage, updateRileyPageAccount, type CostState, type RileyPageKind,
+} from "./controller";
 import "../skittle.css";
 import "../skittle-theme.css";
 import "./rileyPages.css";
@@ -54,6 +68,9 @@ const props = withDefaults(defineProps<{ kind: RileyPageKind; title: string; vie
 const host = ref<HTMLElement | null>(null);
 /** phones: which of his side-by-side blocks shows (rileyPages.css); a desktop shows them all */
 const view = ref(0);
+/** his Team Cost as it stands, for the "At my own sequences and weapons" line */
+const cost = ref<CostState | null>(null);
+onCostState((s) => { cost.value = s; });
 const credit = ref<HTMLElement | null>(null);
 usePlusBar(credit, { pinned: true });
 const router = useRouter();
@@ -76,7 +93,10 @@ onMounted(() => {
 });
 watch(() => registration.value.key, () => updateRileyPageAccount(registration.value));
 watch(() => route.hash, () => onRileyPageLocation(props.kind));
-onBeforeUnmount(() => unmountRileyPage(props.kind));
+onBeforeUnmount(() => {
+  onCostState(null);
+  unmountRileyPage(props.kind);
+});
 </script>
 
 <style>
@@ -97,6 +117,19 @@ onBeforeUnmount(() => unmountRileyPage(props.kind));
   align-items: center;
   width: fit-content;
   cursor: pointer;
+}
+.wt-riley-mine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding: 0.25rem 0;
+}
+.wt-riley-mine .btn {
+  min-height: 44px;
+  height: auto;
+  max-width: 100%;
+  white-space: normal;
 }
 .wt-riley-views {
   display: none;

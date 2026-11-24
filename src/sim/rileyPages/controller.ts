@@ -211,6 +211,7 @@ function rerun(kind: RileyPageKind): void {
   const box = page.app.querySelector<HTMLInputElement>("#matrixToggle");
   if (box) box.checked = model.filters.matrix.length > 0;
   select.dispatchEvent(new Event("change", { bubbles: true }));
+  publishCost();
 }
 
 /** The filters his team links are built under: his roster.ts keeps one for both pages, so each sets its own. */
@@ -231,6 +232,30 @@ function onLinkClick(e: MouseEvent): void {
   e.preventDefault();
   void router.push(to);
 }
+/* ------------------------------------------------- the Team Cost, for the "At my own sequences" button */
+export interface CostState { cost: string; hasAccount: boolean }
+let costListener: ((s: CostState) => void) | null = null;
+export function onCostState(fn: ((s: CostState) => void) | null): void {
+  costListener = fn;
+  publishCost();
+}
+function publishCost(): void {
+  if (!shared || !costListener) return;
+  costListener({ cost: shared.model.filters.cost, hasAccount: shared.solver.hasAccountState() });
+}
+function onCostChange(e: Event): void {
+  if ((e.target as Element).id === "cost") publishCost();
+}
+/** "At my own sequences and weapons": his select set to `mine` and his own change handler run. */
+export function chooseMine(): void {
+  const page = current && pages.get(current);
+  const select = page?.app.querySelector<HTMLSelectElement>("#cost");
+  if (!select || !shared?.solver.hasAccountState()) return;
+  if (![...select.options].some((o) => o.value === "mine")) select.add(new Option("My account", "mine"));
+  select.value = "mine";
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
 function onValueChange(e: Event): void {
   if (current !== "value") return;
   if ((e.target as Element).closest?.("input[data-name]")) afterTicks();
@@ -251,6 +276,7 @@ export async function mountRileyPage(kind: RileyPageKind, host: HTMLElement, r: 
   host.appendChild(page.root);
   document.addEventListener("click", onLinkClick);
   page.root.addEventListener("change", onValueChange);
+  page.root.addEventListener("change", onCostChange);
   page.root.addEventListener("click", onValueClick);
   await loadShared(page);
   if (current !== kind) return;
@@ -264,6 +290,7 @@ export async function mountRileyPage(kind: RileyPageKind, host: HTMLElement, r: 
       await setBuildFiltersFor("tierlist");
       await withoutHashReload(() => import("@skittle/page/tierlist"));
     }
+    publishCost();
     return;
   }
   await setBuildFiltersFor(kind);
@@ -289,6 +316,7 @@ export function unmountRileyPage(kind: RileyPageKind): void {
   const page = pages.get(kind);
   document.removeEventListener("click", onLinkClick);
   page?.root.removeEventListener("change", onValueChange);
+  page?.root.removeEventListener("change", onCostChange);
   page?.root.removeEventListener("click", onValueClick);
   returnOverlay();
   page?.root.remove();

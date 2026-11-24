@@ -150,6 +150,22 @@ describe("Riley's Tier List and Value pages inside the app", () => {
     cy.window().its("wtMarker").should("eq", 5);
   });
 
+  it("My account is one tap away, never started unasked", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/tier-list", seed());
+    loaded();
+    cy.get(".wt-riley-tierlist #cost").should("have.value", "s0r1");
+    cy.get("[data-test-riley-mine-button]").should("contain.text", "At my own sequences and weapons").click();
+    loaded();
+    cy.get(".wt-riley-tierlist #cost").should("have.value", "mine");
+    cy.location("hash").should("include", "tc=mine");
+    cy.get("[data-test-riley-mine-on]").should("be.visible");
+    tierRows().should("have.length.greaterThan", 3);
+    // his own select back to a shipped cost brings the button back
+    cy.get(".wt-riley-tierlist #cost").select("s6r5");
+    cy.get("[data-test-riley-mine-button]").should("be.visible");
+  });
+
   it("an empty account keeps his default roster and says how to get your own", () => {
     cy.viewport(1280, 900);
     cy.visit("/roster-value", { onBeforeLoad(win) { win.localStorage.removeItem("character"); } });
