@@ -3,7 +3,10 @@
 // that it re-points at every detail render); the button lives inside that box, so it goes when the box goes.
 import { rotationPath } from "./hash";
 
-export function mountRotationLink(box: HTMLElement, rowKey: string, navigate: (path: string) => void): void {
+/** `members`: the row's three app character keys. They ride in the link beside the key (`&chars=`, hash.ts), because
+ *  his keys are places in his team list and move with his updates: a bookmark of a bare key opened another team after
+ *  his update of 2026-11-22. */
+export function mountRotationLink(box: HTMLElement, rowKey: string, navigate: (path: string) => void, members: readonly string[] = []): void {
   let link = box.querySelector<HTMLAnchorElement>("a[data-test-rankings-rotation]");
   if (!link) {
     link = document.createElement("a");
@@ -25,5 +28,5 @@ export function mountRotationLink(box: HTMLElement, rowKey: string, navigate: (p
     box.style.rowGap = "0.4rem";
   }
   const teamKey = rowKey.split("-")[0] ?? rowKey;
-  link.href = rotationPath({ kind: "team", teamKey, rowKey: rowKey.includes("-") ? rowKey : null, picks: null });
+  link.href = rotationPath({ kind: "team", teamKey, rowKey: rowKey.includes("-") ? rowKey : null, picks: null, ...(members.length === 3 ? { members: [...members] } : {}) });
 }

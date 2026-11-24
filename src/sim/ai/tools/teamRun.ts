@@ -87,7 +87,7 @@ export const teamRotationTool = defineTool<{ team: string }>({
       // /rankings showed it). A team asked at its own account is linked by its three members instead, which the page
       // reads at the saved team's account (useRotationRun `ofComposition`), so the link opens on the figure given here:
       // the row link opened a pinned team on the active builds' DPS, or on "this row no longer fits"
-      path: riley === base ? rotationPath({ kind: "team", teamKey: solve.teamKey, rowKey: solve.best.rowKey, picks: solve.best.picks }) : rotationPath({ kind: "chars", chars: memberKeysOf(target) }),
+      path: riley === base ? rotationPath({ kind: "team", teamKey: solve.teamKey, rowKey: solve.best.rowKey, picks: solve.best.picks, ...(memberKeysOf(target).length === 3 ? { members: memberKeysOf(target) } : {}) }) : rotationPath({ kind: "chars", chars: memberKeysOf(target) }),
       label: "Rotation cue card",
     });
   },

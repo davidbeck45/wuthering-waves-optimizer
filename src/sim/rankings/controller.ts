@@ -303,7 +303,9 @@ function mountImportControls(key: string): void {
   box.dataset.team = key;
   pointBuildTeamLink(box, key);
   mountMemberStrip(topbar, key);
-  mountRotationLink(box, key, (path) => void router?.push(path)); // Wuthering Tools+: the rotation view (src/sim/rotation/)
+  // Wuthering Tools+: the rotation view (src/sim/rotation/). The link names the row's three members beside its key
+  const shown = (mods?.model.results.get(key) as { members?: Array<{ name: string }> } | undefined)?.members ?? [];
+  mountRotationLink(box, key, (path) => void router?.push(path), shown.map((m) => appKeyOf(m.name)));
 }
 
 /** Wuthering Tools+ build-my-team: the topbar link beside Import (an icon on a phone, where Back and Import share a line). */
