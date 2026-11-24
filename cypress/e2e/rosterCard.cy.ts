@@ -90,6 +90,27 @@ describe("share my roster", () => {
     cy.get("[data-test-roster-card-title]").should("not.exist");
   });
 
+  it("opened while My account is still scoring, fills the teams strip when that run ends (and starts none of its own)", () => {
+    cy.viewport(1440, 900);
+    // hold one rotation file back so the sheet opens mid-run on any machine
+    cy.intercept("GET", "**/presets/data/rotations/Cartethyia.json*", (req) => req.on("response", (res) => res.setDelay(6000)));
+    cy.visit("/account", seed());
+    cy.get("[data-test-account-hero-eyebrow]", { timeout: 60000 }).should("contain.text", "so far");
+    cy.get("[data-test-roster-share-button]").click();
+    cy.get("[data-test-roster-sheet]").should("have.attr", "open");
+    cy.get("[data-test-roster-sheet-scoring]").should("contain.text", "still scoring");
+    cy.get("[data-test-roster-team-damage]").should("not.exist");
+    // the run ends: the hero prints the best team, and the open sheet's strip reads the same figure
+    cy.get("[data-test-account-hero-eyebrow]", { timeout: 120000 }).should("not.contain.text", "so far");
+    cy.get("[data-test-roster-sheet-scoring]", { timeout: 30000 }).should("not.exist");
+    cy.get("[data-test-account-hero-damage]")
+      .invoke("text")
+      .then((hero) => {
+        cy.get("[data-test-roster-team-damage]").first().should("have.text", hero.trim());
+      });
+    cy.get("[data-test-roster-card-no-ranking]").should("not.exist");
+  });
+
   it("is the third choice on /share, and fits a 360 px phone", () => {
     cy.viewport(360, 780);
     cy.visit("/share", seed());

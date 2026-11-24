@@ -23,6 +23,7 @@
             <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-base-content/60">
               <span data-test-roster-size>{{ ROSTER_CARD_WIDTH }} × {{ cardHeight }} px · exported at 2×</span>
               <span v-if="ranking === undefined" class="inline-flex items-center gap-1"><span class="loading loading-spinner loading-xs"></span>reading the team figures…</span>
+              <span v-else-if="scoring" class="inline-flex items-center gap-1" role="status" data-test-roster-sheet-scoring><span class="loading loading-spinner loading-xs"></span>My account is still scoring your teams: their figures appear here when it finishes</span>
             </div>
           </div>
 
@@ -87,7 +88,7 @@ import { useToast } from "../../composables/useToast";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { accountStateOf } from "../account/accountState";
 import { rosterCards } from "../account/accountView";
-import { rankingFingerprint, readCachedRanking, readSavedRanking } from "../myRankings/rankingCache";
+import { rankingFingerprint, rankingInFlight, readCachedRanking, readSavedRanking, sharedRanking } from "../myRankings/rankingCache";
 import type { RosterRanking } from "../myRankings/rankRoster";
 import { characterShortName } from "../display/names";
 import { installSheetBackGuard } from "../shell/askBackGuard";
@@ -156,6 +157,9 @@ const cardNode = (): HTMLElement | null => (cardBox.value?.firstElementChild as 
 // ---- the team figures: the ranking My account reads for exactly this data (this tab, else this browser's saved
 // copy); never scored here, so the sheet opens at once and the card never shows a figure My account does not
 let readToken = 0;
+/** a ranking run for this data is in flight in this tab: the strip fills in when it ends */
+const scoring = ref(false);
+let stopWaiting: (() => void) | null = null;
 async function readRanking() {
   const token = ++readToken;
   ranking.value = undefined;
@@ -168,7 +172,24 @@ async function readRanking() {
   });
   let found: RosterRanking | null = readCachedRanking(fp);
   if (!found) found = (await readSavedRanking(fp).catch(() => null))?.ranking ?? null;
-  if (token === readToken) ranking.value = found;
+  if (token !== readToken) return;
+  ranking.value = found;
+  // My account (or /my-rankings) is still scoring exactly this data: wait for that run, never start one, and fill the
+  // strip when it lands (the sheet was opened from the hero while it read "so far")
+  if (!found && rankingInFlight(fp)) {
+    scoring.value = true;
+    const run = sharedRanking(fp, () => Promise.reject(new Error("not started here")));
+    stopWaiting = run.leave;
+    try {
+      const done = await run.promise;
+      if (token === readToken) ranking.value = done;
+    } catch {
+      // the run failed: the card keeps its "open My account" line
+    } finally {
+      run.leave();
+      if (token === readToken) scoring.value = false;
+    }
+  }
 }
 
 const localDate = (d: Date): string => d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
@@ -192,6 +213,9 @@ function onDialogClose() {
   isOpen.value = false;
   observer?.disconnect();
   readToken += 1;
+  stopWaiting?.();
+  stopWaiting = null;
+  scoring.value = false;
   rendered = null;
 }
 
@@ -260,6 +284,7 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   stopBack?.();
+  stopWaiting?.();
   observer?.disconnect();
 });
 
