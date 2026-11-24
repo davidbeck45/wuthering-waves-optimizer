@@ -3,6 +3,7 @@
 // teams strip reads the hero's own figure, and the sheet holds at 360 px. Seeds the Cartethyia optimizer account plus
 // two armed teammates, as account.cy.ts does, so one team is fieldable.
 import { configOptimizer } from "./calculator/data/Cartethyia/data";
+import { allCharactersList, characterPickerRoster } from "../../src/characters/characters";
 
 function seed() {
   const character = JSON.parse(configOptimizer.data.character);
@@ -109,6 +110,42 @@ describe("share my roster", () => {
         cy.get("[data-test-roster-team-damage]").first().should("have.text", hero.trim());
       });
     cy.get("[data-test-roster-card-no-ranking]").should("not.exist");
+  });
+
+  it("prints every weapon name whole at five columns (25 resonators and more)", () => {
+    // the 30 first picker resonators, each with a long-named weapon of its type
+    const long: Record<string, string> = {
+      Sword: "UnflickeringValor",
+      Broadblade: "StarfieldCalibrator",
+      Pistol: "EverbrightPolestar",
+      Gauntlet: "BlazingJustice",
+      Rectifier: "Stringmaster",
+    };
+    const characters: Record<string, Record<string, unknown>> = {};
+    const released = new Set([...characterPickerRoster.five, ...characterPickerRoster.four].map((c) => c.key));
+    for (const c of allCharactersList.filter((x) => released.has(x.key))) {
+      if (Object.keys(characters).length >= 30) break;
+      const w = long[String(c.weapon ?? "")];
+      if (w) characters[c.key] = { weapon: w };
+    }
+    cy.viewport(1440, 900);
+    cy.visit("/share", {
+      onBeforeLoad(win: Window) {
+        win.sessionStorage.clear();
+        win.localStorage.setItem("character", JSON.stringify({ characters, activeCharacter: Object.keys(characters)[0], favoriteCharacters: [] }));
+        const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+        settings.config = { ...settings.config, useClassicUi: false };
+        win.localStorage.setItem("settings", JSON.stringify(settings));
+      },
+    });
+    cy.get("[data-test-share-roster-choice] [data-test-roster-share-button]").click();
+    cy.get("[data-test-roster-card]").should("have.attr", "data-test-roster-columns", "5");
+    cy.get("[data-test-roster-tile]").should("have.length", 30);
+    cy.get(".share-roster__weapon-name").each(($n) => {
+      const el = $n[0];
+      expect(el.scrollWidth, `${el.textContent} width`).to.be.at.most(el.clientWidth + 1);
+      expect(el.scrollHeight, `${el.textContent} height`).to.be.at.most(el.clientHeight + 1);
+    });
   });
 
   it("is the third choice on /share, and fits a 360 px phone", () => {

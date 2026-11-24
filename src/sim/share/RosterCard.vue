@@ -257,11 +257,16 @@ const footNote = computed(() => {
   flex: none;
   object-fit: contain;
 }
+/* wraps at words to two lines, like the name: at five columns one line cut most weapons to "Unflickering …" */
 .share-roster__weapon-name {
   min-width: 0;
-  white-space: nowrap;
+  line-height: 1.2;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 .share-roster__rank {
   flex: none;
