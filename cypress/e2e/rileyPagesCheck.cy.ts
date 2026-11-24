@@ -31,3 +31,33 @@ describe("Tier list and Roster value beside /rankings (second check)", () => {
     cy.window().its("wtMarker").should("eq", 11);
   });
 });
+
+describe("Roster value: ticks naming a resonator his roster no longer has (second check)", () => {
+  it("a name his engine dropped is not counted: ticks equal to the account read as the account's, with no button", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    cy.visit("/roster-value");
+    rileyLoaded();
+    cy.window().then((win) => {
+      const account = JSON.parse(win.localStorage.getItem("wtplus:rosterValue.applied")!) as string[];
+      expect(account).to.include("Cartethyia");
+      // ticks kept by his own site or an older backup, with a name his roster has since dropped (no record of plus writing them)
+      win.localStorage.setItem("wuwa.owned.v1", JSON.stringify([...account, "Nobody"]));
+      win.localStorage.removeItem("wtplus:rosterValue.applied");
+    });
+    cy.reload();
+    rileyLoaded();
+    cy.get(".wt-riley-value input[data-name='Nobody']").should("not.exist");
+    cy.get("[data-test-riley-owned-line]").should("contain.text", "Ticked from your account").and("not.contain.text", "different");
+    cy.get("[data-test-riley-owned-use-account]").should("not.exist");
+    // and plus wrote the same names on record: the next account change is followed, and no "removed Nobody" is ever said
+    cy.window().then((win) => {
+      win.localStorage.setItem("wuwa.owned.v1", JSON.stringify([...JSON.parse(win.localStorage.getItem("wuwa.owned.v1")!), "Nobody"]));
+      win.localStorage.setItem("wtplus:rosterValue.applied", win.localStorage.getItem("wuwa.owned.v1")!);
+    });
+    cy.reload();
+    rileyLoaded();
+    cy.get("[data-test-riley-owned-line]").should("contain.text", "Ticked from your account").and("not.contain.text", "Nobody");
+  });
+});

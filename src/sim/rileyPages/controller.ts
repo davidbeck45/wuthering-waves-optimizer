@@ -145,6 +145,14 @@ const writeList = (key: string, list: string[] | null): void => {
 };
 
 /* ---------------------------------------------------------------- Roster value: the owned set */
+/** A tick list as his page reads it: names his roster no longer has are dropped (value.ts `prepare()` does the same),
+ *  so a stale name from his own site or an old backup is never counted or named in the line. */
+const readTicks = (key: string): string[] | null => {
+  const list = readList(key);
+  if (!list || !shared) return list;
+  const known = new Set(rosterOf(shared.model.TEAMS).map((m) => m.name));
+  return list.filter((n) => known.has(n));
+};
 export interface OwnedState { source: OwnedSource; count: number; line: string; account: string[] | null }
 let lastAccount: AccountRegistration | null = null;
 let ownedListener: ((s: OwnedState) => void) | null = null;
@@ -157,13 +165,13 @@ function accountSet(): string[] | null {
   return accountOwnedSet(rosterOf(shared.model.TEAMS), lastAccount.entries);
 }
 function publishOwned(source: OwnedSource): void {
-  const count = readList(OWNED_KEY)?.length ?? 0;
+  const count = readTicks(OWNED_KEY)?.length ?? 0;
   ownedListener?.({ source, count, line: ownedLine(source, count), account: accountSet() });
 }
 /** Apply the rule before his `prepare()` reads `wuwa.owned.v1`. */
 function applyOwned(): void {
   const account = accountSet();
-  const { source, write } = decideOwned(account, readList(OWNED_KEY), readList(APPLIED_KEY));
+  const { source, write } = decideOwned(account, readTicks(OWNED_KEY), readTicks(APPLIED_KEY));
   if (write) {
     writeList(OWNED_KEY, write);
     writeList(APPLIED_KEY, write);
@@ -183,13 +191,13 @@ export function useAccountSet(): void {
 function afterTicks(): void {
   const account = accountSet();
   if (!account) { publishOwned({ kind: "none" }); return; }
-  const saved = readList(OWNED_KEY);
+  const saved = readTicks(OWNED_KEY);
   if (saved === null) {
     // his Reset Account: his default is on screen until the next open, which brings the account's set back
     ownedListener?.({ source: { kind: "none" }, count: 0, line: "Riley's default roster is ticked (his Reset Account). Use your account's set to tick your own again.", account });
     return;
   }
-  const { source } = decideOwned(account, saved, readList(APPLIED_KEY));
+  const { source } = decideOwned(account, saved, readTicks(APPLIED_KEY));
   publishOwned(source);
 }
 
