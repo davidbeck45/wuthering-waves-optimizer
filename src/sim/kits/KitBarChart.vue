@@ -103,14 +103,13 @@ withDefaults(
 .kit-chart__bar {
   fill: oklch(var(--p));
 }
-.kit-chart__bar--you {
-  fill: oklch(var(--su));
-}
 .kit-chart__bar--lower {
   fill: oklch(var(--er));
 }
+/* the account's own bar: the chart's colour like the rest (green would read as "good" on a damage chart, and sits
+   under 3:1 on the light theme), set apart by a ring in the text colour and the words "you are here" */
 .kit-chart__row--you .kit-chart__track {
-  box-shadow: 0 0 0 2px oklch(var(--su));
+  box-shadow: 0 0 0 2px oklch(var(--bc));
 }
 .kit-chart__note {
   grid-area: note;
@@ -129,8 +128,10 @@ withDefaults(
   color: oklch(var(--bc));
   background: oklch(var(--bc) / 0.1);
 }
+/* the page's "Yours" chip colour, with an edge so it reads apart from "biggest step" without colour */
 .kit-chart__mark--you {
-  background: oklch(var(--su) / 0.25);
+  background: oklch(var(--wa) / 0.2);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.6);
 }
 .kit-chart__mark--lower {
   background: oklch(var(--er) / 0.2);

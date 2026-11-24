@@ -40,8 +40,8 @@ function expectNoHorizontalScroll(what: string): void {
 
 type Rgba = [number, number, number, number];
 /** The WCAG contrast of an element's text against what is painted behind it, colours read through a canvas (so oklch
- *  works) and backgrounds blended up to the page. */
-function contrastOf(el: Element): number {
+ *  works) and backgrounds blended up to the page. `fgCss`: a mark's colour (a bar's fill, a ring) read against `el`'s background. */
+function contrastOf(el: Element, fgCss?: string): number {
   const win = el.ownerDocument.defaultView!;
   const canvas = el.ownerDocument.createElement("canvas");
   canvas.width = canvas.height = 1;
@@ -65,7 +65,7 @@ function contrastOf(el: Element): number {
   }
   let bg: Rgba = [1, 1, 1, 1];
   for (const c of layers.reverse()) bg = over(c, bg);
-  const fg = over(rgba(win.getComputedStyle(el).color), bg);
+  const fg = over(rgba(fgCss ?? win.getComputedStyle(el).color), bg);
   const [hi, lo] = [lum(fg), lum(bg)].sort((a, b) => b - a) as [number, number];
   return (hi + 0.05) / (lo + 0.05);
 }
@@ -320,6 +320,26 @@ describe("resonator briefs", () => {
       cy.visit("/kit", seed({ theme, teammates: true }));
       cy.get("[data-test-kit-list]").find(".kit-row__name, .kit-chip, .kit-pill, .kit-muted, .kit-intro").each(($el) => {
         expect(contrastOf($el[0]!), `${theme} list: "${$el.text().trim().slice(0, 40)}" (${$el[0]!.className})`).to.be.at.least(4.5);
+      });
+    }
+  });
+
+  it("draws its bars at 3:1 in light, dark and Gruvbox dark, and the account's own bar like the rest, marked by a ring and words, not green", () => {
+    for (const theme of ["light", "dark", "gruvbox"]) {
+      cy.visit("/kit/cartethyia", seed({ theme }));
+      cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S2"]', { timeout: 20000 }).should("contain.text", "you are here");
+      cy.get("html").should("have.attr", "data-theme", theme);
+      cy.get("#kit-ladder").then(($card) => {
+        const card = $card[0]!;
+        const win = card.ownerDocument.defaultView!;
+        const fill = (el: Element): string => win.getComputedStyle(el).fill;
+        const own = card.querySelector('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S2"] rect')!;
+        const other = card.querySelector('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S1"] rect')!;
+        // the own bar is the chart's colour (green would read as "good" on a damage chart); the ring and the words say "yours"
+        expect(fill(own), `${theme}: the own bar's fill`).to.eq(fill(other));
+        card.querySelectorAll(".kit-chart__bar").forEach((r) => expect(contrastOf(card, fill(r)), `${theme}: bar ${r.closest("[data-test-kit-chart-bar]")!.getAttribute("data-test-kit-chart-bar")}`).to.be.at.least(3));
+        const ring = win.getComputedStyle(card.querySelector('[data-test-kit-chart="seq"] .kit-chart__row--you .kit-chart__track')!).boxShadow.match(/(?:rgba?|oklch|oklab|color)\([^)]*\)/)![0];
+        expect(contrastOf(card, ring), `${theme}: the own bar's ring`).to.be.at.least(3);
       });
     }
   });
