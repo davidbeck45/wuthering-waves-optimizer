@@ -122,6 +122,31 @@ describe("the Tools+ menu in sections", () => {
     });
   }
 
+  // phone.css § 16 pads every page's end by the floating Ask's height so the end can scroll out from under it. On a v3
+  // phone Ask is in the header and there is no floating button: that room was an empty band at the end of every page
+  // (about 88 px at 412 px and 130 % text, under /backups' last button). Classic keeps the floating button and its room.
+  it("leaves no room for a floating Ask at a v3 phone page's end, and keeps it in the classic UI", () => {
+    cy.viewport(412, 915);
+    const room = ($content: JQuery<HTMLElement>) => {
+      const win = $content[0].ownerDocument.defaultView!;
+      const style = win.getComputedStyle($content[0]);
+      const root = win.getComputedStyle($content[0].ownerDocument.documentElement);
+      const px = (v: string) => parseFloat(v) || 0;
+      // what is left once Ryan's bottom bar (an inline value AppLayout keeps in --nav-bottom-h) and any plus bar are taken off
+      return px(style.paddingBottom) - px(style.getPropertyValue("--nav-bottom-h") || root.getPropertyValue("--nav-bottom-h")) - px(style.getPropertyValue("--plus-bar-h"));
+    };
+    cy.visit("/backups", v3({ fontScale: 1.3 }));
+    cy.get("[data-test-ai-open-header]").should("be.visible");
+    cy.get("#wt-app .contain > .content").should(($c) => {
+      expect(room($c), "room left at the end for a floating Ask").to.be.at.most(24);
+    });
+    cy.visit("/backups");
+    cy.get(".wt-ask-button").should("be.visible");
+    cy.get("#wt-app .contain > .content").should(($c) => {
+      expect(room($c), "the classic UI still clears its floating Ask (48 px)").to.be.at.least(48);
+    });
+  });
+
   it("opens and closes the assistant from the header's Ask, focus back on it; the classic UI keeps the floating button", () => {
     cy.viewport(360, 740);
     cy.visit("/account", v3({ fontScale: 1.3 }));

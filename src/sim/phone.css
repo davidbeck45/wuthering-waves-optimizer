@@ -867,6 +867,13 @@
 #wt-app .contain > .content {
   padding-bottom: calc(var(--nav-bottom-h) + var(--plus-bar-h, 0px) + 5rem) !important;
 }
+/* (batch 6 second check) On a v3 phone Ask is a button in the header (nav/PlusHeaderAsk.vue) and no floating button is
+   drawn: its room was an empty band (about 88 px at 412 px and 130 % text) at the end of every page. A line of air
+   stays. Keyed on the header button being there, not on the floating one being drawn, so opening the assistant does
+   not move the page's end. Before the two rules below: /rankings and the calculator keep their own. */
+#wt-app:has([data-test-ai-open-header]) .contain > .content {
+  padding-bottom: calc(var(--nav-bottom-h) + var(--plus-bar-h, 0px) + 1rem) !important;
+}
 #wt-app .contain > .content:has(.rankings-page) {
   padding-bottom: var(--nav-bottom-h) !important;
 }
