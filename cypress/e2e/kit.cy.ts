@@ -324,7 +324,7 @@ describe("resonator briefs", () => {
     }
   });
 
-  it("draws its bars at 3:1 in light, dark and Gruvbox dark, and the account's own bar like the rest, marked by a ring and words, not green", () => {
+  it("draws its chart marks at 3:1 in light, dark and Gruvbox dark, and the account's own bar like the rest, marked by a ring and words, not green", () => {
     for (const theme of ["light", "dark", "gruvbox"]) {
       cy.visit("/kit/cartethyia", seed({ theme }));
       cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S2"]', { timeout: 20000 }).should("contain.text", "you are here");
@@ -340,6 +340,21 @@ describe("resonator briefs", () => {
         card.querySelectorAll(".kit-chart__bar").forEach((r) => expect(contrastOf(card, fill(r)), `${theme}: bar ${r.closest("[data-test-kit-chart-bar]")!.getAttribute("data-test-kit-chart-bar")}`).to.be.at.least(3));
         const ring = win.getComputedStyle(card.querySelector('[data-test-kit-chart="seq"] .kit-chart__row--you .kit-chart__track')!).boxShadow.match(/(?:rgba?|oklch|oklab|color)\([^)]*\)/)![0];
         expect(contrastOf(card, ring), `${theme}: the own bar's ring`).to.be.at.least(3);
+      });
+      cy.get("[data-test-kit-strip]").then(($strip) => {
+        const win = $strip[0]!.ownerDocument.defaultView!;
+        const card = $strip[0]!.closest(".kit-card")!;
+        const have = $strip[0]!.querySelector('[data-test-kit-strip-marks~="have"]')!;
+        const current = $strip[0]!.querySelector('[data-test-kit-strip-marks~="current"]')!;
+        expect(contrastOf(have, win.getComputedStyle(have).borderBottomColor), `${theme}: the strip's "you have it" edge`).to.be.at.least(3);
+        expect(contrastOf(card, win.getComputedStyle(current).outlineColor), `${theme}: the strip's ring on your sequence`).to.be.at.least(3);
+      });
+      // a sequence that reads lower than the one below (Suisui's S3 in Riley's run): its bar, in the state colour, at 3:1
+      cy.visit("/kit/suisui", seed({ theme }));
+      cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-bar="S3"]', { timeout: 20000 }).should("contain.text", "lower than the one below");
+      cy.get("#kit-ladder").then(($card) => {
+        const lower = $card[0]!.querySelector(".kit-chart__bar--lower")!;
+        expect(contrastOf($card[0]!, $card[0]!.ownerDocument.defaultView!.getComputedStyle(lower).fill), `${theme}: the lower bar`).to.be.at.least(3);
       });
     }
   });

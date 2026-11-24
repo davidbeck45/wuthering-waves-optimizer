@@ -103,8 +103,9 @@ withDefaults(
 .kit-chart__bar {
   fill: oklch(var(--p));
 }
+/* a level that reads lower than the one below: the error red mixed toward the text colour, 3 : 1 on light too */
 .kit-chart__bar--lower {
-  fill: oklch(var(--er));
+  fill: color-mix(in oklch, oklch(var(--er)) 70%, oklch(var(--bc)));
 }
 /* the account's own bar: the chart's colour like the rest (green would read as "good" on a damage chart, and sits
    under 3:1 on the light theme), set apart by a ring in the text colour and the words "you are here" */
