@@ -181,14 +181,17 @@ function closeSheet(): void {
 function onDialogClose(): void {
   if (route.query.who) closeSheet();
 }
-watch(picked, async (p) => {
+watch(picked, async (p, was) => {
   await nextTick();
   const d = sheet.value;
   if (!d) return;
   if (p && !d.open) d.showModal();
   else if (!p && d.open) {
     d.close();
-    const back = opener ? document.querySelector<HTMLElement>(`[data-test-tier-board-face="${CSS.escape(opener)}"]`) : null;
+    // the portrait that opened it; after Back from a link the board is new and only the address knew who it was
+    const who = opener ?? was?.entry.name ?? null;
+    opener = null;
+    const back = who ? document.querySelector<HTMLElement>(`[data-test-tier-board-face="${CSS.escape(who)}"]`) : null;
     back?.focus();
   }
 });

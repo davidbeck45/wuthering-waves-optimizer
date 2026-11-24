@@ -271,4 +271,24 @@ describe("Tier list: the Board view", () => {
     cy.get("[data-test-tier-board-share-again]").should("not.exist");
     cy.get("@download").should("not.have.been.called");
   });
+
+  // check-tier-board (batch 6): Back from the brief reopens the sheet (its resonator is in the address); closing it
+  // then returns focus to that portrait, not to the page (the board was mounted again and had no opener)
+  it("after Back from the brief, closing the sheet returns focus to the portrait", () => {
+    cy.viewport(412, 915);
+    cy.visit("/tier-list", seed());
+    loaded();
+    cy.get('[data-test-tier-board-face="Cartethyia"]').first().click();
+    cy.get("[data-test-tier-board-sheet]").should("have.attr", "open");
+    cy.get("[data-test-tier-board-kit-link]").click();
+    cy.location("pathname").should("eq", "/kit/cartethyia");
+    cy.go("back");
+    cy.location("search").should("contain", "who=Cartethyia");
+    cy.get("[data-test-tier-board-sheet]").should("have.attr", "open");
+    cy.get("[data-test-tier-board-close]").click();
+    cy.get("[data-test-tier-board-sheet]").should("not.have.attr", "open");
+    cy.location("search").should("not.contain", "who=");
+    cy.focused().should("have.attr", "data-test-tier-board-face", "Cartethyia");
+  });
 });
+
