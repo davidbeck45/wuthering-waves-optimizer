@@ -119,12 +119,11 @@ function characterCause(before: CharacterFigure, after: CharacterFigure, from: L
 /** The cause of one figure's step between two records, by the very rules a comparison uses (trends.ts reads each step
  *  of a line through it, so the line and the comparison never name two causes for one change). `before` / `after` are
  *  the figure as each record holds it. */
-export function figureCause(kind: "character", before: CharacterFigure, after: CharacterFigure, from: LogEntry, to: LogEntry): Cause;
-export function figureCause(kind: "team", before: TeamFigure, after: TeamFigure, from: LogEntry, to: LogEntry): Cause;
-export function figureCause(kind: Move["kind"], before: CharacterFigure | TeamFigure, after: CharacterFigure | TeamFigure, from: LogEntry, to: LogEntry): Cause {
-  if (kind === "character") return characterCause(before as CharacterFigure, after as CharacterFigure, from, to);
+export type FigureStep = { kind: "character"; before: CharacterFigure; after: CharacterFigure } | { kind: "team"; before: TeamFigure; after: TeamFigure };
+export function figureCause(step: FigureStep, from: LogEntry, to: LogEntry): Cause {
+  if (step.kind === "character") return characterCause(step.before, step.after, from, to);
   const chars = { before: new Map(from.characters.map((c) => [c.id, c])), after: new Map(to.characters.map((c) => [c.id, c])) };
-  return teamCause(before as TeamFigure, after as TeamFigure, chars, from, to);
+  return teamCause(step.before, step.after, chars, from, to);
 }
 
 /** `after` read against `before` (the older one). `window` = every entry after `before` up to and including `after`,

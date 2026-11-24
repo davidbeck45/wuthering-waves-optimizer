@@ -217,7 +217,7 @@ export function trendSteps(log: NumbersLog, trend: Trend, names: Namer): TrendSt
     }
     const moved = a.damage !== b.damage;
     if (!moved && !marks.length) continue;
-    const cause = trend.kind === "character" ? figureCause("character", a as CharacterFigure, b as CharacterFigure, from, to) : figureCause("team", a as TeamFigure, b as TeamFigure, from, to);
+    const cause = figureCause(trend.kind === "character" ? { kind: "character", before: a as CharacterFigure, after: b as CharacterFigure } : { kind: "team", before: a as TeamFigure, after: b as TeamFigure }, from, to);
     const words = [imported ? IMPORT_CARD_TEXT : "", cause.kind === "unknown" ? NO_CAUSE_TEXT : causeText(cause, names, imported, trend.kind), moved ? "" : DID_NOT_MOVE_TEXT].filter(Boolean);
     steps.push({ from: i, to: j, at: to.at, before: a.damage, after: b.damage, change: a.damage > 0 ? changeText((b.damage - a.damage) / a.damage) : null, marks, text: words.join(" ") });
   }
@@ -230,6 +230,7 @@ export function bestSavedTeam(trends: readonly Trend[]): Trend | null {
 }
 
 /** "up 12.4 % (+240,000) since 9 Nov" — the change in words, as a share of the first figure and as damage. */
+/* eslint-disable-next-line no-unused-vars -- the parameters of function types */
 export function trendChangeText(t: Trend, fmt: (n: number) => string, day: (at: number) => string): string {
   if (t.switched && t.first.index === t.last.index) return "nothing to compare with since the team-aware buffs switch was flipped";
   if (!t.delta) return `no change since ${day(t.first.at)}`;

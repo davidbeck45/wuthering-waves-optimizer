@@ -111,7 +111,8 @@ describe("your numbers over time", () => {
     cy.get("[data-test-trend-step-text]").eq(1).should("contain.text", "Chisa's build changed.").and("contain.text", "The app was updated between the two records too");
     cy.get("[data-test-trend-points] li").should("have.length", 4).eq(2).should("contain.text", "not in this record (the team could not be fielded then)");
     cy.get("[data-test-trend-readout]").should("contain.text", "Record 4 of 4").and("contain.text", "5,300,000 damage per rotation");
-    cy.get("[data-test-trend-plot]").focus().type("{leftarrow}{leftarrow}{leftarrow}");
+    cy.get("[data-test-trend-plot]").focus();
+    cy.get("[data-test-trend-plot]").type("{leftarrow}{leftarrow}{leftarrow}");
     cy.get("[data-test-trend-readout]").should("contain.text", "Record 1 of 4").and("contain.text", "5,000,000 damage per rotation");
     // a reload keeps the open row (it is in the address); closing it takes it out
     cy.reload();
