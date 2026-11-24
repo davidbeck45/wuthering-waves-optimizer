@@ -494,6 +494,14 @@ onBeforeUnmount(() => {
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
+  /* the classic bar's icon sits about 290 px in: a menu anchored to it ran 260 px past a 1024 px window's right edge.
+     Under the bar, centred on the window, as wide as fits */
+  .plus-nav--bar .plus-nav__menu {
+    position: fixed;
+    top: var(--nav-h);
+    left: max(0.5rem, calc(50vw - 28rem));
+    width: min(56rem, calc(100vw - 1rem));
+  }
   .plus-nav__search-row--half + .plus-nav__news-row .plus-nav__news {
     min-height: 2.75rem;
     margin: 0.1rem 0 0.3rem;

@@ -83,4 +83,19 @@ describe("the Tools+ menu in sections", () => {
     cy.get(".plus-nav--header").should("not.have.attr", "open");
     cy.get(".plus-nav--header > summary").should("have.focus");
   });
+
+  it("keeps the classic bar's menu inside a 1024 px window, under the bar, in five columns", () => {
+    cy.viewport(1024, 768);
+    cy.visit("/account"); // the support file seeds the classic UI
+    cy.get(".plus-nav--bar > summary").should("be.visible").click();
+    cy.get("[data-test-nav-plus-menu]:visible").should(($menu) => {
+      const menu = $menu[0].getBoundingClientRect();
+      // anchored to the icon (about 290 px in), the five columns ran 260 px past the right edge
+      expect(menu.left, "inside the left edge").to.be.at.least(0);
+      expect(menu.right, "inside the right edge").to.be.at.most(1024);
+      expect(menu.bottom, "nothing to scroll").to.be.at.most(768);
+      const tops = Array.from($menu[0].querySelectorAll("[data-test-nav-plus-group]")).map((h) => Math.round(h.getBoundingClientRect().top));
+      expect(new Set(tops).size, "the five headings on one line").to.eq(1);
+    });
+  });
 });
