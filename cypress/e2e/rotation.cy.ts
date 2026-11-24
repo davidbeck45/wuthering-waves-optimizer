@@ -139,10 +139,17 @@ describe("rotation view", () => {
         const el = [...$els].find((e) => !(e.parentElement?.textContent ?? "").includes("Lily"))!;
         const rowKey = el.getAttribute("data-team")!;
         el.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        cy.get("[data-test-rankings-rotation]", { timeout: 90000 }).should("be.visible").and("have.attr", "href", `/rotation#team=${rowKey}`);
+        // the link names the row's three members beside Riley's key: his key is a place in his list and moves with
+        // his updates, and /rotation opens the three when the key names another team by then (rankingsLink.ts)
+        const withMembers = new RegExp(`team=${rowKey.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}&chars=[^,&]+,[^,&]+,[^,&]+$`);
+        cy.get("[data-test-rankings-rotation]", { timeout: 90000 })
+          .should("be.visible")
+          .invoke("attr", "href")
+          .should("match", withMembers)
+          .and("match", /^\/rotation#team=/);
         cy.get("[data-test-rankings-rotation]").click();
         cy.location("pathname").should("eq", "/rotation");
-        cy.location("hash").should("eq", `#team=${rowKey}`);
+        cy.location("hash").should("match", withMembers);
       });
     cy.get("[data-test-rotation-cue]", { timeout: 90000 }).should("be.visible");
     cy.get("[data-test-rotation-header]").should("contain.text", "the Team rankings row you opened");
