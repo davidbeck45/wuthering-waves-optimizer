@@ -233,6 +233,9 @@ async function save(share: boolean): Promise<void> {
 <style scoped>
 .wt-tboard {
   padding: 0 0.75rem 1rem;
+  /* the owned mark: the theme's success green, mixed toward the text colour so the ring and its tick keep 3 : 1 on the
+     band in every theme (DaisyUI light's --su alone is 2.7 : 1 on --b2) */
+  --wt-own: color-mix(in oklab, oklch(var(--su)) 65%, oklch(var(--bc)));
 }
 .wt-tboard__sr {
   position: absolute;
@@ -381,7 +384,7 @@ async function save(share: boolean): Promise<void> {
 }
 .wt-tboard__face.is-owned .wt-tboard__pic img,
 .wt-tboard__face.is-owned .wt-tboard__pic .wt-tboard__initials {
-  box-shadow: 0 0 0 3px oklch(var(--su));
+  box-shadow: 0 0 0 3px var(--wt-own);
 }
 .wt-tboard__face.is-other .wt-tboard__pic img,
 .wt-tboard__face.is-other .wt-tboard__pic .wt-tboard__initials {
@@ -395,8 +398,8 @@ async function save(share: boolean): Promise<void> {
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: oklch(var(--su));
-  color: oklch(var(--suc));
+  background: var(--wt-own);
+  color: oklch(var(--b1));
   font-size: 11px;
   line-height: 18px;
   text-align: center;

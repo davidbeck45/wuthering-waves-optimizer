@@ -158,6 +158,44 @@ describe("Tier list: the Board view", () => {
     });
   }
 
+  // check-tier-board (batch 6): the owned ring and its tick carry meaning, so 3 : 1 against the band in every theme
+  // (light measured 2.72 : 1 with DaisyUI's --su); the tick's letter 4.5 : 1 on its badge; tier names 4.5 : 1
+  it("the owned ring, its tick and the tier names keep their contrast in light, dark and Gruvbox dark", () => {
+    cy.viewport(412, 915);
+    for (const theme of ["light", "dark", "gruvbox"]) {
+      cy.visit("/tier-list", {
+        onBeforeLoad(win: Window) {
+          seed().onBeforeLoad(win);
+          win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: false, theme }, labs: {} }));
+        },
+      });
+      loaded();
+      cy.get("html").should("have.attr", "data-theme", theme);
+      cy.get(".wt-tboard__face.is-owned").should("have.length.at.least", 1);
+      cy.document().then((doc) => {
+        const cv = doc.createElement("canvas");
+        cv.width = cv.height = 1;
+        const cx = cv.getContext("2d", { willReadFrequently: true })!;
+        const rgb = (c: string) => { cx.clearRect(0, 0, 1, 1); cx.fillStyle = "#000"; cx.fillStyle = c; cx.fillRect(0, 0, 1, 1); return [...cx.getImageData(0, 0, 1, 1).data]; };
+        const lum = ([r, g, b]: number[]) => { const f = (v: number) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r!) + 0.7152 * f(g!) + 0.0722 * f(b!); };
+        const ratio = (a: string, b: string) => { const [x, y] = [lum(rgb(a)), lum(rgb(b))].sort((p, q) => q - p); return (x! + 0.05) / (y! + 0.05); };
+        const win = doc.defaultView!;
+        const face = doc.querySelector(".wt-tboard__face.is-owned")!;
+        const band = win.getComputedStyle(face.closest("[data-test-tier-board-band]")!).backgroundColor;
+        const ring = win.getComputedStyle(face.querySelector(".wt-tboard__pic img, .wt-tboard__pic .wt-tboard__initials")!).boxShadow
+          .match(/(rgba?\([^)]*\)|oklch\([^)]*\)|oklab\([^)]*\)|color\([^)]*\))/)![1]!;
+        const tick = win.getComputedStyle(face.querySelector(".wt-tboard__tick")!);
+        expect(ratio(ring, band), `${theme}: the owned ring vs the band`).to.be.at.least(3);
+        expect(ratio(tick.backgroundColor, band), `${theme}: the tick's badge vs the band`).to.be.at.least(3);
+        expect(ratio(tick.color, tick.backgroundColor), `${theme}: the tick on its badge`).to.be.at.least(4.5);
+        doc.querySelectorAll('[data-test-tier-board-block="0"] [data-test-tier-board-band]').forEach((b) => {
+          const t = win.getComputedStyle(b.querySelector(".wt-tboard__tier")!).color;
+          expect(ratio(t, win.getComputedStyle(b).backgroundColor), `${theme}: tier name`).to.be.at.least(4.5);
+        });
+      });
+    }
+  });
+
   it("Save as image hands over a PNG of the design width", () => {
     cy.viewport(412, 915);
     cy.visit("/tier-list", seed());
