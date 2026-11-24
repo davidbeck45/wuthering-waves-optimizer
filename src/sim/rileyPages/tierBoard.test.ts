@@ -59,6 +59,10 @@ describe("the picture's footer", () => {
       "Team Cost: S6R5 all · Matrix Buffs on · 2026-11-23 · Tiers by Riley31415's wuwa_calc · made with Wuthering Tools+",
     );
     expect(costWords("s0r1")).toBe("Team Cost: S0R1 all");
+    // with the account's marks in the picture, the picture says what a ring means (a posted image has no page around it)
+    expect(imageFooter("s0r1", false, "2026-11-23", true)).toBe(
+      "Team Cost: S0R1 all · Matrix Buffs off · Ringed: in my account · 2026-11-23 · Tiers by Riley31415's wuwa_calc · made with Wuthering Tools+",
+    );
     expect(costWords("mine")).toContain("My account");
   });
   it("links a brief only where one exists", () => {

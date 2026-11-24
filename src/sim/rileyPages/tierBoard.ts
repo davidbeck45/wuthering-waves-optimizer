@@ -89,8 +89,10 @@ export function costWords(cost: string): string {
 }
 
 /** The footer line of the saved picture. `date` as the reader's own calendar day (YYYY-MM-DD). */
-export function imageFooter(cost: string, matrix: boolean, date: string): string {
-  return `${costWords(cost)} · Matrix Buffs ${matrix ? "on" : "off"} · ${date} · Tiers by Riley31415's wuwa_calc · made with Wuthering Tools+`;
+export function imageFooter(cost: string, matrix: boolean, date: string, marked = false): string {
+  // a picture with the account's rings says what a ring means: a posted image has no page around it
+  const key = marked ? " · Ringed: in my account" : "";
+  return `${costWords(cost)} · Matrix Buffs ${matrix ? "on" : "off"}${key} · ${date} · Tiers by Riley31415's wuwa_calc · made with Wuthering Tools+`;
 }
 
 /** The day in the reader's time zone, "2026-11-23". */

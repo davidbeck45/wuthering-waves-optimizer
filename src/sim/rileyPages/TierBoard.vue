@@ -202,7 +202,7 @@ const saveError = ref("");
 const markInImage = ref(false);
 const card = ref<HTMLElement | null>(null);
 const canShare = typeof navigator !== "undefined" && typeof navigator.canShare === "function";
-const footer = computed(() => imageFooter(state.value?.cost ?? "s0r1", !!state.value?.matrix, localDay(new Date())));
+const footer = computed(() => imageFooter(state.value?.cost ?? "s0r1", !!state.value?.matrix, localDay(new Date()), markInImage.value && !!owned.value?.size));
 async function save(share: boolean): Promise<void> {
   saving.value = true;
   saveError.value = "";
