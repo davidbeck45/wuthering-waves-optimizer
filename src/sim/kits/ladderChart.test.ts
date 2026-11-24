@@ -63,6 +63,10 @@ describe("ladder charts", () => {
     expect(bars[2]!.note).toBe("-10.0% against Held Blade");
     expect(bars[2]!.marks).toEqual(["you"]);
     expect(bars[0]!.width).toBe(1);
+    // the ladder holds a weapon the list does not carry (Buling's Variation): each against the best
+    const loose = weaponChart(weapons, { weapon: "Not Listed", rank: 1 }, null);
+    expect(loose.map((b) => b.note)).toEqual(["the best here", "-16.7% against the best here", "-25.0% against the best here"]);
+    expect(loose.flatMap((b) => b.marks)).toEqual([]);
     expect(sameWeaponName("Defier's Thorn", "Defier’s Thorn")).toBe(true);
     expect(sameWeaponName("Defier's Thorn", null)).toBe(false);
   });

@@ -78,14 +78,19 @@ export const sameWeaponName = (a: string | null | undefined, b: string | null | 
   return Boolean(a && b && norm(a) === norm(b));
 };
 
-/** The weapons, best first (as `weaponSteps` sorts them), each with its difference to the weapon the ladder holds;
- *  the held one and the account's own (by name) marked. */
+/** The weapons, best first (as `weaponSteps` sorts them), each with its difference to the weapon the ladder holds
+ *  (to the best, when the list does not carry the held one); the held one and the account's own (by name) marked. */
+export const holdsListedWeapon = (weapons: readonly WeaponStep[], held: { weapon: string }): boolean => weapons.some((w) => w.weapon === held.weapon);
+
 export function weaponChart(weapons: readonly WeaponStep[], held: { weapon: string; rank: number }, ownWeapon: string | null): Bar[] {
   const max = maxOf(weapons.map((w) => w.dps));
   const heldRow = weapons.find((w) => w.weapon === held.weapon) ?? null;
   return weapons.map((w) => {
     const isHeld = heldRow === w;
-    const vs = heldRow && heldRow.dps ? (w.dps - heldRow.dps) / heldRow.dps : null;
+    // Buling, Verina, Jianxin: the ladder holds a weapon the list does not carry, so each is read against the best
+    const base = heldRow ?? weapons[0] ?? null;
+    const vs = base && base.dps ? (w.dps - base.dps) / base.dps : null;
+    const against = heldRow ? held.weapon : "the best here";
     const marks: BarMark[] = [];
     if (isHeld) marks.push("held");
     if (sameWeaponName(w.weapon, ownWeapon)) marks.push("you");
@@ -95,7 +100,7 @@ export function weaponChart(weapons: readonly WeaponStep[], held: { weapon: stri
       value: w.dps,
       valueText: dpsText(w.dps),
       width: barWidth(w.dps, max),
-      note: isHeld ? "the weapon the rest of this section holds" : vs == null ? "" : Math.abs(vs) < FLAT ? `same as ${held.weapon}` : `${signedPercent(vs)} against ${held.weapon}`,
+      note: isHeld ? "the weapon the rest of this section holds" : !heldRow && base === w ? "the best here" : vs == null ? "" : Math.abs(vs) < FLAT ? `same as ${against}` : `${signedPercent(vs)} against ${against}`,
       marks,
     };
   });

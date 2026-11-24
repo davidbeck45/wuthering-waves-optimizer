@@ -356,7 +356,11 @@
             <KitBarChart
               name="weapons"
               wide
-              :caption="`Team DPS on each weapon, best first, from zero: each against ${kit.ladder.held.weapon}, the weapon the rest of this section holds.`"
+              :caption="
+                holdsListedWeapon(weapons, kit.ladder.held)
+                  ? `Team DPS on each weapon, best first, from zero: each against ${kit.ladder.held.weapon}, the weapon the rest of this section holds.`
+                  : `Team DPS on each weapon, best first, from zero: each against the best of them (${kit.ladder.held.weapon}, which the rest of this section holds, is not in Riley's list).`
+              "
               :bars="weaponBars" />
             <details class="kit-more mt-1" data-test-kit-ladder-figures="weapons">
             <summary>Show the figures</summary>
@@ -439,7 +443,7 @@ import { rotationPath } from "../rotation/hash";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import KitBarChart from "./KitBarChart.vue";
 import KitTeamRow from "./KitTeamRow.vue";
-import { costWidths, rankChart, sameWeaponName, sequenceChart, sequenceStrip, weaponChart } from "./ladderChart";
+import { costWidths, holdsListedWeapon, rankChart, sameWeaponName, sequenceChart, sequenceStrip, weaponChart } from "./ladderChart";
 import {
   CHANGE_WORDS,
   ROLE_LABEL,
