@@ -176,6 +176,23 @@ describe("contrast, focus and keyboard", () => {
     });
   });
 
+  // each Tools+ section heading carries a small icon in its section's tone (the second cue beside the words); in the
+  // light theme the accent and info tones drew Teams' at 1.5 : 1 and Echoes and weapons' at 1.8 : 1 on their squares
+  it("draws the Tools+ section marks at 3 : 1 on their squares in light, dark, Gruvbox dark, synthwave, nord and pastel", () => {
+    cy.viewport(412, 915);
+    cy.visit("/account", seed({ fontScale: 1.3 }));
+    cy.get(".plus-nav__group-mark").should("have.length", 5);
+    for (const [theme, style] of [["light", "light"], ["dark", "dark"], ["gruvbox", "dark"], ["synthwave", "dark"], ["nord", "light"], ["pastel", "light"]] as const) {
+      setTheme(theme, style);
+      cy.document().then((doc) => {
+        for (const mark of Array.from(doc.querySelectorAll(".plus-nav__group-mark"))) {
+          const section = mark.parentElement!.textContent!.trim();
+          expect(contrastOf(mark), `${theme}: the ${section} mark`).to.be.at.least(3);
+        }
+      });
+    }
+  });
+
   it("reads plus muted text and the Tools+ menu at AA in dark, light, nord and pastel", () => {
     cy.viewport(412, 915);
     cy.visit("/account", seed({ fontScale: 1.3 }));

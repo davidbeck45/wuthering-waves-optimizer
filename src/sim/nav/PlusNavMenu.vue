@@ -372,7 +372,10 @@ onBeforeUnmount(() => {
   height: 1.15rem;
   padding: 0.18rem;
   border-radius: 0.3rem;
-  color: oklch(var(--tone));
+  /* the tone mixed toward the theme's text colour: on the light theme the plain accent and info tones drew Teams' and
+     Echoes and weapons' icons at 1.5 and 1.8 : 1 on their squares (batch 6 second check); this holds 3 : 1 in every
+     theme a11yThemes.cy.ts measures */
+  color: color-mix(in oklch, oklch(var(--tone)) 55%, oklch(var(--bc)));
   background: oklch(var(--tone) / 0.16);
   box-shadow: inset 0 0 0 1px oklch(var(--tone) / 0.45);
 }
