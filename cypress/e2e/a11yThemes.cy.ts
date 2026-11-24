@@ -89,6 +89,17 @@ describe("contrast, focus and keyboard", () => {
     cy.get("h1").should("have.text", "Team rankings").and("have.class", "sr-only");
   });
 
+  it("lets Tab leave Riley's search box with a resonator filter set (its bubble is hidden: the account bar shows the chip)", () => {
+    // the link /account and /my-rankings write: his ring held the hidden bubble, so Tab "moved" to it and stayed put
+    cy.viewport(1440, 900);
+    cy.visit("/rankings#tc=s6r5&r=CartethyiaS6", seed());
+    cy.get(".skittle-root .tcchips .rchip[data-resonator]", ENGINE).should("exist").and("not.be.visible");
+    cy.get(".skittle-root .tcside #optionSearch", ENGINE).should("be.visible").focus();
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.focused().then(($el) => expect($el[0].closest(".tcside #optionSearch"), "focus left the search box").to.equal(null));
+    cy.focused().should("be.visible");
+  });
+
   it("keeps closed dialogs out of the Tab order, offers a skip link and marks the main landmark", () => {
     cy.viewport(1440, 900);
     cy.visit("/account", seed());

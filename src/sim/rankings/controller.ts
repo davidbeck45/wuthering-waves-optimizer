@@ -40,7 +40,7 @@ import { cardMemberOf, mainFirst, tableOrder, teamCards, type CardMember, type R
 import * as pool from "./rileyPool";
 import { appKeyOf } from "./rileyNames";
 import { soFarScheduler, type SoFarScheduler } from "./soFar";
-import { leavesTabRing } from "./tabEscape";
+import { tabRingStep } from "./tabEscape";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Member = { name: string; mainDps: boolean };
@@ -105,16 +105,24 @@ export function toggleRankingsSearch(open?: boolean): void {
 const onKeydown = (e: KeyboardEvent): void => { if (e.key === "Escape") openSide(false); };
 /** Riley's filter-bar ring (`page/table.ts` CHIP_RING, not exported): every bubble and both Clear buttons. */
 const RILEY_CHIP_RING = ".tcchips .rchip, .tcchips .clearall, .tcpins .rchip, .tcpins .clearpins";
-/** The way out of his Tab ring at its two ends (tabEscape.ts; a11y audit H1): window, capture phase, so it runs
- *  before his document listeners and hides the press from them; the browser then moves focus in page order. */
+/** His Tab ring as the player sees it (tabEscape.ts; a11y audit H1): window, capture phase, so it runs before his
+ *  document listeners and hides the press from them. At the ring's two ends the browser then moves focus in page
+ *  order; between them plus moves it, over the bubbles on screen only (plus hides his resonator bubbles, which his
+ *  own handler still walks: focus stayed in the search box). */
 const onTabEscape = (e: KeyboardEvent): void => {
   if (e.key !== "Tab" || !root) return;
   const search = root.querySelector<HTMLElement>("#optionSearch");
   if (!search) return;
-  const ring: HTMLElement[] = [search, ...root.querySelectorAll<HTMLElement>(RILEY_CHIP_RING)];
+  const shown = (el: HTMLElement): boolean => el.getClientRects().length > 0;
+  const ring: HTMLElement[] = [search, ...[...root.querySelectorAll<HTMLElement>(RILEY_CHIP_RING)].filter(shown)];
   let hasHits = false;
   try { hasHits = !!mods?.filterbar?.searchHits?.().length; } catch { /* his module not booted yet */ }
-  if (leavesTabRing(e, e.target as HTMLElement | null, ring, hasHits)) e.stopImmediatePropagation();
+  const step = tabRingStep(e, e.target as HTMLElement | null, ring, hasHits);
+  if (step === null) return;
+  e.stopImmediatePropagation();
+  if (step === "leave") return;
+  e.preventDefault();
+  step.focus();
 };
 
 function buildDom(): HTMLElement {

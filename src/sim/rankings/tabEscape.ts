@@ -27,3 +27,20 @@ export function leavesTabRing<T>(e: TabPress, target: T | null, ring: readonly T
   if (e.shiftKey) return at === 0; // Shift+Tab from the search box goes back up the page
   return at === ring.length - 1; // Tab from the last bubble, or from a search box with no bubble after it
 }
+
+/**
+ * Where a Tab press in his ring goes, on the ring as the player sees it (hidden bubbles left out): `"leave"` for the
+ * browser's own focus order (the ring's two ends, `leavesTabRing`), the next or previous member of `ring` to focus
+ * instead of his handler, or `null` to leave the press to him (not a ring Tab, or the search box walking its hits).
+ * Plus hides his resonator bubbles (the account bar shows those chips): his handler still counts them, so Tab from the
+ * search box with a resonator filter set "moved" to an invisible bubble and focus stayed in the box (2026-11-23 check).
+ */
+export function tabRingStep<T>(e: TabPress, target: T | null, ring: readonly T[], hasHits: boolean): "leave" | T | null {
+  if (e.key !== "Tab" || e.ctrlKey || e.altKey || e.metaKey) return null;
+  if (!target || !ring.length) return null;
+  const at = ring.indexOf(target);
+  if (at < 0) return null;
+  if (at === 0 && hasHits) return null;
+  if (leavesTabRing(e, target, ring, hasHits)) return "leave";
+  return ring[at + (e.shiftKey ? -1 : 1)] ?? null;
+}
