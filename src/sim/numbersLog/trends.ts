@@ -196,6 +196,7 @@ export function trendSteps(log: NumbersLog, trend: Trend, names: Namer): TrendSt
     const to = entries[j]!;
     const a = figure(from)!;
     const b = figure(to)!;
+    const cause = figureCause(trend.kind === "character" ? { kind: "character", before: a as CharacterFigure, after: b as CharacterFigure } : { kind: "team", before: a as TeamFigure, after: b as TeamFigure }, from, to);
     const marks: MarkKind[] = [];
     if (from.build !== to.build) marks.push("update");
     const imported = entries.slice(i + 1, j + 1).some((e) => e.importedAt);
@@ -207,17 +208,13 @@ export function trendSteps(log: NumbersLog, trend: Trend, names: Namer): TrendSt
       const tb = b as TeamFigure;
       if (ta.def !== tb.def && tb.synced && tb.synced !== ta.synced) marks.push("synced");
       else if (ta.def !== tb.def || ta.members.join("+") !== tb.members.join("+")) marks.push("team");
-      const memberChanged = tb.members.some((id) => {
-        const x = from.characters.find((c) => c.id === id);
-        const y = to.characters.find((c) => c.id === id);
-        return !!x && !!y && x.sig.rec !== y.sig.rec;
-      });
-      if (memberChanged) marks.push("build");
+      // a member's build by compare.ts's own rule (teamCause): not a member swapped in, not the loop time a Sync wrote
+      // into the members' saved loops — the mark and the words name one cause
+      if (cause.kind === "members") marks.push("build");
       if (from.autoTeamBuffs !== to.autoTeamBuffs) marks.push("switch");
     }
     const moved = a.damage !== b.damage;
     if (!moved && !marks.length) continue;
-    const cause = figureCause(trend.kind === "character" ? { kind: "character", before: a as CharacterFigure, after: b as CharacterFigure } : { kind: "team", before: a as TeamFigure, after: b as TeamFigure }, from, to);
     const words = [imported ? IMPORT_CARD_TEXT : "", cause.kind === "unknown" ? NO_CAUSE_TEXT : causeText(cause, names, imported, trend.kind), moved ? "" : DID_NOT_MOVE_TEXT].filter(Boolean);
     steps.push({ from: i, to: j, at: to.at, before: a.damage, after: b.damage, change: a.damage > 0 ? changeText((b.damage - a.damage) / a.damage) : null, marks, text: words.join(" ") });
   }
