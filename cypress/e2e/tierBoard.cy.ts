@@ -126,6 +126,38 @@ describe("Tier list: the Board view", () => {
     cy.get('[data-test-tier-board-block="0"]').should("not.be.visible");
   });
 
+  // check-tier-board (batch 6): the board is the reason for the page, so its first band is on the first screen of a
+  // phone at 130 % text: the whole T0 band at 412 x 915 (David's S26), T0's first row of portraits at 360 x 740
+  for (const [w, h, whole] of [[412, 915, true], [360, 740, false]] as const) {
+    it(`at ${w} x ${h} with 130 % text the T0 band's ${whole ? "portraits all" : "first row"} sit above the bottom bar, before any scroll`, () => {
+      cy.viewport(w, h);
+      // v3, the default UI David uses (the support file seeds classic for a spec without settings: no bottom bar there)
+      cy.visit("/tier-list", {
+        onBeforeLoad(win: Window) {
+          seed().onBeforeLoad(win);
+          win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: false }, labs: {} }));
+        },
+        onLoad(win: Window) {
+          const style = win.document.createElement("style");
+          style.textContent = "html { font-size: 130% !important; }";
+          win.document.head.appendChild(style);
+        },
+      });
+      loaded();
+      cy.get('[data-test-tier-board-block="0"] [data-test-tier-board-band="T0"] [data-test-tier-board-face]').should("have.length.at.least", 1);
+      cy.window().should((win) => {
+        expect(win.scrollY, "not scrolled").to.eq(0);
+        const bar = parseFloat(win.getComputedStyle(win.document.documentElement).getPropertyValue("--nav-bottom-h")) || 0;
+        expect(bar, "v3's bottom bar").to.be.greaterThan(40);
+        const faces = [...win.document.querySelectorAll('[data-test-tier-board-block="0"] [data-test-tier-board-band="T0"] [data-test-tier-board-face]')]
+          .map((f) => f.getBoundingClientRect());
+        const top = faces[0]!.top;
+        const shown = whole ? faces : faces.filter((r) => Math.abs(r.top - top) < 2);
+        for (const r of shown) expect(r.bottom, "a T0 portrait's bottom edge vs the bottom bar's top").to.be.at.most(win.innerHeight - bar);
+      });
+    });
+  }
+
   it("Save as image hands over a PNG of the design width", () => {
     cy.viewport(412, 915);
     cy.visit("/tier-list", seed());

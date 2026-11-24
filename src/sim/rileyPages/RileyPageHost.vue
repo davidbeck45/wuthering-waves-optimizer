@@ -215,6 +215,18 @@ onBeforeUnmount(() => {
 .wt-riley-mine__hint--phone {
   display: none;
 }
+/* a page's short Board lead (TierListView): on a phone's Board it stands in for the long lead and the board's own line */
+.wt-tlead-board {
+  display: none;
+}
+@media (max-width: 767px) {
+  .wt-riley-page--board .wt-tlead-long {
+    display: none;
+  }
+  .wt-riley-page--board .wt-tlead-board {
+    display: inline;
+  }
+}
 .wt-riley-views .btn {
   min-height: 44px;
   flex: 1 1 0;

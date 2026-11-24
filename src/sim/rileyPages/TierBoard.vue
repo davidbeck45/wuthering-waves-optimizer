@@ -249,6 +249,12 @@ async function save(share: boolean): Promise<void> {
 .wt-tboard__status {
   font-weight: 600;
 }
+/* a phone: the page's short Board lead says this (TierListView), so the T0 band is on the first screen */
+@media (max-width: 767px) {
+  .wt-tboard__lead {
+    display: none;
+  }
+}
 .wt-tboard__tools {
   margin-top: 0.5rem;
   display: flex;

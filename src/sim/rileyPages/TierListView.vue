@@ -1,7 +1,9 @@
 <template>
   <RileyPageHost kind="tierlist" title="Tier list" :views="['Main DPS', 'Sub DPS', 'Support']" views-label="Which block of the tier list to show">
     <template #lead>
-      Every resonator at the best team they reach, T0 (best) to T4, on Riley's wuwa_calc engine.
+      <span class="wt-tlead-long">Every resonator at the best team they reach, T0 (best) to T4, on Riley's wuwa_calc engine.</span>
+      <!-- a phone's Board: one short line instead of this lead plus the board's own, so the T0 band is on the first screen -->
+      <span class="wt-tlead-board">Riley's wuwa_calc tiers, T0 best. Tap a portrait for its best team.</span>
     </template>
     <template #about>
       A figure is the damage per rotation (DPR) of the best team that resonator stands in, at the Team Cost you pick, with
