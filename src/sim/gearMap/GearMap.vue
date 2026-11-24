@@ -121,7 +121,7 @@
             <h3 id="gm-sheet-title" class="gm-sheet__title">{{ echoName(open.cell.echo) }}</h3>
             <p class="gm-muted">{{ open.name }} · slot {{ open.cell.slot + 1 }}</p>
           </div>
-          <button type="button" class="btn btn-sm btn-ghost btn-square" aria-label="Close" data-test-gear-map-sheet-close @click="closeSheet">✕</button>
+          <button type="button" class="btn btn-ghost btn-square" aria-label="Close" data-test-gear-map-sheet-close @click="closeSheet">✕</button>
         </header>
         <dl class="gm-facts">
           <div><dt>Cost</dt><dd>{{ open.cell.cost ?? "—" }}</dd></div>
@@ -146,7 +146,7 @@
         </p>
         <nav class="gm-links" aria-label="Open in Echo Lab">
           <RouterLink v-if="open.cell.chip.verdictLabel" :to="echoLink(open.cell.echoId!)" class="btn btn-sm btn-primary" data-test-gear-map-sheet-echo-lab>Open this echo in Echo Lab ›</RouterLink>
-          <RouterLink to="/echo-lab?tab=farm" class="btn btn-sm" data-test-gear-map-sheet-farm>Farm next for this slot ›</RouterLink>
+          <RouterLink to="/echo-lab?tab=farm" class="btn btn-sm" data-test-gear-map-sheet-farm>Farm next: the best farm for every slot ›</RouterLink>
         </nav>
       </div>
     </dialog>
@@ -406,7 +406,9 @@ function onBackdrop(e: MouseEvent): void {
   border-radius: 0.45rem;
   font-weight: 700;
   font-size: 0.95rem;
-  border: 1px solid oklch(var(--bc) / 0.35);
+  /* the outline carries the 3 : 1 against the page in every theme (a fill alone did not: the light theme's info and
+     warning, the dark themes' neutral); the letter is the second cue */
+  border: 1.5px solid oklch(var(--bc) / 0.75);
 }
 button.gm-cell:focus-visible {
   outline: 3px solid oklch(var(--bc));
@@ -422,7 +424,7 @@ button.gm-cell:focus-visible {
   border-radius: 0.35rem;
   font-weight: 700;
   font-size: 0.8rem;
-  border: 1px solid oklch(var(--bc) / 0.35);
+  border: 1.5px solid oklch(var(--bc) / 0.75);
 }
 .gm-swatch--sm {
   width: 1.4rem;
