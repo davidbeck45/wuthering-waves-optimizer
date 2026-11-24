@@ -84,7 +84,7 @@
     </dialog>
 
     <!-- the saved picture: a fixed design width and fixed colours, so it is the same from every screen and theme -->
-    <div v-if="exporting && model" ref="card" class="wt-tcard" aria-hidden="true">
+    <div v-if="exporting && model" class="wt-tcard-stage" aria-hidden="true"><div ref="card" class="wt-tcard">
       <div class="wt-tcard__head">Wuthering Waves tier list</div>
       <div class="wt-tcard__sub">Each resonator at the {{ figureLabel(model.mode) }} they stand in</div>
       <div class="wt-tcard__blocks">
@@ -103,7 +103,7 @@
         </div>
       </div>
       <div class="wt-tcard__foot" data-test-tier-card-footer>{{ footer }}</div>
-    </div>
+    </div></div>
   </section>
 </template>
 
@@ -481,10 +481,15 @@ async function save(share: boolean): Promise<void> {
 }
 
 /* the saved picture: fixed colours (the one exception to theme colours, as the share cards) */
-.wt-tcard {
+/* the stage is off the screen; the card in it is laid out in the flow, as html-to-image needs (a fixed node draws nothing) */
+.wt-tcard-stage {
   position: fixed;
   left: -20000px;
   top: 0;
+  pointer-events: none;
+}
+.wt-tcard {
+  box-sizing: border-box;
   width: 1080px;
   padding: 32px;
   background: #15171d;

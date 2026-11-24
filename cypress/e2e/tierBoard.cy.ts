@@ -146,7 +146,15 @@ describe("Tier list: the Board view", () => {
       expect([...bytes.slice(1, 4)].map((c) => String.fromCharCode(c)).join("")).to.eq("PNG");
       const width = new DataView(bytes.buffer).getUint32(16);
       expect(width, "design width 1080 at pixel ratio 2").to.eq(2160);
-      expect(blob.size).to.be.greaterThan(20_000);
+      // drawn, not blank: a node html-to-image cannot lay out comes back as a transparent PNG of the right size
+      const bmp = await win.createImageBitmap(blob);
+      const canvas = win.document.createElement("canvas");
+      canvas.width = bmp.width;
+      canvas.height = bmp.height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(bmp, 0, 0);
+      const [r, g, b, a] = ctx.getImageData(10, 10, 1, 1).data;
+      expect([r, g, b, a], "the card's fixed dark background").to.deep.equal([0x15, 0x17, 0x1d, 255]);
     });
     cy.get("[data-test-tier-board-save]").should("not.be.disabled");
   });
