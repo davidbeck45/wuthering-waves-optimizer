@@ -36,7 +36,9 @@ describe("core pages, refined", () => {
       // it used to open at the top of the window (y 12) with its button half way down
       expect(menu.top, "menu top: no lower than the button's top").to.be.at.most(item.top + 1);
       expect(menu.bottom, "menu bottom: reaches past the button").to.be.at.least(item.bottom - 1);
-      expect(menu.top, "menu top: moved down to its button").to.be.greaterThan(100);
+      // beside its button, moved up only as far as it must to fit the window (railMenu.ts, margin 12). The menu grew
+      // with the pages in it (837 px with Tier list and Roster value), so "below y 100" is no longer where that lands
+      expect(menu.top, "menu top: beside its button, or as low as fits the window").to.be.closeTo(Math.max(12, Math.min(item.top, 900 - menu.height - 12)), 2);
       expect(menu.bottom, "the menu fits the window").to.be.at.most(900);
     });
     cy.get("[data-test-nav-plus-search]:visible").click();

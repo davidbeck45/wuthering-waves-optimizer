@@ -330,7 +330,9 @@ describe("phone layout", () => {
       cy.get('[data-test-my-rankings-expand="Cartethyia"]', { timeout: 120000 }).click();
       cy.get('[data-test-why-number="Cartethyia"]').click();
       cy.get("[data-test-anatomy-move]", { timeout: 60000 }).should("have.length.at.least", 6);
-      cy.get("[data-test-anatomy-sheet]").then(($d) => {
+      // retried: the sheet slides in, and a single read while it moves found its head past the right edge (seen once
+      // with five Cypress runs on one machine; GitHub's two cores are slower still)
+      cy.get("[data-test-anatomy-sheet]").should(($d) => {
         const dialog = $d[0] as HTMLDialogElement;
         expect(dialog.getBoundingClientRect().width, "the sheet fills the phone").to.be.at.most(width);
         expect(dialog.scrollWidth, "no sideways scroll in the sheet").to.be.at.most(dialog.clientWidth);
